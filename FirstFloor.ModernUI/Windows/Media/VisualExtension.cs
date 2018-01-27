@@ -3,6 +3,8 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media;
 using JetBrains.Annotations;
 
@@ -77,6 +79,10 @@ namespace FirstFloor.ModernUI.Windows.Media {
 
         public static double DistanceTo(this Point a, Point b) {
             return Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d));
+        }
+
+        public static Screen GetScreen([NotNull] this Window window) {
+            return Screen.FromHandle(new WindowInteropHelper(window).Handle);
         }
     }
 }

@@ -148,7 +148,7 @@
               <mui:BooleanSwitch Value="{Binding SelectedObject.ChampionshipPointsGoalType}" Margin="0 0 8 0" DockPanel.Dock="Left" Width="32">
                 <mui:BooleanSwitch.True>
                   <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ChampionshipPointsGoal}" Placeholder="1" Mode="Integer"
-                      Minimum="1" Maximum="9999" ToolTip="To win, you need to get this much points" />
+                      Minimum="1" Maximum="{x:Static mui:DpiAwareWindow.UnlimitedSize}" ToolTip="To win, you need to get this much points" />
                 </mui:BooleanSwitch.True>
                 <mui:BooleanSwitch.False>
                   <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ChampionshipRankingGoal}" Placeholder="1" Mode="Integer"

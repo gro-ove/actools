@@ -62,7 +62,7 @@
               Value="True">
             <Setter TargetName="PART_Name" Property="DockPanel.Dock" Value="Top" />
             <Setter TargetName="PART_Name" Property="Margin" Value="0 0 0 2" />
-            <Setter TargetName="PART_Name" Property="MaxWidth" Value="999999" />
+            <Setter TargetName="PART_Name" Property="MaxWidth" Value="{x:Static mui:DpiAwareWindow.UnlimitedSize}" />
             <Setter TargetName="PART_Name" Property="MinWidth" Value="0" />
             <Setter TargetName="ParamCell" Property="Width"
                 Value="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource SumConverter}, ConverterParameter=-140}" />
@@ -183,7 +183,8 @@
               Visibility="{Binding Children, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               Style="{StaticResource Expander.Animated}" Margin="-16 0 0 0">
             <Expander.Header>
-              <Label Content="{Binding ChildrenName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" DockPanel.Dock="Top" HorizontalAlignment="Left" />
+              <Label Content="{Binding ChildrenName}" ContentStringFormat="{x:Static mui:ColonConverter.FormatNoSpaceAfterwards}" DockPanel.Dock="Top"
+                  HorizontalAlignment="Left" />
             </Expander.Header>
             <ItemsControl ItemsSource="{Binding Children}" ItemTemplate="{StaticResource SharedItemChildTemplate}"
                 ItemsPanel="{StaticResource ChildSharedItemsPanel}" Margin="24 4 0 0" />

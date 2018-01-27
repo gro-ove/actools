@@ -17,6 +17,7 @@ using System.Windows.Forms;
 using System.Windows.Interop;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
@@ -109,10 +110,10 @@ namespace AcManager {
             MainInner(a);
         }
 
-        public static uint SecondInstanceMessage { get; private set; }
+        private static uint _secondInstanceMessage;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void MainInner(string[] args) {
+        private static void MainInner(string[] args) {
             if (AppUpdater.OnStartup(args)) return;
 
             if (args.Length == 2 && args[0] == "--run") {
@@ -137,12 +138,36 @@ namespace AcManager {
             }
 
             using (var mutex = new Mutex(false, mutexId)) {
-                SecondInstanceMessage = User32.RegisterWindowMessage(mutexId);
+                _secondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
                     _initialized = true;
-                    App.CreateAndRun();
+                    RunApp();
                 } else {
                     PassArgsToRunningInstance(args);
+                }
+            }
+        }
+
+        private static void RunApp() {
+            var tryingToRunFlag = Path.Combine(ApplicationDataDirectory, "Trying to run.flag");
+            FileUtils.EnsureFileDirectoryExists(tryingToRunFlag);
+
+            var failedLastTime = File.Exists(tryingToRunFlag);
+            if (!failedLastTime) {
+                File.WriteAllBytes(tryingToRunFlag, new byte[0]);
+            }
+
+            DpiAwareWindow.NewWindowCreated += OnWindowCreated;
+            App.CreateAndRun(failedLastTime);
+
+            void OnWindowCreated(object sender, EventArgs args) {
+                ((DpiAwareWindow)sender).Loaded += OnWindowLoaded;
+            }
+
+            async void OnWindowLoaded(object sender, RoutedEventArgs args) {
+                await Task.Yield();
+                if (!_crashed) {
+                    FileUtils.TryToDelete(tryingToRunFlag);
                 }
             }
         }
@@ -182,11 +207,13 @@ namespace AcManager {
 
         private static void PassArgsToRunningInstance(IEnumerable<string> args) {
             PassSomeData(args);
-            User32.PostMessage(User32.HWND_BROADCAST, SecondInstanceMessage, 0, 0);
+            User32.PostMessage(User32.HWND_BROADCAST, _secondInstanceMessage, 0, 0);
         }
 
+        private static bool _crashed;
+
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        public static void SetUnhandledExceptionHandler() {
+        private static void SetUnhandledExceptionHandler() {
             AppDomain.CurrentDomain.UnhandledException += UnhandledExceptionHandler;
 
 #if DEBUG
@@ -196,6 +223,7 @@ namespace AcManager {
 
         [HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args) {
+            _crashed = true;
             var e = args.Exception as Exception;
             var app = System.Windows.Application.Current;
             if (app != null) {
@@ -229,7 +257,7 @@ namespace AcManager {
                 throw new Exception();
             }
 
-            DpiAwareWindow.OnFatalError(e);
+            FatalErrorHandler.OnFatalError(e);
         }
 
         [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
@@ -284,6 +312,7 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static void UnhandledExceptionHandler(object sender, UnhandledExceptionEventArgs args) {
+            _crashed = true;
             var e = args.ExceptionObject as Exception;
             var app = System.Windows.Application.Current;
             if (app != null) {
@@ -298,7 +327,7 @@ namespace AcManager {
         public static void HandleSecondInstanceMessages(Window window, Action<IEnumerable<string>> handler) {
             HwndSource hwnd = null;
             HwndSourceHook hook = (IntPtr handle, int message, IntPtr wParam, IntPtr lParam, ref bool handled) => {
-                if (message == SecondInstanceMessage) {
+                if (message == _secondInstanceMessage) {
                     try {
                         handler(ReceiveSomeData());
                         (window as DpiAwareWindow)?.BringToFront();

@@ -3,7 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" mc:Ignorable="d" Title="Combine app presets" x:Name="This"
     d:DataContext="{d:DesignInstance dialogs:CombinePythonAppsPresetsDialog+ViewModel}" Width="800" SizeToContent="Manual" MinHeight="320" Height="640"
-    MaxHeight="99999" MaxWidth="99999" LocationAndSizeKey="CombinePythonAppsPresetsDialog1" ResizeMode="CanResizeWithGrip">
+    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    LocationAndSizeKey="CombinePythonAppsPresetsDialog1" ResizeMode="CanResizeWithGrip">
   <mui:ModernDialog.Resources>
     <DataTemplate x:Key="SelectedContentTemplate">
       <TextBlock x:Name="TextBlock" Text="{Binding}" />

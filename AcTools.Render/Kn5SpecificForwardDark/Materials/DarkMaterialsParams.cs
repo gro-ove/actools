@@ -1,5 +1,4 @@
 using System.Drawing;
-using SlimDX;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class DarkMaterialsParams {

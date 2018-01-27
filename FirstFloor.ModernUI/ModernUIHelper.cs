@@ -31,8 +31,7 @@ namespace FirstFloor.ModernUI {
         /// <exception cref="System.ComponentModel.Win32Exception"></exception>
         public static ProcessDpiAwareness GetDpiAwereness() {
             if (WindowsVersionHelper.IsWindows8Point1OrGreater) {
-                ProcessDpiAwareness value;
-                var result = NativeMethods.GetProcessDpiAwareness(IntPtr.Zero, out value);
+                var result = NativeMethods.GetProcessDpiAwareness(IntPtr.Zero, out var value);
                 if (result != NativeMethods.SOk) {
                     throw new Win32Exception(result);
                 }

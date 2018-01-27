@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 

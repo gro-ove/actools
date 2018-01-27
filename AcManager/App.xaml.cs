@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -73,25 +72,14 @@ using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using StringBasedFilter;
 
 namespace AcManager {
     public partial class App : IDisposable {
-        /// <summary>
-        /// It’s incredible how I fail to implement something that simple.
-        /// TODO: Find a way to reproduce that RivaTuner crash here and figure out why that flag doesn’t help.
-        /// </summary>
-        public static bool OptionUseTryingToRunFlag = false;
-
         private const string WebBrowserEmulationModeDisabledKey = "___webBrowserEmulationModeDisabled";
 
-        [CanBeNull]
-        private static string _tryingToRunFlag;
-
-        public static void CreateAndRun() {
+        public static void CreateAndRun(bool forceSoftwareRenderingMode) {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
             if (AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize();
@@ -118,33 +106,30 @@ namespace AcManager {
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
 
-            if (OptionUseTryingToRunFlag) {
-                SetTryingToRunFlag();
+            if (forceSoftwareRenderingMode) {
+                ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
 
             if (AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering)) {
                 SwitchToSoftwareRendering();
             }
 
-            AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
-            new App().Run();
-        }
+            var app = new App();
 
-        private static void SetTryingToRunFlag() {
-            _tryingToRunFlag = FilesStorage.Instance.GetTemporaryFilename("Trying to run.flag");
-            if (!File.Exists(_tryingToRunFlag)) {
-                try {
-                    File.WriteAllBytes(_tryingToRunFlag, new byte[0]);
-                } catch {
-                    // ignored
-                }
-            } else if (new CustomMessageBox(
-                    @"Looks like CM failed to start last time, it could be related to third-party apps such as RivaTuner messing with UI rendering. If this is the case, please, add Content Manager to exceptions.
-
-As an alternative solution, you can switch to software UI rendering, but it will slow app down.", "Potential compatibility issue",
-                    "Switch to software rendering", "Use hardware-accelerated rendering").ShowDialog() == System.Windows.Forms.DialogResult.Yes) {
-                ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
+            // some sort of safe mode
+            if (forceSoftwareRenderingMode) {
+                Toast.Show("Safe mode", "Failed to start the last time, now CM uses software rendering", () => {
+                    if (ModernDialog.ShowMessage(
+                            "Would you like to switch back to hardware rendering? You can always do that in Settings/Appearance. App will be restarted.",
+                            "Switch back", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                        ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, false);
+                        Storage.SaveBeforeExit(); // Just in case
+                        WindowsHelper.RestartCurrentApplication();
+                    }
+                });
             }
+
+            app.Run();
         }
 
         private static void SwitchToSoftwareRendering() {
@@ -250,7 +235,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             };
 
             AppArguments.Set(AppFlag.ControlsDebugMode, ref ControlsSettings.OptionDebugControlles);
-            AppArguments.Set(AppFlag.ControlsRescanPeriod, ref DirectInputDevices.OptionMinRescanPeriod);
+            AppArguments.Set(AppFlag.ControlsRescanPeriod, ref DirectInputScanner.OptionMinRescanPeriod);
             var ignoreControls = AppArguments.Get(AppFlag.IgnoreControls);
             if (!string.IsNullOrWhiteSpace(ignoreControls)) {
                 ControlsSettings.OptionIgnoreControlsFilter = Filter.Create(new StringTester(), ignoreControls);
@@ -264,7 +249,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             FancyBackgroundManager.Initialize();
             if (AppArguments.Has(AppFlag.UiScale)) {
-                DpiAwareWindow.OptionScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+                AppearanceManager.Current.AppScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
             }
 
             if (!AppKeyHolder.IsAllRight) {
@@ -278,6 +263,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/
+            AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
             AppAppearanceManager.Initialize();
 
             ContentUtils.Register("AppStrings", AppStrings.ResourceManager);
@@ -497,7 +483,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
             // let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            new AppUi(this, _tryingToRunFlag).Run();
+            new AppUi(this).Run();
         }
 
         private class CarSetupsView : ICarSetupsView {
@@ -578,6 +564,10 @@ As an alternative solution, you can switch to software UI rendering, but it will
 
                 await Task.Delay(500);
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
+
+                if (SettingsHolder.Drive.ScanControllersAutomatically) {
+                    DirectInputScanner.GetAsync().Forget();
+                }
 
                 string additional = null;
                 AppArguments.Set(AppFlag.SimilarAdditionalSourceIds, ref additional);
@@ -695,7 +685,7 @@ As an alternative solution, you can switch to software UI rendering, but it will
             UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
             DiscordConnector.Instance.Dispose();
-            DirectInputDevices.Shutdown();
+            DirectInputScanner.Shutdown();
             Dispose();
         }
 

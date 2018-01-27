@@ -1,5 +1,4 @@
 using System;
-using System.ServiceModel.Configuration;
 using JetBrains.Annotations;
 using AcTools.Utils.Helpers;
 using StringBasedFilter;

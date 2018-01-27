@@ -247,7 +247,7 @@ namespace AcTools.Render.Data {
             public Vector3 Direction { get; }
             public int Group { get; }
 
-            internal FlameDescription(string name, IniFileSection fileSection, Matrix graphicMatrix) {
+            internal FlameDescription(string name, IniFileSection fileSection) {
                 Name = name;
                 Position = fileSection.GetSlimVector3("POSITION");
                 Direction = fileSection.GetSlimVector3("DIRECTION");
@@ -261,8 +261,7 @@ namespace AcTools.Render.Data {
             }
 
             var flames = _data.GetIniFile("flames.ini");
-            var matrix = GetGraphicMatrix();
-            return flames.GetExistingSectionNames("FLAME").Select(x => new FlameDescription(x, flames[x], matrix));
+            return flames.GetExistingSectionNames("FLAME").Select(x => new FlameDescription(x, flames[x]));
         }
         #endregion
 
@@ -367,6 +366,7 @@ namespace AcTools.Render.Data {
             public abstract string Name { get; }
             public abstract string Kpi { get; }
             public abstract string Caster { get; }
+            public abstract string Trail { get; }
 
             public event PropertyChangedEventHandler PropertyChanged {
                 add { }
@@ -388,11 +388,14 @@ namespace AcTools.Render.Data {
 
             public override string Name => Left.DisplayType;
 
-            public override string Kpi => Math.Abs(Left.Kpi - Right.Kpi) < 0.002 ? Left.Kpi.ToString("F3") :
-                    $"{Left.Kpi:F3}/{Right.Kpi:F3}";
+            public override string Kpi => Math.Abs(-Left.Kpi - Right.Kpi) < 0.002 ? $"{-Left.Kpi:F3}°" :
+                    $"{-Left.Kpi:F3}/{Right.Kpi:F3}°";
 
-            public override string Caster => Math.Abs(Left.Caster - Right.Caster) < 0.002 ? Left.Caster.ToString("F3") :
-                    $"{Left.Caster:F3}/{Right.Caster:F3}";
+            public override string Caster => Math.Abs(Left.Caster - Right.Caster) < 0.002 ? $"{Left.Caster:F3}°" :
+                    $"{Left.Caster:F3}/{Right.Caster:F3}°";
+
+            public override string Trail => Math.Abs(Left.Trail - Right.Trail) < 0.002 ? $"{Left.Trail * 100:F2} cm" :
+                    $"{Left.Trail * 100:F2}/{Right.Trail * 100:F2} cm";
         }
 
         public class DependentSuspensionGroup : SuspensionsGroupBase {
@@ -406,6 +409,7 @@ namespace AcTools.Render.Data {
             public override string Name => Both.DisplayType;
             public override string Kpi => Both.Kpi.ToString("F3");
             public override string Caster => Both.Caster.ToString("F3");
+            public override string Trail => Both.Trail.ToString("F3");
         }
 
         public class DebugLine {
@@ -447,6 +451,13 @@ namespace AcTools.Render.Data {
             private float? _kpi;
             #endregion
 
+            #region Trail
+            protected abstract float TrailOverride { get; }
+
+            public float Trail => _trail ?? (_trail = TrailOverride).Value;
+            private float? _trail;
+            #endregion
+
             #region Wheel steering axle
             protected abstract Tuple<Vector3, Vector3> WheelSteerAxisOverride { get; }
 
@@ -476,6 +487,7 @@ namespace AcTools.Render.Data {
             public override string DisplayType => "Axle";
             protected override float CasterOverride => 0f;
             protected override float KpiOverride => 0f;
+            protected override float TrailOverride => 0f;
 
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => Tuple.Create(
                     new Vector3(AxleWidth / 2f, -1f, 0f), new Vector3(AxleWidth / 2f, 1f, 0f));
@@ -504,9 +516,9 @@ namespace AcTools.Render.Data {
 
         public abstract class EightPointsSuspensionBase : SuspensionBase {
             public Vector3[] Points { get; } = new Vector3[8];
-            protected override float KpiOverride => ((Points[4].X - Points[5].X) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
+            protected override float KpiOverride => ((Points[4].X - Points[5].X) / (Points[4].Y - Points[5].Y)).Atan().ToDegrees();
 
-            public EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) { }
+            protected EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) { }
         }
 
         public class DwbSuspension : EightPointsSuspensionBase {
@@ -521,19 +533,23 @@ namespace AcTools.Render.Data {
                         new Vector3(track * 0.5f * xOffset, baseY, wheelbase * (1f - cgLocation)) :
                         new Vector3(track * 0.5f * xOffset, baseY, -wheelbase * cgLocation);
 
-                var vector3 = new Vector3(-xOffset, 1f, 1f);
-                Points[0] = Vector3.Modulate(section.GetSlimVector3("WBCAR_TOP_FRONT"), vector3);
-                Points[1] = Vector3.Modulate(section.GetSlimVector3("WBCAR_TOP_REAR"), vector3);
-                Points[2] = Vector3.Modulate(section.GetSlimVector3("WBCAR_BOTTOM_FRONT"), vector3);
-                Points[3] = Vector3.Modulate(section.GetSlimVector3("WBCAR_BOTTOM_REAR"), vector3);
-                Points[4] = Vector3.Modulate(section.GetSlimVector3("WBTYRE_TOP"), vector3);
-                Points[5] = Vector3.Modulate(section.GetSlimVector3("WBTYRE_BOTTOM"), vector3);
-                Points[6] = Vector3.Modulate(section.GetSlimVector3("WBCAR_STEER"), vector3);
-                Points[7] = Vector3.Modulate(section.GetSlimVector3("WBTYRE_STEER"), vector3);
+                Points[0] = section.GetSlimVector3("WBCAR_TOP_FRONT");
+                Points[1] = section.GetSlimVector3("WBCAR_TOP_REAR");
+                Points[2] = section.GetSlimVector3("WBCAR_BOTTOM_FRONT");
+                Points[3] = section.GetSlimVector3("WBCAR_BOTTOM_REAR");
+                Points[4] = section.GetSlimVector3("WBTYRE_TOP");
+                Points[5] = section.GetSlimVector3("WBTYRE_BOTTOM");
+                Points[6] = section.GetSlimVector3("WBCAR_STEER");
+                Points[7] = section.GetSlimVector3("WBTYRE_STEER");
+
+                for (var i = Points.Length - 1; i >= 0; i--) {
+                    Points[i].X *= -xOffset;
+                }
             }
 
-            public override string DisplayType => "DWB";
-            protected override float CasterOverride => ((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)).Atan() * 57.2957795f;
+            public override string DisplayType => "Double Wishbone (DWB)";
+            protected override float CasterOverride => ((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)).Atan().ToDegrees();
+            protected override float TrailOverride => Points[4].Z - Points[4].Y * (Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y);
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[5], Points[4]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new[] {
@@ -558,18 +574,22 @@ namespace AcTools.Render.Data {
                         new Vector3(track * 0.5f * xOffset, baseY, wheelbase * (1f - cgLocation)) :
                         new Vector3(track * 0.5f * xOffset, baseY, -wheelbase * cgLocation);
 
-                var vector3 = new Vector3(-xOffset, 1f, 1f);
-                Points[0] = Vector3.Modulate(section.GetSlimVector3("STRUT_CAR"), vector3);
-                Points[1] = Vector3.Modulate(section.GetSlimVector3("STRUT_TYRE"), vector3);
-                Points[2] = Vector3.Modulate(section.GetSlimVector3("WBCAR_BOTTOM_FRONT"), vector3);
-                Points[3] = Vector3.Modulate(section.GetSlimVector3("WBCAR_BOTTOM_REAR"), vector3);
-                Points[5] = Vector3.Modulate(section.GetSlimVector3("WBTYRE_BOTTOM"), vector3);
-                Points[6] = Vector3.Modulate(section.GetSlimVector3("WBCAR_STEER"), vector3);
-                Points[7] = Vector3.Modulate(section.GetSlimVector3("WBTYRE_STEER"), vector3);
+                Points[0] = section.GetSlimVector3("STRUT_CAR");
+                Points[1] = section.GetSlimVector3("STRUT_TYRE");
+                Points[2] = section.GetSlimVector3("WBCAR_BOTTOM_FRONT");
+                Points[3] = section.GetSlimVector3("WBCAR_BOTTOM_REAR");
+                Points[5] = section.GetSlimVector3("WBTYRE_BOTTOM");
+                Points[6] = section.GetSlimVector3("WBCAR_STEER");
+                Points[7] = section.GetSlimVector3("WBTYRE_STEER");
+
+                for (var i = Points.Length - 1; i >= 0; i--) {
+                    Points[i].X *= -xOffset;
+                }
             }
 
             public override string DisplayType => "Strut";
-            protected override float CasterOverride => ((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)).Atan() * 57.2957795f;
+            protected override float CasterOverride => ((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)).Atan().ToDegrees();
+            protected override float TrailOverride => Points[1].Z - Points[1].Y * (Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y);
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[1], Points[0]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new [] {

@@ -127,7 +127,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _suspensionDebug;
 
         public bool SuspensionDebug {
-            get { return _suspensionDebug; }
+            get => _suspensionDebug;
             set {
                 if (Equals(value, _suspensionDebug)) return;
                 _suspensionDebug = value;
@@ -174,12 +174,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private static InputLayouts.VerticePC[] GetDebugSuspensionVertices(CarData.SuspensionsPack pack) {
-            CarData.IndependentSuspensionsGroup ifg, irg;
-            CarData.DependentSuspensionGroup dfg, drg;
-
             var index = 0;
-            var result = new InputLayouts.VerticePC[(CountDebugSuspensionPoints(pack.Front, out ifg, out dfg) +
-                    CountDebugSuspensionPoints(pack.Rear, out irg, out drg)) * 2];
+            var result = new InputLayouts.VerticePC[(CountDebugSuspensionPoints(pack.Front, out var ifg, out var dfg) +
+                    CountDebugSuspensionPoints(pack.Rear, out var irg, out var drg)) * 2];
             AddDebugSuspensionPoints(pack, result, ifg, dfg, ref index);
             AddDebugSuspensionPoints(pack, result, irg, drg, ref index);
             return result;
@@ -223,7 +220,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _areWheelsContoursVisible;
 
         public bool AreWheelsContoursVisible {
-            get { return _areWheelsContoursVisible; }
+            get => _areWheelsContoursVisible;
             set {
                 if (Equals(value, _areWheelsContoursVisible)) return;
                 _areWheelsContoursVisible = value;
@@ -262,7 +259,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _isFuelTankVisible;
 
         public bool IsFuelTankVisible {
-            get { return _isFuelTankVisible; }
+            get => _isFuelTankVisible;
             set {
                 if (Equals(value, _isFuelTankVisible)) return;
                 _isFuelTankVisible = value;
@@ -286,7 +283,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _areFlamesVisible;
 
         public bool AreFlamesVisible {
-            get { return _areFlamesVisible; }
+            get => _areFlamesVisible;
             set {
                 if (Equals(value, _areFlamesVisible)) return;
                 _areFlamesVisible = value;
@@ -306,7 +303,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _areWingsVisible;
 
         public bool AreWingsVisible {
-            get { return _areWingsVisible; }
+            get => _areWingsVisible;
             set {
                 if (Equals(value, _areWingsVisible)) return;
                 _areWingsVisible = value;
@@ -327,11 +324,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         });
 
         private void UpdateWingLineAngle(int wing, float angle) {
-            var x = _wingsLines.GetSource(wing) as CarData.WingDescription;
-            if (x == null) return;
-
-            var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
-            _wingsLines.SetMatrix(wing, Matrix.RotationX(angle) * Matrix.Translation(x.Position) * graphicMatrix);
+            if (_wingsLines.GetSource(wing) is CarData.WingDescription x) {
+                var graphicMatrix = Matrix.Invert(_carData.GetGraphicMatrix());
+                _wingsLines.SetMatrix(wing, Matrix.RotationX(angle) * Matrix.Translation(x.Position) * graphicMatrix);
+            }
         }
         #endregion
 

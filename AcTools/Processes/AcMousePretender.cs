@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-using System.Net.Sockets;
 using System.Windows.Forms;
 using AcTools.DataFile;
 using AcTools.Utils;

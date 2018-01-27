@@ -101,11 +101,15 @@ namespace AcManager.Controls.ViewModels {
             public bool? ShuffleCandidates;
             public int? VarietyLimitation, OpponentsNumber, StartingPosition;
 
-            public bool? AiLevelArrangeReverse, AiLevelArrangeRandomly /* not needed to be saved */;
+            public bool? AiLevelArrangeReverse;
+
+            [UsedImplicitly]
+            public bool? AiLevelArrangeRandomly /* not needed to be saved */;
+
             public double AiLevelArrangeRandom = 0.1, AiLevel = 95, AiLevelMin = 85;
 
             public bool? AiAggressionArrangeReverse;
-            public double AiAggressionArrangeRandom = 0.1, AiAggression = 0, AiAggressionMin = 0;
+            public double AiAggressionArrangeRandom = 0.1, AiAggression, AiAggressionMin;
 
             string IJsonSerializable.ToJson() {
                 var s = new StringWriter();
@@ -764,18 +768,22 @@ namespace AcManager.Controls.ViewModels {
 
                 NonfilteredList.ReplaceEverythingBy(candidates);
             } catch (SyntaxErrorException e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 ErrorMessage = string.Format(ToolsStrings.Common_SyntaxErrorFormat, e.Message);
+                NonfilteredList.Clear();
                 NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } catch (ScriptRuntimeException e) {
-                Logging.Warning(e);
+                Logging.Warning(e.Message);
                 ErrorMessage = e.Message;
+                NonfilteredList.Clear();
             } catch (InformativeException e) when (e.SolutionCommentary == null) {
                 Logging.Warning(e);
                 ErrorMessage = e.Message;
+                NonfilteredList.Clear();
             } catch (Exception e) {
                 Logging.Warning(e);
                 ErrorMessage = e.Message;
+                NonfilteredList.Clear();
                 NonfatalError.Notify(ToolsStrings.RaceGrid_CannotUpdate, e);
             } finally {
                 _rebuildingTask = null;
@@ -1411,7 +1419,7 @@ namespace AcManager.Controls.ViewModels {
 
                 var carId = entry.Car.Id;
                 if (entry.AiLimitationDetails.IsActive) {
-                    // TODO: async?
+                    // TODO: Async?
                     try {
                         carId = entry.AiLimitationDetails.Apply();
                     } catch (Exception e) {

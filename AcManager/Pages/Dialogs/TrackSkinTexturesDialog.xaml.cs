@@ -6,7 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

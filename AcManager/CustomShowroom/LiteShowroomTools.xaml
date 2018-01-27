@@ -3,8 +3,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
     mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="True" ShowTitle="False" ShowTopBlob="False"
-    Width="250" SizeToContent="Manual" MaxHeight="99999" Loaded="OnLoaded" Unloaded="OnUnloaded" ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250"
-    LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}" Padding="24">
+    Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+    ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
+    Padding="24">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -107,7 +108,8 @@
         </mui:SpacingStackPanel.Resources>
         <mui:ModernToggleButton IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z" Background="Transparent"
             IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.Main}}"
-            x:Name="HomeButton" MoreCommand="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" Tag="{Binding MainModeCommand.IsAbleToExecute}" />
+            x:Name="HomeButton" MoreCommand="{Binding MainModeCommand}" ToolTip="{x:Static mui:UiStrings.Back}" Tag="{Binding MainModeCommand.IsAbleToExecute}"
+            IsHitTestVisible="{Binding MainModeCommand.IsAbleToExecute}" />
         <mui:ModernToggleButton IconData="{StaticResource GearIconData}" MoreCommand="{Binding SelectModeCommand}" ToolTip="Visual settings"
             IsChecked="{Binding Mode, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter={x:Static cs:LiteShowroomTools+Mode.VisualSettings}}"
             CommandParameter="{x:Static cs:LiteShowroomTools+Mode.VisualSettings}"
@@ -127,7 +129,7 @@
       </mui:SpacingStackPanel>
     </mui:Cell>
 
-    <DockPanel Margin="-4 16 -4 -20">
+    <DockPanel Margin="-4 12 -4 -20">
       <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
           Style="{StaticResource UserPresetsControl.Compact.Share}" Margin="0 20 0 0" Width="208" />
 
@@ -140,7 +142,7 @@
                 <TextBlock Text="{Binding Renderer.FramesPerSecond, StringFormat='{}{0:F0}'}" />
               </DockPanel>
 
-              <mui:ModernTab x:Name="Tab" mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:visualSettings" LinksMargin="0 0 0 4" FrameMargin="0 48 0 0"
+              <mui:ModernTab x:Name="Tab" mui:ModernFrame.KeepContentAlive="True" SaveKey=".lss:visualSettings" LinksMargin="0 0 0 8"
                   LinksHorizontalAlignment="Stretch" Margin="0 4 0 0" DataContext="{Binding Settings}">
                 <mui:ModernTab.LinksListBoxTemplate>
                   <ControlTemplate>

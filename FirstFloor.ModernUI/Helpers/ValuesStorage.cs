@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows;
-using System.Windows.Media;
-using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {

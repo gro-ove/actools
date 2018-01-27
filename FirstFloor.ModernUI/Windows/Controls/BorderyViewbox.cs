@@ -6,7 +6,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BorderyViewbox : Decorator {

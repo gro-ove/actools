@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Serialization;
 using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {

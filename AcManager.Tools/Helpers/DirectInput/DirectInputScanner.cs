@@ -10,15 +10,18 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
+// ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace AcManager.Tools.Helpers.DirectInput {
-    public static class DirectInputDevices {
-        public static TimeSpan OptionMinRescanPeriod = TimeSpan.FromSeconds(1d);
+    public static class DirectInputScanner {
+        public static TimeSpan OptionMinRescanPeriod = TimeSpan.FromSeconds(3d);
 
         private static bool _threadStarted, _isActive;
         private static readonly object ThreadSync = new object();
         private static IList<DeviceInstance> _staticData;
         private static string _staticDataFootprint;
+        private static SlimDX.DirectInput.DirectInput _directInput;
+        private static TimeSpan _scanTime;
 
         public static void Shutdown() {
             _isActive = false;
@@ -35,44 +38,54 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }.Start();
         }
 
-        private static void UpdateLists(IList<DeviceInstance> newData) {
-            var footprint = newData?.Select(x => x.ProductGuid).JoinToString();
-            if (footprint == _staticDataFootprint) return;
+        private static bool UpdateLists(IList<DeviceInstance> newData) {
+            var footprint = newData?.Select(x => x.InstanceGuid).JoinToString(';');
+            if (footprint == _staticDataFootprint) return false;
 
             _staticDataFootprint = footprint;
             _staticData = newData;
             lock (Instances) {
-                foreach (var instance in Instances) {
-                    instance.RaiseUpdate(newData);
+                for (var i = Instances.Count - 1; i >= 0; i--) {
+                    Instances[i].RaiseUpdate(newData);
+                }
+            }
+
+            return true;
+        }
+
+        private static void UpdateScanTime(TimeSpan timeSpan) {
+            _scanTime = timeSpan;
+            lock (Instances) {
+                for (var i = Instances.Count - 1; i >= 0; i--) {
+                    Instances[i].RaiseScanTimeUpdate();
                 }
             }
         }
 
         private static void Scan() {
-            var input = new SlimDX.DirectInput.DirectInput();
+            _directInput = new SlimDX.DirectInput.DirectInput();
 
             try {
-                var lastReport = Stopwatch.StartNew();
                 while (_isActive) {
                     var getDevices = Stopwatch.StartNew();
 
                     IList<DeviceInstance> list;
                     try {
-                        list = input?.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+                        list = _directInput?.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
                     } catch (Exception e) {
                         // TODO: Try to re-initiate scanning later?
                         Logging.Error(e);
                         list = new List<DeviceInstance>(0);
-                        DisposeHelper.Dispose(ref input);
+                        DisposeHelper.Dispose(ref _directInput);
                     }
 
-                    if (lastReport.Elapsed.Minutes > 1) {
-                        Logging.Debug($"Time taken: {getDevices.Elapsed.TotalMilliseconds:F1} ms");
-                        lastReport.Restart();
+                    getDevices.Stop();
+
+                    if (!UpdateLists(list)) {
+                        UpdateScanTime(getDevices.Elapsed);
                     }
 
-                    UpdateLists(list);
-                    Task.Delay(OptionMinRescanPeriod + getDevices.Elapsed);
+                    Thread.Sleep(OptionMinRescanPeriod + getDevices.Elapsed);
 
                     int count;
                     lock (Instances) {
@@ -80,15 +93,20 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     }
 
                     if (count == 0) {
-                        Monitor.Wait(ThreadSync);
+                        lock (ThreadSync) {
+                            Monitor.Wait(ThreadSync);
+                        }
                     }
                 }
             } finally {
-                DisposeHelper.Dispose(ref input);
+                DisposeHelper.Dispose(ref _directInput);
             }
         }
 
         private static readonly List<Watcher> Instances = new List<Watcher>();
+
+        [CanBeNull]
+        public static SlimDX.DirectInput.DirectInput DirectInput => _directInput;
 
         [NotNull]
         public static Watcher Watch() {
@@ -96,8 +114,15 @@ namespace AcManager.Tools.Helpers.DirectInput {
             try {
                 return new Watcher(_staticData, false);
             } finally {
-                Monitor.Pulse(ThreadSync);
+                lock (ThreadSync) {
+                    Monitor.Pulse(ThreadSync);
+                }
             }
+        }
+
+        [CanBeNull]
+        public static IList<DeviceInstance> Get() {
+            return _staticData;
         }
 
         [NotNull, ItemCanBeNull]
@@ -114,9 +139,22 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return new Watcher(_staticData, true).GetAsync(cancellation);
         }
 
+        [NotNull, ItemCanBeNull]
+        public static Task<IList<DeviceInstance>> GetAsync() {
+            return GetAsync(CancellationToken.None);
+        }
+
         public class Watcher : NotifyPropertyChanged, IDisposable {
+            public TimeSpan ScanTime => _scanTime;
+
             private IList<DeviceInstance> _instanceData;
             private readonly bool _oneTime;
+
+            internal void RaiseScanTimeUpdate() {
+                ActionExtension.InvokeInMainThreadAsync(() => {
+                    OnPropertyChanged(nameof(ScanTime));
+                });
+            }
 
             internal void RaiseUpdate(IList<DeviceInstance> newData) {
                 _instanceData = newData;
@@ -131,6 +169,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 ActionExtension.InvokeInMainThreadAsync(() => {
                     HasData = _instanceData != null;
                     Update?.Invoke(this, EventArgs.Empty);
+                    OnPropertyChanged(nameof(ScanTime));
                 });
             }
 
@@ -159,8 +198,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             private List<TaskCompletionSource<IList<DeviceInstance>>> _waitingFor = new List<TaskCompletionSource<IList<DeviceInstance>>>();
 
+            [CanBeNull]
+            public IList<DeviceInstance> Get() {
+                return _instanceData;
+            }
+
             [NotNull, ItemCanBeNull]
-            // ReSharper disable once MemberHidesStaticFromOuterClass
+            public Task<IList<DeviceInstance>> GetAsync() {
+                return GetAsync(CancellationToken.None);
+            }
+
+            [NotNull, ItemCanBeNull]
             public Task<IList<DeviceInstance>> GetAsync(CancellationToken cancellation) {
                 if (_instanceData != null) {
                     return Task.FromResult(_instanceData);
@@ -188,9 +236,14 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 tcs.Task.ContinueWith(t => _waitingFor.Remove(tcs));
             }
 
+            private bool _disposed;
+
             public void Dispose() {
                 _waitingFor.ForEach(x => x.TrySetCanceled());
                 _waitingFor.Clear();
+
+                if (_disposed) return;
+                _disposed = true;
                 lock (Instances) {
                     Instances.Remove(this);
                 }

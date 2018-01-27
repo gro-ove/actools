@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Windows.Forms;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;

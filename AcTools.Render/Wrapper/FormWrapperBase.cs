@@ -64,9 +64,19 @@ namespace AcTools.Render.Wrapper {
             renderer.Tick += OnTick;
         }
 
-        protected virtual void UpdateSize() {
-            Renderer.Width = Form.ClientSize.Width;
-            Renderer.Height = Form.ClientSize.Height;
+        private bool _updatingSize;
+
+        protected virtual async void UpdateSize() {
+            if (_updatingSize) return;
+            _updatingSize = true;
+
+            try {
+                await Task.Yield();
+                Renderer.Width = Form.ClientSize.Width;
+                Renderer.Height = Form.ClientSize.Height;
+            } finally {
+                _updatingSize = false;
+            }
         }
 
         protected virtual void OnTick(object sender, TickEventArgs args) {}

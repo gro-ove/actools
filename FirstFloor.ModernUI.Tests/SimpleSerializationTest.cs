@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Controls.BbCode;
-using FirstFloor.ModernUI.Windows.Converters;
+﻿using FirstFloor.ModernUI.Serialization;
 using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {

@@ -6,7 +6,6 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using AcManager.Tools.Data;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {

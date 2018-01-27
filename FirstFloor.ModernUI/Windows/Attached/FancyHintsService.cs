@@ -7,7 +7,6 @@ using System.Windows.Documents;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 

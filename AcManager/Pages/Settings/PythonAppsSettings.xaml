@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.PythonAppsSettings" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance set:PythonAppsSettings+ViewModel}" Loaded="OnLoaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -71,7 +71,9 @@
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
 
     <!-- Content -->
-    <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled">
+    <mui:ModernTab x:Name="ConfigsTab" Grid.Column="2" Layout="Tab" Margin="20 0 20 40" />
+
+    <!--<ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled">
       <StackPanel Margin="20 0 20 40">
         <mui:Switch Value="{Binding SelectedAppConfigs.Count}">
           <mui:BooleanSwitch mui:Switch.When="1" Value="{Binding SelectedAppConfigs[0].IsSingleSection}">
@@ -107,6 +109,6 @@
               BbCode="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;http://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
         </c:MessageBlock>
       </StackPanel>
-    </ScrollViewer>
+    </ScrollViewer>-->
   </Grid>
 </UserControl>

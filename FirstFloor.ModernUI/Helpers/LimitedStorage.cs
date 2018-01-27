@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Text;
-using FirstFloor.ModernUI.Presentation;
-using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class LimitedStorage {

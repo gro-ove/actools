@@ -6,7 +6,6 @@ using System.IO;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;
-using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;

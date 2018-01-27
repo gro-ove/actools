@@ -381,7 +381,7 @@
 
     <DockPanel Style="{StaticResource DockPanel}" Dock="Top" Margin="0 0 0 8"
         Visibility="{Binding HasNumbers, Converter={StaticResource BooleanToVisibilityConverter}}">
-      <mui:ValueLabel Value="{Binding SkinNumber}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0" mui:BetterTextBox.Maximum="9999"
+      <mui:ValueLabel Value="{Binding SkinNumber}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0" mui:BetterTextBox.Maximum="999"
           DockPanel.Dock="Top" Content="Number" />
       <Slider Minimum="0" Maximum="99" Value="{Binding SkinNumber}" />
     </DockPanel>

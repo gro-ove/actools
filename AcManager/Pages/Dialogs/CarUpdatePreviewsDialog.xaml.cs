@@ -631,9 +631,8 @@ namespace AcManager.Pages.Dialogs {
             Top = Math.Max(area.Top, Top + (oldHeight - Height) / 2d);
         }
 
-        protected override void OnSizeChanged(object sender, SizeChangedEventArgs e) {
-            base.OnSizeChanged(sender, e);
-
+        protected override void OnSizeChangedOverride(SizeChangedEventArgs e) {
+            base.OnSizeChangedOverride(e);
             if (ResizeMode == ResizeMode.CanResizeWithGrip) {
                 ValuesStorage.Set(KeySize, new Point(Width, Height).As<string>());
             }

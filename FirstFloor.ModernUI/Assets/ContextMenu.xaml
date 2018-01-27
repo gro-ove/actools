@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:mui="clr-namespace:FirstFloor.ModernUI.Presentation">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="Fonts.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -27,6 +27,11 @@
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ContextMenu}">
           <c:Cell Margin="4">
+            <c:Cell.LayoutTransform>
+              <ScaleTransform CenterX="0" CenterY="0" ScaleX="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
+                  ScaleY="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+            </c:Cell.LayoutTransform>
+
             <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
             <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
 

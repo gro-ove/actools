@@ -4,13 +4,10 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.ExceptionServices;
-using System.Security;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Interop;
-using System.Windows.Threading;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
@@ -21,7 +18,6 @@ using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
@@ -132,8 +128,24 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         #region Devices
+        private DirectInputScanner.Watcher _devicesScan;
+
         [CanBeNull]
-        private SlimDX.DirectInput.DirectInput _directInput;
+        public DirectInputScanner.Watcher DevicesScan {
+            get => _devicesScan;
+            set {
+                if (Equals(value, _devicesScan)) return;
+                DisposeHelper.Dispose(ref _devicesScan);
+                _devicesScan = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void DisposeDevicesScan() {
+            _devicesScan?.Dispose();
+            DevicesScan = null;
+        }
+
         private readonly Dictionary<int, KeyboardInputButton> _keyboardInput;
 
         private int _used;
@@ -144,11 +156,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(_used, value)) return;
 
                 if (_used == 0) {
-                    RescanDevices();
+                    DisposeDevicesScan();
+                    DevicesScan = DirectInputScanner.Watch();
+                    DevicesScan.Update += OnDevicesUpdate;
+                    IsScanningInProgress = !DevicesScan.HasData;
+                    RescanDevices(DevicesScan.Get());
 
-                    Logging.Debug("Subscribed");
                     CompositionTargetEx.Rendering -= OnTick;
                     CompositionTargetEx.Rendering += OnTick;
+                    Logging.Debug("Subscribed");
                 }
 
                 _used = value;
@@ -156,9 +172,31 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 UpdateInputs();
 
                 if (value == 0) {
-                    Logging.Debug("Unsubscribed");
+                    DisposeDevicesScan();
                     CompositionTargetEx.Rendering -= OnTick;
+                    Logging.Debug("Unsubscribed");
                 }
+            }
+        }
+
+        private bool _isScanningInProgress;
+
+        public bool IsScanningInProgress {
+            get => _isScanningInProgress;
+            set {
+                if (Equals(value, _isScanningInProgress)) return;
+                _isScanningInProgress = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void OnDevicesUpdate(object sender, EventArgs eventArgs) {
+            IsScanningInProgress = false;
+            var watcher = (DirectInputScanner.Watcher)sender;
+            RescanDevices(watcher.Get());
+
+            if (DevicesScan?.ScanTime.TotalSeconds > 1 && !ValuesStorage.Contains("Settings.DriveSettings.ScanControllersAutomatically")) {
+                SettingsHolder.Drive.ScanControllersAutomatically = true;
             }
         }
 
@@ -175,11 +213,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             if (_rescanStopwatch == null) {
                 _rescanStopwatch = Stopwatch.StartNew();
-            }
-
-            if (_rescanStopwatch.Elapsed > OptionRescanPeriod || Devices.Any(x => x.Unplugged)) {
-                RescanDevices();
-                _rescanStopwatch.Restart();
             }
 
             foreach (var device in Devices) {
@@ -200,13 +233,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public void Dispose() {
             CompositionTargetEx.Rendering -= OnTick;
             Devices.DisposeEverything();
-            DisposeHelper.Dispose(ref _directInput);
-        }
-
-        private string _devicesFootprint;
-
-        private string GetFootprint(IEnumerable<DeviceInstance> devices) {
-            return devices.Select(x => x.InstanceGuid).JoinToString(@";");
+            DisposeDevicesScan();
         }
 
         private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
@@ -240,44 +267,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        [HandleProcessCorruptedStateExceptions, SecurityCritical]
-        private IList<DeviceInstance> GetDevicesSafe(SlimDX.DirectInput.DirectInput input) {
-            try {
-                return input.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t list devices", e);
-                return new List<DeviceInstance>();
-            }
-        }
-
-        private void RescanDevices() {
-            IList<DeviceInstance> devices;
-
-            try {
-                if (_directInput == null) {
-                    _directInput = new SlimDX.DirectInput.DirectInput();
-                }
-
-                devices = GetDevicesSafe(_directInput);
-            } catch (Exception e) {
-                Logging.Error(e);
-                devices = new List<DeviceInstance>();
-                DisposeHelper.Dispose(ref _directInput);
-            }
-
-            if (OptionIgnoreControlsFilter != null) {
-                devices = devices.Where(x => OptionIgnoreControlsFilter.Test(x.ProductName)).ToList();
-            }
-
-            var footprint = GetFootprint(devices);
-            if (footprint == _devicesFootprint) return;
-
+        private void RescanDevices([CanBeNull] IList<DeviceInstance> devices) {
             _skip = true;
 
             try {
-                var newDevices = devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x)) ??
-                        DirectInputDevice.Create(_directInput, x, i)).NonNull().ToList();
-                _devicesFootprint = GetFootprint(newDevices.Select(x => x.Device));
+                var directInput = DirectInputScanner.DirectInput;
+                var newDevices = devices == null || directInput == null ? new List<DirectInputDevice>()
+                        : devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x)) ??
+                                DirectInputDevice.Create(directInput, x, i)).NonNull().ToList();
 
                 var checkedPlaceholders = new List<PlaceholderInputDevice>();
                 void EnsureIndicesMatch(PlaceholderInputDevice placeholder, DirectInputDevice actualDevice) {
@@ -1350,10 +1347,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public void FixControllersOrder() {
             if (Devices.Count == 0) {
-                RescanDevices();
+                Logging.Warning("Devices are not yet scanned, scanning…");
+                var fixTimeout = TimeSpan.FromSeconds(1);
+                using (var timeout = new CancellationTokenSource(fixTimeout)) {
+                    Logging.Write("Timeout: " + fixTimeout.ToReadableTime());
+                    var list = DirectInputScanner.GetAsync(timeout.Token).Result;
+                    Logging.Write("Scanned result: " + (list == null ? @"failed to scan" : $@"{list.Count} device(s)"));
+                    if (list == null) return;
+
+                    RescanDevices(list);
+                }
             }
 
             if (_fixingMessedUpOrder) {
+                Logging.Write("Controllers order is fixed");
                 SaveImmediately();
             }
         }

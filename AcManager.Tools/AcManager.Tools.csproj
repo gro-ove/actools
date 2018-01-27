@@ -261,7 +261,7 @@
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
-    <Compile Include="Helpers\DirectInput\DirectInputDevices.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputScanner.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPov.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPovDirection.cs" />
     <Compile Include="Helpers\FtpClient.cs" />

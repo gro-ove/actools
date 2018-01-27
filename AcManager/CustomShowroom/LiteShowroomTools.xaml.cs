@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -37,9 +38,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -468,16 +467,6 @@ namespace AcManager.CustomShowroom {
 
             base.OnKeyUp(e);
         }
-
-        /*protected override void OnKeyDown(KeyEventArgs e) {
-        //
-            if (e.Key == Key.Escape || e.Key == Key.Back || e.Key == Key.BrowserBack) {
-                Model.Mode = Mode.Main;
-                e.Handled = true;
-            }
-
-            base.OnKeyDown(e);
-        }*/
 
         private bool _loaded;
 
@@ -1423,6 +1412,11 @@ namespace AcManager.CustomShowroom {
                 Renderer = null;
                 DisposeSkinItems();
             }
+        }
+
+        protected override void CenterOnScreen(Screen screen) {
+            Top = screen.Bounds.Top + (screen.Bounds.Height - ActualHeight) / 2;
+            Left = screen.Bounds.Right - ActualWidth - 8;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

@@ -45,11 +45,11 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                 bi.BeginInit();
 
                 if (decodeWidth != -1) {
-                    bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
+                    bi.DecodePixelWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
                 }
 
                 if (decodeHeight != -1) {
-                    bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
+                    bi.DecodePixelHeight = (int)(decodeHeight * Math.Max(DpiInformation.MaxScaleY, 1d));
                 }
 
                 bi.CreateOptions = source.Scheme == "http" || source.Scheme == "https"

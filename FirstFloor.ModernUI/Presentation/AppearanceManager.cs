@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
-    public class AppearanceManager : NotifyPropertyChanged {
+    public partial class AppearanceManager : NotifyPropertyChanged {
+        public static AppearanceManager Current { get; } = new AppearanceManager();
+
         public static Uri BaseValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative);
         public static Uri DefaultValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
         public static readonly Uri DarkThemeSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml", UriKind.Relative);
@@ -51,8 +52,6 @@ namespace FirstFloor.ModernUI.Presentation {
 
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = BaseValuesSource });
         }
-
-        public static AppearanceManager Current { get; } = new AppearanceManager();
 
         private ResourceDictionary _currentThemeDictionary;
 
@@ -112,7 +111,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
 
                 foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
-                    window.SetDpiMultiplier();
+                    window.UpdateTextFormatting();
                 }
 
                 OnPropertyChanged(nameof(IdealFormattingMode));
@@ -219,5 +218,51 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
             }
         }
+
+        private readonly StoredValue<bool> _forceMenuAtTopInFullscreenMode = Stored.Get("/appearance_forceMenuAtTopInFullscreenMode", true);
+
+        public bool ForceMenuAtTopInFullscreenMode {
+            get => _forceMenuAtTopInFullscreenMode.Value;
+            set {
+                if (Equals(value, _forceMenuAtTopInFullscreenMode.Value)) return;
+                _forceMenuAtTopInFullscreenMode.Value = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #region App scale
+        private bool _scaleLoaded;
+        private double _scale;
+
+        private void EnsureLoaded() {
+            if (!_scaleLoaded) {
+                _scaleLoaded = true;
+                _scale = ValuesStorage.Get("__uiScale_2", 1d);
+            }
+
+            if (_scale < 0.1 || _scale > 4d || double.IsNaN(_scale) || double.IsInfinity(_scale)) {
+                _scale = 1d;
+            }
+        }
+
+        public double AppScale {
+            get {
+                EnsureLoaded();
+                return _scale;
+            }
+            set {
+                EnsureLoaded();
+                value = Math.Min(Math.Max(value, 0.2), 10d);
+                if (Equals(value, _scale)) return;
+                _scale = value;
+                OnPropertyChanged();
+                ValuesStorage.Set("__uiScale_2", value);
+
+                foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
+                    window.SetAppScale(value);
+                }
+            }
+        }
+        #endregion
     }
 }

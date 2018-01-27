@@ -1,37 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using AcManager.Controls.Helpers;
-using AcManager.Internal;
 using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
-using FirstFloor.ModernUI.Windows.Attached;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
-using StringBasedFilter;
 
 namespace AcManager.Pages.Settings {
-    public partial class PythonAppsSettings : ILoadableContent, ILocalKeyBindings {
+    public partial class PythonAppsSettings : ILoadableContent, ILocalKeyBindings, IContentLoader {
         public PythonAppsSettings() {
             KeyBindingsController = new LocalKeyBindingsController(this);
             InputBindings.Add(new InputBinding(new DelegateCommand(() => {
@@ -57,8 +48,10 @@ namespace AcManager.Pages.Settings {
         public void Initialize() {
             InitializeComponent();
             DataContext = new ViewModel();
-            SetKeyboardInputs();
             Model.PropertyChanged += OnModelPropertyChanged;
+            ConfigsTab.ContentLoader = this;
+            SetKeyboardInputs();
+            UpdateConfigsTabs();
         }
 
         private void SetKeyboardInputs() {
@@ -68,7 +61,44 @@ namespace AcManager.Pages.Settings {
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(Model.SelectedAppConfigs)) {
                 SetKeyboardInputs();
+                UpdateConfigsTabs();
             }
+        }
+
+        private void UpdateConfigsTabs() {
+            var links = ConfigsTab.Links;
+            links.Clear();
+
+            if (Model.SelectedAppConfigs.Count > 1) {
+                foreach (var config in Model.SelectedAppConfigs) {
+                    links.Add(new Link {
+                        DisplayName = config.DisplayName,
+                        Key = config.DisplayName
+                    });
+                }
+                ConfigsTab.LinksMargin = new Thickness(0, 0, 0, 4);
+                ConfigsTab.SelectedSource = ConfigsTab.Links.FirstOrDefault()?.Source;
+            } else {
+                ConfigsTab.LinksMargin = new Thickness(0, 0, 0, -16);
+                ConfigsTab.SelectedSource = new Uri(Model.SelectedAppConfigs.First().DisplayName, UriKind.Relative);
+            }
+        }
+
+        public Task<object> LoadContentAsync(Uri uri, CancellationToken cancellationToken) {
+            return Task.FromResult(LoadContent(uri));
+        }
+
+        public object LoadContent(Uri uri) {
+            var config = Model.SelectedAppConfigs.FirstOrDefault(x => x.DisplayName == uri.OriginalString);
+            return config?.IsSingleSection == true
+                    ? new ContentControl {
+                        ContentTemplate = (DataTemplate)FindResource("PythonAppConfig.SectionTemplate.NoHeader"),
+                        Content = config
+                    }
+                    : new ContentControl {
+                        ContentTemplate = (DataTemplate)FindResource("PythonAppConfig.NoHeader"),
+                        Content = config
+                    };
         }
 
         private ViewModel Model => (ViewModel)DataContext;

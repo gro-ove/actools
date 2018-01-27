@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {

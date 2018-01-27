@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using StringBasedFilter;

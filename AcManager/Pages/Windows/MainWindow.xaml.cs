@@ -9,7 +9,6 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -42,10 +41,8 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
@@ -77,7 +74,7 @@ namespace AcManager.Pages.Windows {
             if (_testGameDialog != null) {
                 Logging.Write("Testing mode");
                 var ui = new GameDialog();
-                ui.ShowDialogWithoutBlocking();
+                ui.ShowDialogAsync().Forget();
                 ((IGameUi)ui).OnResult(JsonConvert.DeserializeObject<Game.Result>(FileUtils.ReadAllText(_testGameDialog)), null);
                 _cancelled = true;
             }
@@ -685,18 +682,6 @@ namespace AcManager.Pages.Windows {
         private void OnPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
             _openOnNext = !QuickSwitchesBlock.GetIsActive(Popup);
         }
-
-        private class InnerPopupHeightConverter : IValueConverter {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value.As<double>() / OptionScale - 2d;
-            }
-
-            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
-                throw new NotSupportedException();
-            }
-        }
-
-        public static IValueConverter PopupHeightConverter { get; } = new InnerPopupHeightConverter();
 
         private void OnContentTitleLinkDrop(object sender, DragEventArgs e) {
             if (e.Data.GetData(TrackObjectBase.DraggableFormat) is TrackObjectBase trackObject) {

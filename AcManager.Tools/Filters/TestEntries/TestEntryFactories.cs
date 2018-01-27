@@ -1,10 +1,4 @@
-using System;
-using System.Globalization;
-using System.Text.RegularExpressions;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
-using StringBasedFilter;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Filters.TestEntries {

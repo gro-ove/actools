@@ -1,9 +1,10 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.TrackSkinTexturesDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="Track Textures"
-    MinWidth="200" MinHeight="200" MaxWidth="9999" MaxHeight="9999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="980" Height="800"
-    LocationAndSizeKey=".trackTextures" d:DataContext="{d:DesignInstance dialogs:TrackSkinTexturesDialog+ViewModel}" ButtonsRowContentAlignment="Left">
+    MinWidth="200" MinHeight="200" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="980" Height="800" LocationAndSizeKey=".trackTextures"
+    d:DataContext="{d:DesignInstance dialogs:TrackSkinTexturesDialog+ViewModel}" ButtonsRowContentAlignment="Left">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

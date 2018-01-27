@@ -10,7 +10,6 @@ using System.Windows;
 using AcManager.Pages.Drive;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;

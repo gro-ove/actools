@@ -7,7 +7,6 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
-using JetBrains.Annotations;
 
 namespace AcManager.CustomShowroom {
     public class ExtraModelProvider : IExtraModelProvider {

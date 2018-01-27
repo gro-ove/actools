@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows.Data;
 using AcManager.Tools;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Pages.ServerPreset {
     public partial class ServerPresetAssists {

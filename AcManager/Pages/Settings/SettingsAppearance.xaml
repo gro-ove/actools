@@ -55,11 +55,6 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.BlurImageViewerBackground}" set:Search.Keywords="images;viewers;image viewer"
-            ToolTip="Works only on Windows 7 or Windows 10">
-          <Label Content="Blur Image Viewer’s background" />
-        </CheckBox>
-
         <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
           <Label Content="Larger title links" />
         </CheckBox>
@@ -69,12 +64,13 @@
         </CheckBox>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource PercentageConverter}}"
+          <mui:ValueLabel Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Converter={StaticResource PercentageConverter}}"
               mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />
-          <mui:FormattedSlider x:Name="ScaleSlider" Minimum="50" Maximum="200" TickFrequency="25" TickPlacement="BottomRight" AutoToolTipFormat="{}{0}%"
-              AutoToolTipPlacement="BottomRight" AutoToolTipPrecision="0" IsMoveToPointEnabled="False" LargeChange="10" SmallChange="10"
-              Value="{Binding ScalePercentage, Source={x:Static mui:DpiAwareWindow.AppScale}, Converter={StaticResource SliderRoundConverter},
-                UpdateSourceTrigger=LostFocus}" />
+          <mui:FormattedSlider x:Name="ScaleSlider" Minimum="0.5" Maximum="2" TickFrequency="0.25" TickPlacement="BottomRight" IsMoveToPointEnabled="False"
+              AutoToolTipFormat="{}{0:F0}%" AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="False"
+              AutoToolTipConverter="{StaticResource PercentageConverter}" LargeChange="0.1" SmallChange="0.1"
+              Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Converter={StaticResource SliderRoundConverter},
+                  ConverterParameter=0.01, UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
 
         <DockPanel set:Search.Keywords="font;text">
@@ -100,11 +96,6 @@
 
         <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="With this option disabled, you can drag them by close button">
           <Label Content="Show draggable areas next to search boxes" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ForceMenuAtTopInFullscreenMode}" ToolTip="Might make dragging fullscreen window more complicated"
-            mui:NewMarkService.New="True">
-          <Label Content="Stick main menu at the top in fullscreen mode" />
         </CheckBox>
 
         <DockPanel>
@@ -158,6 +149,27 @@
 
         <!-- Interface -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
+
+        <CheckBox IsChecked="{Binding AppearanceManager.KeepWithinSingleScreen}" mui:NewMarkService.New="True">
+          <Label Content="Open new windows on the same screen as the first one despite saved location" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppearanceManager.PreferFullscreenMode}" mui:NewMarkService.New="True">
+          <Label Content="Force fullscreen mode" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppearanceManager.ForceMenuAtTopInFullscreenMode}">
+          <Label Content="Stick main menu at the top in fullscreen mode" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.SemiTransparentAttachedTools}" mui:NewMarkService.New="True" set:Search.Keywords="custom showroom">
+          <Label Content="Semi-transparent tools in Custom Showroom and DirectX-specific tools" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.BlurImageViewerBackground}" set:Search.Keywords="images;viewers;image viewer"
+            ToolTip="Works only on Windows 7 or Windows 10" mui:NewMarkService.New="True">
+          <Label Content="Blur Image Viewer’s background" />
+        </CheckBox>
 
         <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
           <Label Content="Fast-access buttons over car and track in Quick Drive" />

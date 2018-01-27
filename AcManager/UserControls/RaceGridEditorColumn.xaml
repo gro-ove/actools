@@ -27,27 +27,25 @@
 
   <!--both at the same time-->
   <!--<Grid Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="80" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-
-        <mui:ModernProgressRing Grid.Row="1" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
-
-        <StackPanel Grid.Row="2" DataContext="{x:Static t:CarsManager.Instance}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8"
-                Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-            <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Margin="0 0 0 8" />
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}Loaded {1} out of {0}">
-                        <Binding Path="WrappersList.Count" />
-                        <Binding Path="LoadedCount" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </StackPanel>
-    </Grid>-->
+    <Grid.RowDefinitions>
+      <RowDefinition Height="1*" />
+      <RowDefinition Height="80" />
+      <RowDefinition Height="1*" />
+    </Grid.RowDefinitions>
+    <mui:ModernProgressRing Grid.Row="1" IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+    <StackPanel Grid.Row="2" DataContext="{x:Static t:CarsManager.Instance}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="8"
+        Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+      <ProgressBar Maximum="{Binding WrappersList.Count}" Value="{Binding LoadedCount}" Margin="0 0 0 8" />
+      <TextBlock>
+        <TextBlock.Text>
+          <MultiBinding StringFormat="{}Loaded {1} out of {0}">
+            <Binding Path="WrappersList.Count" />
+            <Binding Path="LoadedCount" />
+          </MultiBinding>
+        </TextBlock.Text>
+      </TextBlock>
+    </StackPanel>
+  </Grid>-->
 
   <!--either ring or bar-->
   <mui:Cell Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">

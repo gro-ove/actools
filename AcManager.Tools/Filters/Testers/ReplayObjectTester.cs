@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Filters.Testers {

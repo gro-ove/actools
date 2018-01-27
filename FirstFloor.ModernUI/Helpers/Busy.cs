@@ -130,6 +130,13 @@ namespace FirstFloor.ModernUI.Helpers {
             busy.Delay(delay, force).Forget();
         }
 
+        public static Task Yield([NotNull] this Busy busy, Action a) {
+            return busy.Task(async () => {
+                await Task.Yield();
+                a();
+            });
+        }
+
         public static Task DoDelay([NotNull] this Busy busy, Action a, int millisecondsDelay) {
             return busy.Task(async () => {
                 await Task.Delay(millisecondsDelay);

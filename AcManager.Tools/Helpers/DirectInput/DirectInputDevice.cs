@@ -2,11 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.UI;
 using System.Windows;
 using System.Windows.Interop;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -298,7 +296,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         [CanBeNull]
-        public static DirectInputDevice Create(SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
+        public static DirectInputDevice Create([NotNull] SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
             try {
                 return new DirectInputDevice(directInput, device, iniId);
             } catch (DirectInputNotFoundException e) {

@@ -7,7 +7,6 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class RoundSlider : Slider {

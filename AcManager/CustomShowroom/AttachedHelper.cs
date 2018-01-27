@@ -7,11 +7,12 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
+using System.Windows.Media;
+using AcManager.Controls.Presentation;
 using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SlimDX.Windows;
@@ -60,7 +61,7 @@ namespace AcManager.CustomShowroom {
         private readonly bool _verbose;
         private readonly int _offset;
 
-        public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow window, int offset = -1, int padding = 10, bool limitHeight = true,
+        public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow child, int offset = -1, int padding = 10, bool limitHeight = true,
                 bool verbose = false) {
             _padding = padding;
             _limitHeight = limitHeight;
@@ -80,8 +81,8 @@ namespace AcManager.CustomShowroom {
                 Logging.Here();
             }
 
-            _child = window;
-            var child = _child;
+            _child = child;
+            _stickyLocation = Stored.Get(child.LocationAndSizeKey + ":sticky", 0);
 
             child.Owner = null;
             if (_limitHeight) {
@@ -94,28 +95,56 @@ namespace AcManager.CustomShowroom {
                 Logging.Debug("Showing and activating child…");
             }
 
-            child.Show();
-            child.Activate();
-
-            _offset = offset < 0 ? (int)child.ActualWidth - 12 : offset;
-
-            UpdatePosition();
+            UpdateStyle(child);
+            _offset = offset;
 
             child.Closing += OnChildClosing;
-            child.WindowStyle = WindowStyle.ToolWindow;
             child.Activated += ChildActivated;
             child.Deactivated += ChildDeactivated;
             child.Closed += ChildClosed;
-            child.PreviewKeyDown += ChildKeyDown;
             child.KeyUp += ChildKeyUp;
             child.LocationChanged += ChildLocationChanged;
             child.SizeChanged += ChildSizeChanged;
 
-            child.Topmost = true;
-            Visible = true;
-
             Instances.Purge();
             Instances.Add(this);
+
+            parent.Form.Load += OnFormLoad;
+        }
+
+        private void UpdateStyle(DpiAwareWindow window) {
+            window.ConsiderPreferredFullscreen = false;
+            window.ToolWindow = true;
+            window.WindowStyle = WindowStyle.None;
+
+            if (AppAppearanceManager.Instance.SemiTransparentAttachedTools) {
+                window.AllowsTransparency = true;
+                window.BlurBackground = true;
+                window.Opacity = 0.9;
+                window.BorderBrush = new SolidColorBrush(Colors.Transparent);
+                window.Background = new SolidColorBrush(((Color)window.FindResource("WindowBackgroundColor")).SetAlpha(200));
+            }
+        }
+
+        private void OnFormLoad(object o, EventArgs eventArgs) {
+            _moveChildBusy.Delay(500);
+
+            var child = _child;
+            if (child == null) return;
+
+            child.Show();
+            child.Activate();
+
+            Visible = true;
+            RepositionChild();
+
+            child.Topmost = true;
+            child.Activate();
+        }
+
+        private async void RepositionChild() {
+            await Task.Yield();
+            UpdatePosition(true);
         }
 
         private bool _closed;
@@ -147,9 +176,8 @@ namespace AcManager.CustomShowroom {
 
         private void OnResize(object sender, EventArgs e) {
             UpdatePosition();
-
             if (_child != null && Visible && _limitHeight) {
-                _child.MaxHeight = _parent.Height - _padding;
+                //_child.MaxHeight = _parent.Height - _padding;
             }
         }
 
@@ -161,31 +189,29 @@ namespace AcManager.CustomShowroom {
             UpdatePosition();
         }
 
-        private bool _skip;
+        private readonly Busy _moveChildBusy = new Busy();
 
         private void ChildLocationChanged(object sender, EventArgs e) {
-            if (_skip || _child == null) return;
+            var child = _child;
+            if (child == null) return;
+            _moveChildBusy.Do(() => {
+                var pos = new Point(child.Left, child.Top);
+                for (var i = 0; i < StickyLocationsCount; i++) {
+                    var location = GetStickyLocation(i, child.ActualWidth, child.ActualHeight);
+                    if (location.HasValue && (pos - location.Value).Length < 5) {
+                        _stickyLocation.Value = i;
+                        UpdatePosition(true);
+                        return;
+                    }
+                }
 
-            var pos = new Point(_child.Left, _child.Top);
-            foreach (var i in from i in Enumerable.Range(0, StickyLocationsCount)
-                              let location = GetStickyLocation(i, _child.Width, _child.Height)
-                              where location.HasValue
-                              let delta = pos - location.Value
-                              where delta.Length < 5
-                              select i) {
-                _stickyLocation = i;
-                UpdatePosition();
-                return;
-            }
-
-            _stickyLocation = -1;
+                _stickyLocation.Value = -1;
+            });
         }
 
         private void ChildSizeChanged(object sender, SizeChangedEventArgs e) {
-            UpdatePosition(e.NewSize.Width, e.NewSize.Height);
+            UpdatePosition(e.NewSize.Width, e.NewSize.Height, true);
         }
-
-        private void ChildKeyDown(object sender, KeyEventArgs e) {}
 
         private void ChildKeyUp(object sender, KeyEventArgs e) {
             if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is CheckBox) {
@@ -216,14 +242,14 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        private void UpdatePosition(double w, double h) {
+        private void UpdatePosition(double w, double h, bool force) {
             if (_verbose) {
                 Logging.Here();
             }
 
-            var n = GetStickyLocation(_stickyLocation, w, h);
+            var n = GetStickyLocation(_stickyLocation.Value, w, h);
             if (_verbose) {
-                Logging.Debug($"Sticky position: {n?.X ?? -1}, {n?.Y ?? -1}");
+                Logging.Debug($"Sticky position: {n?.X ?? -1}, {n?.Y ?? -1}, #{_stickyLocation.Value}");
             }
 
             if (n == null || _child == null) {
@@ -254,24 +280,30 @@ namespace AcManager.CustomShowroom {
             if (location.X < screen.Bounds.Left) location.X = screen.Bounds.Left;
             if (location.Y < screen.Bounds.Top) location.Y = screen.Bounds.Top;
 
-            _skip = true;
-
             if (_verbose) {
                 Logging.Debug($"Set: {location.X}, {location.Y}");
             }
 
-            _child.Left = location.X;
-            _child.Top = location.Y;
-            _skip = false;
+            if (force) {
+                Apply();
+            } else {
+                _moveChildBusy.Do(Apply);
+            }
+
+            void Apply() {
+                if (_child == null || !_child.IsLoaded) return;
+                _child.Left = location.X;
+                _child.Top = location.Y;
+            }
         }
 
-        private void UpdatePosition() {
+        private void UpdatePosition(bool force = false) {
             if (_verbose) {
                 Logging.Debug("Child: " + _child);
             }
 
             if (_child == null) return;
-            UpdatePosition(_child.Width, _child.Height);
+            UpdatePosition(_child.ActualWidth, _child.ActualHeight, force);
         }
 
         private void ChildActivated(object sender, EventArgs e) {
@@ -344,7 +376,10 @@ namespace AcManager.CustomShowroom {
         }
 
         private void UpdateVisibility(bool keepFocus) {
-            Logging.Debug($"Update visibility; keep focus: {keepFocus}, is busy: {_busyUpdating.Is}");
+            if (_verbose) {
+                Logging.Debug($"Update visibility; keep focus: {keepFocus}, is busy: {_busyUpdating.Is}");
+            }
+
             _busyUpdating.DoDelay(async () => {
                 var visibility = GetVisibility();
                 await UpdateVisibility(_child, visibility, keepFocus);
@@ -370,7 +405,7 @@ namespace AcManager.CustomShowroom {
             UpdateVisibility(false);
         }
 
-        public void Attach(string tag, Window window) {
+        public void Attach(string tag, DpiAwareWindow window) {
             if (_verbose) {
                 Logging.Debug($"Tag: {tag}, window: {window}");
             }
@@ -383,6 +418,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            UpdateStyle(window);
             _attached.Add(window);
             window.Owner = null;
             window.Activated += ChildActivated;
@@ -396,11 +432,7 @@ namespace AcManager.CustomShowroom {
             UpdateVisibility(window, GetVisibility(), true).Forget();
         }
 
-        public void Attach(Window window) {
-            Attach(null, window);
-        }
-
-        public Task AttachAndWaitAsync(string tag, Window window) {
+        public Task AttachAndWaitAsync(string tag, DpiAwareWindow window) {
             if (_verbose) {
                 Logging.Debug($"Tag: {tag}, window: {window}");
             }
@@ -413,6 +445,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            UpdateStyle(window);
             _attached.Add(window);
             window.Owner = null;
             window.Activated += ChildActivated;
@@ -430,10 +463,6 @@ namespace AcManager.CustomShowroom {
             return tcs.Task;
         }
 
-        public Task AttachAndWaitAsync(Window window) {
-            return AttachAndWaitAsync(null, window);
-        }
-
         private void OnWindowClosed(object sender, EventArgs eventArgs) {
             if (_verbose) {
                 Logging.Here();
@@ -442,19 +471,21 @@ namespace AcManager.CustomShowroom {
             _attached.Remove((Window)sender);
         }
 
-        private int _stickyLocation;
+        private readonly StoredValue<int> _stickyLocation;
         private const int StickyLocationsCount = 4;
 
         private Point? GetStickyLocation(int index, double w, double h) {
+            if (_child == null) return null;
+            var offset = _offset < 0 ? (int)_child.ActualWidth - 12 : _offset;
             switch (index) {
                 case 0:
-                    return new Point(_parent.Left + _parent.Width - w + _offset, _parent.Top + _parent.Height - h - _padding);
+                    return new Point(_parent.Left + _parent.Width - w + offset, _parent.Top + _parent.Height - h - _padding);
                 case 1:
-                    return new Point(_parent.Left - _offset, _parent.Top + _parent.Height - h - _padding);
+                    return new Point(_parent.Left - offset, _parent.Top + _parent.Height - h - _padding);
                 case 2:
-                    return new Point(_parent.Left + _parent.Width - w + _offset, _parent.Top - _padding);
+                    return new Point(_parent.Left + _parent.Width - w + offset, _parent.Top - _padding);
                 case 3:
-                    return new Point(_parent.Left - _offset, _parent.Top - _padding);
+                    return new Point(_parent.Left - offset, _parent.Top - _padding);
                 default:
                     return null;
             }

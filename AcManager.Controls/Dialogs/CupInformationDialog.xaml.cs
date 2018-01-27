@@ -1,27 +1,13 @@
-﻿using System;
-using System.ComponentModel;
-using System.IO;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls.Helpers;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.AcLog;
-using AcManager.Tools.Helpers.AcSettings;
-using AcManager.Tools.Lists;
-using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.Objects;
-using AcTools.Processes;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 
 namespace AcManager.Controls.Dialogs {
     public partial class CupInformationDialog {

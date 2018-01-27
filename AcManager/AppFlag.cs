@@ -20,10 +20,10 @@ namespace AcManager {
         DiscordClientId,
 
         /// <summary>
-        /// Period for checking if connected controllers were changed. Default value: 1 second.
+        /// Period for checking if connected controllers were changed. Default value: 3 seconds.
         /// Example: --controls-rescan-period=00:01.
         /// </summary>
-        [FlagDefaultValue("00:01")]
+        [FlagDefaultValue("00:03")]
         ControlsRescanPeriod,
 
         /// <summary>

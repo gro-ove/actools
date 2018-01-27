@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -449,8 +448,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             base.OnApplyTemplate();
 
-            _bottomRow = GetTemplateChild("PART_BottomRow_Buttons") as FrameworkElement;
-            _bottomRowExtra = GetTemplateChild("PART_BottomRow_Content") as FrameworkElement;
+            _bottomRow = GetTemplateChild(@"PART_BottomRow_Buttons") as FrameworkElement;
+            _bottomRowExtra = GetTemplateChild(@"PART_BottomRow_Content") as FrameworkElement;
 
             if (_bottomRow != null) {
                 _bottomRow.SizeChanged += OnBottomRowSizeChanged;
@@ -466,60 +465,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             UpdateBottomRowStyle();
         }
 
-        protected override Size ArrangeOverride(Size arrangeBounds) {
-            var res = base.ArrangeOverride(arrangeBounds);
-            return res;
-        }
-    }
+        private ResizeMode? _originalResizeMode;
+        private Thickness? _originalBorderThickness;
 
-    public class FatalErrorMessage : ModernDialog {
-        internal FatalErrorMessage() {
-            DefaultStyleKey = typeof(FatalErrorMessage);
-        }
+        protected override void OnPreferredFullscreenSet(bool maximizeRequested, bool maximizeDelivered) {
+            base.OnPreferredFullscreenSet(maximizeRequested, maximizeDelivered);
 
-        public static readonly DependencyProperty MessageProperty = DependencyProperty.Register(nameof(Message), typeof(string),
-                typeof(FatalErrorMessage));
-
-        public string Message {
-            get => (string)GetValue(MessageProperty);
-            set => SetValue(MessageProperty, value);
-        }
-
-        public static readonly DependencyProperty StackTraceProperty = DependencyProperty.Register(nameof(StackTrace), typeof(string),
-                typeof(FatalErrorMessage));
-
-        public string StackTrace {
-            get => (string)GetValue(StackTraceProperty);
-            set => SetValue(StackTraceProperty, value);
-        }
-
-        private ICommand _copyCommand;
-
-        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => { Clipboard.SetText(StackTrace); }));
-
-        private ICommand _restartCommand;
-
-        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => { _restartHelper?.Restart(); }));
-
-        private ICommand _exitCommand;
-
-        public ICommand ExitCommand => _exitCommand ?? (_exitCommand = new DelegateCommand(() => {
-            var app = Application.Current;
-            if (app == null) {
-                Environment.Exit(0);
-            } else {
-                app.Shutdown();
+            if (!_originalResizeMode.HasValue) {
+                _originalResizeMode = ResizeMode;
+                _originalBorderThickness = BorderThickness;
             }
-        }));
 
-        private static IAppRestartHelper _restartHelper;
-
-        public static void Register(IAppRestartHelper helper) {
-            _restartHelper = helper;
-        }
-
-        public interface IAppRestartHelper {
-            void Restart();
+            if (!maximizeRequested) {
+                ResizeMode = _originalResizeMode.Value;
+                BorderThickness = _originalBorderThickness ?? BorderThickness;
+            } else if (maximizeDelivered) {
+                ResizeMode = ResizeMode.NoResize;
+                BorderThickness = new Thickness(0d);
+            }
         }
     }
 }

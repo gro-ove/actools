@@ -7,7 +7,6 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 

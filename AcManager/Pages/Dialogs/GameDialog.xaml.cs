@@ -70,14 +70,14 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        protected override void OnClosing(CancelEventArgs e) {
-            base.OnClosing(e);
-
+        protected override void OnClosingOverride(CancelEventArgs e) {
             if (IsResultCancel) {
                 try {
                     _cancellationSource.Cancel();
                 } catch (ObjectDisposedException) { }
             }
+
+            base.OnClosingOverride(e);
         }
 
         public void Dispose() {
@@ -95,7 +95,7 @@ namespace AcManager.Pages.Dialogs {
             _properties = properties;
             _mode = mode;
 
-            ShowDialogWithoutBlocking();
+            ShowDialogAsync().Forget();
             Model.WaitingStatus = AppStrings.Race_Initializing;
         }
 

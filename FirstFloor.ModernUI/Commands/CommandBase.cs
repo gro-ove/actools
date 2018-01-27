@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {

@@ -161,18 +161,20 @@
         <mui:ValueLabel Value="{Binding Renderer.CarNode.SteerDeg}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer" Postfix="°" />
         <Slider Minimum="-30" Maximum="30" Value="{Binding Renderer.CarNode.SteerDeg}" TickFrequency="10" TickPlacement="None" />
       </DockPanel>
-      <ItemsControl ItemsSource="{Binding DarkRenderer.CarNode.SuspensionsPack}"
-          Visibility="{Binding DarkRenderer.CarNode.SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12">
-              <TextBlock FontWeight="Bold" Text="{Binding Name}" />
-              <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
-              <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
-            </mui:SpacingStackPanel>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
+      <StackPanel DataContext="{Binding DarkRenderer.CarNode}" Visibility="{Binding SuspensionDebug, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12" DataContext="{Binding SuspensionsPack.Front}">
+          <TextBlock FontWeight="Bold" Text="{Binding Name, StringFormat='{}Front: {0}'}" />
+          <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
+          <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
+          <TextBlock Text="{Binding Trail, StringFormat='{}Trail: {0}'}" Margin="8 0 0 0" />
+        </mui:SpacingStackPanel>
+        <mui:SpacingStackPanel Spacing="4" Margin="0 0 0 12" DataContext="{Binding SuspensionsPack.Rear}">
+          <TextBlock FontWeight="Bold" Text="{Binding Name, StringFormat='{}Rear: {0}'}" />
+          <TextBlock Text="{Binding Kpi, StringFormat='{}KPI: {0}'}" Margin="8 0 0 0" />
+          <TextBlock Text="{Binding Caster, StringFormat='{}Caster: {0}'}" Margin="8 0 0 0" />
+          <TextBlock Text="{Binding Trail, StringFormat='{}Trail: {0}'}" Margin="8 0 0 0" />
+        </mui:SpacingStackPanel>
+      </StackPanel>
 
       <TextBlock Text="Wheels" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
       <CheckBox IsChecked="{Binding Renderer.CarNode.AlignWheelsByData}">

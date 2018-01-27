@@ -1,5 +1,4 @@
-﻿using AcTools.Utils.Helpers;
-using JetBrains.Annotations;
+﻿using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class FlexibleLoaderMetaInformation {

@@ -114,7 +114,11 @@ namespace FirstFloor.ModernUI.Helpers {
                 result.Add(PluralizingConverter.PluralizeExt(span.Seconds, UiStrings.Time_Second));
             }
 
-            return result.Any() ? string.Join(@" ", result.Take(2)) : PluralizingConverter.PluralizeExt(0, UiStrings.Time_Second);
+            if (span.Milliseconds > 0 && result.Count == 0) {
+                result.Add($@"{span.Milliseconds} ms");
+            }
+
+            return result.Count > 0 ? string.Join(@" ", result.Take(2)) : PluralizingConverter.PluralizeExt(0, UiStrings.Time_Second);
         }
 
         public static double ToMegabytes(this long i) {

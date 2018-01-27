@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
     [ValueConversion(typeof(int), typeof(Brush))]

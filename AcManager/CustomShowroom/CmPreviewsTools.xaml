@@ -1,9 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.CustomShowroom.CmPreviewsTools" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:cs="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" ShowTitle="False" ShowInTaskbar="False"
+    xmlns:cs="clr-namespace:AcManager.CustomShowroom" mc:Ignorable="d" ShowTitle="False" ShowInTaskbar="False" LocationAndSizeKey="CmPreviewsTools.LS"
     d:DataContext="{d:DesignInstance cs:CmPreviewsTools+ViewModel}" Topmost="True" Loaded="OnLoaded" Unloaded="OnUnloaded" Width="280" SizeToContent="Manual"
-    MaxHeight="800" Height="9999" ShowTopBlob="False">
+    MaxHeight="800" Height="{x:Static mui:DpiAwareWindow.UnlimitedSize}" ShowTopBlob="False">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

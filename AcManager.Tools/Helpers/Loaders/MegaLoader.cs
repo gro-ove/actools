@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using CG.Web.MegaApiClient;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class MegaLoader : ILoader {

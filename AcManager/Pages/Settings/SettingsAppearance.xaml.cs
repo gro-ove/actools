@@ -1,10 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
@@ -17,8 +14,6 @@ using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using Microsoft.Win32;
-using OxyPlot;
-using SlimDX.DirectWrite;
 using Path = System.IO.Path;
 
 namespace AcManager.Pages.Settings {
@@ -30,24 +25,27 @@ namespace AcManager.Pages.Settings {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            ScaleSlider.PreviewMouseLeftButtonUp += (s, a) => ScaleSlider.RemoveFocus();
-            var thumb = ScaleSlider.FindVisualChild<Thumb>();
+            ScaleSlider.PreviewMouseLeftButtonUp += (s, a) => ApplyScale();
+            /*var thumb = ScaleSlider.FindVisualChild<Thumb>();
             if (thumb != null) {
-                thumb.DragCompleted += (s, a) => ScaleSlider.RemoveFocus();
-                thumb.DragDelta += OnDragDelta;
-            }
+                thumb.DragDelta += (s, a) => ApplyScale();
+            }*/
         }
 
-        private void OnDragDelta(object sender, DragDeltaEventArgs e) {
-            var window = Application.Current.MainWindow;
-            if (window == null) return;
+        private void ApplyScale() {
+            var window = Application.Current.MainWindow as DpiAwareWindow;
+            if (window == null) {
+                ScaleSlider.RemoveFocus();
+            } else {
+                var position = window.GetMousePosition();
+                var before = position * new Matrix(window.ScaleX, 0, 0, window.ScaleY, 0, 0);
+                AppearanceManager.Current.AppScale = ScaleSlider.Value.Round(0.01);
+                var after = position * new Matrix(window.ScaleX, 0, 0, window.ScaleY, 0, 0);
+                window.Left += before.X - after.X;
+                window.Top += before.Y - after.Y;
+            }
 
-            var thumb = (Thumb)sender;
-            var oldPosition = thumb.PointToScreen(new Point(thumb.ActualWidth / 2, thumb.ActualHeight / 2));
-            DpiAwareWindow.AppScale.ScalePercentage = ScaleSlider.Value.Round();
-            var newPosition = thumb.PointToScreen(new Point(thumb.ActualWidth / 2, thumb.ActualHeight / 2));
-            window.Left += oldPosition.X - newPosition.X;
-            window.Top += oldPosition.Y - newPosition.Y;
+            window?.EnsureOnScreen();
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -55,6 +53,7 @@ namespace AcManager.Pages.Settings {
             private static bool? _originalSoftwareRendering;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
+            public AppearanceManager AppearanceManager => AppearanceManager.Current;
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
             public SettingsHolder.InterfaceSettings Interface => SettingsHolder.Interface;
 

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
-using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class GoogleDriveLoader : DirectLoader {

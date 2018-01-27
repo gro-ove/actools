@@ -12,7 +12,6 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
-using SlimDX.Direct3D11;
 
 namespace AcManager.Tools {
     public class GameDiscordPresence : Game.GameHandler {

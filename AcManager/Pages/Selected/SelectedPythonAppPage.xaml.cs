@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
@@ -15,13 +13,9 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
-using OxyPlot;
-using KeyEventArgs = System.Windows.Input.KeyEventArgs;
-using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace AcManager.Pages.Selected {
     public partial class SelectedPythonAppPage : ILoadableContent, IParametrizedUriContent, IImmediateContent, ILocalKeyBindings {

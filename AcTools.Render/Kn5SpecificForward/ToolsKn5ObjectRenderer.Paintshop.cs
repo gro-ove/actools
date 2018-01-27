@@ -12,7 +12,6 @@ using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
-using AcTools.Render.Temporary;
 using AcTools.Render.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -829,7 +828,6 @@ namespace AcTools.Render.Kn5SpecificForward {
                                         vColors[i] = colors[i].ToVector4();
                                     }
 
-                                    AcToolsLogging.Write(p.BackgroundColorHint);
                                     e.FxColor.Set(p.BackgroundColorHint);
                                     e.FxColors.Set(vColors);
                                     e.TechColorfulPattern.DrawAllPasses(_parent.DeviceContext, 6);

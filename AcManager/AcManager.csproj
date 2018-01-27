@@ -193,7 +193,6 @@
       <DependentUpon>Data.tt</DependentUpon>
     </Compile>
     <Compile Include="About\Licenses\LZF\license.cs" />
-    <Compile Include="App.CustomMessageBox.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>

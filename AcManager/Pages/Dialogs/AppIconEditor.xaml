@@ -3,8 +3,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:dialogs="clr-namespace:AcManager.Pages.Dialogs" xmlns:com="clr-namespace:System.ComponentModel;assembly=WindowsBase"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:acTools="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d" Title="App icons"
-    d:DataContext="{d:DesignInstance dialogs:AppIconEditor+ViewModel}" MaxHeight="99999" MaxWidth="99999" Width="760" Height="800" SizeToContent="Height"
-    ButtonsRowContentAlignment="Left" Padding="0 20" Loaded="OnLoaded">
+    d:DataContext="{d:DesignInstance dialogs:AppIconEditor+ViewModel}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Width="760" Height="800" SizeToContent="Height" ButtonsRowContentAlignment="Left" Padding="0 20"
+    Loaded="OnLoaded">
   <mui:ModernDialog.Resources>
     <CollectionViewSource x:Key="AllFonts" Source="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
       <CollectionViewSource.SortDescriptions>

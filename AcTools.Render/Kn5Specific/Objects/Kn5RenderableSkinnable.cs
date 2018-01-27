@@ -64,7 +64,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _liveReload;
 
         public bool LiveReload {
-            get { return _liveReload; }
+            get => _liveReload;
             set {
                 if (value == _liveReload) return;
                 _liveReload = value;
@@ -79,7 +79,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _magickOverride;
 
         public bool MagickOverride {
-            get { return _magickOverride; }
+            get => _magickOverride;
             set {
                 if (value == _magickOverride) return;
                 _magickOverride = value;
@@ -94,8 +94,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _debugMode;
         private bool? _debugModeLater;
 
-        public bool DebugMode {
-            get { return _debugMode; }
+        // TODO: Sort this out
+        public override bool DebugMode {
+            get => _debugMode;
             set {
                 if (value == _debugMode) return;
                 _debugMode = value;

@@ -3,7 +3,6 @@ using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum DoubleSliderBindingMode {

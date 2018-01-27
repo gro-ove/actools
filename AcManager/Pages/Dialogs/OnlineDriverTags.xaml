@@ -4,8 +4,8 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DesignHeight="300"
     d:DesignWidth="300" Title="Driver tags" SizeToContent="Manual" ResizeMode="CanResize" Width="800" Height="400" MinWidth="600" MinHeight="320"
-    LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="99999" MaxHeight="99999"
-    d:DataContext="{d:DesignInstance di:OnlineDriverTags+ViewModel}">
+    LocationAndSizeKey=".OnlineListManager" Closed="OnClosed" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" d:DataContext="{d:DesignInstance di:OnlineDriverTags+ViewModel}">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

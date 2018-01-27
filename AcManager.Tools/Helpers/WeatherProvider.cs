@@ -27,8 +27,7 @@ namespace AcManager.Tools.Helpers {
         public static async Task<WeatherDescription> TryToGetWeatherAsync(GeoTagsEntry geoTags) {
             CleanUpCache();
 
-            CachedEntry cached;
-            if (LocalCache.TryGetValue(geoTags, out cached)) {
+            if (LocalCache.TryGetValue(geoTags, out var cached)) {
                 return cached.Item2;
             }
 

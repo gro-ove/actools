@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using AcManager.Tools.Filters.TestEntries;
 using AcManager.Tools.Objects;
 using StringBasedFilter;
 

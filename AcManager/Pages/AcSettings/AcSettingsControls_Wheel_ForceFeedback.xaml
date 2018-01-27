@@ -70,7 +70,8 @@
         </CheckBox.ToolTip>
         <DockPanel Style="{x:Null}">
           <Label Content="Try to set hardware lock" DockPanel.Dock="Top" Margin="0 0 0 2" />
-          <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}" />
+          <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}"
+              TextWrapping="Wrap" />
         </DockPanel>
       </CheckBox>
 

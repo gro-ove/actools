@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,11 +10,9 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using Windows.UI.Xaml.Shapes;
 using AcManager.DiscordRpc;
 using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.DirectInput;
-using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -37,14 +29,14 @@ using Path = System.Windows.Shapes.Path;
 
 namespace AcManager.Pages.Dialogs {
     public partial class DiscordJoinRequestDialog : INotifyPropertyChanged {
-        private DirectInput _directInput;
-
         [CanBeNull]
         private Joystick[] _devices;
+
+        [CanBeNull]
         private JoystickState[] _states;
 
-        private CmInGameAppHelper _inGameApp;
-        private CmInGameAppJoinRequestParams _inGameAppParams;
+        private readonly CmInGameAppHelper _inGameApp = CmInGameAppHelper.GetInstance();
+        private readonly CmInGameAppJoinRequestParams _inGameAppParams;
 
         private static Point GetWindowPosition(int width, int height) {
             var screen = System.Windows.Forms.Screen.FromPoint(System.Windows.Forms.Cursor.Position);
@@ -107,11 +99,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private readonly ControlsInput _yes, _no;
-        private readonly DiscordJoinRequest _args;
 
         public DiscordJoinRequestDialog(DiscordJoinRequest args, CancellationToken cancellation = default(CancellationToken)) {
-            _args = args;
-
             cancellation.Register(async () => {
                 await Task.Delay(200);
                 CloseWithResult(MessageBoxResult.Cancel);
@@ -137,13 +126,7 @@ namespace AcManager.Pages.Dialogs {
             _no = new ControlsInput(config["__CM_DISCORD_REQUEST_DENY"], Keys.Back);
 
             try {
-                if (_directInput == null) {
-                    _directInput = new DirectInput();
-                }
-
-                _devices = _directInput.GetDevices(DeviceClass.GameController,
-                        DeviceEnumerationFlags.AttachedOnly).Select(x => new Joystick(_directInput, x.InstanceGuid)).ToArray();
-                _states = new JoystickState[_devices.Length];
+                SetDevices().Forget();
                 _yes.SetIcon(YesIcon, this);
                 _no.SetIcon(NoIcon, this);
             } catch (Exception e) {
@@ -153,6 +136,13 @@ namespace AcManager.Pages.Dialogs {
             _inGameAppParams = new CmInGameAppJoinRequestParams(args.UserName, args.UserId, args.AvatarUrl,
                     b => (b ? YesCommand : NoCommand).Execute());
             CompositionTargetEx.Rendering += OnRendering;
+        }
+
+        private async Task SetDevices() {
+            var devices = await DirectInputScanner.GetAsync();
+            _devices = DirectInputScanner.DirectInput == null ? null
+                    : devices?.Select(x => new Joystick(DirectInputScanner.DirectInput, x.InstanceGuid)).ToArray();
+            _states = _devices == null ? null : new JoystickState[_devices.Length];
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
@@ -174,7 +164,7 @@ namespace AcManager.Pages.Dialogs {
 
         private void OnRendering(object sender, RenderingEventArgs args) {
             try {
-                if (_devices == null) return;
+                if (_devices == null || _states == null) return;
 
                 switch (MessageBoxResult) {
                     case MessageBoxResult.No:
@@ -246,7 +236,6 @@ namespace AcManager.Pages.Dialogs {
             _inGameApp.Dispose();
             CompositionTargetEx.Rendering -= OnRendering;
             DisposeHelper.Dispose(ref _devices);
-            DisposeHelper.Dispose(ref _directInput);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

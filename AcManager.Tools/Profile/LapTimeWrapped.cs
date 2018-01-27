@@ -3,7 +3,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.LapTimes;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 

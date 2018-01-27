@@ -5,6 +5,7 @@ using AcManager.Pages.Lists;
 using AcManager.Tools.Managers;
 using JetBrains.Annotations;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -51,7 +52,7 @@ namespace AcManager.Pages.Dialogs {
         public static void Show([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None) {
             new CarSetupsDialog(car, forceRemoteSource) {
                 ShowInTaskbar = false
-            }.ShowDialogWithoutBlocking();
+            }.ShowDialogAsync().Forget();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

@@ -2,9 +2,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" Width="1080" Height="800" MaxWidth="99999" MaxHeight="99999" SizeToContent="Manual"
-    ResizeMode="CanResizeWithGrip" LocationAndSizeKey="__findInformationDialog.ls" d:DataContext="{d:DesignInstance di:FindInformationDialog+ViewModel}"
-    PreviewKeyDown="OnPreviewKeyDown" ButtonsRowContentAlignment="Stretch" MinWidth="400" MinHeight="600">
+    Title="{Binding SelectedObject.DisplayName, Mode=OneTime}" Width="1080" Height="800" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip"
+    LocationAndSizeKey="__findInformationDialog.ls" d:DataContext="{d:DesignInstance di:FindInformationDialog+ViewModel}" PreviewKeyDown="OnPreviewKeyDown"
+    ButtonsRowContentAlignment="Stretch" MinWidth="400" MinHeight="600">
   <mui:ModernDialog.ButtonsRowContent>
     <DockPanel>
       <Button Command="{Binding SaveCommand}" Content="{Binding SaveLabel}" DockPanel.Dock="Right" Margin="12 0 0 0"

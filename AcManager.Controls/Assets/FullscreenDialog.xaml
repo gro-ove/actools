@@ -78,11 +78,16 @@
   <Style x:Key="FullscreenDialog" TargetType="{x:Type mui:ModernDialog}" BasedOn="{StaticResource {x:Type mui:ModernDialog}}">
     <Setter Property="BackgroundContent" Value="{x:Null}" />
     <Setter Property="Background" Value="#dd151515" />
-    <Setter Property="MaxWidth" Value="99999" />
-    <Setter Property="MaxHeight" Value="99999" />
+    <Setter Property="MaxWidth" Value="{x:Static mui:DpiAwareWindow.UnlimitedSize}" />
+    <Setter Property="MaxHeight" Value="{x:Static mui:DpiAwareWindow.UnlimitedSize}" />
     <Setter Property="WindowState" Value="Maximized" />
     <Setter Property="WindowStyle" Value="None" />
     <Setter Property="SizeToContent" Value="Manual" />
     <Setter Property="AllowsTransparency" Value="True" />
+    <Style.Triggers>
+      <Trigger Property="BlurBackground" Value="True">
+        <Setter Property="Background" Value="#66101010" />
+      </Trigger>
+    </Style.Triggers>
   </Style>
 </ResourceDictionary>

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -38,7 +39,7 @@ namespace AcManager.Pages.Dialogs {
         public static void Show([NotNull] TrackObject track) {
             new TrackSkinsDialog(track) {
                 ShowInTaskbar = false
-            }.ShowDialogWithoutBlocking();
+            }.ShowDialogAsync().Forget();
         }
 
         private void OnInitialized(object sender, EventArgs e) {

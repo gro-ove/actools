@@ -998,6 +998,19 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _scanControllersAutomatically;
+
+            public bool ScanControllersAutomatically {
+                get => _scanControllersAutomatically
+                        ?? (_scanControllersAutomatically = ValuesStorage.Get("Settings.DriveSettings.ScanControllersAutomatically", false)).Value;
+                set {
+                    if (Equals(value, _scanControllersAutomatically)) return;
+                    _scanControllersAutomatically = value;
+                    ValuesStorage.Set("Settings.DriveSettings.ScanControllersAutomatically", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;

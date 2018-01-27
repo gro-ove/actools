@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Controls;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
-using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 
 namespace AcManager.Pages.SelectionLists {
     public partial class CarTags {

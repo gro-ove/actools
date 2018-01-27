@@ -20,7 +20,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -73,7 +72,7 @@ namespace AcManager.CustomShowroom {
             };
         }
 
-        protected override void OnClosing(CancelEventArgs e) {
+        protected override void OnClosingOverride(CancelEventArgs e) {
             if (_dispose != null && Model.IsChanged && ShowMessage(
                     "Some values are changed. Are you sure you want to dismiss changes?", "Some values are changed", MessageBoxButton.YesNo) !=
                     MessageBoxResult.Yes) {
@@ -81,7 +80,7 @@ namespace AcManager.CustomShowroom {
                 return;
             }
 
-            base.OnClosing(e);
+            base.OnClosingOverride(e);
         }
 
         public void Dispose() {

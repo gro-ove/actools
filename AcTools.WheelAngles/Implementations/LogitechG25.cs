@@ -4,12 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using HidLibrary;
 using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
@@ -53,7 +51,7 @@ namespace AcTools.WheelAngles.Implementations {
             var id = ++_applyId;
             Process process = null;
 
-            for (var i = 0; i < 30; i++) {
+            for (var i = 0; i < 100; i++) {
                 await Task.Delay(300);
                 process = AcProcess.TryToFind();
                 if (_applyId != id) return;
@@ -74,7 +72,7 @@ namespace AcTools.WheelAngles.Implementations {
             Initialize(process.MainWindowHandle);
             var properties = new LogiControllerPropertiesData();
             LogiGetCurrentControllerProperties(0, ref properties);
-            AcToolsLogging.Write("WheelRange: " + properties.WheelRange);
+            /*AcToolsLogging.Write("WheelRange: " + properties.WheelRange);
             AcToolsLogging.Write("ForceEnable: " + properties.ForceEnable);
             AcToolsLogging.Write("OverallGain: " + properties.OverallGain);
             AcToolsLogging.Write("SpringGain: " + properties.SpringGain);
@@ -83,7 +81,7 @@ namespace AcTools.WheelAngles.Implementations {
             AcToolsLogging.Write("DefaultSpringGain: " + properties.DefaultSpringGain);
             AcToolsLogging.Write("CombinePedals: " + properties.CombinePedals);
             AcToolsLogging.Write("GameSettingsEnabled: " + properties.GameSettingsEnabled);
-            AcToolsLogging.Write("AllowGameSettings: " + properties.AllowGameSettings);
+            AcToolsLogging.Write("AllowGameSettings: " + properties.AllowGameSettings);*/
             properties.WheelRange = value;
             LogiSetPreferredControllerProperties(properties);
             Apply();

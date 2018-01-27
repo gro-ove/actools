@@ -1,18 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Threading;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -25,11 +20,7 @@ namespace AcManager {
         [NotNull]
         private readonly Application _application;
 
-        [CanBeNull]
-        private readonly string _tryingToRunFlag;
-
-        public AppUi([NotNull] Application application, [CanBeNull] string tryingToRunFlag) {
-            _tryingToRunFlag = tryingToRunFlag;
+        public AppUi([NotNull] Application application) {
             _application = application ?? throw new ArgumentNullException(nameof(application));
 
             // Extra close-if-nothing-shown timer just to be sure
@@ -65,19 +56,13 @@ namespace AcManager {
 
             if (_currentWindow != null) {
                 _currentWindow.Unloaded -= OnUnloaded;
-                _currentWindow.Activated -= OnActivated;
             }
 
             _currentWindow = window;
             if (_currentWindow != null) {
                 EntryPoint.HandleSecondInstanceMessages(_currentWindow, HandleMessagesAsync);
                 _currentWindow.Unloaded += OnUnloaded;
-                _currentWindow.Activated += OnActivated;
             }
-        }
-
-        private void OnActivated(object o, EventArgs args) {
-            AppRanSuccessfully();
         }
 
         private void OnWindowLoaded(object sender, RoutedEventArgs e) {
@@ -110,27 +95,13 @@ namespace AcManager {
             return task.Task;
         }
 
-        private static bool _appRanSuccessfully;
-
-        private void AppRanSuccessfully() {
-            if (_appRanSuccessfully) return;
-            _appRanSuccessfully = true;
-            FileUtils.TryToDelete(_tryingToRunFlag);
-        }
-
         public void Run() {
             ((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
-                Task.Delay(3000).ContinueWith(t => {
-                    if (_currentWindow?.IsVisible == true && _tryingToRunFlag != null) {
-                        AppRanSuccessfully();
-                    }
-                }).Forget();
 
                 try {
                     if ((!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded()) &&
                             new AcRootDirectorySelector().ShowDialog() != true) {
-                        AppRanSuccessfully();
                         Logging.Debug("AC root selection cancelled, exit");
                         return;
                     }
@@ -148,7 +119,6 @@ namespace AcManager {
                     if (_showMainWindow) {
                         Logging.Debug("Main window…");
                         await new MainWindow().ShowAndWaitAsync();
-                        AppRanSuccessfully();
                         Logging.Debug("Main window closed");
                     }
 
@@ -159,7 +129,6 @@ namespace AcManager {
                     } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible)));
 
                     Logging.Debug("No more windows");
-                    AppRanSuccessfully();
                 } finally {
                     Logging.Debug("Shutdown…");
                     _timer.Stop();

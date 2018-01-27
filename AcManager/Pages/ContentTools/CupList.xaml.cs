@@ -1,43 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
-using AcManager.ContentRepair;
-using AcManager.Controls.Dialogs;
-using AcManager.CustomShowroom;
-using AcManager.Pages.Dialogs;
-using AcManager.Pages.Drive;
-using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.ContentRepairUi;
-using AcManager.Tools.Filters.Testers;
-using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
-using AcManager.Tools.Objects;
-using AcManager.Tools.SemiGui;
-using AcTools.DataAnalyzer;
-using AcTools.DataFile;
-using AcTools.Kn5File;
-using AcTools.Render.Data;
-using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
-using StringBasedFilter;
 
 namespace AcManager.Pages.ContentTools {
     public partial class CupList {

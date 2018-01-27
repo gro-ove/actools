@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Windows.Data;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Converters {
     [ValueConversion(typeof(int), typeof(string))]

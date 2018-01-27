@@ -453,4 +453,25 @@
       <ItemsControl ItemsSource="{Binding Sections}" Margin="20 0 0 -20" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" />
     </DockPanel>
   </DataTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.SectionTemplate.NoHeader" DataType="{x:Type t:PythonAppConfig}">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <DockPanel VerticalAlignment="Top">
+        <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
+            Visibility="{Binding IsResettable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <ItemsControl ItemsSource="{Binding Sections[0]}" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}" VerticalAlignment="Top" />
+      </DockPanel>
+    </ScrollViewer>
+  </DataTemplate>
+
+  <DataTemplate x:Key="PythonAppConfig.NoHeader" DataType="{x:Type t:PythonAppConfig}">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+      <DockPanel VerticalAlignment="Top">
+        <Button DockPanel.Dock="Bottom" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.Common_Reset}" Command="{Binding ResetCommand}"
+            Visibility="{Binding IsResettable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <ItemsControl ItemsSource="{Binding Sections}" ItemTemplate="{StaticResource PythonAppConfig.SectionTemplate}" Margin="0 0 0 -20" />
+      </DockPanel>
+    </ScrollViewer>
+  </DataTemplate>
 </ResourceDictionary>

@@ -4,7 +4,6 @@ using JetBrains.Annotations;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Serialization;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarTransmissionLossSelector : INotifyPropertyChanged {

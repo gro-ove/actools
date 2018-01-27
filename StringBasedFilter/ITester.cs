@@ -1,5 +1,4 @@
 ﻿using JetBrains.Annotations;
-using StringBasedFilter.TestEntries;
 
 namespace StringBasedFilter {
     public interface ITester<in T> {

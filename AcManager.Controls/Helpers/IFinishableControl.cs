@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AcManager.Controls.Helpers {
+﻿namespace AcManager.Controls.Helpers {
     public interface IFinishableControl {
         void Finish(bool result);
     }

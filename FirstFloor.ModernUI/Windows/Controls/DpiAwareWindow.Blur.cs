@@ -8,30 +8,6 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public abstract partial class DpiAwareWindow {
-        public static readonly DependencyProperty PreventActivationProperty = DependencyProperty.Register(nameof(PreventActivation), typeof(bool),
-                typeof(DpiAwareWindow), new PropertyMetadata(OnPreventActivationChanged));
-
-        public bool PreventActivation {
-            get => (bool)GetValue(PreventActivationProperty);
-            set => SetValue(PreventActivationProperty, value);
-        }
-
-        private static void OnPreventActivationChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            ((DpiAwareWindow)o).OnPreventActivationChanged((bool)e.NewValue);
-        }
-
-        private void OnPreventActivationChanged(bool newValue) {
-            try {
-                if (!IsLoaded) return;
-                var interopHelper = new WindowInteropHelper(this);
-                var exStyle = NativeMethods.GetWindowLong(interopHelper.Handle, NativeMethods.GwlExStyle);
-                NativeMethods.SetWindowLong(interopHelper.Handle, NativeMethods.GwlExStyle,
-                        newValue ? exStyle | NativeMethods.WsExNoActivate : exStyle & ~NativeMethods.WsExNoActivate);
-            } catch (Exception e) {
-                Logging.Error(e);
-            }
-        }
-
         public static readonly DependencyProperty BlurBackgroundProperty = DependencyProperty.Register(nameof(BlurBackground), typeof(bool),
                 typeof(DpiAwareWindow), new PropertyMetadata(OnBlurBackgroundChanged));
 
@@ -56,10 +32,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void SetBackgroundBlurIfNeeded() {
             if (BlurBackground) {
                 OnBlurBackgroundChanged(true);
-            }
-
-            if (PreventActivation) {
-                OnPreventActivationChanged(true);
             }
         }
 
@@ -86,7 +58,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private class AeroBackgroundBlur : IBackgroundBlur {
             private IntPtr WndProc(IntPtr window, int msg, IntPtr wParam, IntPtr lParam, ref bool handled) {
-                if (msg == NativeMethods.WmDwmCompositionChanged) {
+                if (msg == (int)WindowMessage.DwmCompositionChanged) {
                     Set(window, true);
                 }
 
@@ -103,7 +75,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 var margins = new NativeMethods.Margins { Left = -1, Right = -1, Bottom = -1, Top = -1 };
-                var blurBehind = new NativeMethods.DwmBlurBehind { Enable = enabled, Flags = NativeMethods.DwmBb.DwmBbEnable };
+                var blurBehind = new NativeMethods.DwmBlurBehind { Enable = enabled, Flags = NativeMethods.DwmFlags.BlurBackground };
                 NativeMethods.DwmExtendFrameIntoClientArea(window, ref margins);
                 NativeMethods.DwmEnableBlurBehindWindow(window, ref blurBehind);
             }

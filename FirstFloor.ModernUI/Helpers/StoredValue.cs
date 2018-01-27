@@ -36,8 +36,8 @@ namespace FirstFloor.ModernUI.Helpers {
         private readonly string _storageKey;
         private readonly string _defaultValue;
 
-        protected StoredValue(string key, object defaultValue) {
-            _storageKey = @"_stored:" + key;
+        private StoredValue(string key, object defaultValue) {
+            _storageKey = key.Length > 0 && key[0] == '/' ? key.Substring(1) : @"_stored:" + key;
             _defaultValue = defaultValue?.ToString();
         }
 
@@ -83,6 +83,7 @@ namespace FirstFloor.ModernUI.Helpers {
             set {
                 if (Equals(value, _value)) return;
                 _value = value;
+                _generic.Value = value.As<string>();
                 OnPropertyChanged();
             }
         }

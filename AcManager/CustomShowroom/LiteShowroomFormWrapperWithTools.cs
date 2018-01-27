@@ -1,16 +1,18 @@
 using System;
 using System.ComponentModel;
-using System.Windows;
+using System.Drawing;
 using System.Windows.Forms;
 using AcManager.Tools.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using SlimDX;
 using Size = System.Drawing.Size;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
+using Point = System.Windows.Point;
 
 namespace AcManager.CustomShowroom {
     public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots, ICustomShowroomShots {
@@ -60,6 +62,10 @@ namespace AcManager.CustomShowroom {
 
         private bool? _lastVisibleTools;
 
+        private Rectangle GetScreenBounds() {
+            return (Form.Visible ? Screen.FromControl(Form) : DpiAwareWindow.GetPreferredScreen()).Bounds;
+        }
+
         protected sealed override void GoToNormalMode() {
             if (OptionAttachedToolsLogging) {
                 Logging.Debug("Switching to normal mode…");
@@ -68,25 +74,49 @@ namespace AcManager.CustomShowroom {
             _switchingInProgress = true;
 
             try {
-                var area = Screen.PrimaryScreen.WorkingArea;
-                var size = ValuesStorage.Get(KeyNormalSize, new Point(1600, 900));
-                var pos = ValuesStorage.Get(KeyNormalPos, new Point((area.Width - size.X) / 2, (area.Height - size.Y) / 2));
+                if (AppearanceManager.Current.PreferFullscreenMode) {
+                    var screen = DpiAwareWindow.GetPreferredScreen();
+                    Form.Width = screen.Bounds.Width;
+                    Form.Height = screen.Bounds.Height;
+                    Form.Top = screen.Bounds.Top;
+                    Form.Left = screen.Bounds.Left;
+                    FullscreenEnabled = true;
+                } else {
+                    var size = ValuesStorage.Get(KeyNormalSize, default(Point));
+                    var pos = ValuesStorage.Get(KeyNormalPos, default(Point));
 
-                Form.Width = ((int)size.X).Clamp(320, area.Width);
-                Form.Height = ((int)size.Y).Clamp(200, area.Height);
-                Form.Top = ((int)pos.Y).Clamp(0, area.Height - Form.Height);
-                Form.Left = ((int)pos.X).Clamp(0, area.Width - Form.Width);
+                    if (size.X > 0 && size.Y > 0) {
+                        var savedScreen = pos != default(Point) ? Screen.FromPoint(new System.Drawing.Point(
+                                (int)(pos.X + size.X / 2), (int)(pos.Y + size.Y / 2))) : DpiAwareWindow.GetPreferredScreen();
+                        var activeScreen = AppearanceManager.Current.KeepWithinSingleScreen ? DpiAwareWindow.GetActiveScreen() : null;
+                        if (activeScreen != null && savedScreen.Bounds != activeScreen.Bounds) {
+                            SetDefaultLocation();
+                        } else {
+                            Form.Width = size.X.RoundToInt().Clamp(320, savedScreen.Bounds.Width);
+                            Form.Height = size.Y.RoundToInt().Clamp(200, savedScreen.Bounds.Height);
+                            Form.Top = pos.Y.RoundToInt().Clamp(savedScreen.Bounds.Top, savedScreen.Bounds.Bottom - Form.Height);
+                            Form.Left = pos.X.RoundToInt().Clamp(savedScreen.Bounds.Left, savedScreen.Bounds.Right - Form.Width);
+                        }
+                    } else {
+                        SetDefaultLocation();
+                    }
 
-                Form.WindowState = ValuesStorage.Get(KeyNormalMaximized, false) ? FormWindowState.Maximized : FormWindowState.Normal;
-                Form.FormBorderStyle = FormBorderStyle.Sizable;
-                Form.TopMost = false;
-                FullscreenEnabled = ValuesStorage.Get(KeyNormalFullscreen, false);
+                    if (_lastVisibleTools.HasValue) {
+                        _helper.Visible = _lastVisibleTools.Value;
+                    }
+
+                    FullscreenEnabled = ValuesStorage.Get(KeyNormalFullscreen, false);
+                }
+
+                void SetDefaultLocation() {
+                    var screen = DpiAwareWindow.GetPreferredScreen();
+                    Form.Width = 1600.Clamp(320, screen.Bounds.Width);
+                    Form.Height = 900.Clamp(200, screen.Bounds.Height);
+                    Form.Top = screen.Bounds.Top + (screen.Bounds.Height - Form.Height) / 2;
+                    Form.Left = screen.Bounds.Left + (screen.Bounds.Width - Form.Width) / 2;
+                }
 
                 UpdateSize();
-
-                if (_lastVisibleTools.HasValue) {
-                    _helper.Visible = _lastVisibleTools.Value;
-                }
             } finally {
                 _switchingInProgress = false;
             }
@@ -104,7 +134,7 @@ namespace AcManager.CustomShowroom {
             _switchingInProgress = true;
 
             try {
-                var area = Screen.PrimaryScreen.WorkingArea;
+                var area = GetScreenBounds();
                 var size = ValuesStorage.Get(KeyToolSize, new Point(400, 240));
                 var pos = ValuesStorage.Get(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
 
@@ -115,12 +145,10 @@ namespace AcManager.CustomShowroom {
                 Form.WindowState = FormWindowState.Normal;
                 Form.Width = ((int)size.X).Clamp(320, area.Width);
                 Form.Height = ((int)size.Y).Clamp(200, area.Height);
-                Form.Top = ((int)pos.Y).Clamp(0, area.Height - Form.Height);
-                Form.Left = ((int)pos.X).Clamp(0, area.Width - Form.Width);
-
+                Form.Top = ((int)pos.Y).Clamp(area.Top, area.Bottom - Form.Height);
+                Form.Left = ((int)pos.X).Clamp(area.Left, area.Right - Form.Width);
                 Form.FormBorderStyle = FormBorderStyle.SizableToolWindow;
                 Form.TopMost = true;
-
                 UpdateSize();
             } finally {
                 _switchingInProgress = false;
@@ -135,8 +163,8 @@ namespace AcManager.CustomShowroom {
             if (_switchingInProgress) return;
 
             if (EditMode) {
-                ValuesStorage.Set(KeyToolSize, new Point(Form.Width, Form.Height).As<string>());
-                ValuesStorage.Set(KeyToolPos, new Point(Form.Left, Form.Top).As<string>());
+                ValuesStorage.Set(KeyToolSize, new Point(Form.Width, Form.Height));
+                ValuesStorage.Set(KeyToolPos, new Point(Form.Left, Form.Top));
             } else {
                 ValuesStorage.Set(KeyNormalFullscreen, FullscreenEnabled);
 
@@ -145,8 +173,8 @@ namespace AcManager.CustomShowroom {
                 } else {
                     ValuesStorage.Set(KeyNormalMaximized, Form.WindowState == FormWindowState.Maximized);
                     if (Form.WindowState == FormWindowState.Normal) {
-                        ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height).As<string>());
-                        ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top).As<string>());
+                        ValuesStorage.Set(KeyNormalSize, new Point(Form.Width, Form.Height));
+                        ValuesStorage.Set(KeyNormalPos, new Point(Form.Left, Form.Top));
                     }
                 }
             }
@@ -156,6 +184,12 @@ namespace AcManager.CustomShowroom {
 
         protected override void OnKeyUpOverride(KeyEventArgs args) {
             switch (args.KeyCode) {
+                case Keys.F11:
+                    if (AppearanceManager.Current.PreferFullscreenMode) {
+                        args.Handled = true;
+                    }
+                    break;
+
                 case Keys.F8:
                     var cancelEventArgs = new CancelEventArgs();
                     PreviewScreenshot?.Invoke(this, cancelEventArgs);

@@ -4,10 +4,7 @@ using System.Runtime.InteropServices;
 namespace FirstFloor.ModernUI.Win32 {
     internal static class NativeMethods {
         public const int SOk = 0;
-        public const int WmDpiChanged = 0x02E0;
         public const int MonitorDefaultToNearest = 0x00000002;
-        public const int WsExNoActivate = 0x08000000;
-        public const int GwlExStyle = -20;
 
         [DllImport("Shcore.dll")]
         public static extern int GetProcessDpiAwareness(IntPtr hprocess, out ProcessDpiAwareness value);
@@ -22,26 +19,44 @@ namespace FirstFloor.ModernUI.Win32 {
         public static extern int SetProcessDPIAware();
 
         [DllImport("shcore.dll")]
-        public static extern int GetDpiForMonitor(IntPtr hMonitor, int dpiType, ref uint xDpi, ref uint yDpi);
+        public static extern int GetDpiForMonitor(IntPtr hMonitor, int dpiType, out uint xDpi, out uint yDpi);
 
         [DllImport("user32.dll")]
         public static extern IntPtr MonitorFromWindow(IntPtr hwnd, int flag);
+
+        [DllImport(@"user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetWindowRect(IntPtr hWnd, out Win32Rect lpWindowRect);
 
         [DllImport("user32.dll")]
         public static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
 
         [DllImport("user32.dll")]
-        public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+        public static extern int GetWindowLong(IntPtr hWnd, WindowFlagsSet flagsSet);
 
         [DllImport("user32.dll")]
-        public static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+        public static extern int SetWindowLong(IntPtr hwnd, WindowFlagsSet flagsSet, int newStyle);
 
-        [Flags]
-        public enum DwmBb {
-            DwmBbEnable = 1
+        public static WindowStyle GetWindowStyle(IntPtr hwnd) {
+            return (WindowStyle)GetWindowLong(hwnd, WindowFlagsSet.Style);
         }
 
-        public const int WmDwmCompositionChanged = 0x031E;
+        public static void SetWindowStyle(IntPtr hwnd, WindowStyle style) {
+            SetWindowLong(hwnd, WindowFlagsSet.Style, (int)style);
+        }
+
+        public static WindowExStyle GetWindowExStyle(IntPtr hwnd) {
+            return (WindowExStyle)GetWindowLong(hwnd, WindowFlagsSet.ExStyle);
+        }
+
+        public static void SetWindowExStyle(IntPtr hwnd, WindowExStyle style) {
+            SetWindowLong(hwnd, WindowFlagsSet.ExStyle, (int)style);
+        }
+
+        [Flags]
+        public enum DwmFlags {
+            BlurBackground = 1
+        }
 
         [DllImport("dwmapi.dll", PreserveSig = false)]
         public static extern bool DwmIsCompositionEnabled();
@@ -54,7 +69,7 @@ namespace FirstFloor.ModernUI.Win32 {
 
         [StructLayout(LayoutKind.Sequential)]
         public struct DwmBlurBehind {
-            public DwmBb Flags;
+            public DwmFlags Flags;
             public bool Enable;
             public IntPtr RgnBlur;
             public bool TransitionOnMaximized;

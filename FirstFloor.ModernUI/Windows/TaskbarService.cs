@@ -95,14 +95,19 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         static TaskbarService() {
-            DpiAwareWindow.NewWindowOpened += (sender, args) => {
+            // TODO: Why it’s here?
+            DpiAwareWindow.NewWindowCreated += (sender, args) => {
+                ((DpiAwareWindow)sender).Loaded += OnNewWindowLoaded;
+            };
+
+            void OnNewWindowLoaded(object o, RoutedEventArgs eventArgs) {
                 if (_lazyProgress.IsValueCreated) {
                     _lazyProgress.Value?.Dispose();
                 }
 
                 _lazyProgress = new Lazy<TaskbarProgress>(ValueFactory);
                 Update();
-            };
+            }
         }
 
         public static TaskbarHolder Create(double priority, Func<Tuple<TaskbarState, double>> periodicCallback = null) {

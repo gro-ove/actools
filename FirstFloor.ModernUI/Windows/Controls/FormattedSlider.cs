@@ -11,6 +11,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class FormattedSlider : Slider {
         public FormattedSlider() {
             DefaultStyleKey = typeof(FormattedSlider);
+            AutoToolTipPrecision = 10;
         }
 
         public static readonly DependencyProperty AutoToolTipFormatProperty = DependencyProperty.Register(nameof(AutoToolTipFormat), typeof(string),
@@ -54,7 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var autoToolTip = AutoToolTip;
                 if (autoToolTip != null) {
                     autoToolTip.Content = string.Format(AutoToolTipFormat ?? @"{0}",
-                            (string)AutoToolTipConverter?.Convert(autoToolTip.Content, typeof(string), null, null) ?? autoToolTip.Content);
+                            AutoToolTipConverter?.Convert(autoToolTip.Content, typeof(string), null, null) ?? autoToolTip.Content);
                 }
             }
         }

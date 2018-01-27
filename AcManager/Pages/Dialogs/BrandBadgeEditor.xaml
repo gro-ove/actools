@@ -1,23 +1,22 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.BrandBadgeEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-        xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d"
-        Title="{x:Static g:AppStrings.BrandBadge_Title}" AllowDrop="True" Drop="BrandBadgeEditor_OnDrop" Width="720" Height="800"
-        LocationAndSizeKey="BrandBadgeEditor_LS_" MaxWidth="9999" MaxHeight="9999" SizeToContent="Manual" ResizeMode="CanResizeWithGrip"
-        d:DataContext="{d:DesignInstance di:BrandBadgeEditor}">
-    <ListBox SelectedItem="{Binding Selected, Mode=TwoWay}" ItemsSource="{Binding Icons}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-            ScrollViewer.CanContentScroll="True">
-        <ListBox.ItemsPanel>
-            <ItemsPanelTemplate>
-                <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="68"
-                        ItemHeight="68" />
-            </ItemsPanelTemplate>
-        </ListBox.ItemsPanel>
-        <ListBox.ItemTemplate>
-            <DataTemplate>
-                <mui:BetterImage Filename="{Binding Filename}" Width="64" Height="64" ToolTip="{Binding Name}" MouseDown="BrandBadge_OnMouseDown"
-                        ClearOnChange="True" />
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Title="{x:Static g:AppStrings.BrandBadge_Title}"
+    AllowDrop="True" Drop="BrandBadgeEditor_OnDrop" Width="720" Height="800" LocationAndSizeKey="BrandBadgeEditor_LS_"
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual"
+    ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:BrandBadgeEditor}">
+  <ListBox SelectedItem="{Binding Selected, Mode=TwoWay}" ItemsSource="{Binding Icons}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+      ScrollViewer.CanContentScroll="True">
+    <ListBox.ItemsPanel>
+      <ItemsPanelTemplate>
+        <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Standard" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="68"
+            ItemHeight="68" />
+      </ItemsPanelTemplate>
+    </ListBox.ItemsPanel>
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <mui:BetterImage Filename="{Binding Filename}" Width="64" Height="64" ToolTip="{Binding Name}" MouseDown="BrandBadge_OnMouseDown" ClearOnChange="True" />
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
 </mui:ModernDialog>

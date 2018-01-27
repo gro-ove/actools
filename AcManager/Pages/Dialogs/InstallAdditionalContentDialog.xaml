@@ -4,10 +4,11 @@
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:entries="clr-namespace:AcManager.Tools.ContentInstallation.Entries;assembly=AcManager.Tools"
     xmlns:internal="http://acstuff.ru/app/internal" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="200" MinHeight="320" Width="540" Height="480" MaxWidth="99999" MaxHeight="99999"
-    SizeToContent="Manual" LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}"
-    ShowInTaskbar="True" ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch"
-    Closed="OnClosed" KeyDown="OnKeyDown" x:Name="This">
+    Title="{x:Static g:AppStrings.AdditionalContent_Title}" MinWidth="200" MinHeight="320" Width="540" Height="480"
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual"
+    LocationAndSizeKey="installAdditionalContent" d:DataContext="{d:DesignInstance di:InstallAdditionalContentDialog}" ShowInTaskbar="True"
+    ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch" Closed="OnClosed"
+    KeyDown="OnKeyDown" x:Name="This">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

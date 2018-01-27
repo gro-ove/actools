@@ -22,7 +22,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Brush = System.Windows.Media.Brush;
 using Color = System.Windows.Media.Color;

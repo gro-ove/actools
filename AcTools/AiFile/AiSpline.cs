@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using ImageMagick;
 using JetBrains.Annotations;
 
 namespace AcTools.AiFile {

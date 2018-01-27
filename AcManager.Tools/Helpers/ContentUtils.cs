@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Resources;
@@ -18,7 +19,7 @@ namespace AcManager.Tools.Helpers {
     public static class ContentUtils {
         private static readonly Dictionary<string, ResourceManager> Registered = new Dictionary<string, ResourceManager>();
 
-        public static void Register([NotNull] string key, [NotNull] ResourceManager resourceManager) {
+        public static void Register([Localizable(false), NotNull] string key, [NotNull] ResourceManager resourceManager) {
             Registered[key.ToLowerInvariant()] = resourceManager;
         }
 

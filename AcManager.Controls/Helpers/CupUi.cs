@@ -1,12 +1,11 @@
-﻿using System.Threading;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 
 namespace AcManager.Controls.Helpers {
@@ -47,7 +46,7 @@ namespace AcManager.Controls.Helpers {
                 if (cup == null) return;
 
                 mouseButtonEventArgs.Handled = true;
-                new CupInformationDialog(cup).ShowDialogWithoutBlocking();
+                new CupInformationDialog(cup).ShowDialogAsync().Forget();
             }
         }
     }

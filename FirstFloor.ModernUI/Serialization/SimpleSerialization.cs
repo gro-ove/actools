@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -14,6 +15,7 @@ namespace FirstFloor.ModernUI.Serialization {
             Register(TimeZoneInfo.FromSerializedString, t => t.ToSerializedString());
             Register(Convert.FromBase64String, Convert.ToBase64String);
             RegisterWpfTypes();
+            RegisterDrawingTypes();
         }
 
         #region Methods for adding support for extra types
@@ -58,7 +60,7 @@ namespace FirstFloor.ModernUI.Serialization {
                         var s = ToString(value);
                         return s == null ? targetNullValue : (T)(object)s;
                     } else {
-                        return FromString(value, targetNullValue);
+                        return (T)FromString(typeof(T), value, targetNullValue);
                     }
             }
         }
@@ -83,6 +85,49 @@ namespace FirstFloor.ModernUI.Serialization {
             }
 
             return value.As<T>();
+        }
+        #endregion
+
+        #region Non-generic version
+        private static readonly ConcurrentDictionary<Type, object> TypeDefaults = new ConcurrentDictionary<Type, object>();
+
+        public static object GetDefaultValue(this Type type) {
+            return type.IsValueType ? TypeDefaults.GetOrAdd(type, Activator.CreateInstance) : null;
+        }
+
+        /// <summary>
+        /// Convert anything to anything. Mostly, strings to primitive types, or primitive types to strings.
+        /// </summary>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="type">Target type.</param>
+        /// <param name="targetNullValue">Return value by default, in case conversion failed or original value is null.</param>
+        /// <returns>Converted value.</returns>
+        [ContractAnnotation("targetNullValue:null => canbenull; targetNullValue:notnull => notnull")]
+        public static object As([CanBeNull] this object value, [NotNull] Type type, object targetNullValue) {
+            if (value == null) {
+                return targetNullValue;
+            }
+
+            if (value.GetType() == type) {
+                return value;
+            }
+
+            if (type == typeof(string)) {
+                return ToString(value) ?? targetNullValue;
+            }
+
+            return FromString(type, value, targetNullValue);
+        }
+
+        /// <summary>
+        /// Convert anything to anything. Mostly, strings to primitive types, or primitive types to strings.
+        /// </summary>
+        /// <param name="value">Value to convert.</param>
+        /// <param name="type">Target type.</param>
+        /// <returns>Converted value.</returns>
+        [CanBeNull]
+        public static object As([CanBeNull] this object value, [NotNull] Type type) {
+            return value.As(type, type.GetDefaultValue());
         }
         #endregion
 
@@ -128,12 +173,12 @@ namespace FirstFloor.ModernUI.Serialization {
 
         #region Conversions according to type
         [ContractAnnotation("targetNullValue:null => canbenull; targetNullValue:notnull => notnull")]
-        private static T FromString<T>(object v, T targetNullValue) {
-            var t = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+        private static object FromString(Type targetType, object v, object targetNullValue) {
+            var t = Nullable.GetUnderlyingType(targetType) ?? targetType;
             var s = v.ToString();
             if (t.IsEnum) {
                 try {
-                    return (T)Enum.Parse(t, s);
+                    return Enum.Parse(t, s);
                 } catch {
                     Logging.Error($"Invalid {t} value: {s}");
                     return targetNullValue;
@@ -142,49 +187,49 @@ namespace FirstFloor.ModernUI.Serialization {
 
             switch (Type.GetTypeCode(t)) {
                 case TypeCode.Empty:
-                    return default(T);
+                    return null;
                 case TypeCode.DBNull:
-                    return (T)(object)DBNull.Value;
+                    return DBNull.Value;
                 case TypeCode.Boolean:
                     var byteString = s;
-                    return byteString == "1" || string.Equals(byteString, "true", StringComparison.OrdinalIgnoreCase) ? (T)(object)true
-                            : byteString == "0" || string.Equals(byteString, "false", StringComparison.OrdinalIgnoreCase) ? (T)(object)false : targetNullValue;
+                    return byteString == "1" || string.Equals(byteString, "true", StringComparison.OrdinalIgnoreCase) ? true
+                            : byteString == "0" || string.Equals(byteString, "false", StringComparison.OrdinalIgnoreCase) ? false : targetNullValue;
                 case TypeCode.Char:
-                    return char.TryParse(s, out var char_) ? (T)(object)char_ : targetNullValue;
+                    return char.TryParse(s, out var char_) ? char_ : targetNullValue;
                 case TypeCode.SByte:
-                    return sbyte.TryParse(s, Ns, Cu, out var sbyte_) ? (T)(object)sbyte_ : targetNullValue;
+                    return sbyte.TryParse(s, Ns, Cu, out var sbyte_) ? sbyte_ : targetNullValue;
                 case TypeCode.Byte:
-                    return byte.TryParse(s, Ns, Cu, out var byte_) ? (T)(object)byte_ : targetNullValue;
+                    return byte.TryParse(s, Ns, Cu, out var byte_) ? byte_ : targetNullValue;
                 case TypeCode.Int16:
-                    return short.TryParse(s, Ns, Cu, out var short_) ? (T)(object)short_ : targetNullValue;
+                    return short.TryParse(s, Ns, Cu, out var short_) ? short_ : targetNullValue;
                 case TypeCode.UInt16:
-                    return ushort.TryParse(s, Ns, Cu, out var ushort_) ? (T)(object)ushort_ : targetNullValue;
+                    return ushort.TryParse(s, Ns, Cu, out var ushort_) ? ushort_ : targetNullValue;
                 case TypeCode.Int32:
-                    return int.TryParse(s, Ns, Cu, out var int_) ? (T)(object)int_ : targetNullValue;
+                    return int.TryParse(s, Ns, Cu, out var int_) ? int_ : targetNullValue;
                 case TypeCode.UInt32:
-                    return uint.TryParse(s, Ns, Cu, out var uint_) ? (T)(object)uint_ : targetNullValue;
+                    return uint.TryParse(s, Ns, Cu, out var uint_) ? uint_ : targetNullValue;
                 case TypeCode.Int64:
-                    return long.TryParse(s, Ns, Cu, out var long_) ? (T)(object)long_ : targetNullValue;
+                    return long.TryParse(s, Ns, Cu, out var long_) ? long_ : targetNullValue;
                 case TypeCode.UInt64:
-                    return ulong.TryParse(s, Ns, Cu, out var ulong_) ? (T)(object)ulong_ : targetNullValue;
+                    return ulong.TryParse(s, Ns, Cu, out var ulong_) ? ulong_ : targetNullValue;
                 case TypeCode.Single:
-                    return float.TryParse(s, Ns, Cu, out var float_) ? (T)(object)float_ : targetNullValue;
+                    return float.TryParse(s, Ns, Cu, out var float_) ? float_ : targetNullValue;
                 case TypeCode.Double:
-                    return double.TryParse(s, Ns, Cu, out var double_) ? (T)(object)double_ : targetNullValue;
+                    return double.TryParse(s, Ns, Cu, out var double_) ? double_ : targetNullValue;
                 case TypeCode.Decimal:
-                    return decimal.TryParse(s, Ns, Cu, out var decimal_) ? (T)(object)decimal_ : targetNullValue;
+                    return decimal.TryParse(s, Ns, Cu, out var decimal_) ? decimal_ : targetNullValue;
                 case TypeCode.DateTime:
-                    return DateTime.TryParse(s, Cu, DateTimeStyles.AssumeLocal, out var dateTime) ? (T)(object)dateTime : targetNullValue;
+                    return DateTime.TryParse(s, Cu, DateTimeStyles.AssumeLocal, out var dateTime) ? dateTime : targetNullValue;
                 case TypeCode.String:
-                    return (T)(object)s;
+                    return s;
                 case TypeCode.Object:
                     if (!Registered.TryGetValue(t, out var p)) {
                         Logging.Error($"Not supported type: {t}");
                     } else {
                         try {
-                            var d = p.Deserialize(s);
-                            return d == null ? targetNullValue : (T)d;
+                            return p.Deserialize(s) ?? targetNullValue;
                         } catch (Exception e) {
+                            Logging.Error(t.FullName);
                             Logging.Error(e);
                         }
                     }

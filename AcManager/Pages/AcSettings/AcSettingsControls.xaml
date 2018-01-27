@@ -40,94 +40,125 @@
             Command="{Binding Controls.RunControlPanelCommand}" ToolTip="Device settings" DockPanel.Dock="Right" Margin="8 0 0 0" />
         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
       </DockPanel>
-      <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding Controls.Devices}">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <StackPanel />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
+      <mui:BooleanSwitch Value="{Binding Controls.IsScanningInProgress}">
+        <mui:BooleanSwitch.True>
+          <DockPanel Margin="8 20 8 60" VerticalAlignment="Center">
+            <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top" />
+            <TextBlock TextWrapping="Wrap" Text="Scanning…" DockPanel.Dock="Top" Margin="0 8 0 0" />
+            <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 8 0 0" Style="{StaticResource Small}"
+                BbCode="If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url]." />
+          </DockPanel>
+        </mui:BooleanSwitch.True>
+        <mui:BooleanSwitch.False>
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+              <ItemsControl ItemsSource="{Binding Controls.Devices}">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <StackPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-          <ItemsControl.ItemTemplate>
-            <DataTemplate DataType="{x:Type t:DirectInputDevice}">
-              <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
-                <StackPanel.ToolTip>
-                  <ToolTip
-                      Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <StackPanel Margin="4">
-                      <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                      <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
-                      <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
-                      <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
-                      <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
-                      <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
-                      <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
-                      <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
-                      <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
-                      <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
-                      <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="{x:Type t:DirectInputDevice}">
+                    <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
+                      <StackPanel.ToolTip>
+                        <ToolTip
+                            Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                          <StackPanel Margin="4">
+                            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
+                            <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
+                            <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
+                            <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />
+                            <TextBlock Text="{Binding Device.InstanceGuid, StringFormat='{}Instance GUID: {0}'}" />
+                            <TextBlock Text="{Binding Device.HumanInterfaceDevice, StringFormat='{}HID: {0}'}" />
+                            <TextBlock Text="{Binding Device.UsageId, StringFormat='{}Usage ID: {0}'}" />
+                            <TextBlock Text="{Binding Device.UsagePage, StringFormat='{}Usage page: {0}'}" />
+                            <TextBlock Text="{Binding Device.Type, StringFormat='{}Type: {0}'}" />
+                            <TextBlock Text="{Binding Device.Subtype, StringFormat='{}Subtype: {0}'}" />
+                          </StackPanel>
+                        </ToolTip>
+                      </StackPanel.ToolTip>
+
+                      <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
+
+                      <ItemsControl ItemsSource="{Binding VisibleAxis}" Margin="0 8 0 0"
+                          Visibility="{Binding VisibleAxis.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate DataType="{x:Type t:DirectInputAxle}">
+                            <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DefaultName}" Background="Transparent">
+                              <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40" />
+                                <ColumnDefinition Width="124" />
+                              </Grid.ColumnDefinitions>
+
+                              <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
+
+                              <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}" StrokeThickness="1" />
+                              <Rectangle Grid.Column="1" Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
+                                <Rectangle.RenderTransform>
+                                  <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=112}" Y="0" />
+                                </Rectangle.RenderTransform>
+                              </Rectangle>
+                            </Grid>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
+
+                      <ItemsControl ItemsSource="{Binding VisibleButtons}" Margin="0 8 -4 0"
+                          Visibility="{Binding VisibleButtons.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                        <ItemsControl.ItemsPanel>
+                          <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
+                          </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                          <DataTemplate DataType="{x:Type t:DirectInputButton}">
+                            <mui:Cell Height="24" Margin="0 0 4 4" ToolTip="{Binding DefaultName}" Background="Transparent">
+                              <Ellipse x:Name="Bg" Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}"
+                                  StrokeThickness="1" />
+                              <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Width="17" Height="17" HorizontalAlignment="Center"
+                                  VerticalAlignment="Center" Margin="2 1 2 3">
+                                <TextBlock x:Name="Fg" Text="{Binding ShortName}" Style="{StaticResource Heading2}" FontWeight="Normal"
+                                    Foreground="{DynamicResource ButtonText}" />
+                              </Viewbox>
+                            </mui:Cell>
+                            <DataTemplate.Triggers>
+                              <DataTrigger Binding="{Binding Value}" Value="True">
+                                <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource ButtonBackgroundPressed}" />
+                                <Setter TargetName="Bg" Property="Stroke" Value="{DynamicResource ButtonBorderPressed}" />
+                                <Setter TargetName="Fg" Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
+                              </DataTrigger>
+                            </DataTemplate.Triggers>
+                          </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                      </ItemsControl>
                     </StackPanel>
-                  </ToolTip>
-                </StackPanel.ToolTip>
-
-                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
-
-                <ItemsControl ItemsSource="{Binding VisibleAxis}" Margin="0 8 0 0"
-                    Visibility="{Binding VisibleAxis.Count, Converter={StaticResource MoreToVisibilityConverter}}">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type t:DirectInputAxle}">
-                      <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DefaultName}" Background="Transparent">
-                        <Grid.ColumnDefinitions>
-                          <ColumnDefinition Width="40" />
-                          <ColumnDefinition Width="124" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Text="{Binding ShortName}" Grid.Column="0" Style="{StaticResource Small}" Margin="0 -3 0 -2" />
-
-                        <Rectangle Grid.Column="1" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}" StrokeThickness="1" />
-                        <Rectangle Grid.Column="1" Fill="{DynamicResource Accent}" Height="4" Width="8" Margin="2" HorizontalAlignment="Left">
-                          <Rectangle.RenderTransform>
-                            <TranslateTransform X="{Binding Value, Converter={StaticResource MultiplyConverter}, ConverterParameter=112}" Y="0" />
-                          </Rectangle.RenderTransform>
-                        </Rectangle>
-                      </Grid>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                <ItemsControl ItemsSource="{Binding VisibleButtons}" Margin="0 8 -4 0"
-                    Visibility="{Binding VisibleButtons.Count, Converter={StaticResource MoreToVisibilityConverter}}">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <WrapPanel Orientation="Horizontal" HorizontalAlignment="Left" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type t:DirectInputButton}">
-                      <mui:Cell Height="24" Margin="0 0 4 4" ToolTip="{Binding DefaultName}" Background="Transparent">
-                        <Ellipse x:Name="Bg" Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}"
-                            StrokeThickness="1" />
-                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Width="17" Height="17" HorizontalAlignment="Center" VerticalAlignment="Center"
-                            Margin="2 1 2 3">
-                          <TextBlock x:Name="Fg" Text="{Binding ShortName}" Style="{StaticResource Heading2}" FontWeight="Normal"
-                              Foreground="{DynamicResource ButtonText}" />
-                        </Viewbox>
-                      </mui:Cell>
-                      <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding Value}" Value="True">
-                          <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource ButtonBackgroundPressed}" />
-                          <Setter TargetName="Bg" Property="Stroke" Value="{DynamicResource ButtonBorderPressed}" />
-                          <Setter TargetName="Fg" Property="Foreground" Value="{DynamicResource ButtonTextPressed}" />
-                        </DataTrigger>
-                      </DataTemplate.Triggers>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </StackPanel>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-      </ScrollViewer>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <DockPanel Margin="0 4 0 0">
+                <mui:ContextMenuButton DockPanel.Dock="Right">
+                  <ContextMenu>
+                    <MenuItem Header="Scan devices at launch" IsCheckable="True"
+                        IsChecked="{Binding ScanControllersAutomatically, Source={x:Static t:SettingsHolder.Drive}}">
+                      <MenuItem.ToolTip>
+                        <ToolTip>
+                          <mui:BbCodeBlock TextWrapping="WrapWithOverflow" MaxWidth="400"
+                              BbCode="Content Manager will scan devices in advance to reduce waiting time when devices are needed. It shouldn’t negatively affect the performance." />
+                        </ToolTip>
+                      </MenuItem.ToolTip>
+                    </MenuItem>
+                  </ContextMenu>
+                </mui:ContextMenuButton>
+                <TextBlock
+                    Text="{Binding Controls.DevicesScan.ScanTime, Converter={StaticResource ReadableTimeSpanConverter}, StringFormat='{}Scan time: {0}'}" />
+              </DockPanel>
+            </StackPanel>
+          </ScrollViewer>
+        </mui:BooleanSwitch.False>
+      </mui:BooleanSwitch>
     </DockPanel>
 
     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">

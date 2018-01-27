@@ -570,13 +570,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var downsized = false;
 
                 if (decodeWidth > 0) {
-                    bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
+                    bi.DecodePixelWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
                     width = decodeWidth;
                     downsized = true;
                 }
 
                 if (decodeHeight > 0) {
-                    bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
+                    bi.DecodePixelHeight = (int)(decodeHeight * Math.Max(DpiInformation.MaxScaleY, 1d));
                     height = decodeHeight;
                     downsized = true;
                 }
@@ -706,6 +706,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Safe (handles all exceptions inside).
         /// </summary>
         public static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
+            PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight);
+
             try {
                 // WrappingSteam here helps to avoid memory leaks. For more information:
                 // https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
@@ -718,13 +720,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     bi.BeginInit();
 
                     if (decodeWidth > 0) {
-                        bi.DecodePixelWidth = (int)(decodeWidth * DpiAwareWindow.OptionScale);
+                        bi.DecodePixelWidth = decodeWidth;
                         width = bi.DecodePixelWidth;
                         downsized = true;
                     }
 
                     if (decodeHeight > 0) {
-                        bi.DecodePixelHeight = (int)(decodeHeight * DpiAwareWindow.OptionScale);
+                        bi.DecodePixelHeight = decodeHeight;
                         height = bi.DecodePixelHeight;
                         downsized = true;
                     }
@@ -774,6 +776,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } catch (Exception e) {
                 Logging.Warning(e);
                 return BitmapEntry.Empty;
+            }
+        }
+
+        private static void PrepareDecodeLimits(byte[] data, ref int decodeWidth, ref int decodeHeight) {
+            if (decodeWidth <= 0 && decodeHeight <= 0) return;
+
+            decodeWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
+            decodeHeight = (int)(decodeHeight * Math.Max(DpiInformation.MaxScaleY, 1d));
+
+            var size = GetImageSize(data) ?? new System.Drawing.Size(1, 1);
+            if (decodeHeight > 0 && decodeWidth > 0) {
+                var minimum = Math.Min((double)decodeWidth / size.Width, (double)decodeHeight / size.Height);
+                decodeWidth = minimum >= 1d ? 0 : (int)(size.Width * minimum);
+                decodeHeight = minimum >= 1d ? 0 : (int)(size.Height * minimum);
+            } else if (decodeWidth >= size.Width || decodeHeight >= size.Height) {
+                decodeWidth = decodeHeight = 0;
             }
         }
 

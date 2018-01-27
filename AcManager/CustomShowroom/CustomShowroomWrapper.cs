@@ -67,7 +67,6 @@ namespace AcManager.CustomShowroom {
                     var description = new CarDescription(kn5, carDirectory, carObject?.AcdData);
                     if (toolboxMode) {
                         ExtraModelProvider.Initialize();
-
                         var toolsRenderer = await Task.Run(() => SettingsHolder.CustomShowroom.UseOldLiteShowroom ?
                                 new ToolsKn5ObjectRenderer(description) {
                                     UseMsaa = SettingsHolder.CustomShowroom.LiteUseMsaa,

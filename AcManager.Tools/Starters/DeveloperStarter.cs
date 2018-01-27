@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using AcManager.Tools.SharedMemory;
 using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;

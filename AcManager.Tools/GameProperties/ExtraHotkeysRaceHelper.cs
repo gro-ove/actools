@@ -473,12 +473,6 @@ namespace AcManager.Tools.GameProperties {
             [CanBeNull]
             private readonly KeyValuePair<Keys, JoyCommandBase>[] _keyToCommand;
 
-            [CanBeNull]
-            private readonly DirectInput _directInput;
-
-            [CanBeNull]
-            private readonly List<Joystick> _devices;
-
             private readonly bool _ignorePovInPits;
 
             [CanBeNull]
@@ -551,9 +545,6 @@ namespace AcManager.Tools.GameProperties {
 
                 if (joyToCommand.Count > 0) {
                     try {
-                        _directInput = new DirectInput();
-                        _devices = _directInput.GetDevices(DeviceClass.GameController,
-                                DeviceEnumerationFlags.AttachedOnly).Select(x => new Joystick(_directInput, x.InstanceGuid)).ToList();
                         _pollThread = new Thread(Start) {
                             Name = "CM Controllers Polling",
                             IsBackground = true
@@ -575,21 +566,28 @@ namespace AcManager.Tools.GameProperties {
 
             private bool? _running;
 
-            private void Start() {
+            private async void Start() {
                 if (_running == null) {
                     _running = true;
                 }
 
-                while (_running == true) {
-                    OnTick();
-                    Thread.Sleep(20);
+                var devices = await DirectInputScanner.GetAsync();
+                var joysticks = DirectInputScanner.DirectInput == null ? null
+                        : devices?.Select(x => new Joystick(DirectInputScanner.DirectInput, x.InstanceGuid)).ToList();
+                try {
+                    while (_running == true) {
+                        OnTick(joysticks);
+                        Thread.Sleep(20);
+                    }
+                } finally {
+                    DisposeHelper.Dispose(ref joysticks);
                 }
             }
 
-            private void OnTick() {
-                if (_devices == null) return;
+            private void OnTick(IList<Joystick> devices) {
+                if (devices == null) return;
                 var povAvailable = !(_ignorePovInPits && _isInPits);
-                for (var index = _devices.Count - 1; index >= 0; index--) {
+                for (var index = devices.Count - 1; index >= 0; index--) {
                     for (var i = 0; i < _joyToCommand.Length; i++) {
                         if (_joyToCommand[i].Key.Joy == index) goto PollDevice;
                     }
@@ -598,7 +596,7 @@ namespace AcManager.Tools.GameProperties {
                     PollDevice:
 
                     try {
-                        var joystick = _devices[index];
+                        var joystick = devices[index];
                         if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure || Result.Last.IsFailure) {
                             continue;
                         }
@@ -616,9 +614,9 @@ namespace AcManager.Tools.GameProperties {
                             }
                         }
                     } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
-                        _devices.RemoveAt(index);
+                        devices.RemoveAt(index);
                     } catch (DirectInputException e) {
-                        _devices.RemoveAt(index);
+                        devices.RemoveAt(index);
                         Logging.Warning(e);
                     }
                 }
@@ -677,13 +675,6 @@ namespace AcManager.Tools.GameProperties {
 
             public void Dispose() {
                 _running = false;
-
-                try {
-                    _devices?.DisposeEverything();
-                    _directInput?.Dispose();
-                } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t release devices", e);
-                }
 
                 try {
                     DisposeHelper.Dispose(ref _keyboard);

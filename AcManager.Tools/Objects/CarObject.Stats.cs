@@ -1,6 +1,5 @@
 ﻿using AcManager.Tools.Helpers.Api.TheSetupMarket;
 using AcManager.Tools.Profile;
-using AcTools.DataFile;
 
 namespace AcManager.Tools.Objects {
     public sealed partial class CarObject {

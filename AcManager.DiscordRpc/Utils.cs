@@ -6,13 +6,9 @@ using JetBrains.Annotations;
 namespace AcManager.DiscordRpc {
     internal static class Utils {
         public static void Log(string message, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-#if DEBUG
-            Logging.Debug(message, m, p, l);
-#else
             if (DiscordConnector.OptionVerboseMode) {
                 Logging.Debug(message, m, p, l);
             }
-#endif
         }
 
         public static void Warn(string message, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {

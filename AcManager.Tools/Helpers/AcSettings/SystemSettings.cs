@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {

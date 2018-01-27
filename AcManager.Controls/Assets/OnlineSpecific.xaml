@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:u="clr-namespace:AcManager.Controls.UserControls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:presentation="clr-namespace:AcManager.Controls.Presentation"
+    xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:presentation="clr-namespace:AcManager.Controls.Presentation"
     mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
@@ -253,7 +252,7 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="CacheMode">
       <Setter.Value>
-        <BitmapCache EnableClearType="True" RenderAtScale="{Binding Scale, Source={x:Static mui:DpiAwareWindow.AppScale}, Mode=OneTime}" />
+        <BitmapCache EnableClearType="True" RenderAtScale="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">

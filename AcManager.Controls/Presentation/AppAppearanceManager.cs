@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media;
 using AcManager.Tools.Data;
@@ -14,7 +13,6 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -173,7 +171,6 @@ namespace AcManager.Controls.Presentation {
                 BackgroundOpacity = ValuesStorage.Get(KeyBackgroundOpacity, 0.2);
                 BackgroundStretch = ValuesStorage.Get(KeyBackgroundStretch, Stretch.UniformToFill);
                 IdealFormattingMode = ValuesStorage.Get<bool?>(KeyIdealFormattingMode);
-                ForceMenuAtTopInFullscreenMode = ValuesStorage.Get<bool>(KeyForceMenuAtTopInFullscreenMode);
                 BlurImageViewerBackground = ValuesStorage.Get<bool>(KeyBlurImageViewerBackground);
                 SmallFont = ValuesStorage.Get<bool>(KeySmallFont);
                 LargerTitleLinks = ValuesStorage.Get<bool>(KeyLargerTitleLinks);
@@ -355,27 +352,6 @@ namespace AcManager.Controls.Presentation {
                 } else {
                     ValuesStorage.Remove(KeyIdealFormattingMode);
                 }
-            }
-        }
-
-        private bool _forceMenuAtTopInFullscreenMode;
-
-        public bool ForceMenuAtTopInFullscreenMode {
-            get => _forceMenuAtTopInFullscreenMode;
-            set {
-                if (_loading) {
-                    _forceMenuAtTopInFullscreenMode = value;
-                    Application.Current.Resources["LayoutRootFullscreenMargin"] = value ?
-                            new Thickness(7d) : new Thickness(7d, 35d, 7d, 7d);
-                    return;
-                }
-
-                if (Equals(value, _forceMenuAtTopInFullscreenMode)) return;
-                _forceMenuAtTopInFullscreenMode = value;
-                OnPropertyChanged();
-                Application.Current.Resources["LayoutRootFullscreenMargin"] = value ?
-                        new Thickness(7d) : new Thickness(7d, 35d, 7d, 7d);
-                ValuesStorage.Set(KeyForceMenuAtTopInFullscreenMode, value);
             }
         }
 
@@ -673,6 +649,19 @@ namespace AcManager.Controls.Presentation {
                 foreach (var child in window.FindVisualChildren<ModernFrame>()) {
                     child.TransitionName = value.Id;
                 }
+            }
+        }
+        #endregion
+
+        #region Miscellaneous
+        private StoredValue<bool> _semiTransparentAttachedTools = Stored.Get<bool>("AppAppearanceManager.SemiTransparentAttachedTools", false);
+
+        public bool SemiTransparentAttachedTools {
+            get => _semiTransparentAttachedTools.Value;
+            set {
+                if (Equals(value, _semiTransparentAttachedTools.Value)) return;
+                _semiTransparentAttachedTools.Value = value;
+                OnPropertyChanged();
             }
         }
         #endregion

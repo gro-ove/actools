@@ -12,7 +12,6 @@ using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Shaders;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;

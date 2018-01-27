@@ -50,14 +50,8 @@
           <Border Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
             <c:Cell>
               <AdornerDecorator a:FancyHintsService.HintsDecorator="True">
-                <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                <Border x:Name="PART_Border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
                   <c:Cell>
-                    <c:Cell.LayoutTransform>
-                      <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
-                          ScaleX="{Binding Scale, Source={x:Static c:DpiAwareWindow.AppScale}}"
-                          ScaleY="{Binding Scale, Source={x:Static c:DpiAwareWindow.AppScale}}" />
-                    </c:Cell.LayoutTransform>
-
                     <!-- window background content -->
                     <ContentControl Content="{TemplateBinding BackgroundContent}" />
 
@@ -100,7 +94,7 @@
                   </c:Cell>
                 </Border>
               </AdornerDecorator>
-              <Border BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="{TemplateBinding BorderThickness}"
+              <Border x:Name="PART_BorderActive" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="{TemplateBinding BorderThickness}"
                   Visibility="{Binding IsActive, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Converter={StaticResource BooleanToVisibilityConverter}}" />
             </c:Cell>
           </Border>
@@ -121,6 +115,9 @@
                 </BeginStoryboard>
               </Trigger.ExitActions>
             </Trigger>
+            <DataTrigger Binding="{Binding Path=BorderBrush.(SolidColorBrush.Color).(Color.A), ElementName=PART_Border}" Value="0">
+              <Setter TargetName="PART_BorderActive" Property="Visibility" Value="Collapsed" />
+            </DataTrigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="ResizeMode" Value="CanResizeWithGrip" />

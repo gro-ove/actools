@@ -5,7 +5,6 @@ using System.Linq;
 using System.Xml.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
 
