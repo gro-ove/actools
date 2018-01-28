@@ -31,5 +31,27 @@ namespace FirstFloor.ModernUI.Presentation {
                 }
             }
         }
+
+        private readonly StoredValue<bool> _fullscreenOverTaskbarMode = Stored.Get("/Appearance.FullscreenOverTaskbarMode", false);
+
+        public bool FullscreenOverTaskbarMode {
+            get => _fullscreenOverTaskbarMode.Value;
+            set {
+                if (Equals(value, _fullscreenOverTaskbarMode.Value)) return;
+
+                var toFix = value ? Application.Current.Windows.OfType<DpiAwareWindow>().Where(
+                        x => x.WindowState == WindowState.Maximized && x.WindowStyle == WindowStyle.SingleBorderWindow).ToList() : null;
+
+                _fullscreenOverTaskbarMode.Value = value;
+                OnPropertyChanged();
+
+                if (toFix != null) {
+                    foreach (var window in toFix) {
+                        window.WindowState = WindowState.Normal;
+                        window.WindowState = WindowState.Maximized;
+                    }
+                }
+            }
+        }
     }
 }

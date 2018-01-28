@@ -8,7 +8,7 @@
     Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window" WindowStyle="None">
+    LocationAndSizeKey="MainWindow_LS" x:Name="Window">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

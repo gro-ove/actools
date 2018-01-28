@@ -37,6 +37,7 @@
     <Setter Property="MinHeight" Value="320" />
     <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
     <Setter Property="UseLayoutRounding" Value="True" />
+    <Setter Property="WindowStyle" Value="SingleBorderWindow" />
     <Setter Property="TextOptions.TextFormattingMode" Value="{DynamicResource FormattingMode}" />
 
     <Setter Property="Template">
@@ -211,17 +212,18 @@
         </ControlTemplate>
       </Setter.Value>
     </Setter>
-
     <Setter Property="WindowChrome.WindowChrome">
       <Setter.Value>
         <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
       </Setter.Value>
     </Setter>
-
     <Style.Triggers>
       <Trigger Property="IsActive" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
       </Trigger>
+      <DataTrigger Binding="{Binding FullscreenOverTaskbarMode, Source={x:Static presentation:AppearanceManager.Current}}" Value="True">
+        <Setter Property="WindowStyle" Value="None" />
+      </DataTrigger>
     </Style.Triggers>
   </Style>
 </ResourceDictionary>

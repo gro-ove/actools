@@ -158,6 +158,10 @@
           <Label Content="Force fullscreen mode" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppearanceManager.FullscreenOverTaskbarMode}" mui:NewMarkService.New="True">
+          <Label Content="Fullscreen over taskbar" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding AppearanceManager.ForceMenuAtTopInFullscreenMode}">
           <Label Content="Stick main menu at the top in fullscreen mode" />
         </CheckBox>
