@@ -166,8 +166,7 @@ namespace AcManager.PaintShop {
         }
 
         private PaintShopOverrideBase GetDetailsOverride(PaintShopDestination name) {
-            var color = (PatternAspect?.IsEnabled == true && CurrentPattern?.Colors.DrawingColors.Length > 0
-                    ? Colors.White : ColorAvailable ? Color : DefaultColor).ToColor();
+            var color = (PatternAspect?.IsEnabled == true ? Colors.White : ColorAvailable ? Color : DefaultColor).ToColor();
 
             var value = ColorReplacementValue.Value;
             if (value != null) {

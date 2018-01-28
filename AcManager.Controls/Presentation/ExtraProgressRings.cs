@@ -67,11 +67,7 @@ namespace AcManager.Controls.Presentation {
 
             var memory = new MemoryStream();
             stream.CopyTo(memory);
-
-            Logging.Debug(memory.ReadAsString());
             memory.Position = 0;
-
-            Logging.Debug("Bytes: " + memory.Length);
 
             var dictinary = (ResourceDictionary)XamlReader.Load(memory);
             var list = (string[])dictinary["ProgressRingStyles"];

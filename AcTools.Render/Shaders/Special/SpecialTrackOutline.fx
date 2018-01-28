@@ -182,11 +182,9 @@ technique10 Combine {
 
 // proper version
 float4 ProperBlending(float4 background, float4 foreground) {
-	float a = foreground.a + background.a * (1 - foreground.a);
-	if (a < 0.00001) return 0.0;
-	return saturate(float4(
-		(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
-		a));
+    float a = foreground.a + background.a * (1 - foreground.a);
+    return saturate(float4(
+        (foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / (a + 0.00001), a));
 }
 
 float4 ps_Blend(PS_IN pin) : SV_Target {

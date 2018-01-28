@@ -203,6 +203,7 @@
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />
     <Compile Include="Data\WeatherType.cs" />
+    <Compile Include="Data\WeatherTypeExtension.cs" />
     <Compile Include="Filters\ITesterDescription.cs" />
     <Compile Include="Filters\KeywordDescription.cs" />
     <Compile Include="Filters\KeywordPriority.cs" />

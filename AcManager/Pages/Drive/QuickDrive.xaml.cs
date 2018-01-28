@@ -234,6 +234,9 @@ namespace AcManager.Pages.Drive {
             [JsonProperty(@"rcManTime")]
             public bool? RealConditionsManualTime;
 
+            [JsonProperty(@"rcManWind")]
+            public bool? RealConditionsManualWind;
+
             [JsonProperty(@"rcLw")]
             public bool? RealConditionsLocalWeather;
 
@@ -524,9 +527,7 @@ namespace AcManager.Pages.Drive {
             private readonly ISaveHelper _saveable;
 
             internal void SaveLater() {
-                if (!_uiMode) return;
-
-                if (_saveable.SaveLater()) {
+                if (_uiMode && _saveable.SaveLater()) {
                     Changed?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -566,6 +567,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsLocalWeather = RealConditionsLocalWeather,
                     RealConditionsTimezones = RealConditionsTimezones,
                     RealConditionsManualTime = RealConditionsManualTime,
+                    RealConditionsManualWind = RealConditionsManualWind,
                     Mode = SelectedMode,
                     ModeData = SelectedModeViewModel?.ToSerializedString(),
                     CarId = SelectedCar?.Id,
@@ -594,6 +596,7 @@ namespace AcManager.Pages.Drive {
                     RealConditionsTimezones = o.RealConditionsTimezones ?? true;
                     RealConditionsLocalWeather = o.RealConditionsLocalWeather ?? false;
                     RealConditionsManualTime = o.RealConditionsManualTime ?? false;
+                    RealConditionsManualWind = o.RealConditionsManualWind ?? false;
 
                     Temperature = o.Temperature;
                     Time = o.Time;
@@ -654,6 +657,7 @@ namespace AcManager.Pages.Drive {
                     IdealConditions = false;
                     RealConditionsTimezones = true;
                     RealConditionsManualTime = false;
+                    RealConditionsManualWind = false;
                     RealConditionsLocalWeather = false;
 
                     SelectedMode = ModeRace;
@@ -683,7 +687,6 @@ namespace AcManager.Pages.Drive {
                     _saveable.LoadOrReset();
                 } else {
                     _saveable.Reset();
-
                     if (savePreset) {
                         _saveable.FromSerializedString(serializedPreset);
                     } else {
@@ -697,7 +700,7 @@ namespace AcManager.Pages.Drive {
 
                 if (carObject != null) {
                     SelectedCar = carObject;
-                    // TODO: skin?
+                    // TODO: Skin?
                 }
 
                 if (track != null) {
@@ -822,7 +825,7 @@ namespace AcManager.Pages.Drive {
 
                 dlg.Buttons = new[] {
                     dlg.YesButton,
-                    dlg.CreateCloseDialogButton("Yes, And Fix It", false, false, MessageBoxResult.OK),
+                    dlg.CreateCloseDialogButton("Yes, and fix it", false, false, MessageBoxResult.OK),
                     dlg.NoButton
                 };
 

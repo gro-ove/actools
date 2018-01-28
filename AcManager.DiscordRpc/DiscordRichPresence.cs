@@ -37,7 +37,6 @@ namespace AcManager.DiscordRpc {
         public DiscordImage([NotNull] string key, [NotNull] string text) {
             Key = key == "" ? OptionDefaultImage : key;
             Text = text;
-            Logging.Debug(key);
         }
     }
 

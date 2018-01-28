@@ -163,7 +163,7 @@ namespace AcManager.Controls.Presentation {
             try {
                 _loading = true;
                 var accentColor = ValuesStorage.Get(KeyAccentColor, AccentColors.First());
-                Logging.Debug($"Loaded: {accentColor}");
+                Logging.Write($"Accent color: {accentColor}");
                 AccentColor = accentColor.A == 0 ? AccentColors.First() : accentColor;
 
                 AccentDisplayColor = ValuesStorage.Get<string>(KeyAccentDisplayColor);

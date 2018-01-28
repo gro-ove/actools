@@ -31,20 +31,20 @@ namespace AcManager.Tools.Starters {
             var initialized = SteamAPI.InitSafe();
 
             for (var i = 0; i < 3 && !initialized; i++) {
-                Logging.Debug($"Delayed Steam initialization, attempt #{i + 1} {(SteamAPI.IsSteamRunning() ? "" : "(Steam not running)")}");
+                Logging.Write($"Delayed Steam initialization, attempt #{i + 1} {(SteamAPI.IsSteamRunning() ? "" : "(Steam not running)")}");
                 Thread.Sleep(150);
 
                 try {
                     SteamAPI.Shutdown();
                 } catch (Exception e) {
-                    Logging.Debug("Steam API shutdown not required: " + e);
+                    Logging.Write("Steam API shutdown not required: " + e);
                 }
 
                 initialized = SteamAPI.Init();
             }
 
             if (!initialized) {
-                Logging.Debug("Still not initialized…");
+                Logging.Write("Still not initialized…");
 
                 if (!SteamAPI.RestartAppIfNecessary(new AppId_t(244210u))) {
                     MessageBox.Show("Steam can’t be initialized.", "Steam Inactive", MessageBoxButtons.OK, MessageBoxIcon.Hand);
@@ -103,7 +103,7 @@ namespace AcManager.Tools.Starters {
             _dllsPath = Path.Combine(_acRoot, "launcher", "support");
 
             if (!IsAvailable) {
-                Logging.Debug("Wrong location, SteamStarter won’t work");
+                Logging.Write("Wrong location, SteamStarter won’t work");
                 return false;
             }
 

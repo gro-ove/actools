@@ -228,7 +228,9 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             OnPropertyChanged(nameof(Count));
-            Logging.Write($"{Path.GetFileName(_filename)}: {w.Elapsed.TotalMilliseconds:F2} ms");
+            if (w.Elapsed.TotalMilliseconds > 2) {
+                Logging.Write($"{Path.GetFileName(_filename)}: {w.Elapsed.TotalMilliseconds:F2} ms");
+            }
         }
 
         private const int ActualVersion = 2;

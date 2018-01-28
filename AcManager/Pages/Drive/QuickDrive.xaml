@@ -18,6 +18,8 @@
         <!--TODO-->
         <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}" IsCheckable="True"
             ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}" Command="{Binding SwitchLocalWeatherCommand}" />
+        <MenuItem Header="Set wind manually" IsChecked="{Binding RealConditionsManualWind}" IsCheckable="True" />
+        <Separator />
         <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
         <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
             IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
@@ -545,8 +547,7 @@
           <!--<ComboBox Margin="4 0 4 0" ItemsSource="{Binding TrackPropertiesPresets}" SelectedItem="{Binding SelectedTrackPropertiesPreset}" />-->
         </StackPanel>
 
-        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" IsEnabled="{Binding ManualConditions}"
-            mui:ContextMenuAdvancement.PropagateToChildren="True">
+        <DockPanel Grid.Row="1" Grid.Column="2" Background="Transparent" IsEnabled="{Binding ManualWind}" mui:ContextMenuAdvancement.PropagateToChildren="True">
           <DockPanel.ContextMenu>
             <ContextMenu>
               <MenuItem Header="Wind speed in meters per second" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />

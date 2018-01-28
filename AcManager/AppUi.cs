@@ -32,7 +32,7 @@ namespace AcManager {
         private void OnTimer(object sender, EventArgs eventArgs) {
             if (_application.Windows.Count == 0 && System.Windows.Forms.Application.OpenForms.Count == 0) {
                 if (_nothing > 2) {
-                    Logging.Debug("Nothing shown! Existing…");
+                    Logging.Write("Nothing shown! Existing…");
                     _timer.Stop();
                     _application.Shutdown();
                 } else {
@@ -81,7 +81,7 @@ namespace AcManager {
             _additionalProcessing++;
             var v = await ArgumentsHandler.ProcessArguments(obj);
             _showMainWindow |= v != ArgumentsHandler.ShowMainWindow.No;
-            Logging.Debug("Show main window: " + _showMainWindow);
+            Logging.Write("Show main window: " + _showMainWindow);
 
             if (--_additionalProcessing == 0) {
                 _waiting?.SetResult(true);
@@ -102,7 +102,7 @@ namespace AcManager {
                 try {
                     if ((!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded()) &&
                             new AcRootDirectorySelector().ShowDialog() != true) {
-                        Logging.Debug("AC root selection cancelled, exit");
+                        Logging.Write("AC root selection cancelled, exit");
                         return;
                     }
 
@@ -111,31 +111,31 @@ namespace AcManager {
                     }
 
                     if (_additionalProcessing > 0) {
-                        Logging.Debug("Waiting for extra workers…");
+                        Logging.Write("Waiting for extra workers…");
                         await WaitForInProgress();
-                        Logging.Debug("Done");
+                        Logging.Write("Done");
                     }
 
                     if (_showMainWindow) {
-                        Logging.Debug("Main window…");
+                        Logging.Write("Main window…");
                         await new MainWindow().ShowAndWaitAsync();
-                        Logging.Debug("Main window closed");
+                        Logging.Write("Main window closed");
                     }
 
-                    Logging.Debug("Waiting for extra windows to close…");
+                    Logging.Write("Waiting for extra windows to close…");
 
                     do {
                         await Task.Delay(100);
                     } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible)));
 
-                    Logging.Debug("No more windows");
+                    Logging.Write("No more windows");
                 } finally {
-                    Logging.Debug("Shutdown…");
+                    Logging.Write("Shutdown…");
                     _timer.Stop();
                     _application.Shutdown();
                 }
 
-                Logging.Debug("Main loop is finished");
+                Logging.Write("Main loop is finished");
             })).InvokeInMainThreadAsync();
         }
     }

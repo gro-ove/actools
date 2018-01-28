@@ -73,13 +73,11 @@
 		return saturate(dot(color, float3(0.299f, 0.587f, 0.114f)));
 	}
 
-	float4 ProperBlending(float4 background, float4 foreground) {
-		float a = foreground.a + background.a * (1 - foreground.a);
-		if (a < 0.00001) return background;
-		return saturate(float4(
-			(foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / a,
-			a));
-	}
+    float4 ProperBlending(float4 background, float4 foreground) {
+        float a = foreground.a + background.a * (1 - foreground.a);
+        return saturate(float4(
+            (foreground.rgb * foreground.a + background.rgb * background.a * (1 - foreground.a)) / (a + 0.00001), a));
+    }
 
 	float4 SimpleBlending(float4 background, float4 foreground) {
 		return float4(foreground.rgb * foreground.a + background.rgb * (1 - foreground.a), foreground.a + background.a * (1 - foreground.a));
@@ -186,21 +184,17 @@
         float4 underlay = GetUnderlayMap(uv);
 		float4 details = gDetailsMap.SampleLevel(samLinear, uv, 0);
 
-		float3 overlayColor = overlay.rgb * overlay.a * (gOverlayWithoutAo ? (float3)1 : ao.rgb);
-		float3 underlayColor = underlay.rgb * underlay.a * (gUnderlayWithoutAo ? (float3)1 : ao.rgb);
-		float3 detailsColor = details.rgb * details.a * ao.rgb;
+		overlay.rgb *= (gOverlayWithoutAo ? (float3)1 : ao.rgb);
+		underlay.rgb *= (gUnderlayWithoutAo ? (float3)1 : ao.rgb);
+		details.rgb *= ao.rgb;
 
 		float4 result = float4(patternColor.rgb * ao.rgb, patternColor.a);
-		result.rgb = result.rgb * (1.0 - overlay.a) + overlayColor;
-		result.rgb = result.rgb * (1.0 - details.a) + detailsColor;
-		result.a = saturate(result.a + details.a + overlay.a);
-
-		float patternA = pow(abs(result.a), 0.5);
-		result.rgb = result.rgb * patternA + gColor.rgb * ao.rgb * (1.0 - patternA);
-
-        result.rgb = underlayColor * (1.0 - result.a) + result.rgb * saturate(result.a + (1.0 - underlay.a));
-		result.a = saturate(underlay.a + result.a);
-		return result;
+		result = ProperBlending(result, overlay);
+		result = ProperBlending(result, details);
+		result = ProperBlending(underlay, result);
+		// result.a = pow(abs(saturate(patternColor.a + overlay.a + details.a)), 0.5);
+		result.a = saturate(patternColor.a + overlay.a + details.a);
+		return float4(result.rgb * result.a + gColor.rgb * ao.rgb * (1.0 - result.a), 0);
     }
 
 	float4 ps_Pattern(PS_IN pin) : SV_Target {

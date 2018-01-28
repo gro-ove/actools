@@ -2,51 +2,66 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using AcTools.Utils.Helpers;
 
 namespace AcTools.LapTimes {
     public class SidekickLapTimesReader : ILapTimesReader {
         // http://svn.python.org/projects/python/tags/r32/Lib/pickle.py
-        private static bool ReadPickle(ReadAheadBinaryReader reader, out long result) {
-            if (reader.Length < 2) {
+        private static bool ReadPickle(string filename, out long result) {
+            var data = File.ReadAllBytes(filename);
+            if (data.Length < 3 || data[0] != 0x80 || data[1] != 3) {
                 result = 0;
                 return false;
             }
 
-            if (reader.ReadByte() != 128 || reader.ReadByte() != 3) {
-                result = 0;
-                return false;
-            }
-
-            switch (reader.ReadByte()) {
-                case (byte)'F':
-                    result = (long)reader.ReadSingle();
-                    return true;
+            string s;
+            switch (data[2]) {
                 case (byte)'N':
                     result = 0;
                     return true;
-                case (byte)'I':
                 case (byte)'J':
-                    result = reader.ReadInt32();
+                    result = BitConverter.ToInt32(data, 3);
+                    return true;
+                case (byte)'F':
+                    result = (long)(ReadLine(out s) ? float.Parse(s) : BitConverter.ToSingle(data, 3));
+                    return true;
+                case (byte)'I':
+                    result = ReadLine(out s) ? int.Parse(s) : BitConverter.ToInt32(data, 3);
                     return true;
                 case (byte)'L':
-                    result = reader.ReadInt64();
+                    result = ReadLine(out s) ? long.Parse(s) : BitConverter.ToInt64(data, 3);
+                    return true;
+                case (byte)'G':
+                    result = (long)BitConverter.ToDouble(data.Skip(3).Take(8).Reverse().ToArray(), 0);
                     return true;
                 case (byte)'M':
-                    result = reader.ReadUInt16();
+                    result = BitConverter.ToUInt16(data, 3);
                     return true;
                 case (byte)'K':
-                    result = reader.ReadByte();
+                    result = data[3];
                     return true;
             }
 
             result = 0;
             return false;
+
+            // Because I messed up
+            bool ReadLine(out string piece) {
+                var end = Array.IndexOf(data, (byte)'\n', 3);
+                piece = end == -1 ? null : Encoding.ASCII.GetString(data, 2, end - 2);
+                return end > -1;
+            }
         }
 
-        private static void WritePickle(BinaryWriter writer, long value) {
-            writer.Write(new byte[] { 128, 3, (byte)'L' });
-            writer.Write(value);
+        private static void WritePickle(string filename, long value) {
+            using (var stream = File.Open(filename, FileMode.Create, FileAccess.Write))
+            using (var writer = new BinaryWriter(stream)) {
+                writer.Write(new byte[] { 0x80, 3, (byte)'L' });
+                writer.Write(Encoding.ASCII.GetBytes(value.ToString()));
+                writer.Write((byte)'\n');
+                writer.Write((byte)'.');
+            }
         }
 
         private readonly string _sidekickDirectory;
@@ -60,11 +75,32 @@ namespace AcTools.LapTimes {
             _provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
+        private string TryToGuessTrack(string acTrackId) {
+            if (acTrackId.IndexOf('/') != -1) return acTrackId;
+            if (_trackLayoutIds == null) _trackLayoutIds = _provider.GetTrackIds();
+
+            foreach (var track in _trackLayoutIds) {
+                if (track.Item2 == null) {
+                    if (string.Equals(track.Item1, acTrackId, StringComparison.OrdinalIgnoreCase)) {
+                        /* track found! awesome */
+                        return acTrackId;
+                    }
+                } else if (acTrackId.StartsWith(track.Item1, StringComparison.OrdinalIgnoreCase)) {
+                    var layoutId = acTrackId.Substring(track.Item1.Length);
+                    if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
+                        /* track with layout ID found! can’t believe my luck */
+                        return track.Item1 + "/" + track.Item2;
+                    }
+                }
+            }
+
+            return null;
+        }
+
         private bool TryToGuessCarAndTrack(string filename, out string carId, out string trackLayoutId) {
             filename = Path.GetFileName(filename)?.ApartFromLast("_pb.ini", StringComparison.OrdinalIgnoreCase);
             if (filename != null) {
                 if (_carIds == null) _carIds = _provider.GetCarIds();
-                if (_trackLayoutIds == null) _trackLayoutIds = _provider.GetTrackIds();
 
                 var i = -1;
                 while (true) {
@@ -76,21 +112,8 @@ namespace AcTools.LapTimes {
                     if (!_carIds.Contains(carId, StringComparer.OrdinalIgnoreCase)) continue;
                     /* car’s found! hopefully */
 
-                    foreach (var track in _trackLayoutIds) {
-                        if (track.Item2 == null) {
-                            if (string.Equals(track.Item1, trackLayoutId, StringComparison.OrdinalIgnoreCase)) {
-                                /* track found! awesome */
-                                return true;
-                            }
-                        } else if (trackLayoutId.StartsWith(track.Item1, StringComparison.OrdinalIgnoreCase)) {
-                            var layoutId = trackLayoutId.Substring(track.Item1.Length);
-                            if (string.Equals(track.Item2, layoutId, StringComparison.OrdinalIgnoreCase)) {
-                                /* track with layout ID found! can’t believe my luck */
-                                trackLayoutId = track.Item1 + "/" + track.Item2;
-                                return true;
-                            }
-                        }
-                    }
+                    trackLayoutId = TryToGuessTrack(trackLayoutId);
+                    if (trackLayoutId != null) return true;
                 }
             }
 
@@ -99,7 +122,7 @@ namespace AcTools.LapTimes {
             return false;
         }
 
-        public virtual IEnumerable<LapTimeEntry> Import(string sourceName) {
+        public IEnumerable<LapTimeEntry> Import(string sourceName) {
             var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
             if (!directory.Exists) yield break;
 
@@ -107,10 +130,7 @@ namespace AcTools.LapTimes {
                 long time;
 
                 try {
-                    using (var stream = File.Open(file.FullName, FileMode.Open, FileAccess.Read, FileShare.Read))
-                    using (var reader = new ReadAheadBinaryReader(stream)) {
-                        if (!ReadPickle(reader, out time) || time == 0) continue;
-                    }
+                    if (file.Length > 1000 || !ReadPickle(file.FullName, out time) || time == 0) continue;
                 } catch (Exception e) {
                     AcToolsLogging.Write($"Can’t read {file.Name}: {e}");
                     continue;
@@ -124,7 +144,7 @@ namespace AcTools.LapTimes {
         }
 
         private string GetFilename(string carId, string trackId) {
-            var name = $"{carId}_{trackId.Replace("/", "")}_pb.ini";
+            var name = $"{carId}_{(TryToGuessTrack(trackId) ?? trackId).Replace("/", "")}_pb.ini";
             return Path.Combine(_sidekickDirectory, "personal_best", name);
         }
 
@@ -136,11 +156,7 @@ namespace AcTools.LapTimes {
 
             foreach (var entry in entries.ToList()) {
                 var filename = GetFilename(entry.CarId, entry.TrackId);
-                using (var stream = File.Open(filename, FileMode.Create, FileAccess.Write))
-                using (var reader = new BinaryWriter(stream)) {
-                    WritePickle(reader, (long)entry.LapTime.TotalMilliseconds);
-                }
-
+                WritePickle(filename, (long)entry.LapTime.TotalMilliseconds);
                 new FileInfo(filename).LastWriteTime = entry.EntryDate;
             }
         }

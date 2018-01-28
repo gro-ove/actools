@@ -820,6 +820,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                                 e.FxOverlayWithoutAo.Set(p.OverlayWithoutAo);
                                 e.FxUnderlayWithoutAo.Set(p.UnderlayWithoutAo);
                                 e.FxDetailsMap.SetResource(previous.FirstOrDefault());
+                                e.FxColor.Set(p.BackgroundColorHint);
 
                                 var colors = p.Colors;
                                 if (colors?.Length > 0) {
@@ -828,7 +829,6 @@ namespace AcTools.Render.Kn5SpecificForward {
                                         vColors[i] = colors[i].ToVector4();
                                     }
 
-                                    e.FxColor.Set(p.BackgroundColorHint);
                                     e.FxColors.Set(vColors);
                                     e.TechColorfulPattern.DrawAllPasses(_parent.DeviceContext, 6);
                                 } else {

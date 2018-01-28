@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Helpers {
                     _values[i++] = new KeyValue(Storage.Decode(split[0]), split[1]);
                 }
 
-                if (s.Elapsed.TotalMilliseconds > 0.1) {
+                if (s.Elapsed.TotalMilliseconds > 2) {
                     Logging.Debug($"{_key}, loaded {i} values : {s.Elapsed.TotalMilliseconds:F2} ms");
                 }
             }

@@ -82,6 +82,18 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private bool _realConditionsManualWind;
+            public bool RealConditionsManualWind {
+                get => _realConditionsManualWind;
+                set {
+                    if (value == _realConditionsManualWind) return;
+                    _realConditionsManualWind = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                    UpdateConditions();
+                }
+            }
+
             private bool _realConditionsLocalWeather;
             public bool RealConditionsLocalWeather {
                 get => _realConditionsLocalWeather;
@@ -120,6 +132,17 @@ namespace AcManager.Pages.Drive {
                     if (value) {
                         IsTimeClamped = false;
                     }
+                }
+            }
+
+            private bool _manualWind;
+
+            public bool ManualWind {
+                get => _manualWind;
+                private set {
+                    if (Equals(value, _manualWind)) return;
+                    _manualWind = value;
+                    OnPropertyChanged();
                 }
             }
             #endregion
@@ -417,7 +440,7 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayWindDirection));
                     OnPropertyChanged(nameof(WindDirectionFlipped));
-                    if (!RealConditions) {
+                    if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
                 }
@@ -442,7 +465,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     OnPropertyChanged();
-                    if (!RealConditions) {
+                    if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
                 }
@@ -462,7 +485,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     OnPropertyChanged();
-                    if (!RealConditions) {
+                    if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
                 }
@@ -506,25 +529,28 @@ namespace AcManager.Pages.Drive {
                     IsTemperatureClamped = false;
                     IsWeatherNotSupported = false;
                     ManualTime = false;
+                    ManualWind = false;
                     RealWeather = null;
                     _weatherTypeHelper.Reset();
 
                     Temperature = 26d;
                     Time = 12 * 60 * 60;
                     SelectedWeather = WeatherManager.Instance.GetDefault();
-                    Controls.UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Optimum");
+                    UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Optimum");
                     WindSpeedMin = 0d;
                     WindSpeedMax = 0d;
                 } else if (!RealConditions) {
                     IsTemperatureClamped = false;
                     IsWeatherNotSupported = false;
                     ManualTime = true;
+                    ManualWind = true;
                     RealWeather = null;
                     _weatherTypeHelper.Reset();
                 } else {
                     RandomTime = false;
                     RandomTemperature = false;
                     ManualTime = RealConditionsManualTime;
+                    ManualWind = RealConditionsManualWind;
 
                     using (var cancellation = new CancellationTokenSource()) {
                         _updateCancellationTokenSource = cancellation;
@@ -536,9 +562,12 @@ namespace AcManager.Pages.Drive {
                                         TryToSetTemperature(weather.Temperature);
                                         SelectedWeatherType = weather.Type;
                                         TryToSetWeather();
-                                        WindDirection = weather.WindDirection.RoundToInt();
-                                        WindSpeedMin = weather.WindSpeed * 3.6;
-                                        WindSpeedMax = weather.WindSpeed * 3.6;
+
+                                        if (!RealConditionsManualWind) {
+                                            WindDirection = weather.WindDirection.RoundToInt();
+                                            WindSpeedMin = weather.WindSpeed * 3.6;
+                                            WindSpeedMax = weather.WindSpeed * 3.6;
+                                        }
                                     }, cancellation.Token);
                         } catch (Exception e) when (e.IsCanceled()) {} catch (Exception e) {
                             Logging.Warning(e);

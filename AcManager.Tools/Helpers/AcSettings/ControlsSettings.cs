@@ -123,7 +123,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 entry.PropertyChanged += EntryPropertyChanged;
             }
 
-            // TODO: double “already used as” message
             UpdateWheelHShifterDevice();
         }
 

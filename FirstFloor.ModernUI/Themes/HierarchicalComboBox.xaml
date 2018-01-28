@@ -38,6 +38,9 @@
             <Popup x:Name="PART_Popup" AllowsTransparency="True" Grid.ColumnSpan="2" Grid.Column="0" Placement="Bottom" Margin="1"
                 IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
                 PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+              <Popup.ToolTip>
+                <ToolTip Visibility="Collapsed" />
+              </Popup.ToolTip>
               <Grid Margin="4" MinWidth="{Binding ActualWidth, ElementName=MainGrid}">
                 <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
                 <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
