@@ -175,16 +175,11 @@ namespace AcManager.Pages.Drive {
                     if (Equals(value, _selectedWeather)) return;
                     _selectedWeather = value;
 
-                    if (value is WeatherObject weatherObject) {
-                        SelectedWeatherObject = weatherObject;
-                    } else {
-                        SelectedWeatherObject = WeatherComboBox.Unwrap(value);
-                    }
+                    RefreshSelectedWeatherObject();
 
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
-                    OnPropertyChanged(nameof(SelectedWeatherObject));
 
                     if (!RealConditions) {
                         SaveLater();
@@ -194,6 +189,24 @@ namespace AcManager.Pages.Drive {
 
             [CanBeNull]
             public WeatherObject SelectedWeatherObject { get; private set; }
+
+            private void RefreshSelectedWeatherObject() {
+                var o = WeatherComboBox.Unwrap(SelectedWeather, Time, Temperature);
+                if (o != null && o != SelectedWeatherObject) {
+                    SelectedWeatherObject = o;
+                    OnPropertyChanged(nameof(SelectedWeatherObject));
+                }
+            }
+
+            private readonly Busy _refreshWeatherObjectBusy = new Busy();
+
+            private void RefreshSelectedWeatherObjectLater() {
+                if (RealConditions) return;
+                _refreshWeatherObjectBusy.DoDelay(() => {
+                    if (RealConditions) return;
+                    RefreshSelectedWeatherObject();
+                }, 500);
+            }
 
             [CanBeNull]
             private WeatherObject GetRandomWeather([CanBeNull] double? temperatureToConsider) {
@@ -306,6 +319,7 @@ namespace AcManager.Pages.Drive {
                     if (RealConditions) {
                         TryToSetWeatherLater();
                     } else {
+                        RefreshSelectedWeatherObjectLater();
                         SaveLater();
                     }
                 }
@@ -392,6 +406,8 @@ namespace AcManager.Pages.Drive {
 
                     if (RealConditions) {
                         TryToSetWeatherLater();
+                    } else {
+                        RefreshSelectedWeatherObjectLater();
                     }
                 }
             }
@@ -420,10 +436,9 @@ namespace AcManager.Pages.Drive {
             }));
 
             public string DisplayTime {
-                get => $"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
+                get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
                 set {
-                    int time;
-                    if (!FlexibleParser.TryParseTime(value, out time)) return;
+                    if (!FlexibleParser.TryParseTime(value, out var time)) return;
                     Time = time;
                 }
             }
@@ -594,148 +609,28 @@ namespace AcManager.Pages.Drive {
                 Temperature = clamped;
             }
 
-            private readonly WeatherTypeHelper _weatherTypeHelper = new WeatherTypeHelper();
+            private readonly WeatherTypeConverterState _weatherTypeHelper = new WeatherTypeConverterState();
 
             private void TryToSetWeather() {
-                _weatherTypeHelper.SetParams(Time, Temperature);
-
-                var weather = SelectedWeatherObject;
-                if (_weatherTypeHelper.TryToGetWeather(SelectedWeatherType, ref weather)) {
+                var weather = _weatherTypeHelper.TryToGetWeather(SelectedWeatherType, Time, Temperature);
+                if (weather != null) {
                     SelectedWeather = weather;
                 }
             }
 
-            private bool _tryToSetWeatherLater;
+            private readonly Busy _tryToSetWeatherBusy = new Busy();
 
-            private async void TryToSetWeatherLater() {
-                if (_tryToSetWeatherLater || _updateCancellationTokenSource != null || !RealConditions) return;
-                _tryToSetWeatherLater = true;
-
-                try {
-                    await Task.Delay(500);
-                    if (RealConditions) {
-                        TryToSetWeather();
-                    }
-                } finally {
-                    _tryToSetWeatherLater = false;
-                }
+            private void TryToSetWeatherLater() {
+                if (_updateCancellationTokenSource != null || !RealConditions) return;
+                _tryToSetWeatherBusy.DoDelay(() => {
+                    if (_updateCancellationTokenSource != null || !RealConditions) return;
+                    TryToSetWeather();
+                }, 500);
             }
         }
 
         private void OnAssistsContextMenuButtonClick(object sender, ContextMenuButtonEventArgs e) {
             FancyHints.MoreDriveAssists.MaskAsUnnecessary();
-        }
-    }
-
-    public class WeatherTypeHelper {
-        private int _time;
-        private double _temperature;
-
-        public void SetParams(int time, double temperature) {
-            _time = time;
-            _temperature = temperature;
-        }
-
-        private string _weatherCandidatesFootprint;
-
-        public bool TryToGetWeather(WeatherType type, [CanBeNull] ref WeatherObject weather) {
-            if (type == WeatherType.None) return true;
-
-            try {
-                var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Enabled && x.TemperatureDiapason?.DiapasonContains(_temperature) != false
-                        && x.TimeDiapason?.TimeDiapasonContains(_time) != false).ToList();
-                var closest = WeatherDescription.FindClosestWeather(from w in candidates select w.Type, type);
-                if (closest == null) return false;
-
-                candidates = candidates.Where(x => x.Type == closest).ToList();
-                var footprint = candidates.Select(x => x.Id).JoinToString(';');
-                if (footprint != _weatherCandidatesFootprint || !candidates.Contains(weather)) {
-                    weather = candidates.RandomElementOrDefault();
-                    _weatherCandidatesFootprint = footprint;
-                }
-
-                return true;
-            } catch (Exception e) {
-                Logging.Error(e);
-                return false;
-            }
-        }
-
-        public void Reset() {
-            _weatherCandidatesFootprint = null;
-        }
-
-        [CanBeNull]
-        public static WeatherObject TryToGetWeather(WeatherType type, int time, double temperature) {
-            var helper = new WeatherTypeHelper();
-            helper.SetParams(time, temperature);
-            WeatherObject result = null;
-            return helper.TryToGetWeather(type, ref result) ? result : null;
-        }
-
-        [CanBeNull]
-        public static WeatherObject TryToGetWeather(WeatherDescription description, int time) {
-            return TryToGetWeather(description.Type, time, description.Temperature);
-        }
-    }
-
-    public static class RealConditionsHelper {
-        private const int SecondsPerDay = 24 * 60 * 60;
-
-        /// <summary>
-        /// Complex method, but it’s the best I can think of for now. Due to async nature,
-        /// all results will be returned in callbacks. There is no guarantee in which order callbacks
-        /// will be called (and even if they will be called at all or not)!
-        /// </summary>
-        /// <param name="track">Track for which conditions will be loaded.</param>
-        /// <param name="localWeather">Use local weather instead.</param>
-        /// <param name="considerTimezones">Consider timezones while setting time. Be careful: you’ll get an unclamped time!</param>
-        /// <param name="timeCallback">Set to null if you don’t need an automatic time.</param>
-        /// <param name="weatherCallback">Set to null if you don’t need weather.</param>
-        /// <param name="cancellation">Cancellation token.</param>
-        /// <returns>Task.</returns>
-        public static async Task UpdateConditions(TrackObjectBase track, bool localWeather, bool considerTimezones,
-                [CanBeNull] Action<int> timeCallback, [CanBeNull] Action<WeatherDescription> weatherCallback, CancellationToken cancellation) {
-            GeoTagsEntry trackGeoTags = null, localGeoTags = null;
-
-            if (!localWeather || considerTimezones && timeCallback != null) {
-                trackGeoTags = track.GeoTags;
-                if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
-                    trackGeoTags = await TracksLocator.TryToLocateAsync(track);
-                    if (cancellation.IsCancellationRequested) return;
-                }
-            }
-
-            if ((trackGeoTags == null || localWeather) && !string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
-                localGeoTags = await TracksLocator.TryToLocateAsync(SettingsHolder.Drive.LocalAddress);
-                if (cancellation.IsCancellationRequested) return;
-            }
-
-            // Time
-            var time = DateTime.Now.TimeOfDay.TotalSeconds.RoundToInt();
-            if (timeCallback != null) {
-                if (trackGeoTags == null || !considerTimezones) {
-                    timeCallback.Invoke(time);
-                } else {
-                    var timeZone = await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
-                    if (cancellation.IsCancellationRequested) return;
-
-                    timeCallback.Invoke((time +
-                            (int)(timeZone == null ? 0 : timeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds) +
-                            SecondsPerDay) % SecondsPerDay);
-                }
-            }
-
-            // Weather
-            var tags = localWeather ? localGeoTags : trackGeoTags ?? localGeoTags;
-            if (tags == null) return;
-
-            var weather = await WeatherProvider.TryToGetWeatherAsync(tags);
-            if (cancellation.IsCancellationRequested) return;
-
-            if (weather != null) {
-                weatherCallback?.Invoke(weather);
-            }
         }
     }
 }

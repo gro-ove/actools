@@ -195,7 +195,7 @@ namespace AcManager.Pages.Drive {
 
                         if (description != null) {
                             temperature = description.Temperature.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
-                            weather = WeatherTypeHelper.TryToGetWeather(description, time);
+                            weather = description.TryToGetWeather(time);
                         }
                     } else {
                         time = CurrentRoundTime;
@@ -293,7 +293,7 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
-            private readonly WeatherTypeHelper _weatherTypeHelper = new WeatherTypeHelper();
+            private readonly WeatherTypeConverterState _weatherTypeHelper = new WeatherTypeConverterState();
             private CancellationTokenSource _conditionsTokenSource;
 
             private bool _currentSet;
@@ -353,9 +353,8 @@ namespace AcManager.Pages.Drive {
                 ConditionsLoading = false;
 
                 if (weatherType != null) {
-                    _weatherTypeHelper.SetParams(CurrentRoundTime, CurrentRoundTemperature);
-                    var weather = CurrentRoundWeather;
-                    if (_weatherTypeHelper.TryToGetWeather(weatherType.Value, ref weather)) {
+                    var weather = _weatherTypeHelper.TryToGetWeather(weatherType.Value, CurrentRoundTime, CurrentRoundTemperature);
+                    if (weather != null) {
                         CurrentRoundWeather = weather;
                     } else {
                         OnPropertyChanged(nameof(CurrentRoundWeather));

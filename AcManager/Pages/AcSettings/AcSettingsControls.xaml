@@ -139,7 +139,7 @@
                 </ItemsControl.ItemTemplate>
               </ItemsControl>
               <DockPanel Margin="0 4 0 0">
-                <mui:ContextMenuButton DockPanel.Dock="Right">
+                <mui:ContextMenuButton DockPanel.Dock="Right" Margin="0 2 0 -2">
                   <ContextMenu>
                     <MenuItem Header="Scan devices at launch" IsCheckable="True"
                         IsChecked="{Binding ScanControllersAutomatically, Source={x:Static t:SettingsHolder.Drive}}">

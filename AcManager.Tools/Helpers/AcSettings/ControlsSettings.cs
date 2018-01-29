@@ -73,22 +73,22 @@ namespace AcManager.Tools.Helpers.AcSettings {
             };
 
             SystemUiButtonEntries = new[] {
-                new SystemButtonEntryCombined("HIDE_APPS", "Apps"),
-                new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display"),
-                new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names"),
-                new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line"),
+                new SystemButtonEntryCombined("HIDE_APPS", "Apps", defaultKey: Keys.H),
+                new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display", defaultKey: Keys.Q),
+                new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names", defaultKey: Keys.L),
+                new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line", defaultKey: Keys.I),
             };
 
             SystemReplayButtonEntries = new[] {
-                new SystemButtonEntryCombined("START_REPLAY", "Start replay"),
-                new SystemButtonEntryCombined("PAUSE_REPLAY", "Pause replay"),
-                new SystemButtonEntryCombined("NEXT_LAP", "Next lap"),
-                new SystemButtonEntryCombined("PREVIOUS_LAP", "Previous lap"),
-                new SystemButtonEntryCombined("NEXT_CAR", "Next car"),
-                new SystemButtonEntryCombined("PREVIOUS_CAR", "Previous car"),
-                new SystemButtonEntryCombined("SLOWMO", "Slow motion"),
-                new SystemButtonEntryCombined("FFWD", "Fast-forward"),
-                new SystemButtonEntryCombined("REV", "Rewind"),
+                new SystemButtonEntryCombined("START_REPLAY", "Start replay", defaultKey: Keys.R),
+                new SystemButtonEntryCombined("PAUSE_REPLAY", "Pause replay", defaultKey: Keys.Space),
+                new SystemButtonEntryCombined("NEXT_LAP", "Next lap", defaultKey: Keys.N),
+                new SystemButtonEntryCombined("PREVIOUS_LAP", "Previous lap", defaultKey: Keys.P),
+                new SystemButtonEntryCombined("NEXT_CAR", "Next car", defaultKey: Keys.NumPad3),
+                new SystemButtonEntryCombined("PREVIOUS_CAR", "Previous car", defaultKey: Keys.NumPad1),
+                new SystemButtonEntryCombined("SLOWMO", "Slow motion", defaultKey: Keys.S),
+                new SystemButtonEntryCombined("FFWD", "Fast-forward", defaultKey: Keys.F),
+                new SystemButtonEntryCombined("REV", "Rewind", defaultKey: Keys.D),
             };
 
             SystemDiscordButtonEntries = new[] {
@@ -96,13 +96,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_DENY", "Deny join request", fixedValueCallback: x => new[]{ Keys.Back }, delayed: true)
             };
 
-            var systemAbs = new SystemButtonEntryCombined("ABS", "ABS", true);
-            var systemTractionControl = new SystemButtonEntryCombined("TRACTION_CONTROL", "Traction control", true);
+            var systemAbs = new SystemButtonEntryCombined("ABS", "ABS", true, defaultKey: Keys.A);
+            var systemTractionControl = new SystemButtonEntryCombined("TRACTION_CONTROL", "Traction control", true, defaultKey: Keys.T);
 
             SystemCarButtonEntries = new[] {
-                new SystemButtonEntryCombined("MOUSE_STEERING", "Mouse steering"),
-                new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI"),
-                new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter"),
+                new SystemButtonEntryCombined("MOUSE_STEERING", "Mouse steering", defaultKey: Keys.M),
+                new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI", defaultKey: Keys.C),
+                new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter", defaultKey: Keys.G),
                 systemAbs,
                 new SystemButtonEntryCombined("__CM_ABS_DECREASE", "ABS (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
                     Keys.Control, Keys.Shift, key.Value
@@ -111,7 +111,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("__CM_TRACTION_CONTROL_DECREASE", "Traction c. (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
                     Keys.Control, Keys.Shift, key.Value
                 } : null, buttonReference: systemTractionControl.SystemButton),
-                new SystemButtonEntryCombined("KERS", "KERS"),
+                // new SystemButtonEntryCombined("KERS", "KERS", defaultKey: Keys.K),
             };
 
             #endregion
@@ -197,6 +197,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             if (DevicesScan?.ScanTime.TotalSeconds > 1 && !ValuesStorage.Contains("Settings.DriveSettings.ScanControllersAutomatically")) {
                 SettingsHolder.Drive.ScanControllersAutomatically = true;
             }
+
+            IsHardwareLockSupported = Devices.Any(x => WheelSteerLock.IsSupported(x.Id));
         }
 
         private DelegateCommand _runControlPanelCommand;
@@ -999,6 +1001,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private bool _isHardwareLockSupported;
+
+        public bool IsHardwareLockSupported {
+            get => _isHardwareLockSupported;
+            set {
+                if (Equals(value, _isHardwareLockSupported)) return;
+                _isHardwareLockSupported = value;
+                OnPropertyChanged();
+            }
+        }
+
         public string DisplayHardwareLockSupported { get; } = WheelSteerLock.GetSupportedNames().OrderBy(x => x).JoinToReadableString();
         #endregion
 
@@ -1349,7 +1362,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 Logging.Warning("Devices are not yet scanned, scanning…");
                 var fixTimeout = TimeSpan.FromSeconds(1);
                 using (var timeout = new CancellationTokenSource(fixTimeout)) {
-                    Logging.Write("Timeout: " + fixTimeout.ToReadableTime());
                     var list = DirectInputScanner.GetAsync(timeout.Token).Result;
                     Logging.Write("Scanned result: " + (list == null ? @"failed to scan" : $@"{list.Count} device(s)"));
                     if (list == null) return;

@@ -17,6 +17,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls {
     public sealed class WeatherTypeWrapped : Displayable {
@@ -51,10 +52,39 @@ namespace AcManager.Controls {
         public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
         public static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
 
-        public static WeatherObject Unwrap(object obj) {
+        [CanBeNull]
+        public static WeatherObject Unwrap(object obj, int? time, double? temperature) {
             return obj is WeatherTypeWrapped weatherTypeWrapped
-                    ? WeatherManager.Instance.EnabledOnlyCollection.Where(x => x.Type == weatherTypeWrapped.Type).RandomElementOrDefault()
+                    ? WeatherManager.Instance.EnabledOnlyCollection.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault()
                     : obj as WeatherObject;
+        }
+
+        public static readonly DependencyProperty TimeProperty = DependencyProperty.Register(nameof(Time), typeof(int?),
+                typeof(WeatherComboBox), new PropertyMetadata(null, (o, e) => {
+                    var w = (WeatherComboBox)o;
+                    w._time = (int?)e.NewValue;
+                    w.UpdateWeather();
+                }));
+
+        private int? _time;
+
+        public int? Time {
+            get => _time;
+            set => SetValue(TimeProperty, value);
+        }
+
+        public static readonly DependencyProperty TemperatureProperty = DependencyProperty.Register(nameof(Temperature), typeof(double?),
+                typeof(WeatherComboBox), new PropertyMetadata(null, (o, e) => {
+                    var w = (WeatherComboBox)o;
+                    w._temperature = (double?)e.NewValue;
+                    w.UpdateWeather();
+                }));
+
+        private double? _temperature;
+
+        public double? Temperature {
+            get => _temperature;
+            set => SetValue(TemperatureProperty, value);
         }
 
         public WeatherComboBox() {
@@ -81,11 +111,22 @@ namespace AcManager.Controls {
                     nameof(IBaseAcObjectObservableCollection.CollectionReady), OnWeatherListUpdated);
         }
 
-        private void OnItemSelected(object sender, SelectedItemChangedEventArgs selectedItemChangedEventArgs) {
-            _busy.Do(() => SelectedWeather = Unwrap(SelectedItem));
+        private readonly Busy _updateBusy = new Busy();
+
+        private void UpdateWeather() {
+            _updateBusy.DoDelay(() => _busy.Do(() => {
+                OnItemSelected(null, null);
+            }), 500);
         }
 
+        public event EventHandler WeatherChanged;
+
         private readonly Busy _busy = new Busy();
+
+        private void OnItemSelected(object sender, SelectedItemChangedEventArgs selectedItemChangedEventArgs) {
+            _busy.Do(() => SelectedWeather = Unwrap(SelectedItem, Time, Temperature));
+            WeatherChanged?.Invoke(this, EventArgs.Empty);
+        }
 
         public static readonly DependencyProperty SelectedWeatherProperty = DependencyProperty.Register(nameof(SelectedWeather), typeof(WeatherObject),
                 typeof(WeatherComboBox), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnSelectedWeatherChanged));
@@ -124,7 +165,7 @@ namespace AcManager.Controls {
                     c.UpdateHierarchicalWeatherList().Forget();
                 }));
 
-        private bool _allowWeatherByType = false;
+        private bool _allowWeatherByType;
 
         public bool AllowWeatherByType {
             get => _allowWeatherByType;
@@ -137,7 +178,7 @@ namespace AcManager.Controls {
         }
 
         private static bool IsGbwWeather(WeatherObject o) {
-            return o.Id.Contains("gbW");
+            return o.Id.Contains(@"gbW");
         }
 
         private static bool IsModWeather(WeatherObject o) {
@@ -146,7 +187,7 @@ namespace AcManager.Controls {
 
         private class GbwConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                return value?.ToString().Replace("gbW_", "");
+                return value?.ToString().Replace(@"gbW_", "");
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -178,7 +219,7 @@ namespace AcManager.Controls {
                 }
 
                 if (WeatherList.Any(IsGbwWeather)) {
-                    list.Add(new HierarchicalGroup("GBW", WeatherList.Where(IsGbwWeather)) {
+                    list.Add(new HierarchicalGroup(@"GBW", WeatherList.Where(IsGbwWeather)) {
                         HeaderConverter = new GbwConverter()
                     });
                 }

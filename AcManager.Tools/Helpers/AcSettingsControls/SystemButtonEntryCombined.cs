@@ -24,10 +24,11 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public SystemButtonEntryCombined([LocalizationRequired(false)] string id, string displayName,
                 bool shiftToInvert = false, bool customCommand = false, Func<Keys?, IEnumerable<Keys>> fixedValueCallback = null,
-                SystemButtonEntry buttonReference = null, bool delayed = false, string toolTip = null, string displayModifiers = "Ctrl+") {
+                SystemButtonEntry buttonReference = null, bool delayed = false, string toolTip = null, string displayModifiers = "Ctrl+",
+                Keys? defaultKey = null) {
             _fixedValueCallback = fixedValueCallback;
             WheelButton = new WheelButtonEntry(id, displayName, true);
-            SystemButton = fixedValueCallback == null ? new SystemButtonEntry(id, displayName) : null;
+            SystemButton = fixedValueCallback == null ? new SystemButtonEntry(id, displayName, defaultKey) : null;
             ShiftToInvert = shiftToInvert;
             CustomCommand = customCommand;
             Delayed = delayed;

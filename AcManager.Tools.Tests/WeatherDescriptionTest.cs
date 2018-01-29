@@ -14,7 +14,7 @@ namespace AcManager.Tools.Tests {
 
             foreach (var type in values) {
                 for (var i = 1; i < values.Length; i++) {
-                    result = WeatherDescription.FindClosestWeather(GoodShuffle.Get(values).Take(i), type);
+                    result = type.FindClosestWeather(GoodShuffle.Get(values).Take(i));
                 }
             }
 

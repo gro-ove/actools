@@ -2,9 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
-    xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
+    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -15,7 +15,6 @@
       <mui:BindingProxy x:Key="Model" Data="{Binding}" />
 
       <ContextMenu x:Key="RealConditionsContextMenu" x:Shared="False">
-        <!--TODO-->
         <MenuItem Header="{x:Static g:AppStrings.Drive_LocalWeatherHeader}" IsChecked="{Binding RealConditionsLocalWeather, Mode=OneWay}" IsCheckable="True"
             ToolTip="{x:Static g:AppStrings.Drive_LocalWeather_Tooltip}" Command="{Binding SwitchLocalWeatherCommand}" />
         <MenuItem Header="Set wind manually" IsChecked="{Binding RealConditionsManualWind}" IsCheckable="True" />
@@ -426,10 +425,19 @@
               </Border.ToolTip>
               <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
             </Border>
+            <TextBlock Text="{Binding SelectedWeatherObject.DisplayName}" Style="{StaticResource Small}" Margin="20 1 0 -1" DockPanel.Dock="Right"
+                Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
           </DockPanel>
 
-          <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True" />
+          <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True">
+            <c:WeatherComboBox.ToolTip>
+              <StackPanel Margin="4">
+                <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedWeatherObject.DisplayName}" Margin="0 0 0 4" />
+                <mui:BetterImage Filename="{Binding SelectedWeatherObject.PreviewImage}" MaxWidth="400" />
+              </StackPanel>
+            </c:WeatherComboBox.ToolTip>
+          </c:WeatherComboBox>
         </StackPanel>
 
         <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ManualConditions}">
