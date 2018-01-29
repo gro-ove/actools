@@ -12,6 +12,7 @@ using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -81,7 +82,8 @@ namespace AcManager.Pages.AcSettings {
             });
 
             UpdateListBox();
-            Model.Python.PropertyChanged += Python_PropertyChanged;
+            Model.Python.PropertyChanged += OnPythonPropertyChanged;
+            this.OnActualUnload(() => Model.Python.PropertyChanged -= OnPythonPropertyChanged);
 
             this.AddWidthCondition(600).Add(BlockedColumn);
             this.AddWidthCondition(760).Add(ScaleColumn);
@@ -97,7 +99,7 @@ namespace AcManager.Pages.AcSettings {
             _ignore = false;
         }
 
-        private void Python_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnPythonPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(PythonSettings.Apps)) {
                 UpdateListBox();
             }
@@ -110,8 +112,6 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            Model.Python.PropertyChanged -= Python_PropertyChanged;
-        }
+        private void OnUnloaded(object sender, RoutedEventArgs e) {}
     }
 }

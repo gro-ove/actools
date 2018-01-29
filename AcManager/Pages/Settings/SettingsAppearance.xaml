@@ -191,7 +191,7 @@
           <Button Visibility="{Binding SoftwareRenderingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
               Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2" />
           <CheckBox IsChecked="{Binding SoftwareRendering}">
-            <Label Content="Disable hardware acceleration for UI (not recommended!)" />
+            <Label Content="Disable hardware acceleration for UI (not recommended!)" TextBlock.Foreground="{DynamicResource Error}" />
           </CheckBox>
         </DockPanel>
       </StackPanel>

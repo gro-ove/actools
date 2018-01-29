@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -14,34 +16,9 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.GameProperties.InGameApp {
-    public abstract class CmInGameAppParamsBase { }
-
-    public class CmInGameAppDelayedInputParams : CmInGameAppParamsBase {
-        public string CommandName;
-        public double Progress;
-
-        public CmInGameAppDelayedInputParams(string commandName) {
-            CommandName = commandName;
-        }
-    }
-
-    public class CmInGameAppJoinRequestParams : CmInGameAppParamsBase {
-        public string UserName;
-        public string UserId;
-        public string AvatarUrl;
-        public double YesProgress, NoProgress;
-        public Action<bool> ChoiseCallback;
-
-        public CmInGameAppJoinRequestParams(string userName, string userId, string avatarUrl, Action<bool> choiseCallback) {
-            UserName = userName;
-            UserId = userId;
-            AvatarUrl = avatarUrl;
-            ChoiseCallback = choiseCallback;
-        }
-    }
-
     public class CmInGameAppHelper : IDisposable {
-        public static string OptionAppId = "CmControlsMessages";
+        public static readonly string[] OverlayAppIds = { "CMControlsMessages" };
+
         public static int OptionSocketPort = 52623;
 
         private bool _isActive;
@@ -58,8 +35,8 @@ namespace AcManager.Tools.GameProperties.InGameApp {
         }
 
         public static bool IsAvailable() {
-            return PythonAppsManager.Instance.GetById(OptionAppId) != null
-                    && new IniFile(AcPaths.GetCfgAppsFilename())[OptionAppId.ToUpperInvariant()].GetBool("ACTIVE", false);
+            return OverlayAppIds.Any(x => PythonAppsManager.Instance.GetById(x) != null
+                    && new IniFile(AcPaths.GetCfgAppsFilename())[x.ToUpperInvariant()].GetBool("ACTIVE", false));
         }
 
         private static readonly Busy Busy = new Busy();
@@ -186,9 +163,9 @@ namespace AcManager.Tools.GameProperties.InGameApp {
 
         private string _avatarUserId;
 
-        private static string GetAvatarFilename() {
-            return Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), OptionAppId, "images",
-                    $"avatar_{AvatarId}.png");
+        private static IEnumerable<string> GetAvatarFilename() {
+            return OverlayAppIds.Select(x => Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), x, "images",
+                    $"avatar_{AvatarId}.png"));
         }
 
         private enum AppResponse : byte {
@@ -288,7 +265,9 @@ namespace AcManager.Tools.GameProperties.InGameApp {
                     _avatarUserId = joinRequest.UserId;
                     using (var wc = new WebClient()) {
                         var avatarBytes = await wc.DownloadDataTaskAsync(joinRequest.AvatarUrl).ConfigureAwait(false);
-                        await FileUtils.WriteAllBytesAsync(GetAvatarFilename(), avatarBytes).ConfigureAwait(false);
+                        foreach (var filename in GetAvatarFilename().Where(x => Directory.Exists(Path.GetDirectoryName(x)))) {
+                            await FileUtils.WriteAllBytesAsync(filename, avatarBytes).ConfigureAwait(false);
+                        }
                     }
 
                     return AvatarId;

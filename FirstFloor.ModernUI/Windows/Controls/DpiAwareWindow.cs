@@ -180,9 +180,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             try {
                 base.Close();
             } catch (InvalidOperationException e) {
-                Logging.Warning("Close error: " + e.Message);
+                Logging.Warning(e.Message);
             } catch (Exception e) {
-                Logging.Warning("Close error: " + e);
+                Logging.Warning(e);
             }
         }
         #endregion
@@ -199,6 +199,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
             FixFullscreen();
+            SetBackgroundBlurIfNeeded();
+            SetExtraFlagsIfNeeded();
             OnLoadedOverride();
         }
 

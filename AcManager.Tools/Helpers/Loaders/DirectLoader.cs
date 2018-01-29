@@ -152,23 +152,23 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         private static bool CouldBeBeginningOfAFile(byte[] bytes) {
             // RAR archive v5.0+
-            if (bytes.StartsWith(new byte[] { (byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x01, 0x00 })) return true;
+            if (bytes.StartsWith((byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x01, 0x00)) return true;
 
             // RAR archive v1.5+
-            if (bytes.StartsWith(new byte[] { (byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x00 })) return true;
+            if (bytes.StartsWith((byte)'R', (byte)'a', (byte)'r', (byte)'!', 0x1A, 0x07, 0x00)) return true;
 
             // RAR archive v1.5+
-            if (bytes.StartsWith(new byte[] { (byte)'7', (byte)'z', 0xBC, 0xAF, 0x27, 0x1C })) return true;
+            if (bytes.StartsWith((byte)'7', (byte)'z', 0xBC, 0xAF, 0x27, 0x1C)) return true;
 
             // GZIP
             // if (bytes.StartsWith(new byte[] { 0x1F, 0x8B })) return true;
 
             // ZIP
-            if (bytes.StartsWith(new byte[] { 0x50, 0x4B, 0x03, 0x04 })) return true;
+            if (bytes.StartsWith(0x50, 0x4B, 0x03, 0x04)) return true;
 
             // TAR archive
-            if (bytes.StartsWith(new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30 })
-                    || bytes.StartsWith(new byte[] { 0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00 })) return true;
+            if (bytes.StartsWith(0x75, 0x73, 0x74, 0x61, 0x72, 0x00, 0x30, 0x30)
+                    || bytes.StartsWith(0x75, 0x73, 0x74, 0x61, 0x72, 0x20, 0x20, 0x00)) return true;
 
             return false;
         }
@@ -205,7 +205,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 // Maybe we’ll be lucky enough to load the most accurate data
                 if (client.ResponseHeaders != null) {
-                    if (long.TryParse(client.ResponseHeaders[HttpResponseHeader.ContentLength],
+                    if (long.TryParse(client.ResponseHeaders[HttpResponseHeader.ContentLength] ?? "",
                             NumberStyles.Any, CultureInfo.InvariantCulture, out var length)) {
                         TotalSize = information.TotalSize = length;
                     }
@@ -217,7 +217,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                     // For example, Google Drive responds with “none” and yet allows to download file partially,
                     // so this header will only be checked if value is not defined.
                     if (resumeSupported == null) {
-                        var accept = client.ResponseHeaders[HttpResponseHeader.AcceptRanges];
+                        var accept = client.ResponseHeaders[HttpResponseHeader.AcceptRanges] ?? "";
                         if (accept.Contains("bytes")) {
                             resumeSupported = true;
                         } else if (accept.Contains("none")) {

@@ -40,7 +40,7 @@ namespace AcTools.Utils.Helpers {
             return b1.Length == b2.Length && memcmp(b1, b2, b1.Length) == 0;
         }
 
-        public static bool StartsWith(this byte[] b1, byte[] b2) {
+        public static bool StartsWith(this byte[] b1, params byte[] b2) {
             if (b1.Length < b2.Length) return false;
             for (var i = 0; i < b2.Length; i++) {
                 if (b1[i] != b2[i]) return false;

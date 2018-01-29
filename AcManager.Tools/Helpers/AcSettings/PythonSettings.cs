@@ -17,8 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 throw new ArgumentNullException(nameof(appId));
             }
 
-            bool result;
-            return _apps.TryGetValue(appId.ToLowerInvariant(), out result) && result;
+            return _apps.TryGetValue(appId.ToLowerInvariant(), out var result) && result;
         }
 
         public void SetActivated([NotNull] string appId, bool value) {
@@ -28,13 +27,18 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             _apps[appId.ToLowerInvariant()] = value;
             Save();
+
+            AppActiveStateChanged?.Invoke(this, EventArgs.Empty);
         }
+
+        public event EventHandler AppActiveStateChanged;
 
         protected override void LoadFromIni() {
             _apps = Ini.Where(x => x.Value.ContainsKey(@"ACTIVE")).ToDictionary(
                     x => x.Key.ToLowerInvariant(),
                     x => x.Value.GetBool("ACTIVE", false));
             OnPropertyChanged(nameof(Apps));
+            AppActiveStateChanged?.Invoke(this, EventArgs.Empty);
         }
 
         protected override void SetToIni(IniFile ini) {

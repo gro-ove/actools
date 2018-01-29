@@ -8,8 +8,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
+using AcManager.Tools.Lists;
+using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -113,8 +118,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 } : null, buttonReference: systemTractionControl.SystemButton),
                 // new SystemButtonEntryCombined("KERS", "KERS", defaultKey: Keys.K),
             };
-
             #endregion
+
+            AcSettingsHolder.Python.AppActiveStateChanged += OnAppActiveStateChanged;
+            AcSettingsHolder.Video.PropertyChanged += OnVideoPropertyChanged;
+            RefreshOverlayAvailable();
+        }
+
+        private void OnVideoPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(AcSettingsHolder.Video.Fullscreen)) {
+                RefreshOverlayAvailable();
+            }
+        }
+
+        private void OnAppActiveStateChanged(object sender, EventArgs e) {
+            RefreshOverlayAvailable();
         }
 
         internal void FinishInitialization() {
@@ -989,6 +1007,37 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 OnPropertyChanged();
             }
         }
+
+        #region Overlay-availability-related options
+        public class AppsForOverlayCollection : WrappedFilteredCollection<PythonAppObject, PythonAppObject> {
+            public AppsForOverlayCollection() : base(PythonAppsManager.Instance.EnabledOnlyCollection) { }
+
+            protected override PythonAppObject Wrap(PythonAppObject source) {
+                return source;
+            }
+
+            protected override bool Test(PythonAppObject source) {
+                return Array.IndexOf(CmInGameAppHelper.OverlayAppIds, source.Id) != -1;
+            }
+        }
+
+        public AppsForOverlayCollection AppsForOverlay { get; } = new AppsForOverlayCollection();
+
+        private bool _isOverlayAvailable;
+
+        public bool IsOverlayAvailable {
+            get => _isOverlayAvailable;
+            private set {
+                if (Equals(value, _isOverlayAvailable)) return;
+                _isOverlayAvailable = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private void RefreshOverlayAvailable() {
+            IsOverlayAvailable = !AcSettingsHolder.Video.Fullscreen || AppsForOverlay.Any(x => AcSettingsHolder.Python.IsActivated(x.Id));
+        }
+        #endregion
 
         private bool _hardwareLock;
 

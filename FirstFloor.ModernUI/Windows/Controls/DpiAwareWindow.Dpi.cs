@@ -55,8 +55,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             RefreshMonitorDpi();
             UpdateScaleRelatedParams();
             OnSourceInitializedOverride();
-            SetBackgroundBlurIfNeeded();
-            SetExtraFlagsIfNeeded();
         }
 
         private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e) {

@@ -155,27 +155,23 @@ namespace AcManager.Tools.GameProperties {
                         Opacity = 0.4
                     };
 
-                    var content = new Cell {
-                        Margin = new Thickness(-20),
-                        Width = 300,
-                        Height = 40,
-                        Children = { _progressBar, _textBlock }
-                    };
-
                     RenderOptions.SetClearTypeHint(_textBlock, ClearTypeHint.Auto);
                     TextOptions.SetTextHintingMode(_textBlock, TextHintingMode.Animated);
                     TextOptions.SetTextRenderingMode(_textBlock, TextRenderingMode.Grayscale);
                     TextOptions.SetTextFormattingMode(_textBlock, TextFormattingMode.Display);
 
-                    _dialog = new ModernDialog {
-                        MinWidth = 20,
-                        MinHeight = 20,
+                    var dialog = new ModernDialog {
+                        MinWidth = 300,
+                        MinHeight = 40,
                         Width = 300,
                         Height = 40,
+                        MaxWidth = 300,
+                        MaxHeight = 40,
+                        ConsiderPreferredFullscreen = false,
                         SizeToContent = SizeToContent.Manual,
                         WindowStyle = WindowStyle.None,
                         BlurBackground = true,
-                        AllowsTransparency = true,
+                        PreventActivation = true,
                         Topmost = true,
                         ShowTopBlob = false,
                         ShowTitle = false,
@@ -183,8 +179,13 @@ namespace AcManager.Tools.GameProperties {
                         BorderThickness = new Thickness(0),
                         Background = new SolidColorBrush(Colors.Transparent),
                         Buttons = new Control[0],
-                        Padding = new Thickness(20, 20, 20, 0),
-                        Content = content,
+                        Padding = new Thickness(),
+                        Content = new Cell {
+                            Width = 300,
+                            Height = 40,
+                            Children = { _progressBar, _textBlock }
+                        },
+                        ContentMargin = new Thickness(0, 0, 0, -24),
                         WindowStartupLocation = WindowStartupLocation.Manual,
                         OpacityMask = new VisualBrush {
                             Stretch = Stretch.None,
@@ -197,11 +198,21 @@ namespace AcManager.Tools.GameProperties {
                         }
                     };
 
-                    _dialog.Loaded += OnDialogLoaded;
-                    _dialog.Show();
+                    dialog.Loaded += OnDialogLoaded;
+                    dialog.Show();
 
                     CompositionTargetEx.Rendering -= OnRendering;
                     CompositionTargetEx.Rendering += OnRendering;
+
+                    if (_dialog != null) {
+                        if (_dialog.IsLoaded) {
+                            _dialog.Close();
+                        } else {
+                            _dialog.Loaded += (s, e) => ((ModernDialog)s).Close();
+                        }
+                    }
+
+                    _dialog = dialog;
                 });
             }
 
@@ -250,6 +261,7 @@ namespace AcManager.Tools.GameProperties {
 
                 Application.Current.Dispatcher.InvokeAsync(async () => {
                     var d = new Duration(TimeSpan.FromSeconds(0.12));
+                    progress.Value = 1d;
                     progress.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation((Color)Application.Current.Resources["GoColor"], d));
                     progress.BeginAnimation(UIElement.OpacityProperty, new DoubleAnimation(1d, d));
                     TextBlock.GetForeground(text).BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation(Colors.Black, d));
@@ -534,8 +546,8 @@ namespace AcManager.Tools.GameProperties {
                     joyToCommand[joyKey] = c;
                 }
 
-                Logging.Debug("Extra key bindings: " + keyToCommand.Count);
-                Logging.Debug("Extra joystick bindings: " + joyToCommand.Count);
+                Logging.Write("Extra key bindings: " + keyToCommand.Count);
+                Logging.Write("Extra joystick bindings: " + joyToCommand.Count);
 
                 if (keyToCommand.Count > 0) {
                     _keyboard = new KeyboardListener();
@@ -559,7 +571,7 @@ namespace AcManager.Tools.GameProperties {
                 _pollThread?.Start();
 
                 if (showDelay && isAcFullscreen
-                        && (_joyToCommand.Any(x => x.Value.DelayedName != null) || _keyToCommand.Any(x => x.Value.DelayedName != null))) {
+                        && (joyToCommand.Any(x => x.Value.DelayedName != null) || keyToCommand.Any(x => x.Value.DelayedName != null))) {
                     _inGameApp = CmInGameAppHelper.GetInstance();
                 }
             }
@@ -574,44 +586,53 @@ namespace AcManager.Tools.GameProperties {
                 var devices = await DirectInputScanner.GetAsync();
                 var joysticks = DirectInputScanner.DirectInput == null ? null
                         : devices?.Select(x => new Joystick(DirectInputScanner.DirectInput, x.InstanceGuid)).ToList();
+                var joystickCommands = joysticks == null ? null : _joyToCommand?.GroupBy(x => x.Key.Joy).Select(x =>
+                        Tuple.Create(joysticks.ElementAtOrDefault(x.Key), x.ToArray())).Where(x => x.Item1 != null).ToList();
+
+                var s = Stopwatch.StartNew();
+                var iterations = 0;
+
                 try {
                     while (_running == true) {
-                        OnTick(joysticks);
-                        Thread.Sleep(20);
+                        OnTick(joystickCommands);
+                        Thread.Sleep(10);
+                        if (++iterations >= 300) {
+                            Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F2} ms");
+                            Logging.Debug($"Est. OnTick(): {(s.Elapsed.TotalMilliseconds / iterations - 10):F2} ms");
+                            iterations = 0;
+                            s.Restart();
+                        }
                     }
                 } finally {
                     DisposeHelper.Dispose(ref joysticks);
                 }
             }
 
-            private void OnTick(IList<Joystick> devices) {
+            private void OnTick(List<Tuple<Joystick, KeyValuePair<JoyKey, JoyCommandBase>[]>> devices) {
                 if (devices == null) return;
+
+                var joyToCommand = _joyToCommand;
+                var keyToCommand = _keyToCommand;
+
                 var povAvailable = !(_ignorePovInPits && _isInPits);
                 for (var index = devices.Count - 1; index >= 0; index--) {
-                    for (var i = 0; i < _joyToCommand.Length; i++) {
-                        if (_joyToCommand[i].Key.Joy == index) goto PollDevice;
-                    }
-
-                    continue;
-                    PollDevice:
-
                     try {
-                        var joystick = devices[index];
-                        if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure || Result.Last.IsFailure) {
-                            continue;
-                        }
+                        var item = devices[index];
+                        var joystick = item.Item1;
+                        if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure) continue;
 
                         var state = joystick.GetCurrentState();
+                        if (Result.Last.IsFailure) continue;
+
                         var buttons = state.GetButtons();
                         var povs = state.GetPointOfViewControllers();
-                        for (var i = 0; i < _joyToCommand.Length; i++) {
-                            var command = _joyToCommand[i];
+                        var list = item.Item2;
+                        for (var i = list.Length - 1; i >= 0; i--) {
+                            var command = list[i];
                             var key = command.Key;
-                            if (key.Joy == index) {
-                                command.Value.SetJoyPressed(key.Button.HasValue
-                                        ? buttons.ElementAtOrDefault(key.Button.Value)
-                                        : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ElementAtOrDefault(key.Pov ?? 0)));
-                            }
+                            command.Value.SetJoyPressed(key.Button.HasValue
+                                    ? buttons.ElementAtOrDefault(key.Button.Value)
+                                    : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ElementAtOrDefault(key.Pov ?? 0)));
                         }
                     } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
                         devices.RemoveAt(index);
@@ -624,8 +645,8 @@ namespace AcManager.Tools.GameProperties {
                 string delayedName = null;
                 var delayedProgress = 0d;
 
-                for (var i = _joyToCommand.Length - 1; i >= 0; i--) {
-                    var v = _joyToCommand[i].Value;
+                for (var i = joyToCommand.Length - 1; i >= 0; i--) {
+                    var v = joyToCommand[i].Value;
                     v.Update();
                     if (v.IsDelayed) {
                         delayedName = v.DelayedName;
@@ -633,8 +654,8 @@ namespace AcManager.Tools.GameProperties {
                     }
                 }
 
-                for (var i = _keyToCommand.Length - 1; i >= 0; i--) {
-                    var v = _keyToCommand[i].Value;
+                for (var i = keyToCommand.Length - 1; i >= 0; i--) {
+                    var v = keyToCommand[i].Value;
                     v.Update();
                     if (v.IsDelayed) {
                         delayedName = v.DelayedName;
@@ -642,12 +663,13 @@ namespace AcManager.Tools.GameProperties {
                     }
                 }
 
-                if (delayedName != null) {
-                    _inGameApp?.Update(new CmInGameAppDelayedInputParams(delayedName.ToSentenceMember()) {
-                        Progress = delayedProgress
-                    });
-                } else {
-                    _inGameApp?.HideApp();
+                var inGameApp = _inGameApp;
+                if (inGameApp != null) {
+                    if (delayedName != null) {
+                        inGameApp.Update(new CmInGameAppDelayedInputParams(delayedName.ToSentenceMember()) { Progress = delayedProgress });
+                    } else {
+                        inGameApp.HideApp();
+                    }
                 }
             }
 

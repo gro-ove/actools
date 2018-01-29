@@ -3,11 +3,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:acsc="clr-namespace:AcManager.Pages.AcSettings"
-    mc:Ignorable="d" Unloaded="OnUnloaded">
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
@@ -152,35 +153,33 @@
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Discord:" />
           <ItemsControl ItemsSource="{Binding SystemDiscordButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20"
-              IsEnabled="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}, Converter={StaticResource InvertBooleanConverter}}" />
+              IsEnabled="{Binding IsOverlayAvailable}" />
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Options:" />
-          <StackPanel Style="{StaticResource SettingsPanel}">
-            <mui:BooleanSwitch Value="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
-              <mui:BooleanSwitch.True>
+          <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+
+            <mui:BooleanSwitch Value="{Binding IsOverlayAvailable}">
+              <mui:BooleanSwitch.False>
                 <!-- ¯\_(ツ)_/¯ -->
                 <StackPanel>
-                  <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
+                  <CheckBox IsChecked="False" IsEnabled="False">
                     <Label Content="Delay race-terminating commands by half a second" />
                   </CheckBox>
-
                   <CheckBox IsChecked="False" IsEnabled="False" ToolTip="Not available with fullscreen enabled">
-                    <Label Content="Show popups while delaying" />
+                    <Label Content="Show overlay progress while delaying" />
                   </CheckBox>
                 </StackPanel>
-              </mui:BooleanSwitch.True>
-              <mui:BooleanSwitch.False>
+              </mui:BooleanSwitch.False>
+              <mui:BooleanSwitch.True>
                 <StackPanel>
                   <CheckBox IsChecked="{Binding DelaySpecificSystemCommands}">
                     <Label Content="Delay race-terminating commands by half a second" />
                   </CheckBox>
-
-                  <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}"
-                      ToolTip="Doesn’t work in fullscreen mode, and, I believe, doesn’t work in VR">
-                    <Label Content="Show popups while delaying" />
+                  <CheckBox IsChecked="{Binding ShowSystemDelays}" IsEnabled="{Binding DelaySpecificSystemCommands}">
+                    <Label Content="Show overlay progress while delaying" />
                   </CheckBox>
                 </StackPanel>
-              </mui:BooleanSwitch.False>
+              </mui:BooleanSwitch.True>
             </mui:BooleanSwitch>
 
             <CheckBox IsChecked="{Binding SystemIgnorePovInPits}" ToolTip="To avoid conflicts with pits menu">
@@ -190,12 +189,58 @@
             <c:MessageBlock CloseKey="povcontrols">
               <mui:BbCodeBlock BbCode="[i]Did you know?[/i] In this section, you can use POV buttons as well." />
             </c:MessageBlock>
-          </StackPanel>
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Related video options:" />
-          <CheckBox IsChecked="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
-            <Label Content="Fullscreen (disable to delay race-terminating commands, show popups and accept Discord join requests)" />
-          </CheckBox>
+            <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Overlay-related options:" />
+
+            <CheckBox IsChecked="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}">
+              <Label Content="Fullscreen (from video settings)" />
+            </CheckBox>
+
+            <DockPanel>
+              <Label Content="Overlay apps:" />
+              <mui:PlaceholderTextBlock Placeholder="No apps found"
+                  Visibility="{Binding AppsForOverlay.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" />
+              <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding AppsForOverlay}" SelectionMode="Multiple" Style="{StaticResource VirtualizingListBox}"
+                  SelectionChanged="OnOverlayAppsListSelectionChanged" IsEnabled="{Binding Fullscreen, Source={x:Static acset:AcSettingsHolder.Video}}"
+                  Visibility="{Binding AppsForOverlay.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding Enabled}" Value="False">
+                        <Setter Property="IsEnabled" Value="False" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="t:PythonAppObject">
+                    <DockPanel IsEnabled="{Binding Enabled}" Background="Transparent" mui:Draggable.Data="{Binding}">
+                      <DockPanel.ToolTip>
+                        <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                          <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
+                        </ToolTip>
+                      </DockPanel.ToolTip>
+                      <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                          Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
+                      <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" ToolTip="{Binding AppIcon.Value}"
+                          Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}" Margin="0 0 4 0" ClearOnChange="True" />
+                      <TextBlock Text="{Binding DisplayName}" />
+                    </DockPanel>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                        <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+                      </DataTrigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+            </DockPanel>
+
+            <c:MessageBlock>
+              <mui:BbCodeBlock
+                  BbCode="[i]Please, read me![/i] To show popups — for example, for Discord join requests — CM needs to be able to display some stuff in AC. Now, it could be done either by just showing stuff on top of AC, but [b]only if AC is not in fullscreen mode[/b]. Or, alternatively, I’ve made [url=&quot;acmanager://install?url=https%3A%2F%2Fyadi.sk%2Fd%2F4_42zhk03RtCAL&quot;]a small Python app[/url] for it. It should work, although it won’t be as nice and smooth. For example, it won’t help at all if you’ll get a join request during loading or while in pits.[br][br]If you’re developing interface apps and want to integrate this feature, please, contact me." />
+            </c:MessageBlock>
+          </StackPanel>
 
         </StackPanel>
       </mui:SpacingUniformGrid>

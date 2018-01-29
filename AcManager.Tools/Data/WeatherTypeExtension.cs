@@ -68,20 +68,6 @@ namespace AcManager.Tools.Data {
         }
 
         public static bool Fits(this WeatherObject weatherObject, int? time, double? temperature) {
-            if (time.HasValue) {
-                Logging.Debug("Time fits: " + (weatherObject.TimeDiapason?.TimeDiapasonContains(time.Value) != false));
-                Logging.Debug(weatherObject.TimeDiapason);
-                Logging.Debug(time);
-            }
-
-            if (temperature.HasValue) {
-                Logging.Debug("Temperature fits: " + (weatherObject.TemperatureDiapason?.DiapasonContains(temperature.Value) != false));
-                Logging.Debug(weatherObject.TemperatureDiapason);
-                Logging.Debug(temperature);
-            }
-
-            Logging.Debug(weatherObject.TemperatureDiapason);
-
             return weatherObject.Enabled
                     && (time == null || weatherObject.TimeDiapason?.TimeDiapasonContains(time.Value) != false)
                     && (temperature == null || weatherObject.TemperatureDiapason?.DiapasonContains(temperature.Value) != false);
@@ -93,21 +79,14 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         public static WeatherObject TryToGetWeather(this WeatherType type, int time, double temperature, ref string currentFootprint) {
-            Logging.Debug("Type: " + type);
             if (type == WeatherType.None) return null;
 
             try {
                 var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Fits(time, temperature)).ToList();
-                Logging.Debug("Candidates: " + candidates.Select(x => x.DisplayName + "; " + x.Type).JoinToString("; "));
-
                 var closest = type.FindClosestWeather(from w in candidates select w.Type);
-                Logging.Debug("Closest type: " + closest);
-
                 if (closest == null) return null;
 
                 candidates = candidates.Where(x => x.Type == closest).ToList();
-                Logging.Debug("Filtered candidates: " + candidates.Select(x => x.DisplayName).JoinToString("; "));
-
                 var footprint = candidates.Select(x => x.Id).JoinToString(';');
                 if (footprint == currentFootprint) return null;
 

@@ -413,16 +413,35 @@ namespace AcManager.Tools.ContentInstallation {
                 var root = directory.Parent?.Parent?.Parent;
                 var gui = root?.GetSubDirectory("content")?.GetSubDirectory("gui")?.GetSubDirectory("icons");
 
-                // Let’s try to guess version
+                // Collecting values…
                 var missing = false;
-                string version = null;
-                foreach (var c in PythonAppObject.VersionSources.Select(directory.GetSubFile).NonNull()) {
-                    var r = await c.Info.ReadAsync();
-                    if (r == null) {
+                var uiAppFound = false;
+                string version = null, name = null;
+
+                // Maybe, it’s done nicely?
+                var uiApp = directory.GetSubDirectory("ui")?.GetSubFile("ui_app.json");
+                if (uiApp != null) {
+                    uiAppFound = true;
+                    var data = await uiApp.Info.ReadAsync();
+                    if (data == null) {
                         missing = true;
                     } else {
-                        version = PythonAppObject.GetVersion(r.ToUtf8String());
-                        if (version != null) break;
+                        var parsed = JsonExtension.Parse(data.ToUtf8String());
+                        name = parsed.GetStringValueOnly("name");
+                        version = parsed.GetStringValueOnly("version");
+                    }
+                }
+
+                // Let’s try to guess version
+                if (version == null && !uiAppFound) {
+                    foreach (var c in PythonAppObject.VersionSources.Select(directory.GetSubFile).NonNull()) {
+                        var r = await c.Info.ReadAsync();
+                        if (r == null) {
+                            missing = true;
+                        } else {
+                            version = PythonAppObject.GetVersion(r.ToUtf8String());
+                            if (version != null) break;
+                        }
                     }
                 }
 
@@ -451,7 +470,7 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 return new PythonAppContentEntry(directory.Key ?? "", id,
-                        id, version, icon, icons?.Select(x => x.Key));
+                        name ?? id, version, icon, icons?.Select(x => x.Key));
             }
 
             var ui = directory.GetSubDirectory("ui");

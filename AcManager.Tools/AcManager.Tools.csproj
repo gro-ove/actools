@@ -238,7 +238,10 @@
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
     <Compile Include="GameProperties\ExtraHotkeysRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
+    <Compile Include="GameProperties\InGameApp\CmInGameAppDelayedInputParams.cs" />
     <Compile Include="GameProperties\InGameApp\CmInGameAppHelper.cs" />
+    <Compile Include="GameProperties\InGameApp\CmInGameAppJoinRequestParams.cs" />
+    <Compile Include="GameProperties\InGameApp\CmInGameAppParamsBase.cs" />
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\NationCodeProvider.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
