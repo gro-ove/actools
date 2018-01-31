@@ -70,11 +70,11 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 File.WriteAllBytes(Path.Combine(directory, "sent.zip"), memory.ToArray());
-                InternalUtils.SendLocale(memory.ToArray(), $@"Name: {GetUserName()}
-Used language: {CultureInfo.CurrentUICulture.Name}
-Locale: {Path.GetFileName(directory)}
-Operating system: {GetWindowsName()}
-App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
+                InternalUtils.SendLocale(memory.ToArray(), $@"Name: {GetUserName()};
+Used language: {CultureInfo.CurrentUICulture.Name};
+Locale: {Path.GetFileName(directory)};
+Operating system: {GetWindowsName()};
+App version: {BuildInformation.AppVersion}.", CmApiProvider.UserAgent);
             }
         }
 
@@ -194,18 +194,18 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                     throw new Exception("Size limit exceeded");
                 }
 
-                InternalUtils.SendAppReport(memory.ToArray(), $@"Name: {GetUserName()}
-Operating system: {GetWindowsName()}
-App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
+                InternalUtils.SendAppReport(memory.ToArray(), $@"Name: {GetUserName()};
+Operating system: {GetWindowsName()};
+App version: {BuildInformation.AppVersion}.", CmApiProvider.UserAgent);
             }
         }
 
         [Localizable(false)]
-        public static void SendData([NotNull] string name, [NotNull] object obj) {
+        public static void SendData([NotNull] string name, [NotNull] object obj, string notes) {
             using (var memory = new MemoryStream()) {
                 using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
                     try {
-                        writer.WriteString(name, JsonConvert.SerializeObject(obj));
+                        writer.WriteString(name, obj is string s ? s : JsonConvert.SerializeObject(obj));
                     } catch (Exception e) {
                         Logging.Warning($"Can’t attach {obj}: " + e);
                     }
@@ -221,9 +221,11 @@ App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
                 File.WriteAllBytes(FilesStorage.Instance.GetTemporaryFilename("Data.zip"), data);
 #endif
 
-                InternalUtils.SendData(memory.ToArray(), $@"Name: {GetUserName()}
-Operating system: {GetWindowsName()}
-App version: {BuildInformation.AppVersion}", CmApiProvider.UserAgent);
+                InternalUtils.SendData(memory.ToArray(), $@"Name: {GetUserName()};
+Notes: {notes.ToSentenceMember()};
+Used language: {CultureInfo.CurrentUICulture.Name};
+Operating system: {GetWindowsName()};
+App version: {BuildInformation.AppVersion}.", CmApiProvider.UserAgent);
             }
         }
     }

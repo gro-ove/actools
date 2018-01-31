@@ -101,26 +101,6 @@
           <Label Content="Continue race if Escape pressed" />
         </CheckBox>
 
-        <!-- Player’s name -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_PlayerNameHeader}" />
-
-        <DockPanel set:Search.Keywords="driver;player;name">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_NameLabel}" />
-          <mui:BetterTextBox Text="{Binding Drive.PlayerName}" Placeholder="?" />
-        </DockPanel>
-
-        <DockPanel set:Search.Keywords="driver;player;name">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_NationalityLabel}" />
-          <mui:BetterComboBox Text="{Binding Drive.PlayerNationality}" Placeholder="?"
-              ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
-        </DockPanel>
-
-        <DockPanel set:Search.Keywords="driver;player;name" ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
-          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
-          <mui:BetterTextBox Text="{Binding Drive.PlayerNameOnline}" Placeholder="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
-        </DockPanel>
-
         <!-- Quick drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
@@ -188,8 +168,28 @@
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Drive}" Style="{StaticResource SettingsPanel}">
 
+        <!-- Player’s name -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Drive_PlayerNameHeader}" />
+
+        <DockPanel set:Search.Keywords="driver;player;name">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_NameLabel}" />
+          <mui:BetterTextBox Text="{Binding Drive.PlayerName}" Placeholder="?" />
+        </DockPanel>
+
+        <DockPanel set:Search.Keywords="driver;player;name">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_NationalityLabel}" />
+          <mui:BetterComboBox Text="{Binding Drive.PlayerNationality}" Placeholder="?"
+              ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
+        </DockPanel>
+
+        <DockPanel set:Search.Keywords="driver;player;name" ToolTip="{x:Static g:AppStrings.Settings_Drive_OnlineName_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_OnlineNameLabel}" />
+          <CheckBox DockPanel.Dock="Left" IsChecked="{Binding Drive.DifferentPlayerNameOnline}" VerticalAlignment="Center" />
+          <mui:BetterTextBox Text="{Binding Drive.PlayerNameOnline}" Placeholder="?" IsEnabled="{Binding Drive.DifferentPlayerNameOnline}" />
+        </DockPanel>
+
         <!-- Kunos career -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_Drive_KunosCareerHeader}" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_KunosCareerHeader}" />
 
         <CheckBox IsChecked="{Binding Drive.KunosCareerUserAiLevel}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ChangeAiLevel}" />

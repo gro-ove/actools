@@ -337,6 +337,9 @@
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml.cs">
+      <DependentUpon>ControllerDefinitionsDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\DiscordJoinRequestDialog.xaml.cs">
       <DependentUpon>DiscordJoinRequestDialog.xaml</DependentUpon>
     </Compile>
@@ -914,6 +917,10 @@
     <Page Include="Pages\Dialogs\AppKeyDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\AssistsDialog.xaml">
       <SubType>Designer</SubType>

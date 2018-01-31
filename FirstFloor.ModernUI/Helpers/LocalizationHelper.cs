@@ -236,11 +236,19 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToSentenceMember(this string s) {
-            if (s.Length == 0) return string.Empty;
-
-            s = s.Length < 2 || char.IsLower(s[0]) || char.IsUpper(s[1]) || s.Length > 2 && char.IsPunctuation(s[1]) && char.IsUpper(s[2]) ? s :
-                    char.ToLower(s[0], CultureInfo.CurrentUICulture) + s.Substring(1);
+            if (s.Length < 2) return s;
+            s = char.IsUpper(s[0]) ? ToSentenceCase(s) : s;
             return s[s.Length - 1] == '.' || s[s.Length - 1] == '…' ? s.Substring(0, s.Length - 1) : s;
+
+            string ToSentenceCase(string p) {
+                for (var i = 1; i < p.Length; i++) {
+                    var c = p[i];
+                    if (char.IsLower(c)) continue;
+                    if (char.IsUpper(c) || char.IsDigit(c) || char.IsPunctuation(c) && i < p.Length - 1 && char.IsUpper(p[i + 1])) return p;
+                    break;
+                }
+                return char.ToLower(p[0], CultureInfo.CurrentUICulture) + p.Substring(1);
+            }
         }
 
         public static string ToTitle(this string s, CultureInfo culture) {

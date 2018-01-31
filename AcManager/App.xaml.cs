@@ -106,18 +106,20 @@ namespace AcManager {
             NonfatalError.Initialize();
             LocaleHelper.InitializeAsync().Wait();
 
+            var softwareRenderingModeWasEnabled = IsSoftwareRenderingModeEnabled();
+
             if (forceSoftwareRenderingMode) {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
 
-            if (AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering)) {
+            if (IsSoftwareRenderingModeEnabled()) {
                 SwitchToSoftwareRendering();
             }
 
             var app = new App();
 
             // some sort of safe mode
-            if (forceSoftwareRenderingMode) {
+            if (forceSoftwareRenderingMode && !softwareRenderingModeWasEnabled) {
                 Toast.Show("Safe mode", "Failed to start the last time, now CM uses software rendering", () => {
                     if (ModernDialog.ShowMessage(
                             "Would you like to switch back to hardware rendering? You can always do that in Settings/Appearance. App will be restarted.",
@@ -130,6 +132,10 @@ namespace AcManager {
             }
 
             app.Run();
+        }
+
+        public static bool IsSoftwareRenderingModeEnabled() {
+            return AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering);
         }
 
         private static void SwitchToSoftwareRendering() {

@@ -828,6 +828,15 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
+        public static void ForEach<T>([NotNull] this IEnumerable<T> source, Action<T, int> action) {
+            var index = 0;
+            using (var enumerator = source.GetEnumerator()) {
+                while (enumerator.MoveNext()) {
+                    action(enumerator.Current, index++);
+                }
+            }
+        }
+
         public static void ForEach<TFirst, TSecond>([NotNull] this IEnumerable<TFirst> source, IEnumerable<TSecond> second, Action<TFirst, TSecond> action) {
             using (var enumeratorFirst = source.GetEnumerator())
             using (var enumeratorSecond = second.GetEnumerator()) {

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.GameProperties;
@@ -16,10 +17,13 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Profile {
@@ -45,6 +49,14 @@ namespace AcManager.Tools.Profile {
 
         public IEnumerable<LapTimesSource> EnabledSources => _sources.Where(x => x.IsEnabled);
 
+        private static string GetSidekickDirectory(){
+            return Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick");
+        }
+
+        private static string GetRaceEssentialsDirectory(){
+            return Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials");
+        }
+
         private LapTimesManager() {
             _sources = new[] {
                 new LapTimesSource(CmSourceId,
@@ -64,19 +76,20 @@ namespace AcManager.Tools.Profile {
                 new LapTimesSource(SidekickSourceId,
                         "Sidekick", "Very good source of lap times, accurate and reliable.",
                         "Settings.LapTimesSettings.SourceSidekick", true, false,
-                        () => new SidekickLapTimesReader(
-                                Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "Sidekick"),
-                                this), () => TracksManager.Instance.EnsureLoadedAsync()) {
-                                    DetailsUrl = "http://www.racedepartment.com/downloads/sidekick.11007/"
-                                },
+                        () => new SidekickLapTimesReader(GetSidekickDirectory(), this), () => TracksManager.Instance.EnsureLoadedAsync()) {
+                            DetailsUrl = "http://www.racedepartment.com/downloads/sidekick.11007/",
+                            ExtraTools = { CreateSidekickFixTool(GetSidekickDirectory) }
+                        },
                 new LapTimesSource(RaceEssentialsSourceId,
                         "Race Essentials", "Quite good source of lap times as well.",
                         "Settings.LapTimesSettings.SourceRaceEssentials", true, false,
-                        () => new SidekickLapTimesReader(
-                                Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "RaceEssentials"),
-                                this), () => TracksManager.Instance.EnsureLoadedAsync()),
+                        () => new SidekickLapTimesReader(GetRaceEssentialsDirectory(), this), () => TracksManager.Instance.EnsureLoadedAsync()) {
+                            DetailsUrl = "http://www.racedepartment.com/downloads/sidekick.11007/",
+                            ExtraTools = { CreateSidekickFixTool(GetRaceEssentialsDirectory) }
+                        },
                 new LapTimesSource(Ov1InfoSourceId,
-                        "Rivali OV1 Info", "Sadly, there is no information about entries date. If you need a patch for 64-bit AC or layouts support, you can get it [url=\"http://acstuff.ru/f/d/15-rivali-ov1-info\"]here[/url].",
+                        "Rivali OV1 Info",
+                        "Sadly, there is no information about entries date. If you need a patch for 64-bit AC or layouts support, you can get it [url=\"http://acstuff.ru/f/d/15-rivali-ov1-info\"]here[/url].",
                         "Settings.LapTimesSettings.SourceOv1Info", false, false,
                         () => new Ov1InfoLapTimesReader(
                                 Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "OV1Info"),
@@ -84,6 +97,47 @@ namespace AcManager.Tools.Profile {
             };
 
             Entries = new BetterObservableCollection<LapTimeEntry>();
+        }
+
+        private static LapTimesExtraTool CreateSidekickFixTool(Func<string> appDirectoryCallback) {
+            return new LapTimesExtraTool("Fix lap times",
+                    "Older CM versions could break some records, sorry about it. But now, you can use this button to quickly fix them!",
+                    new AsyncCommand(async () => {
+                        try {
+                            var fixedCount = 0;
+                            using (var waiting = WaitingDialog.Create("Fixing values")) {
+                                var directory = Path.Combine(appDirectoryCallback(), "personal_best");
+                                var files = await Task.Run(() => new DirectoryInfo(directory).GetFiles("*_pb.ini"));
+
+                                for (var i = 0; i < files.Length; i++) {
+                                    var file = files[i];
+                                    if (file.Length != 11) continue;
+
+                                    var bytes = File.ReadAllBytes(file.FullName);
+                                    if (bytes.Length != 11 || bytes[0] != 0x80 || bytes[1] != 3 || bytes[2] != (byte)'L') continue;
+
+                                    waiting.Report(file.Name, i, files.Length);
+
+                                    var value = BitConverter.ToInt64(bytes, 3);
+                                    using (var writer = new BinaryWriter(File.Create(file.FullName))) {
+                                        writer.Write(new byte[] { 0x80, 3, (byte)'L' });
+                                        writer.Write(Encoding.ASCII.GetBytes(value.As<string>()));
+                                        writer.Write((byte)'\n');
+                                        writer.Write((byte)'.');
+                                    }
+
+                                    fixedCount++;
+                                    await Task.Yield();
+                                }
+                            }
+
+                            ModernDialog.ShowMessage(
+                                    fixedCount > 0 ? PluralizingConverter.PluralizeExt(fixedCount, "{0} error") + " fixed." : "No errors found.",
+                                    "Finished", MessageBoxButton.OK);
+                        } catch (Exception e) {
+                            NonfatalError.Notify("Can’t fix records", e);
+                        }
+                    }));
         }
 
         public void SetListener() {
@@ -164,7 +218,8 @@ namespace AcManager.Tools.Profile {
         }
 
         public async Task AddEntry(string carId, string trackId, DateTime date, TimeSpan time) {
-            await EnabledSources.Where(x => x.AutoAddEntries).Select(x => x.AddEntryAsync(new LapTimeEntry(x.DisplayName, carId, trackId, date, time))).WhenAll(2);
+            await EnabledSources.Where(x => x.AutoAddEntries).Select(x => x.AddEntryAsync(new LapTimeEntry(x.DisplayName, carId, trackId, date, time))).WhenAll(
+                    2);
             RaiseEntriesChanged();
         }
 
@@ -186,7 +241,7 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        private class LapTimeEntryComparer : IComparer<LapTimeEntry>{
+        private class LapTimeEntryComparer : IComparer<LapTimeEntry> {
             public int Compare(LapTimeEntry x, LapTimeEntry y) {
                 if (x == null) return y == null ? 0 : 1;
                 if (y == null) return -1;

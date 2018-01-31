@@ -48,8 +48,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var menu = args.Menu ?? Menu ?? (LookForParentMenu ?
                     this.GetParents().OfType<FrameworkElement>().Select(x => x.ContextMenu).FirstOrDefault(x => x != null) : null);
 
-            if (args.Menu != null && (args.Menu as FrameworkElement)?.DataContext == null) {
-                ((FrameworkElement)args.Menu).SetBinding(DataContextProperty, new Binding {
+            if ((menu as FrameworkElement)?.DataContext == null) {
+                ((FrameworkElement)menu)?.SetBinding(DataContextProperty, new Binding {
                     Source = this,
                     Path = new PropertyPath(nameof(DataContext))
                 });

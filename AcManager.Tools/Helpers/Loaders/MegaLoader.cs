@@ -47,7 +47,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 File.Delete(d.Filename);
             }
 
-            await _client.DownloadFileAsync(_uri, d.Filename, new Progress<double>(x => progress?.Report((long)(TotalSize ?? 0 * x / 100))), cancellation);
+            await _client.DownloadFileAsync(_uri, d.Filename, new Progress<double>(x => progress?.Report((long)((TotalSize ?? 0d) * x / 100))), cancellation);
             return d.Filename;
         }
 

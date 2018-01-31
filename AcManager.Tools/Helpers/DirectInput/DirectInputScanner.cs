@@ -53,8 +53,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return true;
         }
 
-        private static void UpdateScanTime(TimeSpan timeSpan) {
-            _scanTime = timeSpan;
+        private static void UpdateScanTime() {
             lock (Instances) {
                 for (var i = Instances.Count - 1; i >= 0; i--) {
                     Instances[i].RaiseScanTimeUpdate();
@@ -80,9 +79,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     }
 
                     getDevices.Stop();
+                    _scanTime = getDevices.Elapsed;
 
                     if (!UpdateLists(list)) {
-                        UpdateScanTime(getDevices.Elapsed);
+                        UpdateScanTime();
                     }
 
                     Thread.Sleep(OptionMinRescanPeriod + getDevices.Elapsed);
@@ -175,6 +175,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             public Watcher(IList<DeviceInstance> staticData, bool oneTime) {
                 _instanceData = staticData;
+                _hasData = _instanceData != null;
                 _oneTime = oneTime;
 
                 lock (Instances) {

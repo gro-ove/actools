@@ -9,10 +9,12 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.Helpers.DirectInput;
 using AcManager.Tools.Miscellaneous;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -214,10 +216,16 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private void ShareButton_OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e) {
+        private void OnShareButtonClick(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
             ShareContextMenu.DataContext = DataContext;
             ShareContextMenu.IsOpen = true;
+        }
+
+        private void OnDeviceEditNamesClick(object sender, RoutedEventArgs e) {
+            if (((FrameworkElement)sender).DataContext is DirectInputDevice device) {
+                new ControllerDefinitionsDialog(device).ShowDialog();
+            }
         }
     }
 }

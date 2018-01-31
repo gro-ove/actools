@@ -29,8 +29,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void OnHistoryDoubleClick(object sender, MouseButtonEventArgs e) {
-            var value = HistoryDataGrid.SelectedValue as SharedEntry;
-            if (value != null) {
+            if (HistoryDataGrid.SelectedValue is SharedEntry value) {
                 Process.Start(value.Url + "#noauto");
             }
         }

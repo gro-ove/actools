@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Data;
+using FirstFloor.ModernUI.Serialization;
 
 namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
@@ -49,6 +50,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public static string GetValue(string key, object defaultValue = null) {
             return StoredValue.Create(key, defaultValue).Value;
+        }
+
+        public static T GetValue<T>(string key, T defaultValue = default(T)) {
+            return StoredValue.Create(key, defaultValue).Value.As(defaultValue);
         }
 
         public static void SetValue(string key, string value) {

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -10,6 +11,21 @@ using System.Xml.Linq;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI {
+    public static class ResourceManagerExtension {
+        public static IEnumerable<KeyValuePair<string, string>> Enumerate(this ResourceManager manager) {
+            foreach (DictionaryEntry entry in manager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)){
+                yield return new KeyValuePair<string, string>(entry.Key.ToString(), entry.Value.ToString());
+            }
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> Enumerate(this CustomResourceManager manager) {
+            foreach (DictionaryEntry entry in manager.GetResourceSet(CultureInfo.CurrentUICulture, true, true)) {
+                var key = entry.Key.ToString();
+                yield return new KeyValuePair<string, string>(key, manager.GetString(key));
+            }
+        }
+    }
+
     [Localizable(false)]
     public class CustomResourceManager : ResourceManager {
         public static bool BasicMode;
@@ -60,9 +76,8 @@ namespace FirstFloor.ModernUI {
                     _custom = LoadCustomResource(location) ?? new Dictionary<string, string>();
                 }
 
-                if (_custom != null) {
-                    string result;
-                    if (_custom.TryGetValue(name, out result)) return result;
+                if (_custom != null && _custom.TryGetValue(name, out var result)) {
+                    return result;
                 }
 
                 return base.GetString(name, culture);

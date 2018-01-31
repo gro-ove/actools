@@ -1,160 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Interop;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
-using Newtonsoft.Json.Linq;
 using SlimDX;
 using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
-    public interface IDirectInputDevice : IWithId {
-        bool IsVirtual { get; }
-
-        string DisplayName { get; }
-
-        int Index { get; }
-
-        IList<int> OriginalIniIds { get; }
-
-        bool Same(IDirectInputDevice other);
-
-        [CanBeNull]
-        DirectInputAxle GetAxle(int id);
-
-        [CanBeNull]
-        DirectInputButton GetButton(int id);
-
-        [CanBeNull]
-        DirectInputPov GetPov(int id, DirectInputPovDirection direction);
-    }
-
-    public class DisplayInputParams {
-        public readonly int Take;
-
-        private readonly Func<int, bool> _test;
-        private readonly Func<int, string> _name;
-
-        public bool Test(int v) {
-            return _test(v);
-        }
-
-        [CanBeNull]
-        public string Name(int v) {
-            return _name(v);
-        }
-
-        public DisplayInputParams(JToken token) {
-            switch (token) {
-                case JArray tokenArray:
-                    Take = tokenArray.Count;
-                    _test = x => true;
-                    _name = x => x >= 0 && x < tokenArray.Count ? ContentUtils.Translate(tokenArray[x]?.ToString()) : null;
-                    break;
-                case JObject tokenObject:
-                    Take = int.MaxValue;
-                    _test = x => tokenObject[x.ToInvariantString()] != null;
-                    _name = x => ContentUtils.Translate(tokenObject[x.ToInvariantString()]?.ToString());
-                    break;
-                default:
-                    Take = token?.Type == JTokenType.Integer ? (int)token : int.MaxValue;
-                    _test = x => true;
-                    _name = x => null;
-                    break;
-            }
-        }
-
-        [ContractAnnotation(@"
-                => displayName:null, axes:null, buttons:null, povs:null, false;
-                => displayName:notnull, axes:notnull, buttons:notnull, povs:notnull, true")]
-        public static bool Get([NotNull] string guid, out string displayName, out DisplayInputParams axes, out DisplayInputParams buttons, out DisplayInputParams povs) {
-            var file = FilesStorage.Instance.GetContentFile("Controllers", $"{guid}.json");
-            if (file.Exists) {
-                Logging.Debug($"Description found: {guid.ToUpperInvariant()}");
-
-                try {
-                    var jData = JsonExtension.Parse(File.ReadAllText(file.Filename));
-                    displayName = ContentUtils.Translate(jData.GetStringValueOnly("name"));
-                    axes = new DisplayInputParams(jData["axes"] ?? jData["axles"]);
-                    buttons = new DisplayInputParams(jData["buttons"]);
-                    povs = new DisplayInputParams(jData["pov"] ?? jData["povs"] ?? jData["pointOfViews"]);
-                    return true;
-                } catch (Exception e) {
-                    Logging.Warning(e);
-                }
-            } else {
-                Logging.Debug($"Unknown device: {guid}");
-            }
-
-            displayName = null;
-            axes = null;
-            buttons = null;
-            povs = null;
-            return false;
-        }
-    }
-
-    public class PlaceholderInputDevice : IDirectInputDevice {
-        [CanBeNull]
-        private readonly DisplayInputParams _axesP, _buttonsP, _povsP;
-
-        public PlaceholderInputDevice([CanBeNull] string id, string displayName, int index) {
-            Id = id;
-            Index = index;
-            OriginalIniIds = new List<int> { index };
-
-            if (id != null && DisplayInputParams.Get(id, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP)) {
-                DisplayName = gotDisplayName;
-            } else {
-                DisplayName = displayName;
-            }
-        }
-
-        [CanBeNull]
-        public string Id { get; }
-
-        public bool IsVirtual => true;
-
-        public string DisplayName { get; }
-
-        public int Index { get; set; }
-
-        public IList<int> OriginalIniIds { get; }
-
-        private readonly Dictionary<int, DirectInputAxle> _axes = new Dictionary<int, DirectInputAxle>();
-
-        private readonly Dictionary<int, DirectInputButton> _buttons = new Dictionary<int, DirectInputButton>();
-
-        private readonly Dictionary<Tuple<int, DirectInputPovDirection>, DirectInputPov> _direction
-                = new Dictionary<Tuple<int, DirectInputPovDirection>, DirectInputPov>();
-
-        public bool Same(IDirectInputDevice other) {
-            return other != null && (Id == other.Id || DisplayName == other.DisplayName);
-        }
-
-        public DirectInputAxle GetAxle(int id) {
-            return id < 0 ? null : _axes.TryGetValue(id, out var result) ? result : (_axes[id] = new DirectInputAxle(this, id, _axesP?.Name(id)));
-        }
-
-        public DirectInputButton GetButton(int id) {
-            return id < 0 ? null : _buttons.TryGetValue(id, out var result) ? result : (_buttons[id] = new DirectInputButton(this, id, _buttonsP?.Name(id)));
-        }
-
-        public DirectInputPov GetPov(int id, DirectInputPovDirection direction) {
-            var key = Tuple.Create(id, direction);
-            return id < 0 ? null : _direction.TryGetValue(key, out var result) ? result : (_direction[key] = new DirectInputPov(this, id, direction, _povsP?.Name(id)));
-        }
-
-        public override string ToString() {
-            return $"PlaceholderInputDevice({Id}:{DisplayName}, Ini={Index})";
-        }
-    }
-
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
         [NotNull]
         public DeviceInstance Device { get; }
@@ -191,9 +48,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public DirectInputButton[] Buttons { get; }
         public DirectInputPov[] Povs { get; }
 
-        public List<DirectInputAxle> VisibleAxis { get; }
-        public List<DirectInputButton> VisibleButtons { get; }
-        public List<DirectInputPov> VisiblePovs { get; }
+        public IReadOnlyList<DirectInputAxle> VisibleAxis { get; set; }
+        public IReadOnlyList<DirectInputButton> VisibleButtons { get; set; }
+        public IReadOnlyList<DirectInputPov> VisiblePovs { get; set; }
 
         private Joystick _joystick;
 
@@ -244,55 +101,43 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 }
             }
 
-            GetCapabilities(out var displayName, out var axes, out var buttons, out var povs);
-            DisplayName = displayName ?? device.InstanceName;
-            Axis = axes;
-            Buttons = buttons;
-            Povs = povs;
+            Axis = Enumerable.Range(0, 8).Select(x => new DirectInputAxle(this, x)).ToArray();
+            Buttons = Enumerable.Range(0, _joystick.Capabilities.ButtonCount).Select(x => new DirectInputButton(this, x)).ToArray();
+            Povs = Enumerable.Range(0, _joystick.Capabilities.PovCount)
+                             .SelectMany(x => Enumerable.Range(0, 4).Select(y => new { Id = x, Direction = (DirectInputPovDirection)y }))
+                             .Select(x => new DirectInputPov(this, x.Id, x.Direction)).ToArray();
+            RefreshDescription();
+            FilesStorage.Instance.Watcher(ContentCategory.Controllers).Update += OnDefinitionsUpdate;
+        }
+
+        public static string FixDisplayName(string deviceName) {
+            var trimmed = Regex.Replace(Regex.Replace(deviceName, @"\b(?:USB|Racing Wheel)\b", ""), @"\s+", " ").Trim();
+            return string.IsNullOrEmpty(trimmed) ? deviceName : trimmed;
+        }
+
+        private void OnDefinitionsUpdate(object sender, EventArgs eventArgs) {
+            RefreshDescription();
+        }
+
+        public void RefreshDescription() {
+            DisplayInputParams.Get(Device.ProductGuid.ToString(), out var displayName, out var axisP, out var buttonsP, out var povsP);
+            DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
+            Proc(Axis, axisP);
+            Proc(Buttons, buttonsP);
+            Proc(Povs, povsP);
+
+            void Proc(IEnumerable<IInputProvider> items, DisplayInputParams p) {
+                foreach (var t in items) {
+                    t.SetDisplayParams(p?.Name(t.Id), p?.Test(t.Id) ?? true);
+                }
+            }
+
             VisibleAxis = Axis.Where(x => x.IsVisible).ToList();
             VisibleButtons = Buttons.Where(x => x.IsVisible).ToList();
             VisiblePovs = Povs.Where(x => x.IsVisible).ToList();
-        }
-
-        private void GetCapabilities([CanBeNull] out string displayName, out DirectInputAxle[] axes,out DirectInputButton[] buttons,  out DirectInputPov[] povs) {
-            if (DisplayInputParams.Get(Device.ProductGuid.ToString(), out displayName, out var axesP, out var buttonsP, out var povsP)) {
-                axes = Axles(axesP.Take, axesP.Test, axesP.Name);
-                buttons = Buttons(buttonsP.Take, buttonsP.Test, buttonsP.Name);
-                povs = Povs(povsP.Take, povsP.Test, povsP.Name);
-            } else {
-                axes = Axles();
-                buttons = Buttons();
-                povs = Povs();
-            }
-
-            DirectInputAxle[] Axles(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
-                return Enumerable.Range(0, 8).Take(take ?? int.MaxValue)
-                                 .Select(x => new DirectInputAxle(this, x, name?.Invoke(x)) {
-                                     IsVisible = test?.Invoke(x) != false
-                                 })
-                                 .ToArray();
-            }
-
-            DirectInputButton[] Buttons(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
-                return Enumerable.Range(0, _joystick.Capabilities.ButtonCount)
-                                 .Take(take?? int.MaxValue)
-                                 .Select(x => new DirectInputButton(this, x, name?.Invoke(x)) {
-                                     IsVisible = test?.Invoke(x) != false
-                                 }).ToArray();
-            }
-
-            DirectInputPov[] Povs(int? take = null, Func<int, bool> test = null, Func<int, string> name = null) {
-                return Enumerable.Range(0, _joystick.Capabilities.PovCount)
-                                 .Take(take ?? int.MaxValue)
-                                 .SelectMany(x => Enumerable.Range(0, 4).Select(y => new {
-                                     Id = x,
-                                     Direction = (DirectInputPovDirection)y
-                                 }))
-                                 .Select(x => new DirectInputPov(this, x.Id, x.Direction,
-                                         name?.Invoke(x.Id) ?? (_joystick.Capabilities.PovCount == 1 ? "POV" : null)) {
-                                             IsVisible = test?.Invoke(x.Id) != false
-                                         }).ToArray();
-            }
+            OnPropertyChanged(nameof(VisibleAxis));
+            OnPropertyChanged(nameof(VisibleButtons));
+            OnPropertyChanged(nameof(VisiblePovs));
         }
 
         [CanBeNull]
@@ -369,6 +214,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public void Dispose() {
+            FilesStorage.Instance.Watcher(ContentCategory.Controllers).Update -= OnDefinitionsUpdate;
             DisposeHelper.Dispose(ref _joystick);
         }
     }

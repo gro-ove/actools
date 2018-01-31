@@ -15,6 +15,21 @@ namespace FirstFloor.ModernUI.Tests {
         }
 
         [Test]
+        public void ToSentenceMemberTest() {
+            Assert.AreEqual("", "".ToSentenceMember());
+            Assert.AreEqual(".", ".".ToSentenceMember());
+            Assert.AreEqual("A", "A".ToSentenceMember());
+            Assert.AreEqual("it", "It".ToSentenceMember());
+            Assert.AreEqual("IT", "IT".ToSentenceMember());
+            Assert.AreEqual("abc", "Abc".ToSentenceMember());
+            Assert.AreEqual("abc Def", "Abc Def".ToSentenceMember());
+            Assert.AreEqual("abc Def", "abc Def".ToSentenceMember());
+            Assert.AreEqual("RSS Def", "RSS Def".ToSentenceMember());
+            Assert.AreEqual("NaMe Def", "NaMe Def".ToSentenceMember());
+            Assert.AreEqual("Dig1t Def", "Dig1t Def".ToSentenceMember());
+        }
+
+        [Test]
         public void PluralizingTest() {
             CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("hour", PluralizingConverter.PluralizeExt(1, "hour"));

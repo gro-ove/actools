@@ -26,7 +26,7 @@ namespace AcManager.Tools.Profile {
         private bool _isEnabled;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (Equals(value, _isEnabled)) return;
                 _isEnabled = value;
@@ -46,7 +46,7 @@ namespace AcManager.Tools.Profile {
         private bool _autoAddEntries;
 
         public bool AutoAddEntries {
-            get { return _autoAddEntries && AutoAddAllowed; }
+            get => _autoAddEntries && AutoAddAllowed;
             set {
                 if (Equals(value, _autoAddEntries)) return;
                 _autoAddEntries = value;
@@ -54,6 +54,8 @@ namespace AcManager.Tools.Profile {
                 OnPropertyChanged();
             }
         }
+
+        public List<LapTimesExtraTool> ExtraTools { get; } = new List<LapTimesExtraTool>();
 
         public LapTimesSource([NotNull] string id, string displayName, string description, string enabledKey, bool enabledByDefault,
                 bool autoAddAllowed, [CanBeNull] Func<ILapTimesReader> readerFunc, Func<Task> preparationFunc) {
@@ -79,7 +81,7 @@ namespace AcManager.Tools.Profile {
         private string _detailsUrl;
 
         public string DetailsUrl {
-            get { return _detailsUrl; }
+            get => _detailsUrl;
             set {
                 if (Equals(value, _detailsUrl)) return;
                 _detailsUrl = value;
@@ -98,7 +100,7 @@ namespace AcManager.Tools.Profile {
         private bool _isLoading;
 
         public bool IsLoading {
-            get { return _isLoading; }
+            get => _isLoading;
             set {
                 if (Equals(value, _isLoading)) return;
                 _isLoading = value;

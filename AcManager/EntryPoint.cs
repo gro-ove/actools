@@ -13,6 +13,7 @@ using System.Security.Permissions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Interop;
 using AcManager.Tools.Helpers;
@@ -22,6 +23,7 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using Application = System.Windows.Forms.Application;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace AcManager {
@@ -69,6 +71,14 @@ namespace AcManager {
 
         [STAThread]
         private static void Main(string[] a) {
+            if (Type.GetType("System.Web.HttpResponse, System.Web, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a")?
+                    .GetMethod("AddOnSendingHeaders") == null
+                    && MessageBox.Show("It appears that .NET 4.5.2 is not installed. Would you like to download it first?", "Error",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Asterisk) == DialogResult.Yes) {
+                Process.Start("https://www.microsoft.com/net/download/dotnet-framework-runtime/net452");
+                return;
+            }
+
             try {
                 MainReal(a);
             } catch (Exception e) {
@@ -94,7 +104,7 @@ namespace AcManager {
             }
 
             if (AppArguments.GetBool(AppFlag.VisualStyles, true)) {
-                System.Windows.Forms.Application.EnableVisualStyles();
+                Application.EnableVisualStyles();
             }
 
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
@@ -153,22 +163,62 @@ namespace AcManager {
             FileUtils.EnsureFileDirectoryExists(tryingToRunFlag);
 
             var failedLastTime = File.Exists(tryingToRunFlag);
-            if (!failedLastTime) {
-                File.WriteAllBytes(tryingToRunFlag, new byte[0]);
+            if (failedLastTime) {
+                FileUtils.TryToDelete(tryingToRunFlag);
+                App.CreateAndRun(true);
+                return;
             }
 
+            var createdOnce = false;
             DpiAwareWindow.NewWindowCreated += OnWindowCreated;
-            App.CreateAndRun(failedLastTime);
+            App.CreateAndRun(false);
 
             void OnWindowCreated(object sender, EventArgs args) {
-                ((DpiAwareWindow)sender).Loaded += OnWindowLoaded;
+                if (App.IsSoftwareRenderingModeEnabled()) {
+                    DpiAwareWindow.NewWindowCreated -= OnWindowCreated;
+                    return;
+                }
+
+                var window = (DpiAwareWindow)sender;
+                if (TryToCreate()) {
+                    if (window.Content == null) {
+                        window.Content = new Border();
+                    }
+
+                    window.ContentRendered += OnWindowRendered;
+                }
+
+                // ((DpiAwareWindow)sender).Initialized += OnWindowLoaded;
             }
 
-            async void OnWindowLoaded(object sender, RoutedEventArgs args) {
+            /*void OnWindowLoaded(object sender, EventArgs e) {
+                var window = (DpiAwareWindow)sender;
+                if (TryToCreate()) {
+                    if (window.Content == null) {
+                        window.Content = new Border();
+                    }
+
+                    window.ContentRendered += OnWindowRendered;
+                }
+            }*/
+
+            async void OnWindowRendered(object sender, EventArgs args) {
+                var window = (DpiAwareWindow)sender;
+                window.ContentRendered -= OnWindowRendered;
+
                 await Task.Yield();
                 if (!_crashed) {
+                    Logging.Warning("Here");
                     FileUtils.TryToDelete(tryingToRunFlag);
                 }
+            }
+
+            bool TryToCreate() {
+                if (createdOnce || File.Exists(tryingToRunFlag)) return false;
+                createdOnce = true;
+                File.WriteAllBytes(tryingToRunFlag, new byte[0]);
+                DpiAwareWindow.NewWindowCreated -= OnWindowCreated;
+                return true;
             }
         }
 

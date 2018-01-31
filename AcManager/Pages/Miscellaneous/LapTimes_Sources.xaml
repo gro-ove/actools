@@ -20,10 +20,25 @@
       <DataTemplate DataType="t:LapTimesSource">
         <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="20" Margin="20">
           <DockPanel>
-            <Button DockPanel.Dock="Bottom" Content="Export" ToolTip="Export lap times from other enabled sources" Command="{Binding ExportCommand}"
-                Margin="0 12 0 0" />
+            <DockPanel DockPanel.Dock="Bottom" Margin="0 12 0 0">
+              <ItemsControl ItemsSource="{Binding ExtraTools}" Visibility="{Binding ExtraTools.Count, Converter={StaticResource MoreToVisibilityConverter}}"
+                  Margin="4 0 0 0" DockPanel.Dock="Right">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="4" />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate>
+                    <Button Content="{Binding DisplayName}" ToolTip="{Binding Hint}" Command="{Binding Command}" />
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Content="Export" ToolTip="Export lap times from other enabled sources" Command="{Binding ExportCommand}" />
+            </DockPanel>
+
             <mui:SpacingStackPanel Spacing="4" Height="160">
-              <!--name-->
+              <!-- Name -->
               <mui:ReferenceSwitch Value="{Binding DetailsUrl}" Height="32">
                 <mui:ReferenceSwitch.Null>
                   <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" VerticalAlignment="Bottom" />
@@ -36,7 +51,7 @@
                 </mui:ReferenceSwitch.NonNull>
               </mui:ReferenceSwitch>
 
-              <!--description-->
+              <!-- Description -->
               <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
 
               <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 12 0 0">
@@ -49,17 +64,17 @@
                   <Label>Add new lap times automatically</Label>
                 </CheckBox>
 
-                <!--loading-->
+                <!-- Loading -->
                 <Border Height="12" Margin="0 12 0 0" Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <ProgressBar IsIndeterminate="True" Height="4" VerticalAlignment="Center" Width="200" />
                 </Border>
 
-                <!--amount of entries-->
+                <!-- Amount of entries -->
                 <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12" Margin="0 12 0 0"
                     Text="{Binding EntriesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} entry', TargetNullValue='Loading…'}"
                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
 
-                <!--last modified-->
+                <!-- Last modified -->
                 <TextBlock Style="{StaticResource Small}" TextWrapping="Wrap" Height="12"
                     Text="{Binding LastModified, StringFormat='Last modified: {0}', TargetNullValue=''}"
                     Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />

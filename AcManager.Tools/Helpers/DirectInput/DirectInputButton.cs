@@ -1,15 +1,19 @@
 using System.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 
 namespace AcManager.Tools.Helpers.DirectInput {
-    public class DirectInputButton : BaseInputProvider<bool>, IDirectInputProvider {
+    public class DirectInputButton : InputProviderBase<bool>, IDirectInputProvider {
         public string DefaultName { get; }
 
-        public DirectInputButton(IDirectInputDevice device, int id, string displayName = null) : base(id) {
+        public DirectInputButton(IDirectInputDevice device, int id) : base(id) {
             Device = device;
             DefaultName = string.Format(ToolsStrings.Input_Button, (id + 1).ToInvariantString());
+            SetDisplayParams(null, true);
+        }
 
+        protected override void SetDisplayName(string displayName) {
             if (displayName?.Length > 2) {
                 var index = displayName.IndexOf(';');
                 if (index != -1) {
@@ -21,7 +25,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                     DisplayName = displayName.ToTitle();
                 }
             } else {
-                ShortName = displayName?.ToTitle() ?? (id + 1).ToInvariantString();
+                ShortName = displayName?.ToTitle() ?? (Id + 1).As<string>();
                 DisplayName = string.Format(ToolsStrings.Input_Button, ShortName);
             }
         }

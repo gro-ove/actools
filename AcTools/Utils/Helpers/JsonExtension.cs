@@ -498,5 +498,21 @@ namespace AcTools.Utils.Helpers {
                 }
             }
         }
+
+        public static JToken RemoveEmptyChildren(this JToken token) {
+            switch (token.Type) {
+                case JTokenType.Object:
+                    return new JObject(token.Children<JProperty>()
+                                            .Select(x => x.IsEmpty() ? null : new JProperty(x.Name, RemoveEmptyChildren(x.Value))).NonNull());
+                case JTokenType.Array:
+                    return new JObject(token.Children().Select(x => x.IsEmpty() ? null : RemoveEmptyChildren(x)).NonNull());
+                default:
+                    return token;
+            }
+        }
+
+        public static bool IsEmpty(this JToken token) {
+            return token.Type == JTokenType.Null;
+        }
     }
 }

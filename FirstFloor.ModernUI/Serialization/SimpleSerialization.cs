@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Serialization {
         /// <param name="targetNullValue">Return value by default, in case conversion failed or original value is null.</param>
         /// <typeparam name="T">Type of the result.</typeparam>
         /// <returns>Converted value.</returns>
-        [ContractAnnotation("targetNullValue:null => canbenull; targetNullValue:notnull => notnull")]
+        [ContractAnnotation("targetNullValue:null, value:null => canbenull; targetNullValue:notnull => notnull")]
         public static T As<T>([CanBeNull] this object value, T targetNullValue = default(T)) {
             switch (value) {
                 case T variable:

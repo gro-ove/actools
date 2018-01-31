@@ -273,7 +273,7 @@
       <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
           Margin="4 0 16 0" Padding="3 3" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
           Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" MaxLength="{TemplateBinding MaxLength}" />
     </c:Cell>
     <ControlTemplate.Triggers>
       <Trigger Property="HasItems" Value="False">
@@ -387,7 +387,7 @@
             VerticalAlignment="Center" IsHitTestVisible="False" />
         <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
             Margin="0 0 16 0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
-            IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
+            IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" MaxLength="{TemplateBinding MaxLength}"
             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
       </c:Cell>
     </c:AdornedControl>

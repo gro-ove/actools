@@ -136,12 +136,10 @@ namespace AcManager.Tools.AcObjectsNew {
 
             [NotNull]
             public T GetParams<T>() where T : AcCommonObjectPackerParams, new() {
-                var result = _packerParams as T;
-                if (result == null) {
+                if (!(_packerParams is T result)) {
                     result = new T();
                     _packerParams = result;
                 }
-
                 return result;
             }
 

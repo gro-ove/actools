@@ -264,10 +264,14 @@
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
+    <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputScanner.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPov.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPovDirection.cs" />
+    <Compile Include="Helpers\DirectInput\DisplayInputParams.cs" />
+    <Compile Include="Helpers\DirectInput\IDirectInputDevice.cs" />
+    <Compile Include="Helpers\DirectInput\PlaceholderInputDevice.cs" />
     <Compile Include="Helpers\FtpClient.cs" />
     <Compile Include="Helpers\IconManager.cs" />
     <Compile Include="Helpers\IndexDirectDownloader.cs" />
@@ -326,7 +330,7 @@
     <Compile Include="Helpers\DirectInput\DirectInputButton.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputButtonEventArgs.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDevice.cs" />
-    <Compile Include="Helpers\DirectInput\BaseInputProvider.cs" />
+    <Compile Include="Helpers\DirectInput\InputProviderBase.cs" />
     <Compile Include="Helpers\DirectInput\IDirectInputProvider.cs" />
     <Compile Include="Helpers\DirectInput\IInputProvider.cs" />
     <Compile Include="Helpers\DirectInput\KeyboardInputButton.cs" />
@@ -439,6 +443,7 @@
     <Compile Include="Objects\UserChampionshipRound.cs" />
     <Compile Include="Objects\UserChampionshipRoundExtended.cs" />
     <Compile Include="Objects\UserChampionshipRules.cs" />
+    <Compile Include="Profile\LapTimesExtraTool.cs" />
     <Compile Include="Profile\LapTimesManager.cs" />
     <Compile Include="Profile\LapTimesSource.cs" />
     <Compile Include="Profile\LapTimesStorage.cs" />

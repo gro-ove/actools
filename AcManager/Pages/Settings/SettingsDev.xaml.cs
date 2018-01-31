@@ -38,7 +38,7 @@ namespace AcManager.Pages.Settings {
                         cars = CarsManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
                         tracks = TracksManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
                         showrooms = ShowroomsManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
-                    }));
+                    }, "Years"));
                     Toast.Show("Data sent", AppStrings.About_ReportAnIssue_Sent_Message);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t send data", e);

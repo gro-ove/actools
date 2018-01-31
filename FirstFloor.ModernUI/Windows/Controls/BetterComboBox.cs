@@ -21,6 +21,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Loaded += OnLoaded;
         }
 
+        public static readonly DependencyProperty MaxLengthProperty = DependencyProperty.Register(nameof(MaxLength), typeof(int),
+                typeof(BetterComboBox));
+
+        public int MaxLength {
+            get => (int)GetValue(MaxLengthProperty);
+            set => SetValue(MaxLengthProperty, value);
+        }
+
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
                 typeof(BetterComboBox));
 
@@ -80,6 +88,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_updateSelectedItemLater) {
                 _updateSelectedItemLater = false;
                 SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
+            }
+
+            if (MaxLength != -1) {
+
             }
         }
 

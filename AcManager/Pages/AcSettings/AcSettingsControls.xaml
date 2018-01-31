@@ -62,6 +62,11 @@
                 <ItemsControl.ItemTemplate>
                   <DataTemplate DataType="{x:Type t:DirectInputDevice}">
                     <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
+                      <StackPanel.ContextMenu>
+                        <ContextMenu>
+                          <MenuItem Header="Edit names" Click="OnDeviceEditNamesClick" />
+                        </ContextMenu>
+                      </StackPanel.ContextMenu>
                       <StackPanel.ToolTip>
                         <ToolTip
                             Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -81,13 +86,16 @@
                         </ToolTip>
                       </StackPanel.ToolTip>
 
-                      <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
+                      <DockPanel>
+                        <mui:ContextMenuButton DockPanel.Dock="Right" LookForParentMenu="True" />
+                        <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Label}" />
+                      </DockPanel>
 
                       <ItemsControl ItemsSource="{Binding VisibleAxis}" Margin="0 8 0 0"
                           Visibility="{Binding VisibleAxis.Count, Converter={StaticResource MoreToVisibilityConverter}}">
                         <ItemsControl.ItemTemplate>
                           <DataTemplate DataType="{x:Type t:DirectInputAxle}">
-                            <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DefaultName}" Background="Transparent">
+                            <Grid Height="8" Margin="0 2 0 2" ToolTip="{Binding DisplayName}" Background="Transparent">
                               <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="40" />
                                 <ColumnDefinition Width="124" />
@@ -115,7 +123,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                           <DataTemplate DataType="{x:Type t:DirectInputButton}">
-                            <mui:Cell Height="24" Margin="0 0 4 4" ToolTip="{Binding DefaultName}" Background="Transparent">
+                            <mui:Cell Height="24" Margin="0 0 4 4" ToolTip="{Binding DisplayName}" Background="Transparent">
                               <Ellipse x:Name="Bg" Width="24" Height="24" Fill="{DynamicResource ButtonBackground}" Stroke="{DynamicResource ButtonBorder}"
                                   StrokeThickness="1" />
                               <Viewbox Stretch="Uniform" StretchDirection="DownOnly" Width="17" Height="17" HorizontalAlignment="Center"
@@ -202,8 +210,8 @@
         <Button Command="{Binding SaveCommand, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0" ToolTip="{x:Static c:ControlsStrings.Presets_Save_Tooltip}"
             Content="{x:Static c:ControlsStrings.Presets_Save}" />
       </Grid>
-      <Button PreviewMouseLeftButtonDown="ShareButton_OnPreviewMouseLeftButtonDown" Margin="4 0 0 0"
-          ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}">
+      <Button PreviewMouseLeftButtonDown="OnShareButtonClick" Margin="4 0 0 0" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
+          Content="{x:Static g:AppStrings.Common_Share}">
         <Button.ContextMenu>
           <ContextMenu x:Name="ShareContextMenu">
             <MenuItem Header="{x:Static g:AppStrings.Controls_SharePreset}" Command="{Binding ShareCommand, Mode=OneTime}" CommandParameter="Basic"
