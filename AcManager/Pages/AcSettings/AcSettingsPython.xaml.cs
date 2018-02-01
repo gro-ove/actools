@@ -26,7 +26,7 @@ namespace AcManager.Pages.AcSettings {
             public FormsSettings Forms => AcSettingsHolder.Forms;
             public IUserPresetable Presets => AcSettingsHolder.AppsPresets;
 
-            public AcEnabledOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.EnabledOnlyCollection;
+            public AcEnabledOnlyCollection<PythonAppObject> Apps => PythonAppsManager.Instance.Enabled;
 
             private double _scaleValue = 1d;
 

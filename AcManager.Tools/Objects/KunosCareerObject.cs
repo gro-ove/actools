@@ -677,7 +677,7 @@ namespace AcManager.Tools.Objects {
             OnPropertyChanged(nameof(LastSelectedTimestamp));
 
             if (EventsManager != null) {
-                foreach (var eventObject in EventsManager.LoadedOnly) {
+                foreach (var eventObject in EventsManager.Loaded) {
                     eventObject.LoadProgress();
                 }
             }

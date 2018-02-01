@@ -635,7 +635,7 @@ All found similarities:
                 progress.Report(AsyncProgressEntry.FromStringIndetermitate("Loading cars…"));
                 await CarsManager.Instance.EnsureLoadedAsync();
 
-                IEnumerable<CarObject> carsEnumerable = CarsManager.Instance.LoadedOnly.OrderBy(x => x.Name);
+                IEnumerable<CarObject> carsEnumerable = CarsManager.Instance.Loaded.OrderBy(x => x.Name);
                 if (filter != null) {
                     carsEnumerable = carsEnumerable.Where(filter.Test);
                 }

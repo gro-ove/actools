@@ -14,9 +14,9 @@ namespace AcManager.Tools.Objects {
 
         public IAcWrapperObservableCollection EventsWrappers => EventsManager.WrappersList;
 
-        public IEnumerable<KunosCareerEventObject> Events => EventsManager.LoadedOnly;
+        public IEnumerable<KunosCareerEventObject> Events => EventsManager.Loaded;
 
-        public AcEnabledOnlyCollection<KunosCareerEventObject> EnabledOnlyEvents => EventsManager.EnabledOnlyCollection;
+        public AcEnabledOnlyCollection<KunosCareerEventObject> EnabledOnlyEvents => EventsManager.Enabled;
 
         private KunosCareerEventObject _selectedEvent;
         private bool _selectedEventSkipSaving;

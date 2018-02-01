@@ -66,7 +66,7 @@
         <uc:ModernPopup mui:PopupHelper.Group="1">
           <DockPanel MaxWidth="240">
             <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding RandomSkinCommand}" Content="Random" />
-            <ListBox ItemsSource="{Binding Car.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+            <ListBox ItemsSource="{Binding Car.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
                 Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}" VerticalAlignment="Top" BorderThickness="0"
                 ItemTemplate="{StaticResource CarSkinItemTemplate}">
               <ListBox.ItemsPanel>
@@ -94,19 +94,16 @@
   </DataTemplate>
 
   <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-    <DataTemplate.Resources>
-      <CollectionViewSource x:Key="SkinsList" Source="{Binding Car.SkinsEnabledWrappersList}" />
-    </DataTemplate.Resources>
     <DockPanel Background="Transparent" mui:DoubleClickEvent.Enabled="True">
       <DockPanel.InputBindings>
         <MouseBinding Gesture="MiddleClick" Command="{Binding RandomSkinCommand}" />
         <MouseBinding Gesture="LeftDoubleClick" Command="{Binding SkinDialogCommand}" />
       </DockPanel.InputBindings>
       <mui:BetterComboBox x:Name="ComboBox" IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="True"
-          Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" ItemsSource="{Binding Car.SkinsActualList}"
+          Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" ItemsSource="{Binding Car.EnabledSkinsListView}"
           IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
         <ComboBox.ItemTemplate>
-          <DataTemplate>
+          <DataTemplate DataType="{x:Type t:CarSkinObject}">
             <DockPanel Height="18">
               <mui:BetterImage x:Name="Image" Margin="0 0 4 0" ClearOnChange="True" Filename="{Binding LiveryImage}" Width="18" Height="18" />
               <TextBlock x:Name="Text" Text="{Binding DisplayName}" VerticalAlignment="Top" TextTrimming="CharacterEllipsis" />

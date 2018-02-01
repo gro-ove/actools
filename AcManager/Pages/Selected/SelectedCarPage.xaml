@@ -120,7 +120,7 @@
         </mui:Cell>
 
         <!-- skins list -->
-        <ListBox ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+        <ListBox ItemsSource="{Binding SelectedObject.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             IsSynchronizedWithCurrentItem="True" Grid.Column="1" Width="120" Margin="4 -2 0 -2" VerticalAlignment="Top" HorizontalAlignment="Left"
             Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}, Converter={StaticResource SumConverter}, ConverterParameter=4}"
             ScrollViewer.CanContentScroll="True">
@@ -131,9 +131,8 @@
             </ItemsPanelTemplate>
           </ListBox.ItemsPanel>
           <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type t:AcItemWrapper}">
-              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-              <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32" ClearOnChange="True"
+            <DataTemplate DataType="{x:Type t:CarSkinObject}">
+              <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
                   PreviewMouseRightButtonUp="OnPreviewContextMenu" />
             </DataTemplate>
           </ListBox.ItemTemplate>

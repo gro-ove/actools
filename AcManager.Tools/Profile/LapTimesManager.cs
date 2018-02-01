@@ -304,7 +304,7 @@ namespace AcManager.Tools.Profile {
         }
 
         IReadOnlyList<Tuple<string, string>> IAcIdsProvider.GetTrackIds() {
-            return TracksManager.Instance.LoadedOnly
+            return TracksManager.Instance.Loaded
                                 .SelectMany(x => x.MultiLayouts?.Select(y => new Tuple<string, string>(x.Id, y.LayoutId)) ??
                                         new[] { new Tuple<string, string>(x.Id, null) })
                                 .ToList();

@@ -51,7 +51,7 @@ namespace AcManager.Pages.Selected {
                     if (waiting.CancellationToken.IsCancellationRequested) return;
 
                     waiting.Title = null;
-                    var toDisable = FontsManager.Instance.LoadedOnly.Where(x => x.Enabled && x.UsingsCarsIds.Length == 0).ToList();
+                    var toDisable = FontsManager.Instance.Loaded.Where(x => x.Enabled && x.UsingsCarsIds.Length == 0).ToList();
                     foreach (var font in toDisable) {
                         waiting.Report(string.Format(AppStrings.Common_DisablingFormat, font.DisplayName));
                         font.ToggleCommand.Execute(null);

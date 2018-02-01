@@ -283,25 +283,25 @@
 
         <DockPanel>
           <Label Content="New CB:" Width="200" DockPanel.Dock="Left" />
-          <mui:BetterComboBox IsEditable="True" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
+          <mui:BetterComboBox IsEditable="True" ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="New CB, placeholder:" Width="200" DockPanel.Dock="Left" />
           <mui:BetterComboBox Placeholder="Placeholder" IsEditable="True"
-              ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
+              ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="New CB, borderless:" Width="200" DockPanel.Dock="Left" />
           <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}"
-              ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
+              ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" Text="Placeholder" />
         </DockPanel>
 
         <DockPanel>
           <Label Content="New CB, b., p.:" Width="200" DockPanel.Dock="Left" />
           <mui:BetterComboBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="Placeholder"
-              ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" />
+              ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" />
         </DockPanel>
 
         <DockPanel>

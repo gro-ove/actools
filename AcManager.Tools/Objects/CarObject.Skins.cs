@@ -57,7 +57,7 @@ namespace AcManager.Tools.Objects {
         public CarSkinsManager SkinsManager { get; }
 
         [NotNull]
-        public AcEnabledOnlyCollection<CarSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
+        public AcEnabledOnlyCollection<CarSkinObject> EnabledOnlySkins => SkinsManager.Enabled;
 
         /* TODO: force sorting by ID! */
 
@@ -121,32 +121,15 @@ namespace AcManager.Tools.Objects {
             return SkinsManager.GetFirstOrNull();
         }
 
-        private AcWrapperCollectionView _skinsEnabledWrappersListView;
+        private BetterListCollectionView _enabledSkinsListView;
 
-        public AcWrapperCollectionView SkinsEnabledWrappersList {
+        public BetterListCollectionView EnabledSkinsListView {
             get {
-                if (_skinsEnabledWrappersListView != null) return _skinsEnabledWrappersListView;
-
-                _skinsEnabledWrappersListView = new AcWrapperCollectionView(SkinsManager.WrappersAsIList) {
-                    Filter = o => (o as AcItemWrapper)?.Value.Enabled == true
-                };
-                _skinsEnabledWrappersListView.MoveCurrentTo(SelectedSkin);
-                _skinsEnabledWrappersListView.CurrentChanged +=
-                        (sender, args) => { SelectedSkin = (_skinsEnabledWrappersListView.CurrentItem as AcItemWrapper)?.Loaded() as CarSkinObject; };
-                return _skinsEnabledWrappersListView;
-            }
-        }
-
-        private BetterListCollectionView _skinsActualListView;
-
-        public BetterListCollectionView SkinsActualList {
-            get {
-                if (_skinsActualListView != null) return _skinsActualListView;
-
-                _skinsActualListView = new BetterListCollectionView(SkinsManager.EnabledOnlyCollection);
-                _skinsActualListView.MoveCurrentTo(SelectedSkin);
-                _skinsActualListView.CurrentChanged += (sender, args) => { SelectedSkin = _skinsActualListView.CurrentItem as CarSkinObject; };
-                return _skinsActualListView;
+                if (_enabledSkinsListView != null) return _enabledSkinsListView;
+                _enabledSkinsListView = new BetterListCollectionView(SkinsManager.Enabled) { CustomSort = CarSkinComparer.Comparer };
+                _enabledSkinsListView.MoveCurrentTo(SelectedSkin);
+                _enabledSkinsListView.CurrentChanged += (sender, args) => { SelectedSkin = _enabledSkinsListView.CurrentItem as CarSkinObject; };
+                return _enabledSkinsListView;
             }
         }
     }

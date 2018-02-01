@@ -127,7 +127,7 @@
                   <mui:BetterImage x:Name="PART_PreviewImage" Filename="{Binding SelectedSkin.PreviewImage, RelativeSource={RelativeSource TemplatedParent}}"
                       Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
                       MaxWidth="1022" />
-                  <ListBox ItemsSource="{Binding Car.SkinsActualList, RelativeSource={RelativeSource TemplatedParent}}"
+                  <ListBox ItemsSource="{Binding Car.EnabledSkinsListView, RelativeSource={RelativeSource TemplatedParent}}"
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" Margin="4"
                       IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding SelectedSkin, RelativeSource={RelativeSource TemplatedParent}}"
                       VerticalAlignment="Top" MaxHeight="76" BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}"

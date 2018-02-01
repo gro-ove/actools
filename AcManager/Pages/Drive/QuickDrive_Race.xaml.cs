@@ -129,6 +129,7 @@ namespace AcManager.Pages.Drive {
             [NotNull]
             public RaceGridViewModel RaceGridViewModel { get; }
 
+            // ReSharper disable UnassignedField.Global
             protected class OldSaveableData {
                 public bool? Penalties, AiLevelFixed, AiLevelArrangeRandomly, AiLevelArrangeReverse;
                 public int? AiLevel, AiLevelMin, LapsNumber, OpponentsNumber, StartingPosition;
@@ -144,6 +145,7 @@ namespace AcManager.Pages.Drive {
                     return !serialized.Contains(@"""Version"":");
                 }
             }
+            // ReSharper restore UnassignedField.Global
 
             [Localizable(false)]
             protected class SaveableData {
@@ -358,8 +360,7 @@ namespace AcManager.Pages.Drive {
             }
 
             public object GetPreview(object item) {
-                var preset = item as ISavedPresetEntry;
-                if (preset == null) return null;
+                if (!(item is ISavedPresetEntry preset)) return null;
 
                 RaceGridViewModel.SaveableData saved;
                 try {
@@ -372,7 +373,7 @@ namespace AcManager.Pages.Drive {
                 var mode = RaceGridViewModel.Modes.GetByIdOrDefault<IRaceGridMode>(saved.ModeId);
                 if (mode == null) return null;
 
-                var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({"Random"})" : mode.DisplayName;
+                var displayMode = mode.CandidatesMode ? $"{mode.DisplayName} ({ToolsStrings.Drive_GridArrangeWay_Random})" : mode.DisplayName;
                 var opponentsNumber = mode.CandidatesMode ? saved.OpponentsNumber : saved.CarIds?.Length;
                 var description = new[] {
                     $"Mode: [b]{displayMode}[/b]",
@@ -387,7 +388,7 @@ namespace AcManager.Pages.Drive {
             }
 
             public void SetRaceGridData(string serializedRaceGrid) {
-                RaceGridViewModel?.ImportFromPresetData(serializedRaceGrid);
+                RaceGridViewModel.ImportFromPresetData(serializedRaceGrid);
             }
 
             public NumberInputConverter StartingPositionInputConverter { get; }

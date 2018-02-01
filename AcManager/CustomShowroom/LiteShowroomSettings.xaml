@@ -280,7 +280,7 @@
         <ListBox.ItemsSource>
           <CompositeCollection>
             <x:Static Member="mui:BetterComboBox.NullValue" />
-            <CollectionContainer Collection="{Binding EnabledOnlyCollection, Source={x:Static t:ShowroomsManager.Instance}}" />
+            <CollectionContainer Collection="{Binding Enabled, Source={x:Static t:ShowroomsManager.Instance}}" />
           </CompositeCollection>
         </ListBox.ItemsSource>
       </ListBox>

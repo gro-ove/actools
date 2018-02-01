@@ -39,7 +39,7 @@ namespace AcManager.Pages.Settings {
 
             internal ViewModel() {
                 Showrooms = new ObservableCollection<object>(
-                        ShowroomsManager.Instance.EnabledOnlyCollection.OrderBy(x => x.DisplayName).Prepend(NoneShowroom));
+                        ShowroomsManager.Instance.Enabled.OrderBy(x => x.DisplayName).Prepend(NoneShowroom));
                 SelectedShowroom = Holder.ShowroomId == null ? NoneShowroom : ShowroomsManager.Instance.GetById(Holder.ShowroomId);
             }
 

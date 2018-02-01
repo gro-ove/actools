@@ -80,7 +80,7 @@ namespace AcManager.Tools.Objects {
         public string ParentDisplayName => Parent?.Name ?? ParentId;
 
         /* TODO: Mark as loaded only? */
-        public IEnumerable<CarObject> Children => CarsManager.Instance.LoadedOnly.Where(x => x.ParentId == Id);
+        public IEnumerable<CarObject> Children => CarsManager.Instance.Loaded.Where(x => x.ParentId == Id);
 
         public bool HasChildren => Children.Any();
 

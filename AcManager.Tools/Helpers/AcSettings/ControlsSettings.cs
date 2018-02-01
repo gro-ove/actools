@@ -1024,7 +1024,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         #region Overlay-availability-related options
         public class AppsForOverlayCollection : WrappedFilteredCollection<PythonAppObject, PythonAppObject> {
-            public AppsForOverlayCollection() : base(PythonAppsManager.Instance.EnabledOnlyCollection) { }
+            public AppsForOverlayCollection() : base(PythonAppsManager.Instance.Enabled) { }
 
             protected override PythonAppObject Wrap(PythonAppObject source) {
                 return source;

@@ -84,7 +84,7 @@ namespace AcManager.Tools.Managers.Plugins {
             }
 
             public int GetHashCode(PluginEntry obj) {
-                return obj?.Id?.GetHashCode() ?? 0;
+                return obj.Id?.GetHashCode() ?? 0;
             }
         }
 

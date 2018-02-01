@@ -12,7 +12,7 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         protected override SelectCountry GetSelectedItem(IList<SelectCountry> list, CarObject obj) {
-            var value = obj?.Country;
+            var value = obj.Country;
             if (value != null) {
                 for (var i = list.Count - 1; i >= 0; i--) {
                     var x = list[i];

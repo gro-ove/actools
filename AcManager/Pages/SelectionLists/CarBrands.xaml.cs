@@ -27,7 +27,7 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         protected override SelectCarBrand GetSelectedItem(IList<SelectCarBrand> list, CarObject obj) {
-            var value = obj?.Brand;
+            var value = obj.Brand;
             if (value != null) {
                 for (var i = list.Count - 1; i >= 0; i--) {
                     var x = list[i];

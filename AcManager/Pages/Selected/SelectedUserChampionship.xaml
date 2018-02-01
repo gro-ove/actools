@@ -61,7 +61,7 @@
               <mui:SpacingStackPanel Spacing="4"
                   Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
-                <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}">
+                <ComboBox ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}">
                   <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
                       <!-- TODO: Replace by WeatherPreviewToolTip from ToolTips.xaml? -->
@@ -315,7 +315,7 @@
                   Text="{Binding SelectedObject.PlayerCar.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
             </mui:Cell>
 
-            <ListBox ItemsSource="{Binding SelectedObject.PlayerCar.SkinsActualList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            <ListBox ItemsSource="{Binding SelectedObject.PlayerCar.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.CanContentScroll="True" Margin="8 0 0 0" IsSynchronizedWithCurrentItem="False"
                 SelectedItem="{Binding SelectedObject.PlayerCarSkin}" VerticalAlignment="Top" MaxHeight="120" BorderThickness="0"
                 ItemTemplate="{StaticResource CarSkinItemTemplate}">

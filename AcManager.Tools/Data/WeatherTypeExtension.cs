@@ -82,7 +82,7 @@ namespace AcManager.Tools.Data {
             if (type == WeatherType.None) return null;
 
             try {
-                var candidates = WeatherManager.Instance.LoadedOnly.Where(x => x.Fits(time, temperature)).ToList();
+                var candidates = WeatherManager.Instance.Loaded.Where(x => x.Fits(time, temperature)).ToList();
                 var closest = type.FindClosestWeather(from w in candidates select w.Type);
                 if (closest == null) return null;
 

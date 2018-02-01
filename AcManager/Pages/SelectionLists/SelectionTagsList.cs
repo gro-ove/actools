@@ -50,22 +50,17 @@ namespace AcManager.Pages.SelectionLists {
         protected abstract bool IsIgnored([NotNull] TObject obj, [NotNull] string tagValue);
 
         protected sealed override SelectTag GetSelectedItem(IList<SelectTag> list, TObject obj) {
-            var value = obj?.Tags;
+            var value = obj.Tags;
+            for (var j = value.Count - 1; j >= 0; j--) {
+                var tagValue = value[j];
+                var isSpecial = tagValue.StartsWith(@"#");
+                var tagName = isSpecial ? tagValue.Substring(1).TrimStart() : tagValue;
 
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-            if (value != null) {
-                for (var j = value.Count - 1; j >= 0; j--) {
-                    var tagValue = value[j];
-                    var isSpecial = tagValue.StartsWith(@"#");
-                    var tagName = isSpecial ? tagValue.Substring(1).TrimStart() : tagValue;
-
-                    for (var i = list.Count - 1; i >= 0; i--) {
-                        var item = list[i];
-                        if (string.Equals(item.DisplayName, tagName, StringComparison.Ordinal)) return item;
-                    }
+                for (var i = list.Count - 1; i >= 0; i--) {
+                    var item = list[i];
+                    if (string.Equals(item.DisplayName, tagName, StringComparison.Ordinal)) return item;
                 }
             }
-
             return null;
         }
 

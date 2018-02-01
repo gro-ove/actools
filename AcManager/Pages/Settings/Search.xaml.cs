@@ -67,7 +67,7 @@ namespace AcManager.Pages.Settings {
                 typeof(Search), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.None));
 
         public static object GetLinkedTo(DependencyObject obj) {
-            return (object)obj.GetValue(LinkedToProperty);
+            return obj.GetValue(LinkedToProperty);
         }
 
         public static void SetLinkedTo(DependencyObject obj, object value) {
@@ -115,9 +115,6 @@ namespace AcManager.Pages.Settings {
             "PresetsPerMode",
         };
 
-        public Search() {
-        }
-
         private IFilter<string> _filter;
 
         public void OnUri(Uri uri) {
@@ -157,7 +154,7 @@ namespace AcManager.Pages.Settings {
             var textBlock = (element.Parent as Panel)?.Children.OfType<FrameworkElement>().TakeWhile(x => !ReferenceEquals(x, element))
                                                       .OfType<TextBlock>().LastOrDefault();
             if (textBlock == null) return null;
-            return GetSubCategory(textBlock) ?? textBlock?.Text;
+            return GetSubCategory(textBlock) ?? textBlock.Text;
         }
 
         public async Task LoadAsync(CancellationToken cancellationToken) {

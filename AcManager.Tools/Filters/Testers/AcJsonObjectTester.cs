@@ -55,7 +55,7 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "t":
                 case "tag":
-                    return obj.Tags?.Any(value.Test) == true;
+                    return obj.Tags.Any(value.Test);
 
                 case "version":
                     return value.Test(obj.Version);

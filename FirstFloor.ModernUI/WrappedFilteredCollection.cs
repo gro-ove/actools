@@ -44,7 +44,7 @@ namespace FirstFloor.ModernUI {
         private List<TWrapper> _wrapped;
 
         [CanBeNull]
-        private List<int> _indexes;
+        private List<int> _indices;
 
         protected WrappedFilteredCollection([NotNull] IReadOnlyList<TSource> collection) {
             _source = collection ?? throw new ArgumentNullException(nameof(collection));
@@ -55,9 +55,9 @@ namespace FirstFloor.ModernUI {
         }
 
         private void EnsureRebuilt(out List<TWrapper> wrapped, out List<int> indexes) {
-            if (_wrapped != null && _indexes != null) {
+            if (_wrapped != null && _indices != null) {
                 wrapped = _wrapped;
-                indexes = _indexes;
+                indexes = _indices;
                 return;
             }
 
@@ -73,13 +73,13 @@ namespace FirstFloor.ModernUI {
             }
 
             _wrapped = wrapped;
-            _indexes = indexes;
+            _indices = indexes;
         }
 
         private void Reset() {
             Debug.WriteLine(@"WrappedFilteredCollection.Reset()");
             _wrapped = null;
-            _indexes = null;
+            _indices = null;
             OnCountAndIndexerChanged();
             OnCollectionReset();
         }
@@ -122,7 +122,7 @@ namespace FirstFloor.ModernUI {
             if (sourceIndex == -1) return;
 
             var wrapped = _wrapped;
-            var indexes = _indexes;
+            var indexes = _indices;
             if (wrapped == null || indexes == null) {
                 Reset();
                 return;
@@ -188,7 +188,7 @@ namespace FirstFloor.ModernUI {
 
         private void OnItemsSourceCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             var wrapped = _wrapped;
-            var indexes = _indexes;
+            var indexes = _indices;
             if (wrapped == null || indexes == null) {
                 Reset();
                 return;

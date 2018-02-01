@@ -278,10 +278,10 @@ namespace AcManager.DiscordRpc {
             Utils.Log($"Write: {opcode}; {data}");
 
             var result = Fit((int)(1.5 * data.Length + 8));
+            var length = _encoding.GetBytes(data, 0, data.Length, result, 8);
             GetBytes((int)opcode, result, 0);
-            GetBytes(data.Length, result, 1);
-            var length = _encoding.GetBytes(data, 0, data.Length, result, 8) + 8;
-            _pipe.Write(result, 0, length);
+            GetBytes(length, result, 1);
+            _pipe.Write(result, 0, length + 8);
             _pipe.Flush();
         }
 

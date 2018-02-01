@@ -37,7 +37,7 @@ namespace AcManager.Tools.Managers {
 
         private void Drive_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.DriveSettings.KunosCareerUserSkin) || SettingsHolder.Drive.KunosCareerUserSkin) return;
-            foreach (var ev in LoadedOnly) {
+            foreach (var ev in Loaded) {
                 ev.ResetSkinToDefault();
             }
         }
@@ -153,7 +153,7 @@ namespace AcManager.Tools.Managers {
                     break;
 
                 case nameof(UserChampionshipsProgress.Entries):
-                    foreach (var careerObject in LoadedOnly) {
+                    foreach (var careerObject in Loaded) {
                         careerObject.LoadProgress();
                     }
                     break;
@@ -209,10 +209,10 @@ namespace AcManager.Tools.Managers {
 
             var parsed = JObject.Parse(data);
             var name = parsed.GetStringValueOnly("name");
-            if (EnabledOnly.Any(x => x.Name == name)) {
+            if (Enabled.Any(x => x.Name == name)) {
                 for (var i = 1; i < 999; i++) {
                     var candidate = $@"{name} ({i})";
-                    if (EnabledOnly.All(x => x.Name != candidate)) {
+                    if (Enabled.All(x => x.Name != candidate)) {
                         name = candidate;
                         break;
                     }

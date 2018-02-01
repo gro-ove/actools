@@ -58,7 +58,7 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "skin":
                 case "skins":
-                    return nameof(CarObject.SkinsEnabledWrappersList);
+                    return nameof(CarObject.EnabledOnlySkins);
             }
 
             return null;
@@ -135,7 +135,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.GetSpecsPwRatioValue());
 
                 case "skins":
-                    return value.Test(obj.SkinsEnabledWrappersList?.Count ?? 0);
+                    return value.Test(obj.SkinsManager.WrappersList.Count);
 
                 case "steerlock":
                     value.Set(TestEntryFactories.AngleDegrees);
@@ -150,7 +150,7 @@ namespace AcManager.Tools.Filters.Testers {
                 case null:
                 case "skin":
                     var skins = obj.SkinsManager;
-                    return skins.IsScanned && skins.LoadedOnly.Any(x => filter.Test(CarSkinObjectTester.Instance, x)); // TODO: non-scanned?
+                    return skins.IsScanned && skins.Loaded.Any(x => filter.Test(CarSkinObjectTester.Instance, x)); // TODO: non-scanned?
 
                 case "parent":
                     return obj.Parent != null && filter.Test(Instance, obj.Parent);

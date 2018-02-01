@@ -69,7 +69,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void OnAcObjectOutdated() {
-            foreach (var obj in SkinsManager.LoadedOnly) {
+            foreach (var obj in SkinsManager.Loaded) {
                 obj.Outdate();
             }
 
@@ -227,7 +227,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private List<EnabledSkinEntry> GetActiveSkins() {
-            return SkinsManager.EnabledOnly.Where(x => x.IsActive)
+            return SkinsManager.Enabled.Where(x => x.IsActive)
                                .Select(x => new EnabledSkinEntry(x.Id, x.Location, x.Priority)).ToList();
         }
 
@@ -242,7 +242,7 @@ namespace AcManager.Tools.Objects {
                 ApplyingSkins = true;
 
                 if (causeToRefresh.IsActive) {
-                    foreach (var skinObject in SkinsManager.EnabledOnly.ApartFrom(causeToRefresh)) {
+                    foreach (var skinObject in SkinsManager.Enabled.ApartFrom(causeToRefresh)) {
                         if (skinObject.Categories.Any(x => causeToRefresh.Categories.ContainsIgnoringCase(x))) {
                             skinObject.IsActive = false;
                         }
@@ -297,7 +297,7 @@ namespace AcManager.Tools.Objects {
         public TrackSkinsManager SkinsManager { get; }
 
         [NotNull]
-        public AcEnabledOnlyCollection<TrackSkinObject> EnabledOnlySkins => SkinsManager.EnabledOnlyCollection;
+        public AcEnabledOnlyCollection<TrackSkinObject> EnabledOnlySkins => SkinsManager.Enabled;
 
         private void UpdateDisplayActiveSkins() {
             if (EnabledOnlySkins.Count == 0) {
@@ -405,7 +405,7 @@ namespace AcManager.Tools.Objects {
             get {
                 if (_skinsActualListView != null) return _skinsActualListView;
 
-                _skinsActualListView = new BetterListCollectionView(SkinsManager.EnabledOnlyCollection);
+                _skinsActualListView = new BetterListCollectionView(SkinsManager.Enabled);
                 _skinsActualListView.MoveCurrentTo(SelectedSkin);
                 _skinsActualListView.CurrentChanged += (sender, args) => { SelectedSkin = _skinsActualListView.CurrentItem as TrackSkinObject; };
                 return _skinsActualListView;

@@ -265,6 +265,7 @@
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
+    <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputScanner.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputPov.cs" />
@@ -369,6 +370,7 @@
     <Compile Include="Helpers\RaceEssentialsHelper.cs" />
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\SharpCompressExtension.cs" />
+    <Compile Include="Helpers\TemperatureUnitMode.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
@@ -412,6 +414,7 @@
     <Compile Include="Objects\CarObject.CustomData.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\CarSkinComparer.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />

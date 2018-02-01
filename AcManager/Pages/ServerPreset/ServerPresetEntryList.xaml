@@ -21,12 +21,9 @@
       </DataTemplate>
 
       <DataTemplate x:Key="Detailed.SkinDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <DataTemplate.Resources>
-          <CollectionViewSource x:Key="SkinsList" Source="{Binding CarObject.SkinsEnabledWrappersList}" />
-        </DataTemplate.Resources>
         <DockPanel PreviewMouseLeftButtonDown="OnOpponentCellClick" Background="Transparent">
           <mui:BetterComboBox IsEditable="False" Style="{StaticResource BetterComboBox.Borderless.White}" Nullable="False"
-              ItemsSource="{Binding CarObject.SkinsActualList}" IsSynchronizedWithCurrentItem="False"
+              ItemsSource="{Binding CarObject.EnabledSkinsListView}" IsSynchronizedWithCurrentItem="False"
               SelectedItem="{Binding CarSkinObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
             <ComboBox.ItemTemplate>
               <DataTemplate DataType="{x:Type t:CarSkinObject}">

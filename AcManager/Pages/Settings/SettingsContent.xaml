@@ -13,7 +13,8 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" set:Search.Keywords="content" Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Content_MarkAsNewLabel}" />
-          <ComboBox ItemsSource="{Binding Holder.NewContentPeriods}" SelectedItem="{Binding Holder.NewContentPeriod}" DisplayMemberPath="DisplayName" />
+          <mui:BetterComboBox ItemsSource="{Binding Holder.NewContentPeriods}" SelectedItem="{Binding Holder.NewContentPeriod}" DisplayMemberPath="DisplayName"
+              IsEditable="False" />
         </DockPanel>
 
         <DockPanel>
@@ -163,6 +164,12 @@
         <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.CarSkinsDisplayId}">
           <Label Content="Display skin IDs instead of names" />
         </CheckBox>
+
+        <DockPanel set:Search.Keywords="cars;skins">
+          <Label Content="Sort by:" />
+          <mui:BetterComboBox ItemsSource="{Binding Holder.CarSkinsSorting}" SelectedItem="{Binding Holder.CarSkinsSorting.SelectedItem}"
+              DisplayMemberPath="DisplayName" IsEditable="False" />
+        </DockPanel>
 
         <!-- Showrooms specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_ShowroomsHeader}" />

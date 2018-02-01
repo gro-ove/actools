@@ -110,7 +110,7 @@
             <DockPanel>
               <Label Content="{x:Static c:ControlsStrings.Common_FilterLabel}" />
               <Button Command="{Binding ManageFiltersCommand}" Content="{x:Static g:AppStrings.Common_Manage}" />
-              <mui:BetterComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:PpFiltersManager.Instance}}"
+              <mui:BetterComboBox ItemsSource="{Binding Enabled, Source={x:Static t:PpFiltersManager.Instance}}"
                   SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName" IsEditable="False"
                   Placeholder="{Binding Video.PostProcessingFilter}" />
             </DockPanel>

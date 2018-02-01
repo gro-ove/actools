@@ -359,7 +359,7 @@
             </DockPanel>
           </mui:Cell>
 
-          <ListBox ItemsSource="{Binding CarObject.SkinsActualList}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+          <ListBox ItemsSource="{Binding CarObject.EnabledSkinsListView}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
               IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
               VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel">
             <ListBox.Visibility>

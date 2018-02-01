@@ -222,9 +222,9 @@ namespace AcManager.Controls.Dialogs {
                 }
             }
 
-            public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
+            public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.Enabled;
 
-            public AcEnabledOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.EnabledOnlyCollection;
+            public AcEnabledOnlyCollection<PpFilterObject> Filters => PpFiltersManager.Instance.Enabled;
 
             public bool CanBeSaved => SelectedShowroom != null && SelectedFilter != null;
             string IUserPresetable.PresetableKey => PresetableKeyValue;

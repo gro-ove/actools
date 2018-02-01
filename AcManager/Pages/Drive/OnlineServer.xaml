@@ -387,7 +387,7 @@
                 <StackPanel Margin="0 20 0 0"
                     Visibility="{Binding SelectedCarEntry.CarObject,Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse }">
                   <TextBlock Style="{StaticResource Label.Padding}" Text="Skin for booking:" />
-                  <ListBox DataContext="{Binding SelectedCarEntry}" ItemsSource="{Binding CarObject.SkinsActualList}"
+                  <ListBox DataContext="{Binding SelectedCarEntry}" ItemsSource="{Binding CarObject.EnabledSkinsListView}"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="False"
                       SelectedItem="{Binding AvailableSkin}" MaxHeight="36" ItemTemplate="{StaticResource CarSkinItemTemplate}"
                       VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.ScrollUnit="Pixel"

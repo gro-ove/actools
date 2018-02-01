@@ -115,7 +115,7 @@ namespace CustomShowroom {
             }
 
             var filename = Assembly.GetEntryAssembly().Location;
-            if (options.Verbose || filename?.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
+            if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
                     || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
                 var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
                 try {

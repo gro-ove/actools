@@ -227,7 +227,7 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _randomSkinCommand;
 
         public DelegateCommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
-            CarSkinId = CarObject?.SkinsManager.EnabledOnly.RandomElementOrDefault()?.Id ?? CarSkinId;
+            CarSkinId = CarObject?.SkinsManager.Enabled.RandomElementOrDefault()?.Id ?? CarSkinId;
         }));
 
         private bool _deleted;

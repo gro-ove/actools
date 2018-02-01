@@ -56,7 +56,7 @@ namespace AcManager.Tools.Managers {
 
         [CanBeNull]
         public SpecialEventObject GetByGuid(string guid) {
-            return LoadedOnly.FirstOrDefault(x => x.Guid == guid);
+            return Loaded.FirstOrDefault(x => x.Guid == guid);
         }
 
         public async Task UpdateProgress(IProgress<string> progress, CancellationToken cancellation) {
@@ -78,7 +78,7 @@ namespace AcManager.Tools.Managers {
                 throw new InformativeException("Can’t get challenges progress because of internal server error (500)", "Make sure Steam account isn’t private.");
             }
 
-            foreach (var eventObject in LoadedOnly) {
+            foreach (var eventObject in Loaded) {
                 eventObject.TakenPlace = 5;
             }
 

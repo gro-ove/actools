@@ -45,7 +45,7 @@ namespace AcManager.Pages.Dialogs {
             Car = car;
             Filter = car.Brand == null ? "" : @"brand:" + car.Brand;
 
-            CarsListView = new ListCollectionView(CarsManager.Instance.LoadedOnly.Where(x => x.ParentId == null && x.Id != Car.Id).ToList()) {
+            CarsListView = new ListCollectionView(CarsManager.Instance.Loaded.Where(x => x.ParentId == null && x.Id != Car.Id).ToList()) {
                 CustomSort = this
             };
 

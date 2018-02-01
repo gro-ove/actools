@@ -49,6 +49,22 @@ namespace AcManager.Tools.Managers {
             protected override int Compare(string x, string y) {
                 return AlphanumComparatorFast.Compare(x, y);
             }
+
+            /*public override int Compare(AcItemWrapper x, AcItemWrapper y) {
+                switch (SettingsHolder.Content.CarSkinsSorting.SelectedValue) {
+                    case SettingsHolder.ContentSettings.SortName:
+                        return Compare(x?.Value.DisplayName, y?.Value.DisplayName);
+                    case SettingsHolder.ContentSettings.SortSkinNumber:
+                        var result = Compare((x?.Value as CarSkinObject)?.SkinNumber, (y?.Value as CarSkinObject)?.SkinNumber);
+                        if (result == 0) {
+                            goto default;
+                        }
+
+                        return result;
+                    default:
+                        return Compare(x?.Value.Id, y?.Value.Id);
+                }
+            }*/
         }
 
         /// <summary>
@@ -100,7 +116,7 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        protected override void LogLoadingTime(TimeSpan s) {}
+        protected override void LogLoadingTime(TimeSpan s) { }
 
         public IAcObjectNew AddNew(string id = null) {
             var mainDirectory = Directories.GetMainDirectory();

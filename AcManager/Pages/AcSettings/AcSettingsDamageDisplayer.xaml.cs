@@ -101,7 +101,7 @@ namespace AcManager.Pages.AcSettings {
             if (_imagesWrapper == null) return;
             _imagesWrapper.Children.Clear();
             foreach (var s in Directory.GetFiles(_directory, "*.png").Where(
-                    x => Array.IndexOf(Images, Path.GetFileNameWithoutExtension(x)?.ToLowerInvariant()) != -1)) {
+                    x => Array.IndexOf(Images, Path.GetFileNameWithoutExtension(x).ToLowerInvariant()) != -1)) {
                 _imagesWrapper.Children.Add(new BetterImage {
                     Filename = s
                 });

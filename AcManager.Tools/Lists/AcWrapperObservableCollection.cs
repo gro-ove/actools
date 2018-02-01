@@ -58,8 +58,7 @@ namespace AcManager.Tools.Lists {
 
         [CanBeNull]
         public AcItemWrapper GetByIdOrDefault([NotNull] string id) {
-            AcItemWrapper result;
-            return _index.TryGetValue(id.ToLowerInvariant(), out result) ? result : null;
+            return _index.TryGetValue(id.ToLowerInvariant(), out var result) ? result : null;
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {

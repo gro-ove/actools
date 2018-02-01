@@ -273,7 +273,7 @@ namespace AcManager.Controls {
         }
 
         private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {
-            var list = Car.SkinsManager.EnabledOnly.Select(x => x.PreviewImage).ToList();
+            var list = Car.SkinsManager.Enabled.Select(x => x.PreviewImage).ToList();
             var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage),
                     details: GetSkinImageViewerDetailsCallback(Car)).ShowDialogInSelectMode();
             SelectedSkin = Car.EnabledOnlySkins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;

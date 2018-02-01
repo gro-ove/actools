@@ -33,7 +33,7 @@ namespace AcManager.Tools.Managers {
 
         private void Drive_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.DriveSettings.KunosCareerUserSkin) || SettingsHolder.Drive.KunosCareerUserSkin) return;
-            foreach (var ev in LoadedOnly.SelectMany(x => x.Events)) {
+            foreach (var ev in Loaded.SelectMany(x => x.Events)) {
                 ev.ResetSkinToDefault();
             }
         }
@@ -168,13 +168,13 @@ namespace AcManager.Tools.Managers {
 
                 case nameof(KunosCareerProgress.Completed):
                     Progress = (double)KunosCareerProgress.Instance.Completed.Length / InnerWrappersList.Count;
-                    foreach (var careerObject in LoadedOnly) {
+                    foreach (var careerObject in Loaded) {
                         careerObject.UpdateIsCompletedFlag();
                     }
                     break;
 
                 case nameof(KunosCareerProgress.Entries):
-                    foreach (var careerObject in LoadedOnly) {
+                    foreach (var careerObject in Loaded) {
                         careerObject.LoadProgress();
                     }
                     break;
@@ -256,7 +256,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private void RebuildTree() {
-            var list = LoadedOnly.ToDictionary(x => x.Id, x => x);
+            var list = Loaded.ToDictionary(x => x.Id, x => x);
             foreach (var careerObject in list.Values) {
                 careerObject.NextCareerObject = null;
             }

@@ -69,7 +69,7 @@ namespace AcManager.Tools.AcManagersNew {
         private void OnContentSettingChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.ContentSettings.NewContentPeriod)) return;
             if (!IsScanned) return;
-            foreach (var entry in LoadedOnly) {
+            foreach (var entry in Loaded) {
                 entry.CheckIfNew();
             }
         }
@@ -83,16 +83,17 @@ namespace AcManager.Tools.AcManagersNew {
             return new AcWrapperObservableCollection();
         }
 
-        protected readonly object ScanningLock = new object();
+        private readonly object _scanningLock = new object();
 
         private void EnsureScanned() {
-            lock (ScanningLock) {
+            lock (_scanningLock) {
                 if (!IsScanned && !IsScanning) {
                     Scan();
                 }
             }
         }
 
+        [NotNull]
         public IAcWrapperObservableCollection WrappersList {
             get {
                 EnsureScanned();
@@ -108,18 +109,14 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         [NotNull]
-        public IEnumerable<T> LoadedOnly => WrappersList.Select(x => x.Value).OfType<T>();
+        public IEnumerable<T> Loaded => WrappersList.Select(x => x.Value).OfType<T>();
 
-        [NotNull]
-        // [Obsolete]?
-        public IEnumerable<T> EnabledOnly => _enabledOnlyList ?? WrappersList.Select(x => x.Value).Where(x => x.Enabled).OfType<T>();
-
-        private AcEnabledOnlyCollection<T> _enabledOnlyList;
+        private AcEnabledOnlyCollection<T> _enabled;
 
         /// <summary>
-        /// Only loaded and enabled items, in order.
+        /// Only loaded and enabled items, not ordered.
         /// </summary>
-        public AcEnabledOnlyCollection<T> EnabledOnlyCollection => _enabledOnlyList ?? (_enabledOnlyList = new AcEnabledOnlyCollection<T>(WrappersList));
+        public AcEnabledOnlyCollection<T> Enabled => _enabled ?? (_enabled = new AcEnabledOnlyCollection<T>(WrappersList));
 
         private void WrappersListListenersChanged(object sender, ListenersChangedEventHandlerArgs args) {
             if (args.OldListenersCount == 0 && !IsLoaded) {
@@ -131,7 +128,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         public void Scan() {
             var scanned = _isScanned;
-            lock (ScanningLock) {
+            lock (_scanningLock) {
                 if (_isScanned && !scanned) {
                     return;
                 }
@@ -220,10 +217,10 @@ namespace AcManager.Tools.AcManagersNew {
         }
 
         protected virtual void LogLoadingTime(TimeSpan s) {
-            Logging.Write($"[{GetType().Name}] Loading finished: {WrappersList.Count} objects, {s.ToMillisecondsString()}");
+            Logging.Write($"({GetType().Name}) Loading finished: {WrappersList.Count} objects, {s.ToMillisecondsString()}");
         }
 
-        protected void ResetLoading() {
+        private void ResetLoading() {
             LoadingReset = true;
         }
 

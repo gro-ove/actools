@@ -35,7 +35,7 @@ namespace AcManager.Pages.Settings {
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
             await PythonAppsManager.Instance.EnsureLoadedAsync();
-            foreach (var appObject in PythonAppsManager.Instance.EnabledOnly) {
+            foreach (var appObject in PythonAppsManager.Instance.Enabled) {
                 if (cancellationToken.IsCancellationRequested) break;
                 await Task.Run(() => appObject.GetAppConfigs());
             }

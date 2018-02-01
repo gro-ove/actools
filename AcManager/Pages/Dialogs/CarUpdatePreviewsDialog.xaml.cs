@@ -185,7 +185,7 @@ namespace AcManager.Pages.Dialogs {
             new SettingEntry("GT5-like", "Style similar to Gran Turismo 5"),
         };
 
-        public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.EnabledOnlyCollection;
+        public AcEnabledOnlyCollection<ShowroomObject> Showrooms => ShowroomsManager.Instance.Enabled;
 
         private IWithId _selectedFilter;
 
@@ -247,7 +247,7 @@ namespace AcManager.Pages.Dialogs {
             get {
                 PpFiltersManager.Instance.EnsureLoaded();
                 return _filters ?? (_filters = new ObservableCollection<IWithId>(
-                        PpFiltersManager.Instance.EnabledOnly.Where(x => DefaultPpFilter.Id != x.Id)
+                        PpFiltersManager.Instance.Enabled.Where(x => DefaultPpFilter.Id != x.Id)
                                         .Cast<IWithId>().Prepend(DefaultPpFilter)));
             }
         }

@@ -30,7 +30,7 @@ namespace AcManager.Pages.Dialogs {
 
             var setup = error.Target as CarSetupObject;
             if (setup != null) {
-                return CarsManager.Instance.GetById(setup.CarId)?.GetSetupsManagerIfInitialized()?.LoadedOnly.SelectMany(x => x.Errors) ?? new IAcError[0];
+                return CarsManager.Instance.GetById(setup.CarId)?.GetSetupsManagerIfInitialized()?.Loaded.SelectMany(x => x.Errors) ?? new IAcError[0];
             }
 
             return new IAcError[0];

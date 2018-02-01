@@ -135,8 +135,8 @@
               Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5626223}"
               MaxWidth="800" />
           <Border x:Name="SkinsListCompactModeParent" Margin="4" Height="36" VerticalAlignment="Top">
-            <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.SkinsEnabledWrappersList}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                IsSynchronizedWithCurrentItem="True" ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling"
+            <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.EnabledSkinsListView}" SelectedItem="{Binding SelectedObject.SelectedSkin}"
+                ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsContainerVirtualizable="True"
                 VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScrollHelper.InvertLocation="True"
                 mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}"
@@ -147,10 +147,9 @@
                 <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
               </i:Interaction.Behaviors>
               <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type t:AcItemWrapper}">
-                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                  <mui:BetterImage ToolTip="{Binding Value.DisplayName}" Filename="{Binding Value.LiveryImage}" Width="32" Height="32" ClearOnChange="True"
-                      PreviewMouseRightButtonUp="OnPreviewRightClick" />
+                <DataTemplate DataType="{x:Type t:CarSkinObject}">
+                  <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True"
+                      PreviewMouseRightButtonUp="OnPreviewRightClick" c:ToolTips.CarSkin="{Binding}" />
                 </DataTemplate>
               </ListBox.ItemTemplate>
             </ListBox>

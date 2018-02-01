@@ -49,13 +49,13 @@ namespace AcManager.Controls {
     /// Bind to SelectedItem if you’re gonna use Random or Select-By-Type features, or to SelectedWeather otherwise.
     /// </summary>
     public class WeatherComboBox : HierarchicalComboBox {
-        public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.EnabledOnlyCollection;
+        public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.Enabled;
         public static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
 
         [CanBeNull]
         public static WeatherObject Unwrap(object obj, int? time, double? temperature) {
             return obj is WeatherTypeWrapped weatherTypeWrapped
-                    ? WeatherManager.Instance.EnabledOnlyCollection.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault()
+                    ? WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault()
                     : obj as WeatherObject;
         }
 

@@ -500,7 +500,7 @@ namespace AcManager.Pages.Windows {
 
             try {
                 if (SettingsHolder.Online.ServerPresetsManaging && ServerPresetsManager.Instance.IsScanned) {
-                    var running = ServerPresetsManager.Instance.LoadedOnly.Where(x => x.IsRunning).ToList();
+                    var running = ServerPresetsManager.Instance.Loaded.Where(x => x.IsRunning).ToList();
                     if (running.Count > 0 && ModernDialog.ShowMessage(
                             $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
                                     running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",

@@ -94,7 +94,7 @@
   </DockPanel>
   <c:QuickSwitchPresetsControl x:Key="WidgetVideoPresets" UserPresetable="{x:Static t:AcSettingsHolder.VideoPresets}"
       IconData="{StaticResource VideoSettingsIconData}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_VideoPresets_Tooltip}" />
-  <c:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:PpFiltersManager.Instance}}"
+  <c:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding Enabled, Source={x:Static t:PpFiltersManager.Instance}}"
       SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static t:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
       ToolTip="{x:Static c:ControlsStrings.QuickSwitches_PpFilters_Tooltip}" DisplayMemberPath="DisplayName" />
 

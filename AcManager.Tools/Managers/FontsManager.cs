@@ -32,7 +32,7 @@ namespace AcManager.Tools.Managers {
 
         private void Content_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.ContentSettings.FontIconCharacter)) {
-                foreach (var fontObject in LoadedOnly) {
+                foreach (var fontObject in Loaded) {
                     fontObject.ResetIconBitmap();
                 }
             }
@@ -95,7 +95,7 @@ namespace AcManager.Tools.Managers {
                 if (cancellation.IsCancellationRequested) return null;
 
                 var i = 0;
-                var cars = CarsManager.Instance.LoadedOnly.ToList();
+                var cars = CarsManager.Instance.Loaded.ToList();
 
                 var list = (await cars.Select(async car => {
                     if (cancellation.IsCancellationRequested) return null;
@@ -109,7 +109,7 @@ namespace AcManager.Tools.Managers {
                 }).WhenAll(12, cancellation)).Where(x => x != null && x.FontIds.Count > 0).ToListIfItIsNot();
 
                 if (cancellation.IsCancellationRequested) return null;
-                foreach (var fontObject in LoadedOnly) {
+                foreach (var fontObject in Loaded) {
                     fontObject.UsingsCarsIds = list.Where(x => x.FontIds.Contains(fontObject.AcId)).Select(x => x.CarId).ToArray();
                 }
 

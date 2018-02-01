@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -8,15 +9,24 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public class DefaultSettingEntry : SettingEntry {
-        public DefaultSettingEntry(string value, string displayName) : base(value, displayName) { }
+        public DefaultSettingEntry([Localizable(false)] string value, string displayName) : base(value, displayName) { }
         public DefaultSettingEntry(int value, string displayName) : base(value, displayName) { }
     }
 
     public class SettingEntryStored : Collection<SettingEntry>, INotifyPropertyChanged {
-        private readonly StoredValue _stored;
+        [NotNull]
+        private readonly string _key;
+
+        [CanBeNull]
+        private StoredValue _stored;
 
         public SettingEntryStored(string key) {
-            _stored = Stored.Get(key);
+            _key = key;
+        }
+
+        public SettingEntryStored([Localizable(false)] string key, Action<SettingEntry> change) {
+            _key = key;
+            _change = change;
         }
 
         private SettingEntry GetDefault() {
@@ -28,20 +38,26 @@ namespace AcManager.Tools.Helpers {
 
         public SettingEntry SelectedItem {
             get {
+                var stored = _stored ?? (_stored = Stored.Get(_key));
+
                 if (!_loaded) {
                     _loaded = true;
-                    _selected = this.GetByIdOrDefault(_stored.Value) ?? GetDefault();
+                    _selected = this.GetByIdOrDefault(stored.Value) ?? GetDefault();
                 }
 
                 return _selected;
             }
             set {
                 if (!Contains(value)) value = GetDefault();
-                if (Equals(value, _selected)) return;
+                if (Equals(value, SelectedItem)) return;
                 _selected = value;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SelectedValue));
-                _stored.Value = value.Id;
+
+                var stored = _stored ?? (_stored = Stored.Get(_key));
+                stored.Value = value.Id;
+
+                _change?.Invoke(value);
             }
         }
 
@@ -49,6 +65,9 @@ namespace AcManager.Tools.Helpers {
             get => SelectedItem.Value;
             set => SelectedItem = this.GetByIdOrDefault(value);
         }
+
+        [CanBeNull]
+        private readonly Action<SettingEntry> _change;
 
         public event PropertyChangedEventHandler PropertyChanged;
 

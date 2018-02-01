@@ -5,7 +5,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Data;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -221,8 +220,8 @@ namespace AcManager.Tools.Objects {
 
         public override void PastLoad() {
             // base.PastLoad();
-            /* we don't need to add country and author to suggestion lists: one
-               might be very invalid and other is missing here anyway */
+            // We don’t need to add country and author to suggestion lists: one
+            // might be very invalid and other is missing here anyway.
 
             if (!Enabled) return;
 
@@ -236,7 +235,7 @@ namespace AcManager.Tools.Objects {
             LoadSkinRelated(json);
 
             if (string.IsNullOrWhiteSpace(Name)) {
-                // more than usual case
+                // More than usual case
                 // AddError(AcErrorType.Data_ObjectNameIsMissing);
             }
 
@@ -271,7 +270,9 @@ namespace AcManager.Tools.Objects {
             return SuggestionLists.CarSkinTagsList;
         }
 
-        public ListCollectionView TeamsList => SuggestionLists.CarSkinDriverNamesList.View;
+        public override int CompareTo(AcPlaceholderNew o) {
+            return CarSkinComparer.Comparer.Compare(this, o);
+        }
 
         #region Packing
         public class CarSkinPackerParams : AcCommonObjectPackerParams {

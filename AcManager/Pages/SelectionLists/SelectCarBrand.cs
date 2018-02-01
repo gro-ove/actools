@@ -16,7 +16,7 @@ namespace AcManager.Pages.SelectionLists {
         private static string GetBrandIcon([NotNull] string brand, [CanBeNull] string carBrandBadge, out bool builtInIcon) {
             var entry = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, brand + @".png");
             builtInIcon = entry.Exists;
-            return builtInIcon ? entry.Filename : carBrandBadge ?? CarsManager.Instance.LoadedOnly.FirstOrDefault(x => x.Brand == brand)?.BrandBadge;
+            return builtInIcon ? entry.Filename : carBrandBadge ?? CarsManager.Instance.Loaded.FirstOrDefault(x => x.Brand == brand)?.BrandBadge;
         }
 
         internal override string Serialize() {

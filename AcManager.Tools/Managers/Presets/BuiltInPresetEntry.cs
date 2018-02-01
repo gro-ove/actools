@@ -1,6 +1,7 @@
 using System;
 using System.Text;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Presets {
     internal class BuiltInPresetEntry : Displayable, ISavedPresetEntry {
@@ -12,7 +13,7 @@ namespace AcManager.Tools.Managers.Presets {
 
         public string Filename { get; }
 
-        public BuiltInPresetEntry(string baseDirectory, string filename, string extension, byte[] data) {
+        public BuiltInPresetEntry([NotNull] string baseDirectory, [NotNull] string filename, [NotNull] string extension, byte[] data) {
             _extension = extension;
             BaseDirectory = baseDirectory;
             Filename = filename;
@@ -53,7 +54,7 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public override int GetHashCode() {
-            return Filename?.GetHashCode() ?? 0;
+            return Filename.GetHashCode();
         }
     }
 }

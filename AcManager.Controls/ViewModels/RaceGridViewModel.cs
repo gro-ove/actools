@@ -823,7 +823,7 @@ namespace AcManager.Controls.ViewModels {
 
             // Another simple mode
             if (mode == BuiltInGridMode.CandidatesFiltered) {
-                return CarsManager.Instance.EnabledOnly.Select(x => new RaceGridEntry(x)).ToArray();
+                return CarsManager.Instance.Enabled.Select(x => new RaceGridEntry(x)).ToArray();
             }
 
             // Same group mode
@@ -841,7 +841,7 @@ namespace AcManager.Controls.ViewModels {
 
             if (mode is CandidatesGridMode candidatesMode) {
                 return await Task.Run(() => {
-                    var carsEnumerable = (IEnumerable<CarObject>)CarsManager.Instance.EnabledOnly.ToList();
+                    var carsEnumerable = (IEnumerable<CarObject>)CarsManager.Instance.Enabled.ToList();
 
                     if (!string.IsNullOrWhiteSpace(candidatesMode.Filter)) {
                         var filter = Filter.Create(CarObjectTester.Instance, candidatesMode.Filter);

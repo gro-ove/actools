@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Data;
 using FirstFloor.ModernUI.Serialization;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
@@ -40,14 +41,17 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [NotNull]
         public static StoredValue Get(string key, object defaultValue = null) {
             return StoredValue.Create(key, defaultValue);
         }
 
+        [NotNull]
         public static StoredValue<T> Get<T>(string key, T defaultValue = default(T)) {
             return StoredValue.Create(key, null).GetStrict(defaultValue);
         }
 
+        [CanBeNull]
         public static string GetValue(string key, object defaultValue = null) {
             return StoredValue.Create(key, defaultValue).Value;
         }

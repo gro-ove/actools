@@ -35,9 +35,9 @@ namespace AcManager.Pages.Settings {
                     await ShowroomsManager.Instance.EnsureLoadedAsync();
 
                     await Task.Run(() => AppReporter.SendData("Years.json", new {
-                        cars = CarsManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
-                        tracks = TracksManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
-                        showrooms = ShowroomsManager.Instance.LoadedOnly.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
+                        cars = CarsManager.Instance.Loaded.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
+                        tracks = TracksManager.Instance.Loaded.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
+                        showrooms = ShowroomsManager.Instance.Loaded.Where(x => x.Year.HasValue).ToDictionary(x => x.Id, x => x.Year),
                     }, "Years"));
                     Toast.Show("Data sent", AppStrings.About_ReportAnIssue_Sent_Message);
                 } catch (Exception e) {
@@ -55,7 +55,7 @@ namespace AcManager.Pages.Settings {
                         w.Report("Loading cars…");
                         await CarsManager.Instance.EnsureLoadedAsync();
 
-                        var list = CarsManager.Instance.EnabledOnly.ToList();
+                        var list = CarsManager.Instance.Enabled.ToList();
                         for (var i = 0; i < list.Count && !cancellation.IsCancellationRequested; i++) {
                             var car = list[i];
                             w.Report(new AsyncProgressEntry(car.DisplayName, i, list.Count));

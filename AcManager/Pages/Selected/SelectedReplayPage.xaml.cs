@@ -194,7 +194,7 @@ namespace AcManager.Pages.Selected {
                 const string key = "__replayLastUsedCategory";
                 var newCategory = Prompt.Show("Where to move selected replay?", "Change Replay’s Category",
                         ValuesStorage.Get<string>(key), "?", required: true, maxLength: 60,
-                        suggestions: ReplaysManager.Instance.EnabledOnly.Select(x => x.Category).ApartFrom(ReplayObject.AutosaveCategory));
+                        suggestions: ReplaysManager.Instance.Enabled.Select(x => x.Category).ApartFrom(ReplayObject.AutosaveCategory));
                 if (string.IsNullOrWhiteSpace(newCategory)) return;
 
                 ValuesStorage.Set(key, newCategory);

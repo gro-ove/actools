@@ -135,7 +135,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override void OnAcObjectOutdated() {
-            foreach (var obj in SkinsManager.LoadedOnly) {
+            foreach (var obj in SkinsManager.Loaded) {
                 obj.Outdate();
             }
 
