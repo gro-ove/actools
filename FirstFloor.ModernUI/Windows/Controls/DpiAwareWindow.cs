@@ -23,7 +23,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Unloaded += OnUnloaded;
             SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
 
-            Owner = GetDefaultOwner();
+            Owner = GetDefaultOwner(true);
 
             // Remove that annoying backspace-to-go-back gesture
             var backGestures = NavigationCommands.BrowseBack.InputGestures;
@@ -70,6 +70,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private DpiAwareWindow _dimmedOwner;
 
         private void DimOwner() {
+            UndimOwner();
+
             _dimmedOwner = Owner as DpiAwareWindow;
             if (_dimmedOwner?.IsDimmed == false) {
                 _dimmedOwner.IsDimmed = true;
@@ -95,10 +97,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Various show-related stuff, including improved ShowDialog() method
-        private Window GetDefaultOwner() {
+        private Window GetDefaultOwner(bool allowCurrent) {
             var app = Application.Current;
             return app == null || ReferenceEquals(app.MainWindow, this) ? null
-                    : app.Windows.OfType<DpiAwareWindow>().Where(x => !ReferenceEquals(x, Owner)).FirstOrDefault(x => x.IsActive)
+                    : app.Windows.OfType<DpiAwareWindow>().Where(x => allowCurrent || !ReferenceEquals(x, Owner)).FirstOrDefault(x => x.IsActive)
                             ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null);
         }
 
@@ -122,7 +124,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public new bool? ShowDialog() {
             if (Owner != null && (!Owner.IsVisible || DoNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
-                Owner = GetDefaultOwner();
+                Owner = GetDefaultOwner(false);
             }
 
             DimOwner();
@@ -178,6 +180,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Safer implementation of the Close() method
         public new void Close() {
             try {
+                UndimOwner();
                 base.Close();
             } catch (InvalidOperationException e) {
                 Logging.Warning(e.Message);

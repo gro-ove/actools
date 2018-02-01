@@ -28,7 +28,7 @@ namespace AcManager.Pages.ContentTools {
 
                 bool result;
                 using (_cancellation = new CancellationTokenSource()) {
-                    result = await LoadOverride(new Progress<AsyncProgressEntry>(entry => {
+                    result = await LoadAsyncOverride(new Progress<AsyncProgressEntry>(entry => {
                         ActionExtension.InvokeInMainThread(() => {
                             ProgressValue = entry;
                         });
@@ -45,7 +45,7 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
-        protected abstract Task<bool> LoadOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+        protected abstract Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
 
         private Stage _currentStage;
 

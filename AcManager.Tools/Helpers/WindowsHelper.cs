@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -38,7 +39,11 @@ namespace AcManager.Tools.Helpers {
 
         [Localizable(false)]
         public static void ViewFile([NotNull] string filename) {
-            Process.Start("explorer", "/select,\"" + filename + "\"");
+            Process.Start(new ProcessStartInfo {
+                FileName = "explorer",
+                WorkingDirectory = Path.GetDirectoryName(filename) ?? "",
+                Arguments = "/select,\"" + Path.GetFileName(filename) + "\""
+            });
         }
 
         [Localizable(false)]

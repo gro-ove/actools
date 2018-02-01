@@ -587,6 +587,18 @@ namespace AcTools.Utils.Helpers {
             return source.Select(fn).Where(i => i != null);
         }
 
+        [NotNull, ItemCanBeNull, Pure]
+        public static IEnumerable<TResult> TryToSelect<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn)
+                where TResult : class {
+            return source.Select(x => {
+                try {
+                    return fn(x);
+                } catch {
+                    return null;
+                }
+            });
+        }
+
         [Pure]
         public static IEnumerable<int> RangeFrom(int from = 0) {
             for (var i = from; i < int.MaxValue; i++) {

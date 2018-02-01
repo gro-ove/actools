@@ -62,6 +62,7 @@ using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.WheelAngles;
 using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -431,6 +432,8 @@ namespace AcManager {
             AppArguments.Set(AppFlag.RaceInformationWebserverFile, ref PlayerStatsManager.OptionWebserverFilename);
             PlayerStatsManager.Instance.SetListener();
 
+            WheelOptionsBase.SetStorage(new WheelAnglesStorage());
+
             // AppArguments.Set(AppFlag.RhmKeepAlive, ref RhmService.OptionKeepRunning);
             RhmService.Instance.SetListener();
 
@@ -450,26 +453,14 @@ namespace AcManager {
                 // Do not show main window and wait for futher instructions?
             }
 
-            AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
-            DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
-            DiscordImage.OptionDefaultImage = "track_ks_brands_hatch";
-            GameWrapper.Started += (sender, args) => {
-                args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
-            };
-            /*new DiscordHandler().JoinRequest(new DiscordJoinRequest {
-                UserId = "395654492135358465",
-                AvatarUrl = "https://cdn.discordapp.com/avatars/395654492135358465/267c97d7c8f1bf20c18e7898d120b464.png",
-                Discriminator = "1234",
-                UserName = "Test user"
-            }, CancellationToken.None, reply => {
-                Logging.Debug(reply);
-            });*/
-            /*new DiscordRichPresence(10000, "Testing", "Testing") {
-                LargeImage = new DiscordImage("", "Testing"),
-                Party = new DiscordParty("party") {
-                    JoinSecret = "join0"
-                }
-            };*/
+            if (SettingsHolder.Integrated.DiscordIntegration) {
+                AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
+                DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
+                DiscordImage.OptionDefaultImage = "track_ks_brands_hatch";
+                GameWrapper.Started += (sender, args) => {
+                    args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
+                };
+            }
 
             // reshade?
             var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
@@ -690,7 +681,7 @@ namespace AcManager {
             KunosCareerProgress.SaveBeforeExit();
             UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
-            DiscordConnector.Instance.Dispose();
+            DiscordConnector.Instance?.Dispose();
             DirectInputScanner.Shutdown();
             Dispose();
         }

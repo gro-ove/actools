@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI {
 
         private void CopyFrom(IEnumerable<T> collection) {
             var items = Items;
-            if (collection == null || items == null) return;
+            if (collection == null) return;
             using (var enumerator = collection.GetEnumerator()) {
                 while (enumerator.MoveNext()) {
                     var item = enumerator.Current;

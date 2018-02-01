@@ -188,13 +188,13 @@ namespace AcManager.DiscordRpc {
             if (IsDisposed) return;
             _busy.DoDelay(() => {
                 if (!force && Instances.FirstOrDefault() != this) return;
-                DiscordConnector.Instance.Update(Instances.FirstOrDefault());
+                DiscordConnector.Instance?.Update(Instances.FirstOrDefault());
             }, 300);
         }
 
         public void ForceUpdate() {
             if (IsDisposed) return;
-            DiscordConnector.Instance.Update(Instances.FirstOrDefault());
+            DiscordConnector.Instance?.Update(Instances.FirstOrDefault());
         }
 
         int IComparer<DiscordRichPresence>.Compare(DiscordRichPresence x, DiscordRichPresence y) {

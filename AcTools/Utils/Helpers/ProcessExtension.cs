@@ -58,28 +58,35 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
-        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, bool shell = true) {
+        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, bool useShellExecute = true) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
 
             // Manual creation allows to catch Win32Exception
-            var process = new Process { StartInfo = new ProcessStartInfo {
-                FileName = filename,
-                Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "",
-                UseShellExecute = shell
-            } };
+            var process = new Process {
+                StartInfo = new ProcessStartInfo {
+                    FileName = filename,
+                    Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "",
+                    UseShellExecute = useShellExecute
+                }
+            };
             process.Start();
             return process;
         }
 
         [NotNull]
-        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo) {
+        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo,
+                bool enableRaisingEvents = false) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
 
             startInfo.FileName = filename;
             startInfo.Arguments = args?.Select(GetQuotedArgument).JoinToString(" ") ?? "";
 
+#if DEBUG
+            AcToolsLogging.Write(startInfo.Arguments);
+#endif
+
             // Manual creation allows to catch Win32Exception
-            var process = new Process { StartInfo = startInfo };
+            var process = new Process { StartInfo = startInfo, EnableRaisingEvents = enableRaisingEvents };
             process.Start();
             return process;
         }
@@ -203,7 +210,8 @@ namespace AcTools.Utils.Helpers {
         }
 
         [DllImport(@"psapi.dll")]
-        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName, [In, MarshalAs(UnmanagedType.U4)]  int nSize);
+        private static extern uint GetModuleFileNameEx(IntPtr hProcess, IntPtr hModule, [Out] StringBuilder lpBaseName,
+                [In, MarshalAs(UnmanagedType.U4)] int nSize);
 
         private static string GetProcessPathUsingPsApi(int pid) {
             var processHandle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryInformation, false, pid);
@@ -250,9 +258,21 @@ namespace AcTools.Utils.Helpers {
             if (process == null) throw new ArgumentNullException(nameof(process));
             var handles = new List<IntPtr>();
             foreach (ProcessThread thread in Process.GetProcessById(process.Id).Threads) {
-                User32.EnumThreadWindows(thread.Id, (hWnd, lParam) => { handles.Add(hWnd); return true; }, IntPtr.Zero);
+                User32.EnumThreadWindows(thread.Id, (hWnd, lParam) => {
+                    handles.Add(hWnd);
+                    return true;
+                }, IntPtr.Zero);
             }
             return handles;
+        }
+
+        public static bool HasWindow([NotNull] this Process process, IntPtr handle) {
+            if (process == null) throw new ArgumentNullException(nameof(process));
+            var result = false;
+            foreach (ProcessThread thread in Process.GetProcessById(process.Id).Threads) {
+                User32.EnumThreadWindows(thread.Id, (h, l) => result |= h == handle, IntPtr.Zero);
+            }
+            return result;
         }
     }
 }

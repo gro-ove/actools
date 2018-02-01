@@ -2,8 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
-    xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:drive="clr-namespace:AcManager.Pages.Drive" mc:Ignorable="d"
+    xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
   <UserControl.Resources>
@@ -78,8 +77,8 @@
         <mui:Cell Visibility="{Binding Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" MaxWidth="355"
             Background="Black" Margin="0 0 10 0"
             Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.5634}"
-            c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" c:ContextMenus.CarSkin="{Binding CarSkin}"
-            mui:Draggable.Data="{Binding Car}" MouseLeftButtonUp="OnCarPreviewClick">
+            c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" c:ContextMenus.CarSkin="{Binding CarSkin}" mui:Draggable.Data="{Binding Car}"
+            MouseLeftButtonUp="OnCarPreviewClick">
           <c:ContextMenus.AdditionalItems>
             <c:ContextMenusItems>
               <MenuItem Header="{x:Static g:AppStrings.Filter_ByCar}" Command="{Binding FilterCommand}" CommandParameter="car" />

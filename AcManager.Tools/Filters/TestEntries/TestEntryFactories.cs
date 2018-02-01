@@ -1,3 +1,4 @@
+using System;
 using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter.TestEntries;
 
@@ -7,6 +8,7 @@ namespace AcManager.Tools.Filters.TestEntries {
         public static ITestEntryFactory DistanceMeters = new TestEntryFactory(ToMetersPostfix);
         public static ITestEntryFactory DistanceKilometers = new TestEntryFactory(ToKilometersPostfix);
         public static ITestEntryFactory SpeedKph = new TestEntryFactory(ToSpeedKphPostfix);
+        public static ITestEntryFactory AngleDegrees = new TestEntryFactory(ToAngleDegreesPostfix);
         public static ITestEntryFactory PowerBhp = new TestEntryFactory(ToPowerBhpPostfix);
         public static ITestEntryFactory TorqueNm = new TestEntryFactory(ToTorqueNmPostfix);
         public static ITestEntryFactory WeightKg = new TestEntryFactory(ToWeightKgPostfix);
@@ -36,6 +38,16 @@ namespace AcManager.Tools.Filters.TestEntries {
                     return 1e3;
                 case "hund":
                     return 1e2;
+                default:
+                    return 1d;
+            }
+        }
+
+        private static double ToAngleDegreesPostfix(string postfix) {
+            switch (postfix) {
+                case "r":
+                case "rad":
+                    return 180 / Math.PI;
                 default:
                     return 1d;
             }

@@ -1,23 +1,21 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.LapTimes_Grid" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" mc:Ignorable="d"
-        d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
-    <mui:Cell Style="{StaticResource ContentRootWithPadding}">
-        <DataGrid Grid.Row="0" ItemsSource="{Binding List}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True"
-                MinRowHeight="20">
-            <!--<DataGrid.Columns>
-                <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car"
-                        CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
-                <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin"
-                        CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
-                <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
-                        CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
-                <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
-                        CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-                <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Ai}" SortMemberPath="AiLevel"
-                        CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
-            </DataGrid.Columns>-->
-        </DataGrid>
-    </mui:Cell>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" mc:Ignorable="d" d:DataContext="{d:DesignInstance mi:LapTimes_Recent+ViewModel}">
+  <mui:Cell Style="{StaticResource ContentRootWithPadding}">
+    <DataGrid Grid.Row="0" ItemsSource="{Binding List}" Style="{StaticResource DataGrid.Lite}" mui:Draggable.Enabled="True" MinRowHeight="20">
+      <!--<DataGrid.Columns>
+          <DataGridTemplateColumn Width="*" Header="{x:Static g:AppStrings.TableHeader_Car}" SortMemberPath="Car"
+              CellTemplate="{StaticResource Detailed.CarDataTemplate}" />
+          <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_CarSkin}" SortMemberPath="CarSkin"
+              CellTemplate="{StaticResource Detailed.SkinDataTemplate}" />
+          <DataGridTemplateColumn Width="100" Header="{x:Static g:AppStrings.TableHeader_Name}" SortMemberPath="Name"
+              CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
+          <DataGridTemplateColumn Width="120" Header="{x:Static g:AppStrings.TableHeader_Nationality}" SortMemberPath="Nationality"
+              CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
+          <DataGridTemplateColumn Width="60" Header="{x:Static g:AppStrings.TableHeader_Ai}" SortMemberPath="AiLevel"
+              CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
+        </DataGrid.Columns>-->
+    </DataGrid>
+  </mui:Cell>
 </UserControl>

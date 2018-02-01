@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -59,38 +60,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (target == null) return;
 
             var grid = (Grid)Parent;
-            var maxWidthAllowed = grid.ActualWidth - grid.ColumnDefinitions.Where(x =>
-                    !ReferenceEquals(x, target)).Sum(x => x.Width.IsAbsolute ? x.ActualWidth : x.MinWidth);
+            var maxWidthAllowed = Math.Max(grid.ActualWidth - grid.ColumnDefinitions.Where(x =>
+                    !ReferenceEquals(x, target)).Sum(x => x.Width.IsAbsolute ? x.ActualWidth : x.MinWidth), 100);
 
             target.MaxWidth = maxWidthAllowed;
             if (target.ActualWidth > maxWidthAllowed - 10) {
                 target.Width = new GridLength(maxWidthAllowed - 10, GridUnitType.Pixel);
             }
         }
-
-        /*private double? GetWidth() {
-            var target = GetTargetColumn();
-            if (target == null) return null;
-
-            var grid = (Grid)Parent;
-            var columns = grid.ColumnDefinitions;
-            var widths = columns.Where(x => !ReferenceEquals(x, target)).Sum(x => {
-                Logging.Debug($"{x.Name}={x.Width.IsAbsolute} ({x.Width}); {x.ActualWidth}; {x.MinWidth}");
-                return x.Width.IsAbsolute ? x.ActualWidth : x.MinWidth;
-            });
-            var maxWidthAllowed = grid.ActualWidth - widths;
-
-            target.MaxWidth = 400;
-
-            // Logging.Debug($"max allowed={maxWidthAllowed}; actual={target.ActualWidth}");
-
-            if (target.ActualWidth > maxWidthAllowed) {
-                target.Width = new GridLength(maxWidthAllowed, GridUnitType.Pixel);
-                return maxWidthAllowed;
-            }
-
-            return Math.Min(maxWidthAllowed, target.ActualWidth);
-        }*/
 
         private double? GetWidth() {
             return GetTargetColumn()?.ActualWidth;

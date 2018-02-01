@@ -1,6 +1,7 @@
 # AcTools (and Content Manager)
 
 [![Build status](https://img.shields.io/appveyor/ci/gro-ove/actools.svg?label=Build&maxAge=60)](https://ci.appveyor.com/project/gro-ove/actools)
+[![Works badge](https://cdn.rawgit.com/nikku/works-on-my-machine/v0.2.0/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![License](https://img.shields.io/github/license/gro-ove/actools.svg?label=License&maxAge=86400)](./LICENSE.txt)
 [![Release](https://img.shields.io/github/release/gro-ove/actools.svg?label=Release&maxAge=60)](https://github.com/gro-ove/actools/releases/latest)
 

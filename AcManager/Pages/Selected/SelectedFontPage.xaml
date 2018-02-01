@@ -1,7 +1,7 @@
 ﻿<selected:SelectedAcObjectPage x:Class="AcManager.Pages.Selected.SelectedFontPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
     mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedFontPage+ViewModel}" Loaded="OnLoaded">
   <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" IconMouseUp="OnIconClick">

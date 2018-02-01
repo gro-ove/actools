@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Attached;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -37,7 +36,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnOpened(RoutedEventArgs e) {
-            Logging.Here();
             InheritingContextMenu previous = null;
             if (_previouslyOpened?.TryGetTarget(out previous) == true) {
                 previous.RemoveTemporary();
@@ -49,7 +47,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _menus = ContextMenuAdvancement.ParentContextMenu;
             if (_menus.Count == 0) return;
 
-            _menus = _menus.Where(x => !ReferenceEquals(x, this)).ToList();
+            _menus = _menus.Where(x => !ReferenceEquals(x.Item1, this)).ToList();
             ContextMenuAdvancement.ParentContextMenu.Clear();
 
             _items = new List<List<FrameworkElement>>(_menus.Count);

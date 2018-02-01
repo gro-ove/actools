@@ -68,6 +68,10 @@ namespace AcManager.Tools {
                 .AddItem(AppStrings.Toolbar_Folder, track.ViewInExplorer);
         }
 
+        public void SetWeatherObjectMenu(ContextMenu menu, WeatherObject weather) {
+            throw new NotImplementedException();
+        }
+
         private static SharedResourceDictionary Icons = new SharedResourceDictionary {
             Source = new Uri("/AcManager.Controls;component/Assets/IconData.xaml", UriKind.Relative)
         };

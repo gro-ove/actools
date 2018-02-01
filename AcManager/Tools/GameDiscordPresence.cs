@@ -16,7 +16,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 namespace AcManager.Tools {
     public class GameDiscordPresence : Game.GameHandler {
         public override IDisposable Set(Process process) {
-            var appId = process != null ? DiscordConnector.Instance.SetAppId(process.Id) : null;
+            var appId = process != null ? DiscordConnector.Instance?.SetAppId(process.Id) : null;
             if (appId != null) {
                 _presence.ForceUpdate();
             }

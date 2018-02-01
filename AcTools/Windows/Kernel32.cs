@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -30,6 +31,38 @@ namespace AcTools.Windows {
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
             public string AlternateFileName;
         }
+
+        public static long GetFileSizeOnDisk(FileInfo info) {
+            var result = GetDiskFreeSpaceW(info.Directory?.Root.FullName ?? "", out var sectorsPerCluster, out var bytesPerSector, out uint dummy, out dummy);
+            if (result == 0) throw new Win32Exception();
+            var clusterSize = sectorsPerCluster * bytesPerSector;
+            var losize = GetCompressedFileSizeW(info.FullName, out var hosize);
+            var size = ((long)hosize << 32) | losize;
+            return (size + clusterSize - 1) / clusterSize * clusterSize;
+        }
+
+        public static long GetFileSizeOnDisk(FileInfo info, out bool isCompressed) {
+            var result = GetDiskFreeSpaceW(info.Directory?.Root.FullName ?? "", out var sectorsPerCluster, out var bytesPerSector, out uint dummy, out dummy);
+            if (result == 0) throw new Win32Exception();
+            var clusterSize = sectorsPerCluster * bytesPerSector;
+            var losize = GetCompressedFileSizeW(info.FullName, out var hosize);
+            var size = ((long)hosize << 32) | losize;
+            isCompressed = info.Length == size;
+            return (size + clusterSize - 1) / clusterSize * clusterSize;
+        }
+
+        public static long GetFileSizeOnDisk(string file) {
+            return GetFileSizeOnDisk(new FileInfo(file));
+        }
+
+        [DllImport("kernel32.dll")]
+        public static extern uint GetCompressedFileSizeW([In, MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
+                [Out, MarshalAs(UnmanagedType.U4)] out uint lpFileSizeHigh);
+
+        [DllImport("kernel32.dll", SetLastError = true, PreserveSig = true)]
+        public static extern int GetDiskFreeSpaceW([In, MarshalAs(UnmanagedType.LPWStr)] string lpRootPathName,
+                out uint lpSectorsPerCluster, out uint lpBytesPerSector, out uint lpNumberOfFreeClusters,
+                out uint lpTotalNumberOfClusters);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr FindFirstFile(string lpFileName, out Win32FindData lpFindFileData);

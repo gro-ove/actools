@@ -31,7 +31,7 @@ using StringBasedFilter;
 namespace AcManager.Pages.ContentTools {
     public partial class BatchPreviewsUpdater {
         #region Loading
-        protected override async Task<bool> LoadOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             await CarsManager.Instance.EnsureLoadedAsync();
 
             Entries = new ChangeableObservableCollection<CarObjectEntry>(

@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Dialogs;
 
 namespace AcManager.Pages.ContentTools {
     public partial class CupList {
-        protected override async Task<bool> LoadOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             progress.Report("Loading list of updates…", 0.01);
             await CupClient.Instance.LoadRegistries();
 

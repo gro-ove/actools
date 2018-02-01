@@ -39,12 +39,12 @@ namespace AcManager.Tools.Objects {
         }
 
         public void SaveTo(IniFileSection section) {
-            section.Set("MODEL", CarId);
-            section.Set("SKIN", CarSkinId);
-            section.Set("SPECTATOR_MODE", SpectatorMode);
-            section.Set("DRIVERNAME", DriverName);
-            section.Set("TEAM", TeamName);
-            section.Set("GUID", Guid);
+            section.SetOrRemove("MODEL", CarId);
+            section.SetOrRemove("SKIN", CarSkinId);
+            section.SetOrRemove("SPECTATOR_MODE", SpectatorMode);
+            section.SetOrRemove("DRIVERNAME", DriverName);
+            section.SetOrRemove("TEAM", TeamName);
+            section.SetOrRemove("GUID", Guid);
             section.Set("BALLAST", Ballast);
             section.Set("RESTRICTOR", Restrictor);
         }

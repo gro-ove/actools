@@ -115,7 +115,7 @@ namespace AcTools.AcdFile {
             } else if (_unpackedDirectory != null) {
                 foreach (var file in Directory.GetFiles(_unpackedDirectory)) {
                     var name = Path.GetFileName(file);
-                    if (name != null && !_entries.ContainsKey(name)) {
+                    if (!_entries.ContainsKey(name)) {
                         _entries[name] = new AcdEntry {
                             Name = name,
                             Data = File.ReadAllBytes(file)
@@ -214,7 +214,7 @@ namespace AcTools.AcdFile {
 
                         if (Directory.Exists(unpackedDirectory)) {
                             foreach (var v in Directory.GetFiles(unpackedDirectory).Where(x =>
-                                    _entries.ContainsKey(Path.GetFileName(x)?.ToLowerInvariant() ?? ""))) {
+                                    _entries.ContainsKey(Path.GetFileName(x).ToLowerInvariant()))) {
                                 FileUtils.TryToDelete(v);
                             }
                         }

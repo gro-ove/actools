@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -32,7 +34,7 @@ namespace AcManager.DiscordRpc {
         private static bool _connected;
 
         public async Task LaunchAsync(string appId) {
-            if (_pipe != null) throw new Exception("Already launched");
+            if (_pipe != null) throw new DiscordException("Already launched");
             _pipe = null;
 
             for (var i = 0; i <= 9; i++) {
@@ -51,10 +53,12 @@ namespace AcManager.DiscordRpc {
             if (_pipe == null) throw new TimeoutException("Pipe not found");
             Write(Opcode.Handshake, new JObject { ["v"] = 1, ["client_id"] = appId }.ToString(Formatting.None));
 
-            var response = await _ReadAsync();
+            var response = await ReadAsync();
+            if (response == null) return;
+
             if ((string)response["cmd"] != "DISPATCH" || (string)response["evt"] != "READY") return;
 
-            _cdnHost = (string)response["data"]["config"]["cdn_host"];
+            _cdnHost = (string)response["data"]?["config"]?["cdn_host"];
             Utils.Log("Connected");
 
             if (!_connected) {
@@ -83,7 +87,7 @@ namespace AcManager.DiscordRpc {
 
                 await Enqueue(async () => {
                     if (PeekNamedPipe(_pipe.SafePipeHandle, buffer, 1, out _, out var bytesAvailable, out _) && buffer[0] != 0 && bytesAvailable >= 8) {
-                        ProcessMessage(await _ReadAsync().ConfigureAwait(false));
+                        ProcessMessage(await ReadAsync().ConfigureAwait(false));
                     }
                 });
 
@@ -242,43 +246,61 @@ namespace AcManager.DiscordRpc {
 
         private Task Execute(string command, JObject data) {
             return Enqueue(async () => {
-                var nonce = ++_nonce;
-                data["cmd"] = command;
-                data["nonce"] = nonce;
-                Write(Opcode.Frame, data.ToString(Formatting.None));
-                Utils.Log("Message written");
-                var response = await _ReadAsync();
-                Utils.Log("Response is here");
-                if ((int)response["nonce"] != nonce) throw new Exception($"Nonce mismatch: {nonce}≠{(int)response["nonce"]}");
-                if ((string)response["evt"] == "ERROR") {
-                    Utils.Warn((string)response["data"]["message"]);
-                    throw new Exception((string)response["data"]["message"]);
-                }
+                var nonce = WriteCommand(command, data);
+                ProcessResponse(await ReadAsync(), nonce);
             });
         }
 
-        private void Write(byte[] b) {
-            _pipe.Write(b, 0, b.Length);
+        private int WriteCommand(string command, JObject data) {
+            var nonce = ++_nonce;
+            data["cmd"] = command;
+            data["nonce"] = nonce;
+            Write(Opcode.Frame, data.ToString(Formatting.None));
+            Utils.Log("Message written");
+            return nonce;
+        }
+
+        private static void ProcessResponse(JToken response, int nonce) {
+            Utils.Log("Response is here");
+            if (response == null) throw new DiscordException("No response");
+
+            var responseNonce = response.GetIntValueOnly("nonce");
+            if (responseNonce != nonce) throw new DiscordException($"Nonce mismatch: {nonce}≠{responseNonce}");
+            if (response.GetStringValueOnly("evt") == "ERROR") {
+                var message = response["data"]?.GetStringValueOnly("message");
+                Utils.Warn(message);
+                throw new DiscordException(message);
+            }
         }
 
         private void Write(Opcode opcode, string data) {
-            if (IsDisposed) throw new Exception("Disposed");
+            if (IsDisposed) throw new DiscordException("Disposed");
             Utils.Log($"Write: {opcode}; {data}");
-            Write(BitConverter.GetBytes((int)opcode));
-            Write(BitConverter.GetBytes(data.Length));
-            Write(_encoding.GetBytes(data));
+
+            var result = Fit((int)(1.5 * data.Length + 8));
+            GetBytes((int)opcode, result, 0);
+            GetBytes(data.Length, result, 1);
+            var length = _encoding.GetBytes(data, 0, data.Length, result, 8) + 8;
+            _pipe.Write(result, 0, length);
             _pipe.Flush();
+        }
+
+        public static unsafe void GetBytes(int value, byte[] result, int offset) {
+            fixed (byte* numPtr = result) {
+                *((int*)numPtr + offset) = value;
+            }
         }
 
         private byte[] _buffer;
 
         private byte[] Fit(int size) {
-            if (size > 100000) throw new Exception("Too much data");
-            return _buffer?.Length >= size ? _buffer : (_buffer = new byte[size]);
+            if (size > 100000) throw new DiscordException("Too much data");
+            return _buffer?.Length >= size ? _buffer : (_buffer = new byte[(int)(size * 1.2)]);
         }
 
-        private async Task<JToken> _ReadAsync(CancellationToken cancellation = default(CancellationToken)) {
-            if (IsDisposed) throw new Exception("Disposed");
+        [ItemCanBeNull]
+        private async Task<JToken> ReadAsync(CancellationToken cancellation = default(CancellationToken)) {
+            if (IsDisposed) throw new DiscordException("Disposed");
 
             // 400 bytes to fit all necessary stuff
             var bytes = Fit(400);
@@ -305,7 +327,7 @@ namespace AcManager.DiscordRpc {
                 case Opcode.Pong:
                     return null;
                 case Opcode.Handshake:
-                    throw new Exception($"Unexpected opcode: {opcode}");
+                    throw new DiscordException($"Unexpected opcode: {opcode}");
                 default:
                     throw new ArgumentOutOfRangeException();
             }

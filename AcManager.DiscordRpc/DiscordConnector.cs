@@ -12,6 +12,7 @@ namespace AcManager.DiscordRpc {
         public static TimeSpan OptionMaxReconnectionDelay = TimeSpan.FromMinutes(1);
         public static bool OptionVerboseMode = false;
 
+        [CanBeNull]
         public static DiscordConnector Instance { get; private set; }
 
         public static void Initialize([NotNull] string clientId, IDiscordHandler handler = null) {
@@ -84,6 +85,8 @@ namespace AcManager.DiscordRpc {
                     Utils.Log(e.Message);
                 } catch (IOException e) {
                     Utils.Warn(e.Message);
+                } catch (DiscordException e) {
+                    Utils.Warn(e.Message);
                 } catch (Exception e) {
                     Utils.Warn(e.ToString());
                 }
@@ -106,5 +109,9 @@ namespace AcManager.DiscordRpc {
             IsDisposed = true;
             _currentConnection?.Dispose();
         }
+    }
+
+    public class DiscordException : Exception {
+        public DiscordException(string message) : base(message) { }
     }
 }

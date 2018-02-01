@@ -247,6 +247,7 @@ namespace AcManager.Tools.Objects {
             section.Set("ALLOWED_TYRES_OUT", AllowTyresOut);
             section.Set("MAX_BALLAST_KG", MaxBallast);
             section.SetIntEnum("START_RULE", JumpStart);
+            section.Set("RACE_GAS_PENALTY_DISABLED", RaceGasPenaltyDisabled);
             section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
 
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Tools.AcErrors;
@@ -17,6 +18,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -51,10 +53,14 @@ namespace AcManager.Tools.Objects {
                 _timeDiapason = value;
                 if (Loaded) {
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayTimeDiapason));
                     Changed = true;
                 }
             }
         }
+
+        public string DisplayTimeDiapason => _timeDiapason == null ? null :
+                Regex.Replace(_timeDiapason.Replace('-', '…').Replace('—', '…'), @"(?<=,)\s*|\s+", " ");
 
         private string _temperatureDiapason;
 
@@ -67,7 +73,46 @@ namespace AcManager.Tools.Objects {
                 _temperatureDiapason = value;
                 if (Loaded) {
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayTemperatureDiapason));
                     Changed = true;
+                }
+            }
+        }
+
+        public string DisplayTemperatureDiapason {
+            get {
+                if (_temperatureDiapason == null) return null;
+
+                var nicer = _temperatureDiapason.Replace('-', '–').Replace('…', '–').Replace('—', '–');
+                var fixedSpaces = Regex.Replace(Regex.Replace(nicer, @"\s+(?=,)", ""), @"(?<=,)\s*|\s+", " ");
+
+                switch (SettingsHolder.Common.TemperatureUnitMode) {
+                    case TemperatureUnitMode.Celsius:
+                        return CelsiusPostfix(fixedSpaces);
+                    case TemperatureUnitMode.Fahrenheit:
+                        return FahrenheitPostfix(Fahrenheit());
+                    case TemperatureUnitMode.Both:
+                        return $@"{CelsiusPostfix(fixedSpaces)}, {FahrenheitPostfix(Fahrenheit())}";
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
+                string Fahrenheit() {
+                    return Regex.Replace(fixedSpaces, @"-?(\d+(?:\.\d+)?|\.\d+)", m => CelsiusToFahrenheit(m.Value.As(0d)).As<string>());
+                }
+
+                string CelsiusPostfix(string s) {
+                    // TODO: ToolsStrings.Common_CelsiusPostfix
+                    return s + "° C";
+                }
+
+                string FahrenheitPostfix(string s) {
+                    // TODO: ToolsStrings.Common_FahrenheitPostfix
+                    return s + "° F";
+                }
+
+                double CelsiusToFahrenheit(double celsius) {
+                    return celsius * 1.8 + 32;
                 }
             }
         }

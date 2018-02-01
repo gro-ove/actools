@@ -41,7 +41,7 @@
     </Setter>
   </Style>
 
-  <Style x:Key="RichTextBox.Small" TargetType="{x:Type RichTextBox}" BasedOn="{StaticResource RichTextBox.ReadOnly}">
+  <Style x:Key="RichTextBox.ReadOnly.Small" TargetType="{x:Type RichTextBox}" BasedOn="{StaticResource RichTextBox.ReadOnly}">
     <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
   </Style>
 

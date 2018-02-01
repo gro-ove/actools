@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:u="clr-namespace:AcManager.Controls.UserControls" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:c="clr-namespace:AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
@@ -34,6 +34,19 @@
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
       <TextBlock Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
       <c:TrackBlock ShowPreview="False" Track="{Binding}" Width="480" MaxHeight="320" />
+    </StackPanel>
+  </ToolTip>
+
+  <ToolTip x:Key="WeatherPreviewTooltip" d:DataContext="{d:DesignInstance t:WeatherObject}" x:Shared="False">
+    <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
+      <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="480" />
+      <c:PropertiesGrid Columns="2" Width="480" LabelWidth="80" Margin="0 6 0 0">
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="None" />
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Time:" Text="{Binding DisplayTimeDiapason}" Placeholder="Any" />
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Coefficient:" Text="{Binding TemperatureCoefficient, StringFormat='{}{0:F2}'}" Placeholder="1" />
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Temperature:" Text="{Binding DisplayTemperatureDiapason}" Placeholder="Any" />
+      </c:PropertiesGrid>
     </StackPanel>
   </ToolTip>
 

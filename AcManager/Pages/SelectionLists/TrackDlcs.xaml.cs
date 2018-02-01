@@ -18,6 +18,7 @@ namespace AcManager.Pages.SelectionLists {
         private static readonly KunosDlcInformation FakeModDlc = new KunosDlcInformation(-2, "MOD", "Mods", null, null);
 
         protected override SelectDlc GetSelectedItem(IList<SelectDlc> list, TrackObject obj) {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (obj == null) return null;
 
             var value = obj.Dlc ?? (obj.Author == AcCommonObject.AuthorKunos ? FakeKunosDlc : FakeModDlc);

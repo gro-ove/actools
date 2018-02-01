@@ -112,6 +112,7 @@ namespace AcTools.Tests {
                     mt[i] = -1;
                 }
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (optimize) {
                     var used1 = new bool[size];
                     for (var i = 0; i < size; i++) {

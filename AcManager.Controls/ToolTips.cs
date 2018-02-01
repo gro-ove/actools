@@ -55,6 +55,17 @@ namespace AcManager.Controls {
         public static readonly DependencyProperty TrackProperty = DependencyProperty.RegisterAttached("Track", typeof(TrackObjectBase),
                 typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
 
+        public static WeatherObject GetWeather(DependencyObject obj) {
+            return (WeatherObject)obj.GetValue(WeatherProperty);
+        }
+
+        public static void SetWeather(DependencyObject obj, WeatherObject value) {
+            obj.SetValue(WeatherProperty, value);
+        }
+
+        public static readonly DependencyProperty WeatherProperty = DependencyProperty.RegisterAttached("Weather", typeof(WeatherObject),
+                typeof(ToolTips), new UIPropertyMetadata(OnToolTipChanged));
+
         public static ICupSupportedObject GetCupUpdate(DependencyObject obj) {
             return (ICupSupportedObject)obj.GetValue(CupUpdateProperty);
         }
@@ -138,6 +149,11 @@ namespace AcManager.Controls {
         }
 
         [CanBeNull]
+        public static ToolTip GetWeatherToolTip(FrameworkElement obj = null) {
+            return GetToolTip(@"WeatherPreviewTooltip", obj);
+        }
+
+        [CanBeNull]
         public static ToolTip GetCupUpdateToolTip(FrameworkElement obj = null) {
             return GetToolTip(@"CupUpdateTooltip", obj);
         }
@@ -204,6 +220,12 @@ namespace AcManager.Controls {
             var track = GetTrack(element);
             if (track != null) {
                 SetToolTip(element, GetTrackToolTip(element), track);
+                return;
+            }
+
+            var weather = GetWeather(element);
+            if (weather != null) {
+                SetToolTip(element, GetWeatherToolTip(element), weather);
                 return;
             }
 

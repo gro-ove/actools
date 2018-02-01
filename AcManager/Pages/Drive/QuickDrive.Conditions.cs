@@ -26,9 +26,9 @@ namespace AcManager.Pages.Drive {
         /// Moved outside in a pity attempt to sort everything out.
         /// </summary>
         public partial class ViewModel {
-
             #region User-set variables which define working mode
             private bool _realConditions;
+
             public bool RealConditions {
                 get => _realConditions;
                 set {
@@ -70,6 +70,7 @@ namespace AcManager.Pages.Drive {
             public bool ManualConditions => !_realConditions && !_idealConditions;
 
             private bool _realConditionsManualTime;
+
             public bool RealConditionsManualTime {
                 get => _realConditionsManualTime;
                 set {
@@ -82,6 +83,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool _realConditionsManualWind;
+
             public bool RealConditionsManualWind {
                 get => _realConditionsManualWind;
                 set {
@@ -94,6 +96,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool _realConditionsLocalWeather;
+
             public bool RealConditionsLocalWeather {
                 get => _realConditionsLocalWeather;
                 set {
@@ -106,6 +109,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool _realConditionsTimezones;
+
             public bool RealConditionsTimezones {
                 get => _realConditionsTimezones;
                 set {
@@ -182,6 +186,9 @@ namespace AcManager.Pages.Drive {
 
                     if (!RealConditions) {
                         SaveLater();
+                        if (value is WeatherObject weather) {
+                            IsTimeOutOfWeatherRange = weather.TimeDiapason?.TimeDiapasonContains(Time) == false;
+                        }
                     }
                 }
             }
@@ -208,27 +215,22 @@ namespace AcManager.Pages.Drive {
             }
 
             [CanBeNull]
-            private WeatherObject GetRandomWeather([CanBeNull] double? temperatureToConsider) {
-                var weatherObject = SelectedWeatherObject;
-                for (var i = 0; i < 100; i++) {
-                    weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
-                    if (!temperatureToConsider.HasValue || weatherObject.TemperatureDiapason?.DiapasonContains(temperatureToConsider.Value) != false) {
-                        break;
-                    }
+            private WeatherObject GetRandomWeather(int? time, double? temperature) {
+                for (var i = 0;; i++) {
+                    var weatherObject = GetRandomObject(WeatherManager.Instance, SelectedWeatherObject?.Id);
+                    if (weatherObject.Fits(time, temperature) || i == 100) return weatherObject;
                 }
-                return weatherObject;
             }
 
-            private void SetRandomWeather(bool considerTemperature) {
+            private void SetRandomWeather(bool considerConditions) {
                 RealConditions = false;
-                SelectedWeather = GetRandomWeather(considerTemperature ? Temperature : (double?)null);
+                SelectedWeather = GetRandomWeather(considerConditions ? Time : (int?)null, considerConditions ? Temperature : (double?)null);
             }
 
             private DelegateCommand _randomWeatherCommand;
 
-            public DelegateCommand RandomWeatherCommand => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => {
-                SetRandomWeather(true);
-            }));
+            public DelegateCommand RandomWeatherCommand
+                => _randomWeatherCommand ?? (_randomWeatherCommand = new DelegateCommand(() => { SetRandomWeather(true); }));
             #endregion
 
             #region Automatically set variables
@@ -245,6 +247,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool _isTimeClamped;
+
             public bool IsTimeClamped {
                 get => _isTimeClamped;
                 set {
@@ -254,7 +257,19 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private bool _isTimeOutOfWeatherRange;
+
+            public bool IsTimeOutOfWeatherRange {
+                get => _isTimeOutOfWeatherRange;
+                set {
+                    if (Equals(value, _isTimeOutOfWeatherRange)) return;
+                    _isTimeOutOfWeatherRange = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private bool _isTemperatureClamped;
+
             public bool IsTemperatureClamped {
                 get => _isTemperatureClamped;
                 set {
@@ -265,6 +280,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool _isWeatherNotSupported;
+
             public bool IsWeatherNotSupported {
                 get => _isWeatherNotSupported;
                 set {
@@ -337,13 +353,12 @@ namespace AcManager.Pages.Drive {
             }
 
             private double GetRandomTemperature() {
-                var diapason = SelectedWeatherObject?.TemperatureDiapason;
-                var temperature = Temperature;
-                for (var i = 0; i < 100; i++) {
-                    temperature = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
-                    if (diapason?.DiapasonContains(temperature) != false) break;
+                for (var i = 0;; i++) {
+                    var value = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
+                    if (SelectedWeatherObject?.TemperatureDiapason?.DiapasonContains(value) != false || i == 100) {
+                        return value;
+                    }
                 }
-                return temperature;
             }
 
             private DelegateCommand _randomTemperatureCommand;
@@ -355,7 +370,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public double RecommendedRoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
-                            SelectedWeatherObject?.TemperatureCoefficient ?? 0.0);
+                    SelectedWeatherObject?.TemperatureCoefficient ?? 0.0);
 
             public double RoadTemperature => CustomRoadTemperature ? CustomRoadTemperatureValue : RecommendedRoadTemperature;
 
@@ -405,6 +420,8 @@ namespace AcManager.Pages.Drive {
 
                     if (RealConditions) {
                         TryToSetWeatherLater();
+                    } else if (SelectedWeather is WeatherObject weather) {
+                        IsTimeOutOfWeatherRange = weather.TimeDiapason?.TimeDiapasonContains(value) == false;
                     } else {
                         RefreshSelectedWeatherObjectLater();
                     }
@@ -423,6 +440,15 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
+            private int GetRandomTime() {
+                for (var i = 0;; i++) {
+                    var value = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                    if (SelectedWeatherObject?.TimeDiapason?.TimeDiapasonContains(value) != false || i == 100) {
+                        return value;
+                    }
+                }
+            }
+
             private DelegateCommand _randomTimeCommand;
 
             public DelegateCommand RandomTimeCommand => _randomTimeCommand ?? (_randomTimeCommand = new DelegateCommand(() => {
@@ -431,7 +457,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 RandomTime = false;
-                Time = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                Time = GetRandomTime();
             }));
 
             public string DisplayTime {
@@ -563,6 +589,7 @@ namespace AcManager.Pages.Drive {
                 } else {
                     RandomTime = false;
                     RandomTemperature = false;
+                    IsTimeOutOfWeatherRange = false;
                     ManualTime = RealConditionsManualTime;
                     ManualWind = RealConditionsManualWind;
 
@@ -583,7 +610,7 @@ namespace AcManager.Pages.Drive {
                                             WindSpeedMax = weather.WindSpeed * 3.6;
                                         }
                                     }, cancellation.Token);
-                        } catch (Exception e) when (e.IsCanceled()) {} catch (Exception e) {
+                        } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
                             Logging.Warning(e);
                         }
 

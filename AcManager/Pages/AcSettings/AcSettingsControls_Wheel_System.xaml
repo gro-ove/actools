@@ -139,6 +139,9 @@
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Race:" />
           <ItemsControl ItemsSource="{Binding SystemRaceButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Online:" />
+          <ItemsControl ItemsSource="{Binding SystemOnlineButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
+
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Car:" />
           <ItemsControl ItemsSource="{Binding SystemCarButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 

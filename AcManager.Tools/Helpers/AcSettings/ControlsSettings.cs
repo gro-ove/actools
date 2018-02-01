@@ -77,6 +77,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             SystemUiButtonEntries = new[] {
                 new SystemButtonEntryCombined("HIDE_APPS", "Apps", defaultKey: Keys.H),
+                new SystemButtonEntryCombined("__CM_NEXT_APPS_DESKTOP", "Next desktop", fixedValueCallback: x => new[] { Keys.Control, Keys.U }),
                 new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display", defaultKey: Keys.Q),
                 new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names", defaultKey: Keys.L),
                 new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line", defaultKey: Keys.I),
@@ -92,6 +93,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("SLOWMO", "Slow motion", defaultKey: Keys.S),
                 new SystemButtonEntryCombined("FFWD", "Fast-forward", defaultKey: Keys.F),
                 new SystemButtonEntryCombined("REV", "Rewind", defaultKey: Keys.D),
+            };
+
+            SystemOnlineButtonEntries = new[] {
+                new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[]{ Keys.Y }, delayed: true),
+                new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[]{ Keys.N }, delayed: true)
             };
 
             SystemDiscordButtonEntries = new[] {
@@ -214,7 +220,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 SettingsHolder.Drive.ScanControllersAutomatically = true;
             }
 
-            IsHardwareLockSupported = Devices.Any(x => WheelSteerLock.IsSupported(x.Id));
+            object options = null;
+            IsHardwareLockSupported = Devices.Any(x => {
+                if (!WheelSteerLock.IsSupported(x.Id, out var o)) return false;
+                if (o != null) options = o;
+                return true;
+            });
+            HardwareLockOptions = options;
+
+            Save();
         }
 
         private DelegateCommand _runControlPanelCommand;
@@ -961,6 +975,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SystemButtonEntryCombined[] SystemCarButtonEntries { get; }
         public SystemButtonEntryCombined[] SystemUiButtonEntries { get; }
         public SystemButtonEntryCombined[] SystemReplayButtonEntries { get; }
+        public SystemButtonEntryCombined[] SystemOnlineButtonEntries { get; }
         public SystemButtonEntryCombined[] SystemDiscordButtonEntries { get; }
 
         [NotNull]
@@ -968,6 +983,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     .Concat(SystemCarButtonEntries)
                     .Concat(SystemUiButtonEntries)
                     .Concat(SystemReplayButtonEntries)
+                    .Concat(SystemOnlineButtonEntries)
                     .Concat(SystemDiscordButtonEntries);
 
         [NotNull]
@@ -1055,6 +1071,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set {
                 if (Equals(value, _isHardwareLockSupported)) return;
                 _isHardwareLockSupported = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private object _hardwareLockOptions;
+
+        public object HardwareLockOptions {
+            get => _hardwareLockOptions;
+            set {
+                if (Equals(value, _hardwareLockOptions)) return;
+                _hardwareLockOptions = value;
                 OnPropertyChanged();
             }
         }

@@ -47,6 +47,9 @@ namespace AcManager.Tools.GameProperties {
             public ModifierKeys Modifiers { get; set; } = ModifierKeys.Control;
             public TimeSpan MinInterval { get; set; } = OptionLargeInterval;
 
+            [CanBeNull]
+            public Func<bool> IsAvailableTest { get; set; }
+
             private string _delayedName;
 
             public string DelayedName {
@@ -172,6 +175,7 @@ namespace AcManager.Tools.GameProperties {
                         WindowStyle = WindowStyle.None,
                         BlurBackground = true,
                         PreventActivation = true,
+                        ShowActivated = false,
                         Topmost = true,
                         ShowTopBlob = false,
                         ShowTitle = false,
@@ -393,9 +397,9 @@ namespace AcManager.Tools.GameProperties {
             private static bool _delaysAvailable;
 
             static MemoryListener() {
-                var startStopSession = new CallbackJoyCommand(() => {
-                    InternalUtils.AcControlPointExecute(_isDriving ? AcCommand.TeleportToPitsWithConfig : AcCommand.StartGame);
-                });
+                var startStopSession =
+                        new CallbackJoyCommand(
+                                () => { InternalUtils.AcControlPointExecute(_isDriving ? AcCommand.TeleportToPitsWithConfig : AcCommand.StartGame); });
 
                 ExtraCommands = new Dictionary<string, JoyCommandBase> {
                     ["__CM_START_SESSION"] = new AcJoyCommand(AcCommand.StartGame),
@@ -403,16 +407,13 @@ namespace AcManager.Tools.GameProperties {
                     ["__CM_TO_PITS"] = new AcJoyCommand(AcCommand.TeleportToPits),
                     ["__CM_SETUP_CAR"] = new AcJoyCommand(AcCommand.TeleportToPitsWithConfig),
                     ["__CM_EXIT"] = new AcJoyCommand(AcCommand.Shutdown),
-                    ["__CM_PAUSE"] = new CallbackJoyCommand(() => {
-                        if (!ContinueRaceHelper.ContinueRace()) {
-                            Press(Keys.Escape);
-                        }
-                    }),
+                    ["__CM_PAUSE"] = new CallbackJoyCommand(ContinueRace),
                     ["__CM_START_STOP_SESSION"] = startStopSession,
                     ["__CM_ABS_DECREASE"] = new ReverseHotkeyJoyCommand("ABS"),
                     ["__CM_TRACTION_CONTROL_DECREASE"] = new ReverseHotkeyJoyCommand("TRACTION_CONTROL"),
-                    // ["__CM_DISCORD_REQUEST_ACCEPT"] = DiscordJoyAcceptCommand,
-                    // ["__CM_DISCORD_REQUEST_DENY"] = DiscordJoyDenyCommand,
+                    ["__CM_NEXT_APPS_DESKTOP"] = new HotkeyJoyCommand(Keys.RControlKey, Keys.U) { MinInterval = OptionSmallInterval },
+                    ["__CM_ONLINE_POLL_YES"] = new HotkeyJoyCommand(Keys.Y) { IsAvailableTest = IsOnlineRace },
+                    ["__CM_ONLINE_POLL_NO"] = new HotkeyJoyCommand(Keys.N) { IsAvailableTest = IsOnlineRace },
                 };
 
                 AcSharedMemory.Instance.Updated += (sender, args) => {
@@ -432,6 +433,16 @@ namespace AcManager.Tools.GameProperties {
                         return false;
                     }
                 };
+            }
+
+            private static void ContinueRace() {
+                if (!ContinueRaceHelper.ContinueRace()) {
+                    Press(Keys.Escape);
+                }
+            }
+
+            private static bool IsOnlineRace() {
+                return new IniFile(AcPaths.GetRaceIniFilename())["REMOTE"].GetBool("ACTIVE", false);
             }
 
             private KeyboardListener _keyboard;
@@ -511,6 +522,8 @@ namespace AcManager.Tools.GameProperties {
                     var delay = ShortenDelays.Contains(n) ? OptionSmallInterval : OptionLargeInterval;
 
                     var isExtra = ExtraCommands.TryGetValue(n, out var c);
+                    if (isExtra && c.IsAvailableTest?.Invoke() == false) continue;
+
                     var joy = section.GetInt("JOY", -1);
                     var button = section.GetInt("BUTTON", -1);
                     var pov = section.GetInt("__CM_POV", -1);

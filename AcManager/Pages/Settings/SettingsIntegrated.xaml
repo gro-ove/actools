@@ -15,7 +15,17 @@
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
-        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+        <TextBlock Text="Discord:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+
+        <DockPanel>
+          <Button Visibility="{Binding DiscordRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2 0 -3" />
+          <CheckBox IsChecked="{Binding Integrated.DiscordIntegration}" Margin="0">
+            <Label Content="Discord Rich Presence (restart app to apply)" />
+          </CheckBox>
+        </DockPanel>
+
+        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2}" />
 
         <c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>

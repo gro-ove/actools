@@ -360,7 +360,9 @@
     <Compile Include="Helpers\Loaders\RedirectingLoader.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
     <Compile Include="Helpers\PaintShopRulesLoader.cs" />
+    <Compile Include="Helpers\SettingEntryStored.cs" />
     <Compile Include="Helpers\SettingsHolder.Drive.cs" />
+    <Compile Include="Helpers\SettingsHolder.Integrated.cs" />
     <Compile Include="Helpers\SocketExtension.cs" />
     <Compile Include="Helpers\StereoOdometerHelper.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />
@@ -489,7 +491,6 @@
     <Compile Include="Profile\PlayerStatsManager.cs" />
     <Compile Include="Profile\RaceWebServer.cs" />
     <Compile Include="Profile\OverallStats.cs" />
-    <Compile Include="Profile\StorageObjectExtension.cs" />
     <Compile Include="SemiGui\CopyFilterToSystemForOculusHelper.cs" />
     <Compile Include="SemiGui\DataUpdateWarning.cs" />
     <Compile Include="SemiGui\GameStartedArgs.cs" />
@@ -510,6 +511,7 @@
     <Compile Include="Starters\ModuleStarter.cs" />
     <Compile Include="Starters\SteamStarter.cs" />
     <Compile Include="Starters\SidePassageStarter.cs" />
+    <Compile Include="StorageObjectExtension.cs" />
     <Compile Include="ToolsStrings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

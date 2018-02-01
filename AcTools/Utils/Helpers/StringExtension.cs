@@ -280,9 +280,9 @@ namespace AcTools.Utils.Helpers {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
-                var n = part.IndexOf('-');
+                var n = part.IndexOfAny(new []{ '-', '…', '—', '–' });
                 if (n == 0) {
-                    var m = part.IndexOf('-', n + 1);
+                    var m = part.IndexOfAny(new[]{ '-', '…', '—', '–' }, n + 1);
                     if (m != -1 && m != 1) {
                         n = m;
                     }
@@ -319,9 +319,9 @@ namespace AcTools.Utils.Helpers {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
-                int n = part.IndexOf('-'), fromValue, toValue;
+                int n = part.IndexOfAny(new []{ '-', '…', '—', '–' }), fromValue, toValue;
                 if (n == 0) {
-                    var m = part.IndexOf('-', n + 1);
+                    var m = part.IndexOfAny(new[]{ '-', '…', '—', '–' }, n + 1);
                     if (m != -1 && m != 1) {
                         n = m;
                     }

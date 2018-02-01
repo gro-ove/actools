@@ -1010,6 +1010,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     try {
                         if (OptionEnsureCacheIsFresh) {
                             var actual = GetActualFilename(Filename);
+                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                             if (actual == null) {
                                 RemoveFromCache(Filename);
                             } else {

@@ -1,9 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsContent" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:loaders="clr-namespace:AcManager.Tools.Helpers.Loaders;assembly=AcManager.Tools" mc:Ignorable="d"
-    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:loaders="clr-namespace:AcManager.Tools.Helpers.Loaders;assembly=AcManager.Tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -120,7 +120,8 @@
         <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}" mui:NewMarkService.New="True">
           <CheckBox.ToolTip>
             <TextBlock MaxWidth="400"
-                Text="Don’t forget: names of cars will remain protected under trademark laws even when this option is enabled! Please, don’t manufacture cars with the same names. You’ve been warned." TextWrapping="Wrap" />
+                Text="Don’t forget: names of cars will remain protected under trademark laws even when this option is enabled! Please, don’t manufacture cars with the same names. You’ve been warned."
+                TextWrapping="Wrap" />
           </CheckBox.ToolTip>
           <Label Content="Hide symbols like ™ from car names" />
         </CheckBox>

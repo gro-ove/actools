@@ -51,6 +51,8 @@ namespace AcManager.Pages.SelectionLists {
 
         protected sealed override SelectTag GetSelectedItem(IList<SelectTag> list, TObject obj) {
             var value = obj?.Tags;
+
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (value != null) {
                 for (var j = value.Count - 1; j >= 0; j--) {
                     var tagValue = value[j];

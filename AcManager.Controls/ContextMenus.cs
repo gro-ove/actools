@@ -14,6 +14,7 @@ namespace AcManager.Controls {
         void SetCarObjectMenu([NotNull] ContextMenu menu, [NotNull] CarObject car, [CanBeNull] CarSkinObject skin);
         void SetCarSkinObjectMenu([NotNull] ContextMenu menu, [NotNull] CarSkinObject skin);
         void SetTrackObjectMenu([NotNull] ContextMenu menu, [NotNull] TrackObjectBase track);
+        void SetWeatherObjectMenu([NotNull] ContextMenu menu, [NotNull] WeatherObject weather);
         void SetCupUpdateMenu([NotNull] ContextMenu menu, [NotNull] ICupSupportedObject obj);
     }
 
@@ -71,6 +72,17 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty TrackProperty = DependencyProperty.RegisterAttached("Track", typeof(TrackObjectBase),
+                typeof(ContextMenus), new UIPropertyMetadata(OnContextMenuChanged));
+
+        public static WeatherObject GetWeather(DependencyObject obj) {
+            return (WeatherObject)obj.GetValue(WeatherProperty);
+        }
+
+        public static void SetWeather(DependencyObject obj, WeatherObject value) {
+            obj.SetValue(WeatherProperty, value);
+        }
+
+        public static readonly DependencyProperty WeatherProperty = DependencyProperty.RegisterAttached("Weather", typeof(WeatherObject),
                 typeof(ContextMenus), new UIPropertyMetadata(OnContextMenuChanged));
 
         public static ICupSupportedObject GetCupUpdate(DependencyObject obj) {
@@ -179,6 +191,11 @@ namespace AcManager.Controls {
         }
 
         [CanBeNull]
+        public static ContextMenu GetWeatherContextMenu([CanBeNull] FrameworkElement element, [NotNull] WeatherObject weather) {
+            return CreateContextMenu(element, menu => ContextMenusProvider?.SetWeatherObjectMenu(menu, weather));
+        }
+
+        [CanBeNull]
         public static ContextMenu GetCupUpdateMenu([CanBeNull] FrameworkElement element, [NotNull] ICupSupportedObject obj) {
             return CreateContextMenu(element, menu => ContextMenusProvider?.SetCupUpdateMenu(menu, obj));
         }
@@ -212,6 +229,12 @@ namespace AcManager.Controls {
             var track = GetTrack(element);
             if (track != null) {
                 SetContextMenu(element, GetTrackContextMenu(element, track), track);
+                return;
+            }
+
+            var weather = GetWeather(element);
+            if (weather != null) {
+                SetContextMenu(element, GetWeatherContextMenu(element, weather), weather);
                 return;
             }
 

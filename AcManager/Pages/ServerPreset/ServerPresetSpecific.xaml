@@ -1,8 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:a="clr-namespace:AcTools;assembly=AcTools">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager"
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset" xmlns:a="clr-namespace:AcTools;assembly=AcTools">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
@@ -208,8 +206,8 @@
         </ContextMenu>
       </StackPanel.ContextMenu>
 
-      <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}"
-          Style="{StaticResource Small}" Margin="0 0 0 8" />
+      <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}" Style="{StaticResource Small}"
+          Margin="0 0 0 8" />
 
       <c:WeatherComboBox SelectedWeather="{Binding Weather}" Margin="0 0 0 8" />
 
@@ -217,9 +215,8 @@
         <c:DoubleTemperatureValueLabel Padding="8 0 0 0" RelativeRangeBase="{Binding BaseAmbientTemperature, StringFormat='{}{0:F1}'}"
             RelativeRangeHalf="{Binding AmbientTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent"
             Content="{x:Static g:AppStrings.Drive_Temperature}" Width="240" JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
-        <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}"
-            Range="{Binding AmbientTemperatureVariation}" BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}"
-            Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
+        <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseAmbientTemperature}" Range="{Binding AmbientTemperatureVariation}"
+            BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
       </DockPanel>
 
       <DockPanel>
@@ -227,8 +224,8 @@
           <ToolTip Content="{Binding RecommendedRoadTemperature}" ContentStringFormat="{}Recommended road temperature: {0:F1} °C" />
         </DockPanel.ToolTip>
         <c:DoubleTemperatureValueLabel Padding="8 0 0 0" RelativeRangeBase="{Binding BaseRoadTemperature, StringFormat='{}{0:F1}'}"
-            RelativeRangeHalf="{Binding RoadTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent" Content="Road temperature"
-            Width="240" JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
+            RelativeRangeHalf="{Binding RoadTemperatureVariationHalf, StringFormat='{}{0:F1}'}" Background="Transparent" Content="Road temperature" Width="240"
+            JoinIfEqual="True" RelativeRange="{mui:Stored 'temperatureRelativeRange=True'}" />
         <mui:DoubleSlider TickFrequency="6" TickPlacement="BottomRight" Value="{Binding BaseRoadTemperature}" Range="{Binding RoadTemperatureVariation}"
             BindingMode="PositionRange" Minimum="{x:Static a:CommonAcConsts.TemperatureMinimum}" Maximum="{x:Static a:CommonAcConsts.TemperatureMaximum}" />
       </DockPanel>
@@ -259,8 +256,8 @@
 
         <mui:BooleanSwitch Value="{mui:Stored windSpeedInMetersPerSecond}" Margin="0 0 0 -2" DockPanel.Dock="Top" HorizontalAlignment="Left">
           <mui:BooleanSwitch.True>
-            <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" m/s" JoinIfEqual="True"
-                RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="F1"
+            <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" m/s" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
+                RelativeRangeStringFormat="F1"
                 Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}"
                 SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}" />
           </mui:BooleanSwitch.True>

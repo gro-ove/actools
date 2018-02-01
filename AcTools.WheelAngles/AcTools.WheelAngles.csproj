@@ -65,6 +65,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -78,9 +79,13 @@
     <Compile Include="Implementations\LogitechG25.cs" />
     <Compile Include="Implementations\LogitechG27.cs" />
     <Compile Include="Implementations\LogitechG29.cs" />
+    <Compile Include="Implementations\Options\LogitechOptions.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
+    <Compile Include="IWheelSteerLockOptionsStorage.cs" />
     <Compile Include="IWheelSteerLockSetter.cs" />
+    <Compile Include="Utils\SimpleSerialization.cs" />
+    <Compile Include="WheelOptionsBase.cs" />
     <Compile Include="WheelSteerLock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

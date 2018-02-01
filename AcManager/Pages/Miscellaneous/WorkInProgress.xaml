@@ -1,11 +1,11 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.WorkInProgress" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d">
-    <Grid Style="{StaticResource ContentRootWithPadding}">
-        <StackPanel>
-            <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Page_Wip}" />
-            <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Page_Wip_Commentary}" />
-        </StackPanel>
-    </Grid>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    mc:Ignorable="d">
+  <Grid Style="{StaticResource ContentRootWithPadding}">
+    <StackPanel>
+      <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Page_Wip}" />
+      <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Page_Wip_Commentary}" />
+    </StackPanel>
+  </Grid>
 </UserControl>

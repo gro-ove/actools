@@ -31,7 +31,6 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
-using AcTools;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -862,9 +861,19 @@ namespace AcManager.Pages.Drive {
                     }
                 }
 
-                var temperature = RandomTemperature ? GetRandomTemperature() : Temperature;
-                var weather = SelectedWeatherObject ?? GetRandomWeather(temperature);
-                var time = _forceTime ?? (RandomTime ? MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum) : Time);
+                double temperature;
+                var weather = SelectedWeatherObject;
+                int time;
+
+                if (weather == null) {
+                    temperature = RandomTemperature ? GetRandomTemperature() : Temperature;
+                    time = _forceTime ?? (RandomTime ? GetRandomTime() : Time);
+                    weather = GetRandomWeather(time, temperature);
+                } else {
+                    temperature = RandomTemperature ? GetRandomTemperature() : Temperature;
+                    time = _forceTime ?? (RandomTime ? GetRandomTime() : Time);
+                }
+
                 var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue :
                         Game.ConditionProperties.GetRoadTemperature(time, Temperature, weather?.TemperatureCoefficient ?? 0.0);
 

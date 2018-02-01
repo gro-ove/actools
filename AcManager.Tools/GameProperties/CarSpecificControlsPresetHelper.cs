@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.WheelAngles;
+using AcTools.WheelAngles.Implementations.Options;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -69,6 +73,11 @@ namespace AcManager.Tools.GameProperties {
                             steer.Set("__CM_ORIGINAL_LOCK", currentDegrees);
                             steer.Set("LOCK", appliedValue);
                             ini.Save();
+
+                            if (lockSetter.GetOptions() is LogitechOptions logitech) {
+                                SpecialLogitechFix(logitech);
+                            }
+
                             return true;
                         }
 
@@ -100,6 +109,19 @@ namespace AcManager.Tools.GameProperties {
             }
 
             return specificControlsLoaded;
+        }
+
+        private void SpecialLogitechFix(LogitechOptions logitech) {
+            if (SettingsHolder.Drive.WatchForSharedMemory) {
+                AcSharedMemory.Instance.Start += OnStart;
+            } else {
+                Task.Delay(5000).ContinueWith(t => logitech.OnGameStarted());
+            }
+
+            void OnStart(object sender, EventArgs eventArgs) {
+                AcSharedMemory.Instance.Start -= OnStart;
+                logitech.OnGameStarted();
+            }
         }
 
         [CanBeNull]

@@ -39,7 +39,7 @@
                   Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
                   VerticalAlignment="Center" Style="{StaticResource Small}" />
               <mui:PathTrimmingTextBlock Text="{Binding DisplayFilename}" Placeholder="Packed archive is missing" VerticalAlignment="Center"
-                  Style="{StaticResource RichTextBox.Small}"
+                  Style="{StaticResource RichTextBox.ReadOnly.Small}"
                   Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
                   Margin="-4 0 0 0" />
             </DockPanel>
@@ -155,7 +155,7 @@
                 Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
                 VerticalAlignment="Center" Style="{StaticResource Small}" />
             <mui:PathTrimmingTextBlock Text="{Binding DisplayFilename}" Placeholder="Missing" VerticalAlignment="Center"
-                Style="{StaticResource RichTextBox.Small}"
+                Style="{StaticResource RichTextBox.ReadOnly.Small}"
                 Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Directly}}"
                 Margin="-4 0 0 0" />
           </DockPanel>

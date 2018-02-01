@@ -617,7 +617,7 @@ All found similarities:
             return allowEmpty || list.Count > 0 ? new BrokenDetails(car, list, ratingMode) : null;
         }
 
-        protected override async Task<bool> LoadOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             if (_id != null) {
                 var car = CarsManager.Instance.GetById(_id);
                 if (car != null) {

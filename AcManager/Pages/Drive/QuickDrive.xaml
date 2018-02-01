@@ -386,6 +386,12 @@
               </mui:BooleanSwitch>
 
               <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
+                  Visibility="{Binding IsTimeOutOfWeatherRange, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  ToolTip="Time is out of weather’s range">
+                <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
+              </Border>
+
+              <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                   Visibility="{Binding IsTimeClamped, Converter={StaticResource BooleanToVisibilityConverter}}"
                   ToolTip="{x:Static g:AppStrings.Drive_Time_Warning}">
                 <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
@@ -425,19 +431,11 @@
               </Border.ToolTip>
               <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
             </Border>
-            <TextBlock Text="{Binding SelectedWeatherObject.DisplayName}" Style="{StaticResource Small}" Margin="20 1 0 -1" DockPanel.Dock="Right"
-                Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
           </DockPanel>
 
-          <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True">
-            <c:WeatherComboBox.ToolTip>
-              <StackPanel Margin="4">
-                <TextBlock Style="{StaticResource Heading2}" Text="{Binding SelectedWeatherObject.DisplayName}" Margin="0 0 0 4" />
-                <mui:BetterImage Filename="{Binding SelectedWeatherObject.PreviewImage}" MaxWidth="400" />
-              </StackPanel>
-            </c:WeatherComboBox.ToolTip>
-          </c:WeatherComboBox>
+          <c:WeatherComboBox SelectedItem="{Binding SelectedWeather}" AllowRandomWeather="True" AllowWeatherByType="True"
+              c:ToolTips.Weather="{Binding SelectedWeatherObject}" />
         </StackPanel>
 
         <StackPanel Margin="0 0 8 0" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding ManualConditions}">

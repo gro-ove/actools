@@ -3,7 +3,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AcManager.Tools.Profile {
+namespace AcManager.Tools {
     public static class StorageObjectExtension {
         [CanBeNull]
         public static T GetObject<T>(this IStorage storage, string key) {

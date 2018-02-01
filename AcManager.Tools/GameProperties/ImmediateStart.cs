@@ -8,7 +8,6 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateStart : Game.GameHandler {
@@ -50,12 +49,13 @@ namespace AcManager.Tools.GameProperties {
                 DisposeHelper.Dispose(ref _process);
                 AcSharedMemory.Instance.Start -= Handler;
 
+                var exitCounter = 0;
+
                 for (var i = 0; i < 20; i++) {
                     Run(true);
 
                     var isInPit = AcSharedMemory.Instance.Shared?.Graphics.IsInPits;
-                    if (isInPit == false) {
-                        Logging.Debug("Is in pit: " + isInPit);
+                    if (isInPit == false && ++exitCounter > 5) {
                         break;
                     }
 

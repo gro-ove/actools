@@ -64,6 +64,7 @@
                 <ComboBox ItemsSource="{Binding EnabledOnlyCollection, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}">
                   <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                      <!-- TODO: Replace by WeatherPreviewToolTip from ToolTips.xaml? -->
                       <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
                     </Style>
                   </ComboBox.ItemContainerStyle>

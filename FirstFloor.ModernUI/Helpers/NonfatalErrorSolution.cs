@@ -42,7 +42,7 @@ namespace FirstFloor.ModernUI.Helpers {
             try {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Solving the issue…");
-                    await Task.Yield().ConfigureAwait(false);
+                    await Task.Yield();
                     await _execute(CancellationToken.None).ConfigureAwait(false);
                 }
             } catch (Exception e) when (e.IsCanceled()) {

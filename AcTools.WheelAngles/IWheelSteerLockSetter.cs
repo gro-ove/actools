@@ -1,6 +1,11 @@
-﻿namespace AcTools.WheelAngles {
+﻿using JetBrains.Annotations;
+
+namespace AcTools.WheelAngles {
     public interface IWheelSteerLockSetter {
         string ControllerName { get; }
+
+        [CanBeNull]
+        WheelOptionsBase GetOptions();
 
         bool Test(string productGuid);
         bool Apply(int angle, bool isReset, out int appliedValue);

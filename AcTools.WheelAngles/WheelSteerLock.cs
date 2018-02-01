@@ -27,6 +27,14 @@ namespace AcTools.WheelAngles {
             return _instances.Any(x => x.Test(productGuid));
         }
 
+        public static bool IsSupported([CanBeNull] string productGuid, [CanBeNull] out WheelOptionsBase options) {
+            Initialize();
+            var setter = Get(productGuid);
+            options = setter?.GetOptions();
+            options?.EnsureLoaded();
+            return setter != null;
+        }
+
         [NotNull]
         public static IEnumerable<string> GetSupportedNames() {
             Initialize();

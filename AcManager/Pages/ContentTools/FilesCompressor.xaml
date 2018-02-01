@@ -1,0 +1,128 @@
+﻿<tools:ContentTool x:Class="AcManager.Pages.ContentTools.FilesCompressor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:c="http://acstuff.ru/app/controls" xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance tools:FilesCompressor}">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <ContextMenu x:Key="FileContextMenu" d:DataContext="{d:DesignInstance tools:FilesCompressor+FileToCompress}">
+        <MenuItem Header="View in explorer" Command="{Binding ViewInExplorerCommand}" />
+      </ContextMenu>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+
+  <mui:Cell mui:Switch.When="{x:Static tools:Stage.Loading}" Width="400" HorizontalAlignment="Center">
+    <mui:SpacingStackPanel Spacing="8" VerticalAlignment="Center">
+      <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
+      <TextBlock Text="{Binding ProgressValue.Message}" />
+    </mui:SpacingStackPanel>
+    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.ReadOnly.Small}"
+        BbCode="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
+sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
+have proper compression already, and it will only slow loading down.
+[br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do
+anyway while it’s waiting for disk to get the data, and there will me much less data to read.
+[br][br]Of course, [b]it shouldn’t affect FPS in any way[/b]: AC doesn’t load resources dynamically." />
+  </mui:Cell>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <TextBlock Text="Some error happened" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
+  </DockPanel>
+
+  <DockPanel mui:Switch.When="{x:Static tools:Stage.Ready}">
+    <mui:SpacingStackPanel DockPanel.Dock="Bottom" Style="{DynamicResource BottomRow}" Spacing="4" Orientation="Horizontal">
+      <Button Content="Compress" Command="{Binding CompressCommand}" />
+      <Button Content="Decompress" Command="{Binding DecompressCommand}" />
+    </mui:SpacingStackPanel>
+
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="270" />
+        <ColumnDefinition Width="9" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
+      <DockPanel>
+        <Border DockPanel.Dock="Top" Height="100">
+          <c:PropertiesGrid Columns="1" VerticalAlignment="Top">
+            <mui:BetterTextBox c:PropertiesGrid.Label="Files:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding DecompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file} to compress', Mode=OneWay}"
+                Visibility="{Binding DecompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+            <mui:BetterTextBox c:PropertiesGrid.Label="Compressed:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding CompressedCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {file} compressed', Mode=OneWay}"
+                Visibility="{Binding CompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+            <mui:BetterTextBox c:PropertiesGrid.Label="Size:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding TotalSize, Converter={StaticResource FileSizeConverter}, Mode=OneWay}" />
+            <mui:BetterTextBox c:PropertiesGrid.Label="Compressed:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding CompressedSize, Converter={StaticResource FileSizeConverter}, Mode=OneWay}"
+                Visibility="{Binding CompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+            <mui:BetterTextBox c:PropertiesGrid.Label="Ratio:" Style="{StaticResource Borderless}" IsReadOnly="True"
+                Text="{Binding TotalRatio, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F1}%', Mode=OneWay}"
+                Visibility="{Binding CompressedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+          </c:PropertiesGrid>
+        </Border>
+        <ListBox ItemsSource="{Binding CompressionMode}" SelectedItem="{Binding CompressionMode.SelectedItem}" DisplayMemberPath="DisplayName"
+            ItemContainerStyle="{StaticResource RadioBoxListItem}" DockPanel.Dock="Bottom" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
+        <Label Content="Compression algorithm:" DockPanel.Dock="Bottom" Margin="8 0 0 4" />
+        <oxy:PlotView Model="{Binding PlotModel}" Height="200" Margin="0 20" Background="Transparent" Foreground="{DynamicResource WindowText}" />
+      </DockPanel>
+
+      <DataGrid Grid.Column="2" ItemsSource="{Binding FilesToCompress}" Style="{StaticResource DataGrid.Lite}">
+        <DataGrid.Columns>
+          <DataGridTemplateColumn Width="1*" Header="Path" SortDirection="Ascending" SortMemberPath="RelativePath">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
+                <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <mui:PathTrimmingTextBlock Text="{Binding RelativePath}" ToolTip="{Binding RelativePath}" />
+                </Border>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn Width="110" Header="Original" SortMemberPath="FileInfo.Length">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
+                <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <TextBlock Text="{Binding FileInfo.Length, Converter={StaticResource FileSizeConverter}}" />
+                </Border>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn Width="110" Header="Compressed" SortMemberPath="CompressedSize">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
+                <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <TextBlock Text="{Binding CompressedSize, Converter={StaticResource FileSizeConverter}}" />
+                </Border>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+          <DataGridTemplateColumn Width="110" Header="Ratio" SortMemberPath="Ratio">
+            <DataGridTemplateColumn.CellTemplate>
+              <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
+                <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+                  <mui:BooleanSwitch Value="{Binding IsCompressed}">
+                    <mui:BooleanSwitch.True>
+                      <TextBlock Text="{Binding Ratio, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F1}%'}" />
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                      <TextBlock Text="Not compressed" />
+                    </mui:BooleanSwitch.False>
+                  </mui:BooleanSwitch>
+                </Border>
+              </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+          </DataGridTemplateColumn>
+        </DataGrid.Columns>
+      </DataGrid>
+    </Grid>
+  </DockPanel>
+</tools:ContentTool>

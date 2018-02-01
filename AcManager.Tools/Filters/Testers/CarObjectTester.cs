@@ -136,6 +136,10 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "skins":
                     return value.Test(obj.SkinsEnabledWrappersList?.Count ?? 0);
+
+                case "steerlock":
+                    value.Set(TestEntryFactories.AngleDegrees);
+                    return value.Test(obj.SteerLock ?? double.NaN);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

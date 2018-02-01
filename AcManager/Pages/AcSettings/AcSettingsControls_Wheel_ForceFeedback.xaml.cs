@@ -53,6 +53,8 @@ namespace AcManager.Pages.AcSettings {
                     mainWindow.Drop -= OnMainWindowDrop;
                 }
             });
+
+            this.AddWidthCondition(900).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
         private void OnMainWindowDrop(object sender, DragEventArgs e) {

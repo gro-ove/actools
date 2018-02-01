@@ -50,6 +50,7 @@ namespace AcManager.Pages.SelectionLists {
         }
 
         protected override SelectRating GetSelectedItem(IList<SelectRating> list, CarObject obj) {
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
             if (obj == null) return null;
 
             if (obj.IsFavourite) {

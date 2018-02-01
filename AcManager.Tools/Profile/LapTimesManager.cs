@@ -22,6 +22,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
@@ -131,9 +132,8 @@ namespace AcManager.Tools.Profile {
                                 }
                             }
 
-                            ModernDialog.ShowMessage(
-                                    fixedCount > 0 ? PluralizingConverter.PluralizeExt(fixedCount, "{0} error") + " fixed." : "No errors found.",
-                                    "Finished", MessageBoxButton.OK);
+                            Toast.Show("Records fixed",
+                                    fixedCount > 0 ? PluralizingConverter.PluralizeExt(fixedCount, "{0} error") + " fixed" : "No errors found");
                         } catch (Exception e) {
                             NonfatalError.Notify("Can’t fix records", e);
                         }
