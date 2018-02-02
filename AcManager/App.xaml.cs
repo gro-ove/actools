@@ -65,6 +65,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.WheelAngles;
 using AcTools.Windows;
+using AcTools.Windows.Input;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -204,6 +205,8 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
+            SneakyPeekyFactory.Register<SneakyPeeky>();
+
             LimitedSpace.Initialize();
             DataProvider.Initialize();
             CountryIdToImageConverter.Initialize(

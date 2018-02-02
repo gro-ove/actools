@@ -56,7 +56,7 @@ namespace AcTools.Render.Wrapper {
         }
 
         private bool IsPressed(Keys key) {
-            return User32.IsKeyPressed(key);
+            return User32.IsAsyncKeyPressed(key);
         }
 
         public virtual void OnTick(IKn5ObjectRenderer renderer, float deltaTime) {
@@ -192,12 +192,12 @@ namespace AcTools.Render.Wrapper {
 
         protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
             if (button == (InvertMouseButtons ? MouseButtons.Left : MouseButtons.Middle) ||
-                    button == MouseButtons.Left && User32.IsKeyPressed(Keys.Space)) {
+                    button == MouseButtons.Left && User32.IsAsyncKeyPressed(Keys.Space)) {
                 Helper.CameraMousePan(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
             } else if (button == (InvertMouseButtons ? MouseButtons.Right : MouseButtons.Left)) {
                 Helper.CameraMouseRotate(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
             } else if (button == (InvertMouseButtons ? MouseButtons.Middle : MouseButtons.Right)
-                    && (!Kn5ObjectRenderer.UseFpsCamera || User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey))) {
+                    && (!Kn5ObjectRenderer.UseFpsCamera || User32.IsAsyncKeyPressed(Keys.LControlKey) || User32.IsAsyncKeyPressed(Keys.RControlKey))) {
                 Helper.CameraMouseZoom(Kn5ObjectRenderer, dx, dy, Form.ClientSize.Width, Form.ClientSize.Height);
             }
         }
@@ -209,7 +209,7 @@ namespace AcTools.Render.Wrapper {
 
         protected override void OnMouseWheel(float value) {
             var useFpsCamera = Kn5ObjectRenderer.UseFpsCamera;
-            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
+            var ctrlPressed = User32.IsAsyncKeyPressed(Keys.LControlKey) || User32.IsAsyncKeyPressed(Keys.RControlKey);
             if (!(useFpsCamera ^ ctrlPressed)) {
                 Kn5ObjectRenderer.Camera.Zoom(value * (useFpsCamera ? -0.1f : -0.4f));
             } else if (!useFpsCamera) {

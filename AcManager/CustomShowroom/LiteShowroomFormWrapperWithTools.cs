@@ -38,7 +38,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected override void OnClickOverride() {
-            if (_tools.CanSelectNodes && !User32.IsKeyPressed(Keys.LControlKey) && !User32.IsKeyPressed(Keys.RControlKey)) {
+            if (_tools.CanSelectNodes && !User32.IsAsyncKeyPressed(Keys.LControlKey) && !User32.IsAsyncKeyPressed(Keys.RControlKey)) {
                 Kn5ObjectRenderer.OnClick(new Vector2(MousePosition.X, MousePosition.Y));
             }
         }

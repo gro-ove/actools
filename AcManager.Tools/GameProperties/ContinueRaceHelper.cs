@@ -24,13 +24,14 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private class MemoryListener : IDisposable {
-            private KeyboardListener _keyboard;
+            private ISneakyPeeky _keyboard;
 
             public MemoryListener() {
                 try {
-                    _keyboard = new KeyboardListener();
-                    _keyboard.PreviewKeyDown += OnKeyDown;
-                    _keyboard.PreviewKeyUp += OnKeyUp;
+                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard.WatchFor(Keys.Escape);
+                    _keyboard.PreviewPeek += OnPeek;
+                    _keyboard.PreviewSneak += OnSneak;
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -38,15 +39,15 @@ namespace AcManager.Tools.GameProperties {
 
             private static bool _isKeyDown;
 
-            private static void OnKeyDown(object sender, VirtualKeyCodeEventArgs e) {
-                if (!_isKeyDown && e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
+            private static void OnPeek(object sender, SneakyPeekyEventArgs e) {
+                if (!_isKeyDown && e.SneakedPeeked == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
                     _isKeyDown = true;
                     e.Handled |= ContinueRace();
                 }
             }
 
-            private static void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
-                if (e.Key == Keys.Escape) {
+            private static void OnSneak(object sender, SneakyPeekyEventArgs e) {
+                if (e.SneakedPeeked == Keys.Escape) {
                     _isKeyDown = false;
                 }
             }

@@ -77,8 +77,8 @@ namespace AcTools.Render.Wrapper {
                 _renderer.IsDirty = true;
             }
 
-            var slow = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
-            var tryToClone = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
+            var slow = User32.IsAsyncKeyPressed(Keys.LMenu) || User32.IsAsyncKeyPressed(Keys.RMenu);
+            var tryToClone = User32.IsAsyncKeyPressed(Keys.LShiftKey) || User32.IsAsyncKeyPressed(Keys.RShiftKey);
 
             if (button != MouseButtons.Left || !_renderer.MoveObject(new Vector2(dx, dy) * (slow ? 0.2f : 1f), tryToClone)) {
                 base.OnMouseMove(button, dx, dy);
@@ -125,7 +125,7 @@ namespace AcTools.Render.Wrapper {
 
         protected override void OnClick() {
             base.OnClick();
-            if (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey)) {
+            if (User32.IsAsyncKeyPressed(Keys.LControlKey) || User32.IsAsyncKeyPressed(Keys.RControlKey)) {
                 (Renderer as DarkKn5ObjectRenderer)?.AutoFocus(new Vector2(MousePosition.X, MousePosition.Y));
             }
         }
@@ -142,25 +142,25 @@ namespace AcTools.Render.Wrapper {
             base.OnTick(sender, args);
 #endif
 
-            if (User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu)) {
+            if (User32.IsAsyncKeyPressed(Keys.LMenu) || User32.IsAsyncKeyPressed(Keys.RMenu)) {
                 if (_renderer.CarNode != null) {
-                    var steeringSpeed = (User32.IsKeyPressed(Keys.LShiftKey) ? 3f : 30f) * args.DeltaTime;
+                    var steeringSpeed = (User32.IsAsyncKeyPressed(Keys.LShiftKey) ? 3f : 30f) * args.DeltaTime;
 
-                    if (User32.IsKeyPressed(Keys.Left)) {
+                    if (User32.IsAsyncKeyPressed(Keys.Left)) {
                         _renderer.CarNode.SteerDeg = (_renderer.CarNode.SteerDeg - steeringSpeed).Clamp(-30f, 30f);
                     }
 
-                    if (User32.IsKeyPressed(Keys.Right)) {
+                    if (User32.IsAsyncKeyPressed(Keys.Right)) {
                         _renderer.CarNode.SteerDeg = (_renderer.CarNode.SteerDeg + steeringSpeed).Clamp(-30f, 30f);
                     }
                 }
 
                 if (_renderer is DarkKn5ObjectRenderer renderer) {
-                    if (User32.IsKeyPressed(Keys.Up)) {
+                    if (User32.IsAsyncKeyPressed(Keys.Up)) {
                         renderer.FlatMirrorReflectiveness += (1f - renderer.FlatMirrorReflectiveness) / 12f;
                     }
 
-                    if (User32.IsKeyPressed(Keys.Down)) {
+                    if (User32.IsAsyncKeyPressed(Keys.Down)) {
                         renderer.FlatMirrorReflectiveness += (0f - renderer.FlatMirrorReflectiveness) / 12f;
                     }
 
@@ -168,7 +168,7 @@ namespace AcTools.Render.Wrapper {
                     var offsetCount = 0;
 
                     for (var i = Keys.NumPad1; i <= Keys.NumPad9; i++) {
-                        if (User32.IsKeyPressed(i)) {
+                        if (User32.IsAsyncKeyPressed(i)) {
                             offset += (Directions[i - Keys.NumPad1] + offset * offsetCount) / ++offsetCount;
                         }
                     }
@@ -199,30 +199,30 @@ namespace AcTools.Render.Wrapper {
             }
 #endif
 
-            if (User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey)) {
-                var speed = (User32.IsKeyPressed(Keys.LShiftKey) ? 0.05f : 0.5f) * args.DeltaTime;
+            if (User32.IsAsyncKeyPressed(Keys.LControlKey) || User32.IsAsyncKeyPressed(Keys.RControlKey)) {
+                var speed = (User32.IsAsyncKeyPressed(Keys.LShiftKey) ? 0.05f : 0.5f) * args.DeltaTime;
 
-                if (User32.IsKeyPressed(Keys.NumPad7)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad7)) {
                     _renderer.ToneExposure += speed;
                 }
 
-                if (User32.IsKeyPressed(Keys.NumPad4)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad4)) {
                     _renderer.ToneExposure -= speed;
                 }
 
-                if (User32.IsKeyPressed(Keys.NumPad8)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad8)) {
                     _renderer.ToneGamma += speed;
                 }
 
-                if (User32.IsKeyPressed(Keys.NumPad5)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad5)) {
                     _renderer.ToneGamma -= speed;
                 }
 
-                if (User32.IsKeyPressed(Keys.NumPad9)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad9)) {
                     _renderer.ToneWhitePoint += speed;
                 }
 
-                if (User32.IsKeyPressed(Keys.NumPad6)) {
+                if (User32.IsAsyncKeyPressed(Keys.NumPad6)) {
                     _renderer.ToneWhitePoint -= speed;
                 }
             }
@@ -293,10 +293,10 @@ echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces
             // hold alt to render scene in 4x resolution
             // hold both for 1x only
 
-            var ctrlPressed = User32.IsKeyPressed(Keys.LControlKey) || User32.IsKeyPressed(Keys.RControlKey);
-            var altPressed = User32.IsKeyPressed(Keys.LMenu) || User32.IsKeyPressed(Keys.RMenu);
-            var shiftPressed = User32.IsKeyPressed(Keys.LShiftKey) || User32.IsKeyPressed(Keys.RShiftKey);
-            var winPressed = User32.IsKeyPressed(Keys.LWin) || User32.IsKeyPressed(Keys.RWin);
+            var ctrlPressed = User32.IsAsyncKeyPressed(Keys.LControlKey) || User32.IsAsyncKeyPressed(Keys.RControlKey);
+            var altPressed = User32.IsAsyncKeyPressed(Keys.LMenu) || User32.IsAsyncKeyPressed(Keys.RMenu);
+            var shiftPressed = User32.IsAsyncKeyPressed(Keys.LShiftKey) || User32.IsAsyncKeyPressed(Keys.RShiftKey);
+            var winPressed = User32.IsAsyncKeyPressed(Keys.LWin) || User32.IsAsyncKeyPressed(Keys.RWin);
 
             var downscale = !shiftPressed;
             int multiplier;

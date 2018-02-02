@@ -22,12 +22,13 @@ namespace AcTools.Processes {
             private bool _prepared;
 
             private readonly List<IDisposable> _changes = new List<IDisposable>();
-            private readonly KeyboardListener _keyboard;
+            private readonly ISneakyPeeky _keyboard;
 
             protected BaseShotter() {
                 try {
-                    _keyboard = new KeyboardListener();
-                    _keyboard.KeyUp += OnKeyUp;
+                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard.WatchFor(Keys.Escape);
+                    _keyboard.Sneak += OnSneak;
                 } catch (Exception e) {
                     AcToolsLogging.Write("Can’t set listener: " + e);
                 }
@@ -67,8 +68,8 @@ namespace AcTools.Processes {
                 Directory.CreateDirectory(OutputDirectory);
             }
 
-            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
-                if (e.Key == Keys.Escape) {
+            private void OnSneak(object sender, SneakyPeekyEventArgs e) {
+                if (e.SneakedPeeked == Keys.Escape) {
                     Terminate();
                 }
             }

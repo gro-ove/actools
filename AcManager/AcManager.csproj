@@ -664,6 +664,7 @@
     <Compile Include="Tools\LargeFileUploaderParams.cs" />
     <Compile Include="Tools\LiveryIconEditor.cs" />
     <Compile Include="Tools\NeutralColorGradingLut.cs" />
+    <Compile Include="Tools\SneakyPeeky.cs" />
     <Compile Include="Tools\SpecialDriveModes\RsrStarter.cs" />
     <Compile Include="Pages\Selected\ISelectedAcObjectViewModel.cs" />
     <Compile Include="Pages\Selected\SelectedAcJsonObjectPage.cs" />

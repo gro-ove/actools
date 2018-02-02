@@ -169,7 +169,7 @@ namespace AcManager.Pages.Lists {
 
         public static void Open([NotNull] CarObject car, CarSetupsRemoteSource forceRemoteSource = CarSetupsRemoteSource.None, bool forceNewWindow = false) {
             if (forceNewWindow
-                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsAsyncKeyPressed(System.Windows.Forms.Keys.K)
                     || !(Application.Current?.MainWindow is MainWindow main) || !main.IsActive
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSetupsDialog.Show(car, forceRemoteSource);

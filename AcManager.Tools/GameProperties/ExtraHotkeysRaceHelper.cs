@@ -445,7 +445,7 @@ namespace AcManager.Tools.GameProperties {
                 return new IniFile(AcPaths.GetRaceIniFilename())["REMOTE"].GetBool("ACTIVE", false);
             }
 
-            private KeyboardListener _keyboard;
+            private ISneakyPeeky _keyboard;
 
             private struct JoyKey {
                 public JoyKey(int joy, int button) {
@@ -563,9 +563,10 @@ namespace AcManager.Tools.GameProperties {
                 Logging.Write("Extra joystick bindings: " + joyToCommand.Count);
 
                 if (keyToCommand.Count > 0) {
-                    _keyboard = new KeyboardListener();
-                    _keyboard.KeyDown += OnKeyDown;
-                    _keyboard.KeyUp += OnKeyUp;
+                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard.WatchFor(keyToCommand.Select(x => x.Key));
+                    _keyboard.Peek += OnPeek;
+                    _keyboard.Sneak += OnSneak;
                 }
 
                 if (joyToCommand.Count > 0) {
@@ -602,19 +603,29 @@ namespace AcManager.Tools.GameProperties {
                 var joystickCommands = joysticks == null ? null : _joyToCommand?.GroupBy(x => x.Key.Joy).Select(x =>
                         Tuple.Create(joysticks.ElementAtOrDefault(x.Key), x.ToArray())).Where(x => x.Item1 != null).ToList();
 
-                var s = Stopwatch.StartNew();
+#if DEBUG
+                var s = new Stopwatch();
                 var iterations = 0;
+#endif
 
                 try {
                     while (_running == true) {
+#if DEBUG
+                        s.Start();
                         OnTick(joystickCommands);
-                        Thread.Sleep(10);
+                        s.Stop();
+#else
+                        OnTick(joystickCommands);
+#endif
+                        Thread.Sleep(5);
+
+#if DEBUG
                         if (++iterations >= 300) {
                             Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F2} ms");
-                            Logging.Debug($"Est. OnTick(): {(s.Elapsed.TotalMilliseconds / iterations - 10):F2} ms");
                             iterations = 0;
                             s.Restart();
                         }
+#endif
                     }
                 } finally {
                     DisposeHelper.Dispose(ref joysticks);
@@ -697,15 +708,15 @@ namespace AcManager.Tools.GameProperties {
                 return null;
             }
 
-            private void OnKeyDown(object sender, VirtualKeyCodeEventArgs e) {
-                var c = GetCommand(e.Key);
+            private void OnPeek(object sender, SneakyPeekyEventArgs e) {
+                var c = GetCommand(e.SneakedPeeked);
                 if (c != null && Keyboard.Modifiers == c.Modifiers) {
                     c.SetKeyboardPressed(true);
                 }
             }
 
-            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
-                GetCommand(e.Key)?.SetKeyboardPressed(false);
+            private void OnSneak(object sender, SneakyPeekyEventArgs e) {
+                GetCommand(e.SneakedPeeked)?.SetKeyboardPressed(false);
             }
 
             public void Dispose() {

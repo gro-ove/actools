@@ -66,10 +66,12 @@ namespace AcTools.Windows {
         [DllImport("user32.dll")]
         public static extern bool ScreenToClient(IntPtr hwnd, ref Win32Point pt);
 
-        public static bool IsKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;
+        public static bool IsKeyPressed(Keys vKey) => (GetKeyState(vKey) & 0x8000) != 0;
 
         [DllImport("user32.dll")]
         public static extern short GetKeyState(Keys virtualKeyCode);
+
+        public static bool IsAsyncKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;
 
         [DllImport("user32.dll")]
         public static extern short GetAsyncKeyState(Keys vKey);
@@ -223,9 +225,6 @@ namespace AcTools.Windows {
         [DllImport("user32.dll")]
         public static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        [DllImport("user32.dll")]
-        public static extern bool ShowWindowAsync(IntPtr hWnd, WindowShowStyle nCmdShow);
-
         public enum WindowShowStyle : uint {
             Hide = 0,
             ShowNormal = 1,
@@ -246,12 +245,6 @@ namespace AcTools.Windows {
         public static extern IntPtr GetForegroundWindow();
 
         [DllImport("user32.dll")]
-        public static extern IntPtr GetWindowThreadProcessId(IntPtr hWnd, out uint ProcessId);
-
-        [DllImport("user32.dll")]
-        public static extern bool CloseWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
 
@@ -259,100 +252,17 @@ namespace AcTools.Windows {
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool IsIconic(IntPtr hWnd);
 
-        public const int WM_KEYDOWN = 0x100;
-        public const int WM_KEYUP = 0x101;
-        public const int WM_SYSCOMMAND = 0x018;
-        public const int SC_CLOSE = 0x053;
-
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindow(string lpClassName, string lpWindowName);
 
         [DllImport("user32.dll")]
         public static extern IntPtr FindWindowEx(IntPtr hwndParent, IntPtr hwndChildAfter, string lpszClass, string lpszWindow);
 
-        [DllImport("user32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, StringBuilder lParam);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern IntPtr PostMessage(HandleRef hwnd, int msg, int wparam, int lparam);
-
         [DllImport("user32.dll")]
         public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, IntPtr wParam, string lParam);
-
-        [DllImport("user32.dll")]
-        public static extern bool PostMessage(IntPtr hWnd, uint Msg, int wParam, ref COPYDATASTRUCT lParam);
-
-        public static void PressKey(IntPtr h, Keys key) {
-            PostMessage(h, WM_KEYDOWN, (int)key, 0);
-            Thread.Sleep(100);
-            PostMessage(h, WM_KEYUP, (int)key, 0);
-        }
-
-        public const int MOUSEEVENTF_MOVE = 0x01;
-        public const int MOUSEEVENTF_LEFTDOWN = 0x02;
-        public const int MOUSEEVENTF_LEFTUP = 0x04;
-        public const int MOUSEEVENTF_RIGHTDOWN = 0x08;
-        public const int MOUSEEVENTF_RIGHTUP = 0x10;
-
-        [DllImport("user32.dll", EntryPoint = "SetCursorPos")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SetCursorPos(int X, int Y);
-
-        [DllImport("user32.dll")]
-        public static extern void mouse_event(int dwFlags, int dx, int dy, int dwData, int dwExtraInfo);
-
-        public static void MouseEvent(int dwFlags, int dx = 0, int dy = 0, int dwData = 0, int dwExtraInfo = 0) {
-            mouse_event(dwFlags, dx, dy, dwData, dwExtraInfo);
-        }
-
-        public static void MouseClick(int x, int y) {
-            SetCursorPos(x, y);
-            mouse_event(MOUSEEVENTF_LEFTDOWN | MOUSEEVENTF_LEFTUP, x, y, 0, 0);
-        }
-
-        public const int WH_KEYBOARD_LL = 13,
-                WH_KEYBOARD = 2,
-                WM_SYSKEYDOWN = 0x104,
-                WM_SYSKEYUP = 0x105;
-
-        public const byte VK_SHIFT = 0x10,
-                VK_CAPITAL = 0x14,
-                VK_NUMLOCK = 0x90;
-
-        public const int KEYEVENTF_EXTENDEDKEY = 0x1,
-                KEYEVENTF_KEYUP = 0x2;
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern int CallNextHookEx(int idHook, int nCode, int wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        public static extern int SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hMod, int dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall, SetLastError = true)]
-        public static extern int UnhookWindowsHookEx(int idHook);
-
-        [DllImport("user32.dll")]
-        public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
-
-        [StructLayout(LayoutKind.Sequential)]
-        public struct KeyboardHookStruct {
-            public int VirtualKeyCode;
-            public int ScanCode;
-            public int Flags;
-            public int Time;
-            public int ExtraInfo;
-        }
-
-        public delegate int HookProc(int nCode, int wParam, IntPtr lParam);
 
         public static void BringProcessWindowToFront(Process process) {
             if (process == null) return;

@@ -42,15 +42,16 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private class MemoryListener : IDisposable {
-            private KeyboardListener _keyboard;
+            private ISneakyPeeky _keyboard;
             private readonly CancellationTokenSource _sharedCancellationTokenSource;
 
             public MemoryListener(CancellationTokenSource sharedCancellationTokenSource) {
                 _sharedCancellationTokenSource = sharedCancellationTokenSource;
 
                 try {
-                    _keyboard = new KeyboardListener();
-                    _keyboard.KeyUp += OnKeyUp;
+                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard.WatchFor(Keys.Escape);
+                    _keyboard.Sneak += OnSneak;
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -62,9 +63,9 @@ namespace AcManager.Tools.GameProperties {
                 Dispose();
             }
 
-            private void OnKeyUp(object sender, VirtualKeyCodeEventArgs e) {
+            private void OnSneak(object sender, SneakyPeekyEventArgs e) {
                 try {
-                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
+                    if (e.SneakedPeeked == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
                         Logging.Write("Escape was pressed, terminating loading…");
                         _sharedCancellationTokenSource?.Cancel();
                     }

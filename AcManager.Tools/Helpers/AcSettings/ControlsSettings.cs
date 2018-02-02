@@ -251,7 +251,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             foreach (var key in _keyboardInput.Values.Where(x => x.Used > 0)) {
-                key.Value = User32.IsKeyPressed(key.Key);
+                key.Value = User32.IsAsyncKeyPressed(key.Key);
             }
         }
 

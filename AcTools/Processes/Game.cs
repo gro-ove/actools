@@ -105,11 +105,11 @@ namespace AcTools.Processes {
             }
 
             RemoveResultJson();
-            KeyboardListener listener = null;
+            ISneakyPeeky listener = null;
 
             if (properties.SetKeyboardListener) {
                 try {
-                    listener = new KeyboardListener();
+                    listener = SneakyPeekyFactory.Get();
                     listener.Subscribe();
                 } catch (Exception e) {
                     AcToolsLogging.Write("Can’t set listener: " + e);
@@ -183,6 +183,10 @@ namespace AcTools.Processes {
             /// I’m going to initialize another listener from AcTools itself for
             /// the duration of the race. All of them will share single hook anyway.
             /// </summary>
+            /// <remarks>
+            /// BUG: What the hell is that shit‽ When did I write that? Holy crap, what a mess.
+            /// TODO: Figure out if this is still the problem and, if so, solve it. And remove it.
+            /// </remarks>
             public bool SetKeyboardListener;
 
             [CanBeNull]

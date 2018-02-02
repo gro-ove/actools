@@ -87,7 +87,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public bool IsPressed(JoystickState[] states) {
-                if (User32.IsKeyPressed(_key)) return true;
+                if (User32.IsAsyncKeyPressed(_key)) return true;
 
                 var state = states.ElementAtOrDefault(_joy);
                 if (state == null) return false;

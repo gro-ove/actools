@@ -96,7 +96,7 @@ namespace AcManager.Pages.Lists {
 
         public static void Open(TrackObject track) {
             if (!(Application.Current?.MainWindow is MainWindow main)
-                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(Keys.K)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsAsyncKeyPressed(Keys.K)
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 TrackSkinsDialog.Show(track);
             } else {

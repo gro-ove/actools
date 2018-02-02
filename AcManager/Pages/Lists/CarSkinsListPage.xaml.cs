@@ -121,7 +121,7 @@ namespace AcManager.Pages.Lists {
 
         public static void Open([NotNull] CarObject car) {
             if (!(Application.Current?.MainWindow is MainWindow main)
-                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsKeyPressed(System.Windows.Forms.Keys.K)
+                    || Keyboard.Modifiers == ModifierKeys.Control && !User32.IsAsyncKeyPressed(System.Windows.Forms.Keys.K)
                     || SettingsHolder.Interface.SkinsSetupsNewWindow) {
                 CarSkinsDialog.Show(car);
             } else {
