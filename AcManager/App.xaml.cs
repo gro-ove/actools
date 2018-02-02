@@ -205,7 +205,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-            SneakyPeekyFactory.Register<SneakyPeeky>();
+            KeyboardListenerFactory.Register<KeyboardListener>();
 
             LimitedSpace.Initialize();
             DataProvider.Initialize();

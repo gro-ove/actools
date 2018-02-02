@@ -35,6 +35,7 @@ using Application = System.Windows.Application;
 using Control = System.Windows.Controls.Control;
 using Cursor = System.Windows.Forms.Cursor;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
+using KeyboardEventArgs = AcTools.Windows.Input.KeyboardEventArgs;
 using ProgressBar = System.Windows.Controls.ProgressBar;
 
 namespace AcManager.Tools.GameProperties {
@@ -445,7 +446,7 @@ namespace AcManager.Tools.GameProperties {
                 return new IniFile(AcPaths.GetRaceIniFilename())["REMOTE"].GetBool("ACTIVE", false);
             }
 
-            private ISneakyPeeky _keyboard;
+            private IKeyboardListener _keyboard;
 
             private struct JoyKey {
                 public JoyKey(int joy, int button) {
@@ -563,10 +564,10 @@ namespace AcManager.Tools.GameProperties {
                 Logging.Write("Extra joystick bindings: " + joyToCommand.Count);
 
                 if (keyToCommand.Count > 0) {
-                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard = KeyboardListenerFactory.Get();
                     _keyboard.WatchFor(keyToCommand.Select(x => x.Key));
-                    _keyboard.Peek += OnPeek;
-                    _keyboard.Sneak += OnSneak;
+                    _keyboard.KeyDown += OnKeyDown;
+                    _keyboard.KeyUp += OnKeyUp;
                 }
 
                 if (joyToCommand.Count > 0) {
@@ -708,15 +709,15 @@ namespace AcManager.Tools.GameProperties {
                 return null;
             }
 
-            private void OnPeek(object sender, SneakyPeekyEventArgs e) {
-                var c = GetCommand(e.SneakedPeeked);
+            private void OnKeyDown(object sender, KeyboardEventArgs e) {
+                var c = GetCommand(e.Key);
                 if (c != null && Keyboard.Modifiers == c.Modifiers) {
                     c.SetKeyboardPressed(true);
                 }
             }
 
-            private void OnSneak(object sender, SneakyPeekyEventArgs e) {
-                GetCommand(e.SneakedPeeked)?.SetKeyboardPressed(false);
+            private void OnKeyUp(object sender, KeyboardEventArgs e) {
+                GetCommand(e.Key)?.SetKeyboardPressed(false);
             }
 
             public void Dispose() {

@@ -10,6 +10,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using AcTools.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using KeyboardEventArgs = AcTools.Windows.Input.KeyboardEventArgs;
 
 namespace AcManager.Tools.GameProperties {
     public class ImmediateCancelHelper : Game.GameHandler, IDisposable {
@@ -42,16 +43,16 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private class MemoryListener : IDisposable {
-            private ISneakyPeeky _keyboard;
+            private IKeyboardListener _keyboard;
             private readonly CancellationTokenSource _sharedCancellationTokenSource;
 
             public MemoryListener(CancellationTokenSource sharedCancellationTokenSource) {
                 _sharedCancellationTokenSource = sharedCancellationTokenSource;
 
                 try {
-                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard = KeyboardListenerFactory.Get();
                     _keyboard.WatchFor(Keys.Escape);
-                    _keyboard.Sneak += OnSneak;
+                    _keyboard.KeyUp += OnKeyUp;
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -63,9 +64,9 @@ namespace AcManager.Tools.GameProperties {
                 Dispose();
             }
 
-            private void OnSneak(object sender, SneakyPeekyEventArgs e) {
+            private void OnKeyUp(object sender, KeyboardEventArgs e) {
                 try {
-                    if (e.SneakedPeeked == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
+                    if (e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
                         Logging.Write("Escape was pressed, terminating loading…");
                         _sharedCancellationTokenSource?.Cancel();
                     }

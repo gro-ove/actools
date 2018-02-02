@@ -105,11 +105,11 @@ namespace AcTools.Processes {
             }
 
             RemoveResultJson();
-            ISneakyPeeky listener = null;
+            IKeyboardListener listener = null;
 
             if (properties.SetKeyboardListener) {
                 try {
-                    listener = SneakyPeekyFactory.Get();
+                    listener = KeyboardListenerFactory.Get();
                     listener.Subscribe();
                 } catch (Exception e) {
                     AcToolsLogging.Write("Can’t set listener: " + e);

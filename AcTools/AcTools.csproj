@@ -225,12 +225,12 @@
     <Compile Include="Utils\SteamRunningHelper.cs" />
     <Compile Include="Utils\TagFile.cs" />
     <Compile Include="Windows\Input\InputBuilder.cs" />
-    <Compile Include="Windows\Input\ISneakyPeeky.cs" />
-    <Compile Include="Windows\Input\SneakyPeekyFactory.cs" />
+    <Compile Include="Windows\Input\IKeyboardListener.cs" />
+    <Compile Include="Windows\Input\KeyboardListenerFactory.cs" />
     <Compile Include="Windows\Input\KeyboardSimulator.cs" />
     <Compile Include="Windows\Input\MouseButton.cs" />
     <Compile Include="Windows\Input\MouseSimulator.cs" />
-    <Compile Include="Windows\Input\SneakyPeekyEventArgs.cs" />
+    <Compile Include="Windows\Input\KeyboardEventArgs.cs" />
     <Compile Include="Utils\JunctionPoint.cs" />
     <Compile Include="Windows\Input\XButton.cs" />
     <Compile Include="Windows\Kernel32.cs" />

@@ -7,6 +7,7 @@ using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using AcTools.Windows.Input;
 using FirstFloor.ModernUI.Helpers;
+using KeyboardEventArgs = AcTools.Windows.Input.KeyboardEventArgs;
 
 namespace AcManager.Tools.GameProperties {
     public class ContinueRaceHelper : Game.GameHandler {
@@ -24,14 +25,14 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private class MemoryListener : IDisposable {
-            private ISneakyPeeky _keyboard;
+            private IKeyboardListener _keyboard;
 
             public MemoryListener() {
                 try {
-                    _keyboard = SneakyPeekyFactory.Get();
+                    _keyboard = KeyboardListenerFactory.Get();
                     _keyboard.WatchFor(Keys.Escape);
-                    _keyboard.PreviewPeek += OnPeek;
-                    _keyboard.PreviewSneak += OnSneak;
+                    _keyboard.PreviewKeyDown += OnKeyDown;
+                    _keyboard.PreviewKeyUp += OnKeyUp;
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -39,15 +40,15 @@ namespace AcManager.Tools.GameProperties {
 
             private static bool _isKeyDown;
 
-            private static void OnPeek(object sender, SneakyPeekyEventArgs e) {
-                if (!_isKeyDown && e.SneakedPeeked == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
+            private static void OnKeyDown(object sender, KeyboardEventArgs e) {
+                if (!_isKeyDown && e.Key == Keys.Escape && Keyboard.Modifiers == ModifierKeys.None) {
                     _isKeyDown = true;
                     e.Handled |= ContinueRace();
                 }
             }
 
-            private static void OnSneak(object sender, SneakyPeekyEventArgs e) {
-                if (e.SneakedPeeked == Keys.Escape) {
+            private static void OnKeyUp(object sender, KeyboardEventArgs e) {
+                if (e.Key == Keys.Escape) {
                     _isKeyDown = false;
                 }
             }

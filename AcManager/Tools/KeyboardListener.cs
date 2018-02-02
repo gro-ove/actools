@@ -1,8 +1,4 @@
-﻿// Goddamn antiviruses don’t let me to add extra bindings easily. Namely, Kaspersky. Whatever,
-// it’s users who will have a problem of some keypresses being missed.
-// #define PROPER_HOOK_IMPLEMENTATION
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -15,30 +11,26 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools {
-#if PROPER_HOOK_IMPLEMENTATION
-        // https://gist.github.com/gro-ove/8dee6bf5d6ddcab57e582df6c434baad
-        // Both AV and users: do not worry, no compiler will include that code here via the link 🙂
-#else
-    public class SneakyPeeky : ISneakyPeeky {
-        public event EventHandler<SneakyPeekyEventArgs> PreviewSneak, PreviewPeek;
-        public event EventHandler<SneakyPeekyEventArgs> Sneak, Peek;
+    public class KeyboardListener : IKeyboardListener {
+        public event EventHandler<KeyboardEventArgs> PreviewKeyUp, PreviewKeyDown;
+        public event EventHandler<KeyboardEventArgs> KeyUp, KeyDown;
 
-        private void RaiseSneak(int value) {
+        private void RaiseKeyUp(int value) {
             ActionExtension.InvokeInMainThreadAsync(() => {
-                var e = new SneakyPeekyEventArgs(value);
-                PreviewSneak?.Invoke(this, e);
+                var e = new KeyboardEventArgs(value);
+                PreviewKeyUp?.Invoke(this, e);
                 if (!e.Handled && !e.SkipMainEvent) {
-                    Sneak?.Invoke(this, e);
+                    KeyUp?.Invoke(this, e);
                 }
             });
         }
 
-        private void RaisePeek(int value) {
+        private void RaiseKeyDown(int value) {
             ActionExtension.InvokeInMainThreadAsync(() => {
-                var e = new SneakyPeekyEventArgs(value);
-                PreviewPeek?.Invoke(this, e);
+                var e = new KeyboardEventArgs(value);
+                PreviewKeyDown?.Invoke(this, e);
                 if (!e.Handled && !e.SkipMainEvent) {
-                    Peek?.Invoke(this, e);
+                    KeyDown?.Invoke(this, e);
                 }
             });
         }
@@ -67,10 +59,10 @@ namespace AcManager.Tools {
         }
 
         #region Static part
-        private static readonly List<SneakyPeeky> Subscribed;
+        private static readonly List<KeyboardListener> Subscribed;
 
-        static SneakyPeeky() {
-            Subscribed = new List<SneakyPeeky>(1);
+        static KeyboardListener() {
+            Subscribed = new List<KeyboardListener>(1);
         }
 
         private static bool _watchForStaticDirty;
@@ -78,12 +70,12 @@ namespace AcManager.Tools {
 
         private class Holder {
             private readonly Keys _key;
-            private readonly SneakyPeeky[] _peekies;
+            private readonly KeyboardListener[] _listeners;
             private bool _isPressed;
 
-            public Holder(Keys key, IEnumerable<SneakyPeeky> peekies) {
+            public Holder(Keys key, IEnumerable<KeyboardListener> listeners) {
                 _key = key;
-                _peekies = peekies.ToArray();
+                _listeners = listeners.ToArray();
             }
 
             public void Update() {
@@ -91,12 +83,12 @@ namespace AcManager.Tools {
                 if (p == _isPressed) return;
 
                 _isPressed = p;
-                for (var j = _peekies.Length - 1; j >= 0; j--) {
-                    var e = _peekies[j];
+                for (var j = _listeners.Length - 1; j >= 0; j--) {
+                    var e = _listeners[j];
                     if (p) {
-                        e.RaisePeek((int)_key);
+                        e.RaiseKeyDown((int)_key);
                     } else {
-                        e.RaiseSneak((int)_key);
+                        e.RaiseKeyUp((int)_key);
                     }
                 }
             }
@@ -107,8 +99,8 @@ namespace AcManager.Tools {
                 _watchForStaticDirty = false;
                 _watchForStatic = Subscribed.SelectMany(x => x._watchFor.Select(y => new {
                     Key = y,
-                    Peeky = x
-                })).GroupBy(x => x.Key).Select(x => new Holder(x.Key, x.Select(y => y.Peeky))).ToArray();
+                    Listener = x
+                })).GroupBy(x => x.Key).Select(x => new Holder(x.Key, x.Select(y => y.Listener))).ToArray();
             }
         }
 
@@ -122,7 +114,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static void SubscribeInner(SneakyPeeky instance) {
+        private static void SubscribeInner(KeyboardListener instance) {
             lock (Subscribed) {
                 if (Subscribed.Contains(instance)) return;
                 Subscribed.Add(instance);
@@ -140,7 +132,7 @@ namespace AcManager.Tools {
             }
         }
 
-        private static void UnsubscribeInner(SneakyPeeky instance) {
+        private static void UnsubscribeInner(KeyboardListener instance) {
             lock (Subscribed) {
                 if (Subscribed.Remove(instance)) {
                     _watchForStaticDirty = true;
@@ -184,5 +176,4 @@ namespace AcManager.Tools {
         }
         #endregion
     }
-#endif
 }
