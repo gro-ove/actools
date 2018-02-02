@@ -9,7 +9,7 @@
 
   <Color x:Key="WindowBackgroundColor">#252526</Color>
   <SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}" />
-  <SolidColorBrush x:Key="WindowBorder" Color="Transparent" />
+  <SolidColorBrush x:Key="WindowBorder" Color="#01000000" /><!-- If it’ll be completely transparent, WindowBorderActive will be hidden -->
   <SolidColorBrush x:Key="WindowBorderActive" Color="{DynamicResource AccentColor}" Opacity=".5" />
   <SolidColorBrush x:Key="WindowHeaderGradient" Color="Transparent" />
   <SolidColorBrush x:Key="WindowText" Color="#c1c1c1" />

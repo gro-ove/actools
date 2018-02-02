@@ -23,7 +23,7 @@
     <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.ReadOnly.Small}"
         BbCode="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
 sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
-have proper compression already, and it will only slow loading down.
+have proper compression already, and it will only slightly slow down AC loading.
 [br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do
 anyway while it’s waiting for disk to get the data, and there will me much less data to read.
 [br][br]Of course, [b]it shouldn’t affect FPS in any way[/b]: AC doesn’t load resources dynamically." />

@@ -402,9 +402,11 @@
     <Compile Include="Pages\Drive\QuickDrive_Drag.xaml.cs">
       <DependentUpon>QuickDrive_Drag.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\ToolFilteringLink.cs" />
     <Compile Include="Pages\Lists\GenericModsListPage.xaml.cs">
       <DependentUpon>GenericModsListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Lists\ToolLink.cs" />
     <Compile Include="Pages\Lists\TrackSkinsListPage.xaml.cs">
       <DependentUpon>TrackSkinsListPage.xaml</DependentUpon>
     </Compile>

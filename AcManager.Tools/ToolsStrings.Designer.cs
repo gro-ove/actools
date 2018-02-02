@@ -2050,7 +2050,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure Internet connection is available and nothing is going on in Content folder..
+        ///   Looks up a localized string similar to Make sure Internet connection is available and nothing is going on in Data folder..
         /// </summary>
         public static string ContentSyncronizer_CannotLoadContent_Commentary {
             get {

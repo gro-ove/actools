@@ -21,6 +21,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows.Converters;
 using OxyPlot;
 using OxyPlot.Series;
@@ -32,6 +33,19 @@ namespace AcManager.Pages.ContentTools {
 
         public static string GetContentDirectory() {
             return Path.Combine(AcRootDirectory.Instance.RequireValue, "content");
+        }
+
+        public static Func<IEnumerable<string>> NotAvailableReason { get; } = GetNonAvailableReason;
+
+        private static IEnumerable<string> GetNonAvailableReason() {
+            if (!WindowsVersionHelper.IsWindows10OrGreater) {
+                yield return "Tool “compact.exe” was added in Windows 10";
+            }
+
+            var format = DriveInfo.GetDrives().FirstOrDefault(x => x.RootDirectory.FullName == Path.GetPathRoot(AcRootDirectory.Instance.Value))?.DriveFormat;
+            if (format != @"NTFS") {
+                yield return $"Not supported file system: {format}";
+            }
         }
 
         public class FileToCompress : NotifyPropertyChanged, IWithId {
@@ -416,17 +430,25 @@ namespace AcManager.Pages.ContentTools {
                                 if (args.Data.EndsWith(@" [OK]") && filesIndex < files.Count) {
                                     waiting.Report(files[filesIndex].RelativePath, filesOffset + filesIndex++, queue.Count);
                                 }
-                                output.Append(args.Data).Append(@"; ");
+                                output.Append(args.Data).Append('\n');
                             };
                             process.ErrorDataReceived += (sender, args) => {
                                 if (args.Data == null) return;
-                                output.Append(args.Data).Append(@"; ");
+                                output.Append(args.Data).Append('\n');
                             };
                             process.BeginOutputReadLine();
                             await process.WaitForExitAsync(waiting.CancellationToken);
                             if (!process.HasExited) {
                                 process.Kill();
                             }
+
+                            if (process.ExitCode != 0) {
+                                Logging.Warning(output.ToString());
+                                throw new InformativeException("Can’t compress files",
+                                        $"Tool compact.exe failed to run: {process.ExitCode}. More information in CM logs.");
+                            }
+
+                            Logging.Debug(output.ToString());
                         }
                     }
                 }

@@ -899,7 +899,7 @@
     <value>Can’t load CM’s data</value>
   </data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
-    <value>Make sure Internet connection is available and nothing is going on in Content folder.</value>
+    <value>Make sure Internet connection is available and nothing is going on in Data folder.</value>
   </data>
   <data name="Weather_LightThunderstorm" xml:space="preserve">
     <value>Light thunderstorm</value>
