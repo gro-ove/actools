@@ -5,16 +5,18 @@
     <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
     <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
     <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type CheckBox}">
           <DockPanel x:Name="LayoutRoot" Background="Transparent">
             <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">
+                BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left"
+                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
               <controls:Cell>
                 <Path x:Name="CheckMark" Width="10" Height="10" Margin="2" Visibility="Collapsed" Stretch="Fill" Fill="{TemplateBinding Foreground}"
-                    Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z " />
+                    Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z" />
                 <Rectangle x:Name="Indeterminate" Width="8" Height="8" Margin="4" Fill="{TemplateBinding Foreground}" Visibility="Hidden" />
               </controls:Cell>
             </Border>

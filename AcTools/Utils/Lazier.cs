@@ -127,8 +127,8 @@ namespace AcTools.Utils {
             }
 
             _value = default(T);
-            OnPropertyChanged(nameof(Value));
             IsSet = false;
+            OnPropertyChanged(nameof(Value));
 
             if (_settingTask != null) {
                 _isSettingId++;

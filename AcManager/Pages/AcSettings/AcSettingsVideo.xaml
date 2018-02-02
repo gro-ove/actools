@@ -91,15 +91,9 @@
           </DockPanel>
 
           <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}" mui:NewMarkService.New="True"
-              set:Search.Keywords="drive events;video;graphics;shadows" Background="Transparent"
-              ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”">
-            <Label>
-              <mui:SpacingStackPanel Spacing="2">
-                <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
-                <mui:BbCodeBlock FontSize="{DynamicResource SmallFontSize}"
-                    BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
-              </mui:SpacingStackPanel>
-            </Label>
+              set:Search.Keywords="drive events;video;graphics;shadows"
+              ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section.">
+            <Label Content="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
           </CheckBox>
 
           <DockPanel>

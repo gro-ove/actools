@@ -187,20 +187,7 @@ namespace AcManager {
 
                     window.ContentRendered += OnWindowRendered;
                 }
-
-                // ((DpiAwareWindow)sender).Initialized += OnWindowLoaded;
             }
-
-            /*void OnWindowLoaded(object sender, EventArgs e) {
-                var window = (DpiAwareWindow)sender;
-                if (TryToCreate()) {
-                    if (window.Content == null) {
-                        window.Content = new Border();
-                    }
-
-                    window.ContentRendered += OnWindowRendered;
-                }
-            }*/
 
             async void OnWindowRendered(object sender, EventArgs args) {
                 var window = (DpiAwareWindow)sender;
@@ -208,7 +195,6 @@ namespace AcManager {
 
                 await Task.Yield();
                 if (!_crashed) {
-                    Logging.Warning("Here");
                     FileUtils.TryToDelete(tryingToRunFlag);
                 }
             }

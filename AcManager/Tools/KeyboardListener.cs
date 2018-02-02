@@ -19,7 +19,7 @@ namespace AcManager.Tools {
             ActionExtension.InvokeInMainThreadAsync(() => {
                 var e = new KeyboardEventArgs(value);
                 PreviewKeyUp?.Invoke(this, e);
-                if (!e.Handled && !e.SkipMainEvent) {
+                if (!e.Handled) {
                     KeyUp?.Invoke(this, e);
                 }
             });
@@ -29,7 +29,7 @@ namespace AcManager.Tools {
             ActionExtension.InvokeInMainThreadAsync(() => {
                 var e = new KeyboardEventArgs(value);
                 PreviewKeyDown?.Invoke(this, e);
-                if (!e.Handled && !e.SkipMainEvent) {
+                if (!e.Handled) {
                     KeyDown?.Invoke(this, e);
                 }
             });

@@ -11,10 +11,82 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.GameProperties {
     public class AcShadowsPatcher : Game.GameHandler {
+        public static Lazier<string> SupportedVersions { get; }
+
+        static AcShadowsPatcher() {
+            SupportedVersions = Lazier.Create(() => {
+                var x86 = _data?.For32BitVersion?.Where(x => x.Value.Original != null).Select(x => x.Key).JoinToReadableString();
+                var x64 = _data?.For64BitVersion?.Where(x => x.Value.Original != null).Select(x => x.Key).JoinToReadableString();
+                var items = new[] {
+                    string.IsNullOrWhiteSpace(x86) ? null : "32-bit: " + x86,
+                    string.IsNullOrWhiteSpace(x64) ? null : "64-bit: " + x64,
+                }.NonNull().ToArray();
+                return items.Length == 0 ? "Definitions are missing" : items.JoinToString(Environment.NewLine);
+            });
+
+            ReloadData(true);
+            FilesStorage.Instance.Watcher(ContentCategory.Miscellaneous).Update += (s, a) => ReloadData(false);
+        }
+
+        private class PlatformEntries {
+            [CanBeNull, JsonProperty("x86")]
+            public Dictionary<string, Entry> For32BitVersion;
+
+            [CanBeNull, JsonProperty("x64")]
+            public Dictionary<string, Entry> For64BitVersion;
+        }
+
+        private class Entry {
+            [JsonProperty("offset")]
+            public int Offset;
+
+            [CanBeNull, JsonProperty("original")]
+            public string Original;
+
+            [CanBeNull, JsonProperty("patched")]
+            public string Patched;
+
+            [JsonProperty("originalOpCode")]
+            public int OriginalOpCode;
+
+            [JsonProperty("patchedOpCode")]
+            public int PatchedOpCode;
+
+            public CommandToPatch ToPatch() {
+                return new CommandToPatch {
+                    Offset = Offset,
+                    OriginalOpCode = OriginalOpCode,
+                    PatchedOpCode = PatchedOpCode
+                };
+            }
+        }
+
+        [CanBeNull]
+        private static PlatformEntries _data;
+
+        private static void ReloadData(bool firstRun) {
+            var file = FilesStorage.Instance.GetContentFile(ContentCategory.Miscellaneous, "DisableShadows.json");
+            try {
+                if (file.Exists) {
+                    _data = JsonConvert.DeserializeObject<PlatformEntries>(File.ReadAllText(file.Filename));
+                    Logging.Debug(JsonConvert.SerializeObject(_data));
+                    if (!firstRun) {
+                        SupportedVersions.Reset();
+                    }
+                    return;
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+
+            _data = null;
+            Logging.Here();
+            SupportedVersions.Reset();
+        }
+
         public AcShadowsPatcher(IAcsStarter starter) {
             starter.PreviewRun += OnPreviewRun;
         }
@@ -32,7 +104,7 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
-        private static IStorage _patchedStorage = new Substorage(ValuesStorage.Storage, "AcShadowsPatcher");
+        private static readonly IStorage PatchedStorage = new Substorage(ValuesStorage.Storage, "AcShadowsPatcher");
 
         private struct CommandToPatch {
             [JsonProperty("o")]
@@ -72,7 +144,7 @@ namespace AcManager.Tools.GameProperties {
 
                 File.Move(filename, backupFilename);
                 File.WriteAllBytes(filename, data);
-                _patchedStorage.SetObject(filename, toPatch);
+                PatchedStorage.SetObject(filename, toPatch);
             } else if (File.Exists(backupFilename) && FileUtils.TryToDelete(filename)) {
                 File.Move(backupFilename, filename);
             } else {
@@ -80,41 +152,15 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
-        private class Entry {
-            [JsonProperty("offset")]
-            public int Offset;
-
-            [JsonProperty("original")]
-            public string Original;
-
-            [JsonProperty("patched")]
-            public string Patched;
-
-            [JsonProperty("originalOpCode")]
-            public int OriginalOpCode;
-
-            [JsonProperty("patchedOpCode")]
-            public int PatchedOpCode;
-
-            public CommandToPatch ToPatch() {
-                return new CommandToPatch {
-                    Offset = Offset,
-                    OriginalOpCode = OriginalOpCode,
-                    PatchedOpCode = PatchedOpCode
-                };
-            }
-        }
-
         private static void PatchAc([NotNull] string acsFilename, bool use32BitVersion) {
             try {
-                var data = FilesStorage.Instance.GetContentFile(ContentCategory.Miscellaneous, "DisableShadows.json");
-                if (!data.Exists) {
-                    throw new PatchException("DisableShadows.json doesn’t exist");
+                if (_data == null) {
+                    throw new PatchException("Definitions are missing");
                 }
 
-                var dictionary = JObject.Parse(File.ReadAllText(data.Filename))[use32BitVersion ? "x86" : "x64"]?.ToObject<Dictionary<string, Entry>>();
+                var dictionary = use32BitVersion ? _data.For32BitVersion : _data.For64BitVersion;
                 if (dictionary == null) {
-                    throw new PatchException("DisableShadows.json doesn’t exist");
+                    throw new PatchException("Definitions for selected platform are missing");
                 }
 
                 var checksum = ComputeChecksum(acsFilename);
@@ -138,13 +184,13 @@ namespace AcManager.Tools.GameProperties {
         }
 
         public static void Revert() {
-            foreach (var key in _patchedStorage.Keys.ToList()) {
-                var data = _patchedStorage.GetObject<CommandToPatch>(key);
+            foreach (var key in PatchedStorage.Keys.ToList()) {
+                var data = PatchedStorage.GetObject<CommandToPatch>(key);
                 if (data.Offset > 0) {
                     ObjectExtension.Swap(ref data.OriginalOpCode, ref data.PatchedOpCode);
                     try {
                         PatchFile(key, data, false);
-                        _patchedStorage.Remove(key);
+                        PatchedStorage.Remove(key);
                     } catch (PatchException e) {
                         NonfatalError.NotifyBackground("Can’t revert AC to its original state", e.Message.ToSentence());
                     } catch (Exception e) {

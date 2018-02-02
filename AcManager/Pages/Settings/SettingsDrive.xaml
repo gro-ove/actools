@@ -229,16 +229,6 @@
           <Label Content="Automatically check and fix controllers order before the race" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" mui:NewMarkService.New="True" set:Search.Keywords="video;graphics;shadows">
-          <Label>
-            <mui:SpacingStackPanel Spacing="2">
-              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
-              <mui:BbCodeBlock FontSize="{DynamicResource SmallFontSize}"
-                  BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
-            </mui:SpacingStackPanel>
-          </Label>
-        </CheckBox>
-
         <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix}" />
         </CheckBox>
@@ -283,6 +273,19 @@
 
         <CheckBox IsChecked="{Binding Drive.WeatherSpecificTyreSmoke}" ToolTip="{x:Static g:AppStrings.Settings_Drive_WeatherParticles_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_WeatherParticles}" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" mui:NewMarkService.New="True" set:Search.Keywords="video;graphics;shadows"
+            Margin="0 12 0 0" VerticalContentAlignment="Top" ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”.">
+          <mui:SpacingStackPanel Spacing="2">
+            <Label>
+              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
+            </Label>
+            <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="Supported AC versions:" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value, Source={x:Static t:AcShadowsPatcher.SupportedVersions}}" />
+            <mui:BbCodeBlock Style="{StaticResource Small}"
+                BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
+          </mui:SpacingStackPanel>
         </CheckBox>
       </StackPanel>
 
