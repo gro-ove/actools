@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools.LapTimes")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,6 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.47")]
-[assembly: AssemblyFileVersion("1.0.0.47")]
-// Modified at: 17/12/03 00:25:04
+[assembly: AssemblyVersion("1.0.0.48")]
+[assembly: AssemblyFileVersion("1.0.0.48")]
+// Modified at: 18/01/28 19:59:42

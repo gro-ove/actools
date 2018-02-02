@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("AcTools.Tests")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2017")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
