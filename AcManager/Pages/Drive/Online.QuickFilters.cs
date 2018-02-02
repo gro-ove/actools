@@ -17,7 +17,7 @@ using StringBasedFilter;
 namespace AcManager.Pages.Drive {
     public partial class Online {
         [JsonObject(MemberSerialization.OptIn)]
-        public sealed class OnlineQuickFilter : Displayable {
+        public sealed class OnlineQuickFilter : Displayable, IWithId {
             public string Description { get; }
             public object Icon { get; }
             public bool Exclude { get; }
@@ -42,6 +42,8 @@ namespace AcManager.Pages.Drive {
                 Exclude = exclude;
                 Filter = filter;
             }
+
+            public string Id => Filter;
         }
 
         public sealed class OnlineQuickFilters : ChangeableObservableCollection<OnlineQuickFilter>, IDisposable {
@@ -90,19 +92,44 @@ namespace AcManager.Pages.Drive {
                 _loading = true;
 
                 try {
-                    var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey)?.Split('&');
-                    if (saved != null) {
-                        for (var i = 0; i < saved.Length; i++) {
-                            var s = saved[i];
-                            if (s.Length > 2 && s[0] == '(' && s[s.Length - 1] == ')') {
-                                saved[i] = s.Substring(1, s.Length - 2);
-                            }
-                        }
-
-                        foreach (var filter in this) {
-                            filter.IsEnabled = Array.IndexOf(saved, filter.Filter) != -1;
+                    var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey);
+                    var previousIndex = 0;
+                    var brackets = 0;
+                    for (var i = 0; i < saved.Length; i++) {
+                        var c = saved[i];
+                        switch (c) {
+                            case '\\':
+                                i++;
+                                break;
+                            case '&' when brackets == 0:
+                                SetFilter(saved.Substring(previousIndex, i - previousIndex));
+                                previousIndex = i + 1;
+                                break;
+                            case '(':
+                                brackets++;
+                                break;
+                            case ')':
+                                brackets--;
+                                break;
                         }
                     }
+
+                    SetFilter(saved.Substring(previousIndex));
+
+                    void SetFilter(string piece) {
+                        if (piece.Length > 2 && piece[0] == '(' && piece[piece.Length - 1] == ')') {
+                            piece = piece.Substring(1, piece.Length - 2);
+                        }
+
+                        var filter = this.GetByIdOrDefault(piece);
+                        if (filter != null) {
+                            filter.IsEnabled = true;
+                        } else {
+                            Logging.Warning("Filter not found: " + piece);
+                        }
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
                 } finally {
                     _loading = false;
                 }

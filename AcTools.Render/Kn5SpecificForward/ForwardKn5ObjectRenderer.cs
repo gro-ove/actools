@@ -106,8 +106,8 @@ namespace AcTools.Render.Kn5SpecificForward {
         protected virtual void PrepareCamera(CameraBase camera) { }
 
         public bool AsyncTexturesLoading { get; set; } = true;
-        public bool AsyncOverridesLoading { get; set; } = false;
-        public bool AllowSkinnedObjects { get; set; } = false;
+        public bool AsyncOverridesLoading { get; set; }
+        public bool AllowSkinnedObjects { get; set; }
 
         private readonly string _showroomKn5Filename;
 
@@ -693,19 +693,6 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             return Vector3.TransformCoordinate(test, camera.ViewProj).X.Abs();
         }
 
-        private static float GetMaxCornerOffset(Vector3[] corners, CameraOrbit camera) {
-            camera.UpdateViewMatrix();
-
-            var maxOffset = 0f;
-            for (var i = 0; i < corners.Length; i++) {
-                var vec = Vector3.TransformCoordinate(corners[i], camera.ViewProj);
-                var offset = new Vector2(vec.X, vec.Y).Length();
-                maxOffset += offset;
-            }
-
-            return maxOffset / corners.Length;
-        }
-
         public void ChangeCameraFov(float newFovY) {
             var c = CameraOrbit;
             if (c == null) return;
@@ -840,6 +827,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             Camera = camera;
             Camera.SetLens(AspectRatio);
             PrepareCamera(Camera);
+            IsDirty = true;
         }
 
         private void OnCamerasChanged(object sender, EventArgs e) {

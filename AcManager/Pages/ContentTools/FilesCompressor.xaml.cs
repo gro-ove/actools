@@ -136,15 +136,15 @@ namespace AcManager.Pages.ContentTools {
 
             var scannedFiles = new List<FileToCompress>();
             foreach (var obj in cars) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj));
+                scannedFiles.AddRange(await ScanObjectFiles(obj, true));
             }
 
             foreach (var obj in tracks) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj));
+                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
             }
 
             foreach (var obj in showrooms) {
-                scannedFiles.AddRange(await ScanObjectFiles(obj));
+                scannedFiles.AddRange(await ScanObjectFiles(obj, false));
             }
 
             scannedFiles.AddRange(await ScanDirectoryFiles(AcPaths.GetWeatherDirectory(AcRootDirectory.Instance.RequireValue), 0.96));
@@ -155,23 +155,32 @@ namespace AcManager.Pages.ContentTools {
             FilesToCompress.ReplaceEverythingBy_Direct(scannedFiles.OrderBy(x => x.RelativePath));
             return FilesToCompress.Any();
 
-            Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj) {
+            Task<List<FileToCompress>> ScanObjectFiles(AcCommonObject obj, bool carMode) {
                 var info = new DirectoryInfo(obj.Location);
                 objectsProgress.Report($"Scanning ({obj.Name ?? obj.Id})…", index[0]++, cars.Count + tracks.Count + showrooms.Count);
-                return ActualScan(info);
+                return ActualScan(info, carMode);
             }
 
             Task<List<FileToCompress>> ScanDirectoryFiles(string directory, double progressValue) {
                 var info = new DirectoryInfo(directory);
                 progress.Report($"Scanning ({FileUtils.GetPathWithin(directory, contentDirectory)})…", progressValue);
-                return ActualScan(info);
+                return ActualScan(info, false);
             }
 
-            Task<List<FileToCompress>> ActualScan(DirectoryInfo info) {
+            Task<List<FileToCompress>> ActualScan(DirectoryInfo info, bool carMode) {
                 return Task.Run(() => {
-                    var textures = info.GetFiles("*.dds", SearchOption.AllDirectories);
-                    var models = info.GetFiles("*.kn5", SearchOption.AllDirectories);
-                    return textures.Concat(models).Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
+                    var list = info.GetFiles("*.dds", SearchOption.AllDirectories)
+                                   .Concat(info.GetFiles("*.kn5", SearchOption.AllDirectories));
+
+                    if (carMode) {
+                        list = list.Concat(info.GetFiles("*.knh"));
+                        var animations = new DirectoryInfo(Path.Combine(info.FullName, "animations"));
+                        if (animations.Exists) {
+                            list = list.Concat(animations.GetFiles("*.ksanim"));
+                        }
+                    }
+
+                    return list.Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
                 });
             }
         }
@@ -197,8 +206,15 @@ namespace AcManager.Pages.ContentTools {
         }
 
         private void OnFileChanged(object o, FileSystemEventArgs e) {
-            if (e.Name.EndsWith(".dds", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase)) {
-                FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
+            var index = e.Name.LastIndexOf('.');
+            if (index == -1) return;
+            switch (e.Name.Substring(index + 1).ToLowerInvariant()) {
+                case "dds":
+                case "kn5":
+                case "knh":
+                case "ksanim":
+                    FilesToCompress.GetByIdOrDefault(FileToCompress.NormalizePath(e.FullPath))?.Refresh();
+                    break;
             }
         }
 

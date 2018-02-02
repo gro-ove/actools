@@ -119,6 +119,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                     if (crash.Contains(@"\analoginstruments.cpp")) {
                         return new WhatsGoingOn(WhatsGoingOnType.AnalogInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
                     }
+
+                    if (crash.Contains(@"\digitalinstruments.cpp")) {
+                        return new WhatsGoingOn(WhatsGoingOnType.DigitalInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
+                    }
                 } else {
                     crash = null;
                 }

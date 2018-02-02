@@ -39,6 +39,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         [Description("Analog instruments of {0} might be broken")]
         AnalogInstrumentsAreDamaged,
 
+        [Description("Analog instruments of {0} might be broken")]
+        DigitalInstrumentsAreDamaged,
+
         [Description("Steer animation might be missing")]
         SteerAnimIsMissing,
 
