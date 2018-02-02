@@ -5,7 +5,7 @@ using AcTools.DataFile;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Tools.GameProperties {
+namespace AcManager.Tools.GameProperties.WeatherSpecific {
     public abstract class WeatherSpecificHelperBase : Game.RaceIniProperties, IDisposable {
         private bool _requiresDisposal;
 

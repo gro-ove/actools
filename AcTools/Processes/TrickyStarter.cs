@@ -18,13 +18,16 @@ namespace AcTools.Processes {
         public TrickyStarter(string acRoot) {
             AcRoot = acRoot;
         }
-        public bool Use32Version { get; set; }
 
-        protected string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
+        public bool Use32BitVersion { get; set; }
+
+        protected string AcsName => Use32BitVersion ? "acs_x86.exe" : "acs.exe";
 
         private string _acLauncher;
         private string _acLauncherBackup;
         private Process _launcherProcess, _gameProcess;
+
+        public event EventHandler<AcsRunEventArgs> PreviewRun;
 
         public void Run() {
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
@@ -44,6 +47,7 @@ namespace AcTools.Processes {
                 File.WriteAllBytes(_acLauncher, Resources.AcStarter);
             }
 
+            PreviewRun?.Invoke(this, new AcsRunEventArgs(Path.Combine(AcRoot, AcsName), Use32BitVersion));
             _launcherProcess = Process.Start(new ProcessStartInfo {
                 WorkingDirectory = AcRoot,
                 FileName = Path.GetFileName(_acLauncher),

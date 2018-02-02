@@ -22,7 +22,7 @@ namespace AcManager.Tools.Starters {
 
         private string _filename;
 
-        protected override string AcsName => OptionStartName ?? (Use32Version ? "acs_x86_chood.exe" : "acs_chood.exe");
+        protected override string AcsName => OptionStartName ?? (Use32BitVersion ? "acs_x86_chood.exe" : "acs_chood.exe");
 
         private static bool _initialized;
         private static Assembly _assembly;
@@ -142,6 +142,7 @@ namespace AcManager.Tools.Starters {
                 }.Save(_filename);
             }
 
+            RaisePreviewRunEvent(AcsFilename);
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = addon.GetFilename("sse.exe"),
                 WorkingDirectory = addon.Directory,

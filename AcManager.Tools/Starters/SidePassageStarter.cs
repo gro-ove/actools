@@ -211,6 +211,7 @@ namespace AcManager.Tools.Starters {
                         "Please, make sure AC Service  (replacement for AssettoCorsa.exe — don’t worry, original file is renamed to AssettoCorsa_original.exe, and you can always restore it) is running well or switch starters.");
             }
 
+            RaisePreviewRunEvent(AcsFilename);
             passage.Start(AcsName);
         }
 
@@ -234,6 +235,7 @@ namespace AcManager.Tools.Starters {
                 throw new InformativeException("Can’t connect to side passage", "Please, make sure AC Service is running well or switch starters.");
             }
 
+            RaisePreviewRunEvent(AcsFilename);
             passage.Start(AcsName);
         }
 

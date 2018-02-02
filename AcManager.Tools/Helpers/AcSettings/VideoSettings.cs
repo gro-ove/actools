@@ -81,8 +81,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             public override bool Equals(object obj) {
-                var a = obj as ResolutionEntry;
-                return a != null && Equals(a);
+                return obj is ResolutionEntry a && Equals(a);
             }
 
             public override int GetHashCode() {
@@ -212,7 +211,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static string AcVideoModesLibrary => Path.Combine(AcRootDirectory.Instance.RequireValue, "acVideoModes.dll");
 
-        public static IReadOnlyList<ResolutionEntry> GetResolutions() {
+        private static IReadOnlyList<ResolutionEntry> GetResolutions() {
             if (File.Exists(AcVideoModesLibrary)) {
                 try {
                     return AcVideoModes.GetResolutionEntries().ToList();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
+using AcManager.Tools.GameProperties.WeatherSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Helpers.AcSettings;
@@ -15,6 +16,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Tools.SemiGui {
@@ -209,6 +211,17 @@ namespace AcManager.Tools.SemiGui {
             Logging.Write("Assists: " + properties.AssistsProperties?.GetDescription());
         }
 
+        [NotNull]
+        private static IAcsStarter CreateStarter(Game.StartProperties properties) {
+            var starter = AcsStarterFactory.Create();
+
+            if (SettingsHolder.Drive.PatchAcToDisableShadows) {
+                properties.SetAdditional(new AcShadowsPatcher(starter));
+            }
+
+            return starter;
+        }
+
         private static async Task<Game.Result> StartAsync_NoUi(Game.StartProperties properties, GameMode mode) {
             using (ReplaysExtensionSetter.OnlyNewIfEnabled())
             using (ScreenshotsConverter.OnlyNewIfEnabled()) {
@@ -218,7 +231,7 @@ namespace AcManager.Tools.SemiGui {
                     properties.SetAdditional(new ReplayCommandExecutor(properties));
                 }
 
-                return await Game.StartAsync(AcsStarterFactory.Create(), properties, null, CancellationToken.None);
+                return await Game.StartAsync(CreateStarter(properties), properties, null, CancellationToken.None);
             }
         }
 
@@ -279,7 +292,7 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
-                        result = await Game.StartAsync(AcsStarterFactory.Create(), properties, new ProgressHandler(ui), cancellationToken);
+                        result = await Game.StartAsync(CreateStarter(properties), properties, new ProgressHandler(ui), cancellationToken);
                     }
 
                     Logging.Write($"Result: {result?.GetDescription() ?? @"<NULL>"}");

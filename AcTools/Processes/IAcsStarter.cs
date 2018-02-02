@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -6,6 +7,8 @@ using JetBrains.Annotations;
 namespace AcTools.Processes {
     public interface IAcsStarter {
         bool RunSteamIfNeeded { get; set; }
+
+        event EventHandler<AcsRunEventArgs> PreviewRun;
 
         void Run();
 

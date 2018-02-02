@@ -35,6 +35,12 @@ namespace AcTools.Utils.Helpers {
             return fn(input);
         }*/
 
+        public static void Swap<T>(ref T a, ref T b) {
+            var c = a;
+            a = b;
+            b = c;
+        }
+
         [Pure]
         public static string ToInvariantString(this float o) {
             return o.ToString(CultureInfo.InvariantCulture);

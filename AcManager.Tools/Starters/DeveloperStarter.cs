@@ -18,6 +18,8 @@ namespace AcManager.Tools.Starters {
         private FileSystemWatcher _watcher;
         private DispatcherTimer _timer;
 
+        public event EventHandler<AcsRunEventArgs> PreviewRun;
+
         public void Run() {
             if (_watcher != null) return;
 
@@ -35,6 +37,8 @@ namespace AcManager.Tools.Starters {
 
             _watcher.Changed += FileUpdate;
             _watcher.Created += FileUpdate;
+
+            PreviewRun?.Invoke(this, new AcsRunEventArgs(null, null));
         }
 
         private void OnTick(object sender, EventArgs eventArgs) {

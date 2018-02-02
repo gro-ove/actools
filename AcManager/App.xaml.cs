@@ -36,6 +36,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.GameProperties;
+using AcManager.Tools.GameProperties.WeatherSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
@@ -551,6 +552,7 @@ namespace AcManager {
             CarSpecificControlsPresetHelper.Revert();
             CarCustomDataHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
+            AcShadowsPatcher.Revert();
         }
 
         private static async void BackgroundInitialization() {

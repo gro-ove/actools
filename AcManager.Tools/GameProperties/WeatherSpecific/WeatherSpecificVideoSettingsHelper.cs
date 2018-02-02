@@ -7,7 +7,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Tools.GameProperties {
+namespace AcManager.Tools.GameProperties.WeatherSpecific {
     public class WeatherSpecificVideoSettingsHelper : WeatherSpecificHelperBase {
         private const string FilterId = "__cm_weather";
 

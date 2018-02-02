@@ -98,6 +98,7 @@ namespace AcManager.Tools.Starters {
             }.Save();
 
             SetAcX86Param();
+            RaisePreviewRunEvent(AcsFilename);
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = LauncherFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue

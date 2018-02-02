@@ -123,6 +123,7 @@
     <Compile Include="KnhFile\KnhWriter.cs" />
     <Compile Include="KsAnimFile\KsAnim.Save.cs" />
     <Compile Include="KsAnimFile\KsAnimWriter.cs" />
+    <Compile Include="Processes\AcsRunEventArgs.cs" />
     <Compile Include="Processes\FakeCarIds.cs" />
     <Compile Include="Utils\AcKunosContent.cs" />
     <Compile Include="Utils\AcLocaleProvider.cs" />

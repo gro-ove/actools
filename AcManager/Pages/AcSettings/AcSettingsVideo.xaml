@@ -77,7 +77,7 @@
             <Slider Minimum="30" Maximum="240" Value="{Binding Video.FramerateLimit}" TickFrequency="21" TickPlacement="BottomRight" />
           </DockPanel>
 
-          <!--quality-->
+          <!-- Quality -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_QualityHeader}" />
 
           <DockPanel>
@@ -90,6 +90,18 @@
             <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
+          <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}" mui:NewMarkService.New="True"
+              set:Search.Keywords="drive events;video;graphics;shadows" Background="Transparent"
+              ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”">
+            <Label>
+              <mui:SpacingStackPanel Spacing="2">
+                <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
+                <mui:BbCodeBlock FontSize="{DynamicResource SmallFontSize}"
+                    BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
+              </mui:SpacingStackPanel>
+            </Label>
+          </CheckBox>
+
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_SmokeGenerationLabel}" />
             <ComboBox ItemsSource="{Binding Video.SmokeLevels}" SelectedItem="{Binding Video.SmokeLevel}" DisplayMemberPath="DisplayName" />
@@ -99,7 +111,7 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_SmokeInMirrors}" />
           </CheckBox>
 
-          <!--effects-->
+          <!-- Effects -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_PostProcessingHeader}" />
 
           <CheckBox IsChecked="{Binding Video.PostProcessing}">
@@ -158,7 +170,7 @@
         </StackPanel>
         <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Video}" Style="{StaticResource SettingsPanel}">
 
-          <!--reflections-->
+          <!-- Reflections -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_ReflectionsHeader}" />
 
           <DockPanel>
@@ -180,7 +192,7 @@
             </DockPanel>
           </StackPanel>
 
-          <!--mirrors-->
+          <!-- Mirrors -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_MirrorsHeader}" />
 
           <DockPanel>
@@ -192,7 +204,7 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_HighQuality}" />
           </CheckBox>
 
-          <!--mirrors-->
+          <!-- Oculus -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_OculusHeader}" />
           <DockPanel>
             <mui:ValueLabel Value="{Binding Oculus.PixelPerDisplay}" mui:BetterTextBox.Mode="Number"
@@ -201,7 +213,7 @@
                 TickPlacement="BottomRight" />
           </DockPanel>
 
-          <!--system-->
+          <!-- System -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_SystemHeader}" />
           <CheckBox IsChecked="{Binding Graphics.AllowUnsupportedDx10}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_AllowDirectX10}" />

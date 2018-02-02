@@ -25,6 +25,7 @@ namespace AcManager.Tools.Starters {
         public override void Run() {
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             CreateAppIdFile();
+            RaisePreviewRunEvent(AcsFilename);
             GameProcess = Process.Start(new ProcessStartInfo {
                 FileName = AcsFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue

@@ -101,7 +101,7 @@
           <Label Content="Continue race if Escape pressed" />
         </CheckBox>
 
-        <!-- Quick drive -->
+        <!-- Quick Drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveTrackDayViaPractice}" ToolTip="This way, there'll be a crew for pitstops, but bots might be more passive"
@@ -227,6 +227,16 @@
 
         <CheckBox IsChecked="{Binding Drive.CheckAndFixControlsOrder}" mui:NewMarkService.New="True" set:Search.Keywords="controls;drive">
           <Label Content="Automatically check and fix controllers order before the race" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" mui:NewMarkService.New="True" set:Search.Keywords="video;graphics;shadows">
+          <Label>
+            <mui:SpacingStackPanel Spacing="2">
+              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
+              <mui:BbCodeBlock FontSize="{DynamicResource SmallFontSize}"
+                  BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
+            </mui:SpacingStackPanel>
+          </Label>
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.CopyFilterToSystemForOculus}" ToolTip="{x:Static g:AppStrings.Settings_Drive_OverridePpFilterOculusFix_Tooltip}">

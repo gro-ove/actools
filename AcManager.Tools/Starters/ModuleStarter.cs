@@ -128,6 +128,7 @@ namespace AcManager.Tools.Starters {
                 throw new InformativeException("Connection file is missing", "Make sure UI module is working properly.");
             }
 
+            RaisePreviewRunEvent(AcsFilename);
             IniFile.Write(backdoor, "COMMAND", "CURRENT", JsonConvert.SerializeObject(new {
                 name = @"start"
             }).ToBase64());

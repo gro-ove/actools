@@ -130,6 +130,7 @@ namespace AcManager.Tools.Starters {
             File.WriteAllText(FlagFilename, AcsName);
             Logging.Warning("Run(), FlagFilename: " + FlagFilename);
 
+            RaisePreviewRunEvent(AcsFilename);
             LauncherProcess = Process.Start(new ProcessStartInfo {
                 FileName = LauncherFilename,
                 WorkingDirectory = AcRootDirectory.Instance.RequireValue

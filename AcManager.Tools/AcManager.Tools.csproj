@@ -231,6 +231,7 @@
     <Compile Include="Filters\Testers\TrackSkinObjectTester.cs" />
     <Compile Include="Filters\Testers\WeatherObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
+    <Compile Include="GameProperties\AcShadowsPatcher.cs" />
     <Compile Include="GameProperties\CarCustomDataHelper.cs" />
     <Compile Include="GameProperties\CarRaceTextures.cs" />
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
@@ -246,13 +247,18 @@
     <Compile Include="GameProperties\NationCodeProvider.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
     <Compile Include="GameProperties\TemporaryFileReplacement.cs" />
-    <Compile Include="GameProperties\WeatherSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />
     <Compile Include="GameProperties\ReplayCommandExecutor.cs" />
     <Compile Include="GameProperties\RsrMark.cs" />
     <Compile Include="GameProperties\SrsMark.cs" />
-    <Compile Include="GameProperties\WeatherSpecificVideoSettingsHelper.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\IWeatherSpecificReplacement.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificCloudsHelper.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificDirectoryReplacementBase.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificFileReplacementBase.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificHelperBase.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificTyreSmokeHelper.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
@@ -526,7 +532,6 @@
     <Compile Include="SemiGui\IGameUi.cs" />
     <Compile Include="SemiGui\IAnyFactory.cs" />
     <Compile Include="SemiGui\VariablesReplacement.cs" />
-    <Compile Include="GameProperties\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="Starters\AcsStarterFactory.cs" />
     <Compile Include="Helpers\Api\CmApiProvider.cs" />
     <Compile Include="Helpers\Api\KunosApiProvider.Lan.cs" />

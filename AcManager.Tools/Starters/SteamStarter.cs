@@ -178,6 +178,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
+            RaisePreviewRunEvent(AcsFilename);
             GameProcess = Process.Start(new ProcessStartInfo {
                 FileName = AcsFilename,
                 WorkingDirectory = _acRoot

@@ -50,7 +50,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Anton Malishev, dr8008, /u/FolkSong, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
+            BbCode="Anton Malishev, dr8008, /u/FolkSong, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas for animations:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"

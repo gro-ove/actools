@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
+using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -13,13 +14,19 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
     public abstract class StarterBase : IAcsPlatformSpecificStarter {
-        public bool Use32Version { get; set; }
+        public bool Use32BitVersion { get; set; }
 
         protected Process LauncherProcess, GameProcess;
 
-        protected virtual string AcsName => Use32Version ? "acs_x86.exe" : "acs.exe";
+        protected virtual string AcsName => Use32BitVersion ? "acs_x86.exe" : "acs.exe";
 
         protected string AcsFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, AcsName);
+
+        public event EventHandler<AcsRunEventArgs> PreviewRun;
+
+        protected void RaisePreviewRunEvent([CanBeNull] string acsFilename) {
+            PreviewRun?.Invoke(this, new AcsRunEventArgs(acsFilename, Use32BitVersion));
+        }
 
         public abstract void Run();
 
@@ -43,7 +50,7 @@ namespace AcManager.Tools.Starters {
         }
 
         protected void SetAcX86Param() {
-            IniFile.Write(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32Version ? @"1" : @"0");
+            IniFile.Write(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "launcher.ini"), "WINDOW", "X86", Use32BitVersion ? @"1" : @"0");
         }
 
         public virtual void WaitGame() {

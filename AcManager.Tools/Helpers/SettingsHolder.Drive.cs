@@ -1011,6 +1011,18 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _patchAcToDisableShadows;
+
+            public bool PatchAcToDisableShadows {
+                get => _patchAcToDisableShadows ?? (_patchAcToDisableShadows = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
+                set {
+                    if (Equals(value, _patchAcToDisableShadows)) return;
+                    _patchAcToDisableShadows = value;
+                    ValuesStorage.Set("Settings.DriveSettings.PatchAcToDisableShadows", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static DriveSettings _drive;
