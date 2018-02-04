@@ -23,7 +23,7 @@
 
     <DockPanel Margin="0 0 8 0">
       <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
-        <TextBlock Text="Target tyres filter:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+        <TextBlock Text="Target tyres filter:" Width="120" Style="{StaticResource Label}" />
         <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
             Text="{Binding TyresFilter, UpdateSourceTrigger=PropertyChanged}" SaveKey="CreateTyres.TyresFilter.History">
           <mui:HistoricalTextBox.DefaultItems>
@@ -35,7 +35,7 @@
       </DockPanel>
 
       <DockPanel DockPanel.Dock="Top" Margin="8 0 0 8">
-        <TextBlock Text="Cars display filter:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+        <TextBlock Text="Cars display filter:" Width="120" Style="{StaticResource Label}" />
         <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
             Text="{Binding CarsFilter, UpdateSourceTrigger=PropertyChanged}" SaveKey="CreateTyres.CarsFilter.History">
           <mui:HistoricalTextBox.DefaultItems>
@@ -45,13 +45,13 @@
       </DockPanel>
 
       <ListBox x:Name="CarsListBox" ItemsSource="{Binding CarsView}" Style="{StaticResource VirtualizingListBox}"
-          ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" mui:ListBoxHelper.ProperMultiSelectionMode="True">
+          ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" mui:ListBoxHelper.ProperMultiSelectionMode="True" mui:FancyScrollHelper.Outside="True">
         <ListBox.ItemTemplate>
           <DataTemplate DataType="{x:Type di:CarCreateTyresMachineDialog+CarWithTyres}">
             <DockPanel>
               <mui:BetterImage Filename="{Binding Car.BrandBadge}" Margin="0 0 8 0" Width="16" Height="16" ClearOnChange="True" />
               <TextBlock Text="{Binding CheckedCount}" DockPanel.Dock="Right" ToolTip="{Binding DisplayChecked}"
-                  Visibility="{Binding CheckedCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+                  Visibility="{Binding CheckedCount, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 0 4 0" />
               <TextBlock Text="{Binding Car.DisplayName}" />
             </DockPanel>
           </DataTemplate>
@@ -62,34 +62,72 @@
     <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarCreateTyresMachineDialog" />
 
     <mui:SpacingStackPanel Grid.Column="2" Margin="8 0 0 0" Spacing="8">
-      <Label Content="Options:" Margin="0 12 0 0" />
+      <Label Content="Options:" Margin="0 0 0 0" />
 
-      <Label Content="Summary:" />
+      <CheckBox Content="Use a separate network for each value" />
 
-      <DockPanel DockPanel.Dock="Top" Margin="8 0 0 0">
-        <TextBlock Text="Total tyres selected:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+      <DockPanel Margin="8 0 0 0">
+        <TextBlock Text="Neurons in hidden layers:" Style="{StaticResource Label}" Width="180" />
+        <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" />
+      </DockPanel>
+
+      <DockPanel Margin="8 0 0 0">
+        <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="network" Content="Average from" Width="180"
+            Padding="0" />
+        <Slider Minimum="0" Maximum="5" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="1" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <DockPanel Margin="8 0 0 0">
+        <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="%" Content="Padding:" Width="180" Padding="0" />
+        <Slider Minimum="0" Maximum="50" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="10" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <Label Content="Summary:" Margin="0 12 0 0" />
+
+      <DockPanel Margin="8 0 0 0">
+        <TextBlock Text="Total tyres selected:" Width="180" Style="{StaticResource Label}" />
         <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
       </DockPanel>
 
-      <DockPanel DockPanel.Dock="Top" Margin="8 0 0 0">
-        <TextBlock Text="Unique tyres selected:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+      <DockPanel Margin="8 0 0 0">
+        <TextBlock Text="Unique tyres selected:" Width="180" Style="{StaticResource Label}" />
         <mui:BetterTextBox Text="{Binding UniqueTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
       </DockPanel>
 
-      <DockPanel DockPanel.Dock="Top" Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Radius:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+        <TextBlock Text="Radius:" Width="180" Style="{StaticResource Label}" />
         <mui:BetterTextBox Text="{Binding Radius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
       </DockPanel>
 
-      <DockPanel DockPanel.Dock="Top" Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Rim radius:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+        <TextBlock Text="Rim radius:" Width="180" Style="{StaticResource Label}" />
         <mui:BetterTextBox Text="{Binding RimRadius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
       </DockPanel>
 
-      <DockPanel DockPanel.Dock="Top" Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Width:" Width="120" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+        <TextBlock Text="Width:" Width="180" Style="{StaticResource Label}" />
         <mui:BetterTextBox Text="{Binding Width.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
       </DockPanel>
+
+      <Label Content="Result:" Margin="0 12 0 0" />
+
+      <mui:AsyncButton Content="Create and teach tyres machine" Command="{Binding CreateTyresMachineCommand}" />
+
+      <mui:ReferenceSwitch Value="{Binding CreateTyresMachineProgress.Progress}">
+        <mui:SpacingStackPanel Spacing="2">
+          <TextBlock Text="{Binding CreateTyresMachineProgress.Message}" Style="{StaticResource Small}" />
+          <ProgressBar Value="{Binding CreateTyresMachineProgress.Progress, Mode=OneWay}" Height="2" />
+        </mui:SpacingStackPanel>
+      </mui:ReferenceSwitch>
+
+      <Label Content="Test:" Margin="0 12 0 0" />
+
+      <mui:ReferenceSwitch Value="{Binding GeneratedMachine}">
+        <mui:SpacingStackPanel Spacing="2">
+          <TextBlock Text="{Binding CreateTyresMachineProgress.Message}" Style="{StaticResource Small}" />
+          <ProgressBar Value="{Binding CreateTyresMachineProgress.Progress, Mode=OneWay}" Height="2" Maximum="1" Minimum="0" />
+        </mui:SpacingStackPanel>
+      </mui:ReferenceSwitch>
 
       <!--<ListBox ItemsSource="{Binding TyresView}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
           ItemTemplate="{StaticResource TyresEntryDataTemplate}" />-->

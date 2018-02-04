@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,8 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Tyres;
 using AcTools.DataFile;
+using AcTools.NeuralTyres;
+using AcTools.NeuralTyres.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -258,12 +261,62 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _uniqueTyresCount)) return;
                     _uniqueTyresCount = value;
                     OnPropertyChanged();
+                    _createTyresMachineCommand?.RaiseCanExecuteChanged();
                 }
             }
 
             public ValueLimits Radius { get; } = new ValueLimits(100, " cm");
             public ValueLimits RimRadius { get; } = new ValueLimits(100, " cm");
             public ValueLimits Width { get; } = new ValueLimits(100, " cm");
+
+            private AsyncProgressEntry _createTyresMachineProgress = AsyncProgressEntry.Finished;
+
+            public AsyncProgressEntry CreateTyresMachineProgress {
+                get => _createTyresMachineProgress;
+                set {
+                    if (Equals(value, _createTyresMachineProgress)) return;
+                    _createTyresMachineProgress = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private TyresMachine _generatedMachine;
+
+            public TyresMachine GeneratedMachine {
+                get => _generatedMachine;
+                set {
+                    if (Equals(value, _generatedMachine)) return;
+                    _generatedMachine = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private AsyncCommand<CancellationToken?> _createTyresMachineCommand;
+
+            public AsyncCommand<CancellationToken?> CreateTyresMachineCommand => _createTyresMachineCommand
+                    ?? (_createTyresMachineCommand = new AsyncCommand<CancellationToken?>(CreateTyresMachine, c => UniqueTyresCount > 1));
+
+            private async Task CreateTyresMachine(CancellationToken? c) {
+                try {
+                    var options = new NeuralTyresOptions {
+                        TrainingRuns = 150000
+                    };
+
+                    var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry).Distinct(
+                                    TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
+                    var machine = await TyresMachine.CreateAsync(tyres, options, new Progress<Tuple<string, double?>>(
+                            OnProgress));
+                    CreateTyresMachineProgress = AsyncProgressEntry.Finished;
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create tyres machine", e);
+                }
+
+                void OnProgress(Tuple<string, double?> p) {
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        CreateTyresMachineProgress = new AsyncProgressEntry(p.Item1, p.Item2);
+                    });
+                }
+            }
 
             public void Dispose() { }
 

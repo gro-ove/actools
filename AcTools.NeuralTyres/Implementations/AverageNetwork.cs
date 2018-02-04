@@ -23,7 +23,7 @@ namespace AcTools.NeuralTyres.Implementations {
             _list.ForEach(x => x.SetOptions(_options));
         }
 
-        public void Train(double[][] inputs, double[] outputs) {
+        public void Train(double[][] inputs, double[][] outputs) {
             try {
                 EnsureInitialized();
                 if (_options.TrainAverageInParallel) {

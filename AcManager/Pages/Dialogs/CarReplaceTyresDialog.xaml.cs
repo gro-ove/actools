@@ -216,7 +216,7 @@ namespace AcManager.Pages.Dialogs {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Front.SourceId
+                            ["__CM_SOURCE_ID"] = x.Front.SourceCarId
                         };
                     }));
 
@@ -229,7 +229,7 @@ namespace AcManager.Pages.Dialogs {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Rear.SourceId
+                            ["__CM_SOURCE_ID"] = x.Rear.SourceCarId
                         };
                     }));
 
@@ -362,7 +362,7 @@ namespace AcManager.Pages.Dialogs {
                 var yx = yt.AppropriateLevelFront > yt.AppropriateLevelRear ? yt.AppropriateLevelFront : yt.AppropriateLevelRear;
                 if (xx != yx) return xx - yx;
 
-                var nx = (xt.Source?.DisplayName ?? xt.SourceId).InvariantCompareTo(yt.Source?.DisplayName ?? yt.SourceId);
+                var nx = (xt.Source?.DisplayName ?? xt.SourceCarId).InvariantCompareTo(yt.Source?.DisplayName ?? yt.SourceCarId);
                 if (nx != 0) return nx;
 
                 var mx = xt.Name.InvariantCompareTo(yt.Name);

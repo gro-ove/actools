@@ -111,9 +111,11 @@ namespace AcManager {
                         _showMainWindow = true;
                     }
 
+#if DEBUG
                     // await CarGenerateTyresDialog.RunAsync(CarsManager.Instance.GetById("bmw_m5_e34"));
-                    /*await CarCreateTyresMachineDialog.RunAsync();
-                    return;*/
+                    await CarCreateTyresMachineDialog.RunAsync();
+                    return;
+#endif
 
                     if (_additionalProcessing > 0) {
                         Logging.Write("Waiting for extra workers…");

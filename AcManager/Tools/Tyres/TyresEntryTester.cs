@@ -39,7 +39,7 @@ namespace AcManager.Tools.Tyres {
                 case "rgrade":
                     return value.Test(obj.AppropriateLevelRear.ToString());
                 case "car":
-                    return value.Test(obj.SourceId) || value.Test(obj.Source?.DisplayName);
+                    return value.Test(obj.SourceCarId) || value.Test(obj.Source?.DisplayName);
                 case "v":
                 case "ver":
                 case "version":

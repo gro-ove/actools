@@ -94,7 +94,7 @@ namespace AcTools.NeuralTyres {
             double processed = 0, total = keys.Length;
             Parallel.ForEach(keys.Select((x, i) => new {
                 Key = x,
-                Outputs = outputs[i]
+                Outputs = outputs[i].Select(y => new[]{ y }).ToArray()
             }), value => {
                 if (cancellationToken.IsCancellationRequested) return;
 

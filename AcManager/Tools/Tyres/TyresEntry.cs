@@ -8,6 +8,7 @@ using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using AcTools.NeuralTyres.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -27,7 +28,7 @@ namespace AcManager.Tools.Tyres {
         private readonly Lazy<CarObject> _carObjectLazy;
 
         [NotNull]
-        public string SourceId { get; }
+        public string SourceCarId { get; }
 
         public int Version { get; }
 
@@ -51,7 +52,7 @@ namespace AcManager.Tools.Tyres {
 
         public string DisplayPosition => BothTyres ? "Both tyres" : RearTyres ? "Rear tyres" : "Front tyres";
 
-        public string DisplaySource => $@"{Source?.Name ?? SourceId} ({DisplayPosition.ToLower(CultureInfo.CurrentUICulture)})";
+        public string DisplaySource => $@"{Source?.Name ?? SourceCarId} ({DisplayPosition.ToLower(CultureInfo.CurrentUICulture)})";
 
         public string DisplayParams { get; }
 
@@ -90,10 +91,10 @@ namespace AcManager.Tools.Tyres {
         [CanBeNull]
         public TyresEntry OtherEntry { get; set; }
 
-        private TyresEntry(string sourceId, int version, IniFileSection mainSection, IniFileSection thermalSection, string wearCurveData,
+        private TyresEntry(string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection, string wearCurveData,
                 string performanceCurveData, bool rearTyres, Lazy<double?> rimRadiusLazy) {
-            SourceId = sourceId;
-            _carObjectLazy = new Lazy<CarObject>(() => CarsManager.Instance.GetById(SourceId));
+            SourceCarId = sourceCarId;
+            _carObjectLazy = new Lazy<CarObject>(() => CarsManager.Instance.GetById(SourceCarId));
 
             Version = version;
             MainSection = mainSection;
@@ -107,6 +108,10 @@ namespace AcManager.Tools.Tyres {
             DisplayParams = $@"{DisplayWidth}/{DisplayProfile}/R{DisplayRimRadius}";
             Name = mainSection.GetNonEmpty("NAME") ?? @"?";
             ShortName = mainSection.GetNonEmpty("SHORT_NAME") ?? (Name.Length == 0 ? @"?" : Name.Substring(0, 1));
+        }
+
+        public NeuralTyresEntry ToNeuralTyresEntry() {
+            return new NeuralTyresEntry(SourceCarId, Version, MainSection, ThermalSection);
         }
 
         public double Radius { get; private set; }

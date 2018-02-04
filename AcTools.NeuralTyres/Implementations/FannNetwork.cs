@@ -36,17 +36,13 @@ namespace AcTools.NeuralTyres.Implementations {
             };
         }
 
-        public void Train(double[][] inputs, double[] outputs) {
+        public void Train(double[][] inputs, double[][] outputs) {
             try {
                 EnsureInitialized();
                 _net.RandomizeWeights(0d, 1d);
                 var data = new TrainingData();
-                var outputsArray = new double[outputs.Length][];
-                for (var i = 0; i < outputs.Length; i++) {
-                    outputsArray[i] = new[] { outputs[i] };
-                }
-                data.SetTrainData(inputs, outputsArray);
-                for (var i = 500000 / outputs.Length; i > 0; i--) {
+                data.SetTrainData(inputs, outputs);
+                for (var i = _options.TrainingRuns / outputs.Length; i > 0; i--) {
                     _net.TrainEpoch(data);
                 }
             } catch (Exception e) {

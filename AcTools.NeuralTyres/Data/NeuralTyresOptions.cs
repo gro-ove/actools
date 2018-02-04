@@ -23,6 +23,7 @@ namespace AcTools.NeuralTyres.Data {
         [NotNull]
         public int[] NetworkLayers = { 15, 15 };
 
+        public int TrainingRuns = 500000;
         public double LearningRate = 0.2;
         public double LearningMomentum = 0.1;
         public double ValuePadding = 0.3;
