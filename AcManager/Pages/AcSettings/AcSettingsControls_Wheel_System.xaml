@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:acsc="clr-namespace:AcManager.Pages.AcSettings"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Unloaded="OnUnloaded">
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

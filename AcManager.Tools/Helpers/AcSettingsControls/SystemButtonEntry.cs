@@ -3,6 +3,7 @@ using System.Windows.Forms;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
+using FirstFloor.ModernUI.Commands;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
@@ -25,6 +26,14 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 OnPropertyChanged();
             }
         }
+
+        private DelegateCommand _resetCommand;
+
+        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(() => {
+            if (_defaultKey.HasValue) {
+                Input = AcSettingsHolder.Controls.GetKeyboardInputButton((int)_defaultKey.Value);
+            }
+        }, () => _defaultKey.HasValue));
 
         protected override void OnInputChanged(KeyboardInputButton oldValue, KeyboardInputButton newValue) {
             base.OnInputChanged(oldValue, newValue);

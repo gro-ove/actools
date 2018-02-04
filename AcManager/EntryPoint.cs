@@ -151,14 +151,18 @@ namespace AcManager {
                 _secondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
                     _initialized = true;
-                    RunApp();
+                    if (args.Length == 0) {
+                        TryToRunAppSafely();
+                    } else {
+                        App.CreateAndRun(false);
+                    }
                 } else {
                     PassArgsToRunningInstance(args);
                 }
             }
         }
 
-        private static void RunApp() {
+        private static void TryToRunAppSafely() {
             var tryingToRunFlag = Path.Combine(ApplicationDataDirectory, "Trying to run.flag");
             FileUtils.EnsureFileDirectoryExists(tryingToRunFlag);
 

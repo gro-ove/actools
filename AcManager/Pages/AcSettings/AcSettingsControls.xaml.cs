@@ -115,6 +115,26 @@ namespace AcManager.Pages.AcSettings {
             public ControlsSettings Controls => AcSettingsHolder.Controls;
             public SystemSettings System => AcSettingsHolder.System;
             public FfPostProcessSettings FfPostProcess => AcSettingsHolder.FfPostProcess;
+
+            private bool _isInSystemBindingsSection;
+
+            public bool IsInSystemBindingsSection {
+                get => _isInSystemBindingsSection;
+                set {
+                    if (Equals(value, _isInSystemBindingsSection)) return;
+                    _isInSystemBindingsSection = value;
+                    OnPropertyChanged();
+                    _resetSystemBindinsCommand?.RaiseCanExecuteChanged();
+                }
+            }
+
+            private DelegateCommand _resetSystemBindinsCommand;
+
+            public DelegateCommand ResetSystemBindinsCommand => _resetSystemBindinsCommand ?? (_resetSystemBindinsCommand = new DelegateCommand(() => {
+                foreach (var button in AcSettingsHolder.Controls.SystemButtonEntries) {
+                    button.SystemButton?.ResetCommand.Execute();
+                }
+            }, () => IsInSystemBindingsSection));
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {

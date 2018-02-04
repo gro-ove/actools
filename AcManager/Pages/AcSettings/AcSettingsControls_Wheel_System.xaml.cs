@@ -22,11 +22,22 @@ namespace AcManager.Pages.AcSettings {
 
             UpdateListBox();
             AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
+            this.AddWidthCondition(900).Add(x => MainGrid.Columns = x ? 2 : 1);
+        }
 
-            this.AddWidthCondition(900).Add(x => {
-                // Resources["ItemsPanelTemplate"] = TryFindResource(x ? "TwoColumnsPanel" : "OneColumnPanel");
-                MainGrid.Columns = x ? 2 : 1;
-            });
+        private AcSettingsControls.ViewModel Model => (AcSettingsControls.ViewModel)DataContext;
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            var model = Model;
+            if (model == null) return;
+
+            model.IsInSystemBindingsSection = true;
+            Unloaded += OnUnloaded;
+
+            void OnUnloaded(object o, RoutedEventArgs args) {
+                Unloaded -= OnUnloaded;
+                model.IsInSystemBindingsSection = false;
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

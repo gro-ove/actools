@@ -170,6 +170,8 @@
     </DockPanel>
 
     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
+      <Button Command="{Binding ResetSystemBindinsCommand}" Content="Reset system bindings" Margin="0 0 4 0"
+          Visibility="{Binding ResetSystemBindinsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
       <Grid MinWidth="300">
         <Grid.ContextMenu>
           <ContextMenu>

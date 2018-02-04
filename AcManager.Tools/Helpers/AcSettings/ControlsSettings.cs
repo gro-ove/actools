@@ -979,7 +979,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SystemButtonEntryCombined[] SystemDiscordButtonEntries { get; }
 
         [NotNull]
-        private IEnumerable<SystemButtonEntryCombined> SystemButtonEntries  => SystemRaceButtonEntries
+        public IEnumerable<SystemButtonEntryCombined> SystemButtonEntries  => SystemRaceButtonEntries
                     .Concat(SystemCarButtonEntries)
                     .Concat(SystemUiButtonEntries)
                     .Concat(SystemReplayButtonEntries)

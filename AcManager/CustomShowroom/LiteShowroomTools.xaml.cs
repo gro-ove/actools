@@ -479,20 +479,20 @@ namespace AcManager.CustomShowroom {
             _loaded = true;
 
             var saveable = Model.Settings;
-            if (saveable == null) return;
-
-            if (_loadPreset == null) {
-                if (saveable.HasSavedData || UserPresetsControl.CurrentUserPreset != null) {
-                    saveable.Initialize(false);
+            if (saveable != null) {
+                if (_loadPreset == null) {
+                    if (saveable.HasSavedData || UserPresetsControl.CurrentUserPreset != null) {
+                        saveable.Initialize(false);
+                    } else {
+                        saveable.Initialize(true);
+                        UserPresetsControl.CurrentUserPreset =
+                                UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == @"Kunos");
+                    }
                 } else {
                     saveable.Initialize(true);
                     UserPresetsControl.CurrentUserPreset =
-                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.ToString() == @"Kunos");
+                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
                 }
-            } else {
-                saveable.Initialize(true);
-                UserPresetsControl.CurrentUserPreset =
-                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
             }
 
             SetSelected();
