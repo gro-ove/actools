@@ -340,6 +340,12 @@
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
+      <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Dialogs\CarGenerateTyresDialog.xaml.cs">
+      <DependentUpon>CarGenerateTyresDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml.cs">
       <DependentUpon>ControllerDefinitionsDialog.xaml</DependentUpon>
     </Compile>
@@ -751,6 +757,12 @@
     </Compile>
     <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
     <Compile Include="Tools\TrackPreviewsCreator.cs" />
+    <Compile Include="Tools\Tyres\TyresAppropriateLevel.cs" />
+    <Compile Include="Tools\Tyres\TyresEntry.cs" />
+    <Compile Include="Tools\Tyres\TyresEntryTester.cs" />
+    <Compile Include="Tools\Tyres\TyresMachineInfo.cs" />
+    <Compile Include="Tools\Tyres\TyresPlace.cs" />
+    <Compile Include="Tools\Tyres\TyresSet.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Compile Include="Tools\WheelAnglesStorage.cs" />
@@ -929,6 +941,14 @@
     <Page Include="Pages\Dialogs\AppKeyDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\Dialogs\CarGenerateTyresDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -1749,6 +1769,10 @@
     <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
       <Project>{38a04388-fc0c-4e96-bed5-1dc5c6c0b18f}</Project>
       <Name>AcTools.LapTimes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcTools.NeuralTyres\AcTools.NeuralTyres.csproj">
+      <Project>{FE9D676D-5E05-491D-A998-7D561475D440}</Project>
+      <Name>AcTools.NeuralTyres</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.Render\AcTools.Render.csproj">
       <Project>{841dcdf5-07d3-412a-98ae-4615f1dc5dd9}</Project>

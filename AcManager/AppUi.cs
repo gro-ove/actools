@@ -29,6 +29,7 @@ namespace AcManager {
         }
 
         private int _nothing;
+
         private void OnTimer(object sender, EventArgs eventArgs) {
             if (_application.Windows.Count == 0 && System.Windows.Forms.Application.OpenForms.Count == 0) {
                 if (_nothing > 2) {
@@ -109,6 +110,10 @@ namespace AcManager {
                     if (!AppArguments.Values.Any() || await ArgumentsHandler.ProcessArguments(AppArguments.Values) != ArgumentsHandler.ShowMainWindow.No) {
                         _showMainWindow = true;
                     }
+
+                    // await CarGenerateTyresDialog.RunAsync(CarsManager.Instance.GetById("bmw_m5_e34"));
+                    /*await CarCreateTyresMachineDialog.RunAsync();
+                    return;*/
 
                     if (_additionalProcessing > 0) {
                         Logging.Write("Waiting for extra workers…");

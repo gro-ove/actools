@@ -4,40 +4,33 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
-using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.Tyres;
 using AcTools.DataFile;
-using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
-using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarReplaceTyresDialog {
-        public static bool OptionRoundNicely = true;
-
         private CarReplaceTyresDialog(CarObject target, List<TyresSet> sets, List<TyresEntry> tyres) {
             DataContext = new ViewModel(target, sets, tyres);
             InitializeComponent();
+            this.OnActualUnload(Model);
 
             Buttons = new[] {
                 CreateExtraDialogButton(ControlsStrings.Presets_Save, new DelegateCommand(() => {
@@ -57,7 +50,7 @@ namespace AcManager.Pages.Dialogs {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public class ViewModel : NotifyPropertyChanged, IDraggableDestinationConverter, IComparer {
+        public class ViewModel : NotifyPropertyChanged, IDraggableDestinationConverter, IComparer, IDisposable {
             public CarObject Car { get; }
 
             public ChangeableObservableCollection<TyresSet> Sets { get; }
@@ -96,7 +89,7 @@ namespace AcManager.Pages.Dialogs {
                         break;
                 }
 
-                var list = await GetList(newFilter);
+                var list = await TyresEntry.GetList(newFilter);
                 if (list == null) return;
 
                 foreach (var entry in list) {
@@ -122,7 +115,7 @@ namespace AcManager.Pages.Dialogs {
 
                 SetsVersion = firstSet.Front.Version;
 
-                _originalTyresSet = GetOriginal(car) ?? firstSet;
+                _originalTyresSet = TyresSet.GetOriginal(car) ?? firstSet;
                 OriginalTyresFront = _originalTyresSet.Front;
                 OriginalTyresRear = _originalTyresSet.Rear;
 
@@ -435,593 +428,31 @@ namespace AcManager.Pages.Dialogs {
 
                 return true;
             }
-        }
 
-        [CanBeNull]
-        private static TyresSet GetOriginal(CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return null;
-
-            var front = TyresEntry.Create(car, @"__CM_FRONT_ORIGINAL", true);
-            var rear = TyresEntry.Create(car, @"__CM_REAR_ORIGINAL", true);
-            if (front != null && rear != null) {
-                return new TyresSet(front, rear);
-            } else {
-                return null;
+            public void Dispose() {
+                Draggable.DragStarted -= OnDragStarted;
+                Draggable.DragEnded -= OnDragEnded;
             }
-        }
-
-        private static IEnumerable<Tuple<TyresEntry, TyresEntry>> GetTyres(CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) yield break;
-
-            for (var i = 0; i < 9999; i++) {
-                var front = TyresEntry.CreateFront(car, i, false);
-                var rear = TyresEntry.CreateRear(car, i, false);
-
-                if (front == null && rear == null) break;
-
-                if (front != null) front.OtherEntry = rear;
-                if (rear != null) rear.OtherEntry = front;
-                yield return Tuple.Create(front, rear);
-            }
-        }
-
-        private static IEnumerable<TyresSet> GetSets(CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return new TyresSet[0];
-
-            var defaultSet = tyres["COMPOUND_DEFAULT"].GetInt("INDEX", 0);
-            return GetTyres(car).Where(x => x.Item1 != null && x.Item2 != null).Select((x, i) => new TyresSet(x.Item1, x.Item2) {
-                DefaultSet = i == defaultSet
-            });
-        }
-
-        [ItemCanBeNull]
-        private static async Task<List<TyresEntry>> GetList(string filter) {
-            var filterObj = Filter.Create(CarObjectTester.Instance, filter);
-
-            var wrappers = CarsManager.Instance.WrappersList.ToList();
-            var list = new List<TyresEntry>(wrappers.Count);
-
-            using (var waiting = new WaitingDialog("Getting a list of tyres…")) {
-                for (var i = 0; i < wrappers.Count; i++) {
-                    if (waiting.CancellationToken.IsCancellationRequested) return null;
-
-                    var wrapper = wrappers[i];
-                    var car = (CarObject)await wrapper.LoadedAsync();
-                    waiting.Report(new AsyncProgressEntry(car.DisplayName, i, wrappers.Count));
-
-                    if (!filterObj.Test(car) || car.AcdData == null) continue;
-                    var tyres = car.AcdData.GetIniFile("tyres.ini");
-
-                    var version = tyres["HEADER"].GetInt("VERSION", -1);
-                    if (version < 4) continue;
-
-                    foreach (var tuple in GetTyres(car)) {
-                        if (list.Contains(tuple.Item1, TyresEntry.TyresEntryComparer)) {
-                            if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
-                                list.Add(tuple.Item2);
-                            }
-                        } else {
-                            if (TyresEntry.TyresEntryComparer.Equals(tuple.Item1, tuple.Item2)) {
-                                list.Add(tuple.Item1);
-                                tuple.Item1.BothTyres = true;
-                            } else if (!list.Contains(tuple.Item2, TyresEntry.TyresEntryComparer)) {
-                                list.Add(tuple.Item1);
-                                list.Add(tuple.Item2);
-                            }
-                        }
-                    }
-
-                    if (i % 3 == 0) {
-                        await Task.Delay(10);
-                    }
-                }
-            }
-
-            return list;
         }
 
         public static async Task<bool> Run(CarObject target) {
             try {
-                var sets = GetSets(target).ToList();
+                var sets = TyresSet.GetSets(target).ToList();
                 if (sets.Count == 0) {
                     throw new Exception("Can’t detect current tyres params");
                 }
 
-                var list = await GetList(SettingsHolder.Content.CarReplaceTyresDonorFilter);
-                if (list == null) return false;
+                List<TyresEntry> list;
+                using (WaitingDialog.Create(ControlsStrings.Common_Loading)) {
+                    list = await TyresEntry.GetList(SettingsHolder.Content.CarReplaceTyresDonorFilter);
+                    if (list == null) return false;
+                }
 
                 var dialog = new CarReplaceTyresDialog(target, sets, list);
                 dialog.ShowDialog();
                 return dialog.IsResultOk;
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t replace tyres", e);
-                return false;
-            }
-        }
-
-        public sealed class TyresSet : Displayable, IDraggable {
-            private int _index;
-
-            public int Index {
-                get => _index;
-                set {
-                    if (Equals(value, _index)) return;
-                    _index = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(Position));
-                }
-            }
-
-            public int Position => Index + 1;
-
-            private bool _dublicate;
-
-            public bool Dublicate {
-                get => _dublicate;
-                set {
-                    if (Equals(value, _dublicate)) return;
-                    _dublicate = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _differentTyres;
-
-            public bool DifferentTyres {
-                get => _differentTyres;
-                set {
-                    if (Equals(value, _differentTyres)) return;
-                    _differentTyres = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private void UpdateDifferentTyres() {
-                DifferentTyres = _front?.Name != _rear?.Name;
-            }
-
-            private bool _defaultSet;
-
-            public bool DefaultSet {
-                get => _defaultSet;
-                set {
-                    if (Equals(value, _defaultSet)) return;
-                    _defaultSet = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private TyresEntry _front;
-
-            [NotNull]
-            public TyresEntry Front {
-                get => _front;
-                set {
-                    if (Equals(value, _front)) return;
-                    _front = value;
-                    OnPropertyChanged();
-                    UpdateDifferentTyres();
-                }
-            }
-
-            private TyresEntry _rear;
-
-            [NotNull]
-            public TyresEntry Rear {
-                get => _rear;
-                set {
-                    if (Equals(value, _rear)) return;
-                    _rear = value;
-                    OnPropertyChanged();
-                    UpdateDifferentTyres();
-                }
-            }
-
-            #region Unique stuff
-            private sealed class FrontRearEqualityComparer : IEqualityComparer<TyresSet> {
-                public bool Equals(TyresSet x, TyresSet y) {
-                    if (ReferenceEquals(x, y)) return true;
-                    if (ReferenceEquals(x, null)) return false;
-                    if (ReferenceEquals(y, null)) return false;
-                    if (x.GetType() != y.GetType()) return false;
-                    return TyresEntry.TyresEntryComparer.Equals(x._front, y._front) && TyresEntry.TyresEntryComparer.Equals(x._rear, y._rear);
-                }
-
-                public int GetHashCode(TyresSet obj) {
-                    unchecked {
-                        return ((obj._front != null ? TyresEntry.TyresEntryComparer.GetHashCode(obj._front) : 0) * 397) ^
-                                (obj._rear != null ? TyresEntry.TyresEntryComparer.GetHashCode(obj._rear) : 0);
-                    }
-                }
-            }
-
-            public static IEqualityComparer<TyresSet> TyresSetComparer { get; } = new FrontRearEqualityComparer();
-            #endregion
-
-            private bool _isDeleted;
-
-            public bool IsDeleted {
-                get => _isDeleted;
-                set {
-                    if (Equals(value, _isDeleted)) return;
-                    _isDeleted = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private bool _canBeDeleted;
-
-            public bool CanBeDeleted {
-                get => _canBeDeleted;
-                set {
-                    if (Equals(value, _canBeDeleted)) return;
-                    _canBeDeleted = value;
-                    OnPropertyChanged();
-                    _deleteCommand?.RaiseCanExecuteChanged();
-                }
-            }
-
-            private DelegateCommand _deleteCommand;
-
-            public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-                IsDeleted = true;
-            }, () => CanBeDeleted));
-
-            public TyresSet([NotNull] TyresEntry front, [NotNull] TyresEntry rear) {
-                Front = front;
-                Rear = rear;
-            }
-
-            public string GetName() {
-                return Front.Name == Rear.Name ? Front.Name : $@"{Front.Name}/{Rear.Name}";
-            }
-
-            public string GetShortName() {
-                return Front.ShortName == Rear.ShortName ? Front.ShortName : $@"{Front.ShortName}/{Rear.ShortName}";
-            }
-
-            public const string DraggableFormat = "X-TyresSet";
-
-            string IDraggable.DraggableFormat => DraggableFormat;
-        }
-
-        public sealed class TyresEntry : Displayable, IDraggable {
-            [CanBeNull]
-            public CarObject Source => _carObjectLazy.Value;
-
-            [NotNull]
-            private readonly Lazy<CarObject> _carObjectLazy;
-
-            [NotNull]
-            public string SourceId { get; }
-
-            public int Version { get; }
-
-            public IniFileSection MainSection { get; }
-
-            public IniFileSection ThermalSection { get; }
-
-            public bool RearTyres { get; }
-
-            private bool _bothTyres;
-
-            public bool BothTyres {
-                get => _bothTyres;
-                set {
-                    if (value == _bothTyres) return;
-                    _bothTyres = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayPosition));
-                }
-            }
-
-            public string DisplayPosition => BothTyres ? "Both tyres" : RearTyres ? "Rear tyres" : "Front tyres";
-
-            public string DisplaySource => $@"{Source?.Name ?? SourceId} ({DisplayPosition.ToLower(CultureInfo.CurrentUICulture)})";
-
-            public string DisplayParams { get; }
-
-            private string _name;
-
-            [NotNull]
-            public string Name {
-                get => _name;
-                set {
-                    if (string.IsNullOrWhiteSpace(value)) value = @"?";
-                    if (value == _name) return;
-                    _name = value;
-                    OnPropertyChanged();
-                    DisplayName = $@"{Name} {DisplayParams}";
-                }
-            }
-
-            private string _shortName;
-
-            [NotNull]
-            public string ShortName {
-                get => _shortName;
-                set {
-                    if (Equals(value, _shortName)) return;
-                    _shortName = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            [CanBeNull]
-            public readonly string WearCurveData;
-
-            [CanBeNull]
-            public readonly string PerformanceCurveData;
-
-            [CanBeNull]
-            public TyresEntry OtherEntry { get; set; }
-
-            private TyresEntry(string sourceId, int version, IniFileSection mainSection, IniFileSection thermalSection, string wearCurveData,
-                    string performanceCurveData, bool rearTyres, Lazy<double?> rimRadiusLazy) {
-                SourceId = sourceId;
-                _carObjectLazy = new Lazy<CarObject>(() => CarsManager.Instance.GetById(SourceId));
-
-                Version = version;
-                MainSection = mainSection;
-                ThermalSection = thermalSection;
-                RearTyres = rearTyres;
-
-                WearCurveData = wearCurveData;
-                PerformanceCurveData = performanceCurveData;
-
-                ReadParameters(rimRadiusLazy);
-                DisplayParams = $@"{DisplayWidth}/{DisplayProfile}/R{DisplayRimRadius}";
-                Name = mainSection.GetNonEmpty("NAME") ?? @"?";
-                ShortName = mainSection.GetNonEmpty("SHORT_NAME") ?? (Name.Length == 0 ? @"?" : Name.Substring(0, 1));
-            }
-
-            private double _radius, _rimRadius, _width;
-
-            private void ReadParameters(Lazy<double?> rimRadiusLazy) {
-                _radius = MainSection.GetDouble("RADIUS", 0);
-                _rimRadius = MainSection.GetDoubleNullable("RIM_RADIUS") ?? rimRadiusLazy.Value ?? -1;
-                _width = MainSection.GetDouble("WIDTH", 0);
-            }
-
-            public string DisplayWidth => (_width * 1000).Round(OptionRoundNicely ? 1d : 0.1d).ToString(CultureInfo.CurrentUICulture);
-
-            public string DisplayProfile => _rimRadius <= 0 ? @"?" :
-                (100d * (_radius - (_rimRadius + 0.0127)) / _width).Round(OptionRoundNicely ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
-
-            public string DisplayRimRadius => _rimRadius <= 0 ? @"?" :
-                (_rimRadius * 100 / 2.54 * 2 - 1).Round(OptionRoundNicely ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
-
-            #region Unique stuff
-            public string Footprint => _footprint ?? (_footprint = new IniFile {
-                ["main"] = new IniFileSection(null, MainSection) { ["NAME"] = "", ["SHORT_NAME"] = "", ["WEAR_CURVE"] = "" },
-                ["thermal"] = new IniFileSection(null, ThermalSection) { ["PERFORMANCE_CURVE"] = "" }
-            }.ToString());
-            private string _footprint;
-
-            private sealed class TyresEntryEqualityComparer : IEqualityComparer<TyresEntry> {
-                public bool Equals(TyresEntry x, TyresEntry y) {
-                    return ReferenceEquals(x, y) || !ReferenceEquals(x, null) && !ReferenceEquals(y, null) && x.GetType() == y.GetType() &&
-                            string.Equals(x.WearCurveData, y.WearCurveData, StringComparison.Ordinal) &&
-                            string.Equals(x.PerformanceCurveData, y.PerformanceCurveData, StringComparison.Ordinal) &&
-                            string.Equals(x.Footprint, y.Footprint, StringComparison.Ordinal) &&
-                            x.Version == y.Version;
-                }
-
-                public int GetHashCode(TyresEntry obj) {
-                    unchecked {
-                        var hashCode = obj.WearCurveData?.GetHashCode() ?? 0;
-                        hashCode = (hashCode * 397) ^ (obj.PerformanceCurveData?.GetHashCode() ?? 0);
-                        hashCode = (hashCode * 397) ^ (obj.Footprint?.GetHashCode() ?? 0);
-                        hashCode = (hashCode * 397) ^ obj.Version;
-                        return hashCode;
-                    }
-                }
-            }
-
-            public static IEqualityComparer<TyresEntry> TyresEntryComparer { get; } = new TyresEntryEqualityComparer();
-            #endregion
-
-            #region Appropriate levels
-            public void SetAppropriateLevel(TyresSet original) {
-                var front = GetAppropriateLevel(original.Front);
-                AppropriateLevelFront = front.Item1;
-                DisplayOffsetFront = front.Item2;
-
-                var rear = GetAppropriateLevel(original.Rear);
-                AppropriateLevelRear = rear.Item1;
-                DisplayOffsetRear = rear.Item2;
-            }
-
-            private static string OffsetOut(double offset) {
-                return $@"{(offset >= 0 ? @"+" : @"−")}{(offset * 1000d).Abs().Round()} mm";
-            }
-
-            private Tuple<TyresAppropriateLevel, string> GetAppropriateLevel(TyresEntry entry) {
-                var radiusOffset = (_radius - entry._radius).Abs() * 1000d;
-
-                var rimRadiusOffset = entry._rimRadius <= 0d ? 0d : (_rimRadius - entry._rimRadius).Abs() * 1000d;
-                var widthOffset = (_width - entry._width).Abs() * 1000d;
-                var displayOffset = string.Format("• Radius: {0};\n• Rim radius: {1};\n• Width: {2}",
-                        OffsetOut(_radius - entry._radius),
-                        entry._rimRadius <= 0d ? @"?" : OffsetOut(_rimRadius - entry._rimRadius),
-                        OffsetOut(_width - entry._width));
-
-                if (radiusOffset < 1 && rimRadiusOffset < 1 && widthOffset < 1) {
-                    return Tuple.Create(TyresAppropriateLevel.A, displayOffset);
-                }
-
-                if (radiusOffset < 3 && rimRadiusOffset < 5 && widthOffset < 12) {
-                    return Tuple.Create(TyresAppropriateLevel.B, displayOffset);
-                }
-
-                if (radiusOffset < 7 && rimRadiusOffset < 10 && widthOffset < 26) {
-                    return Tuple.Create(TyresAppropriateLevel.C, displayOffset);
-                }
-
-                if (radiusOffset < 10 && rimRadiusOffset < 16 && widthOffset < 32) {
-                    return Tuple.Create(TyresAppropriateLevel.D, displayOffset);
-                }
-
-                if (radiusOffset < 15 && rimRadiusOffset < 24 && widthOffset < 50) {
-                    return Tuple.Create(TyresAppropriateLevel.E, displayOffset);
-                }
-
-                return Tuple.Create(TyresAppropriateLevel.F, displayOffset);
-            }
-
-            private TyresAppropriateLevel _appropriateLevelFront;
-
-            public TyresAppropriateLevel AppropriateLevelFront {
-                get => _appropriateLevelFront;
-                set {
-                    if (Equals(value, _appropriateLevelFront)) return;
-                    _appropriateLevelFront = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayOffsetFrontDescription));
-                }
-            }
-
-            private string _displayOffsetFront;
-
-            public string DisplayOffsetFront {
-                get => _displayOffsetFront;
-                set {
-                    if (Equals(value, _displayOffsetFront)) return;
-                    _displayOffsetFront = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayOffsetFrontDescription));
-                }
-            }
-
-            public string DisplayOffsetFrontDescription => AppropriateLevelFront.GetDescription() + ':' + Environment.NewLine + DisplayOffsetFront;
-
-            private TyresAppropriateLevel _appropriateLevelRear;
-
-            public TyresAppropriateLevel AppropriateLevelRear {
-                get => _appropriateLevelRear;
-                set {
-                    if (Equals(value, _appropriateLevelRear)) return;
-                    _appropriateLevelRear = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayOffsetRearDescription));
-                }
-            }
-
-            private string _displayOffsetRear;
-
-            public string DisplayOffsetRear {
-                get => _displayOffsetRear;
-                set {
-                    if (Equals(value, _displayOffsetRear)) return;
-                    _displayOffsetRear = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayOffsetRearDescription));
-                }
-            }
-
-            public string DisplayOffsetRearDescription => AppropriateLevelRear.GetDescription() + ':' + Environment.NewLine + DisplayOffsetRear;
-            #endregion
-
-            #region Draggable
-            public const string DraggableFormat = "X-TyresEntry";
-
-            string IDraggable.DraggableFormat => DraggableFormat;
-            #endregion
-
-            #region Create
-            [CanBeNull]
-            public static TyresEntry Create(CarObject car, string id, bool ignoreDamaged) {
-                var tyres = car.AcdData?.GetIniFile("tyres.ini");
-                if (tyres?.ContainsKey(id) != true) return null;
-
-                var section = tyres[id];
-                var thermal = tyres[Regex.Replace(id, @"(?=FRONT|REAR)", @"THERMAL_")];
-
-                var wearCurve = section.GetNonEmpty("WEAR_CURVE");
-                var performanceCurve = thermal.GetNonEmpty("PERFORMANCE_CURVE");
-                if (ignoreDamaged && (section.GetNonEmpty("NAME") == null || wearCurve == null || performanceCurve == null)) return null;
-
-                var sourceId = section.GetNonEmpty("__CM_SOURCE_ID") ?? car.Id;
-                var rear = id.Contains(@"REAR");
-                return new TyresEntry(sourceId, tyres["HEADER"].GetInt("VERSION", -1), section, thermal,
-                        wearCurve == null ? null : car.AcdData.GetRawFile(wearCurve).Content,
-                        performanceCurve == null ? null : car.AcdData.GetRawFile(performanceCurve).Content,
-                        rear, GetRimRadiusLazy(tyres, rear));
-            }
-
-            private static Lazy<double?> GetRimRadiusLazy(IniFile tyresIni, bool rear) {
-                return new Lazy<double?>(() => {
-                    return tyresIni.GetSections(rear ? @"REAR" : @"FRONT", -1).Select(x => x.GetDoubleNullable("RIM_RADIUS")).FirstOrDefault(x => x != null);
-                });
-            }
-
-            [CanBeNull]
-            public static TyresEntry CreateFront(CarObject car, int index, bool ignoreDamaged) {
-                return Create(car, IniFile.GetSectionNames(@"FRONT", -1).Skip(index).First(), ignoreDamaged);
-            }
-
-            [CanBeNull]
-            public static TyresEntry CreateRear(CarObject car, int index, bool ignoreDamaged) {
-                return Create(car, IniFile.GetSectionNames(@"REAR", -1).Skip(index).First(), ignoreDamaged);
-            }
-            #endregion
-        }
-
-        private class TyresEntryTester : IParentTester<TyresEntry> {
-            public static readonly TyresEntryTester Instance = new TyresEntryTester();
-
-            public string ParameterFromKey(string key) {
-                return null;
-            }
-
-            public bool Test(TyresEntry obj, string key, ITestEntry value) {
-                switch (key) {
-                    case null:
-                        return value.Test(obj.DisplayName);
-                    case "n":
-                    case "name":
-                        return value.Test(obj.Name);
-                    case "p":
-                    case "params":
-                        return value.Test(obj.DisplayParams);
-                    case "profile":
-                        return value.Test(obj.DisplayProfile);
-                    case "radius":
-                    case "rimradius":
-                        return value.Test(obj.DisplayRimRadius);
-                    case "width":
-                        return value.Test(obj.DisplayWidth);
-                    case "a":
-                    case "g":
-                    case "grade":
-                        return value.Test(obj.AppropriateLevelFront.ToString()) || value.Test(obj.AppropriateLevelRear.ToString());
-                    case "fa":
-                    case "fg":
-                    case "fgrade":
-                        return value.Test(obj.AppropriateLevelFront.ToString());
-                    case "ra":
-                    case "rg":
-                    case "rgrade":
-                        return value.Test(obj.AppropriateLevelRear.ToString());
-                    case "car":
-                        return value.Test(obj.SourceId) || value.Test(obj.Source?.DisplayName);
-                    case "v":
-                    case "ver":
-                    case "version":
-                        return value.Test(obj.Version);
-                }
-
-                return false;
-            }
-
-            public bool TestChild(TyresEntry obj, string key, IFilter filter) {
-                switch (key) {
-                    case "car":
-                        return obj.Source != null && filter.Test(CarObjectTester.Instance, obj.Source);
-                }
                 return false;
             }
         }
@@ -1125,48 +556,6 @@ namespace AcManager.Pages.Dialogs {
                 _draggingFrom = set;
                 _draggingFromRearSlot = true;
             }
-        }
-    }
-
-    public enum TyresAppropriateLevel {
-        [Description("Full match")]
-        A = 0,
-
-        [Description("Almost perfect")]
-        B = 1,
-
-        [Description("Good enough")]
-        C = 2,
-
-        [Description("Not recommended")]
-        D = 3,
-
-        [Description("Not recommended, way off")]
-        E = 4,
-
-        [Description("Completely different")]
-        F = 5
-    }
-
-    public class TyresPlace : Border {
-        static TyresPlace() {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(TyresPlace), new FrameworkPropertyMetadata(typeof(TyresPlace)));
-        }
-
-        public static readonly DependencyProperty HighlightColorProperty = DependencyProperty.Register(nameof(HighlightColor), typeof(Brush),
-                typeof(TyresPlace));
-
-        public Brush HighlightColor {
-            get => (Brush)GetValue(HighlightColorProperty);
-            set => SetValue(HighlightColorProperty, value);
-        }
-
-        public static readonly DependencyProperty LevelProperty = DependencyProperty.Register(nameof(Level), typeof(TyresAppropriateLevel),
-                typeof(TyresPlace));
-
-        public TyresAppropriateLevel Level {
-            get => GetValue(LevelProperty) as TyresAppropriateLevel? ?? TyresAppropriateLevel.F;
-            set => SetValue(LevelProperty, value);
         }
     }
 }
