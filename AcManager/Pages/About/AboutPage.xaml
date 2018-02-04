@@ -52,6 +52,9 @@
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
             BbCode="Anton Malishev, dr8008, /u/FolkSong, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
 
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Screenshots for Discord integration:" />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}" BbCode="/u/CipherO32." />
+
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas for animations:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
             BbCode="[url=&quot;https://twitter.com/beesandbombs&quot;]Bees &amp; Bombs (/u/davebees)[/url],
