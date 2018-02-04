@@ -1,7 +1,7 @@
 # AcTools (and Content Manager)
 
 [![Build status](https://img.shields.io/appveyor/ci/gro-ove/actools.svg?label=Build&maxAge=60)](https://ci.appveyor.com/project/gro-ove/actools)
-[![Works badge](https://cdn.rawgit.com/gro-ove/works-on-my-machine/38abf2ac/badge.svg)](https://github.com/nikku/works-on-my-machine)
+[![Works badge](https://cdn.rawgit.com/gro-ove/works-on-my-machine/5fc312b1/badge.svg)](https://github.com/nikku/works-on-my-machine)
 [![License](https://img.shields.io/github/license/gro-ove/actools.svg?label=License&maxAge=86400)](./LICENSE.txt)
 [![Release](https://img.shields.io/github/release/gro-ove/actools.svg?label=Release&maxAge=60)](https://github.com/gro-ove/actools/releases/latest)
 
@@ -26,12 +26,14 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     
     Apart from simple rendering, has a bunch of special modes, allowing to update ambient shadows, AO maps, recalculate tracks’ maps and outlines.
     
-    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1506887799.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1506887799.jpg)
-        
-    [![Dark Showroom](http://i.imgur.com/uWV4zTw.jpg)](http://i.imgur.com/uWV4zTw.jpg)
+    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1517748858.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1517748858.jpg)
     
-    [![Lite Showroom](http://i.imgur.com/neffgq2.png)](http://i.imgur.com/neffgq2.png)
+    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1517749976.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1517749976.jpg)
         
+    [![Dark Showroom](http://acstuff.ru/app/screens/__custom_showroom_1516289950.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1516289950.jpg)
+
+    [![Lite Showroom](http://acstuff.ru/app/screens/__custom_showroom_1517751713.jpg)](http://acstuff.ru/app/screens/__custom_showroom_1517751713.jpg)
+    
 - ### [LicensePlates](https://github.com/gro-ove/actools/tree/master/LicensePlates)
     Fully independent from AcTools.\* library which generates number plates using Lua to interpret style files and Magick.NET to create and save textures. [In action](http://i.imgur.com/T7SVlLF.gifv).
     
