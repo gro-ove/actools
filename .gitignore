@@ -79,7 +79,5 @@ AcManager/Assets/Icons/Source/*-16.png
 AcManager/Assets/Icons/Source/*-32.png
 AcManager/Assets/Icons/Source/*-256.png
 
-# Not ready to release yet
-AcTools.NeuralTyres/*
-AcTools.NeuralTyres.Tests/*
+# Helper scripts
 IgnoreVersionFiles.bat
