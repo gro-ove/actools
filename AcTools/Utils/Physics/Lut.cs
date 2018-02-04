@@ -8,7 +8,6 @@ using JetBrains.Annotations;
 namespace AcTools.Utils.Physics {
     public struct LutPoint {
         public double X { get; }
-
         public double Y { get; }
 
         public LutPoint(double x, double y) {
@@ -230,7 +229,7 @@ namespace AcTools.Utils.Physics {
                         case '|':
                         case ')':
                             if (i > j && key.HasValue) {
-                                result.Add(new LutPoint(key.Value, double.Parse(value.Substring(j, i - j))));
+                                result.Add(new LutPoint(key.Value, FlexibleParser.ParseDouble(value.Substring(j, i - j), 0d)));
                                 key = null;
                             }
                             j = i + 1;
@@ -238,7 +237,7 @@ namespace AcTools.Utils.Physics {
 
                         case '=':
                             if (i > j) {
-                                key = double.Parse(value.Substring(j, i - j));
+                                key = FlexibleParser.ParseDouble(value.Substring(j, i - j), 0d);
                             }
                             j = i + 1;
                             break;

@@ -2315,6 +2315,10 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>… bhp</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>
   </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>… whp</value>
+    <comment>Don't forget to use “…” (in one symbol)!</comment>
+  </data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
     <value>… Nm</value>
     <comment>Don't forget to use “…” (in one symbol)!</comment>

@@ -1,7 +1,9 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarIniVersionRepair : CarSimpleRepairBase {
         protected override void Fix(CarObject car, DataWrapper data) {
             var ini = data.GetIniFile("car.ini");

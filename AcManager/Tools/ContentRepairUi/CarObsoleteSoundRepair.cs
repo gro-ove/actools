@@ -4,8 +4,10 @@ using System.Linq;
 using AcManager.ContentRepair;
 using AcManager.ContentRepair.Repairs;
 using AcManager.Tools.Objects;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentRepairUi {
+    [UsedImplicitly]
     public class CarObsoleteSoundRepair : CarRepairBase {
         public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var guids = car.GuidsFilename;

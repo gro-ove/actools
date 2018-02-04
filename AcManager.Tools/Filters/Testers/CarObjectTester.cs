@@ -132,7 +132,7 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "pw":
                 case "pwratio":
-                    return value.Test(obj.GetSpecsPwRatioValue());
+                    return value.Test(obj.SpecsPwRatioDisplay);
 
                 case "skins":
                     return value.Test(obj.SkinsManager.WrappersList.Count);

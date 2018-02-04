@@ -408,9 +408,16 @@
                       <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}" Command="{Binding Path=FilterCommand}" CommandParameter="pwratio" />
                     </ContextMenu>
                   </mui:ContextMenuButton>
-                  <mui:BetterTextBox Text="{Binding SelectedObject.SpecsPwRatio}" Style="{StaticResource Borderless}" Mode="Number"
-                      Placeholder="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}"
-                      IsEnabled="{Binding RecalculatePwRatioAutomatically, Converter={StaticResource InvertBooleanConverter}}" />
+                  <mui:BooleanSwitch Value="{Binding RecalculatePwRatioAutomatically}">
+                    <mui:BooleanSwitch.True>
+                      <mui:BetterTextBox Text="{Binding SelectedObject.SpecsPwRatioDisplay, Mode=OneWay}" Style="{StaticResource Borderless}" Mode="Number"
+                          IsReadOnly="True" IsEnabled="False" />
+                    </mui:BooleanSwitch.True>
+                    <mui:BooleanSwitch.False>
+                      <mui:BetterTextBox Text="{Binding SelectedObject.SpecsPwRatio}" Style="{StaticResource Borderless}" Mode="Number"
+                          Placeholder="{x:Static g:AppStrings.CarSpecs_PwRatio_FormatTooltip}" />
+                    </mui:BooleanSwitch.False>
+                  </mui:BooleanSwitch>
                 </DockPanel>
               </c:PropertiesGrid>
 

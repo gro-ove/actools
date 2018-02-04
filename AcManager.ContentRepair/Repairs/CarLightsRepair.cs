@@ -6,6 +6,7 @@ using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarLightsRepair : CarSimpleRepairBase {
         public void Multiply([NotNull] DataWrapper data, double multipler) {
             var lightsIni = data.GetIniFile("lights.ini");

@@ -1,7 +1,9 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Critical {
+    [UsedImplicitly]
     public class CarAeroDataRepair : CarSimpleRepairBase {
         public static readonly CarAeroDataRepair Instance = new CarAeroDataRepair();
 

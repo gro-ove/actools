@@ -7,6 +7,7 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Critical {
+    [UsedImplicitly]
     public class MissingAeroLutRepair : CarSimpleRepairBase {
         [CanBeNull]
         private static string GetMissingLutName(DataWrapper data, IniFileSection section, string key) {

@@ -1,8 +1,10 @@
-using AcManager.Tools.Objects;
+/*using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
     // ERROR: Car fc1_2015_brackley_gp cannot have setup items for ROD_LENGTH_HF when a front suspension is also present
+    [UsedImplicitly]
     public class RodLengthHeaveRepair : CarSimpleRepairBase {
         private enum Suspension { Front, Rear }
 
@@ -17,7 +19,7 @@ namespace AcManager.ContentRepair.Repairs {
                     section.GetDouble("DAMP_FAST_BUMPTHRESHOLD", 0d) == 0d &&
                     section.GetDouble("DAMP_REBOUND", 0d) == 0d &&
                     section.GetDouble("DAMP_FAST_REBOUND", 0d) == 0d &&
-                    section.GetDouble("DAMP_FAST_BUMPTHRESHOLD", 0d) == 0d*/;
+                    section.GetDouble("DAMP_FAST_BUMPTHRESHOLD", 0d) == 0d#1#;
 
         }
 
@@ -54,4 +56,4 @@ namespace AcManager.ContentRepair.Repairs {
                     };
         }
     }
-}
+}*/

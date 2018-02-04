@@ -139,6 +139,8 @@
     <Compile Include="Helpers\Stored.cs" />
     <Compile Include="Helpers\StoredValue.cs" />
     <Compile Include="Helpers\Substorage.cs" />
+    <Compile Include="ListenersChangedEventHandler.cs" />
+    <Compile Include="ListenersChangedEventHandlerArgs.cs" />
     <Compile Include="NotifyExtension.cs" />
     <Compile Include="Presentation\AppearanceManager.Behavior.cs" />
     <Compile Include="Serialization\SimpleSerialization.cs" />

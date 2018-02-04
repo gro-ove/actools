@@ -148,7 +148,6 @@ namespace AcManager.CustomShowroom {
             }
 
             private void Reset(bool saveLater) {
-
                 if (saveLater) {
                     SaveLater();
                 }

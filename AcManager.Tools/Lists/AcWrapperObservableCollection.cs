@@ -61,10 +61,6 @@ namespace AcManager.Tools.Lists {
             return _index.TryGetValue(id.ToLowerInvariant(), out var result) ? result : null;
         }
 
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            CollectionChangedInner?.Invoke(this, e);
-        }
-
         public event WrappedValueChangedEventHandler WrappedValueChanged;
 
         private void OnItemValueChanged(object sender, WrappedValueChangedEventArgs e) {
@@ -83,30 +79,6 @@ namespace AcManager.Tools.Lists {
             }
 
             RefreshFilter(wrapperObject);
-        }
-
-        private int _listenersCount;
-        public bool HasListeners => CollectionChangedInner != null;
-
-        protected void CollectionChangedInnerInvoke(NotifyCollectionChangedEventArgs eventArgs) {
-            CollectionChangedInner?.Invoke(this, eventArgs);
-        }
-
-        private event NotifyCollectionChangedEventHandler CollectionChangedInner;
-
-        public event ListenersChangedEventHandler ListenersChanged;
-
-        public override event NotifyCollectionChangedEventHandler CollectionChanged {
-            add {
-                CollectionChangedInner += value;
-                _listenersCount++;
-                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount - 1));
-            }
-            remove {
-                CollectionChangedInner -= value;
-                _listenersCount--;
-                ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount + 1));
-            }
         }
 
         public new void Clear() {
@@ -131,17 +103,6 @@ namespace AcManager.Tools.Lists {
             if (force || IsReady) {
                 CollectionReady?.Invoke(this, new CollectionReadyEventArgs());
             }
-        }
-    }
-
-    public delegate void ListenersChangedEventHandler(object sender, ListenersChangedEventHandlerArgs args);
-
-    public class ListenersChangedEventHandlerArgs {
-        public readonly int NewListenersCount, OldListenersCount;
-
-        public ListenersChangedEventHandlerArgs(int newCount, int oldCount) {
-            NewListenersCount = newCount;
-            OldListenersCount = oldCount;
         }
     }
 }

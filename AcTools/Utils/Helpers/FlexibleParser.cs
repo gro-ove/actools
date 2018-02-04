@@ -14,6 +14,10 @@ namespace AcTools.Utils.Helpers {
                 return false;
             }
 
+            if (s.IndexOf(',') != -1) {
+                s = s.Replace(',', '.');
+            }
+
             if (double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out value)) {
                 return true;
             }
@@ -34,8 +38,7 @@ namespace AcTools.Utils.Helpers {
 
         [ContractAnnotation("s:null => null")]
         public static double? TryParseDouble(string s) {
-            double result;
-            return TryParseDouble(s, out result) ? result : (double?)null;
+            return TryParseDouble(s, out var result) ? result : (double?)null;
         }
 
         [ContractAnnotation("s:null => false")]
@@ -67,8 +70,7 @@ namespace AcTools.Utils.Helpers {
 
         [ContractAnnotation("s:null => null")]
         public static int? TryParseInt(string s) {
-            int result;
-            return TryParseInt(s, out result) ? result : (int?)null;
+            return TryParseInt(s, out var result) ? result : (int?)null;
         }
 
         [ContractAnnotation("s:null => false")]
@@ -91,8 +93,7 @@ namespace AcTools.Utils.Helpers {
 
         [ContractAnnotation("s:null => null")]
         public static long? TryParseLong(string s) {
-            long result;
-            return TryParseLong(s, out result) ? result : (long?)null;
+            return TryParseLong(s, out var result) ? result : (long?)null;
         }
 
         /// <summary>
@@ -101,8 +102,7 @@ namespace AcTools.Utils.Helpers {
         /// <param name="s"></param>
         /// <returns></returns>
         public static double ParseDouble(string s) {
-            double result;
-            if (!TryParseDouble(s, out result)) {
+            if (!TryParseDouble(s, out var result)) {
                 throw new FormatException();
             }
 
@@ -110,8 +110,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static double ParseDouble(string s, double defaultValue) {
-            double result;
-            return TryParseDouble(s, out result) ? result : defaultValue;
+            return TryParseDouble(s, out var result) ? result : defaultValue;
         }
 
         /// <summary>
@@ -120,8 +119,7 @@ namespace AcTools.Utils.Helpers {
         /// <param name="s"></param>
         /// <returns></returns>
         public static int ParseInt(string s) {
-            int result;
-            if (!TryParseInt(s, out result)) {
+            if (!TryParseInt(s, out var result)) {
                 throw new FormatException();
             }
 
@@ -129,8 +127,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static int ParseInt(string s, int defaultValue) {
-            int result;
-            return TryParseInt(s, out result) ? result : defaultValue;
+            return TryParseInt(s, out var result) ? result : defaultValue;
         }
 
         /// <summary>
@@ -139,8 +136,7 @@ namespace AcTools.Utils.Helpers {
         /// <param name="s"></param>
         /// <returns></returns>
         public static long ParseLong(string s) {
-            long result;
-            if (!TryParseLong(s, out result)) {
+            if (!TryParseLong(s, out var result)) {
                 throw new FormatException();
             }
 
@@ -148,8 +144,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static long ParseLong(string s, long defaultValue) {
-            long result;
-            return TryParseLong(s, out result) ? result : defaultValue;
+            return TryParseLong(s, out var result) ? result : defaultValue;
         }
 
         #region Time
@@ -167,20 +162,17 @@ namespace AcTools.Utils.Helpers {
 
             var splitted = value.Split(':');
             if (splitted.Length == 1) {
-                int hours;
-                if (TryParseInt(splitted[0], out hours)) {
+                if (TryParseInt(splitted[0], out var hours)) {
                     totalSeconds = hours * 60 * 60;
                     return true;
                 }
             } else if (splitted.Length == 2) {
-                int hours, minutes;
-                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes)) {
+                if (TryParseInt(splitted[0], out var hours) && TryParseInt(splitted[1], out var minutes)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60;
                     return true;
                 }
             } else if (splitted.Length == 3) {
-                int hours, minutes, seconds;
-                if (TryParseInt(splitted[0], out hours) && TryParseInt(splitted[1], out minutes) && TryParseInt(splitted[2], out seconds)) {
+                if (TryParseInt(splitted[0], out var hours) && TryParseInt(splitted[1], out var minutes) && TryParseInt(splitted[2], out var seconds)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
                     return true;
                 }
@@ -191,8 +183,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static int? TryParseTime(string s) {
-            int result;
-            return TryParseTime(s, out result) ? result : (int?)null;
+            return TryParseTime(s, out var result) ? result : (int?)null;
         }
 
         /// <summary>
@@ -201,8 +192,7 @@ namespace AcTools.Utils.Helpers {
         /// <param name="s"></param>
         /// <returns></returns>
         public static int ParseTime(string s) {
-            int result;
-            if (!TryParseTime(s, out result)) {
+            if (!TryParseTime(s, out var result)) {
                 throw new FormatException();
             }
 
@@ -210,8 +200,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static int ParseTime(string s, int defaultValue) {
-            int result;
-            return TryParseTime(s, out result) ? result : defaultValue;
+            return TryParseTime(s, out var result) ? result : defaultValue;
         }
         #endregion
 
@@ -246,8 +235,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static bool? TryParseBool(string s) {
-            bool result;
-            return TryParseBool(s, out result) ? result : (bool?)null;
+            return TryParseBool(s, out var result) ? result : (bool?)null;
         }
 
         /// <summary>
@@ -256,8 +244,7 @@ namespace AcTools.Utils.Helpers {
         /// <param name="s"></param>
         /// <returns></returns>
         public static bool ParseBool(string s) {
-            bool result;
-            if (!TryParseBool(s, out result)) {
+            if (!TryParseBool(s, out var result)) {
                 throw new FormatException();
             }
 
@@ -265,8 +252,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static bool ParseBool(string s, bool defaultValue) {
-            bool result;
-            return TryParseBool(s, out result) ? result : defaultValue;
+            return TryParseBool(s, out var result) ? result : defaultValue;
         }
         #endregion
     }

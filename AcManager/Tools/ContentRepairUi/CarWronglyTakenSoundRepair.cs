@@ -3,8 +3,10 @@ using AcManager.ContentRepair;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentRepairUi {
+    [UsedImplicitly]
     public class CarWronglyTakenSoundRepair : CarRepairBase {
         public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
             var soundDonor = car.GetSoundOrigin().ConfigureAwait(false).GetAwaiter().GetResult();

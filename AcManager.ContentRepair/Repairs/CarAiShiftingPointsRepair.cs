@@ -1,8 +1,10 @@
 ﻿using AcManager.ContentRepair.Critical;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarAiShiftingPointsRepair : CarSimpleRepairBase {
         public static readonly CarAeroDataRepair Instance = new CarAeroDataRepair();
 

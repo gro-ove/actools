@@ -10,7 +10,7 @@ namespace AcManager.Tools.Lists {
     public class SortedAcWrapperObservableCollection : AcWrapperObservableCollection, IComparer<AcItemWrapper> {
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
             if (IsSorted()) {
-                CollectionChangedInnerInvoke(e);
+                base.OnCollectionChanged(e);
             } else {
                 Sort();
             }

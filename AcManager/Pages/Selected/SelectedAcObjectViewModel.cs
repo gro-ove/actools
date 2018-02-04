@@ -220,16 +220,16 @@ namespace AcManager.Pages.Selected {
         }
 
         [NotNull]
-        private string GetFormat(string key) {
+        protected string GetFormat(string key) {
             return _specs.FirstOrDefault(x => x.Item1 == key)?.Item2 ?? @"…";
         }
 
         [CanBeNull]
-        private string GetSpecsValue(string key) {
+        protected string GetSpecsValue(string key) {
             return _specs.FirstOrDefault(x => x.Item1 == key)?.Item3.Invoke();
         }
 
-        private void SetSpecsValue(string key, string value) {
+        protected void SetSpecsValue(string key, string value) {
             var spec = _specs.FirstOrDefault(x => x.Item1 == key);
             spec?.Item4.Invoke(value);
 
@@ -260,7 +260,7 @@ namespace AcManager.Pages.Selected {
             return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
         }
 
-        private void FixFormat(string key) {
+        protected virtual void FixFormat(string key) {
             var format = GetFormat(key);
             var originalValue = GetSpecsValue(key);
             if (originalValue == null) return;

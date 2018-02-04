@@ -93,8 +93,7 @@ namespace AcTools.DataFile {
                         malformed = line;
                     }
                 } else {
-                    double value;
-                    if (FlexibleParser.TryParseDouble(data.Substring(started, index - started), out value)) {
+                    if (FlexibleParser.TryParseDouble(data.Substring(started, index - started), out var value)) {
                         values.Add(new LutPoint(key, value));
                     } else {
                         if (malformed == -1) {

@@ -1,8 +1,10 @@
 ﻿using System;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarPitStopParamsRepair : CarSimpleRepairBase {
         /// <summary>
         /// Sets pit stop parameters.

@@ -194,17 +194,11 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _carsProperPwRatio;
-
-            public bool CarsProperPwRatio {
-                get => _carsProperPwRatio ?? (_carsProperPwRatio = ValuesStorage.Get("Settings.ContentSettings.CarsProperPwRatio", false)).Value;
-                set {
-                    if (Equals(value, _carsProperPwRatio)) return;
-                    _carsProperPwRatio = value;
-                    ValuesStorage.Set("Settings.ContentSettings.CarsProperPwRatio", value);
-                    OnPropertyChanged();
-                }
-            }
+            public SettingEntryStored CarsDisplayPwRatioFormat { get; } = new SettingEntryStored("/Settings.ContentSettings.CarsProperPwRatio") {
+                new SettingEntry(0, "Weight-to-power (kg/cv)"),
+                new SettingEntry(1, "Power-to-weight (hp/kg)"),
+                new SettingEntry(2, "Power-to-weight (hp/tonne)"),
+            };
 
             private bool? _changeBrandIconAutomatically;
 

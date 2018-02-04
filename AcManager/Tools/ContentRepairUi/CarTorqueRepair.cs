@@ -14,8 +14,10 @@ using AcTools.Utils.Physics;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentRepairUi {
+    [UsedImplicitly]
     public class CarTorqueRepair : CarSimpleRepairBase {
         protected override Task<bool> FixAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
@@ -54,9 +56,9 @@ namespace AcManager.Tools.ContentRepairUi {
             }
 
             car.SpecsTorque = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
-                    (torque.MaxY * multipler.Value).ToString(@"F0", CultureInfo.InvariantCulture));
-            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
-                    (power.MaxY * multipler.Value).ToString(@"F0", CultureInfo.InvariantCulture));
+                    torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + (multipler.Value == 1d ? "*" : "");
+            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(multipler.Value == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip
+                    : AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
             return Task.FromResult(true);
         }
 
@@ -68,9 +70,10 @@ namespace AcManager.Tools.ContentRepairUi {
                 return null;
             }
 
-            double maxUiTorque;
-            if ((car.SpecsTorque?.IndexOf("*", StringComparison.Ordinal) ?? 0) != -1 ||
-                    !FlexibleParser.TryParseDouble(car.SpecsTorque, out maxUiTorque)) {
+            if ((car.SpecsBhp?.IndexOf("*", StringComparison.Ordinal) ?? 0) != -1
+                    || (car.SpecsBhp?.IndexOf("whp", StringComparison.OrdinalIgnoreCase) ?? 0) != -1
+                    || (car.SpecsTorque?.IndexOf("*", StringComparison.Ordinal) ?? 0) != -1
+                    || !FlexibleParser.TryParseDouble(car.SpecsTorque, out var maxUiTorque)) {
                 return null;
             }
 
@@ -95,8 +98,8 @@ namespace AcManager.Tools.ContentRepairUi {
                         FixCaption = "Fix UI"
                     }.AlternateFix("Add “*”", (progress, token) => {
                         if (FlexibleParser.TryParseDouble(car.SpecsBhp, out var uiBhp)) {
-                            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
-                                    uiBhp.ToString(@"F0", CultureInfo.InvariantCulture)) + "*";
+                            car.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_PowerAtWheels_FormatTooltip,
+                                    uiBhp.ToString(@"F0", CultureInfo.InvariantCulture));
                         }
 
                         if (FlexibleParser.TryParseDouble(car.SpecsTorque, out var uiTorque)) {

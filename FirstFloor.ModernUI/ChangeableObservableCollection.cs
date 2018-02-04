@@ -51,7 +51,29 @@ namespace FirstFloor.ModernUI {
             remove => PropertyChanged -= value;
         }
 
-        public virtual event NotifyCollectionChangedEventHandler CollectionChanged;
+        private int _listenersCount;
+        public bool HasListeners => _listenersCount > 0;
+
+        private event NotifyCollectionChangedEventHandler CollectionChangedInner;
+
+        public event NotifyCollectionChangedEventHandler CollectionChanged {
+            add {
+                if (CollectionChangedInner?.GetInvocationList().Any(x => ReferenceEquals(x, value)) != true) {
+                    CollectionChangedInner += value;
+                    _listenersCount++;
+                    ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount - 1));
+                }
+            }
+            remove {
+                if (CollectionChangedInner?.GetInvocationList().Any(x => ReferenceEquals(x, value)) == true) {
+                    CollectionChangedInner -= value;
+                    _listenersCount--;
+                    ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount + 1));
+                }
+            }
+        }
+
+        public event ListenersChangedEventHandler ListenersChanged;
 
         protected override void ClearItems() {
             CheckReentrancy();
@@ -119,7 +141,7 @@ namespace FirstFloor.ModernUI {
         protected event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e) {
-            var c = CollectionChanged;
+            var c = CollectionChangedInner;
             if (c == null) return;
             using (BlockReentrancy()) {
                 c.Invoke(this, e);
@@ -132,7 +154,7 @@ namespace FirstFloor.ModernUI {
         }
 
         protected void CheckReentrancy() {
-            if (_monitor.Busy && CollectionChanged != null && CollectionChanged.GetInvocationList().Length > 1) {
+            if (_monitor.Busy && CollectionChangedInner!= null && CollectionChangedInner.GetInvocationList().Length > 1) {
                 throw new InvalidOperationException();
             }
         }

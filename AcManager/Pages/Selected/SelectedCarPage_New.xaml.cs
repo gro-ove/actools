@@ -445,6 +445,22 @@ namespace AcManager.Pages.Selected {
 
             private static readonly Regex FixAccelerationRegex = new Regex(@"0\s*[-–—]\s*\d\d+", RegexOptions.Compiled);
 
+            protected override void FixFormat(string key) {
+                if (key == @"power") {
+                    var originalValue = GetSpecsValue(key);
+                    if (originalValue == null) return;
+                    if (originalValue.IndexOf('*') != -1 || originalValue.IndexOf("whp", StringComparison.OrdinalIgnoreCase) != -1) {
+                        var fixedValue = FixFormatCommon(originalValue);
+                        var replacement = FlexibleParser.TryParseDouble(fixedValue, out var actualValue) ? actualValue.Round(0.01).ToInvariantString() : @"--";
+                        fixedValue = SpecsFormat(AppStrings.CarSpecs_PowerAtWheels_FormatTooltip, replacement);
+                        SetSpecsValue(key, fixedValue);
+                        return;
+                    }
+                }
+
+                base.FixFormat(key);
+            }
+
             protected override string FixFormatCommon(string value) {
                 return FixAccelerationRegex.Replace(value, "");
             }
@@ -589,9 +605,10 @@ namespace AcManager.Pages.Selected {
                 if (ModernDialog.ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo,
                         "copyNewPowerAndTorque") == MessageBoxResult.Yes) {
                     // MaxY values were updated while creating new GraphData instances above
-                    var postfix = dlg.Multipler == 1d ? "*" : "";
-                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
-                    o.SpecsBhp = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                    o.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture))
+                            + (dlg.Multipler == 1d ? "*" : "");
+                    o.SpecsBhp = SpecsFormat(dlg.Multipler == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                            power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
                 }
             }));
             #endregion

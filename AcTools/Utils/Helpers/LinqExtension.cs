@@ -575,26 +575,37 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull, ItemNotNull, Pure]
-        public static IEnumerable<T> NonNull<T>([ItemCanBeNull, NotNull] this IEnumerable<T> source) where T : class {
+        public static IEnumerable<T> NonNull<T>([ItemCanBeNull, NotNull] this IEnumerable<T> source) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            return source.Where(i => i != null);
+            return source.Where(i => !Equals(i, default(T)));
         }
 
         [NotNull, ItemNotNull, Pure]
-        public static IEnumerable<TResult> NonNull<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn)
-                where TResult : class {
+        public static IEnumerable<TResult> NonNull<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            return source.Select(fn).Where(i => i != null);
+            return source.Select(fn).Where(i => !Equals(i, default(TResult)));
         }
 
         [NotNull, ItemCanBeNull, Pure]
-        public static IEnumerable<TResult> TryToSelect<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn)
-                where TResult : class {
+        public static IEnumerable<TResult> TryToSelect<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn) {
             return source.Select(x => {
                 try {
                     return fn(x);
                 } catch {
-                    return null;
+                    return default(TResult);
+                }
+            });
+        }
+
+        [NotNull, ItemCanBeNull, Pure]
+        public static IEnumerable<TResult> TryToSelect<TSource, TResult>([ItemCanBeNull, NotNull] this IEnumerable<TSource> source, Func<TSource, TResult> fn,
+                Action<Exception> onException) {
+            return source.Select(x => {
+                try {
+                    return fn(x);
+                } catch (Exception e) {
+                    onException?.Invoke(e);
+                    return default(TResult);
                 }
             });
         }

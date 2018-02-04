@@ -17,7 +17,7 @@ namespace AcManager.Pages.Dialogs {
 
         public CarObject Car { get; }
 
-        private double _value;
+        private double _value = double.NaN;
         private double _multipler;
 
         public double Value {

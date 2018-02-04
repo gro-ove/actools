@@ -2416,6 +2416,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to … whp.
+        /// </summary>
+        public static string CarSpecs_PowerAtWheels_FormatTooltip {
+            get {
+                return ResourceManager.GetString("CarSpecs_PowerAtWheels_FormatTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to BHP:.
         /// </summary>
         public static string CarSpecs_PowerLabel {

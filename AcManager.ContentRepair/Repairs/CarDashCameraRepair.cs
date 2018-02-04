@@ -1,7 +1,9 @@
 ﻿using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarDashCameraRepair : CarSimpleRepairBase {
         protected override void Fix(CarObject car, DataWrapper data) {
             var dashCam = data.GetIniFile("dash_cam.ini");

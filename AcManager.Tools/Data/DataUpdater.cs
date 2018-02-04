@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -93,7 +94,19 @@ namespace AcManager.Tools.Data {
                 string installedVersion = null;
                 await Task.Run(() => {
                     var location = FilesStorage.Instance.Combine(FilesStorage.DataDirName);
-                    Directory.Delete(location, true);
+
+                    for (var i = 0; i < 10; i++) {
+                        try {
+                            Directory.Delete(location, true);
+                            break;
+                        } catch (IOException e) {
+                            Logging.Warning(e.Message);
+                            Thread.Sleep(30);
+                        } catch (UnauthorizedAccessException e) {
+                            Logging.Warning(e.Message);
+                            Thread.Sleep(30);
+                        }
+                    }
 
                     using (var stream = new MemoryStream(data, false))
                     using (var archive = new ZipArchive(stream)) {

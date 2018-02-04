@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [NotNull]
         public static StoredValue<T> Get<T>(string key, T defaultValue = default(T)) {
-            return StoredValue.Create(key, null).GetStrict(defaultValue);
+            return StoredValue.Create(key, defaultValue).GetStrict(defaultValue);
         }
 
         [CanBeNull]

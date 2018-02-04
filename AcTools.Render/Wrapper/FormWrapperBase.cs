@@ -64,14 +64,23 @@ namespace AcTools.Render.Wrapper {
             renderer.Tick += OnTick;
         }
 
-        private bool _updatingSize;
+        private bool _updatedOnce, _updatingSize;
 
         protected virtual async void UpdateSize() {
+            if (!_updatedOnce) {
+                _updatedOnce = true;
+                AcToolsLogging.Write($"{Form.ClientSize.Width}×{Form.ClientSize.Height}");
+                Renderer.Width = Form.ClientSize.Width;
+                Renderer.Height = Form.ClientSize.Height;
+                return;
+            }
+
             if (_updatingSize) return;
             _updatingSize = true;
 
             try {
                 await Task.Yield();
+                AcToolsLogging.Write($"{Form.ClientSize.Width}×{Form.ClientSize.Height}");
                 Renderer.Width = Form.ClientSize.Width;
                 Renderer.Height = Form.ClientSize.Height;
             } finally {

@@ -22,6 +22,7 @@ using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -418,9 +419,22 @@ namespace AcManager.Tools.Objects {
 
                 if (Loaded) {
                     OnPropertyChanged(nameof(SpecsPwRatio));
+                    OnPropertyChanged(nameof(SpecsPwRatioDisplay));
                     OnPropertyChanged(nameof(SpecsInfoDisplay));
                     Changed = true;
                 }
+            }
+        }
+
+        public string SpecsPwRatioDisplay {
+            get {
+                var pwRatio = SpecsPwRatio;
+                var pwRatioFormat = SettingsHolder.Content.CarsDisplayPwRatioFormat.SelectedValue.As<int>();
+                if (pwRatio == null || pwRatioFormat == 0 || !PwUsualFormat.IsMatch(pwRatio) || !FlexibleParser.TryParseDouble(pwRatio, out var value)) {
+                    return pwRatio;
+                }
+
+                return pwRatioFormat == 2 ? $"{1000 / value:F1} hp/tonne" : $"{1 / value:F2} hp/kg";
             }
         }
 
@@ -428,11 +442,6 @@ namespace AcManager.Tools.Objects {
 
         public double GetRpmMaxValue() {
             return _rpmMaxValue ?? (_rpmMaxValue = SpecsTorqueCurve?.MaxX ?? SpecsPowerCurve?.MaxX ?? double.NaN).Value;
-        }
-
-        public double GetSpecsPwRatioValue() {
-            if (!FlexibleParser.TryParseDouble(_specsPwRatio, out var value)) return double.NaN;
-            return SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(_specsPwRatio) ? 1d / value : value;
         }
 
         private static readonly Regex FixMissingSpace = new Regex(@"(\d)([a-z])/", RegexOptions.IgnoreCase | RegexOptions.Compiled);
@@ -447,17 +456,11 @@ namespace AcManager.Tools.Objects {
         public string SpecsInfoDisplay {
             get {
                 var result = new StringBuilder();
-
-                var pwRatio = SpecsPwRatio;
-                if (pwRatio != null && SettingsHolder.Content.CarsProperPwRatio && PwUsualFormat.IsMatch(pwRatio)) {
-                    pwRatio = FlexibleParser.TryParseDouble(pwRatio, out var value) ? $"{1 / value:F2} hp/kg" : pwRatio;
-                }
-
                 foreach (var val in new[] {
                     SpecsBhp,
                     SpecsTorque,
                     SpecsWeight,
-                    pwRatio,
+                    SpecsPwRatioDisplay,
                     SpecsTopSpeed,
                     SpecsAcceleration
                 }.Where(val => val?.Length > 0 && char.IsDigit(val[0]))) {

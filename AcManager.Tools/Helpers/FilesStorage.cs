@@ -57,6 +57,10 @@ namespace AcManager.Tools.Helpers {
 
             public string Filename { get; }
 
+            private DateTime? _lastWrite;
+
+            public DateTime LastWriteTime => _lastWrite ?? (_lastWrite = Exists ? File.GetLastWriteTime(Filename) : default(DateTime)).Value;
+
             [Localizable(false)]
             public string Name { get; }
 

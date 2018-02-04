@@ -5,6 +5,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Critical {
+    [UsedImplicitly]
     public class CarDefaultTyreSetRepair : CarSimpleRepairBase {
         public static readonly CarDefaultTyreSetRepair Instance = new CarDefaultTyreSetRepair();
 

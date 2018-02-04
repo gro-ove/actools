@@ -137,10 +137,11 @@
               SaveKey="__CarReplaceTyresDonorFilters" />
         </DockPanel>
 
-        <CheckBox set:Search.Keywords="cars;specs" IsChecked="{Binding Holder.CarsProperPwRatio}">
-          <CheckBox.ToolTip>This way, the more ratio is is better! As it should be</CheckBox.ToolTip>
-          <Label Content="Inverse P/W ratio to horsepowers per kilogram" />
-        </CheckBox>
+        <DockPanel set:Search.Keywords="cars;specs">
+          <Label Content="P/W ratio format:" />
+          <mui:BetterComboBox ItemsSource="{Binding Holder.CarsDisplayPwRatioFormat}" SelectedItem="{Binding Holder.CarsDisplayPwRatioFormat.SelectedItem}"
+              DisplayMemberPath="DisplayName" IsEditable="False" />
+        </DockPanel>
 
         <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.SkinsSkipPriority}">
           <CheckBox.ToolTip>I hope AC won’t break because of it with some future update</CheckBox.ToolTip>

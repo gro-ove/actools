@@ -438,9 +438,6 @@ namespace AcManager.Pages.ContentTools {
                             };
                             process.BeginOutputReadLine();
                             await process.WaitForExitAsync(waiting.CancellationToken);
-                            if (!process.HasExited) {
-                                process.Kill();
-                            }
 
                             if (process.ExitCode != 0) {
                                 Logging.Warning(output.ToString());

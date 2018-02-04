@@ -7,8 +7,10 @@ using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentRepairUi {
+    [UsedImplicitly]
     public class CarWeightRepair : CarSimpleRepairBase {
         public static double OptionAllowedPadding = 50;
 

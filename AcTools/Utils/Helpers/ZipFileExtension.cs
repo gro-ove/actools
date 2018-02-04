@@ -1,20 +1,30 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class ZipFileExtension {
-        public static ZipArchiveEntry CreateEntryFromString([NotNull] this ZipArchive destination, [NotNull] string entryName, string str) {
-            return CreateEntryFromBytes(destination, entryName, Encoding.UTF8.GetBytes(str));
+        public static string ReadString([NotNull] this ZipArchive archive, [NotNull] string entryName) {
+            return archive.ReadBytes(entryName).ToUtf8String();
         }
 
-        public static ZipArchiveEntry CreateEntryFromBytes([NotNull] this ZipArchive destination, [NotNull] string entryName, byte[] data) {
-            return CreateEntryFromBytes(destination, entryName, data, 0, data.Length);
+        public static byte[] ReadBytes([NotNull] this ZipArchive archive, [NotNull] string entryName) {
+            return archive.Entries.FirstOrDefault(x => FileUtils.ArePathsEqual(x.FullName, entryName))?.Open().ReadAsBytesAndDispose()
+                    ?? throw new InvalidOperationException("Entry not found: " + entryName);
         }
 
-        public static ZipArchiveEntry CreateEntryFromBytes([NotNull] this ZipArchive destination, [NotNull] string entryName, byte[] data, int index, int count) {
+        public static ZipArchiveEntry AddString([NotNull] this ZipArchive destination, [NotNull] string entryName, string str) {
+            return AddBytes(destination, entryName, Encoding.UTF8.GetBytes(str));
+        }
+
+        public static ZipArchiveEntry AddBytes([NotNull] this ZipArchive destination, [NotNull] string entryName, byte[] data) {
+            return AddBytes(destination, entryName, data, 0, data.Length);
+        }
+
+        public static ZipArchiveEntry AddBytes([NotNull] this ZipArchive destination, [NotNull] string entryName, byte[] data, int index, int count) {
             if (destination == null) throw new ArgumentNullException(nameof(destination));
             if (entryName == null) throw new ArgumentNullException(nameof(entryName));
 

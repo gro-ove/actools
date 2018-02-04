@@ -14,8 +14,10 @@ using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarFlamesRepair : CarRepairBase {
         private static byte[] _flamesTextures;
 

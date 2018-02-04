@@ -371,9 +371,9 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                                 using (var archive = ZipFile.Open(FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename("Unexpected end.zip")),
                                         ZipArchiveMode.Create)) {
                                     foreach (var r in readList) {
-                                        archive.CreateEntryFromBytes(r.Key, r.Value);
+                                        archive.AddBytes(r.Key, r.Value);
                                     }
-                                    archive.CreateEntryFromBytes(l.Key, buffer, 0, read);
+                                    archive.AddBytes(l.Key, buffer, 0, read);
                                 }
 
                                 Logging.Debug("Dump as archive created, look for it in CM’s temporary directory");

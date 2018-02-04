@@ -174,7 +174,8 @@
 
       <AdornerDecorator>
         <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"
-            mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch">
+            mui:ModernFrame.KeepContentAlive="True" SaveKey=".selectCar" SavePolicy="Flexible" LinksHorizontalAlignment="Stretch"
+            mui:FancyScrollHelper.Outside="True">
           <mui:ModernTab.LinksListBoxTemplate>
             <ControlTemplate>
               <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />

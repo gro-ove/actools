@@ -1,7 +1,9 @@
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
+using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Critical {
+    [UsedImplicitly]
     public class EmptyErsRepair : CarSimpleRepairBase {
         protected override void Fix(CarObject car, DataWrapper data) {
             data.Delete("ctrl_ers_0.ini");

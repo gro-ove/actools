@@ -4,6 +4,7 @@ using AcTools.DataFile;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarDriver3DRepair : CarSimpleRepairBase {
         [CanBeNull]
         private static string[] GetHiddenNodes(string driverModel) {

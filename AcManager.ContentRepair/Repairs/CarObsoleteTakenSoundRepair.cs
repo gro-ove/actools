@@ -11,6 +11,7 @@ using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarObsoleteTakenSoundRepair : CarRepairBase {
         private static readonly int OptionChecksumFastSize = 16000;
 

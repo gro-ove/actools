@@ -12,6 +12,7 @@ using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace AcManager.ContentRepair.Repairs {
+    [UsedImplicitly]
     public class CarModelRepair : CarRepairBase {
         private static readonly string[] SuspensionNodes = { "SUSP_LF", "SUSP_RF", "SUSP_LR", "SUSP_RR" };
 

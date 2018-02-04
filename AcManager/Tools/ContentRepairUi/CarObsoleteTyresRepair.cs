@@ -7,8 +7,10 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using FirstFloor.ModernUI.Dialogs;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentRepairUi {
+    [UsedImplicitly]
     public class CarObsoleteTyresRepair : CarSimpleRepairBase {
         public static readonly CarDashCameraRepair Instance = new CarDashCameraRepair();
 

@@ -72,7 +72,6 @@ namespace AcManager.Tools.GameProperties {
             try {
                 if (file.Exists) {
                     _data = JsonConvert.DeserializeObject<PlatformEntries>(File.ReadAllText(file.Filename));
-                    Logging.Debug(JsonConvert.SerializeObject(_data));
                     if (!firstRun) {
                         SupportedVersions.Reset();
                     }
@@ -83,7 +82,6 @@ namespace AcManager.Tools.GameProperties {
             }
 
             _data = null;
-            Logging.Here();
             SupportedVersions.Reset();
         }
 
