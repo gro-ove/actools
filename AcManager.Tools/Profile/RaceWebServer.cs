@@ -132,7 +132,7 @@ namespace AcManager.Tools.Profile {
 
                 return _cache ?? (_cache = Encoding.UTF8.GetBytes(@"<pre></pre><script>
 var pre = document.querySelector('pre');
-new WebSocket('ws://' + location.host + '/api/shared').onmessage = function(e){{ pre.textContent = JSON.stringify(JSON.parse(e.data), null, 4) }};
+new WebSocket('ws://' + location.host + '/api/ws/shared').onmessage = function(e){{ pre.textContent = JSON.stringify(JSON.parse(e.data), null, 4) }};
 </script>"));
             }
         }

@@ -47,7 +47,7 @@ namespace AcManager.Pages.Lists {
             Model.Load();
             FancyHints.DoubleClickToQuickDrive.Trigger();
 
-            if (Model.MainList.Count > 20){
+            if (Model.MainList.Count > 20) {
                 FancyHints.MultiSelectionMode.Trigger();
             }
         }
@@ -58,7 +58,7 @@ namespace AcManager.Pages.Lists {
 
         private class ViewModel : AcListPageViewModel<CarObject> {
             public ViewModel(IFilter<CarObject> listFilter)
-                    : base(CarsManager.Instance, listFilter) {}
+                    : base(CarsManager.Instance, listFilter) { }
 
             protected override string GetSubject() {
                 return AppStrings.List_Cars;
@@ -111,6 +111,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixBrand : BatchAction<CarObject> {
             public static readonly BatchAction_FixBrand Instance = new BatchAction_FixBrand();
+
             public BatchAction_FixBrand() : base("Fix brand", "Try to guess brand if it’s not in the list", "UI", "Batch.FixBrand") {
                 DisplayApply = "Try";
             }
@@ -128,6 +129,7 @@ namespace AcManager.Pages.Lists {
             }
 
             private bool _searchInTags = ValuesStorage.Get("_ba.fixBrand.fromTags", true);
+
             public bool SearchInTags {
                 get => _searchInTags;
                 set {
@@ -139,6 +141,7 @@ namespace AcManager.Pages.Lists {
             }
 
             private bool _searchInTheMiddle = ValuesStorage.Get("_ba.fixBrand.fromMiddle", true);
+
             public bool SearchInTheMiddle {
                 get => _searchInTheMiddle;
                 set {
@@ -182,6 +185,7 @@ namespace AcManager.Pages.Lists {
             }
 
             private string[] _brands;
+
             public override Task ApplyAsync(IList list, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
                 _brands = SuggestionLists.CarBrandsList.ToArray();
                 return base.ApplyAsync(list, progress, cancellation);
@@ -189,8 +193,8 @@ namespace AcManager.Pages.Lists {
 
             protected override void ApplyOverride(CarObject obj) {
                 if (obj.Brand != null &&
-                    Array.IndexOf(_brands, obj.Brand) != -1 &&
-                    (!FixNamesWithoutBrands || obj.Name?.StartsWith(obj.Brand) != false)) return;
+                        Array.IndexOf(_brands, obj.Brand) != -1 &&
+                        (!FixNamesWithoutBrands || obj.Name?.StartsWith(obj.Brand) != false)) return;
 
                 string newBrand;
 
@@ -267,6 +271,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_RecalculateCurves : BatchAction<CarObject> {
             public static readonly BatchAction_RecalculateCurves Instance = new BatchAction_RecalculateCurves();
+
             public BatchAction_RecalculateCurves() : base("Recalculate curves", "I don’t recommend to use it for Kunos cars", "UI", "Batch.RecalculateCurves") {
                 DisplayApply = "Recalculate";
             }
@@ -389,16 +394,15 @@ namespace AcManager.Pages.Lists {
 
                 if (UpdateMaxValues) {
                     // MaxY values were updated while creating new GraphData instances above
-                    var postfix = TransmissionLoss == 0d ? "*" : "";
-
                     if (torqueCurve != null) {
                         obj.SpecsTorque = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
-                                torqueCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                                torqueCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + (TransmissionLoss == 0d ? "*" : "");
                     }
 
                     if (powerCurve != null) {
-                        obj.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
-                                powerCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                        obj.SpecsBhp = SelectedAcObjectViewModel.SpecsFormat(
+                                TransmissionLoss == 0d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                                powerCurve.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
                     }
                 }
             }
@@ -406,11 +410,13 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_SortAndCleanUpTags : BatchAction<CarObject> {
             public static readonly BatchAction_SortAndCleanUpTags Instance = new BatchAction_SortAndCleanUpTags();
+
             public BatchAction_SortAndCleanUpTags() : base("Sort & Clean Tags", "This way, they’ll be more readable", "UI", "Batch.SortAndCleanUpTags") {
                 DisplayApply = "Fix";
             }
 
             private bool _sortTags = ValuesStorage.Get("_ba.sortOutTags.sort", true);
+
             public bool SortTags {
                 get => _sortTags;
                 set {
@@ -458,6 +464,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_UpdatePwRatio : BatchAction<CarObject> {
             public static readonly BatchAction_UpdatePwRatio Instance = new BatchAction_UpdatePwRatio();
+
             public BatchAction_UpdatePwRatio()
                     : base("Update P/W Ratio", "Simply divide car’s weight by its BHP", "UI", null) {
                 DisplayApply = "Update";
@@ -478,6 +485,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_UpdatePreviews : BatchAction<CarObject> {
             public static readonly BatchAction_UpdatePreviews Instance = new BatchAction_UpdatePreviews();
+
             public BatchAction_UpdatePreviews()
                     : base("Update previews", "With previously used params", "Look", null) {
                 DisplayApply = "Update";
@@ -496,6 +504,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_AnalyzeCar : BatchAction<CarObject> {
             public static readonly BatchAction_AnalyzeCar Instance = new BatchAction_AnalyzeCar();
+
             public BatchAction_AnalyzeCar()
                     : base("Analyze", "Check for common issues", null, null) {
                 DisplayApply = "Analyze";
@@ -567,6 +576,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixCarClass : BatchAction<CarObject> {
             public static readonly BatchAction_FixCarClass Instance = new BatchAction_FixCarClass();
+
             public BatchAction_FixCarClass() : base("Fix car class", "If wrong, try to guess from data and model", "UI", "Batch.FixCarClass") {
                 DisplayApply = "Fix";
             }
@@ -596,6 +606,7 @@ namespace AcManager.Pages.Lists {
 
         public class BatchAction_FixSpecsFormat : BatchAction<CarObject> {
             public static readonly BatchAction_FixSpecsFormat Instance = new BatchAction_FixSpecsFormat();
+
             public BatchAction_FixSpecsFormat() : base("Fix specs format", "This way, they’ll be more readable", "UI", null) {
                 DisplayApply = "Fix";
             }
@@ -637,7 +648,7 @@ namespace AcManager.Pages.Lists {
         }
 
         public class BatchAction_SyncCarLogo : BatchAction<CarObject> {
-            public static readonly BatchAction_SyncCarLogo Instance = new BatchAction_SyncCarLogo ();
+            public static readonly BatchAction_SyncCarLogo Instance = new BatchAction_SyncCarLogo();
             public BatchAction_SyncCarLogo() : base("Update car’s logo", "Replace them by brand badges", "Look", "Batch.SyncCarLogo") { }
 
             public override bool IsAvailable(CarObject obj) {
@@ -645,6 +656,7 @@ namespace AcManager.Pages.Lists {
             }
 
             private bool _differentOnly = ValuesStorage.Get("_ba.syncCarLogos.differentOnly", true);
+
             public bool DifferentOnly {
                 get => _differentOnly;
                 set {
@@ -687,10 +699,11 @@ namespace AcManager.Pages.Lists {
         public class BatchAction_PackCars : CommonBatchActions.BatchAction_Pack<CarObject> {
             public static readonly BatchAction_PackCars Instance = new BatchAction_PackCars();
 
-            public BatchAction_PackCars() : base("Batch.PackCars") {}
+            public BatchAction_PackCars() : base("Batch.PackCars") { }
 
             #region Properies
             private bool _packData = ValuesStorage.Get("_ba.packCars.data", true);
+
             public bool PackData {
                 get => _packData;
                 set {
@@ -702,6 +715,7 @@ namespace AcManager.Pages.Lists {
             }
 
             private bool _includeTemplates = ValuesStorage.Get("_ba.packCars.templates", true);
+
             public bool IncludeTemplates {
                 get => _includeTemplates;
                 set {

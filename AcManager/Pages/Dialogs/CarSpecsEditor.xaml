@@ -49,7 +49,7 @@
           </TextBlock.ToolTip>
         </TextBlock>
 
-        <mui:BetterTextBox Text="{Binding Car.SpecsBhp, Mode=OneWay}" x:Name="PowerInput" Grid.Column="1" Grid.Row="0" Style="{StaticResource Borderless}"
+        <mui:BetterTextBox x:Name="PowerInput" Text="{Binding Car.SpecsBhp, Mode=OneWay}" Grid.Column="1" Grid.Row="0" Style="{StaticResource Borderless}"
             TextChanged="Pw_OnTextChanged" ToolTip="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" Mode="Integer"
             Placeholder="{x:Static g:AppStrings.CarSpecs_Power_FormatTooltip}" />
         <mui:BetterTextBox Text="{Binding Car.SpecsTorque}" x:Name="TorqueInput" Grid.Column="1" Grid.Row="1" Style="{StaticResource Borderless}"
@@ -61,7 +61,7 @@
         <mui:BetterTextBox Text="{Binding Car.SpecsTopSpeed, Mode=OneWay}" x:Name="TopSpeedInput" Grid.Column="3" Grid.Row="0"
             Style="{StaticResource Borderless}" ToolTip="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" Mode="Integer"
             Placeholder="{x:Static g:AppStrings.CarSpecs_MaxSpeed_FormatTooltip}" />
-        <mui:BetterTextBox Text="{Binding Car.SpecsAcceleration}" x:Name="AccelerationInput" Grid.Column="3" Grid.Row="1" Style="{StaticResource Borderless}"
+        <mui:BetterTextBox x:Name="AccelerationInput" Text="{Binding Car.SpecsAcceleration}" Grid.Column="3" Grid.Row="1" Style="{StaticResource Borderless}"
             ToolTip="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" Mode="Number"
             Placeholder="{x:Static g:AppStrings.CarSpecs_Acceleration_FormatTooltip}" />
         <mui:BetterTextBox Text="{Binding Car.SpecsPwRatio, Mode=OneWay}" x:Name="PwRatioInput" Grid.Column="3" Grid.Row="2"

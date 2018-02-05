@@ -34,7 +34,7 @@
   </Style>
 
   <system:Double x:Key="FancyScrollBar.Width">2</system:Double>
-  <system:Double x:Key="FancyScrollBar.ScaleMultipler">6</system:Double>
+  <system:Double x:Key="FancyScrollBar.ScaleMultipler">4</system:Double>
 
   <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />

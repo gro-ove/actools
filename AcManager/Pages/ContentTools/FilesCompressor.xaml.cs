@@ -308,7 +308,7 @@ namespace AcManager.Pages.ContentTools {
             }
         }
 
-        private OxyColor LoadColor(string key) {
+        private OxyColor ToOxyColor(string key) {
             var r = TryFindResource(key);
             var v = r as Color? ?? (r as SolidColorBrush)?.Color ?? Colors.Magenta;
             return v.ToOxyColor();
@@ -347,10 +347,11 @@ namespace AcManager.Pages.ContentTools {
                 var compressedLabel = string.Format(TotalRatio < 0.9 ? ColonConverter.FormatBoth : "{0}", "Compressed", CompressedSize.ToReadableSize());
 
                 if (_savedSlide == null) {
+                    var color = ToOxyColor("WindowText");
                     _savedSlide = new PieSlice(savedLabel, TotalSize - CompressedSize) { Fill = Colors.SeaGreen.ToOxyColor() };
                     _compressedSlice = new PieSlice(compressedLabel, CompressedSize) { Fill = Colors.Peru.ToOxyColor() };
                     PlotModel = new PlotModel {
-                        TextColor = LoadColor("WindowText"),
+                        TextColor = color,
                         Background = Colors.Transparent.ToOxyColor(),
                         Series = {
                             new PieSeries {
@@ -359,7 +360,7 @@ namespace AcManager.Pages.ContentTools {
                                 AngleSpan = 360,
                                 StartAngle = 180,
                                 InsideLabelColor = Colors.White.ToOxyColor(),
-                                TextColor = LoadColor("WindowText"),
+                                TextColor = color,
                                 Diameter = 1,
                                 InnerDiameter = 0.5,
                                 Slices = {

@@ -24,7 +24,7 @@ namespace AcManager.Pages.Dialogs {
         private GraphData _torqueGraph, _powerGraph;
 
         public GraphData TorqueGraph {
-            get { return _torqueGraph; }
+            get => _torqueGraph;
             set {
                 if (Equals(value, _torqueGraph)) return;
                 _torqueGraph = value;
@@ -33,7 +33,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public GraphData PowerGraph {
-            get { return _powerGraph; }
+            get => _powerGraph;
             set {
                 if (Equals(value, _powerGraph)) return;
                 _powerGraph = value;
@@ -76,13 +76,9 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void FixableInput_MouseDown(object sender, MouseButtonEventArgs e) {
-            if (e.ChangedButton != MouseButton.Right) return;
-
-            var textBox = sender as TextBox;
-            if (textBox == null) return;
+            if (e.ChangedButton != MouseButton.Right || !(sender is TextBox textBox)) return;
 
             var contextMenu = new ContextMenu();
-
             MenuItem item;
 
             var mask = GetTextBoxMask(textBox);
@@ -120,14 +116,18 @@ namespace AcManager.Pages.Dialogs {
             if (mask == null) return;
 
             var text = textBox.Text;
-            if (Equals(textBox, AccelerationInput)) {
+            var postfix = "";
+
+            if (ReferenceEquals(textBox, AccelerationInput)) {
                 text = text.Replace(@"0-100", "");
+            } else if (ReferenceEquals(textBox, PowerInput) && (text.IndexOf('*') != -1 || text.IndexOf("whp", StringComparison.OrdinalIgnoreCase) != -1)) {
+                mask = AppStrings.CarSpecs_PowerAtWheels_FormatTooltip;
+            } else if (text.IndexOf('*') != -1) {
+                postfix = "*";
             }
 
-            double value;
-            if (!FlexibleParser.TryParseDouble(text, out value)) return;
-
-            textBox.Text = Format(mask, value.ToString(CultureInfo.InvariantCulture));
+            if (!FlexibleParser.TryParseDouble(text, out var value)) return;
+            textBox.Text = Format(mask, value.ToString(CultureInfo.InvariantCulture)) + postfix;
         }
 
         private void FixValues() {
@@ -158,9 +158,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void ScaleCurves(object sender, RoutedEventArgs e) {
-            double power, torque;
-            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out power) ||
-                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out torque)) {
+            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out var power) ||
+                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out var torque)) {
                 ShowMessage(AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst, ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OK);
                 return;
             }
@@ -170,9 +169,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RecalculateAndScaleCurves(object sender, RoutedEventArgs e) {
-            double maxPower, maxTorque;
-            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out maxPower) ||
-                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out maxTorque)) {
+            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out var maxPower) ||
+                    !FlexibleParser.TryParseDouble(TorqueInput.Text, out var maxTorque)) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDo_Title, AppStrings.CarSpecs_SpecifyPowerAndTorqueFirst);
                 return;
             }
@@ -230,9 +228,10 @@ namespace AcManager.Pages.Dialogs {
             if (ShowMessage(AppStrings.CarSpecs_CopyNewPowerAndTorque, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo, "copyNewPowerAndTorque") ==
                     MessageBoxResult.Yes) {
                 // MaxY values were updated while creating new GraphData instances above
-                var postfix = dlg.Multipler == 1d ? "*" : "";
-                TorqueInput.Text = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
-                PowerInput.Text = Format(AppStrings.CarSpecs_Power_FormatTooltip, power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture)) + postfix;
+                o.SpecsTorque = Format(AppStrings.CarSpecs_Torque_FormatTooltip, torque.MaxY.ToString(@"F0", CultureInfo.InvariantCulture))
+                        + (dlg.Multipler == 1d ? "*" : "");
+                o.SpecsBhp = Format(dlg.Multipler == 1d ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                        power.MaxY.ToString(@"F0", CultureInfo.InvariantCulture));
             }
         }
 
@@ -240,7 +239,7 @@ namespace AcManager.Pages.Dialogs {
         private bool _automaticallyRecalculate;
 
         public bool AutomaticallyRecalculate {
-            get { return _automaticallyRecalculate; }
+            get => _automaticallyRecalculate;
             set {
                 _automaticallyRecalculate = value;
                 ValuesStorage.Set(AutomaticallyRecalculateKey, value);
@@ -266,9 +265,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void RecalculatePwRatio() {
-            double power, weight;
-            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out power) ||
-                    !FlexibleParser.TryParseDouble(WeightInput.Text, out weight)) return;
+            if (!FlexibleParser.TryParseDouble(PowerInput.Text, out var power) ||
+                    !FlexibleParser.TryParseDouble(WeightInput.Text, out var weight)) return;
 
             var ratio = weight / power;
             PwRatioInput.Text = Format(AppStrings.CarSpecs_PwRatio_FormatTooltip, ratio.Round(0.01));
