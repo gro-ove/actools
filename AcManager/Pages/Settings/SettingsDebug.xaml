@@ -97,18 +97,58 @@
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Async button (s.):" Width="240" DockPanel.Dock="Left" />
+          <Label Content="Async button (s):" Width="240" DockPanel.Dock="Left" />
           <mui:AsyncButton Content="Async button" Command="{Binding AsyncBaseCommand}" HorizontalAlignment="Stretch" />
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Async button (c., s.):" Width="240" DockPanel.Dock="Left" />
+          <Label Content="Async button (c):" Width="240" DockPanel.Dock="Left" />
           <mui:AsyncButton Content="Async button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Left" />
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Async button (c., s.):" Width="240" DockPanel.Dock="Left" />
+          <Label Content="Async button (c+s):" Width="240" DockPanel.Dock="Left" />
           <mui:AsyncButton Content="Async button" Command="{Binding AsyncCancelCommand}" HorizontalAlignment="Stretch" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (p):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressCommand}" HorizontalAlignment="Left" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (p+s):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressCommand}" HorizontalAlignment="Stretch" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pc):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressCancelCommand}" HorizontalAlignment="Left" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pc+s):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressCancelCommand}" HorizontalAlignment="Stretch" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pm):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressMsgCommand}" HorizontalAlignment="Left" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pm+s):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressMsgCommand}" HorizontalAlignment="Stretch" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pmc):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressMsgCancelCommand}" HorizontalAlignment="Left" />
+        </DockPanel>
+
+        <DockPanel>
+          <Label Content="Async button (pmc+s):" Width="240" DockPanel.Dock="Left" />
+          <mui:AsyncButton Content="Async button" Command="{Binding AsyncProgressMsgCancelCommand}" HorizontalAlignment="Stretch" />
         </DockPanel>
 
         <DockPanel>

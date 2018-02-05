@@ -1,10 +1,10 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.CarCreateTyresMachineDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="Found tyres"
-    SizeToContent="Manual" Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
-    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarGenerateTyresDialog" ResizeMode="CanResizeWithGrip"
-    d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Title="Found tyres" SizeToContent="Manual" Width="920" Height="800" MinWidth="800" MinHeight="240"
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarGenerateTyresDialog"
+    ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -61,76 +61,90 @@
 
     <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarCreateTyresMachineDialog" />
 
-    <mui:SpacingStackPanel Grid.Column="2" Margin="8 0 0 0" Spacing="8">
-      <Label Content="Options:" Margin="0 0 0 0" />
+    <DockPanel Grid.Column="2" Margin="8 0 0 0">
+      <mui:SpacingStackPanel Spacing="8" DockPanel.Dock="Top">
+        <Label Content="Options:" Margin="0 0 0 0" />
 
-      <CheckBox Content="Use a separate network for each value" />
+        <CheckBox Content="Use a separate network for each value" />
 
-      <DockPanel Margin="8 0 0 0">
-        <TextBlock Text="Neurons in hidden layers:" Style="{StaticResource Label}" Width="180" />
-        <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0">
+          <TextBlock Text="Neurons in hidden layers:" Style="{StaticResource Label}" Width="180" />
+          <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0">
-        <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="network" Content="Average from" Width="180"
-            Padding="0" />
-        <Slider Minimum="0" Maximum="5" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="1" TickPlacement="BottomRight" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0">
+          <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="network" Content="Average from" Width="180"
+              Padding="0" />
+          <Slider Minimum="0" Maximum="5" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="1" TickPlacement="BottomRight" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0">
-        <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="%" Content="Padding:" Width="180" Padding="0" />
-        <Slider Minimum="0" Maximum="50" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="10" TickPlacement="BottomRight" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0">
+          <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="%" Content="Padding:" Width="180" Padding="0" />
+          <Slider Minimum="0" Maximum="50" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="10" TickPlacement="BottomRight" />
+        </DockPanel>
 
-      <Label Content="Summary:" Margin="0 12 0 0" />
+        <Label Content="Summary:" Margin="0 12 0 0" />
 
-      <DockPanel Margin="8 0 0 0">
-        <TextBlock Text="Total tyres selected:" Width="180" Style="{StaticResource Label}" />
-        <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0">
+          <TextBlock Text="Total tyres selected:" Width="180" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding TotalTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0">
-        <TextBlock Text="Unique tyres selected:" Width="180" Style="{StaticResource Label}" />
-        <mui:BetterTextBox Text="{Binding UniqueTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0">
+          <TextBlock Text="Unique tyres selected:" Width="180" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding UniqueTyresCount, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Radius:" Width="180" Style="{StaticResource Label}" />
-        <mui:BetterTextBox Text="{Binding Radius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+          <TextBlock Text="Radius:" Width="180" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding Radius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Rim radius:" Width="180" Style="{StaticResource Label}" />
-        <mui:BetterTextBox Text="{Binding RimRadius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+          <TextBlock Text="Rim radius:" Width="180" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding RimRadius.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+        </DockPanel>
 
-      <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
-        <TextBlock Text="Width:" Width="180" Style="{StaticResource Label}" />
-        <mui:BetterTextBox Text="{Binding Width.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
-      </DockPanel>
+        <DockPanel Margin="8 0 0 0" Visibility="{Binding UniqueTyresCount, Converter={StaticResource MoreToVisibilityConverter}}">
+          <TextBlock Text="Width:" Width="180" Style="{StaticResource Label}" />
+          <mui:BetterTextBox Text="{Binding Width.DisplayValue, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
+        </DockPanel>
 
-      <Label Content="Result:" Margin="0 12 0 0" />
+        <Label Content="Result:" Margin="0 12 0 0" />
 
-      <mui:AsyncButton Content="Create and teach tyres machine" Command="{Binding CreateTyresMachineCommand}" />
+        <mui:AsyncButton Content="Create and teach tyres machine" Command="{Binding CreateTyresMachineCommand}" />
 
-      <mui:ReferenceSwitch Value="{Binding CreateTyresMachineProgress.Progress}">
-        <mui:SpacingStackPanel Spacing="2">
-          <TextBlock Text="{Binding CreateTyresMachineProgress.Message}" Style="{StaticResource Small}" />
-          <ProgressBar Value="{Binding CreateTyresMachineProgress.Progress, Mode=OneWay}" Height="2" />
-        </mui:SpacingStackPanel>
-      </mui:ReferenceSwitch>
+        <!--<mui:ReferenceSwitch Value="{Binding CreateTyresMachineProgress.Progress}">
+          <mui:SpacingStackPanel Spacing="2">
+            <TextBlock Text="{Binding CreateTyresMachineProgress.Message}" Style="{StaticResource Small}" />
+            <ProgressBar Value="{Binding CreateTyresMachineProgress.Progress, Mode=OneWay}" Height="2" Maximum="1" Minimum="0" />
+          </mui:SpacingStackPanel>
+        </mui:ReferenceSwitch>-->
 
-      <Label Content="Test:" Margin="0 12 0 0" />
+        <!--<mui:ReferenceSwitch Value="{Binding GeneratedMachine}">
+      </mui:ReferenceSwitch>-->
 
-      <mui:ReferenceSwitch Value="{Binding GeneratedMachine}">
-        <mui:SpacingStackPanel Spacing="2">
-          <TextBlock Text="{Binding CreateTyresMachineProgress.Message}" Style="{StaticResource Small}" />
-          <ProgressBar Value="{Binding CreateTyresMachineProgress.Progress, Mode=OneWay}" Height="2" Maximum="1" Minimum="0" />
-        </mui:SpacingStackPanel>
-      </mui:ReferenceSwitch>
-
-      <!--<ListBox ItemsSource="{Binding TyresView}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
+        <!--<ListBox ItemsSource="{Binding TyresView}" Style="{StaticResource VirtualizingListBox}" mui:Draggable.Enabled="True"
           ItemTemplate="{StaticResource TyresEntryDataTemplate}" />-->
-    </mui:SpacingStackPanel>
+      </mui:SpacingStackPanel>
+
+      <mui:ReferenceSwitch Value="{Binding GeneratedMachine}" DockPanel.Dock="Bottom">
+        <DockPanel>
+          <Label Content="Test:" Margin="0 20 0 0" DockPanel.Dock="Top" />
+          <ListBox ItemsSource="{Binding GeneratedMachine.OutputKeys}" Width="150" Style="{StaticResource VirtualizingListBox}"
+              SelectedItem="{Binding SelectedOutputKey}" DockPanel.Dock="Left" Margin="0 0 20 0" />
+          <di:ValueGraphViewer Data="{Binding SelectedOutputData}" Height="200" DockPanel.Dock="Top" VerticalAlignment="Top" />
+
+          <DockPanel Margin="0 20 0 0">
+            <mui:ValueLabel Value="{Binding TestWidth}" mui:BetterTextBox.Mode="Number" Postfix="?" Content="Width:" Width="100" Padding="0" />
+            <Slider Minimum="0" Maximum="1" Value="{Binding TestWidth}" TickFrequency="10" TickPlacement="BottomRight" />
+          </DockPanel>
+
+        </DockPanel>
+      </mui:ReferenceSwitch>
+
+      <!--<DockPanel Visibility="{Binding GeneratedMachine, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+      </DockPanel>-->
+    </DockPanel>
   </Grid>
 </mui:ModernDialog>

@@ -15,8 +15,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls;
+using AcManager.Controls.Graphs;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
+using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -36,6 +38,9 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
+using OxyPlot;
+using OxyPlot.Axes;
+using OxyPlot.Series;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
@@ -54,6 +59,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             CarsListBox.SelectionChanged += OnSelectionChanged;
+            CarsListBox.SelectAll();
         }
 
         public class CarTyres : NotifyPropertyChanged {
@@ -269,17 +275,6 @@ namespace AcManager.Pages.Dialogs {
             public ValueLimits RimRadius { get; } = new ValueLimits(100, " cm");
             public ValueLimits Width { get; } = new ValueLimits(100, " cm");
 
-            private AsyncProgressEntry _createTyresMachineProgress = AsyncProgressEntry.Finished;
-
-            public AsyncProgressEntry CreateTyresMachineProgress {
-                get => _createTyresMachineProgress;
-                set {
-                    if (Equals(value, _createTyresMachineProgress)) return;
-                    _createTyresMachineProgress = value;
-                    OnPropertyChanged();
-                }
-            }
-
             private TyresMachine _generatedMachine;
 
             public TyresMachine GeneratedMachine {
@@ -288,41 +283,106 @@ namespace AcManager.Pages.Dialogs {
                     if (Equals(value, _generatedMachine)) return;
                     _generatedMachine = value;
                     OnPropertyChanged();
+                    SelectedOutputKey = SelectedOutputKey;
+                    UpdatePlotModel();
                 }
             }
 
-            private AsyncCommand<CancellationToken?> _createTyresMachineCommand;
+            private const string DefaultOutputKey = "ANGULAR_INERTIA";
+            private string _selectedOutputKey = DefaultOutputKey;
 
-            public AsyncCommand<CancellationToken?> CreateTyresMachineCommand => _createTyresMachineCommand
-                    ?? (_createTyresMachineCommand = new AsyncCommand<CancellationToken?>(CreateTyresMachine, c => UniqueTyresCount > 1));
+            public string SelectedOutputKey {
+                get => _selectedOutputKey;
+                set {
+                    if (GeneratedMachine?.OutputKeys.Contains(value) == false) {
+                        value = DefaultOutputKey;
+                    }
+                    if (Equals(value, _selectedOutputKey)) return;
+                    _selectedOutputKey = value;
+                    OnPropertyChanged();
+                    UpdatePlotModel();
+                }
+            }
 
-            private async Task CreateTyresMachine(CancellationToken? c) {
+            private ICollection<DataPoint> _selectedOutputData;
+
+            public ICollection<DataPoint> SelectedOutputData {
+                get => _selectedOutputData;
+                set {
+                    if (Equals(value, _selectedOutputData)) return;
+                    _selectedOutputData = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private readonly Busy _updatePlotModelBusy = new Busy();
+
+            private void UpdatePlotModel() {
+                _updatePlotModelBusy.Yield(() => {
+                    var machine = GeneratedMachine;
+                    if (machine == null) {
+                        SelectedOutputData = null;
+                        return;
+                    }
+
+                    var width = machine.GetNormalization(NeuralTyresOptions.InputWidth);
+                    var radius = machine.GetNormalization(NeuralTyresOptions.InputRadius);
+                    var profile = machine.GetNormalization(NeuralTyresOptions.InputProfile);
+                    var key = SelectedOutputKey;
+
+                    var list = new List<DataPoint>();
+                    for (var i = 0d; i <= 1d; i += 0.01) {
+                        var w = width.Denormalize(TestWidth);
+                        var u = profile.Denormalize(0.5);
+                        var r = radius.Denormalize(i);
+                        list.Add(new DataPoint(r * 100, machine.Conjure(key, w, r, u)));
+                    }
+
+                    SelectedOutputData = list;
+                });
+            }
+
+            private double _testWidth = 0.5;
+
+            public double TestWidth {
+                get => _testWidth;
+                set {
+                    if (Equals(value, _testWidth)) return;
+                    _testWidth = value;
+                    OnPropertyChanged();
+                    UpdatePlotModel();
+                }
+            }
+
+            private AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> _createTyresMachineCommand;
+
+            public AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> CreateTyresMachineCommand => _createTyresMachineCommand
+                    ?? (_createTyresMachineCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(CreateTyresMachineAsync, c => UniqueTyresCount > 1));
+
+            private async Task CreateTyresMachineAsync(Tuple<IProgress<AsyncProgressEntry>, CancellationToken> tuple) {
                 try {
+                    GeneratedMachine = null;
+
                     var options = new NeuralTyresOptions {
-                        TrainingRuns = 150000
+                        /*TrainingRuns = 50000,
+                        LearningMomentum = 0.5,
+                        LearningRate = 0.5,
+                        AverageAmount = 1*/
                     };
 
                     var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry).Distinct(
-                                    TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
-                    var machine = await TyresMachine.CreateAsync(tyres, options, new Progress<Tuple<string, double?>>(
-                            OnProgress));
-                    CreateTyresMachineProgress = AsyncProgressEntry.Finished;
+                            TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
+                    GeneratedMachine = await TyresMachine.CreateAsync(tyres, options, new Progress<Tuple<string, double?>>(OnProgress), tuple.Item2);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t create tyres machine", e);
                 }
 
                 void OnProgress(Tuple<string, double?> p) {
-                    ActionExtension.InvokeInMainThreadAsync(() => {
-                        CreateTyresMachineProgress = new AsyncProgressEntry(p.Item1, p.Item2);
-                    });
+                    ActionExtension.InvokeInMainThread(() => tuple?.Item1.Report(p.Item1, p.Item2));
                 }
             }
 
             public void Dispose() { }
-
-            public async Task<TyresMachineInfo> CreateTyresMachineAsync() {
-                return null;
-            }
         }
 
         public class ValueLimits : NotifyPropertyChanged {
@@ -400,7 +460,8 @@ namespace AcManager.Pages.Dialogs {
 
                 dialog.ShowDialog();
 
-                return dialog.IsResultOk ? await dialog.Model.CreateTyresMachineAsync() : null;
+                return null;
+                // return dialog.IsResultOk ? await dialog.Model.CreateTyresMachineAsync() : null;
             } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
                 NonfatalError.Notify("Can’t create new tyres machine", e);
             }
@@ -415,6 +476,135 @@ namespace AcManager.Pages.Dialogs {
             foreach (var c in e.RemovedItems.OfType<CarWithTyres>()) {
                 c.IsChecked = false;
             }
+        }
+    }
+
+    public class ValueGraphViewer : GraphDataViewerBase {
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register(nameof(Data), typeof(ICollection<DataPoint>),
+                typeof(ValueGraphViewer), new PropertyMetadata(null, (o, e) => {
+                    var v = (ValueGraphViewer)o;
+                    v._data = (ICollection<DataPoint>)e.NewValue;
+                    v.UpdateData();
+                }));
+
+        private ICollection<DataPoint> _data;
+
+        public ICollection<DataPoint> Data {
+            get => _data;
+            set => SetValue(DataProperty, value);
+        }
+
+        private const string KeyRadius = "radius";
+        private const string KeyValue = "value";
+
+        private void UpdateData() {
+            if (!IsLoaded) return;
+            EnsureModelCreated();
+            Model.Replace(KeyValue, Data);
+            UpdateLimitValues();
+            InvalidatePlot();
+        }
+
+        private void UpdateLimitValues() {
+            var data = Data;
+            UpdateSteps(data?.MaxY() ?? 0d);
+            SetEmpty(!(data?.Count > 1 || data?.Count > 1));
+            Model.Axes.First(x => x.Position == AxisPosition.Bottom).Minimum = Data?.Select(x => x.X).Min() ?? 0d;
+        }
+
+        private LinearAxis _verticalAxis;
+        private LineSeries _valueSeries;
+
+        public static readonly DependencyProperty ValueUnitsProperty = DependencyProperty.Register(nameof(ValueUnits), typeof(string),
+                typeof(ValueGraphViewer), new PropertyMetadata(@"?", (o, e) => {
+                    var v = (ValueGraphViewer)o;
+                    v._valueUnits = (string)e.NewValue;
+                    v.RefreshUnitParams();
+                }));
+
+        private string _valueUnits = @"?";
+
+        public string ValueUnits {
+            get => _valueUnits;
+            set => SetValue(ValueUnitsProperty, value);
+        }
+
+        public static readonly DependencyProperty ValuePointDigitsProperty = DependencyProperty.Register(nameof(ValuePointDigits), typeof(int),
+                typeof(ValueGraphViewer), new PropertyMetadata(2, (o, e) => {
+                    var v = (ValueGraphViewer)o;
+                    v._valuePointDigits = (int)e.NewValue;
+                    v.RefreshUnitParams();
+                }));
+
+        private int _valuePointDigits = 2;
+
+        public int ValuePointDigits {
+            get => _valuePointDigits;
+            set => SetValue(ValuePointDigitsProperty, value);
+        }
+
+        private const string XUnit = "cm";
+
+        private void RefreshUnitParams() {
+            _verticalAxis.Title = ValueUnits;
+            _valueSeries.TrackerFormatString = $"[b]{{4:F{ValuePointDigits}}} {ValueUnits}[/b] at [b]{{2:F1}} {XUnit}[/b]";
+            InvalidatePlot();
+        }
+
+        protected override PlotModel CreateModel() {
+            _verticalAxis = new LinearAxis {
+                Key = KeyValue,
+                Title = ValueUnits,
+                TextColor = BaseTextColor,
+                TitleColor = BaseTextColor,
+                TicklineColor = BaseTextColor,
+                AxislineColor = BaseTextColor,
+                Minimum = 0d,
+                Position = AxisPosition.Left
+            };
+
+            _valueSeries = new CatmulLineSeries {
+                Color = BaseTextColor,
+                Title = "Values",
+                XAxisKey = KeyRadius,
+                YAxisKey = KeyValue,
+                TrackerKey = KeyValue,
+                TrackerFormatString = $"[b]{{4:F{ValuePointDigits}}} {ValueUnits}[/b] at [b]{{2:F1}} {XUnit}[/b]"
+            };
+
+            return new PlotModel {
+                TextColor = BaseTextColor,
+                PlotAreaBorderColor = OxyColors.Transparent,
+                LegendTextColor = BaseTextColor,
+                LegendPosition = LegendPosition.RightBottom,
+                Padding = new OxyThickness(0d),
+                LegendPadding = 0d,
+                TitlePadding = 0d,
+                LegendMargin = 0d,
+                PlotMargins = new OxyThickness(40d, 0d, 40d, 32d),
+                Axes = {
+                    new LinearAxis {
+                        Key = KeyRadius,
+                        Title = XUnit,
+                        TextColor = BaseTextColor,
+                        TitleColor = BaseTextColor,
+                        TicklineColor = BaseTextColor,
+                        AxislineColor = BaseTextColor,
+                        Minimum = 0d,
+                        Position = AxisPosition.Bottom
+                    },
+                    _verticalAxis
+                },
+                Series = { _valueSeries }
+            };
+        }
+
+        protected override void OnLoadedOverride() {
+            base.OnLoadedOverride();
+            EnsureModelCreated();
+            Model.Replace(KeyValue, Data);
+            UpdateLimitValues();
+            InvalidatePlot();
         }
     }
 }

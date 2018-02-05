@@ -32,6 +32,9 @@ namespace AcTools.NeuralTyres {
         private readonly string[] _outputKeys;
 
         [NotNull]
+        public IReadOnlyList<string> OutputKeys => _outputKeys;
+
+        [NotNull]
         private readonly Normalization[] _inputNormalizations, _outputNormalizations;
 
         [CanBeNull]
@@ -185,12 +188,10 @@ namespace AcTools.NeuralTyres {
             return _inputNormalizations.ElementAtOrDefault(_options.InputKeys.IndexOf(key));
         }
 
-        public NeuralTyresEntry Conjure(params double[] input) {
+        private void SetInputs(double[] input, NeuralTyresEntry result) {
             if (input.Length != _options.InputKeys.Length) {
                 throw new Exception("Input keys and inputs lengths don’t match");
             }
-
-            var result = new NeuralTyresEntry();
 
             for (var i = 0; i < _options.InputKeys.Length; i++) {
                 var key = _options.InputKeys[i];
@@ -212,6 +213,11 @@ namespace AcTools.NeuralTyres {
                     input[i] = _inputNormalizations[i].Normalize(input[i]);
                 }
             }
+        }
+
+        public NeuralTyresEntry Conjure(params double[] input) {
+            var result = new NeuralTyresEntry();
+            SetInputs(input, result);
 
             foreach (var n in _networks) {
                 var normalization = _outputNormalizations[_outputKeys.IndexOf(n.Key)];
@@ -219,6 +225,18 @@ namespace AcTools.NeuralTyres {
             }
 
             return result;
+        }
+
+        public double Conjure(string outputKey, params double[] input) {
+            var result = new NeuralTyresEntry();
+            SetInputs(input, result);
+
+            foreach (var n in _networks.Where(x => x.Key == outputKey)) {
+                var normalization = _outputNormalizations[_outputKeys.IndexOf(n.Key)];
+                SetValue(result, n.Key, normalization.Denormalize(n.Value.Compute(input)));
+            }
+
+            return result[outputKey];
         }
 
         private static bool IsProceduralValue(string key) {
