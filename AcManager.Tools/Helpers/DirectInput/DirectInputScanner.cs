@@ -159,7 +159,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
             internal void RaiseUpdate(IList<DeviceInstance> newData) {
                 _instanceData = newData;
 
-                _waitingFor.ForEach(x => x.TrySetResult(newData));
+                for (var i = _waitingFor.Count - 1; i >= 0; i--) {
+                    _waitingFor[i].TrySetResult(newData);
+                }
                 _waitingFor.Clear();
 
                 if (_oneTime) {
@@ -240,7 +242,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
             private bool _disposed;
 
             public void Dispose() {
-                _waitingFor.ForEach(x => x.TrySetCanceled());
+                for (var i = _waitingFor.Count - 1; i >= 0; i--) {
+                    _waitingFor[i].TrySetCanceled();
+                }
                 _waitingFor.Clear();
 
                 if (_disposed) return;

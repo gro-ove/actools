@@ -425,9 +425,10 @@ namespace AcManager.Tools.GameProperties {
                     bool IsDriving(AcShared shared) {
                         if (shared == null) return false;
                         var p = shared.Physics;
-                        if (p.SteerAngle != 0f || p.TurboBoost != 0f || p.SpeedKmh > 0.02f) return true;
-                        for (var i = 0; i < 3; i++) {
-                            if (p.AccG[i] != 0f || p.TyreDirtyLevel[i] != 0f || p.CarDamage[i] != 0f) {
+                        if (p.SteerAngle != 0f || p.Brake != 1f || p.Clutch != 0f
+                                || p.TurboBoost > 0.01f || p.Gas > 0.01f || p.SpeedKmh > 1f) return true;
+                        for (var i = 0; i < 5; i++) {
+                            if (p.CarDamage[i] != 0f) {
                                 return true;
                             }
                         }
@@ -618,7 +619,7 @@ namespace AcManager.Tools.GameProperties {
 #else
                         OnTick(joystickCommands);
 #endif
-                        Thread.Sleep(5);
+                        Thread.Sleep(8);
 
 #if DEBUG
                         if (++iterations >= 300) {
