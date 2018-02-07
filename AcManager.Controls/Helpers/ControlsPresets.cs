@@ -48,8 +48,8 @@ namespace AcManager.Controls.Helpers {
 
             public string Filename { get; }
 
-            public string ReadData() {
-                return FileUtils.ReadAllText(Filename);
+            public byte[] ReadBinaryData() {
+                return File.ReadAllBytes(Filename);
             }
 
             public void SetParent(string baseDirectory) {

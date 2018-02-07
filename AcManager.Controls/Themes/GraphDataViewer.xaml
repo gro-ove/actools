@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:oxy="http://oxyplot.org/wpf" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:t="http://acstuff.ru/app/tools">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
   </ResourceDictionary.MergedDictionaries>
@@ -59,31 +58,10 @@
   </Style>
 
   <Style TargetType="graphs:GraphDataViewerBase">
-    <!--<Setter Property="Background" Value="Transparent" />-->
+    <Setter Property="Background" Value="Transparent" />
     <Setter Property="IsManipulationEnabled" Value="False" />
     <Setter Property="IsMouseWheelEnabled" Value="False" />
-    <Setter Property="Height" Value="200" />
 
-    <!--<Setter Property="PlotMargins" Value="0" />
-    <Setter Property="AxisTierDistance" Value="0" />
-    <Setter Property="LegendMaxWidth" Value="0" />
-    <Setter Property="LegendBorder" Value="Blue" />
-    <Setter Property="LegendBorderThickness" Value="2" />
-    <Setter Property="LegendColumnSpacing" Value="0" />
-    <Setter Property="LegendPadding" Value="0" />
-    <Setter Property="LegendPlacement" Value="Outside" />
-    <Setter Property="PlotAreaBorderColor" Value="Peru" />
-    <Setter Property="PlotAreaBorderThickness" Value="2" />
-    <Setter Property="LegendItemSpacing" Value="0" />
-    <Setter Property="PlotType" Value="Polar" />-->
-
-    <Setter Property="ContextMenu">
-      <Setter.Value>
-        <ContextMenu>
-          <MenuItem Header="Smooth" IsCheckable="True" IsChecked="{Binding SmoothCurves, Source={x:Static t:SettingsHolder.Content}}" />
-        </ContextMenu>
-      </Setter.Value>
-    </Setter>
     <Setter Property="DefaultTrackerTemplate">
       <Setter.Value>
         <ControlTemplate>
@@ -112,6 +90,17 @@
             </mui:Cell>
           </Border>
         </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <Style TargetType="graphs:CarGraphViewer" BasedOn="graphs:GraphDataViewerBase">
+    <Setter Property="Height" Value="200" />
+    <Setter Property="ContextMenu">
+      <Setter.Value>
+        <ContextMenu>
+          <MenuItem Header="Smooth" IsCheckable="True" IsChecked="{Binding SmoothCurves, Source={x:Static t:SettingsHolder.Content}}" />
+        </ContextMenu>
       </Setter.Value>
     </Setter>
   </Style>

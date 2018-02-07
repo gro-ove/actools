@@ -5,9 +5,9 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AcTools.DataFile;
 using AcTools.NeuralTyres.Data;
 using AcTools.NeuralTyres.Implementations;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 using JetBrains.Annotations;
@@ -19,8 +19,11 @@ namespace AcTools.NeuralTyres {
         [NotNull]
         private readonly NeuralTyresOptions _options;
 
-        [NotNull]
-        private readonly Dictionary<string, INeuralNetwork> _networks = new Dictionary<string, INeuralNetwork>();
+        [CanBeNull]
+        private INeuralNetwork[] _networks;
+
+        [CanBeNull]
+        private INeuralNetwork _singleNetwork;
 
         [NotNull]
         private readonly NeuralTyresSource[] _tyresSources;
@@ -76,7 +79,8 @@ namespace AcTools.NeuralTyres {
             }
 
             // Output normalizations and values
-            _outputKeys = tyres[0].Keys.ApartFrom(options.IgnoredKeys).ToArray();
+            _outputKeys = tyres[0].Keys.Where(x => Array.IndexOf(options.IgnoredKeys, x) == -1
+                    && (options.OverrideOutputKeys == null || Array.IndexOf(options.OverrideOutputKeys, x) != -1)).ToArray();
             _outputNormalizations = new Normalization[_outputKeys.Length];
             _outputNormalized = new double[_outputKeys.Length][];
 
@@ -86,39 +90,10 @@ namespace AcTools.NeuralTyres {
             }
         }
 
-        private void Train([CanBeNull] IProgress<Tuple<string, double?>> progress, CancellationToken cancellationToken) {
-            var inputs = _inputNormalized;
-            var outputs = _outputNormalized;
-            if (inputs == null || outputs == null) {
-                throw new Exception("This instance can’t be trained");
-            }
-
-            var keys = _outputKeys;
-            double processed = 0, total = keys.Length;
-            Parallel.ForEach(keys.Select((x, i) => new {
-                Key = x,
-                Outputs = outputs[i].Select(y => new[]{ y }).ToArray()
-            }), value => {
-                if (cancellationToken.IsCancellationRequested) return;
-
-                var network = new AverageNetwork<FannNetwork>();
-                lock (_networks) {
-                    _networks[value.Key] = network;
-                }
-
-                network.SetOptions(_options);
-                network.Train(inputs, value.Outputs);
-
-                Console.WriteLine($"Trained: {value.Key}");
-                progress?.Report(Tuple.Create<string, double?>(value.Key, ++processed / total));
-            });
-        }
-
         private readonly int SaveFormatVersion = 1;
 
-        private TyresMachine(string filename) {
-            using (var stream = File.OpenRead(filename))
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, true)) {
+        private TyresMachine(Stream stream) {
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, false)) {
                 var manifest = Read<JObject>("Manifest.json");
                 if (manifest.GetIntValueOnly("version") != SaveFormatVersion) {
                     throw new Exception("Unsupported version: " + manifest.GetIntValueOnly("version"));
@@ -137,8 +112,23 @@ namespace AcTools.NeuralTyres {
                 _outputKeys = Read<string[]>("Output/Keys.json");
                 _outputNormalizations = Read<Normalization[]>("Output/Normalizations.json");
 
-                foreach (var key in _outputKeys) {
-                    var typeName = zip.ReadString($"Networks/{key}/Type.txt");
+                if (_options.SeparateNetworks) {
+                    _networks = new INeuralNetwork[_outputKeys.Length];
+                    for (var i = 0; i < _outputKeys.Length; i++) {
+                        var key = _outputKeys[i];
+                        var typeName = zip.ReadString($"Networks/{key}/Type.txt");
+                        var type = Type.GetType(typeName);
+                        if (type == null) {
+                            throw new Exception("Type not found: " + typeName);
+                        }
+
+                        var instance = (INeuralNetwork)Activator.CreateInstance(type);
+                        instance.SetOptions(_options);
+                        instance.Load(zip.ReadBytes($"Networks/{key}/Data.bin"));
+                        _networks[i] = instance;
+                    }
+                } else {
+                    var typeName = zip.ReadString("Network/Type.txt");
                     var type = Type.GetType(typeName);
                     if (type == null) {
                         throw new Exception("Type not found: " + typeName);
@@ -146,8 +136,8 @@ namespace AcTools.NeuralTyres {
 
                     var instance = (INeuralNetwork)Activator.CreateInstance(type);
                     instance.SetOptions(_options);
-                    instance.Load(zip.ReadBytes($"Networks/{key}/Data.bin"));
-                    _networks[key] = instance;
+                    instance.Load(zip.ReadBytes("Network/Data.bin"));
+                    _singleNetwork = instance;
                 }
 
                 T Read<T>(string key) {
@@ -156,8 +146,10 @@ namespace AcTools.NeuralTyres {
             }
         }
 
-        public void Save(string filename) {
-            using (var stream = File.Create(filename))
+        private TyresMachine(string filename) : this(File.OpenRead(filename)) {}
+        private TyresMachine(byte[] data) : this(new MemoryStream(data)) {}
+
+        public void Save(Stream stream) {
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
                 Add("Manifest.json", new JObject {
                     ["version"] = SaveFormatVersion,
@@ -170,18 +162,116 @@ namespace AcTools.NeuralTyres {
                 Add("Input/Normalizations.json", _inputNormalizations);
                 Add("Output/Keys.json", _outputKeys);
                 Add("Output/Normalizations.json", _outputNormalizations);
-                foreach (var network in _networks) {
-                    var networkType = network.Value.GetType().FullName;
-                    var data = network.Value.Save();
-                    if (networkType == null || data == null) continue;
-                    zip.AddString($"Networks/{network.Key}/Type.txt", networkType);
-                    zip.AddBytes($"Networks/{network.Key}/Data.bin", data);
+
+                if (_networks != null) {
+                    for (var i = 0; i < _networks.Length; i++) {
+                        var key = _outputKeys[i];
+                        var network = _networks[i];
+                        var networkType = network.GetType().FullName;
+                        var data = network.Save();
+                        if (networkType == null || data == null) continue;
+                        zip.AddString($"Networks/{key}/Type.txt", networkType);
+                        zip.AddBytes($"Networks/{key}/Data.bin", data);
+                    }
+                } else if (_singleNetwork != null) {
+                    var networkType = _singleNetwork.GetType().FullName;
+                    var data = _singleNetwork.Save();
+                    if (networkType != null && data != null) {
+                        zip.AddString("Network/Type.txt", networkType);
+                        zip.AddBytes("Network/Data.bin", data);
+                    }
                 }
 
                 void Add(string key, object data) {
                     zip.AddString(key, JsonConvert.SerializeObject(data, Formatting.Indented));
                 }
             }
+        }
+
+        public byte[] ToByteArray() {
+            using (var stream = new MemoryStream()) {
+                Save(stream);
+                return stream.ToArray();
+            }
+        }
+
+        public void Save(string filename) {
+            using (var stream = File.Create(filename)) {
+                Save(stream);
+            }
+        }
+
+        private void Train([CanBeNull] IProgress<Tuple<string, double?>> progress, CancellationToken cancellationToken) {
+            var inputs = _inputNormalized;
+            var outputs = _outputNormalized;
+            if (inputs == null || outputs == null) {
+                throw new Exception("This instance can’t be trained");
+            }
+
+            var keys = _outputKeys;
+            if (keys.Length == 0) {
+                throw new ArgumentException("At least one output key is required");
+            }
+
+            if (_options.SeparateNetworks) {
+                var networks = new INeuralNetwork[keys.Length];
+                _networks = networks;
+
+                var lastFinished = keys[0];
+                double processed = 0, total = keys.Length;
+                Parallel.ForEach(keys.Select((x, i) => new {
+                    Index = i,
+                    Key = x,
+                    Outputs = outputs[i].Select(y => new[] { y }).ToArray(),
+                }), new ParallelOptions {
+                    MaxDegreeOfParallelism = _options.MaxDegreeOfParallelism
+                }, value => {
+                    if (cancellationToken.IsCancellationRequested) return;
+
+                    var network = CreateNeuralNetwork();
+                    lock (networks) {
+                        networks[value.Index] = network;
+                    }
+
+                    var previousProgress = 0d;
+                    network.SetOptions(_options);
+                    network.Train(inputs, value.Outputs, progress == null ? null : new Progress(v => {
+                        var delta = v - previousProgress;
+                        if (delta < 0.05) return;
+
+                        var currentProgress = delta.AddTo(ref processed);
+                        previousProgress = v;
+                        progress.Report(Tuple.Create(lastFinished, (double?)currentProgress / total));
+                    }), cancellationToken);
+
+                    lastFinished = value.Key;
+                });
+            } else {
+                var network = CreateNeuralNetwork();
+                _singleNetwork = network;
+                network.SetOptions(_options);
+
+                var flipped = new double[outputs[0].Length][];
+                for (var i = 0; i < flipped.Length; i++) {
+                    flipped[i] = new double[outputs.Length];
+                    for (var j = 0; j < outputs.Length; j++) {
+                        flipped[i][j] = outputs[j][i];
+                    }
+                }
+
+                network.Train(inputs, flipped, progress == null ? null : new Progress(v => {
+                    progress.Report(Tuple.Create("Combined", (double?)v));
+                }), cancellationToken);
+            }
+        }
+
+        [Pure]
+        private INeuralNetwork CreateNeuralNetwork() {
+            if (_options.AverageAmount > 1) {
+                return new AverageNetwork<FannNetwork>();
+            }
+
+            return new FannNetwork();
         }
 
         public Normalization GetNormalization(string key) {
@@ -216,27 +306,52 @@ namespace AcTools.NeuralTyres {
         }
 
         public NeuralTyresEntry Conjure(params double[] input) {
-            var result = new NeuralTyresEntry();
+            var name = Sources.Select(x => x.Name).GroupBy(x => x).MaxEntry(x => x.Count()).Key;
+            var shortName = Sources.Select(x => x.ShortName).GroupBy(x => x).MaxEntry(x => x.Count()).Key;
+            var result = new NeuralTyresEntry(name, shortName, TyresVersion);
             SetInputs(input, result);
 
-            foreach (var n in _networks) {
-                var normalization = _outputNormalizations[_outputKeys.IndexOf(n.Key)];
-                SetValue(result, n.Key, normalization.Denormalize(n.Value.Compute(input)));
+            if (_singleNetwork != null) {
+                var data = _singleNetwork.Compute(input);
+                if (data.Length != _outputKeys.Length) {
+                    throw new Exception($"Amount of computed data doesn’t match output keys: {data.Length}≠{_outputKeys.Length}");
+                }
+
+                for (var i = 0; i < _outputKeys.Length; i++) {
+                    SetValue(result, _outputKeys[i], _outputNormalizations[i].Denormalize(data[i]));
+                }
+            } else if (_networks != null) {
+                for (var i = 0; i < _networks.Length; i++) {
+                    SetValue(result, _outputKeys[i], _outputNormalizations[i].Denormalize(_networks[i].Compute(input)[0]));
+                }
+            } else {
+                throw new Exception("Invalid state");
             }
 
             return result;
         }
 
         public double Conjure(string outputKey, params double[] input) {
-            var result = new NeuralTyresEntry();
-            SetInputs(input, result);
-
-            foreach (var n in _networks.Where(x => x.Key == outputKey)) {
-                var normalization = _outputNormalizations[_outputKeys.IndexOf(n.Key)];
-                SetValue(result, n.Key, normalization.Denormalize(n.Value.Compute(input)));
+            var keyIndex = _outputKeys.IndexOf(outputKey);
+            if (keyIndex == -1) {
+                throw new Exception($"Not supported key: {keyIndex}");
             }
 
-            return result[outputKey];
+            var normalization = _outputNormalizations[keyIndex];
+            if (_singleNetwork != null) {
+                var data = _singleNetwork.Compute(input);
+                if (data.Length != _outputKeys.Length) {
+                    throw new Exception("Amount of computed data doesn’t match output keys");
+                }
+
+                return normalization.Denormalize(data[keyIndex]);
+            }
+
+            if (_networks != null) {
+                return normalization.Denormalize(_networks[keyIndex].Compute(input)[0]);
+            }
+
+            throw new Exception("Invalid state");
         }
 
         private static bool IsProceduralValue(string key) {
@@ -273,11 +388,12 @@ namespace AcTools.NeuralTyres {
             }
 
             public double Normalize(double value) {
-                return Range == 0d ? 0.5 : (value - Minimum) / Range;
+                return Range == 0d ? 0.5 : ((value - Minimum) / Range).Saturate();
             }
 
             public bool Fits(double value) {
-                return value >= Minimum && value <= Maximum;
+                var safetyPadding = Range * 0.0001f;
+                return value >= Minimum - safetyPadding && value <= Maximum + safetyPadding;
             }
 
             public double Denormalize(double value) {
@@ -304,31 +420,20 @@ namespace AcTools.NeuralTyres {
             }
         }
 
-        public Generated Generate(params double[] input) {
-            return null;
-        }
-
-        public class Generated {
-            public Generated(int version, Dictionary<string, IniFileSection> sections, Dictionary<string, Lut> luts) {
-                Version = version;
-                Sections = sections;
-                Luts = luts;
-            }
-
-            public int Version { get; }
-            public Dictionary<string, IniFileSection> Sections { get; }
-            public Dictionary<string, Lut> Luts { get; }
-        }
-
+        [ItemCanBeNull]
         public static async Task<TyresMachine> CreateAsync(IEnumerable<NeuralTyresEntry> tyres, NeuralTyresOptions options,
-                [CanBeNull] IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellationToken = default(CancellationToken)) {
+                [CanBeNull] IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellationToken = default) {
             var result = new TyresMachine(tyres.ToArray(), options);
-            await Task.Run(() => result.Train(progress, cancellationToken)).ConfigureAwait(false);
-            return result;
+            await Task.Run(() => result.Train(progress, cancellationToken), cancellationToken).ConfigureAwait(false);
+            return cancellationToken.IsCancellationRequested ? null : result;
         }
 
         public static TyresMachine LoadFrom(string filename) {
             return new TyresMachine(filename);
+        }
+
+        public static TyresMachine LoadFrom(byte[] data) {
+            return new TyresMachine(data);
         }
     }
 }

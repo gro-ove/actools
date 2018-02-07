@@ -151,11 +151,12 @@ namespace AcManager {
                 _secondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
                     _initialized = true;
-                    if (args.Length == 0) {
+                    /*if (args.Length == 0) {
                         TryToRunAppSafely();
                     } else {
                         App.CreateAndRun(false);
-                    }
+                    }*/
+                    App.CreateAndRun(false);
                 } else {
                     PassArgsToRunningInstance(args);
                 }

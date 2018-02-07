@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Wpf;
@@ -13,21 +15,22 @@ namespace AcManager.Controls.Graphs {
     public abstract class GraphDataViewerBase : PlotView {
         private class CustomController : ControllerBase, IPlotController {
             public CustomController() {
-                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.PointsOnlyTrack);
-                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.Track);
+                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.PointsOnlyTrack);
+                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.Track);
             }
         }
 
         protected GraphDataViewerBase() {
             Controller = new CustomController();
+            Background = new SolidColorBrush(Colors.Transparent);
             Loaded += OnLoaded;
         }
 
-        protected void LoadColor(ref OxyColor color, string key) {
+        protected void LoadColor(ref OxyColor color, [Localizable(false)] string key, byte alpha = 255) {
             var r = TryFindResource(key);
             var v = r as Color? ?? (r as SolidColorBrush)?.Color;
             if (v != null) {
-                color = v.Value.ToOxyColor();
+                color = v.Value.SetAlpha(alpha).ToOxyColor();
             }
         }
 
@@ -58,8 +61,8 @@ namespace AcManager.Controls.Graphs {
         }
 
         private static IEnumerable<double> Steps() {
-            for (var i = 0; i < 10; i++) {
-                var v = Math.Pow(10d, i - 2);
+            for (var i = 0; i < 12; i++) {
+                var v = Math.Pow(10d, i - 3);
                 yield return v;
                 yield return v * 2d;
                 yield return v * 4d;
@@ -67,8 +70,8 @@ namespace AcManager.Controls.Graphs {
             }
         }
 
-        private static double GetStep(double maxValue) {
-            if (maxValue < 1d || maxValue > 1e6) return double.NaN;
+        protected static double GetStep(double maxValue) {
+            if (maxValue < 0.001 || maxValue > 1e6) return double.NaN;
 
             foreach (var v in Steps()) {
                 var a = maxValue / v;

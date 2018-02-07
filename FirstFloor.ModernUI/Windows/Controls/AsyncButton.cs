@@ -73,6 +73,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private CancellationTokenSource _cancellation;
+        private TaskbarHolder _taskbar;
         private readonly Busy _busy = new Busy();
 
         protected override void OnClick() {
@@ -80,7 +81,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _busy.Task(async () => {
                     try {
                         SetValue(IsProcessingPropertyKey, true);
-                        using (_cancellation = new CancellationTokenSource()) {
+                        using (_cancellation = new CancellationTokenSource())
+                        using (_taskbar = TaskbarService.Create(1200)) {
                             await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token);
                             if (PercentageProgress) {
                                 Report(new AsyncProgressEntry(Progress.Message, 1d));
@@ -106,7 +108,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public AsyncProgressEntry Progress => (AsyncProgressEntry)GetValue(ProgressProperty);
 
         public void Report(AsyncProgressEntry value) {
-            ActionExtension.InvokeInMainThread(() => SetValue(ProgressPropertyKey, value));
+            _taskbar?.Set(value.IsIndeterminate ? TaskbarState.Indeterminate : TaskbarState.Normal, value.Progress ?? 0.5);
+            ActionExtension.InvokeInMainThread(() => {
+                SetValue(ProgressPropertyKey, value);
+            });
         }
 
         #region Support for various types of commands

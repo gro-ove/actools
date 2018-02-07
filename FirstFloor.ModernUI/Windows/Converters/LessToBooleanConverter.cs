@@ -22,6 +22,18 @@ namespace FirstFloor.ModernUI.Windows.Converters {
     public class LogarithmicScale : DependencyObject, IValueConverter, IMultiValueConverter {
         private bool _dirty = true;
 
+        public static readonly DependencyProperty RoundToProperty = DependencyProperty.Register(nameof(RoundTo), typeof(double),
+                typeof(LogarithmicScale), new PropertyMetadata(0d, (o, e) => {
+                    ((LogarithmicScale)o)._roundTo = (double)e.NewValue;
+                }));
+
+        private double _roundTo;
+
+        public double RoundTo {
+            get => _roundTo;
+            set => SetValue(RoundToProperty, value);
+        }
+
         public static readonly DependencyProperty MinimumProperty = DependencyProperty.Register(nameof(Minimum), typeof(double),
                 typeof(LogarithmicScale), new PropertyMetadata(0d, (o, e) => {
                     var l = (LogarithmicScale)o;
@@ -29,7 +41,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                     l._dirty = true;
                 }));
 
-        private double _minimum = 0d;
+        private double _minimum;
 
         public double Minimum {
             get => _minimum;
@@ -43,7 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                     l._dirty = true;
                 }));
 
-        private double _middle = 0d;
+        private double _middle;
 
         public double Middle {
             get => _middle;
@@ -57,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
                     l._dirty = true;
                 }));
 
-        private double _maximum = 0d;
+        private double _maximum;
 
         public double Maximum {
             get => _maximum;
@@ -112,9 +124,14 @@ namespace FirstFloor.ModernUI.Windows.Converters {
             return isLinear ? (value - a) / b : Math.Log((value - a) / b) / c;
         }
 
-        public static double ConvertBack(double value, bool isLinear, double a, double b, double c, [CanBeNull] double[] fixedValues) {
+        public static double ConvertBack(double value, bool isLinear, double a, double b, double c, [CanBeNull] double[] fixedValues, double roundTo) {
             var linear = isLinear ? value * b + a : a + b * Math.Exp(c * value);
-            return fixedValues?.Aggregate((x, y) => Math.Abs(x - linear) < Math.Abs(y - linear) ? x : y) ?? linear;
+            return Round((fixedValues?.Aggregate((x, y) => Math.Abs(x - linear) < Math.Abs(y - linear) ? x : y) ?? linear), roundTo);
+        }
+
+        public static double Round(double value, double precision) {
+            if (Equals(precision, 0d)) return value;
+            return Math.Round(value / precision) * precision;
         }
 
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture) {
@@ -124,7 +141,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
         object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
             Update();
-            return ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray);
+            return ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray, _roundTo);
         }
 
         object IMultiValueConverter.Convert(object[] values, Type targetType, object parameter, CultureInfo culture) {
@@ -134,7 +151,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
 
         object[] IMultiValueConverter.ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture) {
             Update();
-            return new object[] { ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray) };
+            return new object[] { ConvertBack(value.As<double>(), _linear, _a, _b, _c, _fixedValuesArray, _roundTo) };
         }
     }
 }

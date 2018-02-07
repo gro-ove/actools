@@ -71,6 +71,9 @@
         <Button Content="Replace tyres" Command="{Binding ReplaceTyresCommand}">
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
+        <Button Content="Create tyres" Command="{Binding CreateTyresCommand}">
+          <Button.ToolTip>Create new sets of tyres with machine learning</Button.ToolTip>
+        </Button>
       </ToolBar>
       <!-- <ToolBar Band="0" BandIndex="0"
           Visibility="{Binding SelectedObject.PackCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">

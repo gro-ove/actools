@@ -368,7 +368,7 @@ namespace AcManager.Controls {
 
             public InnerSavedPresetEntry([NotNull] ISavedPresetEntry baseEntry, [NotNull] IUserPresetableCustomDisplay customDisplay) {
                 _baseEntry = baseEntry;
-                DisplayName = customDisplay.GetDisplayName(baseEntry.DisplayName, ReadData());
+                DisplayName = customDisplay.GetDisplayName(baseEntry.DisplayName, this.ReadData());
             }
 
             public event PropertyChangedEventHandler PropertyChanged {
@@ -384,10 +384,10 @@ namespace AcManager.Controls {
 
             public string Filename => _baseEntry.Filename;
 
-            private string _data;
+            private byte[] _data;
 
-            public string ReadData() {
-                return _data ?? (_data = _baseEntry.ReadData());
+            public byte[] ReadBinaryData() {
+                return _data ?? (_data = _baseEntry.ReadBinaryData());
             }
 
             public void SetParent(string baseDirectory) {

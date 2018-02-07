@@ -54,7 +54,7 @@ namespace AcTools.Utils {
 
         // [Obsolete] TODO
         public static double ToDoublePercentage(this int value) => 0.01 * value;
-        
+
         public static int RoundToInt(this double value) => (int)Math.Round(value);
         public static int FloorToInt(this double value) => (int)Math.Floor(value);
         public static int RoundToInt(this float value) => (int)Math.Round(value);

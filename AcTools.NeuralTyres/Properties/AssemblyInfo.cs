@@ -35,8 +35,8 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.36")]
-[assembly: AssemblyFileVersion("1.0.0.36")]
+[assembly: AssemblyVersion("1.0.0.87")]
+[assembly: AssemblyFileVersion("1.0.0.87")]
 
 [assembly: InternalsVisibleTo("AcTools.NeuralTyres.Tests")]
-// Modified at: 18/02/04 20:28:19
+// Modified at: 18/02/07 02:58:51

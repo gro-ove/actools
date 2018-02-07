@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -20,8 +19,8 @@ namespace AcManager.Tools.Managers.Presets {
             Data = data;
         }
 
-        public string ReadData() {
-            return Encoding.UTF8.GetString(Data);
+        public byte[] ReadBinaryData() {
+            return Data;
         }
 
         public void SetParent(string baseDirectory) {}

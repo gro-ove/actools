@@ -343,6 +343,7 @@
     <Compile Include="Pages\Dialogs\AppKeyDialog.xaml.cs">
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.Definitions.cs" />
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
       <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
     </Compile>
@@ -398,6 +399,7 @@
     <Compile Include="Pages\Dialogs\AppIconEditor.xaml.cs">
       <DependentUpon>AppIconEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\TyresMachineGraphViewer.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\RealConditionsHelper.cs" />

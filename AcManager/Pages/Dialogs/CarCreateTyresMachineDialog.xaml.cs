@@ -6,22 +6,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Media;
+using System.Windows.Shapes;
+using System.Xml.Schema;
 using AcManager.Controls;
-using AcManager.Controls.Graphs;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Tyres;
@@ -35,16 +36,23 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
 using OxyPlot;
-using OxyPlot.Axes;
-using OxyPlot.Series;
+using SlimDX.DXGI;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarCreateTyresMachineDialog {
+        public static readonly string NeuralParamsKey = "Tyres Generation";
+        public static readonly PresetsCategory NeuralParamsCategory = new PresetsCategory(System.IO.Path.Combine("Tyres Generation", "Neural Params"));
+
+        public static readonly string NeuralMachinesKey = "Tyres Machines";
+        public static readonly PresetsCategory NeuralMachinesCategory = new PresetsCategory(System.IO.Path.Combine("Tyres Generation", "Tyres Machines"),
+                ".zip");
+
         public static int OptionSupportedVersion = 10;
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -52,6 +60,11 @@ namespace AcManager.Pages.Dialogs {
         public CarCreateTyresMachineDialog(List<CarWithTyres> list) {
             DataContext = new ViewModel(list);
             InitializeComponent();
+            Buttons = new[] {
+                CreateExtraDialogButton(AppStrings.Toolbar_Save, Model.SaveCommand, true),
+                CancelButton
+            };
+
             this.OnActualUnload(Model);
 
             foreach (var s in Model.Cars.Where(x => x.IsChecked)) {
@@ -138,11 +151,54 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private class ViewModel : NotifyPropertyChanged, IDisposable {
+        public static readonly string DefaultNeuralLayers = NeuralTyresOptions.Default.Layers.JoinToString(@"; ");
+        public static readonly bool DefaultSeparateNetworks = NeuralTyresOptions.Default.SeparateNetworks;
+        public static readonly bool DefaultHighPrecision = NeuralTyresOptions.Default.HighPrecision;
+        public static readonly int DefaultTrainingRuns = NeuralTyresOptions.Default.TrainingRuns;
+        public static readonly int DefaultAverageAmount = NeuralTyresOptions.Default.AverageAmount;
+        public static readonly FannTrainingAlgorithm DefaultFannAlgorithm = NeuralTyresOptions.Default.FannAlgorithm;
+        public static readonly double DefaultLearningMomentum = NeuralTyresOptions.Default.LearningMomentum;
+        public static readonly double DefaultLearningRate = NeuralTyresOptions.Default.LearningRate;
+        public static readonly double DefaultRandomBounds = NeuralTyresOptions.Default.RandomBounds;
+
+        public static SettingEntry[] FannAlgorithms { get; } = EnumExtension.GetValues<FannTrainingAlgorithm>().Select(x => {
+            var n = x.GetDescription().Split(new[] { ':' }, 2);
+            return new SettingEntry((int)x, n[0]) {
+                Tag = n[1]
+            };
+        }).ToArray();
+
+        private class ViewModel : NotifyPropertyChanged, IUserPresetable, IDisposable, IComparer {
+            private class SaveableData {
+                public string Layers = DefaultNeuralLayers;
+                public bool SeparateNetworks = DefaultSeparateNetworks, HighPrecision = DefaultHighPrecision;
+                public int TrainingRuns = DefaultTrainingRuns, AverageAmount = DefaultAverageAmount;
+                public FannTrainingAlgorithm FannAlgorithm = DefaultFannAlgorithm;
+                public double LearningMomentum = DefaultLearningMomentum, LearningRate = DefaultLearningRate, RandomBounds = DefaultRandomBounds;
+            }
+
+            private readonly ISaveHelper _saveable;
+
             public List<CarWithTyres> Cars { get; }
             public BetterListCollectionView CarsView { get; }
 
             public ViewModel(List<CarWithTyres> cars) {
+                OutputKeys = new BetterObservableCollection<SettingEntry>();
+                OutputKeysView = new BetterListCollectionView(OutputKeys) {
+                    GroupDescriptions = {
+                        new PropertyGroupDescription(nameof(SettingEntry.Tag))
+                    },
+                    CustomSort = this
+                };
+
+                TestKeys = new BetterObservableCollection<SettingEntry>();
+                TestKeysView = new BetterListCollectionView(TestKeys) {
+                    GroupDescriptions = {
+                        new PropertyGroupDescription(nameof(SettingEntry.Tag))
+                    },
+                    CustomSort = this
+                };
+
                 Cars = cars;
                 UpdateListFilter();
                 UpdateTyresFilter();
@@ -170,8 +226,50 @@ namespace AcManager.Pages.Dialogs {
                         };
                     });
                 });
+
+                (_saveable = new SaveHelper<SaveableData>("_carTextureDialog", () => new SaveableData {
+                    Layers = NeuralLayers,
+                    SeparateNetworks = NeuralSeparateNetworks,
+                    TrainingRuns = NeuralTrainingRuns,
+                    AverageAmount = NeuralAverageAmount,
+                    LearningMomentum = NeuralLearningMomentum,
+                    LearningRate = NeuralLearningRate,
+                    HighPrecision = NeuralHighPrecision,
+                    RandomBounds = NeuralRandomBounds,
+                    FannAlgorithm = (FannTrainingAlgorithm?)NeuralFannAlgorithm.IntValue ?? DefaultFannAlgorithm,
+                }, o => {
+                    NeuralLayers = o.Layers;
+                    NeuralSeparateNetworks = o.SeparateNetworks;
+                    NeuralTrainingRuns = o.TrainingRuns;
+                    NeuralAverageAmount = o.AverageAmount;
+                    NeuralLearningMomentum = o.LearningMomentum;
+                    NeuralLearningRate = o.LearningRate;
+                    NeuralHighPrecision = o.HighPrecision;
+                    NeuralRandomBounds = o.RandomBounds;
+                    NeuralFannAlgorithm = FannAlgorithms.GetByIdOrDefault((int?)o.FannAlgorithm) ?? FannAlgorithms.GetById((int?)DefaultFannAlgorithm);
+                })).Initialize();
             }
 
+            bool IUserPresetable.CanBeSaved => true;
+            string IUserPresetable.PresetableKey => NeuralParamsKey;
+            PresetsCategory IUserPresetable.PresetableCategory => NeuralParamsCategory;
+
+            public event EventHandler Changed;
+
+            public void ImportFromPresetData(string data) {
+                _saveable.FromSerializedString(data);
+            }
+
+            public string ExportToPresetData() {
+                return _saveable.ToSerializedString();
+            }
+
+            private void SaveLater() {
+                _saveable.SaveLater();
+                Changed?.Invoke(this, EventArgs.Empty);
+            }
+
+            #region Tyres selection
             private readonly StoredValue<string> _carsFilter = Stored.Get("/CreateTyres.CarsFilter", "kunos+");
 
             [CanBeNull]
@@ -222,18 +320,20 @@ namespace AcManager.Pages.Dialogs {
                 CarsView?.Refresh();
             }
 
+            private TyresEntry[] _tyres;
             private readonly Busy _updateSummaryBusy = new Busy();
 
             private void UpdateSummary() {
                 _updateSummaryBusy.Yield(() => {
                     var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry)
-                                    .Distinct(TyresEntry.TyresEntryComparer).ToList();
+                                    .Distinct(TyresEntry.TyresEntryComparer).ToArray();
+                    _tyres = tyres;
 
                     Radius.Reset();
                     RimRadius.Reset();
                     Width.Reset();
 
-                    for (var i = tyres.Count - 1; i >= 0; i--) {
+                    for (var i = tyres.Length - 1; i >= 0; i--) {
                         var tyre = tyres[i];
                         Radius.Update(tyre.Radius);
                         RimRadius.Update(tyre.RimRadius);
@@ -241,10 +341,19 @@ namespace AcManager.Pages.Dialogs {
                     }
 
                     TotalTyresCount = Cars.Sum(x => x.IsChecked ? x.CheckedCount : 0);
-                    UniqueTyresCount = tyres.Count;
-                    Radius.Apply();
-                    RimRadius.Apply();
-                    Width.Apply();
+                    UniqueTyresCount = tyres.Length;
+                    Radius.Apply(ValuePadding);
+                    RimRadius.Apply(ValuePadding);
+                    Width.Apply(ValuePadding);
+
+                    if (_tyres.Length > 0) {
+                        var testKey = SelectedTestKey;
+                        TestKeys.ReplaceEverythingBy_Direct(_tyres[0].MainSection.Keys.Concat(_tyres[0].ThermalSection.Keys.Select(x => ThermalPrefix + x))
+                                                                     .Select(GetOutputKeyEntry));
+                        SelectedTestKey = TestKeys.GetByIdOrDefault(testKey.Value) ?? testKey;
+                    }
+
+                    // SuggestedMachineName = tyres.GroupBy(x => x.Name).MaxEntryOrDefault(x => x.Count())?.First().Name;
                 });
             }
 
@@ -271,12 +380,231 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            public ValueLimits Radius { get; } = new ValueLimits(100, " cm");
-            public ValueLimits RimRadius { get; } = new ValueLimits(100, " cm");
-            public ValueLimits Width { get; } = new ValueLimits(100, " cm");
+            public DisplayDoubleRange Radius { get; } = new DisplayDoubleRange(100, " cm");
+            public DisplayDoubleRange RimRadius { get; } = new DisplayDoubleRange(100, " cm");
+            public DisplayDoubleRange Width { get; } = new DisplayDoubleRange(100, " cm");
 
+            private readonly StoredValue<double> _valuePadding = Stored.Get("/CreateTyres.ValuePadding", 0.3);
+
+            public double ValuePadding {
+                get => _valuePadding.Value;
+                set {
+                    if (Equals(value, _valuePadding.Value)) return;
+                    _valuePadding.Value = value;
+                    OnPropertyChanged();
+                    UpdateSummary();
+                }
+            }
+            #endregion
+
+            #region Generation
+            private readonly StoredValue<bool> _testSingleKey = Stored.Get("/CreateTyres.TestSingleKey", false);
+
+            public bool TestSingleKey {
+                get => _testSingleKey.Value;
+                set {
+                    if (Equals(value, _testSingleKey.Value)) return;
+                    _testSingleKey.Value = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            [NotNull]
+            public BetterObservableCollection<SettingEntry> TestKeys { get; }
+
+            public BetterListCollectionView TestKeysView { get; }
+
+            private SettingEntry _selectedTestKey = DefaultOutputKey;
+
+            public SettingEntry SelectedTestKey {
+                get => _selectedTestKey;
+                set {
+                    if (TestKeys.Contains(value) == false) {
+                        value = TestKeys.GetByIdOrDefault(_selectedTestKey?.Value) ?? TestKeys.FirstOrDefault() ?? DefaultOutputKey;
+                    }
+                    if (Equals(value, _selectedTestKey)) return;
+                    _selectedTestKey = value;
+                    OnPropertyChanged();
+                    UpdatePlotModel();
+                }
+            }
+
+            private SettingEntry _neuralFannAlgorithm = DefaultOutputKey;
+
+            public SettingEntry NeuralFannAlgorithm {
+                get => _neuralFannAlgorithm;
+                set {
+                    if (FannAlgorithms.Contains(value) == false) {
+                        value = FannAlgorithms.GetById((int?)DefaultFannAlgorithm);
+                    }
+                    if (Equals(value, _neuralFannAlgorithm)) return;
+                    _neuralFannAlgorithm = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private string _neuralLayers = DefaultNeuralLayers;
+
+            public string NeuralLayers {
+                get => _neuralLayers;
+                set {
+                    if (Equals(value, _neuralLayers)) return;
+                    _neuralLayers = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private bool _neuralSeparateNetworks = DefaultSeparateNetworks;
+
+            public bool NeuralSeparateNetworks {
+                get => _neuralSeparateNetworks;
+                set {
+                    if (Equals(value, _neuralSeparateNetworks)) return;
+                    _neuralSeparateNetworks = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private bool _neuralHighPrecision = DefaultHighPrecision;
+
+            public bool NeuralHighPrecision {
+                get => _neuralHighPrecision;
+                set {
+                    if (Equals(value, _neuralHighPrecision)) return;
+                    _neuralHighPrecision = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private int _neuralTrainingRuns = DefaultTrainingRuns;
+
+            public int NeuralTrainingRuns {
+                get => _neuralTrainingRuns;
+                set {
+                    if (Equals(value, _neuralTrainingRuns)) return;
+                    _neuralTrainingRuns = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private int _neuralAverageAmount = DefaultAverageAmount;
+
+            public int NeuralAverageAmount {
+                get => _neuralAverageAmount;
+                set {
+                    if (Equals(value, _neuralAverageAmount)) return;
+                    _neuralAverageAmount = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private double _neuralLearningMomentum = DefaultLearningMomentum;
+
+            public double NeuralLearningMomentum {
+                get => _neuralLearningMomentum;
+                set {
+                    if (Equals(value, _neuralLearningMomentum)) return;
+                    _neuralLearningMomentum = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private double _neuralLearningRate = DefaultLearningRate;
+
+            public double NeuralLearningRate {
+                get => _neuralLearningRate;
+                set {
+                    if (Equals(value, _neuralLearningRate)) return;
+                    _neuralLearningRate = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private double _neuralRandomBounds = DefaultRandomBounds;
+
+            public double NeuralRandomBounds {
+                get => _neuralRandomBounds;
+                set {
+                    if (Equals(value, _neuralRandomBounds)) return;
+                    _neuralRandomBounds = value;
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            private AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> _createTyresMachineCommand;
+
+            public AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> CreateTyresMachineCommand => _createTyresMachineCommand
+                    ?? (_createTyresMachineCommand =
+                            new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(CreateTyresMachineAsync, c => UniqueTyresCount > 1));
+
+            private async Task CreateTyresMachineAsync(Tuple<IProgress<AsyncProgressEntry>, CancellationToken> tuple) {
+                var progress = tuple?.Item1;
+                var cancellation = tuple?.Item2 ?? CancellationToken.None;
+                progress?.Report(new AsyncProgressEntry("Initialization…", 0.001d));
+
+                try {
+                    GeneratedMachine = null;
+
+                    var layers = (string.IsNullOrWhiteSpace(NeuralLayers) ? DefaultNeuralLayers : NeuralLayers)
+                            .Split(new[] { ';', ',', '.', ' ', '\t', ':' }, StringSplitOptions.RemoveEmptyEntries)
+                            .Select(x => FlexibleParser.ParseInt(x)).ToArray();
+
+                    var options = new NeuralTyresOptions {
+                        Layers = layers,
+                        SeparateNetworks = NeuralSeparateNetworks,
+                        TrainAverageInParallel = !NeuralSeparateNetworks,
+                        TrainingRuns = NeuralTrainingRuns,
+                        LearningMomentum = NeuralLearningMomentum,
+                        LearningRate = NeuralLearningRate,
+                        AverageAmount = NeuralAverageAmount,
+                        HighPrecision = NeuralHighPrecision,
+                        RandomBounds = NeuralRandomBounds,
+                        ValuePadding = ValuePadding,
+                        FannAlgorithm = (FannTrainingAlgorithm)(NeuralFannAlgorithm.IntValue ?? 0),
+                        OverrideOutputKeys = TestSingleKey && NeuralSeparateNetworks && SelectedTestKey?.Value != null
+                                ? new[] { SelectedTestKey?.Value } : null
+                    };
+
+                    var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry).Distinct(
+                            TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
+                    GeneratedMachine = await TyresMachine.CreateAsync(tyres, options, new Progress(OnProgress), cancellation);
+                } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+                    NonfatalError.Notify("Can’t create tyres machine", e);
+                }
+
+                void OnProgress(Tuple<string, double?> p) {
+                    if (cancellation.IsCancellationRequested) return;
+                    var msg = $"Creating: {GetItemName(p.Item1, out _).ToSentenceMember()}…";
+                    ActionExtension.InvokeInMainThread(() => progress?.Report(msg, p.Item2));
+                }
+            }
+
+            private class Progress : IProgress<Tuple<string, double?>> {
+                private readonly Action<Tuple<string, double?>> _callback;
+
+                public Progress(Action<Tuple<string, double?>> callback) {
+                    _callback = callback;
+                }
+
+                public void Report(Tuple<string, double?> value) {
+                    _callback(value);
+                }
+            }
+            #endregion
+
+            #region Messing around with generated machine
             private TyresMachine _generatedMachine;
 
+            [CanBeNull]
             public TyresMachine GeneratedMachine {
                 get => _generatedMachine;
                 set {
@@ -284,18 +612,29 @@ namespace AcManager.Pages.Dialogs {
                     _generatedMachine = value;
                     OnPropertyChanged();
                     SelectedOutputKey = SelectedOutputKey;
+                    OnPropertyChanged(nameof(DisplayTestWidth));
+                    OnPropertyChanged(nameof(DisplayTestProfile));
                     UpdatePlotModel();
+                    var outputKey = SelectedOutputKey;
+                    OutputKeys.ReplaceEverythingBy_Direct(value?.OutputKeys.Select(GetOutputKeyEntry).ToArray() ?? new SettingEntry[0]);
+                    SelectedOutputKey = outputKey;
+                    _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
 
-            private const string DefaultOutputKey = "ANGULAR_INERTIA";
-            private string _selectedOutputKey = DefaultOutputKey;
+            [NotNull]
+            public BetterObservableCollection<SettingEntry> OutputKeys { get; }
 
-            public string SelectedOutputKey {
+            public BetterListCollectionView OutputKeysView { get; }
+
+            private static readonly SettingEntry DefaultOutputKey = GetOutputKeyEntry("ANGULAR_INERTIA");
+            private SettingEntry _selectedOutputKey = DefaultOutputKey;
+
+            public SettingEntry SelectedOutputKey {
                 get => _selectedOutputKey;
                 set {
-                    if (GeneratedMachine?.OutputKeys.Contains(value) == false) {
-                        value = DefaultOutputKey;
+                    if (OutputKeys.Contains(value) == false) {
+                        value = OutputKeys.GetByIdOrDefault(_selectedOutputKey?.Value) ?? OutputKeys.FirstOrDefault() ?? DefaultOutputKey;
                     }
                     if (Equals(value, _selectedOutputKey)) return;
                     _selectedOutputKey = value;
@@ -304,9 +643,9 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private ICollection<DataPoint> _selectedOutputData;
+            private TyresMachineGraphData _selectedOutputData;
 
-            public ICollection<DataPoint> SelectedOutputData {
+            public TyresMachineGraphData SelectedOutputData {
                 get => _selectedOutputData;
                 set {
                     if (Equals(value, _selectedOutputData)) return;
@@ -315,7 +654,43 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
+            private string _selectedOutputUnits;
+
+            public string SelectedOutputUnits {
+                get => _selectedOutputUnits;
+                set {
+                    if (Equals(value, _selectedOutputUnits)) return;
+                    _selectedOutputUnits = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _selectedOutputTrackerDigits;
+
+            public int SelectedOutputTrackerDigits {
+                get => _selectedOutputTrackerDigits;
+                set {
+                    if (Equals(value, _selectedOutputTrackerDigits)) return;
+                    _selectedOutputTrackerDigits = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private int _selectedOutputTitleDigits;
+
+            public int SelectedOutputTitleDigits {
+                get => _selectedOutputTitleDigits;
+                set {
+                    if (Equals(value, _selectedOutputTitleDigits)) return;
+                    _selectedOutputTitleDigits = value;
+                    OnPropertyChanged();
+                }
+            }
+
             private readonly Busy _updatePlotModelBusy = new Busy();
+
+            // Centimetres
+            private static readonly double RadiusToDisplayMultiplier = 100;
 
             private void UpdatePlotModel() {
                 _updatePlotModelBusy.Yield(() => {
@@ -328,65 +703,168 @@ namespace AcManager.Pages.Dialogs {
                     var width = machine.GetNormalization(NeuralTyresOptions.InputWidth);
                     var radius = machine.GetNormalization(NeuralTyresOptions.InputRadius);
                     var profile = machine.GetNormalization(NeuralTyresOptions.InputProfile);
-                    var key = SelectedOutputKey;
 
-                    var list = new List<DataPoint>();
-                    for (var i = 0d; i <= 1d; i += 0.01) {
-                        var w = width.Denormalize(TestWidth);
-                        var u = profile.Denormalize(0.5);
-                        var r = radius.Denormalize(i);
-                        list.Add(new DataPoint(r * 100, machine.Conjure(key, w, r, u)));
+                    var key = SelectedOutputKey.Value;
+                    UpdateOutputType(key, out var units, out var titleDigits, out var trackerDigits, out var multiplier);
+                    SelectedOutputUnits = units;
+                    SelectedOutputTitleDigits = titleDigits;
+                    SelectedOutputTrackerDigits = trackerDigits;
+
+                    var list = new List<Tuple<string, double, ICollection<DataPoint>>>();
+                    var yRange = new DoubleRange();
+                    var testWidth = width.Denormalize(TestWidth.Saturate());
+                    if (ProfileRange == 1) {
+                        list.Add(GetPiece(testWidth, TestProfile, yRange));
+                    } else {
+                        for (var i = 0; i < ProfileRange; i++) {
+                            list.Add(GetPiece(testWidth, (i + 1d) / (ProfileRange + 1d), yRange));
+                        }
                     }
 
-                    SelectedOutputData = list;
+                    var extra = new List<Tuple<string, double, double, DataPoint>>();
+                    var testProfile = width.Denormalize(TestProfile);
+                    for (var i = _tyres.Length - 1; i >= 0; i--) {
+                        var tyre = _tyres[i];
+                        var tyreProfile = tyre.Radius - tyre.RimRadius;
+                        var value = (key.StartsWith(ThermalPrefix)
+                                ? tyre.ThermalSection.GetDouble(key.Substring(8), yRange.Minimum)
+                                : tyre.MainSection.GetDouble(key, yRange.Minimum)) * multiplier;
+                        yRange.Update(value);
+                        if (Math.Abs(testWidth - tyre.Width) < 0.01 && (ProfileRange > 1 || Math.Abs(testProfile - tyreProfile) < 0.01)) {
+                            extra.Add(Tuple.Create(tyre.DisplaySource, tyreProfile * RadiusToDisplayMultiplier,
+                                    ProfileRange > 1 ? profile.Normalize(tyreProfile) : -1d,
+                                    new DataPoint(tyre.Radius * RadiusToDisplayMultiplier, value)));
+                        }
+                    }
+
+                    SelectedOutputData = new TyresMachineGraphData {
+                        List = list,
+                        ExtraPoints = extra,
+                        LeftThreshold = Radius.Minimum * RadiusToDisplayMultiplier,
+                        RightThreshold = Radius.Maximum * RadiusToDisplayMultiplier,
+                        YRange = yRange
+                    };
+
+                    Tuple<string, double, ICollection<DataPoint>> GetPiece(double actualWidth, double profileNormalized, DoubleRange valueRange) {
+                        var result = new DataPoint[(int)(250 / Math.Sqrt(ProfileRange))];
+                        for (var i = 0; i < result.Length; i++) {
+                            var w = actualWidth;
+                            var r = radius.Denormalize((double)i / (result.Length - 1));
+                            var u = profile.Denormalize(profileNormalized.Saturate());
+                            var value = machine.Conjure(key, w, r, u) * multiplier;
+                            result[i].X = r * RadiusToDisplayMultiplier;
+                            result[i].Y = value;
+                            valueRange.Update(value);
+                        }
+                        return Tuple.Create($"Profile: {profile.Denormalize(profileNormalized) * 100:F2} cm",
+                                profileNormalized, (ICollection<DataPoint>)result);
+                    }
                 });
             }
 
-            private double _testWidth = 0.5;
+            private readonly StoredValue<double> _testWidth = Stored.Get("/CreateTyres.TestWidth", 0.5);
 
             public double TestWidth {
-                get => _testWidth;
+                get => _testWidth.Value;
                 set {
-                    if (Equals(value, _testWidth)) return;
-                    _testWidth = value;
+                    value = value.Saturate();
+                    if (Equals(value, _testWidth.Value)) return;
+                    _testWidth.Value = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayTestWidth));
+                    UpdatePlotModel();
+                }
+            }
+
+            public string DisplayTestWidth {
+                get => (GeneratedMachine?.GetNormalization(NeuralTyresOptions.InputWidth)
+                                         .Denormalize(TestWidth) * 100)?.ToString("F1", CultureInfo.CurrentUICulture) ?? "?";
+                set => TestWidth = GeneratedMachine?.GetNormalization(NeuralTyresOptions.InputWidth)
+                                                    .Normalize(FlexibleParser.ParseDouble(value, 0.5d) / 100d) ?? 0.5d;
+            }
+
+            private readonly StoredValue<double> _testProfile = Stored.Get("/CreateTyres.TestProfile", 0.5);
+
+            public double TestProfile {
+                get => _testProfile.Value;
+                set {
+                    value = value.Saturate();
+                    if (Equals(value, _testProfile.Value)) return;
+                    _testProfile.Value = value;
                     OnPropertyChanged();
                     UpdatePlotModel();
                 }
             }
 
-            private AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> _createTyresMachineCommand;
+            public string DisplayTestProfile {
+                get => (GeneratedMachine?.GetNormalization(NeuralTyresOptions.InputProfile)
+                                         .Denormalize(TestProfile) * 100)?.ToString("F1", CultureInfo.CurrentUICulture) ?? "?";
+                set => TestProfile = GeneratedMachine?.GetNormalization(NeuralTyresOptions.InputProfile)
+                                                      .Normalize(FlexibleParser.ParseDouble(value, 0.5d) / 100d) ?? 0.5d;
+            }
 
-            public AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> CreateTyresMachineCommand => _createTyresMachineCommand
-                    ?? (_createTyresMachineCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(CreateTyresMachineAsync, c => UniqueTyresCount > 1));
+            private readonly StoredValue<int> _profileRange = Stored.Get("/CreateTyres.ProfileRange", 5);
 
-            private async Task CreateTyresMachineAsync(Tuple<IProgress<AsyncProgressEntry>, CancellationToken> tuple) {
-                try {
-                    GeneratedMachine = null;
-
-                    var options = new NeuralTyresOptions {
-                        /*TrainingRuns = 50000,
-                        LearningMomentum = 0.5,
-                        LearningRate = 0.5,
-                        AverageAmount = 1*/
-                    };
-
-                    var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry).Distinct(
-                            TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
-                    GeneratedMachine = await TyresMachine.CreateAsync(tyres, options, new Progress<Tuple<string, double?>>(OnProgress), tuple.Item2);
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t create tyres machine", e);
-                }
-
-                void OnProgress(Tuple<string, double?> p) {
-                    ActionExtension.InvokeInMainThread(() => tuple?.Item1.Report(p.Item1, p.Item2));
+            public int ProfileRange {
+                get => _profileRange.Value;
+                set {
+                    value = value.Clamp(1, 400);
+                    if (Equals(value, _profileRange.Value)) return;
+                    _profileRange.Value = value;
+                    OnPropertyChanged();
+                    UpdatePlotModel();
                 }
             }
+
+            public int Compare(object x, object y) {
+                if (!(x is SettingEntry sx) || !(y is SettingEntry sy)) return 0;
+
+                if (sx.DisplayName.StartsWith("Δ")) {
+                    if (!sy.DisplayName.StartsWith("Δ")) return -1;
+                } else if (sy.DisplayName.StartsWith("Δ")) {
+                    return 1;
+                }
+
+                return string.Compare(sx.DisplayName, sy.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+            }
+            #endregion
+
+            #region Save
+            /*private string _suggestedMachineName;
+
+            public string SuggestedMachineName {
+                get => _suggestedMachineName;
+                set {
+                    if (Equals(value, _suggestedMachineName)) return;
+                    _suggestedMachineName = value;
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _machineName;
+
+            public string MachineName {
+                get => _machineName;
+                set {
+                    if (Equals(value, _machineName)) return;
+                    _machineName = value;
+                    OnPropertyChanged();
+                }
+            }*/
+
+            private DelegateCommand _saveCommand;
+
+            public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
+                PresetsManager.Instance.SavePresetUsingDialog(NeuralMachinesKey, NeuralMachinesCategory,
+                        GeneratedMachine?.ToByteArray(), null /* TODO: Editing mode */);
+            }, () => GeneratedMachine?.OutputKeys.Count > 1));
+            #endregion
 
             public void Dispose() { }
         }
 
-        public class ValueLimits : NotifyPropertyChanged {
-            public ValueLimits(double multiplier, string postfix) {
+        public class DisplayDoubleRange : DoubleRange, INotifyPropertyChanged {
+            public DisplayDoubleRange(double multiplier, string postfix) {
                 _multiplier = multiplier;
                 _postfix = postfix;
             }
@@ -394,28 +872,39 @@ namespace AcManager.Pages.Dialogs {
             private readonly double _multiplier;
             private readonly string _postfix;
 
-            public void Reset() {
-                Minimum = double.MaxValue;
-                Maximum = double.MinValue;
-            }
-
-            public void Update(double value) {
-                if (Minimum > value) Minimum = value;
-                if (Maximum < value) Maximum = value;
-            }
-
-            public void Apply() {
-                var from = (Minimum * _multiplier).ToString(@"F1");
-                var to = (Maximum * _multiplier).ToString(@"F1");
-                DisplayValue = from == to ? from + _postfix : $@"{from}…{to}{_postfix}";
+            public override void Reset() {
+                base.Reset();
                 OnPropertyChanged(nameof(Minimum));
                 OnPropertyChanged(nameof(Maximum));
+            }
+
+            public double PaddedMinimum { get; private set; }
+            public double PaddedMaximum { get; private set; }
+
+            public void Apply(double padding) {
+                var pad = Range * padding;
+                PaddedMinimum = Minimum - pad;
+                PaddedMaximum = Maximum + pad;
+
+                var from = (PaddedMinimum * _multiplier).ToString(@"F1");
+                var to = (PaddedMaximum * _multiplier).ToString(@"F1");
+                DisplayValue = from == to ? from + _postfix : $@"{from}–{to}{_postfix}";
+
+                OnPropertyChanged(nameof(Minimum));
+                OnPropertyChanged(nameof(Maximum));
+                OnPropertyChanged(nameof(PaddedMinimum));
+                OnPropertyChanged(nameof(PaddedMaximum));
                 OnPropertyChanged(nameof(DisplayValue));
             }
 
-            public double Minimum { get; private set; } = double.MaxValue;
-            public double Maximum { get; private set; } = double.MinValue;
             public string DisplayValue { get; private set; }
+
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
         }
 
         [ItemCanBeNull]
@@ -476,135 +965,6 @@ namespace AcManager.Pages.Dialogs {
             foreach (var c in e.RemovedItems.OfType<CarWithTyres>()) {
                 c.IsChecked = false;
             }
-        }
-    }
-
-    public class ValueGraphViewer : GraphDataViewerBase {
-        public static readonly DependencyProperty DataProperty = DependencyProperty.Register(nameof(Data), typeof(ICollection<DataPoint>),
-                typeof(ValueGraphViewer), new PropertyMetadata(null, (o, e) => {
-                    var v = (ValueGraphViewer)o;
-                    v._data = (ICollection<DataPoint>)e.NewValue;
-                    v.UpdateData();
-                }));
-
-        private ICollection<DataPoint> _data;
-
-        public ICollection<DataPoint> Data {
-            get => _data;
-            set => SetValue(DataProperty, value);
-        }
-
-        private const string KeyRadius = "radius";
-        private const string KeyValue = "value";
-
-        private void UpdateData() {
-            if (!IsLoaded) return;
-            EnsureModelCreated();
-            Model.Replace(KeyValue, Data);
-            UpdateLimitValues();
-            InvalidatePlot();
-        }
-
-        private void UpdateLimitValues() {
-            var data = Data;
-            UpdateSteps(data?.MaxY() ?? 0d);
-            SetEmpty(!(data?.Count > 1 || data?.Count > 1));
-            Model.Axes.First(x => x.Position == AxisPosition.Bottom).Minimum = Data?.Select(x => x.X).Min() ?? 0d;
-        }
-
-        private LinearAxis _verticalAxis;
-        private LineSeries _valueSeries;
-
-        public static readonly DependencyProperty ValueUnitsProperty = DependencyProperty.Register(nameof(ValueUnits), typeof(string),
-                typeof(ValueGraphViewer), new PropertyMetadata(@"?", (o, e) => {
-                    var v = (ValueGraphViewer)o;
-                    v._valueUnits = (string)e.NewValue;
-                    v.RefreshUnitParams();
-                }));
-
-        private string _valueUnits = @"?";
-
-        public string ValueUnits {
-            get => _valueUnits;
-            set => SetValue(ValueUnitsProperty, value);
-        }
-
-        public static readonly DependencyProperty ValuePointDigitsProperty = DependencyProperty.Register(nameof(ValuePointDigits), typeof(int),
-                typeof(ValueGraphViewer), new PropertyMetadata(2, (o, e) => {
-                    var v = (ValueGraphViewer)o;
-                    v._valuePointDigits = (int)e.NewValue;
-                    v.RefreshUnitParams();
-                }));
-
-        private int _valuePointDigits = 2;
-
-        public int ValuePointDigits {
-            get => _valuePointDigits;
-            set => SetValue(ValuePointDigitsProperty, value);
-        }
-
-        private const string XUnit = "cm";
-
-        private void RefreshUnitParams() {
-            _verticalAxis.Title = ValueUnits;
-            _valueSeries.TrackerFormatString = $"[b]{{4:F{ValuePointDigits}}} {ValueUnits}[/b] at [b]{{2:F1}} {XUnit}[/b]";
-            InvalidatePlot();
-        }
-
-        protected override PlotModel CreateModel() {
-            _verticalAxis = new LinearAxis {
-                Key = KeyValue,
-                Title = ValueUnits,
-                TextColor = BaseTextColor,
-                TitleColor = BaseTextColor,
-                TicklineColor = BaseTextColor,
-                AxislineColor = BaseTextColor,
-                Minimum = 0d,
-                Position = AxisPosition.Left
-            };
-
-            _valueSeries = new CatmulLineSeries {
-                Color = BaseTextColor,
-                Title = "Values",
-                XAxisKey = KeyRadius,
-                YAxisKey = KeyValue,
-                TrackerKey = KeyValue,
-                TrackerFormatString = $"[b]{{4:F{ValuePointDigits}}} {ValueUnits}[/b] at [b]{{2:F1}} {XUnit}[/b]"
-            };
-
-            return new PlotModel {
-                TextColor = BaseTextColor,
-                PlotAreaBorderColor = OxyColors.Transparent,
-                LegendTextColor = BaseTextColor,
-                LegendPosition = LegendPosition.RightBottom,
-                Padding = new OxyThickness(0d),
-                LegendPadding = 0d,
-                TitlePadding = 0d,
-                LegendMargin = 0d,
-                PlotMargins = new OxyThickness(40d, 0d, 40d, 32d),
-                Axes = {
-                    new LinearAxis {
-                        Key = KeyRadius,
-                        Title = XUnit,
-                        TextColor = BaseTextColor,
-                        TitleColor = BaseTextColor,
-                        TicklineColor = BaseTextColor,
-                        AxislineColor = BaseTextColor,
-                        Minimum = 0d,
-                        Position = AxisPosition.Bottom
-                    },
-                    _verticalAxis
-                },
-                Series = { _valueSeries }
-            };
-        }
-
-        protected override void OnLoadedOverride() {
-            base.OnLoadedOverride();
-            EnsureModelCreated();
-            Model.Replace(KeyValue, Data);
-            UpdateLimitValues();
-            InvalidatePlot();
         }
     }
 }

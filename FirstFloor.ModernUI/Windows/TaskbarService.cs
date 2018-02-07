@@ -89,16 +89,15 @@ namespace FirstFloor.ModernUI.Windows {
 
         private static TaskbarProgress ValueFactory() {
             return ActionExtension.InvokeInMainThread(() => {
-                var window = Application.Current?.MainWindow;
+                var window = Application.Current?.MainWindow
+                        ?? Application.Current?.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible && x.ShowInTaskbar);
                 return window == null ? null : new TaskbarProgress(window);
             });
         }
 
         static TaskbarService() {
             // TODO: Why it’s here?
-            DpiAwareWindow.NewWindowCreated += (sender, args) => {
-                ((DpiAwareWindow)sender).Loaded += OnNewWindowLoaded;
-            };
+            DpiAwareWindow.NewWindowCreated += (sender, args) => { ((DpiAwareWindow)sender).Loaded += OnNewWindowLoaded; };
 
             void OnNewWindowLoaded(object o, RoutedEventArgs eventArgs) {
                 if (_lazyProgress.IsValueCreated) {

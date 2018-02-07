@@ -2,10 +2,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
-    xmlns:tyres="clr-namespace:AcManager.Tools.Tyres" mc:Ignorable="d" Title="Found tyres" SizeToContent="Manual" Width="920" Height="800" MinWidth="800"
-    MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
-    LocationAndSizeKey=".CarGenerateTyresDialog" ResizeMode="CanResizeWithGrip" d:DataContext="{d:DesignInstance di:CarGenerateTyresDialog+ViewModel}"
-    x:Name="This" DoNotAttachToWaitingDialogs="True">
+    xmlns:tyres="clr-namespace:AcManager.Tools.Tyres" xmlns:presets="clr-namespace:AcManager.Tools.Managers.Presets;assembly=AcManager.Tools" mc:Ignorable="d"
+    Title="Found tyres" SizeToContent="Manual" Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarGenerateTyresDialog" ResizeMode="CanResizeWithGrip"
+    d:DataContext="{d:DesignInstance di:CarGenerateTyresDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -145,6 +145,72 @@
           </mui:Cell>
         </Border>
       </DataTemplate>
+
+      <DataTemplate x:Key="TyresSetGeneratedDataTemplate" DataType="{x:Type tyres:TyresSet}">
+        <Border TextBlock.FontWeight="Normal" Height="120" Padding="8 4" Background="Transparent">
+
+          <!--tyres per place (draggable tyres)-->
+          <c:PropertiesGrid Columns="1" LabelWidth="60" VerticalSpacing="4">
+            <Border c:PropertiesGrid.Label="Front:" mui:Draggable.Data="{Binding Front}" Style="{StaticResource TyresCell}"
+                PreviewMouseLeftButtonDown="OnFrontSlotMouseDown">
+              <mui:Cell>
+                <DockPanel Margin="8 4">
+                  <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 2 4 -2" Stretch="Uniform"
+                      Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                      Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                  <TextBlock Text="{Binding Front.DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{Binding Front.DisplaySource}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" />
+                </DockPanel>
+                <Border Margin="-1" BorderThickness="1" BorderBrush="Transparent" ToolTip="{Binding Front.DisplayOffsetFrontDescription}">
+                  <TextBlock DataContext="{Binding Front.AppropriateLevelFront}" Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center"
+                      HorizontalAlignment="Right" Margin="4 0" Style="{StaticResource Label}" Foreground="Black"
+                      Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}" />
+                </Border>
+                <Border Margin="-1" BorderThickness="1" DataContext="{Binding DataContext.MovingTyres.AppropriateLevelFront, ElementName=This}"
+                    BorderBrush="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}"
+                    Visibility="{Binding (mui:Draggable.IsDestinationHighlighted), RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <TextBlock Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center" HorizontalAlignment="Right" Margin="4 -2 6 2"
+                      Style="{StaticResource Label}" Foreground="Black"
+                      Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                    <TextBlock.Effect>
+                      <DropShadowEffect Opacity="0.4" Color="Black" Direction="-90" BlurRadius="4" ShadowDepth="2" />
+                    </TextBlock.Effect>
+                  </TextBlock>
+                </Border>
+              </mui:Cell>
+            </Border>
+            <Border c:PropertiesGrid.Label="Rear:" mui:Draggable.Data="{Binding Rear}" Style="{StaticResource TyresCell}"
+                PreviewMouseLeftButtonDown="OnRearSlotMouseDown">
+              <mui:Cell>
+                <DockPanel Margin="8 4">
+                  <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 2 4 -2" Stretch="Uniform"
+                      Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                      Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                  <TextBlock Text="{Binding Rear.DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" />
+                  <TextBlock Text="{Binding Rear.DisplaySource}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" />
+                </DockPanel>
+                <Border Margin="-1" BorderThickness="1" BorderBrush="Transparent" ToolTip="{Binding Rear.DisplayOffsetRearDescription}">
+                  <TextBlock DataContext="{Binding Rear.AppropriateLevelRear}" Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center"
+                      HorizontalAlignment="Right" Margin="4 0" Style="{StaticResource Label}" Foreground="Black"
+                      Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}" />
+                </Border>
+                <Border Margin="-1" BorderThickness="1" DataContext="{Binding DataContext.MovingTyres.AppropriateLevelRear, ElementName=This}"
+                    BorderBrush="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}"
+                    Visibility="{Binding (mui:Draggable.IsDestinationHighlighted), RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <TextBlock Text="{Binding}" Padding="4 2" Width="20" TextAlignment="Center" HorizontalAlignment="Right" Margin="4 -2 6 2"
+                      Style="{StaticResource Label}" Foreground="Black"
+                      Background="{Binding Converter={x:Static di:CarReplaceTyresDialog.AppropriateLevelToColorConverter}}">
+                    <TextBlock.Effect>
+                      <DropShadowEffect Opacity="0.4" Color="Black" Direction="-90" BlurRadius="4" ShadowDepth="2" />
+                    </TextBlock.Effect>
+                  </TextBlock>
+                </Border>
+              </mui:Cell>
+            </Border>
+          </c:PropertiesGrid>
+
+        </Border>
+      </DataTemplate>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
 
@@ -177,16 +243,24 @@
     <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarGenerateTyresDialog" />
 
     <DockPanel Grid.Column="2" Margin="8 0 0 0">
+      <Border DockPanel.Dock="Bottom" Margin="0 20 0 0">
+        <ContentPresenter Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" Width="320"
+            VerticalAlignment="Center" HorizontalAlignment="Center" mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}" />
+      </Border>
+
       <TextBlock Text="Trained machines:" Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-      <ListBox mui:Draggable.Enabled="True" ScrollViewer.CanContentScroll="False" Style="{StaticResource VirtualizingListBox}">
+      <ListBox mui:Draggable.Enabled="True" ScrollViewer.CanContentScroll="False" Style="{StaticResource VirtualizingListBox}"
+          SelectedItem="{Binding SelectedMachine}">
         <ListBox.ItemTemplateSelector>
           <c:FlexibleDataTemplateSelector>
             <c:FlexibleDataTemplateSelector.DataTemplate>
-              <DataTemplate DataType="tyres:TyresMachineInfo">
-                <DockPanel>
-                  <TextBlock Text="{Binding DisplayName}" />
-                  <TextBlock Text="{Binding Description}" Style="{StaticResource Small}" Margin="0 2 0 0" />
-                </DockPanel>
+              <DataTemplate DataType="{x:Type di:CarGenerateTyresDialog+TyresMachinePresetInfo}">
+                <Border Padding="20">
+                  <DockPanel>
+                    <TextBlock Text="{Binding Preset.DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+                    <TextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="0 2 0 0" />
+                  </DockPanel>
+                </Border>
               </DataTemplate>
             </c:FlexibleDataTemplateSelector.DataTemplate>
           </c:FlexibleDataTemplateSelector>
@@ -197,7 +271,7 @@
           </ItemsPanelTemplate>
         </ItemsControl.ItemsPanel>-->
         <ItemsControl.Resources>
-          <CollectionViewSource x:Key="Rounds" Source="{Binding Machines}" />
+          <CollectionViewSource x:Key="Rounds" Source="{Binding NeuralMachines}" />
         </ItemsControl.Resources>
         <ItemsControl.ItemsSource>
           <CompositeCollection>

@@ -1,67 +1,67 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ButtonWithComboBox.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="ac:UserPresetsControl">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
-        <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
-        <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
-        <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
-        <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="MinWidth" Value="100" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="ac:UserPresetsControl">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
-                            <mui:HierarchicalComboBox.SelectedContent>
-                                <DataTemplate>
-                                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"
-                                            Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
-                                </DataTemplate>
-                            </mui:HierarchicalComboBox.SelectedContent>
-                        </mui:HierarchicalComboBox>
-                        <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
-                                Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                ToolTip="{x:Static ac:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static ac:ControlsStrings.Presets_Save}" />
-                    </Grid>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="Changed" Value="True">
-                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic"
-                                                Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        <Trigger Property="CurrentUserPreset" Value="{x:Null}">
-                            <Setter TargetName="PART_ComboBox" Property="SelectedContent">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic" Text="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-        <Style.Triggers>
-            <Trigger Property="ShowSaveButton" Value="True">
-                <Setter Property="MinWidth" Value="250" />
+  <Style TargetType="ac:UserPresetsControl">
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+    <Setter Property="FontSize" Value="{DynamicResource DefaultFontSize}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+    <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="MinWidth" Value="100" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ac:UserPresetsControl">
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <mui:HierarchicalComboBox x:Name="PART_ComboBox" ItemsSource="{TemplateBinding SavedPresetsGrouped}" FixedMode="False">
+              <mui:HierarchicalComboBox.SelectedContent>
+                <DataTemplate>
+                  <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Normal"
+                      Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
+                </DataTemplate>
+              </mui:HierarchicalComboBox.SelectedContent>
+            </mui:HierarchicalComboBox>
+            <Button Command="{Binding SaveCommand, RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}" Grid.Column="1" Margin="4 0 0 0"
+                Visibility="{TemplateBinding ShowSaveButton, Converter={StaticResource BooleanToVisibilityConverter}}"
+                ToolTip="{x:Static ac:ControlsStrings.Presets_Save_Tooltip}" Content="{x:Static ac:ControlsStrings.Presets_Save}" />
+          </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Changed" Value="True">
+              <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                <Setter.Value>
+                  <DataTemplate>
+                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic"
+                        Text="{Binding CurrentUserPreset.DisplayName, RelativeSource={RelativeSource AncestorType={x:Type ac:UserPresetsControl}}}" />
+                  </DataTemplate>
+                </Setter.Value>
+              </Setter>
             </Trigger>
-        </Style.Triggers>
-    </Style>
+            <Trigger Property="CurrentUserPreset" Value="{x:Null}">
+              <Setter TargetName="PART_ComboBox" Property="SelectedContent">
+                <Setter.Value>
+                  <DataTemplate>
+                    <TextBlock TextTrimming="CharacterEllipsis" FontStyle="Italic" Text="{x:Static ac:ControlsStrings.Presets_Unsaved}" />
+                  </DataTemplate>
+                </Setter.Value>
+              </Setter>
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <Trigger Property="ShowSaveButton" Value="True">
+        <Setter Property="MinWidth" Value="250" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
 </ResourceDictionary>

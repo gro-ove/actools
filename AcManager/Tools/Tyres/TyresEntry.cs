@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AcManager.Pages.Dialogs;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -92,7 +93,7 @@ namespace AcManager.Tools.Tyres {
         public TyresEntry OtherEntry { get; set; }
 
         private TyresEntry(string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection, string wearCurveData,
-                string performanceCurveData, bool rearTyres, Lazy<double?> rimRadiusLazy) {
+                string performanceCurveData, bool rearTyres, [CanBeNull] Lazy<double?> rimRadiusLazy) {
             SourceCarId = sourceCarId;
             _carObjectLazy = new Lazy<CarObject>(() => CarsManager.Instance.GetById(SourceCarId));
 
@@ -118,9 +119,9 @@ namespace AcManager.Tools.Tyres {
         public double RimRadius { get; private set; }
         public double Width { get; private set; }
 
-        private void ReadParameters(Lazy<double?> rimRadiusLazy) {
+        private void ReadParameters([CanBeNull] Lazy<double?> rimRadiusLazy) {
             Radius = MainSection.GetDouble("RADIUS", 0);
-            RimRadius = MainSection.GetDoubleNullable("RIM_RADIUS") ?? rimRadiusLazy.Value ?? -1;
+            RimRadius = MainSection.GetDoubleNullable("RIM_RADIUS") ?? rimRadiusLazy?.Value ?? -1;
             Width = MainSection.GetDouble("WIDTH", 0);
         }
 
@@ -310,6 +311,25 @@ namespace AcManager.Tools.Tyres {
         private static Lazy<double?> GetRimRadiusLazy(IniFile tyresIni, bool rear) {
             return new Lazy<double?>(() => tyresIni.GetSections(rear ? @"REAR" : @"FRONT", -1)
                                                    .Select(x => x.GetDoubleNullable("RIM_RADIUS")).FirstOrDefault(x => x != null));
+        }
+
+        public static TyresEntry CreateFromNeural(TyresEntry original, NeuralTyresEntry values) {
+            var mainSection = original.MainSection.Clone();
+            var thermalSection = original.ThermalSection.Clone();
+
+            foreach (var key in values.Keys) {
+                if (key.StartsWith(CarCreateTyresMachineDialog.ThermalPrefix)) {
+                    thermalSection.Set(key.Substring(CarCreateTyresMachineDialog.ThermalPrefix.Length), values[key]);
+                } else {
+                    mainSection.Set(key, values[key]);
+                }
+            }
+
+            mainSection.Set("NAME", $"{values.Name} Neural");
+            mainSection.Set("SHORT_NAME", $"{values.ShortName}-N");
+
+            return new TyresEntry(original.SourceCarId, values.Version, mainSection, thermalSection,
+                    original.PerformanceCurveData, original.WearCurveData, original.RearTyres, null);
         }
 
         [CanBeNull]

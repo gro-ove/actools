@@ -17,7 +17,7 @@
                 <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="{DynamicResource AsyncButton.ProgressBarOpacity}" />
               </ProgressBar.Foreground>
             </ProgressBar>
-            <Border x:Name="Chrome" Background="Transparent" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}">
+            <Border x:Name="Chrome" Background="Transparent" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" ClipToBounds="True">
               <c:AdornedControl x:Name="PART_Adorned">
                 <c:AdornedControl.AdornerContent>
                   <Border ClipToBounds="True" Margin="-1">
@@ -33,9 +33,16 @@
                     </Border>
                   </Border>
                 </c:AdornedControl.AdornerContent>
-                <DockPanel x:Name="PART_PaddingPanel" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" ClipToBounds="True">
-                  <Border Margin="{TemplateBinding Padding}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
-                    <Border Width="12" Height="12" Margin="0 -3 4 -4" DockPanel.Dock="Left" VerticalAlignment="Center" ClipToBounds="True">
+                <DockPanel x:Name="PART_PaddingPanel" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                  <DockPanel.RenderTransform>
+                    <TranslateTransform x:Name="PART_PaddingTranslate" X="0" />
+                  </DockPanel.RenderTransform>
+                  <Border VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <Border.RenderTransform>
+                      <TranslateTransform
+                          X="{Binding Padding.Left, Converter={StaticResource SubstractConverter}, ConverterParameter=4, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Border.RenderTransform>
+                    <Border Width="12" Height="12" Margin="0 -3 0 -4" DockPanel.Dock="Left" VerticalAlignment="Center" ClipToBounds="True">
                       <Border.LayoutTransform>
                         <ScaleTransform x:Name="PART_ProgressScale" ScaleX="0" />
                       </Border.LayoutTransform>
@@ -55,7 +62,7 @@
                     <c:Cell.RenderTransform>
                       <TranslateTransform x:Name="PART_ContentTranslate" Y="0" />
                     </c:Cell.RenderTransform>
-                    <Border Margin="0 -25 0 25">
+                    <Border Margin="0 -20 0 20">
                       <TextBlock Text="{Binding Progress.Message, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{DynamicResource ButtonText}"
                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
                     </Border>
@@ -97,11 +104,11 @@
                 </ObjectAnimationUsingKeyFrames>
               </Storyboard>
               <Storyboard x:Key="PaddingDown">
-                <ThicknessAnimation To="8 1 24 2" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingPanel" Storyboard.TargetProperty="Margin"
+                <DoubleAnimation To="-8" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
                     EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="PaddingUp">
-                <ThicknessAnimation To="16 1 16 2" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingPanel" Storyboard.TargetProperty="Margin"
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
                     EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="ShowProgressBar">
@@ -111,7 +118,7 @@
                 <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity" />
               </Storyboard>
               <Storyboard x:Key="ShowProgressMessage">
-                <DoubleAnimation To="25" Duration="0:0:0.22" Storyboard.TargetName="PART_ContentTranslate" Storyboard.TargetProperty="(TranslateTransform.Y)"
+                <DoubleAnimation To="20" Duration="0:0:0.22" Storyboard.TargetName="PART_ContentTranslate" Storyboard.TargetProperty="(TranslateTransform.Y)"
                     EasingFunction="{StaticResource StandardEase}" />
               </Storyboard>
               <Storyboard x:Key="HideProgressMessage">
@@ -122,7 +129,6 @@
           </ControlTemplate.Resources>
           <ControlTemplate.Triggers>
             <Trigger Property="IsProcessing" Value="True">
-              <!--<Setter TargetName="PART_ProgressRing" Property="Value" Value="True" />-->
               <Trigger.EnterActions>
                 <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
               </Trigger.EnterActions>
@@ -132,12 +138,6 @@
             </Trigger>
             <Trigger Property="Cancellable" Value="True">
               <Setter TargetName="PART_Adorned" Property="IsAdornerVisible" Value="True" />
-              <!--<Trigger.EnterActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
-              </Trigger.EnterActions>
-              <Trigger.ExitActions>
-                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
-              </Trigger.ExitActions>-->
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>

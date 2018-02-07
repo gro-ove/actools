@@ -131,7 +131,7 @@
 
     <DockPanel Margin="-4 12 -4 -20">
       <c:UserPresetsControl x:Name="UserPresetsControl" DockPanel.Dock="Bottom" UserPresetable="{Binding Settings}"
-          Style="{StaticResource UserPresetsControl.Compact.Share}" Margin="0 20 0 0" Width="208" />
+          Style="{StaticResource UserPresetsControl.Compact.Share}" Margin="0 20 0 0" Width="208" Tag="{Binding Settings.ShareCommand}" />
 
       <mui:LazySwitch Value="{Binding Mode}">
         <FrameworkElement.Resources>

@@ -99,9 +99,18 @@ namespace AcManager.Tools.Helpers {
 
         [NotNull]
         public static string NameFromId([NotNull] string id) {
+            return NameFromId(id, true);
+        }
+
+        [NotNull]
+        public static string NameFromId([NotNull] string id, bool titleCase) {
             id = SplitWordsRegex.Replace(id, " ");
             id = UpperAcronimRegex.Replace(id, x => x.Value.ToUpper());
-            id = UpperRegex.Replace(id, x => x.Value.ToUpper());
+            if (titleCase) {
+                id = UpperRegex.Replace(id, x => x.Value.ToUpper());
+            } else {
+                id = id.Length > 0 ? id.Substring(0, 1).ToUpper() + id.Substring(1) : string.Empty;
+            }
             return id;
         }
 
