@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -576,7 +577,8 @@ namespace AcManager.Pages.Dialogs {
 
                     var tyres = Cars.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0]).Select(x => x.Entry).Distinct(
                             TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
-                    GeneratedMachine = await TyresMachine.CreateAsync(tyres, options, new Progress(OnProgress), cancellation);
+                    var machine = await TyresMachine.CreateAsync(tyres, options, new Progress(OnProgress), cancellation);
+                    GeneratedMachine = machine;
                 } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t create tyres machine", e);
                 }
@@ -693,7 +695,7 @@ namespace AcManager.Pages.Dialogs {
             private static readonly double RadiusToDisplayMultiplier = 100;
 
             private void UpdatePlotModel() {
-                _updatePlotModelBusy.Yield(() => {
+                _updatePlotModelBusy.TaskDelay(async () => {
                     var machine = GeneratedMachine;
                     if (machine == null) {
                         SelectedOutputData = null;
@@ -706,37 +708,40 @@ namespace AcManager.Pages.Dialogs {
 
                     var key = SelectedOutputKey.Value;
                     UpdateOutputType(key, out var units, out var titleDigits, out var trackerDigits, out var multiplier);
+
+                    var list = new List<Tuple<string, double, ICollection<DataPoint>>>();
+                    var extra = new List<Tuple<string, double, double, DataPoint>>();
+                    var yRange = new DoubleRange();
+                    var testWidth = width.Denormalize(TestWidth.Saturate());
+                    var testProfile = width.Denormalize(TestProfile);
+
+                    await Task.Run(() => {
+                        if (ProfileRange == 1) {
+                            list.Add(GetPiece(testWidth, TestProfile, yRange));
+                        } else {
+                            for (var i = 0; i < ProfileRange; i++) {
+                                list.Add(GetPiece(testWidth, (i + 1d) / (ProfileRange + 1d), yRange));
+                            }
+                        }
+
+                        for (var i = _tyres.Length - 1; i >= 0; i--) {
+                            var tyre = _tyres[i];
+                            var tyreProfile = tyre.Radius - tyre.RimRadius;
+                            var value = (key.StartsWith(ThermalPrefix)
+                                    ? tyre.ThermalSection.GetDouble(key.Substring(8), yRange.Minimum)
+                                    : tyre.MainSection.GetDouble(key, yRange.Minimum)) * multiplier;
+                            yRange.Update(value);
+                            if (Math.Abs(testWidth - tyre.Width) < 0.01 && (ProfileRange > 1 || Math.Abs(testProfile - tyreProfile) < 0.01)) {
+                                extra.Add(Tuple.Create(tyre.DisplaySource, tyreProfile * RadiusToDisplayMultiplier,
+                                        ProfileRange > 1 ? profile.Normalize(tyreProfile) : -1d,
+                                        new DataPoint(tyre.Radius * RadiusToDisplayMultiplier, value)));
+                            }
+                        }
+                    });
+
                     SelectedOutputUnits = units;
                     SelectedOutputTitleDigits = titleDigits;
                     SelectedOutputTrackerDigits = trackerDigits;
-
-                    var list = new List<Tuple<string, double, ICollection<DataPoint>>>();
-                    var yRange = new DoubleRange();
-                    var testWidth = width.Denormalize(TestWidth.Saturate());
-                    if (ProfileRange == 1) {
-                        list.Add(GetPiece(testWidth, TestProfile, yRange));
-                    } else {
-                        for (var i = 0; i < ProfileRange; i++) {
-                            list.Add(GetPiece(testWidth, (i + 1d) / (ProfileRange + 1d), yRange));
-                        }
-                    }
-
-                    var extra = new List<Tuple<string, double, double, DataPoint>>();
-                    var testProfile = width.Denormalize(TestProfile);
-                    for (var i = _tyres.Length - 1; i >= 0; i--) {
-                        var tyre = _tyres[i];
-                        var tyreProfile = tyre.Radius - tyre.RimRadius;
-                        var value = (key.StartsWith(ThermalPrefix)
-                                ? tyre.ThermalSection.GetDouble(key.Substring(8), yRange.Minimum)
-                                : tyre.MainSection.GetDouble(key, yRange.Minimum)) * multiplier;
-                        yRange.Update(value);
-                        if (Math.Abs(testWidth - tyre.Width) < 0.01 && (ProfileRange > 1 || Math.Abs(testProfile - tyreProfile) < 0.01)) {
-                            extra.Add(Tuple.Create(tyre.DisplaySource, tyreProfile * RadiusToDisplayMultiplier,
-                                    ProfileRange > 1 ? profile.Normalize(tyreProfile) : -1d,
-                                    new DataPoint(tyre.Radius * RadiusToDisplayMultiplier, value)));
-                        }
-                    }
-
                     SelectedOutputData = new TyresMachineGraphData {
                         List = list,
                         ExtraPoints = extra,
@@ -746,7 +751,7 @@ namespace AcManager.Pages.Dialogs {
                     };
 
                     Tuple<string, double, ICollection<DataPoint>> GetPiece(double actualWidth, double profileNormalized, DoubleRange valueRange) {
-                        var result = new DataPoint[(int)(250 / Math.Sqrt(ProfileRange))];
+                        var result = new DataPoint[(int)(GraphSteps / Math.Sqrt(ProfileRange))];
                         for (var i = 0; i < result.Length; i++) {
                             var w = actualWidth;
                             var r = radius.Denormalize((double)i / (result.Length - 1));
@@ -759,7 +764,7 @@ namespace AcManager.Pages.Dialogs {
                         return Tuple.Create($"Profile: {profile.Denormalize(profileNormalized) * 100:F2} cm",
                                 profileNormalized, (ICollection<DataPoint>)result);
                     }
-                });
+                }, 10);
             }
 
             private readonly StoredValue<double> _testWidth = Stored.Get("/CreateTyres.TestWidth", 0.5);
@@ -811,6 +816,19 @@ namespace AcManager.Pages.Dialogs {
                     value = value.Clamp(1, 400);
                     if (Equals(value, _profileRange.Value)) return;
                     _profileRange.Value = value;
+                    OnPropertyChanged();
+                    UpdatePlotModel();
+                }
+            }
+
+            private readonly StoredValue<int> _graphSteps = Stored.Get("/CreateTyres.GraphSteps", 150);
+
+            public int GraphSteps {
+                get => _graphSteps.Value;
+                set {
+                    value = value.Clamp(50, 5000);
+                    if (Equals(value, _graphSteps.Value)) return;
+                    _graphSteps.Value = value;
                     OnPropertyChanged();
                     UpdatePlotModel();
                 }

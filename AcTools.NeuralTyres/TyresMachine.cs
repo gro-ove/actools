@@ -146,8 +146,8 @@ namespace AcTools.NeuralTyres {
             }
         }
 
-        private TyresMachine(string filename) : this(File.OpenRead(filename)) {}
-        private TyresMachine(byte[] data) : this(new MemoryStream(data)) {}
+        private TyresMachine(string filename) : this(File.OpenRead(filename)) { }
+        private TyresMachine(byte[] data) : this(new MemoryStream(data)) { }
 
         public void Save(Stream stream) {
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
@@ -259,9 +259,8 @@ namespace AcTools.NeuralTyres {
                     }
                 }
 
-                network.Train(inputs, flipped, progress == null ? null : new Progress(v => {
-                    progress.Report(Tuple.Create("Combined", (double?)v));
-                }), cancellationToken);
+                network.Train(inputs, flipped, progress == null ? null : new Progress(v => { progress.Report(Tuple.Create("Combined", (double?)v)); }),
+                        cancellationToken);
             }
         }
 
@@ -305,6 +304,12 @@ namespace AcTools.NeuralTyres {
             }
         }
 
+        private void PrepareInputs(double[] input) {
+            for (var i = 0; i < _options.InputKeys.Length; i++) {
+                input[i] = _inputNormalizations[i].Normalize(input[i]);
+            }
+        }
+
         public NeuralTyresEntry Conjure(params double[] input) {
             var name = Sources.Select(x => x.Name).GroupBy(x => x).MaxEntry(x => x.Count()).Key;
             var shortName = Sources.Select(x => x.ShortName).GroupBy(x => x).MaxEntry(x => x.Count()).Key;
@@ -332,6 +337,8 @@ namespace AcTools.NeuralTyres {
         }
 
         public double Conjure(string outputKey, params double[] input) {
+            PrepareInputs(input);
+
             var keyIndex = _outputKeys.IndexOf(outputKey);
             if (keyIndex == -1) {
                 throw new Exception($"Not supported key: {keyIndex}");

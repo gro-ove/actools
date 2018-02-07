@@ -260,13 +260,18 @@
               <Slider Minimum="0" Maximum="1" Value="{Binding TestWidth}" TickPlacement="None" />
             </DockPanel>
             <DockPanel>
-              <mui:ValueLabel Value="{Binding ProfileRange}" mui:BetterTextBox.Mode="Number" Content="Profile samples" Width="200" Padding="0"
+              <mui:ValueLabel Value="{Binding ProfileRange}" mui:BetterTextBox.Mode="Number" Content="Profile" Width="200" Padding="0"
                   Postfix="{Binding ProfileRange, Converter={StaticResource PluralizingConverter}, ConverterParameter=' sample'}" />
               <Slider Minimum="1" Maximum="9" Value="{Binding ProfileRange}" TickPlacement="None" />
             </DockPanel>
-            <DockPanel IsEnabled="{Binding ProfileRange, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter=1}">
+            <DockPanel Visibility="{Binding ProfileRange, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=1}">
               <mui:ValueLabel Value="{Binding DisplayTestProfile}" mui:BetterTextBox.Mode="Number" Postfix=" cm" Content="Profile" Width="200" Padding="0" />
               <Slider Minimum="0" Maximum="1" Value="{Binding TestProfile}" TickPlacement="None" />
+            </DockPanel>
+            <DockPanel>
+              <mui:ValueLabel Value="{Binding GraphSteps}" mui:BetterTextBox.Mode="Number" Content="Interpolate" Width="200" Padding="0"
+                  Postfix="{Binding GraphSteps, Converter={StaticResource PluralizingConverter}, ConverterParameter=' sample'}" />
+              <Slider Minimum="100" Maximum="900" TickFrequency="50" IsSnapToTickEnabled="True" Value="{Binding GraphSteps}" TickPlacement="None" />
             </DockPanel>
           </mui:SpacingStackPanel>
 

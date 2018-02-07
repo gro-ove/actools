@@ -14,7 +14,7 @@ namespace AcTools.NeuralTyres.Implementations {
 
         static FannNetwork() {
             // TODO!
-            Kernel32.LoadLibrary(@"D:\Documents\LINQPad Queries\New folder\fanndouble.dll");
+            Kernel32.LoadLibrary(@"fanndouble.dll");
         }
 
         private NeuralTyresOptions _options = NeuralTyresOptions.Default;

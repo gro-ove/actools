@@ -435,7 +435,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public static async Task<bool> Run(CarObject target) {
+        public static async Task<bool> RunAsync(CarObject target) {
             try {
                 var sets = TyresSet.GetSets(target).ToList();
                 if (sets.Count == 0) {

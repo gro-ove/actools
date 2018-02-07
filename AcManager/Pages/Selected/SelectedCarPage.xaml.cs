@@ -313,7 +313,7 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _replaceTyresCommand;
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
-                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
+                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.RunAsync(SelectedObject)));
         }
 
         private string _id;

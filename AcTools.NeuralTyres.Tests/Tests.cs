@@ -38,24 +38,28 @@ namespace AcTools.NeuralTyres.Tests {
             }
         }
 
-        // [Test]
+        [Test]
         public void Main() {
             var carsFromWebApp = new[] {
-                "lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",
+                /*"lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",
                 "abarth500", "lotus_elise_sc", "alfa_romeo_giulietta_qv", "bmw_m3_e30", "audi_sport_quattro",
                 "audi_a1s1", "nissan_skyline_r34", "ford_mustang_2015", "bmw_1m", "bmw_m4", "bmw_m4",
                 "porsche_991_carrera_s", "porsche_718_boxster_s", "porsche_718_boxster_s", "corvette_c7_stingray",
-                "porsche_991_carrera_s"
+                "porsche_991_carrera_s"*/
+
+                "ks_abarth_595ss_s2", "ks_audi_r8_plus"
             };
 
             var tyres = Directory.GetDirectories(@"D:\Games\Assetto Corsa\content\cars", "*")
                                  .Where(x => carsFromWebApp.Contains(Path.GetFileName(x)))
                                  .Select(DataWrapper.FromCarDirectory).SelectMany(NeuralTyresEntry.Get)
                                  .Where(x => x.Version == 10).ToList();
-            var filteredTyres = tyres.Where(x => x.Name == "Semislicks").ToList();
+            var filteredTyres = tyres.Where(x => x.Name == "Street").ToList();
             // filteredTyres.OrderBy(x => x.Values.GetDouble("RADIUS", 0d)).Select(x => $"{x.Values.GetDouble("RADIUS", 0d)}={x.Values.GetDouble(TestKey, 0d)}").JoinToString("; ").Dump();
 
-            var options = new NeuralTyresOptions();
+            var options = new NeuralTyresOptions {
+                OverrideOutputKeys = new[]{ "ANGULAR_INERTIA" }
+            };
             var checksum = (filteredTyres.GetEnumerableHashCode() * 397) ^ options.GetHashCode();
             var cacheFilename = Path.Combine("U:\\nt-cache", BitConverter.GetBytes(checksum).ToHexString().ToLowerInvariant() + ".zip");
             Console.WriteLine(checksum);
@@ -66,7 +70,7 @@ namespace AcTools.NeuralTyres.Tests {
             } else {
                 neural = TyresMachine.CreateAsync(filteredTyres, options).Result;
                 FileUtils.EnsureFileDirectoryExists(cacheFilename);
-                neural?.Save(cacheFilename);
+                // neural?.Save(cacheFilename);
             }
 
             if (neural == null) return;
@@ -83,6 +87,7 @@ namespace AcTools.NeuralTyres.Tests {
                             var r = radius.Denormalize(i);
                             var u = profile.Denormalize(i);
                             s.Points.Add(new DataPoint(r, neural.Conjure(w, r, u)[testKey]));
+                            // s.Points.Add(new DataPoint(r, neural.Conjure(testKey, w, r, u)));
                         }
 
                         s.Color = new[] { Color.Red, Color.Orange, Color.Brown, Color.Lime, Color.Cyan, Color.Blue, Color.Magenta }[x];
@@ -95,7 +100,7 @@ namespace AcTools.NeuralTyres.Tests {
             Console.WriteLine(neural.Conjure(width.Denormalize(0.5), radius.Denormalize(0.5), profile.Denormalize(0.5))[testKey]);
         }
 
-        [Test]
+        // [Test]
         public void MainSingleNet() {
             var carsFromWebApp = new[] {
                 "lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",

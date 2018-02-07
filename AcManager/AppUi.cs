@@ -113,7 +113,7 @@ namespace AcManager {
 
 #if DEBUG
                     //await CarGenerateTyresDialog.RunAsync(CarsManager.Instance.GetById("bmw_m5_e34"));
-                    // await CarCreateTyresMachineDialog.RunAsync();
+                    //await CarCreateTyresMachineDialog.RunAsync();
                     //return;
 #endif
 
