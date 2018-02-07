@@ -8,6 +8,10 @@ using AcTools.Utils.Physics;
 
 namespace AcTools.NeuralTyres.Data {
     public class NeuralTyresEntry : NeuralTyresSource {
+        public static readonly string[] TemporaryKeys = {
+            "PROFILE"
+        };
+
         public readonly int Version;
 
         private readonly Dictionary<string, double> _values;

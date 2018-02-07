@@ -147,10 +147,10 @@
       </DataTemplate>
 
       <DataTemplate x:Key="TyresSetGeneratedDataTemplate" DataType="{x:Type tyres:TyresSet}">
-        <Border TextBlock.FontWeight="Normal" Height="120" Padding="8 4" Background="Transparent">
+        <Border TextBlock.FontWeight="Normal" Height="120" Padding="8 4">
 
           <!--tyres per place (draggable tyres)-->
-          <c:PropertiesGrid Columns="1" LabelWidth="60" VerticalSpacing="4">
+          <c:PropertiesGrid Columns="1" LabelWidth="60" VerticalSpacing="4" VerticalAlignment="Center">
             <Border c:PropertiesGrid.Label="Front:" mui:Draggable.Data="{Binding Front}" Style="{StaticResource TyresCell}"
                 PreviewMouseLeftButtonDown="OnFrontSlotMouseDown">
               <mui:Cell>
@@ -243,10 +243,20 @@
     <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarGenerateTyresDialog" />
 
     <DockPanel Grid.Column="2" Margin="8 0 0 0">
-      <Border DockPanel.Dock="Bottom" Margin="0 20 0 0">
+      <!--Visibility="{Binding GeneratedTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"-->
+
+      <Canvas x:Name="TestElement" DockPanel.Dock="Bottom" Margin="0 20 0 0" Height="120" Width="600" HorizontalAlignment="Center" Background="Black">
+        <Border x:Name="ScanAnimationPiece" Background="{DynamicResource Accent}" Width="8" Height="120" />
+        <Border x:Name="GeneratedSet" Width="320" RenderTransformOrigin="0.5 0.5" Background="DarkSlateGray" VerticalAlignment="Top">
+          <ContentPresenter Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" mui:Draggable.Enabled="True"
+              mui:Draggable.Data="{Binding GeneratedTyres}" />
+        </Border>
+      </Canvas>
+      <!--<Border DockPanel.Dock="Bottom" Margin="0 20 0 0"
+          Visibility="{Binding GeneratedTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
         <ContentPresenter Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" Width="320"
             VerticalAlignment="Center" HorizontalAlignment="Center" mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}" />
-      </Border>
+      </Border>-->
 
       <TextBlock Text="Trained machines:" Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Margin="0 0 0 4" />
       <ListBox mui:Draggable.Enabled="True" ScrollViewer.CanContentScroll="False" Style="{StaticResource VirtualizingListBox}"

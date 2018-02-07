@@ -6,18 +6,22 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using System.Xml.Schema;
+using Windows.UI.Popups;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
+using AcManager.Pages.Drive;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
@@ -40,6 +44,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using OxyPlot;
 using SlimDX.DXGI;
@@ -58,11 +63,12 @@ namespace AcManager.Pages.Dialogs {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public CarCreateTyresMachineDialog(List<CarWithTyres> list) {
+        public CarCreateTyresMachineDialog([CanBeNull] CarObject carToTest, List<CarWithTyres> list) {
             DataContext = new ViewModel(list);
             InitializeComponent();
             Buttons = new[] {
                 CreateExtraDialogButton(AppStrings.Toolbar_Save, Model.SaveCommand, true),
+                carToTest == null ? null : CreateExtraDialogButton(AppStrings.Common_Test, Model.TestCommand.Bind(carToTest), true),
                 CancelButton
             };
 
@@ -620,6 +626,7 @@ namespace AcManager.Pages.Dialogs {
                     var outputKey = SelectedOutputKey;
                     OutputKeys.ReplaceEverythingBy_Direct(value?.OutputKeys.Select(GetOutputKeyEntry).ToArray() ?? new SettingEntry[0]);
                     SelectedOutputKey = outputKey;
+                    _testCommand?.RaiseCanExecuteChanged();
                     _saveCommand?.RaiseCanExecuteChanged();
                 }
             }
@@ -870,6 +877,31 @@ namespace AcManager.Pages.Dialogs {
                 }
             }*/
 
+            private AsyncCommand<CarObject> _testCommand;
+
+            public AsyncCommand<CarObject> TestCommand => _testCommand ?? (_testCommand = new AsyncCommand<CarObject>(async c => {
+                try {
+                    var machine = GeneratedMachine;
+                    if (c?.AcdData == null || machine == null) return;
+
+                    var data = c.AcdData;
+                    var toBackup = System.IO.Path.Combine(c.Location, data.IsPacked ? DataWrapper.PackedFileName : DataWrapper.UnpackedDirectoryName);
+                    var backuped = toBackup.ApartFromLast(DataWrapper.PackedFileExtension) + "_cm_nt_backup"
+                            + (data.IsPacked ? DataWrapper.PackedFileExtension : "");
+                    if (FileUtils.Exists(toBackup) && !FileUtils.Exists(backuped)) {
+                        if (ShowMessage("Original tyres will be removed, but backup for car’s data will be made. Are you sure?", "Test tyres",
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+
+                        FileUtils.CopyRecursive(toBackup, backuped);
+                    }
+
+                    machine.CreateTyresSet(c).Save(machine.TyresVersion, c, null, null, true);
+                    await QuickDrive.RunAsync(c);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t test tyres", e);
+                }
+            }, c => c != null && GeneratedMachine?.OutputKeys.Count > 1));
+
             private DelegateCommand _saveCommand;
 
             public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
@@ -926,7 +958,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [ItemCanBeNull]
-        public static async Task<TyresMachineInfo> RunAsync() {
+        public static async Task<TyresMachineInfo> RunAsync([CanBeNull] CarObject testCar) {
             try {
                 List<CarWithTyres> list;
                 using (var waiting = WaitingDialog.Create(ControlsStrings.Common_Loading)) {
@@ -944,7 +976,7 @@ namespace AcManager.Pages.Dialogs {
                             var car = c[i];
                             waiting.Report(car.DisplayName, i, c.Count);
                             try {
-                                var tyres = TyresSet.GetSets(car).SelectMany(x => new[] { new CarTyres(x.Front), new CarTyres(x.Rear) }).ToList();
+                                var tyres = car.GetTyresSets().SelectMany(x => new[] { new CarTyres(x.Front), new CarTyres(x.Rear) }).ToList();
                                 if (tyres.Count > 0 && tyres[0].Entry.Version == OptionSupportedVersion) {
                                     l.Add(new CarWithTyres(car, tyres));
                                 }
@@ -960,7 +992,7 @@ namespace AcManager.Pages.Dialogs {
                     cancellation.ThrowIfCancellationRequested();
                 }
 
-                var dialog = new CarCreateTyresMachineDialog(list) {
+                var dialog = new CarCreateTyresMachineDialog(testCar, list) {
                     Owner = null,
                     DoNotAttachToWaitingDialogs = true
                 };

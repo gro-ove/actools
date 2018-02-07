@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.IO.Compression;
@@ -38,6 +39,7 @@ using FirstFloor.ModernUI.Windows.Attached;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using SlimDX;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
@@ -63,6 +65,112 @@ namespace AcManager.Pages.Dialogs {
                     }
                 }))
             };
+
+#if DEBUG
+            Loaded += (sender, args) => AnimateResult();
+#else
+            TestElement.Visibility = Visibility.Collapsed;
+#endif
+        }
+
+        private class PseudoPhysics {
+            private Point _position, _velocity, _size;
+            private Rect _bounds;
+            private double _rotation, _angularVelocity;
+            private readonly TranslateTransform _translate;
+            private readonly RotateTransform _rotate;
+
+            public PseudoPhysics(FrameworkElement set) {
+                var parent = (FrameworkElement)set.Parent;
+                _size = new Point(set.ActualWidth, set.ActualHeight);
+                _bounds = new Rect(_size.X / 2, 0, parent.ActualWidth, parent.ActualHeight + _size.Y / 2);
+
+                _position = new Point(_bounds.Width / 2d, -500);
+                _rotation = MathUtils.Random(-35d, 35d).ToRadians();
+                _angularVelocity = MathUtils.Random(-0.935d, 0.935d).ToRadians()/60;
+
+                _translate = new TranslateTransform();
+                _rotate = new RotateTransform();
+                set.RenderTransform = new TransformGroup { Children = { _rotate, _translate } };
+            }
+
+            private void PhysicsStep(double dt) {
+                dt = dt.Clamp(0.001, 1) * 60;
+                _velocity.Y += 0.3 * dt;
+                AddTo(_velocity, dt, ref _position);
+                AddTo(_velocity, -0.003, ref _velocity);
+                _rotation += _angularVelocity * dt;
+                _angularVelocity -= _angularVelocity * (0.05 * dt).Saturate();
+                double s = Math.Sin(_rotation), c = Math.Cos(_rotation);
+                var o = new Point();
+                var h = 0;
+                TestPoint(s, c, -0.5, -0.5, ref o, ref h);
+                TestPoint(s, c, 0.5, -0.5, ref o, ref h);
+                TestPoint(s, c, -0.5, 0.5, ref o, ref h);
+                TestPoint(s, c, 0.5, 0.5, ref o, ref h);
+                AddTo(o, h > 0 ? 1d / h : 0, ref _position);
+            }
+
+            private void TestPoint(double s, double c, double x, double y, ref Point o, ref int h) {
+                var local = Rotate(_size);
+                double xW = local.X + _position.X, yW = local.Y + _position.Y;
+                var bound = xW < _bounds.Left ? _bounds.Left : xW > _bounds.Right ? _bounds.Right : 0;
+                if (bound != 0) {
+                    Resolve(new Point(bound - _position.X, local.Y), new Point(bound - xW, 0), ref o, ref h);
+                }
+                if (yW > _bounds.Bottom) {
+                    Resolve(new Point(local.X, _bounds.Bottom - _position.Y), new Point(0, _bounds.Bottom - yW), ref o, ref h);
+                }
+                Point Rotate(Point p) => new Point(p.X * x * c - p.Y * y * s, p.X * x * s + p.Y * y * c);
+            }
+
+            private void Resolve(Point l, Point w, ref Point o, ref int h) {
+                h++;
+                AddTo(w, 1, ref o);
+                AddTo(w, 1, ref _velocity);
+                _angularVelocity += Cross(l, w) / 3e4;
+                double Cross(Point a, Point b) => a.X * b.Y - a.Y * b.X;
+            }
+
+            private static void AddTo(Point p, double m, ref Point t) {
+                t.X += p.X * m;
+                t.Y += p.Y * m;
+            }
+
+            public void OnTick(double dt) {
+                for (var i = 0; i < 10; i++) {
+                    PhysicsStep(dt / 10);
+                }
+                _translate.X = _position.X - _size.X;
+                _translate.Y = _position.Y - _size.Y;
+                _rotate.Angle = _rotation.ToDegrees();
+            }
+        }
+
+        private async void AnimateResult() {
+            var physics = new PseudoPhysics(GeneratedSet);
+            var scanLine = ScanAnimationPiece;
+            var scanTranslate = new TranslateTransform();
+            ScanAnimationPiece.RenderTransform = scanTranslate;
+
+            var time = TimeSpan.Zero;
+            var stopwatch = Stopwatch.StartNew();
+            void OnRendering(object sender, RenderingEventArgs e) {
+                if (time == e.RenderingTime) return;
+                var dt = stopwatch.Elapsed.TotalSeconds;
+                stopwatch.Restart();
+
+                physics.OnTick(dt);
+
+                scanTranslate.X += dt * 200;
+                if (scanTranslate.X > 400) {
+                    scanTranslate.X = 0;
+                }
+            }
+
+            await Task.Delay(100);
+            CompositionTargetEx.Rendering += OnRendering;
+            this.OnActualUnload(() => { CompositionTargetEx.Rendering -= OnRendering; });
         }
 
         public class TyresMachinePresetInfo : NotifyPropertyChanged {
@@ -114,13 +222,13 @@ namespace AcManager.Pages.Dialogs {
             public ViewModel(CarObject car) {
                 Car = car;
 
-                Sets = new ChangeableObservableCollection<TyresSet>(TyresSet.GetSets(car));
+                Sets = new ChangeableObservableCollection<TyresSet>(car.GetTyresSets());
                 if (Sets.Count == 0) {
                     throw new Exception("Can’t detect current tyres params");
                 }
 
                 SetsVersion = Sets[0].Front.Version;
-                _originalTyresSet = TyresSet.GetOriginal(car) ?? Sets[0];
+                _originalTyresSet = car.GetOriginalTyresSet() ?? Sets[0];
                 OriginalTyresFront = _originalTyresSet.Front;
                 OriginalTyresRear = _originalTyresSet.Rear;
 
@@ -161,24 +269,14 @@ namespace AcManager.Pages.Dialogs {
             public AsyncCommand GenerateTyresCommand => _generateTyresCommand ?? (_generateTyresCommand = new AsyncCommand(async () => {
                 try {
                     IsGenerating = true;
-                    GeneratedTyres = await Task.Run(() => {
-                        var data = SelectedMachine.Preset.ReadBinaryData();
-                        var machine = TyresMachine.LoadFrom(data);
-                        var front = CreateTyresEntry(machine, OriginalTyresFront);
-                        var rear = CreateTyresEntry(machine, OriginalTyresRear);
-                        return new TyresSet(front, rear);
-                    });
+                    GeneratedTyres = await Task.Run(() => TyresMachine.LoadFrom(SelectedMachine.Preset.ReadBinaryData())
+                                                                      .CreateTyresSet(OriginalTyresFront, OriginalTyresRear));
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t generate tyres", e);
                 } finally {
                     IsGenerating = false;
                 }
             }, () => SelectedMachine != null));
-
-            private static TyresEntry CreateTyresEntry(TyresMachine machine, TyresEntry original) {
-                var values = machine.Conjure(original.Width, original.Radius, original.Radius - original.RimRadius);
-                return TyresEntry.CreateFromNeural(original, values);
-            }
 
             private bool _isGenerating;
 
@@ -291,88 +389,8 @@ namespace AcManager.Pages.Dialogs {
 
             private DelegateCommand _saveCommand;
 
-            public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
-                try {
-                    if (Sets.Count == 0) {
-                        throw new Exception("At least one set is required");
-                    }
-
-                    if (!Sets.All(x => x.Front.Version == SetsVersion && x.Rear.Version == SetsVersion)) {
-                        throw new Exception("Versions are different");
-                    }
-
-                    var data = Car.AcdData;
-                    if (data == null) {
-                        throw new Exception("Data is unreadable");
-                    }
-
-                    var tyresIni = data.GetIniFile("tyres.ini");
-                    tyresIni["HEADER"].Set("VERSION", SetsVersion);
-
-                    var sets = Sets.Distinct(TyresSet.TyresSetComparer).ToList();
-                    var defaultIndex = sets.FindIndex(x => x.DefaultSet);
-                    tyresIni["COMPOUND_DEFAULT"].Set("INDEX", defaultIndex == -1 ? 0 : defaultIndex);
-
-                    tyresIni["__CM_FRONT_ORIGINAL"] = OriginalTyresFront.MainSection;
-                    tyresIni["__CM_THERMAL_FRONT_ORIGINAL"] = OriginalTyresFront.ThermalSection;
-                    tyresIni["__CM_REAR_ORIGINAL"] = OriginalTyresRear.MainSection;
-                    tyresIni["__CM_THERMAL_REAR_ORIGINAL"] = OriginalTyresRear.ThermalSection;
-
-                    tyresIni.SetSections("FRONT", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_wearcurve_front_{i}.lut");
-                        curve.Content = x.Front.WearCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Front.MainSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Front.SourceCarId
-                        };
-                    }));
-
-                    tyresIni.SetSections("REAR", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_wearcurve_rear_{i}.lut");
-                        curve.Content = x.Rear.WearCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Rear.MainSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Rear.SourceCarId
-                        };
-                    }));
-
-                    tyresIni.SetSections("THERMAL_FRONT", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_perfcurve_front_{i}.lut");
-                        curve.Content = x.Front.PerformanceCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Front.ThermalSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["PERFORMANCE_CURVE"] = curve.Name
-                        };
-                    }));
-
-                    tyresIni.SetSections("THERMAL_REAR", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_perfcurve_rear_{i}.lut");
-                        curve.Content = x.Rear.PerformanceCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Rear.ThermalSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["PERFORMANCE_CURVE"] = curve.Name
-                        };
-                    }));
-
-                    tyresIni.Save(true);
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t save changes", e);
-                }
-            }, () => Changed));
+            public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand =
+                    new DelegateCommand(() => Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear), () => Changed));
 
             private void OnSetsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
                 Changed = true;
@@ -574,7 +592,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private async void OnNewTyresMachineButtonClick(object sender, RoutedEventArgs e) {
-            var machine = await CarCreateTyresMachineDialog.RunAsync();
+            var machine = await CarCreateTyresMachineDialog.RunAsync(Model.Car);
             if (machine != null) {
                 Model.RefreshNeuralMachines();
             }

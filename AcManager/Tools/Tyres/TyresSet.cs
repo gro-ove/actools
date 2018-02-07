@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using AcManager.Tools.Objects;
-using AcTools.DataFile;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
@@ -150,29 +147,5 @@ namespace AcManager.Tools.Tyres {
         public const string DraggableFormat = "X-TyresSet";
 
         string IDraggable.DraggableFormat => DraggableFormat;
-
-        [CanBeNull]
-        public static TyresSet GetOriginal(CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return null;
-
-            var front = TyresEntry.Create(car, @"__CM_FRONT_ORIGINAL", true);
-            var rear = TyresEntry.Create(car, @"__CM_REAR_ORIGINAL", true);
-            if (front != null && rear != null) {
-                return new TyresSet(front, rear);
-            } else {
-                return null;
-            }
-        }
-
-        public static IEnumerable<TyresSet> GetSets(CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return new TyresSet[0];
-
-            var defaultSet = tyres["COMPOUND_DEFAULT"].GetInt("INDEX", 0);
-            return TyresEntry.GetTyres(car).Where(x => x.Item1 != null && x.Item2 != null).Select((x, i) => new TyresSet(x.Item1, x.Item2) {
-                DefaultSet = i == defaultSet
-            });
-        }
     }
 }

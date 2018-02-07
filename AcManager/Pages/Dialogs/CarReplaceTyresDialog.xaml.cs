@@ -15,7 +15,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Tyres;
-using AcTools.DataFile;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -115,7 +114,7 @@ namespace AcManager.Pages.Dialogs {
 
                 SetsVersion = firstSet.Front.Version;
 
-                _originalTyresSet = TyresSet.GetOriginal(car) ?? firstSet;
+                _originalTyresSet = car.GetOriginalTyresSet() ?? firstSet;
                 OriginalTyresFront = _originalTyresSet.Front;
                 OriginalTyresRear = _originalTyresSet.Rear;
 
@@ -181,86 +180,7 @@ namespace AcManager.Pages.Dialogs {
             private DelegateCommand _saveCommand;
 
             public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
-                try {
-                    if (Sets.Count == 0) {
-                        throw new Exception("At least one set is required");
-                    }
-
-                    if (!Sets.All(x => x.Front.Version == SetsVersion && x.Rear.Version == SetsVersion)) {
-                        throw new Exception("Versions are different");
-                    }
-
-                    var data = Car.AcdData;
-                    if (data == null) {
-                        throw new Exception("Data is unreadable");
-                    }
-
-                    var tyresIni = data.GetIniFile("tyres.ini");
-                    tyresIni["HEADER"].Set("VERSION", SetsVersion);
-
-                    var sets = Sets.Distinct(TyresSet.TyresSetComparer).ToList();
-                    var defaultIndex = sets.FindIndex(x => x.DefaultSet);
-                    tyresIni["COMPOUND_DEFAULT"].Set("INDEX", defaultIndex == -1 ? 0 : defaultIndex);
-
-                    tyresIni["__CM_FRONT_ORIGINAL"] = OriginalTyresFront.MainSection;
-                    tyresIni["__CM_THERMAL_FRONT_ORIGINAL"] = OriginalTyresFront.ThermalSection;
-                    tyresIni["__CM_REAR_ORIGINAL"] = OriginalTyresRear.MainSection;
-                    tyresIni["__CM_THERMAL_REAR_ORIGINAL"] = OriginalTyresRear.ThermalSection;
-
-                    tyresIni.SetSections("FRONT", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_wearcurve_front_{i}.lut");
-                        curve.Content = x.Front.WearCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Front.MainSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Front.SourceCarId
-                        };
-                    }));
-
-                    tyresIni.SetSections("REAR", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_wearcurve_rear_{i}.lut");
-                        curve.Content = x.Rear.WearCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Rear.MainSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["WEAR_CURVE"] = curve.Name,
-                            ["__CM_SOURCE_ID"] = x.Rear.SourceCarId
-                        };
-                    }));
-
-                    tyresIni.SetSections("THERMAL_FRONT", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_perfcurve_front_{i}.lut");
-                        curve.Content = x.Front.PerformanceCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Front.ThermalSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["PERFORMANCE_CURVE"] = curve.Name
-                        };
-                    }));
-
-                    tyresIni.SetSections("THERMAL_REAR", -1, sets.Select((x, i) => {
-                        var curve = data.GetRawFile($@"__cm_tyre_perfcurve_rear_{i}.lut");
-                        curve.Content = x.Rear.PerformanceCurveData ?? "";
-                        curve.Save();
-
-                        return new IniFileSection(data, x.Rear.ThermalSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["PERFORMANCE_CURVE"] = curve.Name
-                        };
-                    }));
-
-                    tyresIni.Save(true);
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t save changes", e);
-                }
+                Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear);
             }, () => Changed));
 
             private void OnSetsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
@@ -437,7 +357,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static async Task<bool> RunAsync(CarObject target) {
             try {
-                var sets = TyresSet.GetSets(target).ToList();
+                var sets = target.GetTyresSets().ToList();
                 if (sets.Count == 0) {
                     throw new Exception("Can’t detect current tyres params");
                 }

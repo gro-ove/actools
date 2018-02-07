@@ -2,6 +2,7 @@
 using AcTools.Utils.Helpers;
 
 namespace AcTools.Utils {
+    // TODO: Remove MathF
     public static class MathUtils {
         public static double Pow(this double v, double p) => Math.Pow(v, p);
         public static float Pow(this float v, float p) => (float)Math.Pow(v, p);
@@ -58,7 +59,11 @@ namespace AcTools.Utils {
         public static int RoundToInt(this double value) => (int)Math.Round(value);
         public static int FloorToInt(this double value) => (int)Math.Floor(value);
         public static int RoundToInt(this float value) => (int)Math.Round(value);
-        public static int FloorToInt(this float value) => (int)Math.Floor(value);
+
+        public const double ToRad = Math.PI / 180f;
+        public const double ToDeg = 180f / Math.PI;
+        public static double ToRadians(this double degrees) => ToRad * degrees;
+        public static double ToDegrees(this double radians) => ToDeg * radians;
 
         /// <summary>
         /// For example: Round(0.342, 0.05) → 0.35.
