@@ -11,15 +11,13 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public CarSetupsManager GetSetupsManagerIfInitialized() {
-            CarSetupsManager result;
-            return _setupsManager != null && _setupsManager.TryGetTarget(out result) ? result : null;
+            return _setupsManager != null && _setupsManager.TryGetTarget(out var result) ? result : null;
         }
 
         [NotNull]
         public CarSetupsManager SetupsManager {
             get {
-                CarSetupsManager result;
-                if (_setupsManager != null && _setupsManager.TryGetTarget(out result)) {
+                if (_setupsManager != null && _setupsManager.TryGetTarget(out var result)) {
                     return result;
                 }
 

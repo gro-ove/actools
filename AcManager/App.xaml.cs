@@ -143,7 +143,7 @@ namespace AcManager {
 
         private static void SwitchToSoftwareRendering() {
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(24));
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(30));
         }
 
         private AppHibernator _hibernator;
