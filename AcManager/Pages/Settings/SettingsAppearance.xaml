@@ -150,7 +150,26 @@
         <!-- Interface -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Interface:" />
 
-        <CheckBox IsChecked="{Binding AppearanceManager.KeepWithinSingleScreen}" mui:NewMarkService.New="True">
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
+          <Label Content="Bind to screen:" />
+          <mui:BbCodeBlock BbCode="Changes won’t affect already shown windows." DockPanel.Dock="Bottom" Style="{StaticResource BbCodeBlock.Small}"
+              Margin="0 2 0 0" />
+          <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" />
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                    <Setter TargetName="PART_DisplayName" Property="Text" Value="None" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding AppearanceManager.KeepWithinSingleScreen}"
+            IsEnabled="{Binding ForceScreen, Converter={StaticResource NullToBooleanConverter}}">
           <Label Content="Open new windows on the same screen as the first one despite saved location" />
         </CheckBox>
 

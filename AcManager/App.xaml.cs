@@ -143,7 +143,7 @@ namespace AcManager {
 
         private static void SwitchToSoftwareRendering() {
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
-            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(24));
+            Timeline.DesiredFrameRateProperty.OverrideMetadata(typeof(Timeline), new FrameworkPropertyMetadata(30));
         }
 
         private AppHibernator _hibernator;
@@ -271,6 +271,8 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.FancyHintsDebugMode, ref FancyHint.OptionDebugMode);
             AppArguments.Set(AppFlag.FancyHintsMinimumDelay, ref FancyHint.OptionMinimumDelay);
+            AppArguments.Set(AppFlag.WindowsVerbose, ref DpiAwareWindow.OptionVerboseMode);
+            AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
 
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/

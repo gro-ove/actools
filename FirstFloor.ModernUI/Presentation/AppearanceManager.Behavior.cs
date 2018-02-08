@@ -3,6 +3,7 @@ using System.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public partial class AppearanceManager {
@@ -13,6 +14,18 @@ namespace FirstFloor.ModernUI.Presentation {
             set {
                 if (Equals(value, _keepWithinSingleScreen.Value)) return;
                 _keepWithinSingleScreen.Value = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly StoredValue<string> _forceScreenName = Stored.Get<string>("/Appearance.PreferFullscreenMode");
+
+        [CanBeNull]
+        public string ForceScreenName {
+            get => _forceScreenName.Value;
+            set {
+                if (Equals(value, _forceScreenName.Value)) return;
+                _forceScreenName.Value = value;
                 OnPropertyChanged();
             }
         }

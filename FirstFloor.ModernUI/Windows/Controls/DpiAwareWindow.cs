@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -8,13 +9,14 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Microsoft.Win32;
-using Application = System.Windows.Application;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     /// <summary>
     /// Window with some extra features and multi-monitor DPI awareness.
     /// </summary>
     public abstract partial class DpiAwareWindow : Window {
+        public static bool OptionVerboseMode;
+
         public static event EventHandler NewWindowCreated;
 
         protected DpiAwareWindow() {
@@ -41,6 +43,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static DpiAwareWindow LastActiveWindow { get; private set; }
 
         protected sealed override void OnActivated(EventArgs e) {
+            Logging.Here();
             base.OnActivated(e);
             LastActiveWindow = this;
             SaveDefaultScreen();
@@ -201,6 +204,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected virtual void OnClosedOverride() { }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
+            Logging.Here();
             FixFullscreen();
             SetBackgroundBlurIfNeeded();
             SetExtraFlagsIfNeeded();
@@ -214,18 +218,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Methods to save state
         protected sealed override void OnLocationChanged(EventArgs e) {
+            Logging.Here();
             base.OnLocationChanged(e);
             SaveLocationAndSize();
             OnLocationChangedOverride();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
+            Logging.Here();
             UpdateSizeForDpiAwareness();
             SaveLocationAndSize();
             OnSizeChangedOverride(e);
         }
 
         protected sealed override void OnStateChanged(EventArgs e) {
+            Logging.Here();
             base.OnStateChanged(e);
             SaveLocationAndSize();
             OnStateChangedOverride();
@@ -244,6 +251,40 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Topmost = true;
             Topmost = false;
             Focus();
+        }
+
+        private LocalLogging Logging = new LocalLogging();
+
+        private class LocalLogging {
+            public string Id;
+
+            public void Write(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                if (!OptionVerboseMode) return;
+                Helpers.Logging.Write('→', $"({Id}) {s}", m, p, l);
+            }
+
+            public void Debug(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                if (!OptionVerboseMode) return;
+                Helpers.Logging.Write('…', $"({Id}) {s}", m, p, l);
+            }
+
+            public void Here([CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                if (!OptionVerboseMode) return;
+                Helpers.Logging.Write('⊕', $"({Id}) Here", m, p, l);
+            }
+
+            public void Warning(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                if (!OptionVerboseMode) return;
+                Helpers.Logging.Write('⚠', $"({Id}) {s}", m, p, l);
+            }
+
+            public void Error(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                Helpers.Logging.Write('×', $"({Id}) {s}", m, p, l);
+            }
+
+            public void Unexpected(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                Helpers.Logging.Write('☠', $"({Id}) {s}", m, p, l);
+            }
         }
     }
 }

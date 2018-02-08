@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -34,6 +36,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Marshal.StructureToPtr(42, ptr, true);
             }*/
 
+            Logging.Here();
+
             base.OnSourceInitialized(e);
             LoadLocationAndSize();
 
@@ -59,6 +63,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSystemEventsDisplaySettingsChanged(object sender, EventArgs e) {
             if (_hwndSource != null && WindowState == WindowState.Minimized) {
+                Logging.Here();
                 RefreshMonitorDpi();
             }
         }
@@ -103,11 +108,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private bool _isDragged;
+        private bool _isBeingDragged;
 
         private void OnDragged(bool isDragged) {
-            if (_isDragged == isDragged) return;
-            _isDragged = isDragged;
+            if (_isBeingDragged == isDragged) return;
+            _isBeingDragged = isDragged;
             if (!isDragged) {
                 UpdateScaleRelatedParams();
             }
@@ -121,6 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (dpi == null) return;
 
             _updateSizeForDpiAwarenessBusy.Yield(() => {
+                Logging.Here($"{ActualWidth}, {ActualHeight}; {dpi.ScaleX}");
                 _windowSize.Width = ActualWidth / dpi.ScaleX;
                 _windowSize.Height = ActualHeight / dpi.ScaleY;
             });
@@ -132,14 +138,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _originalMinSize.Height = MinHeight;
             _originalMaxSize.Width = IsFinite(MaxWidth) ? MaxWidth : UnlimitedSize;
             _originalMaxSize.Height = IsFinite(MaxHeight) ? MaxHeight : UnlimitedSize;
+            Logging.Warning($"Original limits: {_originalMinSize.Width}×{_originalMinSize.Height}");
         }
 
-        private void UpdateLimitations(double scaleX, double scaleY) {
+        private void UpdateLimitations(Screen screen, double scaleX, double scaleY) {
             SaveOriginalLimitations();
+            Logging.Warning($"{_originalMinSize.Width * scaleX}×{_originalMinSize.Height * scaleY}");
+
             MaxWidth = _originalMaxSize.Width * (_originalMaxSize.Width < UnlimitedSize ? scaleX : 1d);
             MaxHeight = _originalMaxSize.Height * (_originalMaxSize.Height < UnlimitedSize ? scaleY : 1d);
-            MinWidth = _originalMinSize.Width * scaleX;
-            MinHeight = _originalMinSize.Height * scaleY;
+            MinWidth = Math.Min(screen.WorkingArea.Width, _originalMinSize.Width * scaleX);
+            MinHeight = Math.Min(screen.WorkingArea.Height, _originalMinSize.Height * scaleY);
+
             if (ActualWidth > MaxWidth) Width = MaxWidth;
             if (ActualHeight > MaxHeight) Height = MaxHeight;
             if (ActualWidth < MinWidth) Width = MinWidth;
@@ -150,10 +160,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _firstRun = true;
 
         private void UpdateScaleRelatedParams() {
-            if (_isDragged) return;
+            if (_isBeingDragged) return;
 
             var dpi = _dpi;
             if (dpi == null || dpi.ScaleX == _currentScaleX && dpi.ScaleY == _currentScaleY) {
+                Logging.Warning($"Nothing to do: {dpi?.ScaleX}×{dpi?.ScaleY}, {_currentScaleX}×{_currentScaleY}");
                 if (_firstRun) {
                     UpdateTextFormatting();
                 }
@@ -163,15 +174,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _currentScaleX = dpi.ScaleX;
             _currentScaleY = dpi.ScaleY;
             _firstRun = false;
-            UpdateLimitations(dpi.ScaleX, dpi.ScaleY);
+
+            Logging.Here($"Scale: {dpi.ScaleX}×{dpi.ScaleY}");
+
+            var screen = this.GetScreen();
+            UpdateLimitations(screen, dpi.ScaleX, dpi.ScaleY);
 
             var windowSize = _windowSize;
             if (windowSize != default(Size)) {
+                Logging.Warning($"Update window size: {windowSize}");
                 Width = windowSize.Width * dpi.ScaleX;
                 Height = windowSize.Height * dpi.ScaleY;
-                EnsureOnScreen();
+                EnsureOnScreen(screen);
             } else {
-                EnsureOnScreen();
+                Logging.Warning($"Window size is not known");
+                EnsureOnScreen(screen);
                 SaveLocationAndSize();
             }
 

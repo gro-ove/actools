@@ -71,7 +71,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private static readonly object Locker = new object();
 
-        private static readonly object HereMessage = new object();
+        internal static readonly object HereMessage = new object();
 
         internal static void Write(char c, [CanBeNull] object o, string m, string p, int l) {
             if (p != null) {

@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
 using JetBrains.Annotations;
 

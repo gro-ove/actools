@@ -49,7 +49,7 @@ namespace AcTools.LapTimes {
             // Because I messed up
             bool ReadLine(out string piece) {
                 var end = Array.IndexOf(data, (byte)'\n', 3);
-                piece = end == -1 ? null : Encoding.ASCII.GetString(data, 2, end - 2);
+                piece = end == -1 ? null : Encoding.ASCII.GetString(data, 3, end - 3);
                 return end > -1;
             }
         }
@@ -127,10 +127,15 @@ namespace AcTools.LapTimes {
             if (!directory.Exists) yield break;
 
             foreach (var file in directory.GetFiles("*_pb.ini")) {
-                long time;
+                TimeSpan time;
+                var timeValue = 0L;
 
                 try {
-                    if (file.Length > 1000 || !ReadPickle(file.FullName, out time) || time == 0) continue;
+                    if (file.Length > 1000 || !ReadPickle(file.FullName, out timeValue) || timeValue == 0) continue;
+                    time = TimeSpan.FromMilliseconds(timeValue);
+                } catch (OverflowException e) {
+                    AcToolsLogging.Write($"Can’t read {file.Name}: {e.Message} (value: {timeValue})");
+                    continue;
                 } catch (Exception e) {
                     AcToolsLogging.Write($"Can’t read {file.Name}: {e}");
                     continue;
@@ -138,7 +143,7 @@ namespace AcTools.LapTimes {
 
                 if (TryToGuessCarAndTrack(file.FullName, out var carId, out var trackLayoutId)) {
                     yield return new LapTimeEntry(sourceName, carId, trackLayoutId,
-                            file.LastWriteTime, TimeSpan.FromMilliseconds(time));
+                            file.LastWriteTime, time);
                 }
             }
         }
@@ -175,7 +180,7 @@ namespace AcTools.LapTimes {
                                                .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default(DateTime) : default(DateTime);
         }
 
-        public void Dispose() {}
+        public void Dispose() { }
 
         public bool CanExport => true;
     }
