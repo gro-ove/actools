@@ -5,6 +5,17 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Log everything about the way showroom tools or any other attached windows work.
+        /// Example: --showroom-ui-verbose.
+        /// </summary>
+        ShowroomUiVerbose,
+
+        /// <summary>
+        /// Log tons of information about the way windows position themselves. Example: --windows-verbose.
+        /// </summary>
+        WindowsVerbose,
+
+        /// <summary>
         /// For internal use, to pass a command from Discord.
         /// </summary>
         DiscordCmd,

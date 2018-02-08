@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Interop;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Win32;
 
 namespace FirstFloor.ModernUI.Windows.Controls {

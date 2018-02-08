@@ -16,7 +16,7 @@ using Point = System.Windows.Point;
 
 namespace AcManager.CustomShowroom {
     public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots, ICustomShowroomShots {
-        public static bool OptionAttachedToolsLogging = false;
+        public static bool OptionAttachedToolsVerboseMode = false;
 
         private readonly AttachedHelper _helper;
         private readonly LiteShowroomTools _tools;
@@ -25,12 +25,12 @@ namespace AcManager.CustomShowroom {
 
         public LiteShowroomFormWrapperWithTools(ToolsKn5ObjectRenderer renderer, CarObject car, string skinId, string presetFilename)
                 : base(renderer, car.DisplayName) {
-            if (OptionAttachedToolsLogging) {
+            if (OptionAttachedToolsVerboseMode) {
                 Logging.Here();
             }
 
-            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this, OptionAttachedToolsLogging);
-            _helper = new AttachedHelper(this, _tools, limitHeight: false, verbose: OptionAttachedToolsLogging);
+            _tools = new LiteShowroomTools(renderer, car, skinId, presetFilename, this, OptionAttachedToolsVerboseMode);
+            _helper = new AttachedHelper(this, _tools, limitHeight: false, verbose: OptionAttachedToolsVerboseMode);
             GoToNormalMode();
 
             renderer.VisibleUi = false;
@@ -67,7 +67,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected sealed override void GoToNormalMode() {
-            if (OptionAttachedToolsLogging) {
+            if (OptionAttachedToolsVerboseMode) {
                 Logging.Debug("Switching to normal mode…");
             }
 
@@ -88,7 +88,7 @@ namespace AcManager.CustomShowroom {
                     if (size.X > 0 && size.Y > 0) {
                         var savedScreen = pos != default(Point) ? Screen.FromPoint(new System.Drawing.Point(
                                 (int)(pos.X + size.X / 2), (int)(pos.Y + size.Y / 2))) : DpiAwareWindow.GetPreferredScreen();
-                        var activeScreen = AppearanceManager.Current.KeepWithinSingleScreen ? DpiAwareWindow.GetActiveScreen() : null;
+                        var activeScreen = DpiAwareWindow.GetForcedScreen();
                         if (activeScreen != null && savedScreen.Bounds != activeScreen.Bounds) {
                             SetDefaultLocation();
                         } else {
@@ -121,13 +121,13 @@ namespace AcManager.CustomShowroom {
                 _switchingInProgress = false;
             }
 
-            if (OptionAttachedToolsLogging) {
+            if (OptionAttachedToolsVerboseMode) {
                 Logging.Here();
             }
         }
 
         protected override void GoToToolMode() {
-            if (OptionAttachedToolsLogging) {
+            if (OptionAttachedToolsVerboseMode) {
                 Logging.Debug("Switching to tool mode…");
             }
 
@@ -154,7 +154,7 @@ namespace AcManager.CustomShowroom {
                 _switchingInProgress = false;
             }
 
-            if (OptionAttachedToolsLogging) {
+            if (OptionAttachedToolsVerboseMode) {
                 Logging.Here();
             }
         }

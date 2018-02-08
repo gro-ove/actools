@@ -271,6 +271,8 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.FancyHintsDebugMode, ref FancyHint.OptionDebugMode);
             AppArguments.Set(AppFlag.FancyHintsMinimumDelay, ref FancyHint.OptionMinimumDelay);
+            AppArguments.Set(AppFlag.WindowsVerbose, ref DpiAwareWindow.OptionVerboseMode);
+            AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
 
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/

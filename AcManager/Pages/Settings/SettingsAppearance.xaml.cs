@@ -1,11 +1,13 @@
 ﻿using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -13,7 +15,8 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
-using Microsoft.Win32;
+using Application = System.Windows.Application;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
 
 namespace AcManager.Pages.Settings {
@@ -57,7 +60,24 @@ namespace AcManager.Pages.Settings {
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
             public SettingsHolder.InterfaceSettings Interface => SettingsHolder.Interface;
 
+            public SettingEntry[] Screens { get; }
+
+            private SettingEntry _forceScreen;
+
+            public SettingEntry ForceScreen {
+                get => _forceScreen;
+                set {
+                    if (Equals(value, _forceScreen)) return;
+                    _forceScreen = value;
+                    OnPropertyChanged();
+                    AppearanceManager.Current.ForceScreenName = value.Value;
+                }
+            }
+
             internal ViewModel() {
+                Screens = Screen.AllScreens.Select(x => new SettingEntry(x.DeviceName, GetScreenName(x))).ToArray();
+                _forceScreen = Screens.GetByIdOrDefault(AppearanceManager.Current.ForceScreenName);
+
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
                 SoftwareRendering = AppAppearanceManager.SoftwareRenderingMode;
                 TextFormatting = AppAppearanceManager.IdealFormattingMode == null ? TextFormattings[0] :
@@ -70,6 +90,10 @@ namespace AcManager.Pages.Settings {
                 if (!_originalSoftwareRendering.HasValue) {
                     _originalSoftwareRendering = SoftwareRendering;
                 }
+            }
+
+            private static string GetScreenName(Screen x) {
+                return $@"{x.GetFriendlyName() ?? x.DeviceName} ({x.Bounds.ToString().Replace(@",", @", ").TrimStart('{').TrimEnd('}')})";
             }
 
             public class BitmapScalingEntry : Displayable {

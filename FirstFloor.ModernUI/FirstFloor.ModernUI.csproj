@@ -136,6 +136,7 @@
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="Helpers\IStorage.cs" />
+    <Compile Include="Helpers\ScreenInterrogatory.cs" />
     <Compile Include="Helpers\Stored.cs" />
     <Compile Include="Helpers\StoredValue.cs" />
     <Compile Include="Helpers\Substorage.cs" />
