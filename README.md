@@ -19,7 +19,7 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
     Thing for reading best lap times from different sources. Uses LevelDb for reading from the original launcher (which saves times using Chromium’s IndexedDB).
     
 - ### [AcTools.LapTimes.LevelDb](https://github.com/gro-ove/actools/tree/master/AcTools.LapTimes.LevelDb)
-    Small “spin-off” which loads times from old AC database. It was made using IndexedDB in Chromium, which uses LevelDB underneath. Quite a mess if you want to read it.
+    Small “spin-off” which loads times from old AC database. It was made using IndexedDB in Chromium, which uses LevelDB underneath. Quite a mess if you want to read it. Thankfully, now it’s completely redundant, I’m going to remove it for good.
 
 - ### [AcTools.Render](https://github.com/gro-ove/actools/tree/master/AcTools.Render)
     A replacement for AcTools.Kn5Render. Has a much more thoughtful architecture and thereby contains two different renderers: Lite (very simple skins-editing DX10-compatible version) and Dark (extended variation of Lite, with lighting, skinning and a lot of effects such as SSLR, SSAO, PCSS). Both use forward rendering. There was also deferred renderer, but it was quite poor and got moved away.
@@ -81,11 +81,11 @@ Set of utils and apps designed for Assetto Corsa. Some obsolete projects are mov
 
 # Build notes
 
- - For now, only x86 platform is supported. Project can be built in x64, but won’t work. I think it should be fixable, all referenced libraries have both x86 and x64 version. Going to solve it later.
+ - For now, only x86 platform is supported. Projects can be built in x64, but, most likely, it won’t work. It should be fixable, all referenced libraries have both x86 and x64 version. Going to solve it later.
  
  - If you need a support for new Windows 8, 8.1 and 10 notifications, make sure [this path](https://github.com/gro-ove/actools/blob/master/FirstFloor.ModernUI/FirstFloor.ModernUI.csproj#L91) is correct. If it’s not, or you don’t have that library, no problem, dependant piece of code will be disabled, and fallback notifications will be used.
  
- - I use a couple of small tools (they are closer to like shell scripts, to be honest) to increment version number and auto-build T4 templates automatically, but those scripts are disabled by default unless you have `ACTOOLS_BUILD_SCRIPTS=On` environment variable set. So… Don’t set it.
+ - I use a couple of small tools (mostly Cygwin shell scripts) to increment version number and auto-build T4 templates automatically, but they are [disabled by default](https://github.com/gro-ove/actools/blob/master/Libraries/PreBuildEvents.Templates.props#L3) unless you have `ACTOOLS_BUILD_SCRIPTS=On` environment variable set. So… Don’t set it, or make sure you have something compatible in your system. If needed, I’d be glad to send my scripts to you.
 
  - You might need to install DirectX SDK to rebuild [AcTools.Render/Shaders/Shaders.tt](https://github.com/gro-ove/actools/blob/master/AcTools.Render/Shaders/Shaders.tt). But, just in case, built *Shaders.cs* and *Shaders.resources* are already included. Also, it takes quite a long time to rebuild those shaders, up to 5–10 minutes on my PC.
 
