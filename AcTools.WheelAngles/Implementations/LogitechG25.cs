@@ -41,9 +41,11 @@ namespace AcTools.WheelAngles.Implementations {
 
         public virtual bool Apply(int steerLock, bool isReset, out int appliedValue) {
             if (isReset) {
-                Reset();
+                Reset(steerLock);
 
                 // Don’t need to reset, Logitech does that for you as soon as AC is closed. Now, that’s neat.
+                // UPD: No it fucking doesn’t! For crying out loud, what’s wrong with Logitech…
+
                 appliedValue = steerLock;
                 return true;
             }
@@ -78,9 +80,10 @@ namespace AcTools.WheelAngles.Implementations {
 
         private static FormWithHandle _form;
 
-        private void Reset() {
+        private void Reset(int value) {
             if (_initialized) {
                 _initialized = false;
+                SetWheelRange(value);
                 LogiSteeringShutdown();
                 AcToolsLogging.Write("Previous initialization shutdown");
             }
