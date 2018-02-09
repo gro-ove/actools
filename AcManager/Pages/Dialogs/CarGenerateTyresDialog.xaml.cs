@@ -116,19 +116,17 @@ namespace AcManager.Pages.Dialogs {
                 Preset = preset;
                 Data = Lazier.Create(preset.ReadBinaryData);
                 Machine = Lazier.Create(() => TyresMachine.LoadFrom(Data.RequireValue, this));
-                Description = Lazier.CreateAsync(async () => {
-                    return await Task.Run(() => {
-                        var machine = Machine.RequireValue;
-                        return $"Tyres version: {machine.TyresVersion}\n"
-                                + $"Types: {GetGenericNames(machine.Sources)}\n"
-                                + $"Training runs: {machine.Options.TrainingRuns}\n"
-                                + $"Sources: {machine.Sources.Count}";
+                Description = Lazier.CreateAsync(() => Task.Run(() => {
+                    var machine = Machine.RequireValue;
+                    return $"Tyres version: {machine.TyresVersion}\n"
+                            + $"Types: {GetGenericNames(machine.Sources)}\n"
+                            + $"Training runs: {machine.Options.TrainingRuns}\n"
+                            + $"Sources: {machine.Sources.Count}";
 
-                        string GetGenericNames(IEnumerable<NeuralTyresSource> array) {
-                            return array.GroupBy(x => x.Name).OrderByDescending(x => x.Count()).Select(x => x.Key).JoinToReadableString();
-                        }
-                    });
-                });
+                    string GetGenericNames(IEnumerable<NeuralTyresSource> array) {
+                        return array.GroupBy(x => x.Name).OrderByDescending(x => x.Count()).Select(x => x.Key).JoinToReadableString();
+                    }
+                }));
             }
 
             public void OnSave(ZipArchive archive, JObject manifest) {}
@@ -136,7 +134,7 @@ namespace AcManager.Pages.Dialogs {
             public void OnLoad(ZipArchive archive, JObject manifest) {
                 var icon = manifest.GetStringValueOnly("icon");
                 if (icon != null) {
-                    ActionExtension.InvokeInMainThreadAsync(() => {
+                    ActionExtension.InvokeInMainThread(() => {
                         Icon = ContentUtils.GetIcon(icon, archive.ReadBytes);
                     });
                 }

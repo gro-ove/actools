@@ -70,7 +70,7 @@ namespace AcManager.Pages.Dialogs {
                     SoFresh(_that.GeneratedFresh2, _generatedTimer - 0.25);
 
                     void SoFresh(UIElement element, double value) {
-                        element.Opacity = (value > 1d ? 2 - value : value).Saturate() * 0.06;
+                        element.Opacity = (value > 1d ? 2 - value : value).Saturate() * 0.03;
                     }
                 }
 
@@ -201,18 +201,18 @@ namespace AcManager.Pages.Dialogs {
                     _burningTranslate.Y = _translate.Y;
                     _burningRotate.Angle = _rotate.Angle;
                     _existing = null;
-                } else {
-                    _generatedTimer = -1;
                 }
+
+                _generatedTimer = -1;
+                _that.GeneratedFresh1.Opacity = 0d;
+                _that.GeneratedFresh2.Opacity = 0d;
 
                 _position = new Point(_bounds.Width / 2, _size.Y / 2);
                 _velocity = new Point();
                 _rotation = 0d;
-                _angularVelocity = MathUtils.Random() < 0.3 ? MathUtils.Random(0.3, 0.7d).ToRadians() : MathUtils.Random(-1.5d, -0.5).ToRadians();
+                _angularVelocity = MathUtils.Random() < 0.3 ? MathUtils.Random(0.1, 0.7d).ToRadians() : MathUtils.Random(-1d, -0.2).ToRadians();
                 _scanTranslate.X = 0d;
                 SetColor(Colors.Cyan);
-                _that.GeneratedFresh1.Opacity = 0d;
-                _that.GeneratedFresh2.Opacity = 0d;
                 _running = true;
                 _revertStage = 0;
             }
@@ -357,13 +357,12 @@ namespace AcManager.Pages.Dialogs {
                     _that.BurningSet.Opacity = 1 - value * value;
                     if (value >= 1) {
                         _fireActive = false;
-                        _generatedTimer = -1;
                     }
                 }
 
                 void Update(FireParticleBase[] array, int activatePerFrame) {
                     activatePerFrame = (activatePerFrame * 60 * dt).Ceiling().RoundToInt();
-                    for (var i = 0; i < array.Length; i++) {
+                    for (var i = array.Length - 1; i >= 0; i--) {
                         var activated = array[i].IsActive;
                         if (activated || activatePerFrame-- > 0) {
                             array[i].Update(dt, parent);
@@ -378,14 +377,14 @@ namespace AcManager.Pages.Dialogs {
 
             private void PhysicsStep(double dt) {
                 if (_stopped > 200) {
-                    if (_generatedTimer == -1) {
+                    if (_generatedTimer == -1 && !_fireActive) {
                         _generatedTimer = 0;
                     }
                     return;
                 }
 
                 dt = dt.Clamp(0.001, 1) * 60;
-                _velocity.Y += 0.3 * dt;
+                _velocity.Y += 0.5 * dt;
                 AddTo(_velocity, dt, ref _position);
                 AddTo(_velocity, -0.005, ref _velocity);
                 _rotation += _angularVelocity * dt;
@@ -422,46 +421,15 @@ namespace AcManager.Pages.Dialogs {
                 h++;
                 AddTo(w, 1, ref o);
 
-                var dt = 0.01;
-                var da = Rotate(Math.Sin(_angularVelocity * dt), Math.Cos(_angularVelocity * dt), l.X, l.Y);
-                var ds = new Point(_velocity.X + (da.X - l.X) / dt, _velocity.Y + (da.Y - l.Y) / dt);
-
-                var cn = Normalize(w, out var wLength);
-                var dn = Normalize(ds, out var dd);
-                var proj = cn.X * dn.X + cn.Y * dn.Y;
-
-                var ta = new Point(cn.Y, cn.X);
-                var proj2 = ta.X * dn.X + ta.Y * dn.Y;
-
-                var reso = new Point(-cn.X * proj * dd, -cn.Y * proj * dd);
-                // AddTo(ta, -dd * proj2 * 0.1, ref reso);
-
-                /*double wl = LengthSqr(w), dl = LengthSqr(ds);
-                var proj = (w.X * ds.X + w.Y * ds.Y) / (wl * Math.Sqrt(dl));*/
-
-                AddTo(reso, 2 * l.Y / Length(l), ref _velocity);
-
-                //AddTo(cn, 0.15 * proj * dd, ref _velocity);
-                _angularVelocity += Cross(l, reso) / 2e4;
-                double Cross(Point a, Point b) => a.X * b.Y - a.Y * b.X;
+                var d = Rotate(_angularVelocity * 0.01, 1d, l.X, l.Y);
+                var p = -(w.X * (_velocity.X + (d.X - l.X) / 0.01) + w.Y * (_velocity.Y + (d.Y - l.Y) / 0.01)) / (w.X * w.X + w.Y * w.Y);
+                AddTo(w, 1.6 * p * l.Y / Length(l), ref _velocity);
+                _angularVelocity += Cross(l, w) * p / 3e4;
             }
 
-            private static double LengthSqr(Point p) {
-                return (p.X * p.X + p.Y * p.Y) + 0.00001;
-            }
-
-            private static double Length(Point p) {
-                return Math.Sqrt(p.X * p.X + p.Y * p.Y) + 0.00001;
-            }
-
-            private static Point Normalize(Point p, out double length) {
-                length = Math.Sqrt(p.X * p.X + p.Y * p.Y) + 0.00001;
-                return new Point(p.X / length, p.Y / length);
-            }
-
-            private static Point Rotate(double s, double c, double x, double y) {
-                return new Point(x * c - y * s, x * s + y * c);
-            }
+            private static double Cross(Point a, Point b) => a.X * b.Y - a.Y * b.X;
+            private static double Length(Point p) => Math.Sqrt(p.X * p.X + p.Y * p.Y) + 0.00001;
+            private static Point Rotate(double s, double c, double x, double y) => new Point(x * c - y * s, x * s + y * c);
 
             private static void AddTo(Point p, double m, ref Point t) {
                 t.X += p.X * m;

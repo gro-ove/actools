@@ -247,20 +247,23 @@
 
       <Canvas x:Name="TestElement" DockPanel.Dock="Bottom" Margin="0 20 0 0" Height="240" Width="400" HorizontalAlignment="Center">
         <mui:Cell Width="400" Height="240" x:Name="RoomAnimationPiece">
+          <!--<mui:Cell.Effect>
+            <mui:InnerShadowEffect BlurRadius="0.005" BlurYRadius="0.009" />
+          </mui:Cell.Effect>-->
           <mui:Cell.OpacityMask>
             <VisualBrush Stretch="None" TileMode="None">
               <VisualBrush.Visual>
-                <mui:Cell Height="240" Width="400">
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="54 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="104 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="154 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="204 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="254 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="304 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="354 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                  <Border CornerRadius="4" Width="400" Height="120" Background="Black" VerticalAlignment="Bottom" />
-                </mui:Cell>
+                <Canvas Height="240" Width="400">
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="50" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="100" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="150" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="200" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="250" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="300" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="350" />
+                  <Border CornerRadius="4" Width="400" Height="120" Background="Black" Canvas.Top="120" />
+                </Canvas>
               </VisualBrush.Visual>
             </VisualBrush>
           </mui:Cell.OpacityMask>
@@ -322,7 +325,7 @@
                   <DockPanel>
                     <ContentPresenter Width="32" Height="32" Margin="0 0 20 0" Content="{Binding Icon}" />
                     <TextBlock Text="{Binding Preset.DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
-                    <mui:PlaceholderTextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="0 2 0 0" Height="58" Background="Black"
+                    <mui:PlaceholderTextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="0 2 0 0" Height="54"
                         Placeholder="Loading details…" />
                   </DockPanel>
                 </Border>
