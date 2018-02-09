@@ -347,6 +347,7 @@
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
       <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\CarGenerateTyresDialog.Animator.cs" />
     <Compile Include="Pages\Dialogs\CarGenerateTyresDialog.xaml.cs">
       <DependentUpon>CarGenerateTyresDialog.xaml</DependentUpon>
     </Compile>

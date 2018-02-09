@@ -56,6 +56,7 @@ namespace AcManager.Pages.Dialogs {
         public static readonly PresetsCategory NeuralParamsCategory = new PresetsCategory(System.IO.Path.Combine("Tyres Generation", "Neural Params"));
 
         public static readonly string NeuralMachinesKey = "Tyres Machines";
+
         public static readonly PresetsCategory NeuralMachinesCategory = new PresetsCategory(System.IO.Path.Combine("Tyres Generation", "Tyres Machines"),
                 ".zip");
 
@@ -66,9 +67,25 @@ namespace AcManager.Pages.Dialogs {
         public CarCreateTyresMachineDialog([CanBeNull] CarObject carToTest, List<CarWithTyres> list) {
             DataContext = new ViewModel(list);
             InitializeComponent();
-            Buttons = new[] {
+
+            var onTrack = new MenuItem {
+                Header = "Start race immediately",
+                IsCheckable = true
+            };
+            onTrack.SetBinding(MenuItem.IsCheckedProperty, new Stored("/CreateTyres.TestOnTrack", true));
+            Buttons = new Control[] {
                 CreateExtraDialogButton(AppStrings.Toolbar_Save, Model.SaveCommand, true),
-                carToTest == null ? null : CreateExtraDialogButton(AppStrings.Common_Test, Model.TestCommand.Bind(carToTest), true),
+                carToTest == null ? null : new ButtonWithComboBox {
+                    Content = AppStrings.Common_Test,
+                    Command = Model.TestCommand,
+                    Margin = new Thickness(4, 0, 0, 0),
+                    MinHeight = 21,
+                    MinWidth = 65,
+                    CommandParameter = carToTest,
+                    MenuItems = {
+                        onTrack
+                    }
+                },
                 CancelButton
             };
 
@@ -896,7 +913,10 @@ namespace AcManager.Pages.Dialogs {
                     }
 
                     machine.CreateTyresSet(c).Save(machine.TyresVersion, c, null, null, true);
-                    await QuickDrive.RunAsync(c);
+
+                    if (Stored.GetValue("/CreateTyres.TestOnTrack", true)) {
+                        await QuickDrive.RunAsync(c);
+                    }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t test tyres", e);
                 }
@@ -906,7 +926,8 @@ namespace AcManager.Pages.Dialogs {
 
             public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
                 PresetsManager.Instance.SavePresetUsingDialog(NeuralMachinesKey, NeuralMachinesCategory,
-                        GeneratedMachine?.ToByteArray(), null /* TODO: Editing mode */);
+                        GeneratedMachine?.ToByteArray(null) /* TODO: Icons and authorship */,
+                        null /* TODO: Editing mode */);
             }, () => GeneratedMachine?.OutputKeys.Count > 1));
             #endregion
 
@@ -957,8 +978,9 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
+        // TODO: Return created machine
         [ItemCanBeNull]
-        public static async Task<TyresMachineInfo> RunAsync([CanBeNull] CarObject testCar) {
+        public static async Task<object> RunAsync([CanBeNull] CarObject testCar) {
             try {
                 List<CarWithTyres> list;
                 using (var waiting = WaitingDialog.Create(ControlsStrings.Common_Loading)) {

@@ -5,6 +5,24 @@ using JetBrains.Annotations;
 namespace AcTools.Utils.Helpers {
     public static class ArrayExtension {
         [CanBeNull]
+        public static T[] CreateArrayOfType<T>(this int size) where T : new() {
+            var result = new T[size];
+            for (var i = 0; i < result.Length; i++) {
+                result[i] = new T();
+            }
+            return result;
+        }
+
+        [CanBeNull]
+        public static TBase[] CreateArrayOfType<TBase, TValue>(this int size) where TValue : TBase, new() {
+            var result = new TBase[size];
+            for (var i = 0; i < result.Length; i++) {
+                result[i] = new TValue();
+            }
+            return result;
+        }
+
+        [CanBeNull]
         public static T ElementAtOrDefault<T>([NotNull] this T[] array, int index) {
             return index >= 0 && index < array.Length ? array[index] : default(T);
         }

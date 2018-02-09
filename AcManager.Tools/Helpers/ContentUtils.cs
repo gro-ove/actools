@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Resources;
 using System.Text.RegularExpressions;
@@ -11,9 +12,11 @@ using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using Path = System.Windows.Shapes.Path;
 
 namespace AcManager.Tools.Helpers {
     public static class ContentUtils {
@@ -46,51 +49,83 @@ namespace AcManager.Tools.Helpers {
         }
 
         [CanBeNull]
-        public static object GetIcon(string contentCategory, string iconValue) {
+        public static object GetIcon([NotNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
             try {
-                if (iconValue.StartsWith("path:") || iconValue.StartsWith("F1 ") && iconValue.EndsWith("Z")) {
-                    var p = new Path {
-                        Data = Geometry.Parse(iconValue.ApartFromFirst("path:")),
-                        Stretch = Stretch.Uniform
-                    };
-
-                    p.SetBinding(Shape.FillProperty, new Binding {
-                        Path = new PropertyPath(TextBlock.ForegroundProperty),
-                        RelativeSource = RelativeSource.Self
-                    });
-
-                    return p;
+                if (iconValue.StartsWith("path:", StringComparison.OrdinalIgnoreCase) || iconValue.StartsWith("F1 ") && iconValue.EndsWith("Z")) {
+                    return Vector(iconValue.ApartFromFirst("path:", StringComparison.OrdinalIgnoreCase));
                 }
 
-                if (iconValue.StartsWith("text:")) {
-                    var p = new BbCodeBlock {
-                        BbCode = iconValue.ApartFromFirst("text:"),
-                        FontSize = 30,
-                        FontWeight = FontWeights.UltraLight,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        TextAlignment = TextAlignment.Center
-                    };
-
-                    p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
-                    return p;
+                if (iconValue.StartsWith("text:", StringComparison.OrdinalIgnoreCase)) {
+                    return Text(iconValue.ApartFromFirst("text:", StringComparison.OrdinalIgnoreCase));
                 }
 
-                var iconFile = FilesStorage.Instance.GetContentFile(contentCategory, iconValue);
-                if (iconFile.Exists) {
-                    var i = new BetterImage {
-                        Filename = iconFile.Filename,
-                        ClearOnChange = true
-                    };
+                var filename = filenameProvider?.Invoke(iconValue);
+                if (filename != null) {
+                    if (filename.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
+                        return Vector(File.ReadAllText(filename));
+                    }
 
-                    i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
-                    i.SetResourceReference(UIElement.EffectProperty, "TrackOutlineAloneEffect");
-                    return i;
+                    if (filename.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
+                        return Text(File.ReadAllText(filename));
+                    }
+
+                    return RasterFromFile(filename);
+                }
+
+                var data = bytesProvider?.Invoke(iconValue);
+                if (data != null) {
+                    if (iconValue.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
+                        return Vector(data.ToUtf8String());
+                    }
+
+                    if (iconValue.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
+                        return Text(data.ToUtf8String());
+                    }
+
+                    return Raster(data);
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t load icon", e);
+                NonfatalError.NotifyBackground("Can’t load icon", e);
             }
 
             return null;
+
+            object Raster(byte[] data) {
+                var i = new BetterImage { Source = data, ClearOnChange = true };
+                i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+                i.SetResourceReference(UIElement.EffectProperty, "TrackOutlineAloneEffect");
+                return i;
+            }
+
+            object RasterFromFile(string filename) {
+                var i = new BetterImage { Filename = filename, ClearOnChange = true };
+                i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+                i.SetResourceReference(UIElement.EffectProperty, "TrackOutlineAloneEffect");
+                return i;
+            }
+
+            object Vector(string data) {
+                var p = new Path { Data = Geometry.Parse(data), Stretch = Stretch.Uniform };
+                p.SetBinding(Shape.FillProperty, new Binding { Path = new PropertyPath(TextBlock.ForegroundProperty), RelativeSource = RelativeSource.Self });
+                return p;
+            }
+
+            object Text(string data) {
+                var p = new BbCodeBlock {
+                    BbCode = data,
+                    FontSize = 30,
+                    FontWeight = FontWeights.UltraLight,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextAlignment = TextAlignment.Center
+                };
+                p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+                return p;
+            }
+        }
+
+        [CanBeNull]
+        public static object GetIcon(string iconValue, string contentCategory) {
+            return GetIcon(iconValue, filenameProvider: k => FilesStorage.Instance.GetContentFile(contentCategory, k).Filename);
         }
     }
 }

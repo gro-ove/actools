@@ -38,7 +38,7 @@ namespace AcManager.Pages.Drive {
             public OnlineQuickFilter(string name, string description, string icon, bool exclude, string filter) {
                 DisplayName = ContentUtils.Translate(name);
                 Description = ContentUtils.Translate(description);
-                Icon = ContentUtils.GetIcon(ContentCategory.OnlineFilters, icon ?? name + ".png");
+                Icon = ContentUtils.GetIcon(icon ?? name + ".png", ContentCategory.OnlineFilters);
                 Exclude = exclude;
                 Filter = filter;
             }

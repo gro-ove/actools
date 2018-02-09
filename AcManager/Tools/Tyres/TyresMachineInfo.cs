@@ -45,7 +45,7 @@ namespace AcManager.Tools.Tyres {
         }
 
         private static TyresMachineInfo CreateTyresMachineInfo(FilesStorage.ContentEntry x) {
-            return new TyresMachineInfo(Path.GetFileNameWithoutExtension(x.Filename), TyresMachine.LoadFrom(x.Filename)) {
+            return new TyresMachineInfo(Path.GetFileNameWithoutExtension(x.Filename), TyresMachine.LoadFrom(x.Filename, null)) {
                 _filename = x.Filename,
                 _lastWriteTime = x.LastWriteTime
             };

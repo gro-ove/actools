@@ -66,11 +66,11 @@ namespace AcTools.NeuralTyres.Tests {
 
             TyresMachine neural;
             if (File.Exists(cacheFilename)) {
-                neural = TyresMachine.LoadFrom(cacheFilename);
+                neural = TyresMachine.LoadFrom(cacheFilename, null);
             } else {
                 neural = TyresMachine.CreateAsync(filteredTyres, options).Result;
                 FileUtils.EnsureFileDirectoryExists(cacheFilename);
-                // neural?.Save(cacheFilename);
+                // neural?.Save(cacheFilename, null);
             }
 
             if (neural == null) return;
@@ -131,11 +131,11 @@ namespace AcTools.NeuralTyres.Tests {
 
             TyresMachine neural;
             if (File.Exists(cacheFilename)) {
-                neural = TyresMachine.LoadFrom(cacheFilename);
+                neural = TyresMachine.LoadFrom(cacheFilename, null);
             } else {
                 neural = TyresMachine.CreateAsync(filteredTyres, options).Result;
                 FileUtils.EnsureFileDirectoryExists(cacheFilename);
-                neural?.Save(cacheFilename);
+                neural?.Save(cacheFilename, null);
             }
 
             if (neural == null) return;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using AcTools.NeuralTyres.Data;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FANNCSharp;
@@ -10,7 +11,7 @@ using FANNCSharp.Double;
 
 namespace AcTools.NeuralTyres.Implementations {
     internal class FannNetwork : INeuralNetwork {
-        private static readonly string TemporaryFilename = Path.GetTempFileName();
+        private readonly string _temporaryFilename = Path.GetTempFileName();
 
         static FannNetwork() {
             // TODO!
@@ -87,14 +88,24 @@ namespace AcTools.NeuralTyres.Implementations {
 
         public byte[] Save() {
             if (_net == null) return null;
-            _net.Save(TemporaryFilename);
-            return File.ReadAllBytes(TemporaryFilename);
+
+            try {
+                _net.Save(_temporaryFilename);
+                return File.ReadAllBytes(_temporaryFilename);
+            } finally {
+                FileUtils.TryToDelete(_temporaryFilename);
+            }
         }
 
         public void Load(byte[] data) {
             _net?.Dispose();
-            File.WriteAllBytes(TemporaryFilename, data);
-            _net = new NeuralNet(TemporaryFilename);
+
+            try {
+                File.WriteAllBytes(_temporaryFilename, data);
+                _net = new NeuralNet(_temporaryFilename);
+            } finally {
+                FileUtils.TryToDelete(_temporaryFilename);
+            }
         }
 
         public void Dispose() {

@@ -9,9 +9,11 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -66,147 +68,78 @@ namespace AcManager.Pages.Dialogs {
                 }))
             };
 
-#if DEBUG
-            Loaded += (sender, args) => AnimateResult();
-#else
-            TestElement.Visibility = Visibility.Collapsed;
-#endif
+            _animator = new Animator(this) { Offset = new Point(-40, -5) };
         }
 
-        private class PseudoPhysics {
-            private Point _position, _velocity, _size;
-            private Rect _bounds;
-            private double _rotation, _angularVelocity;
-            private readonly TranslateTransform _translate;
-            private readonly RotateTransform _rotate;
+        private Animator _animator;
 
-            public PseudoPhysics(FrameworkElement set) {
-                var parent = (FrameworkElement)set.Parent;
-                _size = new Point(set.ActualWidth, set.ActualHeight);
-                _bounds = new Rect(_size.X / 2, 0, parent.ActualWidth, parent.ActualHeight + _size.Y / 2);
+        private void SelectedMachineChanged(object sender, SelectionChangedEventArgs e) {
+            // Model.SelectedMachine = e.AddedItems.OfType<TyresMachinePresetInfo>().FirstOrDefault();
+            var selected = e.AddedItems.OfType<TyresMachinePresetInfo>().FirstOrDefault();
+            if (selected == null) return;
 
-                _position = new Point(_bounds.Width / 2d, -500);
-                _rotation = MathUtils.Random(-35d, 35d).ToRadians();
-                _angularVelocity = MathUtils.Random(-0.935d, 0.935d).ToRadians()/60;
+            Task<TyresSet>[] t = { null };
+            _animator.Spawn(() => t[0]?.Result);
 
-                _translate = new TranslateTransform();
-                _rotate = new RotateTransform();
-                set.RenderTransform = new TransformGroup { Children = { _rotate, _translate } };
-            }
+            var originalFront = Model.OriginalTyresFront;
+            var originalRear = Model.OriginalTyresRear;
 
-            private void PhysicsStep(double dt) {
-                dt = dt.Clamp(0.001, 1) * 60;
-                _velocity.Y += 0.3 * dt;
-                AddTo(_velocity, dt, ref _position);
-                AddTo(_velocity, -0.003, ref _velocity);
-                _rotation += _angularVelocity * dt;
-                _angularVelocity -= _angularVelocity * (0.05 * dt).Saturate();
-                double s = Math.Sin(_rotation), c = Math.Cos(_rotation);
-                var o = new Point();
-                var h = 0;
-                TestPoint(s, c, -0.5, -0.5, ref o, ref h);
-                TestPoint(s, c, 0.5, -0.5, ref o, ref h);
-                TestPoint(s, c, -0.5, 0.5, ref o, ref h);
-                TestPoint(s, c, 0.5, 0.5, ref o, ref h);
-                AddTo(o, h > 0 ? 1d / h : 0, ref _position);
-            }
-
-            private void TestPoint(double s, double c, double x, double y, ref Point o, ref int h) {
-                var local = Rotate(_size);
-                double xW = local.X + _position.X, yW = local.Y + _position.Y;
-                var bound = xW < _bounds.Left ? _bounds.Left : xW > _bounds.Right ? _bounds.Right : 0;
-                if (bound != 0) {
-                    Resolve(new Point(bound - _position.X, local.Y), new Point(bound - xW, 0), ref o, ref h);
+            t[0] = Task.Run(() => {
+                try {
+                    return selected.Machine.RequireValue.CreateTyresSet(originalFront, originalRear);
+                } catch (Exception ex) {
+                    Logging.Warning(ex);
+                    Toast.Show("Can’t create tyres", "Something went wrong", () => NonfatalError.Notify("Can’t create tyres", ex));
+                    return null;
                 }
-                if (yW > _bounds.Bottom) {
-                    Resolve(new Point(local.X, _bounds.Bottom - _position.Y), new Point(0, _bounds.Bottom - yW), ref o, ref h);
-                }
-                Point Rotate(Point p) => new Point(p.X * x * c - p.Y * y * s, p.X * x * s + p.Y * y * c);
-            }
-
-            private void Resolve(Point l, Point w, ref Point o, ref int h) {
-                h++;
-                AddTo(w, 1, ref o);
-                AddTo(w, 1, ref _velocity);
-                _angularVelocity += Cross(l, w) / 3e4;
-                double Cross(Point a, Point b) => a.X * b.Y - a.Y * b.X;
-            }
-
-            private static void AddTo(Point p, double m, ref Point t) {
-                t.X += p.X * m;
-                t.Y += p.Y * m;
-            }
-
-            public void OnTick(double dt) {
-                for (var i = 0; i < 10; i++) {
-                    PhysicsStep(dt / 10);
-                }
-                _translate.X = _position.X - _size.X;
-                _translate.Y = _position.Y - _size.Y;
-                _rotate.Angle = _rotation.ToDegrees();
-            }
+            });
         }
 
-        private async void AnimateResult() {
-            var physics = new PseudoPhysics(GeneratedSet);
-            var scanLine = ScanAnimationPiece;
-            var scanTranslate = new TranslateTransform();
-            ScanAnimationPiece.RenderTransform = scanTranslate;
-
-            var time = TimeSpan.Zero;
-            var stopwatch = Stopwatch.StartNew();
-            void OnRendering(object sender, RenderingEventArgs e) {
-                if (time == e.RenderingTime) return;
-                var dt = stopwatch.Elapsed.TotalSeconds;
-                stopwatch.Restart();
-
-                physics.OnTick(dt);
-
-                scanTranslate.X += dt * 200;
-                if (scanTranslate.X > 400) {
-                    scanTranslate.X = 0;
-                }
-            }
-
-            await Task.Delay(100);
-            CompositionTargetEx.Rendering += OnRendering;
-            this.OnActualUnload(() => { CompositionTargetEx.Rendering -= OnRendering; });
-        }
-
-        public class TyresMachinePresetInfo : NotifyPropertyChanged {
+        public class TyresMachinePresetInfo : NotifyPropertyChanged, ITyresMachineExtras {
             public ISavedPresetEntry Preset { get; }
+            public Lazier<byte[]> Data { get; }
+            public Lazier<TyresMachine> Machine { get; }
             public Lazier<string> Description { get; }
+
+            private object _icon;
+
+            public object Icon {
+                get => _icon;
+                private set {
+                    if (Equals(value, _icon)) return;
+                    _icon = value;
+                    OnPropertyChanged();
+                }
+            }
 
             public TyresMachinePresetInfo(ISavedPresetEntry preset) {
                 Preset = preset;
+                Data = Lazier.Create(preset.ReadBinaryData);
+                Machine = Lazier.Create(() => TyresMachine.LoadFrom(Data.RequireValue, this));
                 Description = Lazier.CreateAsync(async () => {
                     return await Task.Run(() => {
-                        using (var stream = new MemoryStream(preset.ReadBinaryData()))
-                        using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, true)) {
-                            var manifest = Read<JObject>("Manifest.json");
-                            var version = manifest.GetIntValueOnly("tyresVersion", 0);
-                            if (version < 7) {
-                                throw new Exception("Unsupported tyres version: " + version);
-                            }
+                        var machine = Machine.RequireValue;
+                        return $"Tyres version: {machine.TyresVersion}\n"
+                                + $"Types: {GetGenericNames(machine.Sources)}\n"
+                                + $"Training runs: {machine.Options.TrainingRuns}\n"
+                                + $"Sources: {machine.Sources.Count}";
 
-                            var options = Read<NeuralTyresOptions>("Options.json");
-                            var tyresSources = Read<NeuralTyresSource[]>("Input/Sources.json");
-
-                            T Read<T>(string key) {
-                                return JsonConvert.DeserializeObject<T>(zip.ReadString(key));
-                            }
-
-                            return $"Tyres version: {version}\n"
-                                    + $"Types: {GetGenericNames(tyresSources)}\n"
-                                    + $"Training runs: {options.TrainingRuns}\n"
-                                    + $"Sources: {tyresSources.Length}";
-                        }
-
-                        string GetGenericNames(NeuralTyresSource[] array) {
+                        string GetGenericNames(IEnumerable<NeuralTyresSource> array) {
                             return array.GroupBy(x => x.Name).OrderByDescending(x => x.Count()).Select(x => x.Key).JoinToReadableString();
                         }
                     });
                 });
+            }
+
+            public void OnSave(ZipArchive archive, JObject manifest) {}
+
+            public void OnLoad(ZipArchive archive, JObject manifest) {
+                var icon = manifest.GetStringValueOnly("icon");
+                if (icon != null) {
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        Icon = ContentUtils.GetIcon(icon, archive.ReadBytes);
+                    });
+                }
             }
         }
 
@@ -247,57 +180,6 @@ namespace AcManager.Pages.Dialogs {
 
             private void OnUpdate(object sender, EventArgs eventArgs) {
                 RefreshNeuralMachines();
-            }
-
-            private TyresMachinePresetInfo _selectedMachine;
-
-            public TyresMachinePresetInfo SelectedMachine {
-                get => _selectedMachine;
-                set {
-                    if (Equals(value, _selectedMachine)) return;
-                    _selectedMachine = value;
-                    OnPropertyChanged();
-
-                    // TODO: Sort out:
-                    _generateTyresCommand?.RaiseCanExecuteChanged();
-                    GenerateTyresCommand.ExecuteAsync().Forget();
-                }
-            }
-
-            private AsyncCommand _generateTyresCommand;
-
-            public AsyncCommand GenerateTyresCommand => _generateTyresCommand ?? (_generateTyresCommand = new AsyncCommand(async () => {
-                try {
-                    IsGenerating = true;
-                    GeneratedTyres = await Task.Run(() => TyresMachine.LoadFrom(SelectedMachine.Preset.ReadBinaryData())
-                                                                      .CreateTyresSet(OriginalTyresFront, OriginalTyresRear));
-                } catch (Exception e) {
-                    NonfatalError.Notify("Can’t generate tyres", e);
-                } finally {
-                    IsGenerating = false;
-                }
-            }, () => SelectedMachine != null));
-
-            private bool _isGenerating;
-
-            public bool IsGenerating {
-                get => _isGenerating;
-                set {
-                    if (Equals(value, _isGenerating)) return;
-                    _isGenerating = value;
-                    OnPropertyChanged();
-                }
-            }
-
-            private TyresSet _generatedTyres;
-
-            public TyresSet GeneratedTyres {
-                get => _generatedTyres;
-                set {
-                    if (Equals(value, _generatedTyres)) return;
-                    _generatedTyres = value;
-                    OnPropertyChanged();
-                }
             }
 
             public void RefreshNeuralMachines() {

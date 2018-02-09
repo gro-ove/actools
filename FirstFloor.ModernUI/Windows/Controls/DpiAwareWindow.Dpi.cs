@@ -126,7 +126,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (dpi == null) return;
 
             _updateSizeForDpiAwarenessBusy.Yield(() => {
-                Logging.Here($"{ActualWidth}, {ActualHeight}; {dpi.ScaleX}");
+                Logging.Warning($"{ActualWidth}, {ActualHeight}; {dpi.ScaleX}");
                 _windowSize.Width = ActualWidth / dpi.ScaleX;
                 _windowSize.Height = ActualHeight / dpi.ScaleY;
             });

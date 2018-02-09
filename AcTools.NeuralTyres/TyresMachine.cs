@@ -15,9 +15,17 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcTools.NeuralTyres {
+    public interface ITyresMachineExtras {
+        void OnSave(ZipArchive archive, JObject manifest);
+        void OnLoad(ZipArchive archive, JObject manifest);
+    }
+
     public class TyresMachine {
         [NotNull]
         private readonly NeuralTyresOptions _options;
+
+        [NotNull]
+        public NeuralTyresOptions Options => _options;
 
         [CanBeNull]
         private INeuralNetwork[] _networks;
@@ -92,7 +100,7 @@ namespace AcTools.NeuralTyres {
 
         private readonly int SaveFormatVersion = 1;
 
-        private TyresMachine(Stream stream) {
+        private TyresMachine([NotNull] Stream stream, [CanBeNull] ITyresMachineExtras extras) {
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, false)) {
                 var manifest = Read<JObject>("Manifest.json");
                 if (manifest.GetIntValueOnly("version") != SaveFormatVersion) {
@@ -103,6 +111,8 @@ namespace AcTools.NeuralTyres {
                 if (TyresVersion < 7) {
                     throw new Exception("Unsupported tyres version: " + TyresVersion);
                 }
+
+                extras?.OnLoad(zip, manifest);
 
                 _options = Read<NeuralTyresOptions>("Options.json");
                 _tyresSources = Read<NeuralTyresSource[]>("Input/Sources.json");
@@ -146,16 +156,11 @@ namespace AcTools.NeuralTyres {
             }
         }
 
-        private TyresMachine(string filename) : this(File.OpenRead(filename)) { }
-        private TyresMachine(byte[] data) : this(new MemoryStream(data)) { }
+        private TyresMachine([NotNull] string filename, [CanBeNull] ITyresMachineExtras extras) : this(File.OpenRead(filename), extras) { }
+        private TyresMachine([NotNull] byte[] data, [CanBeNull] ITyresMachineExtras extras) : this(new MemoryStream(data), extras) { }
 
-        public void Save(Stream stream) {
+        public void Save([NotNull] Stream stream, [CanBeNull] ITyresMachineExtras extras) {
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
-                Add("Manifest.json", new JObject {
-                    ["version"] = SaveFormatVersion,
-                    ["tyresVersion"] = TyresVersion
-                });
-
                 Add("Options.json", _options);
                 Add("Input/Sources.json", _tyresSources);
                 Add("Input/LUTs.json", _luts.Select(x => x.Where(y => y.Value != null).ToDictionary(y => y.Key, y => y.Value.ToString())));
@@ -182,22 +187,30 @@ namespace AcTools.NeuralTyres {
                     }
                 }
 
+                var manifest = new JObject {
+                    ["version"] = SaveFormatVersion,
+                    ["tyresVersion"] = TyresVersion
+                };
+
+                extras?.OnSave(zip, manifest);
+                Add("Manifest.json", manifest);
+
                 void Add(string key, object data) {
                     zip.AddString(key, JsonConvert.SerializeObject(data, Formatting.Indented));
                 }
             }
         }
 
-        public byte[] ToByteArray() {
+        public byte[] ToByteArray([CanBeNull] ITyresMachineExtras extras) {
             using (var stream = new MemoryStream()) {
-                Save(stream);
+                Save(stream, extras);
                 return stream.ToArray();
             }
         }
 
-        public void Save(string filename) {
+        public void Save([NotNull] string filename, [CanBeNull] ITyresMachineExtras extras) {
             using (var stream = File.Create(filename)) {
-                Save(stream);
+                Save(stream, extras);
             }
         }
 
@@ -435,12 +448,12 @@ namespace AcTools.NeuralTyres {
             return cancellationToken.IsCancellationRequested ? null : result;
         }
 
-        public static TyresMachine LoadFrom(string filename) {
-            return new TyresMachine(filename);
+        public static TyresMachine LoadFrom([NotNull] string filename, [CanBeNull] ITyresMachineExtras extras) {
+            return new TyresMachine(filename, extras);
         }
 
-        public static TyresMachine LoadFrom(byte[] data) {
-            return new TyresMachine(data);
+        public static TyresMachine LoadFrom([NotNull] byte[] data, [CanBeNull] ITyresMachineExtras extras) {
+            return new TyresMachine(data, extras);
         }
     }
 }

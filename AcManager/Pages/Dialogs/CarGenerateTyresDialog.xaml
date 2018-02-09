@@ -245,30 +245,85 @@
     <DockPanel Grid.Column="2" Margin="8 0 0 0">
       <!--Visibility="{Binding GeneratedTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"-->
 
-      <Canvas x:Name="TestElement" DockPanel.Dock="Bottom" Margin="0 20 0 0" Height="120" Width="600" HorizontalAlignment="Center" Background="Black">
-        <Border x:Name="ScanAnimationPiece" Background="{DynamicResource Accent}" Width="8" Height="120" />
-        <Border x:Name="GeneratedSet" Width="320" RenderTransformOrigin="0.5 0.5" Background="DarkSlateGray" VerticalAlignment="Top">
-          <ContentPresenter Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" mui:Draggable.Enabled="True"
-              mui:Draggable.Data="{Binding GeneratedTyres}" />
-        </Border>
+      <Canvas x:Name="TestElement" DockPanel.Dock="Bottom" Margin="0 20 0 0" Height="240" Width="400" HorizontalAlignment="Center">
+        <mui:Cell Width="400" Height="240" x:Name="RoomAnimationPiece">
+          <mui:Cell.OpacityMask>
+            <VisualBrush Stretch="None" TileMode="None">
+              <VisualBrush.Visual>
+                <mui:Cell Height="240" Width="400">
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="54 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="104 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="154 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="204 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="254 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="304 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="42" Height="100" Margin="354 10 4 10" Background="Black" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                  <Border CornerRadius="4" Width="400" Height="120" Background="Black" VerticalAlignment="Bottom" />
+                </mui:Cell>
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </mui:Cell.OpacityMask>
+          <Border Background="Black" Opacity="0.1" />
+          <Border Height="240" Width="400">
+            <Border.OpacityMask>
+              <VisualBrush Stretch="None">
+                <VisualBrush.Visual>
+                  <Border Width="400" Background="Transparent">
+                    <Border x:Name="GeneratedMask" Width="0" Height="120" Background="Black" HorizontalAlignment="Left" />
+                  </Border>
+                </VisualBrush.Visual>
+              </VisualBrush>
+            </Border.OpacityMask>
+            <Border Height="240" Width="400" ClipToBounds="True">
+              <mui:Cell x:Name="GeneratedSet" Width="320" RenderTransformOrigin="0.5 0.5" VerticalAlignment="Top" Height="110" Margin="0">
+                <Border Background="{DynamicResource ButtonBackground}" Opacity="0.6" Margin="1" />
+                <ContentPresenter x:Name="GeneratedPresenter" Content="{Binding GeneratedTyres}"
+                    ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}"
+                    Margin="0 -5" />
+                <Path x:Name="GeneratedFresh1" Data="M90,0 L0,90 L0,105 L105,0 z" Fill="White" Opacity="0" />
+                <Path x:Name="GeneratedFresh2" Data="M115,0 l-110,110 h30 l110,-110 z" Fill="White" Opacity="0" />
+              </mui:Cell>
+            </Border>
+          </Border>
+          <Border Height="240" Width="400" ClipToBounds="True">
+            <mui:Cell x:Name="BurningSet" Width="320" RenderTransformOrigin="0.5 0.5" VerticalAlignment="Top" Height="110" Margin="0" Opacity="0">
+              <Border Background="{DynamicResource ButtonBackground}" Opacity="0.6" Margin="1" />
+              <ContentPresenter x:Name="BurningPresenter" Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}"
+                  mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}" Margin="0 -5" />
+              <Border x:Name="BurningBlack" Background="Black" Opacity="0" Margin="1" IsHitTestVisible="False" />
+            </mui:Cell>
+          </Border>
+          <Canvas x:Name="FlamesAnimationParent" Height="240" Width="400" ClipToBounds="True" IsHitTestVisible="False" />
+        </mui:Cell>
+        <mui:Cell Width="400" Height="120" x:Name="RoomGlowAnimationPiece" Margin="0 -5 0 5">
+          <mui:Cell.Effect>
+            <DropShadowEffect x:Name="GlowEffect" BlurRadius="50" Direction="0" ShadowDepth="0" RenderingBias="Quality" Opacity="1" />
+          </mui:Cell.Effect>
+          <mui:Cell.OpacityMask>
+            <VisualBrush Stretch="None" ViewportUnits="Absolute" Viewport="0,0,50,120" TileMode="Tile">
+              <VisualBrush.Visual>
+                <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="Black" />
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </mui:Cell.OpacityMask>
+          <Border x:Name="ScanAnimationPiece" HorizontalAlignment="Left" Margin="-4 0" Width="8" />
+        </mui:Cell>
       </Canvas>
-      <!--<Border DockPanel.Dock="Bottom" Margin="0 20 0 0"
-          Visibility="{Binding GeneratedTyres, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-        <ContentPresenter Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" Width="320"
-            VerticalAlignment="Center" HorizontalAlignment="Center" mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}" />
-      </Border>-->
 
       <TextBlock Text="Trained machines:" Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Margin="0 0 0 4" />
       <ListBox mui:Draggable.Enabled="True" ScrollViewer.CanContentScroll="False" Style="{StaticResource VirtualizingListBox}"
-          SelectedItem="{Binding SelectedMachine}">
+          SelectionChanged="SelectedMachineChanged">
         <ListBox.ItemTemplateSelector>
           <c:FlexibleDataTemplateSelector>
             <c:FlexibleDataTemplateSelector.DataTemplate>
               <DataTemplate DataType="{x:Type di:CarGenerateTyresDialog+TyresMachinePresetInfo}">
                 <Border Padding="20">
                   <DockPanel>
+                    <ContentPresenter Width="32" Height="32" Margin="0 0 20 0" Content="{Binding Icon}" />
                     <TextBlock Text="{Binding Preset.DisplayName}" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
-                    <TextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="0 2 0 0" />
+                    <mui:PlaceholderTextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="0 2 0 0" Height="58" Background="Black"
+                        Placeholder="Loading details…" />
                   </DockPanel>
                 </Border>
               </DataTemplate>

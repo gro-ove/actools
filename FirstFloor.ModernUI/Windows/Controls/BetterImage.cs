@@ -295,10 +295,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (e.NewValue is string potentialFilename) {
                     b.ImageSource = null;
                     b.Filename = potentialFilename;
-                } else if (e.NewValue is BitmapEntry) {
+                } else if (e.NewValue is BitmapEntry be) {
                     b.ImageSource = null;
                     b.Filename = null;
-                    b.SetBitmapEntryDirectly((BitmapEntry)e.NewValue);
+                    b.SetBitmapEntryDirectly(be);
+                } else if (e.NewValue is byte[] by) {
+                    b.ImageSource = null;
+                    b.Filename = null;
+                    b.SetBitmapEntryDirectly(LoadBitmapSourceFromBytes(by));
                 } else {
                     var source = (ImageSource)e.NewValue;
                     b.ImageSource = source;

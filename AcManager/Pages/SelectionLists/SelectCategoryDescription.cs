@@ -22,7 +22,7 @@ namespace AcManager.Pages.SelectionLists {
             Description = ContentUtils.Translate(description);
             Filter = filter;
             Order = order;
-            Icon = ContentUtils.GetIcon(_type, icon ?? name + ".png");
+            Icon = ContentUtils.GetIcon(icon ?? name + ".png", _type);
             Source = _source;
         }
 

@@ -327,7 +327,7 @@ namespace AcManager.Tools.Tyres {
                 }
             }
 
-            mainSection.Set("NAME", $"{values.Name} Neural");
+            mainSection.Set("NAME", $"#{MathUtils.Random(0, 10)} {values.Name} Neural");
             mainSection.Set("SHORT_NAME", $"{values.ShortName}-N");
 
             return new TyresEntry(original.SourceCarId, values.Version, mainSection, thermalSection,
@@ -436,7 +436,7 @@ namespace AcManager.Tools.Tyres {
 
         public static void Save([NotNull] this TyresSet sets, int setsVersion, [NotNull] CarObject car,
                 [CanBeNull] TyresEntry originalTyresFront, [CanBeNull] TyresEntry originalTyresRear, bool keepCurves = false) {
-            Save(new[]{ sets }, setsVersion, car, originalTyresFront, originalTyresRear, keepCurves);
+            Save(new[] { sets }, setsVersion, car, originalTyresFront, originalTyresRear, keepCurves);
         }
 
         public static void Save([NotNull] this IEnumerable<TyresSet> sets, int setsVersion, [NotNull] CarObject car,
@@ -493,12 +493,12 @@ namespace AcManager.Tools.Tyres {
                             curveName = curve.Name;
                         }
 
-                        return new IniFileSection(data, entry.MainSection) {
+                        return FixDigits(new IniFileSection(data, entry.MainSection) {
                             ["NAME"] = x.GetName(),
                             ["SHORT_NAME"] = x.GetShortName(),
                             ["WEAR_CURVE"] = curveName,
                             ["__CM_SOURCE_ID"] = entry.SourceCarId
-                        };
+                        });
                     }));
 
                     tyresIni.SetSections(thermalKey, -1, uniqueSets.Select((x, i) => {
@@ -511,10 +511,89 @@ namespace AcManager.Tools.Tyres {
                             curveName = curve.Name;
                         }
 
-                        return new IniFileSection(data, entry.ThermalSection) {
+                        return FixDigits(new IniFileSection(data, entry.ThermalSection) {
                             ["PERFORMANCE_CURVE"] = curveName
-                        };
+                        });
                     }));
+                }
+
+                IniFileSection FixDigits(IniFileSection result) {
+                    foreach (var key in result.Keys.ToList()) {
+                        var digits = GetDigits(key);
+                        if (digits != null) {
+                            result.Set(key, result.GetDouble(key, 0d), "F" + digits);
+                        }
+                    }
+                    return result;
+                }
+
+                int? GetDigits(string key) {
+                    switch (key) {
+                        case "ANGULAR_INERTIA":
+                            return 1;
+                        case "DAMP":
+                            return 0;
+                        case "RATE":
+                            return 0;
+                        case "SPEED_SENSITIVITY":
+                            return 6;
+                        case "RELAXATION_LENGTH":
+                            return 5;
+                        case "ROLLING_RESISTANCE_0":
+                            return 0;
+                        case "ROLLING_RESISTANCE_1":
+                            return 5;
+                        case "ROLLING_RESISTANCE_SLIP":
+                            return 0;
+                        case "FLEX":
+                            return 6;
+                        case "CAMBER_GAIN":
+                            return 3;
+                        case "DCAMBER_0":
+                            return 1;
+                        case "DCAMBER_1":
+                            return 0;
+                        case "FRICTION_LIMIT_ANGLE":
+                            return 2;
+                        case "XMU":
+                            return 2;
+                        case "PRESSURE_STATIC":
+                            return 0;
+                        case "PRESSURE_SPRING_GAIN":
+                            return 0;
+                        case "PRESSURE_FLEX_GAIN":
+                            return 2;
+                        case "PRESSURE_RR_GAIN":
+                            return 2;
+                        case "PRESSURE_D_GAIN":
+                            return 3;
+                        case "PRESSURE_IDEAL":
+                            return 0;
+                        case "FZ0":
+                            return 0;
+                        case "LS_EXPY":
+                            return 4;
+                        case "LS_EXPX":
+                            return 4;
+                        case "DX_REF":
+                            return 2;
+                        case "DY_REF":
+                            return 2;
+                        case "FLEX_GAIN":
+                            return 4;
+                        case "FALLOFF_LEVEL":
+                            return 2;
+                        case "FALLOFF_SPEED":
+                            return 0;
+                        case "CX_MULT":
+                            return 2;
+                        case "RADIUS_ANGULAR_K":
+                            return 2;
+                        case "BRAKE_DX_MOD":
+                            return 2;
+                        default:
+                            return null;
+                    }
                 }
 
                 tyresIni.Save(true);
