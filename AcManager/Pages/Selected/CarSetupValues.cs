@@ -275,7 +275,7 @@ namespace AcManager.Pages.Selected {
         public SettingEntry SelectedTyres {
             get => _selectedTyres;
             set {
-                if (!Tyres.Contains(value)) value = Tyres[0];
+                if (!Tyres.ArrayContains(value)) value = Tyres[0];
                 if (Equals(value, _selectedTyres)) return;
                 _selectedTyres = value;
                 OnPropertyChanged();
@@ -340,7 +340,7 @@ namespace AcManager.Pages.Selected {
             await _selectedObject.EnsureDataLoaded();
             IsLoaded = true;
             LoadValues();
-            SelectedTyres = Tyres?.ElementAtOrDefault(_selectedObject.Tyres ?? -1);
+            SelectedTyres = Tyres?.ArrayElementAtOrDefault(_selectedObject.Tyres ?? -1);
             _selectedObject.SubscribeWeak(Handler);
         }
 
@@ -396,7 +396,7 @@ namespace AcManager.Pages.Selected {
                     if (!_loading) {
                         try {
                             _loading = true;
-                            SelectedTyres = Tyres.ElementAtOrDefault(_selectedObject.Tyres ?? -1);
+                            SelectedTyres = Tyres.ArrayElementAtOrDefault(_selectedObject.Tyres ?? -1);
                             UpdateMaxSpeed();
                         } finally {
                             _loading = false;

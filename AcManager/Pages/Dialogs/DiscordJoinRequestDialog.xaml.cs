@@ -89,12 +89,12 @@ namespace AcManager.Pages.Dialogs {
             public bool IsPressed(JoystickState[] states) {
                 if (User32.IsAsyncKeyPressed(_key)) return true;
 
-                var state = states.ElementAtOrDefault(_joy);
+                var state = states.ArrayElementAtOrDefault(_joy);
                 if (state == null) return false;
 
-                return state.GetButtons().ElementAtOrDefault(_button)
+                return state.GetButtons().ArrayElementAtOrDefault(_button)
                         || _pov >= 0 && _pov < state.GetPointOfViewControllers().Length
-                                && _povDirection.IsInRange(state.GetPointOfViewControllers().ElementAtOrDefault(_pov));
+                                && _povDirection.IsInRange(state.GetPointOfViewControllers().ArrayElementAtOrDefault(_pov));
             }
         }
 

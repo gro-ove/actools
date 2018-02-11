@@ -1,39 +1,30 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:mui="http://firstfloorsoftware.com/ModernUI">
-    <ResourceDictionary.MergedDictionaries>
-        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+  <ResourceDictionary.MergedDictionaries>
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <!--<SolidColorBrush x:Key="TextEditorBackground">#333333</SolidColorBrush>
-    <SolidColorBrush x:Key="TextEditorForeground">#ffffff</SolidColorBrush>
-    <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>-->
+  <Style TargetType="{x:Type ae:TextEditor}" BasedOn="{StaticResource {x:Type ae:TextEditor}}">
+    <Setter Property="Background" Value="{DynamicResource TextEditorBackground}" />
+    <Setter Property="Foreground" Value="{DynamicResource TextEditorForeground}" />
+    <Setter Property="LineNumbersForeground" Value="{DynamicResource TextEditorLineNumbersForeground}" />
+    <Setter Property="FontFamily" Value="{StaticResource MonospaceFont}" />
+    <Setter Property="FontSize" Value="9pt" />
+    <Setter Property="Padding" Value="8 0" />
+    <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
+    <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
+    <Setter Property="ShowLineNumbers" Value="True" />
+  </Style>
 
-    <SolidColorBrush x:Key="TextEditorBackground">#fafafa</SolidColorBrush>
-    <SolidColorBrush x:Key="TextEditorForeground">#000000</SolidColorBrush>
-    <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>
+  <Pen x:Key="SelectionBorderPen" Brush="Transparent" Thickness="0" />
 
-    <Style TargetType="{x:Type ae:TextEditor}" BasedOn="{StaticResource {x:Type ae:TextEditor}}">
-        <Setter Property="Background" Value="{StaticResource TextEditorBackground}" />
-        <Setter Property="Foreground" Value="{StaticResource TextEditorForeground}" />
-        <Setter Property="LineNumbersForeground" Value="{StaticResource TextEditorLineNumbersForeground}" />
-        <Setter Property="FontFamily" Value="{StaticResource MonospaceFont}" />
-        <Setter Property="FontSize" Value="10pt" />
-        <Setter Property="Padding" Value="8 0" />
-        <Setter Property="HorizontalScrollBarVisibility" Value="Disabled" />
-        <Setter Property="VerticalScrollBarVisibility" Value="Visible" />
-        <Setter Property="ShowLineNumbers" Value="True" />
-    </Style>
+  <Style TargetType="{x:Type ae:TextArea}">
+    <Setter Property="SelectionBrush" Value="{DynamicResource Accent}" />
+    <Setter Property="SelectionBorder" Value="{StaticResource SelectionBorderPen}" />
+    <Setter Property="SelectionCornerRadius" Value="2" />
+  </Style>
 
-    <Pen x:Key="SelectionBorderPen" Brush="Transparent" Thickness="0" />
-
-    <Style TargetType="{x:Type ae:TextArea}">
-        <Setter Property="SelectionBrush" Value="{DynamicResource Accent}" />
-        <Setter Property="SelectionBorder" Value="{StaticResource SelectionBorderPen}" />
-        <Setter Property="SelectionCornerRadius" Value="2" />
-    </Style>
-
-    <Style TargetType="{x:Type ae:TextView}">
-        <Setter Property="LinkTextForegroundBrush" Value="{DynamicResource Hyperlink}" />
-    </Style>
+  <Style TargetType="{x:Type ae:TextView}">
+    <Setter Property="LinkTextForegroundBrush" Value="{DynamicResource Hyperlink}" />
+  </Style>
 </ResourceDictionary>

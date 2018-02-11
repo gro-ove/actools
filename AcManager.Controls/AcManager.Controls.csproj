@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
+    <Compile Include="CarIconImage.cs" />
     <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
@@ -141,7 +142,10 @@
       <DependentUpon>CupInformationDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="FontIconImage.cs" />
+    <Compile Include="Graphs\CanonicalSplineHelper.cs" />
     <Compile Include="Graphs\CarGraphViewer.cs" />
+    <Compile Include="Graphs\CatmulLineSeries.cs" />
+    <Compile Include="Graphs\CatmullRomSplineHelper.cs" />
     <Compile Include="Graphs\CustomGraphViewer.cs" />
     <Compile Include="Graphs\CustomTrackerControl.cs" />
     <Compile Include="Graphs\GraphDataViewerBase.cs" />

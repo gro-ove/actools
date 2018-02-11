@@ -390,7 +390,7 @@ namespace AcManager.Tools.Managers.Online {
             private set {
                 if (Equals(value, _currentDrivers)) return;
                 _currentDrivers = value;
-                HasFriends = value?.Any(x => x.Tags.Contains(DriverTag.FriendTag)) == true;
+                HasFriends = value?.Any(x => x.Tags.ArrayContains(DriverTag.FriendTag)) == true;
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(DriversTagsString));
             }

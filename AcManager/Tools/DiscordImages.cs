@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using AcManager.DiscordRpc;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -48,7 +47,7 @@ namespace AcManager.Tools {
 
             if (car != null) {
                 var carBrand = car.Brand?.ToLowerInvariant().Replace(" ", "_");
-                if (!_knownCarBrands.Contains(carBrand)) {
+                if (!_knownCarBrands.ArrayContains(carBrand)) {
                     carBrand = "various";
                 }
 
@@ -63,7 +62,7 @@ namespace AcManager.Tools {
 
             if (track != null) {
                 var trackId = track.MainTrackObject.Id.ToLowerInvariant();
-                if (!_knownTracks.Contains(trackId)) {
+                if (!_knownTracks.ArrayContains(trackId)) {
                     return presence.Default(track.Name ?? track.Id);
                 }
 

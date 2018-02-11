@@ -134,7 +134,7 @@ namespace AcManager {
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 
-            if (args.Contains(WindowsHelper.RestartArg)) {
+            if (args.ArrayContains(WindowsHelper.RestartArg)) {
                 for (var i = 0; i < 999; i++) {
                     Thread.Sleep(200);
 
@@ -151,11 +151,12 @@ namespace AcManager {
                 _secondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
                     _initialized = true;
-                    if (args.Length == 0) {
+                    /*if (args.Length == 0) {
                         TryToRunAppSafely();
                     } else {
                         App.CreateAndRun(false);
-                    }
+                    }*/
+                    App.CreateAndRun(false);
                 } else {
                     PassArgsToRunningInstance(args);
                 }

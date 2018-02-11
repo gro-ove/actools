@@ -211,7 +211,7 @@ namespace AcTools.GenericMods {
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in CheckConflicts(mod).Select(x => x.ModName).Distinct()) {
                     var current = dependancies.GetGenericModDependancies(dependant);
-                    if (current?.Contains(mod.DisplayName) == true) continue;
+                    if (current?.ArrayContains(mod.DisplayName) == true) continue;
                     dependancies.SetGenericModDependancies(dependant, (current ?? new string[0]).Append(mod.DisplayName));
                 }
                 SaveApplyOrder(iniFile, true);
@@ -287,7 +287,7 @@ namespace AcTools.GenericMods {
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in dependancies.Select(x => new {
                     x.Key, Values = x.Value.Split(new[] { '"' }, StringSplitOptions.RemoveEmptyEntries)
-                }).Where(x => x.Values.Contains(mod.DisplayName)).ToList()) {
+                }).Where(x => x.Values.ArrayContains(mod.DisplayName)).ToList()) {
                     dependancies.SetGenericModDependancies(dependant.Key, dependant.Values.ApartFrom(mod.DisplayName));
                 }
                 SaveApplyOrder(iniFile, true);

@@ -521,7 +521,7 @@ namespace AcManager.Tools.GameProperties {
 
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
                     var section = ini[n];
-                    var delay = ShortenDelays.Contains(n) ? OptionSmallInterval : OptionLargeInterval;
+                    var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
 
                     var isExtra = ExtraCommands.TryGetValue(n, out var c);
                     if (isExtra && c.IsAvailableTest?.Invoke() == false) continue;
@@ -657,8 +657,8 @@ namespace AcManager.Tools.GameProperties {
                             var command = list[i];
                             var key = command.Key;
                             command.Value.SetJoyPressed(key.Button.HasValue
-                                    ? buttons.ElementAtOrDefault(key.Button.Value)
-                                    : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ElementAtOrDefault(key.Pov ?? 0)));
+                                    ? buttons.ArrayElementAtOrDefault(key.Button.Value)
+                                    : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ArrayElementAtOrDefault(key.Pov ?? 0)));
                         }
                     } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
                         devices.RemoveAt(index);

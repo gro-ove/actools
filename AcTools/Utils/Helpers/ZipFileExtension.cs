@@ -11,6 +11,10 @@ namespace AcTools.Utils.Helpers {
             return archive.ReadBytes(entryName).ToUtf8String();
         }
 
+        public static bool ZipContains([NotNull] this ZipArchive archive, [NotNull] string entryName) {
+            return archive.Entries.Any(x => FileUtils.ArePathsEqual(x.FullName, entryName));
+        }
+
         public static byte[] ReadBytes([NotNull] this ZipArchive archive, [NotNull] string entryName) {
             return archive.Entries.FirstOrDefault(x => FileUtils.ArePathsEqual(x.FullName, entryName))?.Open().ReadAsBytesAndDispose()
                     ?? throw new InvalidOperationException("Entry not found: " + entryName);

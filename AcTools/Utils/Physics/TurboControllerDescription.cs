@@ -1,4 +1,5 @@
 ﻿using AcTools.DataFile;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Physics {
@@ -29,11 +30,17 @@ namespace AcTools.Utils.Physics {
                 case ControllerInput.Rpms:
                     input = rpm;
                     break;
+                case ControllerInput.Gear:
+                case ControllerInput.Gas:
+                case ControllerInput.Brake:
+                case ControllerInput.SpeedKmh:
+                    input = Lut?.MaxEntryOrDefault(x => x.Y).X ?? 0d;
+                    break;
                 default:
                     input = 0d;
                     break;
             }
-            
+
             var inputValue = Lut?.InterpolateLinear(input) ?? 0d;
             double resultValue;
             switch (Combinator) {
@@ -46,7 +53,7 @@ namespace AcTools.Utils.Physics {
                 default:
                     return boost;
             }
-            
+
             if (!double.IsNaN(UpLimit) && UpLimit < resultValue) {
                 resultValue = UpLimit;
             }

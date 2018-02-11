@@ -316,19 +316,19 @@ namespace AcManager.Controls.ViewModels {
                         NonfilteredList.ReplaceEverythingBy(data.CarIds.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
                             if (x == null) return null;
 
-                            var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
-                            var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
-                            var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+                            var aiLevel = data.AiLevels?.ArrayElementAtOrDefault(i);
+                            var aiAggression = data.AiAggressions?.ArrayElementAtOrDefault(i);
+                            var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
                             return new RaceGridEntry(x) {
                                 CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1,
                                 AiLevel = aiLevel >= 0 ? aiLevel : (int?)null,
                                 AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
-                                Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0,
-                                Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0,
-                                Name = data.Names?.ElementAtOrDefault(i),
-                                Nationality = data.Nationalities?.ElementAtOrDefault(i),
+                                Ballast = data.Ballasts?.ArrayElementAtOrDefault(i) ?? 0,
+                                Restrictor = data.Restrictors?.ArrayElementAtOrDefault(i) ?? 0,
+                                Name = data.Names?.ArrayElementAtOrDefault(i),
+                                Nationality = data.Nationalities?.ArrayElementAtOrDefault(i),
                                 CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
-                                AiLimitationDetailsData =  data.AiLimitations?.ElementAtOrDefault(i),
+                                AiLimitationDetailsData =  data.AiLimitations?.ArrayElementAtOrDefault(i),
                             };
                         }).NonNull());
                         _setPropertiesLater = null;
@@ -343,19 +343,19 @@ namespace AcManager.Controls.ViewModels {
                     NonfilteredList.ReplaceEverythingBy(data.CarIds?.Select(x => CarsManager.Instance.GetById(x)).Select((x, i) => {
                         if (x == null) return null;
 
-                        var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
-                        var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
-                        var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+                        var aiLevel = data.AiLevels?.ArrayElementAtOrDefault(i);
+                        var aiAggression = data.AiAggressions?.ArrayElementAtOrDefault(i);
+                        var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
 
                         return new RaceGridEntry(x) {
                             AiLevel = aiLevel >= 0 ? aiLevel : null,
                             AiAggression = aiAggression >= 0 ? aiAggression : (int?)null,
-                            Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0,
-                            Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0,
-                            Name = data.Names?.ElementAtOrDefault(i),
-                            Nationality = data.Nationalities?.ElementAtOrDefault(i),
+                            Ballast = data.Ballasts?.ArrayElementAtOrDefault(i) ?? 0,
+                            Restrictor = data.Restrictors?.ArrayElementAtOrDefault(i) ?? 0,
+                            Name = data.Names?.ArrayElementAtOrDefault(i),
+                            Nationality = data.Nationalities?.ArrayElementAtOrDefault(i),
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
-                            AiLimitationDetailsData =  data.AiLimitations?.ElementAtOrDefault(i),
+                            AiLimitationDetailsData =  data.AiLimitations?.ArrayElementAtOrDefault(i),
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
                     _setPropertiesLater = null;
@@ -713,18 +713,18 @@ namespace AcManager.Controls.ViewModels {
                         var carId = data.CarIds[i];
                         var entry = candidates.FirstOrDefault(x => x.Car.Id == carId);
                         if (entry != null && !entry.SpecialEntry) {
-                            var aiLevel = data.AiLevels?.ElementAtOrDefault(i);
-                            var aiAggression = data.AiAggressions?.ElementAtOrDefault(i);
-                            var carSkinId = data.SkinIds?.ElementAtOrDefault(i);
+                            var aiLevel = data.AiLevels?.ArrayElementAtOrDefault(i);
+                            var aiAggression = data.AiAggressions?.ArrayElementAtOrDefault(i);
+                            var carSkinId = data.SkinIds?.ArrayElementAtOrDefault(i);
                             entry.CandidatePriority = data.CandidatePriorities?.ElementAtOr(i, 1) ?? 1;
                             entry.AiLevel = aiLevel >= 0 ? aiLevel : null;
                             entry.AiAggression = aiAggression >= 0 ? aiAggression : null;
-                            entry.Ballast = data.Ballasts?.ElementAtOrDefault(i) ?? 0;
-                            entry.Restrictor = data.Restrictors?.ElementAtOrDefault(i) ?? 0;
-                            entry.Name = data.Names?.ElementAtOrDefault(i);
-                            entry.Nationality = data.Nationalities?.ElementAtOrDefault(i);
+                            entry.Ballast = data.Ballasts?.ArrayElementAtOrDefault(i) ?? 0;
+                            entry.Restrictor = data.Restrictors?.ArrayElementAtOrDefault(i) ?? 0;
+                            entry.Name = data.Names?.ArrayElementAtOrDefault(i);
+                            entry.Nationality = data.Nationalities?.ArrayElementAtOrDefault(i);
                             entry.CarSkin = carSkinId != null ? entry.Car.GetSkinById(carSkinId) : null;
-                            entry.AiLimitationDetailsData = data.AiLimitations?.ElementAtOrDefault(i);
+                            entry.AiLimitationDetailsData = data.AiLimitations?.ArrayElementAtOrDefault(i);
                         }
                     }
                 }

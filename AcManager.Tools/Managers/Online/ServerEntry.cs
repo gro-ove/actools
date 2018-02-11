@@ -124,7 +124,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             {
-                var countryId = information.Country?.ElementAtOrDefault(1) ?? "";
+                var countryId = information.Country?.ArrayElementAtOrDefault(1) ?? "";
                 CountryId = CountryId != null && countryId == @"na" ? CountryId : countryId;
             }
 
@@ -168,7 +168,7 @@ namespace AcManager.Tools.Managers.Online {
             if (information.SessionTypes != null) {
                 var sessions = information.SessionTypes.Select((x, i) => new Session {
                     IsActive = x == information.Session,
-                    Duration = information.Durations?.ElementAtOrDefault(i) ?? 0,
+                    Duration = information.Durations?.ArrayElementAtOrDefault(i) ?? 0,
                     Type = (Game.SessionType)x,
                     RaceMode = RaceMode,
                     Inverted = information.Inverted

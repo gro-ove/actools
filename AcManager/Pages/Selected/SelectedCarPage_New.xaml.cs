@@ -384,7 +384,12 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _replaceTyresCommand;
 
             public AsyncCommand ReplaceTyresCommand => _replaceTyresCommand ??
-                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.Run(SelectedObject)));
+                    (_replaceTyresCommand = new AsyncCommand(() => CarReplaceTyresDialog.RunAsync(SelectedObject)));
+
+            private AsyncCommand _createTyresCommand;
+
+            public AsyncCommand CreateTyresCommand => _createTyresCommand ??
+                    (_createTyresCommand = new AsyncCommand(() => CarGenerateTyresDialog.RunAsync(SelectedObject)));
 
             private DelegateCommand _carAnalyzerCommand;
 

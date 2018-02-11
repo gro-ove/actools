@@ -60,7 +60,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            ((Window)d).Title = e.NewValue as string;
+            ((Window)d).Title = e.NewValue as string ?? "";
         }
 
         public new string Title {

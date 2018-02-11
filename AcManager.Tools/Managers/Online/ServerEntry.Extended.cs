@@ -262,7 +262,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool CheckPasswordChecksum() {
             if (PasswordChecksum == null) return true;
             using (var sha1 = SHA1.Create()) {
-                return PasswordChecksum.Contains(sha1.ComputeHash(Encoding.UTF8.GetBytes("apatosaur" + ActualName + Password))
+                return PasswordChecksum.ArrayContains(sha1.ComputeHash(Encoding.UTF8.GetBytes("apatosaur" + ActualName + Password))
                                                      .ToHexString().ToLowerInvariant());
             }
         }

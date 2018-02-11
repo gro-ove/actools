@@ -164,8 +164,8 @@ namespace AcManager.CustomShowroom {
         public sealed class MaterialValue3D : MaterialValueBase {
             public MaterialValue3D(string name, float[] value) : base(name) {
                 X = OriginalX = value.FirstOrDefault().ToInvariantString();
-                Y = OriginalY = value.ElementAtOrDefault(1).ToInvariantString();
-                Z = OriginalZ = value.ElementAtOrDefault(2).ToInvariantString();
+                Y = OriginalY = value.ArrayElementAtOrDefault(1).ToInvariantString();
+                Z = OriginalZ = value.ArrayElementAtOrDefault(2).ToInvariantString();
                 OriginalValue = $"X={X}, Y={Y}, Z={Z}";
             }
 

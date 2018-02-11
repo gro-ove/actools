@@ -137,7 +137,7 @@ namespace AcManager.PaintShop {
         }
 
         public override Color? GetColor(int colorIndex) {
-            return CurrentPattern?.Colors.ActualColors.ElementAtOrDefault(colorIndex);
+            return CurrentPattern?.Colors.ActualColors.ArrayElementAtOrDefault(colorIndex);
         }
 
         public override JObject Serialize() {
@@ -172,7 +172,7 @@ namespace AcManager.PaintShop {
 
         public override Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
             Slot = i,
-            Color = x == -1 ? (Color?)null : CurrentPattern?.Colors.Colors.ElementAtOrDefault(x)?.Value
+            Color = x == -1 ? (Color?)null : CurrentPattern?.Colors.Colors.ArrayElementAtOrDefault(x)?.Value
         }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? base.LiveryColors;
 
         int IPaintablePersonalItem.Number {

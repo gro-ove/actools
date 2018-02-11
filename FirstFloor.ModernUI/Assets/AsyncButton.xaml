@@ -1,0 +1,193 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:s="clr-namespace:System;assembly=mscorlib">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Button.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <s:Double x:Key="AsyncButton.ProgressBarOpacity">0.08</s:Double>
+  <Style TargetType="{x:Type c:AsyncButton}" BasedOn="{StaticResource BaseButtonStyle}">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type c:AsyncButton}">
+          <c:Cell SnapsToDevicePixels="True">
+            <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" />
+            <ProgressBar x:Name="PART_ProgressBar" Minimum="0" Maximum="1"
+                Value="{Binding Progress.Progress, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Background="Transparent">
+              <ProgressBar.Foreground>
+                <SolidColorBrush Color="{DynamicResource AccentColor}" Opacity="{DynamicResource AsyncButton.ProgressBarOpacity}" />
+              </ProgressBar.Foreground>
+            </ProgressBar>
+            <Border x:Name="Chrome" Background="Transparent" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}" ClipToBounds="True">
+              <c:AdornedControl x:Name="PART_Adorned">
+                <c:AdornedControl.AdornerContent>
+                  <Border ClipToBounds="True" Margin="-1">
+                    <Border HorizontalAlignment="Right">
+                      <Border.RenderTransform>
+                        <TranslateTransform x:Name="PART_CancelTranslate" X="23" />
+                      </Border.RenderTransform>
+                      <Button x:Name="PART_CancelButton" Content="×" ToolTip="Cancel" Padding="6 1 5 2" BorderThickness="0">
+                        <Button.Resources>
+                          <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
+                        </Button.Resources>
+                      </Button>
+                    </Border>
+                  </Border>
+                </c:AdornedControl.AdornerContent>
+                <DockPanel x:Name="PART_PaddingPanel" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}">
+                  <DockPanel.RenderTransform>
+                    <TranslateTransform x:Name="PART_PaddingTranslate" X="0" />
+                  </DockPanel.RenderTransform>
+                  <Border VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                    <Border.RenderTransform>
+                      <TranslateTransform
+                          X="{Binding Padding.Left, Converter={StaticResource SubstractConverter}, ConverterParameter=4, RelativeSource={RelativeSource TemplatedParent}}" />
+                    </Border.RenderTransform>
+                    <Border Width="12" Height="12" Margin="0 -3 0 -4" DockPanel.Dock="Left" VerticalAlignment="Center" ClipToBounds="True">
+                      <Border.LayoutTransform>
+                        <ScaleTransform x:Name="PART_ProgressScale" ScaleX="0" />
+                      </Border.LayoutTransform>
+                      <c:BooleanSwitch x:Name="PART_ProgressRing"
+                          RenderTransform="{Binding Path=(FrameworkElement.LayoutTransform).Inverse, RelativeSource={RelativeSource AncestorType=Border}}">
+                        <Canvas>
+                          <c:ModernProgressRing Width="80" Height="80" IsActive="True" Style="{StaticResource CompactProgressRingStyle}">
+                            <c:ModernProgressRing.RenderTransform>
+                              <ScaleTransform ScaleX="0.15" ScaleY="0.15" CenterX="0" CenterY="0" />
+                            </c:ModernProgressRing.RenderTransform>
+                          </c:ModernProgressRing>
+                        </Canvas>
+                      </c:BooleanSwitch>
+                    </Border>
+                  </Border>
+                  <c:Cell>
+                    <c:Cell.RenderTransform>
+                      <TranslateTransform x:Name="PART_ContentTranslate" Y="0" />
+                    </c:Cell.RenderTransform>
+                    <Border Margin="0 -20 0 20">
+                      <TextBlock Text="{Binding Progress.Message, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{DynamicResource ButtonText}"
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+                    </Border>
+                    <ContentPresenter x:Name="Presenter" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+                  </c:Cell>
+                </DockPanel>
+              </c:AdornedControl>
+            </Border>
+          </c:Cell>
+          <ControlTemplate.Resources>
+            <ResourceDictionary>
+              <Storyboard x:Key="ScaleXUp">
+                <DoubleAnimation To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressScale" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_CancelTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource DecelerationEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.0" Storyboard.TargetName="PART_ProgressRing"
+                    Storyboard.TargetProperty="(c:BooleanSwitch.Value)">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0.0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <s:Boolean>True</s:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="ScaleXDown">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressScale" Storyboard.TargetProperty="(ScaleTransform.ScaleX)"
+                    EasingFunction="{StaticResource StandardEase}" />
+                <DoubleAnimation To="23" Duration="0:0:0.22" Storyboard.TargetName="PART_CancelTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource AccelerationEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.22" Storyboard.TargetName="PART_ProgressRing"
+                    Storyboard.TargetProperty="(c:BooleanSwitch.Value)">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0.0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <s:Boolean>False</s:Boolean>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
+              </Storyboard>
+              <Storyboard x:Key="PaddingDown">
+                <DoubleAnimation To="-8" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="PaddingUp">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_PaddingTranslate" Storyboard.TargetProperty="(TranslateTransform.X)"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="ShowProgressBar">
+                <DoubleAnimation To="1" Duration="0:0:0.0" Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity" />
+              </Storyboard>
+              <Storyboard x:Key="HideProgressBar">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ProgressBar" Storyboard.TargetProperty="Opacity" />
+              </Storyboard>
+              <Storyboard x:Key="ShowProgressMessage">
+                <DoubleAnimation To="20" Duration="0:0:0.22" Storyboard.TargetName="PART_ContentTranslate" Storyboard.TargetProperty="(TranslateTransform.Y)"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+              <Storyboard x:Key="HideProgressMessage">
+                <DoubleAnimation To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ContentTranslate" Storyboard.TargetProperty="(TranslateTransform.Y)"
+                    EasingFunction="{StaticResource StandardEase}" />
+              </Storyboard>
+            </ResourceDictionary>
+          </ControlTemplate.Resources>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsProcessing" Value="True">
+              <Trigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXUp}" />
+              </Trigger.EnterActions>
+              <Trigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource ScaleXDown}" />
+              </Trigger.ExitActions>
+            </Trigger>
+            <Trigger Property="Cancellable" Value="True">
+              <Setter TargetName="PART_Adorned" Property="IsAdornerVisible" Value="True" />
+            </Trigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsProcessing" Value="True" />
+                <Condition Property="Cancellable" Value="True" />
+                <Condition Property="Padding" Value="16 1 16 2" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource PaddingDown}" />
+              </MultiTrigger.EnterActions>
+              <MultiTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource PaddingUp}" />
+              </MultiTrigger.ExitActions>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsProcessing" Value="True" />
+                <Condition Property="PercentageProgress" Value="True" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ShowProgressBar}" />
+              </MultiTrigger.EnterActions>
+              <MultiTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource HideProgressBar}" />
+              </MultiTrigger.ExitActions>
+            </MultiTrigger>
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsProcessing" Value="True" />
+                <Condition Property="MessageProgress" Value="True" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.EnterActions>
+                <BeginStoryboard Storyboard="{StaticResource ShowProgressMessage}" />
+              </MultiTrigger.EnterActions>
+              <MultiTrigger.ExitActions>
+                <BeginStoryboard Storyboard="{StaticResource HideProgressMessage}" />
+              </MultiTrigger.ExitActions>
+            </MultiTrigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+              <Setter TargetName="Chrome" Property="BorderBrush" Value="{Binding BorderBrush, RelativeSource={RelativeSource TemplatedParent}}" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

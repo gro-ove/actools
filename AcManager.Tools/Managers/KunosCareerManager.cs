@@ -137,9 +137,9 @@ namespace AcManager.Tools.Managers {
                         if (nextEvent != null) nextEvent.IsAvailable = true;
 
                         var pointsPerPlace = career.ChampionshipPointsPerPlace;
-                        career.ChampionshipPoints += pointsPerPlace.ElementAtOrDefault(places?[0] ?? -1);
+                        career.ChampionshipPoints += pointsPerPlace.ArrayElementAtOrDefault(places?[0] ?? -1);
                         career.ChampionshipAiPoints = places?.Skip(1).Select((place, id) =>
-                                pointsPerPlace.ElementAtOrDefault(place) + career.ChampionshipAiPoints?.ElementAtOrDefault(id) ?? 0).ToArray();
+                                pointsPerPlace.ArrayElementAtOrDefault(place) + career.ChampionshipAiPoints?.ElementAtOrDefault(id) ?? 0).ToArray();
                         career.SaveProgress(true);
 
                         if (!career.IsCompleted && CheckIfCareerCompleted(career)) {

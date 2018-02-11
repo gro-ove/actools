@@ -110,8 +110,12 @@ namespace AcManager.Controls {
 
             try {
                 _isBusy = true;
-                element.Document = newValue == null ? new TextDocument() : new TextDocument(newValue);
-                // ProperUndoStrategy.Set(TextEditor.Document);
+                if (element.Document != null) {
+                    element.Document.Text = newValue;
+                    element.Document.UndoStack.ClearAll();
+                } else {
+                    element.Document = newValue == null ? new TextDocument() : new TextDocument(newValue);
+                }
             } finally {
                 _isBusy = false;
             }

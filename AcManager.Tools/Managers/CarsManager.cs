@@ -69,7 +69,7 @@ namespace AcManager.Tools.Managers {
             if (base.ShouldSkipFile(objectLocation, filename)) return true;
 
             var inner = filename.SubstringExt(objectLocation.Length + 1).ToLowerInvariant();
-            if (WatchedFiles.Contains(inner)) {
+            if (WatchedFiles.ArrayContains(inner)) {
                 return false;
             }
 
@@ -84,7 +84,7 @@ namespace AcManager.Tools.Managers {
             }
 
             var name = Path.GetFileName(inner);
-            return !WatchedSkinFileNames.Contains(name.ToLowerInvariant());
+            return !WatchedSkinFileNames.ArrayContains(name.ToLowerInvariant());
         }
 
         protected override CarObject CreateAcObject(string id, bool enabled) {

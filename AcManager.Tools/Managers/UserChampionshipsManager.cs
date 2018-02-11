@@ -79,7 +79,7 @@ namespace AcManager.Tools.Managers {
                         if (nextEvent != null) nextEvent.IsAvailable = true;
 
                         var pointsPerPlace = career.Rules.Points;
-                        var playerPointsDelta = pointsPerPlace.ElementAtOrDefault(places?[0] ?? -1);
+                        var playerPointsDelta = pointsPerPlace.ArrayElementAtOrDefault(places?[0] ?? -1);
 
                         if (career.PointsForBestLap != 0) {
                             var bestLap = e.Result.Sessions?.SelectMany(x => x.BestLaps).MinEntryOrDefault(x => x.Time);
@@ -130,7 +130,7 @@ namespace AcManager.Tools.Managers {
                         for (var i = career.Drivers.Count - 1; i >= 0; i--) {
                             var driver = career.Drivers[i];
                             if (driver.IsPlayer) continue;
-                            driver.Points += pointsPerPlace.ElementAtOrDefault(places?.ElementAtOrDefault(i) ?? -1);
+                            driver.Points += pointsPerPlace.ArrayElementAtOrDefault(places?.ArrayElementAtOrDefault(i) ?? -1);
                         }
 
                         career.UpdateTakenPlaces();

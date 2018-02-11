@@ -38,7 +38,8 @@
                   IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" />
               <ContentPresenter ContentSource="Header" RecognizesAccessKey="False" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             </DockPanel>
-            <Border x:Name="PART_ExpandSite" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ClipToBounds="True">
+            <Border x:Name="PART_ExpandSite" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" ClipToBounds="True"
+                Visibility="Collapsed">
               <Border.LayoutTransform>
                 <ScaleTransform x:Name="PART_ExpandScale" ScaleX="1" ScaleY="0" />
               </Border.LayoutTransform>
@@ -50,9 +51,23 @@
             <ResourceDictionary>
               <Storyboard x:Key="ScaleYUp" TargetProperty="(ScaleTransform.ScaleY)">
                 <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0" Storyboard.TargetName="PART_ExpandSite" Storyboard.TargetProperty="Visibility">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Visible</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
               </Storyboard>
               <Storyboard x:Key="ScaleYDown" TargetProperty="(ScaleTransform.ScaleY)">
                 <DoubleAnimation From="1" To="0" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />
+                <ObjectAnimationUsingKeyFrames BeginTime="0:0:0.22" Storyboard.TargetName="PART_ExpandSite" Storyboard.TargetProperty="Visibility">
+                  <DiscreteObjectKeyFrame KeyTime="0:0:0">
+                    <DiscreteObjectKeyFrame.Value>
+                      <Visibility>Collapsed</Visibility>
+                    </DiscreteObjectKeyFrame.Value>
+                  </DiscreteObjectKeyFrame>
+                </ObjectAnimationUsingKeyFrames>
               </Storyboard>
               <Storyboard x:Key="ScaleXUp" TargetProperty="(ScaleTransform.ScaleX)">
                 <DoubleAnimation From="0" To="1" Duration="0:0:0.22" Storyboard.TargetName="PART_ExpandScale" EasingFunction="{StaticResource StandardEase}" />

@@ -128,7 +128,7 @@ namespace AcManager.Tools.Objects {
             TakenPlace = SpecialEventsManager.ProgressStorage.Get(KeyTakenPlace, 5);
             if (AiLevels != null) {
                 SelectedLevel = AiLevels.GetByIdOrDefault(SpecialEventsManager.ProgressStorage.Get(KeySelectedLevel, 0)) ??
-                        AiLevels.ElementAtOrDefault(1);
+                        AiLevels.ArrayElementAtOrDefault(1);
             }
         }
 

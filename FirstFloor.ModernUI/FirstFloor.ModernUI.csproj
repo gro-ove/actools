@@ -111,6 +111,7 @@
     </Compile>
     <Compile Include="ChangeableObservableCollection.cs" />
     <Compile Include="CollectionExtension.cs" />
+    <Compile Include="Commands\CommandExt.cs" />
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\CommandBase.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Windows\Attached\DataGridFix.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\Attached\ExpanderHelper.cs" />
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScrollHelper.cs" />
@@ -432,6 +434,10 @@
     <Compile Include="WrappedFilteredCollection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Assets\AsyncButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

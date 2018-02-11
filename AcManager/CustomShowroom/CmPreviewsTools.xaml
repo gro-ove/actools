@@ -78,7 +78,7 @@
 
     <StackPanel Grid.Row="1">
       <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Settings}" Margin="0 4"
-          Style="{StaticResource UserPresetsControl.Compact.Share}" Width="238" />
+          Style="{StaticResource UserPresetsControl.Compact.Share}" Width="238" Tag="{Binding Settings.ShareCommand}" />
       <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Height="24">
         <Button Padding="4 2 4 3" ToolTip="Update selected skin (with confirmation)" Command="{Binding TestCommand}">
           <Path Width="16" Height="16" Stretch="Uniform" Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"

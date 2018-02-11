@@ -22,7 +22,7 @@ namespace AcManager.CustomShowroom {
             Buttons = new Button[0];
 
             if (Model.Layouts != null) {
-                foreach (var layout in Model.Layouts.Where(x => Model.ExtraLayoutIds?.Contains(x.LayoutId) == true)) {
+                foreach (var layout in Model.Layouts.Where(x => Model.ExtraLayoutIds?.ArrayContains(x.LayoutId) == true)) {
                     LayoutsListBox.SelectedItems.Add(layout);
                 }
             }
@@ -36,7 +36,7 @@ namespace AcManager.CustomShowroom {
             public void Apply(TrackOutlineRenderer renderer, TrackObjectBase track) {
                 var value = ExtraLayoutIds;
                 renderer.SetActiveMaps(value == null ? new string[0] :
-                               track.MainTrackObject.MultiLayouts?.Where(x => value.Contains(x.LayoutId)).Select(x => x.MapImage).ToArray());
+                               track.MainTrackObject.MultiLayouts?.Where(x => value.ArrayContains(x.LayoutId)).Select(x => x.MapImage).ToArray());
             }
         }
 
@@ -149,7 +149,7 @@ namespace AcManager.CustomShowroom {
                     OnPropertyChanged();
 
                     Renderer.SetActiveMaps(value == null ? new string[0] :
-                            Track.MainTrackObject.MultiLayouts?.Where(x => value.Contains(x.LayoutId)).Select(x => x.MapImage).ToArray());
+                            Track.MainTrackObject.MultiLayouts?.Where(x => value.ArrayContains(x.LayoutId)).Select(x => x.MapImage).ToArray());
                     _perLayoutSave.SaveLater();
                 }
             }

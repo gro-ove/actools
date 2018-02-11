@@ -180,7 +180,7 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            if (VersionSources.Contains(FileUtils.GetPathWithin(filename, Location)?.ToLowerInvariant())) {
+            if (VersionSources.ArrayContains(FileUtils.GetPathWithin(filename, Location)?.ToLowerInvariant())) {
                 TryToLoadVersion();
                 return true;
             }

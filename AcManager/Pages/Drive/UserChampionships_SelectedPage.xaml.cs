@@ -219,7 +219,7 @@ namespace AcManager.Pages.Drive {
                     CarId = _acObject.PlayerCarId,
                     CarSkinId = _acObject.PlayerCarSkinId,
                     TrackId = trackId[0],
-                    TrackConfigurationId = trackId.ElementAtOrDefault(1)
+                    TrackConfigurationId = trackId.ArrayElementAtOrDefault(1)
                 }, o?.ToGameProperties(), conditions, round.TrackProperties.Properties, new Game.WeekendProperties {
                     AiLevel = 100,
                     RaceLaps = round.LapsCount,

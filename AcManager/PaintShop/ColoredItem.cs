@@ -49,7 +49,7 @@ namespace AcManager.PaintShop {
 
         public override Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
             Slot = i,
-            Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
+            Color = x == -1 ? (Color?)null : ActualColors.ArrayElementAtOrDefault(x)
         }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? base.LiveryColors;
 
         public override string DisplayName { get; set; } = "Colored item";
@@ -81,7 +81,7 @@ namespace AcManager.PaintShop {
         }
 
         public override Color? GetColor(int colorIndex) {
-            return Colors.ActualColors.ElementAtOrDefault(colorIndex);
+            return Colors.ActualColors.ArrayElementAtOrDefault(colorIndex);
         }
     }
 }

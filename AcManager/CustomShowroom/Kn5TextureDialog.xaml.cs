@@ -23,7 +23,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Microsoft.Win32;
-using SlimDX.DXGI;
 
 namespace AcManager.CustomShowroom {
     public partial class Kn5TextureDialog {
@@ -419,9 +418,7 @@ namespace AcManager.CustomShowroom {
             if (imageData == null || imageData.Length == 0) return null;
 
             try {
-                Format format;
-                var pngData = TextureReader.ToPng(renderer.DeviceContextHolder, imageData, true, out format);
-
+                var pngData = TextureReader.ToPng(renderer.DeviceContextHolder, imageData, true, out var format);
                 var image = new BitmapImage();
                 using (var stream = new MemoryStream(pngData) {
                     Position = 0

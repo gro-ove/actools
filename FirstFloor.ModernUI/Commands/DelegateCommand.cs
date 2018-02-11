@@ -12,8 +12,7 @@ namespace FirstFloor.ModernUI.Commands {
 
         public DelegateCommand([NotNull] Action execute, Func<bool> canExecute = null, bool isAutomaticRequeryDisabled = false)
                 : base(canExecute == null, isAutomaticRequeryDisabled) {
-            if (execute == null) throw new ArgumentNullException(nameof(execute));
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
 
@@ -35,8 +34,7 @@ namespace FirstFloor.ModernUI.Commands {
 
         public DelegateCommand([NotNull] Action<T> execute, Func<T, bool> canExecute = null, bool isAutomaticRequeryDisabled = false)
                 : base(canExecute == null, isAutomaticRequeryDisabled) {
-            if (execute == null) throw new ArgumentNullException(nameof(execute));
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
         }
 

@@ -17,7 +17,7 @@ namespace AcManager.Tools.ContentRepairUi {
         protected override Task<bool> FixAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
-            return CarReplaceTyresDialog.Run(car);
+            return CarReplaceTyresDialog.RunAsync(car);
         }
 
         protected override void Fix(CarObject car, DataWrapper data) {}
@@ -48,7 +48,7 @@ namespace AcManager.Tools.ContentRepairUi {
         protected override Task<bool> FixAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
-            return CarReplaceTyresDialog.Run(car);
+            return CarReplaceTyresDialog.RunAsync(car);
         }
 
         protected override void Fix(CarObject car, DataWrapper data) {}

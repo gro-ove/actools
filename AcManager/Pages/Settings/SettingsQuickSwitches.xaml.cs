@@ -79,7 +79,7 @@ namespace AcManager.Pages.Settings {
                     SettingsHolder.Drive.QuickSwitchesList = active;
                 }
 
-                Stored = new BetterObservableCollection<WidgetEntry>(Widgets.Values.Where(x => !active.Contains(x.Key)));
+                Stored = new BetterObservableCollection<WidgetEntry>(Widgets.Values.Where(x => !active.ArrayContains(x.Key)));
                 Added = new BetterObservableCollection<WidgetEntry>(active.Select(x => Widgets.GetValueOrDefault(x)).NonNull());
                 Added.CollectionChanged += Added_CollectionChanged;
             }

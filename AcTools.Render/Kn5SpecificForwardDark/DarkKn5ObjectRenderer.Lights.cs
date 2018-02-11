@@ -276,7 +276,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 for (var i = _lights.Length - 1; i >= 0; i--) {
                     var light = _lights[i];
-                    if (!value.Contains(light)) {
+                    if (!value.ArrayContains(light)) {
                         light.Dispose();
                         light.PropertyChanged -= OnLightPropertyChanged;
                         someIsVisible |= light.IsVisibleAsMesh;
@@ -285,7 +285,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
                 for (var i = value.Length - 1; i >= 0; i--) {
                     var light = value[i];
-                    if (!_lights.Contains(light)) {
+                    if (!_lights.ArrayContains(light)) {
                         light.PropertyChanged += OnLightPropertyChanged;
                         someIsVisible |= light.IsVisibleAsMesh;
                     }

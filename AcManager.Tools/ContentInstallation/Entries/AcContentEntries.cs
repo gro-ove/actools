@@ -726,7 +726,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         protected override UpdateOption GetDefaultUpdateOption(UpdateOption[] list) {
-            return list.ElementAtOrDefault(2) ?? base.GetDefaultUpdateOption(list);
+            return list.ArrayElementAtOrDefault(2) ?? base.GetDefaultUpdateOption(list);
         }
 
         public override FileAcManager<WeatherObject> GetManager() {

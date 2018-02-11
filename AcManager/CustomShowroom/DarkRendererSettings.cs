@@ -1025,7 +1025,7 @@ namespace AcManager.CustomShowroom {
         public SettingEntry MsaaMode {
             get => _msaaMode;
             set {
-                if (!MsaaModes.Contains(value)) value = MsaaModes[0];
+                if (!MsaaModes.ArrayContains(value)) value = MsaaModes[0];
                 if (Equals(value, _msaaMode)) return;
                 _msaaMode = value;
                 OnPropertyChanged();
@@ -1040,7 +1040,7 @@ namespace AcManager.CustomShowroom {
         public SettingEntry SsaaMode {
             get => _ssaaMode;
             set {
-                if (!SsaaModesExtended.Contains(value)) value = SsaaModesExtended[0];
+                if (!SsaaModesExtended.ArrayContains(value)) value = SsaaModesExtended[0];
                 if (Equals(value, _ssaaMode)) return;
                 _ssaaMode = value;
                 OnPropertyChanged();
@@ -1057,7 +1057,7 @@ namespace AcManager.CustomShowroom {
         public SettingEntry ShadowMapSize {
             get => _shadowMapSize;
             set {
-                if (!ShadowResolutions.Contains(value)) value = ShadowResolutions[1];
+                if (!ShadowResolutions.ArrayContains(value)) value = ShadowResolutions[1];
                 if (Equals(value, _shadowMapSize)) return;
                 _shadowMapSize = value;
                 OnPropertyChanged();
@@ -1071,7 +1071,7 @@ namespace AcManager.CustomShowroom {
         public SettingEntry CubemapReflectionMapSize {
             get => _cubemapReflectionMapSize;
             set {
-                if (!CubemapReflectionResolutions.Contains(value)) value = CubemapReflectionResolutions[2];
+                if (!CubemapReflectionResolutions.ArrayContains(value)) value = CubemapReflectionResolutions[2];
                 if (Equals(value, _cubemapReflectionMapSize)) return;
                 _cubemapReflectionMapSize = value;
                 OnPropertyChanged();

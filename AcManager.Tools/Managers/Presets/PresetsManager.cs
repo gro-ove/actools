@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
@@ -124,12 +125,16 @@ namespace AcManager.Tools.Managers.Presets {
 
         public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] PresetsCategory category, [CanBeNull] string data,
                 [CanBeNull] ref string filename) {
+            return SavePresetUsingDialog(key, category, data == null ? null : Encoding.UTF8.GetBytes(data), ref filename);
+        }
+
+        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] PresetsCategory category, [CanBeNull] byte[] data,
+                [CanBeNull] ref string filename) {
             if (data == null) {
                 return false;
             }
 
             var presetsDirectory = EnsureDirectory(category);
-
             filename = FileRelatedDialogs.Save(new SaveDialogParams {
                 Filters = { new DialogFilterPiece("Presets", "*" + category.Extension) },
                 InitialDirectory = presetsDirectory,
@@ -149,7 +154,7 @@ namespace AcManager.Tools.Managers.Presets {
                 return false;
             }
 
-            File.WriteAllText(filename, data);
+            File.WriteAllBytes(filename, data);
             Logging.Debug("Preset saved as " + filename);
 
             if (key != null) {
@@ -160,6 +165,11 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] PresetsCategory category, [CanBeNull] string data,
+                [CanBeNull] string filename) {
+            return SavePresetUsingDialog(key, category, data == null ? null : Encoding.UTF8.GetBytes(data), filename);
+        }
+
+        public bool SavePresetUsingDialog([CanBeNull] string key, [NotNull] PresetsCategory category, [CanBeNull] byte[] data,
                 [CanBeNull] string filename) {
             return SavePresetUsingDialog(key, category, data, ref filename);
         }

@@ -185,6 +185,10 @@ namespace AcTools.DataFile {
     }
 
     public class DataWrapper : DataWrapperBase, INotifyPropertyChanged {
+        public static readonly string PackedFileExtension = ".acd";
+        public static readonly string PackedFileName = "data.acd";
+        public static readonly string UnpackedDirectoryName = "data";
+
         [CanBeNull]
         private Acd _acd;
 
@@ -196,12 +200,12 @@ namespace AcTools.DataFile {
         private DataWrapper([NotNull] string carDirectory) {
             ParentDirectory = carDirectory;
 
-            var dataAcd = Path.Combine(carDirectory, "data.acd");
+            var dataAcd = Path.Combine(carDirectory, PackedFileName);
             if (File.Exists(dataAcd)) {
                 _acd = Acd.FromFile(dataAcd);
                 IsPacked = true;
             } else {
-                var dataDirectory = Path.Combine(carDirectory, "data");
+                var dataDirectory = Path.Combine(carDirectory, UnpackedDirectoryName);
                 if (Directory.Exists(dataDirectory)) {
                     _acd = Acd.FromDirectory(dataDirectory);
                 } else {

@@ -29,7 +29,7 @@ namespace AcManager {
         private static readonly string[] SupportedLocales = { "en", "en-gb", "en-us" };
 
         public static bool IsSupported(string id) {
-            return SupportedLocales.Contains(id?.ToLowerInvariant());
+            return SupportedLocales.ArrayContains(id?.ToLowerInvariant());
         }
 
         public static async Task InitializeAsync() {

@@ -37,9 +37,11 @@ namespace AcManager.CustomShowroom {
                     var s = _fn?.Invoke(textureSize);
                     if (s != null) {
                         reader.CopyTo(s, textureSize);
+                        return null;
                     }
                 }
 
+                reader.Skip(textureSize);
                 return null;
             }
         }

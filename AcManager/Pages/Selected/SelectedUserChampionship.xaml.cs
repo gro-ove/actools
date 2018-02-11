@@ -120,7 +120,7 @@ namespace AcManager.Pages.Selected {
 
                 Points.ReplaceEverythingBy_Direct(Enumerable.Range(1, count).Select((x, i) => {
                     var result = new PlacePoints(x) {
-                        Value = SelectedObject.Rules.Points.ElementAtOrDefault(i)
+                        Value = SelectedObject.Rules.Points.ArrayElementAtOrDefault(i)
                     };
                     result.PropertyChanged += OnPlacePointsPropertyChanged;
                     return result;

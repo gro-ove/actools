@@ -1,5 +1,5 @@
 using System;
-using AcTools.Utils;
+using System.IO;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -39,8 +39,8 @@ namespace AcManager.Tools.Managers.Presets {
             Filename = filename;
         }
 
-        public string ReadData() {
-            return FileUtils.ReadAllText(Filename);
+        public byte[] ReadBinaryData() {
+            return File.ReadAllBytes(Filename);
         }
 
         public void SetParent(string baseDirectory) {

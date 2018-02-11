@@ -231,7 +231,7 @@ namespace AcManager.PaintShop {
                 colorIndex--;
             }
 
-            return CurrentPattern?.Colors.ActualColors.ElementAtOrDefault(colorIndex);
+            return CurrentPattern?.Colors.ActualColors.ArrayElementAtOrDefault(colorIndex);
         }
     }
 }

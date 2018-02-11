@@ -258,7 +258,7 @@ namespace AcManager.Pages.Dialogs {
                                 CarSkin = entry.CarSkin,
                                 TakenPlace = i < takenPlaces?.Length ? takenPlaces[i] + 1 : DefinitelyNonPrizePlace,
                                 PrizePlace = takenPlaces?.Length > 1,
-                                LapsCount = session.LapsTotalPerCar?.ElementAtOrDefault(i) ?? 0,
+                                LapsCount = session.LapsTotalPerCar?.ArrayElementAtOrDefault(i) ?? 0,
                                 BestLapTime = bestLapTime,
                                 DeltaToSessionBest = sessionBestLap?.CarNumber == i ? null : bestLapTime - sessionBest,
                                 TotalTime = session.Laps?.Where(x => x.CarNumber == i).Select(x => x.SectorsTime.Sum()).Sum(),

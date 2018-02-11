@@ -13,7 +13,12 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector) {
-            var knownKeys = new HashSet<TKey>();
+            return source.DistinctBy(keySelector, EqualityComparer<TKey>.Default);
+        }
+
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
+                IEqualityComparer<TKey> comparer) {
+            var knownKeys = new HashSet<TKey>(comparer);
             foreach (var element in source) {
                 if (knownKeys.Add(keySelector(element))) {
                     yield return element;
@@ -44,7 +49,9 @@ namespace AcTools.Utils.Helpers {
         public static double Median(this IEnumerable<double> source, IComparer<double> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
         public static int? Median(this IEnumerable<int?> source, IComparer<int?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
         public static float? Median(this IEnumerable<float?> source, IComparer<float?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
-        public static double? Median(this IEnumerable<double?> source, IComparer<double?> comparer = null) => source.MedianInner(comparer, (x, y) => (x + y) / 2);
+
+        public static double? Median(this IEnumerable<double?> source, IComparer<double?> comparer = null)
+                => source.MedianInner(comparer, (x, y) => (x + y) / 2);
 
         public static TimeSpan Median(this IEnumerable<TimeSpan> source, IComparer<TimeSpan> comparer = null)
                 => source.MedianInner(comparer, (x, y) => TimeSpan.FromSeconds((x.TotalSeconds + y.TotalSeconds) / 2d));
@@ -709,7 +716,7 @@ namespace AcTools.Utils.Helpers {
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] params T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (additionalItems == null) return source;
-            return source.Where(x => !additionalItems.Contains(x));
+            return source.Where(x => !additionalItems.ArrayContains(x));
         }
 
         [Pure]
@@ -726,7 +733,6 @@ namespace AcTools.Utils.Helpers {
         public static IEnumerable<T> IfWhere<T>([NotNull] this IEnumerable<T> source, bool condition, [NotNull] Func<T, bool> fn) {
             return condition ? source.Where(fn) : source;
         }
-
 
         [Pure]
         public static IEnumerable<T> IfSelect<T>([NotNull] this IEnumerable<T> source, bool condition, [NotNull] Func<T, T> fn) {
@@ -750,7 +756,7 @@ namespace AcTools.Utils.Helpers {
         [Pure]
         public static int Count<T>([NotNull] this IEnumerable<T> source, T[] additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            return source.Count(additionalItems.Contains);
+            return source.Count(additionalItems.ArrayContains);
         }
 
         [Pure]
@@ -926,11 +932,27 @@ namespace AcTools.Utils.Helpers {
                 }
             }
         }
+
+        private class CallbackComparer<T> : IComparer<T> {
+            private readonly Func<T, T, int> _callback;
+
+            public CallbackComparer(Func<T, T, int> callback) {
+                _callback = callback;
+            }
+
+            public int Compare(T x, T y) {
+                return _callback.Invoke(x, y);
+            }
+        }
+
+        public static IComparer<T> ToComparer<T>(this Func<T, T, int> callback) {
+            return new CallbackComparer<T>(callback);
+        }
     }
 
     public interface IWithId<out T> {
         T Id { get; }
     }
 
-    public interface IWithId : IWithId<string> {}
+    public interface IWithId : IWithId<string> { }
 }

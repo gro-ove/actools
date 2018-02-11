@@ -476,7 +476,7 @@ namespace AcManager.Tools.Managers.Online {
                 if (server == null) return null;
 
                 if (server.HasFriends) {
-                    if (!hasFriendTag && server.CurrentDrivers?.Any(x => x.Tags.Contains(FriendTag)) != true) {
+                    if (!hasFriendTag && server.CurrentDrivers?.Any(x => x.Tags.ArrayContains(FriendTag)) != true) {
                         server.HasFriends = false;
                     }
                 } else {

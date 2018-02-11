@@ -295,10 +295,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (e.NewValue is string potentialFilename) {
                     b.ImageSource = null;
                     b.Filename = potentialFilename;
-                } else if (e.NewValue is BitmapEntry) {
+                } else if (e.NewValue is BitmapEntry be) {
                     b.ImageSource = null;
                     b.Filename = null;
-                    b.SetBitmapEntryDirectly((BitmapEntry)e.NewValue);
+                    b.SetBitmapEntryDirectly(be);
+                } else if (e.NewValue is byte[] by) {
+                    b.ImageSource = null;
+                    b.Filename = null;
+                    b.SetBitmapEntryDirectly(LoadBitmapSourceFromBytes(by));
                 } else {
                     var source = (ImageSource)e.NewValue;
                     b.ImageSource = source;
@@ -1053,19 +1057,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _broken;
         private bool _fromCache;
 
-        private void SetCurrent(BitmapEntry value, bool fromCache = false) {
+        protected void SetCurrent(BitmapEntry value, bool? fromCache = false) {
             ++_loading;
 
             _current = value;
             _broken = value.IsBroken;
-            _fromCache = fromCache;
+            _fromCache = fromCache == true;
 
-            if (fromCache) {
-                if (_broken && Filename != null) {
-                    RemoveFromCache(Filename);
+            if (fromCache.HasValue) {
+                if (fromCache.Value) {
+                    if (_broken && Filename != null) {
+                        RemoveFromCache(Filename);
+                    }
+                } else if (!_broken) {
+                    AddToCache(Filename, _current);
                 }
-            } else if (!_broken) {
-                AddToCache(Filename, _current);
             }
 
             InvalidateMeasure();

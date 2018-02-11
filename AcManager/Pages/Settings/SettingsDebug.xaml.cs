@@ -108,6 +108,46 @@ namespace AcManager.Pages.Settings {
             public AsyncCommand<CancellationToken?> AsyncCancelCommand
                 => _asyncCancelCommand ?? (_asyncCancelCommand = new AsyncCommand<CancellationToken?>(c => Task.Delay(2000, c ?? default(CancellationToken))));
 
+            private AsyncCommand<IProgress<double>> _asyncProgressCommand;
+
+            public AsyncCommand<IProgress<double>> AsyncProgressCommand
+                => _asyncProgressCommand ?? (_asyncProgressCommand = new AsyncCommand<IProgress<double>>(async c => {
+                    for (var i = 0; i < 100; i++) {
+                        c?.Report(i / 100d);
+                        await Task.Delay(16);
+                    }
+                }));
+
+            private AsyncCommand<IProgress<string>> _asyncProgressMsgCommand;
+
+            public AsyncCommand<IProgress<string>> AsyncProgressMsgCommand
+                => _asyncProgressMsgCommand ?? (_asyncProgressMsgCommand = new AsyncCommand<IProgress<string>>(async c => {
+                    for (var i = 0; i < 100; i++) {
+                        c?.Report($"Progress: {i}%");
+                        await Task.Delay(16);
+                    }
+                }));
+
+            private AsyncCommand<Tuple<IProgress<double>, CancellationToken>> _asyncProgressCancelCommand;
+
+            public AsyncCommand<Tuple<IProgress<double>, CancellationToken>> AsyncProgressCancelCommand
+                => _asyncProgressCancelCommand ?? (_asyncProgressCancelCommand = new AsyncCommand<Tuple<IProgress<double>, CancellationToken>>(async t => {
+                    for (var i = 0; i < 100 && !t.Item2.IsCancellationRequested; i++) {
+                        t.Item1?.Report(i / 100d);
+                        await Task.Delay(16, t.Item2);
+                    }
+                }));
+
+            private AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> _asyncProgressMsgCancelCommand;
+
+            public AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>> AsyncProgressMsgCancelCommand
+                => _asyncProgressMsgCancelCommand ?? (_asyncProgressMsgCancelCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(async t => {
+                    for (var i = 0; i < 100 && !t.Item2.IsCancellationRequested; i++) {
+                        t.Item1?.Report($"Progress: {i}%", i, 100);
+                        await Task.Delay(16, t.Item2);
+                    }
+                }));
+
             private ICommand _magickNetMemoryLeakingCommand;
 
             public ICommand MagickNetMemoryLeakingCommand => _magickNetMemoryLeakingCommand ?? (_magickNetMemoryLeakingCommand = new AsyncCommand(async () => {

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Windows.Input;
 using AcManager.Tools.AcErrors;
@@ -155,7 +154,7 @@ namespace AcManager.Tools.Objects {
         }
 
         protected override bool TestIfKunos() {
-            return /*base.TestIfKunos() ||*/ (DataProvider.Instance.GetKunosContentIds(@"showrooms")?.Contains(Id) ?? false);
+            return /*base.TestIfKunos() ||*/ (DataProvider.Instance.GetKunosContentIds(@"showrooms")?.ArrayContains(Id) ?? false);
         }
 
         public void ToggleSound() {

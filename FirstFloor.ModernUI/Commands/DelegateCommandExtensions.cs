@@ -78,5 +78,13 @@ namespace FirstFloor.ModernUI.Commands {
                     });
             return delegateCommand;
         }
+
+        public static DelegateCommand Bind<T>(this DelegateCommand<T> command, T parameter) {
+            return new DelegateCommand(() => command.Execute(parameter), () => command.CanExecute(parameter)).ListenOnWeak(command);
+        }
+
+        public static AsyncCommand Bind<T>(this AsyncCommand<T> command, T parameter) {
+            return new AsyncCommand(() => command.ExecuteAsync(parameter), () => command.CanExecute(parameter)).ListenOnWeak(command);
+        }
     }
 }

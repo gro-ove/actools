@@ -2,7 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
-    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Title="Found tyres" SizeToContent="Manual"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:tyres="clr-namespace:AcManager.Tools.Tyres"
+    mc:Ignorable="d" Title="Found tyres" SizeToContent="Manual"
     Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".carReplaceTyresDialog" ResizeMode="CanResizeWithGrip"
     d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
@@ -17,7 +19,7 @@
         <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
         <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
         <Setter Property="TextBlock.Foreground" Value="{DynamicResource ButtonText}" />
-        <Setter Property="mui:Draggable.Destination" Value="{x:Static di:CarReplaceTyresDialog+TyresEntry.DraggableFormat}" />
+        <Setter Property="mui:Draggable.Destination" Value="{x:Static tyres:TyresEntry.DraggableFormat}" />
         <Style.Triggers>
           <Trigger Property="IsMouseOver" Value="True">
             <Setter Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
@@ -32,7 +34,7 @@
         </Style.Triggers>
       </Style>
 
-      <DataTemplate x:Key="TyresSetDataTemplate" DataType="{x:Type di:CarReplaceTyresDialog+TyresSet}">
+      <DataTemplate x:Key="TyresSetDataTemplate" DataType="{x:Type tyres:TyresSet}">
         <Border TextBlock.FontWeight="Normal" Height="120" Padding="8 4">
           <Border.ContextMenu>
             <mui:InheritingContextMenu>
@@ -146,7 +148,7 @@
         </Border>
       </DataTemplate>
 
-      <DataTemplate x:Key="TyresEntryDataTemplate" DataType="{x:Type di:CarReplaceTyresDialog+TyresEntry}">
+      <DataTemplate x:Key="TyresEntryDataTemplate" DataType="{x:Type tyres:TyresEntry}">
         <Border TextBlock.FontWeight="Normal" Height="60">
           <DockPanel VerticalAlignment="Center">
             <mui:SpacingStackPanel Spacing="2" VerticalAlignment="Center" DockPanel.Dock="Left" Width="32" Margin="0 0 8 0">

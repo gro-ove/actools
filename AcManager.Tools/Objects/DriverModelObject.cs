@@ -65,7 +65,7 @@ namespace AcManager.Tools.Objects {
             base.LoadOrThrow();
 
             try {
-                Author = (DataProvider.Instance.GetKunosContentIds(@"drivers")?.Contains(Id) ?? false) ? AuthorKunos : null;
+                Author = (DataProvider.Instance.GetKunosContentIds(@"drivers")?.ArrayContains(Id) ?? false) ? AuthorKunos : null;
             } catch (Exception e) {
                 Logging.Warning(e);
             }

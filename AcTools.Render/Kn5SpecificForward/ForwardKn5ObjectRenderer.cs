@@ -155,7 +155,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                 if (Equals(value, _carSlots)) return;
 
                 if (_carSlots != null) {
-                    foreach (var removed in _carSlots.Where(x => !value.Contains(x))) {
+                    foreach (var removed in _carSlots.Where(x => !value.ArrayContains(x))) {
                         removed.SetCar(null);
                         OnCarSlotRemoved(removed);
                     }

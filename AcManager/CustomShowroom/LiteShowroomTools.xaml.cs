@@ -395,7 +395,7 @@ namespace AcManager.CustomShowroom {
                 }, Load);
 
                 Saveable.Initialize();
-                PaintShopSupported = Lazier.CreateAsync(async () => (await CmApiProvider.GetPaintShopIdsAsync())?.Contains(Car.Id) == true);
+                PaintShopSupported = Lazier.CreateAsync(async () => (await CmApiProvider.GetPaintShopIdsAsync())?.ArrayContains(Car.Id) == true);
 
                 var defaultSize = _shots.DefaultSize;
                 ShotWidth = defaultSize.Width;

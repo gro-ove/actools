@@ -917,7 +917,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             var relative = FileUtils.GetRelativePath(destination, root);
-            if (list.Contains(relative)) return;
+            if (list.ArrayContains(relative)) return;
 
             var backupFilename = GenericModsEnabler.GetBackupFilename(modsDirectory, modName, relative);
             if (!File.Exists(backupFilename)) {
@@ -983,7 +983,7 @@ namespace AcManager.Tools.ContentInstallation {
                     // Uh-oh
                     foreach (var d in dependsOn) {
                         var v = dependancies.GetGenericModDependancies(d);
-                        if (v?.Contains(p.Key) == true) continue;
+                        if (v?.ArrayContains(p.Key) == true) continue;
                         dependancies.SetGenericModDependancies(d, (v ?? new string[0]).Append(p.Key));
                     }
                 }

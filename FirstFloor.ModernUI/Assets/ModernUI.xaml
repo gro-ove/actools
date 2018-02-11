@@ -2,6 +2,7 @@
     xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation"
     xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
   <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="AsyncButton.xaml" />
     <ResourceDictionary Source="Button.xaml" />
     <ResourceDictionary Source="ButtonWithComboBox.xaml" />
     <ResourceDictionary Source="Calendar.xaml" />
