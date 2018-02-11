@@ -133,6 +133,7 @@
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
+    <Compile Include="Utils\Helpers\TaskCache.cs" />
     <Compile Include="Utils\Helpers\TaskExtension.cs" />
     <Compile Include="Utils\InterlockExtra.cs" />
     <Compile Include="Utils\LazierFn.cs" />

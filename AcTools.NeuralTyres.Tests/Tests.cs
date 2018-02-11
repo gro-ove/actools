@@ -51,7 +51,7 @@ namespace AcTools.NeuralTyres.Tests {
             };
 
             var tyres = Directory.GetDirectories(@"D:\Games\Assetto Corsa\content\cars", "*")
-                                 .Where(x => carsFromWebApp.Contains(Path.GetFileName(x)))
+                                 .Where(x => carsFromWebApp.ArrayContains(Path.GetFileName(x)))
                                  .Select(DataWrapper.FromCarDirectory).SelectMany(NeuralTyresEntry.Get)
                                  .Where(x => x.Version == 10).ToList();
             var filteredTyres = tyres.Where(x => x.Name == "Street").ToList();
@@ -111,7 +111,7 @@ namespace AcTools.NeuralTyres.Tests {
             };
 
             var tyres = Directory.GetDirectories(@"D:\Games\Assetto Corsa\content\cars", "*")
-                                 .Where(x => carsFromWebApp.Contains(Path.GetFileName(x)))
+                                 .Where(x => carsFromWebApp.ArrayContains(Path.GetFileName(x)))
                                  .Select(DataWrapper.FromCarDirectory).SelectMany(NeuralTyresEntry.Get)
                                  .Where(x => x.Version == 10).ToList();
             var filteredTyres = tyres.Where(x => x.Name == "Semislicks").ToList();

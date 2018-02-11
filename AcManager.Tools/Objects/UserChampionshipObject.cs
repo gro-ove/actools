@@ -673,7 +673,7 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, ChampionshipPointsGoalType)) return;
                 if (ChampionshipPointsGoal == 0) {
-                    var perRound = Rules.Points.ElementAtOrDefault(1);
+                    var perRound = Rules.Points.ArrayElementAtOrDefault(1);
                     if (perRound == 0) {
                         perRound = Rules.Points.FirstOrDefault();
                     }

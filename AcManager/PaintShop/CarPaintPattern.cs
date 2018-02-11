@@ -152,7 +152,7 @@ namespace AcManager.PaintShop {
         [NotNull]
         public Dictionary<int, Color> LiveryColors => LiveryColorIds?.Select((x, i) => new {
             Slot = i,
-            Color = x == -1 ? (Color?)null : ActualColors.ElementAtOrDefault(x)
+            Color = x == -1 ? (Color?)null : ActualColors.ArrayElementAtOrDefault(x)
         }).Where(x => x.Color.HasValue).ToDictionary(x => x.Slot, x => x.Color.Value) ?? ActualColors.ToDictionary((x, i) => i, (x, i) => x);
     }
 }

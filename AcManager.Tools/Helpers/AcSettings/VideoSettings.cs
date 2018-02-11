@@ -286,7 +286,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public ResolutionEntry Resolution {
             get => _resolution;
             set {
-                if (!Resolutions.Contains(value)) value = GetPreferredResolution();
+                if (!Resolutions.ArrayContains(value)) value = GetPreferredResolution();
                 if (ReferenceEquals(value, _resolution)) return;
                 _resolution = value;
                 OnPropertyChanged();
@@ -305,7 +305,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry CameraMode {
             get => _cameraMode;
             set {
-                if (!CameraModes.Contains(value)) value = CameraModes[0];
+                if (!CameraModes.ArrayContains(value)) value = CameraModes[0];
                 if (Equals(value, _cameraMode)) return;
                 _cameraMode = value;
                 OnPropertyChanged();
@@ -317,7 +317,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry AnisotropicLevel {
             get => _anisotropicLevel;
             set {
-                if (!AnisotropicLevels.Contains(value)) value = AnisotropicLevels[0];
+                if (!AnisotropicLevels.ArrayContains(value)) value = AnisotropicLevels[0];
                 if (Equals(value, _anisotropicLevel)) return;
                 _anisotropicLevel = value;
                 OnPropertyChanged();
@@ -329,7 +329,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry AntiAliasingLevel {
             get => _antiAliasingLevel;
             set {
-                if (!AntiAliasingLevels.Contains(value)) value = AntiAliasingLevels[0];
+                if (!AntiAliasingLevels.ArrayContains(value)) value = AntiAliasingLevels[0];
                 if (Equals(value, _antiAliasingLevel)) return;
                 _antiAliasingLevel = value;
                 OnPropertyChanged();
@@ -396,7 +396,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry ShadowMapSize {
             get => _shadowMapSize;
             set {
-                if (!ShadowMapSizes.Contains(value)) value = ShadowMapSizes[0];
+                if (!ShadowMapSizes.ArrayContains(value)) value = ShadowMapSizes[0];
                 if (Equals(value, _shadowMapSize)) return;
                 _shadowMapSize = value;
                 OnPropertyChanged();
@@ -408,7 +408,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry WorldDetail {
             get => _worldDetail;
             set {
-                if (!WorldDetailLevels.Contains(value)) value = WorldDetailLevels[0];
+                if (!WorldDetailLevels.ArrayContains(value)) value = WorldDetailLevels[0];
                 if (Equals(value, _worldDetail)) return;
                 _worldDetail = value;
                 OnPropertyChanged();
@@ -431,7 +431,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry SmokeLevel {
             get => _smokeLevel;
             set {
-                if (!SmokeLevels.Contains(value)) value = SmokeLevels[0];
+                if (!SmokeLevels.ArrayContains(value)) value = SmokeLevels[0];
                 if (Equals(value, _smokeLevel)) return;
                 _smokeLevel = value;
                 OnPropertyChanged();
@@ -491,7 +491,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry PostProcessingQuality {
             get => _postProcessingQuality;
             set {
-                if (!PostProcessingQualities.Contains(value)) value = PostProcessingQualities[0];
+                if (!PostProcessingQualities.ArrayContains(value)) value = PostProcessingQualities[0];
                 if (Equals(value, _postProcessingQuality)) return;
                 _postProcessingQuality = value;
                 OnPropertyChanged();
@@ -503,7 +503,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry GlareQuality {
             get => _glareQuality;
             set {
-                if (!GlareQualities.Contains(value)) value = GlareQualities[0];
+                if (!GlareQualities.ArrayContains(value)) value = GlareQualities[0];
                 if (Equals(value, _glareQuality)) return;
                 _glareQuality = value;
                 OnPropertyChanged();
@@ -515,7 +515,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry DepthOfFieldQuality {
             get => _depthOfFieldQuality;
             set {
-                if (!DepthOfFieldQualities.Contains(value)) value = DepthOfFieldQualities[0];
+                if (!DepthOfFieldQualities.ArrayContains(value)) value = DepthOfFieldQualities[0];
                 if (Equals(value, _depthOfFieldQuality)) return;
                 _depthOfFieldQuality = value;
                 OnPropertyChanged();
@@ -586,7 +586,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry MirrorResolution {
             get => _mirrorResolution;
             set {
-                if (!MirrorResolutions.Contains(value)) value = MirrorResolutions[0];
+                if (!MirrorResolutions.ArrayContains(value)) value = MirrorResolutions[0];
                 if (Equals(value, _mirrorResolution)) return;
                 _mirrorResolution = value;
                 OnPropertyChanged();
@@ -609,7 +609,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry CubemapResolution {
             get => _cubemapResolution;
             set {
-                if (!CubemapResolutions.Contains(value)) value = CubemapResolutions[0];
+                if (!CubemapResolutions.ArrayContains(value)) value = CubemapResolutions[0];
                 if (Equals(value, _cubemapResolution)) return;
                 _cubemapResolution = value;
                 OnPropertyChanged();
@@ -621,7 +621,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry CubemapRenderingFrequency {
             get => _cubemapRenderingFrequency;
             set {
-                if (!CubemapRenderingFrequencies.Contains(value)) value = CubemapRenderingFrequencies[0];
+                if (!CubemapRenderingFrequencies.ArrayContains(value)) value = CubemapRenderingFrequencies[0];
                 if (Equals(value, _cubemapRenderingFrequency)) return;
                 _cubemapRenderingFrequency = value;
                 OnPropertyChanged();

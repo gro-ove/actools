@@ -170,7 +170,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public AcFormEntry(string id, int desktop, [NotNull] IniFileSection section) {
             Id = id;
             DisplayName = NameFromId(id);
-            Desktops.ElementAtOrDefault(desktop)?.LoadFrom(section);
+            Desktops.ArrayElementAtOrDefault(desktop)?.LoadFrom(section);
             AnyVisible = Desktops.Any(x => x.IsVisible);
             foreach (var desktopEntry in Desktops) {
                 desktopEntry.PropertyChanged += OnDesktopEntryPropertyChanged;
@@ -184,7 +184,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public void Extend(int desktop, IniFileSection section) {
-            Desktops.ElementAtOrDefault(desktop)?.LoadFrom(section);
+            Desktops.ArrayElementAtOrDefault(desktop)?.LoadFrom(section);
         }
 
         private bool _anyVisible;

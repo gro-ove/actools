@@ -121,7 +121,7 @@
 
 	float4 ps_ColorGrading(PS_IN pin) : SV_Target{
 		float4 value = tex(pin.Tex);
-		return float4(gColorGradingMap.SampleLevel(samColorGrading, saturate(value.rgb), 0).rgb, value.a);
+		return float4(gColorGradingMap.SampleLevel(samColorGrading, saturate(value.rbg), 0).rbg, value.a);
 	}
 
 	technique10 ColorGrading {

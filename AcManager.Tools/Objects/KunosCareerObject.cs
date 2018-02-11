@@ -191,7 +191,7 @@ namespace AcManager.Tools.Objects {
         private void Events_CollectionReady(object sender, EventArgs e) {
             if (Type != KunosCareerObjectType.Championship) return;
 
-            var points = Events.Sum(x => ChampionshipPointsPerPlace.ElementAtOrDefault(x.TakenPlace - 1));
+            var points = Events.Sum(x => ChampionshipPointsPerPlace.ArrayElementAtOrDefault(x.TakenPlace - 1));
             if (points == ChampionshipPoints) return;
 
             Logging.Write($"Summary points restored: {points} (was {ChampionshipPoints})");
@@ -605,11 +605,11 @@ namespace AcManager.Tools.Objects {
         }
 
         internal void UpdateIsCompletedFlag() {
-            IsCompleted = KunosCareerProgress.Instance.Completed.Contains(Id);
+            IsCompleted = KunosCareerProgress.Instance.Completed.ArrayContains(Id);
         }
 
         public void UpdateIfIsAvailable() {
-            bool Fn(string x) => KunosCareerProgress.Instance.Completed.Contains(x);
+            bool Fn(string x) => KunosCareerProgress.Instance.Completed.ArrayContains(x);
             IsAvailable = RequiredSeries.Length == 0 || (RequiredAnySeries ? RequiredSeries.Any(Fn) : RequiredSeries.All(Fn));
         }
 

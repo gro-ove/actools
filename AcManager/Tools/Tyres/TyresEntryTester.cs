@@ -12,7 +12,7 @@ namespace AcManager.Tools.Tyres {
         public bool Test(TyresEntry obj, string key, ITestEntry value) {
             switch (key) {
                 case null:
-                    return value.Test(obj.DisplayName);
+                    return value.Test(obj.DisplayName) || value.Test(obj.Name);
                 case "n":
                 case "name":
                     return value.Test(obj.Name);

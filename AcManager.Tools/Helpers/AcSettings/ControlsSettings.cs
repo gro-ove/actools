@@ -581,7 +581,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SettingEntry InputMethod {
             get => _inputMethod;
             set {
-                if (!InputMethods.Contains(value)) value = InputMethods[0];
+                if (!InputMethods.ArrayContains(value)) value = InputMethods[0];
                 if (Equals(value, _inputMethod)) return;
                 _inputMethod = value;
                 OnPropertyChanged();

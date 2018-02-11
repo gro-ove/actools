@@ -146,7 +146,7 @@
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
             ToolTip="Very experimental feature which might be removed later">
-          <Label mui:LimitedService.Limited="True">
+          <Label>
             <DockPanel Style="{x:Null}">
               <TextBlock Text="Enable AI limitations" />
               <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=fakeCars" />

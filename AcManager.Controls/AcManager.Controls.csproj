@@ -133,6 +133,7 @@
   <ItemGroup>
     <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
+    <Compile Include="CarIconImage.cs" />
     <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />

@@ -327,7 +327,7 @@ namespace AcTools.Processes {
 
                         case SessionType.Qualification:
                         case SessionType.Race:
-                            return LapsTotalPerCar?.Contains(LapsCount) == true;
+                            return LapsTotalPerCar?.ArrayContains(LapsCount) == true;
 
                         case SessionType.Drift:
                         case SessionType.Hotlap:

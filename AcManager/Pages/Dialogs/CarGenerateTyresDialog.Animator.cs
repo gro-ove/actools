@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using AcManager.Tools.Tyres;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -26,6 +27,7 @@ namespace AcManager.Pages.Dialogs {
 
             private void Run() {
                 _size = new Point(_that.GeneratedSet.ActualWidth, _that.GeneratedSet.ActualHeight);
+                _fireCanvasSize = new Point(_that.FlamesAnimationParent.ActualWidth, _that.FlamesAnimationParent.ActualHeight);
                 _bounds = new Rect(0, 0, _that.TestElement.ActualWidth, _that.TestElement.ActualHeight);
                 _translate = new TranslateTransform();
                 _rotate = new RotateTransform();
@@ -134,7 +136,7 @@ namespace AcManager.Pages.Dialogs {
                 if (current > ScanAssignPosition && _info != null) {
                     _existing = _info();
                     _info = null;
-                    _that.GeneratedPresenter.Content = _existing;
+                    _that.GeneratedPresenter.DataContext = _existing;
                     if (_existing == null) {
                         _revertStage = 10;
                     }
@@ -193,10 +195,13 @@ namespace AcManager.Pages.Dialogs {
             private void Restart() {
                 if (_existing != null) {
                     _fireActive = true;
+                    _extraSparksSpawn = false;
                     _burningAngularSpeed = _angularVelocity + _rotate.Angle + MathUtils.Random(-10d, 10d);
-                    _that.BurningPresenter.Content = _existing;
+                    _that.BurningPresenter.DataContext = _existing;
                     _that.BurningSet.Opacity = 1d;
                     _that.BurningBlack.Opacity = 0d;
+                    _that.BurningFresh1.Opacity = _that.GeneratedFresh1.Opacity;
+                    _that.BurningFresh2.Opacity = _that.GeneratedFresh2.Opacity;
                     _burningTranslate.X = _translate.X;
                     _burningTranslate.Y = _translate.Y;
                     _burningRotate.Angle = _rotate.Angle;
@@ -239,17 +244,28 @@ namespace AcManager.Pages.Dialogs {
                 private TranslateTransform _translate;
                 protected SolidColorBrush Brush;
 
-                protected virtual CornerRadius CornerRadius => new CornerRadius(4d);
-                protected virtual Color Color => ColorExtension.FromHsb(MathUtils.Random(20d, 80d), 1d, 1d);
+                protected virtual double CornerRadius => 4d;
+                protected virtual Color Color => Colors.Yellow;
 
-                protected abstract void Initialize(Canvas parent);
+                protected abstract void Initialize(Point canvasSize);
                 protected abstract void Move(double dt);
                 protected abstract double UpdateState();
 
-                public void Update(double dt, Canvas parent) {
+                public void Update(double dt, Panel parent, Point canvasSize, Point lowestPoint, Point setVelocity) {
                     if (!IsActive) {
                         IsActive = true;
-                        Initialize(parent);
+                        Initialize(canvasSize);
+                    }
+
+                    var velocityCoefficient = Math.Max(setVelocity.Y.Abs() - 0.5, 0);
+                    if (velocityCoefficient > 0) {
+                        var closiness = (1d - (Position.Y - lowestPoint.Y).Abs() / 120).Saturate().SmootherStep();
+                        if (closiness > 0) {
+                            var toSide = ((Position.X - lowestPoint.X) / 200).Clamp(-1d, 1d);
+                            var toSideCoefficient = (1d / (toSide * toSide * toSide)).Clamp(-200, 200);
+                            var force = (lowestPoint.X - canvasSize.X / 2d).Sign() * toSide.Sign() > 0 ? 0.5 : 2;
+                            Velocity.X += force * closiness * velocityCoefficient * toSideCoefficient * dt;
+                        }
                     }
 
                     Move(dt);
@@ -263,11 +279,12 @@ namespace AcManager.Pages.Dialogs {
                         _scale = new ScaleTransform();
 
                         Brush = new SolidColorBrush(Color);
-                        _element = new Border {
-                            CornerRadius = CornerRadius,
+                        _element = new Rectangle {
+                            RadiusX = CornerRadius,
+                            RadiusY= CornerRadius,
                             Width = 20d,
                             Height = 20d,
-                            Background = Brush,
+                            Fill = Brush,
                             RenderTransformOrigin = new Point(0.5, 0.5),
                             RenderTransform = new TransformGroup {
                                 Children = {
@@ -294,11 +311,11 @@ namespace AcManager.Pages.Dialogs {
             }
 
             private class FlameParticle : FireParticleBase {
-                protected override void Initialize(Canvas parent) {
+                protected override void Initialize(Point canvasSize) {
                     AngularVelocity = MathUtils.Random(-1d, 1d);
                     ScaleValue = 1;
                     ScaleVelocity = 2;
-                    Position = new Point(parent.ActualWidth * MathUtils.Random(0.05, 0.95), parent.ActualHeight + 10);
+                    Position = new Point(canvasSize.X * MathUtils.Random(0.05, 0.95), canvasSize.Y + 10);
                     Rotation = MathUtils.Random(Math.PI);
                     StartingPosition = Position.Y;
                     Velocity = new Point();
@@ -316,13 +333,14 @@ namespace AcManager.Pages.Dialogs {
             }
 
             private class SparkParticle : FireParticleBase {
-                protected override CornerRadius CornerRadius => new CornerRadius(10d);
+                protected override double CornerRadius => 10d;
                 protected override Color Color => Colors.Yellow;
-                private double _time;
+                private double _time, _lifeSpan;
 
-                protected override void Initialize(Canvas parent) {
+                protected override void Initialize(Point canvasSize) {
                     _time = 0d;
-                    Position = new Point(parent.ActualWidth * MathUtils.Random(0.05, 0.95), parent.ActualHeight + 10);
+                    _lifeSpan = MathUtils.Random(0.8, 2.2);
+                    Position = new Point(canvasSize.X * MathUtils.Random(0.05, 0.95), canvasSize.Y + 10);
                     StartingPosition = Position.Y;
                     Velocity = new Point(0, -200);
                 }
@@ -331,23 +349,24 @@ namespace AcManager.Pages.Dialogs {
                     _time += dt;
                     Velocity.X += MathUtils.Random(-1e3, 1e3) * dt;
                     Velocity.Y += (MathUtils.Random(-1e3, 1e3) - 100) * dt;
-                    AddTo(Velocity, -0.02, ref Velocity);
+                    AddTo(Velocity, -1.2 * dt, ref Velocity);
                 }
 
                 protected override double UpdateState() {
-                    if (Position.Y < -10 || _time > 2.25) return -1d;
-                    ScaleValue = 0.1 * (1 - ((_time - 2) * 4).Saturate());
+                    if (Position.Y < -10 || _time > _lifeSpan + 0.25) return -1d;
+                    ScaleValue = 0.1 * (1 - ((_time - _lifeSpan) * 4).Saturate());
                     return 1d;
                 }
             }
 
-            private readonly FireParticleBase[] _flameParticles = 160.CreateArrayOfType<FireParticleBase, FlameParticle>();
-            private readonly FireParticleBase[] _sparks = 40.CreateArrayOfType<FireParticleBase, SparkParticle>();
+            private readonly FireParticleBase[] _flameParticles = ArrayExtension.CreateArrayOfType<FireParticleBase, FlameParticle>(160);
+            private readonly FireParticleBase[] _sparks = ArrayExtension.CreateArrayOfType<FireParticleBase, SparkParticle>(60);
+            private bool _extraSparksSpawn;
 
             private void UpdateFlames(double dt) {
                 var parent = _that.FlamesAnimationParent;
                 Update(_flameParticles, _fireActive ? 4 : 0);
-                Update(_sparks, _fireActive && MathUtils.Random() > 0.95 ? 1 : 0);
+                Update(_sparks, _fireActive && (_extraSparksSpawn || MathUtils.Random() > 0.95) ? 1 : 0);
 
                 if (_fireActive) {
                     _burningTranslate.Y += 140 * dt;
@@ -355,8 +374,10 @@ namespace AcManager.Pages.Dialogs {
                     var value = (_that.BurningBlack.Opacity + 2 * dt).Saturate();
                     _that.BurningBlack.Opacity = value;
                     _that.BurningSet.Opacity = 1 - value * value;
+                    _extraSparksSpawn = value >= 0.8;
                     if (value >= 1) {
                         _fireActive = false;
+                        _extraSparksSpawn = false;
                     }
                 }
 
@@ -365,15 +386,16 @@ namespace AcManager.Pages.Dialogs {
                     for (var i = array.Length - 1; i >= 0; i--) {
                         var activated = array[i].IsActive;
                         if (activated || activatePerFrame-- > 0) {
-                            array[i].Update(dt, parent);
+                            array[i].Update(dt, parent, _fireCanvasSize, _lowestPoint, _velocity);
                         }
                     }
                 }
             }
 
-            private Point _position, _velocity, _size;
+            private Point _position, _velocity, _size, _fireCanvasSize;
             private Rect _bounds;
             private double _rotation, _angularVelocity;
+            private double _rotationSin, _rotationCos;
 
             private void PhysicsStep(double dt) {
                 if (_stopped > 200) {
@@ -388,14 +410,16 @@ namespace AcManager.Pages.Dialogs {
                 AddTo(_velocity, dt, ref _position);
                 AddTo(_velocity, -0.005, ref _velocity);
                 _rotation += _angularVelocity * dt;
+                _rotationSin = Math.Sin(_rotation);
+                _rotationCos = Math.Cos(_rotation);
                 _angularVelocity -= _angularVelocity * (0.02 * dt).Saturate();
-                double s = Math.Sin(_rotation), c = Math.Cos(_rotation);
+                _lowestPoint = _position;
                 var o = new Point();
                 var h = 0;
-                TestPoint(s, c, -0.5, -0.5, ref o, ref h);
-                TestPoint(s, c, 0.5, -0.5, ref o, ref h);
-                TestPoint(s, c, -0.5, 0.5, ref o, ref h);
-                TestPoint(s, c, 0.5, 0.5, ref o, ref h);
+                TestPoint(-0.5, -0.5, ref o, ref h);
+                TestPoint(0.5, -0.5, ref o, ref h);
+                TestPoint(-0.5, 0.5, ref o, ref h);
+                TestPoint(0.5, 0.5, ref o, ref h);
                 AddTo(o, h > 0 ? 1d / h : 0, ref _position);
 
                 if (_velocity.X < 0.1 && _velocity.Y < 0.1 && _angularVelocity < 0.1 && _rotation.Abs() < 0.1) {
@@ -405,9 +429,15 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private void TestPoint(double s, double c, double x, double y, ref Point o, ref int h) {
-                var local = Rotate(s, c, _size.X * x, _size.Y * y);
+            private Point _lowestPoint;
+
+            private void TestPoint(double x, double y, ref Point o, ref int h) {
+                var local = Rotate(_rotationSin, _rotationCos, _size.X * x, _size.Y * y);
                 double xW = local.X + _position.X, yW = local.Y + _position.Y;
+                if (yW > _lowestPoint.Y) {
+                    _lowestPoint.X = xW;
+                    _lowestPoint.Y = yW;
+                }
                 var bound = xW < _bounds.Left ? _bounds.Left : xW > _bounds.Right ? _bounds.Right : 0;
                 if (bound != 0) {
                     Resolve(new Point(bound - _position.X, local.Y), new Point(bound - xW, 0), ref o, ref h);
@@ -421,8 +451,8 @@ namespace AcManager.Pages.Dialogs {
                 h++;
                 AddTo(w, 1, ref o);
 
-                var d = Rotate(_angularVelocity * 0.01, 1d, l.X, l.Y);
-                var p = -(w.X * (_velocity.X + (d.X - l.X) / 0.01) + w.Y * (_velocity.Y + (d.Y - l.Y) / 0.01)) / (w.X * w.X + w.Y * w.Y);
+                var d = Rotate(_angularVelocity * 0.001, 1d, l.X, l.Y);
+                var p = -(w.X * (_velocity.X + (d.X - l.X) / 0.001) + w.Y * (_velocity.Y + (d.Y - l.Y) / 0.001)) / (w.X * w.X + w.Y * w.Y);
                 AddTo(w, 1.6 * p * l.Y / Length(l), ref _velocity);
                 _angularVelocity += Cross(l, w) * p / 3e4;
             }

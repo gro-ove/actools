@@ -223,7 +223,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             if (result.Durations != null && result.SessionTypes != null) {
                 for (var i = 0; i < result.Durations.Length; i++) {
-                    if ((Game.SessionType?)result.SessionTypes.ElementAtOrDefault(i) != Game.SessionType.Race) {
+                    if ((Game.SessionType?)result.SessionTypes.ArrayElementAtOrDefault(i) != Game.SessionType.Race) {
                         if (result.Durations[i] < 6000 /* usual value from the original launcher is 60, but it’s not enough */) {
                             result.Durations[i] *= 60;
                         }

@@ -51,7 +51,7 @@ namespace AcManager.Tools.GameProperties {
         }
 
         public void Dispose() {
-            Convert(GetBitmaps().Where(x => !_previous.Contains(x)).ToList());
+            Convert(GetBitmaps().Where(x => !_previous.ArrayContains(x)).ToList());
         }
     }
 }

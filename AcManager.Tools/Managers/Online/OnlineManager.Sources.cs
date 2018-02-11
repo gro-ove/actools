@@ -55,7 +55,7 @@ namespace AcManager.Tools.Managers.Online {
                 return GetSourcesPack(KunosOnlineSource.Key);
             }
 
-            if (keys.Contains(@"*") || keys.Contains(@"all")) {
+            if (keys.ArrayContains(@"*") || keys.ArrayContains(@"all")) {
                 var enumerable = Sources.Keys.Union(FileBasedOnlineSources.Instance.GetSourceKeys());
 
                 if (!SettingsHolder.Online.IntegrateMinorating) {

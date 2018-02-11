@@ -9,12 +9,10 @@ using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
-using AcTools.NeuralTyres;
 using AcTools.NeuralTyres.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -30,13 +28,15 @@ namespace AcManager.Tools.Tyres {
         [NotNull]
         private readonly Lazy<CarObject> _carObjectLazy;
 
-        [NotNull]
+        [CanBeNull]
         public string SourceCarId { get; }
 
         public int Version { get; }
 
+        [NotNull]
         public IniFileSection MainSection { get; }
 
+        [NotNull]
         public IniFileSection ThermalSection { get; }
 
         public bool RearTyres { get; }
@@ -94,10 +94,11 @@ namespace AcManager.Tools.Tyres {
         [CanBeNull]
         public TyresEntry OtherEntry { get; set; }
 
-        private TyresEntry(string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection, string wearCurveData,
-                string performanceCurveData, bool rearTyres, [CanBeNull] Lazy<double?> rimRadiusLazy) {
+        private TyresEntry([CanBeNull] string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection,
+                [CanBeNull] string wearCurveData, [CanBeNull] string performanceCurveData,
+                bool rearTyres, [CanBeNull] Lazy<double?> rimRadiusLazy) {
             SourceCarId = sourceCarId;
-            _carObjectLazy = new Lazy<CarObject>(() => CarsManager.Instance.GetById(SourceCarId));
+            _carObjectLazy = new Lazy<CarObject>(() => SourceCarId == null ? null : CarsManager.Instance.GetById(SourceCarId));
 
             Version = version;
             MainSection = mainSection;
@@ -315,23 +316,33 @@ namespace AcManager.Tools.Tyres {
                                                    .Select(x => x.GetDoubleNullable("RIM_RADIUS")).FirstOrDefault(x => x != null));
         }
 
-        public static TyresEntry CreateFromNeural(TyresEntry original, NeuralTyresEntry values) {
-            var mainSection = original.MainSection.Clone();
-            var thermalSection = original.ThermalSection.Clone();
+        public static TyresEntry CreateFromNeural(NeuralTyresEntry values, [CanBeNull] TyresEntry original) {
+            var mainSection = original?.MainSection.Clone() ?? new IniFileSection(null);
+            var thermalSection = original?.ThermalSection.Clone() ?? new IniFileSection(null);
+
+#if DEBUG
+            mainSection.Set("NAME", $"#{MathUtils.Random(0, 10)} {values.Name} N");
+#else
+            mainSection.Set("NAME", $"{values.Name} N");
+#endif
+            mainSection.Set("SHORT_NAME", $"{values.ShortName}-N");
 
             foreach (var key in values.Keys.ApartFrom(NeuralTyresEntry.TemporaryKeys)) {
                 if (key.StartsWith(CarCreateTyresMachineDialog.ThermalPrefix)) {
-                    thermalSection.Set(key.Substring(CarCreateTyresMachineDialog.ThermalPrefix.Length), values[key]);
+                    var actualKey = key.Substring(CarCreateTyresMachineDialog.ThermalPrefix.Length);
+                    thermalSection.Set(actualKey, Fix(values[key], key));
                 } else {
-                    mainSection.Set(key, values[key]);
+                    mainSection.Set(key, Fix(values[key], key));
                 }
             }
 
-            mainSection.Set("NAME", $"#{MathUtils.Random(0, 10)} {values.Name} Neural");
-            mainSection.Set("SHORT_NAME", $"{values.ShortName}-N");
+            return new TyresEntry(original?.SourceCarId, values.Version, mainSection, thermalSection,
+                    original?.WearCurveData, original?.PerformanceCurveData, original?.RearTyres ?? false, null);
 
-            return new TyresEntry(original.SourceCarId, values.Version, mainSection, thermalSection,
-                    original.PerformanceCurveData, original.WearCurveData, original.RearTyres, null);
+            double Fix(double value, string key) {
+                var digits = TyresExtension.GetValueDigits(key);
+                return digits.HasValue ? FlexibleParser.ParseDouble(value.ToString($@"F{digits.Value}"), value) : value;
+            }
         }
 
         [CanBeNull]
@@ -405,222 +416,6 @@ namespace AcManager.Tools.Tyres {
             }
 
             return list;
-        }
-    }
-
-    public static class TyresExtension {
-        [CanBeNull]
-        public static TyresSet GetOriginalTyresSet([NotNull] this CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return null;
-
-            var front = TyresEntry.Create(car, @"__CM_FRONT_ORIGINAL", true);
-            var rear = TyresEntry.Create(car, @"__CM_REAR_ORIGINAL", true);
-            if (front != null && rear != null) {
-                return new TyresSet(front, rear);
-            } else {
-                return null;
-            }
-        }
-
-        [NotNull]
-        public static IEnumerable<TyresSet> GetTyresSets([NotNull] this CarObject car) {
-            var tyres = car.AcdData?.GetIniFile("tyres.ini");
-            if (tyres?.IsEmptyOrDamaged() != false) return new TyresSet[0];
-
-            var defaultSet = tyres["COMPOUND_DEFAULT"].GetInt("INDEX", 0);
-            return TyresEntry.GetTyres(car).Where(x => x.Item1 != null && x.Item2 != null).Select((x, i) => new TyresSet(x.Item1, x.Item2) {
-                DefaultSet = i == defaultSet
-            });
-        }
-
-        public static void Save([NotNull] this TyresSet sets, int setsVersion, [NotNull] CarObject car,
-                [CanBeNull] TyresEntry originalTyresFront, [CanBeNull] TyresEntry originalTyresRear, bool keepCurves = false) {
-            Save(new[] { sets }, setsVersion, car, originalTyresFront, originalTyresRear, keepCurves);
-        }
-
-        public static void Save([NotNull] this IEnumerable<TyresSet> sets, int setsVersion, [NotNull] CarObject car,
-                [CanBeNull] TyresEntry originalTyresFront, [CanBeNull] TyresEntry originalTyresRear, bool keepCurves = false) {
-            try {
-                var uniqueSets = sets.Distinct(TyresSet.TyresSetComparer).ToList();
-
-                if (uniqueSets.Count == 0) {
-                    throw new Exception("At least one set is required");
-                }
-
-                if (!uniqueSets.All(x => x.Front.Version == setsVersion && x.Rear.Version == setsVersion)) {
-                    throw new Exception("Versions are different");
-                }
-
-                var data = car.AcdData;
-                if (data == null) {
-                    throw new Exception("Data is unreadable");
-                }
-
-                var tyresIni = data.GetIniFile("tyres.ini");
-                tyresIni["HEADER"].Set("VERSION", setsVersion);
-
-                var defaultIndex = uniqueSets.FindIndex(x => x.DefaultSet);
-                tyresIni["COMPOUND_DEFAULT"].Set("INDEX", defaultIndex == -1 ? 0 : defaultIndex);
-
-                if (originalTyresFront != null) {
-                    tyresIni["__CM_FRONT_ORIGINAL"] = originalTyresFront.MainSection;
-                    tyresIni["__CM_THERMAL_FRONT_ORIGINAL"] = originalTyresFront.ThermalSection;
-                }
-
-                if (originalTyresRear != null) {
-                    tyresIni["__CM_REAR_ORIGINAL"] = originalTyresRear.MainSection;
-                    tyresIni["__CM_THERMAL_REAR_ORIGINAL"] = originalTyresRear.ThermalSection;
-                }
-
-                SetTyres(true);
-                SetTyres(false);
-
-                void SetTyres(bool isRear) {
-                    var key = isRear ? "FRONT" : "REAR";
-                    var thermalKey = $"THERMAL_{key}";
-
-                    var currentTyres = keepCurves ? tyresIni.GetSections(key, -1).ToList() : null;
-                    var currentThermalTyres = keepCurves ? tyresIni.GetSections(thermalKey, -1).ToList() : null;
-
-                    tyresIni.SetSections(key, -1, uniqueSets.Select((x, i) => {
-                        var entry = isRear ? x.Rear : x.Front;
-                        var curveName = currentTyres?.ElementAtOrDefault(i)?.GetNonEmpty("WEAR_CURVE");
-                        if (!keepCurves || curveName == null) {
-                            var curve = data.GetRawFile($@"__cm_tyre_wearcurve_{key.ToLowerInvariant()}_{i}.lut");
-                            curve.Content = entry.WearCurveData ?? "";
-                            curve.Save();
-                            curveName = curve.Name;
-                        }
-
-                        return FixDigits(new IniFileSection(data, entry.MainSection) {
-                            ["NAME"] = x.GetName(),
-                            ["SHORT_NAME"] = x.GetShortName(),
-                            ["WEAR_CURVE"] = curveName,
-                            ["__CM_SOURCE_ID"] = entry.SourceCarId
-                        });
-                    }));
-
-                    tyresIni.SetSections(thermalKey, -1, uniqueSets.Select((x, i) => {
-                        var entry = isRear ? x.Rear : x.Front;
-                        var curveName = currentThermalTyres?.ElementAtOrDefault(i)?.GetNonEmpty("PERFORMANCE_CURVE");
-                        if (!keepCurves || curveName == null) {
-                            var curve = data.GetRawFile($@"__cm_tyre_perfcurve_{key.ToLowerInvariant()}_{i}.lut");
-                            curve.Content = entry.PerformanceCurveData ?? "";
-                            curve.Save();
-                            curveName = curve.Name;
-                        }
-
-                        return FixDigits(new IniFileSection(data, entry.ThermalSection) {
-                            ["PERFORMANCE_CURVE"] = curveName
-                        });
-                    }));
-                }
-
-                IniFileSection FixDigits(IniFileSection result) {
-                    foreach (var key in result.Keys.ToList()) {
-                        var digits = GetDigits(key);
-                        if (digits != null) {
-                            result.Set(key, result.GetDouble(key, 0d), "F" + digits);
-                        }
-                    }
-                    return result;
-                }
-
-                int? GetDigits(string key) {
-                    switch (key) {
-                        case "ANGULAR_INERTIA":
-                            return 1;
-                        case "DAMP":
-                            return 0;
-                        case "RATE":
-                            return 0;
-                        case "SPEED_SENSITIVITY":
-                            return 6;
-                        case "RELAXATION_LENGTH":
-                            return 5;
-                        case "ROLLING_RESISTANCE_0":
-                            return 0;
-                        case "ROLLING_RESISTANCE_1":
-                            return 5;
-                        case "ROLLING_RESISTANCE_SLIP":
-                            return 0;
-                        case "FLEX":
-                            return 6;
-                        case "CAMBER_GAIN":
-                            return 3;
-                        case "DCAMBER_0":
-                            return 1;
-                        case "DCAMBER_1":
-                            return 0;
-                        case "FRICTION_LIMIT_ANGLE":
-                            return 2;
-                        case "XMU":
-                            return 2;
-                        case "PRESSURE_STATIC":
-                            return 0;
-                        case "PRESSURE_SPRING_GAIN":
-                            return 0;
-                        case "PRESSURE_FLEX_GAIN":
-                            return 2;
-                        case "PRESSURE_RR_GAIN":
-                            return 2;
-                        case "PRESSURE_D_GAIN":
-                            return 3;
-                        case "PRESSURE_IDEAL":
-                            return 0;
-                        case "FZ0":
-                            return 0;
-                        case "LS_EXPY":
-                            return 4;
-                        case "LS_EXPX":
-                            return 4;
-                        case "DX_REF":
-                            return 2;
-                        case "DY_REF":
-                            return 2;
-                        case "FLEX_GAIN":
-                            return 4;
-                        case "FALLOFF_LEVEL":
-                            return 2;
-                        case "FALLOFF_SPEED":
-                            return 0;
-                        case "CX_MULT":
-                            return 2;
-                        case "RADIUS_ANGULAR_K":
-                            return 2;
-                        case "BRAKE_DX_MOD":
-                            return 2;
-                        default:
-                            return null;
-                    }
-                }
-
-                tyresIni.Save(true);
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t save changes", e);
-            }
-        }
-
-        [NotNull]
-        public static TyresEntry CreateTyresEntry([NotNull] this TyresMachine machine, [NotNull] TyresEntry original) {
-            var values = machine.Conjure(original.Width, original.Radius, original.Radius - original.RimRadius);
-            return TyresEntry.CreateFromNeural(original, values);
-        }
-
-        [NotNull]
-        public static TyresSet CreateTyresSet([NotNull] this TyresMachine machine, [NotNull] TyresEntry frontOriginal, [NotNull] TyresEntry rearOriginal) {
-            var front = CreateTyresEntry(machine, frontOriginal);
-            var rear = CreateTyresEntry(machine, rearOriginal);
-            return new TyresSet(front, rear);
-        }
-
-        [NotNull]
-        public static TyresSet CreateTyresSet([NotNull] this TyresMachine machine, [NotNull] CarObject car) {
-            var original = car.GetOriginalTyresSet() ?? car.GetTyresSets().First();
-            var front = CreateTyresEntry(machine, original.Front);
-            var rear = CreateTyresEntry(machine, original.Rear);
-            return new TyresSet(front, rear);
         }
     }
 }

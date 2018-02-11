@@ -305,7 +305,7 @@ namespace AcManager.Tools {
             string data, header;
             using (var client = new WebClient()) {
                 data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
-                header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ElementAtOrDefault(1)?.Trim();
+                header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ArrayElementAtOrDefault(1)?.Trim();
             }
 
             if (data == null || header == null) {

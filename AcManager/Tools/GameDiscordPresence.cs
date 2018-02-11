@@ -69,7 +69,7 @@ namespace AcManager.Tools {
             while (_presence?.IsDisposed == false) {
                 try {
                     var data = await KunosApiProvider.GetInformationDirectAsync(online.ServerIp, online.ServerHttpPort.Value);
-                    var currentSession = data.SessionTypes?.ElementAtOrDefault(data.Session);
+                    var currentSession = data.SessionTypes?.ArrayElementAtOrDefault(data.Session);
                     if (currentSession > 0) {
                         _presence.Details = ((Game.SessionType)currentSession).GetDescription();
                     }

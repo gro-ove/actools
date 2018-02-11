@@ -254,15 +254,15 @@
             <VisualBrush Stretch="None" TileMode="None">
               <VisualBrush.Visual>
                 <Canvas Height="240" Width="400">
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="50" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="100" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="150" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="200" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="250" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="300" />
-                  <Border CornerRadius="4" Width="42" Height="100" Margin="4 10" Background="#aa000000" Canvas.Left="350" />
-                  <Border CornerRadius="4" Width="400" Height="120" Background="Black" Canvas.Top="120" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="50" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="100" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="150" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="200" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="250" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="300" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="42" Height="100" Margin="4 10" Fill="#aa000000" Canvas.Left="350" />
+                  <Rectangle RadiusX="4" RadiusY="4" Width="400" Height="120" Fill="Black" Canvas.Top="120" />
                 </Canvas>
               </VisualBrush.Visual>
             </VisualBrush>
@@ -281,25 +281,45 @@
             <Border Height="240" Width="400" ClipToBounds="True">
               <mui:Cell x:Name="GeneratedSet" Width="320" RenderTransformOrigin="0.5 0.5" VerticalAlignment="Top" Height="110" Margin="0">
                 <Border Background="{DynamicResource ButtonBackground}" Opacity="0.6" Margin="1" />
-                <ContentPresenter x:Name="GeneratedPresenter" Content="{Binding GeneratedTyres}"
-                    ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}" mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}"
-                    Margin="0 -5" />
+                <ContentPresenter x:Name="GeneratedPresenter" Content="{Binding}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}"
+                    mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding}" Margin="0 -5" />
                 <Path x:Name="GeneratedFresh1" Data="M90,0 L0,90 L0,105 L105,0 z" Fill="White" Opacity="0" />
                 <Path x:Name="GeneratedFresh2" Data="M115,0 l-110,110 h30 l110,-110 z" Fill="White" Opacity="0" />
               </mui:Cell>
             </Border>
           </Border>
-          <Border Height="240" Width="400" ClipToBounds="True">
+          <Border Height="240" Width="400" ClipToBounds="True" IsHitTestVisible="False">
             <mui:Cell x:Name="BurningSet" Width="320" RenderTransformOrigin="0.5 0.5" VerticalAlignment="Top" Height="110" Margin="0" Opacity="0">
               <Border Background="{DynamicResource ButtonBackground}" Opacity="0.6" Margin="1" />
-              <ContentPresenter x:Name="BurningPresenter" Content="{Binding GeneratedTyres}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}"
-                  mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding GeneratedTyres}" Margin="0 -5" />
+              <ContentPresenter x:Name="BurningPresenter" Content="{Binding}" ContentTemplate="{StaticResource TyresSetGeneratedDataTemplate}"
+                  mui:Draggable.Enabled="True" mui:Draggable.Data="{Binding}" Margin="0 -5" />
+              <Path x:Name="BurningFresh1" Data="M90,0 L0,90 L0,105 L105,0 z" Fill="White" Opacity="0" />
+              <Path x:Name="BurningFresh2" Data="M115,0 l-110,110 h30 l110,-110 z" Fill="White" Opacity="0" />
               <Border x:Name="BurningBlack" Background="Black" Opacity="0" Margin="1" IsHitTestVisible="False" />
             </mui:Cell>
           </Border>
+          <Border Height="240" Width="400" IsHitTestVisible="False" ClipToBounds="True">
+            <Border.CacheMode>
+              <BitmapCache EnableClearType="False" />
+            </Border.CacheMode>
+            <Canvas Height="240" Width="400" Opacity="0.2">
+              <Canvas.Effect>
+                <BlurEffect Radius="6" RenderingBias="Performance" KernelType="Gaussian" />
+              </Canvas.Effect>
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="50" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="100" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="150" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="200" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="250" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="300" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="50" Height="110" Margin="0 4" StrokeThickness="4" Stroke="Black" Canvas.Left="350" />
+              <Rectangle RadiusX="6" RadiusY="6" Width="408" Height="130" Margin="-4 0" StrokeThickness="4" Stroke="Black" Canvas.Top="114" />
+            </Canvas>
+          </Border>
           <Canvas x:Name="FlamesAnimationParent" Height="240" Width="400" ClipToBounds="True" IsHitTestVisible="False" />
         </mui:Cell>
-        <mui:Cell Width="400" Height="120" x:Name="RoomGlowAnimationPiece" Margin="0 -5 0 5">
+        <mui:Cell Width="400" Height="120" x:Name="RoomGlowAnimationPiece" Margin="0 -5 0 5" IsHitTestVisible="False">
           <mui:Cell.Effect>
             <DropShadowEffect x:Name="GlowEffect" BlurRadius="50" Direction="0" ShadowDepth="0" RenderingBias="Quality" Opacity="1" />
           </mui:Cell.Effect>

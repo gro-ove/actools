@@ -25,7 +25,7 @@ namespace AcManager.Tools.Managers {
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
             if (base.ShouldSkipFile(objectLocation, filename)) return true;
             var inner = filename.SubstringExt(objectLocation.Length + 1);
-            return !WatchedFiles.Contains(inner.ToLowerInvariant());
+            return !WatchedFiles.ArrayContains(inner.ToLowerInvariant());
         }
 
         public static readonly string ServerDirectory;

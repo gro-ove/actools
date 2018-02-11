@@ -971,7 +971,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public void ToggleExtra(int index, bool? value = null) {
             InitializeExtras();
 
-            var extra = _extras.ElementAtOrDefault(index);
+            var extra = _extras.ArrayElementAtOrDefault(index);
             if (extra == null) return;
 
             var actualValue = value ?? Equals(extra.Value, 0f);
@@ -1230,7 +1230,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public void ToggleWing(int index, bool? value = null) {
             InitializeWings();
 
-            var wing = _wings.ElementAtOrDefault(index);
+            var wing = _wings.ArrayElementAtOrDefault(index);
             if (wing == null) return;
 
             var actualValue = value ?? Equals(wing.Value, 0f);
@@ -1240,7 +1240,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     parent.Update(RootObject, 1f, _skinsWatcherHolder);
                 }
             } else {
-                _wings.ElementAtOrDefault(wing.Description.Next ?? -1)?.Update(RootObject, 0f, _skinsWatcherHolder);
+                _wings.ArrayElementAtOrDefault(wing.Description.Next ?? -1)?.Update(RootObject, 0f, _skinsWatcherHolder);
             }
 
             wing.Update(RootObject, actualValue ? 1f : 0f, _skinsWatcherHolder);

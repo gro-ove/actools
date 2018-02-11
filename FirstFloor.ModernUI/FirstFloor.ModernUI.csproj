@@ -170,6 +170,7 @@
     <Compile Include="Windows\Attached\DataGridFix.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\Attached\ExpanderHelper.cs" />
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScrollHelper.cs" />

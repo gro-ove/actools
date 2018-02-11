@@ -20,7 +20,8 @@ namespace AcTools.NeuralTyres.Data {
         [NotNull]
         public string[] IgnoredKeys = {
             InputWidth, InputRadius, InputRimRadius, InputProfile,
-            "NAME", "SHORT_NAME", "WEAR_CURVE", "THERMAL@PERFORMANCE_CURVE"
+            "NAME", "SHORT_NAME", "WEAR_CURVE", "THERMAL@PERFORMANCE_CURVE",
+            "DY0", "DY1", "DX0", "DX1"
         };
 
         [NotNull]

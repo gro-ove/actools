@@ -1057,19 +1057,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _broken;
         private bool _fromCache;
 
-        private void SetCurrent(BitmapEntry value, bool fromCache = false) {
+        protected void SetCurrent(BitmapEntry value, bool? fromCache = false) {
             ++_loading;
 
             _current = value;
             _broken = value.IsBroken;
-            _fromCache = fromCache;
+            _fromCache = fromCache == true;
 
-            if (fromCache) {
-                if (_broken && Filename != null) {
-                    RemoveFromCache(Filename);
+            if (fromCache.HasValue) {
+                if (fromCache.Value) {
+                    if (_broken && Filename != null) {
+                        RemoveFromCache(Filename);
+                    }
+                } else if (!_broken) {
+                    AddToCache(Filename, _current);
                 }
-            } else if (!_broken) {
-                AddToCache(Filename, _current);
             }
 
             InvalidateMeasure();

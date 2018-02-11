@@ -215,7 +215,7 @@ namespace AcManager.Tools.Objects {
             ErrorIf(IsUsed && !Enabled, AcErrorType.Font_UsedButDisabled);
 
             try {
-                Author = (DataProvider.Instance.GetKunosContentIds(@"fonts")?.Contains(Id) ?? false) ? AuthorKunos : null;
+                Author = (DataProvider.Instance.GetKunosContentIds(@"fonts")?.ArrayContains(Id) ?? false) ? AuthorKunos : null;
             } catch (Exception e) {
                 Logging.Warning(e);
             }

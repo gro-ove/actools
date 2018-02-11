@@ -130,27 +130,10 @@ namespace AcManager.Pages.Dialogs {
                     var x = new DoubleRange();
                     var index = 0;
                     foreach (var collection in data.List) {
-                        var series = CreateLineSeries(collection, index, data.List.Count, reuseSeries ? (LineSeries)model.Series[index] : null);
+                        var series = CreateLineSeries(collection, index, data.List.Count, reuseSeries ? (LineSeries)model.Series[index] : null, x);
                         index++;
-
                         if (!reuseSeries) {
                             model.Series.Add(series);
-                        }
-
-                        if (collection.Item3 is DataPoint[] array) {
-                            for (var j = array.Length - 1; j >= 0; j--) {
-                                var p = array[j];
-                                x.Update(p.X);
-                            }
-                        } else if (collection.Item3 is IReadOnlyList<DataPoint> list) {
-                            for (var j = list.Count - 1; j >= 0; j--) {
-                                var p = list[j];
-                                x.Update(p.X);
-                            }
-                        } else {
-                            foreach (var p in collection.Item3) {
-                                x.Update(p.X);
-                            }
                         }
                     }
 
@@ -206,26 +189,65 @@ namespace AcManager.Pages.Dialogs {
                             ColorExtension.FromHsb((180 + (total / 5d - 5).Saturate() * 180) * (1d - value.Saturate()), 1d, 1d));
                 }
 
-                LineSeries CreateLineSeries(Tuple<string, double, ICollection<DataPoint>> points, int index, int total, LineSeries result = null) {
+                LineSeries CreateLineSeries(Tuple<string, double, ICollection<DataPoint>> points, int index, int total, LineSeries result,
+                        DoubleRange xRange) {
                     if (result != null) {
-                        result.Points.Clear();
-                        result.Points.AddRange(points.Item3);
-                        return null;
+                        SyncPoints(result.Points, points.Item3, xRange);
+                    } else {
+                        result = (LineSeries)_lineSeriesPool.Get();
+                        result.TrackerFormatString = $"[b]{{4:F{ValueTrackerDigits}}}{ValueUnits}[/b] at [b]{{2:F1}}{XUnit}[/b]";
                     }
 
-                    result = (LineSeries)_lineSeriesPool.Get();
-                    result.TrackerFormatString = $"[b]{{4:F{ValueTrackerDigits}}}{ValueUnits}[/b] at [b]{{2:F1}}{XUnit}[/b]";
-
-                    var isInteresting = index == 0
+                    var isInteresting = points.Item2 < 0d || index == 0
                             || Math.Abs(index - 2d * (total - total % 3) / 3d) < 0.0001
                             || Math.Abs(index - (total - total % 3) / 3d) < 0.0001
                             || index == total - 1;
-
                     result.Title = isInteresting ? points.Item1 : null;
-                    result.Color = total <= 1 ? BaseTextColor : ProfileToColor(points.Item2, total);
-                    result.Points.Clear();
-                    result.Points.AddRange(points.Item3);
+                    result.Color = points.Item2 < 0d ? BaseTextColor : ProfileToColor(points.Item2, total);
+                    SyncPoints(result.Points, points.Item3, xRange);
                     return result;
+                }
+
+                void SyncPoints(List<DataPoint> destination, ICollection<DataPoint> source, DoubleRange xRange) {
+                    if (destination.Count == source.Count) {
+                        if (source is DataPoint[] array) {
+                            for (var j = array.Length - 1; j >= 0; j--) {
+                                var p = array[j];
+                                destination[j] = p;
+                                xRange.Update(p.X);
+                            }
+                        } else if (source is IReadOnlyList<DataPoint> list) {
+                            for (var j = list.Count - 1; j >= 0; j--) {
+                                var p = list[j];
+                                destination[j] = p;
+                                xRange.Update(p.X);
+                            }
+                        } else {
+                            var i = 0;
+                            foreach (var p in source) {
+                                destination[i++] = p;
+                                xRange.Update(p.X);
+                            }
+                        }
+
+                    } else {
+                        destination.Clear();
+                        destination.AddRange(source);
+
+                        if (source is DataPoint[] array) {
+                            for (var j = array.Length - 1; j >= 0; j--) {
+                                xRange.Update(array[j].X);
+                            }
+                        } else if (source is IReadOnlyList<DataPoint> list) {
+                            for (var j = list.Count - 1; j >= 0; j--) {
+                                xRange.Update(list[j].X);
+                            }
+                        } else {
+                            foreach (var p in source) {
+                                xRange.Update(p.X);
+                            }
+                        }
+                    }
                 }
             }, 10);
         }

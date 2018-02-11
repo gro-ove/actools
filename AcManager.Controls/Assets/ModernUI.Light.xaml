@@ -207,6 +207,9 @@
   <SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->
+  <SolidColorBrush x:Key="TextEditorBackground">#fafafa</SolidColorBrush>
+  <SolidColorBrush x:Key="TextEditorForeground">#000000</SolidColorBrush>
+  <SolidColorBrush x:Key="TextEditorLineNumbersForeground">#717171</SolidColorBrush>
   <s:String x:Key="TextEditorSyntaxIni"><![CDATA[
 		<SyntaxDefinition name="INI" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
 			<Color name="Section" foreground="#777722" />

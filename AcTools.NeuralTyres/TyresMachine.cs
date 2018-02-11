@@ -287,7 +287,7 @@ namespace AcTools.NeuralTyres {
         }
 
         public Normalization GetNormalization(string key) {
-            return _inputNormalizations.ElementAtOrDefault(_options.InputKeys.IndexOf(key));
+            return _inputNormalizations.ArrayElementAtOrDefault(_options.InputKeys.IndexOf(key));
         }
 
         private void SetInputs(double[] input, NeuralTyresEntry result) {
@@ -407,19 +407,23 @@ namespace AcTools.NeuralTyres {
                 Range = Maximum - Minimum;
             }
 
+            [Pure]
             public double Normalize(double value) {
                 return Range == 0d ? 0.5 : ((value - Minimum) / Range).Saturate();
             }
 
+            [Pure]
             public bool Fits(double value) {
                 var safetyPadding = Range * 0.0001f;
                 return value >= Minimum - safetyPadding && value <= Maximum + safetyPadding;
             }
 
+            [Pure]
             public double Denormalize(double value) {
                 return Minimum + value * Range;
             }
 
+            [Pure]
             public override string ToString() {
                 return $"[{Minimum}…{Maximum}]";
             }

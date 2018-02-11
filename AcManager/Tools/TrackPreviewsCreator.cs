@@ -45,7 +45,7 @@ namespace AcManager.Tools {
             }
 
             var newShots = FileUtils.GetFilesSafe(directory)
-                                    .Where(x => !shots.Contains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
+                                    .Where(x => !shots.ArrayContains(x) && Regex.IsMatch(x, @"\.(jpe?g|png|bmp)$", RegexOptions.IgnoreCase)).ToList();
             if (!newShots.Any()) {
                 NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, ControlsStrings.AcObject_CannotUpdatePreview_TrackCommentary);
                 return;

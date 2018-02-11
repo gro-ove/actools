@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
@@ -32,7 +31,7 @@ namespace AcManager.Tools.Managers {
         protected override bool ShouldSkipFile(string objectLocation, string filename) {
             if (base.ShouldSkipFile(objectLocation, filename)) return true;
             var inner = filename.SubstringExt(objectLocation.Length + 1);
-            if (WatchedFiles.Contains(inner.ToLowerInvariant())) return false;
+            if (WatchedFiles.ArrayContains(inner.ToLowerInvariant())) return false;
             return !filename.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase) &&
                    !filename.EndsWith(".bank", StringComparison.OrdinalIgnoreCase);
         }

@@ -351,7 +351,7 @@ namespace AcManager.Pages.Drive {
                 IFilter<ServerEntry> sourcesTester;
                 if (sources == null || sources.Length == 0) {
                     sourcesTester = new ServerSourceTester(KunosOnlineSource.Key);
-                } else if (sources.Contains(@"*") || sources.Contains(@"all")) {
+                } else if (sources.ArrayContains(@"*") || sources.ArrayContains(@"all")) {
                     sourcesTester = null;
                 } else if (sources.Length == 1) {
                     sourcesTester = new ServerSourceTester(sources[0]);
@@ -622,7 +622,7 @@ namespace AcManager.Pages.Drive {
             public SettingEntry SortingMode {
                 get => _sortingMode;
                 set {
-                    if (!SortingModes.Contains(value)) value = SortingModes[0];
+                    if (!SortingModes.ArrayContains(value)) value = SortingModes[0];
                     if (Equals(value, _sortingMode)) return;
 
                     _sortingMode = value;

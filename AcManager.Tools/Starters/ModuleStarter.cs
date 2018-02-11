@@ -91,7 +91,7 @@ namespace AcManager.Tools.Starters {
                 }
 
                 var active = ini["MODULES"].GetStrings("ACTIVE");
-                if (!active.Contains(ModuleId)) {
+                if (!active.ArrayContains(ModuleId)) {
                     ini["MODULES"].Set("ACTIVE", active.Append(@"CmHelper").Distinct());
                     ini.Save();
                     installed = true;

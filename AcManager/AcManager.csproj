@@ -344,6 +344,9 @@
       <DependentUpon>AppKeyDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.Definitions.cs" />
+    <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.ExampleCars.cs" />
+    <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.HelperClasses.cs" />
+    <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.TrainingParams.cs" />
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
       <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
     </Compile>
@@ -766,6 +769,7 @@
     <Compile Include="Tools\Tyres\TyresAppropriateLevel.cs" />
     <Compile Include="Tools\Tyres\TyresEntry.cs" />
     <Compile Include="Tools\Tyres\TyresEntryTester.cs" />
+    <Compile Include="Tools\Tyres\TyresExtension.cs" />
     <Compile Include="Tools\Tyres\TyresMachineInfo.cs" />
     <Compile Include="Tools\Tyres\TyresPlace.cs" />
     <Compile Include="Tools\Tyres\TyresSet.cs" />

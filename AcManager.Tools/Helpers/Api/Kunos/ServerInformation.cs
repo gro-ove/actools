@@ -62,7 +62,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
             var splitted = description.Split(new[] { ';' }, 2);
             var result = FromAddress(splitted[0]);
 
-            if (result != null && !string.IsNullOrWhiteSpace(splitted.ElementAtOrDefault(1))) {
+            if (result != null && !string.IsNullOrWhiteSpace(splitted.ArrayElementAtOrDefault(1))) {
                 result.Name = splitted[1].Trim();
             }
 

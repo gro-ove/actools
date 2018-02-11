@@ -163,7 +163,7 @@ namespace AcManager {
             if (!string.IsNullOrWhiteSpace(proxy)) {
                 try {
                     var s = proxy.Split(':');
-                    WebRequest.DefaultWebProxy = new WebProxy(s[0], FlexibleParser.ParseInt(s.ElementAtOrDefault(1), 1080));
+                    WebRequest.DefaultWebProxy = new WebProxy(s[0], FlexibleParser.ParseInt(s.ArrayElementAtOrDefault(1), 1080));
                 } catch (Exception e) {
                     Logging.Error(e);
                 }
@@ -369,12 +369,12 @@ namespace AcManager {
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/car"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
-                IndexDirectDownloader.DownloadCarAsync(s[0], s.ElementAtOrDefault(1)).Forget();
+                IndexDirectDownloader.DownloadCarAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/track"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
-                IndexDirectDownloader.DownloadTrackAsync(s[0], s.ElementAtOrDefault(1)).Forget();
+                IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"),

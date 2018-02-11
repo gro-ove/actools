@@ -387,8 +387,8 @@ namespace AcManager.Tools.Objects {
 
         protected override bool TestIfKunos() {
             return LayoutId != null ?
-                    (DataProvider.Instance.GetKunosContentIds(@"layouts")?.Contains(IdWithLayout) ?? false) :
-                    (DataProvider.Instance.GetKunosContentIds(@"tracks")?.Contains(Id) ?? false);
+                    (DataProvider.Instance.GetKunosContentIds(@"layouts")?.ArrayContains(IdWithLayout) ?? false) :
+                    (DataProvider.Instance.GetKunosContentIds(@"tracks")?.ArrayContains(Id) ?? false);
         }
 
         public override void SaveData(JObject json) {

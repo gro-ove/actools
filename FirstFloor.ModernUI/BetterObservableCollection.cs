@@ -34,9 +34,8 @@ namespace FirstFloor.ModernUI {
         }
 
         public void Sort(IComparer<T> comparer) {
-            var list = Items as List<T>;
-            if (list != null) {
-                list.Sort(comparer);
+            if (Items is List<T> itemsList) {
+                itemsList.Sort(comparer);
                 OnPropertyChanged(new PropertyChangedEventArgs("Count"));
                 OnPropertyChanged(new PropertyChangedEventArgs("Item[]"));
                 OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
@@ -46,9 +45,14 @@ namespace FirstFloor.ModernUI {
         }
 
         private void ReplaceEverythingByInner([NotNull] IEnumerable<T> list) {
-            Items.Clear();
-            foreach (var item in list) {
-                Items.Add(item);
+            var items = Items;
+            items.Clear();
+            if (items is List<T> itemsList) {
+                itemsList.AddRange(list);
+            } else {
+                foreach (var item in list) {
+                    items.Add(item);
+                }
             }
 
             OnPropertyChanged(new PropertyChangedEventArgs("Count"));
@@ -58,10 +62,13 @@ namespace FirstFloor.ModernUI {
 
         private void ReplaceEverythingByInner([NotNull] IList<T> list) {
             var items = Items;
-
             items.Clear();
-            for (int i = 0, c = list.Count; i < c; i++) {
-                items.Add(list[i]);
+            if (items is List<T> itemsList) {
+                itemsList.AddRange(list);
+            } else {
+                foreach (var item in list) {
+                    items.Add(item);
+                }
             }
 
             OnPropertyChanged(new PropertyChangedEventArgs("Count"));

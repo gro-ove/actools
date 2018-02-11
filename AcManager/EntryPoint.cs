@@ -134,7 +134,7 @@ namespace AcManager {
             var appGuid = ((GuidAttribute)Assembly.GetEntryAssembly().GetCustomAttributes(typeof(GuidAttribute), true).GetValue(0)).Value;
             var mutexId = $@"Global\{{{appGuid}}}";
 
-            if (args.Contains(WindowsHelper.RestartArg)) {
+            if (args.ArrayContains(WindowsHelper.RestartArg)) {
                 for (var i = 0; i < 999; i++) {
                     Thread.Sleep(200);
 

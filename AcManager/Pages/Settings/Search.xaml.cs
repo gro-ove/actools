@@ -164,7 +164,7 @@ namespace AcManager.Pages.Settings {
             Logging.Debug($"Get types: {s.Elapsed.TotalMilliseconds:F1} ms");
 
             s.Restart();
-            var filteredTypes = types.Where(x => !x.IsAbstract && Namespaces.Keys.Contains(x.Namespace ?? "") && !Ignored.Contains(x.Name) &&
+            var filteredTypes = types.Where(x => !x.IsAbstract && Namespaces.Keys.Contains(x.Namespace ?? "") && !Ignored.ArrayContains(x.Name) &&
                     x.IsSubclassOf(typeof(UserControl))).ToList();
             Logging.Debug($"Filter types: {s.Elapsed.TotalMilliseconds:F1} ms");
 
