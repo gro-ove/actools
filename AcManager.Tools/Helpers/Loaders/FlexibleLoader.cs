@@ -182,7 +182,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                     Logging.Write("Loaded: " + loaded);
                     return loaded;
                 }
-            } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCanceled()) {
+            } catch (Exception e) when (cancellation.IsCancellationRequested || e.IsCancelled()) {
                 Logging.Warning("Cancelled");
                 throw new OperationCanceledException();
             } catch (Exception e) {

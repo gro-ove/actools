@@ -91,7 +91,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
 
             try {
                 foreach (var url in SettingsHolder.Integrated.TheSetupMarketCacheServer ? ListUrls : new[]{ ListUrls.Last() }) {
-                    Logging.Debug(url);
+                    Logging.Write(url);
 
                     try {
                         var data = await Cache.GetStringAsync(url, "List.json",

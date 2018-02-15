@@ -1,10 +1,11 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Pages.Dialogs.SelectTrackDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    Title="{Binding SelectedTrackConfiguration.Name}" d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual"
-    ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600" MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" ShowTitle="False"
-    LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual" ShowTopBlob="False" Padding="24" ButtonsMargin="0">
+    xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Title="{Binding SelectedTrackConfiguration.Name}"
+    d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
+    MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" ShowTitle="False" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual"
+    ShowTopBlob="False" Padding="24" ButtonsMargin="0">
   <mui:ModernDialog.BackgroundContent>
     <Rectangle>
       <Rectangle.Fill>
@@ -39,7 +40,7 @@
   </mui:ModernDialog.BackgroundContent>
   <mui:ModernDialog.Resources>
     <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-    <DataTemplate x:Key="LayoutItemTemplate">
+    <DataTemplate x:Key="LayoutItemTemplate" DataType="t:TrackObjectBase">
       <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
       <mui:BetterImage x:Name="Image" Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" ClearOnChange="True" />
       <DataTemplate.Triggers>
@@ -67,7 +68,7 @@
       </DockPanel>
 
       <c:TrackBlock Track="{Binding SelectedTrackConfiguration}">
-        <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}"
+        <ListBox DataContext="{Binding Data, Source={StaticResource DataContextProxy}}" d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}"
             Visibility="{Binding SelectedTrack.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}"
             ItemsSource="{Binding SelectedTrack.MultiLayouts}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             SelectedItem="{Binding SelectedTrackConfiguration}" ItemTemplate="{StaticResource LayoutItemTemplate}" Margin="0 210 0 0">
@@ -98,7 +99,8 @@
             SavePolicy="Flexible" LinksHorizontalAlignment="Stretch" mui:FancyScrollHelper.Outside="True">
           <mui:ModernTab.LinksListBoxTemplate>
             <ControlTemplate>
-              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+              <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left"
+                  WindowChrome.IsHitTestVisibleInChrome="True" />
             </ControlTemplate>
           </mui:ModernTab.LinksListBoxTemplate>
           <mui:ModernTab.Links>

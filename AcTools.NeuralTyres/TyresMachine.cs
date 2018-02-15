@@ -15,11 +15,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcTools.NeuralTyres {
-    public interface ITyresMachineExtras {
-        void OnSave(ZipArchive archive, JObject manifest);
-        void OnLoad(ZipArchive archive, JObject manifest);
-    }
-
     public class TyresMachine {
         [NotNull]
         private readonly NeuralTyresOptions _options;
@@ -80,7 +75,9 @@ namespace AcTools.NeuralTyres {
 
             _inputNormalizations = new Normalization[options.InputKeys.Length];
             for (var i = 0; i < _inputNormalizations.Length; i++) {
-                _inputNormalizations[i] = Normalization.BuildNormalization(tyres, options.InputKeys[i], options.ValuePadding, out var normalized);
+                var limits = _options.NormalizationLimits.GetLimits(options.InputKeys[i]) ?? Tuple.Create(double.NegativeInfinity, double.PositiveInfinity);
+                _inputNormalizations[i] = Normalization.BuildNormalization(tyres, options.InputKeys[i], options.ValuePadding,
+                        out var normalized, limits.Item1, limits.Item2);
                 for (var j = 0; j < normalized.Length; j++) {
                     _inputNormalized[j][i] = normalized[j];
                 }
@@ -93,12 +90,14 @@ namespace AcTools.NeuralTyres {
             _outputNormalized = new double[_outputKeys.Length][];
 
             for (var i = 0; i < _outputKeys.Length; i++) {
+                var limits = _options.NormalizationLimits.GetLimits(_outputKeys[i]) ?? Tuple.Create(double.NegativeInfinity, double.PositiveInfinity);
                 _outputNormalizations[i] = Normalization.BuildNormalization(tyres, _outputKeys[i], options.ValuePadding,
-                        out _outputNormalized[i]);
+                        out _outputNormalized[i], limits.Item1, limits.Item2);
             }
         }
 
         private readonly int SaveFormatVersion = 1;
+        private JObject _loadedManifest;
 
         private TyresMachine([NotNull] Stream stream, [CanBeNull] ITyresMachineExtras extras) {
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Read, false)) {
@@ -112,8 +111,7 @@ namespace AcTools.NeuralTyres {
                     throw new Exception("Unsupported tyres version: " + TyresVersion);
                 }
 
-                extras?.OnLoad(zip, manifest);
-
+                _loadedManifest = manifest;
                 _options = Read<NeuralTyresOptions>("Options.json");
                 _tyresSources = Read<NeuralTyresSource[]>("Input/Sources.json");
                 _luts = Read<Dictionary<string, string>[]>("Input/LUTs.json")
@@ -121,6 +119,7 @@ namespace AcTools.NeuralTyres {
                 _inputNormalizations = Read<Normalization[]>("Input/Normalizations.json");
                 _outputKeys = Read<string[]>("Output/Keys.json");
                 _outputNormalizations = Read<Normalization[]>("Output/Normalizations.json");
+                extras?.OnLoad(zip, manifest, this);
 
                 if (_options.SeparateNetworks) {
                     _networks = new INeuralNetwork[_outputKeys.Length];
@@ -168,6 +167,14 @@ namespace AcTools.NeuralTyres {
                 Add("Output/Keys.json", _outputKeys);
                 Add("Output/Normalizations.json", _outputNormalizations);
 
+                var manifest = _loadedManifest ?? new JObject();
+                manifest["version"] = SaveFormatVersion;
+                manifest["tyresVersion"] = TyresVersion;
+
+                _loadedManifest = manifest;
+                extras?.OnSave(zip, manifest, this);
+                Add("Manifest.json", manifest);
+
                 if (_networks != null) {
                     for (var i = 0; i < _networks.Length; i++) {
                         var key = _outputKeys[i];
@@ -186,14 +193,6 @@ namespace AcTools.NeuralTyres {
                         zip.AddBytes("Network/Data.bin", data);
                     }
                 }
-
-                var manifest = new JObject {
-                    ["version"] = SaveFormatVersion,
-                    ["tyresVersion"] = TyresVersion
-                };
-
-                extras?.OnSave(zip, manifest);
-                Add("Manifest.json", manifest);
 
                 void Add(string key, object data) {
                     zip.AddString(key, JsonConvert.SerializeObject(data, Formatting.Indented));
@@ -230,7 +229,7 @@ namespace AcTools.NeuralTyres {
                 var networks = new INeuralNetwork[keys.Length];
                 _networks = networks;
 
-                var lastFinished = keys[0];
+                string[] lastFinished = { keys[0] };
                 double processed = 0, total = keys.Length;
                 Parallel.ForEach(keys.Select((x, i) => new {
                     Index = i,
@@ -254,10 +253,10 @@ namespace AcTools.NeuralTyres {
 
                         var currentProgress = delta.AddTo(ref processed);
                         previousProgress = v;
-                        progress.Report(Tuple.Create(lastFinished, (double?)currentProgress / total));
+                        progress.Report(Tuple.Create(lastFinished[0], (double?)currentProgress / total));
                     }), cancellationToken);
 
-                    lastFinished = value.Key;
+                    lastFinished[0] = value.Key;
                 });
             } else {
                 var network = CreateNeuralNetwork();
@@ -299,7 +298,7 @@ namespace AcTools.NeuralTyres {
                 var key = _options.InputKeys[i];
                 var normalization = _inputNormalizations[i];
                 if (!normalization.Fits(input[i])) {
-                    throw new Exception($"Value  {input[i]} for {key} is out of range {normalization}");
+                    throw new Exception($"Value {input[i]} for {key} is out of range {normalization}");
                 }
 
                 if (!IsProceduralValue(key)) {
@@ -400,10 +399,10 @@ namespace AcTools.NeuralTyres {
                 if (value > Maximum) Maximum = value;
             }
 
-            public void Seal(double valuePadding) {
+            public void Seal(double valuePadding, double minValue, double maxValue) {
                 var range = Maximum - Minimum;
-                Minimum -= range * valuePadding;
-                Maximum += range * valuePadding;
+                Minimum = Math.Max(Minimum - range * valuePadding, minValue);
+                Maximum = Math.Min(Maximum + range * valuePadding, maxValue);
                 Range = Maximum - Minimum;
             }
 
@@ -428,7 +427,8 @@ namespace AcTools.NeuralTyres {
                 return $"[{Minimum}…{Maximum}]";
             }
 
-            public static Normalization BuildNormalization(NeuralTyresEntry[] tyres, string key, double valuePadding, out double[] normalizedValues) {
+            public static Normalization BuildNormalization(NeuralTyresEntry[] tyres, string key, double valuePadding, out double[] normalizedValues,
+                    double minValue, double maxValue) {
                 var result = new Normalization();
                 normalizedValues = new double[tyres.Length];
                 for (var i = normalizedValues.Length - 1; i >= 0; i--) {
@@ -436,7 +436,7 @@ namespace AcTools.NeuralTyres {
                     normalizedValues[i] = value;
                     result.Extend(value);
                 }
-                result.Seal(valuePadding);
+                result.Seal(valuePadding, minValue, maxValue);
                 for (var i = normalizedValues.Length - 1; i >= 0; i--) {
                     normalizedValues[i] = result.Normalize(normalizedValues[i]);
                 }

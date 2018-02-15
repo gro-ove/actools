@@ -35,7 +35,7 @@ namespace AcTools.NeuralTyres.Data {
             ShortName = shortName;
             Version = version;
             _values = new Dictionary<string, double>();
-            // TODO: Luts
+            // TODO: Curves?
         }
 
         private NeuralTyresEntry(string carId, Tuple<int, IniFileSection, IniFileSection> data) {

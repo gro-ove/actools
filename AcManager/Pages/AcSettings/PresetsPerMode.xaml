@@ -23,12 +23,14 @@
       </Style>
 
       <DataTemplate x:Key="SelectedDataTemplate">
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
         <TextBlock x:Name="TextBlock" TextTrimming="CharacterEllipsis"
             Text="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" />
         <DataTemplate.Triggers>
           <Trigger Property="IsEnabled" Value="False">
             <Setter TargetName="TextBlock" Property="Foreground" Value="{DynamicResource InputTextDisabled}" />
           </Trigger>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
           <DataTrigger Binding="{Binding DataContext.Name, RelativeSource={RelativeSource AncestorType=mui:HierarchicalComboBox}}" Value="{x:Null}">
             <Setter TargetName="TextBlock" Property="Text" Value="Default" />
             <Setter TargetName="TextBlock" Property="FontStyle" Value="Italic" />
@@ -160,7 +162,7 @@
       <ListBox.ItemContainerStyle>
         <Style TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Top}">
           <Style.Triggers>
-            <DataTrigger Binding="{Binding Controls, FallbackValue={x:Null}}" Value="{x:Null}">
+            <DataTrigger Binding="{Binding Controls, FallbackValue={x:Null}}" Value="{x:Null}" d:DataContext="{d:DesignInstance t:PresetPerMode}">
               <Setter Property="Background" Value="Transparent" />
             </DataTrigger>
           </Style.Triggers>

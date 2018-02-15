@@ -252,7 +252,9 @@
     </Compile>
     <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
     <Compile Include="DiscordHandler.cs" />
+    <Compile Include="EntryPoint.AssembliesResolved.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="FlagDefaultValueAttribute.cs" />
     <Compile Include="LocaleHelper.cs" />
     <Compile Include="PackedHelper.cs" />
     <Compile Include="Pages\About\License.xaml.cs">
@@ -349,10 +351,6 @@
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.TrainingParams.cs" />
     <Compile Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml.cs">
       <DependentUpon>CarCreateTyresMachineDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Dialogs\CarGenerateTyresDialog.Animator.cs" />
-    <Compile Include="Pages\Dialogs\CarGenerateTyresDialog.xaml.cs">
-      <DependentUpon>CarGenerateTyresDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\ControllerDefinitionsDialog.xaml.cs">
       <DependentUpon>ControllerDefinitionsDialog.xaml</DependentUpon>
@@ -647,8 +645,6 @@
     <Compile Include="PaintShop\TexturePattern.cs" />
     <Compile Include="PaintShop\TintedWindows.cs" />
     <Compile Include="PaintShop\TransparentIfFlagged.cs" />
-    <Compile Include="Plugins\CefSharpPluginWrapper.cs" />
-    <Compile Include="Plugins\MagickPluginWrapper.cs" />
     <Compile Include="QuickSwitches\QuickSwitchCommands.cs" />
     <Compile Include="QuickSwitches\QuickSwitchesBlock.xaml.cs">
       <DependentUpon>QuickSwitchesBlock.xaml</DependentUpon>
@@ -770,6 +766,7 @@
     <Compile Include="Tools\Tyres\TyresEntry.cs" />
     <Compile Include="Tools\Tyres\TyresEntryTester.cs" />
     <Compile Include="Tools\Tyres\TyresExtension.cs" />
+    <Compile Include="Tools\Tyres\TyresMachineExtras.cs" />
     <Compile Include="Tools\Tyres\TyresMachineInfo.cs" />
     <Compile Include="Tools\Tyres\TyresPlace.cs" />
     <Compile Include="Tools\Tyres\TyresSet.cs" />
@@ -953,10 +950,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\CarCreateTyresMachineDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Pages\Dialogs\CarGenerateTyresDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

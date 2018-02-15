@@ -21,7 +21,7 @@ namespace AcManager.Pages.About {
         public class ViewModel : NotifyPropertyChanged {
             public ViewModel(string key) {
                 NotesList = new ListCollectionView(
-                        ImportantTips.Entries.Where(x => !x.IsLimited || AppKeyHolder.IsAllRight).OrderBy(x => x.DisplayName).ToList());
+                        ImportantTips.Entries.Where(x => !x.IsLimited || InternalUtils.IsAllRight).OrderBy(x => x.DisplayName).ToList());
                 if (key != null) {
                     NotesList.MoveCurrentTo(ImportantTips.Entries.FirstOrDefault(x => x.Id?.Contains(key) == true));
                 } else {

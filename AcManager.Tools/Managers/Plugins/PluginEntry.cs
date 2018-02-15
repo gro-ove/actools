@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Tools.Helpers;
+using AcTools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -15,12 +16,13 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools.Managers.Plugins {
     [JsonObject(MemberSerialization.OptIn)]
-    public class PluginEntry : NotifyPropertyChanged, IWithId, IProgress<double?> {
+    public class PluginEntry : NotifyPropertyChanged, IWithId {
         [Localizable(false)]
         public static readonly Tuple<string, string>[] SupportedVersions = {
             Tuple.Create("Magick", ""),
             Tuple.Create("Awesomium", ""),
             Tuple.Create("SSE", "1.4.2.1"),
+            Tuple.Create(KnownPlugins.SevenZip, "17.0.1"),
         };
 
         [JsonProperty(PropertyName = @"id")]
@@ -67,7 +69,7 @@ namespace AcManager.Tools.Managers.Plugins {
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
         public string KeyEnabled => $"_appAddon__{Id}__enabled";
 
-        public bool AvailableToInstall => !IsInstalled && !InstallationInProgress;
+        public bool AvailableToInstall => !IsInstalled && !IsInstalling;
         public bool IsInstalled => _installedVersion != null;
 
         public bool IsEnabled {
@@ -94,18 +96,6 @@ namespace AcManager.Tools.Managers.Plugins {
         /// Addon is installed and enabled.
         /// </summary>
         public bool IsReady => IsInstalled && IsEnabled;
-
-        private bool _isInstalling;
-
-        public bool IsInstalling {
-            get => _isInstalling;
-            set {
-                if (value == _isInstalling) return;
-                _isInstalling = value;
-                OnPropertyChanged();
-                _installCommand?.RaiseCanExecuteChanged();
-            }
-        }
 
         public bool HasUpdate => IsInstalled && Version.IsVersionNewerThan(InstalledVersion);
 
@@ -171,46 +161,6 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public bool PlatformFits => _platform == null || _platform == BuildInformation.Platform;
 
-        private bool _installationInProgress;
-
-        public bool InstallationInProgress {
-            get => _installationInProgress;
-            set {
-                if (Equals(value, _installationInProgress)) return;
-                _installationInProgress = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(AvailableToInstall));
-            }
-        }
-
-        private bool _downloadProgressIndeterminate;
-
-        public bool DownloadProgressIndeterminate {
-            get => _downloadProgressIndeterminate;
-            set {
-                if (Equals(value, _downloadProgressIndeterminate)) return;
-                _downloadProgressIndeterminate = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _downloadProgress;
-
-        public double DownloadProgress {
-            get => _downloadProgress;
-            set {
-                if (Equals(value, _downloadProgress)) return;
-                _downloadProgress = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public void Report(double? value) {
-            var v = value ?? 0d;
-            DownloadProgressIndeterminate = Equals(v, 0d);
-            DownloadProgress = v;
-        }
-
         private PluginEntry(string id) {
             Id = id;
             AppVersion = "0";
@@ -241,33 +191,62 @@ namespace AcManager.Tools.Managers.Plugins {
             IsObsolete = supported != null && (string.IsNullOrEmpty(supported.Item2) || supported.Item2.IsVersionNewerThan(InstalledVersion ?? Version));
         }
 
+        private bool _isInstalling;
+
+        public bool IsInstalling {
+            get => _isInstalling;
+            set => Apply(value, ref _isInstalling);
+        }
+
         private AsyncCommand _installCommand;
 
         public AsyncCommand InstallCommand => _installCommand ??
-                (_installCommand = new AsyncCommand(Install, () => (!IsInstalled || HasUpdate) && !IsInstalling));
+                (_installCommand = new AsyncCommand(Install, () => !IsInstalled || HasUpdate));
 
-        private CancellationTokenSource _cancellation;
+        private AsyncProgressEntry _progress;
 
-        private async Task Install() {
-            using (_cancellation = new CancellationTokenSource()) {
-                Report(0d);
-
-                InstallationInProgress = true;
-
-                try {
-                    await PluginsManager.Instance.InstallPlugin(this, this, _cancellation.Token);
-                } finally {
-                    InstallationInProgress = false;
-                }
-            }
-            _cancellation = null;
+        public AsyncProgressEntry Progress {
+            get => _progress;
+            set => Apply(value, ref _progress);
         }
 
-        private DelegateCommand _cancellationCommand;
+        private CancellationTokenSource _cancellationTokenSource;
 
-        public DelegateCommand CancellationCommand => _cancellationCommand ?? (_cancellationCommand = new DelegateCommand(() => {
-            _cancellation?.Cancel();
-        }));
+        private DelegateCommand _cancelCommand;
+
+        public DelegateCommand CancelCommand => _cancelCommand ?? (_cancelCommand = new DelegateCommand(() => {
+            _cancellationTokenSource?.Cancel();
+        }, () => _cancellationTokenSource != null));
+
+        private async Task Install() {
+            using (var cts = new CancellationTokenSource()) {
+                _cancellationTokenSource = cts;
+                _cancelCommand?.RaiseCanExecuteChanged();
+                Progress = AsyncProgressEntry.FromStringIndetermitate("Downloading…");
+                await PluginsManager.Instance.InstallPlugin(this, new Progress<AsyncProgressEntry>(v => {
+                    if (ReferenceEquals(cts, _cancellationTokenSource)) {
+                        // Trim everything after “,” to show progress on the button itself
+                        // TODO: Find a better solution?
+                        var index = v.Message.IndexOf(',');
+                        Progress = new AsyncProgressEntry(index != -1 ? v.Message.Substring(0, index) : v.Message, v.Progress);
+                    }
+                }), cts.Token);
+                if (ReferenceEquals(cts, _cancellationTokenSource)) {
+                    Progress = AsyncProgressEntry.Ready;
+                    _cancellationTokenSource = null;
+                    _cancelCommand?.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+        private async Task Install(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            IsInstalling = true;
+            try {
+                await PluginsManager.Instance.InstallPlugin(this, progress, cancellation);
+            } finally {
+                IsInstalling = false;
+            }
+        }
 
         public bool IsAllRight => Id != null && Name != null && Version != null && PlatformFits;
 

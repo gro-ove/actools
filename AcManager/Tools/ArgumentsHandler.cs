@@ -22,7 +22,6 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using OxyPlot.Reporting;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Tools {
@@ -53,10 +52,10 @@ namespace AcManager.Tools {
             try {
                 if (Clipboard.ContainsData(DataFormats.FileDrop)) {
                     var data = Clipboard.GetFileDropList().OfType<string>().ToList();
-                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(data));
+                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(data, true));
                 } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
-                    var list = Clipboard.GetText().SplitLines();
-                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(list));
+                    var list = Clipboard.GetText().ToLines();
+                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(list, true));
                 }
             } catch (Exception e) {
                 Logging.Warning(e);
@@ -68,7 +67,7 @@ namespace AcManager.Tools {
 
             (sender as IInputElement)?.Focus();
             var data = e.GetInputFiles().ToList();
-            ActionExtension.InvokeInMainThreadAsync(() => e.Handled ? Task.Delay(0) : ProcessArguments(data));
+            ActionExtension.InvokeInMainThreadAsync(() => e.Handled ? Task.Delay(0) : ProcessArguments(data, true));
         }
 
         public static void OnDragEnter(object sender, DragEventArgs e) {
@@ -86,7 +85,8 @@ namespace AcManager.Tools {
         /// <summary>
         /// Returns true if MainWindow should be shown afterwards.
         /// </summary>
-        public static async Task<ShowMainWindow> ProcessArguments([CanBeNull] IEnumerable<string> arguments, TimeSpan extraDelay = default(TimeSpan)) {
+        public static async Task<ShowMainWindow> ProcessArguments([CanBeNull] IEnumerable<string> arguments, bool fullPathsOnly,
+                TimeSpan extraDelay = default(TimeSpan)) {
             if (arguments == null) return ShowMainWindow.No;
 
             var list = arguments.ToList();
@@ -98,7 +98,7 @@ namespace AcManager.Tools {
                 _previousArguments = list;
 
                 var contentToInstall = (await list.Where(x => !IsCustomUriScheme(x)).Select(async x => Tuple.Create(x,
-                        ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x) ? x :
+                        ContentInstallationManager.IsRemoteSource(x) || ContentInstallationManager.IsAdditionalContent(x, fullPathsOnly) ? x :
                                 await ContentInstallationManager.IsRemoteSourceFlexible(x))
                         ).WhenAll()).Where(x => x.Item2 != null).ToList();
                 if (contentToInstall.Any()) {

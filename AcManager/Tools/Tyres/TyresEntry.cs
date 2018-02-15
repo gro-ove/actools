@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
-using AcTools.NeuralTyres.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -94,7 +93,7 @@ namespace AcManager.Tools.Tyres {
         [CanBeNull]
         public TyresEntry OtherEntry { get; set; }
 
-        private TyresEntry([CanBeNull] string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection,
+        public TyresEntry([CanBeNull] string sourceCarId, int version, IniFileSection mainSection, IniFileSection thermalSection,
                 [CanBeNull] string wearCurveData, [CanBeNull] string performanceCurveData,
                 bool rearTyres, [CanBeNull] Lazy<double?> rimRadiusLazy) {
             SourceCarId = sourceCarId;
@@ -114,8 +113,8 @@ namespace AcManager.Tools.Tyres {
             ShortName = mainSection.GetNonEmpty("SHORT_NAME") ?? (Name.Length == 0 ? @"?" : Name.Substring(0, 1));
         }
 
-        public NeuralTyresEntry ToNeuralTyresEntry() {
-            return new NeuralTyresEntry(SourceCarId, Version, MainSection, ThermalSection);
+        public TyresEntry Clone() {
+            return new TyresEntry(SourceCarId, Version, MainSection, ThermalSection, WearCurveData, PerformanceCurveData, RearTyres, null);
         }
 
         public double Radius { get; private set; }
@@ -168,18 +167,18 @@ namespace AcManager.Tools.Tyres {
             return rimRadius <= 0 ? double.NaN : (radius - (rimRadius + 0.0127)) / width;
         }
 
-        private static string GetDisplayProfile(double radius, double rimRadius, double width) {
+        public static string GetDisplayProfile(double radius, double rimRadius, double width, bool? roundNicely = null) {
             var profile = GetProfile(radius, rimRadius, width);
-            return double.IsNaN(profile) ? @"?" : (100d * profile).Round(OptionRoundNicely ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
+            return double.IsNaN(profile) ? @"?" : (100d * profile).Round((roundNicely ?? OptionRoundNicely) ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
         }
 
-        public static string GetDisplayWidth(double width) {
-            return (width * 1000).Round(OptionRoundNicely ? 1d : 0.1d).ToString(CultureInfo.CurrentUICulture);
+        public static string GetDisplayWidth(double width, bool? roundNicely = null) {
+            return (width * 1000).Round((roundNicely ?? OptionRoundNicely) ? 1d : 0.1d).ToString(CultureInfo.CurrentUICulture);
         }
 
-        public static string GetDisplayRadius(double rimRadius) {
+        public static string GetDisplayRadius(double rimRadius, bool? roundNicely = null) {
             return rimRadius <= 0 || double.IsNaN(rimRadius) ? @"?" :
-                    (rimRadius * 100 / 2.54 * 2 - 1).Round(OptionRoundNicely ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
+                    (rimRadius * 100 / 2.54 * 2 - 1).Round((roundNicely ?? OptionRoundNicely) ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
         }
         #endregion
 
@@ -316,35 +315,6 @@ namespace AcManager.Tools.Tyres {
                                                    .Select(x => x.GetDoubleNullable("RIM_RADIUS")).FirstOrDefault(x => x != null));
         }
 
-        public static TyresEntry CreateFromNeural(NeuralTyresEntry values, [CanBeNull] TyresEntry original) {
-            var mainSection = original?.MainSection.Clone() ?? new IniFileSection(null);
-            var thermalSection = original?.ThermalSection.Clone() ?? new IniFileSection(null);
-
-#if DEBUG
-            mainSection.Set("NAME", $"#{MathUtils.Random(0, 10)} {values.Name} N");
-#else
-            mainSection.Set("NAME", $"{values.Name} N");
-#endif
-            mainSection.Set("SHORT_NAME", $"{values.ShortName}-N");
-
-            foreach (var key in values.Keys.ApartFrom(NeuralTyresEntry.TemporaryKeys)) {
-                if (key.StartsWith(CarCreateTyresMachineDialog.ThermalPrefix)) {
-                    var actualKey = key.Substring(CarCreateTyresMachineDialog.ThermalPrefix.Length);
-                    thermalSection.Set(actualKey, Fix(values[key], key));
-                } else {
-                    mainSection.Set(key, Fix(values[key], key));
-                }
-            }
-
-            return new TyresEntry(original?.SourceCarId, values.Version, mainSection, thermalSection,
-                    original?.WearCurveData, original?.PerformanceCurveData, original?.RearTyres ?? false, null);
-
-            double Fix(double value, string key) {
-                var digits = TyresExtension.GetValueDigits(key);
-                return digits.HasValue ? FlexibleParser.ParseDouble(value.ToString($@"F{digits.Value}"), value) : value;
-            }
-        }
-
         [CanBeNull]
         public static TyresEntry CreateFront(CarObject car, int index, bool ignoreDamaged) {
             return Create(car, IniFile.GetSectionNames(@"FRONT", -1).Skip(index).First(), ignoreDamaged);
@@ -373,49 +343,54 @@ namespace AcManager.Tools.Tyres {
         }
 
         [ItemCanBeNull]
-        public static async Task<List<TyresEntry>> GetList(string filter) {
+        public static async Task<List<TyresEntry>> GetList(string filter, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             var filterObj = Filter.Create(CarObjectTester.Instance, filter);
 
             var wrappers = CarsManager.Instance.WrappersList.ToList();
             var list = new List<TyresEntry>(wrappers.Count);
 
-            using (var waiting = new WaitingDialog("Getting a list of tyres…")) {
-                for (var i = 0; i < wrappers.Count; i++) {
-                    if (waiting.CancellationToken.IsCancellationRequested) return null;
+            for (var i = 0; i < wrappers.Count; i++) {
+                if (cancellation.IsCancellationRequested) return null;
 
-                    var wrapper = wrappers[i];
-                    var car = (CarObject)await wrapper.LoadedAsync();
-                    waiting.Report(new AsyncProgressEntry(car.DisplayName, i, wrappers.Count));
+                var wrapper = wrappers[i];
+                var car = (CarObject)await wrapper.LoadedAsync();
+                progress?.Report(car.DisplayName, i, wrappers.Count);
 
-                    if (!filterObj.Test(car) || car.AcdData == null) continue;
-                    var tyres = car.AcdData.GetIniFile("tyres.ini");
+                if (!filterObj.Test(car) || car.AcdData == null) continue;
+                var tyres = car.AcdData.GetIniFile("tyres.ini");
 
-                    var version = tyres["HEADER"].GetInt("VERSION", -1);
-                    if (version < 4) continue;
+                var version = tyres["HEADER"].GetInt("VERSION", -1);
+                if (version < 4) continue;
 
-                    foreach (var tuple in GetTyres(car)) {
-                        if (list.Contains(tuple.Item1, TyresEntryComparer)) {
-                            if (!list.Contains(tuple.Item2, TyresEntryComparer)) {
-                                list.Add(tuple.Item2);
-                            }
-                        } else {
-                            if (TyresEntryComparer.Equals(tuple.Item1, tuple.Item2)) {
-                                list.Add(tuple.Item1);
-                                tuple.Item1.BothTyres = true;
-                            } else if (!list.Contains(tuple.Item2, TyresEntryComparer)) {
-                                list.Add(tuple.Item1);
-                                list.Add(tuple.Item2);
-                            }
+                foreach (var tuple in GetTyres(car)) {
+                    if (list.Contains(tuple.Item1, TyresEntryComparer)) {
+                        if (!list.Contains(tuple.Item2, TyresEntryComparer)) {
+                            list.Add(tuple.Item2);
+                        }
+                    } else {
+                        if (TyresEntryComparer.Equals(tuple.Item1, tuple.Item2)) {
+                            list.Add(tuple.Item1);
+                            tuple.Item1.BothTyres = true;
+                        } else if (!list.Contains(tuple.Item2, TyresEntryComparer)) {
+                            list.Add(tuple.Item1);
+                            list.Add(tuple.Item2);
                         }
                     }
+                }
 
-                    if (i % 3 == 0) {
-                        await Task.Delay(10);
-                    }
+                if (i % 3 == 0) {
+                    await Task.Delay(10);
                 }
             }
 
             return list;
+        }
+
+        [ItemCanBeNull]
+        public static async Task<List<TyresEntry>> GetList(string filter) {
+            using (var waiting = new WaitingDialog("Getting a list of tyres…")) {
+                return await GetList(filter, waiting, waiting.CancellationToken);
+            }
         }
     }
 }

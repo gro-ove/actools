@@ -450,7 +450,7 @@ namespace AcManager.Pages.ContentTools {
                         }
                     }
                 }
-            } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 NonfatalError.Notify("Can’t process files", e);
             }
         }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -43,14 +45,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool MessageProgress => GetValue(MessageProgressProperty) as bool? == true;
 
         private InvokeExecuteDelegate _commandInvoke;
+        private bool _commandCancellable, _commandPercentageProgress, _commandMessageProgress;
 
         protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e) {
             base.OnPropertyChanged(e);
             if (e.Property.Name == nameof(Command)) {
-                _commandInvoke = AnalyzeCommand(Command as IAsyncCommand, out var cancellable, out var percentageProgress, out var messageProgress);
-                SetValue(CancellablePropertyKey, cancellable);
-                SetValue(PercentageProgressPropertyKey, percentageProgress);
-                SetValue(MessageProgressPropertyKey, messageProgress);
+                _commandInvoke = AnalyzeCommand(Command as IAsyncCommand,
+                        out _commandCancellable, out _commandPercentageProgress, out _commandMessageProgress);
+                SetValue(CancellablePropertyKey, _commandCancellable || CancelCommand != null);
+                SetValue(PercentageProgressPropertyKey, _commandPercentageProgress || ProgressPercentage);
+                SetValue(MessageProgressPropertyKey, _commandMessageProgress || ProgressMessage);
             }
         }
 
@@ -70,6 +74,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnCancelClick(object sender, RoutedEventArgs routedEventArgs) {
             _cancellation?.Cancel();
+            CancelCommand?.Execute(null);
         }
 
         private CancellationTokenSource _cancellation;
@@ -84,7 +89,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         using (_cancellation = new CancellationTokenSource())
                         using (_taskbar = TaskbarService.Create(1200)) {
                             await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token);
-                            if (PercentageProgress) {
+                            if (_commandPercentageProgress) {
                                 Report(new AsyncProgressEntry(Progress.Message, 1d));
                             }
                         }
@@ -100,18 +105,66 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static readonly DependencyPropertyKey ProgressPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Progress), typeof(AsyncProgressEntry),
-                typeof(AsyncButton), new PropertyMetadata(default(AsyncProgressEntry)));
+        public static readonly DependencyProperty CancelCommandProperty = DependencyProperty.Register(nameof(CancelCommand), typeof(ICommand),
+                typeof(AsyncButton), new PropertyMetadata(null, (o, e) => {
+                    var b = (AsyncButton)o;
+                    b._cancelCommand = (ICommand)e.NewValue;
+                    (b.CancelCommand as CommandBase)?.SubscribeWeak(b.OnCancelCommandPropertyChanged);
+                    b.SetValue(CancellablePropertyKey, b._commandCancellable || b.CancelCommand != null);
+                }));
 
-        public static readonly DependencyProperty ProgressProperty = ProgressPropertyKey.DependencyProperty;
+        private void OnCancelCommandPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(CommandBase.IsAbleToExecute) && !_busy.Is) {
+                SetValue(IsProcessingPropertyKey, (CancelCommand as CommandBase)?.IsAbleToExecute);
+            }
+        }
 
-        public AsyncProgressEntry Progress => (AsyncProgressEntry)GetValue(ProgressProperty);
+        private ICommand _cancelCommand;
+
+        public ICommand CancelCommand {
+            get => _cancelCommand;
+            set => SetValue(CancelCommandProperty, value);
+        }
+
+        public static readonly DependencyProperty ProgressPercentageProperty = DependencyProperty.Register(nameof(ProgressPercentage), typeof(bool),
+                typeof(AsyncButton), new PropertyMetadata(false, (o, e) => {
+                    var b = (AsyncButton)o;
+                    b._progressPercentage = (bool)e.NewValue;
+                    b.SetValue(PercentageProgressPropertyKey, b._commandPercentageProgress || b.ProgressPercentage);
+                }));
+
+        private bool _progressPercentage;
+
+        public bool ProgressPercentage {
+            get => _progressPercentage;
+            set => SetValue(ProgressPercentageProperty, value);
+        }
+
+        public static readonly DependencyProperty ProgressMessageProperty = DependencyProperty.Register(nameof(ProgressMessage), typeof(bool),
+                typeof(AsyncButton), new PropertyMetadata(false, (o, e) => {
+                    var b = (AsyncButton)o;
+                    b._progressMessage = (bool)e.NewValue;
+                    b.SetValue(MessageProgressPropertyKey, b._commandMessageProgress || b.ProgressMessage);
+                }));
+
+        private bool _progressMessage;
+
+        public bool ProgressMessage {
+            get => _progressMessage;
+            set => SetValue(ProgressMessageProperty, value);
+        }
+
+        public static readonly DependencyProperty ProgressProperty = DependencyProperty.Register(nameof(Progress), typeof(AsyncProgressEntry),
+                typeof(AsyncButton));
+
+        public AsyncProgressEntry Progress {
+            get => (AsyncProgressEntry)GetValue(ProgressProperty);
+            set => SetValue(ProgressProperty, value);
+        }
 
         public void Report(AsyncProgressEntry value) {
             _taskbar?.Set(value.IsIndeterminate ? TaskbarState.Indeterminate : TaskbarState.Normal, value.Progress ?? 0.5);
-            ActionExtension.InvokeInMainThread(() => {
-                SetValue(ProgressPropertyKey, value);
-            });
+            ActionExtension.InvokeInMainThread(() => Progress = value);
         }
 
         #region Support for various types of commands

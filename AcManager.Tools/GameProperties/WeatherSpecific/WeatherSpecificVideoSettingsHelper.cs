@@ -29,17 +29,18 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 {
                     var section = ini["POST_PROCESS"];
                     if (section.GetNonEmpty("FILTER") == FilterId) {
-                        section.Set("FILTER", section.GetNonEmpty("__OGIRINAL_FILTER") ?? @"default");
-                        section.Remove(@"__OGIRINAL_FILTER");
+                        section.Set("FILTER", section.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_FILTER") ?? @"default");
+                        section.Remove(@"__CM_PREWEATHER_ORIGINAL_FILTER");
                         changed = true;
                     }
                 }
 
                 {
                     var section = ini["VIDEO"];
-                    if (section.ContainsKey(@"__OGIRINAL_SHADOW_MAP_SIZE")) {
-                        section.Set("SHADOW_MAP_SIZE", section.GetNonEmpty("__OGIRINAL_SHADOW_MAP_SIZE"));
-                        section.Remove(@"__OGIRINAL_SHADOW_MAP_SIZE");
+                    if (section.ContainsKey(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE")) {
+                        section.Set("SHADOW_MAP_SIZE", section.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE"));
+                        section.Remove(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE");
+                        section.Remove(@"__CM_ORIGINAL_SHADOW_MAP_SIZE");
                         changed = true;
                     }
                 }
@@ -82,13 +83,13 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
 
             if (customFilter) {
                 var section = ini["POST_PROCESS"];
-                section.Set("__OGIRINAL_FILTER", section.GetNonEmpty("FILTER"));
+                section.Set("__CM_PREWEATHER_ORIGINAL_FILTER", section.GetNonEmpty("FILTER"));
                 section.Set("FILTER", FilterId);
             }
 
             if (weather.DisableShadows) {
                 var section = ini["VIDEO"];
-                section.Set("__OGIRINAL_SHADOW_MAP_SIZE", section.GetNonEmpty("SHADOW_MAP_SIZE"));
+                section.Set("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE", section.GetNonEmpty("__CM_ORIGINAL_SHADOW_MAP_SIZE") ?? section.GetNonEmpty("SHADOW_MAP_SIZE"));
                 section.Set("SHADOW_MAP_SIZE", -1);
             }
 

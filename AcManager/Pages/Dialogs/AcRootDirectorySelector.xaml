@@ -6,7 +6,7 @@
     WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
     d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200" ButtonsRowContentAlignment="Left" WindowStyle="None">
   <mui:ModernDialog.ButtonsRowContent>
-    <Button Content="Install recommended plugins" Command="{Binding InstallRecommendedCommand, Source={x:Static t:PluginsManager.Instance}}" />
+    <Button Content="Install recommended plugins" Command="{Binding Recommended.InstallAllCommand, Source={x:Static t:PluginsManager.Instance}}" />
   </mui:ModernDialog.ButtonsRowContent>
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
@@ -61,13 +61,9 @@
     <!-- Plugins -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
       <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
-          Visibility="{Binding RecommendedListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
-      <DockPanel Margin="20 8 0 0">
-        <ScrollViewer Height="240">
-          <ItemsControl ItemsSource="{Binding RecommendedListView, Source={x:Static t:PluginsManager.Instance}}"
-              ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" />
-        </ScrollViewer>
-      </DockPanel>
+          Visibility="{Binding Recommended.ListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
+      <ItemsControl Margin="20 8 0 0" ItemsSource="{Binding Recommended.ListView, Source={x:Static t:PluginsManager.Instance}}"
+          ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440" Style="{StaticResource VirtualizingItemsControl}" Padding="0 0 20 0" />
     </StackPanel>
   </StackPanel>
 </mui:ModernDialog>

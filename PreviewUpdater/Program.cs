@@ -28,7 +28,7 @@ namespace PreviewUpdater {
             var magick = _helper.GetFilename("Magick.NET-x86");
             if (magick != null && File.Exists(magick)) {
                 try {
-                    ImageUtils.LoadImageMagickAssembly(magick);
+                    ImageUtils.MagickResolver.Initialize(Path.GetDirectoryName(magick) ?? "");
                 } catch (Exception e) {
                     Console.Error.WriteLine("Can’t load ImageMagick assembly: " + e.Message);
                 }
@@ -123,7 +123,7 @@ namespace PreviewUpdater {
                                 Console.WriteLine("    Nothing shotted");
                             }
                         }
-                        
+
                         break;
                     } catch (ShotingCancelledException e) {
                         if (!e.UserCancelled) {

@@ -28,14 +28,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Put all window-size-related stuff here, not in OnLoaded!
         /// </summary>
-        protected virtual void OnSourceInitializedOverride() {}
+        protected virtual void OnSourceInitializedOverride() { }
 
         protected sealed override void OnSourceInitialized(EventArgs e) {
-            /*if (RenderOptions.ProcessRenderMode != RenderMode.SoftwareOnly) {
-                var ptr = new IntPtr(42);
-                Marshal.StructureToPtr(42, ptr, true);
-            }*/
-
             Logging.Here();
 
             base.OnSourceInitialized(e);
@@ -50,10 +45,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             _dpi.UpdateUserScale(AppearanceManager.Current.AppScale);
-            UpdateSizeForDpiAwareness();
+            Logging.Debug($"DPI: {_dpi}");
+
+            UpdateReferenceSizeForDpiAwareness();
 
             if (IsPerMonitorDpiAware) {
+                Logging.Debug("Per-monitor DPI-aware");
                 _hwndSource?.AddHook(WndProc);
+            } else {
+                Logging.Error("Not per-monitor DPI-aware!");
             }
 
             RefreshMonitorDpi();
@@ -69,10 +69,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void RefreshMonitorDpi() {
-            if (!IsPerMonitorDpiAware || _hwndSource == null) return;
+            var dpi = _dpi;
+            Logging.Debug($"DPI: {dpi}, per-monitor DPI-aware: {IsPerMonitorDpiAware}, HWND src.: {_hwndSource}");
+            if (!IsPerMonitorDpiAware || _hwndSource == null || dpi == null) return;
             var monitor = NativeMethods.MonitorFromWindow(_hwndSource.Handle, NativeMethods.MonitorDefaultToNearest);
             if (NativeMethods.GetDpiForMonitor(monitor, (int)MonitorDpiType.EffectiveDpi, out var dpiX, out var dpiY) == NativeMethods.SOk) {
-                _dpi?.UpdateMonitorDpi(dpiX, dpiY);
+                dpi.UpdateMonitorDpi(dpiX, dpiY);
+                Logging.Debug($"DPI: {dpi}");
             }
         }
 
@@ -81,18 +84,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 case WindowMessage.SystemCommand:
                     var command = (WindowSystemCommand)(wParam.ToInt32() & 0xfff0);
                     if (command == WindowSystemCommand.Move && PreferredFullscreenMode) {
+                        Logging.Debug("Cancel movement in preferred fullscreen mode");
                         handled = true;
                     }
                     break;
                 case WindowMessage.EnterSizeMove:
+                    Logging.Debug("Movement started");
                     OnDragged(true);
                     break;
                 case WindowMessage.ExitSizeMove:
+                    Logging.Debug("Movement ended");
                     OnDragged(false);
                     break;
                 case WindowMessage.DpiChanged:
                     var dpiX = (double)(wParam.ToInt32() >> 16);
                     var dpiY = (double)(wParam.ToInt32() & 0x0000FFFF);
+                    Logging.Debug($"DPI changed: {dpiX}, {dpiY}");
                     if (_dpi != null && _dpi.UpdateMonitorDpi(dpiX, dpiY)) {
                         UpdateScaleRelatedParams();
                     }
@@ -103,6 +110,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void SetAppScale(double value) {
+            Logging.Debug(value);
             if (_dpi != null && _dpi.UpdateUserScale(value)) {
                 UpdateScaleRelatedParams();
             }
@@ -121,50 +129,72 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private Size _originalMinSize, _originalMaxSize, _windowSize;
         private readonly Busy _updateSizeForDpiAwarenessBusy = new Busy();
 
-        private void UpdateSizeForDpiAwareness() {
+        private void UpdateReferenceSizeForDpiAwareness() {
             var dpi = _dpi;
+
+            Logging.Debug(dpi);
             if (dpi == null) return;
 
             _updateSizeForDpiAwarenessBusy.Yield(() => {
-                Logging.Warning($"{ActualWidth}, {ActualHeight}; {dpi.ScaleX}");
                 _windowSize.Width = ActualWidth / dpi.ScaleX;
                 _windowSize.Height = ActualHeight / dpi.ScaleY;
+                Logging.Debug($"Reference size: {_windowSize.Width}×{_windowSize.Height}");
             });
         }
 
         private void SaveOriginalLimitations() {
-            if (_originalMinSize != default(Size)) return;
+            if (_originalMinSize != default(Size)) {
+                Logging.Debug("Original limitations already saved");
+                return;
+            }
+
             _originalMinSize.Width = MinWidth;
             _originalMinSize.Height = MinHeight;
             _originalMaxSize.Width = IsFinite(MaxWidth) ? MaxWidth : UnlimitedSize;
             _originalMaxSize.Height = IsFinite(MaxHeight) ? MaxHeight : UnlimitedSize;
-            Logging.Warning($"Original limits: {_originalMinSize.Width}×{_originalMinSize.Height}");
+            Logging.Debug($"Original limitations: {_originalMinSize.Width}×{_originalMinSize.Height}");
         }
 
         private void UpdateLimitations(Screen screen, double scaleX, double scaleY) {
             SaveOriginalLimitations();
-            Logging.Warning($"{_originalMinSize.Width * scaleX}×{_originalMinSize.Height * scaleY}");
 
+            Logging.Debug($"{_originalMinSize.Width * scaleX}×{_originalMinSize.Height * scaleY} ({scaleX}, {scaleY}); {screen.WorkingArea}");
             MaxWidth = _originalMaxSize.Width * (_originalMaxSize.Width < UnlimitedSize ? scaleX : 1d);
             MaxHeight = _originalMaxSize.Height * (_originalMaxSize.Height < UnlimitedSize ? scaleY : 1d);
             MinWidth = Math.Min(screen.WorkingArea.Width, _originalMinSize.Width * scaleX);
             MinHeight = Math.Min(screen.WorkingArea.Height, _originalMinSize.Height * scaleY);
 
-            if (ActualWidth > MaxWidth) Width = MaxWidth;
-            if (ActualHeight > MaxHeight) Height = MaxHeight;
-            if (ActualWidth < MinWidth) Width = MinWidth;
-            if (ActualHeight < MinHeight) Height = MinHeight;
+            Logging.Debug($"Result: {MinWidth}×{MinHeight}");
+
+            if (ActualWidth > MaxWidth) {
+                Width = MaxWidth;
+            } else if (ActualWidth < MinWidth) {
+                Width = MinWidth;
+                Logging.Debug($"Clamp width to: {MinWidth}");
+            }
+
+            if (ActualHeight > MaxHeight) {
+                Height = MaxHeight;
+            } else if (ActualHeight < MinHeight) {
+                Height = MinHeight;
+                Logging.Debug($"Clamp width to: {MinHeight}");
+            }
         }
 
         private double _currentScaleX = 1d, _currentScaleY = 1d;
         private bool _firstRun = true;
 
         private void UpdateScaleRelatedParams() {
-            if (_isBeingDragged) return;
+            if (_isBeingDragged) {
+                Logging.Debug("Window is being dragged at the moment, skipping");
+                return;
+            }
 
             var dpi = _dpi;
+            Logging.Debug($"DPI: {dpi?.ToString() ?? @"none"}");
+
             if (dpi == null || dpi.ScaleX == _currentScaleX && dpi.ScaleY == _currentScaleY) {
-                Logging.Warning($"Nothing to do: {dpi?.ScaleX}×{dpi?.ScaleY}, {_currentScaleX}×{_currentScaleY}");
+                Logging.Debug($"Nothing to do: {dpi?.ScaleX}×{dpi?.ScaleY}, {_currentScaleX}×{_currentScaleY}");
                 if (_firstRun) {
                     UpdateTextFormatting();
                 }
@@ -175,25 +205,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _currentScaleY = dpi.ScaleY;
             _firstRun = false;
 
-            Logging.Here($"Scale: {dpi.ScaleX}×{dpi.ScaleY}");
-
             var screen = this.GetScreen();
+            Logging.Debug($"Screen: {screen}");
             UpdateLimitations(screen, dpi.ScaleX, dpi.ScaleY);
 
             var windowSize = _windowSize;
             if (windowSize != default(Size)) {
-                Logging.Warning($"Update window size: {windowSize}");
+                Logging.Debug($"Update window size: {windowSize.Width}×{windowSize.Height}; scale: {dpi.ScaleX}, {dpi.ScaleY}");
                 Width = windowSize.Width * dpi.ScaleX;
                 Height = windowSize.Height * dpi.ScaleY;
                 EnsureOnScreen(screen);
             } else {
-                Logging.Warning($"Window size is not known");
+                Logging.Debug("Reference window size is not known");
                 EnsureOnScreen(screen);
+
+                // Why saving it here?
                 SaveLocationAndSize();
             }
 
             var root = (FrameworkElement)GetVisualChild(0);
             if (root != null) {
+                Logging.Debug($"Set UI transform: {dpi.ScaleX}, {dpi.ScaleY}");
                 root.LayoutTransform = dpi.IsScaled ? new ScaleTransform(dpi.ScaleX, dpi.ScaleY) : null;
             }
 

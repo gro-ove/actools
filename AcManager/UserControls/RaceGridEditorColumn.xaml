@@ -184,7 +184,8 @@
                       <MenuItem Header="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding DeleteSelectedCommand}" />
                     </mui:InheritingContextMenu>
                   </DockPanel.ContextMenu>
-                  <Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
+                  <Button Style="{StaticResource DeleteButton}" Command="{Binding DeleteCommand}" />
+                  <!--<Button DockPanel.Dock="Right" Width="13" Height="13" Margin="4 0 4 0" VerticalAlignment="Center" RenderOptions.EdgeMode="Aliased"
                       Padding="2" Command="{Binding DeleteCommand}">
                     <Button.Style>
                       <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
@@ -195,16 +196,19 @@
                     <Path Data="M0,0 L7,7 M7,0 L0,7 Z" Width="8" Height="8"
                         Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" VerticalAlignment="Center"
                         HorizontalAlignment="Center" StrokeThickness="1" />
-                  </Button>
+                  </Button>-->
                   <mui:BetterTextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
                       ToolTip="{x:Static g:AppStrings.RaceGrid_CandidatePriority}" Style="{StaticResource Borderless.White.Small}" VerticalAlignment="Center"
                       Width="20" Mode="Positive" />
                   <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
                       VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                       Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
-                  <TextBlock Text="{Binding DisplayName}" />
+                  <TextBlock x:Name="NameTextBlock" Text="{Binding DisplayName}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding IsDeleted}" Value="True">
+                    <Setter TargetName="NameTextBlock" Property="Foreground" Value="{DynamicResource Error}" />
+                  </DataTrigger>
                   <DataTrigger Binding="{Binding CandidatePriority}" Value="1">
                     <Setter TargetName="PriorityTextBox" Property="Visibility" Value="Collapsed" />
                   </DataTrigger>

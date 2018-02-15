@@ -719,7 +719,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             VerticalSyncronization = section.GetBool("VSYNC", false);
             AntiAliasingLevel = section.GetEntry("AASAMPLES", AntiAliasingLevels);
             AnisotropicLevel = section.GetEntry("ANISOTROPIC", AnisotropicLevels, "8");
-            ShadowMapSize = section.GetEntry("SHADOW_MAP_SIZE", ShadowMapSizes, "2048");
+            ShadowMapSize = section.ContainsKey(@"__CM_ORIGINAL_SHADOW_MAP_SIZE")
+                    ? section.GetEntry("__CM_ORIGINAL_SHADOW_MAP_SIZE", ShadowMapSizes, "2048")
+                    : section.GetEntry("SHADOW_MAP_SIZE", ShadowMapSizes, "2048");
 
             var limit = section.GetDouble("FPS_CAP_MS", 0);
             FramerateLimitEnabled = Math.Abs(limit) >= 0.1;
@@ -774,6 +776,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("AASAMPLES", AntiAliasingLevel);
             section.Set("ANISOTROPIC", AnisotropicLevel);
             section.Set("SHADOW_MAP_SIZE", ShadowMapSize);
+            section.Remove("__CM_ORIGINAL_SHADOW_MAP_SIZE");
             section.Set("FPS_CAP_MS", FramerateLimitEnabled ? 1e3 / FramerateLimit : 0d);
 
             ini["CAMERA"].Set("MODE", CameraMode);

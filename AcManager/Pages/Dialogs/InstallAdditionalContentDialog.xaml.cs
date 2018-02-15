@@ -2,25 +2,22 @@
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.ContentInstallation.Entries;
-using AcManager.Tools.ContentInstallation.Implementations;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Media;
-using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public class AdditionalContentEntryTemplateSelectorInner : DataTemplateSelector {
@@ -40,7 +37,7 @@ namespace AcManager.Pages.Dialogs {
         }
     }
 
-    public partial class InstallAdditionalContentDialog : INotifyPropertyChanged {
+    public partial class InstallAdditionalContentDialog {
         private static InstallAdditionalContentDialog _dialog;
 
         public static void Initialize() {
@@ -90,112 +87,39 @@ namespace AcManager.Pages.Dialogs {
 
         private static bool IsAlone => Application.Current?.Windows.OfType<MainWindow>().FirstOrDefault()?.IsVisible != true;
 
-        public BetterListCollectionView DownloadListView { get; }
+        public ListCollectionView DownloadListView { get; }
 
         private InstallAdditionalContentDialog() {
-            UpdateSevenZipPluginMissing();
-            PluginsManager.Instance.PluginEnabled += OnPlugin;
-            PluginsManager.Instance.PluginDisabled += OnPlugin;
-            this.OnActualUnload(() => {
-                PluginsManager.Instance.PluginEnabled -= OnPlugin;
-                PluginsManager.Instance.PluginDisabled -= OnPlugin;
-            });
-
             DownloadListView = new BetterListCollectionView(ContentInstallationManager.Instance.DownloadList);
             DownloadListView.SortDescriptions.Add(new SortDescription(nameof(ContentInstallationEntry.AddedDateTime), ListSortDirection.Descending));
-
-            PluginsManager.Instance.UpdateIfObsolete().Forget();
-            RecommendedListView = new BetterListCollectionView(PluginsManager.Instance.List);
-            RecommendedListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
-            RecommendedListView.Filter = o => (o as PluginEntry)?.Id == SevenZipContentInstallator.PluginId;
 
             DataContext = this;
             InitializeComponent();
             InputBindings.AddRange(new[] {
                 new InputBinding(new DelegateCommand(ArgumentsHandler.OnPaste), new KeyGesture(Key.V, ModifierKeys.Control)),
             });
-            Buttons = new[] { IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None) };
-
-            if (ContentInstallationManager.Instance.DownloadList.Any(x => x.SevenZipInstallatorWouldNotHurt)) {
-                SevenZipWarning.Visibility = Visibility.Visible;
-                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
-            } else {
-                ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged += OnItemPropertyChanged;
-                this.OnActualUnload(() => {
-                    ContentInstallationManager.Instance.DownloadList.ItemPropertyChanged -= OnItemPropertyChanged;
-                });
-            }
+            Buttons = new[] {
+                CreateExtraDialogButton("Remove completed", ContentInstallationManager.Instance.RemoveCompletedCommand),
+                IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None)
+            };
 
             this.AddWidthCondition(x => (x - 104).Clamp(120, 240)).Add(x => Resources[@"ButtonsRowWidth"] = x);
+            Plugins.Ready += OnPluginsReady;
         }
 
-        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ContentInstallationEntry.SevenZipInstallatorWouldNotHurt)) {
-                SevenZipWarning.Visibility = Visibility.Visible;
-                SevenZipObsoleteWarning.Visibility = Visibility.Visible;
+        private async void OnPluginsReady(object sender, EventArgs e) {
+            var list = ContentInstallationManager.Instance.DownloadList.Where(
+                    x => x.RetryCommand.IsAbleToExecute && (x.State == ContentInstallationEntryState.WaitingForConfirmation || x.IsFailed)).ToList();
+            Logging.Debug(list.Count);
+
+            await Task.Yield();
+            foreach (var entry in list) {
+                Logging.Debug(entry.DisplayName);
+                entry.RetryCommand.Execute();
             }
         }
 
-        public BetterListCollectionView RecommendedListView { get; }
-
-        private bool? _isSevenZipPluginMissing;
-
-        public bool IsSevenZipPluginMissing {
-            get => _isSevenZipPluginMissing ?? false;
-            set {
-                if (value == _isSevenZipPluginMissing) return;
-                var oldValue = _isSevenZipPluginMissing;
-                _isSevenZipPluginMissing = value;
-                OnPropertyChanged();
-
-                if (oldValue == true && value == false) {
-                    foreach (var entry in ContentInstallationManager.Instance.DownloadList.Where(x => x.SevenZipInstallatorWouldNotHurt &&
-                            x.CancelCommand.IsAbleToExecute && x.State == ContentInstallationEntryState.WaitingForConfirmation)) {
-                        ContentInstallationManager.Instance.InstallAsync(entry.Source).ContinueWith(async v => {
-                            if (!v.Result) {
-                                await Task.Delay(1);
-                                ContentInstallationManager.Instance.InstallAsync(entry.LocalFilename ?? entry.Source).Forget();
-                            }
-                        }, TaskContinuationOptions.OnlyOnRanToCompletion);
-                        entry.CancelCommand.Execute();
-                    }
-                }
-            }
-        }
-
-        private bool _isSevenZipPluginObsolete;
-
-        public bool IsSevenZipPluginObsolete {
-            get => _isSevenZipPluginObsolete;
-            set {
-                if (Equals(value, _isSevenZipPluginObsolete)) return;
-                _isSevenZipPluginObsolete = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double _buttonsRowWidth;
-
-        public double ButtonsRowWidth {
-            get => _buttonsRowWidth;
-            set {
-                if (Equals(value, _buttonsRowWidth)) return;
-                _buttonsRowWidth = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private void UpdateSevenZipPluginMissing() {
-            IsSevenZipPluginMissing = !PluginsManager.Instance.IsPluginEnabled(SevenZipContentInstallator.PluginId);
-            IsSevenZipPluginObsolete = PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.Version.IsVersionOlderThan(
-                    SevenZipContentInstallator.MinimalRecommendedVersion) == true;
-        }
-
-        private void OnPlugin(object o, AppAddonEventHandlerArgs e) {
-            if (e.PluginId == SevenZipContentInstallator.PluginId) {
-                UpdateSevenZipPluginMissing();
-            }
-        }
+        public PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.SevenZip);
 
         private void OnClosed(object sender, EventArgs e) {}
 
@@ -233,12 +157,5 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {}
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

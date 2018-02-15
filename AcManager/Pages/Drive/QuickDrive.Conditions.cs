@@ -392,8 +392,8 @@ namespace AcManager.Pages.Drive {
             public double CustomRoadTemperatureValue {
                 get => _customRoadTemperatureValue ?? RecommendedRoadTemperature;
                 set {
-                    value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
-                            SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
+                    value = value.Round(0.1).Clamp(CommonAcConsts.RoadTemperatureMinimum,
+                            SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.RoadTemperatureMaximum * 2 : CommonAcConsts.RoadTemperatureMaximum);
                     if (Equals(value, _customRoadTemperatureValue)) return;
                     _customRoadTemperatureValue = value;
                     OnPropertyChanged();
@@ -610,7 +610,7 @@ namespace AcManager.Pages.Drive {
                                             WindSpeedMax = weather.WindSpeed * 3.6;
                                         }
                                     }, cancellation.Token);
-                        } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+                        } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                             Logging.Warning(e);
                         }
 

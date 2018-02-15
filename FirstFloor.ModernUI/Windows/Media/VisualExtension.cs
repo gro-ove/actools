@@ -1,12 +1,13 @@
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
-using System.Windows.Interop;
 using System.Windows.Media;
 using JetBrains.Annotations;
+using Point = System.Windows.Point;
 
 namespace FirstFloor.ModernUI.Windows.Media {
     public static class VisualExtension {
@@ -81,8 +82,12 @@ namespace FirstFloor.ModernUI.Windows.Media {
             return Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d));
         }
 
-        public static Screen GetScreen([NotNull] this Window window) {
-            return Screen.FromHandle(new WindowInteropHelper(window).Handle);
+        public static Screen GetScreen([NotNull] this Window window){
+            return Screen.FromRectangle(new Rectangle((int)window.Left, (int)window.Top, (int)window.Width, (int)window.Height));
         }
+
+        /*public static Screen GetScreen([NotNull] this Window window) {
+            return Screen.FromHandle(new WindowInteropHelper(window).Handle);
+        }*/
     }
 }

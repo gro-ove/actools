@@ -2,7 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:ab="clr-namespace:AcManager.Pages.About" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance ab:AboutPage+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:at="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance ab:AboutPage+ViewModel}">
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition />
@@ -32,8 +33,8 @@
           <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0">
             <TextBox.Text>
               <MultiBinding Mode="OneTime" StringFormat="{}{0} ({1})">
-                <Binding Source="{x:Static t:BuildInformation.AppVersion}" />
-                <Binding Source="{x:Static t:BuildInformation.Platform}" />
+                <Binding Source="{x:Static at:BuildInformation.AppVersion}" />
+                <Binding Source="{x:Static at:BuildInformation.Platform}" />
               </MultiBinding>
             </TextBox.Text>
           </TextBox>
@@ -48,9 +49,9 @@
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
             BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Roberto Zagallo, Shijie Zhang (St3fan), Stanislav Minakov." />
 
-        <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas and testing:" />
+        <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas, reports and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Anton Malishev, dr8008, /u/FolkSong, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
+            BbCode="Anton Malishev, cq.mysk, dr8008, /u/FolkSong, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Screenshots for Discord integration:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}" BbCode="/u/CipherO32." />

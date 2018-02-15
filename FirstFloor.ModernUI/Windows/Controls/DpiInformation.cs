@@ -41,5 +41,9 @@
             UpdateScale();
             return true;
         }
+
+        public override string ToString() {
+            return $"(WPF DPI: {WpfDpiX}, {WpfDpiY}; monitor DPI: {MonitorDpiX}, {MonitorDpiY}; scale: {ScaleX}, {ScaleY})";
+        }
     }
 }

@@ -3,17 +3,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d" Title="Tyres machine editor"
-    SizeToContent="Manual" Width="920" Height="800" MinWidth="800" MinHeight="240" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    SizeToContent="Manual" Width="1100" Height="800" MinWidth="1200" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarCreateTyresMachineDialog" ResizeMode="CanResizeWithGrip"
-    d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True">
-  <!--<mui:ModernDialog.ButtonsRowContent>
-    <mui:SpacingStackPanel Spacing="4">
-      <Label Content="Save as:" Margin="0 2 0 -2"
-          Visibility="{Binding SaveCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-      <mui:BetterTextBox Text="{Binding MachineName}" ToolTip="{Binding SuggestedMachineName}"
-          Visibility="{Binding SaveCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-    </mui:SpacingStackPanel>
-  </mui:ModernDialog.ButtonsRowContent>-->
+    d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True" ContentMargin="0 0 0 -42">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -42,8 +34,18 @@
           </Setter.Value>
         </Setter>
       </Style>
+
+      <c:PropertiesGrid x:Key="ResultParams" Columns="2" Rows="1">
+        <mui:BetterComboBox c:PropertiesGrid.Label="Tyres name:" Text="{Binding ExampleCarsModel.TyresName, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding ExampleCarsModel.TyresNames}" Placeholder="{Binding ExampleCarsModel.TyresNames[0]}" />
+        <mui:BetterComboBox c:PropertiesGrid.Label="Short name:" Text="{Binding ExampleCarsModel.TyresShortName, UpdateSourceTrigger=PropertyChanged}"
+            ItemsSource="{Binding ExampleCarsModel.TyresShortNames}" Placeholder="{Binding ExampleCarsModel.TyresShortNames[0]}" />
+      </c:PropertiesGrid>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
+  <mui:ModernDialog.ButtonsRowContent>
+    <ContentPresenter Content="{StaticResource ResultParams}" Width="400" />
+  </mui:ModernDialog.ButtonsRowContent>
 
   <Grid>
     <Grid.ColumnDefinitions>
@@ -98,15 +100,17 @@
       <ListBox x:Name="CarsListBox" ItemsSource="{Binding ExampleCarsModel.CarsView}" Style="{StaticResource VirtualizingListBox}"
           VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True" mui:FancyScrollHelper.Outside="True">
         <ListBox.ItemContainerStyle>
-          <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}">
+          <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}"
+              d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+CarWithTyres}">
             <Setter Property="IsSelected" Value="{Binding IsChecked, Mode=TwoWay}" />
           </Style>
         </ListBox.ItemContainerStyle>
         <ListBox.ItemTemplate>
           <DataTemplate DataType="{x:Type di:CarCreateTyresMachineDialog+CarWithTyres}">
-            <Expander Style="{StaticResource Expander.Animated}" IsExpanded="False">
+            <Expander Style="{StaticResource Expander.Animated}" IsExpanded="{Binding IsExpanded}">
               <!--<Expander.CacheMode>
-                <BitmapCache EnableClearType="True" RenderAtScale="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+                <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
+                    EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
               </Expander.CacheMode>-->
               <Expander.Header>
                 <DockPanel>
@@ -116,22 +120,20 @@
                   <TextBlock Text="{Binding Car.DisplayName}" TextTrimming="CharacterEllipsis" />
                 </DockPanel>
               </Expander.Header>
-              <!--<mui:BooleanSwitch Value="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType=Expander}}">-->
-                <ItemsControl ItemsSource="{Binding Tyres}" DockPanel.Dock="Bottom" Margin="0 4 0 0">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <WrapPanel />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type di:CarCreateTyresMachineDialog+CarTyres}">
-                      <CheckBox IsChecked="{Binding IsChecked}" Margin="0 0 8 4">
-                        <TextBlock Style="{StaticResource Label}" Text="{Binding Entry.DisplayName}" />
-                      </CheckBox>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              <!--</mui:BooleanSwitch>-->
+              <ItemsControl ItemsSource="{Binding Tyres}" DockPanel.Dock="Bottom" Margin="0 4 0 0">
+                <ItemsControl.ItemsPanel>
+                  <ItemsPanelTemplate>
+                    <WrapPanel />
+                  </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="{x:Type di:CarCreateTyresMachineDialog+CarTyres}">
+                    <CheckBox IsChecked="{Binding IsChecked}" Margin="0 0 8 4">
+                      <TextBlock Style="{StaticResource Label}" Text="{Binding Entry.DisplayName}" />
+                    </CheckBox>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
             </Expander>
           </DataTemplate>
         </ListBox.ItemTemplate>
@@ -140,7 +142,7 @@
 
     <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarCreateTyresMachineDialog" />
 
-    <DockPanel Grid.Column="2" Margin="8 0 0 0">
+    <DockPanel Grid.Column="2" Margin="8 0 0 42">
       <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" DockPanel.Dock="Top">
         <mui:SpacingStackPanel Spacing="8">
           <DockPanel>
@@ -269,8 +271,8 @@
           <mui:BetterComboBox.GroupStyle>
             <GroupStyle>
               <GroupStyle.HeaderTemplate>
-                <DataTemplate>
-                  <TextBlock x:Name="PART_Name" Text="{Binding Path=Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}"
+                <DataTemplate DataType="GroupItem">
+                  <TextBlock x:Name="PART_Name" Text="{Binding Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}"
                       Margin="0 4" />
                   <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
@@ -316,8 +318,8 @@
             <ListBox.GroupStyle>
               <GroupStyle>
                 <GroupStyle.HeaderTemplate>
-                  <DataTemplate>
-                    <TextBlock x:Name="PART_Name" Text="{Binding Path=Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}"
+                  <DataTemplate DataType="GroupItem">
+                    <TextBlock x:Name="PART_Name" Text="{Binding Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}"
                         Margin="0 4" />
                     <DataTemplate.Triggers>
                       <DataTrigger Binding="{Binding Name}" Value="{x:Null}">
@@ -337,32 +339,24 @@
 
           <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0" DockPanel.Dock="Bottom">
             <DockPanel>
+              <RadioButton Width="20" Margin="0 -2 0 2" IsChecked="{Binding GraphWidth, Converter={StaticResource InvertBooleanConverter}}" />
               <mui:ValueLabel Value="{Binding DisplayTestWidth}" mui:BetterTextBox.Mode="Number" Postfix=" cm" Content="Width" Width="200" Padding="0" />
               <Slider Minimum="0" Maximum="1" Value="{Binding TestWidth}" TickPlacement="None" />
             </DockPanel>
-            <!--<DockPanel>
-              <mui:ValueLabel Value="{Binding ProfileRange}" mui:BetterTextBox.Mode="Number" Content="Profile" Width="200" Padding="0"
-                  Postfix="{Binding ProfileRange, Converter={StaticResource PluralizingConverter}, ConverterParameter=' sample'}" />
-              <Slider Minimum="1" Maximum="9" Value="{Binding ProfileRange}" TickPlacement="None" />
-            </DockPanel>-->
             <DockPanel>
+              <RadioButton Width="20" Margin="0 -2 0 2" IsChecked="{Binding GraphWidth}" />
               <mui:ValueLabel Value="{Binding DisplayTestRadius}" mui:BetterTextBox.Mode="Number" Postfix=" cm" Content="Radius" Width="200" Padding="0" />
               <Slider Minimum="0" Maximum="1" Value="{Binding TestRadius}" TickPlacement="None" />
             </DockPanel>
-            <DockPanel>
+            <DockPanel Margin="20 0 0 0">
               <mui:ValueLabel Value="{Binding DisplayTestProfile}" mui:BetterTextBox.Mode="Number" Postfix=" cm" Content="Profile" Width="200" Padding="0" />
               <Slider Minimum="0" Maximum="1" Value="{Binding TestProfile}" TickPlacement="None" />
             </DockPanel>
-            <!--<DockPanel>
-              <mui:ValueLabel Value="{Binding GraphSteps}" mui:BetterTextBox.Mode="Number" Content="Interpolate" Width="200" Padding="0"
-                  Postfix="{Binding GraphSteps, Converter={StaticResource PluralizingConverter}, ConverterParameter=' sample'}" />
-              <Slider Minimum="100" Maximum="900" TickFrequency="50" IsSnapToTickEnabled="True" Value="{Binding GraphSteps}" TickPlacement="None" />
-            </DockPanel>-->
           </mui:SpacingStackPanel>
 
-          <di:TyresMachineGraphViewer Data="{Binding SelectedOutputData}" ValueTitle="{Binding SelectedOutputKey.DisplayName}"
-              ValueUnits="{Binding SelectedOutputUnits}" ValueTitleDigits="{Binding SelectedOutputTitleDigits}"
-              ValueTrackerDigits="{Binding SelectedOutputTrackerDigits}" />
+          <di:TyresMachineGraphViewer Data="{Binding SelectedOutputData}" GraphWidth="{Binding GraphWidth}"
+              ValueTitle="{Binding SelectedOutputKey.DisplayName}" ValueUnits="{Binding SelectedOutputUnits}"
+              ValueTitleDigits="{Binding SelectedOutputTitleDigits}" ValueTrackerDigits="{Binding SelectedOutputTrackerDigits}" />
         </DockPanel>
       </mui:ReferenceSwitch>
     </DockPanel>

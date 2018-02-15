@@ -115,6 +115,7 @@
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\DelegateCommandExtensions.cs" />
     <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
     <Compile Include="Commands\UnavailableCommand.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="Effects\NorEffect.cs" />
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
+    <Compile Include="Helpers\GenericObjectFactoryExtension.cs" />
     <Compile Include="Helpers\IStorage.cs" />
     <Compile Include="Helpers\ScreenInterrogatory.cs" />
     <Compile Include="Helpers\Stored.cs" />
@@ -193,10 +195,13 @@
     <Compile Include="Windows\Controls\Cell.cs" />
     <Compile Include="Windows\Controls\ContextMenuButton.cs" />
     <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
+    <Compile Include="Windows\Controls\DependencyObjectHelper.cs" />
     <Compile Include="Windows\Controls\DoubleSlider.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.ActualLocation.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Blur.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Dpi.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.ExtraFlags.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Logging.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
     <Compile Include="Windows\Controls\FatalErrorMessage.cs" />
@@ -206,7 +211,7 @@
     <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
     <Compile Include="Windows\Controls\LazySwitch.cs" />
     <Compile Include="Windows\Controls\ListSwitch.cs" />
-    <Compile Include="Windows\Controls\ModernMenu.Helpers.cs" />
+    <Compile Include="Windows\Controls\ModernSubMenuItemContainerStyleSelector.cs" />
     <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
     <Compile Include="Windows\Controls\NumberInputConverter.cs" />
     <Compile Include="Windows\Controls\PathTrimmingTextBlock.cs" />

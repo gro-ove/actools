@@ -209,7 +209,7 @@
                 <ListBox.ItemContainerStyle>
                   <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
                     <Style.Triggers>
-                      <DataTrigger Binding="{Binding Enabled}" Value="False">
+                      <DataTrigger Binding="{Binding Enabled}" Value="False" d:DataContext="{d:DesignInstance t:PythonAppObject}">
                         <Setter Property="IsEnabled" Value="False" />
                       </DataTrigger>
                     </Style.Triggers>

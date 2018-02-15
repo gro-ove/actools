@@ -101,7 +101,7 @@
                   <Setter.Value>
                     <ControlTemplate>
                       <mui:RememberingExpander Header="{Binding RelativeSource={RelativeSource AncestorType=TreeViewItem}, Path=Header}"
-                          Style="{StaticResource Expander.Animated}" DefaultValue="False"
+                          Style="{StaticResource Expander.Animated}" DefaultValue="False" d:DataContext="{d:DesignInstance h:DirectoryEntry}"
                           Key="{Binding RelativeSource={RelativeSource Self}, Path=DataContext.Id, StringFormat='{}.sharing_dir_{0}', Mode=OneTime}">
                         <ItemsPresenter x:Name="ItemsHost" Margin="20 0 0 0" />
                       </mui:RememberingExpander>
@@ -109,7 +109,8 @@
                   </Setter.Value>
                 </Setter>
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Items.Count}" Value="0">
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Items.Count}" Value="0"
+                      d:DataContext="{d:DesignInstance TreeViewItem}">
                     <Setter Property="Template">
                       <Setter.Value>
                         <ControlTemplate>

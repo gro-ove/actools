@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using AcManager.Tools.Helpers;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -150,6 +151,12 @@ namespace AcManager.Tools.GameProperties {
             }
         }
 
+        public static bool IsSupposedToWork() {
+            // Loading value directly in case custom preset were applied, but VideoSettings aren’t updated yet
+            var video = new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"];
+            return (video.GetIntNullable("__CM_ORIGINAL_SHADOW_MAP_SIZE") ?? video.GetInt("SHADOW_MAP_SIZE", 2048)) < 1;
+        }
+
         private static void PatchAc([NotNull] string acsFilename, bool use32BitVersion) {
             try {
                 if (_data == null) {
@@ -166,6 +173,13 @@ namespace AcManager.Tools.GameProperties {
                 if (toPatch.Value != null) {
                     Logging.Write($"Description found: version={toPatch.Key}, checksum={checksum}");
                     PatchFile(acsFilename, toPatch.Value.ToPatch(), true);
+                    var ini = new IniFile(AcPaths.GetCfgVideoFilename());
+                    var video = ini["VIDEO"];
+                    if (!video.ContainsKey("__CM_ORIGINAL_SHADOW_MAP_SIZE")) {
+                        video.Set("__CM_ORIGINAL_SHADOW_MAP_SIZE", video.GetInt("SHADOW_MAP_SIZE", 0));
+                        video.Set("SHADOW_MAP_SIZE", 32);
+                    }
+                    ini.Save();
                 } else {
                     var alreadyPatched = dictionary.FirstOrDefault(x => string.Equals(x.Value.Patched, checksum, StringComparison.OrdinalIgnoreCase));
                     if (alreadyPatched.Value != null) {
@@ -195,6 +209,14 @@ namespace AcManager.Tools.GameProperties {
                         NonfatalError.NotifyBackground("Can’t revert AC to its original state", e);
                     }
                 }
+            }
+
+            var ini = new IniFile(AcPaths.GetCfgVideoFilename());
+            var video = ini["VIDEO"];
+            if (video.ContainsKey(@"__CM_ORIGINAL_SHADOW_MAP_SIZE")) {
+                video.Set("SHADOW_MAP_SIZE", video.GetInt("__CM_ORIGINAL_SHADOW_MAP_SIZE", 2048));
+                video.Remove(@"__CM_ORIGINAL_SHADOW_MAP_SIZE");
+                ini.Save();
             }
         }
 

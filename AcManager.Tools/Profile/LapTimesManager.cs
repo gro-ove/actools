@@ -271,7 +271,7 @@ namespace AcManager.Tools.Profile {
                     LapTimesChanged?.Invoke(this, EventArgs.Empty);
                 }
 
-                Logging.Debug($"{s.Elapsed.TotalMilliseconds:F2} ms");
+                Logging.Write($"{s.Elapsed.TotalMilliseconds:F2} ms");
             } finally {
                 _updateTask = null;
             }

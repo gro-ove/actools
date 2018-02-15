@@ -29,7 +29,7 @@ namespace AcManager.Tools.Objects {
                         await CreateFtpClient().DirectoryListSimpleAsync(FtpDirectory);
                         c?.ThrowIfCancellationRequested();
                         Toast.Show("Verified", "FTP parameters verified");
-                    } catch (Exception e) when (e.IsCanceled()) {
+                    } catch (Exception e) when (e.IsCancelled()) {
                         // Do nothing
                     } catch (WebException e) when (e.Response is FtpWebResponse ftp && ftp.StatusCode == FtpStatusCode.NotLoggedIn) {
                         if (c?.IsCancellationRequested == true) return;
@@ -113,7 +113,7 @@ namespace AcManager.Tools.Objects {
                             // Already exists? Isn’t FTP lovely…
                         }
                     }
-                } catch (Exception e) when (e.IsCanceled()) {
+                } catch (Exception e) when (e.IsCancelled()) {
                     // Do nothing
                 } catch (WebException e) when (e.Response is FtpWebResponse ftp && ftp.StatusCode == FtpStatusCode.NotLoggedIn) {
                     if (c?.IsCancellationRequested == true) return;

@@ -13,6 +13,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Wrapper;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using SlimDX.Windows;
@@ -243,6 +244,8 @@ namespace AcManager.CustomShowroom {
         }
 
         private void UpdatePosition(double w, double h, bool force) {
+            if (!AppearanceManager.Current.ManageWindowsLocation) return;
+
             if (_verbose) {
                 Logging.Here();
             }
@@ -269,16 +272,16 @@ namespace AcManager.CustomShowroom {
                 return;
             }
 
-            if (location.X + _child.Width > screen.Bounds.Right) {
-                location.X = screen.Bounds.Right - _child.Width;
+            if (location.X + _child.ActualWidth > screen.WorkingArea.Right) {
+                location.X = screen.WorkingArea.Right - _child.ActualWidth;
             }
 
-            if (location.Y + _child.Height > screen.Bounds.Bottom) {
-                location.Y = screen.Bounds.Bottom - _child.Height;
+            if (location.Y + _child.ActualHeight > screen.WorkingArea.Bottom) {
+                location.Y = screen.WorkingArea.Bottom - _child.ActualHeight;
             }
 
-            if (location.X < screen.Bounds.Left) location.X = screen.Bounds.Left;
-            if (location.Y < screen.Bounds.Top) location.Y = screen.Bounds.Top;
+            if (location.X < screen.WorkingArea.Left) location.X = screen.WorkingArea.Left;
+            if (location.Y < screen.WorkingArea.Top) location.Y = screen.WorkingArea.Top;
 
             if (_verbose) {
                 Logging.Debug($"Set: {location.X}, {location.Y}");

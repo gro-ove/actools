@@ -15,6 +15,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;

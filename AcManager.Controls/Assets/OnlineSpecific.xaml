@@ -185,7 +185,7 @@
     <MenuItem Command="{Binding JoinCommand}">
       <MenuItem.Header>
         <!-- TODO: fallback value? -->
-        <TextBlock Text="{Binding CarsView.CurrentItem.CarObject, FallbackValue='?', StringFormat={x:Static c:ControlsStrings.Online_JoinUsing}}" />
+        <TextBlock Text="{Binding SelectedCarEntry.CarObject, FallbackValue='?', StringFormat={x:Static c:ControlsStrings.Online_JoinUsing}}" />
       </MenuItem.Header>
     </MenuItem>
     <!-- TODO: rework this -->
@@ -196,7 +196,8 @@
   <DataTemplate x:Key="SimpleListItem" DataType="{x:Type t:ServerEntry}">
     <Grid ContextMenu="{StaticResource ListItemContextMenu}">
       <Grid.CacheMode>
-        <BitmapCache EnableClearType="True" />
+        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
+            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
       </Grid.CacheMode>
 
       <Grid.ColumnDefinitions>
@@ -251,7 +252,8 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="CacheMode">
       <Setter.Value>
-        <BitmapCache EnableClearType="True" RenderAtScale="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
+            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">

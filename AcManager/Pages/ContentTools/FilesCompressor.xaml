@@ -10,7 +10,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <ContextMenu x:Key="FileContextMenu" d:DataContext="{d:DesignInstance tools:FilesCompressor+FileToCompress}">
-        <MenuItem Header="View in explorer" Command="{Binding ViewInExplorerCommand}" />
+        <MenuItem Header="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
       </ContextMenu>
     </ResourceDictionary>
   </FrameworkElement.Resources>

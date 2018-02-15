@@ -16,6 +16,7 @@ using AcManager.Internal;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
+using AcTools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -31,7 +32,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [Localizable(false)]
-        private static string Branch => AppKeyHolder.IsAllRight && SettingsHolder.Common.UpdateToNontestedVersions ? "latest" : "tested";
+        private static string Branch => InternalUtils.IsAllRight && SettingsHolder.Common.UpdateToNontestedVersions ? "latest" : "tested";
 
         public static AppUpdater Instance { get; private set; }
 

@@ -17,7 +17,7 @@ namespace FirstFloor.ModernUI.Localizable {
 
         #region English
         private static readonly Regex EnTitleCaseRegex =
-                new Regex(@"^[a-z]|\b(?!(?:a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)\b)[a-z]\w+|\b[a-z]\w*$",
+                new Regex(@"(?<!['’])(?:^[a-z]|\b(?!(?:a|an|and|as|at|but|by|en|for|if|in|of|on|or|the|to|v[.]?|via|vs)\b)[a-z]\w+|\b[a-z]\w*$)",
                         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static string En(string s, CultureInfo culture) {
@@ -100,12 +100,12 @@ namespace FirstFloor.ModernUI.Localizable {
             return FrWordsRegex.Replace(s, m => {
                 ++i;
                 var w = m.Value.ToLower(culture);
-                
+
                 if (w.Contains('-')) {
                     var p = w.Split(new[] { '-' }, 2);
                     return CapitalizeFirst(p[0], culture) + '-' + FrCapitalizeFirstIfNeeded(p[1], culture);
                 }
-                
+
                 var isComposedWord = w.Contains('\'');
                 if (isComposedWord) {
                     w = FrCapitalizeWithQuote(w, culture);

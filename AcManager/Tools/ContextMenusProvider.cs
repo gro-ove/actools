@@ -64,7 +64,7 @@ namespace AcManager.Tools {
                 menu.AddItem("Open track in Quick Drive", () => QuickDrive.Show(track: track));
             }
 
-            menu.AddItem("Open track in Content tab", () => TracksListPage.Show(track), isEnabled: AppKeyHolder.IsAllRight)
+            menu.AddItem("Open track in Content tab", () => TracksListPage.Show(track), isEnabled: InternalUtils.IsAllRight)
                 .AddItem(AppStrings.Toolbar_Folder, track.ViewInExplorer);
         }
 

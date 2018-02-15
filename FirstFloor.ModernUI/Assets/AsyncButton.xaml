@@ -64,7 +64,7 @@
                     </c:Cell.RenderTransform>
                     <Border Margin="0 -20 0 20">
                       <TextBlock Text="{Binding Progress.Message, RelativeSource={RelativeSource TemplatedParent}}" Foreground="{DynamicResource ButtonText}"
-                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" TextTrimming="CharacterEllipsis" />
                     </Border>
                     <ContentPresenter x:Name="Presenter" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                         VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />

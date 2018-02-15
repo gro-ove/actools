@@ -31,7 +31,8 @@
               <DockPanel>
                 <mui:ReferenceSwitch Value="{TemplateBinding CarId}" DockPanel.Dock="Top" Height="80">
                   <mui:ReferenceSwitch.NonNull>
-                    <Border DataContext="{TemplateBinding CarId, Converter={StaticResource CarIdToCarWrapperConverter}}">
+                    <Border DataContext="{TemplateBinding CarId, Converter={StaticResource CarIdToCarWrapperConverter}}"
+                        d:DataContext="{d:DesignInstance t:AcItemWrapper}">
                       <mui:Cell DataContext="{Binding Value}" Background="Transparent" d:DataContext="{d:DesignInstance t:CarObject}"
                           ac:ToolTips.Car="{Binding}" ac:ContextMenus.Car="{Binding}" mui:Draggable.Data="{Binding}">
                         <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" Margin="0 8 0 0" />
@@ -44,7 +45,8 @@
                   <mui:ReferenceSwitch.Null>
                     <mui:ReferenceSwitch Value="{TemplateBinding TrackId}">
                       <mui:ReferenceSwitch.NonNull>
-                        <Border DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}">
+                        <Border DataContext="{TemplateBinding TrackId, Converter={StaticResource TrackIdToTrackWrapperConverter}}"
+                            d:DataContext="{d:DesignInstance t:AcItemWrapper}">
                           <mui:Cell DataContext="{Binding Value}" Background="Transparent" d:DataContext="{d:DesignInstance t:TrackObjectBase}"
                               ac:ToolTips.Track="{Binding}" ac:ContextMenus.Track="{Binding}" mui:Draggable.Data="{Binding}">
                             <mui:BetterImage Filename="{Binding OutlineImage}" Margin="0 20 0 0" Effect="{DynamicResource TrackOutlineAloneEffect}" />

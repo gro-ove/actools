@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 using AcManager.Internal;
 using AcManager.Tools.ContentInstallation.Entries;
@@ -401,11 +402,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public ImageSource FileIcon {
             get => _fileIcon;
-            set {
-                if (Equals(value, _fileIcon)) return;
-                _fileIcon = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _fileIcon);
         }
         #endregion
 
@@ -415,11 +412,7 @@ namespace AcManager.Tools.ContentInstallation {
         [NotNull]
         public string DisplayName {
             get => _displayName;
-            set {
-                if (Equals(value, _displayName)) return;
-                _displayName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayName);
         }
 
         private string _informationUrl;
@@ -430,11 +423,7 @@ namespace AcManager.Tools.ContentInstallation {
         [CanBeNull]
         public string InformationUrl {
             get => _informationUrl;
-            set {
-                if (Equals(value, _informationUrl)) return;
-                _informationUrl = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _informationUrl);
         }
 
         private string _fileName;
@@ -467,11 +456,7 @@ namespace AcManager.Tools.ContentInstallation {
         [CanBeNull]
         public string Version {
             get => _version;
-            set {
-                if (Equals(value, _version)) return;
-                _version = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _version);
         }
         #endregion
 
@@ -484,56 +469,36 @@ namespace AcManager.Tools.ContentInstallation {
         [CanBeNull]
         public string LocalFilename {
             get => _localFilename;
-            set {
-                if (Equals(value, _localFilename)) return;
-                _localFilename = value;
-                OnPropertyChanged();
+            set => Apply(value, ref _localFilename, () => {
                 _viewInExplorerCommand?.RaiseCanExecuteChanged();
                 DisplayName = Path.GetFileName(value) ?? DisplayName;
-            }
+            });
         }
 
         private bool _canPause;
 
         public bool CanPause {
             get => _canPause;
-            set {
-                if (Equals(value, _canPause)) return;
-                _canPause = value;
-                OnPropertyChanged();
-                if (!value) {
-                    IsPaused = false;
-                }
-            }
+            set => Apply(value, ref _canPause, () => IsPaused = value && IsPaused);
         }
 
         private bool _isPaused;
 
         public bool IsPaused {
             get => _isPaused;
-            set {
-                if (Equals(value, _isPaused)) return;
-                _isPaused = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _sevenZipInstallatorWouldNotHurt;
-
-        public bool SevenZipInstallatorWouldNotHurt {
-            get => _sevenZipInstallatorWouldNotHurt;
-            set {
-                if (Equals(value, _sevenZipInstallatorWouldNotHurt)) return;
-                _sevenZipInstallatorWouldNotHurt = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isPaused);
         }
         #endregion
 
         private static readonly Regex ExecutablesRegex = new Regex(@"\.(?:exe|bat|cmd|py|vbs|js|ps1|sh|zsh|bash|pl|hta)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
-        private static bool _sevenZipWarning;
+        private DelegateCommand _copySourceToClipboardCommand;
+
+        public DelegateCommand CopySourceToClipboardCommand => _copySourceToClipboardCommand ?? (_copySourceToClipboardCommand = new DelegateCommand(() => {
+            Clipboard.SetText(Source);
+            Toast.Show("Copied to clipboard", "Source reference is copied to clipboard");
+        }));
 
         private DelegateCommand _viewInExplorerCommand;
 
@@ -555,10 +520,12 @@ namespace AcManager.Tools.ContentInstallation {
 
         private AsyncCommand _retryCommand;
 
-        public AsyncCommand RetryCommand => _retryCommand ?? (_retryCommand = new AsyncCommand(() => {
+        public AsyncCommand RetryCommand => _retryCommand ?? (_retryCommand = new AsyncCommand(async () => {
             RestartFrom = LocalFilename ?? Source;
-            return DeleteDelayCommand.ExecuteAsync();
-        }));
+            IsDeleting = true;
+            await Task.Delay(StateChangeDelay);
+            IsDeleted = true;
+        }, () => (State == ContentInstallationEntryState.WaitingForConfirmation || State == ContentInstallationEntryState.Finished) && !IsDeleted));
 
         private static string GetFileNameFromUrl(string url) {
             var fileName = FileUtils.EnsureFileNameIsValid(
@@ -648,7 +615,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     cancellation.Token);
                             CanPause = false;
                             if (CheckCancellation()) return false;
-                        } catch (Exception e) when (e.IsCanceled()) {
+                        } catch (Exception e) when (e.IsCancelled()) {
                             CheckCancellation(true);
                             return false;
                         } catch (WebException e) when (e.Response is HttpWebResponse) {
@@ -692,23 +659,18 @@ namespace AcManager.Tools.ContentInstallation {
                         using (var installator = await FromFile(localFilename, InstallationParams, cancellation.Token)) {
                             if (CheckCancellation()) return false;
 
-                            if (installator is SharpCompressContentInstallator || installator is ZipContentInstallator
-                                    || installator is SevenZipContentInstallator /* to check for 7-Zip updates */) {
-                                SevenZipInstallatorWouldNotHurt = true;
-                            }
-
                             if (installator.IsNotSupported) {
                                 FailedMessage = $"Not supported: {installator.NotSupportedMessage.ToSentenceMember()}";
 
-                                if (!_sevenZipWarning && installator is SharpCompressContentInstallator &&
-                                        PluginsManager.Instance.GetById(SevenZipContentInstallator.PluginId)?.IsInstalled != true) {
+                                /*if (!_sevenZipWarning && installator is SharpCompressContentInstallator &&
+                                        PluginsManager.Instance.GetById(KnownPlugins.SevenZip)?.IsInstalled != true) {
                                     Toast.Show("Try 7-Zip",
                                             "Have some unusual archive you want to install content from? Try 7-Zip plugin, you can find it in Settings",
                                             ContentInstallationManager.PluginsNavigator == null ? (Action)null : () => {
                                                 ContentInstallationManager.PluginsNavigator?.ShowPluginsList();
                                             });
                                     _sevenZipWarning = true;
-                                }
+                                }*/
 
                                 return false;
                             }
@@ -835,7 +797,7 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         return true;
-                    } catch (Exception e) when (e.IsCanceled()) {
+                    } catch (Exception e) when (e.IsCancelled()) {
                         Cancel();
                         return false;
                     } catch (FileNotFoundException e) {
@@ -849,7 +811,7 @@ namespace AcManager.Tools.ContentInstallation {
                         return false;
                     }
                 }
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 Cancel();
                 return false;
             } finally {
@@ -1047,18 +1009,22 @@ namespace AcManager.Tools.ContentInstallation {
         #region Creating installator
         private static Task<IAdditionalContentInstallator> FromFile(string filename, ContentInstallationParams installationParams,
                 CancellationToken cancellation) {
+            Logging.Write(filename);
+
             if (FileUtils.IsDirectory(filename)) {
                 return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
             }
 
-            if (/*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(SevenZipContentInstallator.PluginId)) {
+            if (/*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
                 try {
+                    Logging.Write("7-Zip plugin is available");
                     return SevenZipContentInstallator.Create(filename, installationParams, cancellation);
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t use 7-Zip to unpack", e);
                 }
             }
 
+            Logging.Warning("7-Zip plugin is not available");
             return SharpCompressContentInstallator.Create(filename, installationParams, cancellation);
         }
         #endregion

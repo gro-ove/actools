@@ -5,6 +5,11 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Load windows’ location and size, enabled by default. Example: --windows-location-management=no.
+        /// </summary>
+        WindowsLocationManagement,
+
+        /// <summary>
         /// Log everything about the way showroom tools or any other attached windows work.
         /// Example: --showroom-ui-verbose.
         /// </summary>

@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-    xmlns:internal="http://acstuff.ru/app/internal" mc:Ignorable="d" FocusVisualStyle="{x:Null}">
+    xmlns:in="http://acstuff.ru/app/internal" mc:Ignorable="d" FocusVisualStyle="{x:Null}">
   <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/Settings/SettingsGeneral.xaml" SaveKey="__SettingsPage.SelectedPage"
       Style="{StaticResource ContentRoot}">
     <mui:ModernTab.Links>
@@ -10,8 +10,7 @@
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Content}" Source="/Pages/Settings/SettingsContent.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Toolbar_CustomShowroom}" Source="/Pages/Settings/SettingsCustomShowroom.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Drive}" Source="/Pages/Settings/SettingsDrive.xaml" />
-      <mui:Link DisplayName="Generic mods" Source="/Pages/Settings/SettingsGenericMods.xaml" IsNew="True"
-          IsEnabled="{x:Static internal:AppKeyHolder.IsAllRight}" />
+      <mui:Link DisplayName="Generic mods" Source="/Pages/Settings/SettingsGenericMods.xaml" IsEnabled="{x:Static in:InternalUtils.IsAllRight}" />
       <mui:Link DisplayName="Integrated" Source="/Pages/Settings/SettingsIntegrated.xaml" />
       <mui:Link DisplayName="Lap times" Source="/Pages/Settings/SettingsLapTimes.xaml" />
       <!--<mui:Link DisplayName="{x:Static g:AppStrings.Main_Live}" Source="/Pages/Settings/SettingsLive.xaml" />-->

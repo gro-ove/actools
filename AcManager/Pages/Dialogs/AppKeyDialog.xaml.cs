@@ -52,7 +52,7 @@ namespace AcManager.Pages.Dialogs {
 
         public class AppKeyDialogViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
             public AppKeyDialogViewModel() {
-                var key = AppKeyHolder.Key;
+                var key = InternalUtils.Key;
                 if (string.IsNullOrWhiteSpace(key)) {
                     key = ValuesStorage.GetEncrypted<string>(AppKeyRevokedKey);
                     KeyRevoked = key != null;
@@ -201,7 +201,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 ValuesStorage.Remove(AppKeyRevokedKey);
-                AppKeyHolder.Instance.SetKey(Value);
+                InternalUtils.SetKey(Value);
 
                 ShowMessage(AppStrings.AppKey_PreRestart_Message, AppStrings.AppKey_PreRestart_Title, MessageBoxButton.OK);
                 WindowsHelper.RestartCurrentApplication();

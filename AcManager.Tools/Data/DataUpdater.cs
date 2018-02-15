@@ -39,6 +39,12 @@ namespace AcManager.Tools.Data {
 
         [CanBeNull]
         private static string GetInstalledVersion() {
+            var onlineFiltersFilename = FilesStorage.Instance.Combine(FilesStorage.DataDirName, ContentCategory.OnlineFilters, @"Quick Filters.json");
+            if (!File.Exists(onlineFiltersFilename)) {
+                Logging.Warning("Quick Filters are missing");
+                return @"0";
+            }
+
             var versionFilename = FilesStorage.Instance.Combine(FilesStorage.DataDirName, @"Manifest.json");
 
             try {
@@ -52,6 +58,8 @@ namespace AcManager.Tools.Data {
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
             InstalledVersion = GetInstalledVersion();
             var latest = await GetLatestVersion();
+
+            Logging.Write($"Installed: {InstalledVersion}, latest: {latest}");
             return latest != null && (InstalledVersion == null || latest.IsVersionNewerThan(InstalledVersion)) && await LoadAndInstall();
         }
 
@@ -95,14 +103,16 @@ namespace AcManager.Tools.Data {
                 await Task.Run(() => {
                     var location = FilesStorage.Instance.Combine(FilesStorage.DataDirName);
 
-                    for (var i = 0; i < 10; i++) {
+                    for (var i = 10; i >= 0; i--) {
                         try {
-                            Directory.Delete(location, true);
+                            CleanUp(location);
                             break;
                         } catch (IOException e) {
+                            if (i == 0) throw;
                             Logging.Warning(e.Message);
                             Thread.Sleep(30);
                         } catch (UnauthorizedAccessException e) {
+                            if (i == 0) throw;
                             Logging.Warning(e.Message);
                             Thread.Sleep(30);
                         }
@@ -125,6 +135,12 @@ namespace AcManager.Tools.Data {
             }
 
             return false;
+
+            void CleanUp(string location) {
+                if (Directory.Exists(location)) {
+                    Directory.Delete(location, true);
+                }
+            }
         }
 
         protected override void OnUpdated() {

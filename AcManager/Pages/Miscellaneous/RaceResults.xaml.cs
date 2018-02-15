@@ -404,7 +404,7 @@ namespace AcManager.Pages.Miscellaneous {
                         link += $@"&password={OnlineServer.EncryptSharedPassword($@"{ip}:{port}", password)}";
                     }
 
-                    ArgumentsHandler.ProcessArguments(new[] { link }).Forget();
+                    ArgumentsHandler.ProcessArguments(new[] { link }, true).Forget();
                 }
             }, () => RaceIni["REMOTE"].GetBool("ACTIVE", false)));
 

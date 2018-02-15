@@ -9,21 +9,6 @@ using System.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager {
-    internal class FlagDefaultValueAttribute : Attribute {
-        public string Value { get; }
-
-        public FlagDefaultValueAttribute([Localizable(false)] string value) {
-            Value = value;
-        }
-
-        [CanBeNull]
-        public static string GetValue(Enum enumVal) {
-            return enumVal.GetType().GetMember(enumVal.ToString())[0]
-                    .GetCustomAttributes(typeof(FlagDefaultValueAttribute), false)
-                    .OfType<FlagDefaultValueAttribute>().FirstOrDefault()?.Value;
-        }
-    }
-
     /// <summary>
     /// Can be safely used before references are loaded.
     /// </summary>
@@ -72,9 +57,8 @@ namespace AcManager {
         }
 
         internal static AppFlag? ArgStringToFlag(string arg) {
-            AppFlag result;
             var s = string.Join("", arg.Split('-').Where(x => x.Length > 0).Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")));
-            return Enum.TryParse(s, out result) ? result : (AppFlag?)null;
+            return Enum.TryParse(s, out AppFlag result) ? result : (AppFlag?)null;
         }
 
         public static bool Has(AppFlag flag) {
@@ -142,8 +126,7 @@ namespace AcManager {
                 return long.TryParse(size, NumberStyles.Any, CultureInfo.InvariantCulture, out bytes);
             }
 
-            double val;
-            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out val)) {
+            if (!double.TryParse(size.Substring(0, split).Trim(), NumberStyles.Any, CultureInfo.InvariantCulture, out var val)) {
                 bytes = 0;
                 return false;
             }

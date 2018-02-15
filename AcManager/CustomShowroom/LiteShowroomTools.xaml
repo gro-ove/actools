@@ -9,6 +9,7 @@
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/UserPresets.xaml" />
         <mui:SharedResourceDictionary Source="LiteShowroomSettings.xaml" />
         <mui:SharedResourceDictionary Source="LiteShowroomCar.xaml" />
@@ -214,23 +215,37 @@
                   <mui:BbCodeBlock BbCode="Now, with updated Paint Shop, CM will automatically download and update rules for various cars. It might take some time." />
                 </c:MessageBlock>-->
 
-                <mui:AsyncButton Margin="0 20 0 0" Command="{Binding PaintShopCommand}">
-                  <DockPanel>
-                    <mui:BooleanSwitch Value="{Binding PaintShopSupported.Value}" Margin="0 0 6 -1" VerticalAlignment="Center" Width="12" Height="12">
-                      <mui:BooleanSwitch.True>
-                        <Path Data="{StaticResource BrushIconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" />
-                      </mui:BooleanSwitch.True>
-                      <mui:BooleanSwitch.False>
-                        <Path Data="{StaticResource BrushIconData}" Stretch="Uniform"
-                            Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
-                      </mui:BooleanSwitch.False>
-                    </mui:BooleanSwitch>
-                    <TextBlock Text="Paint Shop" />
-                  </DockPanel>
-                </mui:AsyncButton>
 
-                <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
-                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0">
+                  <StackPanel
+                      Visibility="{Binding PaintShopRequirement.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <mui:Switch Value="{Binding PaintShopRequirement.ListView.Count}">
+                      <TextBlock mui:Switch.When="0" Text="Magick.NET plugin is required for Paint Shop to work." Style="{StaticResource Label}"
+                          Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
+                      <mui:SpacingStackPanel Spacing="4">
+                        <TextBlock Text="Plugin is required for Paint Shop to work:" Style="{StaticResource Label}" Foreground="{DynamicResource Error}"
+                            TextWrapping="Wrap" />
+                        <ItemsControl ItemsSource="{Binding PaintShopRequirement.ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}"
+                            Margin="0 0 0 -12" />
+                      </mui:SpacingStackPanel>
+                    </mui:Switch>
+                  </StackPanel>
+
+                  <mui:AsyncButton Command="{Binding PaintShopCommand}" IsEnabled="{Binding PaintShopRequirement.IsReady}">
+                    <DockPanel>
+                      <mui:BooleanSwitch Value="{Binding PaintShopSupported.Value}" Margin="0 0 6 -1" VerticalAlignment="Center" Width="12" Height="12">
+                        <mui:BooleanSwitch.True>
+                          <Path Data="{StaticResource BrushIconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" />
+                        </mui:BooleanSwitch.True>
+                        <mui:BooleanSwitch.False>
+                          <Path Data="{StaticResource BrushIconData}" Stretch="Uniform"
+                              Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                        </mui:BooleanSwitch.False>
+                      </mui:BooleanSwitch>
+                      <TextBlock Text="Paint Shop" />
+                    </DockPanel>
+                  </mui:AsyncButton>
+                </mui:SpacingStackPanel>
 
                 <!--<mui:ReferenceSwitch Value="{Binding PaintShopRulesLoader}">
                   <StackPanel Margin="0 4 0 0">
@@ -238,12 +253,12 @@
                   </StackPanel>
                 </mui:ReferenceSwitch>-->
 
-                <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                  <TextBlock Text="{x:Static c:ControlsStrings.Common_DevTools}" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
-                  <Button Margin="0 12 0 0" Command="{Binding UnpackKn5Command}">
-                    <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
-                  </Button>
-                </StackPanel>
+                <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
+                <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
+                    Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
+                <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}">
+                  <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
+                </Button>
               </StackPanel>
             </ScrollViewer>
 
@@ -269,6 +284,7 @@
                     <ItemsControl.ItemTemplate>
                       <DataTemplate>
                         <DockPanel Margin="8 0 0 0" Style="{StaticResource DockPanel}">
+                          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                           <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding Data.ViewTextureCommand, Source={StaticResource DataContextProxy}}"
                               CommandParameter="{Binding}" Height="20" Margin="4 0 0 0" Padding="4 0" />
                           <Label VerticalAlignment="Center" Width="90">

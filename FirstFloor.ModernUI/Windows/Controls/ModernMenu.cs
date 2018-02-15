@@ -164,6 +164,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public LinkGroup SelectedLinkGroup => (LinkGroup)GetValue(SelectedLinkGroupProperty);
 
+        [CanBeNull]
+        public LinkGroupFilterable SelectedLinkGroupFilterable => SelectedLinkGroup as LinkGroupFilterable;
+
         private static void OnSelectedLinkGroupChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
             ((ModernMenu)o).OnSelectedLinkGroupChanged((LinkGroup)e.OldValue, (LinkGroup)e.NewValue);
         }

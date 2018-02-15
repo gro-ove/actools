@@ -10,9 +10,11 @@ using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Path = System.IO.Path;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationManager : NotifyPropertyChanged {
@@ -55,6 +57,7 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
+            _removeCompletedCommand?.RaiseCanExecuteChanged();
             Save();
         }
 
@@ -70,9 +73,12 @@ namespace AcManager.Tools.ContentInstallation {
                 case nameof(ContentInstallationEntry.IsCancelling):
                 case nameof(ContentInstallationEntry.IsPaused):
                 case nameof(ContentInstallationEntry.LocalFilename):
-                case nameof(ContentInstallationEntry.State):
                 case nameof(ContentInstallationEntry.Version):
                     Save();
+                    break;
+                case nameof(ContentInstallationEntry.State):
+                    Save();
+                    _removeCompletedCommand?.RaiseCanExecuteChanged();
                     break;
                 case nameof(ContentInstallationEntry.IsDeleted):
                     // No reason to save here, list will be changed as well
@@ -83,12 +89,20 @@ namespace AcManager.Tools.ContentInstallation {
                 case nameof(ContentInstallationEntry.RestartFrom):
                     // No reason to save here, list will be changed as well
                     if (sender is ContentInstallationEntry restartedEntry) {
+                        _taskCache.ForceRemove<bool>(restartedEntry.RestartFrom);
                         InstallAsync(restartedEntry.RestartFrom, restartedEntry.InstallationParams);
-                        DownloadList.Remove(restartedEntry);
                     }
                     break;
             }
         }
+
+        private DelegateCommand _removeCompletedCommand;
+
+        public DelegateCommand RemoveCompletedCommand => _removeCompletedCommand ?? (_removeCompletedCommand = new DelegateCommand(() => {
+            foreach (var finished in DownloadList.Where(x => x.State == ContentInstallationEntryState.Finished).ToList()) {
+                DownloadList.Remove(finished);
+            }
+        }, () => DownloadList.Any(x => x.State == ContentInstallationEntryState.Finished)));
 
         public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
 
@@ -141,14 +155,14 @@ namespace AcManager.Tools.ContentInstallation {
 
         private readonly TaskCache _taskCache = new TaskCache();
 
-        public Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry) {
+        private Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry) {
             if (entry == null) throw new ArgumentNullException(nameof(entry));
 
-            Logging.Debug(entry.Source);
-            return _taskCache.Get(() => ActionExtension.InvokeInMainThread(() => {
+            return _taskCache.Get(() => ActionExtension.InvokeInMainThread(async () => {
+                await Task.Yield();
                 TaskAdded?.Invoke(this, EventArgs.Empty);
                 DownloadList.Add(entry);
-                return entry.RunAsync();
+                return await entry.RunAsync();
             }), entry.Source);
         }
 
@@ -181,11 +195,12 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        public static bool IsAdditionalContent(string filename) {
+        public static bool IsAdditionalContent(string filename, bool fullPathsOnly) {
             // TODO: or PP-filter, or …?
             try {
-                if (filename.StartsWith("--") || filename.Contains("://")) return false;
+                if (filename.StartsWith(@"--") || filename.Contains(@"://")) return false;
                 if (!FileUtils.ArePathsEqual(FileUtils.EnsureFilenameIsValid(filename), filename)) return false;
+                if (fullPathsOnly && !Path.IsPathRooted(filename)) return false;
                 return FileUtils.Exists(filename) && FileUtils.IsDirectory(filename) ||
                         !filename.EndsWith(@".kn5") && !filename.EndsWith(@".acreplay") && !FileUtils.Affects(AcPaths.GetReplaysDirectory(), filename);
             } catch (Exception e) {

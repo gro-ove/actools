@@ -138,7 +138,7 @@ namespace AcManager.Pages.Settings {
                 element = refElement;
             }
 
-            if (LimitedService.GetLimited(element) && !AppKeyHolder.IsAllRight) {
+            if (LimitedService.GetLimited(element) && !InternalUtils.IsAllRight) {
                 return false;
             }
 
@@ -185,7 +185,7 @@ namespace AcManager.Pages.Settings {
                 Limited = GetLimited(x.Panel),
                 x.NamespaceType,
                 x.Panel
-            }).Where(x => x.Category != null && (!x.Limited || AppKeyHolder.IsAllRight)).ToList();
+            }).Where(x => x.Category != null && (!x.Limited || InternalUtils.IsAllRight)).ToList();
             Logging.Debug($"Finding panels: {s.Elapsed.TotalMilliseconds:F1} ms ({panels.Count} panels)");
 
             s.Restart();

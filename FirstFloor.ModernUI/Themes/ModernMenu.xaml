@@ -62,8 +62,9 @@
           <c:Cell MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInputEmpty}" Margin="0 0 12 0">
             <c:BetterTextBox x:Name="NameTextBox" Style="{StaticResource Borderless}" Text="{Binding DisplayName}" TextAlignment="Center" Margin="2"
                 Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center"
-                Tag="{Binding SelectedLinkGroup.FilterHint, RelativeSource={RelativeSource AncestorType=c:ModernMenu}}">
+                Tag="{Binding SelectedLinkGroupFilterable.FilterHint, RelativeSource={RelativeSource AncestorType=c:ModernMenu}}">
               <c:BetterTextBox.ToolTip>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <ToolTip DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
                     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                   <c:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value}" TextAlignment="Left" />
@@ -125,8 +126,9 @@
               </Button.Style>
             </Button>
 
-            <c:Cell Tag="{Binding SelectedLinkGroup.FilterHint, RelativeSource={RelativeSource AncestorType=c:ModernMenu}}">
+            <c:Cell Tag="{Binding SelectedLinkGroupFilterable.FilterHint, RelativeSource={RelativeSource AncestorType=c:ModernMenu}}">
               <FrameworkElement.ToolTip>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <ToolTip x:Name="ToolTip" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
                     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                   <c:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value}" />
@@ -174,8 +176,9 @@
                   <Setter Property="Margin" Value="0 0 12 0" />
                   <Setter Property="Template">
                     <Setter.Value>
-                      <ControlTemplate TargetType="ListBoxItem">
-                        <TextBlock DataContext="{TemplateBinding Content}" Text="{Binding DisplayName, Converter={StaticResource ToLowerConverter}}"
+                      <ControlTemplate TargetType="ListBoxItem" d:DataContext="{d:DesignInstance pr:Link}">
+                        <TextBlock DataContext="{TemplateBinding Content}" d:DataContext="{d:DesignInstance pr:Link}"
+                            Text="{Binding DisplayName, Converter={StaticResource ToLowerConverter}}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                             SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" Style="{StaticResource Title}" />
                         <ControlTemplate.Triggers>

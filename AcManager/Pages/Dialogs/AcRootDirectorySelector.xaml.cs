@@ -56,7 +56,7 @@ namespace AcManager.Pages.Dialogs {
             PluginsManager.Instance.UpdateIfObsolete().Forget();
         }
 
-        private void ProcessArguments(IEnumerable<string> arguments) {
+        private bool ProcessArguments(IEnumerable<string> arguments) {
             foreach (var message in arguments) {
                 var request = CustomUriRequest.TryParse(message);
                 if (request == null) continue;
@@ -64,9 +64,11 @@ namespace AcManager.Pages.Dialogs {
                 switch (request.Path) {
                     case "setsteamid":
                         Model.SetPacked(request.Params.Get(@"code"));
-                        break;
+                        return true;
                 }
             }
+
+            return false;
         }
 
         public class ViewModel : NotifyPropertyChanged, INotifyDataErrorInfo {
@@ -200,7 +202,7 @@ namespace AcManager.Pages.Dialogs {
                         if (!_cancellationTokenSource.IsCancellationRequested && packed.Code != null) {
                             SetPacked(packed.Code);
                         }
-                    } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+                    } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                         NonfatalError.Notify("Can’t get Steam ID", e);
                     }
                 }

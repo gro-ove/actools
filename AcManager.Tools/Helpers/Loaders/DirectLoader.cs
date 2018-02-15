@@ -327,7 +327,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 Logging.Write("Download finished");
                 return filename;
-            } catch (Exception e) when (e is WebException || e.IsCanceled()) {
+            } catch (Exception e) when (e is WebException || e.IsCancelled()) {
                 Logging.Write("Download is interrupted! Saving details to resume later…");
                 var download = filename == null ? null : new FileInfo(filename);
                 if (download?.Exists == true && filename.Length > 0) {

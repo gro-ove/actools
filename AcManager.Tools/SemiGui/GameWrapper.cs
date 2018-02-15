@@ -11,7 +11,6 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
-using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -216,9 +215,7 @@ namespace AcManager.Tools.SemiGui {
         private static IAcsStarter CreateStarter(Game.StartProperties properties) {
             var starter = AcsStarterFactory.Create();
 
-            if (SettingsHolder.Drive.PatchAcToDisableShadows
-                    // Loading value directly in case custom preset were applied, but VideoSettings aren’t updated yet
-                    && new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"].GetInt("SHADOW_MAP_SIZE", 2048) < 1) {
+            if (SettingsHolder.Drive.PatchAcToDisableShadows && AcShadowsPatcher.IsSupposedToWork()) {
                 properties.SetAdditional(new AcShadowsPatcher(starter));
             }
 
@@ -323,7 +320,7 @@ namespace AcManager.Tools.SemiGui {
                     }
 
                     return result;
-                } catch (Exception e) when (e.IsCanceled()) {
+                } catch (Exception e) when (e.IsCancelled()) {
                     // ui.OnError(new UserCancelledException());
                     ui.OnResult(null, null);
                     return null;

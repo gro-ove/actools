@@ -41,11 +41,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool IsChecked {
                 get => _isChecked;
-                set {
-                    if (Equals(value, _isChecked)) return;
-                    _isChecked = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isChecked);
             }
         }
 
@@ -60,11 +56,7 @@ namespace AcManager.Pages.Dialogs {
 
             public int IncludedCount {
                 get => _includedCount;
-                set {
-                    if (Equals(value, _includedCount)) return;
-                    _includedCount = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _includedCount);
             }
 
             public CommonTyres(string name, Action<string, bool> changeTyresStateCallback) {
@@ -101,38 +93,32 @@ namespace AcManager.Pages.Dialogs {
             public CarObject Car { get; }
             public List<CarTyres> Tyres { get; }
 
+            private bool _isExpanded;
+
+            public bool IsExpanded {
+                get => _isExpanded;
+                set => Apply(value, ref _isExpanded);
+            }
+
             private bool _isChecked;
 
             public bool IsChecked {
                 get => _isChecked;
-                set {
-                    if (Equals(value, _isChecked)) return;
-                    _isChecked = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isChecked);
             }
 
             private int _checkedCount;
 
             public int CheckedCount {
                 get => _checkedCount;
-                set {
-                    if (Equals(value, _checkedCount)) return;
-                    _checkedCount = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _checkedCount);
             }
 
             private string _displayChecked = ToolsStrings.Common_None;
 
             public string DisplayChecked {
                 get => _displayChecked;
-                set {
-                    if (string.IsNullOrEmpty(value)) value = ToolsStrings.Common_None;
-                    if (Equals(value, _displayChecked)) return;
-                    _displayChecked = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(string.IsNullOrEmpty(value) ? ToolsStrings.Common_None : value, ref _displayChecked);
             }
 
             private void UpdateChecked() {

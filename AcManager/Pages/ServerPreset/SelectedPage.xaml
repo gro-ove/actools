@@ -30,7 +30,7 @@
         <Separator />
         <Button Content="{x:Static g:AppStrings.Toolbar_Clone}" Command="{Binding CloneCommand}" ToolTip="Clone preset (Ctrl+Shift+D)" />
         <Separator />
-        <Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />
+        <!--<Button Content="{x:Static g:AppStrings.Common_Share}" Command="{Binding ShareCommand}" ToolTip="Share preset (Ctrl+Page Up)" IsEnabled="False" />-->
         <mui:ButtonWithComboBox Content="Pack" ButtonToolTip="Pack a new package for quick launching on a remote machine (Ctrl+P)"
             Command="{Binding PackCommand}" PreviewMouseDown="OnPackServerButtonMouseDown">
           <!--<MenuItem Header="Pack For Linux" ToolTip="Pack server for Linux machine" Command="{Binding PackCommand}" CommandParameter="linux" />-->

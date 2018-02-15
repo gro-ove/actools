@@ -61,7 +61,7 @@ namespace AcManager {
 
             _currentWindow = window;
             if (_currentWindow != null) {
-                EntryPoint.HandleSecondInstanceMessages(_currentWindow, HandleMessagesAsync);
+                EntryPoint.HandleSecondInstanceMessages(_currentWindow, HandleMessages);
                 _currentWindow.Unloaded += OnUnloaded;
             }
         }
@@ -76,13 +76,26 @@ namespace AcManager {
             return (_waiting ?? (_waiting = new TaskCompletionSource<bool>())).Task;
         }
 
-        private async void HandleMessagesAsync(IEnumerable<string> obj) {
-            if (AcRootDirectory.Instance?.IsReady != true) return;
+        private bool HandleMessages(IEnumerable<string> obj) {
+            if (AcRootDirectory.Instance?.IsReady != true) return false;
 
+            var list = obj.ToList();
+            Logging.Write(list.Select(x => $"“{x}”").JoinToReadableString());
+            HandleMessagesAsync(list).Ignore();
+            return true;
+        }
+
+        private Task _mainWindowTask;
+
+        private async Task HandleMessagesAsync(IEnumerable<string> obj) {
             _additionalProcessing++;
-            var v = await ArgumentsHandler.ProcessArguments(obj);
+            var v = await ArgumentsHandler.ProcessArguments(obj, false);
             _showMainWindow |= v != ArgumentsHandler.ShowMainWindow.No;
             Logging.Write("Show main window: " + _showMainWindow);
+
+            if (_showMainWindow && _mainWindowTask == null) {
+                _mainWindowTask = new MainWindow().ShowAndWaitAsync();
+            }
 
             if (--_additionalProcessing == 0) {
                 _waiting?.SetResult(true);
@@ -107,15 +120,10 @@ namespace AcManager {
                         return;
                     }
 
-                    if (!AppArguments.Values.Any() || await ArgumentsHandler.ProcessArguments(AppArguments.Values) != ArgumentsHandler.ShowMainWindow.No) {
+                    if (!AppArguments.Values.Any()
+                            || await ArgumentsHandler.ProcessArguments(AppArguments.Values, false) != ArgumentsHandler.ShowMainWindow.No) {
                         _showMainWindow = true;
                     }
-
-#if DEBUG
-                    // await CarGenerateTyresDialog.RunAsync(CarsManager.Instance.GetById("bmw_m5_e34"));
-                    /*await CarCreateTyresMachineDialog.RunAsync(CarsManager.Instance.GetById("bmw_m5_e34"));
-                    return;*/
-#endif
 
                     if (_additionalProcessing > 0) {
                         Logging.Write("Waiting for extra workers…");
@@ -125,7 +133,7 @@ namespace AcManager {
 
                     if (_showMainWindow) {
                         Logging.Write("Main window…");
-                        await new MainWindow().ShowAndWaitAsync();
+                        await (_mainWindowTask ?? new MainWindow().ShowAndWaitAsync());
                         Logging.Write("Main window closed");
                     }
 

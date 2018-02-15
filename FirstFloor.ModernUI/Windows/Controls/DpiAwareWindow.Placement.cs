@@ -14,8 +14,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public abstract partial class DpiAwareWindow {
         public static readonly DependencyProperty LocationAndSizeKeyProperty = DependencyProperty.Register(nameof(LocationAndSizeKey), typeof(string),
                 typeof(DpiAwareWindow), new PropertyMetadata(null, (o, e) => {
-                    ((DpiAwareWindow)o).Logging.Id = (string)e.NewValue;
-                    ((DpiAwareWindow)o)._locationAndSizeKey = (string)e.NewValue;
+                    var d = (DpiAwareWindow)o;
+                    d.Logging.Debug("Location and size key: " + e.NewValue);
+                    d._locationAndSizeKey = (string)e.NewValue;
                 }));
 
         private string _locationAndSizeKey;
@@ -45,35 +46,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         static DpiAwareWindow() {
             SimpleSerialization.Register(Placement.FromString);
+
+            Helpers.Logging.Warning("Initializing DPI-aware windows…");
+            Helpers.Logging.Warning($"Main screen: {Screen.PrimaryScreen}");
+            foreach (var screen in Screen.AllScreens) {
+                Helpers.Logging.Warning($"Found screen: {screen}");
+            }
         }
 
         private void SetDefaultLocation() {
-            Logging.Here();
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
+            }
+
             var screen = GetPreferredScreen(this);
+            Logging.Debug($"Screen to use: {screen.WorkingArea}");
+
             var originalState = WindowState;
             if (originalState != WindowState.Normal) {
+                Logging.Debug("Roll back to normal state to move properly");
                 WindowState = WindowState.Normal;
             }
 
-            if (ActualWidth > screen.Bounds.Width) {
+            if (ActualWidth > screen.WorkingArea.Width) {
                 // Do not change DPI-related original values, so, if window will be moved
                 // somewhere else, to a window with different DPI, original values will be
                 // restored
-                if (MinWidth > screen.Bounds.Width) {
+                if (MinWidth > screen.WorkingArea.Width) {
+                    Logging.Debug($"Clamp min width to: {screen.WorkingArea.Width}");
                     SaveOriginalLimitations();
-                    MinWidth = screen.Bounds.Width;
+                    MinWidth = screen.WorkingArea.Width;
                 }
 
-                Width = screen.Bounds.Width;
+                Logging.Debug($"Clamp width to: {screen.WorkingArea.Width}");
+                Width = screen.WorkingArea.Width;
             }
 
-            if (ActualHeight > screen.Bounds.Height) {
-                if (MinHeight > screen.Bounds.Height) {
+            if (ActualHeight > screen.WorkingArea.Height) {
+                if (MinHeight > screen.WorkingArea.Height) {
+                    Logging.Debug($"Clamp min height to: {screen.WorkingArea.Height}");
                     SaveOriginalLimitations();
-                    MinHeight = screen.Bounds.Height;
+                    MinHeight = screen.WorkingArea.Height;
                 }
 
-                Height = screen.Bounds.Height;
+                Logging.Debug($"Clamp height to: {screen.WorkingArea.Height}");
+                Height = screen.WorkingArea.Height;
             }
 
             UpdatePreferredFullscreenMode(screen, originalState != WindowState.Normal, true);
@@ -101,11 +119,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _locationAndSizeInitialized;
 
         private void LoadLocationAndSize() {
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
+            }
+
+            Logging.Debug($"LS init-ed: {_locationAndSizeInitialized}, busy: {_locationAndSizeBusy.Is}");
+
             _locationAndSizeInitialized = true;
             _locationAndSizeBusy.DoDelayAfterwards(() => {
-                Logging.Here();
-
                 if (LocationAndSizeKey == null) {
+                    Logging.Debug("LS key not set, setting default location…");
+                    SetDefaultLocation();
+                    return;
+                }
+
+                if (AppearanceManager.Current.PreferFullscreenMode && ConsiderPreferredFullscreen) {
+                    Logging.Debug("Preferred fullscreen, setting default location…");
                     SetDefaultLocation();
                     return;
                 }
@@ -133,52 +163,67 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         placement = oldPlacement.As<Placement>();
                     }
 
-                    if (AppearanceManager.Current.PreferFullscreenMode && ConsiderPreferredFullscreen
-                            || placement == null || placement.Width <= 0 || placement.Height <= 0) {
+                    if (placement == null || placement.Width <= 0 || placement.Height <= 0) {
+                        Logging.Debug($"No loaded LS to use: {placement?.ToString() ?? @"nothing"}");
                         SetDefaultLocation();
                     } else {
+                        Logging.Debug($"Loaded LS: {placement}");
+
                         WindowState = WindowState.Normal;
-                        var savedScreen = Screen.FromPoint(new System.Drawing.Point(
-                                placement.Left + placement.Width / 2, placement.Top + placement.Height / 2));
+                        var savedScreen = Screen.FromPoint(new System.Drawing.Point(placement.Left + 10, placement.Top + 10));
                         var forcedScreen = GetForcedScreen(this);
-                        Logging.Warning($"Applying window scale: saved screen={savedScreen.Bounds}, active screen={forcedScreen?.Bounds}…");
-                        if (forcedScreen != null && savedScreen.Bounds != forcedScreen.Bounds) {
+                        Logging.Debug($"Saved screen: {savedScreen.WorkingArea}, forced screen: {forcedScreen?.WorkingArea.ToString() ?? @"none"}…");
+
+                        if (forcedScreen != null && savedScreen.WorkingArea != forcedScreen.WorkingArea) {
+                            Logging.Debug("Saved screen doesn’t match forced one, switching to forced by setting default location…");
                             UpdateLimitations(forcedScreen, Math.Max(placement.ScaleX, 0.2), Math.Max(placement.ScaleY, 0.2));
                             SetDefaultLocation();
                         } else {
+                            Logging.Debug("Saved is the same as forced, loading location and size…");
                             UpdateLimitations(savedScreen, Math.Max(placement.ScaleX, 0.2), Math.Max(placement.ScaleY, 0.2));
 
                             Left = placement.Left;
                             Top = placement.Top;
+                            Logging.Debug($"Left and top values are set: {Left}, {Top}");
 
                             if (MinWidth > savedScreen.WorkingArea.Width) {
+                                Logging.Debug($"Clamp min width to: {savedScreen.WorkingArea.Width}");
+                                SaveOriginalLimitations();
                                 MinWidth = savedScreen.WorkingArea.Width;
                             }
 
                             if (MinHeight > savedScreen.WorkingArea.Height) {
+                                Logging.Debug($"Clamp min height to: {savedScreen.WorkingArea.Height}");
+                                SaveOriginalLimitations();
                                 MinHeight = savedScreen.WorkingArea.Height;
                             }
 
                             Width = Math.Min(placement.Width, savedScreen.WorkingArea.Width);
                             Height = Math.Min(placement.Height, savedScreen.WorkingArea.Height);
+                            Logging.Debug($"Width and height values are set: {Width}, {Height}");
 
-                            Logging.Debug($"Loaded: {Left}, {Top}, {Width}×{Height}");
                             EnsurePositionOnScreen(savedScreen);
+                            Logging.Debug("At this point, window should be on screen. Saving size as reference for scaling later…");
 
                             _windowSize.Width = placement.Width / Math.Max(placement.ScaleX, 0.2);
                             _windowSize.Height = placement.Height / Math.Max(placement.ScaleY, 0.2);
+                            Logging.Debug($"Reference size: {_windowSize.Width}×{_windowSize.Height}");
                         }
 
                         if (placement.IsMaximized) {
+                            Logging.Debug($"Window should be maximized, can do now: {_shownAndReady}");
+
                             if (_shownAndReady) {
                                 WindowState = WindowState.Maximized;
+                                Logging.Debug("Maximized");
                             } else {
                                 _maximizeLater = true;
+                                Logging.Debug("Maximize later");
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Logging.Warning(e);
+                    Logging.Error(e);
                 }
             }, 500);
         }
@@ -186,10 +231,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _shownAndReady, _maximizeLater;
 
         private void FixFullscreen() {
+            Logging.Debug($"Should maximize: {_maximizeLater}");
             if (_maximizeLater) {
                 WindowState = WindowState.Maximized;
+                Logging.Debug("Maximized");
             }
             _shownAndReady = true;
+            Logging.Debug("Window is shown and ready");
         }
 
         public static readonly DependencyPropertyKey PreferredFullscreenModePropertyKey = DependencyProperty.RegisterReadOnly(nameof(PreferredFullscreenMode), typeof(bool),
@@ -204,29 +252,43 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void UpdatePreferredFullscreenMode(Screen screen, bool maximized = false, bool centerAlign = false) {
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
+            }
+
             if (maximized || AppearanceManager.Current.PreferFullscreenMode) {
+                Logging.Debug("Time to maximize window");
+
                 if (MaxWidth < UnlimitedSize || MaxHeight < UnlimitedSize) {
+                    Logging.Debug("Can’t be maximized, align in the middle instead…");
                     WindowState = WindowState.Normal;
-                    Width = Math.Min(MaxWidth, screen.Bounds.Width);
-                    Height = Math.Min(MaxHeight, screen.Bounds.Height);
+                    Width = Math.Min(MaxWidth, screen.WorkingArea.Width);
+                    Height = Math.Min(MaxHeight, screen.WorkingArea.Height);
+                    Logging.Debug($"Size set: {Width}×{Height}");
                     CenterOnScreen(screen);
                     OnPreferredFullscreenSet(true, false);
                     _maximizeLater = false;
                 } else {
-                    Top = screen.Bounds.Top;
-                    Left = screen.Bounds.Left;
-                    Width = screen.Bounds.Width;
-                    Height = screen.Bounds.Height;
+                    Top = screen.WorkingArea.Top;
+                    Left = screen.WorkingArea.Left;
+                    Width = screen.WorkingArea.Width;
+                    Height = screen.WorkingArea.Height;
+                    Logging.Debug("Dimensions set, maximizing…");
 
                     if (_shownAndReady) {
                         WindowState = WindowState.Maximized;
+                        Logging.Debug("Maximized");
                     } else {
                         _maximizeLater = true;
+                        Logging.Debug("Maximize later");
                     }
 
                     OnPreferredFullscreenSet(true, true);
                 }
             } else {
+                Logging.Debug("Normal state");
+
                 WindowState = WindowState.Normal;
                 if (centerAlign) {
                     CenterOnScreen(screen);
@@ -238,52 +300,74 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected virtual void CenterOnScreen(Screen screen) {
-            Top = screen.Bounds.Top + (screen.Bounds.Height - ActualHeight) / 2;
-            Left = screen.Bounds.Left + (screen.Bounds.Width - ActualWidth) / 2;
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
+            }
+
+            Top = screen.WorkingArea.Top + (screen.WorkingArea.Height - ActualHeight) / 2;
+            Left = screen.WorkingArea.Left + (screen.WorkingArea.Width - ActualWidth) / 2;
+            Logging.Debug($"Aligned in the middle: {Top}, {Left}");
         }
 
         private const string DefaultScreenKey = @"DefaultScreen";
 
         private void SaveDefaultScreen() {
-            if (WindowState == WindowState.Minimized || !_locationAndSizeInitialized) return;
+            Logging.Here();
+
+            if (WindowState == WindowState.Minimized) {
+                Logging.Debug("Can’t save screen of minimized window");
+                return;
+            }
+
+            if (!_locationAndSizeInitialized) {
+                Logging.Debug("LS isn’t inialized yet");
+                return;
+            }
+
             var screen = this.GetScreen();
-            Logging.Warning(screen.Bounds);
-            ValuesStorage.Set(DefaultScreenKey, new System.Drawing.Point(
-                    screen.Bounds.Left + screen.Bounds.Width / 2,
-                    screen.Bounds.Top + screen.Bounds.Height / 2));
+            var saveAs = new System.Drawing.Point(screen.WorkingArea.Left + 10, screen.WorkingArea.Top + 10);
+            Logging.Debug($"Current screen: {screen.WorkingArea}, save as: {saveAs}");
+            ValuesStorage.Set(DefaultScreenKey, saveAs);
         }
 
-        private static T LogResult<T>(T t, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        private static T LogResult<T>(DpiAwareWindow target, T t, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             if (OptionVerboseMode) {
-                Helpers.Logging.Warning($"Result: {t}", m, p, l);
+                var g = (object)t is Screen s ? s.WorkingArea.ToString() : t.ToString();
+                if (target != null) {
+                    target.Logging.Debug($"Result: {g}", m, p, l);
+                } else {
+                    Helpers.Logging.Debug($"Result: {g}", m, p, l);
+                }
             }
 
             return t;
         }
 
         [NotNull]
-        public static Screen GetLastUsedScreen(DpiAwareWindow screenFor = null) {
+        private static Screen GetLastUsedScreen(DpiAwareWindow screenFor = null) {
             var window = screenFor?.Owner ?? LastActiveWindow;
-            return LogResult(!ReferenceEquals(window, screenFor) && window?.IsLoaded == true ? window.GetScreen()
+            return LogResult(screenFor, !ReferenceEquals(window, screenFor) && window?.IsLoaded == true ? window.GetScreen()
                     : Screen.FromPoint(ValuesStorage.Get<System.Drawing.Point?>(DefaultScreenKey) ?? Control.MousePosition));
         }
 
         [NotNull]
         public static Screen GetPreferredScreen(DpiAwareWindow screenFor = null) {
-            return LogResult(GetForcedScreen(screenFor) ?? GetLastUsedScreen(screenFor));
+            return LogResult(screenFor, GetForcedScreen(screenFor) ?? GetLastUsedScreen(screenFor));
         }
 
         [CanBeNull]
         public static Screen GetForcedScreen(DpiAwareWindow screenFor = null) {
             var screenName = AppearanceManager.Current.ForceScreenName;
-            if (screenName != null) {
+            var forcedScreen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName == screenName);
+            if (forcedScreen != null) {
                 if (OptionVerboseMode) {
-                    Helpers.Logging.Warning($"Forced: {screenName}, screens: {string.Join("\n", Screen.AllScreens.Select(x => x.Bounds))}");
+                    Helpers.Logging.Warning($"Forced: {screenName}, screens: {string.Join("\n", Screen.AllScreens.Select(x => x.WorkingArea))}");
                 }
-                return LogResult(Screen.AllScreens.FirstOrDefault(x => x.DeviceName == screenName) ?? Screen.PrimaryScreen);
+                return LogResult(screenFor, forcedScreen);
             }
 
-            return LogResult(AppearanceManager.Current.KeepWithinSingleScreen ? GetLastUsedScreen(screenFor) : null);
+            return LogResult(screenFor, AppearanceManager.Current.KeepWithinSingleScreen ? GetLastUsedScreen(screenFor) : null);
         }
 
         private readonly Busy _locationAndSizeBusy = new Busy();
@@ -294,7 +378,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     || AppearanceManager.Current.PreferFullscreenMode) return;
 
             _locationAndSizeBusy.DoDelay(() => {
-                Logging.Warning($"Saving location and size for {LocationAndSizeKey}: {Left}, {Top}, {ActualWidth}×{ActualHeight}; scale={_dpi?.ScaleX ?? -1}");
+                Logging.Debug("Saving location and size");
 
                 try {
                     ValuesStorage.Set(LocationAndSizeKey, new Placement {
@@ -306,59 +390,77 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         ScaleX = _dpi?.ScaleX ?? 1d,
                         ScaleY = _dpi?.ScaleY ?? 1d,
                     });
+                    Logging.Debug("Saved");
                     SaveDefaultScreen();
                 } catch (Exception e) {
-                    Logging.Warning(e);
+                    Logging.Debug(e);
                 }
             }, 300);
         }
 
         public void EnsurePositionOnScreen(Screen screen) {
-            Logging.Warning($"Left={Left}, Top={Top}, Screen={screen.Bounds}");
-
-            if (Left < screen.Bounds.Left) {
-                Left = screen.Bounds.Left;
-            } else if (Left + ActualWidth > screen.Bounds.Right) {
-                Left = screen.Bounds.Right - ActualWidth;
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
             }
 
-            if (Top < screen.Bounds.Top) {
-                Top = screen.Bounds.Top;
-            } else if (Top + ActualHeight > screen.Bounds.Bottom) {
-                Top = screen.Bounds.Bottom - ActualHeight;
+            Logging.Debug($"Align within: {screen.WorkingArea}");
+
+            if (Left < screen.WorkingArea.Left) {
+                Left = screen.WorkingArea.Left;
+                Logging.Debug($"Adjusted left, →: {Left}");
+            } else if (Left + ActualWidth > screen.WorkingArea.Right) {
+                Left = screen.WorkingArea.Right - ActualWidth;
+                Logging.Debug($"Adjusted left, ←: {Left}");
+            }
+
+            if (Top < screen.WorkingArea.Top) {
+                Top = screen.WorkingArea.Top;
+                Logging.Debug($"Adjusted top, ↓: {Top}");
+            } else if (Top + ActualHeight > screen.WorkingArea.Bottom) {
+                Top = screen.WorkingArea.Bottom - ActualHeight;
+                Logging.Debug($"Adjusted top, ↑: {Top}");
             }
         }
 
         public void EnsureOnScreen(Screen screen) {
-            Logging.Warning(screen.Bounds);
+            if (!AppearanceManager.Current.ManageWindowsLocation) {
+                Logging.Debug("Location management is disabled");
+                return;
+            }
+
+            Logging.Debug(screen.WorkingArea);
 
             // Do not change DPI-related original values, so, if window will be moved
             // somewhere else, to a window with different DPI, original values will be
             // restored
             if (MinWidth > screen.WorkingArea.Width) {
                 SaveOriginalLimitations();
-                Logging.Warning($"Adjust MinWidth to fit: {screen.WorkingArea.Width}");
+                Logging.Debug($"Clamp min width to: {screen.WorkingArea.Width}");
                 MinWidth = screen.WorkingArea.Width;
             }
 
             if (MinHeight > screen.WorkingArea.Height) {
                 SaveOriginalLimitations();
-                Logging.Warning($"Adjust MinHeight to fit: {screen.WorkingArea.Height}");
+                Logging.Debug($"Clamp min width to: {screen.WorkingArea.Height}");
                 MinHeight = screen.WorkingArea.Height;
             }
 
-            if (ActualWidth > screen.Bounds.Width) {
-                Width = screen.Bounds.Width;
+            if (ActualWidth > screen.WorkingArea.Width) {
+                Logging.Debug($"Clamp width to: {screen.WorkingArea.Width}");
+                Width = screen.WorkingArea.Width;
             }
 
-            if (ActualHeight > screen.Bounds.Height) {
-                Height = screen.Bounds.Height;
+            if (ActualHeight > screen.WorkingArea.Height) {
+                Logging.Debug($"Clamp height to: {screen.WorkingArea.Height}");
+                Height = screen.WorkingArea.Height;
             }
 
             EnsurePositionOnScreen(screen);
         }
 
         public void EnsureOnScreen() {
+            Logging.Here();
             EnsureOnScreen(this.GetScreen());
         }
     }

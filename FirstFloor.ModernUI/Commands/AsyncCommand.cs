@@ -4,11 +4,6 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
-    public interface IAsyncCommand {
-        bool IsInProcess { get; }
-        Task ExecuteAsync([CanBeNull] object parameter);
-    }
-
     public class AsyncCommand : CommandExt, IAsyncCommand {
         [NotNull]
         private readonly Func<Task> _execute;

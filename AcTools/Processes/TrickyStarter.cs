@@ -128,7 +128,7 @@ namespace AcTools.Processes {
                     await Task.Delay(50, cancellation);
                     if (cancellation.IsCancellationRequested) return null;
                 }
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return null;
             }
 

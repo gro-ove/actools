@@ -13,7 +13,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
-using AcManager.Tools.Miscellaneous;
 using AcTools.Kn5File;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Utils;
@@ -993,7 +992,7 @@ namespace AcManager.PaintShop {
 
         [ItemCanBeNull]
         public static async Task<List<PaintableItem>> GetPaintableItemsAsync(string carId, [CanBeNull] Kn5 kn5, CancellationToken cancellation) {
-            if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) return new List<PaintableItem>(0);
+            if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) return new List<PaintableItem>(0);
 
             try {
                 var result = (await GetCarPaintableItemsAsync(carId, kn5, new List<string>(2),
@@ -1003,7 +1002,7 @@ namespace AcManager.PaintShop {
 
                 result.Sort(PaintableItemComparer.Instance);
                 return result;
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return null;
             }
         }

@@ -28,7 +28,6 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Windows;
-using AcManager.Plugins;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -59,6 +58,7 @@ using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Kn5File;
+using AcTools.NeuralTyres;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Utils;
@@ -110,7 +110,6 @@ namespace AcManager {
             LocaleHelper.InitializeAsync().Wait();
 
             var softwareRenderingModeWasEnabled = IsSoftwareRenderingModeEnabled();
-
             if (forceSoftwareRenderingMode) {
                 ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, true);
             }
@@ -138,7 +137,8 @@ namespace AcManager {
         }
 
         public static bool IsSoftwareRenderingModeEnabled() {
-            return AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering);
+            return AppArguments.GetBool(AppFlag.SoftwareRendering) || ValuesStorage.Get<bool>(AppAppearanceManager.KeySoftwareRendering)
+                    || MainExecutingFile.Name.IndexOf(@"safe", StringComparison.OrdinalIgnoreCase) != -1;
         }
 
         private static void SwitchToSoftwareRendering() {
@@ -262,8 +262,11 @@ namespace AcManager {
             if (AppArguments.Has(AppFlag.UiScale)) {
                 AppearanceManager.Current.AppScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
             }
+            if (AppArguments.Has(AppFlag.WindowsLocationManagement)) {
+                AppearanceManager.Current.ManageWindowsLocation = AppArguments.GetBool(AppFlag.WindowsLocationManagement, true);
+            }
 
-            if (!AppKeyHolder.IsAllRight) {
+            if (!InternalUtils.IsAllRight) {
                 AppAppearanceManager.OptionCustomThemes = false;
             } else {
                 AppArguments.Set(AppFlag.CustomThemes, ref AppAppearanceManager.OptionCustomThemes);
@@ -315,10 +318,10 @@ namespace AcManager {
 
                 PluginsManager.Initialize(pluginsDir);
                 PluginsWrappers.Initialize(
-                        new FmodPluginWrapper(),
-                        new MagickPluginWrapper(),
-                        new CefSharpPluginWrapper(),
-                        new StarterPlus());
+                        new AssemblyResolvingWrapper(KnownPlugins.Fmod, FmodResolverService.Resolver),
+                        new AssemblyResolvingWrapper(KnownPlugins.Fann, FannResolverService.Resolver),
+                        new AssemblyResolvingWrapper(KnownPlugins.Magick, ImageUtils.MagickResolver),
+                        new AssemblyResolvingWrapper(KnownPlugins.CefSharp, CefSharpResolverService.Resolver));
             }
 
             {
@@ -382,7 +385,7 @@ namespace AcManager {
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
-                    ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }).Forget();
+                    ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }, true).Forget();
                     args.Cancel = true;
                 }
             };
@@ -534,13 +537,13 @@ namespace AcManager {
         }
 
         private async void TestKey() {
-            AppKeyHolder.Initialize(FilesStorage.Instance.GetFilename("License.txt"));
-            if (AppKeyHolder.Instance.Revoked == null) return;
+            InternalUtils.Initialize(FilesStorage.Instance.GetFilename("License.txt"));
+            if (InternalUtils.Revoked == null) return;
 
             await Task.Delay(3000);
 
-            ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, AppKeyHolder.Instance.Revoked);
-            AppKeyHolder.Instance.SetKey(null);
+            ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, InternalUtils.Revoked);
+            InternalUtils.SetKey(null);
 
             Current.Dispatcher.Invoke(() => {
                 if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {
@@ -597,7 +600,7 @@ namespace AcManager {
                         return;
                     }
 
-                    Logging.Debug("Changelog entries: " + changelog.Count);
+                    Logging.Write("Changelog entries: " + changelog.Count);
                     if (changelog.Any()) {
                         Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
                             ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")

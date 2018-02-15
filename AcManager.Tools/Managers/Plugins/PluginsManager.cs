@@ -11,7 +11,7 @@ using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -23,21 +23,25 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public static PluginsManager Instance { get; private set; }
 
-        public static PluginsManager Initialize(string dir) {
+        public static void Initialize(string dir) {
             if (Instance != null) throw new Exception("Already initialized");
-            return Instance = new PluginsManager(dir);
+            Instance = new PluginsManager(dir);
+            Instance.SetupRecommended();
         }
 
         public readonly string PluginsDirectory;
 
         public BetterObservableCollection<PluginEntry> List { get; }
         public BetterListCollectionView ListView { get; }
-        public BetterListCollectionView RecommendedListView { get; }
+        public PluginsRequirement Recommended { get; private set; }
 
         private bool _locallyLoaded;
 
-        public event AddonEventHandler PluginEnabled;
-        public event AddonEventHandler PluginDisabled;
+        public event PluginEventHandler PluginEnabled;
+        public event PluginEventHandler PluginDisabled;
+
+        [UsedImplicitly]
+        public event EventHandler ListUpdated;
 
         [CanBeNull]
         public PluginEntry GetById(string addonId) {
@@ -49,18 +53,13 @@ namespace AcManager.Tools.Managers.Plugins {
             List = new BetterObservableCollection<PluginEntry>();
             ListView = new BetterListCollectionView(List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
-            RecommendedListView = new BetterListCollectionView(List);
-            RecommendedListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
-            RecommendedListView.Filter = o => (o as PluginEntry)?.IsRecommended == true;
             ReloadLocalList();
             // TODO: Directory watching
         }
 
-        private AsyncCommand _installRecommendedCommand;
-
-        public AsyncCommand InstallRecommendedCommand => _installRecommendedCommand ?? (_installRecommendedCommand = new AsyncCommand(() => {
-            return List.Where(x => x.IsRecommended && !x.IsInstalled && !x.IsInstalling).ToList().Select(x => x.InstallCommand.ExecuteAsync()).WhenAll(2);
-        }, () => List.Any(x => x.IsRecommended && !x.IsInstalled && !x.IsInstalling)));
+        private void SetupRecommended() {
+            Instance.Recommended = new PluginsRequirement(o => o.IsRecommended);
+        }
 
         public bool IsPluginEnabled([Localizable(false)] string id) {
             if (!_locallyLoaded) {
@@ -108,12 +107,12 @@ namespace AcManager.Tools.Managers.Plugins {
         private static DateTime _lastUpdated;
 
         public Task UpdateIfObsolete() {
-            if (DateTime.Now - _lastUpdated < TimeSpan.FromMinutes(10d)) {
+            if (DateTime.Now - _lastUpdated < TimeSpan.FromHours(1d)) {
                 return Task.Delay(0);
             }
 
             _lastUpdated = DateTime.Now;
-            return Instance.UpdateList();
+            return UpdateList();
         }
 
         private async Task UpdateList() {
@@ -136,7 +135,7 @@ namespace AcManager.Tools.Managers.Plugins {
                 List.Add(plugin);
             }
 
-            _installRecommendedCommand?.RaiseCanExecuteChanged();
+            ListUpdated?.Invoke(this, EventArgs.Empty);
         }
 
         private static async Task<IEnumerable<PluginEntry>> DownloadAndParseList() {
@@ -149,12 +148,12 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        public async Task InstallPlugin(PluginEntry plugin, IProgress<double?> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task InstallPlugin(PluginEntry plugin, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             var destination = GetPluginDirectory(plugin.Id);
 
             try {
                 plugin.IsInstalling = true;
-                _installRecommendedCommand?.RaiseCanExecuteChanged();
 
                 var data = await CmApiProvider.GetDataAsync($"plugins/get/{plugin.Id}", progress, cancellation);
                 if (data == null || cancellation.IsCancellationRequested) return;
@@ -175,33 +174,27 @@ namespace AcManager.Tools.Managers.Plugins {
                 File.WriteAllText(Path.Combine(destination, ManifestFileName), JsonConvert.SerializeObject(plugin));
 
                 if (plugin.IsEnabled) {
-                    PluginEnabled?.Invoke(this, new AppAddonEventHandlerArgs { PluginId = plugin.Id });
+                    PluginEnabled?.Invoke(this, new PluginEventArgs { PluginId = plugin.Id });
                 }
-            } catch (Exception e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 NonfatalError.Notify(ToolsStrings.Plugins_CannotInstall, e);
             } finally {
                 plugin.IsInstalling = false;
-                _installRecommendedCommand?.RaiseCanExecuteChanged();
             }
         }
 
+        [UsedImplicitly]
         public void RemoveAddon(PluginEntry plugin) {
             throw new NotImplementedException();
         }
 
         internal void OnPluginEnabled(PluginEntry plugin, bool value) {
-            (value ? PluginEnabled : PluginDisabled)?.Invoke(this, new AppAddonEventHandlerArgs { PluginId = plugin.Id });
+            (value ? PluginEnabled : PluginDisabled)?.Invoke(this, new PluginEventArgs { PluginId = plugin.Id });
         }
 
         public bool HasAnyNew() {
             // TODO
             return false;
         }
-    }
-
-    public delegate void AddonEventHandler(object sender, AppAddonEventHandlerArgs args);
-
-    public class AppAddonEventHandlerArgs {
-        public string PluginId;
     }
 }

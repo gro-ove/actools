@@ -93,12 +93,6 @@ namespace AcManager.Tools.Helpers {
                     ToolsStrings.Settings_Starter_UiModule,
                     ToolsStrings.Settings_Starter_UiModule_Description);
 
-            public static readonly StarterType StarterPlusType = new StarterType(
-                    "Starter+",
-                    ToolsStrings.Settings_Starter_StarterPlus,
-                    ToolsStrings.Settings_Starter_StarterPlus_Description,
-                    StarterPlus.AddonId);
-
             public static readonly StarterType SseStarterType = new StarterType(
                     "SSE",
                     ToolsStrings.Settings_Starter_Sse,

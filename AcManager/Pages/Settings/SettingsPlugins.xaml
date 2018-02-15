@@ -11,5 +11,6 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
-  <ItemsControl ItemsSource="{Binding View}" ItemTemplate="{StaticResource PluginItemTemplate}" Style="{StaticResource VirtualizingItemsControl}" />
+  <ItemsControl ItemsSource="{Binding View}" ItemTemplate="{StaticResource PluginItemTemplate}" Padding="0 0 20 0"
+      Style="{StaticResource VirtualizingItemsControl}" />
 </UserControl>

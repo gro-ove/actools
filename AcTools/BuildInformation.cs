@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Helpers {
+namespace AcTools {
         public static class BuildInformation {
         private static string _appVersion;
 

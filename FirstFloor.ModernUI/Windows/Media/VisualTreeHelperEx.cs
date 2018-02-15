@@ -41,8 +41,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
 
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
                 var child = VisualTreeHelper.GetChild(depObj, i);
-                var childT = child as T;
-                if (childT != null) {
+                if (child is T childT) {
                     yield return childT;
                 }
 
@@ -63,8 +62,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
             if (depObj == null) throw new ArgumentNullException(nameof(depObj));
 
             foreach (var child in LogicalTreeHelper.GetChildren(depObj).OfType<DependencyObject>()) {
-                var childT = child as T;
-                if (childT != null) {
+                if (child is T childT) {
                     yield return childT;
                 }
 
@@ -158,16 +156,17 @@ namespace FirstFloor.ModernUI.Windows.Media {
             var fe = dependencyObject as FrameworkElement;
             if (fe?.Parent != null) return fe.Parent;
 
-            var ce = dependencyObject as ContentElement;
-            if (ce == null) return VisualTreeHelper.GetParent(dependencyObject);
+            if (dependencyObject is ContentElement ce) {
+                var parent = ContentOperations.GetParent(ce);
+                if (parent != null) {
+                    return parent;
+                }
 
-            var parent = ContentOperations.GetParent(ce);
-            if (parent != null) {
-                return parent;
+                var fce = ce as FrameworkContentElement;
+                return fce?.Parent;
             }
 
-            var fce = ce as FrameworkContentElement;
-            return fce?.Parent;
+            return VisualTreeHelper.GetParent(dependencyObject);
         }
 
         [Pure]
@@ -194,8 +193,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
 
         [Pure, CanBeNull]
         public static T GetFromPoint<T>(this UIElement reference, Point point) where T : DependencyObject {
-            var element = reference.InputHitTest(point) as DependencyObject;
-            return element == null ? null : element as T ?? GetParent<T>(element);
+            return reference.InputHitTest(point) is DependencyObject element ? element as T ?? GetParent<T>(element) : null;
         }
 
         /// <summary>

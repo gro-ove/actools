@@ -104,7 +104,7 @@ namespace AcManager.Pages.Windows {
             }
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
-            AppKeyHolder.ProceedMainWindow(this);
+            InternalUtils.Launch(this);
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
                                                  .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {

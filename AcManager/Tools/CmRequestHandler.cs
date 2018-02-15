@@ -12,7 +12,7 @@ namespace AcManager.Tools {
         }
 
         public void Handle(string request) {
-            ArgumentsHandler.ProcessArguments(new[] { request }).Forget();
+            ArgumentsHandler.ProcessArguments(new[] { request }, true).Forget();
         }
     }
 }

@@ -98,7 +98,7 @@ namespace AcManager.Tools.GameProperties {
 
                         try {
                             await Task.Delay(timeout, token);
-                        } catch (Exception e) when (e.IsCanceled()) {}
+                        } catch (Exception e) when (e.IsCancelled()) {}
 
                         _keptAlive += s.Elapsed;
 

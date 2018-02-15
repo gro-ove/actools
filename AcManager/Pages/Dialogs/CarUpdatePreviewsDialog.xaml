@@ -152,7 +152,8 @@
         </ListBox.ItemTemplate>
       </ListBox>
 
-      <Grid DataContext="{Binding ResultPreviewComparisonsView.CurrentItem}">
+      <Grid DataContext="{Binding ResultPreviewComparisonsView.CurrentItem}"
+          d:DataContext="{d:DesignInstance di:CarUpdatePreviewsDialog+ResultPreviewComparison}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
           <ColumnDefinition Width="9" />

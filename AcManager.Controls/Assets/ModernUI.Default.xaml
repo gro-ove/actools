@@ -161,9 +161,9 @@
   <SolidColorBrush x:Key="ModernButtonTextPressed" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ModernButtonTextDisabled" Color="#515151" />
 
-  <SolidColorBrush x:Key="ScrollBarThumb" Color="{DynamicResource AccentColor}" Opacity="0.8" />
-  <SolidColorBrush x:Key="ScrollBarThumbDragging" Color="{DynamicResource AccentColor}" Opacity="0.9" />
-  <SolidColorBrush x:Key="ScrollBarThumbHover" Color="{DynamicResource AccentColor}" Opacity="1" />
+  <SolidColorBrush x:Key="ScrollBarThumb" Color="{DynamicResource AccentColor}" Opacity="0.6" />
+  <SolidColorBrush x:Key="ScrollBarThumbHover" Color="{DynamicResource AccentColor}" Opacity="0.8" />
+  <SolidColorBrush x:Key="ScrollBarThumbDragging" Color="{DynamicResource AccentColor}" Opacity="1" />
   <SolidColorBrush x:Key="ScrollBarBackground" Color="#333333" />
   <SolidColorBrush x:Key="ScrollBarThumbBackground" Color="Transparent" />
   <SolidColorBrush x:Key="ScrollBarThumbBackgroundDragging" Color="Transparent" />

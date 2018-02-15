@@ -26,12 +26,8 @@ namespace FirstFloor.ModernUI.Helpers {
         private bool _hasUnseen;
 
         public bool HasUnseen {
-            get { return _hasUnseen; }
-            set {
-                if (Equals(value, _hasUnseen)) return;
-                _hasUnseen = value;
-                OnPropertyChanged();
-            }
+            get => _hasUnseen;
+            set => Apply(value, ref _hasUnseen);
         }
 
         internal void UpdateUnseen() {
@@ -44,7 +40,7 @@ namespace FirstFloor.ModernUI.Helpers {
             new NonfatalErrorsDialog().ShowDialog();
         });
 
-        private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(3);
+        private static readonly TimeSpan ErrorsTimeout = TimeSpan.FromSeconds(1);
         private const int ErrorsLimit = 30;
 
         private static void NotifyInner([NotNull] string message, [CanBeNull] string commentary, [CanBeNull] Exception exception,

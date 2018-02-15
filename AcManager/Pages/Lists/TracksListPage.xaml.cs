@@ -53,15 +53,12 @@ namespace AcManager.Pages.Lists {
 
         public static void Show(TrackObjectBase track) {
             // TODO
-            if (!AppKeyHolder.IsAllRight) return;
-
-            var mainWindow = Application.Current?.MainWindow as MainWindow;
-            if (mainWindow == null) return;
-
-            _selectNextTrack = track.Id;
-            _selectNextTrackLayoutId = track.LayoutId;
-
-            NavigateToPage();
+            if (!InternalUtils.IsAllRight) return;
+            if (Application.Current?.MainWindow is MainWindow) {
+                _selectNextTrack = track.Id;
+                _selectNextTrackLayoutId = track.LayoutId;
+                NavigateToPage();
+            }
         }
 
         public static void NavigateToPage() {

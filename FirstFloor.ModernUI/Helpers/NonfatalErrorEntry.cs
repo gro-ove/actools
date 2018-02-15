@@ -12,20 +12,15 @@ namespace FirstFloor.ModernUI.Helpers {
 
             DisplayName = problemDescription;
             Commentary = solutionCommentary;
-            Exception = exception;
+            Exception = (exception as AggregateException)?.GetBaseException() ?? exception;
             Solutions = solutions as IReadOnlyList<NonfatalErrorSolution> ?? solutions.ToList();
         }
 
         private bool _unseen = true;
 
         public bool Unseen {
-            get { return _unseen; }
-            internal set {
-                if (Equals(value, _unseen)) return;
-                _unseen = value;
-                OnPropertyChanged();
-                NonfatalError.Instance.UpdateUnseen();
-            }
+            get => _unseen;
+            internal set => Apply(value, ref _unseen, NonfatalError.Instance.UpdateUnseen);
         }
 
         public string Commentary { get; }

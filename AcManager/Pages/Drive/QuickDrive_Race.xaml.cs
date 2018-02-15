@@ -314,7 +314,7 @@ namespace AcManager.Pages.Drive {
                             return;
                         }
                     }
-                } catch (Exception e) when (e.IsCanceled()) {
+                } catch (Exception e) when (e.IsCancelled()) {
                     return;
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t create race grid", e);

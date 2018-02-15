@@ -97,8 +97,22 @@ namespace AcManager.Pages.Dialogs {
             set => SetValue(ValueTrackerDigitsProperty, value);
         }
 
+        public static readonly DependencyProperty GraphWidthProperty = DependencyProperty.Register(nameof(GraphWidth), typeof(bool),
+                typeof(TyresMachineGraphViewer), new PropertyMetadata(false, (o, e) => {
+                    var v = (TyresMachineGraphViewer)o;
+                    v._graphWidth = (bool)e.NewValue;
+                    v.RefreshUnitParams();
+                }));
+
+        private bool _graphWidth;
+
+        public bool GraphWidth {
+            get => _graphWidth;
+            set => SetValue(GraphWidthProperty, value);
+        }
+
         private static readonly string XUnit = " cm";
-        private const string KeyRadius = "radius";
+        private const string KeyHorizontalAxis = "input";
         private const string KeyValue = "value";
 
         private OxyColor _limitColor = OxyColor.FromUInt32(0x60ff0000);
@@ -113,6 +127,8 @@ namespace AcManager.Pages.Dialogs {
             _updateSeriesBusy.DoDelay(() => {
                 var model = Model;
                 if (model == null) return;
+
+                _horizontalAxis.Title = GraphWidth ? $"Width ({XUnit.Trim()})" : $"Radius ({XUnit.Trim()})";
 
                 try {
                     var data = Data;
@@ -284,8 +300,7 @@ namespace AcManager.Pages.Dialogs {
             };
 
             _horizontalAxis = new LinearAxis {
-                Key = KeyRadius,
-                Title = $"Radius ({XUnit.Trim()})",
+                Key = KeyHorizontalAxis,
                 TextColor = BaseTextColor,
                 TitleColor = BaseTextColor,
                 TicklineColor = BaseTextColor,
@@ -299,7 +314,7 @@ namespace AcManager.Pages.Dialogs {
                 MinimumPadding = 0,
                 AxisTickToLabelDistance = 2,
                 MajorTickSize = 4,
-                MinorTickSize = 1
+                MinorTickSize = 1,
             };
 
             _leftThreshold = new LineAnnotation {

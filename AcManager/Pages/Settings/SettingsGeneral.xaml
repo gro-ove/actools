@@ -2,9 +2,9 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:t="http://acstuff.ru/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal" mc:Ignorable="d" d:DesignHeight="300"
-    d:DesignWidth="300" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsGeneral+ViewModel}" Loaded="OnLoaded"
-    Unloaded="OnUnloaded">
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:in="clr-namespace:AcManager.Internal;assembly=AcManager.Internal"
+    xmlns:at="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsGeneral+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -52,7 +52,7 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AppKeyLabel}" />
           <Button Command="{Binding ChangeAppKeyCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-          <mui:PlaceholderTextBlock Text="{Binding Source={x:Static in:AppKeyHolder.KeySafe}, Mode=OneTime}" Placeholder="?" />
+          <mui:PlaceholderTextBlock Text="{Binding Source={x:Static in:InternalUtils.KeySafe}, Mode=OneTime}" Placeholder="?" />
         </DockPanel>
 
         <CheckBox IsChecked="{Binding AppShortcutExists}" ToolTip="{x:Static g:AppStrings.Settings_General_WindowsShortcut_Tooltip}">
@@ -82,8 +82,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
           <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
               Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding Source={x:Static t:BuildInformation.AppVersion}, Mode=OneTime}" Placeholder="?"
-              IsReadOnly="True" PreviewMouseLeftButtonUp="OnVersionClick" />
+          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding Source={x:Static at:BuildInformation.AppVersion}, Mode=OneTime}"
+              Placeholder="?" IsReadOnly="True" PreviewMouseLeftButtonUp="OnVersionClick" />
         </DockPanel>
 
         <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
@@ -116,7 +116,8 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
           <mui:PlaceholderTextBlock Placeholder="?"
-              Text="{Binding ValuesStorage.PreviosSaveTime.TotalMilliseconds, StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
+              Text="{Binding PreviosSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
+                  StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
         </DockPanel>
 
         <!--beta access-->

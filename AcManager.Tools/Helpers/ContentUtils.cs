@@ -16,6 +16,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Path = System.Windows.Shapes.Path;
+using VerticalAlignment = System.Windows.VerticalAlignment;
 
 namespace AcManager.Tools.Helpers {
     public static class ContentUtils {
@@ -47,41 +48,50 @@ namespace AcManager.Tools.Helpers {
                     : Regex.Replace(line, @"\{(\w+(?:\.\w+)?)\}", m => GetString(m.Groups[1].Value) ?? m.Value);
         }
 
+        /// <summary>
+        /// Use this method if you want to get an icon from a non-UI thread. You still need to call
+        /// the returned value in UI thread to get an icon, but bytesProvider or filenameProvider
+        /// will execute from your thread, immediately.
+        /// </summary>
         [CanBeNull]
-        public static object GetIcon([NotNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
+        public static Func<object> GetIconInTwoSteps([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
+            if (iconValue == null) return null;
+
             try {
                 if (iconValue.StartsWith("path:", StringComparison.OrdinalIgnoreCase) || iconValue.StartsWith("F1 ") && iconValue.EndsWith("Z")) {
-                    return Vector(iconValue.ApartFromFirst("path:", StringComparison.OrdinalIgnoreCase));
+                    return () => Vector(iconValue.ApartFromFirst("path:", StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (iconValue.StartsWith("text:", StringComparison.OrdinalIgnoreCase)) {
-                    return Text(iconValue.ApartFromFirst("text:", StringComparison.OrdinalIgnoreCase));
+                    return () => Text(iconValue.ApartFromFirst("text:", StringComparison.OrdinalIgnoreCase));
                 }
 
                 var filename = filenameProvider?.Invoke(iconValue);
                 if (filename != null) {
                     if (filename.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
-                        return Vector(File.ReadAllText(filename));
+                        var text = File.ReadAllText(filename);
+                        return () => Vector(text);
                     }
 
                     if (filename.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
-                        return Text(File.ReadAllText(filename));
+                        var text = File.ReadAllText(filename);
+                        return () => Text(text);
                     }
 
-                    return RasterFromFile(filename);
+                    return () => RasterFromFile(filename);
                 }
 
                 var data = bytesProvider?.Invoke(iconValue);
                 if (data != null) {
                     if (iconValue.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
-                        return Vector(data.ToUtf8String());
+                        return () => Vector(data.ToUtf8String());
                     }
 
                     if (iconValue.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
-                        return Text(data.ToUtf8String());
+                        return () => Text(data.ToUtf8String());
                     }
 
-                    return Raster(data);
+                    return () => Raster(data);
                 }
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t load icon", e);
@@ -120,6 +130,11 @@ namespace AcManager.Tools.Helpers {
                 p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
                 return p;
             }
+        }
+
+        [CanBeNull]
+        public static object GetIcon([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
+            return GetIconInTwoSteps(iconValue, bytesProvider, filenameProvider)?.Invoke();
         }
 
         [CanBeNull]

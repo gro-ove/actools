@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Threading;
 using System.Windows;
-using AcTools.Utils;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 
@@ -303,7 +302,7 @@ namespace AcManager {
 
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string PitySolution() {
-            return AcRootFinder.TryToFind();
+            return AcTools.Utils.AcRootFinder.TryToFind();
         }
 
         private string ExtractUnmanaged(string id) {

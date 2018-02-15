@@ -95,8 +95,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public object Value {
             get => null;
             set {
-                var entry = value as ISavedPresetEntry;
-                if (entry != null) {
+                if (value is ISavedPresetEntry entry) {
                     Filename = entry.Filename;
                 }
             }

@@ -104,7 +104,7 @@ namespace AcManager.Pages.Drive {
             private bool _showExtensionMessage;
 
             public bool ShowExtensionMessage {
-                get => AppKeyHolder.IsAllRight && _showExtensionMessage;
+                get => InternalUtils.IsAllRight && _showExtensionMessage;
                 set {
                     if (Equals(value, _showExtensionMessage)) return;
                     _showExtensionMessage = value;

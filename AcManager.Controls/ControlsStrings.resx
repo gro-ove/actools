@@ -939,14 +939,14 @@ Depth mode: [b]{4}[/b]</value>
     <value> FPS</value>
   <comment>@Invariant</comment></data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>Download and install ({0})</value>
+    <value>Install ({0})</value>
     <comment>{0} — plugin’s size</comment>
   </data>
   <data name="Plugins_NotAvailable" xml:space="preserve">
     <value>Not available, required app version is {0}.</value>
   </data>
   <data name="Plugins_Update" xml:space="preserve">
-    <value>Update (new version: {0})</value>
+    <value>Update to {0}</value>
   </data>
   <data name="Common_Unsaved" xml:space="preserve">
     <value>Unsaved</value>

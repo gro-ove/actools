@@ -78,7 +78,6 @@
   <ItemGroup>
     <Compile Include="AcCarSound.cs" />
     <Compile Include="AcCarSoundFactory.cs" />
-    <Compile Include="FmodPluginWrapper.cs" />
     <Compile Include="FmodResolverService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

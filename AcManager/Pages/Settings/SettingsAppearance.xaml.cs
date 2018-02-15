@@ -15,6 +15,7 @@ using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
+using JetBrains.Annotations;
 using Application = System.Windows.Application;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using Path = System.IO.Path;
@@ -64,13 +65,14 @@ namespace AcManager.Pages.Settings {
 
             private SettingEntry _forceScreen;
 
+            [CanBeNull]
             public SettingEntry ForceScreen {
                 get => _forceScreen;
                 set {
                     if (Equals(value, _forceScreen)) return;
                     _forceScreen = value;
                     OnPropertyChanged();
-                    AppearanceManager.Current.ForceScreenName = value.Value;
+                    AppearanceManager.Current.ForceScreenName = value?.Value;
                 }
             }
 

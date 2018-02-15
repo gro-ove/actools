@@ -65,10 +65,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public int Compare(object x, object y) {
-            var xc = x as ChampionshipDriverEntry;
-            var yc = y as ChampionshipDriverEntry;
-            if (xc == null || yc == null) return 0;
-            return yc.Points - xc.Points;
+            return x is ChampionshipDriverEntry xc && y is ChampionshipDriverEntry yc ? yc.Points - xc.Points : 0;
         }
 
         private BetterObservableCollection<ChampionshipDriverEntry> _championshipDrivers;

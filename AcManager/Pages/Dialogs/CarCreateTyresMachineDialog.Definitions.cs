@@ -4,8 +4,6 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarCreateTyresMachineDialog {
-        public static readonly string ThermalPrefix = @"THERMAL@";
-
         private static string GetItemName(string key, out string category) {
             string name;
 

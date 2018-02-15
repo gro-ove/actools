@@ -401,6 +401,11 @@
     <Compile Include="Managers\Online\ServerEntry.Origins.cs" />
     <Compile Include="Managers\Online\SourcesPack.cs" />
     <Compile Include="IJsonSerializable.cs" />
+    <Compile Include="Managers\Plugins\AssemblyResolvingWrapper.cs" />
+    <Compile Include="Managers\Plugins\KnownPlugins.cs" />
+    <Compile Include="Managers\Plugins\PluginEventArgs.cs" />
+    <Compile Include="Managers\Plugins\PluginEventHandler.cs" />
+    <Compile Include="Managers\Plugins\PluginsRequirement.cs" />
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\TrackSkinsManager.cs" />
     <Compile Include="Managers\TrueTypeFontsManager.cs" />
@@ -413,7 +418,6 @@
     <Compile Include="Miscellaneous\FakeCarsHelper.cs" />
     <Compile Include="Miscellaneous\ICupSupportedObject.cs" />
     <Compile Include="Miscellaneous\ILocalKeyBindingInput.cs" />
-    <Compile Include="Miscellaneous\MagickPluginHelper.cs" />
     <Compile Include="Miscellaneous\OAuth.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
@@ -538,7 +542,6 @@
     <Compile Include="Helpers\Api\KunosApiProvider.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerActualCarInformation.cs" />
     <Compile Include="Helpers\Api\Kunos\ServerCarsInformation.cs" />
-    <Compile Include="Helpers\BuildInformation.cs" />
     <Compile Include="Lists\SortedAcWrapperObservableCollection.cs" />
     <Compile Include="Managers\InnerHelpers\DirectoryWatcher.cs" />
     <Compile Include="Helpers\IPAddressExtension.cs" />
@@ -614,7 +617,6 @@
     <Compile Include="Starters\IAcsPrepareableStarter.cs" />
     <Compile Include="Starters\NaiveStarter.cs" />
     <Compile Include="Starters\OfficialStarter.cs" />
-    <Compile Include="Starters\StarterPlus.cs" />
     <Compile Include="Starters\SseStarter.cs" />
   </ItemGroup>
   <ItemGroup>

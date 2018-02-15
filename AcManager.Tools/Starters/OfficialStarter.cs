@@ -52,34 +52,6 @@ namespace AcManager.Tools.Starters {
                 return Mode.DefaultMode;
             }
 
-            if (StarterPlus.IsPatched(LauncherFilename)) {
-                var backupFilename = StarterPlus.BackupFilename;
-                if (!File.Exists(backupFilename)) {
-                    ModernDialog.ShowMessage(ToolsStrings.OfficialStarter_DownloadAndRestore, ToolsStrings.OfficialStarter_CannotRun, MessageBoxButton.OK);
-                    throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_RestoreOriginalLauncher);
-                }
-
-                try {
-                    File.Delete(LauncherFilename);
-                } catch (Exception) {
-                    if (ModernDialog.ShowMessage(
-                            ToolsStrings.OfficialStarter_RestoreLauncherManually,
-                            ToolsStrings.OfficialStarter_CannotRun, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
-                        WindowsHelper.ViewFile(backupFilename);
-                    }
-                    throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_RestoreOriginalLauncher);
-                }
-
-                File.Copy(backupFilename, LauncherFilename);
-                try {
-                    File.Delete(backupFilename);
-                } catch (Exception) {
-                    // ignored
-                }
-
-                return Mode.DefaultMode;
-            }
-
             if (ModernDialog.ShowMessage(ToolsStrings.OfficialStarter_GameIsTooOld, ToolsStrings.NotSupported, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                 throw new InformativeException(ToolsStrings.OfficialStarter_CannotRunGame, ToolsStrings.OfficialStarter_UpdateAC);
             }

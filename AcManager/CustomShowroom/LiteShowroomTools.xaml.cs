@@ -21,7 +21,6 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
-using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
@@ -200,7 +199,7 @@ namespace AcManager.CustomShowroom {
                     }
 
                     if (value == Mode.Skin && SkinItems == null) {
-                        if (!PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId)) {
+                        if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
                         /*} else {
@@ -317,7 +316,7 @@ namespace AcManager.CustomShowroom {
                 }
             }));
 
-            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(MagickPluginHelper.PluginId);
+            public bool MagickNetEnabled => PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick);
 
             [NotNull]
             public CarObject Car { get; }

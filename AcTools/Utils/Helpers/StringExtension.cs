@@ -6,14 +6,6 @@ using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
-    public class VersionComparer : IComparer<string> {
-        public static VersionComparer Instance = new VersionComparer();
-
-        public int Compare(string x, string y) {
-            return x.CompareAsVersionTo(y);
-        }
-    }
-
     public static class StringExtension {
         public static int ComputeLevenshteinDistance([CanBeNull] this string s, [CanBeNull] string t) {
             if (string.IsNullOrEmpty(s)) {
@@ -44,12 +36,85 @@ namespace AcTools.Utils.Helpers {
             return d[n, m];
         }
 
-        public static string RandomString(int length){
+        public static int Count([NotNull] this string s, params char[] c) {
+            var r = 0;
+            for (var i = 0; i < s.Length; i++) {
+                if (c.ArrayContains(s[i])) r++;
+            }
+            return r;
+        }
+
+        public static int CountLines([NotNull] this string s) {
+            var r = 1;
+            for (var i = 0; i < s.Length; i++) {
+                switch (s[i]) {
+                    case '\n':
+                        r++;
+                        break;
+                    case '\r':
+                        r++;
+                        if (i < s.Length - 1 && s[i + 1] == '\n') {
+                            i++;
+                        }
+                        break;
+                }
+            }
+            return r;
+        }
+
+        public static string[] ToLines([NotNull] this string s, bool trimSpaces = true, bool skipEmpty = true) {
+            var result = new string[s.CountLines()];
+
+            int i = 0, j = 0, l = 0, p = 0;
+            var n = false;
+            for (; i < s.Length; i++) {
+                var c = s[i];
+                switch (c) {
+                    case '\r':
+                        End();
+                        if (i < s.Length - 1 && s[i + 1] == '\n') {
+                            j = ++i + 1;
+                        }
+                        break;
+                    case '\n':
+                        End();
+                        break;
+                    default:
+                        if (!trimSpaces || !char.IsWhiteSpace(c)) {
+                            l = i + 1;
+                            n = true;
+                        } else if (!n) {
+                            j = l = i + 1;
+                        }
+                        break;
+                }
+            }
+
+            End();
+            if (p < result.Length){
+                Array.Resize(ref result, p);
+            }
+
+            return result.ToArray();
+
+            void End(){
+                if (!skipEmpty || (j < s.Length && l > j)){
+                    if (result.Length <= p){
+                        Array.Resize(ref result, p + 1);
+                    }
+                    result[p++] = j >= s.Length ? string.Empty : s.Substring(j, l - j);
+                }
+                j = l = i + 1;
+                n = false;
+            }
+        }
+
+        public static string RandomString(int length) {
             const string chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[MathUtils.Random(s.Length)]).ToArray());
         }
 
-        public static string GetChecksum([NotNull] this string s){
+        public static string GetChecksum([NotNull] this string s) {
             using (var sha1 = new SHA1Managed()) {
                 return sha1.ComputeHash(Encoding.UTF8.GetBytes(s)).ToHexString();
             }
@@ -69,6 +134,12 @@ namespace AcTools.Utils.Helpers {
             }
 
             return ap.Length - bp.Length;
+        }
+
+        [CanBeNull, ContractAnnotation("b:notnull=>notnull"), Pure]
+        public static string Or([CanBeNull] this string a, string b, params string[] c) {
+            return !string.IsNullOrWhiteSpace(a) ? a : !string.IsNullOrWhiteSpace(b) ? b
+                    : c.FirstOrDefault(s => !string.IsNullOrWhiteSpace(s));
         }
 
         [Pure]
@@ -280,31 +351,36 @@ namespace AcTools.Utils.Helpers {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
-                var n = part.IndexOfAny(new []{ '-', '…', '—', '–' });
+                var n = part.IndexOfAny(new[] { '-', '…', '—', '–' });
                 if (n == 0) {
-                    var m = part.IndexOfAny(new[]{ '-', '…', '—', '–' }, n + 1);
+                    var m = part.IndexOfAny(new[] { '-', '…', '—', '–' }, n + 1);
                     if (m != -1 && m != 1) {
                         n = m;
                     }
                 }
 
                 double fromValue, toValue;
-                if (n > 0 && n < part.Length - 1) { // "x-y"
+                if (n > 0 && n < part.Length - 1) {
+                    // "x-y"
                     if (FlexibleParser.TryParseDouble(part.Substring(0, n), out fromValue) &&
                             FlexibleParser.TryParseDouble(part.Substring(n + 1), out toValue)) {
                         return value >= fromValue && value <= toValue;
                     }
-                } else if (n < 0) { // "x"
+                } else if (n < 0) {
+                    // "x"
                     if (FlexibleParser.TryParseDouble(part, out fromValue)) {
                         return roundSingle ? value.RoughlyEquals(fromValue) : Equals(fromValue, value);
                     }
-                } else if (part.Length == 1) { // "-"
+                } else if (part.Length == 1) {
+                    // "-"
                     return true;
-                } else if (n == part.Length - 1) { // "x-"
+                } else if (n == part.Length - 1) {
+                    // "x-"
                     if (FlexibleParser.TryParseDouble(part.Substring(0, n), out fromValue)) {
                         return value >= fromValue;
                     }
-                } else { // "-x"
+                } else {
+                    // "-x"
                     if (FlexibleParser.TryParseDouble(part.Substring(n + 1), out toValue)) {
                         return value <= toValue;
                     }
@@ -319,20 +395,22 @@ namespace AcTools.Utils.Helpers {
             if (s == null) throw new ArgumentNullException(nameof(s));
 
             return s.Split(',', ';').Select(x => x.Trim()).Any(part => {
-                int n = part.IndexOfAny(new []{ '-', '…', '—', '–' }), fromValue, toValue;
+                int n = part.IndexOfAny(new[] { '-', '…', '—', '–' }), fromValue, toValue;
                 if (n == 0) {
-                    var m = part.IndexOfAny(new[]{ '-', '…', '—', '–' }, n + 1);
+                    var m = part.IndexOfAny(new[] { '-', '…', '—', '–' }, n + 1);
                     if (m != -1 && m != 1) {
                         n = m;
                     }
                 }
 
-                if (n > 0 && n < part.Length - 1) { // "x-y"
+                if (n > 0 && n < part.Length - 1) {
+                    // "x-y"
                     if (FlexibleParser.TryParseTime(part.Substring(0, n), out fromValue) &&
                             FlexibleParser.TryParseTime(part.Substring(n + 1), out toValue)) {
                         return value >= fromValue && value <= toValue;
                     }
-                } else if (n < 0) { // "x"
+                } else if (n < 0) {
+                    // "x"
                     if (FlexibleParser.TryParseTime(part, out fromValue)) {
                         if (roundSingle) {
                             var delimiters = part.Count(':');
@@ -341,13 +419,16 @@ namespace AcTools.Utils.Helpers {
 
                         return Equals(fromValue, value);
                     }
-                } else if (part.Length == 1) { // "-"
+                } else if (part.Length == 1) {
+                    // "-"
                     return true;
-                } else if (n == part.Length - 1) { // "x-"
+                } else if (n == part.Length - 1) {
+                    // "x-"
                     if (FlexibleParser.TryParseTime(part.Substring(0, n), out fromValue)) {
                         return value >= fromValue;
                     }
-                } else { // "-x"
+                } else {
+                    // "-x"
                     if (FlexibleParser.TryParseTime(part.Substring(n + 1), out toValue)) {
                         return value <= toValue;
                     }
@@ -378,24 +459,29 @@ namespace AcTools.Utils.Helpers {
                     }
                 }
 
-                if (n > 0 && n < part.Length - 1) { // "x-y"
+                if (n > 0 && n < part.Length - 1) {
+                    // "x-y"
                     if (FlexibleParser.TryParseInt(part.Substring(0, n), out fromValue) &&
                             FlexibleParser.TryParseInt(part.Substring(n + 1), out toValue)) {
                         fromValue = Math.Max(fromValue, min);
                         return Enumerable.Range(fromValue, 1 + Math.Min(toValue, max) - fromValue);
                     }
-                } else if (n < 0) { // "x"
+                } else if (n < 0) {
+                    // "x"
                     if (FlexibleParser.TryParseInt(part, out fromValue) && fromValue >= min && fromValue <= max) {
                         return new[] { fromValue };
                     }
-                } else if (part.Length == 1) { // "-"
+                } else if (part.Length == 1) {
+                    // "-"
                     return Enumerable.Range(min, 1 + max - min);
-                } else if (n == part.Length - 1) { // "x-"
+                } else if (n == part.Length - 1) {
+                    // "x-"
                     if (FlexibleParser.TryParseInt(part.Substring(0, n), out fromValue)) {
                         fromValue = Math.Max(fromValue, min);
                         return Enumerable.Range(fromValue, 1 + max - fromValue);
                     }
-                } else { // "-x"
+                } else {
+                    // "-x"
                     if (FlexibleParser.TryParseInt(part.Substring(n + 1), out toValue)) {
                         return Enumerable.Range(min, 1 + Math.Min(toValue, max) - min);
                     }
@@ -427,11 +513,11 @@ namespace AcTools.Utils.Helpers {
                 string c = (i < s.Length ? s[i] : (char)w).ToString(), t;
                 if (c == "\\" && i < s.Length - 1) {
                     (w > 0 ? u : r).Append((t = s[++i].ToString()) != "\\" && Array.IndexOf(Quotes, t[0]) == -1 ? c + t : t);
-                } else if (c[0] == w && w > 0){
+                } else if (c[0] == w && w > 0) {
                     r.Append(t = "___sub_" + dictionary.Count + "__");
                     dictionary[t] = u.ToString();
                     w = u.Clear().Length;
-                } else if (w > 0){
+                } else if (w > 0) {
                     u.Append(c);
                 } else if (Array.IndexOf(Quotes, c[0]) != -1) {
                     w = c == "“" ? '”' : c[0];

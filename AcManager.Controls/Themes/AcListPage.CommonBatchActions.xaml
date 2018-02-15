@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
-
+  
   <DataTemplate x:Key="Batch.AddTag" DataType="{x:Type ac:CommonBatchActions+BatchAction_AddTag}">
     <DataTemplate.Resources>
       <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
@@ -44,14 +44,14 @@
     <DataTemplate.Resources>
       <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
     </DataTemplate.Resources>
-    <mui:SpacingStackPanel Spacing="4">
+    <mui:SpacingStackPanel Spacing="4" d:DataContext="{d:DesignInstance {x:Type ac:CommonBatchActions+BatchAction_Pack`1}}">
       <!--<DockPanel VerticalAlignment="Top">
           <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
           <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" />
         </DockPanel>-->
       <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20" VerticalSpacing="8" HorizontalAlignment="Left">
         <CheckBox IsChecked="{Binding PackSeparately}">
-          <!--d:DataContext="{d:DesignInstance ac:CommonBatchActions+BatchAction_Pack}"-->
+          <!---->
           <Label Content="Pack separately" />
         </CheckBox>
       </mui:SpacingUniformGrid>

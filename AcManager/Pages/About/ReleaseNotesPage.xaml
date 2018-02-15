@@ -1,7 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.About.ReleaseNotesPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:about="clr-namespace:AcManager.Pages.About" xmlns:g="clr-namespace:AcManager"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance about:ReleaseNotesPage+ViewModel}">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:a="clr-namespace:AcManager.Pages.About" xmlns:g="clr-namespace:AcManager"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:ta="clr-namespace:AcManager.Tools.About" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance a:ReleaseNotesPage+ViewModel}">
   <Grid Style="{StaticResource ContentRoot}">
     <Grid>
       <Grid.ColumnDefinitions>
@@ -10,7 +11,7 @@
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
 
-      <!-- link list -->
+      <!-- Link list -->
       <ListBox ItemsSource="{Binding NotesList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" IsSynchronizedWithCurrentItem="True">
         <ListBox.ContextMenu>
           <ContextMenu>
@@ -18,7 +19,7 @@
           </ContextMenu>
         </ListBox.ContextMenu>
         <ListBox.ItemTemplate>
-          <DataTemplate>
+          <DataTemplate DataType="ta:PieceOfInformation">
             <Grid Margin="10 2 2 2">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -45,8 +46,8 @@
       <!-- Separator -->
       <mui:ModernTabSplitter Grid.Column="1" SaveKey="ReleaseNotes" />
 
-      <!-- content -->
-      <about:ReleaseNotesBlock Grid.Column="2" Margin="32 0 0 0" Piece="{Binding NotesList.CurrentItem}" />
+      <!-- Content -->
+      <a:ReleaseNotesBlock Grid.Column="2" Margin="32 0 0 0" Piece="{Binding NotesList.CurrentItem}" />
     </Grid>
   </Grid>
 </UserControl>

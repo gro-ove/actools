@@ -113,7 +113,7 @@ namespace AcManager.Tools.Starters {
                     await Task.Delay(100, cancellation);
                     if (cancellation.IsCancellationRequested) return null;
                 }
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return null;
             }
 

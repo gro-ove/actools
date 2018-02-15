@@ -142,7 +142,7 @@ namespace AcManager.Controls.ViewModels {
         public AsyncCommand<CancellationToken?> LogOutCommand => _logOutCommand ?? (_logOutCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
                 await SelectedUploader.ResetAsync(c ?? default(CancellationToken));
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
             } catch (WebException e) {
                 NonfatalError.Notify("Can’t log out", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {
@@ -159,7 +159,7 @@ namespace AcManager.Controls.ViewModels {
         public AsyncCommand<CancellationToken?> SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
                 await SelectedUploader.SignInAsync(c ?? default(CancellationToken));
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
             } catch (WebException e) {
                 NonfatalError.Notify("Can’t sign in", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {

@@ -25,7 +25,7 @@ namespace AcManager.Pages.Dialogs {
 
             private class Data {
                 public Dictionary<string, Tuple<bool, string[]>> Checked;
-                public string Filter = "kunos+";
+                public string Filter = "kunos+", TyresName, TyresShortName;
             }
 
             private readonly ISaveHelper _saveable;
@@ -52,7 +52,9 @@ namespace AcManager.Pages.Dialogs {
                 (_saveable = new SaveHelper<Data>("CreateTyres.ExampleCars", () => new Data {
                     Checked = CarsList.ToDictionary(x => x.Car.Id,
                             x => Tuple.Create(x.IsChecked, x.Tyres.Where(y => y.IsChecked).Select(y => y.Entry.DisplayName).ToArray())),
-                        Filter = CarsFilter
+                    Filter = CarsFilter,
+                    TyresName = TyresName,
+                    TyresShortName = TyresShortName,
                 }, o => {
                     for (var i = CarsList.Count - 1; i >= 0; i--) {
                         var c = CarsList[i];
@@ -64,6 +66,8 @@ namespace AcManager.Pages.Dialogs {
                         }
                     }
                     CarsFilter = o.Filter;
+                    TyresName = o.TyresName;
+                    TyresShortName = o.TyresShortName;
                 })).Initialize();
                 UpdateListFilter();
 
@@ -159,15 +163,11 @@ namespace AcManager.Pages.Dialogs {
                 set => Apply(value, ref _carsFilter, UpdateListFilterLater);
             }
 
-            public event EventHandler ListFilterUpdate;
-
             private IFilter<CarObject> _listFilterInstance;
             private readonly Busy _updateListFilterBusy = new Busy();
 
             private void UpdateListFilter() {
-                ListFilterUpdate?.Invoke(this, EventArgs.Empty);
-                _listFilterInstance = Filter.Create(CarObjectTester.Instance, CarsFilter ?? "*");
-
+                _listFilterInstance = Filter.Create(CarObjectTester.Instance, CarsFilter.Or(@"*"));
                 if (CarsView == null) return;
                 CarsView.Refresh();
                 CommonTyresList.ReplaceEverythingBy_Direct(GetCommonTyres());
@@ -200,19 +200,55 @@ namespace AcManager.Pages.Dialogs {
 
                     TotalTyresCount = CarsList.Sum(x => x.IsChecked ? x.CheckedCount : 0);
                     UniqueTyresCount = tyres.Length;
-                    Radius.Apply(ValuePadding);
-                    RimRadius.Apply(ValuePadding);
-                    Width.Apply(ValuePadding);
+                    Radius.Apply(ValuePadding, AcNormalizationLimits.Default.GetLimits(NeuralTyresOptions.InputRadius));
+                    RimRadius.Apply(ValuePadding, AcNormalizationLimits.Default.GetLimits(NeuralTyresOptions.InputRimRadius));
+                    Width.Apply(ValuePadding, AcNormalizationLimits.Default.GetLimits(NeuralTyresOptions.InputWidth));
 
                     if (SelectedTyres.Length > 0) {
                         var testKey = SelectedTestKey;
-                        var keys = SelectedTyres[0].MainSection.Keys.Concat(SelectedTyres[0].ThermalSection.Keys.Select(x => ThermalPrefix + x));
+                        var keys = SelectedTyres[0].MainSection.Keys.Concat(SelectedTyres[0].ThermalSection.Keys.Select(x => TyresExtension.ThermalPrefix + x));
                         TestKeys.ReplaceEverythingBy_Direct(keys.Where(x => !NeuralTyresOptions.Default.IgnoredKeys.ArrayContains(x)).Select(GetOutputKeyEntry));
                         SelectedTestKey = TestKeys.GetByIdOrDefault(testKey.Value) ?? testKey;
+                        TyresNames = tyres.GroupBy(x => x.Name).OrderByDescending(x => x.Count()).Select(x => x.Key).ToList();
+                        TyresShortNames = tyres.GroupBy(x => x.ShortName).OrderByDescending(x => x.Count()).Select(x => x.Key).ToList();
                     }
 
                     UpdateIncludedCounters();
                     SaveLater();
+                });
+            }
+
+            private List<string> _tyresNames;
+
+            public IReadOnlyList<string> TyresNames {
+                get => _tyresNames;
+                set => Apply(value.ToListIfItIsNot(), ref _tyresNames);
+            }
+
+            private List<string> _tyresShortNames;
+
+            public IReadOnlyList<string> TyresShortNames {
+                get => _tyresShortNames;
+                set => Apply(value.ToListIfItIsNot(), ref _tyresShortNames);
+            }
+
+            private string _tyresName;
+
+            public string TyresName {
+                get => _tyresName;
+                set => Apply(value, ref _tyresName, () => {
+                    SaveLater();
+                    RaiseInvalidatePlotModel();
+                });
+            }
+
+            private string _tyresShortName;
+
+            public string TyresShortName {
+                get => _tyresShortName;
+                set => Apply(value, ref _tyresShortName, () => {
+                    SaveLater();
+                    RaiseInvalidatePlotModel();
                 });
             }
 
@@ -261,11 +297,15 @@ namespace AcManager.Pages.Dialogs {
                 get => _selectedTestKey;
                 set => Apply(TestKeys.Contains(value) ? value
                         : TestKeys.GetByIdOrDefault(_selectedTestKey?.Value) ?? TestKeys.FirstOrDefault() ?? DefaultOutputKey,
-                        ref _selectedTestKey, () => InvalidatedPlotModel?.Invoke(this, EventArgs.Empty));
+                        ref _selectedTestKey, RaiseInvalidatePlotModel);
             }
             #endregion
 
-            public event EventHandler InvalidatedPlotModel;
+            private void RaiseInvalidatePlotModel() {
+                InvalidatePlotModel?.Invoke(this, EventArgs.Empty);
+            }
+
+            public event EventHandler InvalidatePlotModel;
 
             /*
              * TODO: SAVE SELECTED CARS

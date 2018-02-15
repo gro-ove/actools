@@ -8,6 +8,7 @@ using System.Windows.Input;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
+using AcTools;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;

@@ -33,7 +33,7 @@
 
               <mui:ReferenceSwitch Value="{Binding Parsed}" Margin="0 4 0 4">
                 <mui:ReferenceSwitch.Null>
-                  <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding FileInfo.Name, StringFormat='{}Failed to parse: {0}'}" />
+                  <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding DisplayName, StringFormat='{}Failed to parse: {0}'}" />
                 </mui:ReferenceSwitch.Null>
                 <mui:ReferenceSwitch.NonNull>
                   <DockPanel Background="Transparent" MouseLeftButtonDown="OnItemDoubleClick">

@@ -213,13 +213,16 @@
     </Grid>
 
     <!--<StackPanel Margin="0 24 24 0" Grid.Row="1" Grid.Column="0">
-            <TextBlock Style="{StaticResource Heading2}"
-                    Text="{Binding Manager.DisplayProgress, StringFormat={x:Static g:AppStrings.KunosCareer_ProgressFormat}}" Margin="0 0 0 8" />
-            <ProgressBar Maximum="1" Value="{Binding Manager.Progress}" Height="4" />
-        </StackPanel>-->
+      <TextBlock Style="{StaticResource Heading2}"
+          Text="{Binding Manager.DisplayProgress, StringFormat={x:Static g:AppStrings.KunosCareer_ProgressFormat}}" Margin="0 0 0 8" />
+      <ProgressBar Maximum="1" Value="{Binding Manager.Progress}" Height="4" />
+    </StackPanel>-->
 
-    <c:UserChampionshipBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding MainList.CurrentItem.Value}">
+    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+    <c:UserChampionshipBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" DataContext="{Binding MainList.CurrentItem.Value}"
+        d:DataContext="{d:DesignInstance t:UserChampionshipObject}">
       <c:UserChampionshipBlock.ButtonPlaceholder>
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
         <Button Style="{StaticResource Go.Button}" IsEnabled="{Binding IsAvailable}"
             Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}" Margin="0 4 0 0" />
       </c:UserChampionshipBlock.ButtonPlaceholder>

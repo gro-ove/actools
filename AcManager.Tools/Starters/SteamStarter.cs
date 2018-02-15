@@ -16,11 +16,13 @@ using Steamworks;
 
 namespace AcManager.Tools.Starters {
     public class SteamStarter : StarterBase {
+        private static bool _running;
         private static string _acRoot;
         private static string _dllsPath;
 
         private static async Task RunCallbacks() {
-            while (true) {
+            _running = true;
+            while (_running) {
                 SteamAPI.RunCallbacks();
                 await Task.Delay(500);
             }
@@ -86,9 +88,6 @@ namespace AcManager.Tools.Starters {
         public static bool IsInitialized { get; private set; }
 
         private static void InitializeLibraries() {
-            // Environment.SetEnvironmentVariable("PATH", $"{Environment.GetEnvironmentVariable("PATH")};{_dllsPath}");
-            // LoadLibrary(Path.Combine(_dllsPath, "CSteamworks.dll"));
-            // LoadLibrary(Path.Combine(_dllsPath, "steam_api.dll"));
             Kernel32.AddDllDirectory(_dllsPath);
             AppDomain.CurrentDomain.AssemblyResolve += OnAssemblyResolve;
             AppDomain.CurrentDomain.ProcessExit += OnExit;
@@ -171,6 +170,7 @@ namespace AcManager.Tools.Starters {
 
         private static void OnExit(object sender, EventArgs e) {
             try {
+                _running = false;
                 SteamFinish();
             } catch {
                 // ignored

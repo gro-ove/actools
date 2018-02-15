@@ -93,7 +93,7 @@ namespace AcManager.Pages.Selected {
                                 waiting.CancellationToken);
                     }
                 }
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return;
             } catch (WebException e) {
                 NonfatalError.Notify(AppStrings.Replay_CannotShare, ToolsStrings.Common_MakeSureInternetWorks, e);

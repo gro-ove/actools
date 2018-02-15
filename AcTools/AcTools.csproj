@@ -19,7 +19,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;PLATFORM_X86</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
@@ -28,7 +28,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;PLATFORM_X86</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -39,7 +39,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>DEBUG;TRACE;PLATFORM_X64</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
@@ -48,7 +48,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;PLATFORM_X64</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
@@ -98,6 +98,7 @@
     <Compile Include="AiFile\AiPoint.cs" />
     <Compile Include="AiFile\AiPointExtra.cs" />
     <Compile Include="AiFile\AiSplineGrid.cs" />
+    <Compile Include="BuildInformation.cs" />
     <Compile Include="CommonAcConsts.cs" />
     <Compile Include="DataAnalyzer\HashStorage.cs" />
     <Compile Include="DataAnalyzer\RulesSet.cs" />
@@ -130,11 +131,13 @@
     <Compile Include="Utils\AcPaths.cs" />
     <Compile Include="Utils\AcProcess.cs" />
     <Compile Include="Utils\DoubleRange.cs" />
+    <Compile Include="Utils\AssemblyResolver.cs" />
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
     <Compile Include="Utils\Helpers\TaskCache.cs" />
     <Compile Include="Utils\Helpers\TaskExtension.cs" />
+    <Compile Include="Utils\Helpers\VersionComparer.cs" />
     <Compile Include="Utils\InterlockExtra.cs" />
     <Compile Include="Utils\LazierFn.cs" />
     <Compile Include="Utils\LazierThis.cs" />

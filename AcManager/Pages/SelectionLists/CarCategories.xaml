@@ -11,8 +11,6 @@
   <ListBox.ItemTemplate>
     <DataTemplate DataType="{x:Type sl:SelectCategory}">
       <mui:Cell Width="100" Height="100" PreviewMouseLeftButtonDown="OnItemMouseDown" Background="Transparent" ToolTip="{Binding Description.Description}">
-        <!--<mui:BetterImage Filename="{Binding Description.Icon}" Margin="8 8 8 24" Width="40" Height="40" HorizontalAlignment="Center" ClearOnChange="True"
-            Effect="{DynamicResource TrackOutlineAloneEffect}" />-->
         <ContentPresenter Content="{Binding Description.Icon}" Width="68" Height="60" Margin="8 8 8 24" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding DisplayName}" Margin="4" Padding="0"
             VerticalAlignment="Bottom" />
@@ -31,7 +29,7 @@
   <ListBox.GroupStyle>
     <GroupStyle>
       <GroupStyle.HeaderTemplate>
-        <DataTemplate>
+        <DataTemplate DataType="GroupItem">
           <TextBlock Text="{Binding Name}" Style="{StaticResource Label}" Foreground="{DynamicResource WindowText}" Margin="0 4" />
         </DataTemplate>
       </GroupStyle.HeaderTemplate>

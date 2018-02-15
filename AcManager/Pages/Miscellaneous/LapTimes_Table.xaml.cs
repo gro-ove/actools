@@ -22,7 +22,7 @@ namespace AcManager.Pages.Miscellaneous {
     public partial class LapTimes_Table : ILoadableContent, IParametrizedUriContent {
         private string _filter;
         private string _key;
-        
+
         public void OnUri(Uri uri) {
             _filter = uri.GetQueryParam("Filter");
             _key = _filter;
@@ -75,8 +75,7 @@ namespace AcManager.Pages.Miscellaneous {
             }
 
             private bool FilterTest(object obj) {
-                var t = obj as LapTimeWrapped;
-                return t != null && _filter.Test(t);
+                return obj is LapTimeWrapped t && _filter.Test(t);
             }
 
             public IReadOnlyList<LapTimeWrapped> List { get; }

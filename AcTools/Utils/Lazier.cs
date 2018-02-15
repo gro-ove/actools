@@ -45,6 +45,10 @@ namespace AcTools.Utils {
             }
         }
 
+        public bool CheckIfIsSetting() {
+            return _settingTask != null;
+        }
+
         private readonly object _lock = new object();
 
         [CanBeNull]

@@ -20,14 +20,14 @@ namespace AcManager.Tools.Managers.Plugins {
             }
         }
 
-        private static void OnPluginDisabled(object sender, AppAddonEventHandlerArgs args) {
+        private static void OnPluginDisabled(object sender, PluginEventArgs args) {
             IPluginWrapper wrapper;
             if (Wrappers.TryGetValue(args.PluginId, out wrapper)) {
                 wrapper.Disable();
             }
         }
 
-        private static void OnPluginEnabled(object sender, AppAddonEventHandlerArgs args) {
+        private static void OnPluginEnabled(object sender, PluginEventArgs args) {
             IPluginWrapper wrapper;
             if (Wrappers.TryGetValue(args.PluginId, out wrapper)) {
                 wrapper.Enable();

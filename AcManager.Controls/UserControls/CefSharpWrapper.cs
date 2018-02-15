@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
+using AcTools;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using CefSharp.Wpf;
@@ -388,11 +389,6 @@ namespace AcManager.Controls.UserControls {
         }
     }
 
-    public static class CefSharpPluginInformation {
-        public static readonly string Id = "CefSharp";
-        // public static readonly string Id = "CefSharp-57.0.0-" + BuildInformation.Platform;
-    }
-
     internal class CefSharpWrapper : IWebSomething {
         #region Initialization
         public static readonly string DefaultUserAgent;
@@ -409,7 +405,7 @@ namespace AcManager.Controls.UserControls {
 
         public FrameworkElement Initialize() {
             if (!Cef.IsInitialized) {
-                var path = PluginsManager.Instance.GetPluginDirectory(CefSharpPluginInformation.Id);
+                var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
                 var settings = new CefSettings {
                     UserAgent = DefaultUserAgent,
                     MultiThreadedMessageLoop = true,

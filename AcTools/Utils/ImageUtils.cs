@@ -4,7 +4,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -53,29 +52,10 @@ namespace AcTools.Utils {
             return "loaded, version: " + MagickNET.Version;
         }
 
-        public static void LoadImageMagickAssembly(string dllFilename) {
-            if (IsMagickAsseblyLoaded) return;
-            _isMagickSupported = null;
-
-            try {
-                _imageMagickAssemblyFilename = dllFilename;
-                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
-            } catch (Exception) {
-                _imageMagickAssemblyFilename = null;
-                throw;
-            }
-        }
-
-        private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args) {
-            return args.Name.Contains("Magick.NET") && _imageMagickAssemblyFilename != null ? Assembly.LoadFrom(_imageMagickAssemblyFilename) : null;
-        }
-
-        public static void UnloadImageMagickAssembly() {
-            if (!IsMagickAsseblyLoaded) return;
-
-            _isMagickSupported = null;
-            AppDomain.CurrentDomain.AssemblyResolve -= CurrentDomain_AssemblyResolve;
-        }
+        public static AssemblyResolver MagickResolver { get; } = new AssemblyResolver {
+            Assemblies = { $"Magick.NET-Q8-{BuildInformation.Platform}" },
+            Imports = { $@"Magick.NET-Q8-{BuildInformation.Platform}.Native" }
+        };
 
         // Temporary solution?
         public static Func<Func<object>, object> SafeMagickWrapper { get; set; }
@@ -235,9 +215,7 @@ namespace AcTools.Utils {
                 if (!Directory.Exists(skinDirectory)) continue;
 
                 progress?.Report(new Tuple<string, double?>(id, (double)i / files.Length));
-                await Task.Run(() => {
-                    ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize, information);
-                }, cancellation);
+                await Task.Run(() => { ApplyPreview(file, Path.Combine(skinDirectory, "preview.jpg"), resize, information); }, cancellation);
                 if (cancellation.IsCancellationRequested) return;
             }
 
@@ -268,6 +246,7 @@ namespace AcTools.Utils {
 
             [CanBeNull]
             public string[] Tags;
+
             public double? Rating;
         }
 
@@ -285,7 +264,8 @@ namespace AcTools.Utils {
             }
         }
 
-        public static void SaveImage(MagickImage image, Stream destination, int? quality = null, ImageInformation exif = null, MagickFormat format = MagickFormat.Jpeg) {
+        public static void SaveImage(MagickImage image, Stream destination, int? quality = null, ImageInformation exif = null,
+                MagickFormat format = MagickFormat.Jpeg) {
             if (exif != null) {
                 var profile = new ExifProfile();
 
@@ -346,7 +326,8 @@ namespace AcTools.Utils {
         public static bool OptionConvertCombined = true;
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void ConvertImageMagick(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif, [CanBeNull] ImageFormat format) {
+        private static void ConvertImageMagick(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif,
+                [CanBeNull] ImageFormat format) {
             using (var image = new MagickImage(source)) {
                 if (resize.HasValue) {
                     var k = Math.Max((double)resize.Value.Height / image.Height, (double)resize.Value.Width / image.Width);
@@ -361,7 +342,7 @@ namespace AcTools.Utils {
             }
         }
 
-        private static Image CutOutAlpha(Bitmap image){
+        private static Image CutOutAlpha(Bitmap image) {
             return image.Clone(new RectangleF(0, 0, image.Width, image.Height), PixelFormat.Format24bppRgb);
         }
 
@@ -389,7 +370,7 @@ namespace AcTools.Utils {
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static void ConvertGdi(Stream source, Stream destination, Size? resize, int quality, ImageInformation exif, [CanBeNull] ImageFormat format) {
             using (var image = Image.FromStream(source))
-            using (var prepared = format == null || format.Guid == ImageFormat.Jpeg.Guid ? CutOutAlpha((Bitmap)image) : image){
+            using (var prepared = format == null || format.Guid == ImageFormat.Jpeg.Guid ? CutOutAlpha((Bitmap)image) : image) {
                 if (resize.HasValue) {
                     using (var resized = prepared.HighQualityResize(resize.Value)) {
                         SaveImage(resized, destination, quality, exif, format);

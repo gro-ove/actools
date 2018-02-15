@@ -209,8 +209,11 @@
       <ProgressBar Maximum="1" Value="{Binding Manager.Progress}" Height="4" />
     </StackPanel>
 
-    <c:KunosCareerBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="1" DataContext="{Binding MainList.CurrentItem.Value}">
+    <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+    <c:KunosCareerBlock Margin="0 8 0 0" Grid.Row="1" Grid.Column="1" DataContext="{Binding MainList.CurrentItem.Value}"
+        d:DataContext="{d:DesignInstance t:KunosCareerObject}">
       <c:KunosCareerBlock.ButtonPlaceholder>
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
         <Button Style="{StaticResource Go.Button}" IsEnabled="{Binding IsAvailable}"
             Command="{Binding Data.SelectSeriesCommand, Source={StaticResource DataContextProxy}}" Content="{Binding DisplayGo}" Margin="0 4 0 0" />
       </c:KunosCareerBlock.ButtonPlaceholder>

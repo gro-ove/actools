@@ -1,45 +1,45 @@
 ﻿<UserControl x:Class="AcManager.Pages.Selected.PopupAuthor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-        xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DesignHeight="300"
-        d:DesignWidth="300">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <mui:BindingProxy x:Key="Model" Data="{Binding}" />
-        </ResourceDictionary>
-    </UserControl.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
+    xmlns:c="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:selected="clr-namespace:AcManager.Pages.Selected" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <mui:BindingProxy x:Key="Model" Data="{Binding}" />
+    </ResourceDictionary>
+  </UserControl.Resources>
 
-    <Grid Style="{StaticResource ObjectDataGrid}" Width="400" Margin="0 4 4 4">
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-        </Grid.RowDefinitions>
+  <Grid Style="{StaticResource ObjectDataGrid}" Width="400" Margin="0 4 4 4" d:DataContext="{d:DesignInstance selected:SelectedAcJsonObjectPage}">
+    <Grid.RowDefinitions>
+      <RowDefinition />
+      <RowDefinition />
+      <RowDefinition />
+    </Grid.RowDefinitions>
 
-        <DockPanel Grid.Row="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
-            <DockPanel.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                            CommandParameter="author" />
-                </ContextMenu>
-            </DockPanel.ContextMenu>
-            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Author_TooltipExt}" />
-            <mui:BetterComboBox Text="{Binding SelectedObject.Author, UpdateSourceTrigger=LostFocus}" ItemsSource="{x:Static t:SuggestionLists.AuthorsListView}"
-                    Style="{StaticResource BetterComboBox.Borderless}" Placeholder="?" />
-        </DockPanel>
+    <DockPanel Grid.Row="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
+      <DockPanel.ContextMenu>
+        <ContextMenu DataContext="{Binding Data, Source={StaticResource Model}}"
+            d:DataContext="{d:DesignInstance {x:Type selected:SelectedAcObjectViewModel`1}}">
+          <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding FilterCommand}" CommandParameter="author" />
+        </ContextMenu>
+      </DockPanel.ContextMenu>
+      <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Author_TooltipExt}" />
+      <mui:BetterComboBox Text="{Binding SelectedAcJsonObject.Author, UpdateSourceTrigger=LostFocus}"
+          ItemsSource="{x:Static t:SuggestionLists.AuthorsListView}" Style="{StaticResource BetterComboBox.Borderless}" Placeholder="?" />
+    </DockPanel>
 
-        <DockPanel Grid.Row="1">
-            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Url_TooltipExt}" />
-            <mui:BetterTextBox Text="{Binding SelectedObject.Url, UpdateSourceTrigger=LostFocus}" Style="{StaticResource Borderless}" Placeholder="?" />
-        </DockPanel>
+    <DockPanel Grid.Row="1">
+      <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Url_TooltipExt}" />
+      <mui:BetterTextBox Text="{Binding SelectedAcJsonObject.Url, UpdateSourceTrigger=LostFocus}" Style="{StaticResource Borderless}" Placeholder="?" />
+    </DockPanel>
 
-        <DockPanel Grid.Row="2">
-            <TextBlock Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Version_TooltipExt}" />
-            <mui:BetterTextBox Text="{Binding SelectedObject.Version, UpdateSourceTrigger=LostFocus}" Mode="Version" Style="{StaticResource Borderless}"
-                    Placeholder="?" />
-        </DockPanel>
-    </Grid>
+    <DockPanel Grid.Row="2">
+      <TextBlock Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Version_TooltipExt}" />
+      <mui:BetterTextBox Text="{Binding SelectedAcJsonObject.Version, UpdateSourceTrigger=LostFocus}" Mode="Version" Style="{StaticResource Borderless}"
+          Placeholder="?" />
+    </DockPanel>
+  </Grid>
 </UserControl>

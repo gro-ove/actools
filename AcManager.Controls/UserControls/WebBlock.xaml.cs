@@ -14,7 +14,7 @@ namespace AcManager.Controls.UserControls {
         private readonly IWebSomething _something;
 
         private static IWebSomething GetSomething() {
-            if (PluginsManager.Instance.IsPluginEnabled(CefSharpPluginInformation.Id)) return new CefSharpWrapper();
+            if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)) return new CefSharpWrapper();
             return new WebBrowserWrapper();
         }
 

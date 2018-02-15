@@ -79,7 +79,8 @@ namespace AcManager.Pages.Dialogs {
             };
             onTrack.SetBinding(MenuItem.IsCheckedProperty, new Stored("/CreateTyres.TestOnTrack", true));
             Buttons = new Control[] {
-                CreateExtraDialogButton(AppStrings.Toolbar_Save, Model.SaveCommand, true),
+                CreateExtraDialogButton(AppStrings.Toolbar_Save, Model.SaveCommand, true,
+                        "Save trained Tyres Machine and use it later to generate any tyres you need (within range of known values and padding, of course)"),
                 carToTest == null ? null : new ButtonWithComboBox {
                     Content = AppStrings.Common_Test,
                     Command = Model.TestCommand,
@@ -91,7 +92,7 @@ namespace AcManager.Pages.Dialogs {
                         onTrack
                     }
                 },
-                CancelButton
+                CloseButton
             };
 
             this.OnActualUnload(Model);
@@ -101,8 +102,6 @@ namespace AcManager.Pages.Dialogs {
             }
 
             CarsListBox.SelectionChanged += OnSelectionChanged;
-            Model.ExampleCarsModel.ListFilterUpdate += OnListFilterUpdate;
-            Model.ExampleCarsModel.PropertyChanged += OnModelPropertyChanged;
         }
 
         private class ViewModel : NotifyPropertyChanged, IDisposable {
@@ -118,10 +117,10 @@ namespace AcManager.Pages.Dialogs {
 
                 TrainingModel = new TrainingViewModel();
                 ExampleCarsModel = new ExampleCarsViewModel(cars);
-                ExampleCarsModel.InvalidatedPlotModel += OnInvalidatedPlotModel;
+                ExampleCarsModel.InvalidatePlotModel += OnInvalidatePlotModel;
             }
 
-            private void OnInvalidatedPlotModel(object sender, EventArgs eventArgs) {
+            private void OnInvalidatePlotModel(object sender, EventArgs eventArgs) {
                 UpdatePlotModel();
             }
 
@@ -137,11 +136,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool IsGenerating {
                 get => _isGenerating;
-                set {
-                    if (Equals(value, _isGenerating)) return;
-                    _isGenerating = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isGenerating);
             }
 
             private async Task CreateTyresMachineAsync(Tuple<IProgress<AsyncProgressEntry>, CancellationToken> tuple) {
@@ -175,7 +170,7 @@ namespace AcManager.Pages.Dialogs {
                     var tyres = ExampleCarsModel.CarsList.SelectMany(x => x.IsChecked ? x.Tyres.Where(y => y.IsChecked) : new CarTyres[0])
                                                 .Select(x => x.Entry).Distinct(TyresEntry.TyresEntryComparer).Select(x => x.ToNeuralTyresEntry()).ToList();
                     GeneratedMachine = await TyresMachine.CreateAsync(tyres, options, new Progress(OnProgress), cancellation);
-                } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+                } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t create tyres machine", e);
                 } finally {
                     IsGenerating = false;
@@ -232,65 +227,43 @@ namespace AcManager.Pages.Dialogs {
 
             public SettingEntry SelectedOutputKey {
                 get => _selectedOutputKey;
-                set {
-                    if (OutputKeys.Contains(value) == false) {
-                        value = OutputKeys.GetByIdOrDefault(_selectedOutputKey?.Value) ?? OutputKeys.FirstOrDefault() ?? DefaultOutputKey;
-                    }
-                    if (Equals(value, _selectedOutputKey)) return;
-                    _selectedOutputKey = value;
-                    OnPropertyChanged();
-                    UpdatePlotModel();
-                }
+                set => Apply(OutputKeys.Contains(value) ? value
+                        : (OutputKeys.GetByIdOrDefault(_selectedOutputKey?.Value) ?? OutputKeys.FirstOrDefault() ?? DefaultOutputKey),
+                        ref _selectedOutputKey, UpdatePlotModel);
             }
 
             private TyresMachineGraphData _selectedOutputData;
 
             public TyresMachineGraphData SelectedOutputData {
                 get => _selectedOutputData;
-                set {
-                    if (Equals(value, _selectedOutputData)) return;
-                    _selectedOutputData = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedOutputData);
             }
 
             private string _selectedOutputUnits;
 
             public string SelectedOutputUnits {
                 get => _selectedOutputUnits;
-                set {
-                    if (Equals(value, _selectedOutputUnits)) return;
-                    _selectedOutputUnits = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedOutputUnits);
             }
 
             private int _selectedOutputTrackerDigits;
 
             public int SelectedOutputTrackerDigits {
                 get => _selectedOutputTrackerDigits;
-                set {
-                    if (Equals(value, _selectedOutputTrackerDigits)) return;
-                    _selectedOutputTrackerDigits = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedOutputTrackerDigits);
             }
 
             private int _selectedOutputTitleDigits;
 
             public int SelectedOutputTitleDigits {
                 get => _selectedOutputTitleDigits;
-                set {
-                    if (Equals(value, _selectedOutputTitleDigits)) return;
-                    _selectedOutputTitleDigits = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedOutputTitleDigits);
             }
 
             private readonly Busy _updatePlotModelBusy = new Busy();
 
             // Centimetres
-            private static readonly double RadiusToDisplayMultiplier = 100;
+            private static readonly double SizeToDisplayMultiplier = 100;
 
             private void UpdatePlotModel() {
                 _updatePlotModelBusy.TaskYield(async () => {
@@ -317,7 +290,9 @@ namespace AcManager.Pages.Dialogs {
                     string generatedData = null;
 
                     await Task.Run(() => {
-                        var tyres = machine.CreateTyresEntry(testWidthDenormalized, testRadiusDenormalized, testProfileDenormalized);
+                        var tyres = machine.CreateTyresEntry(testWidthDenormalized, testRadiusDenormalized, testProfileDenormalized,
+                                ExampleCarsModel.TyresName.Or(ExampleCarsModel.TyresNames.FirstOrDefault()),
+                                ExampleCarsModel.TyresShortName.Or(ExampleCarsModel.TyresShortNames.FirstOrDefault()));
                         var name = tyres.MainSection.GetNonEmpty("NAME")?.Replace(' ', '_').ToLowerInvariant() ?? @"tyres";
                         tyres.MainSection.Set("WEAR_CURVE", $"{name}_front.lut");
                         tyres.ThermalSection.Set("PERFORMANCE_CURVE", $"tcurve_{name}.lut");
@@ -329,33 +304,34 @@ namespace AcManager.Pages.Dialogs {
                         var profileRange = 5; // ProfileRange;
                         if (profileRange > 1) {
                             for (var i = 0; i < profileRange; i++) {
-                                list.Add(GetPiece(testWidthDenormalized, false, (i + 1d) / (profileRange + 1d), yRange));
+                                list.Add(GetPiece(false, (i + 1d) / (profileRange + 1d), yRange));
                             }
                         }
 
-                        list.Add(GetPiece(testWidthDenormalized, true, TestProfile, yRange));
+                        list.Add(GetPiece(true, TestProfile, yRange));
 
                         for (var i = ExampleCarsModel.SelectedTyres.Length - 1; i >= 0; i--) {
                             var tyre = ExampleCarsModel.SelectedTyres[i];
                             var tyreProfile = tyre.Radius - tyre.RimRadius;
-                            var value = (key.StartsWith(ThermalPrefix)
+                            var value = (key.StartsWith(TyresExtension.ThermalPrefix)
                                     ? tyre.ThermalSection.GetDouble(key.Substring(8), yRange.Minimum)
                                     : tyre.MainSection.GetDouble(key, yRange.Minimum)) * multiplier;
                             yRange.Update(value);
-                            if (Math.Abs(testWidthDenormalized - tyre.Width) < 0.01
-                                    && (profileRange > 1 || Math.Abs(testProfileDenormalized - tyreProfile) < 0.01)) {
-                                extra.Add(Tuple.Create(tyre.DisplaySource, tyreProfile * RadiusToDisplayMultiplier,
+                            if ((profileRange > 1 || Math.Abs(testProfileDenormalized - tyreProfile) < 0.01)
+                                    && Math.Abs(GraphWidth ? testRadiusDenormalized - tyre.Radius : testWidthDenormalized - tyre.Width) < 0.01) {
+                                extra.Add(Tuple.Create(tyre.DisplaySource, tyreProfile * SizeToDisplayMultiplier,
                                         profileRange > 1 ? profile.Normalize(tyreProfile) : -1d,
-                                        new DataPoint(tyre.Radius * RadiusToDisplayMultiplier, value)));
+                                        new DataPoint((GraphWidth ? tyre.Width : tyre.Radius) * SizeToDisplayMultiplier, value)));
                             }
                         }
 
                         var testValue = machine.Conjure(key, testWidthDenormalized, testRadiusDenormalized, testProfileDenormalized)
                                 * multiplier;
-                        extra.Add(Tuple.Create("Test", testProfileDenormalized * RadiusToDisplayMultiplier, -1d,
-                                new DataPoint(testRadiusDenormalized * RadiusToDisplayMultiplier, testValue)));
+                        extra.Add(Tuple.Create("Test", testProfileDenormalized * SizeToDisplayMultiplier, -1d,
+                                new DataPoint((GraphWidth ? testWidthDenormalized : testRadiusDenormalized) * SizeToDisplayMultiplier, testValue)));
                     });
 
+                    var thresholds = GraphWidth ? ExampleCarsModel.Width : ExampleCarsModel.Radius;
                     GeneratedTyresData = generatedData;
                     SelectedOutputUnits = units;
                     SelectedOutputTitleDigits = titleDigits;
@@ -363,20 +339,19 @@ namespace AcManager.Pages.Dialogs {
                     SelectedOutputData = new TyresMachineGraphData {
                         List = list,
                         ExtraPoints = extra,
-                        LeftThreshold = ExampleCarsModel.Radius.Minimum * RadiusToDisplayMultiplier,
-                        RightThreshold = ExampleCarsModel.Radius.Maximum * RadiusToDisplayMultiplier,
+                        LeftThreshold = thresholds.Minimum * SizeToDisplayMultiplier,
+                        RightThreshold = thresholds.Maximum * SizeToDisplayMultiplier,
                         YRange = yRange
                     };
 
-                    Tuple<string, double, ICollection<DataPoint>> GetPiece(double actualWidth, bool mainCurve, double profileNormalized, DoubleRange valueRange) {
-                        // var result = new DataPoint[(int)(GraphSteps / Math.Sqrt(ProfileRange))];
-                        var result = new DataPoint[100];
+                    Tuple<string, double, ICollection<DataPoint>> GetPiece(bool mainCurve, double profileNormalized, DoubleRange valueRange) {
+                        var result = new DataPoint[200];
                         for (var i = 0; i < result.Length; i++) {
-                            var w = actualWidth;
-                            var r = radius.Denormalize((double)i / (result.Length - 1));
+                            var w = GraphWidth ? width.Denormalize((double)i / (result.Length - 1)) : testWidthDenormalized;
+                            var r = GraphWidth ? testRadiusDenormalized : radius.Denormalize((double)i / (result.Length - 1));
                             var u = profile.Denormalize(profileNormalized.Saturate());
                             var value = machine.Conjure(key, w, r, u) * multiplier;
-                            result[i].X = r * RadiusToDisplayMultiplier;
+                            result[i].X = (GraphWidth ? w : r) * SizeToDisplayMultiplier;
                             result[i].Y = value;
                             valueRange.Update(value);
                         }
@@ -386,18 +361,18 @@ namespace AcManager.Pages.Dialogs {
                 });
             }
 
+            private StoredValue<bool> _graphWidth = Stored.Get("/CreateTyres.GraphWidth", false);
+
+            public bool GraphWidth {
+                get => _graphWidth.Value;
+                set => Apply(value, _graphWidth, UpdatePlotModel);
+            }
+
             private readonly StoredValue<double> _testWidth = Stored.Get("/CreateTyres.TestWidth", 0.5);
 
             public double TestWidth {
                 get => _testWidth.Value;
-                set {
-                    value = value.Saturate();
-                    if (Equals(value, _testWidth.Value)) return;
-                    _testWidth.Value = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayTestWidth));
-                    UpdatePlotModel();
-                }
+                set => Apply(value.Saturate(), _testWidth, UpdatePlotModel, linked: nameof(DisplayTestWidth));
             }
 
             public string DisplayTestWidth {
@@ -411,14 +386,7 @@ namespace AcManager.Pages.Dialogs {
 
             public double TestProfile {
                 get => _testProfile.Value;
-                set {
-                    value = value.Saturate();
-                    if (Equals(value, _testProfile.Value)) return;
-                    _testProfile.Value = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayTestProfile));
-                    UpdatePlotModel();
-                }
+                set => Apply(value.Saturate(), _testProfile, UpdatePlotModel, linked: nameof(DisplayTestProfile));
             }
 
             public string DisplayTestProfile {
@@ -432,14 +400,7 @@ namespace AcManager.Pages.Dialogs {
 
             public double TestRadius {
                 get => _testRadius.Value;
-                set {
-                    value = value.Saturate();
-                    if (Equals(value, _testRadius.Value)) return;
-                    _testRadius.Value = value;
-                    OnPropertyChanged();
-                    OnPropertyChanged(nameof(DisplayTestRadius));
-                    UpdatePlotModel();
-                }
+                set => Apply(value.Saturate(), _testRadius, UpdatePlotModel, linked: nameof(DisplayTestRadius));
             }
 
             public string DisplayTestRadius {
@@ -453,11 +414,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string GeneratedTyresData {
                 get => _generatedTyresData;
-                set {
-                    if (Equals(value, _generatedTyresData)) return;
-                    _generatedTyresData = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _generatedTyresData);
             }
             #endregion
 
@@ -480,8 +437,10 @@ namespace AcManager.Pages.Dialogs {
                         FileUtils.CopyRecursive(toBackup, backuped);
                     }
 
-                    machine.CreateTyresSet(c).Save(machine.TyresVersion, c, null, null, true);
-
+                    machine.CreateTyresSet(c,
+                            ExampleCarsModel.TyresName.Or(ExampleCarsModel.TyresNames.FirstOrDefault()),
+                            ExampleCarsModel.TyresShortName.Or(ExampleCarsModel.TyresShortNames.FirstOrDefault()))
+                           .Save(machine.TyresVersion, c, null, null, true);
                     if (Stored.GetValue("/CreateTyres.TestOnTrack", true)) {
                         await QuickDrive.RunAsync(c);
                     }
@@ -494,7 +453,10 @@ namespace AcManager.Pages.Dialogs {
 
             public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(() => {
                 PresetsManager.Instance.SavePresetUsingDialog(NeuralMachinesKey, NeuralMachinesCategory,
-                        GeneratedMachine?.ToByteArray(null) /* TODO: Icons and authorship */,
+                        GeneratedMachine?.ToByteArray(new TyresMachineExtras {
+                            TyresName = ExampleCarsModel.TyresName.Or(ExampleCarsModel.TyresNames.FirstOrDefault()),
+                            TyresShortName = ExampleCarsModel.TyresShortName.Or(ExampleCarsModel.TyresShortNames.FirstOrDefault())
+                        }),
                         null /* TODO: Editing mode */);
             }, () => GeneratedMachine?.OutputKeys.Count > 1));
             #endregion
@@ -520,10 +482,10 @@ namespace AcManager.Pages.Dialogs {
             public double PaddedMinimum { get; private set; }
             public double PaddedMaximum { get; private set; }
 
-            public void Apply(double padding) {
+            public void Apply(double padding, Tuple<double, double> limits) {
                 var pad = Range * padding;
-                PaddedMinimum = Minimum - pad;
-                PaddedMaximum = Maximum + pad;
+                PaddedMinimum = Math.Max(Minimum - pad, limits.Item1);
+                PaddedMaximum = Math.Min(Maximum + pad, limits.Item2);
 
                 var from = (PaddedMinimum * _multiplier).ToString(@"F1");
                 var to = (PaddedMaximum * _multiplier).ToString(@"F1");
@@ -591,35 +553,14 @@ namespace AcManager.Pages.Dialogs {
 
                 return null;
                 // return dialog.IsResultOk ? await dialog.Model.CreateTyresMachineAsync() : null;
-            } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 NonfatalError.Notify("Can’t create new tyres machine", e);
             }
 
             return null;
         }
 
-        private void OnListFilterUpdate(object sender, EventArgs e) {
-            _syncSelectionBusy.DoDelay(SyncSelectionNow, 100);
-        }
-
-        private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs args) {
-            if (args.PropertyName == nameof(ExampleCarsViewModel.CarsFilter)) {
-                // SyncSelection();
-            }
-        }
-
         private readonly Busy _syncSelectionBusy = new Busy();
-
-        private void SyncSelection() {
-            _syncSelectionBusy.Yield(SyncSelectionNow);
-        }
-
-        private void SyncSelectionNow() {
-            /*CarsListBox.SelectedItems.Clear();
-            foreach (var car in Model.ExampleCarsModel.CarsView) {
-                CarsListBox.SelectedItems.Add(car);
-            }*/
-        }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e) {
             _syncSelectionBusy.Do(() => {

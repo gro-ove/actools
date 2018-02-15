@@ -58,14 +58,14 @@ namespace FirstFloor.ModernUI {
 
         public event NotifyCollectionChangedEventHandler CollectionChanged {
             add {
-                if (CollectionChangedInner?.GetInvocationList().Any(x => ReferenceEquals(x, value)) != true) {
+                if (CollectionChangedInner?.GetInvocationList().Any(x => Equals(x, value)) != true) {
                     CollectionChangedInner += value;
                     _listenersCount++;
                     ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount - 1));
                 }
             }
             remove {
-                if (CollectionChangedInner?.GetInvocationList().Any(x => ReferenceEquals(x, value)) == true) {
+                if (CollectionChangedInner?.GetInvocationList().Any(x => Equals(x, value)) == true) {
                     CollectionChangedInner -= value;
                     _listenersCount--;
                     ListenersChanged?.Invoke(this, new ListenersChangedEventHandlerArgs(_listenersCount, _listenersCount + 1));

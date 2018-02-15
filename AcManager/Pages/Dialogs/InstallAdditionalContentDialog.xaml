@@ -61,7 +61,7 @@
           <mui:BooleanSwitch DockPanel.Dock="Top">
             <mui:BooleanSwitch.Value>
               <MultiBinding Converter="{StaticResource AndConverter}">
-                <Binding Source="{x:Static internal:AppKeyHolder.IsAllRight}" />
+                <Binding Source="{x:Static internal:InternalUtils.IsAllRight}" />
                 <Binding Path="DetectWhileInstalling" Source="{x:Static t:SettingsHolder.GenericMods}" />
                 <Binding Path="GenericModSupported" />
               </MultiBinding>
@@ -137,7 +137,7 @@
           <mui:BooleanSwitch DockPanel.Dock="Top">
             <mui:BooleanSwitch.Value>
               <MultiBinding Converter="{StaticResource AndConverter}">
-                <Binding Source="{x:Static internal:AppKeyHolder.IsAllRight}" />
+                <Binding Source="{x:Static internal:InternalUtils.IsAllRight}" />
                 <Binding Path="DetectWhileInstalling" Source="{x:Static t:SettingsHolder.GenericMods}" />
                 <Binding Path="GenericModSupported" />
               </MultiBinding>
@@ -303,27 +303,14 @@
 
   <DockPanel>
 
-    <mui:BooleanSwitch x:Name="SevenZipWarning" Visibility="Collapsed" Value="{Binding IsSevenZipPluginMissing}" DockPanel.Dock="Top">
+    <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding Plugins.IsReady, Converter={StaticResource InvertBooleanConverter}}">
       <c:MessageBlock Margin="0 0 0 20">
         <DockPanel>
-          <mui:BbCodeBlock Text="Turn on 7-Zip plugin to improve installation performance and let CM to unpack all types of archives:" DockPanel.Dock="Top"
+          <mui:BbCodeBlock Text="With 7-Zip plugin, you can improve installation performance and let CM to unpack all types of archives:" DockPanel.Dock="Top"
               Margin="0 0 0 8" />
-          <mui:Switch Value="{Binding RecommendedListView.Count}">
+          <mui:Switch Value="{Binding Plugins.ListView.Count}">
             <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
-            <ItemsControl ItemsSource="{Binding RecommendedListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 -20 -20" />
-          </mui:Switch>
-        </DockPanel>
-      </c:MessageBlock>
-    </mui:BooleanSwitch>
-
-    <mui:BooleanSwitch x:Name="SevenZipObsoleteWarning" Visibility="Collapsed" Value="{Binding IsSevenZipPluginObsolete}" DockPanel.Dock="Top">
-      <c:MessageBlock Margin="0 0 0 20">
-        <DockPanel>
-          <mui:BbCodeBlock Text="There is a new version of 7-Zip plugin available! Please, update it to ensure it would work properly:" DockPanel.Dock="Top"
-              Margin="0 0 0 8" />
-          <mui:Switch Value="{Binding RecommendedListView.Count}">
-            <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
-            <ItemsControl ItemsSource="{Binding RecommendedListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 -20 -20" />
+            <ItemsControl ItemsSource="{Binding Plugins.ListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 0 -20" />
           </mui:Switch>
         </DockPanel>
       </c:MessageBlock>
@@ -333,7 +320,23 @@
         ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
       <ListBox.ItemTemplate>
         <DataTemplate DataType="t:ContentInstallationEntry">
-          <Border ClipToBounds="True">
+          <Border ClipToBounds="True" Background="Transparent">
+            <Border.ContextMenu>
+              <ContextMenu>
+                <MenuItem Command="{Binding CopySourceToClipboardCommand}">
+                  <MenuItem.Header>
+                    <DockPanel MaxWidth="400">
+                      <TextBlock Text="From: " />
+                      <mui:PathTrimmingTextBlock Text="{Binding Source}" />
+                    </DockPanel>
+                  </MenuItem.Header>
+                </MenuItem>
+                <MenuItem Header="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
+                <Separator />
+                <MenuItem Header="Restart" Command="{Binding RetryCommand}" />
+                <MenuItem Header="Cancel" Command="{Binding CancelCommand}" />
+              </ContextMenu>
+            </Border.ContextMenu>
             <Border.LayoutTransform>
               <ScaleTransform x:Name="PART_CollapseEntry" ScaleX="1" ScaleY="1" />
             </Border.LayoutTransform>
@@ -520,6 +523,10 @@
               <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
               <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
 
+              <Storyboard x:Key="ExpandEverything" TargetProperty="(ScaleTransform.ScaleY)">
+                <DoubleAnimation From="0" To="1" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_CollapseEntry"
+                    EasingFunction="{StaticResource StandardEase}" FillBehavior="Stop" />
+              </Storyboard>
               <Storyboard x:Key="CollapseEverything" TargetProperty="(ScaleTransform.ScaleY)">
                 <DoubleAnimation To="0" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_CollapseEntry"
                     EasingFunction="{StaticResource StandardEase}" />
@@ -613,6 +620,9 @@
             </ResourceDictionary>
           </DataTemplate.Resources>
           <DataTemplate.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+              <BeginStoryboard Storyboard="{StaticResource ExpandEverything}" />
+            </EventTrigger>
             <DataTrigger Binding="{Binding IsFailed}" Value="True">
               <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
               <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />

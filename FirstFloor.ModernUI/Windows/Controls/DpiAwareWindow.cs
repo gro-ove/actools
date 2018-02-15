@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -20,12 +19,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static event EventHandler NewWindowCreated;
 
         protected DpiAwareWindow() {
+            Logging.SetParent(this);
+
             SizeChanged += OnSizeChanged;
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
             SystemEvents.DisplaySettingsChanged += OnSystemEventsDisplaySettingsChanged;
 
             Owner = GetDefaultOwner(true);
+            Logging.Debug($"New window of type {GetType().Name} created! Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));
 
             // Remove that annoying backspace-to-go-back gesture
             var backGestures = NavigationCommands.BrowseBack.InputGestures;
@@ -60,6 +62,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            ((DpiAwareWindow)d).Logging.Debug("Title: " + e.NewValue);
             ((Window)d).Title = e.NewValue as string ?? "";
         }
 
@@ -81,9 +84,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 _dimmedOwner = null;
             }
+
+            Logging.Debug("Dimmed owner: " + (_dimmedOwner == null ? @"none" : $@"W{_dimmedOwner?.GetHashCode():X8}"));
         }
 
         private void UndimOwner() {
+            Logging.Debug("Dimmed owner: " + (_dimmedOwner == null ? @"none" : $@"W{_dimmedOwner?.GetHashCode():X8}"));
             if (_dimmedOwner != null) {
                 _dimmedOwner.IsDimmed = false;
                 _dimmedOwner = null;
@@ -102,9 +108,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Various show-related stuff, including improved ShowDialog() method
         private Window GetDefaultOwner(bool allowCurrent) {
             var app = Application.Current;
-            return app == null || ReferenceEquals(app.MainWindow, this) ? null
+            return Logging.Log("Default owner", app == null || ReferenceEquals(app.MainWindow, this) ? null
                     : app.Windows.OfType<DpiAwareWindow>().Where(x => allowCurrent || !ReferenceEquals(x, Owner)).FirstOrDefault(x => x.IsActive)
-                            ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null);
+                            ?? (app.MainWindow?.IsVisible == true ? app.MainWindow : null));
         }
 
         public static readonly DependencyProperty DoNotAttachToWaitingDialogsProperty = DependencyProperty.Register(nameof(DoNotAttachToWaitingDialogs),
@@ -130,9 +136,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Owner = GetDefaultOwner(false);
             }
 
+            Logging.Debug("Show dialog! Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));
             DimOwner();
 
             if (Owner == null || Owner.Visibility == Visibility.Hidden) {
+                Logging.Debug("Show in taskbar: owner is either missing or hidden");
                 ShowInTaskbar = true;
             }
 
@@ -160,6 +168,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected sealed override void OnClosing(CancelEventArgs e) {
+            Logging.Debug("Closing… Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));
             base.OnClosing(e);
             if (e.Cancel) return;
             OnClosingOverride(e);
@@ -168,11 +177,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     Owner?.Activate();
                 }
             } catch (Exception ex) {
-                Logging.Warning(ex);
+                Logging.Error(ex);
             }
         }
 
         protected sealed override void OnClosed(EventArgs e) {
+            Logging.Here();
             UndimOwner();
             SystemEvents.DisplaySettingsChanged -= OnSystemEventsDisplaySettingsChanged;
             base.OnClosed(e);
@@ -182,13 +192,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Safer implementation of the Close() method
         public new void Close() {
+            Logging.Here();
             try {
                 UndimOwner();
                 base.Close();
             } catch (InvalidOperationException e) {
-                Logging.Warning(e.Message);
+                Logging.Error(e.Message);
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Error(e);
             }
         }
         #endregion
@@ -220,13 +231,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected sealed override void OnLocationChanged(EventArgs e) {
             Logging.Here();
             base.OnLocationChanged(e);
+            UpdateActualLocation();
             SaveLocationAndSize();
             OnLocationChangedOverride();
         }
 
         private void OnSizeChanged(object sender, SizeChangedEventArgs e) {
             Logging.Here();
-            UpdateSizeForDpiAwareness();
+            UpdateReferenceSizeForDpiAwareness();
+            UpdateActualLocation();
             SaveLocationAndSize();
             OnSizeChangedOverride(e);
         }
@@ -234,6 +247,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         protected sealed override void OnStateChanged(EventArgs e) {
             Logging.Here();
             base.OnStateChanged(e);
+            UpdateActualLocation();
             SaveLocationAndSize();
             OnStateChangedOverride();
         }
@@ -251,40 +265,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Topmost = true;
             Topmost = false;
             Focus();
-        }
-
-        private LocalLogging Logging = new LocalLogging();
-
-        private class LocalLogging {
-            public string Id;
-
-            public void Write(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                if (!OptionVerboseMode) return;
-                Helpers.Logging.Write('→', $"({Id}) {s}", m, p, l);
-            }
-
-            public void Debug(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                if (!OptionVerboseMode) return;
-                Helpers.Logging.Write('…', $"({Id}) {s}", m, p, l);
-            }
-
-            public void Here([CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                if (!OptionVerboseMode) return;
-                Helpers.Logging.Write('⊕', $"({Id}) Here", m, p, l);
-            }
-
-            public void Warning(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                if (!OptionVerboseMode) return;
-                Helpers.Logging.Write('⚠', $"({Id}) {s}", m, p, l);
-            }
-
-            public void Error(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                Helpers.Logging.Write('×', $"({Id}) {s}", m, p, l);
-            }
-
-            public void Unexpected(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
-                Helpers.Logging.Write('☠', $"({Id}) {s}", m, p, l);
-            }
         }
     }
 }

@@ -27,10 +27,6 @@ namespace AcManager.Tools.Starters {
                 return new NaiveStarter();
             }
 
-            if (type == SettingsHolder.DriveSettings.StarterPlusType) {
-                return new StarterPlus();
-            }
-
             if (type == SettingsHolder.DriveSettings.SseStarterType) {
                 return new SseStarter();
             }

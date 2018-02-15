@@ -77,6 +77,7 @@ namespace AcTools.Render.Forward {
             set {
                 if (Equals(value, _colorGradingData)) return;
                 _colorGradingData = value;
+                _colorGradingSet = false;
                 IsDirty = true;
                 OnPropertyChanged();
             }

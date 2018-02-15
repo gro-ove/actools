@@ -14,32 +14,45 @@ namespace FirstFloor.ModernUI.Presentation {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        protected bool Apply<T>(T value, ref T backendValue, [CallerMemberName] string propertyName = null) {
+        private void RaiseApplyEvent(string propertyName, string[] linked) {
+            OnPropertyChanged(propertyName);
+            if (linked != null) {
+                for (var i = 0; i < linked.Length; i++) {
+                    OnPropertyChanged(linked[i]);
+                }
+            }
+        }
+
+        protected bool Apply<T>(T value, ref T backendValue, [CallerMemberName] string propertyName = null,
+                params string[] linked) {
             if (Equals(value, backendValue)) return false;
             backendValue = value;
-            OnPropertyChanged(propertyName);
+            RaiseApplyEvent(propertyName, linked);
             return true;
         }
 
-        protected bool Apply<T>(T value, ref T backendValue, Action onChangeCallback, [CallerMemberName] string propertyName = null) {
+        protected bool Apply<T>(T value, ref T backendValue, Action onChangeCallback, [CallerMemberName] string propertyName = null,
+                params string[] linked) {
             if (Equals(value, backendValue)) return false;
             backendValue = value;
-            OnPropertyChanged(propertyName);
+            RaiseApplyEvent(propertyName, linked);
             onChangeCallback();
             return true;
         }
 
-        protected bool Apply<T>(T value, StoredValue<T> backendValue, [CallerMemberName] string propertyName = null) {
+        protected bool Apply<T>(T value, StoredValue<T> backendValue, [CallerMemberName] string propertyName = null,
+                params string[] linked) {
             if (Equals(value, backendValue)) return false;
             backendValue.Value = value;
-            OnPropertyChanged(propertyName);
+            RaiseApplyEvent(propertyName, linked);
             return true;
         }
 
-        protected bool Apply<T>(T value, StoredValue<T> backendValue, Action onChangeCallback, [CallerMemberName] string propertyName = null) {
+        protected bool Apply<T>(T value, StoredValue<T> backendValue, Action onChangeCallback, [CallerMemberName] string propertyName = null,
+                params string[] linked) {
             if (Equals(value, backendValue)) return false;
             backendValue.Value = value;
-            OnPropertyChanged(propertyName);
+            RaiseApplyEvent(propertyName, linked);
             onChangeCallback();
             return true;
         }

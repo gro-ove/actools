@@ -79,7 +79,6 @@ namespace AcTools.DataFile {
         [CanBeNull, Pure, Localizable(false)]
         public string GetNonEmpty([NotNull, LocalizationRequired(false)] string key) {
             if (!ContainsKey(key)) return null;
-
             var value = base[key];
             return string.IsNullOrWhiteSpace(value) ? null : value;
         }

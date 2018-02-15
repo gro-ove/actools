@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -69,31 +68,31 @@ namespace AcTools.Render.Kn5SpecificForward {
         private Dictionary<string, TargetResourceTexture> _paintShopTextures,
                 _paintShopMaskedTextures;
 
+        private object _paintShopEffectLock = new object();
+
         [CanBeNull]
         private EffectSpecialPaintShop _paintShopEffect;
 
         private void UseEffect(Action<EffectSpecialPaintShop> fn, TargetResourceTexture tex) {
-            if (_paintShopEffect == null) {
-                _paintShopEffect = DeviceContextHolder.GetEffect<EffectSpecialPaintShop>();
+            lock (_paintShopEffectLock) {
+                var effect = _paintShopEffect;
+                if (effect == null) {
+                    effect = _paintShopEffect = DeviceContextHolder.GetEffect<EffectSpecialPaintShop>();
+                    effect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(OptionPaintShopRandomSize, OptionPaintShopRandomSize));
+                }
 
-                var s = Stopwatch.StartNew();
-                _paintShopEffect.FxNoiseMap.SetResource(DeviceContextHolder.GetRandomTexture(OptionPaintShopRandomSize, OptionPaintShopRandomSize));
-                AcToolsLogging.Write($"Random texture: {s.Elapsed.TotalMilliseconds:F1} ms");
-            }
-
-            using (DeviceContextHolder.SaveRenderTargetAndViewport()) {
-                DeviceContextHolder.PrepareQuad(_paintShopEffect.LayoutPT);
-                DeviceContext.Rasterizer.SetViewports(tex.Viewport);
-                DeviceContext.OutputMerger.SetTargets(tex.TargetView);
-                DeviceContext.ClearRenderTargetView(tex.TargetView, new Color4(0f, 0f, 0f, 0f));
-                DeviceContext.OutputMerger.BlendState = null;
-                DeviceContext.OutputMerger.DepthStencilState = null;
-                DeviceContext.Rasterizer.State = null;
-
-                _paintShopEffect.FxNoiseMultipler.Set((float)Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
-                _paintShopEffect.FxSize.Set(new Vector4(tex.Width, tex.Height, 1f / tex.Width, 1f / tex.Height));
-
-                fn?.Invoke(_paintShopEffect);
+                using (DeviceContextHolder.SaveRenderTargetAndViewport()) {
+                    DeviceContextHolder.PrepareQuad(effect.LayoutPT);
+                    DeviceContext.Rasterizer.SetViewports(tex.Viewport);
+                    DeviceContext.OutputMerger.SetTargets(tex.TargetView);
+                    DeviceContext.ClearRenderTargetView(tex.TargetView, new Color4(0f, 0f, 0f, 0f));
+                    DeviceContext.OutputMerger.BlendState = null;
+                    DeviceContext.OutputMerger.DepthStencilState = null;
+                    DeviceContext.Rasterizer.State = null;
+                    effect.FxNoiseMultipler.Set((float)Math.Max(tex.Width, tex.Height) / OptionPaintShopRandomSize);
+                    effect.FxSize.Set(new Vector4(tex.Width, tex.Height, 1f / tex.Width, 1f / tex.Height));
+                    fn?.Invoke(effect);
+                }
             }
         }
 
@@ -232,7 +231,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private bool OverrideTexture([NotNull] PaintShopDestination destination, [NotNull] IReadOnlyList<Step> update, Size size) {
             var car = CarNode;
-            if (car == null) return false;
+            if (car == null || Disposed) return false;
 
             var tx = GetTexture(destination.TextureName, destination.PreferredFormat.IsHdr(), update, size);
             if (destination.OutputMask != null || destination.AnyChannelAdjusted || destination.AnyChannelMapped) {
@@ -317,6 +316,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         private Dictionary<string, Tuple<ShaderResourceView, Size>> _paintShopCache;
+        private object _paintShopCacheLock = new object();
 
         private static Size? GetSize([NotNull] ResourceView view) {
             var d = (view.Resource as Texture2D)?.Description;
@@ -350,21 +350,25 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             var key = GetCacheKey(source, maxSize);
             if (key != null) {
-                if (_paintShopCache == null) {
-                    _paintShopCache = new Dictionary<string, Tuple<ShaderResourceView, Size>>();
-                }
+                lock (_paintShopCacheLock) {
+                    if (_paintShopCache == null) {
+                        _paintShopCache = new Dictionary<string, Tuple<ShaderResourceView, Size>>();
+                    }
 
-                if (_paintShopCache.TryGetValue(key, out var value)) {
-                    size = value.Item2;
-                    cached = true;
-                    return value.Item1;
+                    if (_paintShopCache.TryGetValue(key, out var value)) {
+                        size = value.Item2;
+                        cached = true;
+                        return value.Item1;
+                    }
                 }
             }
 
             var decoded = GetBytes(source);
             if (decoded == null) {
                 if (key != null) {
-                    _paintShopCache[key] = Tuple.Create((ShaderResourceView)null, default(Size));
+                    lock (_paintShopCacheLock) {
+                        _paintShopCache[key] = Tuple.Create((ShaderResourceView)null, default(Size));
+                    }
                 }
 
                 size = default(Size);
@@ -394,7 +398,9 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             if (key != null) {
-                _paintShopCache[key] = Tuple.Create(original, size);
+                lock (_paintShopCacheLock) {
+                    _paintShopCache[key] = Tuple.Create(original, size);
+                }
             }
 
             cached = key != null;
@@ -463,7 +469,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         [CanBeNull]
         private SourceReady GetOriginal([NotNull] PaintShopSource source, int maxSize,
                 Func<ShaderResourceView, ShaderResourceView> preparation = null) {
-            if (MainSlot.Kn5 == null) return null;
+            if (MainSlot.Kn5 == null || Disposed) return null;
 
             try {
                 ShaderResourceView original;
@@ -935,7 +941,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             public PaintShopAction([NotNull] PaintShopDestination destination,
                     [NotNull] Step drawAction, Size size, int? maxPreviewSize = null) {
                 Destination = destination;
-                DrawAction = new[]{ drawAction };
+                DrawAction = new[] { drawAction };
                 Size = size;
                 MaxPreviewSize = maxPreviewSize;
             }
@@ -997,8 +1003,11 @@ namespace AcTools.Render.Kn5SpecificForward {
             _paintShopMaskedTextures = null;
             _paintShopIndependantFix?.DisposeEverything();
             _paintShopIndependantFix = null;
-            _paintShopCache?.Select(x => x.Value.Item1).DisposeEverything();
-            _paintShopCache = null;
+
+            lock (_paintShopCacheLock) {
+                _paintShopCache?.Select(x => x.Value.Item1).DisposeEverything();
+                _paintShopCache = null;
+            }
 
             _paintShopFlags?.DisposeEverything();
             _patternFontsCollections?.DisposeEverything();

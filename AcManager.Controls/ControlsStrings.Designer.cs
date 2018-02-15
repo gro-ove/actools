@@ -24,7 +24,7 @@ namespace AcManager.Controls {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -187,7 +187,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Geo Tags:.
+        ///   Looks up a localized string similar to Geo tags:.
         /// </summary>
         public static string AcObject_TrackGeoTagsLabel {
             get {
@@ -376,7 +376,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open In Custom Showroom.
+        ///   Looks up a localized string similar to Open in Custom Showroom.
         /// </summary>
         public static string Car_OpenInCustomShowroom {
             get {
@@ -385,7 +385,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open In Showroom.
+        ///   Looks up a localized string similar to Open in showroom.
         /// </summary>
         public static string Car_OpenInShowroom {
             get {
@@ -403,7 +403,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make Independent.
+        ///   Looks up a localized string similar to Make independent.
         /// </summary>
         public static string CarParent_MakeIndependent {
             get {
@@ -457,7 +457,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change Skin.
+        ///   Looks up a localized string similar to Change skin.
         /// </summary>
         public static string Common_ChangeSkin {
             get {
@@ -484,7 +484,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Developer Tools.
+        ///   Looks up a localized string similar to Developer tools.
         /// </summary>
         public static string Common_DevTools {
             get {
@@ -646,7 +646,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Offline Mode.
+        ///   Looks up a localized string similar to Offline mode.
         /// </summary>
         public static string Common_OfflineMode {
             get {
@@ -745,7 +745,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  lap.
+        ///   Looks up a localized string similar to  round.
         /// </summary>
         public static string Common_RoundPostfix {
             get {
@@ -772,7 +772,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Try Again.
+        ///   Looks up a localized string similar to Try again.
         /// </summary>
         public static string Common_TryAgain {
             get {
@@ -817,7 +817,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Built-in Presets.
+        ///   Looks up a localized string similar to Built-in presets.
         /// </summary>
         public static string Controls_BuiltInPresets {
             get {
@@ -970,7 +970,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin)..
+        ///   Looks up a localized string similar to Load “{0}”? Current values will be replaced (but later could be restored from the Recycle Bin)..
         /// </summary>
         public static string Controls_LoadPresetWarning {
             get {
@@ -1123,7 +1123,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User Presets.
+        ///   Looks up a localized string similar to User presets.
         /// </summary>
         public static string Controls_UserPresets {
             get {
@@ -1204,7 +1204,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset To Recommended Values.
+        ///   Looks up a localized string similar to Reset to recommended values.
         /// </summary>
         public static string CustomShowroom_AmbientShadows_Reset {
             get {
@@ -1213,7 +1213,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update Ambient Shadows.
+        ///   Looks up a localized string similar to Update ambient shadows.
         /// </summary>
         public static string CustomShowroom_AmbientShadows_Update {
             get {
@@ -1231,7 +1231,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ambient Shadow.
+        ///   Looks up a localized string similar to Ambient shadow.
         /// </summary>
         public static string CustomShowroom_AmbientShadowsHeader {
             get {
@@ -1240,7 +1240,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Is Encrypted.
+        ///   Looks up a localized string similar to Data is encrypted.
         /// </summary>
         public static string CustomShowroom_AmbientShadowsSize_EncryptedData {
             get {
@@ -1406,11 +1406,11 @@ namespace AcManager.Controls {
         ///Visible: [b]{4}[/b]
         ///
         ///Transparent: [b]{5}[/b]
-        ///Casting Shadows: [b]{6}[/b]
+        ///Casting shadows: [b]{6}[/b]
         ///
         ///Layer: [b]{7}[/b]
-        ///LOD In: [b]{8}[/b]
-        ///LOD In: [b]{9}[/b]
+        ///LOD in: [b]{8}[/b]
+        ///LOD in: [b]{9}[/b]
         ///
         ///Material: [b]{10}[/b].
         /// </summary>
@@ -1565,7 +1565,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to View Mapping.
+        ///   Looks up a localized string similar to View mapping.
         /// </summary>
         public static string CustomShowroom_ViewMapping {
             get {
@@ -1619,7 +1619,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Export Texture Mapping.
+        ///   Looks up a localized string similar to Export texture mapping.
         /// </summary>
         public static string CustomShowroom_ViewMapping_Export {
             get {
@@ -1673,7 +1673,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as Country.
+        ///   Looks up a localized string similar to Save as country.
         /// </summary>
         public static string FindInformation_SaveAsCountry {
             get {
@@ -1682,7 +1682,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as Description.
+        ///   Looks up a localized string similar to Save as description.
         /// </summary>
         public static string FindInformation_SaveAsDescription {
             get {
@@ -1691,7 +1691,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as Year.
+        ///   Looks up a localized string similar to Save as year.
         /// </summary>
         public static string FindInformation_SaveAsYear {
             get {
@@ -1718,7 +1718,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Image As.
+        ///   Looks up a localized string similar to Save image as.
         /// </summary>
         public static string ImageViewer_Save_Title {
             get {
@@ -1781,7 +1781,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Join Using {0}.
+        ///   Looks up a localized string similar to Join using {0}.
         /// </summary>
         public static string Online_JoinUsing {
             get {
@@ -1808,7 +1808,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download And Install ({0}).
+        ///   Looks up a localized string similar to Install ({0}).
         /// </summary>
         public static string Plugins_DownloadAndInstall {
             get {
@@ -1826,7 +1826,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update (New Version: {0}).
+        ///   Looks up a localized string similar to Update to {0}.
         /// </summary>
         public static string Plugins_Update {
             get {
@@ -1835,7 +1835,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Preset.
+        ///   Looks up a localized string similar to Save preset.
         /// </summary>
         public static string Presets_Save {
             get {
@@ -1853,7 +1853,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsaved Preset.
+        ///   Looks up a localized string similar to Unsaved preset.
         /// </summary>
         public static string Presets_Unsaved {
             get {
@@ -1979,7 +1979,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quick Switches.
+        ///   Looks up a localized string similar to Quick switches.
         /// </summary>
         public static string QuickSwitches_Header {
             get {
@@ -2240,7 +2240,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share As.
+        ///   Looks up a localized string similar to Share as.
         /// </summary>
         public static string Share_EnterNameHeader {
             get {
@@ -2296,7 +2296,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Is Everything OK?.
+        ///   Looks up a localized string similar to Is everything OK?.
         /// </summary>
         public static string Share_VerifyMessageHeader {
             get {
@@ -2386,7 +2386,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Best Lap.
+        ///   Looks up a localized string similar to Best lap.
         /// </summary>
         public static string TableHeader_BestLap {
             get {
@@ -2530,7 +2530,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove ui_skin.json to Recycle Bin (Alt+Delete).
+        ///   Looks up a localized string similar to Remove ui_skin.json to the Recycle Bin (Alt+Delete).
         /// </summary>
         public static string Toolbar_DeleteJson_Tooltip {
             get {

@@ -245,6 +245,9 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        public double BitmapCacheScale => AppScale <= 1d ? AppScale : AppScale + 1d;
+        public bool BitmapCacheClearType => AppScale == 1d;
+
         public double AppScale {
             get {
                 EnsureLoaded();

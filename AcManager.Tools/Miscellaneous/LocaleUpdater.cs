@@ -8,6 +8,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Miscellaneous {
@@ -28,6 +29,7 @@ namespace AcManager.Tools.Miscellaneous {
         protected override void SetListener() {
             SettingsHolder.Locale.PropertyChanged += OnCommonSettingsChanged;
         }
+
         protected override void OnCommonSettingsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(SettingsHolder.LocaleSettings.UpdatePeriod)) return;
             RestartPeriodicCheck();
@@ -77,13 +79,14 @@ namespace AcManager.Tools.Miscellaneous {
             }
         }
 
-        public async Task<string> InstallCustom(string id, IProgress<double?> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<string> InstallCustom(string id, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             var destination = FilesStorage.Instance.GetDirectory("Locales", id);
 
             var data = await CmApiProvider.GetDataAsync(@"locales/get/base", progress, cancellation);
             if (cancellation.IsCancellationRequested || data == null) return null;
 
-            progress?.Report(null);
+            progress?.Report(AsyncProgressEntry.Indetermitate);
             using (var memory = new MemoryStream(data))
             using (var updateZip = new ZipArchive(memory)) {
                 foreach (var entry in updateZip.Entries) {

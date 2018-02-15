@@ -102,14 +102,14 @@
     </c:AcObjectBase.ToolBars>
 
     <StackPanel>
-      <!-- preview, skins -->
+      <!-- Preview, skins -->
       <Grid Margin="0 0 0 12" MaxHeight="575">
         <Grid.ColumnDefinitions>
           <ColumnDefinition />
           <ColumnDefinition Width="114" />
         </Grid.ColumnDefinitions>
 
-        <!-- preview of selected skin -->
+        <!-- Preview of selected skin -->
         <mui:Cell>
           <mui:BetterImage x:Name="SelectedSkinPreviewImage" DataContext="{Binding SelectedObject.SelectedSkin}" Filename="{Binding PreviewImage}"
               PreviewMouseLeftButtonUp="OnPreviewClick" PreviewMouseRightButtonUp="OnPreviewContextMenu" MinHeight="160" MaxHeight="575" MaxWidth="1022"
@@ -119,7 +119,7 @@
               Visibility="{Binding SelectedObject.IsChild, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </mui:Cell>
 
-        <!-- skins list -->
+        <!-- Skins list -->
         <ListBox ItemsSource="{Binding SelectedObject.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             IsSynchronizedWithCurrentItem="True" Grid.Column="1" Width="120" Margin="4 -2 0 -2" VerticalAlignment="Top" HorizontalAlignment="Left"
             Height="{Binding ActualHeight, Source={x:Reference SelectedSkinPreviewImage}, Converter={StaticResource SumConverter}, ConverterParameter=4}"
@@ -139,25 +139,27 @@
         </ListBox>
       </Grid>
 
-      <!-- data section -->
+      <!-- Data section -->
       <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <!-- tags -->
+        <!-- Tags -->
         <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}"
-            mui:ContextMenuAdvancement.PropagateToChildren="True">
+            mui:ContextMenuAdvancement.PropagateToChildren="True" Margin="0 0 0 12"
+            mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.TagsContextMenu}, Mode=OneTime}"
+            mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top" mui:FancyHintsService.OffsetX="16"
+            mui:FancyHintsService.OffsetY="8" mui:FancyHintsService.HorizontalContentAlignment="Left" mui:FancyHintsService.VerticalContentAlignment="Bottom">
           <mui:TagsList.ItemContextMenu>
             <mui:InheritingContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Data.FilterTagCommand, Source={StaticResource Model}}"
-                  CommandParameter="{Binding}" />
+              <MenuItem Header="{x:Static g:AppStrings.Filter_ByTag}" Command="{Binding Path=FilterTagCommand}" CommandParameter="{Binding}" />
             </mui:InheritingContextMenu>
           </mui:TagsList.ItemContextMenu>
-          <mui:TagsList.ContextMenu>
+          <FrameworkElement.ContextMenu>
             <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUp}" Command="{Binding Data.TagsCleanUpCommand, Source={StaticResource Selected}}" />
-              <MenuItem Header="{x:Static g:AppStrings.Tags_Sort}" Command="{Binding Data.TagsSortCommand, Source={StaticResource Selected}}" />
-              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUpAndSort}"
-                  Command="{Binding Data.TagsCleanUpAndSortCommand, Source={StaticResource Selected}}" InputGestureText="Ctrl+Alt+T" />
+              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUp}" Command="{Binding Path=SelectedObject.TagsCleanUpCommand}" />
+              <MenuItem Header="{x:Static g:AppStrings.Tags_Sort}" Command="{Binding Path=SelectedObject.TagsSortCommand}" />
+              <MenuItem Header="{x:Static g:AppStrings.Tags_CleanUpAndSort}" Command="{Binding Path=SelectedObject.TagsCleanUpAndSortCommand}"
+                  InputGestureText="Ctrl+Alt+T" />
             </ContextMenu>
-          </mui:TagsList.ContextMenu>
+          </FrameworkElement.ContextMenu>
         </mui:TagsList>
 
         <Grid Style="{StaticResource ObjectDataGrid}">
@@ -172,12 +174,11 @@
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
-          <!-- first row -->
+          <!-- First row -->
           <DockPanel Grid.Row="0" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="brand" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByBrand}" Command="{Binding Path=FilterCommand}" CommandParameter="brand" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarBrandLabel}" />
@@ -188,8 +189,7 @@
           <DockPanel Grid.Row="0" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="country" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Path=FilterCommand}" CommandParameter="country" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_ContryLabel}" />
@@ -197,12 +197,11 @@
                 ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" />
           </DockPanel>
 
-          <!-- second row -->
+          <!-- Second row -->
           <DockPanel Grid.Row="1" Grid.Column="0" mui:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="class" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByClass}" Command="{Binding Path=FilterCommand}" CommandParameter="class" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_CarClassLabel}">
@@ -215,17 +214,15 @@
           <DockPanel Grid.Row="1" Grid.Column="1" mui:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="year" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="decade" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Path=FilterCommand}" CommandParameter="year" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Path=FilterCommand}" CommandParameter="decade" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_YearLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}" />
             <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer" Minimum="1900" Maximum="2100" />
           </DockPanel>
 
-          <!-- third row -->
+          <!-- Third row -->
           <DockPanel Grid.Row="2" Grid.Column="0">
             <DockPanel.ToolTip>
               <ToolTip Visibility="{Binding SelectedObject.Parent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
@@ -243,8 +240,7 @@
           <DockPanel Grid.Row="2" Grid.Column="1">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="author" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}">
@@ -262,22 +258,16 @@
             <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
           </DockPanel>
 
-          <!-- last row -->
+          <!-- Last row -->
           <DockPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
             <DockPanel.ContextMenu>
               <ContextMenu>
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPower}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="power" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTorque}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="torque" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeight}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="weight" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="pwratio" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTopSpeed}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="topspeed" />
-                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAcceleration}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
-                    CommandParameter="acceleration" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPower}" Command="{Binding Path=FilterCommand}" CommandParameter="power" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTorque}" Command="{Binding Path=FilterCommand}" CommandParameter="torque" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeight}" Command="{Binding Path=FilterCommand}" CommandParameter="weight" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByPwRatio}" Command="{Binding Path=FilterCommand}" CommandParameter="pwratio" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByTopSpeed}" Command="{Binding Path=FilterCommand}" CommandParameter="topspeed" />
+                <MenuItem Header="{x:Static g:AppStrings.Filter_ByAcceleration}" Command="{Binding Path=FilterCommand}" CommandParameter="acceleration" />
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_SpecsLabel}" />
@@ -285,7 +275,7 @@
           </DockPanel>
         </Grid>
 
-        <!-- description -->
+        <!-- Description -->
         <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
             Placeholder="None" />
       </StackPanel>

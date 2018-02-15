@@ -23,7 +23,9 @@
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
             <ComboBox.ItemContainerStyle>
               <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Setter Property="IsEnabled" Value="{Binding IsSelectable}" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <Setter Property="ToolTip" Value="{Binding Description}" />
               </Style>
             </ComboBox.ItemContainerStyle>

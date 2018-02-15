@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using AcTools.Render.Base.Materials;
@@ -358,9 +359,11 @@ namespace AcTools.Render.Base {
         public ShaderResourceView GetRandomTexture(int width, int height) {
             var size = Tuple.Create(width, height);
             if (!_randomTextures.TryGetValue(size, out var texture)) {
+                var s = Stopwatch.StartNew();
                 var r = new Random((width * 397) ^ height);
                 texture = CreateTextureView(width, height, (x, y) => Color.FromArgb((int)(r.NextDouble() * ((double)int.MaxValue - int.MinValue) + int.MinValue)));
                 _randomTextures[size] = texture;
+                AcToolsLogging.Write($"{width}×{height}: {s.Elapsed.TotalMilliseconds:F1} ms");
             }
 
             return texture;

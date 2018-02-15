@@ -110,6 +110,7 @@
         <ListBox.ItemContainerStyle>
           <Style TargetType="ListBoxItem" BasedOn="{StaticResource RibbonListBoxItem.Top}">
             <Style.Triggers>
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
               <DataTrigger Binding="{Binding Index, FallbackValue=-1}" Value="-1">
                 <Setter Property="Background" Value="Transparent" />
               </DataTrigger>

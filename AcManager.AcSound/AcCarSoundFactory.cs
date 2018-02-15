@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using AcManager.Tools.Managers;
-using AcManager.Tools.Managers.Plugins;
 using AcTools.Render.Kn5Specific;
 using AcTools.SoundbankPlayer;
 using FirstFloor.ModernUI.Helpers;
@@ -13,11 +12,7 @@ namespace AcManager.AcSound {
         private static bool _initialized;
 
         public async Task<IAcCarSound> CreateAsync(string carDirectory) {
-            if (!PluginsManager.Instance.IsPluginEnabled(FmodPluginWrapper.IdValue)) {
-                return null;
-            }
-
-            if (!FmodResolverService.IsInitialized) {
+            if (!FmodResolverService.Resolver.IsInitialized) {
                 Logging.Warning("FmodResolverService is not initialized!");
                 return null;
             }
@@ -31,8 +26,8 @@ namespace AcManager.AcSound {
         }
 
         private static async Task<IAcCarSound> CreateAsyncInner(string carDirectory) {
-            var directory = PluginsManager.Instance.GetPluginDirectory(FmodPluginWrapper.IdValue);
-            if (!Directory.Exists(directory)) {
+            var directory = FmodResolverService.Resolver.Directory;
+            if (directory == null || !Directory.Exists(directory)) {
                 Logging.Warning("Fmod plugin directory not found");
                 return null;
             }

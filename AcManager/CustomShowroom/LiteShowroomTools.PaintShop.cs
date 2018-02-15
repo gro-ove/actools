@@ -14,6 +14,7 @@ using AcManager.PaintShop;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -93,16 +94,7 @@ namespace AcManager.CustomShowroom {
             }
             #endregion
 
-            /*private PaintShopRulesLoader _paintShopRulesLoader;
-
-            public PaintShopRulesLoader PaintShopRulesLoader {
-                get => _paintShopRulesLoader;
-                set {
-                    if (Equals(value, _paintShopRulesLoader)) return;
-                    _paintShopRulesLoader = value;
-                    OnPropertyChanged();
-                }
-            }*/
+            public PluginsRequirement PaintShopRequirement { get; } = new PluginsRequirement(KnownPlugins.Magick);
 
             public Lazier<bool> PaintShopSupported { get; }
 
@@ -318,7 +310,7 @@ namespace AcManager.CustomShowroom {
                         Skin = skin;
                         SaveAsNewSkin = false;
                     }
-                } catch (Exception e) when (e.IsCanceled()) {
+                } catch (Exception e) when (e.IsCancelled()) {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t save skin", e);
                 }

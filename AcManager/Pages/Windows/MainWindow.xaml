@@ -166,11 +166,10 @@
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
-        <mui:Link DisplayName="Championships" Source="/Pages/Drive/UserChampionships.xaml" IsEnabled="False" />
-        <!-- <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False" /> -->
+        <mui:Link DisplayName="Championships" Source="/Pages/Drive/UserChampionships.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml" IsEnabled="False"
+    <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml"
         FilterHint="{x:Static c:FilterHints.SpecialEvents}">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Hotlaps" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:hotlap&amp;Special=1" />
@@ -225,7 +224,7 @@
     <!-- Content -->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Cars}" />
-    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml"
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Tracks}" />
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Showrooms}" />
@@ -239,7 +238,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroupFilterable GroupKey="content" IsEnabled="False" DisplayName="Mods" Source="/Pages/Lists/GenericModsListPage.xaml" />
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="Mods" Source="/Pages/Lists/GenericModsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />

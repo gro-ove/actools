@@ -42,7 +42,7 @@ namespace AcManager.Tools {
             CustomUriRequest custom;
             try {
                 custom = CustomUriRequest.Parse(request);
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return null;
             } catch (Exception) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
@@ -98,7 +98,7 @@ namespace AcManager.Tools {
                     var address = Convert.FromBase64String(param).ToUtf8String();
                     try {
                         return await ProcessInputFile(await LoadRemoveFile(address, query?.Get(@"name")));
-                    } catch (Exception e) when (e.IsCanceled()) {
+                    } catch (Exception e) when (e.IsCancelled()) {
                         return ArgumentHandleResult.Failed;
                     } catch (Exception e) {
                         Logging.Warning(e);
@@ -129,7 +129,7 @@ namespace AcManager.Tools {
             CustomUriRequest custom;
             try {
                 custom = CustomUriRequest.Parse(uri);
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return ArgumentHandleResult.Failed;
             } catch (Exception) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotParseRequest, AppStrings.Main_CannotProcessArgument_Commentary);
@@ -179,7 +179,7 @@ namespace AcManager.Tools {
                         NonfatalError.Notify(string.Format(AppStrings.Main_NotSupportedRequest, custom.Path), AppStrings.Main_CannotProcessArgument_Commentary);
                         return ArgumentHandleResult.Failed;
                 }
-            } catch (Exception e) when (e.IsCanceled()) {
+            } catch (Exception e) when (e.IsCancelled()) {
                 return ArgumentHandleResult.Failed;
             } catch (Exception e) {
                 NonfatalError.Notify(AppStrings.Arguments_CannotProcessRequest, AppStrings.Arguments_CannotProcessRequest_Commentary, e);

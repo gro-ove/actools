@@ -41,6 +41,11 @@ namespace AcTools.NeuralTyres.Data {
         [CanBeNull]
         public string[] OverrideOutputKeys;
 
+        // Not being saved
+        // TODO: Find another way?
+        [NotNull]
+        public INormalizationLimits NormalizationLimits = AcNormalizationLimits.Default;
+
         // Envinroment setting, doesn’t affect hash code or equality
         [JsonIgnore]
         public int MaxDegreeOfParallelism = (Environment.ProcessorCount / 2).Clamp(1, 4);

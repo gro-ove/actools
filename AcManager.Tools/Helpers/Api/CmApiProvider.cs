@@ -6,8 +6,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
+using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -83,7 +85,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static Task<byte[]> GetDataAsync(string url, IProgress<double?> progress = null,
+        public static Task<byte[]> GetDataAsync(string url, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
         }
@@ -93,12 +95,9 @@ namespace AcManager.Tools.Helpers.Api {
         /// <summary>
         /// Load piece of static data, either from CM API, or from cache.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="progress"></param>
-        /// <param name="cancellation"></param>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
+        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Static", $"{id}.zip"));
 
@@ -139,7 +138,7 @@ namespace AcManager.Tools.Helpers.Api {
         /// <param name="cancellation"></param>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<Tuple<string, bool>> GetPaintShopDataAsync([NotNull] string carId, IProgress<double?> progress = null,
+        public static async Task<Tuple<string, bool>> GetPaintShopDataAsync([NotNull] string carId, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Paint Shop", $"{carId}.zip"));
 
@@ -179,7 +178,7 @@ namespace AcManager.Tools.Helpers.Api {
         /// <param name="cancellation"></param>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<string[]> GetPaintShopIdsAsync(IProgress<double?> progress = null,
+        public static async Task<string[]> GetPaintShopIdsAsync(IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             if (_paintShopIds != null) {
                 return _paintShopIds;
@@ -210,14 +209,14 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<byte[]> GetStaticDataBytesAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
+        public static async Task<byte[]> GetStaticDataBytesAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
             return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
         }
 
         [ItemCanBeNull]
-        public static async Task<byte[]> GetStaticDataBytesIfUpdatedAsync(string id, TimeSpan maxAge, IProgress<double?> progress = null,
+        public static async Task<byte[]> GetStaticDataBytesIfUpdatedAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
             var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
             return t?.Item2 == true ? await FileUtils.ReadAllBytesAsync(t.Item1) : null;

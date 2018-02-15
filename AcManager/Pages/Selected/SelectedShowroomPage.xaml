@@ -67,9 +67,9 @@
           services:ImageViewerService.Image="{Binding SelectedObject.PreviewImage}" MaxWidth="1022" MaxHeight="575"
           Visibility="{Binding SelectedObject.PreviewImage, Converter={StaticResource ExistToVisibilityConverter}}" />
 
-      <!-- data section -->
+      <!-- Data section -->
       <StackPanel Visibility="{Binding SelectedObject.HasData, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <!-- tags -->
+        <!-- Tags -->
         <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" MouseDown="OnTagsListMouseDown"
             SuggestionsSource="{x:Static managers:SuggestionLists.ShowroomTagsListView}" />
 
@@ -83,10 +83,11 @@
             <RowDefinition Height="Auto" />
           </Grid.RowDefinitions>
 
-          <!-- first row -->
+          <!-- First row -->
           <DockPanel Grid.Row="0" Grid.Column="0" attached:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByCountry}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                     CommandParameter="country" />
               </ContextMenu>
@@ -99,8 +100,10 @@
           <DockPanel Grid.Row="0" Grid.Column="1" attached:ContextMenuAdvancement.PropagateToChildren="True">
             <DockPanel.ContextMenu>
               <ContextMenu>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByYear}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                     CommandParameter="year" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByDecade}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                     CommandParameter="decade" />
               </ContextMenu>
@@ -109,10 +112,11 @@
             <mui:BetterTextBox Text="{Binding SelectedObject.Year, TargetNullValue=''}" Mode="Integer" Placeholder="?" />
           </DockPanel>
 
-          <!-- last row -->
+          <!-- Last row -->
           <DockPanel Grid.Row="1" Grid.Column="0">
             <DockPanel.ContextMenu>
               <ContextMenu>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Data.FilterCommand, Source={StaticResource Model}}"
                     CommandParameter="author" />
               </ContextMenu>
@@ -122,7 +126,7 @@
           </DockPanel>
         </Grid>
 
-        <!-- description -->
+        <!-- Description -->
         <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />
         <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
             Placeholder="None" />

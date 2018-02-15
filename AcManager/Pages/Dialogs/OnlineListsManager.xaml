@@ -66,7 +66,8 @@
           Binding="{Binding Information.Hidden, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
           EditingElementStyle="{StaticResource {x:Type CheckBox}}">
         <DataGridCheckBoxColumn.CellStyle>
-          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}"
+              d:DataContext="{d:DesignInstance di:OnlineListsManager+ListEntry}">
             <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
             <Setter Property="ToolTip" Value="Link to the list will be hidden" />
           </Style>
@@ -76,7 +77,8 @@
           Binding="{Binding Information.Excluded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ElementStyle="{StaticResource {x:Type CheckBox}}"
           EditingElementStyle="{StaticResource {x:Type CheckBox}}">
         <DataGridCheckBoxColumn.CellStyle>
-          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}"
+              d:DataContext="{d:DesignInstance di:OnlineListsManager+ListEntry}">
             <Setter Property="IsEnabled" Value="{Binding IsBuiltIn, Converter={StaticResource InvertBooleanConverter}}" />
             <Setter Property="ToolTip">
               <Setter.Value>

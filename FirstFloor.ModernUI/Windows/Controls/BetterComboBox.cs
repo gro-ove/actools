@@ -89,10 +89,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _updateSelectedItemLater = false;
                 SelectedItem = ReferenceEquals(base.SelectedItem, NullValue) ? null : base.SelectedItem;
             }
-
-            if (MaxLength != -1) {
-
-            }
         }
 
         private class NullValueClass {
