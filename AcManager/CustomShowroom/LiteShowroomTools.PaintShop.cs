@@ -95,6 +95,7 @@ namespace AcManager.CustomShowroom {
             #endregion
 
             public PluginsRequirement PaintShopRequirement { get; } = new PluginsRequirement(KnownPlugins.Magick);
+            public PluginsRequirement MontageRequirement { get; } = new PluginsRequirement(KnownPlugins.ImageMontage);
 
             public Lazier<bool> PaintShopSupported { get; }
 

@@ -397,12 +397,7 @@ namespace AcManager.Controls {
 
         private static ISavedPresetEntry Fix(ISavedPresetEntry entry, string parent, [CanBeNull] IUserPresetableCustomDisplay customDisplay) {
             entry.SetParent(parent);
-
-            if (customDisplay != null) {
-                entry = new InnerSavedPresetEntry(entry, customDisplay);
-            }
-
-            return entry;
+            return customDisplay != null ? new InnerSavedPresetEntry(entry, customDisplay) : entry;
         }
 
         private class UserPresetableComparer : IComparer<ISavedPresetEntry> {

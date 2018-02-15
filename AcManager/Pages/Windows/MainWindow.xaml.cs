@@ -419,9 +419,9 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateThemeDynamicBackground() {
-            if (AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackground"] is string value) {
+            if (AppearanceManager.Instance.CurrentThemeDictionary?[@"DynamicBackground"] is string value) {
                 value = FileUtils.GetFullPath(value, () => FilesStorage.Instance.GetDirectory());
-                ApplyDynamicBackground(value, AppearanceManager.Current.CurrentThemeDictionary?[@"DynamicBackgroundOpacity"] as double? ?? 0.5);
+                ApplyDynamicBackground(value, AppearanceManager.Instance.CurrentThemeDictionary?[@"DynamicBackgroundOpacity"] as double? ?? 0.5);
             } else {
                 ApplyDynamicBackground(null);
             }
@@ -429,7 +429,7 @@ namespace AcManager.Pages.Windows {
 
         private void SetThemeDynamicBackgroundListener() {
             UpdateThemeDynamicBackground();
-            AppearanceManager.Current.PropertyChanged += (sender, args) => {
+            AppearanceManager.Instance.PropertyChanged += (sender, args) => {
                 if (args.PropertyName == nameof(AppearanceManager.CurrentThemeDictionary)) {
                     ((Action)UpdateThemeDynamicBackground).InvokeInMainThreadAsync();
                 }

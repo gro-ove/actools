@@ -199,6 +199,7 @@
     <Compile Include="Windows\Controls\DoubleSlider.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.ActualLocation.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Blur.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.CoordinatesTransform.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Dpi.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.ExtraFlags.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Logging.cs" />

@@ -39,10 +39,13 @@
     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
     <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
     <Setter Property="BorderThickness" Value="1 0" />
+    <Setter Property="MinWidth" Value="8" />
+    <Setter Property="Width" Value="8" />
+    <Setter Property="MaxWidth" Value="8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ScrollBar}">
-          <Border x:Name="Bg" Width="8" Margin="0 0 -12 0" Background="Transparent" SnapsToDevicePixels="True">
+          <Border x:Name="Bg" Width="8" Margin="0 0 0 0" SnapsToDevicePixels="True">
             <Track x:Name="PART_Track" IsDirectionReversed="True" IsEnabled="{TemplateBinding IsMouseOver}" HorizontalAlignment="Right">
               <Track.DecreaseRepeatButton>
                 <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" />
@@ -104,10 +107,13 @@
     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
     <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
     <Setter Property="BorderThickness" Value="0 1" />
+    <Setter Property="MinHeight" Value="8" />
+    <Setter Property="Height" Value="8" />
+    <Setter Property="MaxHeight" Value="8" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ScrollBar}">
-          <Border x:Name="Bg" Height="8" Margin="0 0 0 -12" Background="Transparent" SnapsToDevicePixels="True">
+          <Border x:Name="Bg" Height="8" Background="Transparent" SnapsToDevicePixels="True">
             <Track x:Name="PART_Track" IsDirectionReversed="False" IsEnabled="{TemplateBinding IsMouseOver}" VerticalAlignment="Bottom">
               <Track.DecreaseRepeatButton>
                 <RepeatButton Command="{x:Static ScrollBar.PageLeftCommand}" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" />
@@ -178,7 +184,7 @@
                     Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
                 <c:BetterScrollBar x:Name="PART_VerticalScrollBar" HorizontalAlignment="Right" AutomationProperties.AutomationId="VerticalScrollBar"
                     Cursor="Arrow" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}"
+                    Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="0"
                     ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource FancyScrollBarVertical}" />
               </c:Cell>
               <ControlTemplate.Triggers>

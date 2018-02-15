@@ -2199,7 +2199,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Can’t solve the problem</value>
   </data>
   <data name="AcRoot_Welcome" xml:space="preserve">
-    <value>Welcome to Content Manager and thanks for using it! You have only couple of things left to do before launch:</value>
+    <value>Welcome to AC Content Manager and thank you for using it! There are only a couple of things left to specify:</value>
   </data>
   <data name="AcRoot_Prompt" xml:space="preserve">
     <value>Assetto Corsa root folder:</value>

@@ -90,9 +90,9 @@ namespace AcManager.Pages.Dialogs {
                 ChangeAcRoot = changeAcRoot;
                 ChangeSteamId = changeSteamId;
 
-                FirstRun = ValuesStorage.Get(KeyFirstRun, false);
+                FirstRun = ValuesStorage.Get(KeyFirstRun, true);
                 if (FirstRun) {
-                    ValuesStorage.Set(KeyFirstRun, true);
+                    ValuesStorage.Set(KeyFirstRun, false);
                 }
 
                 ReviewMode = !FirstRun && IsReviewNeeded();
@@ -100,7 +100,7 @@ namespace AcManager.Pages.Dialogs {
 
 #if DEBUG
                 if (changeAcRoot) {
-                    Value = Value?.Replace("D:", "C:");
+                    // Value = Value?.Replace("D:", "C:");
                 }
 #endif
 

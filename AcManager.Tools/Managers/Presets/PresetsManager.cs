@@ -85,8 +85,21 @@ namespace AcManager.Tools.Managers.Presets {
         private readonly Dictionary<PresetsCategory, List<BuiltInPresetEntry>> _builtInPresets;
 
         private List<BuiltInPresetEntry> GetBuiltInPresetsList(PresetsCategory category) {
-            if (_builtInPresets.ContainsKey(category)) return _builtInPresets[category];
-            return _builtInPresets[category] = new List<BuiltInPresetEntry>(1);
+            return _builtInPresets.TryGetValue(category, out var value) ? value
+                    : (_builtInPresets[category] = new List<BuiltInPresetEntry>(10));
+        }
+
+        private IEnumerable<ISavedPresetEntry> GetDataPresets(PresetsCategory category) {
+            if (category.DirectoryName.IndexOf(':') != -1) return new BuiltInPresetEntry[0];
+            var directory = FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.BuiltInPresets, category.DirectoryName);
+            Logging.Debug(directory);
+            return FileUtils.GetFilesRecursive(directory, @"*" + category.Extension)
+                            .Select(x => new SavedPresetEntry(directory, category.Extension, x))
+                            .ToList<ISavedPresetEntry>();
+        }
+
+        private IEnumerable<ISavedPresetEntry> GetBuiltInPresets(PresetsCategory category) {
+            return GetBuiltInPresetsList(category).Concat(GetDataPresets(category));
         }
 
         public bool HasBuiltInPreset(PresetsCategory category, string filename) {
@@ -108,16 +121,15 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public void ClearBuiltInPresets(PresetsCategory category) {
-            GetBuiltInPresetsList(category).Clear();
+            _builtInPresets.Remove(category);
         }
 
         public IEnumerable<ISavedPresetEntry> GetSavedPresets(PresetsCategory category) {
             var directory = GetDirectory(category);
-            var filesList = FileUtils.GetFilesRecursive(directory)
-                                     .Where(x => x.ToLowerInvariant().EndsWith(category.Extension))
+            var filesList = FileUtils.GetFilesRecursive(directory, @"*" + category.Extension)
                                      .Select(x => new SavedPresetEntry(directory, category.Extension, x))
                                      .ToList<ISavedPresetEntry>();
-            return filesList.Union(GetBuiltInPresetsList(category)
+            return filesList.Concat(GetBuiltInPresets(category)
                                        .Where(x => filesList.All(y => x.Filename != y.Filename))).OrderBy(x => x.Filename);
         }
 

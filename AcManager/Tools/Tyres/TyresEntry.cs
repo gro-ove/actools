@@ -12,6 +12,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -57,6 +58,10 @@ namespace AcManager.Tools.Tyres {
         public string DisplaySource => $@"{Source?.Name ?? SourceCarId} ({DisplayPosition.ToLower(CultureInfo.CurrentUICulture)})";
 
         public string DisplayParams { get; }
+
+        public string DisplayParamsExtra { get; }
+
+        public string DisplayParamsExtended { get; }
 
         private string _name;
 
@@ -109,6 +114,8 @@ namespace AcManager.Tools.Tyres {
 
             ReadParameters(rimRadiusLazy);
             DisplayParams = $@"{DisplayWidth}/{DisplayProfile}/R{DisplayRimRadius}";
+            DisplayParamsExtra = $"Radius: {Radius * 100:F1} cm, profile: {(Radius - RimRadius) * 100:F1} cm";
+            DisplayParamsExtended = $@"{DisplayParams} ({DisplayParamsExtra.ToSentenceMember()})";
             Name = mainSection.GetNonEmpty("NAME") ?? @"?";
             ShortName = mainSection.GetNonEmpty("SHORT_NAME") ?? (Name.Length == 0 ? @"?" : Name.Substring(0, 1));
         }
@@ -129,7 +136,7 @@ namespace AcManager.Tools.Tyres {
 
         public string DisplayWidth => GetDisplayWidth(Width);
         public string DisplayProfile => GetDisplayProfile(Radius, RimRadius, Width);
-        public string DisplayRimRadius => GetDisplayRadius(RimRadius);
+        public string DisplayRimRadius => GetDisplayRimRadius(RimRadius);
 
         #region Unique stuff
         public string Footprint => _footprint ?? (_footprint = new IniFile {
@@ -176,7 +183,7 @@ namespace AcManager.Tools.Tyres {
             return (width * 1000).Round((roundNicely ?? OptionRoundNicely) ? 1d : 0.1d).ToString(CultureInfo.CurrentUICulture);
         }
 
-        public static string GetDisplayRadius(double rimRadius, bool? roundNicely = null) {
+        public static string GetDisplayRimRadius(double rimRadius, bool? roundNicely = null) {
             return rimRadius <= 0 || double.IsNaN(rimRadius) ? @"?" :
                     (rimRadius * 100 / 2.54 * 2 - 1).Round((roundNicely ?? OptionRoundNicely) ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
         }

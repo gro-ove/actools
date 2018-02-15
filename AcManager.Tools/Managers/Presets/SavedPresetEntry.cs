@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
@@ -33,6 +34,7 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public SavedPresetEntry(string baseDirectory, string extension, string filename) {
+            Logging.Debug(baseDirectory);
             BaseDirectory = baseDirectory;
             _displayBaseDirectory = baseDirectory;
             _extension = extension;

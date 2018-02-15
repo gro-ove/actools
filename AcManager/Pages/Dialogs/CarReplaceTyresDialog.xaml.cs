@@ -16,8 +16,10 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using AcManager.Controls;
+using AcManager.Controls.Presentation;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -39,20 +41,22 @@ using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarReplaceTyresDialog {
+        public static PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.Fann);
+
         private CarReplaceTyresDialog(CarObject target) {
             DataContext = new ViewModel(target);
             InitializeComponent();
             this.OnActualUnload(Model);
 
             Buttons = new[] {
-                CreateExtraDialogButton(ControlsStrings.Presets_Save, new DelegateCommand(() => {
+                CreateExtraDialogButton(AppStrings.Toolbar_Save, new DelegateCommand(() => {
                     if (DataUpdateWarning.Warn(Model.Car)) {
                         Model.SaveCommand.Execute();
                         CloseWithResult(MessageBoxResult.OK);
                     }
                 }, () => Model.SaveCommand.CanExecute()).ListenOnWeak(Model.SaveCommand)),
                 CreateExtraDialogButton(UiStrings.Cancel, new DelegateCommand(() => {
-                    if (!Model.Changed || ShowMessage("Discard changes?",
+                    if (!Model.Changed || ShowMessage("Are you sure you want to discard changes?",
                             ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                         CloseWithResult(MessageBoxResult.Cancel);
                     }
@@ -349,11 +353,14 @@ namespace AcManager.Pages.Dialogs {
 
             public object Convert(IDataObject data) {
                 if (data.GetData(TyresSet.DraggableFormat) is TyresSet set) {
+                    if (Sets.Contains(set)) return null;
+
                     if (SetsVersion != set.Front.Version) {
                         UpdateVersionLater(set);
                         return null;
                     }
 
+                    set.IsDeleted = false;
                     return set;
                 }
 
@@ -396,6 +403,7 @@ namespace AcManager.Pages.Dialogs {
                     SetsVersion = set.Front.Version;
 
                     set.DefaultSet = true;
+                    set.IsDeleted = false;
                     Sets.ReplaceEverythingBy(new[] { set });
                 }
             }
@@ -408,6 +416,7 @@ namespace AcManager.Pages.Dialogs {
 
                     var set = CreateSet(tyre);
                     set.DefaultSet = true;
+                    set.IsDeleted = false;
                     Sets.ReplaceEverythingBy(new[] { set });
                 }
             }
@@ -500,6 +509,13 @@ namespace AcManager.Pages.Dialogs {
                 set => Apply(value, ref _isRimRadiusAppropriate);
             }
 
+            private bool _isProfileAppropriate;
+
+            public bool IsProfileAppropriate {
+                get => _isProfileAppropriate;
+                set => Apply(value, ref _isProfileAppropriate);
+            }
+
             private TyresSet _fake;
 
             public TyresSet GetFakeSet(TyresEntry originalFront, TyresEntry originalRear) {
@@ -535,13 +551,14 @@ namespace AcManager.Pages.Dialogs {
                             GetMachineBitsQuick(out var w, out var p, out var r, out var t);
                             WidthRange = Range(w.Minimum, w.Maximum, _tyres.Front.Width, _tyres.Rear.Width, v => TyresEntry.GetDisplayWidth(v));
                             RimRadiusRange = Range(r.Minimum - p.Maximum, r.Maximum - p.Minimum, _tyres.Front.RimRadius, _tyres.Rear.RimRadius,
-                                    v => TyresEntry.GetDisplayRadius(v), "R");
-                            RadiusRange = Range(r.Minimum, r.Maximum, _tyres.Front.Radius, _tyres.Rear.Radius, v => TyresEntry.GetDisplayRadius(v));
-                            ProfileRange = $@"{TyresEntry.GetDisplayProfile(r.Minimum, r.Minimum - p.Maximum, w.Maximum)}–"
-                                    + $@"{TyresEntry.GetDisplayProfile(r.Maximum, r.Maximum - p.Minimum, w.Minimum)}";
+                                    v => TyresEntry.GetDisplayRimRadius(v), "R");
+                            RadiusRange = Range(r.Minimum, r.Maximum, _tyres.Front.Radius, _tyres.Rear.Radius, v => TyresEntry.GetDisplayRimRadius(v));
+                            ProfileRange = Range(p.Minimum, p.Maximum, _tyres.Front.Radius - _tyres.Front.RimRadius, _tyres.Rear.Radius - _tyres.Front.RimRadius,
+                                    v => $@"{v * 100:F1} cm");
 
                             IsWidthAppropriate = w.Fits(_tyres.Front.Width) && w.Fits(_tyres.Rear.Width);
                             IsRimRadiusAppropriate = p.Fits(_tyres.Front.Radius - _tyres.Front.RimRadius) && p.Fits(_tyres.Rear.Radius - _tyres.Rear.RimRadius);
+                            IsProfileAppropriate = p.Fits(_tyres.Front.Radius - _tyres.Front.RimRadius) && p.Fits(_tyres.Rear.Radius - _tyres.Rear.RimRadius);
                             IsRadiusAppropriate = r.Fits(_tyres.Front.Radius) && r.Fits(_tyres.Rear.Radius);
                             IsAppropriate = IsWidthAppropriate && IsRimRadiusAppropriate && IsRadiusAppropriate;
 
@@ -794,6 +811,8 @@ namespace AcManager.Pages.Dialogs {
         private class Animator {
             public Point Offset;
 
+            private static bool TakeItEasy => AppAppearanceManager.Instance.SoftwareRenderingMode;
+
             private readonly FrameworkElement _that;
             private TranslateTransform _translate, _burningTranslate, _scanTranslate;
             private RotateTransform _rotate, _burningRotate;
@@ -815,6 +834,9 @@ namespace AcManager.Pages.Dialogs {
                 _generatedMask = ((VisualBrush)that.RequireChild<FrameworkElement>("GeneratedMaskBorder").OpacityMask)
                         .Visual.RequireChild<FrameworkElement>("GeneratedMask");
                 _glowEffect = (DropShadowEffect)that.RequireChild<FrameworkElement>("RoomGlowAnimationPiece").Effect;
+
+                _glowEffect.RenderingBias = TakeItEasy ? RenderingBias.Performance : RenderingBias.Quality;
+                _glowEffect.BlurRadius = TakeItEasy ? 0 : 50;
 
                 if (that.IsLoaded) {
                     Run();
@@ -1202,13 +1224,13 @@ namespace AcManager.Pages.Dialogs {
                 }
             }
 
-            private readonly FireParticleBase[] _flameParticles = ArrayExtension.CreateArrayOfType<FireParticleBase, FlameParticle>(160);
-            private readonly FireParticleBase[] _sparks = ArrayExtension.CreateArrayOfType<FireParticleBase, SparkParticle>(60);
+            private readonly FireParticleBase[] _flameParticles = ArrayExtension.CreateArrayOfType<FireParticleBase, FlameParticle>(TakeItEasy ? 40 : 120);
+            private readonly FireParticleBase[] _sparks = ArrayExtension.CreateArrayOfType<FireParticleBase, SparkParticle>(TakeItEasy ? 10 : 30);
             private bool _extraSparksSpawn;
 
             private void UpdateFlames(double dt) {
                 var parent = _flamesAnimationParent;
-                Update(_flameParticles, _fireActive ? 4 : 0);
+                Update(_flameParticles, _fireActive ? 3 : 0);
                 Update(_sparks, _fireActive && (_extraSparksSpawn || MathUtils.Random() > 0.95) ? 1 : 0);
 
                 if (_fireActive) {

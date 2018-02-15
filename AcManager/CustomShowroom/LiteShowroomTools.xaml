@@ -211,11 +211,6 @@
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_EditingMode}" />
                 </CheckBox>
 
-                <!--<c:MessageBlock>
-                  <mui:BbCodeBlock BbCode="Now, with updated Paint Shop, CM will automatically download and update rules for various cars. It might take some time." />
-                </c:MessageBlock>-->
-
-
                 <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0">
                   <StackPanel
                       Visibility="{Binding PaintShopRequirement.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
@@ -246,12 +241,6 @@
                     </DockPanel>
                   </mui:AsyncButton>
                 </mui:SpacingStackPanel>
-
-                <!--<mui:ReferenceSwitch Value="{Binding PaintShopRulesLoader}">
-                  <StackPanel Margin="0 4 0 0">
-                    <TextBlock Text="Updating obsolete rules…" Style="{StaticResource Label}" />
-                  </StackPanel>
-                </mui:ReferenceSwitch>-->
 
                 <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
@@ -569,8 +558,19 @@
                 </DockPanel>
 
                 <c:MessageBlock Visibility="{Binding ShotMagickMontageWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
-                  <mui:BbCodeBlock Style="{StaticResource Small}"
-                      BbCode="[b]ImageMagick Montage plugin is not active.[/b] Please, go to Settings/Plugins and install it if you want to make super-resolution screenshots." />
+                  <StackPanel
+                      Visibility="{Binding MontageRequirement.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                    <mui:Switch Value="{Binding MontageRequirement.ListView.Count}">
+                      <TextBlock mui:Switch.When="0" Text="ImageMagick Montage plugin is required to make super-resolution screenshots." Style="{StaticResource Label}"
+                          Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
+                      <mui:SpacingStackPanel Spacing="4">
+                        <TextBlock Text="Plugin is required to make super-resolution screenshots:" Style="{StaticResource Label}" Foreground="{DynamicResource Error}"
+                            TextWrapping="Wrap" />
+                        <ItemsControl ItemsSource="{Binding MontageRequirement.ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}"
+                            Margin="0 0 0 -12" />
+                      </mui:SpacingStackPanel>
+                    </mui:Switch>
+                  </StackPanel>
                 </c:MessageBlock>
 
                 <Label Content="{Binding DisplayShotSize}" ContentStringFormat="{}Output size: {0}" />

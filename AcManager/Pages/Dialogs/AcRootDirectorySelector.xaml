@@ -18,7 +18,7 @@
   <StackPanel Width="500">
     <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
         Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
-    <mui:BbCodeBlock BbCode="Content Manager was updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
+    <mui:BbCodeBlock BbCode="App just has been updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
         Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
     <!-- AC root -->
@@ -63,7 +63,8 @@
       <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
           Visibility="{Binding Recommended.ListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
       <ItemsControl Margin="20 8 0 0" ItemsSource="{Binding Recommended.ListView, Source={x:Static t:PluginsManager.Instance}}"
-          ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440" Style="{StaticResource VirtualizingItemsControl}" Padding="0 0 20 0" />
+          mui:FancyScrollHelper.Outside="True" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440"
+          Style="{StaticResource VirtualizingItemsControl}" Padding="0 0 8 0" />
     </StackPanel>
   </StackPanel>
 </mui:ModernDialog>

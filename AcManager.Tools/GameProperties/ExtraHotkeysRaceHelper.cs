@@ -154,7 +154,7 @@ namespace AcManager.Tools.GameProperties {
 
                     _progressBar = new ProgressBar {
                         Background = new SolidColorBrush(Colors.Black),
-                        Foreground = new SolidColorBrush(AppearanceManager.Current.AccentColor),
+                        Foreground = new SolidColorBrush(AppearanceManager.Instance.AccentColor),
                         Maximum = 1d,
                         Opacity = 0.4
                     };

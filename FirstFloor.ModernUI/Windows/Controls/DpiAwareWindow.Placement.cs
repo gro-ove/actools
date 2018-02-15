@@ -2,12 +2,10 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Forms;
 using System.Xml.Linq;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -48,14 +46,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SimpleSerialization.Register(Placement.FromString);
 
             Helpers.Logging.Warning("Initializing DPI-aware windows…");
-            Helpers.Logging.Warning($"Main screen: {Screen.PrimaryScreen}");
-            foreach (var screen in Screen.AllScreens) {
+            Helpers.Logging.Warning($"Main screen: {System.Windows.Forms.Screen.PrimaryScreen}");
+            foreach (var screen in System.Windows.Forms.Screen.AllScreens) {
                 Helpers.Logging.Warning($"Found screen: {screen}");
             }
         }
 
         private void SetDefaultLocation() {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -119,7 +117,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _locationAndSizeInitialized;
 
         private void LoadLocationAndSize() {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -134,7 +132,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     return;
                 }
 
-                if (AppearanceManager.Current.PreferFullscreenMode && ConsiderPreferredFullscreen) {
+                if (AppearanceManager.Instance.PreferFullscreenMode && ConsiderPreferredFullscreen) {
                     Logging.Debug("Preferred fullscreen, setting default location…");
                     SetDefaultLocation();
                     return;
@@ -170,7 +168,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         Logging.Debug($"Loaded LS: {placement}");
 
                         WindowState = WindowState.Normal;
-                        var savedScreen = Screen.FromPoint(new System.Drawing.Point(placement.Left + 10, placement.Top + 10));
+                        var savedScreen = ScreenFromPoint(new Point(placement.Left + 10, placement.Top + 10));
                         var forcedScreen = GetForcedScreen(this);
                         Logging.Debug($"Saved screen: {savedScreen.WorkingArea}, forced screen: {forcedScreen?.WorkingArea.ToString() ?? @"none"}…");
 
@@ -251,13 +249,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetValue(PreferredFullscreenModePropertyKey, maximizeDelivered);
         }
 
-        public void UpdatePreferredFullscreenMode(Screen screen, bool maximized = false, bool centerAlign = false) {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+        public void UpdatePreferredFullscreenMode([NotNull] WpfScreen screen, bool maximized = false, bool centerAlign = false) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
 
-            if (maximized || AppearanceManager.Current.PreferFullscreenMode) {
+            if (maximized || AppearanceManager.Instance.PreferFullscreenMode) {
                 Logging.Debug("Time to maximize window");
 
                 if (MaxWidth < UnlimitedSize || MaxHeight < UnlimitedSize) {
@@ -299,8 +297,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        protected virtual void CenterOnScreen(Screen screen) {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+        protected virtual void CenterOnScreen([NotNull] WpfScreen screen) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -325,49 +323,24 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return;
             }
 
-            var screen = this.GetScreen();
-            var saveAs = new System.Drawing.Point(screen.WorkingArea.Left + 10, screen.WorkingArea.Top + 10);
+            var screen = GetScreen();
+            var saveAs = new Point(screen.WorkingArea.Left + 10, screen.WorkingArea.Top + 10);
             Logging.Debug($"Current screen: {screen.WorkingArea}, save as: {saveAs}");
-            ValuesStorage.Set(DefaultScreenKey, saveAs);
+            ValuesStorage.Set(DefaultScreenKey, ToDevicePoint(saveAs));
         }
 
-        private static T LogResult<T>(DpiAwareWindow target, T t, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+        private static T LogResult<T>(DpiAwareWindow target, T t, string e = "Result",
+                [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             if (OptionVerboseMode) {
-                var g = (object)t is Screen s ? s.WorkingArea.ToString() : t.ToString();
+                var g = (object)t is WpfScreen s ? s.WorkingArea.ToString() : t.ToString();
                 if (target != null) {
-                    target.Logging.Debug($"Result: {g}", m, p, l);
+                    target.Logging.Debug($"{e}: {g}", m, p, l);
                 } else {
-                    Helpers.Logging.Debug($"Result: {g}", m, p, l);
+                    Helpers.Logging.Debug($"{e}: {g}", m, p, l);
                 }
             }
 
             return t;
-        }
-
-        [NotNull]
-        private static Screen GetLastUsedScreen(DpiAwareWindow screenFor = null) {
-            var window = screenFor?.Owner ?? LastActiveWindow;
-            return LogResult(screenFor, !ReferenceEquals(window, screenFor) && window?.IsLoaded == true ? window.GetScreen()
-                    : Screen.FromPoint(ValuesStorage.Get<System.Drawing.Point?>(DefaultScreenKey) ?? Control.MousePosition));
-        }
-
-        [NotNull]
-        public static Screen GetPreferredScreen(DpiAwareWindow screenFor = null) {
-            return LogResult(screenFor, GetForcedScreen(screenFor) ?? GetLastUsedScreen(screenFor));
-        }
-
-        [CanBeNull]
-        public static Screen GetForcedScreen(DpiAwareWindow screenFor = null) {
-            var screenName = AppearanceManager.Current.ForceScreenName;
-            var forcedScreen = Screen.AllScreens.FirstOrDefault(x => x.DeviceName == screenName);
-            if (forcedScreen != null) {
-                if (OptionVerboseMode) {
-                    Helpers.Logging.Warning($"Forced: {screenName}, screens: {string.Join("\n", Screen.AllScreens.Select(x => x.WorkingArea))}");
-                }
-                return LogResult(screenFor, forcedScreen);
-            }
-
-            return LogResult(screenFor, AppearanceManager.Current.KeepWithinSingleScreen ? GetLastUsedScreen(screenFor) : null);
         }
 
         private readonly Busy _locationAndSizeBusy = new Busy();
@@ -375,7 +348,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void SaveLocationAndSize() {
             var key = LocationAndSizeKey;
             if (key == null || WindowState == WindowState.Minimized || !_locationAndSizeInitialized
-                    || AppearanceManager.Current.PreferFullscreenMode) return;
+                    || AppearanceManager.Instance.PreferFullscreenMode) return;
 
             _locationAndSizeBusy.DoDelay(() => {
                 Logging.Debug("Saving location and size");
@@ -398,8 +371,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }, 300);
         }
 
-        public void EnsurePositionOnScreen(Screen screen) {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+        public void EnsurePositionOnScreen(WpfScreen screen) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -423,8 +396,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public void EnsureOnScreen(Screen screen) {
-            if (!AppearanceManager.Current.ManageWindowsLocation) {
+        public void EnsureOnScreen(WpfScreen screen) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -461,7 +434,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public void EnsureOnScreen() {
             Logging.Here();
-            EnsureOnScreen(this.GetScreen());
+            EnsureOnScreen(GetScreen());
         }
     }
 }

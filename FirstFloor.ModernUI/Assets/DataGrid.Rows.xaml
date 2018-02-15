@@ -8,8 +8,8 @@
   <Style x:Key="{x:Type DataGridRow}" TargetType="{x:Type DataGridRow}">
     <Setter Property="CacheMode">
       <Setter.Value>
-        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static p:AppearanceManager.Current}, Mode=OneTime}"
-            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static p:AppearanceManager.Current}, Mode=OneTime}" />
+        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static p:AppearanceManager.Instance}, Mode=OneTime}"
+            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static p:AppearanceManager.Instance}, Mode=OneTime}" />
       </Setter.Value>
     </Setter>
     <Setter Property="Background" Value="Transparent" />

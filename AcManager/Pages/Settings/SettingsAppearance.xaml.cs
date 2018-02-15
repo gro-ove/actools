@@ -43,7 +43,7 @@ namespace AcManager.Pages.Settings {
             } else {
                 var position = window.GetMousePosition();
                 var before = position * new Matrix(window.ScaleX, 0, 0, window.ScaleY, 0, 0);
-                AppearanceManager.Current.AppScale = ScaleSlider.Value.Round(0.01);
+                AppearanceManager.Instance.AppScale = ScaleSlider.Value.Round(0.01);
                 var after = position * new Matrix(window.ScaleX, 0, 0, window.ScaleY, 0, 0);
                 window.Left += before.X - after.X;
                 window.Top += before.Y - after.Y;
@@ -57,7 +57,7 @@ namespace AcManager.Pages.Settings {
             private static bool? _originalSoftwareRendering;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
-            public AppearanceManager AppearanceManager => AppearanceManager.Current;
+            public AppearanceManager AppearanceManager => AppearanceManager.Instance;
             public AppAppearanceManager AppAppearanceManager => AppAppearanceManager.Instance;
             public SettingsHolder.InterfaceSettings Interface => SettingsHolder.Interface;
 
@@ -72,13 +72,13 @@ namespace AcManager.Pages.Settings {
                     if (Equals(value, _forceScreen)) return;
                     _forceScreen = value;
                     OnPropertyChanged();
-                    AppearanceManager.Current.ForceScreenName = value?.Value;
+                    AppearanceManager.Instance.ForceScreenName = value?.Value;
                 }
             }
 
             internal ViewModel() {
                 Screens = Screen.AllScreens.Select(x => new SettingEntry(x.DeviceName, GetScreenName(x))).ToArray();
-                _forceScreen = Screens.GetByIdOrDefault(AppearanceManager.Current.ForceScreenName);
+                _forceScreen = Screens.GetByIdOrDefault(AppearanceManager.Instance.ForceScreenName);
 
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
                 SoftwareRendering = AppAppearanceManager.SoftwareRenderingMode;

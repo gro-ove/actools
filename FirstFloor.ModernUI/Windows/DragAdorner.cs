@@ -30,7 +30,7 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public double OffsetLeft {
-            get { return _offsetLeft; }
+            get => _offsetLeft;
             set {
                 _offsetLeft = value;
                 UpdateLocation();
@@ -44,7 +44,7 @@ namespace FirstFloor.ModernUI.Windows {
         }
 
         public double OffsetTop {
-            get { return _offsetTop; }
+            get => _offsetTop;
             set {
                 _offsetTop = value;
                 UpdateLocation();

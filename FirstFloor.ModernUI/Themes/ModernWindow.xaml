@@ -82,7 +82,7 @@
                             StrokeThickness="{TemplateBinding IconPathThickness}" />
                       </Button>
                       <c:Cell
-                          Visibility="{Binding PreferFullscreenMode, Source={x:Static presentation:AppearanceManager.Current},
+                          Visibility="{Binding PreferFullscreenMode, Source={x:Static presentation:AppearanceManager.Instance},
                               Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                         <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
                             ToolTip="{x:Static mui:UiStrings.Restore}" Style="{StaticResource SystemButton}" Visibility="Collapsed"
@@ -189,7 +189,7 @@
             </Trigger>
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding ForceMenuAtTopInFullscreenMode, Source={x:Static presentation:AppearanceManager.Current}}" Value="True" />
+                <Condition Binding="{Binding ForceMenuAtTopInFullscreenMode, Source={x:Static presentation:AppearanceManager.Instance}}" Value="True" />
                 <Condition Binding="{Binding Visibility, ElementName=Restore}" Value="Visible" />
               </MultiDataTrigger.Conditions>
               <Setter TargetName="LayoutRoot" Property="Margin" Value="7" />
@@ -221,7 +221,7 @@
       <Trigger Property="IsActive" Value="True">
         <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderActive}" />
       </Trigger>
-      <DataTrigger Binding="{Binding FullscreenOverTaskbarMode, Source={x:Static presentation:AppearanceManager.Current}}" Value="True">
+      <DataTrigger Binding="{Binding FullscreenOverTaskbarMode, Source={x:Static presentation:AppearanceManager.Instance}}" Value="True">
         <Setter Property="WindowStyle" Value="None" />
       </DataTrigger>
     </Style.Triggers>

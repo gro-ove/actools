@@ -82,12 +82,8 @@ namespace FirstFloor.ModernUI.Windows.Media {
             return Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d));
         }
 
-        public static Screen GetScreen([NotNull] this Window window){
+        public static Screen GetDeviceScreen([NotNull] this Window window) {
             return Screen.FromRectangle(new Rectangle((int)window.Left, (int)window.Top, (int)window.Width, (int)window.Height));
         }
-
-        /*public static Screen GetScreen([NotNull] this Window window) {
-            return Screen.FromHandle(new WindowInteropHelper(window).Handle);
-        }*/
     }
 }

@@ -10,6 +10,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <Style x:Key="TyresCell" TargetType="Border">
@@ -408,7 +409,8 @@
                       <mui:SpacingUniformGrid Rows="1" Margin="0 4 0 0" DockPanel.Dock="Bottom"
                           Visibility="{Binding Description.Value, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse hidden'}">
                         <mui:BbCodeBlock x:Name="PART_Width" BbCode="{Binding WidthRange, StringFormat='Width: {0}'}" Style="{StaticResource Small}" />
-                        <mui:BbCodeBlock x:Name="PART_RimRadius" BbCode="{Binding RimRadiusRange, StringFormat='Rims: {0}'}" Style="{StaticResource Small}" />
+                        <!--<mui:BbCodeBlock x:Name="PART_RimRadius" BbCode="{Binding RimRadiusRange, StringFormat='Rims: {0}'}" Style="{StaticResource Small}" />-->
+                        <mui:BbCodeBlock x:Name="PART_Profile" BbCode="{Binding ProfileRange, StringFormat='Profile: {0}'}" Style="{StaticResource Small}" />
                         <mui:BbCodeBlock x:Name="PART_Radius" BbCode="{Binding RadiusRange, StringFormat='Radius: {0}'}" Style="{StaticResource Small}" />
                       </mui:SpacingUniformGrid>
                       <mui:PlaceholderTextBlock Text="{Binding Description.Value}" Style="{StaticResource Label}" Margin="8 1 4 -1"
@@ -419,6 +421,18 @@
                   <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding IsAppropriate}" Value="False">
                       <Setter TargetName="PART_Panel" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsWidthAppropriate}" Value="False">
+                      <Setter TargetName="PART_Width" Property="TextBlock.TextDecorations" Value="Strikethrough" />
+                    </DataTrigger>
+                    <!--<DataTrigger Binding="{Binding IsRimRadiusAppropriate}" Value="False">
+                      <Setter TargetName="PART_RimRadius" Property="TextBlock.TextDecorations" Value="Strikethrough" />
+                    </DataTrigger>-->
+                    <DataTrigger Binding="{Binding IsProfileAppropriate}" Value="False">
+                      <Setter TargetName="PART_Profile" Property="TextBlock.TextDecorations" Value="Strikethrough" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsRadiusAppropriate}" Value="False">
+                      <Setter TargetName="PART_Radius" Property="TextBlock.TextDecorations" Value="Strikethrough" />
                     </DataTrigger>
                   </DataTemplate.Triggers>
                 </DataTemplate>
@@ -436,13 +450,30 @@
           <ItemsControl.ItemsSource>
             <CompositeCollection>
               <CollectionContainer Collection="{Binding Source={StaticResource Rounds}}" />
-              <Button Click="OnNewTyresMachineButtonClick">
-                <DockPanel>
-                  <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="10" Height="10" HorizontalAlignment="Center"
-                      Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 4 -1" />
-                  <TextBlock Text="Create new" VerticalAlignment="Center" />
-                </DockPanel>
-              </Button>
+
+              <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0" DataContext="{x:Static di:CarReplaceTyresDialog.Plugins}">
+                <StackPanel
+                    Visibility="{Binding IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                  <mui:Switch Value="{Binding ListView.Count}">
+                    <TextBlock mui:Switch.When="0" Text="FANN plugin is required to generate tyres." Style="{StaticResource Label}"
+                        Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
+                    <mui:SpacingStackPanel Spacing="4">
+                      <TextBlock Text="Plugin is required to generate tyres:" Style="{StaticResource Label}" Foreground="{DynamicResource Error}"
+                          TextWrapping="Wrap" />
+                      <ItemsControl ItemsSource="{Binding .ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}"
+                          Margin="0 0 0 -12" />
+                    </mui:SpacingStackPanel>
+                  </mui:Switch>
+                </StackPanel>
+                <Button Click="OnNewTyresMachineButtonClick" IsEnabled="{Binding IsReady}">
+                  <DockPanel>
+                    <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="10" Height="10" HorizontalAlignment="Center"
+                        Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 4 -1" />
+                    <TextBlock Text="Create new" VerticalAlignment="Center" />
+                  </DockPanel>
+                </Button>
+              </mui:SpacingStackPanel>
+
             </CompositeCollection>
           </ItemsControl.ItemsSource>
           <ListBox.ItemContainerStyle>
@@ -479,8 +510,10 @@
 
       <c:PropertiesGrid Columns="1" LabelWidth="120" VerticalSpacing="4" LabelPadding="8 0 0 0" DockPanel.Dock="Top">
         <TextBlock c:PropertiesGrid.Label="Current version:" Text="{Binding SetsVersion}" TextTrimming="CharacterEllipsis" />
-        <TextBlock c:PropertiesGrid.Label="Front tyres:" Text="{Binding OriginalTyresFront.DisplayParams}" TextTrimming="CharacterEllipsis" />
-        <TextBlock c:PropertiesGrid.Label="Rear tyres:" Text="{Binding OriginalTyresRear.DisplayParams}" TextTrimming="CharacterEllipsis" />
+        <TextBlock c:PropertiesGrid.Label="Front tyres:" Text="{Binding OriginalTyresFront.DisplayParams}"
+            ToolTip="{Binding OriginalTyresFront.DisplayParamsExtra}" TextTrimming="CharacterEllipsis" />
+        <TextBlock c:PropertiesGrid.Label="Rear tyres:" Text="{Binding OriginalTyresRear.DisplayParams}"
+            ToolTip="{Binding OriginalTyresRear.DisplayParamsExtra}" TextTrimming="CharacterEllipsis" />
       </c:PropertiesGrid>
 
       <TextBlock Text="Existing sets:" Style="{StaticResource Label.Padding}" DockPanel.Dock="Top" Margin="0 4 0 4" />
@@ -502,7 +535,8 @@
         Grid.Column="2" Margin="8 0 0 0">
       <mui:ModernTab.LinksListBoxTemplate>
         <ControlTemplate>
-          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />
+          <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left"
+              WindowChrome.IsHitTestVisibleInChrome="True" />
         </ControlTemplate>
       </mui:ModernTab.LinksListBoxTemplate>
       <mui:ModernTab.Links>

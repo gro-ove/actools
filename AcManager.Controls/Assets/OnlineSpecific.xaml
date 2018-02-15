@@ -196,8 +196,8 @@
   <DataTemplate x:Key="SimpleListItem" DataType="{x:Type t:ServerEntry}">
     <Grid ContextMenu="{StaticResource ListItemContextMenu}">
       <Grid.CacheMode>
-        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
-            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}"
+            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
       </Grid.CacheMode>
 
       <Grid.ColumnDefinitions>
@@ -252,8 +252,8 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="CacheMode">
       <Setter.Value>
-        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
-            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+        <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}"
+            EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
       </Setter.Value>
     </Setter>
     <Setter Property="Template">

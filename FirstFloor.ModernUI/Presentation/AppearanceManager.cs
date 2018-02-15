@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public partial class AppearanceManager : NotifyPropertyChanged {
-        public static AppearanceManager Current { get; } = new AppearanceManager();
+        public static AppearanceManager Instance { get; } = new AppearanceManager();
 
         public static Uri BaseValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.xaml", UriKind.Relative);
         public static Uri DefaultValuesSource = new Uri("/FirstFloor.ModernUI;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
@@ -35,21 +35,6 @@ namespace FirstFloor.ModernUI.Presentation {
         private AppearanceManager() {}
 
         public void Initialize() {
-            /*Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary {
-                [@"DefaultFont"] = new FontFamily(@"Courier New"),
-                [@"CondensedFont"] = new FontFamily(@"Impact"),
-            });
-
-            TextElement.FontFamilyProperty.OverrideMetadata(
-                    typeof(TextElement),
-                    new FrameworkPropertyMetadata(
-                            new FontFamily("Comic Sans MS")));
-
-            TextBlock.FontFamilyProperty.OverrideMetadata(
-                    typeof(TextBlock),
-                    new FrameworkPropertyMetadata(
-                            new FontFamily("Comic Sans MS")));*/
-
             Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary { Source = BaseValuesSource });
         }
 

@@ -25,6 +25,9 @@ namespace FirstFloor.ModernUI.Windows {
             }
         }
 
+        private readonly double _deviceScaleX = 1d;
+        private readonly double _deviceScaleY = 1d;
+
         public DragPopup(Size size, Brush brush) {
             Child = new Rectangle {
                 Fill = brush,
@@ -41,8 +44,13 @@ namespace FirstFloor.ModernUI.Windows {
             Placement = PlacementMode.Absolute;
             UpdatePosition();
 
-            var hwndSource = PresentationSource.FromVisual(Child) as HwndSource;
-            if (hwndSource != null) {
+            if (PresentationSource.FromVisual(Child) is HwndSource hwndSource) {
+                if (hwndSource.CompositionTarget != null) {
+                    var matrix = hwndSource.CompositionTarget.TransformToDevice;
+                    _deviceScaleX = matrix.M11;
+                    _deviceScaleY = matrix.M22;
+                }
+
                 WindowHelper.SetWindowExTransparent(hwndSource.Handle);
             }
 
@@ -55,8 +63,8 @@ namespace FirstFloor.ModernUI.Windows {
 
         public void UpdatePosition() {
             var pos = VisualExtension.GetMousePosition();
-            HorizontalOffset = pos.X - 8;
-            VerticalOffset = pos.Y - 8;
+            HorizontalOffset = pos.X / _deviceScaleX - 8;
+            VerticalOffset = pos.Y / _deviceScaleY - 8;
         }
 
         public void Dispose() {

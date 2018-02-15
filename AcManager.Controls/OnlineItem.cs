@@ -48,7 +48,7 @@ namespace AcManager.Controls {
         }
 
         static OnlineItem() {
-            AppearanceManager.Current.ThemeChange += OnThemeChange;
+            AppearanceManager.Instance.ThemeChange += OnThemeChange;
             DefaultStyleKeyProperty.OverrideMetadata(typeof(OnlineItem), new FrameworkPropertyMetadata(typeof(OnlineItem)));
         }
 

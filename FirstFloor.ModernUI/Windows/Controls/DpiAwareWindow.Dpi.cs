@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Win32;
-using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -34,19 +32,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Logging.Here();
 
             base.OnSourceInitialized(e);
-            LoadLocationAndSize();
 
             _hwndSource = (HwndSource)PresentationSource.FromVisual(this);
             if (_hwndSource?.CompositionTarget != null) {
                 var matrix = _hwndSource.CompositionTarget.TransformToDevice;
                 _dpi = new DpiInformation(BaseDpi * matrix.M11, BaseDpi * matrix.M22);
+                DeviceScaleX = matrix.M11;
+                DeviceScaleY = matrix.M22;
             } else {
                 _dpi = new DpiInformation(BaseDpi, BaseDpi);
             }
 
-            _dpi.UpdateUserScale(AppearanceManager.Current.AppScale);
+            _dpi.UpdateUserScale(AppearanceManager.Instance.AppScale);
             Logging.Debug($"DPI: {_dpi}");
 
+            LoadLocationAndSize();
             UpdateReferenceSizeForDpiAwareness();
 
             if (IsPerMonitorDpiAware) {
@@ -155,7 +155,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Logging.Debug($"Original limitations: {_originalMinSize.Width}×{_originalMinSize.Height}");
         }
 
-        private void UpdateLimitations(Screen screen, double scaleX, double scaleY) {
+        private void UpdateLimitations(WpfScreen screen, double scaleX, double scaleY) {
             SaveOriginalLimitations();
 
             Logging.Debug($"{_originalMinSize.Width * scaleX}×{_originalMinSize.Height * scaleY} ({scaleX}, {scaleY}); {screen.WorkingArea}");
@@ -205,7 +205,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _currentScaleY = dpi.ScaleY;
             _firstRun = false;
 
-            var screen = this.GetScreen();
+            var screen = GetScreen();
             Logging.Debug($"Screen: {screen}");
             UpdateLimitations(screen, dpi.ScaleX, dpi.ScaleY);
 
@@ -235,8 +235,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public void UpdateTextFormatting() {
             var dpi = _dpi;
             if (dpi == null) return;
-            if (AppearanceManager.Current.IdealFormattingMode == null) {
-                Resources[AppearanceManager.KeyFormattingMode] = dpi.IsScaled ? TextFormattingMode.Ideal : TextFormattingMode.Display;
+            if (AppearanceManager.Instance.IdealFormattingMode == null) {
+                Resources[AppearanceManager.KeyFormattingMode] = dpi.IsScaled || DeviceScaleX != 1d || DeviceScaleY != 1d
+                        ? TextFormattingMode.Ideal : TextFormattingMode.Display;
             } else {
                 Resources.Remove(AppearanceManager.KeyFormattingMode);
             }

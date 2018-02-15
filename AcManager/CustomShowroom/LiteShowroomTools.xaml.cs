@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
@@ -1039,9 +1038,9 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected override void CenterOnScreen(Screen screen) {
-            Top = screen.Bounds.Top + (screen.Bounds.Height - ActualHeight) / 2;
-            Left = screen.Bounds.Right - ActualWidth - 8;
+        protected override void CenterOnScreen(WpfScreen screen) {
+            Top = screen.WorkingArea.Top + (screen.WorkingArea.Height - ActualHeight) / 2;
+            Left = screen.WorkingArea.Right - ActualWidth - 8;
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {

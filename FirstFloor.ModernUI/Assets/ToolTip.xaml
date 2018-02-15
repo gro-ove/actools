@@ -24,8 +24,8 @@
           <c:Cell Margin="4">
             <c:Cell.LayoutTransform>
               <ScaleTransform x:Name="ApplicationScaleTransform" CenterX="0" CenterY="0"
-                  ScaleX="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}"
-                  ScaleY="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Mode=OneTime}" />
+                  ScaleX="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}"
+                  ScaleY="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
             </c:Cell.LayoutTransform>
 
             <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />

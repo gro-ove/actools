@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" mc:Ignorable="d" Title="Tyres machine editor"
-    SizeToContent="Manual" Width="1100" Height="800" MinWidth="1200" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
+    SizeToContent="Manual" Width="1400" Height="800" MinWidth="1200" MinHeight="600" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}"
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" LocationAndSizeKey=".CarCreateTyresMachineDialog" ResizeMode="CanResizeWithGrip"
     d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+ViewModel}" x:Name="This" DoNotAttachToWaitingDialogs="True" ContentMargin="0 0 0 -42">
   <mui:ModernDialog.Resources>
@@ -49,7 +49,7 @@
 
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition MinWidth="200" Width="400" />
+      <ColumnDefinition MinWidth="200" Width="300" />
       <ColumnDefinition Width="9" />
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
@@ -140,7 +140,7 @@
       </ListBox>
     </DockPanel>
 
-    <mui:ModernTabSplitter Grid.Column="1" InitialWidth="400" SaveKey="CarCreateTyresMachineDialog" />
+    <mui:ModernTabSplitter Grid.Column="1" InitialWidth="300" SaveKey="CarCreateTyresMachineDialog" />
 
     <DockPanel Grid.Column="2" Margin="8 0 0 42">
       <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" DockPanel.Dock="Top">

@@ -93,10 +93,10 @@ namespace AcManager.Controls.Presentation {
                     };
 
                     using (var fs = new FileStream(_filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
-                        AppearanceManager.Current.SetTheme((ResourceDictionary)XamlReader.Load(fs, parserContext));
+                        AppearanceManager.Instance.SetTheme((ResourceDictionary)XamlReader.Load(fs, parserContext));
                     }
                 } else {
-                    AppearanceManager.Current.SetTheme(Source);
+                    AppearanceManager.Instance.SetTheme(Source);
                 }
             }
 
@@ -147,8 +147,8 @@ namespace AcManager.Controls.Presentation {
         private AppAppearanceManager() { }
 
         private void InnerInitialize() {
-            AppearanceManager.Current.Initialize();
-            AppearanceManager.Current.ThemeObsolete += OnThemeObsolete;
+            AppearanceManager.Instance.Initialize();
+            AppearanceManager.Instance.ThemeObsolete += OnThemeObsolete;
 
             var theme = ValuesStorage.Get<string>(KeyTheme);
 
@@ -339,14 +339,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _idealFormattingMode = value;
-                    AppearanceManager.Current.IdealFormattingMode = value;
+                    AppearanceManager.Instance.IdealFormattingMode = value;
                     return;
                 }
 
                 if (Equals(value, _idealFormattingMode)) return;
                 _idealFormattingMode = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.IdealFormattingMode = value;
+                AppearanceManager.Instance.IdealFormattingMode = value;
                 if (value.HasValue) {
                     ValuesStorage.Set(KeyIdealFormattingMode, value.Value);
                 } else {
@@ -374,14 +374,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _smallFont = value;
-                    AppearanceManager.Current.FontSize = value ? FontSize.Small : FontSize.Large;
+                    AppearanceManager.Instance.FontSize = value ? FontSize.Small : FontSize.Large;
                     return;
                 }
 
                 if (Equals(value, _smallFont)) return;
                 _smallFont = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.FontSize = value ? FontSize.Small : FontSize.Large;
+                AppearanceManager.Instance.FontSize = value ? FontSize.Small : FontSize.Large;
                 ValuesStorage.Set(KeySmallFont, value);
             }
         }
@@ -393,14 +393,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _largerTitleLinks = value;
-                    AppearanceManager.Current.LargerTitleLinks = value;
+                    AppearanceManager.Instance.LargerTitleLinks = value;
                     return;
                 }
 
                 if (Equals(value, _largerTitleLinks)) return;
                 _largerTitleLinks = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.LargerTitleLinks = value;
+                AppearanceManager.Instance.LargerTitleLinks = value;
                 ValuesStorage.Set(KeyLargerTitleLinks, value);
             }
         }
@@ -412,14 +412,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _boldTitleLinks = value;
-                    AppearanceManager.Current.BoldTitleLinks = value;
+                    AppearanceManager.Instance.BoldTitleLinks = value;
                     return;
                 }
 
                 if (Equals(value, _boldTitleLinks)) return;
                 _boldTitleLinks = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.BoldTitleLinks = value;
+                AppearanceManager.Instance.BoldTitleLinks = value;
                 ValuesStorage.Set(KeyBoldTitleLinks, value);
             }
         }
@@ -431,14 +431,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _largeSubMenuFont = value;
-                    AppearanceManager.Current.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
+                    AppearanceManager.Instance.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
                     return;
                 }
 
                 if (Equals(value, _largeSubMenuFont)) return;
                 _largeSubMenuFont = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
+                AppearanceManager.Instance.SubMenuFontSize = value ? FontSize.Large : FontSize.Small;
                 ValuesStorage.Set(KeyLargeSubMenuFont, value);
             }
         }
@@ -450,14 +450,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _showSubMenuDraggableIcons = value;
-                    AppearanceManager.Current.SubMenuDraggablePoints = value;
+                    AppearanceManager.Instance.SubMenuDraggablePoints = value;
                     return;
                 }
 
                 if (Equals(value, _showSubMenuDraggableIcons)) return;
                 _showSubMenuDraggableIcons = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.SubMenuDraggablePoints = value;
+                AppearanceManager.Instance.SubMenuDraggablePoints = value;
                 ValuesStorage.Set(KeyShowSubMenuDraggableIcons, value);
             }
         }
@@ -484,14 +484,14 @@ namespace AcManager.Controls.Presentation {
             set {
                 if (_loading) {
                     _accentColor = value;
-                    AppearanceManager.Current.SetAccentColorAsync(value);
+                    AppearanceManager.Instance.SetAccentColorAsync(value);
                     return;
                 }
 
                 if (Equals(value, _accentColor)) return;
                 _accentColor = value;
                 OnPropertyChanged();
-                AppearanceManager.Current.SetAccentColorAsync(value);
+                AppearanceManager.Instance.SetAccentColorAsync(value);
                 ValuesStorage.Set(KeyAccentColor, value);
             }
         }

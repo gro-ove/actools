@@ -67,6 +67,9 @@ namespace FirstFloor.ModernUI.Win32 {
         [DllImport("dwmapi.dll")]
         public static extern int DwmExtendFrameIntoClientArea(IntPtr hWnd, ref Margins pMargins);
 
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        public static extern int MoveWindow(IntPtr hwnd, int x, int y, int width, int height, [MarshalAs(UnmanagedType.Bool)] bool repaint);
+
         [StructLayout(LayoutKind.Sequential)]
         public struct DwmBlurBehind {
             public DwmFlags Flags;

@@ -260,10 +260,10 @@ namespace AcManager {
 
             FancyBackgroundManager.Initialize();
             if (AppArguments.Has(AppFlag.UiScale)) {
-                AppearanceManager.Current.AppScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
+                AppearanceManager.Instance.AppScale = AppArguments.GetDouble(AppFlag.UiScale, 1d);
             }
             if (AppArguments.Has(AppFlag.WindowsLocationManagement)) {
-                AppearanceManager.Current.ManageWindowsLocation = AppArguments.GetBool(AppFlag.WindowsLocationManagement, true);
+                AppearanceManager.Instance.ManageWindowsLocation = AppArguments.GetBool(AppFlag.WindowsLocationManagement, true);
             }
 
             if (!InternalUtils.IsAllRight) {

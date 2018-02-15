@@ -63,7 +63,7 @@ namespace AcManager.CustomShowroom {
         private bool? _lastVisibleTools;
 
         private Rectangle GetScreenBounds() {
-            return (Form.Visible ? Screen.FromControl(Form) : DpiAwareWindow.GetPreferredScreen()).Bounds;
+            return (Form.Visible ? Screen.FromControl(Form) : DpiAwareWindow.GetPreferredDeviceScreen()).Bounds;
         }
 
         protected sealed override void GoToNormalMode() {
@@ -74,8 +74,8 @@ namespace AcManager.CustomShowroom {
             _switchingInProgress = true;
 
             try {
-                if (AppearanceManager.Current.PreferFullscreenMode) {
-                    var screen = DpiAwareWindow.GetPreferredScreen();
+                if (AppearanceManager.Instance.PreferFullscreenMode) {
+                    var screen = DpiAwareWindow.GetPreferredDeviceScreen();
                     Form.Width = screen.Bounds.Width;
                     Form.Height = screen.Bounds.Height;
                     Form.Top = screen.Bounds.Top;
@@ -87,8 +87,8 @@ namespace AcManager.CustomShowroom {
 
                     if (size.X > 0 && size.Y > 0) {
                         var savedScreen = pos != default(Point) ? Screen.FromPoint(new System.Drawing.Point(
-                                (int)(pos.X + size.X / 2), (int)(pos.Y + size.Y / 2))) : DpiAwareWindow.GetPreferredScreen();
-                        var activeScreen = DpiAwareWindow.GetForcedScreen();
+                                (int)(pos.X + size.X / 2), (int)(pos.Y + size.Y / 2))) : DpiAwareWindow.GetPreferredDeviceScreen();
+                        var activeScreen = DpiAwareWindow.GetForcedDeviceScreen();
                         if (activeScreen != null && savedScreen.Bounds != activeScreen.Bounds) {
                             SetDefaultLocation();
                         } else {
@@ -109,7 +109,7 @@ namespace AcManager.CustomShowroom {
                 }
 
                 void SetDefaultLocation() {
-                    var screen = DpiAwareWindow.GetPreferredScreen();
+                    var screen = DpiAwareWindow.GetPreferredDeviceScreen();
                     Form.Width = 1600.Clamp(320, screen.Bounds.Width);
                     Form.Height = 900.Clamp(200, screen.Bounds.Height);
                     Form.Top = screen.Bounds.Top + (screen.Bounds.Height - Form.Height) / 2;
@@ -185,7 +185,7 @@ namespace AcManager.CustomShowroom {
         protected override void OnKeyUpOverride(KeyEventArgs args) {
             switch (args.KeyCode) {
                 case Keys.F11:
-                    if (AppearanceManager.Current.PreferFullscreenMode) {
+                    if (AppearanceManager.Instance.PreferFullscreenMode) {
                         args.Handled = true;
                     }
                     break;

@@ -153,7 +153,7 @@ namespace AcManager.CustomShowroom {
             public virtual bool FlatMirrorBlurred { get; set; } = true;
             public virtual float FlatMirrorBlurMuiltiplier { get; set; } = 1f;
             public virtual bool UseBloom { get; set; } = true;
-            public virtual bool UseDither { get; set; } = false;
+            public virtual bool UseDither { get; set; } = true;
             public virtual bool UseColorGrading { get; set; }
             public virtual bool UseFxaa { get; set; }
             public virtual bool UsePcss { get; set; }
@@ -164,19 +164,19 @@ namespace AcManager.CustomShowroom {
             public virtual bool ReflectionsWithShadows { get; set; }
             public virtual bool ReflectionsWithMultipleLights { get; set; }
 
-            public virtual float AmbientBrightness { get; set; } = 3.0f;
-            public virtual float BackgroundBrightness { get; set; } = 0.2f;
+            public virtual float AmbientBrightness { get; set; } = 1.58f;
+            public virtual float BackgroundBrightness { get; set; } = 1.0f;
             public virtual float FlatMirrorReflectiveness { get; set; } = 0.6f;
-            public virtual bool FlatMirrorReflectedLight { get; set; } = false;
-            public virtual float LightBrightness { get; set; }
+            public virtual bool FlatMirrorReflectedLight { get; set; }
+            public virtual float LightBrightness { get; set; } = 1.27f;
             public virtual float Lightθ { get; set; } = 50f;
             public virtual float Lightφ { get; set; } = 104f;
             public virtual float MaterialsReflectiveness { get; set; } = 1f;
             public virtual float CarShadowsOpacity { get; set; } = 1f;
 
             public int ToneVersion;
-            public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Filmic;
-            public virtual float ToneExposure { get; set; } = 1.2f;
+            public virtual ToneMappingFn ToneMapping { get; set; } = ToneMappingFn.Reinhard;
+            public virtual float ToneExposure { get; set; } = 1.189f;
             public virtual float ToneGamma { get; set; } = 1f;
             public virtual float ToneWhitePoint { get; set; } = 1.66f;
 
@@ -188,7 +188,7 @@ namespace AcManager.CustomShowroom {
             public virtual float AoOpacity { get; set; } = 0.3f;
             public virtual float AoRadius { get; set; } = 1f;
 
-            public virtual bool MeshDebug { get; set; } = false;
+            public virtual bool MeshDebug { get; set; }
             public virtual bool MeshDebugWithEmissive { get; set; } = true;
             public virtual WireframeMode WireframeMode { get; set; } = WireframeMode.Disabled;
             public virtual bool IsWireframeColored { get; set; } = true;
@@ -201,7 +201,7 @@ namespace AcManager.CustomShowroom {
             public virtual bool UseAccumulationDof { get; set; } = true;
             public virtual bool AccumulationDofBokeh { get; set; }
             public virtual int AccumulationDofIterations { get; set; } = 40;
-            public virtual float AccumulationDofApertureSize { get; set; } = 0f;
+            public virtual float AccumulationDofApertureSize { get; set; }
 
             [CanBeNull]
             public virtual JObject[] ExtraLights { get; set; }
@@ -211,7 +211,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public virtual double[] CameraLookAt { get; set; } = { -0.53, 0.49, 0.11 };
-            public virtual float CameraTilt { get; set; } = 0f;
+            public virtual float CameraTilt { get; set; }
             public virtual float CameraFov { get; set; } = 32f;
             public virtual bool CameraOrbitMode { get; set; } = true;
 
@@ -691,7 +691,7 @@ namespace AcManager.CustomShowroom {
 
         [NotNull]
         protected virtual ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load, () => Reset(false));
+            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load);
         }
 
         internal bool HasSavedData {

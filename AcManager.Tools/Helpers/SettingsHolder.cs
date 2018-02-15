@@ -781,7 +781,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool CustomShowroomInstead {
                 get => _customShowroomInstead ??
-                        (_customShowroomInstead = ValuesStorage.Get("Settings.CustomShowroomSettings.CustomShowroomInstead", false)).Value;
+                        (_customShowroomInstead = ValuesStorage.Get("Settings.CustomShowroomSettings.CustomShowroomInstead", true)).Value;
                 set {
                     if (Equals(value, _customShowroomInstead)) return;
                     _customShowroomInstead = value;

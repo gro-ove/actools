@@ -196,9 +196,9 @@ namespace AcManager.CustomShowroom {
             var child = _child;
             if (child == null) return;
             _moveChildBusy.Do(() => {
-                var pos = new Point(child.Left, child.Top);
+                var pos = new Point(child.DeviceLeft, child.DeviceTop);
                 for (var i = 0; i < StickyLocationsCount; i++) {
-                    var location = GetStickyLocation(i, child.ActualWidth, child.ActualHeight);
+                    var location = GetStickyLocation(i, child.DeviceWidth, child.DeviceHeight);
                     if (location.HasValue && (pos - location.Value).Length < 5) {
                         _stickyLocation.Value = i;
                         UpdatePosition(true);
@@ -211,7 +211,8 @@ namespace AcManager.CustomShowroom {
         }
 
         private void ChildSizeChanged(object sender, SizeChangedEventArgs e) {
-            UpdatePosition(e.NewSize.Width, e.NewSize.Height, true);
+            if (_child == null) return;
+            UpdatePosition(_child.DeviceScaleX * e.NewSize.Width, _child.DeviceScaleY * e.NewSize.Height, true);
         }
 
         private void ChildKeyUp(object sender, KeyEventArgs e) {
@@ -244,7 +245,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private void UpdatePosition(double w, double h, bool force) {
-            if (!AppearanceManager.Current.ManageWindowsLocation) return;
+            if (!AppearanceManager.Instance.ManageWindowsLocation) return;
 
             if (_verbose) {
                 Logging.Here();
@@ -272,12 +273,12 @@ namespace AcManager.CustomShowroom {
                 return;
             }
 
-            if (location.X + _child.ActualWidth > screen.WorkingArea.Right) {
-                location.X = screen.WorkingArea.Right - _child.ActualWidth;
+            if (location.X + _child.DeviceWidth > screen.WorkingArea.Right) {
+                location.X = screen.WorkingArea.Right - _child.DeviceWidth;
             }
 
-            if (location.Y + _child.ActualHeight > screen.WorkingArea.Bottom) {
-                location.Y = screen.WorkingArea.Bottom - _child.ActualHeight;
+            if (location.Y + _child.DeviceHeight > screen.WorkingArea.Bottom) {
+                location.Y = screen.WorkingArea.Bottom - _child.DeviceHeight;
             }
 
             if (location.X < screen.WorkingArea.Left) location.X = screen.WorkingArea.Left;
@@ -295,8 +296,8 @@ namespace AcManager.CustomShowroom {
 
             void Apply() {
                 if (_child == null || !_child.IsLoaded) return;
-                _child.Left = location.X;
-                _child.Top = location.Y;
+                _child.DeviceLeft = location.X;
+                _child.DeviceTop = location.Y;
             }
         }
 
@@ -306,7 +307,7 @@ namespace AcManager.CustomShowroom {
             }
 
             if (_child == null) return;
-            UpdatePosition(_child.ActualWidth, _child.ActualHeight, force);
+            UpdatePosition(_child.DeviceWidth, _child.DeviceHeight, force);
         }
 
         private void ChildActivated(object sender, EventArgs e) {
@@ -479,7 +480,7 @@ namespace AcManager.CustomShowroom {
 
         private Point? GetStickyLocation(int index, double w, double h) {
             if (_child == null) return null;
-            var offset = _offset < 0 ? (int)_child.ActualWidth - 12 : _offset;
+            var offset = _offset < 0 ? (int)_child.DeviceWidth - 12 : _offset;
             switch (index) {
                 case 0:
                     return new Point(_parent.Left + _parent.Width - w + offset, _parent.Top + _parent.Height - h - _padding);

@@ -64,12 +64,12 @@
         </CheckBox>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Converter={StaticResource PercentageConverter}}"
+          <mui:ValueLabel Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Converter={StaticResource PercentageConverter}}"
               mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />
           <mui:FormattedSlider x:Name="ScaleSlider" Minimum="0.5" Maximum="2" TickFrequency="0.25" TickPlacement="BottomRight" IsMoveToPointEnabled="False"
               AutoToolTipFormat="{}{0:F0}%" AutoToolTipPlacement="BottomRight" IsSnapToTickEnabled="False"
               AutoToolTipConverter="{StaticResource PercentageConverter}" LargeChange="0.1" SmallChange="0.1"
-              Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Current}, Converter={StaticResource SliderRoundConverter},
+              Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Converter={StaticResource SliderRoundConverter},
                   ConverterParameter=0.01, UpdateSourceTrigger=LostFocus}" />
         </DockPanel>
 
