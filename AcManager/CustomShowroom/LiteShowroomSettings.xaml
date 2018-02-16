@@ -46,7 +46,7 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <Grid>
@@ -86,7 +86,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Camera" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 0" Text="Parameters:" />
@@ -180,7 +180,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <DockPanel>
@@ -223,7 +223,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Background:" Style="{StaticResource Heading2}" />
@@ -276,7 +276,7 @@
       <TextBlock Text="Scene:" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
 
       <ListBox Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding Showroom}" Margin="0 0 4 0" Height="200"
-          ItemTemplate="{StaticResource VisualSettings.ShowroomItem}" mui:FancyScrollHelper.Outside="False">
+          ItemTemplate="{StaticResource VisualSettings.ShowroomItem}" mui:FancyScrollHelper.Outside="True">
         <ListBox.ItemsSource>
           <CompositeCollection>
             <x:Static Member="mui:BetterComboBox.NullValue" />
@@ -679,7 +679,7 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
@@ -773,7 +773,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
@@ -877,7 +877,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
@@ -969,7 +969,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Previews.Quality" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
@@ -1059,7 +1059,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False" Margin="0 0 -12 0"
+  <ScrollViewer x:Key="VisualSettings.Hdr" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True" Margin="0 0 -12 0"
       Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Tone mapping:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
@@ -1121,7 +1121,7 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="False"
+  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScrollHelper.Outside="True"
       Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Wireframe &amp; Mesh:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />

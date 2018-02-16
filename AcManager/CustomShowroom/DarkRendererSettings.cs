@@ -434,15 +434,13 @@ namespace AcManager.CustomShowroom {
                     }
 
                     NonfatalError.Notify("Can’t fully load the preset: showroom “{showroomId}” is missing",
-                            "I suggest you to try and search it in Google", solutions: new [] {
+                            "Maybe you can find it online?", solutions: new [] {
                                 new NonfatalErrorSolution("Search for showroom", null, token => {
                                     WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(showroomId,
                                             SettingsHolder.MissingContentType.Showroom));
                                     return Task.Delay(0);
                                 }),
                             });
-
-                    ModernDialog.ShowMessage($"Showroom “{showroomId}” is missing");
                 } else {
                     Showroom = showroom;
                 }

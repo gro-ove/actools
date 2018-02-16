@@ -43,12 +43,8 @@ namespace AcTools.Utils {
             }
         }
 
-        private static string _imageMagickAssemblyFilename;
-
-        private static bool IsMagickAsseblyLoaded => _imageMagickAssemblyFilename != null;
-
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string TestImageMagick() {
+        private static string TestImageMagick() {
             return "loaded, version: " + MagickNET.Version;
         }
 
