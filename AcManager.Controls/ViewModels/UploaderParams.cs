@@ -58,22 +58,14 @@ namespace AcManager.Controls.ViewModels {
 
         public string UploaderId {
             get => _uploaderId;
-            set {
-                if (value == _uploaderId) return;
-                _uploaderId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _uploaderId);
         }
 
         private string _directoryId;
 
         public string DirectoryId {
             get => _directoryId;
-            set {
-                if (value == _directoryId) return;
-                _directoryId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _directoryId);
         }
 
         public IStorage Storage { get; }
@@ -91,11 +83,7 @@ namespace AcManager.Controls.ViewModels {
 
         public int IsBusy {
             get => _isBusy;
-            set {
-                if (Equals(value, _isBusy)) return;
-                _isBusy = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isBusy);
         }
 
         public async Task Prepare() {
@@ -130,11 +118,7 @@ namespace AcManager.Controls.ViewModels {
 
                 return _uploaderDirectories;
             }
-            set {
-                if (Equals(value, _uploaderDirectories)) return;
-                _uploaderDirectories = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _uploaderDirectories);
         }
 
         private AsyncCommand<CancellationToken?> _logOutCommand;

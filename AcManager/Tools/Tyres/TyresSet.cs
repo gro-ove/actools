@@ -24,22 +24,14 @@ namespace AcManager.Tools.Tyres {
 
         public bool Dublicate {
             get => _dublicate;
-            set {
-                if (Equals(value, _dublicate)) return;
-                _dublicate = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _dublicate);
         }
 
         private bool _differentTyres;
 
         public bool DifferentTyres {
             get => _differentTyres;
-            set {
-                if (Equals(value, _differentTyres)) return;
-                _differentTyres = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _differentTyres);
         }
 
         private void UpdateDifferentTyres() {
@@ -50,11 +42,7 @@ namespace AcManager.Tools.Tyres {
 
         public bool DefaultSet {
             get => _defaultSet;
-            set {
-                if (Equals(value, _defaultSet)) return;
-                _defaultSet = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _defaultSet);
         }
 
         private TyresEntry _front;
@@ -108,11 +96,7 @@ namespace AcManager.Tools.Tyres {
 
         public bool IsDeleted {
             get => _isDeleted;
-            set {
-                if (Equals(value, _isDeleted)) return;
-                _isDeleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isDeleted);
         }
 
         private bool _canBeDeleted;

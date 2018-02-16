@@ -7,7 +7,10 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class NonfatalErrorSolution : AsyncCommand {
+        [CanBeNull]
         private readonly NonfatalErrorEntry _entry;
+
+        [CanBeNull]
         private readonly Func<CancellationToken, Task> _execute;
 
         [NotNull]
@@ -25,7 +28,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public NonfatalErrorSolution([CanBeNull] string displayName, NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute)
+        public NonfatalErrorSolution([CanBeNull] string displayName, [CanBeNull] NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute)
                 : base(() => Task.Delay(0), () => execute != null) {
             _entry = entry;
             _execute = execute;

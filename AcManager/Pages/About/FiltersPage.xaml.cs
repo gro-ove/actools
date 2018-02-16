@@ -72,11 +72,7 @@ namespace AcManager.Pages.About {
 
             public ListCollectionView NotesList {
                 get => _notesList;
-                set {
-                    if (Equals(value, _notesList)) return;
-                    _notesList = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _notesList);
             }
 
             public int Compare(object x, object y) {

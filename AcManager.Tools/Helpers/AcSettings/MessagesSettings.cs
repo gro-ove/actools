@@ -6,154 +6,98 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool NewGhost {
             get => _newGhost;
-            set {
-                if (Equals(value, _newGhost)) return;
-                _newGhost = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _newGhost);
         }
 
         private bool _serverPlayerJoined;
 
         public bool ServerPlayerJoined {
             get => _serverPlayerJoined;
-            set {
-                if (Equals(value, _serverPlayerJoined)) return;
-                _serverPlayerJoined = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverPlayerJoined);
         }
 
         private bool _serverPlayerDisconnected;
 
         public bool ServerPlayerDisconnected {
             get => _serverPlayerDisconnected;
-            set {
-                if (Equals(value, _serverPlayerDisconnected)) return;
-                _serverPlayerDisconnected = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverPlayerDisconnected);
         }
 
         private bool _serverKickedMsg;
 
         public bool ServerKickedMsg {
             get => _serverKickedMsg;
-            set {
-                if (Equals(value, _serverKickedMsg)) return;
-                _serverKickedMsg = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverKickedMsg);
         }
 
         private bool _serverSessionVoting;
 
         public bool ServerSessionVoting {
             get => _serverSessionVoting;
-            set {
-                if (Equals(value, _serverSessionVoting)) return;
-                _serverSessionVoting = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverSessionVoting);
         }
 
         private bool _serverKickVoting;
 
         public bool ServerKickVoting {
             get => _serverKickVoting;
-            set {
-                if (Equals(value, _serverKickVoting)) return;
-                _serverKickVoting = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverKickVoting);
         }
 
         private bool _serverVote;
 
         public bool ServerVote {
             get => _serverVote;
-            set {
-                if (Equals(value, _serverVote)) return;
-                _serverVote = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _serverVote);
         }
 
         private bool _abs;
 
         public bool Abs {
             get => _abs;
-            set {
-                if (Equals(value, _abs)) return;
-                _abs = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _abs);
         }
 
         private bool _tractionControl;
 
         public bool TractionControl {
             get => _tractionControl;
-            set {
-                if (Equals(value, _tractionControl)) return;
-                _tractionControl = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _tractionControl);
         }
 
         private bool _turbo;
 
         public bool Turbo {
             get => _turbo;
-            set {
-                if (Equals(value, _turbo)) return;
-                _turbo = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _turbo);
         }
 
         private bool _brakeBias;
 
         public bool BrakeBias {
             get => _brakeBias;
-            set {
-                if (Equals(value, _brakeBias)) return;
-                _brakeBias = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _brakeBias);
         }
 
         private bool _brakeEngine;
 
         public bool BrakeEngine {
             get => _brakeEngine;
-            set {
-                if (Equals(value, _brakeEngine)) return;
-                _brakeEngine = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _brakeEngine);
         }
 
         private bool _mgu;
 
         public bool Mgu {
             get => _mgu;
-            set {
-                if (Equals(value, _mgu)) return;
-                _mgu = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _mgu);
         }
 
         private bool _penaltyLockControl;
 
         public bool PenaltyLockControl {
             get => _penaltyLockControl;
-            set {
-                if (Equals(value, _penaltyLockControl)) return;
-                _penaltyLockControl = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _penaltyLockControl);
         }
 
         protected override void LoadFromIni() {

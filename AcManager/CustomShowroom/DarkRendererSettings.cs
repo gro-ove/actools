@@ -27,6 +27,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
@@ -49,7 +50,7 @@ namespace AcManager.CustomShowroom {
         Blurred = 2
     }
 
-    public class DarkRendererSettings : INotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider, ILinkNavigator {
+    public class DarkRendererSettings : NotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider, ILinkNavigator {
         public static readonly string DefaultKey = "__DarkRendererSettings";
         public static readonly string DefaultPresetableKeyValue = "Custom Showroom";
 
@@ -432,6 +433,15 @@ namespace AcManager.CustomShowroom {
                         Showroom = null;
                     }
 
+                    NonfatalError.Notify("Can’t fully load the preset: showroom “{showroomId}” is missing",
+                            "I suggest you to try and search it in Google", solutions: new [] {
+                                new NonfatalErrorSolution("Search for showroom", null, token => {
+                                    WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(showroomId,
+                                            SettingsHolder.MissingContentType.Showroom));
+                                    return Task.Delay(0);
+                                }),
+                            });
+
                     ModernDialog.ShowMessage($"Showroom “{showroomId}” is missing");
                 } else {
                     Showroom = showroom;
@@ -474,11 +484,7 @@ namespace AcManager.CustomShowroom {
 
         public bool CameraOrbitMode {
             get => _cameraOrbitMode;
-            set {
-                if (Equals(value, _cameraOrbitMode)) return;
-                _cameraOrbitMode = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _cameraOrbitMode);
         }
 
         private void OnCameraCoordinatePropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -517,8 +523,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, LoadCameraEnabled)) return;
                 _loadCameraEnabled = value;
                 ValuesStorage.Set(KeyLoadCamera, value);
-                OnPropertyChanged(save: false);
-
+                OnPropertyChangedSkipSaving();
                 if (value) {
                     PushCamera();
                 }
@@ -533,7 +538,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, LockCamera)) return;
                 _lockCamera = value;
                 ValuesStorage.Set(KeyLockCamera, value);
-                OnPropertyChanged(save: false);
+                OnPropertyChangedSkipSaving();
                 Renderer.LockCamera = value;
             }
         }
@@ -564,6 +569,7 @@ namespace AcManager.CustomShowroom {
         protected virtual void PushCamera(bool force = false) {
             if (!force && !LoadCameraEnabled && Keyboard.Modifiers != ModifierKeys.Control) return;
             CameraBusy.Do(() => {
+                Renderer.AutoAdjustTarget = false;
                 if (CameraOrbitMode) {
                     Renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
                 } else {
@@ -1343,14 +1349,13 @@ namespace AcManager.CustomShowroom {
         }
         #endregion
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            base.OnPropertyChanged(propertyName);
+            SaveLater();
+        }
 
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null, bool save = true) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            if (save) {
-                SaveLater();
-            }
+        protected void OnPropertyChangedSkipSaving([CallerMemberName] string propertyName = null) {
+            base.OnPropertyChanged(propertyName);
         }
     }
 }

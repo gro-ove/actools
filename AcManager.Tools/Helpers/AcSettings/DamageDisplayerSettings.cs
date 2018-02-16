@@ -6,22 +6,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int X {
             get => _x;
-            set {
-                if (Equals(value, _x)) return;
-                _x = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _x);
         }
 
         private int _y;
 
         public int Y {
             get => _y;
-            set {
-                if (Equals(value, _y)) return;
-                _y = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _y);
         }
 
         private int _maxDamageSpeed;
@@ -29,33 +21,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
         // Kilometres per hour
         public int MaxDamageSpeed {
             get => _maxDamageSpeed;
-            set {
-                if (Equals(value, _maxDamageSpeed)) return;
-                _maxDamageSpeed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _maxDamageSpeed);
         }
 
         private int _time;
 
         public int Time {
             get => _time;
-            set {
-                if (Equals(value, _time)) return;
-                _time = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _time);
         }
 
         private bool _printValues;
 
         public bool PrintValues {
             get => _printValues;
-            set {
-                if (Equals(value, _printValues)) return;
-                _printValues = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _printValues);
         }
 
         protected override void LoadFromIni() {

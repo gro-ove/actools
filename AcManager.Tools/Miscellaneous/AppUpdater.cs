@@ -79,11 +79,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public bool IsSupported {
             get => _isSupported;
-            set {
-                if (Equals(value, _isSupported)) return;
-                _isSupported = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isSupported);
         }
 
         public override Task CheckAndUpdateIfNeeded() {

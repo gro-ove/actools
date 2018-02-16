@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -11,11 +9,12 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcTools.GenericMods {
-    public class GenericMod : INotifyPropertyChanged, IDraggable {
+    public class GenericMod : NotifyPropertyChanged, IDraggable {
         public static readonly string DescriptionExtension = ".jsgme";
 
         private readonly GenericModsEnabler _enabler;
@@ -130,18 +129,7 @@ namespace AcTools.GenericMods {
 
         public string DisplayDependsOn {
             get => _displayDependsOn;
-            private set {
-                if (Equals(value, _displayDependsOn)) return;
-                _displayDependsOn = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            private set => Apply(value, ref _displayDependsOn);
         }
 
         public const string DraggableFormat = "X-GenericMod";

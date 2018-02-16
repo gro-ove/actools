@@ -8,77 +8,49 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool Practice {
             get { return _practice; }
-            set {
-                if (Equals(value, _practice)) return;
-                _practice = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _practice);
         }
 
         private bool _qualify;
 
         public bool Qualify {
             get { return _qualify; }
-            set {
-                if (Equals(value, _qualify)) return;
-                _qualify = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _qualify);
         }
 
         private bool _race;
 
         public bool Race {
             get { return _race; }
-            set {
-                if (Equals(value, _race)) return;
-                _race = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _race);
         }
 
         private Color _backgroundColor;
 
         public Color BackgroundColor {
             get { return _backgroundColor; }
-            set {
-                if (Equals(value, _backgroundColor)) return;
-                _backgroundColor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _backgroundColor);
         }
 
         private double _backgroundOpacity;
 
         public double BackgroundOpacity {
             get { return _backgroundOpacity; }
-            set {
-                if (Equals(value, _backgroundOpacity)) return;
-                _backgroundOpacity = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _backgroundOpacity);
         }
 
         private Color _foregroundColor;
 
         public Color ForegroundColor {
             get { return _foregroundColor; }
-            set {
-                if (Equals(value, _foregroundColor)) return;
-                _foregroundColor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _foregroundColor);
         }
 
         private double _foregroundOpacity;
 
         public double ForegroundOpacity {
             get { return _foregroundOpacity; }
-            set {
-                if (Equals(value, _foregroundOpacity)) return;
-                _foregroundOpacity = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _foregroundOpacity);
         }
 
         protected override void LoadFromIni() {
@@ -90,7 +62,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             double opacity;
             BackgroundColor = section.GetColor("BACKGROUND_COLOR", Colors.Black, 0.3, out opacity);
             BackgroundOpacity = opacity;
-            
+
             ForegroundColor = section.GetColor("FONT_COLOR", Colors.White, 1.0, out opacity);
             ForegroundOpacity = opacity;
         }

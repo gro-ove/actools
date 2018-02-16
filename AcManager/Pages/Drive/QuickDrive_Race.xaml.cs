@@ -87,11 +87,7 @@ namespace AcManager.Pages.Drive {
 
             public Game.JumpStartPenaltyType JumpStartPenalty {
                 get => _jumpStartPenalty;
-                set {
-                    if (Equals(value, _jumpStartPenalty)) return;
-                    _jumpStartPenalty = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _jumpStartPenalty);
             }
             #endregion
 

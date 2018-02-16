@@ -41,15 +41,15 @@ namespace AcManager.Controls.Helpers {
         public class PresetEntry : NotifyPropertyChanged, ISavedPresetEntry {
             public PresetEntry(string filename) {
                 DisplayName = Path.GetFileNameWithoutExtension(filename) ?? @"?";
-                Filename = filename;
+                VirtualFilename = filename;
             }
 
             public string DisplayName { get; }
-
-            public string Filename { get; }
+            public string VirtualFilename { get; }
+            public bool IsBuiltIn => false;
 
             public byte[] ReadBinaryData() {
-                return File.ReadAllBytes(Filename);
+                return File.ReadAllBytes(VirtualFilename);
             }
 
             public void SetParent(string baseDirectory) {
@@ -57,7 +57,7 @@ namespace AcManager.Controls.Helpers {
             }
 
             public bool Equals(ISavedPresetEntry other) {
-                return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+                return other != null && string.Equals(VirtualFilename, other.VirtualFilename, StringComparison.OrdinalIgnoreCase);
             }
 
             public override bool Equals(object other) {
@@ -65,11 +65,11 @@ namespace AcManager.Controls.Helpers {
             }
 
             protected bool Equals(PresetEntry other) {
-                return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+                return other != null && string.Equals(VirtualFilename, other.VirtualFilename, StringComparison.OrdinalIgnoreCase);
             }
 
             public override int GetHashCode() {
-                return Filename.GetHashCode();
+                return VirtualFilename.GetHashCode();
             }
         }
 
@@ -84,11 +84,7 @@ namespace AcManager.Controls.Helpers {
 
         public bool PresetsReady {
             get => _presetsReady;
-            set {
-                if (Equals(value, _presetsReady)) return;
-                _presetsReady = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _presetsReady);
         }
 
         private bool _reloading;
@@ -130,7 +126,7 @@ namespace AcManager.Controls.Helpers {
                 return;
             }
 
-            Controls.LoadPreset(entry.Filename, backup);
+            Controls.LoadPreset(entry.VirtualFilename, backup);
         }
 
         public void SwitchToNext() {
@@ -138,7 +134,7 @@ namespace AcManager.Controls.Helpers {
             if (presets.Count < 2) return;
 
             var current = Controls.CurrentPresetFilename;
-            var selectedId = presets.FindIndex(x => x.Filename == current);
+            var selectedId = presets.FindIndex(x => x.VirtualFilename == current);
             if (selectedId == -1 || ++selectedId >= presets.Count) {
                 SwitchToPreset(presets.FirstOrDefault());
             } else {
@@ -151,7 +147,7 @@ namespace AcManager.Controls.Helpers {
             if (presets.Count < 2) return;
 
             var current = Controls.CurrentPresetFilename;
-            var selectedId = presets.FindIndex(x => x.Filename == current);
+            var selectedId = presets.FindIndex(x => x.VirtualFilename == current);
             if (selectedId == -1) {
                 SwitchToPreset(presets.FirstOrDefault());
             } else if (--selectedId < 0) {

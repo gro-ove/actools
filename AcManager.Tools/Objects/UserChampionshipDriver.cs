@@ -55,22 +55,14 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public int Points {
             get => _points;
-            set {
-                if (Equals(value, _points)) return;
-                _points = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _points);
         }
 
         private int _takenPlace;
 
         public int TakenPlace {
             get => _takenPlace;
-            set {
-                if (value == _takenPlace) return;
-                _takenPlace = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _takenPlace);
         }
         #endregion
 
@@ -92,11 +84,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty("aiLevel", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(100d)]
         public double AiLevel {
             get => _aiLevel;
-            set {
-                if (Equals(value, _aiLevel)) return;
-                _aiLevel = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _aiLevel);
         }
 
         private double _aiAggression;
@@ -104,11 +92,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty("aiAggression", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
         public double AiAggression {
             get => _aiAggression;
-            set {
-                if (Equals(value, _aiAggression)) return;
-                _aiAggression = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _aiAggression);
         }
 
         private double _ballast;
@@ -116,11 +100,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty("ballast", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
         public double Ballast {
             get => _ballast;
-            set {
-                if (Equals(value, _ballast)) return;
-                _ballast = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ballast);
         }
 
         private double _restrictor;
@@ -128,11 +108,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty("restrictor", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate), DefaultValue(0d)]
         public double Restrictor {
             get => _restrictor;
-            set {
-                if (Equals(value, _restrictor)) return;
-                _restrictor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _restrictor);
         }
 
         private string _nationality;
@@ -140,11 +116,7 @@ namespace AcManager.Tools.Objects {
         [CanBeNull, JsonProperty("nationality", DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate)]
         public string Nationality {
             get => _nationality;
-            set {
-                if (Equals(value, _nationality)) return;
-                _nationality = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _nationality);
         }
         #endregion
     }

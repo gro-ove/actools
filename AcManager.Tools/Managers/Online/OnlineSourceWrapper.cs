@@ -99,11 +99,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public AsyncProgressEntry LoadingProgress {
             get { return _loadingProgress; }
-            set {
-                if (Equals(value, _loadingProgress)) return;
-                _loadingProgress = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _loadingProgress);
         }
 
         private ErrorInformation _error;

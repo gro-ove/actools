@@ -204,11 +204,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsScanningInProgress {
             get => _isScanningInProgress;
-            set {
-                if (Equals(value, _isScanningInProgress)) return;
-                _isScanningInProgress = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isScanningInProgress);
         }
 
         private void OnDevicesUpdate(object sender, EventArgs eventArgs) {
@@ -594,22 +590,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool WheelSteerScaleAutoAdjust {
             get => _wheelSteerScaleAutoAdjust;
-            set {
-                if (Equals(value, _wheelSteerScaleAutoAdjust)) return;
-                _wheelSteerScaleAutoAdjust = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wheelSteerScaleAutoAdjust);
         }
 
         private double _wheelSteerScale;
 
         public double WheelSteerScale {
             get => _wheelSteerScale;
-            set {
-                if (Equals(value, _wheelSteerScale)) return;
-                _wheelSteerScale = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wheelSteerScale);
         }
 
         private int _debouncingInterval;
@@ -631,11 +619,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool CombineWithKeyboardInput {
             get => _combineWithKeyboardInput;
-            set {
-                if (Equals(value, _combineWithKeyboardInput)) return;
-                _combineWithKeyboardInput = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _combineWithKeyboardInput);
         }
 
         public WheelButtonCombined[] WheelGearsButtonEntries { get; } = {
@@ -647,11 +631,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool WheelUseHShifter {
             get => _wheelUseHShifter;
-            set {
-                if (Equals(value, _wheelUseHShifter)) return;
-                _wheelUseHShifter = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wheelUseHShifter);
         }
 
         private IDirectInputDevice _wheelHShifterDevice;
@@ -757,11 +737,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool WheelFfbInvert {
             get => _wheelFfbInvert;
-            set {
-                if (Equals(value, _wheelFfbInvert)) return;
-                _wheelFfbInvert = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wheelFfbInvert);
         }
 
         private int _wheelFfbGain;
@@ -876,11 +852,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool WheelFfbEnhancedUndersteer {
             get => _wheelFfbEnhancedUndersteer;
-            set {
-                if (Equals(value, _wheelFfbEnhancedUndersteer)) return;
-                _wheelFfbEnhancedUndersteer = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wheelFfbEnhancedUndersteer);
         }
 
         private int _wheelFfbSkipSteps;
@@ -937,22 +909,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool KeyboardMouseSteering {
             get => _keyboardMouseSteering;
-            set {
-                if (Equals(value, _keyboardMouseSteering)) return;
-                _keyboardMouseSteering = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _keyboardMouseSteering);
         }
 
         private bool _keyboardMouseButtons;
 
         public bool KeyboardMouseButtons {
             get => _keyboardMouseButtons;
-            set {
-                if (Equals(value, _keyboardMouseButtons)) return;
-                _keyboardMouseButtons = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _keyboardMouseButtons);
         }
 
         private double _keyboardMouseSteeringSpeed;
@@ -993,33 +957,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool DelaySpecificSystemCommands {
             get => _delaySpecificSystemCommands;
-            set {
-                if (Equals(value, _delaySpecificSystemCommands)) return;
-                _delaySpecificSystemCommands = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _delaySpecificSystemCommands);
         }
 
         private bool _showSystemDelays;
 
         public bool ShowSystemDelays {
             get => _showSystemDelays;
-            set {
-                if (Equals(value, _showSystemDelays)) return;
-                _showSystemDelays = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _showSystemDelays);
         }
 
         private bool _systemIgnorePovInPits;
 
         public bool SystemIgnorePovInPits {
             get => _systemIgnorePovInPits;
-            set {
-                if (Equals(value, _systemIgnorePovInPits)) return;
-                _systemIgnorePovInPits = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _systemIgnorePovInPits);
         }
 
         #region Overlay-availability-related options
@@ -1041,11 +993,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsOverlayAvailable {
             get => _isOverlayAvailable;
-            private set {
-                if (Equals(value, _isOverlayAvailable)) return;
-                _isOverlayAvailable = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isOverlayAvailable);
         }
 
         private void RefreshOverlayAvailable() {
@@ -1057,33 +1005,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool HardwareLock {
             get => _hardwareLock;
-            set {
-                if (Equals(value, _hardwareLock)) return;
-                _hardwareLock = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hardwareLock);
         }
 
         private bool _isHardwareLockSupported;
 
         public bool IsHardwareLockSupported {
             get => _isHardwareLockSupported;
-            set {
-                if (Equals(value, _isHardwareLockSupported)) return;
-                _isHardwareLockSupported = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isHardwareLockSupported);
         }
 
         private object _hardwareLockOptions;
 
         public object HardwareLockOptions {
             get => _hardwareLockOptions;
-            set {
-                if (Equals(value, _hardwareLockOptions)) return;
-                _hardwareLockOptions = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hardwareLockOptions);
         }
 
         public string DisplayHardwareLockSupported { get; } = WheelSteerLock.GetSupportedNames().OrderBy(x => x).JoinToReadableString();

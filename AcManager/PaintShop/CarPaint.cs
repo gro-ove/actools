@@ -48,11 +48,7 @@ namespace AcManager.PaintShop {
 
         public bool FlakesAllowed {
             get => _flakesAllowed;
-            set {
-                if (Equals(value, _flakesAllowed)) return;
-                _flakesAllowed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _flakesAllowed);
         }
 
         private void UpdateFlakesAllowed() {
@@ -63,11 +59,7 @@ namespace AcManager.PaintShop {
 
         public bool ColorAllowed {
             get => _colorAllowed;
-            set {
-                if (Equals(value, _colorAllowed)) return;
-                _colorAllowed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _colorAllowed);
         }
 
         private void UpdateColorAllowed() {

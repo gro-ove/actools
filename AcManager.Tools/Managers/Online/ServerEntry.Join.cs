@@ -23,11 +23,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public IReadOnlyList<string> NonAvailableReasons {
             get { return _naReasons; }
-            set {
-                if (Equals(value, _naReasons)) return;
-                _naReasons = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _naReasons);
         }
 
         /// <summary>
@@ -112,11 +108,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public string BookingErrorMessage {
             get { return _bookingErrorMessage; }
-            set {
-                if (Equals(value, _bookingErrorMessage)) return;
-                _bookingErrorMessage = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _bookingErrorMessage);
         }
 
         public TimeSpan BookingTimeLeft {
@@ -232,11 +224,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public Game.AssistsProperties Assists {
             get { return _assists; }
-            set {
-                if (Equals(value, _assists)) return;
-                _assists = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _assists);
         }
 
         private async Task Join(object o) {

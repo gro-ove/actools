@@ -80,11 +80,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string MaxDistancePerCarCarId {
                 get => _maxDistancePerCarCarId;
-                internal set {
-                    if (value == _maxDistancePerCarCarId) return;
-                    _maxDistancePerCarCarId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _maxDistancePerCarCarId);
             }
 
             [JsonProperty]
@@ -102,11 +98,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string MaxDistancePerTrackTrackId {
                 get => _maxDistancePerTrackTrackId;
-                internal set {
-                    if (value == _maxDistancePerTrackTrackId) return;
-                    _maxDistancePerTrackTrackId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _maxDistancePerTrackTrackId);
             }
 
             [JsonProperty]
@@ -122,11 +114,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string MaxSpeedCarId {
                 get => _maxSpeedCarId;
-                internal set {
-                    if (value == _maxSpeedCarId) return;
-                    _maxSpeedCarId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _maxSpeedCarId);
             }
 
             [JsonProperty]
@@ -142,11 +130,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string LongestAirborneCarId {
                 get => _longestAirborneCarId;
-                internal set {
-                    if (value == _longestAirborneCarId) return;
-                    _longestAirborneCarId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _longestAirborneCarId);
             }
 
             [JsonProperty]
@@ -162,11 +146,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string LongestWheelieCarId {
                 get => _longestWheelieCarId;
-                internal set {
-                    if (value == _longestWheelieCarId) return;
-                    _longestWheelieCarId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _longestWheelieCarId);
             }
 
             [JsonProperty]
@@ -182,11 +162,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public string LongestTwoWheelsCarId {
                 get => _longestTwoWheelsCarId;
-                internal set {
-                    if (value == _longestTwoWheelsCarId) return;
-                    _longestTwoWheelsCarId = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _longestTwoWheelsCarId);
             }
 
             /* summary */
@@ -238,21 +214,13 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public int SessionsCount {
                 get => _sessionsCount;
-                set {
-                    if (Equals(value, _sessionsCount)) return;
-                    _sessionsCount = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _sessionsCount);
             }
 
             [JsonProperty]
             public int GoneOffroadTimes {
                 get => _goneOffroadTimes;
-                internal set {
-                    if (value == _goneOffroadTimes) return;
-                    _goneOffroadTimes = value;
-                    OnPropertyChanged();
-                }
+                internal set => Apply(value, ref _goneOffroadTimes);
             }
 
             [JsonProperty]
@@ -303,11 +271,7 @@ namespace AcManager.Tools.Profile {
             [JsonProperty]
             public int TotalCrashes {
                 get => _totalCrashes;
-                set {
-                    if (Equals(value, _totalCrashes)) return;
-                    _totalCrashes = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _totalCrashes);
             }
 
             /* calculated on-fly */

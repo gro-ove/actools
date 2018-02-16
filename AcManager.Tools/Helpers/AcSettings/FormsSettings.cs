@@ -17,11 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public AcFormEntry[] Entries {
             get => _entries;
-            set {
-                if (Equals(value, _entries)) return;
-                _entries = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _entries);
         }
 
         private int _selectedDesktop;

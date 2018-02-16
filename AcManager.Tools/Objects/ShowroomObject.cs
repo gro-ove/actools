@@ -75,11 +75,7 @@ namespace AcManager.Tools.Objects {
 
         public bool SoundEnabled {
             get => _soundEnabled;
-            private set {
-                if (Equals(value, _soundEnabled)) return;
-                _soundEnabled = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _soundEnabled);
         }
         #endregion
 

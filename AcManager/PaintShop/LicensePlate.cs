@@ -65,11 +65,7 @@ namespace AcManager.PaintShop {
         [CanBeNull]
         public List<FilesStorage.ContentEntry> Styles {
             get => _styles;
-            private set {
-                if (Equals(value, _styles)) return;
-                _styles = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _styles);
         }
 
         public void SetStyles(List<FilesStorage.ContentEntry> styles) {

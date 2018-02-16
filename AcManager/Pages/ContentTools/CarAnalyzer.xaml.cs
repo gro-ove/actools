@@ -60,11 +60,7 @@ namespace AcManager.Pages.ContentTools {
 
             public int LeftUnsolved {
                 get => _leftUnsolved;
-                set {
-                    if (Equals(value, _leftUnsolved)) return;
-                    _leftUnsolved = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _leftUnsolved);
             }
 
             public BrokenDetails(CarObject car, IEnumerable<ContentRepairSuggestion> aspects, bool ratingMode) {
@@ -158,11 +154,7 @@ namespace AcManager.Pages.ContentTools {
 
             public bool RatingLoading {
                 get => _ratingLoading;
-                set {
-                    if (Equals(value, _ratingLoading)) return;
-                    _ratingLoading = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _ratingLoading);
             }
 
             public class SimularEntry {
@@ -561,11 +553,7 @@ All found similarities:
 
                     return _ratings;
                 }
-                set {
-                    if (Equals(value, _ratings)) return;
-                    _ratings = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _ratings);
             }
             #endregion
         }
@@ -680,26 +668,21 @@ All found similarities:
 
         public BrokenDetails BrokenCar {
             get => _brokenCar;
-            set {
-                if (Equals(value, _brokenCar)) return;
-                _brokenCar = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _brokenCar);
         }
         #endregion
 
         private bool _warned;
 
         private void OnFixButtonClick(object sender, RoutedEventArgs e) {
-            var aspect = ((FrameworkElement)sender).DataContext as ContentRepairSuggestionFix;
-            if (aspect == null) return;
+            if (((FrameworkElement)sender).DataContext is ContentRepairSuggestionFix aspect) {
+                if (aspect.AffectsData && !_warned) {
+                    if (!DataUpdateWarning.Warn(BrokenCar.Car)) return;
+                    _warned = true;
+                }
 
-            if (aspect.AffectsData && !_warned) {
-                if (!DataUpdateWarning.Warn(BrokenCar.Car)) return;
-                _warned = true;
+                aspect.FixCommand.ExecuteAsync().Forget();
             }
-
-            aspect.FixCommand.ExecuteAsync().Forget();
         }
 
         [ValueConversion(typeof(double?), typeof(SolidColorBrush))]

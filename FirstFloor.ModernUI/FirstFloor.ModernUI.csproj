@@ -147,6 +147,7 @@
     <Compile Include="ListenersChangedEventHandlerArgs.cs" />
     <Compile Include="NotifyExtension.cs" />
     <Compile Include="Presentation\AppearanceManager.Behavior.cs" />
+    <Compile Include="Presentation\NotifyPropertyErrorsChanged.cs" />
     <Compile Include="Serialization\SimpleSerialization.cs" />
     <Compile Include="Serialization\SimpleSerialization.Extra.cs" />
     <Compile Include="TaskExtension.cs" />

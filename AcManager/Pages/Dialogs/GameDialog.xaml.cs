@@ -665,11 +665,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string WaitingStatus {
                 get => _waitingStatus;
-                set {
-                    if (Equals(value, _waitingStatus)) return;
-                    _waitingStatus = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _waitingStatus);
             }
 
             private string _errorMessage;
@@ -689,11 +685,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string ErrorDescription {
                 get => _errorDescription;
-                set {
-                    if (Equals(value, _errorDescription)) return;
-                    _errorDescription = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _errorDescription);
             }
 
             private BaseFinishedData _finishedData;

@@ -39,11 +39,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         public bool IsScanned {
             get => _isScanned;
-            protected set {
-                if (value == _isScanned) return;
-                _isScanned = value;
-                OnPropertyChanged();
-            }
+            protected set => Apply(value, ref _isScanned);
         }
 
         public bool IsLoaded {
@@ -228,11 +224,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         public int LoadedCount {
             get => _loadedCount;
-            set {
-                if (Equals(value, _loadedCount)) return;
-                _loadedCount = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _loadedCount);
         }
 
         [CanBeNull]

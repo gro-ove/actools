@@ -425,7 +425,7 @@ namespace AcManager.CustomShowroom {
                 if (Equals(value, HighQualityPreview)) return;
                 _highQualityPreview = value;
                 ValuesStorage.Set(".cmPsHqPreview", value);
-                OnPropertyChanged(save: false);
+                OnPropertyChangedSkipSaving();
                 Renderer.ResolutionMultiplier = GetRendererResolutionMultipler();
             }
         }
@@ -517,22 +517,14 @@ namespace AcManager.CustomShowroom {
 
         public bool SoftwareDownsize {
             get => _softwareDownsize;
-            set {
-                if (Equals(value, _softwareDownsize)) return;
-                _softwareDownsize = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _softwareDownsize);
         }
 
         private string _fileName;
 
         public string FileName {
             get => _fileName;
-            set {
-                if (Equals(value, _fileName)) return;
-                _fileName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _fileName);
         }
 
         private void ResetSize() {
@@ -822,33 +814,21 @@ namespace AcManager.CustomShowroom {
 
         public double X {
             get => _x;
-            set {
-                if (Equals(value, _x)) return;
-                _x = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _x);
         }
 
         private double _y;
 
         public double Y {
             get => _y;
-            set {
-                if (Equals(value, _y)) return;
-                _y = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _y);
         }
 
         private double _z;
 
         public double Z {
             get => _z;
-            set {
-                if (Equals(value, _z)) return;
-                _z = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _z);
         }
 
         public void Set(double x, double y, double z) {

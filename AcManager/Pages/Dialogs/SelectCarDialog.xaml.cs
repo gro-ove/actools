@@ -23,13 +23,14 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Navigation;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class SelectCarDialog : INotifyPropertyChanged {
+    public partial class SelectCarDialog : IInvokingNotifyPropertyChanged {
         /*private static WeakReference<SelectCarDialog> _instance;
         public static SelectCarDialog Instance => _instance == null ? null : _instance.TryGetTarget(out var result) ? result : null;*/
 
@@ -129,11 +130,7 @@ namespace AcManager.Pages.Dialogs {
 
         public bool HasChildren {
             get => _hasChildren;
-            set {
-                if (Equals(value, _hasChildren)) return;
-                _hasChildren = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _hasChildren);
         }
 
         public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
@@ -369,8 +366,12 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

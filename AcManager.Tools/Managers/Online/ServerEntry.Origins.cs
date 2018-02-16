@@ -239,11 +239,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool FromKunosList {
             get => _fromKunosList;
-            private set {
-                if (Equals(value, _fromKunosList)) return;
-                _fromKunosList = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _fromKunosList);
         }
         #endregion
 
@@ -252,11 +248,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool FromLan {
             get => _fromLan;
-            private set {
-                if (Equals(value, _fromLan)) return;
-                _fromLan = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _fromLan);
         }
         #endregion
 
@@ -265,11 +257,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool FromMinoratingList {
             get => _fromMinoratingList;
-            private set {
-                if (Equals(value, _fromMinoratingList)) return;
-                _fromMinoratingList = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _fromMinoratingList);
         }
         #endregion
 
@@ -342,11 +330,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool WasUsedRecently {
             get => _wasUsedRecently;
-            private set {
-                if (Equals(value, _wasUsedRecently)) return;
-                _wasUsedRecently = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _wasUsedRecently);
         }
         #endregion
     }

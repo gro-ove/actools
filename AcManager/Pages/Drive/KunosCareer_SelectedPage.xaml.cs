@@ -145,11 +145,7 @@ namespace AcManager.Pages.Drive {
 
             public KunosCareerObject AcObject {
                 get => _acObject;
-                set {
-                    if (Equals(value, _acObject)) return;
-                    _acObject = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _acObject);
             }
 
             public ViewModel(KunosCareerObject careerObject) {

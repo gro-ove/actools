@@ -35,11 +35,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public double Value {
             get => _value;
-            set {
-                if (Equals(value, _value)) return;
-                _value = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _value);
         }
 
         private void UpdateValue() {

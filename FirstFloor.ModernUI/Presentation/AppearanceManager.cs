@@ -43,11 +43,7 @@ namespace FirstFloor.ModernUI.Presentation {
         [CanBeNull]
         public ResourceDictionary CurrentThemeDictionary {
             get => _currentThemeDictionary;
-            private set {
-                if (Equals(value, _currentThemeDictionary)) return;
-                _currentThemeDictionary = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _currentThemeDictionary);
         }
 
         public void SetTheme([CanBeNull] ResourceDictionary dictionary) {

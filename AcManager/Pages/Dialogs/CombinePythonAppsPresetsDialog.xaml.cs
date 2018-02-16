@@ -33,11 +33,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool IsSelected {
                 get => _isSelected;
-                set {
-                    if (Equals(value, _isSelected)) return;
-                    _isSelected = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isSelected);
             }
 
             private ISavedPresetEntry _preset;
@@ -59,22 +55,14 @@ namespace AcManager.Pages.Dialogs {
 
             public SettingEntry[] Desktops {
                 get => _desktops;
-                set {
-                    if (Equals(value, _desktops)) return;
-                    _desktops = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _desktops);
             }
 
             private SettingEntry _presetDesktopToUse;
 
             public SettingEntry PresetDesktopToUse {
                 get => _presetDesktopToUse;
-                set {
-                    if (Equals(value, _presetDesktopToUse)) return;
-                    _presetDesktopToUse = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _presetDesktopToUse);
             }
         }
 

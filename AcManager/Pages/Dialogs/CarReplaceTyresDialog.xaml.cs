@@ -79,11 +79,7 @@ namespace AcManager.Pages.Dialogs {
 
             public int SetsVersion {
                 get => _setsVersion;
-                set {
-                    if (Equals(value, _setsVersion)) return;
-                    _setsVersion = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _setsVersion);
             }
 
             public TyresEntry OriginalTyresFront { get; }
@@ -206,11 +202,7 @@ namespace AcManager.Pages.Dialogs {
 
             public TyresEntry MovingTyres {
                 get => _movingTyres;
-                set {
-                    if (Equals(value, _movingTyres)) return;
-                    _movingTyres = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _movingTyres);
             }
 
             private void OnDragStarted(object sender, DraggableMovedEventArgs e) {

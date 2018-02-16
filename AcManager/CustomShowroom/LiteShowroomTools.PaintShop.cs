@@ -226,11 +226,7 @@ namespace AcManager.CustomShowroom {
 
             public string SaveAsSkinIdSuggested {
                 get => _saveAsSkinIdSuggested;
-                set {
-                    if (Equals(value, _saveAsSkinIdSuggested)) return;
-                    _saveAsSkinIdSuggested = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _saveAsSkinIdSuggested);
             }
 
             private async Task SkinSaveAsync() {
@@ -322,11 +318,7 @@ namespace AcManager.CustomShowroom {
 
             public bool HasNumbers {
                 get => _hasNumbers;
-                set {
-                    if (Equals(value, _hasNumbers)) return;
-                    _hasNumbers = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _hasNumbers);
             }
 
             private int _skinNumber;
@@ -380,11 +372,7 @@ namespace AcManager.CustomShowroom {
 
             public bool HasFlags {
                 get => _hasFlags;
-                set {
-                    if (Equals(value, _hasFlags)) return;
-                    _hasFlags = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _hasFlags);
             }
 
             private string _skinFlag;
@@ -440,11 +428,7 @@ namespace AcManager.CustomShowroom {
 
                 public string Value {
                     get => _value;
-                    set {
-                        if (Equals(value, _value)) return;
-                        _value = value;
-                        OnPropertyChanged();
-                    }
+                    set => Apply(value, ref _value);
                 }
             }
 

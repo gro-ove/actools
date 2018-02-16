@@ -26,22 +26,14 @@ namespace AcManager.Tools.Objects {
 
         public bool IsWaiting {
             get => _isWaiting;
-            set {
-                if (Equals(value, _isWaiting)) return;
-                _isWaiting = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isWaiting);
         }
 
         private bool _isPressed;
 
         public bool IsPressed {
             get => _isPressed;
-            set {
-                if (Equals(value, _isPressed)) return;
-                _isPressed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isPressed);
         }
 
         private DelegateCommand _clearCommand;

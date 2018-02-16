@@ -37,22 +37,14 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public double RoundedValue {
             get => _roundedValue;
-            set {
-                if (Equals(value, _roundedValue)) return;
-                _roundedValue = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _roundedValue);
         }
 
         private double _delta;
 
         public double Delta {
             get => _delta;
-            set {
-                if (Equals(value, _delta)) return;
-                _delta = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _delta);
         }
 
         protected override void OnValueChanged() {

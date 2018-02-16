@@ -77,11 +77,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         public bool IsLoaded {
             get => _isLoaded;
-            private set {
-                if (Equals(value, _isLoaded)) return;
-                _isLoaded = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isLoaded);
         }
 
         public override string ToString() {

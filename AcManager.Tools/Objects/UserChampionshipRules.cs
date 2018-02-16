@@ -43,11 +43,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty(@"points")]
         public int[] Points {
             get { return _points; }
-            set {
-                if (Equals(value, _points)) return;
-                _points = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _points);
         }
 
         private bool _penalties = true;
@@ -55,11 +51,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty(@"penalties")]
         public bool Penalties {
             get { return _penalties; }
-            set {
-                if (Equals(value, _penalties)) return;
-                _penalties = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _penalties);
         }
 
         private Game.JumpStartPenaltyType _jumpStartPenalty = Game.JumpStartPenaltyType.DriveThrough;
@@ -67,11 +59,7 @@ namespace AcManager.Tools.Objects {
         [JsonProperty(@"jumpstart")]
         public Game.JumpStartPenaltyType JumpStartPenalty {
             get { return _jumpStartPenalty; }
-            set {
-                if (Equals(value, _jumpStartPenalty)) return;
-                _jumpStartPenalty = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _jumpStartPenalty);
         }
 
         public void SaveTo(JObject obj) {

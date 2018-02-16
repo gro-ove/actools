@@ -58,44 +58,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool Autosave {
             get => _autosave;
-            set {
-                if (Equals(value, _autosave)) return;
-                _autosave = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _autosave);
         }
 
         private int _racesLimit;
 
         public int RacesLimit {
             get => _racesLimit;
-            set {
-                if (Equals(value, _racesLimit)) return;
-                _racesLimit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _racesLimit);
         }
 
         private int _qualifyLimit;
 
         public int QualifyLimit {
             get => _qualifyLimit;
-            set {
-                if (Equals(value, _qualifyLimit)) return;
-                _qualifyLimit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _qualifyLimit);
         }
 
         private int _othersLimit;
 
         public int OthersLimit {
             get => _othersLimit;
-            set {
-                if (Equals(value, _othersLimit)) return;
-                _othersLimit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _othersLimit);
         }
 
         private int _minTimeSecond;

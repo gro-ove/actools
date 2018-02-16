@@ -57,22 +57,14 @@ namespace AcManager.CustomShowroom {
 
             public string TextureFormatDescription {
                 get => _textureFormatDescription;
-                set {
-                    if (Equals(value, _textureFormatDescription)) return;
-                    _textureFormatDescription = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textureFormatDescription);
             }
 
             private string _textureDimensions;
 
             public string TextureDimensions {
                 get => _textureDimensions;
-                set {
-                    if (value == _textureDimensions) return;
-                    _textureDimensions = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textureDimensions);
             }
 
             public byte[] Data { get; set; }
@@ -81,22 +73,14 @@ namespace AcManager.CustomShowroom {
 
             public bool Loading {
                 get => _loading;
-                set {
-                    if (Equals(value, _loading)) return;
-                    _loading = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _loading);
             }
 
             private BitmapSource _previewImage;
 
             public BitmapSource PreviewImage {
                 get => _previewImage;
-                set {
-                    if (Equals(value, _previewImage)) return;
-                    _previewImage = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _previewImage);
             }
 
             [CanBeNull]
@@ -106,11 +90,7 @@ namespace AcManager.CustomShowroom {
 
             public string UsedFor {
                 get => _usedFor;
-                set {
-                    if (Equals(value, _usedFor)) return;
-                    _usedFor = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _usedFor);
             }
 
             public bool IsForkAvailable { get; }

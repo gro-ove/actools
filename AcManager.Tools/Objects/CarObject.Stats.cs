@@ -35,11 +35,7 @@ namespace AcManager.Tools.Objects {
 
                 return _tsmSetupsCount;
             }
-            set {
-                if (Equals(value, _tsmSetupsCount)) return;
-                _tsmSetupsCount = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _tsmSetupsCount);
         }
 
         private async void UpdateTsmSetupsCount() {

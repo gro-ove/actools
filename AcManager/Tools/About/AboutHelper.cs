@@ -8,22 +8,14 @@ namespace AcManager.Tools.About {
 
         public bool HasNewReleaseNotes {
             get { return _hasNewReleaseNotes; }
-            set {
-                if (Equals(value, _hasNewReleaseNotes)) return;
-                _hasNewReleaseNotes = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hasNewReleaseNotes);
         }
 
         private bool _hasNewImportantTips;
 
         public bool HasNewImportantTips {
             get { return _hasNewImportantTips; }
-            set {
-                if (Equals(value, _hasNewImportantTips)) return;
-                _hasNewImportantTips = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hasNewImportantTips);
         }
 
         public AboutHelper() {

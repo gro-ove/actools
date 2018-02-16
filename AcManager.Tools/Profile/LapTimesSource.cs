@@ -82,11 +82,7 @@ namespace AcManager.Tools.Profile {
 
         public string DetailsUrl {
             get => _detailsUrl;
-            set {
-                if (Equals(value, _detailsUrl)) return;
-                _detailsUrl = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _detailsUrl);
         }
 
         public int? EntriesCount {
@@ -101,11 +97,7 @@ namespace AcManager.Tools.Profile {
 
         public bool IsLoading {
             get => _isLoading;
-            set {
-                if (Equals(value, _isLoading)) return;
-                _isLoading = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isLoading);
         }
 
         public DateTime? LastModified => IsEnabled ? _storage.LastModified : null;

@@ -155,11 +155,7 @@ namespace AcManager.Pages.Drive {
 
             public UserChampionshipObject AcObject {
                 get => _acObject;
-                set {
-                    if (Equals(value, _acObject)) return;
-                    _acObject = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _acObject);
             }
 
             public ViewModel(UserChampionshipObject careerObject) {
@@ -366,11 +362,7 @@ namespace AcManager.Pages.Drive {
 
             public bool ConditionsLoading {
                 get => _conditionsLoading;
-                set {
-                    if (Equals(value, _conditionsLoading)) return;
-                    _conditionsLoading = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _conditionsLoading);
             }
 
             private int _currentRoundTime;

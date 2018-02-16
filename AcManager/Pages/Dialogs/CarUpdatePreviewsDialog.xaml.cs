@@ -42,7 +42,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Pages.Dialogs {
     // Sorry for all this mess, this was one of the first bits of CM I made. I didn’t really know how to work with MVC
     // properly back then.
-    public partial class CarUpdatePreviewsDialog : INotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
+    public partial class CarUpdatePreviewsDialog : IInvokingNotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
         #region Options
 
         private bool _disableSweetFx;
@@ -85,33 +85,21 @@ namespace AcManager.Pages.Dialogs {
 
         public bool MaximizeVideoSettings {
             get => _maximizeVideoSettings;
-            set {
-                if (Equals(value, _maximizeVideoSettings)) return;
-                _maximizeVideoSettings = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _maximizeVideoSettings);
         }
 
         private bool _enableFxaa;
 
         public bool EnableFxaa {
             get => _enableFxaa;
-            set {
-                if (Equals(value, _enableFxaa)) return;
-                _enableFxaa = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _enableFxaa);
         }
 
         private bool _useSpecialResolution;
 
         public bool UseSpecialResolution {
             get => _useSpecialResolution;
-            set {
-                if (Equals(value, _useSpecialResolution)) return;
-                _useSpecialResolution = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _useSpecialResolution);
         }
 
         private string _cameraPosition;
@@ -221,11 +209,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string Name {
                 get => _name ?? (_name = Path.GetFileNameWithoutExtension(Filename));
-                set {
-                    if (Equals(value, _name)) return;
-                    _name = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _name);
             }
 
             public override string ToString() {
@@ -258,33 +242,21 @@ namespace AcManager.Pages.Dialogs {
 
         public AsyncProgressEntry SeriesProgress {
             get => _seriesProgress;
-            set {
-                if (Equals(value, _seriesProgress)) return;
-                _seriesProgress = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _seriesProgress);
         }
 
         private AsyncProgressEntry _progress;
 
         public AsyncProgressEntry Progress {
             get => _progress;
-            set {
-                if (Equals(value, _progress)) return;
-                _progress = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _progress);
         }
 
         private string _errorMessage;
 
         public string ErrorMessage {
             get => _errorMessage;
-            set {
-                if (Equals(value, _errorMessage)) return;
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _errorMessage);
         }
 
         private ObservableCollection<ResultPreviewComparison> _resultPreviewComparisons;
@@ -304,11 +276,7 @@ namespace AcManager.Pages.Dialogs {
 
         public CollectionView ResultPreviewComparisonsView {
             get => _resultPreviewComparisonsView;
-            set {
-                if (Equals(value, _resultPreviewComparisonsView)) return;
-                _resultPreviewComparisonsView = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _resultPreviewComparisonsView);
         }
         #endregion
 
@@ -409,11 +377,7 @@ namespace AcManager.Pages.Dialogs {
 
         public bool ApplyImmediately {
             get => _applyImmediately;
-            set {
-                if (Equals(value, _applyImmediately)) return;
-                _applyImmediately = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _applyImmediately);
         }
 
         public CarUpdatePreviewsDialog(CarObject carObject, UpdatePreviewMode mode, string loadPreset = null)
@@ -519,7 +483,7 @@ namespace AcManager.Pages.Dialogs {
             } else {
                 _saveable.Reset();
                 UserPresetsControl.CurrentUserPreset =
-                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
+                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.VirtualFilename == _loadPreset);
             }
 
             if (_mode == UpdatePreviewMode.Options) {
@@ -588,11 +552,7 @@ namespace AcManager.Pages.Dialogs {
 
         public Phase CurrentPhase {
             get => _currentPhase;
-            set {
-                if (Equals(value, _currentPhase)) return;
-                _currentPhase = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _currentPhase);
         }
 
         private const string KeySize = "_CarUpdatePreviewsDialog.Size";
@@ -900,6 +860,10 @@ namespace AcManager.Pages.Dialogs {
         [NotifyPropertyChangedInvocator]
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

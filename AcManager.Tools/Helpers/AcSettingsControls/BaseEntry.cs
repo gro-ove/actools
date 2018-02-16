@@ -23,11 +23,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public bool IsWaiting {
             get => _isWaiting;
-            set {
-                if (Equals(value, _isWaiting)) return;
-                _isWaiting = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isWaiting);
         }
 
         public virtual EntryLayer Layer => EntryLayer.Basic;

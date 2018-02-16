@@ -241,33 +241,21 @@ namespace AcManager.Controls.Dialogs {
 
             public bool Saveable {
                 get => _saveable;
-                set {
-                    if (Equals(value, _saveable)) return;
-                    _saveable = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _saveable);
             }
 
             private string _saveableTitle = ControlsStrings.ImageViewer_Save_Title;
 
             public string SaveableTitle {
                 get => _saveableTitle;
-                set {
-                    if (Equals(value, _saveableTitle)) return;
-                    _saveableTitle = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _saveableTitle);
             }
 
             private string _saveDirectory;
 
             public string SaveDirectory {
                 get => _saveDirectory;
-                set {
-                    if (Equals(value, _saveDirectory)) return;
-                    _saveDirectory = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _saveDirectory);
             }
 
             private double _maxImageWidth = double.MaxValue;
@@ -296,11 +284,7 @@ namespace AcManager.Controls.Dialogs {
 
             public object CurrentDetails {
                 get => _currentDetails;
-                set {
-                    if (Equals(value, _currentDetails)) return;
-                    _currentDetails = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _currentDetails);
             }
 
             public object CurrentImage {
@@ -318,11 +302,7 @@ namespace AcManager.Controls.Dialogs {
 
             public bool SelectionMode {
                 get => _selectionMode;
-                set {
-                    if (Equals(value, _selectionMode)) return;
-                    _selectionMode = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectionMode);
             }
 
             private CommandBase _previousCommand;

@@ -67,11 +67,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string SaveLabel {
                 get { return _saveLabel; }
-                set {
-                    if (Equals(value, _saveLabel)) return;
-                    _saveLabel = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _saveLabel);
             }
 
             public ViewModel(AcJsonObjectNew selectedObject) {

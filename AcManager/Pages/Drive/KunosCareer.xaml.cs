@@ -147,11 +147,7 @@ namespace AcManager.Pages.Drive {
 
             public Uri SelectedCareerUri {
                 get { return _selectedCareerUri; }
-                set {
-                    if (Equals(value, _selectedCareerUri)) return;
-                    _selectedCareerUri = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedCareerUri);
             }
 
             protected override string LoadCurrentId() {

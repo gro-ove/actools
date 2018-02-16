@@ -84,11 +84,7 @@ namespace AcManager.Tools.Objects {
 
         public bool ApplyingSkins {
             get => _applyingSkins;
-            private set {
-                if (Equals(value, _applyingSkins)) return;
-                _applyingSkins = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _applyingSkins);
         }
 
         private bool _again, _working;

@@ -30,11 +30,7 @@ namespace AcManager.Tools.Objects {
 
         public Color Color {
             get { return _color; }
-            set {
-                if (Equals(value, _color)) return;
-                _color = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _color);
         }
 
         private double _multipler;

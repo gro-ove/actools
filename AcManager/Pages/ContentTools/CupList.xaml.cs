@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.ContentTools {
     public partial class CupList {
@@ -27,22 +28,14 @@ namespace AcManager.Pages.ContentTools {
 
         public BetterObservableCollection<ICupSupportedObject> ItemsToUpdate {
             get => _itemsToUpdate;
-            set {
-                if (Equals(value, _itemsToUpdate)) return;
-                _itemsToUpdate = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _itemsToUpdate);
         }
 
         private ICupSupportedObject _selectedItem;
 
         public ICupSupportedObject SelectedItem {
             get => _selectedItem;
-            set {
-                if (Equals(value, _selectedItem)) return;
-                _selectedItem = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _selectedItem);
         }
     }
 }

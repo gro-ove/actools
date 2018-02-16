@@ -10,31 +10,26 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class UpgradeIconEditor_Library : IFinishableControl, INotifyPropertyChanged {
+    public partial class UpgradeIconEditor_Library : IFinishableControl, IInvokingNotifyPropertyChanged {
         private readonly string _key;
-        private ObservableCollection<FilesStorage.ContentEntry> _icons;
-        private FilesStorage.ContentEntry _selected;
 
-        public CarObject Car { get; private set; }
+        public CarObject Car { get; }
+
+        private ObservableCollection<FilesStorage.ContentEntry> _icons;
 
         public ObservableCollection<FilesStorage.ContentEntry> Icons {
             get => _icons;
-            set {
-                if (Equals(value, _icons)) return;
-                _icons = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _icons);
         }
+
+        private FilesStorage.ContentEntry _selected;
 
         public FilesStorage.ContentEntry Selected {
             get => _selected;
-            set {
-                if (Equals(value, _selected)) return;
-                _selected = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _selected);
         }
 
         public UpgradeIconEditor_Library() {
@@ -85,8 +80,12 @@ namespace AcManager.Pages.Dialogs {
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

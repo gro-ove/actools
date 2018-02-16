@@ -46,11 +46,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public string ActualName {
             get => _actualName;
-            set {
-                if (Equals(value, _actualName)) return;
-                _actualName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _actualName);
         }
 
         private void UpdateMissingContent() {
@@ -216,11 +212,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public DateTime PreviousUpdateTime {
             get => _previousUpdateTime;
-            private set {
-                if (Equals(value, _previousUpdateTime)) return;
-                _previousUpdateTime = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _previousUpdateTime);
         }
 
         private static TrackObjectBase GetTrack([NotNull] string informationId) {
@@ -238,11 +230,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool FixedCar {
             get => _fixedCar;
-            set {
-                if (Equals(value, _fixedCar)) return;
-                _fixedCar = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _fixedCar);
         }
 
         private CarEntry _selectedCarEntry;

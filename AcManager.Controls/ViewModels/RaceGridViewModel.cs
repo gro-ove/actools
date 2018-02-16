@@ -795,11 +795,7 @@ namespace AcManager.Controls.ViewModels {
 
         public string ErrorMessage {
             get => _errorMessage;
-            set {
-                if (Equals(value, _errorMessage)) return;
-                _errorMessage = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _errorMessage);
         }
 
         [ItemCanBeNull]

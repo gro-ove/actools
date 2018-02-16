@@ -182,11 +182,7 @@ namespace AcManager.Controls {
 
             public bool IsEnabled {
                 get => _isEnabled;
-                set {
-                    if (Equals(value, _isEnabled)) return;
-                    _isEnabled = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isEnabled);
             }
         }
 

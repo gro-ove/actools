@@ -9,11 +9,7 @@ namespace AcManager.Controls.ViewModels {
 
         public bool IsAllowed {
             get => _isAllowed;
-            set {
-                if (Equals(value, _isAllowed)) return;
-                _isAllowed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isAllowed);
         }
 
         public AiLimitationTyre(IniFileSection section) {

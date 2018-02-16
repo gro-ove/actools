@@ -29,22 +29,14 @@ namespace AcManager.Pages.Settings {
 
             public string SteamId {
                 get => _steamId;
-                set {
-                    if (Equals(value, _steamId)) return;
-                    _steamId = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _steamId);
             }
 
             private string _steamProfileName;
 
             public string SteamProfileName {
                 get => _steamProfileName;
-                set {
-                    if (Equals(value, _steamProfileName)) return;
-                    _steamProfileName = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _steamProfileName);
             }
 
             internal ViewModel() {

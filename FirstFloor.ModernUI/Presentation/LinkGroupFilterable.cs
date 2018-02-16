@@ -18,11 +18,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public Lazy<string> FilterHint {
             get => _filterHint;
-            set {
-                if (Equals(value, _filterHint)) return;
-                _filterHint = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _filterHint);
         }
 
         /// <summary>
@@ -30,11 +26,7 @@ namespace FirstFloor.ModernUI.Presentation {
         /// </summary>
         public bool AddAllLink {
             get => _addAllLink;
-            set {
-                if (Equals(value, _addAllLink)) return;
-                _addAllLink = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _addAllLink);
         }
 
         private bool _initialized;
@@ -213,11 +205,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public bool IsEnabled {
             get => _isEnabled;
-            set {
-                if (Equals(value, _isEnabled)) return;
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isEnabled);
         }
 
         private Uri _source;

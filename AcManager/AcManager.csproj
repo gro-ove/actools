@@ -1667,14 +1667,6 @@
     <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
     <Resource Include="Assets\Img\AppOff.png" />
     <Resource Include="Assets\Img\AppOn.png" />
-    <Content Include="Assets\Presets\Ambient Shadows\Default.cmpreset" />
-    <Content Include="Assets\Presets\Ambient Shadows\Open Wheelers.cmpreset" />
-    <Content Include="Assets\Presets\Baked Shadows\Body.cmpreset" />
-    <Content Include="Assets\Presets\Baked Shadows\Rims.cmpreset" />
-    <Content Include="Assets\Presets\Custom Showroom\Default (Fast).cmpreset" />
-    <Content Include="Assets\Presets\Custom Showroom\Default (Nice).cmpreset" />
-    <Content Include="Assets\Presets\Custom Showroom\Industrial.cmpreset" />
-    <Content Include="Assets\Presets\Custom Showroom\Showroom (Day).cmpreset" />
     <None Include="About\Filtering\More About Expressions.txt" />
     <None Include="About\Filtering\Introduction.txt" />
     <None Include="About\Filtering\More About Quotes.txt" />
@@ -1727,9 +1719,7 @@
     <None Include="Assets\Presets\Assists\c@AssistsPreset_Gamer.cmpreset" />
     <None Include="Assets\Presets\Assists\c@AssistsPreset_Intermediate.cmpreset" />
     <None Include="Assets\Presets\Assists\c@AssistsPreset_Pro.cmpreset" />
-    <None Include="Assets\Presets\Custom Previews\GT5-like.cmpreset" />
     <None Include="Assets\Presets\Custom Previews\Kunos.cmpreset" />
-    <None Include="Assets\Presets\Custom Previews\Light.cmpreset" />
     <None Include="Assets\Presets\Previews\Kunos.cmpreset" />
     <None Include="Packages.config" />
   </ItemGroup>
@@ -2018,7 +2008,12 @@
   </PropertyGroup>
   <Import Project="..\Libraries\PreBuildEvents.Templates.props" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <EditBinLocation>C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\editbin.exe</EditBinLocation>
+    <!-- In release builds, there is a special script to do that (and more). And I think 64-bit builds
+     should work fine without that flag as well. -->
+    <EditBinLocation Condition="'$(Configuration)|$(Platform)' != 'Debug|x86'">NUL</EditBinLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition="Exists('$(EditBinLocation)')">
+    <PostBuildEvent>"$(EditBinLocation)" /largeaddressaware /nologo "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

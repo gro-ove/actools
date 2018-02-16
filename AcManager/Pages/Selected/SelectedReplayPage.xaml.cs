@@ -137,55 +137,35 @@ namespace AcManager.Pages.Selected {
 
             public bool AlreadyShared {
                 get => _alreadyShared;
-                private set {
-                    if (Equals(value, _alreadyShared)) return;
-                    _alreadyShared = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _alreadyShared);
             }
 
             private WeatherObject _weather;
 
             public WeatherObject Weather {
                 get => _weather;
-                set {
-                    if (Equals(value, _weather)) return;
-                    _weather = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _weather);
             }
 
             private CarObject _car;
 
             public CarObject Car {
                 get => _car;
-                set {
-                    if (Equals(value, _car)) return;
-                    _car = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _car);
             }
 
             private CarSkinObject _carSkin;
 
             public CarSkinObject CarSkin {
                 get => _carSkin;
-                set {
-                    if (Equals(value, _carSkin)) return;
-                    _carSkin = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _carSkin);
             }
 
             private TrackObjectBase _track;
 
             public TrackObjectBase Track {
                 get => _track;
-                set {
-                    if (Equals(value, _track)) return;
-                    _track = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _track);
             }
 
             private DelegateCommand _changeCategoryCommand;
@@ -209,11 +189,7 @@ namespace AcManager.Pages.Selected {
 
             public HierarchicalItemsView QuickDrivePresets {
                 get => _quickDrivePresets;
-                set {
-                    if (Equals(value, _quickDrivePresets)) return;
-                    _quickDrivePresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _quickDrivePresets);
             }
 
             private HierarchicalItemsView _quickDrivePresets;
@@ -222,7 +198,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.Filename).Forget();
+                        QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Forget();
                     });
                 }
             }

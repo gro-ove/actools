@@ -96,11 +96,7 @@ namespace AcManager.Pages.ContentTools {
 
         public BetterListCollectionView EntriesView {
             get => _entriesView;
-            set {
-                if (Equals(value, _entriesView)) return;
-                _entriesView = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _entriesView);
         }
 
         private ChangeableObservableCollection<CarObjectEntry> _entries;
@@ -235,11 +231,7 @@ namespace AcManager.Pages.ContentTools {
 
             public bool IsCurrent {
                 get => _isCurrent;
-                set {
-                    if (Equals(value, _isCurrent)) return;
-                    _isCurrent = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isCurrent);
             }
         }
         #endregion
@@ -399,11 +391,7 @@ namespace AcManager.Pages.ContentTools {
 
         public HierarchicalItemsView UpdatePreviewsPresets {
             get => _updatePreviewsPresets;
-            set {
-                if (Equals(value, _updatePreviewsPresets)) return;
-                _updatePreviewsPresets = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _updatePreviewsPresets);
         }
 
         private AsyncCommand _selectDifferentCommand;
@@ -450,9 +438,9 @@ namespace AcManager.Pages.ContentTools {
                                 ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                         p => {
                             if (_runButtonClicked) {
-                                Run(p.Filename).Forget();
+                                Run(p.VirtualFilename).Forget();
                             } else {
-                                SelectDifferent(p.Filename).Forget();
+                                SelectDifferent(p.VirtualFilename).Forget();
                             }
                         });
             }

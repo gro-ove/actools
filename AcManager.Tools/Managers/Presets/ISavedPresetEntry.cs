@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Presets {
@@ -9,18 +8,13 @@ namespace AcManager.Tools.Managers.Presets {
         string DisplayName { get; }
 
         [NotNull]
-        string Filename { get; }
+        string VirtualFilename { get; }
+
+        bool IsBuiltIn { get; }
 
         [NotNull]
         byte[] ReadBinaryData();
 
         void SetParent(string baseDirectory);
-    }
-
-    public static class SavedPresetEntryExtension {
-        [NotNull]
-        public static string ReadData([NotNull] this ISavedPresetEntry preset) {
-            return preset.ReadBinaryData().ToUtf8String();
-        }
     }
 }

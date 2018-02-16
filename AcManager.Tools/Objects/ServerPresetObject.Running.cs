@@ -291,11 +291,7 @@ namespace AcManager.Tools.Objects {
 
         public string InviteCommand {
             get => _inviteCommand;
-            set {
-                if (Equals(value, _inviteCommand)) return;
-                _inviteCommand = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _inviteCommand);
         }
 
         /// <summary>
@@ -523,11 +519,7 @@ namespace AcManager.Tools.Objects {
 
         public BetterObservableCollection<string> RunningLog {
             get => _runningLog;
-            set {
-                if (Equals(value, _runningLog)) return;
-                _runningLog = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _runningLog);
         }
 
         private DelegateCommand _stopServerCommand;

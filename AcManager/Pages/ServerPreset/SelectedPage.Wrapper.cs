@@ -208,11 +208,7 @@ namespace AcManager.Pages.ServerPreset {
         [CanBeNull]
         public string DisplayFilename {
             get => _displayFilename;
-            set {
-                if (Equals(value, _displayFilename)) return;
-                _displayFilename = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayFilename);
         }
 
         private string _downloadUrl;
@@ -274,11 +270,7 @@ namespace AcManager.Pages.ServerPreset {
 
         public string ChildrenName {
             get => _childrenName;
-            set {
-                if (Equals(value, _childrenName)) return;
-                _childrenName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _childrenName);
         }
 
         private List<WrapperContentObject> _children;

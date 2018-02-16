@@ -40,22 +40,14 @@ namespace AcManager.Controls.ViewModels {
 
         public bool IsAnySet {
             get => _isAnySet;
-            private set {
-                if (Equals(value, _isAnySet)) return;
-                _isAnySet = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isAnySet);
         }
 
         private bool _isActive;
 
         public bool IsActive {
             get => _isActive;
-            private set {
-                if (Equals(value, _isActive)) return;
-                _isActive = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isActive);
         }
 
         private double _tyresWearMultiplier = 1d;

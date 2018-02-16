@@ -322,11 +322,7 @@ namespace AcManager.Tools.Objects {
 
         public int? Tyres {
             get => _tyres;
-            set {
-                if (value == _tyres) return;
-                _tyres = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _tyres);
         }
 
         private IniFile _iniFile = new IniFile();

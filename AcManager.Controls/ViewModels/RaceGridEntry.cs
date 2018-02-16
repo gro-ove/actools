@@ -23,11 +23,7 @@ namespace AcManager.Controls.ViewModels {
 
         public bool ExceedsLimit {
             get => _exceedsLimit;
-            set {
-                if (Equals(value, _exceedsLimit)) return;
-                _exceedsLimit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _exceedsLimit);
         }
 
         public bool CanBeCloned => !SpecialEntry;
@@ -59,11 +55,7 @@ namespace AcManager.Controls.ViewModels {
         [CanBeNull]
         public CarSkinObject CarSkin {
             get => _carSkin;
-            set {
-                if (Equals(value, _carSkin)) return;
-                _carSkin = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _carSkin);
         }
 
         private ICommand _randomSkinCommand;
@@ -177,22 +169,14 @@ namespace AcManager.Controls.ViewModels {
 
         public double Ballast {
             get => _ballast;
-            set {
-                if (Equals(value, _ballast)) return;
-                _ballast = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ballast);
         }
 
         private double _restrictor;
 
         public double Restrictor {
             get => _restrictor;
-            set {
-                if (Equals(value, _restrictor)) return;
-                _restrictor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _restrictor);
         }
 
         private AiLimitationDetails _aiLimitationDetails;
@@ -248,11 +232,7 @@ namespace AcManager.Controls.ViewModels {
 
         public bool IsDeleted {
             get => _isDeleted;
-            set {
-                if (Equals(value, _isDeleted)) return;
-                _isDeleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isDeleted);
         }
 
         private ICommand _deleteCommand;

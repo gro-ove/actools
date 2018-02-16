@@ -73,11 +73,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public bool IsNew {
             get => _isNew;
-            set {
-                if (Equals(value, _isNew)) return;
-                _isNew = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isNew);
         }
 
         public TimeSpan Age => DateTime.Now - CreationDateTime;

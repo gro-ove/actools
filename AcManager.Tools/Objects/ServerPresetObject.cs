@@ -61,11 +61,7 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public IniFile EntryListIniObject {
             get => _entryListIniObject;
-            set {
-                if (Equals(value, _entryListIniObject)) return;
-                _entryListIniObject = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _entryListIniObject);
         }
 
         private void LoadEntryListOrThrow() {

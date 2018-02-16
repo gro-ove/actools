@@ -21,6 +21,19 @@ namespace AcTools.WheelAngles {
             _storage = storage;
         }
 
+        protected bool Apply<T>(T value, ref T backendValue, [CallerMemberName] string propertyName = null,
+                params string[] linked) {
+            if (Equals(value, backendValue)) return false;
+            backendValue = value;
+            OnPropertyChanged(propertyName);
+            if (linked != null) {
+                for (var i = 0; i < linked.Length; i++) {
+                    OnPropertyChanged(linked[i]);
+                }
+            }
+            return true;
+        }
+
         [NotifyPropertyChangedInvocator]
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

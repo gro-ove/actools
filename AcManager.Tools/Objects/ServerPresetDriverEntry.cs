@@ -134,11 +134,7 @@ namespace AcManager.Tools.Objects {
 
         public bool SpectatorMode {
             get => _spectatorMode;
-            set {
-                if (value == _spectatorMode) return;
-                _spectatorMode = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _spectatorMode);
         }
 
         private string _driverName;
@@ -159,11 +155,7 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string TeamName {
             get => _teamName;
-            set {
-                if (value == _teamName) return;
-                _teamName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _teamName);
         }
 
         private string _guid;
@@ -183,22 +175,14 @@ namespace AcManager.Tools.Objects {
 
         public double Ballast {
             get => _ballast;
-            set {
-                if (Equals(value, _ballast)) return;
-                _ballast = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ballast);
         }
 
         private double _restrictor;
 
         public double Restrictor {
             get => _restrictor;
-            set {
-                if (Equals(value, _restrictor)) return;
-                _restrictor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _restrictor);
         }
 
         private string _carSetup;
@@ -206,22 +190,14 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string CarSetup {
             get => _carSetup;
-            set {
-                if (value == _carSetup) return;
-                _carSetup = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _carSetup);
         }
 
         private int _index;
 
         public int Index {
             get { return _index; }
-            set {
-                if (value == _index) return;
-                _index = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _index);
         }
 
         private DelegateCommand _randomSkinCommand;
@@ -234,11 +210,7 @@ namespace AcManager.Tools.Objects {
 
         public bool Deleted {
             get => _deleted;
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _deleted);
         }
 
         private DelegateCommand _deleteCommand;
@@ -251,11 +223,7 @@ namespace AcManager.Tools.Objects {
 
         public bool Cloned {
             get => _cloned;
-            set {
-                if (Equals(value, _cloned)) return;
-                _cloned = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _cloned);
         }
 
         private DelegateCommand _cloneCommand;

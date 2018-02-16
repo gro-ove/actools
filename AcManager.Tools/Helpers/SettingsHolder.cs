@@ -61,7 +61,8 @@ namespace AcManager.Tools.Helpers {
 
         public enum MissingContentType {
             Car,
-            Track
+            Track,
+            Showroom
         }
 
         public delegate string MissingContentUrlFunc(MissingContentType type, [NotNull] string id);
@@ -79,7 +80,7 @@ namespace AcManager.Tools.Helpers {
 
             public string GetUri([NotNull] string id, MissingContentType type) {
                 var value = Func(type, id);
-                return ViaSearchEngine ? Content.SearchEngine.GetUri(value, false) : value;
+                return ViaSearchEngine || !value.Contains(@"://") ? Content.SearchEngine.GetUri(value, false) : value;
             }
         }
 
@@ -660,6 +661,8 @@ namespace AcManager.Tools.Helpers {
                         case MissingContentType.Track:
                             if (!id.Contains(@"/")) id = $@"{id}/{id}";
                             return $"http://assetto-db.com/track/{id}";
+                        case MissingContentType.Showroom:
+                            return $"\"{id}\" Assetto Corsa";
                         default:
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
                     }

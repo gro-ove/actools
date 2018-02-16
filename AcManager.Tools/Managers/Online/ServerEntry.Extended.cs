@@ -25,44 +25,28 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int? PortExtended {
             get => _portExtended;
-            set {
-                if (Equals(value, _portExtended)) return;
-                _portExtended = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _portExtended);
         }
 
         private bool _extendedMode;
 
         public bool ExtendedMode {
             get => _extendedMode;
-            set {
-                if (Equals(value, _extendedMode)) return;
-                _extendedMode = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _extendedMode);
         }
 
         private string _city;
 
         public string City {
             get => _city;
-            set {
-                if (Equals(value, _city)) return;
-                _city = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _city);
         }
 
         private string _description;
 
         public string Description {
             get => _description;
-            set {
-                if (Equals(value, _description)) return;
-                _description = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _description);
         }
 
         private string _trackBaseId;
@@ -70,22 +54,14 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public string TrackBaseId {
             get => _trackBaseId;
-            set {
-                if (Equals(value, _trackBaseId)) return;
-                _trackBaseId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _trackBaseId);
         }
 
         private int _frequencyHz;
 
         public int FrequencyHz {
             get => _frequencyHz;
-            set {
-                if (Equals(value, _frequencyHz)) return;
-                _frequencyHz = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _frequencyHz);
         }
 
         private string _weatherId;
@@ -126,22 +102,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public double? AmbientTemperature {
             get => _ambientTemperature;
-            set {
-                if (Equals(value, _ambientTemperature)) return;
-                _ambientTemperature = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ambientTemperature);
         }
 
         private double? _roadTemperature;
 
         public double? RoadTemperature {
             get => _roadTemperature;
-            set {
-                if (Equals(value, _roadTemperature)) return;
-                _roadTemperature = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _roadTemperature);
         }
 
         private double? _windDirection;
@@ -162,11 +130,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public double? WindSpeed {
             get => _windSpeed;
-            set {
-                if (Equals(value, _windSpeed)) return;
-                _windSpeed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _windSpeed);
         }
 
         private string[] _passwordChecksum;
@@ -186,44 +150,28 @@ namespace AcManager.Tools.Managers.Online {
 
         public double? Grip {
             get => _grip;
-            set {
-                if (Equals(value, _grip)) return;
-                _grip = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _grip);
         }
 
         private double? _gripTransfer;
 
         public double? GripTransfer {
             get => _gripTransfer;
-            set {
-                if (Equals(value, _gripTransfer)) return;
-                _gripTransfer = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _gripTransfer);
         }
 
         private double? _maxContactsPerKm;
 
         public double? MaxContactsPerKm {
             get => _maxContactsPerKm;
-            set {
-                if (Equals(value, _maxContactsPerKm)) return;
-                _maxContactsPerKm = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _maxContactsPerKm);
         }
 
         private ServerInformationExtendedAssists _assistsInformation;
 
         public ServerInformationExtendedAssists AssistsInformation {
             get => _assistsInformation;
-            set {
-                if (Equals(value, _assistsInformation)) return;
-                _assistsInformation = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _assistsInformation);
         }
 
         public enum IsAbleToInstallMissingContent {

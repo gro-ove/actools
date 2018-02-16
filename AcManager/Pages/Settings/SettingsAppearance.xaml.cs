@@ -106,11 +106,7 @@ namespace AcManager.Pages.Settings {
 
             public bool BitmapScalingRestartRequired {
                 get => _bitmapScalingRestartRequired;
-                set {
-                    if (Equals(value, _bitmapScalingRestartRequired)) return;
-                    _bitmapScalingRestartRequired = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _bitmapScalingRestartRequired);
             }
 
             private CommandBase _restartCommand;
@@ -143,11 +139,7 @@ namespace AcManager.Pages.Settings {
 
             public bool SoftwareRenderingRestartRequired {
                 get => _softwareRenderingRestartRequired;
-                set {
-                    if (Equals(value, _softwareRenderingRestartRequired)) return;
-                    _softwareRenderingRestartRequired = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _softwareRenderingRestartRequired);
             }
 
             private bool _softwareRendering;

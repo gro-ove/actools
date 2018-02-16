@@ -217,11 +217,7 @@ namespace AcManager.Tools.Objects {
 
         public string Author {
             get => _author;
-            set {
-                if (value == _author) return;
-                _author = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _author);
         }
 
         private static bool IsKunosWeather(string o) {
@@ -560,11 +556,7 @@ namespace AcManager.Tools.Objects {
 
         public bool HasCurvesData {
             get => _hasCurvesData;
-            set {
-                if (Equals(value, _hasCurvesData)) return;
-                _hasCurvesData = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hasCurvesData);
         }
 
         private double _hdrOffMultipler;

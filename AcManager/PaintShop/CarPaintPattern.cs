@@ -25,11 +25,7 @@ namespace AcManager.PaintShop {
 
         public KeyValuePair<string, PaintShopSource> Selected {
             get => _selected;
-            set {
-                if (Equals(value, _selected)) return;
-                _selected = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _selected);
         }
     }
 

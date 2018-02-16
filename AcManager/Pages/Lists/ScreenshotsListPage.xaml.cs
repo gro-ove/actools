@@ -46,22 +46,14 @@ namespace AcManager.Pages.Lists {
 
         public bool IsDeleted {
             get => _isDeleted;
-            private set {
-                if (Equals(value, _isDeleted)) return;
-                _isDeleted = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isDeleted);
         }
 
         private bool _isDeleting;
 
         public bool IsDeleting {
             get => _isDeleting;
-            private set {
-                if (value == _isDeleting) return;
-                _isDeleting = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isDeleting);
         }
 
         private DelegateCommand _deleteCommand;

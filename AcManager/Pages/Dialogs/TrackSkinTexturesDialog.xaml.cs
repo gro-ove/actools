@@ -57,11 +57,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool IsSelected {
                 get => _isSelected;
-                set {
-                    if (Equals(value, _isSelected)) return;
-                    _isSelected = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isSelected);
             }
 
             private class SingleTextureLoader : IKn5TextureLoader {

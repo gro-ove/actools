@@ -142,11 +142,7 @@ namespace AcManager.Pages.Drive {
 
             public bool ManualWind {
                 get => _manualWind;
-                private set {
-                    if (Equals(value, _manualWind)) return;
-                    _manualWind = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _manualWind);
             }
             #endregion
 
@@ -239,55 +235,35 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public WeatherDescription RealWeather {
                 get => _realWeather;
-                set {
-                    if (Equals(value, _realWeather)) return;
-                    _realWeather = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _realWeather);
             }
 
             private bool _isTimeClamped;
 
             public bool IsTimeClamped {
                 get => _isTimeClamped;
-                set {
-                    if (value == _isTimeClamped) return;
-                    _isTimeClamped = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isTimeClamped);
             }
 
             private bool _isTimeOutOfWeatherRange;
 
             public bool IsTimeOutOfWeatherRange {
                 get => _isTimeOutOfWeatherRange;
-                set {
-                    if (Equals(value, _isTimeOutOfWeatherRange)) return;
-                    _isTimeOutOfWeatherRange = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isTimeOutOfWeatherRange);
             }
 
             private bool _isTemperatureClamped;
 
             public bool IsTemperatureClamped {
                 get => _isTemperatureClamped;
-                set {
-                    if (value == _isTemperatureClamped) return;
-                    _isTemperatureClamped = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isTemperatureClamped);
             }
 
             private bool _isWeatherNotSupported;
 
             public bool IsWeatherNotSupported {
                 get => _isWeatherNotSupported;
-                set {
-                    if (value == _isWeatherNotSupported) return;
-                    _isWeatherNotSupported = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isWeatherNotSupported);
             }
             #endregion
 

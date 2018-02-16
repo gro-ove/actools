@@ -32,11 +32,7 @@ namespace AcManager.Tools.Profile {
                 PrepareCar().Forget();
                 return _car;
             }
-            set {
-                if (Equals(value, _car)) return;
-                _car = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _car);
         }
 
         private bool _preparedTrack;
@@ -56,11 +52,7 @@ namespace AcManager.Tools.Profile {
                 PrepareTrack().Forget();
                 return _track;
             }
-            set {
-                if (Equals(value, _track)) return;
-                _track = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _track);
         }
     }
 }

@@ -291,11 +291,7 @@ namespace AcManager.Pages.Drive {
 
             public bool ServerSelected {
                 get => _serverSelected;
-                set {
-                    if (Equals(value, _serverSelected)) return;
-                    _serverSelected = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _serverSelected);
             }
 
             private class ServerSourceTester : IFilter<ServerEntry> {

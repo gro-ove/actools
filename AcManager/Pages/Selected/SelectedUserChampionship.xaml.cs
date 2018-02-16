@@ -78,11 +78,7 @@ namespace AcManager.Pages.Selected {
 
             public int Value {
                 get => _value;
-                set {
-                    if (Equals(value, _value)) return;
-                    _value = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _value);
             }
         }
 
@@ -253,11 +249,7 @@ namespace AcManager.Pages.Selected {
 
             public bool UpdatingSerializedRaceGridData {
                 get => _updatingSerializedRaceGridData;
-                set {
-                    if (Equals(value, _updatingSerializedRaceGridData)) return;
-                    _updatingSerializedRaceGridData = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _updatingSerializedRaceGridData);
             }
 
             private CancellationTokenSource _updatingSerializedRaceGridDataTokenSource;

@@ -67,11 +67,7 @@ namespace AcManager.Tools.About {
 
         public bool IsNew {
             get { return _isNew; }
-            private set {
-                if (Equals(value, _isNew)) return;
-                _isNew = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isNew);
         }
 
         public void MarkAsRead() {

@@ -158,11 +158,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool IsDeleting {
             get => _isDeleting;
-            private set {
-                if (Equals(value, _isDeleting)) return;
-                _isDeleting = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isDeleting);
         }
 
         private static readonly TimeSpan StateChangeDelay = TimeSpan.FromMilliseconds(300);
@@ -179,11 +175,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool IsConfirming {
             get => _isConfirming;
-            set {
-                if (Equals(value, _isConfirming)) return;
-                _isConfirming = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isConfirming);
         }
 
         private AsyncCommand _confirmDelayCommand;
@@ -198,11 +190,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool IsCancelling {
             get => _isCancelling;
-            set {
-                if (Equals(value, _isCancelling)) return;
-                _isCancelling = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isCancelling);
         }
 
         private AsyncCommand _cancelDelayCommand;
@@ -261,11 +249,7 @@ namespace AcManager.Tools.ContentInstallation {
         [CanBeNull]
         public string FailedCommentary {
             get => _failedCommentary;
-            set {
-                if (Equals(value, _failedCommentary)) return;
-                _failedCommentary = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _failedCommentary);
         }
 
         private bool _cancelled;
@@ -511,11 +495,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public string RestartFrom {
             get => _restartFrom;
-            set {
-                if (Equals(value, _restartFrom)) return;
-                _restartFrom = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _restartFrom);
         }
 
         private AsyncCommand _retryCommand;
@@ -981,22 +961,14 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool IsDisplayFoundSameAsFirstName {
             get => _isDisplayFoundSameAsFirstName;
-            set {
-                if (Equals(value, _isDisplayFoundSameAsFirstName)) return;
-                _isDisplayFoundSameAsFirstName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isDisplayFoundSameAsFirstName);
         }
 
         private string _displayFound;
 
         public string DisplayFound {
             get => _displayFound;
-            set {
-                if (Equals(value, _displayFound)) return;
-                _displayFound = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayFound);
         }
 
         public ExtraOption[] ExtraOptions { get; set; }

@@ -70,11 +70,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool InShadow {
                 get { return _inShadow; }
-                set {
-                    if (Equals(value, _inShadow)) return;
-                    _inShadow = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _inShadow);
             }
 
             private ICommand _selectPanoramaFileCommand;

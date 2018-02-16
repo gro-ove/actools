@@ -122,11 +122,7 @@ namespace AcManager.Tools.Objects {
 
         public UserChampionshipRules Rules {
             get => _rules;
-            private set {
-                if (Equals(value, _rules)) return;
-                _rules = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _rules);
         }
 
         private List<UserChampionshipDriver> _drivers;
@@ -1086,44 +1082,28 @@ namespace AcManager.Tools.Objects {
 
         public CarSkinObject UserPlayerCarSkin {
             get => _userPlayerCarSkin ?? PlayerCarSkin;
-            set {
-                if (Equals(value, _userPlayerCarSkin)) return;
-                _userPlayerCarSkin = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _userPlayerCarSkin);
         }
 
         private int _firstPlaces;
 
         public int FirstPlaces {
             get => _firstPlaces;
-            set {
-                if (value == _firstPlaces) return;
-                _firstPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _firstPlaces);
         }
 
         private int _secondPlaces;
 
         public int SecondPlaces {
             get => _secondPlaces;
-            set {
-                if (value == _secondPlaces) return;
-                _secondPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _secondPlaces);
         }
 
         private int _thirdPlaces;
 
         public int ThirdPlaces {
             get => _thirdPlaces;
-            set {
-                if (value == _thirdPlaces) return;
-                _thirdPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _thirdPlaces);
         }
 
         private long _lastSelectedTimestamp;
@@ -1169,33 +1149,21 @@ namespace AcManager.Tools.Objects {
 
         public int ChampionshipPointsNeeded {
             get => _championshipPointsNeeded;
-            set {
-                if (Equals(value, _championshipPointsNeeded)) return;
-                _championshipPointsNeeded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipPointsNeeded);
         }
 
         private bool _isCompleted;
 
         public bool IsCompleted {
             get => _isCompleted;
-            set {
-                if (Equals(value, _isCompleted)) return;
-                _isCompleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isCompleted);
         }
 
         private bool _isFinished;
 
         public bool IsFinished {
             get => _isFinished;
-            set {
-                if (Equals(value, _isFinished)) return;
-                _isFinished = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isFinished);
         }
 
         private int _championshipPoints = -1;
@@ -1220,22 +1188,14 @@ namespace AcManager.Tools.Objects {
 
         public int ChampionshipPlace {
             get => _championshipPlace;
-            private set {
-                if (Equals(value, _championshipPlace)) return;
-                _championshipPlace = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _championshipPlace);
         }
 
         private UserChampionshipRoundExtended _currentRound;
 
         public UserChampionshipRoundExtended CurrentRound {
             get => _currentRound;
-            set {
-                if (Equals(value, _currentRound)) return;
-                _currentRound = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _currentRound);
         }
 
         public int Compare(object x, object y) {
@@ -1246,11 +1206,7 @@ namespace AcManager.Tools.Objects {
 
         public ListCollectionView ChampionshipDriversView {
             get => _championshipDriversView ?? (_championshipDriversView = new ListCollectionView(_drivers) { CustomSort = this });
-            set {
-                if (Equals(value, _championshipDriversView)) return;
-                _championshipDriversView = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipDriversView);
         }
 
         public void LoadProgress() {

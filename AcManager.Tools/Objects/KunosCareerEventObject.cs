@@ -70,11 +70,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsPassed {
             get { return _isPassed; }
-            set {
-                if (Equals(value, _isPassed)) return;
-                _isPassed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isPassed);
         }
         #endregion
 

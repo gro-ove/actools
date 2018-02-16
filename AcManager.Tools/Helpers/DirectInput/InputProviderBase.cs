@@ -23,11 +23,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public bool IsVisible {
             get => _isVisible;
-            set {
-                if (Equals(value, _isVisible)) return;
-                _isVisible = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isVisible);
         }
 
         private string _shortName;

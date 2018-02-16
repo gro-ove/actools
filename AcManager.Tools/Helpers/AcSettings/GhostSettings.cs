@@ -9,11 +9,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public Color Color {
             get { return _color; }
-            set {
-                if (Equals(value, _color)) return;
-                _color = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _color);
         }
 
         public int MaxMinutesRecordingDefault => 20;
@@ -84,22 +80,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool TimeDifferenceEnabled {
             get { return _timeDifferenceEnabled; }
-            set {
-                if (Equals(value, _timeDifferenceEnabled)) return;
-                _timeDifferenceEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _timeDifferenceEnabled);
         }
 
         private bool _playerNameEnabled;
 
         public bool PlayerNameEnabled {
             get { return _playerNameEnabled; }
-            set {
-                if (Equals(value, _playerNameEnabled)) return;
-                _playerNameEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _playerNameEnabled);
         }
 
         protected override void LoadFromIni() {

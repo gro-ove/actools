@@ -1,52 +1,48 @@
 using System;
 using System.IO;
-using FirstFloor.ModernUI.Helpers;
+using AcTools.Utils;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Tools.Managers.Presets {
     internal class SavedPresetEntry : Displayable, ISavedPresetEntry, IShortDisplayable {
-        private readonly string _extension;
-
-        public string BaseDirectory { get; }
-
-        public string Filename { get; }
-
-        private string _displayName;
-
-        public override string DisplayName {
-            get {
-                if (_displayName != null) return _displayName;
-                var start = BaseDirectory.Length + 1;
-                return _displayName = Filename.Substring(start, Filename.Length - start - _extension.Length);
-            }
-        }
-
+        private readonly string _baseDirectory;
         private string _displayBaseDirectory;
-        private string _shortDisplayName;
-
-        public string ShortDisplayName {
-            get {
-                if (_shortDisplayName != null) return _shortDisplayName;
-                var start = _displayBaseDirectory.Length + 1;
-                return _shortDisplayName = Filename.Substring(start, Filename.Length - start - _extension.Length);
-            }
-        }
+        private readonly string _extension;
+        public string VirtualFilename { get; }
+        public virtual bool IsBuiltIn => false;
 
         public SavedPresetEntry(string baseDirectory, string extension, string filename) {
-            Logging.Debug(baseDirectory);
-            BaseDirectory = baseDirectory;
+            _baseDirectory = baseDirectory;
             _displayBaseDirectory = baseDirectory;
             _extension = extension;
-            Filename = filename;
+            VirtualFilename = filename;
+
+            _displayName = Lazier.Create(GetDisplayName);
+            _shortDisplayName = Lazier.Create(GetShortDisplayName);
         }
 
-        public byte[] ReadBinaryData() {
-            return File.ReadAllBytes(Filename);
+        private string GetDisplayName() {
+            var start = _baseDirectory.Length + 1;
+            return VirtualFilename.Substring(start, VirtualFilename.Length - start - _extension.Length);
         }
+
+        private string GetShortDisplayName() {
+            var start = _displayBaseDirectory.Length + 1;
+            return VirtualFilename.Substring(start, VirtualFilename.Length - start - _extension.Length);
+        }
+
+        public virtual byte[] ReadBinaryData() {
+            return File.ReadAllBytes(VirtualFilename);
+        }
+
+        private readonly Lazier<string> _displayName, _shortDisplayName;
+
+        public override string DisplayName => _displayName.RequireValue;
+        public string ShortDisplayName => _shortDisplayName.RequireValue;
 
         public void SetParent(string baseDirectory) {
-            _shortDisplayName = null;
+            _shortDisplayName.Reset();
             _displayBaseDirectory = baseDirectory;
             OnPropertyChanged(nameof(ShortDisplayName));
         }
@@ -56,7 +52,7 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public bool Equals(ISavedPresetEntry other) {
-            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+            return other != null && string.Equals(VirtualFilename, other.VirtualFilename, StringComparison.OrdinalIgnoreCase);
         }
 
         public override bool Equals(object other) {
@@ -64,11 +60,11 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         protected bool Equals(SavedPresetEntry other) {
-            return other != null && string.Equals(Filename, other.Filename, StringComparison.OrdinalIgnoreCase);
+            return other != null && string.Equals(VirtualFilename, other.VirtualFilename, StringComparison.OrdinalIgnoreCase);
         }
 
         public override int GetHashCode() {
-            return Filename.GetHashCode();
+            return VirtualFilename.GetHashCode();
         }
     }
 }

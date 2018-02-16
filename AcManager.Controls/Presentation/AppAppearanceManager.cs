@@ -57,11 +57,7 @@ namespace AcManager.Controls.Presentation {
 
         public string ThemeError {
             get => _themeError;
-            internal set {
-                if (Equals(value, _themeError)) return;
-                _themeError = value;
-                OnPropertyChanged();
-            }
+            internal set => Apply(value, ref _themeError);
         }
 
         public sealed class ThemeLink : Link, IWithId {

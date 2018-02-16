@@ -54,11 +54,7 @@ namespace AcManager.PaintShop {
 
         public bool Guessed {
             get => _guessed;
-            internal set {
-                if (Equals(value, _guessed)) return;
-                _guessed = value;
-                OnPropertyChanged();
-            }
+            internal set => Apply(value, ref _guessed);
         }
 
         private bool _updating;

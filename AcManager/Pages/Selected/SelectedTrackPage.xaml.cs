@@ -83,11 +83,7 @@ namespace AcManager.Pages.Selected {
 
             public HierarchicalItemsView QuickDrivePresets {
                 get => _quickDrivePresets;
-                set {
-                    if (Equals(value, _quickDrivePresets)) return;
-                    _quickDrivePresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _quickDrivePresets);
             }
 
             private static HierarchicalItemsView _quickDrivePresets;
@@ -102,7 +98,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.Filename).Forget();
+                        QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget();
                     });
                 }
             }

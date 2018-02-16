@@ -126,11 +126,7 @@ namespace AcManager.Pages.Dialogs {
 
             public bool MovementMode {
                 get => _movementMode;
-                set {
-                    if (Equals(value, _movementMode)) return;
-                    _movementMode = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _movementMode);
             }
 
             private Point _iconPosition = new Point(12, 12);
@@ -138,11 +134,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("iconPosition")]
             public Point IconPosition {
                 get => _iconPosition;
-                set {
-                    if (Equals(value, _iconPosition)) return;
-                    _iconPosition = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _iconPosition);
             }
 
             private string _iconFilename;
@@ -166,11 +158,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("iconScale")]
             public double IconScale {
                 get => _iconScale;
-                set {
-                    if (Equals(value, _iconScale)) return;
-                    _iconScale = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _iconScale);
             }
 
             private bool _iconShadow;
@@ -178,11 +166,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("iconShadow")]
             public bool IconShadow {
                 get => _iconShadow;
-                set {
-                    if (Equals(value, _iconShadow)) return;
-                    _iconShadow = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _iconShadow);
             }
 
             private string _labelText;
@@ -277,11 +261,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("fontWeight")]
             public FontWeight FontWeight {
                 get => _fontWeight;
-                set {
-                    if (Equals(value, _fontWeight)) return;
-                    _fontWeight = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _fontWeight);
             }
 
             private FontStyle _fontStyle = FontStyles.Normal;
@@ -289,11 +269,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("fontStyle")]
             public FontStyle FontStyle {
                 get => _fontStyle;
-                set {
-                    if (Equals(value, _fontStyle)) return;
-                    _fontStyle = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _fontStyle);
             }
 
             private FontStretch _fontStretch = FontStretches.Normal;
@@ -301,11 +277,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("fontStretch")]
             public FontStretch FontStretch {
                 get => _fontStretch;
-                set {
-                    if (Equals(value, _fontStretch)) return;
-                    _fontStretch = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _fontStretch);
             }
 
             private double _fontSize = 25d;
@@ -313,11 +285,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("fontSize")]
             public double FontSize {
                 get => _fontSize;
-                set {
-                    if (Equals(value, _fontSize)) return;
-                    _fontSize = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _fontSize);
             }
 
             private Color _textColor = Colors.White;
@@ -325,11 +293,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("textColor")]
             public Color TextColor {
                 get => _textColor;
-                set {
-                    if (Equals(value, _textColor)) return;
-                    _textColor = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textColor);
             }
 
             private Point _textPosition = new Point(0, 12);
@@ -337,11 +301,7 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("textPosition")]
             public Point TextPosition {
                 get => _textPosition;
-                set {
-                    if (Equals(value, _textPosition)) return;
-                    _textPosition = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textPosition);
             }
 
             private bool _textShadow;
@@ -349,33 +309,21 @@ namespace AcManager.Pages.Dialogs {
             [JsonProperty("textShadow")]
             public bool TextShadow {
                 get => _textShadow;
-                set {
-                    if (Equals(value, _textShadow)) return;
-                    _textShadow = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textShadow);
             }
 
             private bool _isInEditMode;
 
             public bool IsInEditMode {
                 get => _isInEditMode;
-                set {
-                    if (Equals(value, _isInEditMode)) return;
-                    _isInEditMode = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isInEditMode);
             }
 
             private string _iconOriginal;
 
             public string IconOriginal {
                 get => _iconOriginal;
-                set {
-                    if (Equals(value, _iconOriginal)) return;
-                    _iconOriginal = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _iconOriginal);
             }
 
             private bool? _showEnabled;

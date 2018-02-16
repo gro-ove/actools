@@ -19,11 +19,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public int Index {
             get { return _index; }
-            set {
-                if (Equals(value, _index)) return;
-                _index = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _index);
         }
 
         [JsonIgnore]
@@ -114,11 +110,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore, CanBeNull]
         public WeatherObject Weather {
             get { return _weather; }
-            set {
-                if (Equals(value, _weather)) return;
-                _weather = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _weather);
         }
 
         [JsonProperty(@"weather")]
@@ -134,11 +126,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public Game.TrackPropertiesPreset TrackProperties {
             get { return _trackProperties; }
-            set {
-                if (Equals(value, _trackProperties)) return;
-                _trackProperties = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _trackProperties);
         }
 
         [JsonProperty(@"surface")]
@@ -206,11 +194,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public int TakenPlace {
             get { return _takenPlace; }
-            set {
-                if (Equals(value, _takenPlace)) return;
-                _takenPlace = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _takenPlace);
         }
 
         private bool _isAvailable;
@@ -218,11 +202,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public bool IsAvailable {
             get { return _isAvailable; }
-            set {
-                if (Equals(value, _isAvailable)) return;
-                _isAvailable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isAvailable);
         }
 
         private bool _isPassed;
@@ -230,11 +210,7 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore]
         public bool IsPassed {
             get { return _isPassed; }
-            set {
-                if (Equals(value, _isPassed)) return;
-                _isPassed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isPassed);
         }
         #endregion
     }

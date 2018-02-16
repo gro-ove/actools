@@ -69,11 +69,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                 }
                 return _name;
             }
-            private set {
-                if (value == _name) return;
-                _name = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _name);
         }
 
         private string _filename;
@@ -96,7 +92,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             get => null;
             set {
                 if (value is ISavedPresetEntry entry) {
-                    Filename = entry.Filename;
+                    Filename = entry.VirtualFilename;
                 }
             }
         }
@@ -228,11 +224,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         public bool NotEmpty {
             get => _notEmpty;
-            private set {
-                if (Equals(value, _notEmpty)) return;
-                _notEmpty = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _notEmpty);
         }
 
         public void Extend(PresetPerModeBase ext) {
@@ -385,11 +377,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         public bool Deleted {
             get => _deleted;
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _deleted);
         }
 
         private DelegateCommand _deleteCommand;

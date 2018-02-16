@@ -22,11 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool WorldAligned {
             get => _worldAligned;
-            set {
-                if (Equals(value, _worldAligned)) return;
-                _worldAligned = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _worldAligned);
         }
 
         private int _glancingSpeed;

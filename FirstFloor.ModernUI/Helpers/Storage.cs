@@ -65,11 +65,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public TimeSpan? PreviosSaveTime {
             get => _previosSaveTime;
-            set {
-                if (Equals(value, _previosSaveTime)) return;
-                _previosSaveTime = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _previosSaveTime);
         }
 
         private const byte DeflateFlag = 0;

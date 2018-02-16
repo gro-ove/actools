@@ -49,11 +49,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             public double Framerate {
                 get => _framerate;
-                set {
-                    if (Equals(value, _framerate)) return;
-                    _framerate = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _framerate);
             }
 
             public sealed override string DisplayName { get; set; }
@@ -357,22 +353,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool VerticalSyncronization {
             get => _verticalSyncronization;
-            set {
-                if (Equals(value, _verticalSyncronization)) return;
-                _verticalSyncronization = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _verticalSyncronization);
         }
 
         private bool _framerateLimitEnabled;
 
         public bool FramerateLimitEnabled {
             get => _framerateLimitEnabled;
-            set {
-                if (Equals(value, _framerateLimitEnabled)) return;
-                _framerateLimitEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _framerateLimitEnabled);
         }
 
         private int _framerateLimit;
@@ -419,11 +407,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool SmokeInMirrors {
             get => _smokeInMirrors;
-            set {
-                if (Equals(value, _smokeInMirrors)) return;
-                _smokeInMirrors = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _smokeInMirrors);
         }
 
         private SettingEntry _smokeLevel;
@@ -444,11 +428,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool PostProcessing {
             get => _postProcessing;
-            set {
-                if (Equals(value, _postProcessing)) return;
-                _postProcessing = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _postProcessing);
         }
 
         private string _postProcessingFilter;
@@ -526,22 +506,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool RaysOfGod {
             get => _raysOfGod;
-            set {
-                if (Equals(value, _raysOfGod)) return;
-                _raysOfGod = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _raysOfGod);
         }
 
         private bool _heatShimmering;
 
         public bool HeatShimmering {
             get => _heatShimmering;
-            set {
-                if (Equals(value, _heatShimmering)) return;
-                _heatShimmering = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _heatShimmering);
         }
 
         private int _colorSaturation;
@@ -560,11 +532,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool Fxaa {
             get => _fxaa;
-            set {
-                if (Equals(value, _fxaa)) return;
-                _fxaa = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _fxaa);
         }
 
         private int _motionBlur;
@@ -597,11 +565,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool MirrorHighQuality {
             get => _mirrorHighQuality;
-            set {
-                if (Equals(value, _mirrorHighQuality)) return;
-                _mirrorHighQuality = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _mirrorHighQuality);
         }
 
         private SettingEntry _cubemapResolution;
@@ -646,33 +610,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool HideSteeringWheel {
             get => _hideSteeringWheel;
-            set {
-                if (Equals(value, _hideSteeringWheel)) return;
-                _hideSteeringWheel = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hideSteeringWheel);
         }
 
         private bool _hideArms;
 
         public bool HideArms {
             get => _hideArms;
-            set {
-                if (Equals(value, _hideArms)) return;
-                _hideArms = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hideArms);
         }
 
         private bool _lockSteeringWheel;
 
         public bool LockSteeringWheel {
             get => _lockSteeringWheel;
-            set {
-                if (Equals(value, _lockSteeringWheel)) return;
-                _lockSteeringWheel = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _lockSteeringWheel);
         }
 
         #endregion

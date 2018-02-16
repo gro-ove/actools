@@ -45,11 +45,7 @@ namespace AcManager.Pages.Dialogs {
 
             public Color TagColor {
                 get { return _tagColor; }
-                set {
-                    if (Equals(value, _tagColor)) return;
-                    _tagColor = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _tagColor);
             }
 
             public IEnumerable GetErrors(string propertyName) {

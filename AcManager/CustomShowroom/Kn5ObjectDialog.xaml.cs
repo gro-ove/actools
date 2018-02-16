@@ -63,11 +63,7 @@ namespace AcManager.CustomShowroom {
 
             public string TextureDimensions {
                 get => _textureDimensions;
-                set {
-                    if (value == _textureDimensions) return;
-                    _textureDimensions = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _textureDimensions);
             }
 
             public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5,

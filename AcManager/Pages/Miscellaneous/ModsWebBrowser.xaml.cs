@@ -60,11 +60,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("enabled")]
             public bool IsEnabled {
                 get => _isEnabled;
-                set {
-                    if (Equals(value, _isEnabled)) return;
-                    _isEnabled = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isEnabled);
             }
 
             private bool _isFavourite;
@@ -72,11 +68,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("favourite")]
             public bool IsFavourite {
                 get => _isFavourite;
-                set {
-                    if (Equals(value, _isFavourite)) return;
-                    _isFavourite = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isFavourite);
             }
 
             private string _favicon;
@@ -84,11 +76,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("favicon")]
             public string Favicon {
                 get => _favicon;
-                set {
-                    if (Equals(value, _favicon)) return;
-                    _favicon = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _favicon);
             }
 
             private string _url;
@@ -96,11 +84,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("url")]
             public string Url {
                 get => _url;
-                set {
-                    if (Equals(value, _url)) return;
-                    _url = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _url);
             }
 
             private bool _captureDownloads;
@@ -108,11 +92,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("captureDownloads")]
             public bool CaptureDownloads {
                 get => _captureDownloads;
-                set {
-                    if (Equals(value, _captureDownloads)) return;
-                    _captureDownloads = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _captureDownloads);
             }
         }
 
@@ -123,11 +103,7 @@ namespace AcManager.Pages.Miscellaneous {
 
             public WebSource SelectedSource {
                 get => _selectedSource;
-                set {
-                    if (Equals(value, _selectedSource)) return;
-                    _selectedSource = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedSource);
             }
 
             public ViewModel() {

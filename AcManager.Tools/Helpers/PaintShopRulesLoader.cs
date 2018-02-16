@@ -205,66 +205,42 @@ namespace AcManager.Tools.Helpers {
 
             public string InstalledVersion {
                 get => _installedVersion;
-                set {
-                    if (Equals(value, _installedVersion)) return;
-                    _installedVersion = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _installedVersion);
             }
 
             private string _remoteVersion;
 
             public string RemoteVersion {
                 get => _remoteVersion;
-                set {
-                    if (Equals(value, _remoteVersion)) return;
-                    _remoteVersion = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _remoteVersion);
             }
 
             private AsyncProgressEntry _progress;
 
             public AsyncProgressEntry Progress {
                 get => _progress;
-                set {
-                    if (Equals(value, _progress)) return;
-                    _progress = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _progress);
             }
 
             private bool _hasFailed;
 
             public bool HasFailed {
                 get => _hasFailed;
-                set {
-                    if (Equals(value, _hasFailed)) return;
-                    _hasFailed = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _hasFailed);
             }
 
             private string _failedReason = "Unknown reason";
 
             public string FailedReason {
                 get => _failedReason;
-                set {
-                    if (Equals(value, _failedReason)) return;
-                    _failedReason = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _failedReason);
             }
 
             private bool _isReady;
 
             public bool IsReady {
                 get => _isReady;
-                set {
-                    if (Equals(value, _isReady)) return;
-                    _isReady = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isReady);
             }
         }
 

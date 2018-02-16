@@ -175,11 +175,7 @@ namespace AcManager.Controls.Dialogs {
 
             public HierarchicalGroup VideoPresets {
                 get { return _videoPresets; }
-                set {
-                    if (Equals(value, _videoPresets)) return;
-                    _videoPresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _videoPresets);
             }
 
             private string _videoPresetFilename;
@@ -201,11 +197,7 @@ namespace AcManager.Controls.Dialogs {
             [CanBeNull]
             public string DisplayVideoPreset {
                 get { return _displayVideoPreset; }
-                set {
-                    if (Equals(value, _displayVideoPreset)) return;
-                    _displayVideoPreset = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _displayVideoPreset);
             }
 
             public object SelectedVideoPreset {
@@ -216,7 +208,7 @@ namespace AcManager.Controls.Dialogs {
                     } else {
                         var entry = value as ISavedPresetEntry;
                         if (entry != null) {
-                            VideoPresetFilename = entry.Filename;
+                            VideoPresetFilename = entry.VirtualFilename;
                         }
                     }
                 }

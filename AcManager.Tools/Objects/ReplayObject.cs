@@ -225,33 +225,21 @@ namespace AcManager.Tools.Objects {
 
         public string CarId {
             get => _carId;
-            set {
-                if (Equals(value, _carId)) return;
-                _carId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _carId);
         }
 
         private string _carSkinId;
 
         public string CarSkinId {
             get => _carSkinId;
-            set {
-                if (Equals(value, _carSkinId)) return;
-                _carSkinId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _carSkinId);
         }
 
         private string _driverName;
 
         public string DriverName {
             get => _driverName;
-            set {
-                if (Equals(value, _driverName)) return;
-                _driverName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _driverName);
         }
 
         private string _trackId;
@@ -280,11 +268,7 @@ namespace AcManager.Tools.Objects {
 
         public long Size {
             get => _size;
-            set {
-                if (Equals(value, _size)) return;
-                _size = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _size);
         }
         #endregion
 

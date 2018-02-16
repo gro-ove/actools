@@ -20,11 +20,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public string DisplayInvertCombination {
             get => _displayInvertCombination;
-            set {
-                if (Equals(value, _displayInvertCombination)) return;
-                _displayInvertCombination = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayInvertCombination);
         }
 
         private DelegateCommand _resetCommand;

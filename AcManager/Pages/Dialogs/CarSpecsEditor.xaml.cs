@@ -16,29 +16,22 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using AcTools.Utils.Physics;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Pages.Dialogs {
-    public sealed partial class CarSpecsEditor : INotifyPropertyChanged {
+    public sealed partial class CarSpecsEditor : IInvokingNotifyPropertyChanged {
         public CarObject Car { get; private set; }
 
         private GraphData _torqueGraph, _powerGraph;
 
         public GraphData TorqueGraph {
             get => _torqueGraph;
-            set {
-                if (Equals(value, _torqueGraph)) return;
-                _torqueGraph = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _torqueGraph);
         }
 
         public GraphData PowerGraph {
             get => _powerGraph;
-            set {
-                if (Equals(value, _powerGraph)) return;
-                _powerGraph = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _powerGraph);
         }
 
         private readonly TextBox[] _fixableInputs;
@@ -305,6 +298,10 @@ namespace AcManager.Pages.Dialogs {
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

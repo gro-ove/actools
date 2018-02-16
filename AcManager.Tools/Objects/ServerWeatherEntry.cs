@@ -15,11 +15,7 @@ namespace AcManager.Tools.Objects {
 
         public int Index {
             get => _index;
-            set {
-                if (Equals(value, _index)) return;
-                _index = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _index);
         }
 
         public ServerWeatherEntry() {
@@ -219,11 +215,7 @@ namespace AcManager.Tools.Objects {
 
         public bool Deleted {
             get => _deleted;
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _deleted);
         }
 
         private DelegateCommand _deleteCommand;

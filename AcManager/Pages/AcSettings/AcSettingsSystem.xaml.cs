@@ -24,11 +24,7 @@ namespace AcManager.Pages.AcSettings {
 
             public string GhostDisplayColor {
                 get => _ghostDisplayColor;
-                set {
-                    if (Equals(value, _ghostDisplayColor)) return;
-                    _ghostDisplayColor = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _ghostDisplayColor);
             }
         }
     }

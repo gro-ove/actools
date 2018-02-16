@@ -14,23 +14,20 @@ using AcTools.Utils;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class BrandBadgeEditor : INotifyPropertyChanged {
+    public partial class BrandBadgeEditor : IInvokingNotifyPropertyChanged {
         private FilesStorage.ContentEntry _selected;
         public CarObject Car { get; }
 
         public BetterObservableCollection<FilesStorage.ContentEntry> Icons { get; }
 
         public FilesStorage.ContentEntry Selected {
-            get { return _selected; }
-            set {
-                if (Equals(value, _selected)) return;
-                _selected = value;
-                OnPropertyChanged();
-            }
+            get => _selected;
+            set => this.Apply(value, ref _selected);
         }
 
         public BrandBadgeEditor(CarObject car) {
@@ -134,23 +131,26 @@ namespace AcManager.Pages.Dialogs {
                 CloseWithResult(MessageBoxResult.OK);
             } else if (e.ChangedButton == MouseButton.Right) {
                 e.Handled = true;
-                var entry = ((FrameworkElement)sender).DataContext as FilesStorage.ContentEntry;
-                if (entry == null || !entry.UserFile) return;
+                if (((FrameworkElement)sender).DataContext is FilesStorage.ContentEntry entry && entry.UserFile) {
+                    var contextMenu = new ContextMenu();
 
-                var contextMenu = new ContextMenu();
-
-                var item = new MenuItem { Header = AppStrings.Toolbar_Delete };
-                item.Click += (o, args) => FilesStorage.Instance.Remove(entry);
-                contextMenu.Items.Add(item);
-                contextMenu.IsOpen = true;
+                    var item = new MenuItem { Header = AppStrings.Toolbar_Delete };
+                    item.Click += (o, args) => FilesStorage.Instance.Remove(entry);
+                    contextMenu.Items.Add(item);
+                    contextMenu.IsOpen = true;
+                }
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

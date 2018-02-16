@@ -22,11 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool Enabled {
             get => _enabled;
-            set {
-                if (Equals(value, _enabled)) return;
-                _enabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _enabled);
         }
 
         private SettingEntry _type;
@@ -45,11 +41,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public double Gamma {
             get => _gamma;
-            set {
-                if (Equals(value, _gamma)) return;
-                _gamma = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _gamma);
         }
 
         private string _lutName;
@@ -101,22 +93,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public string[] LutNames {
             get => _lutNames;
-            set {
-                if (Equals(value, _lutNames)) return;
-                _lutNames = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _lutNames);
         }
 
         private GraphData _lutGraphData;
 
         public GraphData LutGraphData {
             get => _lutGraphData;
-            set {
-                if (Equals(value, _lutGraphData)) return;
-                _lutGraphData = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _lutGraphData);
         }
 
         protected override void OnFileChanged(string filename) {

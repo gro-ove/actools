@@ -178,11 +178,7 @@ namespace AcManager.Pages.Dialogs {
 
             public string CurrentPreviewImage {
                 get => _currentPreviewImage;
-                set {
-                    if (Equals(value, _currentPreviewImage)) return;
-                    _currentPreviewImage = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _currentPreviewImage);
             }
 
             public ViewModel([NotNull] TrackObjectBase selectedTrackConfiguration) {

@@ -104,11 +104,7 @@ namespace AcManager.Pages.Drive {
         [CanBeNull]
         public Tuple<string, Action<TrackObjectBase>> TrackDoesNotFit {
             get { return _trackDoesNotFit; }
-            set {
-                if (Equals(value, _trackDoesNotFit)) return;
-                _trackDoesNotFit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _trackDoesNotFit);
         }
 
         [CanBeNull]

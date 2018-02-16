@@ -74,7 +74,7 @@ namespace AcManager.CustomShowroom {
             } else {
                 saveable.Initialize(true);
                 UserPresetsControl.CurrentUserPreset =
-                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
+                        UserPresetsControl.SavedPresets.FirstOrDefault(x => x.VirtualFilename == _loadPreset);
             }
         }
 
@@ -102,11 +102,7 @@ namespace AcManager.CustomShowroom {
             [CanBeNull]
             public CarObject Car {
                 get => _car;
-                set {
-                    if (Equals(value, _car)) return;
-                    _car = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _car);
             }
 
             private CarSkinObject _skin;
@@ -245,11 +241,7 @@ namespace AcManager.CustomShowroom {
 
             public bool SingleSkin {
                 get => _singleSkin;
-                set {
-                    if (Equals(value, _singleSkin)) return;
-                    _singleSkin = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _singleSkin);
             }
 
             private DarkPreviewsUpdater _previewsUpdater;

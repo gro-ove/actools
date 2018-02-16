@@ -28,44 +28,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool DeveloperApps {
             get => _developerApps;
-            set {
-                if (Equals(value, _developerApps)) return;
-                _developerApps = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _developerApps);
         }
 
         private bool _hideDriver;
 
         public bool HideDriver {
             get => _hideDriver;
-            set {
-                if (Equals(value, _hideDriver)) return;
-                _hideDriver = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hideDriver);
         }
 
         private bool _allowFreeCamera;
 
         public bool AllowFreeCamera {
             get => _allowFreeCamera;
-            set {
-                if (Equals(value, _allowFreeCamera)) return;
-                _allowFreeCamera = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _allowFreeCamera);
         }
 
         private bool _logging;
 
         public bool Logging {
             get => _logging;
-            set {
-                if (Equals(value, _logging)) return;
-                _logging = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _logging);
         }
 
         private SettingEntry _screenshotFormat;
@@ -112,11 +96,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool VrCameraShake {
             get => _vrCameraShake;
-            set {
-                if (Equals(value, _vrCameraShake)) return;
-                _vrCameraShake = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _vrCameraShake);
         }
         #endregion
 
@@ -239,11 +219,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IgnoreResultTeleport {
             get => _ignoreResultTeleport;
-            set {
-                if (Equals(value, _ignoreResultTeleport)) return;
-                _ignoreResultTeleport = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ignoreResultTeleport);
         }
 
         protected override void LoadFromIni() {

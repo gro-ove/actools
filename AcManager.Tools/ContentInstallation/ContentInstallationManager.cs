@@ -110,11 +110,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool HasLoadingItems {
             get => _hasLoadingItems;
-            set {
-                if (Equals(value, _hasLoadingItems)) return;
-                _hasLoadingItems = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hasLoadingItems);
         }
 
         private int _unfinishedItemsCount;

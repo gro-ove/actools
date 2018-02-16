@@ -9,11 +9,7 @@ namespace FirstFloor.ModernUI.Presentation {
         [Bindable(true)]
         public object Content {
             get => _content;
-            set {
-                if (Equals(value, _content)) return;
-                _content = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _content);
         }
 
         public override string DisplayName {
@@ -25,22 +21,14 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public string GroupKey {
             get => _groupKey;
-            set {
-                if (Equals(value, _groupKey)) return;
-                _groupKey = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _groupKey);
         }
 
         private bool _isAccented;
 
         public bool IsAccented {
             get => _isAccented;
-            set {
-                if (Equals(value, _isAccented)) return;
-                _isAccented = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isAccented);
         }
     }
 }

@@ -163,11 +163,7 @@ namespace AcManager.Pages.Miscellaneous {
 
             public bool IsExpanded {
                 get { return _isExpanded; }
-                set {
-                    if (Equals(value, _isExpanded)) return;
-                    _isExpanded = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isExpanded);
             }
         }
 

@@ -37,44 +37,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int PosX {
             get => _posX;
-            set {
-                if (Equals(value, _posX)) return;
-                _posX = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _posX);
         }
 
         private int _posY;
 
         public int PosY {
             get => _posY;
-            set {
-                if (Equals(value, _posY)) return;
-                _posY = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _posY);
         }
 
         private bool _isVisible;
 
         public bool IsVisible {
             get => _isVisible;
-            set {
-                if (Equals(value, _isVisible)) return;
-                _isVisible = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isVisible);
         }
 
         private bool _isBlocked;
 
         public bool IsBlocked {
             get => _isBlocked;
-            set {
-                if (Equals(value, _isBlocked)) return;
-                _isBlocked = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isBlocked);
         }
 
         private int _scale = 100;
@@ -191,11 +175,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool AnyVisible {
             get => _anyVisible;
-            set {
-                if (Equals(value, _anyVisible)) return;
-                _anyVisible = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _anyVisible);
         }
 
         public void SetVisibility(bool value) {

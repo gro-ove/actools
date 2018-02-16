@@ -104,11 +104,7 @@ namespace AcManager.Tools.SharedMemory {
 
         public DateTime PauseTime {
             get => _pauseTime;
-            private set {
-                if (Equals(value, _pauseTime)) return;
-                _pauseTime = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _pauseTime);
         }
 
         private AcShared _shared;

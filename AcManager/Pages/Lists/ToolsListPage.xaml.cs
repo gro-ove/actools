@@ -12,11 +12,7 @@ namespace AcManager.Pages.Lists {
 
             public bool Active {
                 get => _active;
-                set {
-                    if (Equals(value, _active)) return;
-                    _active = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _active);
             }
         }
 

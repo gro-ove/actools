@@ -93,11 +93,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool Active {
             get => _active;
-            set {
-                if (Equals(value, _active)) return;
-                _active = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _active);
         }
 
         [CanBeNull]
@@ -128,11 +124,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public TrackObjectBase ExistingLayout {
             get => _existingLayout;
-            set {
-                if (Equals(value, _existingLayout)) return;
-                _existingLayout = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _existingLayout);
         }
 
         private BetterImage.BitmapEntry? _icon;
@@ -217,11 +209,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public TrackObjectBase NoLayoutsExistingLayout {
             get => _noLayoutsExistingLayout;
-            set {
-                if (Equals(value, _noLayoutsExistingLayout)) return;
-                _noLayoutsExistingLayout = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _noLayoutsExistingLayout);
         }
 
         private async Task Initialize() {
@@ -388,33 +376,21 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool HasNewExtraLayouts {
             get => _hasNewExtraLayouts;
-            set {
-                if (Equals(value, _hasNewExtraLayouts)) return;
-                _hasNewExtraLayouts = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hasNewExtraLayouts);
         }
 
         private bool _sharedModelsOverlap;
 
         public bool SharedModelsOverlap {
             get => _sharedModelsOverlap;
-            set {
-                if (value == _sharedModelsOverlap) return;
-                _sharedModelsOverlap = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _sharedModelsOverlap);
         }
 
         private bool _keepExistingSharedModels = true;
 
         public bool KeepExistingSharedModels {
             get => _keepExistingSharedModels;
-            set {
-                if (Equals(value, _keepExistingSharedModels)) return;
-                _keepExistingSharedModels = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _keepExistingSharedModels);
         }
 
         public override string GenericModTypeName => "Track";

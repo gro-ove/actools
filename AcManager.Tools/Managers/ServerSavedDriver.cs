@@ -60,11 +60,7 @@ namespace AcManager.Tools.Managers {
         [CanBeNull]
         public string TeamName {
             get => _teamName;
-            set {
-                if (value == _teamName) return;
-                _teamName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _teamName);
         }
 
         [NotNull]
@@ -169,11 +165,7 @@ namespace AcManager.Tools.Managers {
 
         public bool Deleted {
             get => _deleted;
-            set {
-                if (Equals(value, _deleted)) return;
-                _deleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _deleted);
         }
 
         private DelegateCommand _deleteCommand;

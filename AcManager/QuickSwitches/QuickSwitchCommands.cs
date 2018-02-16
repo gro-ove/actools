@@ -40,7 +40,7 @@ namespace AcManager.QuickSwitches {
 
             foreach (var menuItem in PresetsMenuHelper.GroupPresets(RhmService.Instance.PresetableCategory,
                     p => {
-                        UserPresetsControl.SetCurrentFilename(RhmService.Instance.PresetableKey, p.Filename);
+                        UserPresetsControl.SetCurrentFilename(RhmService.Instance.PresetableKey, p.VirtualFilename);
                         RhmService.Instance.ImportFromPresetData(p.ReadData());
                     })) {
                 presetsItem.Items.Add(menuItem);

@@ -240,22 +240,14 @@ namespace AcManager.Tools.Objects {
 
         public bool IsWrapperConnected {
             get => _isWrapperConnected;
-            set {
-                if (Equals(value, _isWrapperConnected)) return;
-                _isWrapperConnected = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isWrapperConnected);
         }
 
         private string _wrapperConnectionFailedReason;
 
         public string WrapperConnectionFailedReason {
             get => _wrapperConnectionFailedReason;
-            set {
-                if (Equals(value, _wrapperConnectionFailedReason)) return;
-                _wrapperConnectionFailedReason = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wrapperConnectionFailedReason);
         }
 
         private string _wrapperIpAddress;
@@ -263,11 +255,7 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string WrapperIpAddress {
             get => _wrapperIpAddress;
-            set {
-                if (Equals(value, _wrapperIpAddress)) return;
-                _wrapperIpAddress = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wrapperIpAddress);
         }
 
         private string _wrapperPassword;
@@ -275,22 +263,14 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string WrapperPassword {
             get => _wrapperPassword;
-            set {
-                if (Equals(value, _wrapperPassword)) return;
-                _wrapperPassword = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wrapperPassword);
         }
 
         private AcServerStatus _wrapperAcServerStatus;
 
         public AcServerStatus WrapperAcServerStatus {
             get => _wrapperAcServerStatus;
-            set {
-                if (Equals(value, _wrapperAcServerStatus)) return;
-                _wrapperAcServerStatus = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _wrapperAcServerStatus);
         }
 
         private AsyncCommand _connectWrapperCommand;

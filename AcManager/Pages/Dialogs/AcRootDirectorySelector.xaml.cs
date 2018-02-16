@@ -146,11 +146,7 @@ namespace AcManager.Pages.Dialogs {
             [NotNull]
             public SteamProfile SteamProfile {
                 get => _steamProfile;
-                set {
-                    if (Equals(value, _steamProfile)) return;
-                    _steamProfile = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _steamProfile);
             }
 
             public BetterObservableCollection<SteamProfile> SteamProfiles { get; }

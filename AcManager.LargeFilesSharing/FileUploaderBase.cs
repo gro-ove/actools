@@ -1,17 +1,16 @@
 using System;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.LargeFilesSharing {
-    public abstract class FileUploaderBase : ILargeFileUploader {
+    public abstract class FileUploaderBase : NotifyPropertyChanged, ILargeFileUploader {
         protected readonly IStorage Storage;
         internal readonly Request Request = new Request();
 
@@ -35,7 +34,6 @@ namespace AcManager.LargeFilesSharing {
         public string DisplayName { get; }
         public string Description { get; }
 
-        [CanBeNull]
         public Uri Icon { get; }
 
         private string _destinationDirectoryId;
@@ -54,11 +52,7 @@ namespace AcManager.LargeFilesSharing {
 
         public bool IsReady {
             get => _isReady;
-            protected set {
-                if (Equals(value, _isReady)) return;
-                _isReady = value;
-                OnPropertyChanged();
-            }
+            protected set => Apply(value, ref _isReady);
         }
 
         public virtual Task ResetAsync(CancellationToken cancellation) {
@@ -107,13 +101,6 @@ namespace AcManager.LargeFilesSharing {
                 Id = $"{(uploadAs == UploadAs.Content ? "I6" : "Ii")}{url.ToCutBase64()}",
                 DirectUrl = url
             };
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

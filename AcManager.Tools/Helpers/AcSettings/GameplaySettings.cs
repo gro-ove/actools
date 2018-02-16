@@ -27,77 +27,49 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool AllowOverlapping {
             get => _allowOverlapping;
-            set {
-                if (Equals(value, _allowOverlapping)) return;
-                _allowOverlapping = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _allowOverlapping);
         }
 
         private bool _displayTimeGap;
 
         public bool DisplayTimeGap {
             get => _displayTimeGap;
-            set {
-                if (Equals(value, _displayTimeGap)) return;
-                _displayTimeGap = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayTimeGap);
         }
 
         private bool _displayDamage;
 
         public bool DisplayDamage {
             get => _displayDamage;
-            set {
-                if (Equals(value, _displayDamage)) return;
-                _displayDamage = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayDamage);
         }
 
         private bool _displayLeaderboard;
 
         public bool DisplayLeaderboard {
             get => _displayLeaderboard;
-            set {
-                if (Equals(value, _displayLeaderboard)) return;
-                _displayLeaderboard = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayLeaderboard);
         }
 
         private bool _displayMirror;
 
         public bool DisplayMirror {
             get => _displayMirror;
-            set {
-                if (Equals(value, _displayMirror)) return;
-                _displayMirror = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayMirror);
         }
 
         private bool _displayDriverNames;
 
         public bool DisplayDriverNames {
             get => _displayDriverNames;
-            set {
-                if (Equals(value, _displayDriverNames)) return;
-                _displayDriverNames = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayDriverNames);
         }
 
         private bool _downshiftProtectionNotification;
 
         public bool DownshiftProtectionNotification {
             get => _downshiftProtectionNotification;
-            set {
-                if (Equals(value, _downshiftProtectionNotification)) return;
-                _downshiftProtectionNotification = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _downshiftProtectionNotification);
         }
         #endregion
 

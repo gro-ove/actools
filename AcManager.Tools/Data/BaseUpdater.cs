@@ -90,11 +90,7 @@ namespace AcManager.Tools.Data {
 
         public string LatestError {
             get => _latestError;
-            set {
-                if (Equals(value, _latestError)) return;
-                _latestError = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _latestError);
         }
 
         private bool _isGetting;

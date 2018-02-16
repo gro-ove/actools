@@ -131,11 +131,7 @@ namespace AcManager.Pages.Drive {
 
             public CarSkinObject CarSkin {
                 get => _carSkin;
-                set {
-                    if (Equals(value, _carSkin)) return;
-                    _carSkin = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _carSkin);
             }
 
             private TrackObjectBase _track;

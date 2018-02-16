@@ -37,11 +37,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public bool IsFullyLoaded {
             get => _isFullyLoaded;
-            private set {
-                if (Equals(value, _isFullyLoaded)) return;
-                _isFullyLoaded = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _isFullyLoaded);
         }
 
         private int _portHttp;
@@ -51,11 +47,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int PortHttp {
             get => _portHttp;
-            private set {
-                if (Equals(value, _portHttp)) return;
-                _portHttp = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _portHttp);
         }
 
         private int _port;
@@ -65,11 +57,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int Port {
             get => _port;
-            private set {
-                if (Equals(value, _port)) return;
-                _port = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _port);
         }
 
         private int _portRace;
@@ -79,11 +67,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int PortRace {
             get => _portRace;
-            private set {
-                if (Equals(value, _portRace)) return;
-                _portRace = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _portRace);
         }
 
         private bool _passwordRequired;
@@ -226,22 +210,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public string Time {
             get => _time;
-            set {
-                if (Equals(value, _time)) return;
-                _time = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _time);
         }
 
         private RaceMode _raceMode;
 
         public RaceMode RaceMode {
             get => _raceMode;
-            set {
-                if (Equals(value, _raceMode)) return;
-                _raceMode = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _raceMode);
         }
 
         private DateTime _sessionEnd;
@@ -260,11 +236,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public Game.SessionType? CurrentSessionType {
             get => _currentSessionType;
-            set {
-                if (Equals(value, _currentSessionType)) return;
-                _currentSessionType = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _currentSessionType);
         }
 
         public string DisplayTimeLeft {
@@ -304,22 +276,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public long? Ping {
             get => _ping;
-            set {
-                if (Equals(value, _ping)) return;
-                _ping = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ping);
         }
 
         private bool _isAvailable;
 
         public bool IsAvailable {
             get => _isAvailable;
-            set {
-                if (Equals(value, _isAvailable)) return;
-                _isAvailable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isAvailable);
         }
 
         private string _trackId;
@@ -327,11 +291,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public string TrackId {
             get => _trackId;
-            set {
-                if (Equals(value, _trackId)) return;
-                _trackId = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _trackId);
         }
 
         [CanBeNull]
@@ -340,11 +300,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public TrackObjectBase Track {
             get => _track;
-            set {
-                if (Equals(value, _track)) return;
-                _track = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _track);
         }
 
         [CanBeNull]
@@ -364,22 +320,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public int ConnectedDrivers {
             get => _connectedDrivers;
-            set {
-                if (Equals(value, _connectedDrivers)) return;
-                _connectedDrivers = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _connectedDrivers);
         }
 
         private bool _isBookedForPlayer;
 
         public bool IsBookedForPlayer {
             get => _isBookedForPlayer;
-            set {
-                if (Equals(value, _isBookedForPlayer)) return;
-                _isBookedForPlayer = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isBookedForPlayer);
         }
 
         private IReadOnlyList<CurrentDriver> _currentDrivers;
@@ -483,22 +431,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool HasErrors {
             get => _hasErrors;
-            private set {
-                if (Equals(value, _hasErrors)) return;
-                _hasErrors = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _hasErrors);
         }
 
         private AsyncProgressEntry _updateProgress;
 
         public AsyncProgressEntry UpdateProgress {
             get => _updateProgress;
-            set {
-                if (Equals(value, _updateProgress)) return;
-                _updateProgress = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _updateProgress);
         }
         #endregion
 

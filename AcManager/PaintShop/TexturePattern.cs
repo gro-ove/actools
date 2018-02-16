@@ -200,33 +200,21 @@ namespace AcManager.PaintShop {
 
         public bool IsNumberActive {
             get => _isNumberActive;
-            set {
-                if (value == _isNumberActive) return;
-                _isNumberActive = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isNumberActive);
         }
 
         private bool _isFlagActive;
 
         public bool IsFlagActive {
             get => _isFlagActive;
-            set {
-                if (value == _isFlagActive) return;
-                _isFlagActive = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isFlagActive);
         }
 
         private IReadOnlyList<string> _activeLabels;
 
         public IReadOnlyList<string> ActiveLabels {
             get => _activeLabels;
-            set {
-                if (Equals(value, _activeLabels)) return;
-                _activeLabels = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _activeLabels);
         }
 
         private void UpdateIsNumberActive() {

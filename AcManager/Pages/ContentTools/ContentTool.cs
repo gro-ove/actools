@@ -9,6 +9,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -18,7 +19,7 @@ namespace AcManager.Pages.ContentTools {
         Loading, Ready, Empty, Error
     }
 
-    public abstract class ContentTool : Switch, INotifyPropertyChanged, IParametrizedUriContent {
+    public abstract class ContentTool : Switch, IInvokingNotifyPropertyChanged, IParametrizedUriContent {
         #region Loading
         private CancellationTokenSource _cancellation;
 
@@ -50,34 +51,22 @@ namespace AcManager.Pages.ContentTools {
         private Stage _currentStage;
 
         public Stage CurrentStage {
-            get { return _currentStage; }
-            private set {
-                if (Equals(value, _currentStage)) return;
-                _currentStage = value;
-                OnPropertyChanged();
-            }
+            get => _currentStage;
+            private set => this.Apply(value, ref _currentStage);
         }
 
         private string _error;
 
         public string Error {
-            get { return _error; }
-            set {
-                if (Equals(value, _error)) return;
-                _error = value;
-                OnPropertyChanged();
-            }
+            get => _error;
+            set => this.Apply(value, ref _error);
         }
 
         private AsyncProgressEntry _progressValue;
 
         public AsyncProgressEntry ProgressValue {
-            get { return _progressValue; }
-            private set {
-                if (Equals(value, _progressValue)) return;
-                _progressValue = value;
-                OnPropertyChanged();
-            }
+            get => _progressValue;
+            private set => this.Apply(value, ref _progressValue);
         }
         #endregion
 
@@ -110,6 +99,10 @@ namespace AcManager.Pages.ContentTools {
         [NotifyPropertyChangedInvocator]
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

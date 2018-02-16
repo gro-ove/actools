@@ -42,11 +42,7 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public string Guid {
             get { return _guid; }
-            set {
-                if (Equals(value, _guid)) return;
-                _guid = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _guid);
         }
 
         public SpecialEventObject(IFileAcManager manager, string id, bool enabled)
@@ -56,11 +52,7 @@ namespace AcManager.Tools.Objects {
 
         public AiLevelEntry[] AiLevels {
             get { return _aiLevels; }
-            set {
-                if (Equals(value, _aiLevels)) return;
-                _aiLevels = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _aiLevels);
         }
 
         private AiLevelEntry _selectedLevel;
@@ -84,11 +76,7 @@ namespace AcManager.Tools.Objects {
 
         public string DisplayDescription {
             get { return _displayDescription; }
-            set {
-                if (Equals(value, _displayDescription)) return;
-                _displayDescription = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayDescription);
         }
 
         protected override void LoadObjects() {

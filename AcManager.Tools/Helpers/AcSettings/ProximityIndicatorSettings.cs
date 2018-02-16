@@ -6,11 +6,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsEnabled {
             get { return _isEnabled; }
-            set {
-                if (Equals(value, _isEnabled)) return;
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isEnabled);
         }
 
         protected override void LoadFromIni() {

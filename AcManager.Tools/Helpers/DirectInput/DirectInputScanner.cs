@@ -192,11 +192,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             public bool HasData {
                 get => _hasData;
-                private set {
-                    if (Equals(value, _hasData)) return;
-                    _hasData = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _hasData);
             }
 
             private List<TaskCompletionSource<IList<DeviceInstance>>> _waitingFor = new List<TaskCompletionSource<IList<DeviceInstance>>>();

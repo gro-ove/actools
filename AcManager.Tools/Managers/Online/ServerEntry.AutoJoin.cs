@@ -6,22 +6,14 @@ namespace AcManager.Tools.Managers.Online {
 
         public bool AutoJoinAvailable {
             get { return _autoJoinAvailable; }
-            set {
-                if (Equals(value, _autoJoinAvailable)) return;
-                _autoJoinAvailable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _autoJoinAvailable);
         }
 
         private bool _autoJoinAnyCarAvailable;
 
         public bool AutoJoinAnyCarAvailable {
             get { return _autoJoinAnyCarAvailable; }
-            set {
-                if (Equals(value, _autoJoinAnyCarAvailable)) return;
-                _autoJoinAnyCarAvailable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _autoJoinAnyCarAvailable);
         }
 
         public bool IsAutoJoinReady(bool anyCar) {

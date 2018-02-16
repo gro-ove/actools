@@ -9,11 +9,7 @@ namespace AcManager.Pages.SelectionLists {
 
         public bool Accented {
             get { return _accented; }
-            set {
-                if (value == _accented) return;
-                _accented = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _accented);
         }
 
         public SelectTag([NotNull] string name) : base(name.ApartFromFirst(@"#").TrimStart()) {

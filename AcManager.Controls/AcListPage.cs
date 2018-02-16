@@ -191,11 +191,7 @@ namespace AcManager.Controls {
 
             public bool Value {
                 get => _value;
-                set {
-                    if (Equals(value, _value)) return;
-                    _value = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _value);
             }
         }
 

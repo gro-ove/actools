@@ -45,20 +45,12 @@ namespace AcManager.Tools.Objects {
 
             public int Points {
                 get => _points;
-                set {
-                    if (value == _points) return;
-                    _points = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _points);
             }
 
             public int TakenPlace {
                 get => _takenPlace;
-                set {
-                    if (value == _takenPlace) return;
-                    _takenPlace = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _takenPlace);
             }
 
             public int Id { get; set; }
@@ -72,11 +64,7 @@ namespace AcManager.Tools.Objects {
 
         public BetterObservableCollection<ChampionshipDriverEntry> ChampionshipDrivers {
             get => _championshipDrivers;
-            set {
-                if (Equals(value, _championshipDrivers)) return;
-                _championshipDrivers = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipDrivers);
         }
 
         protected override void OnAcObjectOutdated() {
@@ -228,11 +216,7 @@ namespace AcManager.Tools.Objects {
 
         public string Description {
             get => _description;
-            set {
-                if (Equals(value, _description)) return;
-                _description = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _description);
         }
 
         private string _code;
@@ -267,55 +251,35 @@ namespace AcManager.Tools.Objects {
 
         public string[] RequiredSeries {
             get => _requiredSeries;
-            set {
-                if (Equals(value, _requiredSeries)) return;
-                _requiredSeries = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _requiredSeries);
         }
 
         private bool _requiredAnySeries;
 
         public bool RequiredAnySeries {
             get => _requiredAnySeries;
-            set {
-                if (Equals(value, _requiredAnySeries)) return;
-                _requiredAnySeries = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _requiredAnySeries);
         }
 
         private int[] _pointsForPlace;
 
         public int[] PointsForPlace {
             get => _pointsForPlace;
-            set {
-                if (Equals(value, _pointsForPlace)) return;
-                _pointsForPlace = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _pointsForPlace);
         }
 
         private int _championshipPointsGoal;
 
         public int ChampionshipPointsGoal {
             get => _championshipPointsGoal;
-            set {
-                if (Equals(value, _championshipPointsGoal)) return;
-                _championshipPointsGoal = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipPointsGoal);
         }
 
         private int _championshipRankingGoal;
 
         public int ChampionshipRankingGoal {
             get => _championshipRankingGoal;
-            set {
-                if (Equals(value, _championshipRankingGoal)) return;
-                _championshipRankingGoal = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipRankingGoal);
         }
 
         public string DisplayChampionshipGoal
@@ -326,55 +290,35 @@ namespace AcManager.Tools.Objects {
 
         public int FirstPlacesGoal {
             get => _firstPlacesGoal;
-            set {
-                if (Equals(value, _firstPlacesGoal)) return;
-                _firstPlacesGoal = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _firstPlacesGoal);
         }
 
         private int _secondPlacesGoal;
 
         public int SecondPlacesGoal {
             get => _secondPlacesGoal;
-            set {
-                if (Equals(value, _secondPlacesGoal)) return;
-                _secondPlacesGoal = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _secondPlacesGoal);
         }
 
         private int _thirdPlacesGoal;
 
         public int ThirdPlacesGoal {
             get => _thirdPlacesGoal;
-            set {
-                if (Equals(value, _thirdPlacesGoal)) return;
-                _thirdPlacesGoal = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _thirdPlacesGoal);
         }
 
         private int[] _championshipPointsPerPlace;
 
         public int[] ChampionshipPointsPerPlace {
             get => _championshipPointsPerPlace;
-            set {
-                if (Equals(value, _championshipPointsPerPlace)) return;
-                _championshipPointsPerPlace = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipPointsPerPlace);
         }
 
         private KunosCareerObject _nextCareerObject;
 
         public KunosCareerObject NextCareerObject {
             get => _nextCareerObject;
-            set {
-                if (Equals(value, _nextCareerObject)) return;
-                _nextCareerObject = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _nextCareerObject);
         }
         #endregion
 
@@ -383,11 +327,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsAvailable {
             get => _isAvailable;
-            set {
-                if (Equals(value, _isAvailable)) return;
-                _isAvailable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isAvailable);
         }
 
         private int _completedEvents;
@@ -408,88 +348,56 @@ namespace AcManager.Tools.Objects {
 
         public int FirstPlaces {
             get => _firstPlaces;
-            set {
-                if (Equals(value, _firstPlaces)) return;
-                _firstPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _firstPlaces);
         }
 
         private int _secondPlaces;
 
         public int SecondPlaces {
             get => _secondPlaces;
-            set {
-                if (Equals(value, _secondPlaces)) return;
-                _secondPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _secondPlaces);
         }
 
         private int _thirdPlaces;
 
         public int ThirdPlaces {
             get => _thirdPlaces;
-            set {
-                if (Equals(value, _thirdPlaces)) return;
-                _thirdPlaces = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _thirdPlaces);
         }
 
         private int _firstPlacesNeeded;
 
         public int FirstPlacesNeeded {
             get => _firstPlacesNeeded;
-            set {
-                if (Equals(value, _firstPlacesNeeded)) return;
-                _firstPlacesNeeded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _firstPlacesNeeded);
         }
 
         private int _secondPlacesNeeded;
 
         public int SecondPlacesNeeded {
             get => _secondPlacesNeeded;
-            set {
-                if (Equals(value, _secondPlacesNeeded)) return;
-                _secondPlacesNeeded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _secondPlacesNeeded);
         }
 
         private int _thirdPlacesNeeded;
 
         public int ThirdPlacesNeeded {
             get => _thirdPlacesNeeded;
-            set {
-                if (Equals(value, _thirdPlacesNeeded)) return;
-                _thirdPlacesNeeded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _thirdPlacesNeeded);
         }
 
         private int _championshipPointsNeeded;
 
         public int ChampionshipPointsNeeded {
             get => _championshipPointsNeeded;
-            set {
-                if (Equals(value, _championshipPointsNeeded)) return;
-                _championshipPointsNeeded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipPointsNeeded);
         }
 
         private bool _isCompleted;
 
         public bool IsCompleted {
             get => _isCompleted;
-            set {
-                if (Equals(value, _isCompleted)) return;
-                _isCompleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isCompleted);
         }
 
         private long _lastSelectedTimestamp;
@@ -539,11 +447,7 @@ namespace AcManager.Tools.Objects {
 
         public int ChampionshipPlace {
             get => _championshipPlace;
-            set {
-                if (Equals(value, _championshipPlace)) return;
-                _championshipPlace = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _championshipPlace);
         }
         #endregion
 

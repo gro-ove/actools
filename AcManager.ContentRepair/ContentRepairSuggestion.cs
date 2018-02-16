@@ -105,22 +105,14 @@ namespace AcManager.ContentRepair {
 
         public bool IsHidden {
             get => _isHidden;
-            set {
-                if (Equals(value, _isHidden)) return;
-                _isHidden = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isHidden);
         }
 
         private bool _isSolved;
 
         public bool IsSolved {
             get => _isSolved;
-            set {
-                if (Equals(value, _isSolved)) return;
-                _isSolved = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isSolved);
         }
 
         private DelegateCommand _hideCommand;

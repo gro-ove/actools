@@ -385,11 +385,7 @@ namespace AcManager.Pages.Drive {
 
             public bool HasChildren {
                 get => _hasChildren;
-                set {
-                    if (Equals(value, _hasChildren)) return;
-                    _hasChildren = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _hasChildren);
             }
 
             public BetterObservableCollection<CarObject> TunableVersions { get; } = new BetterObservableCollection<CarObject>();
@@ -439,11 +435,7 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public List<ContentRepairSuggestion> SelectedCarRepairSuggestions {
                 get => _selectedCarRepairSuggestions;
-                set {
-                    if (Equals(value, _selectedCarRepairSuggestions)) return;
-                    _selectedCarRepairSuggestions = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedCarRepairSuggestions);
             }
 
             private DelegateCommand _repairCarCommand;

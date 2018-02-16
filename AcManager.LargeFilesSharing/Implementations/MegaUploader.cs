@@ -65,11 +65,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
         private string _userPassword;
         public string UserPassword {
             get => _userPassword;
-            set {
-                if (Equals(value, _userPassword)) return;
-                _userPassword = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _userPassword);
         }
 
         public override async Task SignInAsync(CancellationToken cancellation) {

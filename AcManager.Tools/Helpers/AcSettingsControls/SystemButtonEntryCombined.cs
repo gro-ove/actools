@@ -60,11 +60,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         [CanBeNull]
         public string DisplayFixedValue {
             get => _displayFixedValue;
-            private set {
-                if (value == _displayFixedValue) return;
-                _displayFixedValue = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _displayFixedValue);
         }
 
         [NotNull]

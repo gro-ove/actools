@@ -58,11 +58,7 @@ namespace AcManager.Tools.Objects {
 
         public string ConfigName {
             get { return _configName; }
-            set {
-                if (Equals(value, _configName)) return;
-                _configName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _configName);
         }
 
         private bool _isEnabled;
@@ -108,11 +104,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsOpen {
             get { return _isOpen; }
-            set {
-                if (Equals(value, _isOpen)) return;
-                _isOpen = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isOpen);
         }
 
         public bool IsClosable { get; }
@@ -219,33 +211,21 @@ namespace AcManager.Tools.Objects {
 
         public bool LimitByTime {
             get { return _limitByTime; }
-            set {
-                if (Equals(value, _limitByTime)) return;
-                _limitByTime = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _limitByTime);
         }
 
         private bool _extraLap;
 
         public bool ExtraLap {
             get { return _extraLap; }
-            set {
-                if (Equals(value, _extraLap)) return;
-                _extraLap = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _extraLap);
         }
 
         private bool _mandatoryPit;
 
         public bool MandatoryPit {
             get { return _mandatoryPit; }
-            set {
-                if (Equals(value, _mandatoryPit)) return;
-                _mandatoryPit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _mandatoryPit);
         }
 
         private int _mandatoryPitFrom;
@@ -282,66 +262,42 @@ namespace AcManager.Tools.Objects {
 
         public int ReversedGridRacePositions {
             get { return _reversedGridRacePositions; }
-            set {
-                if (Equals(value, _reversedGridRacePositions)) return;
-                _reversedGridRacePositions = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _reversedGridRacePositions);
         }
 
         private int _lapsCount;
 
         public int LapsCount {
             get { return _lapsCount; }
-            set {
-                if (Equals(value, _lapsCount)) return;
-                _lapsCount = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _lapsCount);
         }
 
         private TimeSpan _waitTime;
 
         public TimeSpan WaitTime {
             get { return _waitTime; }
-            set {
-                if (Equals(value, _waitTime)) return;
-                _waitTime = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _waitTime);
         }
 
         private ServerPresetRaceJoinType _joinType;
 
         public ServerPresetRaceJoinType JoinType {
             get { return _joinType; }
-            set {
-                if (Equals(value, _joinType)) return;
-                _joinType = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _joinType);
         }
 
         private TimeSpan _resultScreenTime;
 
         public TimeSpan ResultScreenTime {
             get { return _resultScreenTime; }
-            set {
-                if (Equals(value, _resultScreenTime)) return;
-                _resultScreenTime = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _resultScreenTime);
         }
 
         private TimeSpan _raceOverTime;
 
         public TimeSpan RaceOverTime {
             get => _raceOverTime;
-            set {
-                if (Equals(value, _raceOverTime)) return;
-                _raceOverTime = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _raceOverTime);
         }
     }
 }

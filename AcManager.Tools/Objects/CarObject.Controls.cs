@@ -44,11 +44,7 @@ namespace AcManager.Tools.Objects {
 
                 return _currentControlsPresetName;
             }
-            private set {
-                if (value == _currentControlsPresetName) return;
-                _currentControlsPresetName = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _currentControlsPresetName);
         }
 
         private string _controlsPresetFilename;
@@ -80,7 +76,7 @@ namespace AcManager.Tools.Objects {
             get => null;
             set {
                 if (value is ISavedPresetEntry entry) {
-                    ControlsPresetFilename = entry.Filename;
+                    ControlsPresetFilename = entry.VirtualFilename;
                 }
             }
         }

@@ -167,33 +167,21 @@ namespace AcManager.Tools.Managers.Online {
 
             public int Total {
                 get => _total;
-                set {
-                    if (value == _total) return;
-                    _total = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _total);
             }
 
             private int _available;
 
             public int Available {
                 get => _available;
-                set {
-                    if (value == _available) return;
-                    _available = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _available);
             }
 
             private bool _isAvailable;
 
             public bool IsAvailable {
                 get => _isAvailable && CarExists;
-                set {
-                    if (Equals(value, _isAvailable)) return;
-                    _isAvailable = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isAvailable);
             }
 
             public override string DisplayName {

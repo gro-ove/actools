@@ -46,7 +46,7 @@ namespace AcManager.CustomShowroom {
             [JsonProperty("asb")]
             public double AmbientShadowBrightness = 200d;
 
-            public int AmbientShadowIterations = 8000;
+            public int AmbientShadowIterations = 3000;
             public bool AmbientShadowHideWheels;
             public bool AmbientShadowFade = true;
 
@@ -175,33 +175,21 @@ namespace AcManager.CustomShowroom {
 
         public bool PoissonSampling {
             get => _poissonSampling;
-            set {
-                if (Equals(value, _poissonSampling)) return;
-                _poissonSampling = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _poissonSampling);
         }
 
         private bool _extraBlur;
 
         public bool ExtraBlur {
             get => _extraBlur;
-            set {
-                if (Equals(value, _extraBlur)) return;
-                _extraBlur = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _extraBlur);
         }
 
         private float _upDelta = 0.05f;
 
         public float UpDelta {
             get => _upDelta;
-            set {
-                if (Equals(value, _upDelta)) return;
-                _upDelta = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _upDelta);
         }
 
         private float _bodyMultiplier = 0.8f;

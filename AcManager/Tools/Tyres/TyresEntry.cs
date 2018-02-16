@@ -82,11 +82,7 @@ namespace AcManager.Tools.Tyres {
         [NotNull]
         public string ShortName {
             get => _shortName;
-            set {
-                if (Equals(value, _shortName)) return;
-                _shortName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _shortName);
         }
 
         [CanBeNull]

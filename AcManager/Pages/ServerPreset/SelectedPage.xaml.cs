@@ -101,11 +101,7 @@ namespace AcManager.Pages.ServerPreset {
 
             public int MaximumCapacity {
                 get => _maximumCapacity;
-                set {
-                    if (Equals(value, _maximumCapacity)) return;
-                    _maximumCapacity = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _maximumCapacity);
             }
 
             public BetterObservableCollection<CarObject> Cars { get; }
@@ -420,11 +416,7 @@ namespace AcManager.Pages.ServerPreset {
 
             public HierarchicalItemsView PackServerPresets {
                 get => _packServerPresets;
-                set {
-                    if (Equals(value, _packServerPresets)) return;
-                    _packServerPresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _packServerPresets);
             }
 
             public void InitializePackServerPresets() {

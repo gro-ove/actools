@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -21,10 +20,11 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.CustomShowroom {
-    public class BakedShadowsRendererViewModel : INotifyPropertyChanged, IUserPresetable {
+    public class BakedShadowsRendererViewModel : NotifyPropertyChanged, IUserPresetable {
         public static readonly string PresetableKey = "Baked Shadows";
         public static readonly PresetsCategory PresetableKeyCategory = new PresetsCategory(PresetableKey);
 
@@ -131,77 +131,49 @@ namespace AcManager.CustomShowroom {
 
         public double From {
             get => _from;
-            set {
-                if (Equals(value, _from)) return;
-                _from = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _from);
         }
 
         private double _to = 60;
 
         public double To {
             get => _to;
-            set {
-                if (Equals(value, _to)) return;
-                _to = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _to);
         }
 
         private double _brightness = 220;
 
         public double Brightness {
             get => _brightness;
-            set {
-                if (Equals(value, _brightness)) return;
-                _brightness = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _brightness);
         }
 
         private double _gamma = 60;
 
         public double Gamma {
             get => _gamma;
-            set {
-                if (Equals(value, _gamma)) return;
-                _gamma = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _gamma);
         }
 
         private double _ambient;
 
         public double Ambient {
             get => _ambient;
-            set {
-                if (Equals(value, _ambient)) return;
-                _ambient = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _ambient);
         }
 
         private double _shadowBiasCullFront;
 
         public double ShadowBiasCullFront {
             get => _shadowBiasCullFront;
-            set {
-                if (Equals(value, _shadowBiasCullFront)) return;
-                _shadowBiasCullFront = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _shadowBiasCullFront);
         }
 
         private double _shadowBiasCullBack;
 
         public double ShadowBiasCullBack {
             get => _shadowBiasCullBack;
-            set {
-                if (Equals(value, _shadowBiasCullBack)) return;
-                _shadowBiasCullBack = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _shadowBiasCullBack);
         }
 
         private int _iterations = 5000;
@@ -244,11 +216,7 @@ namespace AcManager.CustomShowroom {
 
         public bool UseFxaa {
             get => _useFxaa;
-            set {
-                if (Equals(value, _useFxaa)) return;
-                _useFxaa = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _useFxaa);
         }
 
         private int _shadowMapSize;
@@ -462,16 +430,12 @@ namespace AcManager.CustomShowroom {
         }
         #endregion
 
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-
         [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        protected override void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+            base.OnPropertyChanged(propertyName);
             if (_saveable.SaveLater()) {
                 Changed?.Invoke(this, EventArgs.Empty);
             }
         }
-        #endregion
     }
 }

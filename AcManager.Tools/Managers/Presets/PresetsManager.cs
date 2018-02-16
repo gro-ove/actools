@@ -92,9 +92,14 @@ namespace AcManager.Tools.Managers.Presets {
         private IEnumerable<ISavedPresetEntry> GetDataPresets(PresetsCategory category) {
             if (category.DirectoryName.IndexOf(':') != -1) return new BuiltInPresetEntry[0];
             var directory = FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.BuiltInPresets, category.DirectoryName);
-            Logging.Debug(directory);
+            var virtualDirectory = GetDirectory(category);
             return FileUtils.GetFilesRecursive(directory, @"*" + category.Extension)
-                            .Select(x => new SavedPresetEntry(directory, category.Extension, x))
+                            .TryToSelect(x => {
+                                var relative = FileUtils.GetPathWithin(x, directory);
+                                return relative == null
+                                        ? throw new Exception($"Can’t find relative path from “{x}” to “{directory}”")
+                                        : new DataBuiltInPresetEntry(virtualDirectory, category.Extension, Path.Combine(virtualDirectory, relative), x);
+                            }, e => Logging.Error(e))
                             .ToList<ISavedPresetEntry>();
         }
 
@@ -103,11 +108,11 @@ namespace AcManager.Tools.Managers.Presets {
         }
 
         public bool HasBuiltInPreset(PresetsCategory category, string filename) {
-            return _builtInPresets.GetValueOrDefault(category)?.Any(x => FileUtils.ArePathsEqual(x.Filename, filename)) == true;
+            return _builtInPresets.GetValueOrDefault(category)?.Any(x => FileUtils.ArePathsEqual(x.VirtualFilename, filename)) == true;
         }
 
         public ISavedPresetEntry GetBuiltInPreset(PresetsCategory category, string filename) {
-            return _builtInPresets.GetValueOrDefault(category)?.FirstOrDefault(x => FileUtils.ArePathsEqual(x.Filename, filename));
+            return _builtInPresets.GetValueOrDefault(category)?.FirstOrDefault(x => FileUtils.ArePathsEqual(x.VirtualFilename, filename));
         }
 
         public void RegisterBuiltInPreset(byte[] data, PresetsCategory category, params string[] localFilename) {
@@ -130,7 +135,7 @@ namespace AcManager.Tools.Managers.Presets {
                                      .Select(x => new SavedPresetEntry(directory, category.Extension, x))
                                      .ToList<ISavedPresetEntry>();
             return filesList.Concat(GetBuiltInPresets(category)
-                                       .Where(x => filesList.All(y => x.Filename != y.Filename))).OrderBy(x => x.Filename);
+                                       .Where(x => filesList.All(y => x.VirtualFilename != y.VirtualFilename))).OrderBy(x => x.VirtualFilename);
         }
 
         public static event EventHandler<PresetSavedEventArgs> PresetSaved;

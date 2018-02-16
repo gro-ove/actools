@@ -239,11 +239,7 @@ namespace AcManager.Pages.Selected {
 
             public double? RatioMaxSpeed {
                 get { return _ratioMaxSpeed; }
-                set {
-                    if (Equals(value, _ratioMaxSpeed)) return;
-                    _ratioMaxSpeed = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _ratioMaxSpeed);
             }
 
             private DelegateCommand _resetCommand;
@@ -329,11 +325,7 @@ namespace AcManager.Pages.Selected {
 
         public bool IsLoaded {
             get => _isLoaded;
-            set {
-                if (Equals(value, _isLoaded)) return;
-                _isLoaded = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isLoaded);
         }
 
         private async Task EnsureLoaded() {

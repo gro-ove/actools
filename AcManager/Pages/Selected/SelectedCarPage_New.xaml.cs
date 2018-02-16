@@ -219,38 +219,22 @@ namespace AcManager.Pages.Selected {
             #region Presets
             public HierarchicalItemsView ShowroomPresets {
                 get => _showroomPresets;
-                set {
-                    if (Equals(value, _showroomPresets)) return;
-                    _showroomPresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _showroomPresets);
             }
 
             public HierarchicalItemsView CustomShowroomPresets {
                 get => _customShowroomPresets;
-                set {
-                    if (Equals(value, _customShowroomPresets)) return;
-                    _customShowroomPresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _customShowroomPresets);
             }
 
             public HierarchicalItemsView UpdatePreviewsPresets {
                 get => _updatePreviewsPresets;
-                set {
-                    if (Equals(value, _updatePreviewsPresets)) return;
-                    _updatePreviewsPresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _updatePreviewsPresets);
             }
 
             public HierarchicalItemsView QuickDrivePresets {
                 get => _quickDrivePresets;
-                set {
-                    if (Equals(value, _quickDrivePresets)) return;
-                    _quickDrivePresets = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _quickDrivePresets);
             }
 
             private HierarchicalItemsView _showroomPresets, _customShowroomPresets, _updatePreviewsPresets, _quickDrivePresets;
@@ -259,7 +243,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
                     ShowroomPresets = _helper.Create(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue), p => {
-                        CarOpenInShowroomDialog.RunPreset(p.Filename, SelectedObject, SelectedObject.SelectedSkin?.Id);
+                        CarOpenInShowroomDialog.RunPreset(p.VirtualFilename, SelectedObject, SelectedObject.SelectedSkin?.Id);
                     });
                 }
             }
@@ -267,7 +251,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeCustomShowroomPresets() {
                 if (CustomShowroomPresets == null) {
                     CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue), p => {
-                        CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.Filename);
+                        CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.VirtualFilename);
                     });
                 }
             }
@@ -275,7 +259,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.Filename).Forget();
+                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Forget();
                     });
                 }
             }
@@ -285,7 +269,7 @@ namespace AcManager.Pages.Selected {
                     UpdatePreviewsPresets = _helper.Create(new PresetsCategory(
                             SettingsHolder.CustomShowroom.CustomShowroomPreviews
                                     ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
-                            p => new ToUpdatePreview(SelectedObject).Run(p.Filename));
+                            p => new ToUpdatePreview(SelectedObject).Run(p.VirtualFilename));
                 }
             }
             #endregion

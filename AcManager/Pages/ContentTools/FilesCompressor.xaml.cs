@@ -56,11 +56,7 @@ namespace AcManager.Pages.ContentTools {
 
             public long CompressedSize {
                 get => _compressedSize;
-                set {
-                    if (value == _compressedSize) return;
-                    _compressedSize = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _compressedSize);
             }
 
             public double Ratio => _isCompressed ? (double)CompressedSize / FileInfo.Length : 1d;
@@ -69,11 +65,7 @@ namespace AcManager.Pages.ContentTools {
 
             public bool IsCompressed {
                 get => _isCompressed;
-                private set {
-                    if (Equals(value, _isCompressed)) return;
-                    _isCompressed = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _isCompressed);
             }
 
             public string Id { get; }
@@ -244,22 +236,14 @@ namespace AcManager.Pages.ContentTools {
 
         public long TotalSize {
             get => _totalSize;
-            private set {
-                if (Equals(value, _totalSize)) return;
-                _totalSize = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _totalSize);
         }
 
         private long _compressedSize;
 
         public long CompressedSize {
             get => _compressedSize;
-            private set {
-                if (Equals(value, _compressedSize)) return;
-                _compressedSize = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _compressedSize);
         }
 
         private int _compressedCount;
@@ -290,22 +274,14 @@ namespace AcManager.Pages.ContentTools {
 
         public double TotalRatio {
             get => _totalRatio;
-            private set {
-                if (Equals(value, _totalRatio)) return;
-                _totalRatio = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _totalRatio);
         }
 
         private PlotModel _plotModel;
 
         public PlotModel PlotModel {
             get => _plotModel;
-            private set {
-                if (Equals(value, _plotModel)) return;
-                _plotModel = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _plotModel);
         }
 
         private OxyColor ToOxyColor(string key) {

@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Dialogs {
-    public partial class WaitingDialog : INotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
+    public partial class WaitingDialog : IInvokingNotifyPropertyChanged, IProgress<string>, IProgress<double?>, IProgress<Tuple<string, double?>>,
             IProgress<AsyncProgressEntry>, IDisposable, IProgress<double> {
         public static WaitingDialog Create(string reportValue) {
             var w = new WaitingDialog();
@@ -24,22 +25,14 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public string Message {
             get => _message;
-            private set {
-                if (Equals(value, _message)) return;
-                _message = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _message);
         }
 
         private string _details;
 
         public string Details {
             get => _details;
-            private set {
-                if (Equals(value, _details)) return;
-                _details = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _details);
         }
 
         public void SetMultiline(bool multiline) {
@@ -75,33 +68,21 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public double? Progress {
             get => _progress;
-            private set {
-                if (Equals(value, _progress)) return;
-                _progress = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _progress);
         }
 
         private bool _progressIndetermitate;
 
         public bool ProgressIndetermitate {
             get => _progressIndetermitate;
-            private set {
-                if (Equals(value, _progressIndetermitate)) return;
-                _progressIndetermitate = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _progressIndetermitate);
         }
 
         private bool _isCancelled;
 
         public bool IsCancelled {
             get => _isCancelled;
-            private set {
-                if (Equals(value, _isCancelled)) return;
-                _isCancelled = value;
-                OnPropertyChanged();
-            }
+            private set => this.Apply(value, ref _isCancelled);
         }
 
         public WaitingDialog(string title = null, string reportValue = null) {
@@ -345,6 +326,10 @@ namespace FirstFloor.ModernUI.Dialogs {
         [NotifyPropertyChangedInvocator]
         private void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

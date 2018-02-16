@@ -206,11 +206,7 @@ namespace AcManager.CustomShowroom {
 
             public string OriginalValue {
                 get => _originalValue;
-                private set {
-                    if (Equals(value, _originalValue)) return;
-                    _originalValue = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _originalValue);
             }
 
             protected override void ApplyOverride() {
@@ -307,22 +303,14 @@ namespace AcManager.CustomShowroom {
             [CanBeNull]
             public Kn5Material Material {
                 get => _material;
-                set {
-                    if (Equals(value, _material)) return;
-                    _material = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _material);
             }
 
             private string _usedFor;
 
             public string UsedFor {
                 get => _usedFor;
-                set {
-                    if (Equals(value, _usedFor)) return;
-                    _usedFor = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _usedFor);
             }
 
             public bool IsForkAvailable { get; }
@@ -333,11 +321,7 @@ namespace AcManager.CustomShowroom {
 
             public bool IsChanged {
                 get => _isChanged;
-                set {
-                    if (value == _isChanged) return;
-                    _isChanged = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _isChanged);
             }
 
             private MaterialAlphaMode _originalAlphaMode;

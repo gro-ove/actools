@@ -13,11 +13,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public sealed override string DisplayName {
             get => _displayName;
-            set {
-                if (value == _displayName) return;
-                _displayName = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _displayName);
         }
 
         public UpdateOption(string name) {
@@ -40,11 +36,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         public bool Enabled {
             get => _enabled;
-            set {
-                if (Equals(value, _enabled)) return;
-                _enabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _enabled);
         }
 
         public override string ToString() {

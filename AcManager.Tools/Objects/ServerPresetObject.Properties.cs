@@ -281,11 +281,7 @@ namespace AcManager.Tools.Objects {
 
         public bool WelcomeMessageMissing {
             get => _welcomeMessageMissing;
-            set {
-                if (Equals(value, _welcomeMessageMissing)) return;
-                _welcomeMessageMissing = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _welcomeMessageMissing);
         }
 
         private bool _loopMode;
@@ -725,11 +721,7 @@ namespace AcManager.Tools.Objects {
 
         public Game.TrackProperties TrackProperties {
             get => _trackProperties;
-            set {
-                if (Equals(value, _trackProperties)) return;
-                _trackProperties = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _trackProperties);
         }
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;

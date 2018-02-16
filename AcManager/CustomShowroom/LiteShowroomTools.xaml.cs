@@ -115,7 +115,7 @@ namespace AcManager.CustomShowroom {
                 } else {
                     saveable.Initialize(true);
                     UserPresetsControl.CurrentUserPreset =
-                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.Filename == _loadPreset);
+                            UserPresetsControl.SavedPresets.FirstOrDefault(x => x.VirtualFilename == _loadPreset);
                 }
             }
 
@@ -265,11 +265,7 @@ namespace AcManager.CustomShowroom {
             [CanBeNull]
             public AmbientShadowViewModel AmbientShadow {
                 get => _ambientShadow;
-                private set {
-                    if (Equals(value, _ambientShadow)) return;
-                    _ambientShadow = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _ambientShadow);
             }
 
             // Not always renderer is the Dark one
@@ -282,22 +278,14 @@ namespace AcManager.CustomShowroom {
             [CanBeNull]
             public DarkRendererSettings Settings {
                 get => _settings;
-                private set {
-                    if (Equals(value, _settings)) return;
-                    _settings = value;
-                    OnPropertyChanged();
-                }
+                private set => Apply(value, ref _settings);
             }
 
             private DarkRendererCars _cars;
 
             public DarkRendererCars Cars {
                 get => _cars;
-                set {
-                    if (Equals(value, _cars)) return;
-                    _cars = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _cars);
             }
 
             private DelegateCommand _addCarCommand;
@@ -780,11 +768,7 @@ namespace AcManager.CustomShowroom {
 
             public int SelectedObjectTrianglesCount {
                 get => _selectedObjectTrianglesCount;
-                set {
-                    if (Equals(value, _selectedObjectTrianglesCount)) return;
-                    _selectedObjectTrianglesCount = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _selectedObjectTrianglesCount);
             }
 
             private void OnRendererPropertyChanged(object sender, PropertyChangedEventArgs e) {

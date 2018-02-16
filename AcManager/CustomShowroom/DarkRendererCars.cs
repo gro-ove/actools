@@ -35,11 +35,7 @@ namespace AcManager.CustomShowroom {
 
         public bool MainCar {
             get { return _mainCar; }
-            set {
-                if (Equals(value, _mainCar)) return;
-                _mainCar = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _mainCar);
         }
 
         private CarObject _car;
@@ -47,11 +43,7 @@ namespace AcManager.CustomShowroom {
         [CanBeNull]
         public CarObject Car {
             get { return _car; }
-            set {
-                if (Equals(value, _car)) return;
-                _car = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _car);
         }
 
         private CarSkinObject _skin;
@@ -119,11 +111,7 @@ namespace AcManager.CustomShowroom {
 
         public bool IsDeleted {
             get { return _isDeleted; }
-            set {
-                if (Equals(value, _isDeleted)) return;
-                _isDeleted = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isDeleted);
         }
 
         private DelegateCommand _deleteCommand;

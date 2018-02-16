@@ -10,11 +10,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool AllowUnsupportedDx10 {
             get { return _allowUnsupportedDx10; }
-            set {
-                if (Equals(value, _allowUnsupportedDx10)) return;
-                _allowUnsupportedDx10 = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _allowUnsupportedDx10);
         }
 
         private int _mipLodBias;

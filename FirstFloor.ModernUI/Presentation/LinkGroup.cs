@@ -88,11 +88,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public bool IsShown {
             get => _isShown;
-            set {
-                if (Equals(value, _isShown)) return;
-                _isShown = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isShown);
         }
     }
 }

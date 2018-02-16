@@ -15,11 +15,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public int Pinged {
             get { return _pinged; }
-            set {
-                if (Equals(value, _pinged)) return;
-                _pinged = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _pinged);
         }
 
         public bool PingingInProcess => _currentPinging != null;

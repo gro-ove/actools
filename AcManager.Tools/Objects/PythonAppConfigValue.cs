@@ -42,11 +42,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsEnabled {
             get => _isEnabled;
-            set {
-                if (Equals(value, _isEnabled)) return;
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isEnabled);
         }
 
         public string AppDirectory { get; private set; }
@@ -138,11 +134,7 @@ namespace AcManager.Tools.Objects {
 
         public bool IsResettable {
             get => _isResettable;
-            set {
-                if (value == _isResettable) return;
-                _isResettable = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isResettable);
         }
 
         private DelegateCommand _resetCommand;

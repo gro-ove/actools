@@ -204,11 +204,7 @@ namespace AcManager.Tools.Profile {
         [CanBeNull]
         public SessionStats Last {
             get => _last;
-            private set {
-                if (Equals(value, _last)) return;
-                _last = value;
-                OnPropertyChanged();
-            }
+            private set => Apply(value, ref _last);
         }
 
         private PlayerStatsManager() {

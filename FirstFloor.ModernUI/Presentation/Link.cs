@@ -8,33 +8,21 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public bool IsEnabled {
             get => _isEnabled;
-            set {
-                if (Equals(value, _isEnabled)) return;
-                _isEnabled = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isEnabled);
         }
 
         private bool _isNew;
 
         public bool IsNew {
             get => _isNew;
-            set {
-                if (Equals(value, _isNew)) return;
-                _isNew = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isNew);
         }
 
         private bool _isShown = true;
 
         public bool IsShown {
             get => _isShown;
-            set {
-                if (Equals(value, _isShown)) return;
-                _isShown = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isShown);
         }
 
         public void SetNew(bool isNew) {

@@ -406,6 +406,8 @@
     <Compile Include="Managers\Plugins\PluginEventArgs.cs" />
     <Compile Include="Managers\Plugins\PluginEventHandler.cs" />
     <Compile Include="Managers\Plugins\PluginsRequirement.cs" />
+    <Compile Include="Managers\Presets\DataBuiltInPresetEntry.cs" />
+    <Compile Include="Managers\Presets\SavedPresetEntryExtension.cs" />
     <Compile Include="Managers\ServerSavedDriver.cs" />
     <Compile Include="Managers\TrackSkinsManager.cs" />
     <Compile Include="Managers\TrueTypeFontsManager.cs" />

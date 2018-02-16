@@ -41,11 +41,7 @@ namespace AcManager.Controls {
 
         public string DisplayApply {
             get => _displayApply;
-            protected set {
-                if (value == _displayApply) return;
-                _displayApply = value;
-                OnPropertyChanged();
-            }
+            protected set => Apply(value, ref _displayApply);
         }
 
         protected BatchAction(string displayName, string description, string groupPath, [CanBeNull] string paramsTemplateKey) {

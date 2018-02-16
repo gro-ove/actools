@@ -69,11 +69,7 @@ namespace AcManager.Pages.Miscellaneous {
 
             public double Columns {
                 get { return _columns; }
-                set {
-                    if (Equals(value, _columns)) return;
-                    _columns = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _columns);
             }
         }
 

@@ -59,11 +59,7 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public string Name {
             get => _name;
-            set {
-                if (value == _name) return;
-                _name = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _name);
         }
 
         public string DisplaySize => LocalizationHelper.ToReadableSize(_size);
@@ -116,47 +112,27 @@ namespace AcManager.Tools.Managers.Plugins {
 
         public string Description {
             get => _description;
-            set {
-                if (value == _description) return;
-                _description = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _description);
         }
 
         public bool IsRecommended {
             get => _isRecommended ?? (_isRecommended = Id != "Awesomium" && Id != "VLC").Value;
-            set {
-                if (Equals(value, _isRecommended)) return;
-                _isRecommended = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isRecommended);
         }
 
         public bool IsHidden {
             get => _hidden;
-            set {
-                if (Equals(value, _hidden)) return;
-                _hidden = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _hidden);
         }
 
         public string Version {
             get => _version;
-            set {
-                if (value == _version) return;
-                _version = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _version);
         }
 
         public string Platform {
             get => _platform;
-            set {
-                if (value == _platform) return;
-                _platform = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _platform);
         }
 
         public bool PlatformFits => _platform == null || _platform == BuildInformation.Platform;

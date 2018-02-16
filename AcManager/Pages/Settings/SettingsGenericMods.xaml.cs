@@ -30,22 +30,14 @@ namespace AcManager.Pages.Settings {
 
             public string ModsDirectory {
                 get => _modsDirectory;
-                set {
-                    if (Equals(value, _modsDirectory)) return;
-                    _modsDirectory = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _modsDirectory);
             }
 
             private bool _modsDirectoryWrong;
 
             public bool ModsDirectoryWrong {
                 get => _modsDirectoryWrong;
-                set {
-                    if (Equals(value, _modsDirectoryWrong)) return;
-                    _modsDirectoryWrong = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _modsDirectoryWrong);
             }
 
             private void UpdateDirectory() {

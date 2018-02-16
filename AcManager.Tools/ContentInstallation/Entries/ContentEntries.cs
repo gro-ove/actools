@@ -47,22 +47,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool SingleEntry {
             get => _singleEntry;
-            set {
-                if (Equals(value, _singleEntry)) return;
-                _singleEntry = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _singleEntry);
         }
 
         private bool _installAsGenericMod;
 
         public bool InstallAsGenericMod {
             get => _installAsGenericMod;
-            set {
-                if (Equals(value, _installAsGenericMod)) return;
-                _installAsGenericMod = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _installAsGenericMod);
         }
 
         public bool GenericModSupported => GenericModSupportedByDesign && _installationParams?.CupType.HasValue != true;
@@ -87,11 +79,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool InstallEntry {
             get => _installEntry;
-            set {
-                if (Equals(value, _installEntry)) return;
-                _installEntry = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _installEntry);
         }
 
         private void InitializeOptions() {
@@ -214,22 +202,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool Active {
             get => _active;
-            set {
-                if (Equals(value, _active)) return;
-                _active = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _active);
         }
 
         private bool _noConflictMode;
 
         public bool NoConflictMode {
             get => _noConflictMode;
-            set {
-                if (value == _noConflictMode) return;
-                _noConflictMode = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _noConflictMode);
         }
 
         public async Task CheckExistingAsync() {
@@ -278,22 +258,14 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         public bool IsNewer {
             get => _isNewer;
-            set {
-                if (value == _isNewer) return;
-                _isNewer = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isNewer);
         }
 
         private bool _isOlder;
 
         public bool IsOlder {
             get => _isOlder;
-            set {
-                if (value == _isOlder) return;
-                _isOlder = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isOlder);
         }
 
         public string DisplayName => IsNew ? GetNew(Name) : GetExisting(ExistingName ?? Name);

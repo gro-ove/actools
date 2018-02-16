@@ -66,11 +66,7 @@ namespace AcManager.Tools.Objects {
 
         public bool Changed {
             get => _changed;
-            set {
-                if (Equals(value, _changed)) return;
-                _changed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _changed);
         }
 
         private void OnValuePropertyChanged(object sender, PropertyChangedEventArgs e) {

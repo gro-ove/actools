@@ -66,11 +66,7 @@ namespace AcManager.Pages.Settings {
 
             public bool DiscordRestartRequired {
                 get => _discordRestartRequired;
-                set {
-                    if (Equals(value, _discordRestartRequired)) return;
-                    _discordRestartRequired = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value, ref _discordRestartRequired);
             }
 
             private DelegateCommand _restartCommand;

@@ -66,11 +66,7 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public ErrorInformation Error {
             get { return _error; }
-            set {
-                if (Equals(value, _error)) return;
-                _error = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _error);
         }
 
         private void UpdateStatus() {

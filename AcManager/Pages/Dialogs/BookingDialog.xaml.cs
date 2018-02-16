@@ -9,11 +9,12 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class BookingDialog : IBookingUi, INotifyPropertyChanged {
+    public partial class BookingDialog : IBookingUi, IInvokingNotifyPropertyChanged {
         public ServerEntry ServerEntry { get; private set; }
 
         private CarObject _car;
@@ -21,11 +22,7 @@ namespace AcManager.Pages.Dialogs {
         [CanBeNull]
         public CarObject Car {
             get => _car;
-            set {
-                if (Equals(value, _car)) return;
-                _car = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _car);
         }
 
         private bool _ignoreSkinChange;
@@ -54,11 +51,7 @@ namespace AcManager.Pages.Dialogs {
         [CanBeNull]
         public TrackObjectBase Track {
             get => _track;
-            set {
-                if (Equals(value, _track)) return;
-                _track = value;
-                OnPropertyChanged();
-            }
+            set => this.Apply(value, ref _track);
         }
 
         private readonly CancellationTokenSource _cancellationSource;
@@ -168,6 +161,10 @@ namespace AcManager.Pages.Dialogs {
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
+            OnPropertyChanged(propertyName);
         }
     }
 }

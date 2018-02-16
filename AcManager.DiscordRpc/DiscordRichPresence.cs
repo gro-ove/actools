@@ -168,11 +168,7 @@ namespace AcManager.DiscordRpc {
 
         public bool IsDisposed {
             get => _isDisposed;
-            set {
-                if (Equals(value, _isDisposed)) return;
-                _isDisposed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _isDisposed);
         }
 
         public void Dispose() {

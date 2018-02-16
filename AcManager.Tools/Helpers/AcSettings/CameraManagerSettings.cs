@@ -57,11 +57,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public Color FadeColor {
             get { return _fadeColor; }
-            set {
-                if (Equals(value, _fadeColor)) return;
-                _fadeColor = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, ref _fadeColor);
         }
 
         protected override void LoadFromIni() {
