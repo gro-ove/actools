@@ -24,7 +24,7 @@ namespace AcManager.Tools {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -2523,15 +2523,6 @@ namespace AcManager.Tools {
         public static string DirectLoader_GoogleDriveChanged {
             get {
                 return ResourceManager.GetString("DirectLoader_GoogleDriveChanged", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to RaceDepartment has changed..
-        /// </summary>
-        public static string DirectLoader_RdChanged {
-            get {
-                return ResourceManager.GetString("DirectLoader_RdChanged", resourceCulture);
             }
         }
         

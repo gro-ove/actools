@@ -564,9 +564,6 @@
   <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
     <value>Google Drive has changed.</value>
   </data>
-  <data name="DirectLoader_RdChanged" xml:space="preserve">
-    <value>RaceDepartment has changed.</value>
-  </data>
   <data name="Common_SteamIdIsMissing" xml:space="preserve">
     <value>Steam ID is missing</value>
   </data>

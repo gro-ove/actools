@@ -43,59 +43,11 @@ namespace AcManager.Tools.Helpers.Loaders {
             if (OneDriveLoader.Test(uri)) return new OneDriveLoader(uri);
             if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
             if (AcDriftingProLoader.Test(uri)) return new AcDriftingProLoader(uri);
-            if (RaceDepartmentLoader.Test(uri)) return new RaceDepartmentLoader(uri);
             if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);
             if (AdFlyLoader.Test(uri)) return new AdFlyLoader(uri);
             if (MegaLoader.Test(uri)) return new MegaLoader(uri);
             return new DirectLoader(uri);
         }
-
-        /*
-        private static string GetTemporaryName(string argument) {
-            using (var sha1 = new SHA1Managed()) {
-                var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(argument));
-                return BitConverter.ToString(hash).Replace(@"-", "").ToLower();
-            }
-        }
-
-        [ItemNotNull]
-        public static async Task<string> LoadAsync(string argument, string name = null, string extension = null, bool useCachedIfAny = false,
-                IProgress<AsyncProgressEntry> progress = null, Action<FlexibleLoaderMetaInformation> metaInformationCallback = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            var directory = SettingsHolder.Content.TemporaryFilesLocationValue;
-            if (useCachedIfAny) {
-                var fileName = name ?? $"cm_dl_{GetTemporaryName(argument)}{extension}";
-                var destination = Path.Combine(directory, fileName);
-                if (File.Exists(destination)) return destination;
-
-                var temporary = destination + ".tmp";
-                await LoadAsyncTo(argument, temporary, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
-                cancellation.ThrowIfCancellationRequested();
-
-                if (File.Exists(temporary)) {
-                    File.Move(temporary, destination);
-                    return destination;
-                }
-
-                throw new Exception("Downloaded file is missing");
-            } else {
-                string destination;
-                if (name != null) {
-                    destination = Path.Combine(directory, name);
-                    if (File.Exists(destination)) {
-                        destination = FileUtils.GetTempFileNameFixed(directory, name);
-                    }
-                } else {
-                    destination = extension == null
-                            ? FileUtils.GetTempFileName(directory)
-                            : FileUtils.GetTempFileName(directory, extension);
-                }
-
-                File.WriteAllBytes(destination, new byte[0]);
-                await LoadAsyncTo(argument, destination, progress, metaInformationCallback, cancellation).ConfigureAwait(false);
-                return destination;
-            }
-        }*/
 
         private static IWebProxy _proxy;
 

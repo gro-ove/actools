@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsContent" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:loaders="clr-namespace:AcManager.Tools.Helpers.Loaders;assembly=AcManager.Tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsContent+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -81,21 +80,6 @@
           <Label Content="Search missing content via:" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}"
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
-        </DockPanel>
-
-        <DockPanel set:Search.Include="False"
-            Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
-          <Label Content="RaceDepartment credentials:" ToolTip="Optional, default will be used if not set" Background="Transparent" />
-          <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
-            <mui:BetterTextBox Text="{Binding Holder.RdLogin}" ToolTip="Login (nickname or e-mail)" Placeholder="Login" />
-            <mui:ProperPasswordBox Password="{Binding Holder.RdPassword}" ToolTip="Password" Placeholder="Password" />
-          </mui:SpacingUniformGrid>
-        </DockPanel>
-
-        <DockPanel set:Search.Include="False"
-            Visibility="{Binding Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static loaders:RaceDepartmentLoader.OptionAllowed}}">
-          <Label Content="RaceDepartment proxy:" Background="Transparent" />
-          <mui:BetterTextBox Text="{Binding Holder.RdProxy}" Placeholder="None" />
         </DockPanel>
 
         <c:MessageBlock set:Search.Include="False">

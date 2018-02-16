@@ -199,7 +199,6 @@ namespace AcManager {
             AppArguments.Set(AppFlag.SidekickOptimalRangeThreshold, ref SidekickHelper.OptionRangeThreshold);
             AppArguments.Set(AppFlag.GoogleDriveLoaderDebugMode, ref GoogleDriveLoader.OptionDebugMode);
             AppArguments.Set(AppFlag.GoogleDriveLoaderManualRedirect, ref GoogleDriveLoader.OptionManualRedirect);
-            AppArguments.Set(AppFlag.RdLoaderAllowed, ref RaceDepartmentLoader.OptionAllowed);
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
             AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);

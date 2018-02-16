@@ -667,9 +667,6 @@ namespace AcManager.Tools.Helpers {
                             throw new ArgumentOutOfRangeException(nameof(type), type, null);
                     }
                 }, false)
-                // new MissingContentSearchEntry("AcClub (via selected search engine)", (type, id) => $"site:assettocorsa.club {id}", true),
-                // new MissingContentSearchEntry("AC Drifting Pro", (type, id) => $"http://www.acdriftingpro.com/?s={HttpUtility.UrlEncode(id)}", false),
-                // new MissingContentSearchEntry("RaceDepartment (via selected search engine)", (type, id) => $"site:racedepartment.com {id}", true),
             });
 
             private MissingContentSearchEntry _missingContentSearch;

@@ -253,44 +253,6 @@ namespace AcManager.Tools.Helpers {
             }
 
             public string TemporaryFilesLocationValue => TemporaryFilesLocation == "" ? Path.GetTempPath() : TemporaryFilesLocation;
-            private string _rdLogin;
-
-            public string RdLogin {
-                get => _rdLogin ?? (_rdLogin = ValuesStorage.GetEncrypted("Settings.ContentSettings.RdLogin", ""));
-                set {
-                    value = value.Trim();
-                    if (Equals(value, _rdLogin)) return;
-                    _rdLogin = value;
-                    ValuesStorage.SetEncrypted("Settings.ContentSettings.RdLogin", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private string _rdPassword;
-
-            public string RdPassword {
-                get => _rdPassword ?? (_rdPassword = ValuesStorage.GetEncrypted("Settings.ContentSettings.RdPassword", ""));
-                set {
-                    value = value.Trim();
-                    if (Equals(value, _rdPassword)) return;
-                    _rdPassword = value;
-                    ValuesStorage.SetEncrypted("Settings.ContentSettings.RdPassword", value);
-                    OnPropertyChanged();
-                }
-            }
-
-            private string _rdProxy;
-
-            public string RdProxy {
-                get => _rdProxy ?? (_rdProxy = ValuesStorage.Get("Settings.ContentSettings.RdProxy", ""));
-                set {
-                    value = value.Trim();
-                    if (Equals(value, _rdProxy)) return;
-                    _rdProxy = value;
-                    ValuesStorage.Set("Settings.ContentSettings.RdProxy", value);
-                    OnPropertyChanged();
-                }
-            }
 
             private string _fontIconCharacter;
 

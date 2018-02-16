@@ -362,7 +362,6 @@
     <Compile Include="Helpers\Loaders\MediaFireLoader.cs" />
     <Compile Include="Helpers\Loaders\MegaLoader.cs" />
     <Compile Include="Helpers\Loaders\OneDriveLoader.cs" />
-    <Compile Include="Helpers\Loaders\RaceDepartmentLoader.cs" />
     <Compile Include="Helpers\CustomUriRequest.cs" />
     <Compile Include="Helpers\Loaders\RedirectingLoader.cs" />
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />

@@ -247,12 +247,6 @@ namespace AcManager {
 
         /// <summary>
         /// For internal use.
-        /// Example: --rd-loader-allowed.
-        /// </summary>
-        RdLoaderAllowed,
-
-        /// <summary>
-        /// For internal use.
         /// Example: --log-packed.
         /// </summary>
         LogPacked,

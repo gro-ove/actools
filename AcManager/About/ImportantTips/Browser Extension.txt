@@ -1,7 +1,7 @@
 ﻿sid: ni6swcdi
 id: extension
 
-If you want to install setups or new content directly from your browser, I’ve just made an extension! For sites like RaceDepartment, AC Club or Assetto-DB, it will add quick car, track, skin or app installation buttons, and for sites like RSR Live Timing or The Setup Market, buttons to install setups in a couple of clicks. Also, it allows to quickly start a race from RSR website as well.
+If you want to install setups or new content directly from your browser, I’ve just made an extension! For sites like AC Club or Assetto-DB, it will add quick car, track, skin or app installation buttons, and for sites like RSR Live Timing or The Setup Market, buttons to install setups in a couple of clicks. Also, it allows to quickly start a race from RSR website as well.
 
  [img="http://i.imgur.com/nLDeGRS.png|240"]Example[/img]
 
