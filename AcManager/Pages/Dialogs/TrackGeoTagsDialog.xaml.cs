@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Input;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools;
 using AcManager.Tools.Helpers.Api;
@@ -10,6 +9,7 @@ using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class TrackGeoTagsDialog {
@@ -27,7 +27,7 @@ namespace AcManager.Pages.Dialogs {
                 CancelButton
             };
 
-            MapWebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            MapWebBrowser.SetScriptProvider(() => new JsBridge(Model));
             MapWebBrowser.StartPage = GetMapAddress(track);
 
             Model.PropertyChanged += Model_PropertyChanged;
@@ -49,13 +49,14 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class ScriptProvider : ScriptProviderBase {
+        public class JsBridge : JsBridgeBase {
             private readonly ViewModel _model;
 
-            public ScriptProvider(ViewModel model) {
+            public JsBridge(ViewModel model) {
                 _model = model;
             }
 
+            [UsedImplicitly]
             public void Update(double lat, double lng) {
                 Sync(() => {
                     _skipNext = true;
@@ -63,10 +64,6 @@ namespace AcManager.Pages.Dialogs {
                     _model.Longitude = GeoTagsEntry.ToLng(lng);
                     _skipNext = false;
                 });
-            }
-
-            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
-                return new ScriptProvider(_model);
             }
         }
 

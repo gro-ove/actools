@@ -216,7 +216,7 @@
     <Compile Include="UserControls\Web\IWebSomething.cs" />
     <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
     <Compile Include="UserControls\Web\PageLoadingEventArgs.cs" />
-    <Compile Include="UserControls\Web\ScriptProviderBase.cs" />
+    <Compile Include="UserControls\Web\JsBridgeBase.cs" />
     <Compile Include="UserControls\Web\TitleChangedEventArgs.cs" />
     <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
     <Compile Include="UserControls\Web\UrlEventArgs.cs" />

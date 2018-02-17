@@ -4,7 +4,6 @@ using System.Security.Permissions;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using AcManager.Controls;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
@@ -27,25 +26,20 @@ namespace AcManager.Pages.Dialogs {
                 CloseButton
             };
 
-            WebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            WebBrowser.SetScriptProvider(() => new JsBridge(Model));
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class ScriptProvider : ScriptProviderBase {
+        public class JsBridge : JsBridgeBase {
             private readonly ViewModel _model;
 
-            public ScriptProvider(ViewModel model) {
+            public JsBridge(ViewModel model) {
                 _model = model;
             }
 
+            [UsedImplicitly]
             public void Update(string selected) {
-                Sync(() => {
-                    _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
-                });
-            }
-
-            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
-                return new ScriptProvider(_model);
+                Sync(() => _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim());
             }
         }
 

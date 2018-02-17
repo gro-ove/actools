@@ -9,7 +9,11 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-    public abstract class ScriptProviderBase {
+    public abstract class JsBridgeBase {
+        public WebTab Tab { get; internal set; }
+
+        public virtual void PageLoaded(string url) {}
+
         protected void Sync(Action action) {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
                 try {
@@ -29,16 +33,6 @@ namespace AcManager.Controls.UserControls.Web {
                     return default(T);
                 }
             });
-        }
-
-        protected abstract ScriptProviderBase ForkForOverride(WebTab tab);
-
-        public WebTab Tab { get; private set; }
-
-        public ScriptProviderBase ForkFor(WebTab tab) {
-            var forked = ForkForOverride(tab);
-            forked.Tab = tab;
-            return forked;
         }
 
         [UsedImplicitly]

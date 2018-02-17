@@ -16,7 +16,7 @@ namespace AcManager.Controls.UserControls.Web {
         [NotNull]
         string GetUrl();
 
-        void SetScriptProvider([CanBeNull] ScriptProviderBase provider);
+        void SetJsBridge([CanBeNull] JsBridgeBase bridge);
         void SetUserAgent([NotNull] string userAgent);
         void SetStyleProvider([CanBeNull] ICustomStyleProvider provider);
         void SetNewWindowsBehavior(NewWindowsBehavior mode);

@@ -46,7 +46,7 @@ namespace AcManager.Pages.Drive {
             });
             InitializeComponent();
             Model.SetTab(WebBrowser);
-            WebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            WebBrowser.SetScriptProvider(() => new JsBridge(Model));
             WebBrowser.StyleProvider = new StyleProvider();
         }
 
@@ -365,15 +365,11 @@ namespace AcManager.Pages.Drive {
         }));
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class ScriptProvider : ScriptProviderBase {
+        public class JsBridge : JsBridgeBase {
             private readonly ViewModel _model;
 
-            public ScriptProvider(ViewModel model) {
+            public JsBridge(ViewModel model) {
                 _model = model;
-            }
-
-            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
-                return new ScriptProvider(_model);
             }
 
             [UsedImplicitly]

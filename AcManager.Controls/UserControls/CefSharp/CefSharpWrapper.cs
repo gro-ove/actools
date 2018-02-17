@@ -117,9 +117,9 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return _inner.Address;
         }
 
-        public void SetScriptProvider(ScriptProviderBase provider) {
+        public void SetJsBridge(JsBridgeBase bridge) {
             try {
-                _inner.RegisterJsObject(@"external", provider, new BindingOptions { CamelCaseJavascriptNames = false });
+                _inner.RegisterJsObject(@"external", bridge, new BindingOptions { CamelCaseJavascriptNames = false });
             } catch (Exception e) {
                 Logging.Warning(e);
             }

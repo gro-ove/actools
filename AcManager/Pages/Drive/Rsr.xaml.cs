@@ -8,7 +8,6 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Presentation;
-using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
@@ -29,6 +28,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Pages.Drive {
     public partial class Rsr {
@@ -43,7 +43,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
             InitializeComponent();
-            WebBrowser.SetScriptProvider(new ScriptProvider(Model));
+            WebBrowser.SetScriptProvider(() => new JsBridge(Model));
             WebBrowser.StyleProvider = new StyleProvider();
         }
 
@@ -266,21 +266,16 @@ namespace AcManager.Pages.Drive {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class ScriptProvider : ScriptProviderBase {
+        public class JsBridge : JsBridgeBase {
             private readonly ViewModel _model;
 
-            public ScriptProvider(ViewModel model) {
+            public JsBridge(ViewModel model) {
                 _model = model;
             }
 
+            [UsedImplicitly]
             public void SetEventId(string value) {
-                Sync(() => {
-                    _model.EventId = value;
-                });
-            }
-
-            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
-                return new ScriptProvider(_model);
+                Sync(() => _model.EventId = value);
             }
         }
 

@@ -51,8 +51,8 @@ namespace AcManager.Controls.UserControls {
             var tab = new WebTab(url);
             var something = tab.Something;
 
-            if (_scriptProvider != null) {
-                something.SetScriptProvider(_scriptProvider.ForkFor(tab));
+            if (_jsBridgeFactory != null) {
+                something.SetJsBridge(_jsBridgeFactory(tab));
             }
 
             if (UserAgent != null) {
@@ -99,13 +99,20 @@ namespace AcManager.Controls.UserControls {
             SetCurrentTab(CreateTab(e.Url));
         }
 
-        private ScriptProviderBase _scriptProvider;
+        private Func<WebTab, JsBridgeBase> _jsBridgeFactory;
 
-        public void SetScriptProvider(ScriptProviderBase provider) {
-            _scriptProvider = provider;
-            Tabs.ForEach(x => {
-                x.Something.SetScriptProvider(provider.ForkFor(x));
-            });
+        public void SetScriptProvider<T>() where T : JsBridgeBase, new() {
+            _jsBridgeFactory = tab => new T { Tab = tab };
+            Tabs.ForEach(x => x.Something.SetJsBridge(_jsBridgeFactory(x)));
+        }
+
+        public void SetScriptProvider(Func<JsBridgeBase> factory) {
+            _jsBridgeFactory = tab => {
+                var result = factory();
+                result.Tab = tab;
+                return result;
+            };
+            Tabs.ForEach(x => x.Something.SetJsBridge(_jsBridgeFactory(x)));
         }
 
         public static readonly DependencyProperty IsAddressBarVisibleProperty = DependencyProperty.Register(nameof(IsAddressBarVisible), typeof(bool),

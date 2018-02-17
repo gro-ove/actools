@@ -144,8 +144,8 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             return _inner.Source?.OriginalString ?? "";
         }
 
-        public void SetScriptProvider(ScriptProviderBase provider) {
-            _inner.ObjectForScripting = provider;
+        public void SetJsBridge(JsBridgeBase bridge) {
+            _inner.ObjectForScripting = bridge;
         }
 
         public void SetUserAgent(string userAgent) {
