@@ -140,7 +140,8 @@
 
     <Setter Property="WindowChrome.WindowChrome">
       <Setter.Value>
-        <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" />
+        <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" CaptionHeight="20" NonClientFrameEdges="None"
+            ResizeBorderThickness="4" />
       </Setter.Value>
     </Setter>
   </Style>
