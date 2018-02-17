@@ -376,9 +376,15 @@ namespace AcManager.Pages.Drive {
                 return new ScriptProvider(_model);
             }
 
+            [UsedImplicitly]
             public void SetCars(string json) {
+                Logging.Debug(json);
+
                 Sync(async () => {
-                    if (json == null || Tab == null) return;
+                    if (json == null || Tab == null) {
+                        Logging.Warning("Tab=null!");
+                        return;
+                    }
 
                     var ids = JArray.Parse(json).ToObject<string[]>();
                     Logging.Debug(ids.JoinToString("; "));
@@ -389,7 +395,10 @@ namespace AcManager.Pages.Drive {
 
                         foreach (var id in ids.NonNull()) {
                             var car = await CarsManager.Instance.GetByIdAsync(id);
-                            if (car == null) continue;
+                            if (car == null) {
+                                Logging.Warning($"Car not found: {id}");
+                                continue;
+                            }
 
                             Logging.Debug($"Car found: {car}");
                             await car.SkinsManager.EnsureLoadedAsync();
@@ -406,6 +415,10 @@ namespace AcManager.Pages.Drive {
                             }
 
                             var code = $@"
+var u = document.createElement('div');
+u.setAttribute('id', {JsonConvert.SerializeObject(id)});
+u.src = {JsonConvert.SerializeObject(skin.Location)};
+document.body.appendChild(u);
 document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='{await Tab.GetImageUrlAsync(skin.PreviewImage)}'>"";
 document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='{await
         Tab.GetImageUrlAsync(car.LogoIcon)}'>"";
@@ -421,6 +434,7 @@ for (var i = 0; i < l.length; i++){{
     }}, false);
 }}
 ";
+                            Logging.Debug(code);
                             Tab.Execute(code);
                             waiting.Report(new AsyncProgressEntry(car.DisplayName, i++, ids.Length));
                         }
@@ -428,6 +442,7 @@ for (var i = 0; i < l.length; i++){{
                 });
             }
 
+            [UsedImplicitly]
             public void UpdatePreview(string carId, string skinId) {
                 Sync(async () => {
                     if (carId == null || skinId == null || Tab == null) return;
@@ -442,6 +457,7 @@ for (var i = 0; i < l.length; i++){{
                 });
             }
 
+            [UsedImplicitly]
             public void SetParam(string key, string value) {
                 Sync(() => {
                     switch (key) {
@@ -503,6 +519,7 @@ for (var i = 0; i < l.length; i++){{
                 });
             }
 
+            [UsedImplicitly]
             public void SetParams(string json) {
                 Sync(() => {
                     if (json == null) {
@@ -555,10 +572,12 @@ document.getElementById('{_model.CarId}5').innerHTML = '<img src=""{
                 });
             }
 
+            [UsedImplicitly]
             public string GetCarName(string carId) {
                 return Sync(() => CarsManager.Instance.GetById(carId)?.DisplayName);
             }
 
+            [UsedImplicitly]
             public bool ContentExists(string trackId, string carIdsJson) {
                 return Sync(() => TracksManager.Instance.GetLayoutByKunosId(trackId) != null &&
                         JArray.Parse(carIdsJson).Select(x => x?.ToString() ?? "").All(x => CarsManager.Instance.GetWrapperById(x) != null));

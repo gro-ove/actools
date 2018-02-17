@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
@@ -35,24 +36,17 @@ namespace AcManager.Controls.UserControls.Web {
         public WebTab Tab { get; private set; }
 
         public ScriptProviderBase ForkFor(WebTab tab) {
-            Tab = tab;
-            return ForkForOverride(tab);
+            var forked = ForkForOverride(tab);
+            forked.Tab = tab;
+            return forked;
         }
 
-        public void NavigateTo(string url) {
-            Sync(() => {
-                /*if (Associated?.NewWindowsBehavior == ) {
-                    Associated.Navigate(url);
-                } else {
-                    WindowsHelper.ViewInBrowser(url);
-                }*/
-            });
-        }
-
+        [UsedImplicitly]
         public void Log(string message) {
             Logging.Write("" + message);
         }
 
+        [UsedImplicitly]
         public void OnError(string error, string url, int line, int column) {
             Sync(() => {
                 Logging.Warning($"[{url}:{line}:{column}] {error}");
@@ -60,16 +54,17 @@ namespace AcManager.Controls.UserControls.Web {
             });
         }
 
+        [UsedImplicitly]
         public void Alert(string message) {
-            Sync(() => {
-                ModernDialog.ShowMessage(message);
-            });
+            Sync(() => ModernDialog.ShowMessage(message));
         }
 
+        [UsedImplicitly]
         public string Prompt(string message, string defaultValue) {
             return Sync(() => FirstFloor.ModernUI.Dialogs.Prompt.Show(message, ControlsStrings.WebBrowser_Prompt, defaultValue));
         }
 
+        [UsedImplicitly]
         public object CmTest() {
             return true;
         }

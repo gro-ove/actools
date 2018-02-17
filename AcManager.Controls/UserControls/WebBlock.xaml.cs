@@ -103,7 +103,9 @@ namespace AcManager.Controls.UserControls {
 
         public void SetScriptProvider(ScriptProviderBase provider) {
             _scriptProvider = provider;
-            Tabs.ForEach(x => x.Something.SetScriptProvider(provider.ForkFor(x)));
+            Tabs.ForEach(x => {
+                x.Something.SetScriptProvider(provider.ForkFor(x));
+            });
         }
 
         public static readonly DependencyProperty IsAddressBarVisibleProperty = DependencyProperty.Register(nameof(IsAddressBarVisible), typeof(bool),
