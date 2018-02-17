@@ -111,7 +111,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             Buttons = new Control[0];
 
-            Title.BbCode = $"User {args.UserName} wants to join. Allow?";
+            TitleBlock.BbCode = $"User {args.UserName} wants to join. Allow?";
 
             if (!string.IsNullOrWhiteSpace(args.AvatarUrl)) {
                 Image.Filename = $"{args.AvatarUrl}?size=128";

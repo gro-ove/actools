@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
+using AcManager.Controls.UserControls.Web;
 using AcManager.DiscordRpc;
 using AcManager.Internal;
 using AcManager.Properties;
@@ -44,7 +45,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
             InitializeComponent();
-            Model.SetAssociated(WebBrowser);
+            Model.SetTab(WebBrowser);
             WebBrowser.SetScriptProvider(new ScriptProvider(Model));
             WebBrowser.StyleProvider = new StyleProvider();
         }
@@ -210,7 +211,7 @@ namespace AcManager.Pages.Drive {
 
                 if (leftTime.HasValue) {
                     if (_previousLeftTime.HasValue && leftTime.Value.TotalMinutes < 3 && _previousLeftTime.Value.TotalMinutes >= 3) {
-                        _associated?.RefreshPage();
+                        _associated?.MainTab?.RefreshCommand.Execute(null);
                     }
 
                     _previousLeftTime = leftTime;
@@ -341,7 +342,7 @@ namespace AcManager.Pages.Drive {
 
             public ICommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(Go, CanGo));
 
-            public void SetAssociated(WebBlock webBlock) {
+            public void SetTab(WebBlock webBlock) {
                 _associated = webBlock;
             }
 
@@ -353,14 +354,14 @@ namespace AcManager.Pages.Drive {
         private CommandBase _quitCommand;
 
         public ICommand QuitCommand => _quitCommand ?? (_quitCommand = new AsyncCommand(async () => {
-            WebBrowser.Navigate(Model.QuitUrl);
+            WebBrowser.MainTab?.Navigate(Model.QuitUrl);
             await Task.Delay(500);
         }, () => Model.CanQuit));
 
         private CommandBase _testCommand;
 
         public ICommand TestCommand => _testCommand ?? (_testCommand = new DelegateCommand(() => {
-            WebBrowser.Execute(@"location.reload(true)");
+            WebBrowser.MainTab?.Execute(@"location.reload(true)");
         }));
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
@@ -371,9 +372,13 @@ namespace AcManager.Pages.Drive {
                 _model = model;
             }
 
+            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
+                return new ScriptProvider(_model);
+            }
+
             public void SetCars(string json) {
                 Sync(async () => {
-                    if (json == null || Associated == null) return;
+                    if (json == null || Tab == null) return;
 
                     var ids = JArray.Parse(json).ToObject<string[]>();
                     Logging.Debug(ids.JoinToString("; "));
@@ -397,13 +402,13 @@ namespace AcManager.Pages.Drive {
                             foreach (var x in skins) {
                                 liveries.Append(
                                         $@"<img data-skin-id='{HttpUtility.HtmlEncode(x.Id)}' width=24 style='margin-left:2px' src='{await
-                                                Associated.GetImageUrlAsync(x.LiveryImage)}'>");
+                                                Tab.GetImageUrlAsync(x.LiveryImage)}'>");
                             }
 
                             var code = $@"
-document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='{await Associated.GetImageUrlAsync(skin.PreviewImage)}'>"";
+document.querySelector('[id^=""{id}1""]').innerHTML = ""<img width=280 style='margin-right:10px' src='{await Tab.GetImageUrlAsync(skin.PreviewImage)}'>"";
 document.querySelector('[id^=""{id}2""]').innerHTML = ""{HttpUtility.HtmlEncode(car.DisplayName)}<img width=48 style='margin-left:2px;margin-right:10px;margin-top:-10px;float:left' src='{await
-        Associated.GetImageUrlAsync(car.LogoIcon)}'>"";
+        Tab.GetImageUrlAsync(car.LogoIcon)}'>"";
 document.querySelector('[id^=""{id}3""]').innerHTML = {JsonConvert.SerializeObject(liveries.ToString())};
 document.querySelector('[id^=""{id}4""]').textContent = {JsonConvert.SerializeObject(skin.Id)};
 
@@ -416,7 +421,7 @@ for (var i = 0; i < l.length; i++){{
     }}, false);
 }}
 ";
-                            Associated.Execute(code);
+                            Tab.Execute(code);
                             waiting.Report(new AsyncProgressEntry(car.DisplayName, i++, ids.Length));
                         }
                     }
@@ -425,7 +430,7 @@ for (var i = 0; i < l.length; i++){{
 
             public void UpdatePreview(string carId, string skinId) {
                 Sync(async () => {
-                    if (carId == null || skinId == null || Associated == null) return;
+                    if (carId == null || skinId == null || Tab == null) return;
 
                     var car = await CarsManager.Instance.GetByIdAsync(carId);
                     if (car == null) return;
@@ -433,7 +438,7 @@ for (var i = 0; i < l.length; i++){{
                     var skin = await car.SkinsManager.GetByIdAsync(skinId);
                     if (skin == null) return;
 
-                    Associated.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = '{await Associated.GetImageUrlAsync(skin.PreviewImage)}';");
+                    Tab.Execute($@"document.querySelector('[id^=""{carId}1""] img').src = '{await Tab.GetImageUrlAsync(skin.PreviewImage)}';");
                 });
             }
 
@@ -532,21 +537,21 @@ for (var i = 0; i < l.length; i++){{
 
             public void UpdateWaitingPage() {
                 Sync(async () => {
-                    Associated?.Execute($@"
+                    Tab?.Execute($@"
 document.getElementById('{_model.CarId}1').innerHTML = '<img id=""mclaren_mp412c_gt3"" src=""{
-                            await Associated.GetImageUrlAsync(_model.CarSkin?.PreviewImage)}"" height=""200"">';
+                            await Tab.GetImageUrlAsync(_model.CarSkin?.PreviewImage)}"" height=""200"">';
 document.getElementById('{_model.CarId}2').innerHTML = '<img style=""margin-top:145px;float:left"" src=""{
-                            await Associated.GetImageUrlAsync(_model.Car?.LogoIcon)}"" width=""48"">';
+                            await Tab.GetImageUrlAsync(_model.Car?.LogoIcon)}"" width=""48"">';
 document.getElementById('{_model.CarId}3').innerHTML = '<img style=""margin-left:300px;margin-right:10px;margin-top:160px;float:left"" src=""{
-                            await Associated.GetImageUrlAsync(_model.CarSkin?.LiveryImage)}"" width=""32"">';
+                            await Tab.GetImageUrlAsync(_model.CarSkin?.LiveryImage)}"" width=""32"">';
 document.getElementById('{_model.CarId}6').textContent = {
                             JsonConvert.SerializeObject(_model.Car?.DisplayName ?? @"?")};
 document.getElementById('{_model.CarId}7').textContent = {
                             JsonConvert.SerializeObject(_model.Track?.Name ?? @"?")};
 document.getElementById('{_model.CarId}4').innerHTML = '<img src=""{
-                            await Associated.GetImageUrlAsync(_model.Track?.PreviewImage)}"" width=""355"">';
+                            await Tab.GetImageUrlAsync(_model.Track?.PreviewImage)}"" width=""355"">';
 document.getElementById('{_model.CarId}5').innerHTML = '<img src=""{
-                            await Associated.GetImageUrlAsync(_model.Track?.OutlineImage)}"" height=""192"">';");
+                            await Tab.GetImageUrlAsync(_model.Track?.OutlineImage)}"" height=""192"">';");
                 });
             }
 
@@ -567,7 +572,7 @@ document.getElementById('{_model.CarId}5').innerHTML = '<img src=""{
         }
 
         private void SrsCommon() {
-            WebBrowser.Execute($@"
+            WebBrowser.MainTab?.Execute($@"
 /* Set user Steam ID */
 var g = document.getElementById('gui');
 if (g){{
@@ -585,7 +590,7 @@ if (t){{
 
         private void SrsMainOld() {
             /* Old SRS (let’s keep it for now just in case) */
-            WebBrowser.Execute(@"
+            WebBrowser.MainTab?.Execute(@"
 /* User is not registered to any race yet, hide params */
 var b = document.querySelector('[onclick*=""REMOTE/REQUESTED_CAR""]');
 if (!b){
@@ -617,7 +622,7 @@ b.addEventListener('click', function (){
 
         private void SrsMain() {
             /* Updated SRS (21/11/2016) */
-            WebBrowser.Execute(@"
+            WebBrowser.MainTab?.Execute(@"
 /* Test if content is available and fix register buttons in events list */
 [].forEach.call(document.querySelectorAll('input[id^=""btn""][value=""""]'), function(e){
     var s = e.parentNode.childNodes[[].indexOf.call(e.parentNode.childNodes, e) + 1].innerHTML;
@@ -697,7 +702,7 @@ if (o['car']){
 
         private void SrsSelectCar() {
             Logging.Debug("Preparing…");
-            WebBrowser.Execute(@"
+            WebBrowser.MainTab?.Execute(@"
 /* Fix cars list */
 var a = [];
 var b = document.querySelectorAll('[onclick*=""./regsrs.php?""]');
@@ -708,7 +713,7 @@ window.external.SetCars(JSON.stringify(a));", true);
 
         private async void SrsUnregister() {
             await Task.Delay(300);
-            WebBrowser.Navigate(Model.StartPage);
+            WebBrowser.MainTab?.Navigate(Model.StartPage);
             Model.Reset();
         }
 
@@ -726,8 +731,8 @@ window.external.SetCars(JSON.stringify(a));", true);
             }
         }
 
-        private void WebBrowser_OnPageLoaded(object sender, PageLoadedEventArgs e) {
-            var uri = e.Url;
+        private void OnPageLoaded(object sender, WebTabEventArgs e) {
+            var uri = e.Tab.LoadedUrl;
 
             SrsCommon();
 

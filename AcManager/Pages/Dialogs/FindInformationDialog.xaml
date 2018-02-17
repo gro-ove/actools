@@ -13,5 +13,5 @@
       <TextBlock Text="{x:Static c:ControlsStrings.FindInformation_Description}" Style="{StaticResource Small}" TextWrapping="Wrap" VerticalAlignment="Center" />
     </DockPanel>
   </mui:ModernDialog.ButtonsRowContent>
-  <c:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="OnPageLoaded" OpenNewWindowsExternally="False" />
+  <c:WebBlock x:Name="WebBrowser" StartPage="{Binding StartPage}" PageLoaded="OnPageLoaded" NewWindowsBehavior="MultiTab" />
 </mui:ModernDialog>

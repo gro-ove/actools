@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -7,9 +8,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Loading
         public static Size? GetImageSize(byte[] data) {
             int index = 0, limit = Math.Min(data.Length, 4000);
-
             try {
                 if (NextAre(0xFF, 0xD8, 0xFF)) {
+                    // JPEG
                     while (index < limit) {
                         if (SkipUntil(0xFF) && SkipWhile(0xFF) && AnyOf(0xC0, 0xC2)) {
                             index += 3;
@@ -19,9 +20,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         }
                     }
                 } else if (NextAre(0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A)) {
+                    // PNG
                     index += 16;
                     var size = new Size(NextInt(), NextInt());
                     return index >= limit ? (Size?)null : size;
+                } else if (NextAre(0x00, 0x00, 0x01, 0x00)) {
+                    // ICO
+                    var result = new Size();
+                    for (var i = NextShort(); i > 0 && index < limit; i--, index += 14) {
+                        var size = new Size(Next(), Next());
+                        if (size.Width > result.Width || size.Height > result.Height) {
+                            result = size;
+                        }
+                    }
+#if DEBUG
+                    Logging.Debug(result);
+#endif
+                    return result;
                 }
             } catch (Exception e) {
                 Logging.Warning(e.Message);
@@ -29,6 +44,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 #if DEBUG
             Logging.Warning("Failed to determine size: " + data);
+
+            // TODO: Remove me!
+            if (Directory.Exists(@"U:\test")) {
+                File.WriteAllBytes(@"U:\test\failed.bin", data);
+            }
 #endif
 
             return null;

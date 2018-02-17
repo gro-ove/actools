@@ -1,106 +1,156 @@
 ﻿<UserControl x:Class="AcManager.Pages.Miscellaneous.ModsWebBrowser" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.Miscellaneous"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:ModsWebBrowser+ViewModel}">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.Miscellaneous"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance l:ModsWebBrowser+ListViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding WebSources.Count}" Margin="{StaticResource ContentMargin}">
+  <ContentControl Content="{Binding}">
+    <ContentControl.Resources>
 
-    <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-      <TextBlock Text="No sources found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="{Binding AddNewSourceCommand}">
-        <DockPanel IsHitTestVisible="False">
-          <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
-              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
-              Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
-          <TextBlock Text="Add new source" />
+      <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
+
+        <DockPanel Margin="{StaticResource ContentMarginWithPadding}">
+          <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
+              SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}" />
         </DockPanel>
-      </Button>
-    </DockPanel>
 
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition MinWidth="50" MaxWidth="400" />
-        <ColumnDefinition Width="9" />
-        <ColumnDefinition />
-      </Grid.ColumnDefinitions>
+      </DataTemplate>
 
-      <!-- Link list -->
-      <ListBox ItemsSource="{Binding WebSources}" Style="{StaticResource VirtualizingListBox}" SelectedItem="{Binding SelectedSource}">
-        <ListBox.ItemContainerStyle>
-          <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
-            <Setter Property="Template">
-              <Setter.Value>
-                <ControlTemplate TargetType="ListBoxItem">
-                  <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                      BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                  </Border>
-                  <ControlTemplate.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                      <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-                    </Trigger>
-                    <Trigger Property="IsSelected" Value="True">
-                      <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
-                    </Trigger>
-                  </ControlTemplate.Triggers>
-                </ControlTemplate>
-              </Setter.Value>
-            </Setter>
-          </Style>
-        </ListBox.ItemContainerStyle>
-        <ListBox.ItemTemplate>
-          <DataTemplate>
-            <DockPanel IsEnabled="{Binding IsEnabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
-              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
-                  Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
-              <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding Favicon, FallbackValue={x:Null}}"
-                  Margin="0 0 4 0" ClearOnChange="True" />
-              <TextBlock Text="{Binding Url}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
-              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
-            </DockPanel>
-            <DataTemplate.Triggers>
-              <DataTrigger Binding="{Binding IsFavourite}" Value="True">
-                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
-              </DataTrigger>
-            </DataTemplate.Triggers>
-          </DataTemplate>
-        </ListBox.ItemTemplate>
-      </ListBox>
+      <DataTemplate DataType="{x:Type l:ModsWebBrowser+ListViewModel}">
+        <mui:Switch Value="{Binding WebSources.Count}" Margin="{StaticResource ContentMargin}">
 
-      <!-- Separator -->
-      <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
-
-      <!-- Content -->
-      <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding SelectedSource}"
-          d:DataContext="{d:DesignInstance local:ModsWebBrowser+WebSource}">
-        <StackPanel Margin="20 0 20 40" Style="{StaticResource SettingsPanel}">
-          <CheckBox IsChecked="{Binding IsEnabled}">
-            <mui:BetterTextBox Text="{Binding DisplayName}" Style="{StaticResource Borderless.Heading2}" Margin="0 0 0 8" />
-          </CheckBox>
-          <DockPanel>
-            <Label Content="URL (domain):" />
-            <mui:BetterTextBox Text="{Binding Url}" />
+          <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="No sources found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+            <Button Margin="0 8 0 0" Command="{Binding AddNewSourceCommand}">
+              <DockPanel IsHitTestVisible="False">
+                <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
+                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                    Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                <TextBlock Text="Add new source" />
+              </DockPanel>
+            </Button>
           </DockPanel>
-          <DockPanel>
-            <Label Content="Icon:" />
-            <mui:BetterTextBox Text="{Binding Favicon}" />
-          </DockPanel>
-          <CheckBox IsChecked="{Binding CaptureDownloads}">
-            <Label Content="Download files from website using browser" />
-          </CheckBox>
-        </StackPanel>
-      </ScrollViewer>
-    </Grid>
 
-  </mui:Switch>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition MinWidth="50" MaxWidth="400" />
+              <ColumnDefinition Width="9" />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!-- Link list -->
+            <Grid ZIndex="10">
+              <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition Height="33" />
+              </Grid.RowDefinitions>
+
+              <ListBox x:Name="SourcesList" ItemsSource="{Binding WebSourcesView}" Style="{StaticResource VirtualizingListBox}"
+                  SelectedItem="{Binding SelectedSource}">
+                <ListBox.ItemContainerStyle>
+                  <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                          <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                              BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                          </Border>
+                          <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                              <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                            </Trigger>
+                          </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                  <DataTemplate DataType="{x:Type l:ModsWebBrowser+WebSource}">
+                    <DockPanel IsEnabled="{Binding IsEnabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
+                      <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                          Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
+                      <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True"
+                          Filename="{Binding Favicon, FallbackValue={x:Null}}" Margin="0 0 4 0" ClearOnChange="True" />
+                      <TextBlock x:Name="PART_Url" Text="{Binding Url}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
+                      <TextBlock x:Name="PART_Name" Text="{Binding Name}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+                    </DockPanel>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                        <Setter TargetName="PART_FavouriteIcon" Property="Visibility" Value="Visible" />
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding IsEnabled}" Value="False">
+                        <Setter TargetName="PART_FavouriteIcon" Property="Visibility" Value="Collapsed" />
+                        <Setter TargetName="PART_Url" Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                        <Setter TargetName="PART_Name" Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                      </DataTrigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ListBox.ItemTemplate>
+              </ListBox>
+
+              <DockPanel Grid.Row="1">
+                <mui:ModernButton Command="{Binding AddNewSourceCommand}" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
+                    ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
+                    ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                <TextBlock Text="{Binding WebSources.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} site'}"
+                    Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
+              </DockPanel>
+            </Grid>
+
+            <!-- Separator -->
+            <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
+
+            <!-- Content -->
+            <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding SelectedSource}"
+                d:DataContext="{d:DesignInstance l:ModsWebBrowser+WebSource}">
+              <StackPanel Margin="20 0 20 40" Style="{StaticResource SettingsPanel}">
+                <DockPanel>
+                  <c:FavouriteButton DockPanel.Dock="Right" Margin="4 0 0 0" IsChecked="{Binding IsFavourite, Mode=TwoWay}" />
+                  <CheckBox IsChecked="{Binding IsEnabled}" Margin="0 0 0 8">
+                    <mui:BetterTextBox Text="{Binding Name}" Style="{StaticResource Borderless.Heading2}" />
+                  </CheckBox>
+                </DockPanel>
+                <DockPanel>
+                  <Label Content="URL (domain):" />
+                  <mui:BetterTextBox Text="{Binding Url}" />
+                </DockPanel>
+                <DockPanel>
+                  <Label Content="Icon:" />
+                  <mui:BetterTextBox Text="{Binding Favicon}" />
+                </DockPanel>
+                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
+                  <Button Content="Refresh name &amp; icon" Command="{Binding UpdateDisplayNameCommand}" />
+                  <Button Content="Delete site" Command="{Binding DeleteCommand}" Foreground="{DynamicResource Error}" />
+                </mui:SpacingUniformGrid>
+
+                <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
+                <CheckBox IsChecked="{Binding CaptureDownloads}">
+                  <Label Content="Download files from website using browser" />
+                </CheckBox>
+              </StackPanel>
+            </ScrollViewer>
+          </Grid>
+
+        </mui:Switch>
+      </DataTemplate>
+    </ContentControl.Resources>
+  </ContentControl>
+
 </UserControl>

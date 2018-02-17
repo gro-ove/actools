@@ -986,6 +986,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public int InnerDecodeHeight => DecodeHeight;
 
+        private bool IsRemoteImage() {
+            return Filename.StartsWith("http://") || Filename.StartsWith("https://");
+        }
+
         /// <summary>
         /// Reloads image.
         /// </summary>
@@ -1001,9 +1005,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return false;
             }
 
-            if (Filename.StartsWith("http://") || Filename.StartsWith("https://")) {
+            if (IsRemoteImage()) {
                 LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(
-                        v => { ActionExtension.InvokeInMainThread(() => { SetCurrent(v.IsCompleted ? v.Result : BitmapEntry.Empty); }); });
+                        v => ActionExtension.InvokeInMainThread(() => SetCurrent(v.IsCompleted ? v.Result : BitmapEntry.Empty)));
                 return true;
             }
 
@@ -1015,6 +1019,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         if (OptionEnsureCacheIsFresh) {
                             var actual = GetActualFilename(Filename);
                             // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                            // ReSharper disable HeuristicUnreachableCode
                             if (actual == null) {
                                 RemoveFromCache(Filename);
                             } else {
@@ -1031,6 +1036,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                                     return false;
                                 }
                             }
+                            // ReSharper restore HeuristicUnreachableCode
                         } else {
                             SetCurrent(cached, true);
                             return false;
@@ -1210,7 +1216,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
-            if (CollapseIfMissing) {
+            if (CollapseIfMissing && !IsRemoteImage()) {
                 if (File.Exists(GetActualFilename(value))) {
                     Visibility = Visibility.Visible;
                 } else {

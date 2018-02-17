@@ -197,6 +197,8 @@
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
     <Setter Property="ItemContainerStyle" Value="{StaticResource FlatListBoxItem}" />
+    <Setter Property="IsTextSearchEnabled" Value="True" />
+    <Setter Property="IsTextSearchCaseSensitive" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ListBox">
@@ -239,6 +241,8 @@
   </Style>
 
   <Style TargetType="ItemsControl" x:Key="ScrollingItemsControl" BasedOn="{StaticResource {x:Type ItemsControl}}">
+    <Setter Property="IsTextSearchEnabled" Value="True" />
+    <Setter Property="IsTextSearchCaseSensitive" Value="False" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ItemsControl">

@@ -23,6 +23,6 @@
                     Maximum="180" Placeholder="?" />
         </Grid>
 
-        <c:WebBlock x:Name="MapWebBrowser" Width="1080" Height="640" IsAddressBarVisible="False" />
+        <c:WebBlock x:Name="MapWebBrowser" Width="1080" Height="640" IsAddressBarVisible="False" NewWindowsBehavior="OpenInBrowser" />
     </StackPanel>
 </mui:ModernDialog>

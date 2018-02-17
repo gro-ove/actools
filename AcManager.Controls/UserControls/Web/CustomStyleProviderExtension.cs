@@ -1,15 +1,7 @@
-using System;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AcManager.Controls.UserControls {
-    public interface ICustomStyleProvider {
-        string GetStyle(string url);
-    }
-
+namespace AcManager.Controls.UserControls.Web {
     internal static class CustomStyleProviderExtension {
         [CanBeNull, ContractAnnotation(@"provider:null => null; url:null => null")]
         public static string ToScript([CanBeNull] this ICustomStyleProvider provider, [CanBeNull] string url) {
@@ -44,41 +36,5 @@ if (document.body){{
     window.addEventListener('load', onload, false);
 }}";
         }
-    }
-
-    internal interface IWebSomething {
-        FrameworkElement Initialize();
-
-        event EventHandler<PageLoadingEventArgs> Navigating;
-
-        event EventHandler<PageLoadedEventArgs> Navigated;
-
-        [NotNull]
-        string GetUrl();
-
-        void SetScriptProvider([CanBeNull] ScriptProviderBase provider);
-
-        void SetUserAgent([NotNull] string userAgent);
-
-        void SetStyleProvider([CanBeNull] ICustomStyleProvider provider);
-
-        void Execute([NotNull] string js);
-
-        void Navigate([NotNull] string url);
-
-        void OnLoaded();
-
-        void OnUnloaded();
-
-        void OnError(string error, string url, int line, int column);
-
-        [ItemCanBeNull]
-        Task<string> GetImageUrlAsync([CanBeNull] string filename);
-
-        ICommand BackCommand { get; }
-
-        ICommand ForwardCommand { get; }
-
-        ICommand RefreshCommand { get; }
     }
 }

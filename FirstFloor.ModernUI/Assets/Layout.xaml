@@ -1,29 +1,29 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <!-- Layout margins -->
-    <Thickness x:Key="RootMargin">0</Thickness>
-    <Thickness x:Key="ContentMargin">0 8 0 0</Thickness>
-    <Thickness x:Key="ContentMarginWithPadding">20</Thickness>
-    <Thickness x:Key="InnerContentMargin">16 28 16 16</Thickness>
-    <Thickness x:Key="StatusMargin">16 8 4 8</Thickness>
+  <!-- Layout margins -->
+  <Thickness x:Key="RootMargin">0</Thickness>
+  <Thickness x:Key="ContentMargin">0 8 0 0</Thickness>
+  <Thickness x:Key="ContentMarginWithPadding">20</Thickness>
+  <Thickness x:Key="InnerContentMargin">16 28 16 16</Thickness>
+  <Thickness x:Key="StatusMargin">16 8 4 8</Thickness>
 
-    <!-- Bottom row, to override in dialogs -->
-    <Style x:Key="BottomRow" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="0 20 0 0" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-    </Style>
+  <!-- Bottom row, to override in dialogs -->
+  <Style x:Key="BottomRow" TargetType="FrameworkElement">
+    <Setter Property="Margin" Value="0 20 0 0" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
+  </Style>
 
-    <Thickness x:Key="SplitLeft">0 0 0 0</Thickness>
-    <Thickness x:Key="SplitRight">16 0 0 0</Thickness>
+  <Thickness x:Key="SplitLeft">0 0 0 0</Thickness>
+  <Thickness x:Key="SplitRight">16 0 0 0</Thickness>
 
-    <Style x:Key="ContentRoot" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource ContentMargin}" />
-    </Style>
+  <Style x:Key="ContentRoot" TargetType="FrameworkElement">
+    <Setter Property="Margin" Value="{StaticResource ContentMargin}" />
+  </Style>
 
-    <Style x:Key="ContentRootWithPadding" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource ContentMarginWithPadding}" />
-    </Style>
+  <Style x:Key="ContentRootWithPadding" TargetType="FrameworkElement">
+    <Setter Property="Margin" Value="{StaticResource ContentMarginWithPadding}" />
+  </Style>
 
-    <Style x:Key="InnerContentRoot" TargetType="FrameworkElement">
-        <Setter Property="Margin" Value="{StaticResource InnerContentMargin}" />
-    </Style>
+  <Style x:Key="InnerContentRoot" TargetType="FrameworkElement">
+    <Setter Property="Margin" Value="{StaticResource InnerContentMargin}" />
+  </Style>
 </ResourceDictionary>

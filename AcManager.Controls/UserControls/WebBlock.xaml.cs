@@ -1,78 +1,109 @@
 ﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using AcManager.Tools.Managers.Plugins;
+using AcManager.Controls.UserControls.Web;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
-using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
-        private readonly IWebSomething _something;
-
-        private static IWebSomething GetSomething() {
-            if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)) return new CefSharpWrapper();
-            return new WebBrowserWrapper();
-        }
-
         public WebBlock() {
-            _something = GetSomething();
-            _something.Navigating += OnProgressChanged;
-            _something.Navigated += OnNavigated;
-            var child = _something.Initialize();
-
             InitializeComponent();
-            Children.Add(child);
         }
 
-        private void OnProgressChanged(object sender, PageLoadingEventArgs e) {
-            ProgressBar.Visibility = e.Progress.IsReady ? Visibility.Collapsed : Visibility.Visible;
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            Loaded -= OnLoaded;
+            MainTab = CreateTab((SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey)) ?? StartPage);
+            SetCurrentTab(MainTab);
+            TabsList.ItemsSource = Tabs;
+            this.OnActualUnload(() => {
+                Tabs.ForEach(x => x.Something.OnUnloaded());
+            });
         }
 
-        [ItemCanBeNull]
-        public Task<string> GetImageUrlAsync([CanBeNull] string filename) {
-            return _something.GetImageUrlAsync(filename);
+        private void SetCurrentTab([NotNull] WebTab tab) {
+            if (ReferenceEquals(CurrentTab, tab)) return;
+            CurrentTab = tab;
+            TabsList.SelectedItem = tab;
+            PageParent.Child = tab.Element;
+            UrlTextBox.Text = tab.ActiveUrl;
+            ProgressBar.Visibility = tab.IsLoading ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public void OnError(string error, string url, int line, int column) {
-            _something.OnError(error, url, line, column);
+        private void OnTabsListSelectionChanged(object sender, SelectionChangedEventArgs e) {
+            SetCurrentTab((WebTab)TabsList.SelectedItem);
         }
 
-        private void OnNavigated(object sender, PageLoadedEventArgs e) {
-            CommandManager.InvalidateRequerySuggested();
-            UrlTextBox.Text = e.Url;
-            PageLoaded?.Invoke(this, new PageLoadedEventArgs(_something.GetUrl()));
+        public BetterObservableCollection<WebTab> Tabs { get; } = new BetterObservableCollection<WebTab>();
 
-            if (SaveKey != null && e.Url.StartsWith(@"http", StringComparison.OrdinalIgnoreCase)) {
+        [CanBeNull]
+        public WebTab MainTab { get; private set; }
+
+        [CanBeNull]
+        public WebTab CurrentTab { get; private set; }
+
+        [NotNull]
+        private WebTab CreateTab(string url) {
+            var tab = new WebTab(url);
+            var something = tab.Something;
+
+            if (_scriptProvider != null) {
+                something.SetScriptProvider(_scriptProvider.ForkFor(tab));
+            }
+
+            if (UserAgent != null) {
+                something.SetUserAgent(UserAgent);
+            }
+
+            if (StyleProvider != null) {
+                something.SetStyleProvider(StyleProvider);
+            }
+
+            something.SetNewWindowsBehavior(NewWindowsBehavior);
+            Tabs.Add(tab);
+
+            tab.PropertyChanged += OnTabPropertyChanged;
+            tab.PageLoaded += OnTabPageLoaded;
+            tab.NewWindow += OnTabNewWindow;
+            return tab;
+        }
+
+        private void OnTabPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (ReferenceEquals(sender, CurrentTab)) {
+                var tab = (WebTab)sender;
+                if (args.PropertyName == nameof(CurrentTab.IsLoading)) {
+                    ProgressBar.Visibility = CurrentTab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
+                } else if (args.PropertyName == nameof(CurrentTab.ActiveUrl)) {
+                    UrlTextBox.Text = tab.ActiveUrl;
+                }
+            }
+        }
+
+        private void OnTabPageLoaded(object sender, UrlEventArgs e) {
+            var tab = (WebTab)sender;
+
+            if (ReferenceEquals(tab, MainTab) && SaveKey != null && e.Url.StartsWith(@"http", StringComparison.OrdinalIgnoreCase)) {
                 ValuesStorage.Set(SaveKey, e.Url);
             }
+
+            PageLoaded?.Invoke(this, new WebTabEventArgs(tab));
         }
+
+        public event EventHandler<WebTabEventArgs> PageLoaded;
+
+        private void OnTabNewWindow(object sender, UrlEventArgs e) {
+            SetCurrentTab(CreateTab(e.Url));
+        }
+
+        private ScriptProviderBase _scriptProvider;
 
         public void SetScriptProvider(ScriptProviderBase provider) {
-            _something.SetScriptProvider(provider);
-            provider.Associated = this;
-        }
-
-        public void Execute(string js, bool onload = false) {
-            try {
-                _something.Execute(onload ?
-                        @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
-                        @"(function(){" + js + @"})();");
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
-        }
-
-        public void Execute(string fnName, params object[] args) {
-            Execute(fnName, false, args);
-        }
-
-        public void Execute(string fnName, bool onload, params object[] args) {
-            var js = $"{fnName}({args.Select(JsonConvert.SerializeObject).JoinToString(',')})";
-            Execute(js, onload);
+            _scriptProvider = provider;
+            Tabs.ForEach(x => x.Something.SetScriptProvider(provider.ForkFor(x)));
         }
 
         public static readonly DependencyProperty IsAddressBarVisibleProperty = DependencyProperty.Register(nameof(IsAddressBarVisible), typeof(bool),
@@ -91,12 +122,12 @@ namespace AcManager.Controls.UserControls {
             AddressBar.Visibility = newValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public static readonly DependencyProperty OpenNewWindowsExternallyProperty = DependencyProperty.Register(nameof(OpenNewWindowsExternally), typeof(bool),
-                typeof(WebBlock), new PropertyMetadata(true));
+        public static readonly DependencyProperty NewWindowsBehaviorProperty = DependencyProperty.Register(nameof(NewWindowsBehavior), typeof(NewWindowsBehavior),
+                typeof(WebBlock), new PropertyMetadata(NewWindowsBehavior.Ignore));
 
-        public bool OpenNewWindowsExternally {
-            get => GetValue(OpenNewWindowsExternallyProperty) as bool? == true;
-            set => SetValue(OpenNewWindowsExternallyProperty, value);
+        public NewWindowsBehavior NewWindowsBehavior {
+            get => (NewWindowsBehavior)GetValue(NewWindowsBehaviorProperty);
+            set => SetValue(NewWindowsBehaviorProperty, value);
         }
 
         public static readonly DependencyProperty UserAgentProperty = DependencyProperty.Register(nameof(UserAgent), typeof(string),
@@ -113,7 +144,7 @@ namespace AcManager.Controls.UserControls {
 
         private void OnUserAgentChanged([CanBeNull] string newValue) {
             if (newValue == null) return;
-            _something.SetUserAgent(newValue);
+            Tabs.ForEach(x => x.Something.SetUserAgent(newValue));
         }
 
         public static readonly DependencyProperty StyleProviderProperty = DependencyProperty.Register(nameof(StyleProvider), typeof(ICustomStyleProvider),
@@ -130,7 +161,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnStyleProviderChanged(ICustomStyleProvider newValue) {
-            _something.SetStyleProvider(newValue);
+            Tabs.ForEach(x => x.Something.SetStyleProvider(newValue));
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
@@ -156,25 +187,15 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnStartPageChanged([CanBeNull] string newValue) {
-            if (_loaded) {
-                Navigate(newValue);
+            if (IsLoaded) {
+                MainTab?.Navigate(newValue);
             }
         }
-
-        public void Navigate([CanBeNull] string url) {
-            _something.Navigate(url ?? @"about:blank");
-        }
-
-        public void RefreshPage() {
-            _something.RefreshCommand.Execute(null);
-        }
-
-        public event EventHandler<PageLoadedEventArgs> PageLoaded;
 
         private void UrlTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.Enter) {
                 e.Handled = true;
-                Navigate(UrlTextBox.Text);
+                CurrentTab?.Navigate(UrlTextBox.Text);
             }
         }
 
@@ -185,19 +206,19 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = _something?.BackCommand.CanExecute(null) == true;
+            e.CanExecute = CurrentTab?.BackCommand.CanExecute(null) == true;
         }
 
         private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e) {
-            _something.BackCommand.Execute(null);
+            CurrentTab?.BackCommand.Execute(null);
         }
 
         private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
-            e.CanExecute = _something?.ForwardCommand.CanExecute(null) == true;
+            e.CanExecute = CurrentTab?.ForwardCommand.CanExecute(null) == true;
         }
 
         private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e) {
-            _something.ForwardCommand.Execute(null);
+            CurrentTab?.ForwardCommand.Execute(null);
         }
 
         private void GoToPage_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
@@ -205,7 +226,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs a) {
-            Navigate(UrlTextBox.Text);
+            CurrentTab?.Navigate(UrlTextBox.Text);
         }
 
         private void BrowseHome_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
@@ -213,22 +234,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void BrowseHome_Executed(object sender, ExecutedRoutedEventArgs e) {
-            Navigate(StartPage);
-        }
-
-        private bool _loaded;
-
-        private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
-            _loaded = true;
-            _something.OnLoaded();
-            Navigate((SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey)) ?? StartPage);
-        }
-
-        private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (!_loaded) return;
-            _loaded = false;
-            _something.OnUnloaded();
+            CurrentTab?.Navigate(StartPage);
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.UserControls;
 using AcManager.CustomShowroom;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
@@ -21,6 +22,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -44,26 +46,49 @@ namespace AcManager.Tools {
         private static List<string> _previousArguments;
 
         #region Events handling
-        public static void OnPaste() {
-            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is ComboBox) {
-                return;
+        public static void HandlePasteEvent(Window window) {
+            window.PreviewKeyDown += (sender, args) => {
+                if (args.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control && OnPaste()) {
+                    args.Handled = true;
+                }
+            };
+        }
+
+        public static bool OnPaste() {
+            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is ComboBox
+                    || Application.Current?.Windows.OfType<Window>().SelectMany(VisualTreeHelperEx.FindVisualChildren<WebBlock>)
+                                  .Any(x => x.IsKeyboardFocused || x.IsKeyboardFocusWithin) == true) {
+                return false;
             }
 
             try {
                 if (Clipboard.ContainsData(DataFormats.FileDrop)) {
                     var data = Clipboard.GetFileDropList().OfType<string>().ToList();
                     ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(data, true));
-                } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
+                    return true;
+                }
+
+                if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
                     var list = Clipboard.GetText().ToLines();
-                    ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(list, true));
+                    if (list.Length > 0 && list.All(x => !string.IsNullOrWhiteSpace(x))) {
+                        ActionExtension.InvokeInMainThreadAsync(() => ProcessArguments(list, true));
+                        return true;
+                    }
                 }
             } catch (Exception e) {
                 Logging.Warning(e);
             }
+
+            return false;
         }
 
         public static void OnDrop(object sender, DragEventArgs e) {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
+
+            if (Application.Current?.Windows.OfType<Window>().SelectMany(VisualTreeHelperEx.FindVisualChildren<WebBlock>)
+                           .Any(x => x.IsMouseOver) == true) {
+                return;
+            }
 
             (sender as IInputElement)?.Focus();
             var data = e.GetInputFiles().ToList();
@@ -79,7 +104,9 @@ namespace AcManager.Tools {
         #endregion
 
         public enum ShowMainWindow {
-            No, Yes, Immediately,
+            No,
+            Yes,
+            Immediately,
         }
 
         /// <summary>
@@ -199,7 +226,14 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessInputFile(string filename) {
-            var isDirectory = FileUtils.IsDirectory(filename);
+            bool isDirectory;
+            try {
+                if (!FileUtils.Exists(filename)) return ArgumentHandleResult.Failed;
+                isDirectory = FileUtils.IsDirectory(filename);
+            } catch (Exception) {
+                return ArgumentHandleResult.Failed;
+            }
+
             if (!isDirectory && filename.EndsWith(@".acreplay", StringComparison.OrdinalIgnoreCase) ||
                     Path.GetDirectoryName(filename)?.Equals(AcPaths.GetReplaysDirectory(), StringComparison.OrdinalIgnoreCase) == true) {
                 await GameWrapper.StartReplayAsync(new Game.StartProperties(new Game.ReplayProperties {

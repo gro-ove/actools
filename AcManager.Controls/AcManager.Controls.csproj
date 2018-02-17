@@ -194,23 +194,37 @@
     <Compile Include="StatEntry.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="TrackBlock.cs" />
+    <Compile Include="UserControls\CefSharp\AltFilesHandlerFactory.cs" />
+    <Compile Include="UserControls\CefSharp\CefSharpWrapper.cs" />
+    <Compile Include="UserControls\CefSharp\DownloadHandler.cs" />
+    <Compile Include="UserControls\CefSharp\LifeSpanHandler.cs" />
+    <Compile Include="UserControls\CefSharp\MenuHandler.cs" />
+    <Compile Include="UserControls\CefSharp\RequestHandler.cs" />
+    <Compile Include="UserControls\CefSharp\RequestsFiltering.cs" />
+    <Compile Include="UserControls\WebTab.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\CefSharpWrapper.cs" />
     <Compile Include="UserControls\UploaderBlock.xaml.cs">
       <DependentUpon>UploaderBlock.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\UserChampionshipBlock.xaml.cs">
       <DependentUpon>UserChampionshipBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Web\CustomStyleProviderExtension.cs" />
+    <Compile Include="UserControls\Web\ICustomStyleProvider.cs" />
+    <Compile Include="UserControls\Web\IWebSomething.cs" />
+    <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
+    <Compile Include="UserControls\Web\PageLoadingEventArgs.cs" />
+    <Compile Include="UserControls\Web\ScriptProviderBase.cs" />
+    <Compile Include="UserControls\Web\TitleChangedEventArgs.cs" />
+    <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
+    <Compile Include="UserControls\Web\UrlEventArgs.cs" />
+    <Compile Include="UserControls\Web\WebBrowserWrapper.cs" />
     <Compile Include="Video\IVideoPlayer.cs" />
-    <Compile Include="UserControls\ScriptProviderBase.cs" />
-    <Compile Include="UserControls\IWebSomething.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
       <DependentUpon>ModernPopup.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\PageLoadedEventArgs.cs" />
     <Compile Include="UserControls\DynamicBackground.xaml.cs">
       <DependentUpon>DynamicBackground.xaml</DependentUpon>
     </Compile>
@@ -246,7 +260,6 @@
     <Compile Include="UserControls\KunosCareerBlock.xaml.cs">
       <DependentUpon>KunosCareerBlock.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UserControls\WebBrowserWrapper.cs" />
     <Compile Include="Video\WindowsMediaPlayer.cs" />
     <Compile Include="UserPresetsControl.cs" />
     <Compile Include="AcObjectListBox.cs" />
@@ -561,6 +574,17 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="SHDocVw">
+      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>1</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

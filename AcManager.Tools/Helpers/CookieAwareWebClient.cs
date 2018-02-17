@@ -65,7 +65,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public IDisposable MaskAsCommonBrowser() {
-            return SetUserAgent(CmApiProvider.UserAgentAlt);
+            return SetUserAgent(CmApiProvider.CommonUserAgent);
         }
 
         private readonly CookieContainer _container = new CookieContainer();
@@ -228,6 +228,8 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            ResponseUri = response?.ResponseUri;
+
             var cookies = response?.Headers?.GetValues("Set-Cookie");
             if (cookies != null) {
                 foreach (var c in cookies) {
@@ -237,6 +239,9 @@ namespace AcManager.Tools.Helpers {
 
             return response;
         }
+
+        [CanBeNull]
+        public Uri ResponseUri { get; private set; }
 
         protected override WebResponse GetWebResponse(WebRequest request) {
             var response = base.GetWebResponse(request);
@@ -249,6 +254,8 @@ namespace AcManager.Tools.Helpers {
                     Logging.Error(e);
                 }
             }
+
+            ResponseUri = response?.ResponseUri;
 
             var cookies = response?.Headers?.GetValues("Set-Cookie");
             if (cookies != null) {

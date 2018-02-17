@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows.Input;
 using AcManager.Controls.UserControls;
+using AcManager.Controls.UserControls.Web;
 using AcManager.Tools;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
@@ -20,7 +21,7 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 CreateExtraDialogButton(ToolsStrings.TrackGeoTags_FindIt, new DelegateCommand(() => {
-                    MapWebBrowser.Execute(@"moveTo", GetQuery(Model.Track));
+                    MapWebBrowser.MainTab?.Execute(@"moveTo", GetQuery(Model.Track));
                 })),
                 CreateExtraDialogButton(FirstFloor.ModernUI.UiStrings.Ok, new CombinedCommand(Model.SaveCommand, CloseCommand)),
                 CancelButton
@@ -41,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
                 case nameof(Model.Longitude):
                     var pair = new GeoTagsEntry(Model.Latitude, Model.Longitude);
                     if (!pair.IsEmptyOrInvalid) {
-                        MapWebBrowser.Execute(@"moveTo", $@"{pair.LatitudeValue};{pair.LongitudeValue}");
+                        MapWebBrowser.MainTab?.Execute(@"moveTo", $@"{pair.LatitudeValue};{pair.LongitudeValue}");
                     }
                     break;
             }
@@ -63,13 +64,17 @@ namespace AcManager.Pages.Dialogs {
                     _skipNext = false;
                 });
             }
+
+            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
+                return new ScriptProvider(_model);
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {
             private string _latitude;
 
             public string Latitude {
-                get { return _latitude; }
+                get => _latitude;
                 set {
                     if (value == _latitude) return;
                     _latitude = value;
@@ -80,7 +85,7 @@ namespace AcManager.Pages.Dialogs {
             private string _longitude;
 
             public string Longitude {
-                get { return _longitude; }
+                get => _longitude;
                 set {
                     if (value == _longitude) return;
                     _longitude = value;

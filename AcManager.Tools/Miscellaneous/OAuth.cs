@@ -143,7 +143,8 @@ namespace AcManager.Tools.Miscellaneous {
                     waiting = false;
 
                     // ReSharper disable once AccessToModifiedClosure
-                    code = await Prompt.ShowAsync(title, description, code, watermark, toolTip, false, false, false, maxLength, null, false, cancellation);
+                    code = await Prompt.ShowAsync(title, description, code, watermark, toolTip,
+                            false, false, false, maxLength, null, false, null, cancellation);
                     ready = true;
                 }
 

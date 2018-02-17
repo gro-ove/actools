@@ -542,9 +542,9 @@
         <StackPanel Margin="0 0 8 16" Grid.Row="0" Grid.Column="2">
           <DockPanel DataContext="{Binding AssistsViewModel}" Margin="0 0 0 4">
             <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0">
-              <c:ModernPopup Padding="16 12 16 16" DataContext="{Binding Data, Source={StaticResource Model}}"
-                  d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}">
-                <uc:TrackStateEditor DataContext="{Binding TrackState}" />
+              <c:ModernPopup Padding="16 12 16 16">
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <uc:TrackStateEditor DataContext="{Binding Data.TrackState, Source={StaticResource Model}}" />
               </c:ModernPopup>
             </mui:ContextMenuButton>
 
@@ -663,9 +663,9 @@
         <DockPanel DataContext="{Binding AssistsViewModel}">
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center"
               mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.MoreDriveAssists}}" Click="OnAssistsContextMenuButtonClick">
-            <c:ModernPopup Padding="16 12 16 16" DataContext="{Binding Data, Source={StaticResource Model}}"
-                d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}">
-              <uc:AssistsEditor DataContext="{Binding AssistsViewModel}" />
+            <c:ModernPopup Padding="16 12 16 16">
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+              <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
             </c:ModernPopup>
           </mui:ContextMenuButton>
 

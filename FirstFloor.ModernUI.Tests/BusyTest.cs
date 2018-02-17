@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Tests {
         public async Task Test() {
             var busy = new Busy();
             var value = 0;
-            busy.DoDelay(() => value++, 10);
+            busy.DoDelay(() => value++, 10).Forget();
             busy.Do(() => value++);
             Assert.AreEqual(0, value);
             await Task.Delay(100);

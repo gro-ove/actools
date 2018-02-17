@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
+using AcManager.Controls.UserControls.Web;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
 using AcManager.Internal;
@@ -277,6 +278,10 @@ namespace AcManager.Pages.Drive {
                     _model.EventId = value;
                 });
             }
+
+            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
+                return new ScriptProvider(_model);
+            }
         }
 
         private class StyleProvider : ICustomStyleProvider {
@@ -293,8 +298,8 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private void OnPageLoaded(object sender, PageLoadedEventArgs e) {
-            var uri = e.Url;
+        private void OnPageLoaded(object sender, WebTabEventArgs e) {
+            var uri = e.Tab.LoadedUrl;
             var match = Regex.Match(uri, @"\beventId=(\d+)");
             if (match.Success) {
                 Model.EventId = match.Groups[1].Value;
@@ -309,7 +314,7 @@ namespace AcManager.Pages.Drive {
             }
 
             if (uri.Contains(@"page=setups")) {
-                WebBrowser.Execute(@"
+                e.Tab.Execute(@"
 window.addEventListener('load', function(){
     var ths = document.getElementsByTagName('th');
     for (var i=0; i<ths.length; i++) if (ths[i].innerHTML == 'Download') ths[i].innerHTML = 'Install';

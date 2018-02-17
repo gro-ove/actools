@@ -179,9 +179,9 @@ namespace AcManager.Pages.Settings {
                 }
             }));
 
-            private AsyncCommand _convertOutlineCommand;
+            private DelegateCommand _convertOutlineCommand;
 
-            public AsyncCommand ConvertOutlineCommand => _convertOutlineCommand ?? (_convertOutlineCommand = new AsyncCommand(async () => {
+            public DelegateCommand ConvertOutlineCommand => _convertOutlineCommand ?? (_convertOutlineCommand = new DelegateCommand(() => {
                 var track = TracksManager.Instance.Default;
                 if (track == null) return;
 

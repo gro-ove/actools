@@ -85,6 +85,7 @@ namespace AcManager.Pages.Windows {
             }
 
             InitializeSubGroups();
+
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
@@ -95,12 +96,14 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
                 new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
                 new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4)),
-                new InputBinding(new DelegateCommand(ArgumentsHandler.OnPaste), new KeyGesture(Key.V, ModifierKeys.Control)),
             });
+
             InitializeComponent();
+            ModsWebBrowser.Initialize();
+            ArgumentsHandler.HandlePasteEvent(this);
 
             if (SteamStarter.IsInitialized) {
-                OverlayContentCell.Children.Add((FrameworkElement)FindResource("SteamOverlayFix"));
+                OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));
             }
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);

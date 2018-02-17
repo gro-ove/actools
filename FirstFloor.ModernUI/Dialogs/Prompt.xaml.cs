@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         private readonly bool _multiline;
 
         private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, bool required,
-                int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed) {
+                int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment) {
             DataContext = new ViewModel(description, defaultValue, watermark, toolTip, required);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
@@ -33,6 +33,11 @@ namespace FirstFloor.ModernUI.Dialogs {
                     Path = new PropertyPath(nameof(ViewModel.Text)),
                     Converter = this
                 });
+            }
+
+            if (comment != null) {
+                ButtonsRowContent = new BbCodeBlock { BbCode = comment, Style = (Style)FindResource(@"BbCodeBlock.Small") };
+                ButtonsRowContentAlignment = HorizontalAlignment.Left;
             }
 
             Title = title;
@@ -200,17 +205,20 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="maxLength">Length limitation.</param>
         /// <param name="suggestions">Suggestions if needed.</param>
         /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
+        /// <param name="comment">Something to display in the bottom left corner.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [CanBeNull]
         public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                bool suggestionsFixed = false) {
+                bool suggestionsFixed = false, string comment = null) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed);
+                    suggestionsFixed, comment) {
+                        DoNotAttachToWaitingDialogs = true
+                    };
             dialog.ShowDialog();
 
             var result = dialog.Result;
@@ -234,18 +242,19 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="maxLength">Length limitation.</param>
         /// <param name="suggestions">Suggestions if needed.</param>
         /// <param name="suggestionsFixed">Only allow values from suggestions.</param>
+        /// <param name="comment">Something to display in the bottom left corner.</param>
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [ItemCanBeNull]
         public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                bool suggestionsFixed = false, CancellationToken cancellation = default(CancellationToken)) {
+                bool suggestionsFixed = false, string comment = null, CancellationToken cancellation = default(CancellationToken)) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
             var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
-                    suggestionsFixed);
+                    suggestionsFixed, comment);
             try {
                 await dialog.ShowAsync(cancellation);
             } catch (Exception e) when (e.IsCanceled()) {

@@ -14,7 +14,6 @@ using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils;
 using FirstFloor.ModernUI;
-using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Media;
@@ -95,9 +94,7 @@ namespace AcManager.Pages.Dialogs {
 
             DataContext = this;
             InitializeComponent();
-            InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(ArgumentsHandler.OnPaste), new KeyGesture(Key.V, ModifierKeys.Control)),
-            });
+            ArgumentsHandler.HandlePasteEvent(this);
             Buttons = new[] {
                 CreateExtraDialogButton("Remove completed", ContentInstallationManager.Instance.RemoveCompletedCommand),
                 IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None)

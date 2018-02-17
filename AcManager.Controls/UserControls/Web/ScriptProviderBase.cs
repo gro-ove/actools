@@ -3,16 +3,12 @@ using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Threading;
-using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 
-namespace AcManager.Controls.UserControls {
+namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
     public abstract class ScriptProviderBase {
-        private WeakReference<WebBlock> _lastAssociatedWebBrowser;
-
         protected void Sync(Action action) {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
                 try {
@@ -34,22 +30,22 @@ namespace AcManager.Controls.UserControls {
             });
         }
 
-        [CanBeNull]
-        public WebBlock Associated {
-            get {
-                WebBlock res = null;
-                return _lastAssociatedWebBrowser?.TryGetTarget(out res) == true ? res : null;
-            }
-            set => _lastAssociatedWebBrowser = value == null ? null : new WeakReference<WebBlock>(value);
+        protected abstract ScriptProviderBase ForkForOverride(WebTab tab);
+
+        public WebTab Tab { get; private set; }
+
+        public ScriptProviderBase ForkFor(WebTab tab) {
+            Tab = tab;
+            return ForkForOverride(tab);
         }
 
         public void NavigateTo(string url) {
             Sync(() => {
-                if (Associated?.OpenNewWindowsExternally == false) {
+                /*if (Associated?.NewWindowsBehavior == ) {
                     Associated.Navigate(url);
                 } else {
                     WindowsHelper.ViewInBrowser(url);
-                }
+                }*/
             });
         }
 
@@ -60,7 +56,7 @@ namespace AcManager.Controls.UserControls {
         public void OnError(string error, string url, int line, int column) {
             Sync(() => {
                 Logging.Warning($"[{url}:{line}:{column}] {error}");
-                Associated?.OnError(error, url, line, column);
+                Tab?.OnError(error, url, line, column);
             });
         }
 

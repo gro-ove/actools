@@ -10,7 +10,7 @@ using Microsoft.Win32;
 
 namespace AcManager.Tools.Helpers {
     public static class WebBrowserHelper {
-        public const int EmulationModeDisablingVersion = 4;
+        public const int EmulationModeDisablingVersion = 5;
 
         /// <summary>
         /// Internet Explorer 11. Webpages are displayed in IE11 Standards mode, regardless of the !DOCTYPE directive.
@@ -32,6 +32,7 @@ namespace AcManager.Tools.Helpers {
         public static void DisableBrowserEmulationMode() {
             if (MainExecutingFile.IsInDevelopment) return;
             SetBrowserFeatureControlKey(@"FEATURE_BROWSER_EMULATION", MainExecutingFile.Name, EmulationModeDisabled);
+            SetBrowserFeatureControlKey(@"FEATURE_96DPI_PIXEL", MainExecutingFile.Name, 1);
         }
 
         public static void SetSilentAlternative([NotNull] WebBrowser browser, bool silent) {
@@ -47,17 +48,13 @@ namespace AcManager.Tools.Helpers {
 
         public static void SetSilent([NotNull] WebBrowser browser, bool silent) {
             if (browser == null) throw new ArgumentNullException(nameof(browser));
-
-            var sp = browser.Document as IOleServiceProvider;
-            if (sp == null) return;
-
-            var iidIWebBrowserApp = new Guid("0002DF05-0000-0000-C000-000000000046");
-            var iidIWebBrowser2 = new Guid("D30C1661-CDAF-11d0-8A3E-00C04FC9E26E");
-
-            object webBrowser;
-            sp.QueryService(ref iidIWebBrowserApp, ref iidIWebBrowser2, out webBrowser);
-            webBrowser?.GetType().InvokeMember("Silent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.PutDispProperty,
-                    null, webBrowser, new object[] { silent });
+            if (browser.Document is IOleServiceProvider sp) {
+                var iidIWebBrowserApp = new Guid("0002DF05-0000-0000-C000-000000000046");
+                var iidIWebBrowser2 = new Guid("D30C1661-CDAF-11d0-8A3E-00C04FC9E26E");
+                sp.QueryService(ref iidIWebBrowserApp, ref iidIWebBrowser2, out var webBrowser);
+                webBrowser?.GetType().InvokeMember("Silent", BindingFlags.Instance | BindingFlags.Public | BindingFlags.PutDispProperty,
+                        null, webBrowser, new object[] { silent });
+            }
         }
 
         [ComImport, Guid("6D5140C1-7436-11CE-8034-00AA006009FA"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -70,8 +67,8 @@ namespace AcManager.Tools.Helpers {
         private static extern int UrlMkSetSessionOption(
                 int dwOption, string pBuffer, int dwBufferLength, int dwReserved);
 
-        const int URLMON_OPTION_USERAGENT = 0x10000001;
-        const int URLMON_OPTION_USERAGENT_REFRESH = 0x10000002;
+        private const int URLMON_OPTION_USERAGENT = 0x10000001;
+        private const int URLMON_OPTION_USERAGENT_REFRESH = 0x10000002;
 
         public static void SetUserAgent(string userAgent) {
             UrlMkSetSessionOption(URLMON_OPTION_USERAGENT_REFRESH, null, 0, 0);

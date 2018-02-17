@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.UserControls;
+using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -42,6 +43,10 @@ namespace AcManager.Pages.Dialogs {
                     _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
                 });
             }
+
+            protected override ScriptProviderBase ForkForOverride(WebTab tab) {
+                return new ScriptProvider(_model);
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -53,7 +58,7 @@ namespace AcManager.Pages.Dialogs {
 
             [NotNull]
             public string SelectedText {
-                get { return _selectedText; }
+                get => _selectedText;
                 set {
                     if (Equals(value, _selectedText)) return;
                     _selectedText = value;
@@ -66,7 +71,7 @@ namespace AcManager.Pages.Dialogs {
             private string _saveLabel;
 
             public string SaveLabel {
-                get { return _saveLabel; }
+                get => _saveLabel;
                 set => Apply(value, ref _saveLabel);
             }
 
@@ -126,8 +131,8 @@ namespace AcManager.Pages.Dialogs {
                     $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.Name ?? obj.Id)}&ia=web";
         }
 
-        private void OnPageLoaded(object sender, PageLoadedEventArgs e) {
-            WebBrowser.Execute(@"
+        private void OnPageLoaded(object sender, WebTabEventArgs e) {
+            e.Tab.Execute(@"
 document.addEventListener('mouseup', function(){
     window.external.Update(window.getSelection().toString());
 }, false);

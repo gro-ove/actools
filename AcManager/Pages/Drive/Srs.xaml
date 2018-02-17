@@ -23,7 +23,7 @@
         <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Srs_Commentary}" />
       </DockPanel>
 
-      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" PageLoaded="WebBrowser_OnPageLoaded" />
+      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" PageLoaded="OnPageLoaded" />
       <Grid Grid.Row="2" Margin="0 16 0 0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition />

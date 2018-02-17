@@ -8,11 +8,14 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
-      <mui:BindingProxy x:Key="Model" Data="{Binding}" />
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <Grid Style="{StaticResource ObjectDataGrid}" Width="400" Margin="0 4 4 4" d:DataContext="{d:DesignInstance selected:SelectedAcJsonObjectPage}">
+  <Grid Style="{StaticResource ObjectDataGrid}" Width="400" Margin="0 4 4 4" x:Name="MainGrid"
+      d:DataContext="{d:DesignInstance {x:Type selected:SelectedAcObjectViewModel`1}}">
+    <Grid.Resources>
+      <mui:BindingProxy x:Key="Model" Data="{Binding}" />
+    </Grid.Resources>
     <Grid.RowDefinitions>
       <RowDefinition />
       <RowDefinition />
@@ -27,18 +30,21 @@
         </ContextMenu>
       </DockPanel.ContextMenu>
       <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Author_TooltipExt}" />
-      <mui:BetterComboBox Text="{Binding SelectedAcJsonObject.Author, UpdateSourceTrigger=LostFocus}"
+      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+      <mui:BetterComboBox Text="{Binding SelectedObject.Author, UpdateSourceTrigger=LostFocus}"
           ItemsSource="{x:Static t:SuggestionLists.AuthorsListView}" Style="{StaticResource BetterComboBox.Borderless}" Placeholder="?" />
     </DockPanel>
 
     <DockPanel Grid.Row="1">
       <TextBlock Text="{x:Static c:ControlsStrings.AcObject_UrlLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Url_TooltipExt}" />
-      <mui:BetterTextBox Text="{Binding SelectedAcJsonObject.Url, UpdateSourceTrigger=LostFocus}" Style="{StaticResource Borderless}" Placeholder="?" />
+      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+      <mui:BetterTextBox Text="{Binding SelectedObject.Url, UpdateSourceTrigger=LostFocus}" Style="{StaticResource Borderless}" Placeholder="?" />
     </DockPanel>
 
     <DockPanel Grid.Row="2">
       <TextBlock Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" ToolTip="{x:Static g:AppStrings.AcObject_Version_TooltipExt}" />
-      <mui:BetterTextBox Text="{Binding SelectedAcJsonObject.Version, UpdateSourceTrigger=LostFocus}" Mode="Version" Style="{StaticResource Borderless}"
+      <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+      <mui:BetterTextBox Text="{Binding SelectedObject.Version, UpdateSourceTrigger=LostFocus}" Mode="Version" Style="{StaticResource Borderless}"
           Placeholder="?" />
     </DockPanel>
   </Grid>

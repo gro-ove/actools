@@ -11,6 +11,13 @@ namespace FirstFloor.ModernUI.Presentation {
             set => Apply(value, ref _isEnabled);
         }
 
+        private object _icon;
+
+        public object Icon {
+            get => _icon;
+            set => Apply(value, ref _icon);
+        }
+
         private bool _isNew;
 
         public bool IsNew {

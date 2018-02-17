@@ -39,6 +39,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 InputBindings.Add(new InputBinding(new DelegateCommand(() => SwitchSection(i, false)),
                         new KeyGesture(Key.D1 + i, ModifierKeys.Alt | ModifierKeys.Control)));
             }
+
+            Loaded += OnLoaded;
         }
 
         public static readonly RoutedEvent InitializeEvent = EventManager.RegisterRoutedEvent(nameof(Initialize), RoutingStrategy.Bubble,
@@ -58,19 +60,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public Uri LoadedUri { get; }
         }
 
-        private bool _initialized;
-
-        public override void EndInit() {
-            base.EndInit();
-
-            if (_initialized) return;
-            _initialized = true;
-
+        private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
             foreach (var linkGroup in LinkGroups) {
                 linkGroup.Initialize();
             }
 
-            if (!SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}_link"))) {
+            var saved = ValuesStorage.Get<Uri>($"{SaveKey}_link");
+            if (!SelectUriIfLinkExists(saved)) {
+                Logging.Debug("Can’t find link: " + saved);
                 SelectUriIfLinkExists(DefaultSource);
             }
         }
@@ -173,18 +170,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSelectedLinkGroupChanged(LinkGroup oldValue, LinkGroup newValue) {
             if (oldValue != null) {
-                oldValue.PropertyChanged -= Group_PropertyChanged;
+                oldValue.PropertyChanged -= OnGroupPropertyChanged;
             }
 
             if (newValue != null) {
-                newValue.PropertyChanged += Group_PropertyChanged;
+                newValue.PropertyChanged += OnGroupPropertyChanged;
                 SelectedLink = newValue.SelectedLink;
             } else {
                 SelectedLink = null;
             }
         }
 
-        private void Group_PropertyChanged(object sender, PropertyChangedEventArgs e) {
+        private void OnGroupPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName != nameof(LinkGroup.SelectedLink)) return;
             SelectedLink = (sender as LinkGroup)?.SelectedLink;
         }
@@ -274,9 +271,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var destination = (ListBox)sender;
             var widget = e.Data.GetData(LinkInput.DraggableFormat) as LinkInput;
             var source = e.Data.GetData(Draggable.SourceFormat) as ItemsControl;
-            var group = SelectedLinkGroup as LinkGroupFilterable;
 
-            if (widget == null || source == null || !ReferenceEquals(source, _subMenuListBox) || group == null) {
+            if (widget == null || source == null || !ReferenceEquals(source, _subMenuListBox) || !(SelectedLinkGroup is LinkGroupFilterable group)) {
                 e.Effects = DragDropEffects.None;
                 return;
             }
@@ -331,8 +327,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (groups != null) {
                 // fill the group map based on group key
                 foreach (var group in groups) {
-                    ReadOnlyLinkGroupCollection groupCollection;
-                    if (!_groupMap.TryGetValue(group.GroupKey, out groupCollection)) {
+                    if (!_groupMap.TryGetValue(group.GroupKey, out var groupCollection)) {
                         // create a new collection for this group key
                         groupCollection = new ReadOnlyLinkGroupCollection(new LinkGroupCollection());
                         _groupMap.Add(group.GroupKey, groupCollection);
@@ -348,7 +343,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void UpdateSelection() {
-            if (!_initialized) return;
+            if (!IsLoaded) return;
 
             LinkGroup selectedGroup = null;
             Link selectedLink = null;
