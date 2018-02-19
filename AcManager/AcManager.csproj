@@ -405,6 +405,9 @@
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
     <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
+    <Compile Include="Pages\Drive\Srs2.xaml.cs">
+      <DependentUpon>Srs2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -597,6 +600,9 @@
     </Compile>
     <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
       <DependentUpon>SettingsDev.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsWebBlocks.xaml.cs">
+      <DependentUpon>SettingsWebBlocks.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Settings\SettingsLapTimes.xaml.cs">
       <DependentUpon>SettingsLapTimes.xaml</DependentUpon>
@@ -1033,6 +1039,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\Srs2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1388,6 +1398,10 @@
     <Page Include="Pages\Settings\SettingsDev.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Settings\SettingsWebBlocks.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Settings\SettingsLapTimes.xaml">
       <Generator>MSBuild:Compile</Generator>

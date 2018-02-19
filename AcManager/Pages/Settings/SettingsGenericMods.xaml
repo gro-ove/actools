@@ -11,7 +11,7 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <ScrollViewer mui:SaveScroll.Key="SettingsReplays">
+  <ScrollViewer mui:SaveScroll.Key="SettingsGenericMods">
     <StackPanel set:Search.Category="Generic mods" set:Search.Limited="True" x:Name="Panel" Style="{StaticResource SettingsPanel}">
       <CheckBox IsChecked="{Binding GenericMods.UseHardLinks}"
           ToolTip="The only possible issue here is that in some cases, if you change file from mod folder or placed modded file, the other one will change as well">

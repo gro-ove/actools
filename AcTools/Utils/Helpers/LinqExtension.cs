@@ -720,6 +720,52 @@ namespace AcTools.Utils.Helpers {
         }
 
         [Pure]
+        public static T Next<T>([NotNull] this IEnumerable<T> source, T currentValue) {
+            var first = default(T);
+            var firstSet = false;
+            var returnNext = false;
+
+            foreach (var i in source) {
+                if (!firstSet) {
+                    firstSet = true;
+                    first = i;
+                }
+
+                if (returnNext) {
+                    return i;
+                }
+
+                if (Equals(i, currentValue)) {
+                    returnNext = true;
+                }
+            }
+
+            return first;
+        }
+
+        [Pure]
+        public static T Previous<T>([NotNull] this IEnumerable<T> source, T currentValue) {
+            var previous = default(T);
+            var previousSet = false;
+            var returnLast = false;
+
+            foreach (var i in source) {
+                if (!returnLast && Equals(i, currentValue)) {
+                    if (previousSet) {
+                        return previous;
+                    }
+
+                    returnLast = true;
+                }
+
+                previous = i;
+                previousSet = true;
+            }
+
+            return previous;
+        }
+
+        [Pure]
         public static IEnumerable<T> If<T>([NotNull] this IEnumerable<T> source, [NotNull] Func<IEnumerable<T>, IEnumerable<T>> fn) {
             return fn(source);
         }

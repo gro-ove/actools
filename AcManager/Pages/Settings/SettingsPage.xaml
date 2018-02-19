@@ -20,6 +20,7 @@
       <mui:Link DisplayName="{x:Static g:AppStrings.Settings_QuickSwitches}" Source="/Pages/Settings/SettingsQuickSwitches.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Settings/SettingsReplays.xaml" IsNew="True" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Settings_Sharing}" Source="/Pages/Settings/SettingsSharing.xaml" />
+      <mui:Link DisplayName="Web" Source="/Pages/Settings/SettingsWebBlocks.xaml" />
     </mui:ModernTab.Links>
   </mui:ModernTab>
 </UserControl>

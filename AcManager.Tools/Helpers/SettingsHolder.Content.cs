@@ -4,11 +4,12 @@ using System.Linq;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using StringBasedFilter;
 
 namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
-        public partial class ContentSettings {
+        public class ContentSettings : NotifyPropertyChanged {
             internal ContentSettings() { }
             private string _cupRegistries;
 
@@ -321,6 +322,116 @@ namespace AcManager.Tools.Helpers {
             }
 
             private bool? _deleteConfirmation;
+
+            public bool DeleteConfirmation {
+                get => _deleteConfirmation ?? (_deleteConfirmation = ValuesStorage.Get("Settings.ContentSettings.DeleteConfirmation", true)).Value;
+                set {
+                    if (Equals(value, _deleteConfirmation)) return;
+                    _deleteConfirmation = value;
+                    ValuesStorage.Set("Settings.ContentSettings.DeleteConfirmation", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private SearchEngineEntry[] _searchEngines;
+
+            public SearchEngineEntry[] SearchEngines => _searchEngines ?? (_searchEngines = new[] {
+                new SearchEngineEntry(ToolsStrings.SearchEngine_DuckDuckGo, @"https://duckduckgo.com/?q={0}&ia=web"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Bing, @"http://www.bing.com/search?q={0}"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Google, @"https://www.google.com/search?q={0}&ie=UTF-8"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Yandex, @"https://yandex.ru/search/?text={0}"),
+                new SearchEngineEntry(ToolsStrings.SearchEngine_Baidu, @"http://www.baidu.com/s?ie=utf-8&wd={0}")
+            });
+
+            private SearchEngineEntry _searchEngine;
+
+            public SearchEngineEntry SearchEngine {
+                get {
+                    return _searchEngine ?? (_searchEngine = SearchEngines.FirstOrDefault(x =>
+                            x.DisplayName == ValuesStorage.Get<string>("Settings.ContentSettings.SearchEngine")) ??
+                            SearchEngines.First());
+                }
+                set {
+                    if (Equals(value, _searchEngine)) return;
+                    _searchEngine = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SearchEngine", value.DisplayName);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _searchWithWikipedia;
+
+            public bool SearchWithWikipedia {
+                get => _searchWithWikipedia ?? (_searchWithWikipedia = ValuesStorage.Get("Settings.ContentSettings.SearchWithWikipedia", true)).Value;
+                set {
+                    if (Equals(value, _searchWithWikipedia)) return;
+                    _searchWithWikipedia = value;
+                    ValuesStorage.Set("Settings.ContentSettings.SearchWithWikipedia", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private MissingContentSearchEntry[] _missingContentSearchEntries;
+
+            public MissingContentSearchEntry[] MissingContentSearchEntries => _missingContentSearchEntries ?? (_missingContentSearchEntries = new[] {
+                new MissingContentSearchEntry("Use selected search engine", (type, id) => $"{id} Assetto Corsa", true),
+                new MissingContentSearchEntry("Use selected search engine (strict)", (type, id) => $"\"{id}\" Assetto Corsa", true),
+                new MissingContentSearchEntry("Assetto-DB.com (by ID, strict)", (type, id) => {
+                    switch (type) {
+                        case MissingContentType.Car:
+                            return $"http://assetto-db.com/car/{id}";
+                        case MissingContentType.Track:
+                            if (!id.Contains(@"/")) id = $@"{id}/{id}";
+                            return $"http://assetto-db.com/track/{id}";
+                        case MissingContentType.Showroom:
+                            return $"\"{id}\" Assetto Corsa";
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(type), type, null);
+                    }
+                }, false)
+            });
+
+            private MissingContentSearchEntry _missingContentSearch;
+
+            public MissingContentSearchEntry MissingContentSearch {
+                get {
+                    return _missingContentSearch
+                            ?? (_missingContentSearch = MissingContentSearchEntries.FirstOrDefault(x =>
+                                    x.DisplayName == ValuesStorage.Get<string>("Settings.ContentSettings.MissingContentSearch")) ??
+                                    MissingContentSearchEntries.First());
+                }
+                set {
+                    if (Equals(value, _missingContentSearch)) return;
+                    _missingContentSearch = value;
+                    ValuesStorage.Set("Settings.ContentSettings.MissingContentSearch", value.DisplayName);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _carReplaceTyresDonorFilter;
+
+            public string CarReplaceTyresDonorFilter {
+                get {
+                    if (_carReplaceTyresDonorFilter == null) {
+                        _carReplaceTyresDonorFilter = ValuesStorage.Get("Settings.ContentSettings.CarReplaceTyresDonorFilter", "k+");
+                        if (string.IsNullOrWhiteSpace(_carReplaceTyresDonorFilter)) {
+                            _carReplaceTyresDonorFilter = "*";
+                        }
+                    }
+
+                    return _carReplaceTyresDonorFilter;
+                }
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _carReplaceTyresDonorFilter)) return;
+                    _carReplaceTyresDonorFilter = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarReplaceTyresDonorFilter", value);
+                    OnPropertyChanged();
+                }
+            }
         }
+
+        private static ContentSettings _content;
+        public static ContentSettings Content => _content ?? (_content = new ContentSettings());
     }
 }

@@ -102,6 +102,8 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     ? $@"background:{b.Color.ToHexString()}!important;opacity:{b.Opacity}!important;" : "";
         }
 
+        public event EventHandler<WebInjectEventArgs> Inject;
+
         private readonly string _windowColor = (Application.Current.TryFindResource(@"WindowBackgroundColor") as Color?)?.ToHexString();
         private readonly string _scrollThumbColor = GetColor(@"ScrollBarThumb");
         private readonly string _scrollThumbHoverColor = GetColor(@"ScrollBarThumbHover");
@@ -110,9 +112,11 @@ namespace AcManager.Controls.UserControls.CefSharp {
         public IResponseFilter GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response) {
             if (response.MimeType == @"text/html") {
                 var css = StyleProvider?.GetStyle(request.Url);
-                return ReplaceResponseFilter.CreateCustomCss($@"
+                var inject = new WebInjectEventArgs(request.Url);
+                Inject?.Invoke(this, inject);
+                return ReplaceResponseFilter.CreateCustomCss(inject.ToInject.JoinToString(), $@"
 ::-webkit-scrollbar {{ width: 8px!important; height: 8px!important; }}
-::-webkit-scrollbar-track {{ box-shadow: none!important; border-radius: 0!important; background: {_windowColor}!important; }}
+::-webkit-scrollbar-track {{ box-shadow: none!important; border-radius: 0!important; background: {_windowColor}!important; opacity: 0!important; }}
 ::-webkit-scrollbar-corner {{ background: {_windowColor}!important; }}
 ::-webkit-scrollbar-thumb {{ border: none!important; box-shadow: none!important; border-radius: 0!important; {_scrollThumbColor} }}
 ::-webkit-scrollbar-thumb:hover {{ {_scrollThumbHoverColor} }}
@@ -135,8 +139,8 @@ namespace AcManager.Controls.UserControls.CefSharp {
             private readonly List<byte> _overflow = new List<byte>();
             private int _findMatchOffset;
 
-            public static ReplaceResponseFilter CreateCustomCss(params string[] css) {
-                return new ReplaceResponseFilter(@"</head>", $@"<style>{css.NonNull().JoinToString('\n')}</style></head>");
+            public static ReplaceResponseFilter CreateCustomCss(string prefix, params string[] css) {
+                return new ReplaceResponseFilter(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style></head>");
             }
 
             public ReplaceResponseFilter(string find, string replace) {

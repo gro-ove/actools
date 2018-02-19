@@ -176,6 +176,46 @@ namespace AcTools.Processes {
             public abstract void Set(IniFile file);
         }
 
+        public static IniFile DefaultRaceConfig => new IniFile {
+            ["HEADER"] = { ["VERSION"] = 2 },
+            ["RACE"] = {
+                ["TRACK"] = @"magione",
+                ["CONFIG_TRACK"] = "",
+                ["MODEL"] = @"lotus_elise_sc",
+                ["MODEL_CONFIG"] = "",
+                ["CARS"] = 1,
+                ["AI_LEVEL"] = 98,
+                ["FIXED_SETUP"] = 0,
+                ["PENALTIES"] = 0
+            },
+            ["REMOTE"] = {
+                ["ACTIVE"] = false,
+                ["SERVER_IP"] = "",
+                ["SERVER_PORT"] = "",
+                ["NAME"] = "",
+                ["TEAM"] = "",
+                ["GUID"] = "",
+                ["REQUESTED_CAR"] = "",
+                ["PASSWORD"] = ""
+            },
+            ["CAR_0"] = {
+                ["MODEL"] = @"-",
+                ["MODEL_CONFIG"] = "",
+                ["SKIN"] = @"Racing_Green_Stripe",
+                ["DRIVER_NAME"] = "",
+                ["NATIONALITY"] = @"ITA",
+                ["AI_LEVEL"] = 96
+            },
+            ["GHOST_CAR"] = { ["RECORDING"] = true, ["PLAYING"] = true, ["SECONDS_ADVANTAGE"] = 0, ["LOAD"] = true, ["FILE"] = "" },
+            ["REPLAY"] = { ["FILENAME"] = "", ["ACTIVE"] = false },
+            ["LIGHTING"] = { ["SUN_ANGLE"] = -48, ["TIME_MULT"] = 1, ["CLOUD_SPEED"] = 0.2 },
+            ["GROOVE"] = { ["VIRTUAL_LAPS"] = 10, ["MAX_LAPS"] = 30, ["STARTING_LAPS"] = 0 },
+            ["DYNAMIC_TRACK"] = { ["SESSION_START"] = 100, ["SESSION_TRANSFER"] = 50, ["RANDOMNESS"] = 0, ["LAP_GAIN"] = 1 },
+            ["LAP_INVALIDATOR"] = { ["ALLOWED_TYRES_OUT"] = -1 },
+            ["TEMPERATURE"] = { ["AMBIENT"] = 26, ["ROAD"] = 32 },
+            ["WEATHER"] = { ["NAME"] = @"4_mid_clear" },
+        };
+
         public class StartProperties {
             /// <summary>
             /// I can’t quite explain this, but with initializing KeyboardListener from

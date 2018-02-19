@@ -55,7 +55,7 @@ namespace AcManager.Pages.Settings {
         }
 
         private void SetKeyboardInputs() {
-            KeyBindingsController.Set(Model.SelectedAppConfigs.SelectMany(x => x.Sections).SelectMany().OfType<PythonAppConfigKeyValue>());
+            KeyBindingsController.Set(Model.SelectedAppConfigs?.SelectMany(x => x.Sections).SelectMany().OfType<PythonAppConfigKeyValue>());
         }
 
         private void OnModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -69,7 +69,7 @@ namespace AcManager.Pages.Settings {
             var links = ConfigsTab.Links;
             links.Clear();
 
-            if (Model.SelectedAppConfigs.Count > 1) {
+            if (Model.SelectedAppConfigs?.Count > 1) {
                 foreach (var config in Model.SelectedAppConfigs) {
                     links.Add(new Link {
                         DisplayName = config.DisplayName,
@@ -80,7 +80,8 @@ namespace AcManager.Pages.Settings {
                 ConfigsTab.SelectedSource = ConfigsTab.Links.FirstOrDefault()?.Source;
             } else {
                 ConfigsTab.LinksMargin = new Thickness(0, 0, 0, -16);
-                ConfigsTab.SelectedSource = new Uri(Model.SelectedAppConfigs.First().DisplayName, UriKind.Relative);
+                ConfigsTab.SelectedSource = Model.SelectedAppConfigs == null ? null
+                        : new Uri(Model.SelectedAppConfigs.First().DisplayName, UriKind.Relative);
             }
         }
 
@@ -89,7 +90,7 @@ namespace AcManager.Pages.Settings {
         }
 
         public object LoadContent(Uri uri) {
-            var config = Model.SelectedAppConfigs.FirstOrDefault(x => x.DisplayName == uri.OriginalString);
+            var config = Model.SelectedAppConfigs?.FirstOrDefault(x => x.DisplayName == uri.OriginalString);
             return config?.IsSingleSection == true
                     ? new ContentControl {
                         ContentTemplate = (DataTemplate)FindResource("PythonAppConfig.SectionTemplate.NoHeader"),
@@ -129,7 +130,8 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            public PythonAppConfigs SelectedAppConfigs => _selectedApp.GetAppConfigs();
+            [CanBeNull]
+            public PythonAppConfigs SelectedAppConfigs => SelectedApp?.GetAppConfigs();
         }
 
         public class ConfigurableAppsCollection : WrappedFilteredCollection<AcItemWrapper, PythonAppObject> {

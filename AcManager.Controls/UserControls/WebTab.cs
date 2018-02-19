@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -9,37 +7,46 @@ using AcManager.Controls.UserControls.CefSharp;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls {
     public class WebTab : NotifyPropertyChanged {
-        private static Dictionary<string, IWebSomething> _somethings = new Dictionary<string, IWebSomething>();
-
         [NotNull]
         private static IWebSomething GetSomething() {
             if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)) return new CefSharpWrapper();
             return new WebBrowserWrapper();
         }
 
-        [NotNull]
-        internal IWebSomething Something { get; }
+        private readonly IWebSomething _something;
+        private readonly bool _preferTransparentBackground;
 
-        public FrameworkElement Element { get; }
+        public WebTab(string url, bool preferTransparentBackground) {
+            _preferTransparentBackground = preferTransparentBackground;
+            _something = GetSomething();
+            _something.Navigating += OnProgressChanged;
+            _something.Navigated += OnNavigated;
+            _something.NewWindow += OnNewWindow;
+            _something.TitleChanged += OnTitleChanged;
+            _something.Inject += OnInject;
+            _something.AcApiRequest += OnAcApiRequest;
+            _something.OnLoaded();
 
-        public WebTab(string url) {
-            Something = GetSomething();
-            Something.Navigating += OnProgressChanged;
-            Something.Navigated += OnNavigated;
-            Something.NewWindow += OnNewWindow;
-            Something.TitleChanged += OnTitleChanged;
-            Element = Something.GetElement();
-            Something.OnLoaded();
+            // We need to initialize element first to be able to use Navigate().
+            // TODO: Find a better way without overcomplicating everything?
+            _something.GetElement(null, preferTransparentBackground);
+
             Title = url;
             LoadedUrl = ActiveUrl = url;
             Navigate(url);
+        }
+
+        public FrameworkElement GetElement([CanBeNull] DpiAwareWindow parentWindow) {
+            return _something.GetElement(parentWindow, _preferTransparentBackground);
         }
 
         private string _title;
@@ -53,21 +60,26 @@ namespace AcManager.Controls.UserControls {
             Title = e.Title;
         }
 
-        public ICommand BackCommand => Something.BackCommand;
-        public ICommand ForwardCommand => Something.ForwardCommand;
-        public ICommand RefreshCommand => Something.RefreshCommand;
+        public ICommand BackCommand => _something.BackCommand;
+        public ICommand ForwardCommand => _something.ForwardCommand;
+        public ICommand RefreshCommand => _something.RefreshCommand;
 
         public void Navigate([CanBeNull] string url) {
-            Something.Navigate(url ?? @"about:blank");
+            _something.Navigate(url ?? @"about:blank");
+        }
+
+        [ContractAnnotation(@"filename: null => null; filename: notnull => notnull")]
+        public string ConvertFilename([CanBeNull] string filename) {
+            return _something.ConvertFilename(filename);
         }
 
         [ItemCanBeNull]
         public Task<string> GetImageUrlAsync([CanBeNull] string filename) {
-            return Something.GetImageUrlAsync(filename) ?? Task.FromResult((string)null);
+            return _something.GetImageUrlAsync(filename);
         }
 
         public void OnError(string error, string url, int line, int column) {
-            Something.OnError(error, url, line, column);
+            _something.OnError(error, url, line, column);
         }
 
         private string _loadedUrl;
@@ -82,7 +94,8 @@ namespace AcManager.Controls.UserControls {
         public string ActiveUrl {
             get => _activeUrl;
             private set => Apply(value, ref _activeUrl, () => {
-                Favicon = Regex.Replace(value, @"(?<=\w)/.+", "") + @"/favicon.ico";
+                // Favicon = Regex.Replace(value, @"(?<=\w)/.+", "") + @"/favicon.ico";
+                Favicon = $@"https://www.google.com/s2/favicons?domain={Uri.EscapeDataString(value)}";
             });
         }
 
@@ -95,7 +108,7 @@ namespace AcManager.Controls.UserControls {
 
         public void Execute(string js, bool onload = false) {
             try {
-                Something.Execute(onload ?
+                _something.Execute(onload ?
                         @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
                         @"(function(){" + js + @"})();");
             } catch (Exception e) {
@@ -114,9 +127,17 @@ namespace AcManager.Controls.UserControls {
 
         private void OnNavigated(object sender, UrlEventArgs e) {
             CommandManager.InvalidateRequerySuggested();
-            LoadedUrl = e.Url;
-            ActiveUrl = e.Url;
-            PageLoaded?.Invoke(this, new UrlEventArgs(Something.GetUrl()));
+            LoadedUrl = ActiveUrl = e.Url;
+            _jsBridge?.PageLoaded(e.Url);
+            PageLoaded?.Invoke(this, new UrlEventArgs(e.Url));
+        }
+
+        private void OnInject(object sender, WebInjectEventArgs e) {
+            _jsBridge?.PageInject(e.Url, e.ToInject);
+        }
+
+        private void OnAcApiRequest(object sender, AcApiRequestEventArgs e) {
+            e.Response = _jsBridge?.AcApiRequest(e.RequestUrl);
         }
 
         public event EventHandler<UrlEventArgs> PageLoaded;
@@ -138,5 +159,48 @@ namespace AcManager.Controls.UserControls {
             ActiveUrl = e.Url;
             IsLoading = !e.Progress.IsReady;
         }
+
+        [CanBeNull]
+        private JsBridgeBase _jsBridge;
+
+        public void SetJsBridge(Func<WebTab, JsBridgeBase> jsBridgeFactory) {
+            _something.SetJsBridge(_jsBridge = jsBridgeFactory(this));
+        }
+
+        public void SetUserAgent(string userAgent) {
+            _something.SetUserAgent(userAgent);
+        }
+
+        public void SetStyleProvider(ICustomStyleProvider styleProvider) {
+            _something.SetStyleProvider(styleProvider);
+        }
+
+        public void SetNewWindowsBehavior(NewWindowsBehavior newWindowsBehavior) {
+            _something.SetNewWindowsBehavior(newWindowsBehavior);
+        }
+
+        public void OnUnloaded() {
+            _something.OnUnloaded();
+        }
+
+        private bool _isClosed;
+
+        public bool IsClosed {
+            get => _isClosed;
+            set => Apply(value, ref _isClosed);
+        }
+
+        private bool _isMainTab;
+
+        public bool IsMainTab {
+            get => _isMainTab;
+            set => Apply(value, ref _isMainTab, () => _closeCommand?.RaiseCanExecuteChanged());
+        }
+
+        private DelegateCommand _closeCommand;
+
+        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => {
+            IsClosed = true;
+        }, () => !IsMainTab));
     }
 }

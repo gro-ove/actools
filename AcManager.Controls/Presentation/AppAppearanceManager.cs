@@ -154,6 +154,12 @@ namespace AcManager.Controls.Presentation {
             }
 
             InitializeThemesList();
+
+            Logging.Debug(theme);
+            Logging.Debug(Themes.OfType<ThemeLink>().Select(x => x.Id).JoinToString("; "));
+            Logging.Debug(Themes.OfType<ThemeLink>().Select(x => x.Source).JoinToString("; "));
+            Logging.Debug(Themes.OfType<ThemeLink>().GetByIdOrDefault(theme));
+
             SelectedTheme = Themes.OfType<ThemeLink>().GetByIdOrDefault(theme) ?? Themes.OfType<ThemeLink>().FirstOrDefault();
 
             try {

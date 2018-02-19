@@ -15,6 +15,7 @@ using AcTools.Utils;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Web {
@@ -33,7 +34,7 @@ namespace AcManager.Controls.UserControls.Web {
         [CanBeNull]
         private ICustomStyleProvider _styleProvider;
 
-        public FrameworkElement GetElement() {
+        public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
             if (_inner != null) return _inner;
             WebBrowserHelper.SetUserAgent(DefaultUserAgent);
 
@@ -96,6 +97,7 @@ namespace AcManager.Controls.UserControls.Web {
             }
             cancel = ppDisp == null;
         }
+
         // ReSharper restore RedundantAssignment
 
         [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("6d5140c1-7436-11ce-8034-00aa006009fa")]
@@ -105,9 +107,21 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
-        public event EventHandler<UrlEventArgs> Navigated;
+        public event EventHandler<PageLoadedEventArgs> Navigated;
         public event EventHandler<UrlEventArgs> NewWindow;
         public event EventHandler<TitleChangedEventArgs> TitleChanged;
+
+        public bool CanHandleAcApiRequests => false;
+        public event EventHandler<AcApiRequestEventArgs> AcApiRequest;
+
+        public bool IsInjectSupported => false;
+        public event EventHandler<WebInjectEventArgs> Inject;
+
+        public bool CanConvertFilenames => true;
+        public string ConvertFilename(string filename) {
+            // TODO: Might not work!
+            return filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri;
+        }
 
         private void OnNavigating(object sender, NavigatingCancelEventArgs e) {
             Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Uri.ToString()));
@@ -126,7 +140,7 @@ namespace AcManager.Controls.UserControls.Web {
                 Execute(userCss);
             }
 
-            Navigated?.Invoke(this, new UrlEventArgs(e.Uri.OriginalString));
+            Navigated?.Invoke(this, new PageLoadedEventArgs(e.Uri.OriginalString, null));
 
             try {
                 TitleChanged?.Invoke(this, new TitleChangedEventArgs((string)((dynamic)_inner.Document).Title));
@@ -245,7 +259,8 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
         }
 
         public async Task<string> GetImageUrlAsync(string filename) {
-            return File.Exists(filename) ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename))}" : null;
+            return File.Exists(filename)
+                    ? $@"data:image/png;base64,{Convert.ToBase64String(await FileUtils.ReadAllBytesAsync(filename).ConfigureAwait(false))}" : null;
         }
     }
 }

@@ -70,7 +70,6 @@
             <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
               <Setter TargetName="PART_Track" Property="HorizontalAlignment" Value="Left" />
-              <Setter TargetName="Bg" Property="Margin" Value="-12 0 0 0" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
@@ -138,7 +137,6 @@
             <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
               <Setter TargetName="PART_Track" Property="VerticalAlignment" Value="Top" />
-              <Setter TargetName="Bg" Property="Margin" Value="0 -12 0 0" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>

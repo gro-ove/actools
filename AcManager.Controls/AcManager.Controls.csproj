@@ -194,6 +194,7 @@
     <Compile Include="StatEntry.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="TrackBlock.cs" />
+    <Compile Include="UserControls\CefSharp\AcApiHandlerFactory.cs" />
     <Compile Include="UserControls\CefSharp\AltFilesHandlerFactory.cs" />
     <Compile Include="UserControls\CefSharp\CefSharpWrapper.cs" />
     <Compile Include="UserControls\CefSharp\DownloadHandler.cs" />
@@ -211,13 +212,17 @@
     <Compile Include="UserControls\UserChampionshipBlock.xaml.cs">
       <DependentUpon>UserChampionshipBlock.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\Web\AcApiRequestEventArgs.cs" />
+    <Compile Include="UserControls\Web\AcCompatibleApiBridge.cs" />
     <Compile Include="UserControls\Web\CustomStyleProviderExtension.cs" />
     <Compile Include="UserControls\Web\ICustomStyleProvider.cs" />
     <Compile Include="UserControls\Web\IWebSomething.cs" />
     <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
+    <Compile Include="UserControls\Web\PageLoadedEventArgs.cs" />
     <Compile Include="UserControls\Web\PageLoadingEventArgs.cs" />
     <Compile Include="UserControls\Web\JsBridgeBase.cs" />
     <Compile Include="UserControls\Web\TitleChangedEventArgs.cs" />
+    <Compile Include="UserControls\Web\WebInjectEventArgs.cs" />
     <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
     <Compile Include="UserControls\Web\UrlEventArgs.cs" />
     <Compile Include="UserControls\Web\WebBrowserWrapper.cs" />

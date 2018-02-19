@@ -304,7 +304,7 @@ namespace AcTools.Processes {
                 });
             }
 
-            protected virtual void SetRace(IniFile file) {
+            protected void SetRace(IniFile file) {
                 var section = file["RACE"];
                 section.Set("CARS", 2);
                 section.Set("AI_LEVEL", AiLevel);
@@ -314,7 +314,7 @@ namespace AcTools.Processes {
                 section.Set("JUMP_START_PENALTY", 0);
             }
 
-            protected virtual void SetSessions(IniFile file) {
+            protected void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection(null) {
                     ["NAME"] = SessionName,
                     ["TYPE"] = SessionType.Drag,
@@ -486,7 +486,7 @@ namespace AcTools.Processes {
             private int? _preset;
 
             public int? Preset {
-                get { return _preset; }
+                get => _preset;
                 set {
                     if (value == _preset) return;
                     _preset = value;
@@ -498,7 +498,7 @@ namespace AcTools.Processes {
             private int? _sessionStart;
 
             public int? SessionStart {
-                get { return _sessionStart; }
+                get => _sessionStart;
                 set {
                     if (value.Equals(_sessionStart)) return;
                     _sessionStart = value;
@@ -509,7 +509,7 @@ namespace AcTools.Processes {
             private int? _randomness;
 
             public int? Randomness {
-                get { return _randomness; }
+                get => _randomness;
                 set {
                     if (value.Equals(_randomness)) return;
                     _randomness = value;
@@ -520,7 +520,7 @@ namespace AcTools.Processes {
             private int? _lapGain;
 
             public int? LapGain {
-                get { return _lapGain; }
+                get => _lapGain;
                 set {
                     if (value.Equals(_lapGain)) return;
                     _lapGain = value;
@@ -531,7 +531,7 @@ namespace AcTools.Processes {
             private int? _sessionTransfer;
 
             public int? SessionTransfer {
-                get { return _sessionTransfer; }
+                get => _sessionTransfer;
                 set {
                     if (value.Equals(_sessionTransfer)) return;
                     _sessionTransfer = value;

@@ -2,14 +2,16 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Web {
     internal interface IWebSomething {
-        FrameworkElement GetElement();
+        [NotNull]
+        FrameworkElement GetElement([CanBeNull] DpiAwareWindow parentWindow, bool preferTransparentBackground);
 
         event EventHandler<PageLoadingEventArgs> Navigating;
-        event EventHandler<UrlEventArgs> Navigated;
+        event EventHandler<PageLoadedEventArgs> Navigated;
         event EventHandler<UrlEventArgs> NewWindow;
         event EventHandler<TitleChangedEventArgs> TitleChanged;
 
@@ -34,5 +36,19 @@ namespace AcManager.Controls.UserControls.Web {
         ICommand BackCommand { get; }
         ICommand ForwardCommand { get; }
         ICommand RefreshCommand { get; }
+
+        // Unfortunately, here, standard Windows’ WebBrowser becomes completely unusable. Thankfully,
+        // in most cases those features aren’t needed.
+
+        bool CanHandleAcApiRequests { get; }
+        event EventHandler<AcApiRequestEventArgs> AcApiRequest;
+
+        bool IsInjectSupported { get; }
+        event EventHandler<WebInjectEventArgs> Inject;
+
+        bool CanConvertFilenames { get; }
+
+        [ContractAnnotation(@"filename: null => null; filename: notnull => notnull")]
+        string ConvertFilename([CanBeNull] string filename);
     }
 }

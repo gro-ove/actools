@@ -266,6 +266,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _filename;
 
+        [CanBeNull]
         public string Filename {
             get => _filename;
             set => SetValue(FilenameProperty, value);
@@ -440,9 +441,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var canonicalUrl = uri.ToString();
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
                 fileNameBuilder.Append(BitConverter.ToString(hash).Replace(@"-", "").ToLower());
-                if (Path.HasExtension(canonicalUrl)) {
-                    fileNameBuilder.Append(Regex.Match(Path.GetExtension(canonicalUrl), @"^\.[-_a-zA-Z0-9]+").Value);
-                }
+
+                try {
+                    if (Path.HasExtension(canonicalUrl)) {
+                        fileNameBuilder.Append(Regex.Match(Path.GetExtension(canonicalUrl), @"^\.[-_a-zA-Z0-9]+").Value);
+                    }
+                } catch (ArgumentException) { }
             }
 
             var fileName = fileNameBuilder.ToString();
@@ -986,8 +990,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public int InnerDecodeHeight => DecodeHeight;
 
+        [Pure]
         private bool IsRemoteImage() {
-            return Filename.StartsWith("http://") || Filename.StartsWith("https://");
+            return Filename != null && (Filename.StartsWith("http://") || Filename.StartsWith("https://"));
         }
 
         /// <summary>

@@ -271,6 +271,7 @@
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
+    <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputScanner.cs" />
@@ -367,8 +368,17 @@
     <Compile Include="Helpers\Loaders\YandexDiskLoader.cs" />
     <Compile Include="Helpers\PaintShopRulesLoader.cs" />
     <Compile Include="Helpers\SettingEntryStored.cs" />
+    <Compile Include="Helpers\SettingsHolder.CustomShowroom.cs" />
     <Compile Include="Helpers\SettingsHolder.Drive.cs" />
+    <Compile Include="Helpers\SettingsHolder.GenericMods.cs" />
     <Compile Include="Helpers\SettingsHolder.Integrated.cs" />
+    <Compile Include="Helpers\SettingsHolder.Interface.cs" />
+    <Compile Include="Helpers\SettingsHolder.Live.cs" />
+    <Compile Include="Helpers\SettingsHolder.Locale.cs" />
+    <Compile Include="Helpers\SettingsHolder.Online.cs" />
+    <Compile Include="Helpers\SettingsHolder.Plugins.cs" />
+    <Compile Include="Helpers\SettingsHolder.Sharing.cs" />
+    <Compile Include="Helpers\SettingsHolder.WebBlocks.cs" />
     <Compile Include="Helpers\SocketExtension.cs" />
     <Compile Include="Helpers\StereoOdometerHelper.cs" />
     <Compile Include="Helpers\PresetsPerMode\PresetsPerModeBase.cs" />

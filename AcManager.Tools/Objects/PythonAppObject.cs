@@ -138,6 +138,7 @@ namespace AcManager.Tools.Objects {
         private PythonAppConfigs _configs;
         private DateTime _lastSaved;
 
+        [NotNull]
         public PythonAppConfigs GetAppConfigs() {
             if (_configs == null) {
                 _configs = new PythonAppConfigs(Location, () => {

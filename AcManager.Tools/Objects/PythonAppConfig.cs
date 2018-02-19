@@ -92,6 +92,7 @@ namespace AcManager.Tools.Objects {
             return FileUtils.Affects(changed, Filename) || _defaultsFilename != null && FileUtils.Affects(changed, _defaultsFilename);
         }
 
+        [NotNull]
         public List<PythonAppConfigSection> Sections { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]

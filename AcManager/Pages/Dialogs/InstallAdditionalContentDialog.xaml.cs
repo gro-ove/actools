@@ -63,8 +63,10 @@ namespace AcManager.Pages.Dialogs {
             if (_dialog == null) {
                 _dialog = new InstallAdditionalContentDialog();
 
-                if (Application.Current?.MainWindow is MainWindow) {
-                    _dialog.Owner = Application.Current?.MainWindow;
+                if (Application.Current?.MainWindow is MainWindow m && m.IsVisible) {
+                    try {
+                        _dialog.Owner = m;
+                    } catch (InvalidOperationException) { }
                     _dialog.ShowInTaskbar = false;
                     _dialog.WindowStyle = WindowStyle.ToolWindow;
                 }
@@ -118,7 +120,7 @@ namespace AcManager.Pages.Dialogs {
 
         public PluginsRequirement Plugins { get; } = new PluginsRequirement(KnownPlugins.SevenZip);
 
-        private void OnClosed(object sender, EventArgs e) {}
+        private void OnClosed(object sender, EventArgs e) { }
 
         private void OnDrop(object sender, DragEventArgs e) {
             ArgumentsHandler.OnDrop(sender, e);
@@ -153,6 +155,6 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) {}
+        private void OnItemMouseDown(object sender, MouseButtonEventArgs e) { }
     }
 }

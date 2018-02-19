@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.CefSharp {
     public class AltFilesHandlerFactory : ISchemeHandlerFactory {
-        public const string SchemeName = "custom";
+        public const string SchemeName = "file";
 
         public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
             if (schemeName == SchemeName) {
@@ -19,7 +19,6 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     return new CustomResourceHandler(filename);
                 } catch (Exception e) {
                     Logging.Error(e);
-                    return null;
                 }
             }
 
@@ -48,16 +47,12 @@ namespace AcManager.Controls.UserControls.CefSharp {
                 }
             }
 
-            public void Dispose() {
-                _data?.Dispose();
-            }
-
-            public bool ProcessRequest(IRequest request, ICallback callback) {
+            bool IResourceHandler.ProcessRequest(IRequest request, ICallback callback) {
                 callback.Continue();
                 return true;
             }
 
-            public void GetResponseHeaders(IResponse response, out long responseLength, out string redirectUrl) {
+            void IResourceHandler.GetResponseHeaders(IResponse response, out long responseLength, out string redirectUrl) {
                 redirectUrl = null;
                 if (_data == null) {
                     responseLength = 0L;
@@ -71,7 +66,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
                 }
             }
 
-            public bool ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
+            bool IResourceHandler.ReadResponse(Stream dataOut, out int bytesRead, ICallback callback) {
                 if (!callback.IsDisposed) {
                     callback.Dispose();
                 }
@@ -85,15 +80,14 @@ namespace AcManager.Controls.UserControls.CefSharp {
                 return bytesRead > 0;
             }
 
-            public bool CanGetCookie(Cookie cookie) {
-                return true;
+            bool IResourceHandler.CanGetCookie(Cookie cookie) => true;
+            bool IResourceHandler.CanSetCookie(Cookie cookie) => true;
+
+            void IDisposable.Dispose() {
+                _data?.Dispose();
             }
 
-            public bool CanSetCookie(Cookie cookie) {
-                return true;
-            }
-
-            public void Cancel() { }
+            void IResourceHandler.Cancel() { }
         }
     }
 }

@@ -1,8 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
@@ -13,6 +17,8 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using LogSeverity = CefSharp.LogSeverity;
 
 namespace AcManager.Controls.UserControls.CefSharp {
@@ -22,70 +28,123 @@ namespace AcManager.Controls.UserControls.CefSharp {
 
         static CefSharpWrapper() {
             var windows = $@"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
-            DefaultUserAgent =
-                    $@"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
+            DefaultUserAgent = $@"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
         #endregion
 
+        private Border _wrapper;
         private ChromiumWebBrowser _inner;
         private RequestHandler _requestHandler;
+        private double _zoomLevel;
 
-        public FrameworkElement GetElement() {
-            if (_inner != null) return _inner;
+        private static readonly AcApiHandlerFactory AcApiHandler = new AcApiHandlerFactory();
 
-            if (!Cef.IsInitialized) {
-                var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
-                var settings = new CefSettings {
-                    UserAgent = DefaultUserAgent,
-                    MultiThreadedMessageLoop = true,
-                    LogSeverity = LogSeverity.Disable,
-                    CachePath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
-                    UserDataPath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
-                    BrowserSubprocessPath = Path.Combine(path, "CefSharp.BrowserSubprocess.exe"),
-                    LocalesDirPath = Path.Combine(path, "locales"),
-                    ResourcesDirPath = Path.Combine(path),
-                    Locale = SettingsHolder.Locale.LocaleName,
+        public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
+            if (_inner == null) {
+                if (!Cef.IsInitialized) {
+                    var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
+                    var settings = new CefSettings {
+                        UserAgent = DefaultUserAgent,
+                        MultiThreadedMessageLoop = true,
+                        LogSeverity = LogSeverity.Disable,
+                        CachePath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
+                        UserDataPath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
+                        BrowserSubprocessPath = Path.Combine(path, "CefSharp.BrowserSubprocess.exe"),
+                        LocalesDirPath = Path.Combine(path, "locales"),
+                        ResourcesDirPath = Path.Combine(path),
+                        Locale = SettingsHolder.Locale.LocaleName,
 #if DEBUG
-                    RemoteDebuggingPort = 45451,
+                        RemoteDebuggingPort = 45451,
 #endif
+                    };
+
+                    settings.RegisterScheme(new CefCustomScheme {
+                        SchemeName = AcApiHandlerFactory.AcSchemeName,
+                        SchemeHandlerFactory = AcApiHandler
+                    });
+
+                    settings.RegisterScheme(new CefCustomScheme {
+                        SchemeName = AltFilesHandlerFactory.SchemeName,
+                        SchemeHandlerFactory = new AltFilesHandlerFactory()
+                    });
+
+                    AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
+                        try {
+                            Cef.Shutdown();
+                        } catch (Exception e) {
+                            Logging.Error(e);
+                        }
+                    };
+
+                    Cef.Initialize(settings, false, null);
+                }
+
+                _requestHandler = new RequestHandler {
+                    UserAgent = DefaultUserAgent
                 };
 
-                settings.RegisterScheme(new CefCustomScheme {
-                    SchemeName = AltFilesHandlerFactory.SchemeName,
-                    SchemeHandlerFactory = new AltFilesHandlerFactory()
-                });
+                _requestHandler.Inject += OnRequestHandlerInject;
 
-                AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
-                    try {
-                        Cef.Shutdown();
-                    } catch (Exception e) {
-                        Logging.Error(e);
-                    }
+                _inner = new ChromiumWebBrowser {
+                    BrowserSettings = {
+                        FileAccessFromFileUrls = CefState.Enabled,
+                        UniversalAccessFromFileUrls = CefState.Enabled,
+                        WebSecurity = CefState.Disabled,
+                        OffScreenTransparentBackground = preferTransparentBackground,
+                    },
+                    RequestHandler = _requestHandler,
+                    MenuHandler = new MenuHandler(),
+                    DownloadHandler = new DownloadHandler(),
                 };
 
-                Cef.Initialize(settings, false, null);
+                RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
+                _inner.FrameLoadStart += OnFrameLoadStart;
+                _inner.FrameLoadEnd += OnFrameLoadEnd;
+                _inner.TitleChanged += OnTitleChanged;
+
+                _wrapper = new Border { Child = _inner };
             }
 
-            _requestHandler = new RequestHandler {
-                UserAgent = DefaultUserAgent
-            };
+            _zoomLevel = parentWindow?.ScaleX ?? 1d;
+            if (_zoomLevel > 1d) {
+                _inner.LayoutTransform = new ScaleTransform { ScaleX = 1d / _zoomLevel, ScaleY = 1d / _zoomLevel };
+                _inner.SetBinding(FrameworkElement.WidthProperty, new Binding {
+                    Path = new PropertyPath(FrameworkElement.ActualWidthProperty),
+                    Source = _wrapper,
+                    Converter = new MultiplyConverter(),
+                    ConverterParameter = _zoomLevel
+                });
+                _inner.SetBinding(FrameworkElement.HeightProperty, new Binding {
+                    Path = new PropertyPath(FrameworkElement.ActualHeightProperty),
+                    Source = _wrapper,
+                    Converter = new MultiplyConverter(),
+                    ConverterParameter = _zoomLevel
+                });
+            } else {
+                _inner.LayoutTransform = null;
+                _inner.ClearValue(FrameworkElement.WidthProperty);
+                _inner.ClearValue(FrameworkElement.HeightProperty);
+            }
 
-            _inner = new ChromiumWebBrowser {
-                BrowserSettings = {
-                    FileAccessFromFileUrls = CefState.Enabled,
-                    UniversalAccessFromFileUrls = CefState.Enabled,
-                    WebSecurity = CefState.Disabled,
-                    OffScreenTransparentBackground = false,
-                },
-                RequestHandler = _requestHandler,
-                MenuHandler = new MenuHandler(),
-                DownloadHandler = new DownloadHandler(),
-            };
+            RenderOptions.SetBitmapScalingMode(_inner, _zoomLevel >= 1d ? BitmapScalingMode.NearestNeighbor : BitmapScalingMode.HighQuality);
+            return _wrapper;
+        }
 
-            _inner.FrameLoadStart += OnFrameLoadStart;
-            _inner.FrameLoadEnd += OnFrameLoadEnd;
-            _inner.TitleChanged += OnTitleChanged;
-            return _inner;
+        private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
+            _inner.SetZoomLevel(_zoomLevel);
+            if (e.Frame.IsMain) {
+                ActionExtension.InvokeInMainThreadAsync(() => Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Url)));
+            }
+        }
+
+        private string OnAcApiRequest(string url) {
+            var e = new AcApiRequestEventArgs(url);
+            AcApiRequest?.Invoke(this, e);
+            return e.Response;
+        }
+
+        private void OnRequestHandlerInject(object o, WebInjectEventArgs webInjectEventArgs) {
+            Inject?.Invoke(this, webInjectEventArgs);
         }
 
         private void OnTitleChanged(object o, DependencyPropertyChangedEventArgs args) {
@@ -93,22 +152,16 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
-        public event EventHandler<UrlEventArgs> Navigated;
+        public event EventHandler<PageLoadedEventArgs> Navigated;
         public event EventHandler<UrlEventArgs> NewWindow;
         public event EventHandler<Web.TitleChangedEventArgs> TitleChanged;
-
-        private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
-            if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThreadAsync(() => Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Url)));
-            }
-        }
 
         private void OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
             if (e.Frame.IsMain) {
                 ActionExtension.InvokeInMainThread(() => {
                     Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Ready, e.Url));
                     ModifyPage();
-                    Navigated?.Invoke(this, new UrlEventArgs(_inner.Address));
+                    Navigated?.Invoke(this, new PageLoadedEventArgs(_inner.Address, null));
                 });
             }
         }
@@ -119,6 +172,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
 
         public void SetJsBridge(JsBridgeBase bridge) {
             try {
+                AcApiHandler.Register(_inner, bridge?.AcApiHosts.ToArray(), OnAcApiRequest);
                 _inner.RegisterJsObject(@"external", bridge, new BindingOptions { CamelCaseJavascriptNames = false });
             } catch (Exception e) {
                 Logging.Warning(e);
@@ -134,9 +188,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior mode) {
-            _inner.LifeSpanHandler = new LifeSpanHandler(mode, url => {
-                NewWindow?.Invoke(this, new UrlEventArgs(url));
-            });
+            _inner.LifeSpanHandler = new LifeSpanHandler(mode, url => { NewWindow?.Invoke(this, new UrlEventArgs(url)); });
         }
 
         public void ModifyPage() {
@@ -163,22 +215,29 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             _inner.Address = url;
         }
 
+        public bool CanHandleAcApiRequests => true;
+        public event EventHandler<AcApiRequestEventArgs> AcApiRequest;
+
+        public bool IsInjectSupported => true;
+        public event EventHandler<WebInjectEventArgs> Inject;
+
+        public bool CanConvertFilenames => true;
+
+        public string ConvertFilename(string filename) {
+            return filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri.Replace(@"file", AltFilesHandlerFactory.SchemeName);
+        }
+
         public ICommand BackCommand => _inner.BackCommand;
-
         public ICommand ForwardCommand => _inner.ForwardCommand;
-
         private DelegateCommand<bool?> _refreshCommand;
-
         public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => { _inner.Reload(noCache == true); }));
 
         public void OnLoaded() { }
-
         public void OnUnloaded() { }
-
         public void OnError(string error, string url, int line, int column) { }
 
         public Task<string> GetImageUrlAsync(string filename) {
-            return Task.FromResult(filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri.Replace(@"file", AltFilesHandlerFactory.SchemeName));
+            return Task.FromResult(ConvertFilename(filename));
         }
     }
 }

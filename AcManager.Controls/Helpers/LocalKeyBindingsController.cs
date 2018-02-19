@@ -48,8 +48,8 @@ namespace AcManager.Controls.Helpers {
                 o.IsWaiting = true;
             }, o => o != null));
 
-        public void Set(IEnumerable<ILocalKeyBindingInput> list) {
-            _list = list.ToList();
+        public void Set([CanBeNull] IEnumerable<ILocalKeyBindingInput> list) {
+            _list = list?.ToList();
             OnPropertyChanged(nameof(IsWaitingForKey));
             OnPropertyChanged(nameof(ToggleWaitingCommand));
         }

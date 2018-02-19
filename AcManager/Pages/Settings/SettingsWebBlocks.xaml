@@ -1,0 +1,47 @@
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsWebBlocks" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    d:DataContext="{d:DesignInstance set:SettingsWebBlocks+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer mui:SaveScroll.Key="SettingsWebBlocks">
+    <StackPanel set:Search.Category="Web" set:Search.Limited="True" x:Name="Panel" Style="{StaticResource SettingsPanel}">
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Staying alive in background:" />
+
+      <DockPanel>
+        <DockPanel.ToolTip>
+          <TextBlock Text="Use this option to set how many recently used browsers should be kept alive when you switch to a different section" MaxWidth="400"
+              TextWrapping="Wrap" />
+        </DockPanel.ToolTip>
+        <mui:ValueLabel Value="{Binding WebBlocks.KeepInMemory}" mui:BetterTextBox.Minimum="0" Content="Keep alive"
+            Postfix="{Binding WebBlocks.KeepInMemory, Converter={StaticResource PluralizingConverter}, ConverterParameter=' browser'}" />
+        <Slider Minimum="0" Maximum="10" Value="{Binding WebBlocks.KeepInMemory}" TickFrequency="1" TickPlacement="BottomRight" />
+      </DockPanel>
+
+      <CheckBox IsChecked="{Binding WebBlocks.AlwaysKeepImportantInMemory}" ToolTip="With the next option, they’ll still be unloaded before the race">
+        <Label Content="Always keep important browsers alive, such as SRS one" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding WebBlocks.UnloadBeforeRace}">
+        <Label Content="Before the race, unload browsers in background" />
+      </CheckBox>
+
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Saving:" />
+
+      <CheckBox IsChecked="{Binding WebBlocks.SaveMainUrl}">
+        <Label Content="Save URL in the main tab" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding WebBlocks.SaveExtraTabs}">
+        <Label Content="Save extra tabs" />
+      </CheckBox>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

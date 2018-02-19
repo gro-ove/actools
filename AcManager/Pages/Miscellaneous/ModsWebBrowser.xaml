@@ -19,7 +19,7 @@
 
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
 
-        <DockPanel Margin="{StaticResource ContentMarginWithPadding}">
+        <DockPanel Margin="0 4 0 0">
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
               SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}" />
         </DockPanel>

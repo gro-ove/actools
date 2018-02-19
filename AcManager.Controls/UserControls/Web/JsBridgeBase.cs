@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using System.Windows;
@@ -10,8 +11,17 @@ using JetBrains.Annotations;
 namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
     public abstract class JsBridgeBase {
+        // Do not include “www.” here!
+        public Collection<string> AcApiHosts { get; } = new Collection<string>();
+
         public WebTab Tab { get; internal set; }
 
+        [CanBeNull]
+        public virtual string AcApiRequest(string url) {
+            return null;
+        }
+
+        public virtual void PageInject(string url, Collection<string> toInject) {}
         public virtual void PageLoaded(string url) {}
 
         protected void Sync(Action action) {
