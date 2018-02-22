@@ -612,4 +612,7 @@
   <data name="Colon_Format" xml:space="preserve">
     <value>{0}: {1}</value>
   </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>Pliki DDS (*.dds)|*.dds|Wszystkie pliki (*.*)|*.*</value>
+  </data>
 </root>

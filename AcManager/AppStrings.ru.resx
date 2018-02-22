@@ -143,8 +143,8 @@
     <value>Не удалось начать заезд</value>
   </data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
-    <value>Сохранить без привязки к трассе</value>
-  </data>
+    <value>Сохранить как общий</value>
+  <alternative>Сохранить без привязки к трассе</alternative></data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Для</value>
   </data>
@@ -206,8 +206,8 @@
     <value>Поправить имя</value>
   </data>
   <data name="Main_Title" xml:space="preserve">
-    <value>Content Manager (Lite-режим)</value>
-  </data>
+    <value>Контент Менеджер (Lite-режим)</value>
+  <alternative>Content Manager (Lite-режим)</alternative></data>
   <data name="Main_OfficialSupportNotification" xml:space="preserve">
     <value>Теперь с официальной поддержкой!</value>
   </data>
@@ -287,8 +287,8 @@
     <value>Трассы</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Демонстрационные залы</value>
-  <alternative>Шоурумы</alternative></data>
+    <value>Выставочные залы</value>
+  <alternative>Шоурумы</alternative><alternative>Демонстрационные залы</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Разное</value>
   </data>
@@ -338,8 +338,8 @@
     <value>Машины:</value>
   </data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Демонстрационные залы:</value>
-  <alternative>Шоурумы:</alternative></data>
+    <value>Выставочные залы:</value>
+  <alternative>Шоурумы:</alternative><alternative>Демонстрационные залы:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Шрифты:</value>
   </data>
@@ -447,11 +447,11 @@
     <value>Перезагрузить (Ctrl+R)</value>
   </data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Демонстрационный зал</value>
-  <alternative>Шоурум</alternative></data>
+    <value>Выставочный зал</value>
+  <alternative>Шоурум</alternative><alternative>Демонстрационный зал</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Демонстрационный зал</value>
-  <alternative>Кастомный Шоурум</alternative></data>
+    <value>Пользовательский выставочный зал</value>
+  <alternative>Кастомный Шоурум</alternative><alternative>Демонстрационный зал</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>Пробный заезд</value>
   <alternative>Тест-драйв</alternative></data>
@@ -621,8 +621,8 @@
     <value>Погода:</value>
   </data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Создать новый зал</value>
-  <alternative>Создать новый шоурум</alternative></data>
+    <value>Создать новый выставочный зал</value>
+  <alternative>Создать новый шоурум</alternative><alternative>Создать новый зал</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Лишь выбрать существующее изображение</value>
   </data>
@@ -636,8 +636,8 @@
     <value>Начать редактирование</value>
   </data>
   <data name="Toolbar_DisableEditMode" xml:space="preserve">
-    <value>Завершить редактирование</value>
-  </data>
+    <value>Отключить режим редактирования</value>
+  <alternative>Завершить редактирование</alternative></data>
   <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
     <value>Протестировать погоду на трассе (Ctrl+G)</value>
   </data>
@@ -669,8 +669,8 @@
     <value>{0} предустановка</value>
   <alternative>{0} сетап</alternative></data>
   <data name="List_Skins" xml:space="preserve">
-    <value>{0} скин</value>
-  </data>
+    <value>{0} раскраска</value>
+  <alternative>{0} скин</alternative></data>
   <data name="List_Cars" xml:space="preserve">
     <value>{0} машина</value>
   </data>
@@ -690,8 +690,8 @@
     <value>{0} пресет</value>
   <alternative>{0} предустановок</alternative></data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} зал</value>
-  <alternative>{0} залов</alternative><alternative>{0} шоурум</alternative></data>
+    <value>{0} выставочный зал</value>
+  <alternative>{0} залов</alternative><alternative>{0} шоурум</alternative><alternative>{0} зал</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} трасса</value>
   </data>
@@ -703,8 +703,8 @@
     <comment>Please, keep it short</comment>
   </data>
   <data name="AcError_AvailableSolutions" xml:space="preserve">
-    <value>{!Доступное решение}:</value>
-  </data>
+    <value>Доступно {решение}:</value>
+  <alternative>{!Доступное решение}:</alternative></data>
   <data name="CarPreviews_TakenTime" xml:space="preserve">
     <value>Заняло {0}</value>
   </data>
@@ -787,8 +787,8 @@
     <value>Большие файлы:</value>
   </data>
   <data name="Settings_Sharing_CustomIds" xml:space="preserve">
-    <value>Кастомные ID</value>
-  </data>
+    <value>Пользовательские ID</value>
+  <alternative>Кастомные ID</alternative></data>
   <data name="Settings_QuickSwitches_LibraryLabel" xml:space="preserve">
     <value>Библиотека:</value>
   </data>
@@ -895,8 +895,8 @@
     <value>Температура</value>
   </data>
   <data name="Drive_TrackStateLabel" xml:space="preserve">
-    <value>Состояние трассы:</value>
-  <alternative>Трасса:</alternative></data>
+    <value>Трасса:</value>
+  <alternative>Состояние трассы:</alternative></data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
     <value>Время:</value>
   </data>
@@ -1003,8 +1003,8 @@
     <value>Всё</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Создать новый зал</value>
-  <alternative>Создать новый шоурум</alternative></data>
+    <value>Создать новый выставочный зал</value>
+  <alternative>Создать новый шоурум</alternative><alternative>Создать новый зал</alternative></data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Имя:</value>
   </data>
@@ -1216,8 +1216,8 @@
     <value>Макс. непрозрачн. за</value>
   </data>
   <data name="AcSettings_GhostCar" xml:space="preserve">
-    <value>Автомобиль-призрак</value>
-  </data>
+    <value>Машина-призрак</value>
+  <alternative>Автомобиль-призрак</alternative></data>
   <data name="Controls_Abs" xml:space="preserve">
     <value>АБС:</value>
   </data>
@@ -1315,8 +1315,8 @@
     <value>Убедитесь, что данные верны.</value>
   </data>
   <data name="CarSpecs_PowerLabel" xml:space="preserve">
-    <value>Мощность:</value>
-  </data>
+    <value>Л.с.:</value>
+  <alternative>Мощность:</alternative></data>
   <data name="CarSpecs_TorqueLabel" xml:space="preserve">
     <value>Крут. момент:</value>
   </data>
@@ -1354,11 +1354,11 @@
     <value>Третичный цвет:</value>
   </data>
   <data name="LiveryIcon_NumberValue" xml:space="preserve">
-    <value>Номер</value>
-  </data>
+    <value>Значение</value>
+  <alternative>Номер</alternative></data>
   <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
-    <value>Цвет номера:</value>
-  </data>
+    <value>Цвет текста:</value>
+  <alternative>Цвет номера:</alternative></data>
   <data name="LiveryIcon_Number_Condensed" xml:space="preserve">
     <value>Сжатый</value>
   </data>
@@ -1475,13 +1475,37 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Загружать информацию о повторах</value>
   </data>
   <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
-    <value>Пытаться определять трассу, автомобиль и погоду для повторов на вкладке МЕДИА/ПОВТОРЫ</value>
-  </data>
+    <value>Пытаться определять трассу, машину и погоду для повторов на вкладке МЕДИА/ПОВТОРЫ</value>
+  <alternative>Пытаться определять трассу, автомобиль и погоду для повторов на вкладке МЕДИА/ПОВТОРЫ</alternative></data>
   <data name="Settings_Replays_NameFormat" xml:space="preserve">
     <value>Формат имени для повтора</value>
   </data>
   <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
     <value>Используется для сохранения и автосохранения повторов после гонки.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название машины;
+ [b][mono]{car.id}[/mono][/b] — id машины;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы;
+ [b][mono]{date}[/mono][/b] — дата и время в правильном формате;
+ [b][mono]{date_ac}[/mono][/b] — дата и время в формате AC.
+
+Модификаторы:
+ [b][mono]{…:l}[/mono][/b] — нижний регистр;
+ [b][mono]{…:u}[/mono][/b] — верхний регистр;
+ [b][mono]{…:0}[/mono][/b] — только первый символ.
+
+Примеры:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — формат Kunos по умолчанию;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — что-то вроде “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+[b]Осторожно[/b]:
+ Не используйте символы, такие как “[” или “]”!</value>
+  <alternative>Используется для сохранения и автосохранения повторов после гонки.
 
 Значения для подстановки:
  [b][mono]{type}[/mono][/b] — тип гонки;
@@ -1504,8 +1528,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
 Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
 
 [b]Осторожно[/b]:
- Не используйте символы, такие как “[” или “]”!</value>
-  </data>
+ Не используйте символы, такие как “[” или “]”!</alternative></data>
   <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
     <value>Действия связанные с повторами:</value>
   </data>
@@ -1584,14 +1607,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Записывать "призрак" в режиме "Быстрый круг" даже если он скрыт</value>
   </data>
   <data name="Settings_Drive_CacheBrands_Tooltip" xml:space="preserve">
-    <value>В диалоге выбора автомобиля</value>
-  </data>
+    <value>В диалоге выбора машины</value>
+  <alternative>В диалоге выбора автомобиля</alternative></data>
   <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
     <value>Разрешить изменять уровень ИИ</value>
   </data>
   <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
-    <value>Разрешить изменять раскраску автомобиля</value>
-  </data>
+    <value>Разрешить изменять раскраску машины</value>
+  <alternative>Разрешить изменять раскраску автомобиля</alternative></data>
   <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
     <value>Я настоятельно рекомендую сначала включить Magick.NET — с ним, качество результата будет выше</value>
   </data>
@@ -1642,20 +1665,15 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
 
 Значения для подстановки:
  [b][mono]{type}[/mono][/b] — тип гонки;
- [b][mono]{car}[/mono][/b] — название автомобиля;
- [b][mono]{car.id}[/mono][/b] — id автомобиля;
+ [b][mono]{car}[/mono][/b] — название машины;
+ [b][mono]{car.id}[/mono][/b] — id машины;
  [b][mono]{track}[/mono][/b] — название трассы;
  [b][mono]{track.id}[/mono][/b] — id трассы.
 
 Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
 
 Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</value>
-  </data>
-  <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
-    <value>Команда после гонки:</value>
-  </data>
-  <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
-    <value>Эта команда будет выполнена перед запуском acs.exe,но после применения всех ini-файлов.
+  <alternative>Эта команда будет выполнена после завершения acs.exe, но до прочтения всех результирующих json-файлов.
 
 Значения для подстановки:
  [b][mono]{type}[/mono][/b] — тип гонки;
@@ -1666,8 +1684,35 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
 
 Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
 
-Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</value>
+Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</alternative></data>
+  <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
+    <value>Команда после гонки:</value>
   </data>
+  <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
+    <value>Эта команда будет выполнена перед запуском acs.exe,но после применения всех ini-файлов.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название машины;
+ [b][mono]{car.id}[/mono][/b] — id машины;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</value>
+  <alternative>Эта команда будет выполнена перед запуском acs.exe,но после применения всех ini-файлов.
+
+Значения для подстановки:
+ [b][mono]{type}[/mono][/b] — тип гонки;
+ [b][mono]{car}[/mono][/b] — название автомобиля;
+ [b][mono]{car.id}[/mono][/b] — id автомобиля;
+ [b][mono]{track}[/mono][/b] — название трассы;
+ [b][mono]{track.id}[/mono][/b] — id трассы.
+
+Если вам нужны какие-то другие значения, пожалуйста, свяжитесь с нами и мы добавим их.
+
+Рабочим будет установлен каталог Assetto Corsa в Документах профиля пользователя.</alternative></data>
   <data name="Settings_Drive_CacheBrands" xml:space="preserve">
     <value>Кэшировать марки</value>
   </data>
@@ -1678,11 +1723,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Теоретически:</value>
   </data>
   <data name="Drive_GhostCar" xml:space="preserve">
-    <value>Автомобиль-призрак</value>
-  </data>
+    <value>Машина-призрак</value>
+  <alternative>Автомобиль-призрак</alternative></data>
   <data name="Drive_GhostCarAdvantage" xml:space="preserve">
-    <value>Преимущество автомобиля-призрака</value>
-  </data>
+    <value>Преимущество машины-призрака</value>
+  <alternative>Преимущество автомобиля-призрака</alternative></data>
   <data name="Drive_StartFrom" xml:space="preserve">
     <value>Откуда начать:</value>
   </data>
@@ -1810,14 +1855,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Водители в сети:</value>
   </data>
   <data name="Online_Sorting_Drivers" xml:space="preserve">
-    <value>Водителям</value>
-  </data>
+    <value>Водители</value>
+  <alternative>Водителям</alternative></data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
-    <value>Заполненности</value>
-  </data>
+    <value>Вместимость</value>
+  <alternative>Заполненности</alternative></data>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
-    <value>Количеству авто</value>
-  </data>
+    <value>Количество машин</value>
+  <alternative>Количеству авто</alternative></data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
     <value>Нечего отображать</value>
   </data>
@@ -1825,8 +1870,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Добавить новый сервер</value>
   </data>
   <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
-    <value>Показывать логотипы марок в списке автомобилей</value>
-  </data>
+    <value>Показывать логотипы марок в списке машин</value>
+  <alternative>Показывать логотипы марок в списке автомобилей</alternative></data>
   <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
     <value>Загружать информацию с сервера напрямую</value>
   </data>
@@ -1882,8 +1927,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Управление настройками сервера:</value>
   </data>
   <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
-    <value>Простой демонстрационный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</value>
-  </data>
+    <value>Простой выставочный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</value>
+  <alternative>Простой демонстрационный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
     <value>Автоматическая регулировка поворота камеры</value>
   </data>
@@ -1891,14 +1936,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Инвертировать кнопки мыши</value>
   </data>
   <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
-    <value>Простой зал:</value>
-  </data>
+    <value>Простой выставочный зал:</value>
+  <alternative>Простой зал:</alternative></data>
   <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
-    <value>Качественный зал:</value>
-  </data>
+    <value>Качественный выставочный зал:</value>
+  <alternative>Качественный зал:</alternative></data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>Зал по умолчанию</value>
-  </data>
+    <value>Выставочный зал по умолчанию</value>
+  <alternative>Зал по умолчанию</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
     <value>По умолчанию:</value>
   </data>
@@ -1912,8 +1957,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Использовать быстрое сглаживание (FXAA)</value>
   </data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
-    <value>Пытаться держать автомобиль в центре экрана как можно дольше (но без каких-либо сложных расчетов)</value>
-  </data>
+    <value>Пытаться держать машину в центре экрана как можно дольше (но без каких-либо сложных расчетов)</value>
+  <alternative>Пытаться держать автомобиль в центре экрана как можно дольше (но без каких-либо сложных расчетов)</alternative></data>
   <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
     <value>Использовать левую кнопку мыши для панорамирования и правую для вращения модели</value>
   </data>
@@ -1933,11 +1978,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Я сомневаюсь, что у вас есть время, чтобы обновить их все</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Скачать предварительные просмотры обычных демонстрационных залов</value>
-  </data>
+    <value>Скачать предварительные просмотры обычных выставочных залов</value>
+  <alternative>Скачать предварительные просмотры обычных демонстрационных залов</alternative></data>
   <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
-    <value>Значок символ шрифта:</value>
-  </data>
+    <value>Значок символа шрифта:</value>
+  <alternative>Значок символ шрифта:</alternative></data>
   <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
     <value>Один символ, который будет использоваться для значка</value>
   </data>
@@ -1957,14 +2002,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>К примеру, на отключение</value>
   </data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>Открыть каталог с демонстрационными залами (Ctrl+F)</value>
-  </data>
+    <value>Открыть каталог с выставочными залами (Ctrl+F)</value>
+  <alternative>Открыть каталог с демонстрационными залами (Ctrl+F)</alternative></data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>Создать новый зал из существующей панорамы (Ctrl+N)</value>
-  </data>
+    <value>Создать новый выставочный зал из существующей панорамы (Ctrl+N)</value>
+  <alternative>Создать новый зал из существующей панорамы (Ctrl+N)</alternative></data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Не удалось создать новый зал</value>
-  </data>
+    <value>Не удалось создать новый выставочный зал</value>
+  <alternative>Не удалось создать новый зал</alternative></data>
   <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
     <value>Отключить (Ctrl+D)</value>
   </data>
@@ -1975,20 +2020,20 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Сохранить изменённый INI-файл (Ctrl+S)</value>
   </data>
   <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
-    <value>Удалить зал в корзину (Ctrl+Delete)</value>
-  </data>
+    <value>Удалить выставочный зал в корзину (Ctrl+Delete)</value>
+  <alternative>Удалить зал в корзину (Ctrl+Delete)</alternative></data>
   <data name="Toolbar_UpdatePreview" xml:space="preserve">
     <value>Обновить пред. просмотр</value>
   </data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>Обновить пред. просмотр залов (Ctrl+P)</value>
-  </data>
+    <value>Обновить пред. просмотр выставочных залов (Ctrl+P)</value>
+  <alternative>Обновить пред. просмотр залов (Ctrl+P)</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>Отключить звук</value>
   </data>
   <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
-    <value>Отключить звук (Ctrl+I)</value>
-  </data>
+    <value>Выключить звук (Ctrl+I)</value>
+  <alternative>Отключить звук (Ctrl+I)</alternative></data>
   <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
     <value>Обновить информацию о сервере (Ctrl+R)</value>
   </data>
@@ -2002,8 +2047,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Управление настройками</value>
   </data>
   <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
-    <value>Открыть каталог с автомобилями (Ctrl+F)</value>
-  </data>
+    <value>Открыть каталог с машинами (Ctrl+F)</value>
+  <alternative>Открыть каталог с автомобилями (Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
     <value>Открыть каталог со шрифтами (Ctrl+F)</value>
   </data>
@@ -2029,8 +2074,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Искать информацию</value>
   </data>
   <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
-    <value>Искать информацию об автомобиле (Ctrl+I)</value>
-  </data>
+    <value>Искать информацию о машине (Ctrl+I)</value>
+  <alternative>Искать информацию об автомобиле (Ctrl+I)</alternative></data>
   <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
     <value>Искать информацию о трассе (Ctrl+I)</value>
   </data>
@@ -2053,8 +2098,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Удалить приложение в корзину (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
-    <value>Удалить автомобиль в корзину (Ctrl+Delete)</value>
-  </data>
+    <value>Удалить машину в корзину (Ctrl+Delete)</value>
+  <alternative>Удалить автомобиль в корзину (Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
     <value>Удалить шрифт в корзину (Ctrl+Delete)</value>
   </data>
@@ -2074,17 +2119,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Удалить погоду в корзину (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>Просмотр автомобиля в демонстрационном зале (Ctrl+H)</value>
-  </data>
+    <value>Просмотр машины в выставочном зале (Ctrl+H)</value>
+  <alternative>Просмотр автомобиля в демонстрационном зале (Ctrl+H)</alternative></data>
   <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
     <value>Ручной режим</value>
   </data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Простой пользовательский зал</value>
-  </data>
+    <value>Простой пользовательский выставочный зал</value>
+  <alternative>Простой пользовательский зал</alternative></data>
   <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
-    <value>Качественный пользовательский зал</value>
-  </data>
+    <value>Качественный пользовательский выставочный зал</value>
+  <alternative>Качественный пользовательский зал</alternative></data>
   <data name="Tags_CleanUp" xml:space="preserve">
     <value>Очистить метки</value>
   </data>
@@ -2116,8 +2161,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Использовать трассу в Быстром Заезде (Ctrl+G)</value>
   </data>
   <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
-    <value>Использовать автомобиль в Быстром Заезде (Ctrl+G)</value>
-  </data>
+    <value>Использовать машину в Быстром Заезде (Ctrl+G)</value>
+  <alternative>Использовать автомобиль в Быстром Заезде (Ctrl+G)</alternative></data>
   <data name="Toolbar_UpdateMap" xml:space="preserve">
     <value>Обновить карту</value>
   </data>
@@ -2161,8 +2206,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Пересканировать используемые и отключить все неиспользуемые шрифты (Ctrl+Shift+D)</value>
   </data>
   <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
-    <value>Собрать список автомобилей на шрифт (Ctrl+U)</value>
-  </data>
+    <value>Собрать список машин на шрифт (Ctrl+U)</value>
+  <alternative>Собрать список автомобилей на шрифт (Ctrl+U)</alternative></data>
   <data name="Toolbar_RescanUsings" xml:space="preserve">
     <value>Пересканировать используемые</value>
   </data>
@@ -2170,11 +2215,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Поделиться фильтром (Ctrl+Page Up)</value>
   </data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>Тестировать фильтр в демонстрационном зале (Ctrl+G)</value>
-  </data>
+    <value>Тестировать фильтр в выставочном зале (Ctrl+G)</value>
+  <alternative>Тестировать фильтр в демонстрационном зале (Ctrl+G)</alternative></data>
   <data name="Page_Wip" xml:space="preserve">
-    <value>Эта раздел ещё не готов</value>
-  </data>
+    <value>Этот раздел ещё не готов</value>
+  <alternative>Эта раздел ещё не готов</alternative></data>
   <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
     <value>Автоматически копировать ссылку в буфер обмена</value>
   </data>
@@ -2239,8 +2284,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Таблица с временами</value>
   </data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
-    <value>Убедитесь, что требуемый автомобиль и колея установлены и доступны.</value>
-  </data>
+    <value>Убедитесь, что требуемая машина и колея установлены и доступны.</value>
+  <alternative>Убедитесь, что требуемый автомобиль и колея установлены и доступны.</alternative></data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
     <value>Невозможно разобрать запрос</value>
   </data>
@@ -2304,8 +2349,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Введите новое имя бренда:</value>
   </data>
   <data name="Solution_SetBrandNameFromName" xml:space="preserve">
-    <value>Введите новое имя бренда на основе марки автомобиля</value>
-  </data>
+    <value>Введите новое имя бренда на основе марки машины</value>
+  <alternative>Введите новое имя бренда на основе марки автомобиля</alternative></data>
   <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
     <value>Новое имя бренда будет: “{0}”</value>
   </data>
@@ -2418,8 +2463,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Идентификатор: {0}</value>
   </data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Выбрать зал, фильтр и прочее</value>
-  </data>
+    <value>Выбрать выставочный зал, фильтр и прочее</value>
+  <alternative>Выбрать зал, фильтр и прочее</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
     <value>Быстрее и точнее, полезно для рисования моддинга или рисования скинов</value>
   </data>
@@ -2451,8 +2496,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
   </data>
   <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
-    <value>Выберите зал, фильтр, положение камеры и т.д.</value>
-  </data>
+    <value>Выберите выставочный зал, фильтр, положение камеры и т.д.</value>
+  <alternative>Выберите зал, фильтр, положение камеры и т.д.</alternative></data>
   <data name="Car_CannotPackData" xml:space="preserve">
     <value>Невозможно упаковать данные</value>
   </data>
@@ -2487,8 +2532,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Отсутствующие шрифты</value>
   </data>
   <data name="Common_CannotFindCarById" xml:space="preserve">
-    <value>Не удается найти автомобиль с предоставленным ID</value>
-  </data>
+    <value>Не удается найти машину с предоставленным ID</value>
+  <alternative>Не удается найти автомобиль с предоставленным ID</alternative></data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
     <value>Изменить livery.png (Ctrl+L)</value>
   </data>
@@ -2505,8 +2550,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Включить звук (Ctrl+I)</value>
   </data>
   <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
-    <value>Невозможно обновить пред.просмотр демонтрационного зала</value>
-  </data>
+    <value>Невозможно обновить пред.просмотр выствочного зала</value>
+  <alternative>Невозможно обновить пред.просмотр демонтрационного зала</alternative></data>
   <data name="Toolbar_CopyValues" xml:space="preserve">
     <value>Копировать значения</value>
   </data>
@@ -2538,8 +2583,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Облака:</value>
   </data>
   <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
-    <value>Переключиться из режима редактирования (Ctrl + E)</value>
-  </data>
+    <value>Переключиться из режима редактирования (Ctrl+E)</value>
+  <alternative>Переключиться из режима редактирования (Ctrl + E)</alternative></data>
   <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
     <value>Дополнительно:</value>
   </data>
@@ -2562,26 +2607,26 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Осталось заработать:</value>
   </data>
   <data name="KunosCareer_SeriesGoal" xml:space="preserve">
-    <value>Целевая задача:</value>
-  </data>
+    <value>Цель серии:</value>
+  <alternative>Целевая задача:</alternative></data>
   <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
     <value>Соперники:</value>
   </data>
   <data name="Online_SortByName" xml:space="preserve">
-    <value>Сортировка по Имени</value>
-  </data>
+    <value>Сортировать по имени</value>
+  <alternative>Сортировка по Имени</alternative></data>
   <data name="Online_SortByDrivers" xml:space="preserve">
-    <value>Сортировка по Пилотам</value>
-  </data>
+    <value>Сортировать по водителям</value>
+  <alternative>Сортировка по Пилотам</alternative></data>
   <data name="Online_SortByCapacity" xml:space="preserve">
-    <value>Сортировка по Мощности</value>
-  </data>
+    <value>Сортировать по вместимости</value>
+  <alternative>Сортировка по Мощности</alternative></data>
   <data name="Online_SortByCarsNumber" xml:space="preserve">
-    <value>Сортировать по Количеству автомобилей</value>
-  </data>
+    <value>Сортировать по количеству машин</value>
+  <alternative>Сортировать по Количеству автомобилей</alternative></data>
   <data name="Online_SortByPing" xml:space="preserve">
-    <value>Сортировка по Пингу</value>
-  </data>
+    <value>Сортировка по пингу</value>
+  <alternative>Сортировка по Пингу</alternative></data>
   <data name="Online_AddByIp" xml:space="preserve">
     <value>Добавить по IP</value>
   </data>
@@ -2679,14 +2724,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Начните с:</value>
   </data>
   <data name="Rsr_Quit" xml:space="preserve">
-    <value>Выход</value>
-  </data>
+    <value>Покинуть</value>
+  <alternative>Выход</alternative></data>
   <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
     <value>Сервер SRS готов</value>
   </data>
   <data name="Srs_ReadyNotification" xml:space="preserve">
-    <value>Нажмать, чтобы присоединиться к гонке</value>
-  </data>
+    <value>Нажмите, чтобы присоединиться к гонке</value>
+  <alternative>Нажмать, чтобы присоединиться к гонке</alternative></data>
   <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
     <value>Убедитесь, что все необходимые моды установлены.</value>
   </data>
@@ -2906,14 +2951,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>[url="{0}"]{1}[/url] не установлен. Установить?</value>
   </data>
   <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
-    <value>Демонстрационный зал отсутствует</value>
-  </data>
+    <value>Выставочный зал отсутствует</value>
+  <alternative>Демонстрационный зал отсутствует</alternative></data>
   <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
-    <value>Невозможно загрузить демонстрационный зал “{0}”</value>
-  </data>
+    <value>Невозможно загрузить выставочный зал “{0}”</value>
+  <alternative>Невозможно загрузить демонстрационный зал “{0}”</alternative></data>
   <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
-    <value>Невозможно установить демонстрационный зал “{0}”</value>
-  </data>
+    <value>Невозможно установить выставочный зал “{0}”</value>
+  <alternative>Невозможно установить демонстрационный зал “{0}”</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
     <value>Невозможно сохранить пред.просмотр</value>
   </data>
@@ -2924,14 +2969,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
   </data>
   <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
-    <value>Демонстрационный зал отсутствует. Открыть опции?</value>
-  </data>
+    <value>Выставочный зал отсутствует. Открыть опции?</value>
+  <alternative>Демонстрационный зал отсутствует. Открыть опции?</alternative></data>
   <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
     <value>Фильтр отсутствует. Открыть опции?</value>
   </data>
   <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
-    <value>Невозможно обновить предварительный просмотр отключенного автомобиля или раскраски.</value>
-  </data>
+    <value>Невозможно обновить предварительный просмотр отключенной машины или раскраски.</value>
+  <alternative>Невозможно обновить предварительный просмотр отключенного автомобиля или раскраски.</alternative></data>
   <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
     <value>Что-то пошло не так.</value>
   </data>
@@ -2989,8 +3034,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Обрезать изображение</value>
   </data>
   <data name="AdditionalContent_Title" xml:space="preserve">
-    <value>Установка дополнительного содержимого</value>
-  </data>
+    <value>Установка дополнительного контента</value>
+  <alternative>Установка дополнительного содержимого</alternative></data>
   <data name="AdditionalContent_NothingFound" xml:space="preserve">
     <value>Ничего не найдено</value>
   </data>
@@ -3028,8 +3073,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Установка {0}…</value>
   </data>
   <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
-    <value>Невомзможно установить {0}</value>
-  </data>
+    <value>Невозможно установить {0}</value>
+  <alternative>Невомзможно установить {0}</alternative></data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>Ровный</value>
   </data>
@@ -3097,8 +3142,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Убедитесь что livery.png не занято другим процессом</value>
   </data>
   <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
-    <value>Управление настройками автомобиля</value>
-  </data>
+    <value>Управление настройками машины</value>
+  <alternative>Управление настройками автомобиля</alternative></data>
   <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
     <value>Панорама:</value>
   </data>
@@ -3107,8 +3152,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
     <value>Рекомендуемый формат: DDS-изображение, 32f.32f.32f.32f, 5120 × 2560
-Но если вы не хотите тратить 200 МБ: TIFF Image, 96 бит на пиксель, ZIP</value>
-  </data>
+Но если вы не хотите тратить 200 МБ: TIFF-изображение, 96 бит на пиксель, ZIP</value>
+  <alternative>Рекомендуемый формат: DDS-изображение, 32f.32f.32f.32f, 5120 × 2560
+Но если вы не хотите тратить 200 МБ: TIFF Image, 96 бит на пиксель, ZIP</alternative></data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>В тени</value>
   </data>
@@ -3164,8 +3210,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Невозможно начать гонку</value>
   </data>
   <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
-    <value>Пожалуйста, выберите не отключенный автомобиль.</value>
-  </data>
+    <value>Пожалуйста, выберите не отключенную машину.</value>
+  <alternative>Пожалуйста, выберите не отключенный автомобиль.</alternative></data>
   <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
     <value>Пожайлуста, выберите трассу.</value>
   </data>
@@ -3206,8 +3252,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Класс: {0}</value>
   </data>
   <data name="RaceGrid_OverTheLimit" xml:space="preserve">
-    <value>Для этого автомобиля нет пит-стопа</value>
-  </data>
+    <value>Для этой машины нет пит-стопа</value>
+  <alternative>Для этого автомобиля нет пит-стопа</alternative></data>
   <data name="RaceGrid_Opponents" xml:space="preserve">
     <value>Соперники:</value>
   </data>
@@ -3234,5 +3280,149 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="Settings_Locale_RestartApp" xml:space="preserve">
     <value>Рестарт</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Контент Менеджер</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>Приложение:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>Ключ Приложения:</value>
+  </data>
+  <data name="Replay_DefaultUploadedName" xml:space="preserve">
+    <value>Повтор AC</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Яркость</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Угол гаммы</value>
+  </data>
+  <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
+    <value>Регулирует влияние других цветов на облако:
+ • [b]0%:[/b] учитываются только цветовые эффекты на облаках;
+ • [b]50%:[/b] 50% от облачного цвета и 50% эффектов;
+ • [b]100%:[/b]  учитывается только цвет облака</value>
+  </data>
+  <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
+    <value>Основной цвет; солнечный свет, светлый цвет и окружающая среда будут добавлены к этому</value>
+  </data>
+  <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
+    <value>Ширина квадрата</value>
+  </data>
+  <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
+    <value>Высота квадрата</value>
+  </data>
+  <data name="Rsr_Quit_Tooltip" xml:space="preserve">
+    <value>Покинуть регистрацию</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>Сейчас обновится: {0} ({1}/{2})</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Не поддерживается запрос: “{0}”</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
+    <value>Обновить локальный перед запуском</value>
+  </data>
+  <data name="Settings_Locale_UpdateBeforeStartUp_Tooltip" xml:space="preserve">
+    <value>Пройдет не более 500 мс</value>
+  </data>
+  <data name="Settings_Locale_ResxMode" xml:space="preserve">
+    <value>Перевести Resx-файлы</value>
+  </data>
+  <data name="Settings_Locale_Prepare" xml:space="preserve">
+    <value>Подготовить</value>
+  </data>
+  <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
+    <value>Подготовить распакованный язык</value>
+  </data>
+  <data name="Settings_Locale_Submit_Tooltip" xml:space="preserve">
+    <value>Отправить распакованный язык, чтобы включить его в CM</value>
+  </data>
+  <data name="Settings_Locale_VersionLabel" xml:space="preserve">
+    <value>Локальная версия:</value>
+  </data>
+  <data name="Settings_Locale_LocaleId" xml:space="preserve">
+    <value>Локальный ID</value>
+  </data>
+  <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
+    <value>Просто удерживайте Ctrl, когда вы нажмете кнопку «Закрыть», чтобы быстрее перезапустить CM</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Пользовательский</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>Официально поддерживается</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>Установлен</value>
+  </data>
+  <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
+    <value>Установить локальный ID</value>
+  </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>Не удалось загрузить журнал обновлений</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Открыть папку моделей (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>Удалить модель в корзину (Ctrl+Delete)</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>Отсутствующие модели водителей</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Температура дороги: </value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} модель водителя</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Случайный</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Случайный</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… м</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… м</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>Общая длина, рекомендуемый формат: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>Средняя ширина трассы, рекомендуемый формат: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>Количество пит-стопов, а также ограничение на количество машин на трассе, рекомендуемый формат: “{0}”</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>Запуск повтора…</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>Запуск теста…</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>Ожидание окончания повтора…</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>Ожидание окончания теста…</value>
   </data>
 </root>

@@ -1658,4 +1658,13 @@
   <data name="Weather_Mods" xml:space="preserve">
     <value>Mod</value>
   </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>Impossibile inizializzare Lua</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Usa i nomi delle skin se disponibili</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Tag “{0}” e mancante </value>
+  </data>
 </root>

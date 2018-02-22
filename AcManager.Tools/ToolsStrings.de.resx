@@ -124,8 +124,8 @@
     <value>Google</value>
   </data>
   <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
-    <value>Rennen starten fehlgeschlagen</value>
-  <alternative>Spiel kann nicht starten</alternative></data>
+    <value>Konnte Rennen nicht starten</value>
+  <alternative>Spiel kann nicht starten</alternative><alternative>Rennen starten fehlgeschlagen</alternative></data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
     <value>Originaler Spiel-Starter fehlt, bitte Starter wechseln</value>
   <alternative>Originaler Spiel-Starter fehlt, Bitte Starter wechseln</alternative></data>
@@ -154,20 +154,20 @@
     <value>Neue Version kann nicht geladen werden.</value>
   </data>
   <data name="AppUpdater_UpdateFailed" xml:space="preserve">
-    <value>Aktualisierung fehlgeschlagen</value>
-  </data>
+    <value>Update fehlgeschlagen</value>
+  <alternative>Aktualisierung fehlgeschlagen</alternative></data>
   <data name="Shared_CarSetup" xml:space="preserve">
     <value>Fahrzeug-Setup</value>
   <alternative>Auto Setup</alternative></data>
   <data name="Shared_ControlsPreset" xml:space="preserve">
-    <value>Voreinstellung Steuerung</value>
-  </data>
+    <value>Vorlage Steuerung</value>
+  <alternative>Voreinstellung Steuerung</alternative></data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
-    <value>Voreinstellung Force Feedback </value>
-  </data>
+    <value>Vorlage Force Feedback </value>
+  <alternative>Voreinstellung Force Feedback </alternative></data>
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
-    <value>Voreinstellung Fahrhilfen</value>
-  </data>
+    <value>Vorlage Fahrhilfen</value>
+  <alternative>Voreinstellung Fahrhilfen</alternative></data>
   <data name="Shared_Replay" xml:space="preserve">
     <value>Wiederholung</value>
   </data>
@@ -175,8 +175,8 @@
     <value>Wetter</value>
   </data>
   <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
-    <value>Prüfe ob CM aktuell ist.</value>
-  </data>
+    <value>Stelle sicher, dass CM aktuell ist.</value>
+  <alternative>Prüfe ob CM aktuell ist.</alternative></data>
   <data name="AcObject_CannotBeDisabled" xml:space="preserve">
     <value>Kann nicht deaktiviert werden.</value>
   </data>
@@ -196,8 +196,8 @@
     <value>Strecke {0} fehlt.</value>
   </data>
   <data name="Common_NA" xml:space="preserve">
-    <value>Nicht verfügbar</value>
-  </data>
+    <value>k.A.</value>
+  <alternative>Nicht verfügbar</alternative></data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
     <value>Beendet</value>
   </data>
@@ -256,8 +256,8 @@
     <value>Schriftart</value>
   </data>
   <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>Ausstellungsraum</value>
-  </data>
+    <value>Showroom</value>
+  <alternative>Ausstellungsraum</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>Strecke</value>
   </data>
@@ -361,8 +361,8 @@
     <value>Drehmoment</value>
   </data>
   <data name="Shared_VideoSettingsPreset" xml:space="preserve">
-    <value>Grafik-Voreinstellungen</value>
-  </data>
+    <value>Grafik-Vorlage</value>
+  <alternative>Grafik-Voreinstellungen</alternative></data>
   <data name="Common_Width" xml:space="preserve">
     <value>Breite</value>
   </data>
@@ -445,8 +445,8 @@
     <value>Neue Strecke {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
-    <value>Neuer Ausstellungsraum {0}</value>
-  </data>
+    <value>Neuer Showroom {0}</value>
+  <alternative>Neuer Ausstellungsraum {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
     <value>Neue Schriftart {0}</value>
   </data>
@@ -460,8 +460,8 @@
     <value>Neue Version für Strecke {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>Neue Version für Ausstellungsraum {0}</value>
-  </data>
+    <value>Neue Version für Showroom {0}</value>
+  <alternative>Neue Version für Ausstellungsraum {0}</alternative></data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
     <value>Neue Version für Schriftart {0}</value>
   </data>
@@ -505,8 +505,8 @@
     <value>Blickrichtung</value>
   </data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
-    <value>Hochgeschwindigkeitsschütteln</value>
-  </data>
+    <value>Hochgeschwindigkeits-Rütteln</value>
+  <alternative>Hochgeschwindigkeitsschütteln</alternative></data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
     <value>G-Kräfte</value>
   </data>
@@ -559,8 +559,8 @@
     <value>Server</value>
   </data>
   <data name="Online_Server_SessionInProcess" xml:space="preserve">
-    <value>Rennen läuft</value>
-  <alternative>In Verarbeitung</alternative></data>
+    <value>läuft</value>
+  <alternative>In Verarbeitung</alternative><alternative>Rennen läuft</alternative></data>
   <data name="Settings_PeriodFormat" xml:space="preserve">
     <value>Alle {0}</value>
   </data>
@@ -610,8 +610,8 @@
     <value>Mechanische Schäden</value>
   </data>
   <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
-    <value>Schadensempfindlicher Motor, Getriebe, Aufhängung, etc.</value>
-  <alternative>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</alternative></data>
+    <value>Schadensmodell für Motor, Getriebe, Aufhängung, etc.</value>
+  <alternative>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</alternative><alternative>Schadensempfindlicher Motor, Getriebe, Aufhängung, etc.</alternative></data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
     <value>Windschatteneffekt</value>
   </data>
@@ -637,8 +637,8 @@
     <value>Reifenheizdecken</value>
   </data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
-    <value>Wärmt Reifen in der Box vor</value>
-  </data>
+    <value>Vorheizen der Reifen in der Box</value>
+  <alternative>Wärmt Reifen in der Box vor</alternative></data>
   <data name="Assists_TyreWear" xml:space="preserve">
     <value>Reifenverschleiß</value>
   </data>
@@ -691,8 +691,8 @@
     <value>An</value>
   </data>
   <data name="JumpStartPenalty_Pits" xml:space="preserve">
-    <value>Strafversetzung in die Box</value>
-  <alternative>Boxen</alternative></data>
+    <value>Boxengasse</value>
+  <alternative>Boxen</alternative><alternative>Strafversetzung in die Box</alternative></data>
   <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
     <value>Durchfahrtsstrafe</value>
   <alternative>Durchfahrt</alternative></data>
@@ -745,20 +745,20 @@
     <value>Schriftart wird benutzt, ist aber deaktiviert</value>
   </data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
-    <value>Benötigte Fahrzeuglackierung "{1}" oder {0} fehlt</value>
-  </data>
+    <value>Benötigte Lackierung "{1}" oder {0} fehlt</value>
+  <alternative>Benötigte Fahrzeuglackierung "{1}" oder {0} fehlt</alternative></data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>({0}/livery.png) der Fahrzeuglackierung fehlt</value>
-  <alternative>Fahrzeuglackierungsbibliothek ({0}/livery.png) fehlt</alternative></data>
+    <value>({0}/livery.png) der Lackierung fehlt</value>
+  <alternative>Fahrzeuglackierungsbibliothek ({0}/livery.png) fehlt</alternative><alternative>({0}/livery.png) der Fahrzeuglackierung fehlt</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Vorschau ({0}/preview.jpg) der Fahrzeuglackierung fehlt</value>
-  <alternative>Fahrzeuglackierungsvorschau ({0}/preview.jpg) fehlt</alternative></data>
+    <value>Vorschau ({0}/preview.jpg) der Lackierung fehlt</value>
+  <alternative>Fahrzeuglackierungsvorschau ({0}/preview.jpg) fehlt</alternative><alternative>Vorschau ({0}/preview.jpg) der Fahrzeuglackierung fehlt</alternative></data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>Fahrzeuglackierungen fehlen</value>
-  </data>
+    <value>Lackierungen fehlen</value>
+  <alternative>Fahrzeuglackierungen fehlen</alternative></data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>Verzeichnis der Fahrzeuglackierung ist nicht erreichbar</value>
-  <alternative>Fahrzeuglackierungsverzeichnis ist nicht erreichbar</alternative></data>
+    <value>Verzeichnis der Lackierung ist nicht erreichbar</value>
+  <alternative>Fahrzeuglackierungsverzeichnis ist nicht erreichbar</alternative><alternative>Verzeichnis der Fahrzeuglackierung ist nicht erreichbar</alternative></data>
   <data name="AcObject_CannotChangeId" xml:space="preserve">
     <value>ID ändern nicht möglich</value>
   </data>
@@ -808,8 +808,8 @@
     <value>Kann keine korrekte Liste der Auflösungen bekommen</value>
   </data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
-    <value>AC Einstellungen speicher nicht möglich</value>
-  </data>
+    <value>Konnte AC Einstellungen nicht speichern</value>
+  <alternative>AC Einstellungen speicher nicht möglich</alternative></data>
   <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
     <value>Zugriff auf cfg Ordner sicherstellen</value>
   </data>
@@ -817,8 +817,8 @@
     <value>Statisch</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
-    <value>Benutzerdefiniert</value>
-  </data>
+    <value>Eigene</value>
+  <alternative>Benutzerdefiniert</alternative></data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (Experimentell)</value>
   </data>
@@ -856,17 +856,17 @@
     <value>JPEG</value>
   </data>
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
-    <value>Fahrzeuglackierung</value>
-  </data>
+    <value>Fahrzeug Lackierung</value>
+  <alternative>Fahrzeuglackierung</alternative></data>
   <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
-    <value>Löschen der Datei "{0}", um Aktualisierung zu installieren, nicht möglich. Bitte versuchen manuell zu löschen und dann starte "{1}"</value>
-  </data>
+    <value>Löschen der Datei "{0}", um Update zu installieren, nicht möglich. Bitte versuchen manuell zu löschen und dann starte "{1}"</value>
+  <alternative>Löschen der Datei "{0}", um Aktualisierung zu installieren, nicht möglich. Bitte versuchen manuell zu löschen und dann starte "{1}"</alternative></data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
     <value>Prozess konnte nicht aktualisiert werden: {0}. Bitte versuchen, eine neue Version manuell zu installieren.</value>
   <alternative>Prozess konnte nicht aktualisiert werden: {0}. Bitte manuel versuchen zu installieren.</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
-    <value>Entpackte Version untersützt keine automatische Aktualisierung</value>
-  </data>
+    <value>Entpackte Version untersützt keine automatischen Updates.</value>
+  <alternative>Entpackte Version untersützt keine automatische Aktualisierung</alternative></data>
   <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
     <value>Entpacker wurde nicht initialisiert</value>
   </data>
@@ -907,8 +907,8 @@
     <value>Deaktiviert</value>
   </data>
   <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>Allgemein</value>
-  </data>
+    <value>Global:</value>
+  <alternative>Allgemein</alternative></data>
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID ist vergeben</value>
   </data>
@@ -922,20 +922,20 @@
     <value>Steam ID fehlt</value>
   </data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>Neue Version für Fahrzeuglackierung {0}</value>
-  </data>
+    <value>Neue Version für Lackierung {0}</value>
+  <alternative>Neue Version für Fahrzeuglackierung {0}</alternative></data>
   <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
-    <value>Neue Fahrzeuglackierung {0}</value>
-  </data>
+    <value>Neue Lackierung {0}</value>
+  <alternative>Neue Fahrzeuglackierung {0}</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Fahrzeuglackierungsvorschauen behalten</value>
-  </data>
+    <value>Lackierungsvorschauen behalten</value>
+  <alternative>Fahrzeuglackierungsvorschauen behalten</alternative></data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
     <value>KI-Informationen behalten</value>
   </data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>KI-Informationen &amp; Fahrzeuglackierungsvorschauen behalten</value>
-  </data>
+    <value>KI-Informationen &amp; Lackierungsvorschauen behalten</value>
+  <alternative>KI-Informationen &amp; Fahrzeuglackierungsvorschauen behalten</alternative></data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
     <value>Stelle sicher, dass eine Internetverbindung besteht und Nichts auf den Content Ordner zugreift.</value>
   </data>
@@ -1078,8 +1078,8 @@
     <value>Gemischt</value>
   </data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Fahrzeuglackierungsname verwenden, falls verfügbar</value>
-  </data>
+    <value>Lackierungsname verwenden, falls verfügbar</value>
+  <alternative>Fahrzeuglackierungsname verwenden, falls verfügbar</alternative></data>
   <data name="FontObject_DeleteFont" xml:space="preserve">
     <value>Schrift löschen</value>
   </data>
@@ -1108,11 +1108,11 @@
     <value>Taste {0}</value>
   </data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
-    <value>Fahrzeuglackierungsvorschau behalten</value>
-  </data>
+    <value>Lackierungsvorschau behalten</value>
+  <alternative>Fahrzeuglackierungsvorschau behalten</alternative></data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>KI-Informationen &amp; Fahrzeuglackierungsvorschau behalten</value>
-  </data>
+    <value>KI-Informationen &amp; Lackierungsvorschau behalten</value>
+  <alternative>KI-Informationen &amp; Fahrzeuglackierungsvorschau behalten</alternative></data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
     <value>Fahrzeug gesperrt</value>
   </data>
@@ -1120,8 +1120,8 @@
     <value>Durchfahrtsstrafe</value>
   </data>
   <data name="JumpStart_TeleportToPit" xml:space="preserve">
-    <value>Zur Boxengasse teleportieren</value>
-  </data>
+    <value>Zur Box teleportieren</value>
+  <alternative>Zur Boxengasse teleportieren</alternative></data>
   <data name="KunosCareer_Championship" xml:space="preserve">
     <value>Meisterschaft</value>
   </data>
@@ -1171,11 +1171,11 @@
     <value>Zugriff auf Server fehlgeschlagen</value>
   </data>
   <data name="Online_GettingInformationDirectly" xml:space="preserve">
-    <value>Informationen direkt empfangen...</value>
-  </data>
+    <value>Lade Informationen direkt ...</value>
+  <alternative>Informationen direkt empfangen...</alternative></data>
   <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
-    <value>Informationen direkt empfangen (zweiter Versuch)...</value>
-  </data>
+    <value>Lade Informationen direkt (zweiter Versuch)...</value>
+  <alternative>Informationen direkt empfangen (zweiter Versuch)...</alternative></data>
   <data name="Online_ScanningProgress_Found" xml:space="preserve">
     <value>{0} Server</value>
   </data>
@@ -1405,8 +1405,8 @@
     <value>Ausgewähltes Fahrzeug besitzt keinen ordnungsgemäßen Sound</value>
   </data>
   <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
-    <value>Authorisationsprozess fehlgeschlagen</value>
-  </data>
+    <value>Authorisationsprozess konnte nicht abgeschlossen werden</value>
+  <alternative>Authorisationsprozess fehlgeschlagen</alternative></data>
   <data name="Weather_FewClouds" xml:space="preserve">
     <value>Bewölkt</value>
   </data>
@@ -1512,8 +1512,8 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Gehe sicher, dass die Server-Addresse korrekt und der Server erreichbar ist.</value>
   </data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
-    <value>Gehe sicher, dass die Sounddateien des Ausstellungsraums in keinem anderen Programm geöffnet sind.</value>
-  </data>
+    <value>Gehe sicher, dass die Sounddateien des Showrooms in keinem anderen Programm geöffnet sind.</value>
+  <alternative>Gehe sicher, dass die Sounddateien des Ausstellungsraums in keinem anderen Programm geöffnet sind.</alternative></data>
   <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
     <value>Gehe sicher, dass genügend Speicherplatz vorhanden ist und originale Dateien entfernt werden können.</value>
   </data>
@@ -1668,11 +1668,11 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Von ...{0} wiederherstellen</value>
   </data>
   <data name="Presets_FileFilter" xml:space="preserve">
-    <value>Voreinstellungen (*{0})|*{0}</value>
-  </data>
+    <value>Vorlage (*{0})|*{0}</value>
+  <alternative>Voreinstellungen (*{0})|*{0}</alternative></data>
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
-    <value>Voreinstellungen für Schnellstart</value>
-  </data>
+    <value>Vorlage für Schnellstart</value>
+  <alternative>Voreinstellungen für Schnellstart</alternative></data>
   <data name="Weather_OvercastClouds" xml:space="preserve">
     <value>Wolkenverhangen</value>
   </data>
@@ -1689,11 +1689,11 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Zwei Flächen per Frame</value>
   </data>
   <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
-    <value>Fahrzeuglackierung {0} fehlt.</value>
-  </data>
+    <value>Lackierung {0} fehlt.</value>
+  <alternative>Fahrzeuglackierung {0} fehlt.</alternative></data>
   <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
-    <value>Fahrzeuglackierungen {0} fehlen.</value>
-  </data>
+    <value>Lackierungen {0} fehlen.</value>
+  <alternative>Fahrzeuglackierungen {0} fehlen.</alternative></data>
   <data name="Weather_Mods" xml:space="preserve">
     <value>Mods</value>
   </data>
@@ -1707,6 +1707,18 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Zufall</value>
   </data>
   <data name="Shared_TrackStatePreset" xml:space="preserve">
-    <value>Voreinstellung des Streckenzustands</value>
+    <value>Vorlage des Streckenzustands</value>
+  <alternative>Voreinstellung des Streckenzustands</alternative></data>
+  <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
+    <value>Wiederholung nicht wiederherstellbar</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Eigene Vorlage für Vorschauen</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Eigene Vorlage für Ausstellungsräume</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Eigene Vorlage für Real Head Motion</value>
   </data>
 </root>

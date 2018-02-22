@@ -565,8 +565,8 @@
     <value>e</value>
   </data>
   <data name="Toolbar_Favourite" xml:space="preserve">
-    <value>Favorito</value>
-  </data>
+    <value>Preferito</value>
+  <alternative>Favorito</alternative></data>
   <data name="Toolbar_Hide" xml:space="preserve">
     <value>Nascondi</value>
   </data>
@@ -596,5 +596,20 @@
   </data>
   <data name="Colon_Format" xml:space="preserve">
     <value>{0}: {1}</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Rimuovi dai preferiti</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Condividi un link a questo server così i tuoi amici possono unirsi a te velocemente (Ctrl+PagSU)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Aggiungi server nella lista server nascosti (cerca "@hidden" per accedere alla lista)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Rimuovi server dall'elenco dei server nascosti</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>file DDS (*.dds)|*.dds|All files (*.*)|*.*</value>
   </data>
 </root>

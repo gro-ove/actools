@@ -2657,7 +2657,30 @@ Se hai bisogno di altri valori, contattaci e li aggiungeremo.
 
 [B] Avviso [/ b]:
   Non utilizzare simboli come "[" o "]"!</value>
-  </data>
+  <alternative>Utilizzato per salvare o ripristinare automaticamente dopo la gara.
+
+Valori per la sostituzione:
+ [b][mono]{tipo}[/mono][/b] - tipo di gara;
+ [b][mono]{car}[/mono][/b] - nome dell'auto;
+ [b][mono]{car.id}[/mono][/b] - id dell'auto;
+ [b][mono]{traccia}[/mono][/b] - nome della circuito;
+ [b][mono]{track.id} [/ mono] [/ b] - id del circuito;
+ [b][mono]{data}[/mono][/b] - data e ora nel formato corretto;
+ [b][mono]{date_ac}[/mono][/b] - data e ora in formato AC.
+
+Modificatori:
+ [b][mono]{...: l}[/mono][/b] - minuscolo;
+ [b][mono]{...: u}[/mono][/b] - maiuscolo;
+ [b][mono]{...: 0}[/mono][/b] - solo primo simbolo.
+
+Esempi:
+ [b][mono]{car.id}_{track.id}_{data_ac}[/mono][/b] - formato predefinito Kunos;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — qualcosa come “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+Se hai bisogno di altri valori, contattaci e li aggiungeremo.
+
+[B] Avviso [/ b]:
+  Non utilizzare simboli come "[" o "]"!</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
     <value>Showroom personalizzato leggero</value>
   </data>
@@ -3491,5 +3514,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
   </data>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
     <value>In attesa del termine del benchmark...</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>Salvare le modifiche ai seguenti elementi</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Apri cartella modelli</value>
   </data>
 </root>

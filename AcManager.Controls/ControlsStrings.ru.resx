@@ -465,8 +465,8 @@
     <value>Установка…</value>
   </data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
-    <value> с</value>
-  </data>
+    <value> сек</value>
+  <alternative> с</alternative></data>
   <data name="Common_Change" xml:space="preserve">
     <value>Изменить</value>
   </data>
@@ -516,8 +516,8 @@
     <value>Расход топлива:</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Шоурум</value>
-  </data>
+    <value>Выставочный зал</value>
+  <alternative>Шоурум</alternative></data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Экспозиция:</value>
   </data>
@@ -615,11 +615,11 @@
     <value>Водителей в сети:</value>
   <alternative>Гонщиков онлайн:</alternative></data>
   <data name="Online_TrackIsMissingLabel" xml:space="preserve">
-    <value>Трек не найден:</value>
-  </data>
+    <value>Трасса не найдена:</value>
+  <alternative>Трек не найден:</alternative></data>
   <data name="Online_CarIsMissingLabel" xml:space="preserve">
-    <value>Автомобиль не найден:</value>
-  </data>
+    <value>Машина не найдена:</value>
+  <alternative>Автомобиль не найден:</alternative></data>
   <data name="Common_ResetToRecommendedValue" xml:space="preserve">
     <value>Вернуть рекомендуемые значения</value>
   </data>
@@ -746,8 +746,8 @@
     <value>Очевидно, SweetFX не влияет на результат, но может уменьшить время загрузки</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
-    <value>Не удается запустить демонстрационный зал</value>
-  </data>
+    <value>Не удается запустить выставочный зал</value>
+  <alternative>Не удается запустить демонстрационный зал</alternative></data>
   <data name="ImageViewer_CannotSave" xml:space="preserve">
     <value>Не удалось сохранить изображение</value>
   </data>
@@ -803,8 +803,8 @@
     <value>Загрузка модели ...</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Не удается запустить пользовательский демонстрационный зал</value>
-  </data>
+    <value>Не удается запустить пользовательский выставочный зал</value>
+  <alternative>Не удается запустить пользовательский демонстрационный зал</alternative></data>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Инструменты</value>
   </data>
@@ -842,9 +842,97 @@
     <value>Яркость</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
-    <value>Скрыть колеса</value>
-  </data>
+    <value>Скрыть руль</value>
+  <alternative>Скрыть колеса</alternative></data>
   <data name="TableHeader_BestLap" xml:space="preserve">
     <value>Лучший круг</value>
+  </data>
+  <data name="Share_Shared" xml:space="preserve">
+    <value>{0} Передано</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>FPS:</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>Используйте PSD, XCF и т. д., Если существует (требуется аддон Magick.NET)</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>Обновить окружающие тени</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>Окружающая тень</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>Имя объекта: [b]{0}[/b]
+Класс: [b]{1}[/b]
+
+Активный: [b]{2}[/b]
+Визуализируемых: [b]{3}[/b]
+Видимый: [b]{4}[/b]
+
+Прозрачный: [b]{5}[/b]
+Подбор теней: [b]{6}[/b]
+
+Слой: [b]{7}[/b]
+LOD в: [b]{8}[/b]
+LOD в: [b]{9}[/b]
+
+Материал: [b]{10}[/b]</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>Имя материала: [b]{0}[/b]
+Шейдер: [b]{1}[/b]
+
+Режим смешивания: [b]{2}[/b]
+Альфа-тест: [b]{3}[/b]
+Режим глубины: [b]{4}[/b]</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value> °C</value>
+  </data>
+  <data name="Common_CelsiusFormat" xml:space="preserve">
+    <value>{0:F0} °C</value>
+  </data>
+  <data name="CarParent_MakeIndependent" xml:space="preserve">
+    <value>Сделать независимым</value>
+  </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value> FPS</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Обновить (Новая версия: {0})</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> круг</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Машина</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Трасса</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Дата</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Раскраска</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Национальность</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Видимый</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Закрытый</value>
   </data>
 </root>

@@ -649,7 +649,9 @@
     <value>Nome autore: [b]{0}[/b]
 Inserisci nome: [b]{1}[/b]
 Inserisci tipo: [b]{2}[/b]</value>
-  </data>
+  <alternative>Nome autore: [b]{0}[/b]
+Inserisci nome: [b]{1}[/b]
+Inserisci tipo: [b]{2}[/b]</alternative></data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
     <value>E' tutto OK?</value>
   </data>

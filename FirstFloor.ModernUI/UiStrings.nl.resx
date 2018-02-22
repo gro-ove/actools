@@ -585,4 +585,7 @@
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}: </value>
   </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}.</value>
+  </data>
 </root>

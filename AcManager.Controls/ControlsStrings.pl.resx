@@ -985,8 +985,8 @@ Tryb głębi: [b]{4}[/b]</value>
     <value>X</value>
   </data>
   <data name="TableHeader_Y" xml:space="preserve">
-    <value>X</value>
-  </data>
+    <value>Y</value>
+  <alternative>X</alternative></data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>Widoczne</value>
   </data>

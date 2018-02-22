@@ -166,11 +166,11 @@
     <value>Urheber, Version und URL</value>
   <alternative>Autor, Version und URL</alternative></data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>In Ausstellungsraum öffnen</value>
-  </data>
+    <value>In Showroom öffnen</value>
+  <alternative>In Ausstellungsraum öffnen</alternative></data>
   <data name="Common_Presets" xml:space="preserve">
-    <value>Voreinstellungen</value>
-  </data>
+    <value>Vorlagen</value>
+  <alternative>Voreinstellungen</alternative></data>
   <data name="Common_Options" xml:space="preserve">
     <value>Optionen</value>
   </data>
@@ -184,14 +184,14 @@
     <value>{Fehler}:</value>
   </data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>Voreinstellung speichern</value>
-  </data>
+    <value>Vorlage speichern</value>
+  <alternative>Voreinstellung speichern</alternative></data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>Aktuelle Einstellungen als Voreinstellung speichern (Strg+S)</value>
-  </data>
+    <value>Aktuelle Einstellungen als Vorlage speichern (Strg+S)</value>
+  <alternative>Aktuelle Einstellungen als Voreinstellung speichern (Strg+S)</alternative></data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Ungespeicherte Voreinstellung</value>
-  <alternative>Ungespeichert</alternative></data>
+    <value>Ungespeicherte Vorlage</value>
+  <alternative>Ungespeichert</alternative><alternative>Ungespeicherte Voreinstellung</alternative></data>
   <data name="QuickSwitches_Header" xml:space="preserve">
     <value>Schnellumschalter</value>
   </data>
@@ -268,8 +268,8 @@
     <value>Online anderen Namen nutzen</value>
   </data>
   <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
-    <value>Zwischen UI Voreinstellungen umschalten</value>
-  </data>
+    <value>Zwischen UI-Vorlagen umschalten</value>
+  <alternative>Zwischen UI Voreinstellungen umschalten</alternative></data>
   <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
     <value>Helligkeitseinstellung</value>
   </data>
@@ -322,8 +322,8 @@
     <value>Standardvorlagen</value>
   <alternative>Eingebaute Voreinstellungen</alternative></data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>Benutzervorlagen</value>
-  <alternative>Benutzer-Voreinstellungen</alternative></data>
+    <value>Eigene Vorlagen</value>
+  <alternative>Benutzer-Voreinstellungen</alternative><alternative>Benutzervorlagen</alternative></data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
     <value>Eingabemethode: [b]{0}[/b]</value>
   </data>
@@ -367,8 +367,8 @@
     <value>Produktionsjahr</value>
   </data>
   <data name="AssistsPreset_Gamer" xml:space="preserve">
-    <value>Anfänger</value>
-  </data>
+    <value>Spieler</value>
+  <alternative>Anfänger</alternative></data>
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Fortgeschritten</value>
   </data>
@@ -376,8 +376,8 @@
     <value>Pro</value>
   <alternative>Profi</alternative></data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>In eigenem Ausstellungsraum öffnen</value>
-  <alternative>In eigenem Austellungsraum öffnen</alternative></data>
+    <value>In eigenem Showroom öffnen</value>
+  <alternative>In eigenem Austellungsraum öffnen</alternative><alternative>In eigenem Ausstellungsraum öffnen</alternative></data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>Unabhängig machen</value>
   </data>
@@ -394,20 +394,20 @@
     <value>Ändern</value>
   </data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Fahrzeuglackierung ändern</value>
-  </data>
+    <value>Lackierung ändern</value>
+  <alternative>Fahrzeuglackierung ändern</alternative></data>
   <data name="Common_Clear" xml:space="preserve">
     <value>Klar</value>
   </data>
   <data name="Common_Compressing" xml:space="preserve">
-    <value>Komprimieren...</value>
-  </data>
+    <value>Komprimiere...</value>
+  <alternative>Komprimieren...</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
     <value>Entwicklerwerkzeuge</value>
   </data>
   <data name="Common_Downloading" xml:space="preserve">
-    <value>Herunterladen...</value>
-  </data>
+    <value>Lade herunter...</value>
+  <alternative>Herunterladen...</alternative></data>
   <data name="Common_Error" xml:space="preserve">
     <value>Fehler</value>
   </data>
@@ -421,8 +421,8 @@
     <value>Fertig</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
-    <value>Ordner "{0}" existiert bereits. Überschreiben?</value>
-  </data>
+    <value>Ordner "{0}" existiert bereits. Überschreibe Dateien?</value>
+  <alternative>Ordner "{0}" existiert bereits. Überschreiben?</alternative></data>
   <data name="Common_FpsPostfix" xml:space="preserve">
     <value> FPS</value>
   </data>
@@ -433,14 +433,14 @@
     <value>Gute Nachrichten!</value>
   </data>
   <data name="Common_Installing" xml:space="preserve">
-    <value>Installieren...</value>
-  </data>
+    <value>Installiere...</value>
+  <alternative>Installieren...</alternative></data>
   <data name="Common_LapsPostfix" xml:space="preserve">
     <value> Runde(n)</value>
   <alternative>Runde</alternative></data>
   <data name="Common_Loading" xml:space="preserve">
-    <value>Laden...</value>
-  </data>
+    <value>Lade...</value>
+  <alternative>Laden...</alternative></data>
   <data name="Common_MetersPostfix" xml:space="preserve">
     <value>M</value>
   </data>
@@ -493,8 +493,8 @@
     <value>Ungespeichert</value>
   </data>
   <data name="Common_Uploading" xml:space="preserve">
-    <value>Hochladen...</value>
-  </data>
+    <value>Lade hoch...</value>
+  <alternative>Hochladen...</alternative></data>
   <data name="Common_Waiting" xml:space="preserve">
     <value>Warten...</value>
   </data>
@@ -511,8 +511,8 @@
     <value>Dämpfungszunahme</value>
   </data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
-    <value>0 auswählen für Logitech G920, 1 für alle Anderen behalten</value>
-  </data>
+    <value>0 für Logitech G920, sonst 1</value>
+  <alternative>0 auswählen für Logitech G920, 1 für alle Anderen behalten</alternative></data>
   <data name="Controls_EffectsHeader" xml:space="preserve">
     <value>Effekte:</value>
   </data>
@@ -526,8 +526,8 @@
     <value>Filter</value>
   </data>
   <data name="Controls_Gain" xml:space="preserve">
-    <value>Zunnahme</value>
-  </data>
+    <value>Verstärkung</value>
+  <alternative>Zunnahme</alternative></data>
   <data name="Controls_GammaAxis" xml:space="preserve">
     <value>Gamma</value>
   </data>
@@ -541,8 +541,8 @@
     <value>Kerbeffekt</value>
   </data>
   <data name="Controls_KeyboardButton" xml:space="preserve">
-    <value>Tastaturtaste:</value>
-  </data>
+    <value>Tastaturtaste</value>
+  <alternative>Tastaturtaste:</alternative></data>
   <data name="Controls_MinimumForce" xml:space="preserve">
     <value>Minimale Kraft</value>
   </data>
@@ -559,8 +559,8 @@
     <value>Bis</value>
   </data>
   <data name="Controls_RoadEffect" xml:space="preserve">
-    <value>Straßeneffekt</value>
-  </data>
+    <value>Oberlächeneffekt</value>
+  <alternative>Straßeneffekt</alternative></data>
   <data name="Controls_SlipEffect" xml:space="preserve">
     <value>Rutscheffekt</value>
   </data>
@@ -583,8 +583,8 @@
     <value>Umgebungsschatten aktualisieren fehlgeschlagen</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
-    <value>Räder ausblenden</value>
-  </data>
+    <value>Verstecke Räder</value>
+  <alternative>Räder ausblenden</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
     <value>Wiederholungen</value>
   </data>
@@ -598,14 +598,14 @@
     <value>Zurücksetzen</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
-    <value>Überschreiben</value>
-  <alternative>Sichern</alternative></data>
+    <value>Speichern</value>
+  <alternative>Sichern</alternative><alternative>Überschreiben</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
     <value>Größe</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Eigenen Ausstellungsraum starten fehlgeschlagen</value>
-  <alternative>Eigenen Austellungsraum starten fehlgeschlagen</alternative></data>
+    <value>Eigenen Showroom starten fehlgeschlagen</value>
+  <alternative>Eigenen Austellungsraum starten fehlgeschlagen</alternative><alternative>Eigenen Ausstellungsraum starten fehlgeschlagen</alternative></data>
   <data name="CustomShowroom_Control_Lights" xml:space="preserve">
     <value>Lichter</value>
   </data>
@@ -625,8 +625,8 @@
     <value>Texturen:</value>
   </data>
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Fahrzeuglackierung</value>
-  </data>
+    <value>Lackierung</value>
+  <alternative>Fahrzeuglackierung</alternative></data>
   <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
     <value>FPS:</value>
   <alternative>FPS</alternative></data>
@@ -664,8 +664,8 @@
     <value>In 512x512 anzeigen</value>
   </data>
   <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
-    <value>In benutzerdefinierten Auflösung anzeigen</value>
-  </data>
+    <value>In eigener Auflösung anzeigen</value>
+  <alternative>In benutzerdefinierten Auflösung anzeigen</alternative></data>
   <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
     <value>Texturmapping exportieren</value>
   </data>
@@ -742,8 +742,8 @@
     <value>Eigene ID eingeben:</value>
   </data>
   <data name="Share_EnterCustomIdHeader" xml:space="preserve">
-    <value>Benutzerdefinierte ID</value>
-  <alternative>Benuter ID</alternative></data>
+    <value>Eigene ID</value>
+  <alternative>Benuter ID</alternative><alternative>Benutzerdefinierte ID</alternative></data>
   <data name="Share_SharedMessage" xml:space="preserve">
     <value>Link in die Zwischenablage kopiert</value>
   </data>
@@ -754,8 +754,8 @@
     <value>Aufstellungsraum starten fehlgeschlagen</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Ausstellungsraum</value>
-  </data>
+    <value>Showroom</value>
+  <alternative>Ausstellungsraum</alternative></data>
   <data name="Showroom_DisableSweetFx" xml:space="preserve">
     <value>SweetFX deaktivieren</value>
   </data>
@@ -772,8 +772,8 @@
     <value>Kunos Wasserzeichen vorübergehend ausblenden</value>
   </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Ausstellungsraum:</value>
-  </data>
+    <value>Showroom:</value>
+  <alternative>Ausstellungsraum:</alternative></data>
   <data name="Theme_Black" xml:space="preserve">
     <value>Schwarz</value>
   </data>
@@ -835,8 +835,8 @@
     <value>Du kannst in den Einstellungen "Wiederholungen automatisch abspeichern" einschalten, um wertvolle Momente nicht zu verlieren.</value>
   </data>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
-    <value>FFB Schritte überspringen</value>
-  </data>
+    <value>FFB Update Takte überspringen</value>
+  <alternative>FFB Schritte überspringen</alternative></data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
     <value>Gehe sicher, dass das VLC-Addon richtig installiert ist.</value>
   </data>
@@ -844,8 +844,8 @@
     <value>Grad</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
-    <value>Größe des Schatten wird in “data/ambient_shadows.ini” gespeichert, das Data-Verzeichnis ist jedoch verschlüsselt und die Änderung hat keinen Effekt. Fortsetzen?</value>
-  </data>
+    <value>Größe des Schattens wird in “data/ambient_shadows.ini” gespeichert, das data-Verzeichnis ist jedoch verschlüsselt und die Änderung hat keinen Effekt. Fortsetzen?</value>
+  <alternative>Größe des Schatten wird in “data/ambient_shadows.ini” gespeichert, das Data-Verzeichnis ist jedoch verschlüsselt und die Änderung hat keinen Effekt. Fortsetzen?</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
     <value>Größe hervorheben</value>
   </data>
@@ -901,8 +901,8 @@ LOD In: [b]{9}[/b]
 Material: [b]{10}[/b]</value>
   </data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Schritte die Physik-Engine beim Berechnen des Force-Feedback überspringen darf, passend für Lenkräder mit kleinerem FFB Eingabepuffer; wenn du Probleme mit der CPU hast versuche diesen Wert auf 2-4 zu erhöhen</value>
-  </data>
+    <value>Die Physik-Engine kann einige FFB-Update-Takte überspringen; passend für Lenkräder mit kleinerem FFB Eingabepuffer; wenn Probleme mit der CPU auftauchen, diesen Wert auf 2-4 zu erhöhen, evtl. hilfts</value>
+  <alternative>Schritte die Physik-Engine beim Berechnen des Force-Feedback überspringen darf, passend für Lenkräder mit kleinerem FFB Eingabepuffer; wenn du Probleme mit der CPU hast versuche diesen Wert auf 2-4 zu erhöhen</alternative></data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>Shader-Eigenschaften</value>
   </data>
@@ -946,8 +946,8 @@ Material: [b]{10}[/b]</value>
     <value>Fahrzeug</value>
   </data>
   <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Fahrzeuglackierung</value>
-  </data>
+    <value>Lackierung</value>
+  <alternative>Fahrzeuglackierung</alternative></data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Gesperrt</value>
   </data>

@@ -1718,4 +1718,7 @@
   <data name="Weather_Mods" xml:space="preserve">
     <value>Mod天气选项</value>
   </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>真实头部运动插件RHM预设</value>
+  </data>
 </root>

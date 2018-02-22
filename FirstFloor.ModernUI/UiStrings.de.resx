@@ -484,8 +484,8 @@
     <value>Passende Kandidaten nicht gefunden</value>
   </data>
   <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
-    <value>Startaufstellung als Voreinstellung speichern</value>
-  </data>
+    <value>Startaufstellung als Vorlage speichern</value>
+  <alternative>Startaufstellung als Voreinstellung speichern</alternative></data>
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
     <value>Startaufstellung teilen</value>
   </data>
@@ -611,5 +611,8 @@
   </data>
   <data name="Colon_Format" xml:space="preserve">
     <value>{0}: {1}</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDS Dateien (*.dds)|*.dds|Alle Dateien (*.*)|*.*</value>
   </data>
 </root>

@@ -121,8 +121,8 @@
     <value>Чемпионат</value>
   </data>
   <data name="Online_ScanningProgress" xml:space="preserve">
-    <value>Сканирование ({0}/{1}), найдено {2}…</value>
-  </data>
+    <value>Сканирование ({0}/{1}), {2} найдено…</value>
+  <alternative>Сканирование ({0}/{1}), найдено {2}…</alternative></data>
   <data name="Online_ScanningProgress_Found" xml:space="preserve">
     <value>{0} сервер</value>
   </data>
@@ -139,9 +139,9 @@
     <value>{0} пит-стоп</value>
   </data>
   <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} ГГц</value>
+    <value>{0}×{1}, {2} Гц</value>
     <comment>Parameters: width, height, refresh rate</comment>
-  </data>
+  <alternative>{0}×{1}, {2} ГГц</alternative></data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Задать вручную</value>
   <alternative>Заданное вручную</alternative></data>
@@ -180,8 +180,8 @@
     <value>Не поддерживается</value>
   </data>
   <data name="Units_BHP" xml:space="preserve">
-    <value>л. с.</value>
-  </data>
+    <value>Л. с.</value>
+  <alternative>л. с.</alternative></data>
   <data name="Units_Nm" xml:space="preserve">
     <value>Н·м</value>
   </data>
@@ -243,23 +243,23 @@
     <value>Статичные</value>
   </data>
   <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
-    <value>Одна сторона за кадр</value>
-  </data>
+    <value>Одна грань за кадр</value>
+  <alternative>Одна сторона за кадр</alternative></data>
   <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
-    <value>Две стороны за кадр</value>
-  </data>
+    <value>Две грани за кадр</value>
+  <alternative>Две стороны за кадр</alternative></data>
   <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
-    <value>Три стороны за кадр</value>
-  </data>
+    <value>Три грани за кадр</value>
+  <alternative>Три стороны за кадр</alternative></data>
   <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
-    <value>Четыре стороны за кадр</value>
-  </data>
+    <value>Четыре грани за кадр</value>
+  <alternative>Четыре стороны за кадр</alternative></data>
   <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
-    <value>Пять сторон за кадр</value>
-  </data>
+    <value>Пять граней за кадр</value>
+  <alternative>Пять сторон за кадр</alternative></data>
   <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
-    <value>Шесть сторон за кадр</value>
-  </data>
+    <value>Шесть граней за кадр</value>
+  <alternative>Шесть сторон за кадр</alternative></data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (экспериментально)</value>
   </data>
@@ -285,8 +285,8 @@
     <value>шрифт</value>
   </data>
   <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>шоурум</value>
-  </data>
+    <value>выставочный зал</value>
+  <alternative>шоурум</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>трасса</value>
   </data>
@@ -390,8 +390,8 @@
     <value>Машина «{0}» отсутствует</value>
   </data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
-    <value>Нужный контент отсутствует</value>
-  </data>
+    <value>Требуемый контент отсутствует</value>
+  <alternative>Нужный контент отсутствует</alternative></data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
     <value>Раскраска «{1}» для «{0}» отсутствует</value>
   <alternative>Скин «{1}» для «{0}» отсутствует</alternative></data>
@@ -402,8 +402,8 @@
     <value>Погода «{0}» отсутствует</value>
   </data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
-    <value>Трасса «{0}» отсутствует</value>
-  </data>
+    <value>Настройки трассы «{0}» отсутствует</value>
+  <alternative>Трасса «{0}» отсутствует</alternative></data>
   <data name="AcObject_CannotDelete" xml:space="preserve">
     <value>Не удалось удалить</value>
   </data>
@@ -465,8 +465,8 @@
     <value>Увеличить</value>
   </data>
   <data name="Controls_Kers" xml:space="preserve">
-    <value>Включить KERS</value>
-  </data>
+    <value>Активация KERS</value>
+  <alternative>Включить KERS</alternative></data>
   <data name="Controls_KeyboardAndMouse" xml:space="preserve">
     <value>Клавиатура и мышь</value>
   </data>
@@ -585,11 +585,11 @@
     <value>При открытии</value>
   </data>
   <data name="TrackGeoTags_FindIt" xml:space="preserve">
-    <value>Найти трассу</value>
-  </data>
+    <value>Найти это</value>
+  <alternative>Найти трассу</alternative></data>
   <data name="Shared_PpFilter" xml:space="preserve">
-    <value>Фильтр</value>
-  </data>
+    <value>PP Фильтр</value>
+  <alternative>Фильтр</alternative></data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
     <value>Предустановка Force Feedback</value>
   <alternative>FFB-пресет</alternative></data>
@@ -832,14 +832,14 @@
     <value>Пожалуйста, восстановите оригинальный лаунчер и попробуйте снова (или смените стартер).</value>
   </data>
   <data name="Online_Server_TrackIsMissing" xml:space="preserve">
-    <value>Трек {0} не найден.</value>
-  </data>
+    <value>Трасса {0} не найдена.</value>
+  <alternative>Трек {0} не найден.</alternative></data>
   <data name="Online_Server_CarsAreMissing" xml:space="preserve">
-    <value>Автомобили {0} не найдены.</value>
-  <alternative>Автомобили {0} не найден.</alternative></data>
+    <value>Машины {0} не найдены.</value>
+  <alternative>Автомобили {0} не найден.</alternative><alternative>Автомобили {0} не найдены.</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
-    <value>Автомобиль {0} не найден.</value>
-  </data>
+    <value>Машина {0} не найдена.</value>
+  <alternative>Автомобиль {0} не найден.</alternative></data>
   <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
     <value>Проверьте правильность адреса сервера и его доступность.</value>
   </data>
@@ -880,8 +880,8 @@
     <value>Невозможно переименовать повторы</value>
   <alternative>Невозможно переименовать реплеи</alternative></data>
   <data name="Fonts_RescanUsings" xml:space="preserve">
-    <value>Невозможно пересканировать автомобили</value>
-  </data>
+    <value>Невозможно пересканировать машины</value>
+  <alternative>Невозможно пересканировать автомобили</alternative></data>
   <data name="AcObject_CannotBeMoved" xml:space="preserve">
     <value>Объект не может быть перемещен</value>
   </data>
@@ -931,8 +931,8 @@
     <value>Невозможно сохранить фильтр</value>
   </data>
   <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
-    <value>Некоторые автомобили требуют наличия этого шрифта. Вы уверены, что хотите его удалить?</value>
-  </data>
+    <value>Некоторые машины требуют наличия этого шрифта. Вы уверены, что хотите его удалить?</value>
+  <alternative>Некоторые автомобили требуют наличия этого шрифта. Вы уверены, что хотите его удалить?</alternative></data>
   <data name="FontObject_DeleteFont" xml:space="preserve">
     <value>Удалить шрифт</value>
   </data>
@@ -955,35 +955,35 @@
     <value>Левое переднее</value>
   </data>
   <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
-    <value>Невозможно восстановить непропатченную версию оригинального лаунчера. Пожалуйста,  [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]пройдите по ссылке, чтобы восстановить его[/url].</value>
-  </data>
+    <value>Невозможно восстановить непропатченную версию оригинального лаунчера. Пожалуйста, [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]восстановите вручную[/url]</value>
+  <alternative>Невозможно восстановить непропатченную версию оригинального лаунчера. Пожалуйста,  [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]пройдите по ссылке, чтобы восстановить его[/url].</alternative></data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
     <value>Невозможно использовать Официальный Стартер: слишком старая версия игры. Хотите переключиться на Tricky Starter? Вы всегда можете поменять его в Настройки/Вождение.</value>
   </data>
   <data name="Controls_Celebrate" xml:space="preserve">
-    <value>Праздновать</value>
-  </data>
+    <value>Выразить радость</value>
+  <alternative>Праздновать</alternative></data>
   <data name="Controls_Complain" xml:space="preserve">
-    <value>Пожаловаться</value>
-  <alternative>Выразить недовольство</alternative></data>
+    <value>Выразить недовольство</value>
+  <alternative>Пожаловаться</alternative></data>
   <data name="Drive_GridType" xml:space="preserve">
-    <value>Тип решётки:</value>
-  </data>
+    <value>Тип сетки:</value>
+  <alternative>Тип решётки:</alternative></data>
   <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
-    <value>Добавить новый автомобиль в список</value>
-  </data>
+    <value>Добавить новую машину в список</value>
+  <alternative>Добавить новый автомобиль в список</alternative></data>
   <data name="Drive_Grid_SameCar" xml:space="preserve">
-    <value>Такие же автомобили</value>
-  </data>
+    <value>Такая же машина</value>
+  <alternative>Такие же автомобили</alternative></data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Введите проверочный код для Google Диска</value>
   </data>
   <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
-    <value>Не удалось переключить: {0}</value>
-  </data>
+    <value>Есть несколько машин, которым нужен этот шрифт. Вы уверены, что хотите его отключить?</value>
+  <alternative>Не удалось переключить: {0}</alternative></data>
   <data name="AcObject_CannotToggleExt" xml:space="preserve">
-    <value>Не удалось переключить</value>
-  </data>
+    <value>Не удалось переключить: {0}</value>
+  <alternative>Не удалось переключить</alternative></data>
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Начать</value>
   </data>
@@ -1006,20 +1006,20 @@
     <value>Случайная</value>
   </data>
   <data name="Drive_GridArrangeWay" xml:space="preserve">
-    <value>Расположить:</value>
-  </data>
+    <value>Способ упорядочить:</value>
+  <alternative>Расположить:</alternative></data>
   <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
-    <value>Перемешав</value>
-  </data>
+    <value>Перемешать</value>
+  <alternative>Перемешав</alternative></data>
   <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
     <value>Случайно</value>
   </data>
   <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
-    <value>Каким образом расположить кандидатов на стартовой решётке</value>
-  </data>
+    <value>Каким образом упорядочить кандидатов на стартовой сетке</value>
+  <alternative>Каким образом расположить кандидатов на стартовой решётке</alternative></data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Использовать имена из скинов, если имеются</value>
-  </data>
+    <value>Использовать имена раскрасок, если они доступны</value>
+  <alternative>Использовать имена из скинов, если имеются</alternative></data>
   <data name="RaceGrid_You" xml:space="preserve">
     <value>Вы</value>
   </data>
@@ -1034,5 +1034,347 @@
   </data>
   <data name="Shared_UserChampionship" xml:space="preserve">
     <value>Чемпионат</value>
+  </data>
+  <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
+    <value>Не удается восстановить не патченную версию оригинального лаунчера. Пожалуйста, восстановите его вручную: вам нужно заменить “AssettoCorsa.exe” из “AssettoCorsa_backup_sp.exe”</value>
+  </data>
+  <data name="OfficialStarter_UpdateAC" xml:space="preserve">
+    <value>Пожалуйста, обновите AC или измените Starter на что-то еще.</value>
+  </data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Не удалось переключить</value>
+  </data>
+  <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
+    <value>Убедитесь, что файл может быть перезаписан.</value>
+  </data>
+  <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
+    <value>Неподдерживаемый формат</value>
+  </data>
+  <data name="JumpStart_TeleportToPit" xml:space="preserve">
+    <value>Телепортировать в боксы</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Не удалось обновить</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>файл не найден</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Игрок</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="GameCommand_UnknownProblem" xml:space="preserve">
+    <value>Неизвестная проблема (Process=null)</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Убедитесь, что команда не занимает больше, чем {0:F1} секунд; используйте “start [app.exe]” вместо “[app.exe]” если приложение должно работать в фоновом режиме</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
+    <value>Время ожидания превышено</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Не удалось выполнить команду</value>
+  </data>
+  <data name="Common_UnhandledError_Commentary" xml:space="preserve">
+    <value>Произошла некоторая необработанная ошибка.</value>
+  </data>
+  <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Не удалось загрузить информацию о последней версии.</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>Не удалось загрузить контент-пак</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
+    <value>Убедитесь, что подключение к Интернету доступно и ничего не происходит в папке контента.</value>
+  </data>
+  <data name="Weather_LightThunderstorm" xml:space="preserve">
+    <value>Слабая гроза</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Гроза</value>
+  </data>
+  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
+    <value>Сильная гроза</value>
+  </data>
+  <data name="Weather_LightDrizzle" xml:space="preserve">
+    <value>Легкий мелкий дождь</value>
+  </data>
+  <data name="Weather_Drizzle" xml:space="preserve">
+    <value>Мелкий дождь</value>
+  </data>
+  <data name="Weather_HeavyDrizzle" xml:space="preserve">
+    <value>Сильный мелкий дождь</value>
+  </data>
+  <data name="Weather_LightRain" xml:space="preserve">
+    <value>Слабый дождь</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Дождь</value>
+  </data>
+  <data name="Weather_HeavyRain" xml:space="preserve">
+    <value>Сильный дождь</value>
+  </data>
+  <data name="Weather_LightSnow" xml:space="preserve">
+    <value>Слабый снег</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Снег</value>
+  </data>
+  <data name="Weather_HeavySnow" xml:space="preserve">
+    <value>Сильный снег</value>
+  </data>
+  <data name="Weather_LightSleet" xml:space="preserve">
+    <value>Слабый мокрый снег</value>
+  </data>
+  <data name="Weather_Sleet" xml:space="preserve">
+    <value>Мокрый снег</value>
+  </data>
+  <data name="Weather_HeavySleet" xml:space="preserve">
+    <value>Сильный мокрый снег</value>
+  </data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>Дым</value>
+  </data>
+  <data name="Weather_Haze" xml:space="preserve">
+    <value>Мгла</value>
+  </data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>Песок</value>
+  </data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>Пыль</value>
+  </data>
+  <data name="Weather_Squalls" xml:space="preserve">
+    <value>Вихрь</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Смерч</value>
+  </data>
+  <data name="Weather_Hurricane" xml:space="preserve">
+    <value>Ураган</value>
+  </data>
+  <data name="Weather_Cold" xml:space="preserve">
+    <value>Холод</value>
+  </data>
+  <data name="Weather_Hot" xml:space="preserve">
+    <value>Жара</value>
+  </data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>Ветренный</value>
+  </data>
+  <data name="Weather_Hail" xml:space="preserve">
+    <value>Град</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>Не удается изменить ID</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>Не удается изменить ID: {0}</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Перезагрузить файл?</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI-файл был изменен. Обновить? Все локальные изменения будут потеряны.</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON-файл был изменен. Обновить? Все локальные изменения будут потеряны.</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>К сожалению, вы не можете отключить этот тип объекта.</value>
+  </data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>Не удается удалить существующий каталог</value>
+  </data>
+  <data name="Solving_Cancelled" xml:space="preserve">
+    <value>Отменен</value>
+  </data>
+  <data name="Solving_RestoreFrom" xml:space="preserve">
+    <value>Восстановить из …{0}</value>
+  </data>
+  <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
+    <value>Исходный файл будет перемещен в корзину, если существует</value>
+  </data>
+  <data name="Solving_CreateNewFile" xml:space="preserve">
+    <value>Создать новый файл</value>
+  </data>
+  <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
+    <value>Будет создан новый файл, содержащий имя, основанное на ID</value>
+  </data>
+  <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
+    <value>Не удалось завершить процесс авторизации</value>
+  </data>
+  <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
+    <value>Идентификатор аутентификации отсутствует</value>
+  </data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>События “{0}” отсутствуют</value>
+  </data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Состояние события “{0}” еще не поддерживается</value>
+  </data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Каталог раскрасок недоступен</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Машина “{0}” отсутствует</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>Трасса “{0}” отсутствует</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Новая машина {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
+    <value>Новая раскраска машины {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Новая трасса {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Новый выставочный зал {0}</value>
+  </data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>Новый шрифт {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>Новая погода {0}</value>
+  </data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>Новая версия машины {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
+    <value>Новая версия раскраски машины {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>Новая версия трассы {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>Новая версия выставочного зала {0}</value>
+  </data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>Новая версия шрифта {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>Новая версия погоды {0}</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
+    <value>Широта:</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
+    <value>Долгота:</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
+    <value>Рекомендуемый формат: “…° N” или “…° S”</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
+    <value>Рекомендуемый формат: “…° W” или “…° E”</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>в процессе</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Фильтровать по…</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Такая же группа</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Создание сетки…</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Удалить выбранные машины из списка</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Боксы</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Трэк день</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>Модули интерфейса</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Общие:</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Безумный</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} в {1}.</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Очки</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Позиция</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Победы</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Не удалось запустить RHM</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Вы занесены в черный список на этом сервере</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Сервер полный</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Сервер ответил: “{0}”</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Вы на этом сервере</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Вы)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>пароль администратора:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Показать вводимый пароль администратора</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Раскраска машины {0} отсутствует.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Раскраски машины {0} отсутствуют.</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Случайный</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Оригинал</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Моды</value>
   </data>
 </root>

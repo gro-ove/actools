@@ -151,8 +151,8 @@
     <value>Nie można zapisać powtórki.</value>
   </data>
   <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
-    <value>Nie można zapisać powtórki.</value>
-  </data>
+    <value>Nie można anulować zapisu powtórki.</value>
+  <alternative>Nie można zapisać powtórki.</alternative></data>
   <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
     <value>Lewy przód</value>
   </data>
@@ -1719,5 +1719,8 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   </data>
   <data name="Weather_Mods" xml:space="preserve">
     <value>Mody</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Ustawienie Real Head Motion</value>
   </data>
 </root>
