@@ -114,8 +114,7 @@ namespace AcManager.Tools.Helpers {
                 // ignored
             }
 
-            Vdf selectedSection;
-            if (selectedId != null && parsed.Children.TryGetValue(selectedId, out selectedSection)) {
+            if (selectedId != null && parsed.Children.TryGetValue(selectedId, out var selectedSection)) {
                 yield return new SteamProfile(selectedId, selectedSection.Values.GetValueOrDefault("PersonaName"));
             }
 
@@ -151,7 +150,7 @@ namespace AcManager.Tools.Helpers {
 
         [CanBeNull]
         public string ProfileName {
-            get { return _profileName; }
+            get => _profileName;
             set {
                 if (Equals(value, _profileName)) return;
                 _profileName = value;
@@ -161,7 +160,7 @@ namespace AcManager.Tools.Helpers {
         }
 
         public override string DisplayName {
-            get { return ProfileName == null ? SteamId : SteamId == null ? ProfileName : $"{ProfileName} ({SteamId})"; }
+            get => ProfileName == null ? SteamId : SteamId == null ? ProfileName : $"{ProfileName} ({SteamId})";
             set { }
         }
 

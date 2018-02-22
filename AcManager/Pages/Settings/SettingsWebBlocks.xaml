@@ -39,7 +39,7 @@
         <Label Content="Save URL in the main tab" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding WebBlocks.SaveExtraTabs}">
+      <CheckBox IsChecked="{Binding WebBlocks.SaveExtraTabs}" IsEnabled="{Binding WebBlocks.SaveMainUrl}">
         <Label Content="Save extra tabs" />
       </CheckBox>
     </StackPanel>

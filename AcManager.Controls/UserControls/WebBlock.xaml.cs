@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -81,14 +82,53 @@ namespace AcManager.Controls.UserControls {
                 Tabs.AddRange(alive.Tabs);
                 MainTab = Tabs.First();
                 SetCurrentTab(alive.Selected);
+
+                foreach (var tab in Tabs) {
+                    tab.PropertyChanged += OnTabPropertyChanged;
+                    tab.PageLoaded += OnTabPageLoaded;
+                    tab.NewWindow += OnTabNewWindow;
+                }
             } else {
-                MainTab = CreateTab((SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey)) ?? StartPage);
+                MainTab = CreateTab(SaveKey != null && SettingsHolder.WebBlocks.SaveMainUrl ? ValuesStorage.Get(SaveKey, StartPage) : StartPage);
                 MainTab.IsMainTab = true;
-                SetCurrentTab(MainTab);
+
+                if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs) {
+                    foreach (var tab in ValuesStorage.GetStringList(SaveKey + ":tabs")) {
+                        CreateTab(tab, true);
+                    }
+
+                    var current = ValuesStorage.Get<string>(SaveKey + ":current");
+                    SetCurrentTab(Tabs.FirstOrDefault(x => x.ActiveUrl == current) ?? MainTab);
+                } else {
+                    SetCurrentTab(MainTab);
+                }
             }
+
+            Tabs.CollectionChanged -= OnTabsCollectionChanged;
+            Tabs.CollectionChanged += OnTabsCollectionChanged;
 
             TabsList.ItemsSource = Tabs;
             this.OnActualUnload(() => { Tabs.ForEach(x => x.OnUnloaded()); });
+        }
+
+        private readonly Busy _saveTabsBusy = new Busy();
+
+        private void SaveTabs() {
+            if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs) {
+                _saveTabsBusy.Yield(() => {
+                    if (Tabs.Count > 1) {
+                        ValuesStorage.Storage.SetStringList(SaveKey + ":tabs", Tabs.ApartFrom(MainTab).Select(x => x.ActiveUrl));
+                        ValuesStorage.Set(SaveKey + ":current", CurrentTab?.ActiveUrl);
+                    } else {
+                        ValuesStorage.Remove(SaveKey + ":tabs");
+                        ValuesStorage.Remove(SaveKey + ":current");
+                    }
+                });
+            }
+        }
+
+        private void OnTabsCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
+            SaveTabs();
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
@@ -102,6 +142,12 @@ namespace AcManager.Controls.UserControls {
                 }
 
                 StayingAlive.Add(new Stored(KeepAliveKey, Tabs, CurrentTab, AlwaysKeepAlive));
+                foreach (var tab in Tabs) {
+                    tab.PropertyChanged -= OnTabPropertyChanged;
+                    tab.PageLoaded -= OnTabPageLoaded;
+                    tab.NewWindow -= OnTabNewWindow;
+                }
+
                 SetCurrentTab(null);
                 MainTab = null;
                 Tabs.Clear();
@@ -110,12 +156,14 @@ namespace AcManager.Controls.UserControls {
 
         private void SetCurrentTab([CanBeNull] WebTab tab) {
             if (ReferenceEquals(CurrentTab, tab)) return;
+            tab?.EnsureLoaded();
             CurrentTab = tab;
             TabsList.SelectedItem = tab;
             PageParent.Child = tab?.GetElement(Window.GetWindow(this) as DpiAwareWindow);
             UrlTextBox.Text = tab?.ActiveUrl ?? "";
             ProgressBar.Visibility = tab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
             CommandManager.InvalidateRequerySuggested();
+            SaveTabs();
         }
 
         private void OnTabsListSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -129,11 +177,11 @@ namespace AcManager.Controls.UserControls {
         public WebTab CurrentTab { get; private set; }
 
         [NotNull]
-        private WebTab CreateTab(string url) {
-            var tab = new WebTab(url, PreferTransparentBackground);
+        private WebTab CreateTab(string url, bool delayed = false) {
+            var tab = new WebTab(url, PreferTransparentBackground, delayed);
 
             if (_jsBridgeFactory != null) {
-                tab.SetJsBridge(_jsBridgeFactory);
+                _setJsBridgeCallback?.Invoke(tab.GetJsBridge(_jsBridgeFactory));
             }
 
             if (UserAgent != null) {
@@ -142,6 +190,10 @@ namespace AcManager.Controls.UserControls {
 
             if (StyleProvider != null) {
                 tab.SetStyleProvider(StyleProvider);
+            }
+
+            if (DownloadListener != null) {
+                tab.SetDownloadListener(DownloadListener);
             }
 
             tab.SetNewWindowsBehavior(NewWindowsBehavior);
@@ -154,20 +206,24 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnTabPropertyChanged(object sender, PropertyChangedEventArgs args) {
-            if (ReferenceEquals(sender, CurrentTab)) {
+            if (args.PropertyName == nameof(CurrentTab.IsClosed)) {
+                var tab = (WebTab)sender;
+                if (ReferenceEquals(tab, CurrentTab)) {
+                    SetCurrentTab(Tabs.Previous(CurrentTab));
+                }
+
+                if (Tabs.Remove(tab)) {
+                    tab.OnUnloaded();
+                }
+            } else if (ReferenceEquals(sender, CurrentTab)) {
                 var tab = (WebTab)sender;
                 if (args.PropertyName == nameof(CurrentTab.IsLoading)) {
                     ProgressBar.Visibility = CurrentTab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
                 } else if (args.PropertyName == nameof(CurrentTab.ActiveUrl)) {
                     UrlTextBox.Text = tab.ActiveUrl;
-                } else if (args.PropertyName == nameof(CurrentTab.IsClosed)) {
-                    if (ReferenceEquals(tab, CurrentTab)) {
-                        SetCurrentTab(Tabs.Previous(CurrentTab));
-                    }
-
-                    Tabs.Remove(tab);
                 }
             }
+
         }
 
         private void OnTabPageLoaded(object sender, UrlEventArgs e) {
@@ -186,20 +242,49 @@ namespace AcManager.Controls.UserControls {
             SetCurrentTab(CreateTab(e.Url));
         }
 
+        [CanBeNull]
         private Func<WebTab, JsBridgeBase> _jsBridgeFactory;
 
-        public void SetScriptProvider<T>() where T : JsBridgeBase, new() {
+        [CanBeNull]
+        private Action<JsBridgeBase> _setJsBridgeCallback;
+
+        /// <summary>
+        /// If browser restored its old tabs instead of creating new ones, JS Bridges can’t be replaced.
+        /// But you can get the list of them and change their state to actual.
+        /// </summary>
+        public void SetJsBridge<T>(Action<T> setJsBridgeCallback = null) where T : JsBridgeBase, new() {
             _jsBridgeFactory = tab => new T { Tab = tab };
-            Tabs.ForEach(x => x.SetJsBridge(_jsBridgeFactory));
+            var t = Tabs.Select(x => x.GetJsBridge(_jsBridgeFactory)).Cast<T>().ToList();
+            if (setJsBridgeCallback == null) {
+                _setJsBridgeCallback = null;
+            } else {
+                _setJsBridgeCallback = b => setJsBridgeCallback((T)b);
+                t.NonNull().ForEach(setJsBridgeCallback);
+            }
         }
 
-        public void SetScriptProvider(Func<JsBridgeBase> factory) {
-            _jsBridgeFactory = tab => {
-                var result = factory();
-                result.Tab = tab;
-                return result;
-            };
-            Tabs.ForEach(x => x.SetJsBridge(_jsBridgeFactory));
+        /// <summary>
+        /// If browser restored its old tabs instead of creating new ones, JS Bridges can’t be replaced.
+        /// But you can get the list of them and change their state to actual.
+        /// </summary>
+        public void SetJsBridge<T>([CanBeNull] Func<T> factory, Action<T> setJsBridgeCallback = null) where T : JsBridgeBase {
+            if (factory == null) {
+                _jsBridgeFactory = null;
+            } else {
+                _jsBridgeFactory = tab => {
+                    var result = factory();
+                    result.Tab = tab;
+                    return result;
+                };
+            }
+
+            var t = Tabs.Select(x => x.GetJsBridge(_jsBridgeFactory)).Cast<T>().ToList();
+            if (setJsBridgeCallback == null) {
+                _setJsBridgeCallback = null;
+            } else {
+                _setJsBridgeCallback = b => setJsBridgeCallback((T)b);
+                t.NonNull().ForEach(setJsBridgeCallback);
+            }
         }
 
         public static readonly DependencyProperty IsAddressBarVisibleProperty = DependencyProperty.Register(nameof(IsAddressBarVisible), typeof(bool),
@@ -267,6 +352,23 @@ namespace AcManager.Controls.UserControls {
 
         private void OnStyleProviderChanged(ICustomStyleProvider newValue) {
             Tabs.ForEach(x => x.SetStyleProvider(newValue));
+        }
+
+        public static readonly DependencyProperty DownloadListenerProperty = DependencyProperty.Register(nameof(DownloadListener), typeof(IWebDownloadListener),
+                typeof(WebBlock), new PropertyMetadata(OnDownloadListenerChanged));
+
+        [CanBeNull]
+        public IWebDownloadListener DownloadListener {
+            get => (IWebDownloadListener)GetValue(DownloadListenerProperty);
+            set => SetValue(DownloadListenerProperty, value);
+        }
+
+        private static void OnDownloadListenerChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((WebBlock)o).OnDownloadListenerChanged((IWebDownloadListener)e.NewValue);
+        }
+
+        private void OnDownloadListenerChanged(IWebDownloadListener newValue) {
+            Tabs.ForEach(x => x.SetDownloadListener(newValue));
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),
@@ -360,6 +462,10 @@ namespace AcManager.Controls.UserControls {
             if (_usedForScrolling) {
                 e.Handled = true;
             }
+        }
+
+        private void OnDrop(object sender, DragEventArgs e) {
+            e.Handled = true;
         }
     }
 }

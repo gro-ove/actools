@@ -43,8 +43,23 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control))
             });
             InitializeComponent();
-            WebBrowser.SetScriptProvider(() => new JsBridge(Model));
+            WebBrowser.SetJsBridge<JsBridge>(x => x.Model = Model);
             WebBrowser.StyleProvider = new StyleProvider();
+        }
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+        public class JsBridge : JsBridgeBase {
+            [CanBeNull]
+            internal ViewModel Model;
+
+            [UsedImplicitly]
+            public void SetEventId(string value) {
+                Sync(() => {
+                    if (Model != null) {
+                        Model.EventId = value;
+                    }
+                });
+            }
         }
 
         public static Task<bool> RunAsync(string eventId) {
@@ -262,20 +277,6 @@ namespace AcManager.Pages.Drive {
 
             public void Dispose() {
                 _discordPresence?.Dispose();
-            }
-        }
-
-        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeBase {
-            private readonly ViewModel _model;
-
-            public JsBridge(ViewModel model) {
-                _model = model;
-            }
-
-            [UsedImplicitly]
-            public void SetEventId(string value) {
-                Sync(() => _model.EventId = value);
             }
         }
 

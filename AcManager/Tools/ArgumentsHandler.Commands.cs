@@ -153,6 +153,7 @@ namespace AcManager.Tools {
                     case "install":
                         return (await (custom.Params.GetValues(@"url") ?? new string[0]).Select(
                                 x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams {
+                                    CarId = custom.Params.Get(@"car"),
                                     AllowExecutables = true
                                 })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
@@ -305,7 +306,8 @@ namespace AcManager.Tools {
             string data, header;
             using (var client = new WebClient()) {
                 data = await client.DownloadStringTaskAsync($"http://www.radiators-champ.com/RSRLiveTiming/ajax.php?action=download_setup&id={id}");
-                header = client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ArrayElementAtOrDefault(1)?.Trim();
+                header =
+                        client.ResponseHeaders[@"Content-Disposition"]?.Split(new[] { @"filename=" }, StringSplitOptions.None).ArrayElementAtOrDefault(1)?.Trim();
             }
 
             if (data == null || header == null) {

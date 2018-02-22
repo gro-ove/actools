@@ -21,7 +21,8 @@
 
         <DockPanel Margin="0 4 0 0">
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
-              SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}" />
+              SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
+              KeepAliveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser:{0}'}" />
         </DockPanel>
 
       </DataTemplate>
@@ -87,7 +88,8 @@
                           Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
                       <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True"
                           Filename="{Binding Favicon, FallbackValue={x:Null}}" Margin="0 0 4 0" ClearOnChange="True" />
-                      <TextBlock x:Name="PART_Url" Text="{Binding Url}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
+                      <TextBlock x:Name="PART_Url" Text="{Binding Url}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" DockPanel.Dock="Bottom"
+                          Margin="0 2 0 0" />
                       <TextBlock x:Name="PART_Name" Text="{Binding Name}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
                     <DataTemplate.Triggers>
@@ -106,7 +108,7 @@
 
               <DockPanel Grid.Row="1">
                 <mui:ModernButton Command="{Binding AddNewSourceCommand}" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
-                    ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                    ToolTip="Add a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
                     ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding WebSources.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} site'}"
@@ -142,7 +144,12 @@
 
                 <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
                 <CheckBox IsChecked="{Binding CaptureDownloads}">
-                  <Label Content="Download files from website using browser" />
+                  <Label>
+                    <DockPanel Style="{x:Null}">
+                      <TextBlock Text="Download files from website using browser" />
+                      <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
+                    </DockPanel>
+                  </Label>
                 </CheckBox>
               </StackPanel>
             </ScrollViewer>

@@ -61,8 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
 
             // first check if uri refers to a command
             if (Commands != null) {
-                ICommand command;
-                if (Commands.TryGetValue(uri, out command)) {
+                if (Commands.TryGetValue(uri, out var command)) {
                     // note: not executed within BbCodeBlock context, Hyperlink instance has Command and CommandParameter set
                     if (command.CanExecute(parameter)) {
                         command.Execute(parameter);

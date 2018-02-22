@@ -22,7 +22,7 @@
         <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Rsr_Commentary}" />
       </DockPanel>
 
-      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" />
+      <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" />
       <Grid Grid.Row="2" Margin="0 16 0 0">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />

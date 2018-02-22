@@ -1,11 +1,12 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools;
@@ -17,45 +18,70 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Web {
-    // TODO: Remove
-    internal class WebBrowserWrapper : IWebSomething {
+    internal class FormsWebBrowserWrapper : IWebSomething {
         #region Initialization
         public static readonly string DefaultUserAgent;
 
-        static WebBrowserWrapper() {
+        static FormsWebBrowserWrapper() {
             var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             DefaultUserAgent = $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
         }
         #endregion
 
         private WebBrowser _inner;
+        private WindowsFormsHost _wrapper;
 
         [CanBeNull]
         private ICustomStyleProvider _styleProvider;
 
         public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
-            if (_inner != null) return _inner;
+            if (_wrapper != null) return _wrapper;
             WebBrowserHelper.SetUserAgent(DefaultUserAgent);
 
-            _inner = new WebBrowser();
+            _inner = new WebBrowser { ScriptErrorsSuppressed = true };
             _inner.Navigated += OnNavigated;
-            _inner.LoadCompleted += OnLoadCompleted;
             _inner.Navigating += OnNavigating;
-            return _inner;
+            _inner.NewWindow += OnNewWindow;
+            _inner.DocumentTitleChanged += OnTitleChanged;
+            _wrapper = new WindowsFormsHost {
+                Child = _inner
+            };
+
+            return _wrapper;
+        }
+
+        private void OnNewWindow(object sender, CancelEventArgs args) {
+            switch (_newWindowsBehavior) {
+                case NewWindowsBehavior.Ignore:
+                    args.Cancel = true;
+                    break;
+                case NewWindowsBehavior.ReplaceCurrent:
+                    _inner.Navigate(_inner.StatusText);
+                    args.Cancel = true;
+                    break;
+                case NewWindowsBehavior.OpenInBrowser:
+                    break;
+                case NewWindowsBehavior.MultiTab:
+                    NewWindow?.Invoke(this, new UrlEventArgs(_inner.StatusText));
+                    args.Cancel = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void OnTitleChanged(object sender, EventArgs e) {
+            TitleChanged?.Invoke(this, new TitleChangedEventArgs(_inner.DocumentTitle ?? _inner.Url.ToString()));
         }
 
         public void SetDownloadListener(IWebDownloadListener listener) {
             // Not supported
         }
 
-        public void SetNewWindowsBehavior(NewWindowsBehavior mode) {
-            // Not supported
-        }
+        private NewWindowsBehavior _newWindowsBehavior;
 
-        [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("6d5140c1-7436-11ce-8034-00aa006009fa")]
-        internal interface IServiceProvider {
-            [return: MarshalAs(UnmanagedType.IUnknown)]
-            object QueryService(ref Guid guidService, ref Guid riid);
+        public void SetNewWindowsBehavior(NewWindowsBehavior mode) {
+            _newWindowsBehavior = mode;
         }
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
@@ -72,34 +98,30 @@ namespace AcManager.Controls.UserControls.Web {
         public bool CanConvertFilenames => true;
 
         public string ConvertFilename(string filename) {
-            // TODO: Might not work!
             return filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri;
         }
 
-        private void OnNavigating(object sender, NavigatingCancelEventArgs e) {
-            Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Uri.ToString()));
+        private void OnNavigating(object sender, WebBrowserNavigatingEventArgs args) {
+            if (_inner.Url != args.Url) return;
+            Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, args.Url.ToString()));
         }
 
-        private void OnLoadCompleted(object sender, NavigationEventArgs e) {
+        /*private void OnLoadCompleted(object sender, NavigationEventArgs e) {
             Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Ready, e.Uri.ToString()));
-        }
+        }*/
 
-        private void OnNavigated(object sender, NavigationEventArgs e) {
-            WebBrowserHelper.SetSilent(_inner, true);
+        private void OnNavigated(object sender, WebBrowserNavigatedEventArgs args) {
+            if (_inner.Url != args.Url) return;
+
+            // AsWebBrowser2();
             ModifyPage();
 
-            var userCss = _styleProvider?.ToScript(e.Uri.OriginalString);
+            var userCss = _styleProvider?.ToScript(args.Url.OriginalString);
             if (userCss != null) {
                 Execute(userCss);
             }
 
-            Navigated?.Invoke(this, new PageLoadedEventArgs(e.Uri.OriginalString, null));
-
-            try {
-                TitleChanged?.Invoke(this, new TitleChangedEventArgs((string)((dynamic)_inner.Document).Title));
-            } catch (Exception ex) {
-                Logging.Error(ex);
-            }
+            Navigated?.Invoke(this, new PageLoadedEventArgs(args.Url.OriginalString, null));
         }
 
         public void ModifyPage() {
@@ -108,7 +130,7 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
         }
 
         public string GetUrl() {
-            return _inner.Source?.OriginalString ?? "";
+            return _inner.Url?.OriginalString ?? "";
         }
 
         private bool _jsBridgeSet;
@@ -140,10 +162,9 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
         }
 
         public object Execute(string js) {
-            if (_inner.Source == null) return null;
             try {
                 _errorHappened = false;
-                return _inner.InvokeScript(@"eval", js);
+                return _inner.Document?.InvokeScript(@"eval", new object[]{ js });
             } catch (InvalidOperationException e) {
                 Logging.Warning("InvalidOperationException: " + e.Message);
             } catch (COMException e) {
@@ -166,7 +187,9 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
 
         public void Navigate(string url) {
             if (Equals(url, GetUrl())) {
-                _inner.Refresh(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
+                _inner.Refresh(Keyboard.Modifiers.HasFlag(ModifierKeys.Control)
+                        ? WebBrowserRefreshOption.Completely
+                        : WebBrowserRefreshOption.Normal);
                 return;
             }
 
@@ -198,7 +221,9 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
 
         private DelegateCommand<bool?> _refreshCommand;
 
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => { _inner.Refresh(noCache == true); }));
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => {
+            _inner.Refresh(noCache == true ? WebBrowserRefreshOption.Completely : WebBrowserRefreshOption.Normal);
+        }));
 
         private DispatcherTimer _timer;
 

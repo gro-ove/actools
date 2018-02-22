@@ -1,0 +1,24 @@
+﻿<UserControl x:Class="AcManager.UserControls.ModsWebFinder" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.UserControls"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance l:ModsWebFinder+ViewModel}">
+  <FrameworkElement.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </FrameworkElement.Resources>
+  <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 0 -8">
+    <DockPanel>
+      <Label>
+        <DockPanel Style="{x:Null}">
+          <TextBlock Text="Selector or JS-code:" />
+          <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
+        </DockPanel>
+      </Label>
+      <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" AcceptsReturn="True" TextWrapping="Wrap" Height="60"
+          FontSize="{DynamicResource SmallFontSize}" />
+    </DockPanel>
+  </StackPanel>
+</UserControl>

@@ -19,6 +19,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using JetBrains.Annotations;
 using LogSeverity = CefSharp.LogSeverity;
 
 namespace AcManager.Controls.UserControls.CefSharp {
@@ -35,6 +36,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         private Border _wrapper;
         private ChromiumWebBrowser _inner;
         private RequestHandler _requestHandler;
+        private DownloadHandler _downloadHandler;
         private double _zoomLevel;
 
         private static readonly AcApiHandlerFactory AcApiHandler = new AcApiHandlerFactory();
@@ -79,10 +81,8 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     Cef.Initialize(settings, false, null);
                 }
 
-                _requestHandler = new RequestHandler {
-                    UserAgent = DefaultUserAgent
-                };
-
+                _downloadHandler = new DownloadHandler();
+                _requestHandler = new RequestHandler { UserAgent = DefaultUserAgent };
                 _requestHandler.Inject += OnRequestHandlerInject;
 
                 _inner = new ChromiumWebBrowser {
@@ -92,9 +92,9 @@ namespace AcManager.Controls.UserControls.CefSharp {
                         WebSecurity = CefState.Disabled,
                         OffScreenTransparentBackground = preferTransparentBackground,
                     },
+                    DownloadHandler = _downloadHandler,
                     RequestHandler = _requestHandler,
                     MenuHandler = new MenuHandler(),
-                    DownloadHandler = new DownloadHandler(),
                 };
 
                 RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
@@ -170,13 +170,27 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return _inner.Address;
         }
 
-        public void SetJsBridge(JsBridgeBase bridge) {
+        private bool _jsBridgeSet;
+
+        [CanBeNull]
+        private JsBridgeBase _jsBridge;
+
+        public T GetJsBridge<T>(Func<T> factory) where T : JsBridgeBase {
+            if (_jsBridgeSet) {
+                return (T)_jsBridge;
+            }
+
+            _jsBridge = factory();
+            _jsBridgeSet = true;
+
             try {
-                AcApiHandler.Register(_inner, bridge?.AcApiHosts.ToArray(), OnAcApiRequest);
-                _inner.RegisterJsObject(@"external", bridge, new BindingOptions { CamelCaseJavascriptNames = false });
+                AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
+                _inner.RegisterJsObject(@"external", _jsBridge, new BindingOptions { CamelCaseJavascriptNames = false });
             } catch (Exception e) {
                 Logging.Warning(e);
             }
+
+            return (T)_jsBridge;
         }
 
         public void SetUserAgent(string userAgent) {
@@ -185,6 +199,10 @@ namespace AcManager.Controls.UserControls.CefSharp {
 
         public void SetStyleProvider(ICustomStyleProvider provider) {
             _requestHandler.StyleProvider = provider;
+        }
+
+        public void SetDownloadListener(IWebDownloadListener listener) {
+            _downloadHandler.Register(_inner, new[] { @"*" }, listener);
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior mode) {

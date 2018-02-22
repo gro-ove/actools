@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,43 +12,45 @@ using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
-    public interface ICmRequestHandler {
-        bool Test([NotNull] string request);
-
-        [CanBeNull]
-        string UnwrapDownloadUrl([NotNull] string request);
-
-        void Handle([NotNull] string request);
-    }
-
     public static class FlexibleLoader {
         [CanBeNull]
         public static ICmRequestHandler CmRequestHandler { get; set; }
 
+        private static readonly List<ILoaderFactory> Factories = new List<ILoaderFactory>();
+
+        public static void Register([NotNull] ILoaderFactory factory) {
+            Factories.Add(factory);
+        }
+
         [NotNull]
-        public static ILoader CreateLoader([NotNull] string uri) {
-            if (CmRequestHandler?.Test(uri) == true) {
-                var unwrapped = CmRequestHandler.UnwrapDownloadUrl(uri);
+        public static ILoader CreateLoader([NotNull] string url) {
+            if (CmRequestHandler?.Test(url) == true) {
+                var unwrapped = CmRequestHandler.UnwrapDownloadUrl(url);
                 if (unwrapped != null) {
-                    uri = unwrapped;
+                    url = unwrapped;
                     Logging.Debug($"Unwrapped URL: {unwrapped}");
                 } else {
                     throw new OperationCanceledException("Link is handled by CM Requests Handler");
                 }
             }
 
-            if (AcStuffSharedLoader.Test(uri)) return new AcStuffSharedLoader(uri);
-            if (GoogleDriveLoader.Test(uri)) return new GoogleDriveLoader(uri);
-            if (YandexDiskLoader.Test(uri)) return new YandexDiskLoader(uri);
-            if (MediaFireLoader.Test(uri)) return new MediaFireLoader(uri);
-            if (DropboxLoader.Test(uri)) return new DropboxLoader(uri);
-            if (OneDriveLoader.Test(uri)) return new OneDriveLoader(uri);
-            if (AcClubLoader.Test(uri)) return new AcClubLoader(uri);
-            if (AcDriftingProLoader.Test(uri)) return new AcDriftingProLoader(uri);
-            if (AssettoDbLoader.Test(uri)) return new AssettoDbLoader(uri);
-            if (AdFlyLoader.Test(uri)) return new AdFlyLoader(uri);
-            if (MegaLoader.Test(uri)) return new MegaLoader(uri);
-            return new DirectLoader(uri);
+            var loader = Factories.Select(x => x.Create(url)).FirstOrDefault(x => x != null);
+            if (loader != null) {
+                return loader;
+            }
+
+            if (AcStuffSharedLoader.Test(url)) return new AcStuffSharedLoader(url);
+            if (GoogleDriveLoader.Test(url)) return new GoogleDriveLoader(url);
+            if (YandexDiskLoader.Test(url)) return new YandexDiskLoader(url);
+            if (MediaFireLoader.Test(url)) return new MediaFireLoader(url);
+            if (DropboxLoader.Test(url)) return new DropboxLoader(url);
+            if (OneDriveLoader.Test(url)) return new OneDriveLoader(url);
+            if (AcClubLoader.Test(url)) return new AcClubLoader(url);
+            if (AcDriftingProLoader.Test(url)) return new AcDriftingProLoader(url);
+            if (AssettoDbLoader.Test(url)) return new AssettoDbLoader(url);
+            if (AdFlyLoader.Test(url)) return new AdFlyLoader(url);
+            if (MegaLoader.Test(url)) return new MegaLoader(url);
+            return new DirectLoader(url);
         }
 
         private static IWebProxy _proxy;

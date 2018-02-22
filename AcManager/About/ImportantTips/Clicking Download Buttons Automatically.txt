@@ -1,0 +1,23 @@
+﻿sid: cfdptdvq
+id: autoClickdownloadButtons
+
+Now, you can download mods directly from CM using built-in browser, but that’s not all! You know how you can drag’n’drop (or paste) a link to a mod in CM to install, but not if it leads to some website? Or, how one pasted link might redirect to another, and it’s some website, and CM doesn’t know how to deal with it? This app can handle that as well! For that, there is this option:
+
+ [img="https://i.imgur.com/8nWHfzw.png|240"]I’d like to point out I don’t encourage you to use any specific sites and don’t use any names 😄[/img]
+
+Turn it on and, as soon as you’ll try to download something from any of those hosts, app will show you a browser so you can click the download button and CM will do the rest.
+
+But wait, there is more!
+[i]Te😄st[/i]
+
+If you have CefSharp plugin enabled (and I highly recommend that you do), you can specify for CM where to click and you won’t even have to click anything. You can either use a simple selector — the same way it works, for example, in most ad blocking browser extension — or even write a short script for that, if simple selector won’t do.
+
+For CSS rules, all you need is a selector. As soon as you switch to rules creating mode, just use your mouse and click somewhere on page to pick an item. Result should look like that:
+
+ [mono]#content > .download-btn[/mono]
+
+And if you want to make a JS rule, use “javascript:” prefix (by the way, [b]be careful if you’re using somebody else’s selector, don’t forget to check it for anything suspicious[/b]):
+
+ [mono]javascript:document.querySelector('#content > .download-btn').click()[/mono]
+
+Also, take a look [url="http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically"]here[/url], maybe you’ll find some ready-to-use rules, or would like to share yours.

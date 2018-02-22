@@ -68,7 +68,8 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public override void PageInject(string url, Collection<string> toInject) {
-            toInject.Add(@"<script>!function(){
+            if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
+                toInject.Add(@"<script>!function(){
 window.__AC = {};
 window.__AC.CarsArray = JSON.parse(window.external.GetCars());
 window.__AC.TracksArray = JSON.parse(window.external.GetTracks());
@@ -86,6 +87,7 @@ function find(a, f, p1, p2) { return p1 && a.filter(function (n){ return (p2 ? n
 window.__AC.findCar = find.bind(null, __AC.CarsArray);
 window.__AC.findTrack = find.bind(null, __AC.TracksArray);
 }()</script>");
+            }
         }
 
         [UsedImplicitly]

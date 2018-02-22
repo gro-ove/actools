@@ -27,6 +27,7 @@ using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
+using AcManager.Pages.Miscellaneous;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
@@ -120,7 +121,7 @@ namespace AcManager {
 
             var app = new App();
 
-            // some sort of safe mode
+            // Some sort of safe mode
             if (forceSoftwareRenderingMode && !softwareRenderingModeWasEnabled) {
                 Toast.Show("Safe mode", "Failed to start the last time, now CM uses software rendering", () => {
                     if (ModernDialog.ShowMessage(
@@ -334,6 +335,7 @@ namespace AcManager {
             SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             CupClient.Initialize();
             Superintendent.Initialize();
+            ModsWebBrowser.Initialize();
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
@@ -357,29 +359,29 @@ namespace AcManager {
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/car"),
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/car"),
                     new DelegateCommand<string>(
                             id => {
                                 WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car));
                             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findmissing/track"),
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/track"),
                     new DelegateCommand<string>(
                             id => {
                                 WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
                             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/car"), new DelegateCommand<string>(id => {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/car"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
                 IndexDirectDownloader.DownloadCarAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadmissing/track"), new DelegateCommand<string>(id => {
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/track"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
                 IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://createneutrallut"),
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"),
                     new DelegateCommand<string>(id => { NeutralColorGradingLut.CreateNeutralLut(id.As(16)); }));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
@@ -453,10 +455,10 @@ namespace AcManager {
 
             CmPreviewsTools.MissingShowroomHelper = new CarUpdatePreviewsDialog.MissingShowroomHelper();
 
-            // paint shop+livery generator?
+            // Paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
 
-            // discord
+            // Discord
             if (AppArguments.Has(AppFlag.DiscordCmd)) {
                 // Do not show main window and wait for futher instructions?
             }
@@ -470,7 +472,7 @@ namespace AcManager {
                 };
             }
 
-            // reshade?
+            // Reshade?
             var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
             if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), "kn5only", StringComparison.OrdinalIgnoreCase)) {
                 loadReShade = AppArguments.Values.Any(x => x.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase));
@@ -483,10 +485,10 @@ namespace AcManager {
                 }
             }
 
-            // auto-show that thing
+            // Auto-show that thing
             InstallAdditionalContentDialog.Initialize();
 
-            // let’s roll
+            // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run();
         }

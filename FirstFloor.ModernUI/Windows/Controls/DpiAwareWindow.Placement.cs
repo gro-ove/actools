@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -19,6 +20,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private string _locationAndSizeKey;
 
+        [Localizable(false)]
         public string LocationAndSizeKey {
             get => _locationAndSizeKey;
             set => SetValue(LocationAndSizeKeyProperty, value);

@@ -26,20 +26,21 @@ namespace AcManager.Pages.Dialogs {
                 CloseButton
             };
 
-            WebBrowser.SetScriptProvider(() => new JsBridge(Model));
+            WebBrowser.SetJsBridge<JsBridge>(x => x.Model = Model);
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class JsBridge : JsBridgeBase {
-            private readonly ViewModel _model;
-
-            public JsBridge(ViewModel model) {
-                _model = model;
-            }
+            [CanBeNull]
+            internal ViewModel Model;
 
             [UsedImplicitly]
             public void Update(string selected) {
-                Sync(() => _model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim());
+                Sync(() => {
+                    if (Model != null) {
+                        Model.SelectedText = Regex.Replace(selected ?? "", @"\[(?:\d+|citation needed)\]", "").Trim();
+                    }
+                });
             }
         }
 

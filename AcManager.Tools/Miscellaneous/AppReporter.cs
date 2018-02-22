@@ -169,7 +169,7 @@ App version: {BuildInformation.AppVersion}.", CmApiProvider.UserAgent);
                         }
                     }
 
-                    var career = AcPaths.GetKunosCareerProgressFilename(); ;
+                    var career = AcPaths.GetKunosCareerProgressFilename();
                     if (File.Exists(career)) {
                         try {
                             writer.Write("Career.ini", career);

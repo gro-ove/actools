@@ -85,6 +85,7 @@ namespace AcManager {
             return true;
         }
 
+        private bool _mainWindowShown;
         private Task _mainWindowTask;
 
         private async Task HandleMessagesAsync(IEnumerable<string> obj) {
@@ -93,7 +94,8 @@ namespace AcManager {
             _showMainWindow |= v != ArgumentsHandler.ShowMainWindow.No;
             Logging.Write("Show main window: " + _showMainWindow);
 
-            if (_showMainWindow && _mainWindowTask == null) {
+            if (_showMainWindow && _mainWindowTask == null && !_mainWindowShown) {
+                _mainWindowShown = true;
                 _mainWindowTask = new MainWindow().ShowAndWaitAsync();
             }
 
@@ -131,8 +133,9 @@ namespace AcManager {
                         Logging.Write("Done");
                     }
 
-                    if (_showMainWindow) {
+                    if (_showMainWindow && !_mainWindowShown) {
                         Logging.Write("Main window…");
+                        _mainWindowShown = true;
                         await (_mainWindowTask ?? new MainWindow().ShowAndWaitAsync());
                         Logging.Write("Main window closed");
                     }

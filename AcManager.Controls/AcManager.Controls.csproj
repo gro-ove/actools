@@ -202,6 +202,8 @@
     <Compile Include="UserControls\CefSharp\MenuHandler.cs" />
     <Compile Include="UserControls\CefSharp\RequestHandler.cs" />
     <Compile Include="UserControls\CefSharp\RequestsFiltering.cs" />
+    <Compile Include="UserControls\IWebDownloader.cs" />
+    <Compile Include="UserControls\IWebDownloadListener.cs" />
     <Compile Include="UserControls\WebTab.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
@@ -215,6 +217,7 @@
     <Compile Include="UserControls\Web\AcApiRequestEventArgs.cs" />
     <Compile Include="UserControls\Web\AcCompatibleApiBridge.cs" />
     <Compile Include="UserControls\Web\CustomStyleProviderExtension.cs" />
+    <Compile Include="UserControls\Web\FormsWebBrowserWrapper.cs" />
     <Compile Include="UserControls\Web\ICustomStyleProvider.cs" />
     <Compile Include="UserControls\Web\IWebSomething.cs" />
     <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
@@ -579,17 +582,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Background.jpg" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="SHDocVw">
-      <Guid>{EAB22AC0-30C1-11CF-A7EB-0000C05BAE0B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>1</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

@@ -14,38 +14,12 @@ namespace AcManager.Controls.UserControls.CefSharp {
     public class AcApiHandlerFactory : ISchemeHandlerFactory {
         public const string AcSchemeName = "ac";
 
-        public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
-            if (schemeName == AcSchemeName) {
-                for (var i = 0; i < _listeners.Count; i++) {
-                    var listener = _listeners[i];
-                    if (!listener.Browser.TryGetTarget(out var targetBrowser)) {
-                        _listeners.RemoveAt(i);
-                        continue;
-                    }
-
-                    if (targetBrowser.GetMainFrame().Url == frame.Url) {
-                        var hostName = frame.Url.Split(new[] { '/' }, 3, StringSplitOptions.RemoveEmptyEntries)
-                                            .ArrayElementAtOrDefault(1)?.ApartFromFirst(@"www.").ToLowerInvariant();
-                        if (listener.AllowedHosts.ArrayContains(hostName)) {
-                            try {
-                                var e = listener.Callback(request.Url);
-                                if (e != null) {
-                                    return new AcResourceHandler(e);
-                                }
-                            } catch (Exception e) {
-                                Logging.Error(e);
-                            }
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
         private class Registered {
             public readonly WeakReference<ChromiumWebBrowser> Browser;
+
+            [CanBeNull]
             public readonly string[] AllowedHosts;
+
             public readonly Func<string, string> Callback;
 
             public Registered(WeakReference<ChromiumWebBrowser> browser, string[] allowedHosts, Func<string, string> callback) {
@@ -61,9 +35,37 @@ namespace AcManager.Controls.UserControls.CefSharp {
             if (browser == null) throw new ArgumentNullException(nameof(browser));
             _listeners.RemoveAll(x => !x.Browser.TryGetTarget(out var b) || ReferenceEquals(b, browser));
             if (allowedHosts?.Length > 0) {
-                var hosts = allowedHosts.Select(x => x.ApartFromFirst(@"www.").ToLowerInvariant()).Distinct().ToArray();
+                var hosts = allowedHosts.ArrayContains(@"*") ? null : allowedHosts.Select(x => x.GetDomainNameFromUrl()).Distinct().ToArray();
                 _listeners.Add(new Registered(new WeakReference<ChromiumWebBrowser>(browser), hosts, callback));
             }
+        }
+
+        IResourceHandler ISchemeHandlerFactory.Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
+            if (schemeName == AcSchemeName) {
+                for (var i = 0; i < _listeners.Count; i++) {
+                    var listener = _listeners[i];
+                    if (!listener.Browser.TryGetTarget(out var targetBrowser)) {
+                        _listeners.RemoveAt(i);
+                        continue;
+                    }
+
+                    if (targetBrowser.GetBrowser().Identifier == browser.Identifier) {
+                        var hostName = frame.Url.GetDomainNameFromUrl();
+                        if (listener.AllowedHosts?.Contains(hostName, StringComparer.OrdinalIgnoreCase) != false) {
+                            try {
+                                var e = listener.Callback(request.Url);
+                                if (e != null) {
+                                    return new AcResourceHandler(e);
+                                }
+                            } catch (Exception e) {
+                                Logging.Error(e);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
         }
 
         private class AcResourceHandler : IResourceHandler {

@@ -570,6 +570,13 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         try {
+                            DisplayName = Source.Split('?')[0].Split(new[]{ '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
+                        } catch (Exception e) {
+                            Logging.Warning(e.Message);
+                        }
+
+                        try {
+
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),

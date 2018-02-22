@@ -26,7 +26,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnWebClockLoaded(object sender, RoutedEventArgs e) {
-            ((WebBlock)sender).SetScriptProvider(() => new AcCompatibleApiBridge {
+            ((WebBlock)sender).SetJsBridge(() => new AcCompatibleApiBridge {
                 AcApiHosts = { @"simracingsystem.com" }
             });
         }

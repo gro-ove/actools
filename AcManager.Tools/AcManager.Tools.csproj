@@ -271,6 +271,8 @@
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
+    <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
+    <Compile Include="Helpers\Loaders\ILoaderFactory.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />

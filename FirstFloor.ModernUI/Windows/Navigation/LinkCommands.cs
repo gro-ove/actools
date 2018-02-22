@@ -35,20 +35,23 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
                 } else {
                     var dlg = new ModernDialog {
                         Title = "",
-                        Content = new ModernFrame {
-                            Source = u
-                        },
-                        MinHeight = 0,
-                        MinWidth = 0,
+                        Content = new ModernFrame { Source = u },
+                        MinHeight = 400,
+                        MinWidth = 320,
                         Height = 540,
-                        MaxHeight = 540,
-                        SizeToContent = SizeToContent.Manual,
-                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
                         Width = 800,
-                        MaxWidth = 800
+                        MaxHeight = DpiAwareWindow.UnlimitedSize,
+                        MaxWidth = DpiAwareWindow.UnlimitedSize,
+                        ShowTitle = false,
+                        ShowTopBlob = false,
+                        SizeToContent = SizeToContent.Manual,
+                        ResizeMode = ResizeMode.CanResizeWithGrip,
+                        LocationAndSizeKey = "Navigate.NewWindow",
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                        Padding = new Thickness(0, 20, 0, 20),
                     };
 
-                    dlg.Buttons = new[]{ dlg.OkButton };
+                    dlg.Buttons = new[] { dlg.CloseButton };
                     dlg.ShowDialog();
                 }
             }

@@ -192,7 +192,7 @@ namespace AcManager.Tools.Managers.Online {
             var name = $@"“{BbCodeBlock.Encode(id)}”";
             var typeLocalized = car ? ToolsStrings.AdditionalContent_Car : ToolsStrings.AdditionalContent_Track;
 
-            var searchUrl = $"cmd://findmissing/{(car ? "car" : "track")}?param={id}";
+            var searchUrl = $"cmd://findMissing/{(car ? "car" : "track")}?param={id}";
             var searchLink = string.Format(@"[url={0}][ico={1}]Look for missing {2} online[/ico][/url]", BbCodeBlock.EncodeAttribute(searchUrl),
                     BbCodeBlock.EncodeAttribute(searchIcon), typeLocalized);
 
@@ -202,7 +202,7 @@ namespace AcManager.Tools.Managers.Online {
                 return $@"{name} \[{searchLink}]";
             }
 
-            var downloadUrl = $"cmd://downloadmissing/{(car ? "car" : "track")}?param={(string.IsNullOrWhiteSpace(version) ? id : $@"{id}|{version}")}";
+            var downloadUrl = $"cmd://downloadMissing/{(car ? "car" : "track")}?param={(string.IsNullOrWhiteSpace(version) ? id : $@"{id}|{version}")}";
             var downloadLink = string.Format(@"[url={0}][ico={1}]{2} is found; click to open its page or hold Ctrl and click to start downloading[/ico][/url]",
                     BbCodeBlock.EncodeAttribute(downloadUrl), BbCodeBlock.EncodeAttribute(linkIcon), typeLocalized.ToTitle());
             return $@"“{BbCodeBlock.Encode(id)}” \[{searchLink}, {downloadLink}]";

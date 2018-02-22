@@ -56,7 +56,7 @@ using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator, INavigateUriHandler {
         public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
-        public static readonly Uri EnterKeyUrl = new Uri("cmd://enterkey");
+        public static readonly Uri EnterKeyUrl = new Uri("cmd://enterKey");
 
         private readonly bool _cancelled;
         private readonly string _testGameDialog = null;
@@ -99,14 +99,14 @@ namespace AcManager.Pages.Windows {
             });
 
             InitializeComponent();
-            ModsWebBrowser.Initialize();
+            ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
 
             if (SteamStarter.IsInitialized) {
                 OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));
             }
 
-            LinkNavigator.Commands.Add(new Uri("cmd://enterkey"), Model.EnterKeyCommand);
+            LinkNavigator.Commands.Add(new Uri("cmd://enterKey"), Model.EnterKeyCommand);
             InternalUtils.Launch(this);
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()

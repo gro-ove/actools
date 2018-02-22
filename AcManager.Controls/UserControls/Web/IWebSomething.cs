@@ -18,9 +18,12 @@ namespace AcManager.Controls.UserControls.Web {
         [NotNull]
         string GetUrl();
 
-        void SetJsBridge([CanBeNull] JsBridgeBase bridge);
+        [CanBeNull]
+        T GetJsBridge<T>(Func<T> factory) where T : JsBridgeBase;
+
         void SetUserAgent([NotNull] string userAgent);
         void SetStyleProvider([CanBeNull] ICustomStyleProvider provider);
+        void SetDownloadListener([CanBeNull] IWebDownloadListener listener);
         void SetNewWindowsBehavior(NewWindowsBehavior mode);
 
         void Execute([NotNull] string js);

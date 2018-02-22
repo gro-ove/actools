@@ -19,13 +19,15 @@ namespace AcManager.Controls.UserControls {
         [NotNull]
         private static IWebSomething GetSomething() {
             if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)) return new CefSharpWrapper();
-            return new WebBrowserWrapper();
+            // return new WebBrowserWrapper();
+            return new FormsWebBrowserWrapper();
         }
 
         private readonly IWebSomething _something;
         private readonly bool _preferTransparentBackground;
+        private string _delayedUrl;
 
-        public WebTab(string url, bool preferTransparentBackground) {
+        public WebTab(string url, bool preferTransparentBackground, bool delayed) {
             _preferTransparentBackground = preferTransparentBackground;
             _something = GetSomething();
             _something.Navigating += OnProgressChanged;
@@ -42,7 +44,19 @@ namespace AcManager.Controls.UserControls {
 
             Title = url;
             LoadedUrl = ActiveUrl = url;
-            Navigate(url);
+
+            if (delayed) {
+                _delayedUrl = url;
+            } else {
+                Navigate(url);
+            }
+        }
+
+        public void EnsureLoaded() {
+            var delayedUrl = _delayedUrl;
+            if (delayedUrl == null) return;
+            _delayedUrl = null;
+            Navigate(delayedUrl);
         }
 
         public FrameworkElement GetElement([CanBeNull] DpiAwareWindow parentWindow) {
@@ -65,7 +79,12 @@ namespace AcManager.Controls.UserControls {
         public ICommand RefreshCommand => _something.RefreshCommand;
 
         public void Navigate([CanBeNull] string url) {
-            _something.Navigate(url ?? @"about:blank");
+            url = url ?? @"about:blank";
+            if (_delayedUrl != null) {
+                _delayedUrl = url;
+            } else {
+                _something.Navigate(url);
+            }
         }
 
         [ContractAnnotation(@"filename: null => null; filename: notnull => notnull")]
@@ -163,8 +182,10 @@ namespace AcManager.Controls.UserControls {
         [CanBeNull]
         private JsBridgeBase _jsBridge;
 
-        public void SetJsBridge(Func<WebTab, JsBridgeBase> jsBridgeFactory) {
-            _something.SetJsBridge(_jsBridge = jsBridgeFactory(this));
+        public T GetJsBridge<T>([CanBeNull] Func<WebTab, T> jsBridgeFactory) where T : JsBridgeBase {
+            var result = _something.GetJsBridge(() => jsBridgeFactory?.Invoke(this));
+            _jsBridge = result;
+            return result;
         }
 
         public void SetUserAgent(string userAgent) {
@@ -173,6 +194,10 @@ namespace AcManager.Controls.UserControls {
 
         public void SetStyleProvider(ICustomStyleProvider styleProvider) {
             _something.SetStyleProvider(styleProvider);
+        }
+
+        public void SetDownloadListener(IWebDownloadListener downloadListener) {
+            _something.SetDownloadListener(downloadListener);
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior newWindowsBehavior) {

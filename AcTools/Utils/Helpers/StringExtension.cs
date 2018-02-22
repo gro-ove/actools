@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -280,6 +281,11 @@ namespace AcTools.Utils.Helpers {
             }
 
             return from <= 0 ? s : s.Substring(from);
+        }
+
+        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
+        public static string GetDomainNameFromUrl(this string value) {
+            return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.+$", "", RegexOptions.IgnoreCase);
         }
 
         [Pure, NotNull]

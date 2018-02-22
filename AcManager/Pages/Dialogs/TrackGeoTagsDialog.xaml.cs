@@ -27,7 +27,7 @@ namespace AcManager.Pages.Dialogs {
                 CancelButton
             };
 
-            MapWebBrowser.SetScriptProvider(() => new JsBridge(Model));
+            MapWebBrowser.SetJsBridge<JsBridge>(x => x.Model = Model);
             MapWebBrowser.StartPage = GetMapAddress(track);
 
             Model.PropertyChanged += Model_PropertyChanged;
@@ -50,18 +50,17 @@ namespace AcManager.Pages.Dialogs {
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class JsBridge : JsBridgeBase {
-            private readonly ViewModel _model;
-
-            public JsBridge(ViewModel model) {
-                _model = model;
-            }
+            [CanBeNull]
+            internal ViewModel Model;
 
             [UsedImplicitly]
             public void Update(double lat, double lng) {
                 Sync(() => {
                     _skipNext = true;
-                    _model.Latitude = GeoTagsEntry.ToLat(lat);
-                    _model.Longitude = GeoTagsEntry.ToLng(lng);
+                    if (Model != null) {
+                        Model.Latitude = GeoTagsEntry.ToLat(lat);
+                        Model.Longitude = GeoTagsEntry.ToLng(lng);
+                    }
                     _skipNext = false;
                 });
             }

@@ -2,6 +2,8 @@
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class FlexibleLoaderMetaInformation {
+        public FlexibleLoaderMetaInformation() { }
+
         public FlexibleLoaderMetaInformation(long? totalSize, [CanBeNull] string fileName, [CanBeNull] string version, bool canPause) {
             TotalSize = totalSize;
             FileName = fileName;

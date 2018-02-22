@@ -783,6 +783,9 @@
     <Compile Include="UserControls\BakedShadowsSettings.xaml.cs">
       <DependentUpon>BakedShadowsSettings.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\ModsWebFinder.xaml.cs">
+      <DependentUpon>ModsWebFinder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\TrackStateEditor.xaml.cs">
       <DependentUpon>TrackStateEditor.xaml</DependentUpon>
     </Compile>
@@ -1655,6 +1658,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\ModsWebFinder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="UserControls\TrackStateEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1686,7 +1693,9 @@
     <None Include="About\Filtering\More About Quotes.txt" />
     <None Include="About\Filtering\More About Properties.txt" />
     <None Include="About\Filtering\More About Sub-Filters.txt" />
+    <None Include="About\ImportantTips\Clicking Download Buttons Automatically.txt" />
     <None Include="About\ImportantTips\Custom Car Data.txt" />
+    <None Include="About\ImportantTips\Fake Cars.txt" />
     <None Include="About\Licenses\CefSharp\LICENSE" />
     <None Include="About\Licenses\EmbedIO\LICENSE" />
     <None Include="About\Licenses\ImageMagick\LICENSE" />
@@ -1703,7 +1712,6 @@
     <None Include="About\ImportantTips\Custom Showroom Best Antialiasing.txt" />
     <None Include="About\ImportantTips\Custom Showroom Color Grading.txt" />
     <None Include="About\ImportantTips\Custom Showroom Shadows Baking.txt" />
-    <None Include="About\ImportantTips\Fake Cars.txt" />
     <None Include="About\ImportantTips\Generic Mods.txt" />
     <None Include="About\ImportantTips\Paint Shop.txt" />
     <None Include="About\ImportantTips\Python Apps Versions.txt" />
