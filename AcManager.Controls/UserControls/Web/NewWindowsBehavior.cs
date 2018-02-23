@@ -3,6 +3,7 @@ namespace AcManager.Controls.UserControls.Web {
         OpenInBrowser,
         Ignore,
         ReplaceCurrent,
-        MultiTab
+        MultiTab,
+        Callback
     }
 }

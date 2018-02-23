@@ -87,8 +87,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Close();
         }
 
-        public static Button CreateExtraDialogButton(string content, ICommand command, bool isDefault = false, string toolTip = null) {
-            return new Button {
+        // TODO: Sort those methods, it’s too much
+
+        public static T CreateExtraDialogButton<T>(string content, ICommand command, bool isDefault = false, string toolTip = null) where T : Button, new() {
+            return new T {
                 Content = content /*.ToLower()*/,
                 IsDefault = isDefault,
                 MinHeight = 21,
@@ -99,8 +101,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
-        public static Button CreateExtraDialogButton(string content, Action action, Func<bool> canExecute) {
-            return CreateExtraDialogButton(content, new DelegateCommand(action, canExecute));
+        public static Button CreateExtraDialogButton(string content, ICommand command, bool isDefault = false, string toolTip = null) {
+            return CreateExtraDialogButton<Button>(content, command, isDefault, toolTip);
         }
 
         public static Button CreateExtraDialogButton(string content, Action action) {

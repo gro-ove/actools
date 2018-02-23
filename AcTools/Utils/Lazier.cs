@@ -6,6 +6,9 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     public static class Lazier {
+        // TODO: Is it even a solution? Maybe there is a better way?
+        public static Action<Action> SyncAction = a => a.Invoke();
+
         [NotNull]
         public static Lazier<T> Create<T>([CanBeNull] Func<T> fn) {
             return new Lazier<T>(fn);
@@ -95,9 +98,12 @@ namespace AcTools.Utils {
                 _value = _loadingValue;
             }
 
-            IsSet = true;
-            _settingTask = null;
-            OnPropertyChanged(nameof(Value));
+            Lazier.SyncAction(() => {
+                IsSet = true;
+                _settingTask = null;
+                OnPropertyChanged(nameof(Value));
+            });
+
             return _value;
         }
 

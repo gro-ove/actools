@@ -13,7 +13,7 @@
     <DockPanel>
       <Label>
         <DockPanel Style="{x:Null}">
-          <TextBlock Text="Selector or JS-code:" />
+          <TextBlock Text="Rule to start download:" />
           <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
         </DockPanel>
       </Label>

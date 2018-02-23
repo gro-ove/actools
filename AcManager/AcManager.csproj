@@ -1693,7 +1693,7 @@
     <None Include="About\Filtering\More About Quotes.txt" />
     <None Include="About\Filtering\More About Properties.txt" />
     <None Include="About\Filtering\More About Sub-Filters.txt" />
-    <None Include="About\ImportantTips\Clicking Download Buttons Automatically.txt" />
+    <Content Include="About\ImportantTips\Clicking Download Buttons Automatically.txt" />
     <None Include="About\ImportantTips\Custom Car Data.txt" />
     <None Include="About\ImportantTips\Fake Cars.txt" />
     <None Include="About\Licenses\CefSharp\LICENSE" />

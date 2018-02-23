@@ -144,13 +144,19 @@
 
                 <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
                 <CheckBox IsChecked="{Binding CaptureDownloads}">
+                  <Label Content="Download files from website using browser" />
+                </CheckBox>
+                <DockPanel>
                   <Label>
                     <DockPanel Style="{x:Null}">
-                      <TextBlock Text="Download files from website using browser" />
-                      <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
+                      <TextBlock Text="Rule to start download:" />
+                      <Button Style="{StaticResource MoreDetailsSuperscript}"
+                          CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
                     </DockPanel>
                   </Label>
-                </CheckBox>
+                  <mui:BetterComboBox Text="{Binding AutoDownloadRule, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
+                      ItemsSource="{Binding RuleSuggestions.Value}" />
+                </DockPanel>
               </StackPanel>
             </ScrollViewer>
           </Grid>

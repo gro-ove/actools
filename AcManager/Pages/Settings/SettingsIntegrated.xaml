@@ -98,7 +98,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
         </CheckBox>
 
-        <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
+        <!--<StackPanel IsEnabled="{Binding Live.SrsEnabled}">
           <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
           </CheckBox>
@@ -111,13 +111,19 @@
             <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
             <mui:BetterTextBox Text="{Binding Live.SrsAutoMask}" Placeholder="?" />
           </DockPanel>
-        </StackPanel>
+        </StackPanel>-->
 
       </StackPanel>
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
 
         <!-- Sidekick -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Sidekick:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Camber Extravaganza:" />
+        <CheckBox IsChecked="{Binding Drive.CamberExtravaganzaIntegration}">
+          <Label Content="Add missing tyres information" />
+        </CheckBox>
+
+        <!-- Sidekick -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Sidekick:" />
         <CheckBox IsChecked="{Binding Drive.SidekickIntegration}">
           <Label Content="Extend Sidekick’s tyres information if needed" />
         </CheckBox>

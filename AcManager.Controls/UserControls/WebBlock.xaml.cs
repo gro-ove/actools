@@ -181,7 +181,11 @@ namespace AcManager.Controls.UserControls {
             var tab = new WebTab(url, PreferTransparentBackground, delayed);
 
             if (_jsBridgeFactory != null) {
-                _setJsBridgeCallback?.Invoke(tab.GetJsBridge(_jsBridgeFactory));
+                try {
+                    _setJsBridgeCallback?.Invoke(tab.GetJsBridge(_jsBridgeFactory));
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t set JS bridge", e);
+                }
             }
 
             if (UserAgent != null) {
@@ -223,7 +227,6 @@ namespace AcManager.Controls.UserControls {
                     UrlTextBox.Text = tab.ActiveUrl;
                 }
             }
-
         }
 
         private void OnTabPageLoaded(object sender, UrlEventArgs e) {
@@ -268,22 +271,26 @@ namespace AcManager.Controls.UserControls {
         /// But you can get the list of them and change their state to actual.
         /// </summary>
         public void SetJsBridge<T>([CanBeNull] Func<T> factory, Action<T> setJsBridgeCallback = null) where T : JsBridgeBase {
-            if (factory == null) {
-                _jsBridgeFactory = null;
-            } else {
-                _jsBridgeFactory = tab => {
-                    var result = factory();
-                    result.Tab = tab;
-                    return result;
-                };
-            }
+            try {
+                if (factory == null) {
+                    _jsBridgeFactory = null;
+                } else {
+                    _jsBridgeFactory = tab => {
+                        var result = factory();
+                        result.Tab = tab;
+                        return result;
+                    };
+                }
 
-            var t = Tabs.Select(x => x.GetJsBridge(_jsBridgeFactory)).Cast<T>().ToList();
-            if (setJsBridgeCallback == null) {
-                _setJsBridgeCallback = null;
-            } else {
-                _setJsBridgeCallback = b => setJsBridgeCallback((T)b);
-                t.NonNull().ForEach(setJsBridgeCallback);
+                var t = Tabs.Select(x => x.GetJsBridge(_jsBridgeFactory)).Cast<T>().ToList();
+                if (setJsBridgeCallback == null) {
+                    _setJsBridgeCallback = null;
+                } else {
+                    _setJsBridgeCallback = b => setJsBridgeCallback((T)b);
+                    t.NonNull().ForEach(setJsBridgeCallback);
+                }
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t set JS bridge", e);
             }
         }
 

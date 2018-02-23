@@ -6,6 +6,53 @@ namespace FirstFloor.ModernUI.Localizable {
     /// </summary>
     [Localizable(false)]
     internal static class PluralizingDictionary {
+        public static string De(string s) {
+            switch (s) {
+                case "Reparaturvorschlag:":
+                    return "Reparaturvorschläge";
+
+                case "Raum":
+                    return "Räume";
+
+                case "Eintrag":
+                    return "Einträge";
+
+                case "Runde":
+                case "Stunde":
+                case "Minute":
+                case "Sekunde":
+                case "Vorlage":
+                case "Strecke":
+                case "Woche":
+                    return s + "n";
+
+                case "Wiederholung":
+                case "Einstellung":
+                case "Lackierung":
+                case "Schriftart":
+                case "Position":
+                    return s + "en";
+
+                case "App":
+                case "Pitstop":
+                case "Showroom":
+                case "Setup":
+                case "Server":
+                    return s + "s";
+
+                case "Tag":
+                case "Monat":
+                case "Jahr":
+                case "Punkt":
+                case "Rekord":
+                case "Fahrermodel":
+                case "Fahrzeug":
+                    return s + "e";
+            }
+
+            return s; // Gegner, Filter, Wetter all the same
+        }
+
         public static string En(string s) {
             switch (s) {
                 case "child":
@@ -93,12 +140,12 @@ namespace FirstFloor.ModernUI.Localizable {
                 return s.Substring(0, s.Length - 1) + "is";
             }
 
-            // Words ending in “m”: change “m” for “ns” 
+            // Words ending in “m”: change “m” for “ns”
             if (lastLetter == 'm') {
                 return s.Substring(0, s.Length - 1) + "ns";
             }
 
-            // Words ending in “r”, “s” or “z”: add – “es” 
+            // Words ending in “r”, “s” or “z”: add – “es”
             if (lastLetter == 'r' || lastLetter == 's' || lastLetter == 'z') {
                 return s + "es";
             }
@@ -177,4 +224,3 @@ namespace FirstFloor.ModernUI.Localizable {
         }
     }
 }
- 

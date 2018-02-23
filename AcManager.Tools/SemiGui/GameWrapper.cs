@@ -176,6 +176,10 @@ namespace AcManager.Tools.SemiGui {
 
             var carId = properties.BasicProperties?.CarId;
             if (carId != null) {
+                if (SettingsHolder.Drive.CamberExtravaganzaIntegration) {
+                    CamberExtravaganzaHelper.UpdateDatabase(carId);
+                }
+
                 if (SettingsHolder.Drive.SidekickIntegration) {
                     SidekickHelper.UpdateSidekickDatabase(carId);
                 }

@@ -473,9 +473,17 @@ namespace AcManager.Controls {
         private void UpdateSavedPresets() {
             if (_presetable == null) return;
 
+#if DEBUG
             var s = Stopwatch.StartNew();
+#endif
 
             var presets = new ObservableCollection<ISavedPresetEntry>(PresetsManager.Instance.GetSavedPresets(_presetable.PresetableCategory));
+
+#if DEBUG
+            s.Restart();
+            Logging.Debug($"First step: {s.Elapsed.TotalMilliseconds} ms");
+#endif
+
             SetValue(SavedPresetsPropertyKey, presets);
             SetValue(SavedPresetsGroupedPropertyKey, new HierarchicalGroup("",
                     GroupPresets(presets, PresetsManager.Instance.GetDirectory(_presetable.PresetableCategory), _presetable as IUserPresetableCustomDisplay,
@@ -487,7 +495,9 @@ namespace AcManager.Controls {
                     (defaultPreset == null ? null : presets.FirstOrDefault(x => x.DisplayName == defaultPreset));
             _ignoreNext = false;
 
-            Logging.Debug($"{s.Elapsed.TotalMilliseconds} ms");
+#if DEBUG
+            Logging.Debug($"Second step: {s.Elapsed.TotalMilliseconds} ms");
+#endif
         }
 
         private static readonly DependencyPropertyKey ChangedPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Changed),

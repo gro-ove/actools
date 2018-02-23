@@ -215,6 +215,10 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
         }
 
         public void Execute(string js) {
+#if DEBUG
+            Logging.Debug(js);
+#endif
+
             try {
                 using (var mainFrame = _inner.GetMainFrame()) {
                     mainFrame.ExecuteJavaScriptAsync(js, @"about:contentmanager");

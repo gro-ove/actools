@@ -114,8 +114,8 @@ namespace AcManager.Tools.Helpers {
 
             [NotNull]
             public StarterType SelectedStarterType {
-                get => _selectedStarterType ??
-                        (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.Get<string>("Settings.DriveSettings.SelectedStarterType")) ??
+                get => _selectedStarterType
+                        ?? (_selectedStarterType = StarterTypes.GetByIdOrDefault(ValuesStorage.Get<string>("Settings.DriveSettings.SelectedStarterType")) ??
                                 DefaultStarterType);
                 set {
                     if (Equals(value, _selectedStarterType)) return;
@@ -137,8 +137,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _fallbackIfNotAvailable;
 
             public bool StarterFallbackIfNotAvailable {
-                get => _fallbackIfNotAvailable ??
-                        (_fallbackIfNotAvailable = ValuesStorage.Get("Settings.DriveSettings.FallbackIfNotAvailable", true)).Value;
+                get => _fallbackIfNotAvailable
+                        ?? (_fallbackIfNotAvailable = ValuesStorage.Get("Settings.DriveSettings.FallbackIfNotAvailable", true)).Value;
                 set {
                     if (Equals(value, _fallbackIfNotAvailable)) return;
                     _fallbackIfNotAvailable = value;
@@ -177,8 +177,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _presetsPerModeAutoUpdate;
 
             public bool PresetsPerModeAutoUpdate {
-                get => _presetsPerModeAutoUpdate ??
-                        (_presetsPerModeAutoUpdate = ValuesStorage.Get("Settings.DriveSettings.PresetsPerModeAutoUpdate", true)).Value;
+                get => _presetsPerModeAutoUpdate
+                        ?? (_presetsPerModeAutoUpdate = ValuesStorage.Get("Settings.DriveSettings.PresetsPerModeAutoUpdate", true)).Value;
                 set {
                     if (Equals(value, _presetsPerModeAutoUpdate)) return;
                     _presetsPerModeAutoUpdate = value;
@@ -226,8 +226,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _saveDevAppsInAppsPresets;
 
             public bool SaveDevAppsInAppsPresets {
-                get => _saveDevAppsInAppsPresets ??
-                        (_saveDevAppsInAppsPresets = ValuesStorage.Get("Settings.DriveSettings.SaveDevAppsInAppsPresets", false)).Value;
+                get => _saveDevAppsInAppsPresets
+                        ?? (_saveDevAppsInAppsPresets = ValuesStorage.Get("Settings.DriveSettings.SaveDevAppsInAppsPresets", false)).Value;
                 set {
                     if (Equals(value, _saveDevAppsInAppsPresets)) return;
                     _saveDevAppsInAppsPresets = value;
@@ -239,12 +239,25 @@ namespace AcManager.Tools.Helpers {
             private bool? _copyFilterToSystemForOculus;
 
             public bool CopyFilterToSystemForOculus {
-                get => _copyFilterToSystemForOculus ??
-                        (_copyFilterToSystemForOculus = ValuesStorage.Get("Settings.DriveSettings.CopyFilterToSystemForOculus", true)).Value;
+                get => _copyFilterToSystemForOculus
+                        ?? (_copyFilterToSystemForOculus = ValuesStorage.Get("Settings.DriveSettings.CopyFilterToSystemForOculus", true)).Value;
                 set {
                     if (Equals(value, _copyFilterToSystemForOculus)) return;
                     _copyFilterToSystemForOculus = value;
                     ValuesStorage.Set("Settings.DriveSettings.CopyFilterToSystemForOculus", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _camberExtravaganzaIntegration;
+
+            public bool CamberExtravaganzaIntegration {
+                get => _camberExtravaganzaIntegration
+                        ?? (_camberExtravaganzaIntegration = ValuesStorage.Get("Settings.DriveSettings.CamberExtravaganzaIntegration", true)).Value;
+                set {
+                    if (Equals(value, _camberExtravaganzaIntegration)) return;
+                    _camberExtravaganzaIntegration = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CamberExtravaganzaIntegration", value);
                     OnPropertyChanged();
                 }
             }
@@ -264,8 +277,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sidekickUpdateExistingKunos;
 
             public bool SidekickUpdateExistingKunos {
-                get => _sidekickUpdateExistingKunos ??
-                        (_sidekickUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingKunos", false)).Value;
+                get => _sidekickUpdateExistingKunos
+                        ?? (_sidekickUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingKunos", false)).Value;
                 set {
                     if (Equals(value, _sidekickUpdateExistingKunos)) return;
                     _sidekickUpdateExistingKunos = value;
@@ -277,8 +290,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sidekickUpdateExistingMods;
 
             public bool SidekickUpdateExistingMods {
-                get => _sidekickUpdateExistingMods ??
-                        (_sidekickUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingMods", true)).Value;
+                get => _sidekickUpdateExistingMods
+                        ?? (_sidekickUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.SidekickUpdateExistingMods", true)).Value;
                 set {
                     if (Equals(value, _sidekickUpdateExistingMods)) return;
                     _sidekickUpdateExistingMods = value;
@@ -290,8 +303,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sidekickOdometerImportValues;
 
             public bool SidekickOdometerImportValues {
-                get => _sidekickOdometerImportValues ??
-                        (_sidekickOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerImportValues", true)).Value;
+                get => _sidekickOdometerImportValues
+                        ?? (_sidekickOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerImportValues", true)).Value;
                 set {
                     if (Equals(value, _sidekickOdometerImportValues)) return;
                     _sidekickOdometerImportValues = value;
@@ -303,8 +316,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _sidekickOdometerExportValues;
 
             public bool SidekickOdometerExportValues {
-                get => _sidekickOdometerExportValues ??
-                        (_sidekickOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerExportValues", true)).Value;
+                get => _sidekickOdometerExportValues
+                        ?? (_sidekickOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.sidekickOdometerExportValues", true)).Value;
                 set {
                     if (Equals(value, _sidekickOdometerExportValues)) return;
                     _sidekickOdometerExportValues = value;
@@ -316,8 +329,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _raceEssentialsIntegration;
 
             public bool RaceEssentialsIntegration {
-                get => _raceEssentialsIntegration ??
-                        (_raceEssentialsIntegration = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsIntegration", true)).Value;
+                get => _raceEssentialsIntegration
+                        ?? (_raceEssentialsIntegration = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsIntegration", true)).Value;
                 set {
                     if (Equals(value, _raceEssentialsIntegration)) return;
                     _raceEssentialsIntegration = value;
@@ -329,8 +342,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _raceEssentialsUpdateExistingKunos;
 
             public bool RaceEssentialsUpdateExistingKunos {
-                get => _raceEssentialsUpdateExistingKunos ??
-                        (_raceEssentialsUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", false)).Value;
+                get => _raceEssentialsUpdateExistingKunos
+                        ?? (_raceEssentialsUpdateExistingKunos = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingKunos", false)).Value;
                 set {
                     if (Equals(value, _raceEssentialsUpdateExistingKunos)) return;
                     _raceEssentialsUpdateExistingKunos = value;
@@ -342,8 +355,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _raceEssentialsUpdateExistingMods;
 
             public bool RaceEssentialsUpdateExistingMods {
-                get => _raceEssentialsUpdateExistingMods ??
-                        (_raceEssentialsUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", true)).Value;
+                get => _raceEssentialsUpdateExistingMods
+                        ?? (_raceEssentialsUpdateExistingMods = ValuesStorage.Get("Settings.DriveSettings.RaceEssentialsUpdateExistingMods", true)).Value;
                 set {
                     if (Equals(value, _raceEssentialsUpdateExistingMods)) return;
                     _raceEssentialsUpdateExistingMods = value;
@@ -355,8 +368,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _stereoOdometerImportValues;
 
             public bool StereoOdometerImportValues {
-                get => _stereoOdometerImportValues ??
-                        (_stereoOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerImportValues", true)).Value;
+                get => _stereoOdometerImportValues
+                        ?? (_stereoOdometerImportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerImportValues", true)).Value;
                 set {
                     if (Equals(value, _stereoOdometerImportValues)) return;
                     _stereoOdometerImportValues = value;
@@ -368,8 +381,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _stereoOdometerExportValues;
 
             public bool StereoOdometerExportValues {
-                get => _stereoOdometerExportValues ??
-                        (_stereoOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerExportValues", true)).Value;
+                get => _stereoOdometerExportValues
+                        ?? (_stereoOdometerExportValues = ValuesStorage.Get("Settings.DriveSettings.stereoOdometerExportValues", true)).Value;
                 set {
                     if (Equals(value, _stereoOdometerExportValues)) return;
                     _stereoOdometerExportValues = value;
@@ -518,8 +531,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _autoAddReplaysExtension;
 
             public bool AutoAddReplaysExtension {
-                get => _autoAddReplaysExtension ??
-                        (_autoAddReplaysExtension = ValuesStorage.Get("Settings.DriveSettings.AutoAddReplaysExtension", true)).Value;
+                get => _autoAddReplaysExtension
+                        ?? (_autoAddReplaysExtension = ValuesStorage.Get("Settings.DriveSettings.AutoAddReplaysExtension", true)).Value;
                 set {
                     if (Equals(value, _autoAddReplaysExtension)) return;
                     _autoAddReplaysExtension = value;
@@ -600,8 +613,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _differentPlayerNameOnline;
 
             public bool DifferentPlayerNameOnline {
-                get => _differentPlayerNameOnline ??
-                        (_differentPlayerNameOnline = ValuesStorage.Get("Settings.DriveSettings.DifferentPlayerNameOnline", false)).Value;
+                get => _differentPlayerNameOnline
+                        ?? (_differentPlayerNameOnline = ValuesStorage.Get("Settings.DriveSettings.DifferentPlayerNameOnline", false)).Value;
                 set {
                     if (Equals(value, _differentPlayerNameOnline)) return;
                     _differentPlayerNameOnline = value;
@@ -626,8 +639,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _quickDriveTrackDayViaPractice;
 
             public bool QuickDriveTrackDayViaPractice {
-                get => _quickDriveTrackDayViaPractice ??
-                        (_quickDriveTrackDayViaPractice = ValuesStorage.Get("Settings.DriveSettings.QuickDriveTrackDayViaPractice", true)).Value;
+                get => _quickDriveTrackDayViaPractice
+                        ?? (_quickDriveTrackDayViaPractice = ValuesStorage.Get("Settings.DriveSettings.QuickDriveTrackDayViaPractice", true)).Value;
                 set {
                     if (Equals(value, _quickDriveTrackDayViaPractice)) return;
                     _quickDriveTrackDayViaPractice = value;
@@ -786,8 +799,8 @@ namespace AcManager.Tools.Helpers {
             private string[] _quickSwitchesList;
 
             public string[] QuickSwitchesList {
-                get => _quickSwitchesList ??
-                        (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList", new[] {
+                get => _quickSwitchesList
+                        ?? (_quickSwitchesList = ValuesStorage.GetStringList("Settings.DriveSettings.QuickSwitchesList", new[] {
                             @"WidgetExposure",
                             @"WidgetUiPresets",
                             @"WidgetHideDriveArms",
@@ -804,8 +817,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _automaticallyConvertBmpToJpg;
 
             public bool AutomaticallyConvertBmpToJpg {
-                get => _automaticallyConvertBmpToJpg ??
-                        (_automaticallyConvertBmpToJpg = ValuesStorage.Get("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", false)).Value;
+                get => _automaticallyConvertBmpToJpg
+                        ?? (_automaticallyConvertBmpToJpg = ValuesStorage.Get("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", false)).Value;
                 set {
                     if (Equals(value, _automaticallyConvertBmpToJpg)) return;
                     _automaticallyConvertBmpToJpg = value;
@@ -858,8 +871,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _weatherSpecificTyreSmoke;
 
             public bool WeatherSpecificTyreSmoke {
-                get => _weatherSpecificTyreSmoke ??
-                        (_weatherSpecificTyreSmoke = ValuesStorage.Get("Settings.DriveSettings.WeatherSpecificTyreSmoke", true)).Value;
+                get => _weatherSpecificTyreSmoke
+                        ?? (_weatherSpecificTyreSmoke = ValuesStorage.Get("Settings.DriveSettings.WeatherSpecificTyreSmoke", true)).Value;
                 set {
                     if (Equals(value, _weatherSpecificTyreSmoke)) return;
                     _weatherSpecificTyreSmoke = value;
@@ -871,8 +884,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _rhmIntegration;
 
             public bool RhmIntegration {
-                get => _rhmIntegration ??
-                        (_rhmIntegration = ValuesStorage.Get("Settings.DriveSettings.RhmIntegration", false)).Value;
+                get => _rhmIntegration
+                        ?? (_rhmIntegration = ValuesStorage.Get("Settings.DriveSettings.RhmIntegration", false)).Value;
                 set {
                     if (Equals(value, _rhmIntegration)) return;
                     _rhmIntegration = value;
@@ -1009,7 +1022,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _patchAcToDisableShadows;
 
             public bool PatchAcToDisableShadows {
-                get => _patchAcToDisableShadows ?? (_patchAcToDisableShadows = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value;
+                get => _patchAcToDisableShadows ?? (_patchAcToDisableShadows = ValuesStorage.Get("Settings.DriveSettings.PatchAcToDisableShadows", false)).Value
+                        ;
                 set {
                     if (Equals(value, _patchAcToDisableShadows)) return;
                     _patchAcToDisableShadows = value;

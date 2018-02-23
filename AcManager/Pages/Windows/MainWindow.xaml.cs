@@ -253,7 +253,7 @@ namespace AcManager.Pages.Windows {
 
         private void UpdateLiveTabs() {
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
-            SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
+            // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
         }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Permissions;
 using AcManager.Controls.UserControls.CefSharp;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -16,6 +18,7 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls.Web {
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
     public class AcCompatibleApiBridge : JsBridgeBase {
         private readonly IniFile _raceConfig = Game.DefaultRaceConfig;
 

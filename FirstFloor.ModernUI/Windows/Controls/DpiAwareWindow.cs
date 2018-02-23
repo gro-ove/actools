@@ -183,6 +183,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected sealed override void OnClosed(EventArgs e) {
             Logging.Here();
+            _closed = true;
             UndimOwner();
             SystemEvents.DisplaySettingsChanged -= OnSystemEventsDisplaySettingsChanged;
             base.OnClosed(e);
@@ -191,7 +192,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Safer implementation of the Close() method
+        private bool _closed;
+
+        public bool IsClosed() {
+            return _closed;
+        }
+
         public new void Close() {
+            _closed = true;
             Logging.Here();
             try {
                 UndimOwner();
@@ -265,6 +273,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Topmost = true;
             Topmost = false;
             Focus();
+        }
+
+        public void ShowInvisible() {
+            var needToShowInTaskbar = ShowInTaskbar;
+            var initialWindowState = WindowState;
+
+            try {
+                ShowInTaskbar = false;
+                WindowState = WindowState.Minimized;
+
+                Show();
+                Hide();
+            } finally {
+                ShowInTaskbar = needToShowInTaskbar;
+                WindowState = initialWindowState;
+            }
         }
     }
 }

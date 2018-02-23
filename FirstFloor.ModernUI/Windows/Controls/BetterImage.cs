@@ -781,6 +781,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 #endif
 
                 return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
+            } catch (NotSupportedException e) when (e.ToString().Contains(@"0x88982F50")) {
+                Logging.Warning(e.Message);
+                return BitmapEntry.Empty;
             } catch (Exception e) {
                 Logging.Warning(e);
                 return BitmapEntry.Empty;

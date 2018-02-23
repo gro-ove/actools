@@ -285,7 +285,7 @@ namespace AcTools.Utils.Helpers {
 
         [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
         public static string GetDomainNameFromUrl(this string value) {
-            return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.+$", "", RegexOptions.IgnoreCase);
+            return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
         }
 
         [Pure, NotNull]

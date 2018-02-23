@@ -10,8 +10,6 @@ namespace AcManager.UserControls {
         }
 
         public class ViewModel : NotifyPropertyChanged {
-            public ViewModel() { }
-
             private string _value;
 
             public string Value {

@@ -65,6 +65,9 @@ namespace AcManager.Controls.UserControls.Web {
                     NewWindow?.Invoke(this, new UrlEventArgs(_inner.StatusText));
                     args.Cancel = true;
                     break;
+                case NewWindowsBehavior.Callback:
+                    // TODO
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

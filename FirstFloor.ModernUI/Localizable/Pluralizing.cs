@@ -6,6 +6,10 @@ namespace FirstFloor.ModernUI.Localizable {
     /// themself are defined in PluralizingDictionary.
     /// </summary>
     internal static class Pluralizing {
+        private static string De(int v, string s) {
+            return v == 1 ? s : PluralizingDictionary.De(s);
+        }
+
         private static string En(int v, string s) {
             return v == 1 ? s : PluralizingDictionary.En(s);
         }
@@ -41,6 +45,8 @@ namespace FirstFloor.ModernUI.Localizable {
             var culture = CultureInfo.CurrentUICulture;
             if (culture.Name.Length < 2) return s;
             switch (culture.Name.Substring(0, 2).ToLowerInvariant()) {
+                case "de":
+                    return De(v, s);
                 case "en":
                     return En(v, s);
                 case "fr":
