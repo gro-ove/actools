@@ -6,6 +6,7 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Shaders;
+using AcTools.Utils;
 using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
@@ -146,7 +147,7 @@ Distance threshold: {_sslrDistanceThreshold}";
 #endif
 
         public void Process(DeviceContextHolder holder, ShaderResourceView depthView, ShaderResourceView normalsView, ICamera camera, float blurMultipler,
-                TargetResourceTexture blurTemporary, RenderTargetView target) {
+                TargetResourceTexture blurTemporary, RenderTargetView target, bool accumulationMode) {
             // Prepare SSLR and combine buffers
 #if SSLR_PARAMETRIZED
             if (_sslrParamsChanged) {
@@ -160,6 +161,7 @@ Distance threshold: {_sslrDistanceThreshold}";
             }
 #endif
 
+            _effect.FxNoiseMapOffset.Set(accumulationMode ? new Vector2(MathUtils.Random(0f, 1f), MathUtils.Random(0f, 1f)) : Vector2.Zero);
             Draw(holder, depthView, normalsView, camera);
             _blurHelper.BlurDarkSslr(holder, BufferResult, blurTemporary, 4f * blurMultipler);
             FinalStep(holder, BufferScene.View, BufferResult.View, BufferBaseReflection.View,

@@ -245,7 +245,7 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyBoolVariable FxGPassTransparent, FxPcssEnabled, FxUseAo, FxCubemapReflections;
 		[NotNull]
-		public EffectOnlyVector2Variable FxShadowMapSize;
+		public EffectOnlyVector2Variable FxShadowMapSize, FxShadowNoiseMapOffset;
 		[NotNull]
 		public EffectOnlyVector3Variable FxLightDir, FxLightColor, FxEyePosW, FxAmbientDown, FxAmbientRange, FxBackgroundColor;
 		[NotNull]
@@ -402,6 +402,7 @@ namespace AcTools.Render.Shaders {
 			FxUseAo = new EffectOnlyBoolVariable(E.GetVariableByName("gUseAo"));
 			FxCubemapReflections = new EffectOnlyBoolVariable(E.GetVariableByName("gCubemapReflections"));
 			FxShadowMapSize = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowMapSize"));
+			FxShadowNoiseMapOffset = new EffectOnlyVector2Variable(E.GetVariableByName("gShadowNoiseMapOffset"));
 			FxLightDir = new EffectOnlyVector3Variable(E.GetVariableByName("gLightDir"));
 			FxLightColor = new EffectOnlyVector3Variable(E.GetVariableByName("gLightColor"));
 			FxEyePosW = new EffectOnlyVector3Variable(E.GetVariableByName("gEyePosW"));
@@ -649,6 +650,8 @@ namespace AcTools.Render.Shaders {
 		[NotNull]
 		public EffectOnlyFloatVariable FxStartFrom, FxFixMultiplier, FxOffset, FxGlowFix, FxDistanceThreshold;
 		[NotNull]
+		public EffectOnlyVector2Variable FxNoiseMapOffset;
+		[NotNull]
 		public EffectOnlyVector3Variable FxEyePosW;
 		[NotNull]
 		public EffectOnlyVector4Variable FxSize;
@@ -684,6 +687,7 @@ namespace AcTools.Render.Shaders {
 			FxOffset = new EffectOnlyFloatVariable(E.GetVariableByName("gOffset"));
 			FxGlowFix = new EffectOnlyFloatVariable(E.GetVariableByName("gGlowFix"));
 			FxDistanceThreshold = new EffectOnlyFloatVariable(E.GetVariableByName("gDistanceThreshold"));
+			FxNoiseMapOffset = new EffectOnlyVector2Variable(E.GetVariableByName("gNoiseMapOffset"));
 			FxEyePosW = new EffectOnlyVector3Variable(E.GetVariableByName("gEyePosW"));
 			FxSize = new EffectOnlyVector4Variable(E.GetVariableByName("gSize"));
 		}

@@ -32,6 +32,7 @@
         float3 gEyePosW;
 
 		float4 gSize;
+		float2 gNoiseMapOffset;
 
 		// bool gTemporary;
     }
@@ -234,7 +235,7 @@
 
 	float4 GetReflection(float2 baseUv, float2 uv, float blur) {
 		float4 reflection = (float4)0;
-		float2 random = normalize(gNoiseMap.SampleLevel(samPoint, uv * 1000.0, 0).xy);
+		float2 random = normalize(gNoiseMap.SampleLevel(samPoint, uv * 1000.0 + gNoiseMapOffset, 0).xy);
 
 		for (float i = 0; i < 25; i++) {
 			float2 uvOffset = reflect(poissonDisk[i], random) * blur;// *gSize.zw;

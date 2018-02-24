@@ -242,13 +242,13 @@ float GetExtraShadowByUvSmooth(float3 uv, const uint extra) {
 	float2 shadowMapSize = gExtraShadowMapSize[extra].xy;
 
 	[unroll]
-	float2 random = normalize(gNoiseMap.Sample(samNoise, uv.xy * shadowMapSize).xy);
+	float2 random = normalize(gNoiseMap.Sample(samNoise, uv.xy * shadowMapSize + gShadowNoiseMapOffset).xy);
 	for (int i = 0; i < 5; ++i) {
 		float2 offset = reflect(SmoothShadowsSamples[i], random) * shadowMapSizeTexel;
 		shadow += GetExtraShadowByUvFast(float3(uv.x + offset.x, uv.y + offset.y, uv.z), extra).r;
 	}
 
-	return shadow / 5;
+	return smoothstep(0, 5, shadow);
 }
 #endif
 

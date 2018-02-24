@@ -871,6 +871,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 return;
             }
 
+            var accumulationMode = UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep || _accumulationDofShotInProcess;
             DrawPrepare();
 
             if (UseSslr) {
@@ -964,7 +965,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
 
                     aoHelper.Draw(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera, _aoBuffer,
-                            AoOpacity, aoRadius, UseDof && UseAccumulationDof && !_realTimeAccumulationFirstStep || _accumulationDofShotInProcess);
+                            AoOpacity, aoRadius, accumulationMode);
                     aoHelper.Blur(DeviceContextHolder, _aoBuffer, InnerBuffer, Camera);
                 } else {
                     DeviceContext.ClearRenderTargetView(_aoBuffer.TargetView, new Color4(1f, 1f, 1f, 1f));
@@ -1013,6 +1014,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 }
             }
 
+            _effect.FxShadowNoiseMapOffset.Set(accumulationMode ? new Vector2(MathUtils.Random(0f, 1f), MathUtils.Random(0f, 1f)) : Vector2.Zero);
+
             DeviceContext.Rasterizer.SetViewports(Viewport);
             if (UseSslr && _sslr != null) {
                 // Draw actual scene to _sslrBufferScene
@@ -1020,7 +1023,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 DrawPreparedSceneToBuffer();
                 SetInnerBuffer(null);
                 _sslr?.Process(DeviceContextHolder, _lastDepthBuffer, _gBufferNormals.View, ActualCamera,
-                        (float)ResolutionMultiplier, InnerBuffer, InnerBuffer.TargetView);
+                        (float)ResolutionMultiplier, InnerBuffer, InnerBuffer.TargetView, accumulationMode);
             } else {
                 DrawPreparedSceneToBuffer();
             }

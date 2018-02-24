@@ -26,7 +26,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
         private bool? _accumulationMode;
         private float _randomSize;
 
-        public void SetRandomValues(DeviceContextHolder holder, EffectOnlyResourceVariable texture, EffectOnlyVector4Variable size, bool accumulationMode,
+        protected void SetRandomValues(DeviceContextHolder holder, EffectOnlyResourceVariable texture, EffectOnlyVector4Variable size, bool accumulationMode,
                 Vector2 targetSize) {
             if (_accumulationMode != accumulationMode) {
                 _accumulationMode = accumulationMode;

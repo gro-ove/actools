@@ -193,8 +193,9 @@
 		result = ProperBlending(result, details);
 		result = ProperBlending(underlay, result);
 		// result.a = pow(abs(saturate(patternColor.a + overlay.a + details.a)), 0.5);
-		result.a = saturate(patternColor.a + overlay.a + details.a);
-		return float4(result.rgb * result.a + gColor.rgb * ao.rgb * (1.0 - result.a), 0);
+		result.a = saturate(underlay.a + patternColor.a + overlay.a + details.a);
+		return float4(result.rgb * result.a + gColor.rgb * ao.rgb * (1.0 - result.a),
+		        saturate(underlay.a + overlay.a + details.a));
     }
 
 	float4 ps_Pattern(PS_IN pin) : SV_Target {
