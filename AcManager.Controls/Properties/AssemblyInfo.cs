@@ -50,8 +50,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.12090")]
-[assembly: AssemblyFileVersion("1.0.1.12090")]
+[assembly: AssemblyVersion("1.0.1.12662")]
+[assembly: AssemblyFileVersion("1.0.1.12662")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Converters")]
@@ -67,4 +67,4 @@ using System.Windows.Markup;
 [assembly: XmlnsPrefix("http://acstuff.ru/app/controls", "c")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 18/02/02 23:37:16
+// Modified at: 18/02/24 23:27:06
