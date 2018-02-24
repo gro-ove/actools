@@ -161,11 +161,11 @@ namespace AcManager.Controls.UserControls {
 
         public event EventHandler<UrlEventArgs> PageLoaded;
 
-        private void OnNewWindow(object sender, UrlEventArgs e) {
+        private void OnNewWindow(object sender, NewWindowEventArgs e) {
             NewWindow?.Invoke(this, e);
         }
 
-        public event EventHandler<UrlEventArgs> NewWindow;
+        public event EventHandler<NewWindowEventArgs> NewWindow;
 
         private bool _isLoading;
 

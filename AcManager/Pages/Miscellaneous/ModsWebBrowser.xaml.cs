@@ -360,6 +360,11 @@ namespace AcManager.Pages.Miscellaneous {
                 return x?.Name?.CompareTo(y?.Name) ?? 0;
             }
 
+            bool ILoaderFactory.Test(string url) {
+                return WebSources.Where(x => x.IsEnabled && x.CaptureDownloads).Any(
+                        x => string.Equals(x.Url.GetDomainNameFromUrl(), url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase));
+            }
+
             ILoader ILoaderFactory.Create(string url) {
                 Logging.Debug(url);
 
@@ -397,6 +402,40 @@ namespace AcManager.Pages.Miscellaneous {
                 return Task.FromResult(true);
             }
 
+            private async void LoadViaLoader(string url) {
+                var webClient = _webClient;
+                var destinationCallback = _destinationCallback;
+                var reportDestinationCallback = _reportDestinationCallback;
+                var progress = _progress;
+                var resultTask = _resultTask;
+
+                if (destinationCallback == null) return;
+
+                _onDownloadFired = true;
+                _destinationCallback = null;
+                _reportDestinationCallback = null;
+                _progress = null;
+
+                try {
+                    var newLoader = FlexibleLoader.CreateLoader(url);
+                    Logging.Write("Loader: " + newLoader.GetType().Name);
+
+                    if (!await newLoader.PrepareAsync(webClient, _cancellation)) {
+                        throw new InformativeException("Can’t load file", "Loader preparation failed.");
+                    }
+
+                    TotalSize = newLoader.TotalSize;
+                    FileName = newLoader.FileName;
+                    _dialog.Hide();
+
+                    var result = await newLoader.DownloadAsync(webClient, destinationCallback, reportDestinationCallback, null, progress, _cancellation);
+                    resultTask.TrySetResult(result);
+                } catch (Exception e) {
+                    resultTask.TrySetException(e);
+                }
+            }
+
+            private CookieAwareWebClient _webClient;
             private FlexibleLoaderGetPreferredDestinationCallback _destinationCallback;
             private FlexibleLoaderReportDestinationCallback _reportDestinationCallback;
             private IProgress<long> _progress;
@@ -406,8 +445,7 @@ namespace AcManager.Pages.Miscellaneous {
             private ModsWebFinder _finder;
             private TaskCompletionSource<string> _resultTask;
             private CancellationTokenSource _testToken;
-            private string _testUrl, _testFileName;
-            private long _testSize;
+            private string _testMessage;
             private bool _onDownloadFired;
 
             void IWebDownloadListener.OnDownload(string url, string suggestedName, long totalSize, IWebDownloader downloader) {
@@ -417,9 +455,9 @@ namespace AcManager.Pages.Miscellaneous {
 
                     if (_testToken != null) {
                         Logging.Debug("Test mode");
-                        _testUrl = url;
-                        _testFileName = suggestedName;
-                        _testSize = totalSize;
+                        _testMessage = $" • Name: {suggestedName};\n"
+                                + (totalSize >= 0 ? $" • Size: {totalSize.ToReadableSize()};\n" : "")
+                                + $" • URL: {url}.";
                         _testToken.Cancel();
                         return;
                     }
@@ -456,8 +494,8 @@ namespace AcManager.Pages.Miscellaneous {
                 });
             }
 
-            private static readonly string StopKey = StringExtension.RandomString(20);
-            private static readonly string PauseKey = StringExtension.RandomString(20);
+            private static readonly string StopKey = @"s" + StringExtension.RandomString(20);
+            private static readonly string PauseKey = @"p" + StringExtension.RandomString(20);
 
             [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
             private class JsBridge : JsBridgeBase {
@@ -523,6 +561,7 @@ window.$KEY = outline.stop.bind(outline);
                     CancellationToken cancellation) {
                 await Task.Delay(500);
 
+                _webClient = client;
                 _destinationCallback = getPreferredDestination;
                 _reportDestinationCallback = reportDestination;
                 _progress = progress;
@@ -536,6 +575,8 @@ window.$KEY = outline.stop.bind(outline);
                     DownloadListener = this,
                     Margin = new Thickness(0, 0, 0, 12),
                 };
+
+                _webBlock.NewWindow += OnNewWindow;
 
                 _finder = new ModsWebFinder {
                     Margin = new Thickness(24, 0, 24, 0),
@@ -602,6 +643,7 @@ window.$KEY = outline.stop.bind(outline);
 
                 void FailSafe() {
                     if (finished) return;
+                    _ranRule = false;
                     _dialog.Show();
                     _message.BbCode =
                             "App failed to start download. Please, click the button manually, or [url=\"cmd://setRule\"]change the describtion of where download button is[/url].";
@@ -616,6 +658,44 @@ window.$KEY = outline.stop.bind(outline);
                 }
             }
 
+            private void OnNewWindow(object o, NewWindowEventArgs args) {
+                if (_testToken == null && !_ranRule) {
+                    // Not in auto-download mode, usual behavior
+                    OpenNewTab();
+                    return;
+                }
+
+                Logging.Write("New window: " + args.Url);
+                if (args.Url.GetDomainNameFromUrl() == _source.Url.GetDomainNameFromUrl()) {
+                    OpenNewTab();
+                    return;
+                }
+
+                if (FlexibleLoader.IsSupported(args.Url)) {
+                    // Create a Loader and use it
+                    Logging.Warning("There is a loader for URL: " + args.Url);
+                    args.Cancel = true;
+
+                    if (_testToken != null) {
+                        _testMessage = $" • Redirect to known website: {args.Url}.";
+                        _testToken.Cancel();
+                        return;
+                    }
+
+                    LoadViaLoader(args.Url);
+                    return;
+                }
+
+                // Not supported and unknown, skip
+                Logging.Warning("No loader for URL: " + args.Url);
+                args.Cancel = true;
+
+                void OpenNewTab() {
+                    _webBlock.OpenNewTab(args.Url);
+                    args.Cancel = true;
+                }
+            }
+
             public Task<string> GetDownloadLink(CancellationToken cancellation) {
                 return Task.FromResult(_url);
             }
@@ -627,8 +707,11 @@ window.$KEY = outline.stop.bind(outline);
                 remove { }
             }
 
+            private bool _ranRule;
+
             private void RunRule(string rule) {
                 rule = rule.Trim();
+                _ranRule = true;
                 _webBlock.CurrentTab?.Execute(@"
 window.$PAUSEKEY = true;
 try {
@@ -649,12 +732,13 @@ try {
                     using (var linked = CancellationTokenSource.CreateLinkedTokenSource(token.Token, c ?? default(CancellationToken))) {
                         try {
                             _testToken = token;
-                            _testUrl = null;
+                            _testMessage = null;
                             RunRule(_finder.Model.Value);
                             await Task.Delay(5000, linked.Token);
                         } finally {
                             if (ReferenceEquals(_testToken, token)) {
                                 _testToken = null;
+                                _ranRule = false;
                             }
                         }
 
@@ -668,11 +752,8 @@ try {
 
                 void DisplayResult(bool triggered) {
                     if (c?.IsCancellationRequested == true) return;
-                    ModernDialog.ShowMessage(triggered && _testUrl != null
-                            ? "Download triggered:\n"
-                                    + $" • Name: {_testFileName};\n"
-                                    + (_testSize >= 0 ? $" • Size: {_testSize.ToReadableSize()};\n" : "")
-                                    + $" • URL: {_testUrl}."
+                    ModernDialog.ShowMessage(triggered && _testMessage != null
+                            ? "Download triggered:\n" + _testMessage
                             : "Download wasn’t triggered.",
                             AppStrings.Common_Test, MessageBoxButton.OK);
                 }

@@ -1,6 +1,5 @@
 ﻿sid: 3hokmd0p
 id: autoClickdownloadButtons
-hidden: true
 
 Now, you can download mods directly from CM using built-in browser, but that’s not all! You know how you can drag’n’drop (or paste) a link to a mod in CM to install, but not if it leads to some website? Or, how one pasted link might redirect to another, and it’s some website, and CM doesn’t know how to deal with it? This app can handle that as well! For that, there is this option:
 

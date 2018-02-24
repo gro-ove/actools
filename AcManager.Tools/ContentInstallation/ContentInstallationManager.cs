@@ -57,8 +57,11 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-            _removeCompletedCommand?.RaiseCanExecuteChanged();
             Save();
+            _removeCompletedCommand?.RaiseCanExecuteChanged();
+            _removeAllCommand?.RaiseCanExecuteChanged();
+            _installAllCommand?.RaiseCanExecuteChanged();
+            HasMoreThanOneWaiting = DownloadList.Count(x => x.State == ContentInstallationEntryState.WaitingForConfirmation) > 1;
         }
 
         private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -79,6 +82,8 @@ namespace AcManager.Tools.ContentInstallation {
                 case nameof(ContentInstallationEntry.State):
                     Save();
                     _removeCompletedCommand?.RaiseCanExecuteChanged();
+                    _installAllCommand?.RaiseCanExecuteChanged();
+                    HasMoreThanOneWaiting = DownloadList.Count(x => x.State == ContentInstallationEntryState.WaitingForConfirmation) > 1;
                     break;
                 case nameof(ContentInstallationEntry.IsDeleted):
                     // No reason to save here, list will be changed as well
@@ -99,10 +104,44 @@ namespace AcManager.Tools.ContentInstallation {
         private DelegateCommand _removeCompletedCommand;
 
         public DelegateCommand RemoveCompletedCommand => _removeCompletedCommand ?? (_removeCompletedCommand = new DelegateCommand(() => {
-            foreach (var finished in DownloadList.Where(x => x.State == ContentInstallationEntryState.Finished).ToList()) {
-                DownloadList.Remove(finished);
+            var toRemove = DownloadList.Where(x => x.State == ContentInstallationEntryState.Finished).ToList();
+            foreach (var finished in toRemove) {
+                if (toRemove.Count > 3) {
+                    DownloadList.Remove(finished);
+                } else {
+                    finished.DeleteDelayCommand.Execute();
+                }
             }
         }, () => DownloadList.Any(x => x.State == ContentInstallationEntryState.Finished)));
+
+        private DelegateCommand _removeAllCommand;
+
+        public DelegateCommand RemoveAllCommand => _removeAllCommand ?? (_removeAllCommand = new DelegateCommand(() => {
+            var toRemove = DownloadList.ToList();
+            foreach (var finished in toRemove) {
+                finished.CancelCommand.Execute();
+                if (toRemove.Count > 3) {
+                    DownloadList.Remove(finished);
+                } else {
+                    finished.DeleteDelayCommand.Execute();
+                }
+            }
+        }, () => DownloadList.Count > 0));
+
+        private bool _hasMoreThanOneWaiting;
+
+        public bool HasMoreThanOneWaiting {
+            get => _hasMoreThanOneWaiting;
+            set => Apply(value, ref _hasMoreThanOneWaiting);
+        }
+
+        private DelegateCommand _installAllCommand;
+
+        public DelegateCommand InstallAllCommand => _installAllCommand ?? (_installAllCommand = new DelegateCommand(() => {
+            foreach (var waiting in DownloadList.Where(x => x.State == ContentInstallationEntryState.WaitingForConfirmation).ToList()) {
+                waiting.ConfirmCommand.Execute();
+            }
+        }, () => DownloadList.Any(x => x.State == ContentInstallationEntryState.WaitingForConfirmation)));
 
         public ChangeableObservableCollection<ContentInstallationEntry> DownloadList { get; }
 

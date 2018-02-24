@@ -19,7 +19,45 @@ namespace AcManager.Tools.Helpers.Loaders {
         private static readonly List<ILoaderFactory> Factories = new List<ILoaderFactory>();
 
         public static void Register([NotNull] ILoaderFactory factory) {
-            Factories.Add(factory);
+            Factories.Insert(0, factory);
+        }
+
+        public static void Register<T>([NotNull] Func<string, bool> test) where T : ILoader {
+            Factories.Add(new FnLoaderFactory<T>(test));
+        }
+
+        private class FnLoaderFactory<T> : ILoaderFactory where T : ILoader {
+            private readonly Func<string, bool> _test;
+
+            public FnLoaderFactory(Func<string, bool> test) {
+                _test = test;
+            }
+
+            public bool Test(string url) {
+                return _test(url);
+            }
+
+            public ILoader Create(string url) {
+                return _test(url) ? (ILoader)Activator.CreateInstance(typeof(T), url) : null;
+            }
+        }
+
+        static FlexibleLoader() {
+            Register<AcStuffSharedLoader>(AcStuffSharedLoader.Test);
+            Register<GoogleDriveLoader>(GoogleDriveLoader.Test);
+            Register<YandexDiskLoader>(YandexDiskLoader.Test);
+            Register<MediaFireLoader>(MediaFireLoader.Test);
+            Register<DropboxLoader>(DropboxLoader.Test);
+            Register<OneDriveLoader>(OneDriveLoader.Test);
+            Register<AcClubLoader>(AcClubLoader.Test);
+            Register<AcDriftingProLoader>(AcDriftingProLoader.Test);
+            Register<AssettoDbLoader>(AssettoDbLoader.Test);
+            Register<AdFlyLoader>(AdFlyLoader.Test);
+            Register<MegaLoader>(MegaLoader.Test);
+        }
+
+        public static bool IsSupported(string url) {
+            return Factories.Any(x => x.Test(url));
         }
 
         [NotNull]
@@ -35,22 +73,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             }
 
             var loader = Factories.Select(x => x.Create(url)).FirstOrDefault(x => x != null);
-            if (loader != null) {
-                return loader;
-            }
-
-            if (AcStuffSharedLoader.Test(url)) return new AcStuffSharedLoader(url);
-            if (GoogleDriveLoader.Test(url)) return new GoogleDriveLoader(url);
-            if (YandexDiskLoader.Test(url)) return new YandexDiskLoader(url);
-            if (MediaFireLoader.Test(url)) return new MediaFireLoader(url);
-            if (DropboxLoader.Test(url)) return new DropboxLoader(url);
-            if (OneDriveLoader.Test(url)) return new OneDriveLoader(url);
-            if (AcClubLoader.Test(url)) return new AcClubLoader(url);
-            if (AcDriftingProLoader.Test(url)) return new AcDriftingProLoader(url);
-            if (AssettoDbLoader.Test(url)) return new AssettoDbLoader(url);
-            if (AdFlyLoader.Test(url)) return new AdFlyLoader(url);
-            if (MegaLoader.Test(url)) return new MegaLoader(url);
-            return new DirectLoader(url);
+            return loader ?? new DirectLoader(url);
         }
 
         private static IWebProxy _proxy;

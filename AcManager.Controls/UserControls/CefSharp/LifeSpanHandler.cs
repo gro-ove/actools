@@ -7,11 +7,11 @@ using FirstFloor.ModernUI;
 namespace AcManager.Controls.UserControls.CefSharp {
     internal class LifeSpanHandler : ILifeSpanHandler {
         private readonly NewWindowsBehavior _mode;
-        private readonly Action<string> _newWindowCallback;
+        private readonly Func<string, bool> _newWindowCancelCallback;
 
-        public LifeSpanHandler(NewWindowsBehavior mode, Action<string> newWindowCallback) {
+        public LifeSpanHandler(NewWindowsBehavior mode, Func<string, bool> newWindowCancelCallback) {
             _mode = mode;
-            _newWindowCallback = newWindowCallback;
+            _newWindowCancelCallback = newWindowCancelCallback;
         }
 
         public bool OnBeforePopup(IWebBrowser browserControl, IBrowser browser, IFrame frame, string targetUrl, string targetFrameName, WindowOpenDisposition targetDisposition,
@@ -27,7 +27,13 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     browser.MainFrame.LoadUrl(targetUrl);
                     break;
                 case NewWindowsBehavior.MultiTab:
-                    ActionExtension.InvokeInMainThread(() => _newWindowCallback(targetUrl));
+                    ActionExtension.InvokeInMainThread(() => _newWindowCancelCallback(targetUrl));
+                    break;
+                case NewWindowsBehavior.Callback:
+                    var cancel = ActionExtension.InvokeInMainThread(() => _newWindowCancelCallback(targetUrl));
+                    if (!cancel) {
+                        browser.MainFrame.LoadUrl(targetUrl);
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

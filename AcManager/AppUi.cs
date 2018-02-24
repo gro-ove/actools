@@ -7,6 +7,7 @@ using System.Windows.Threading;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -94,14 +95,23 @@ namespace AcManager {
             _showMainWindow |= v != ArgumentsHandler.ShowMainWindow.No;
             Logging.Write("Show main window: " + _showMainWindow);
 
-            if (_showMainWindow && _mainWindowTask == null && !_mainWindowShown) {
-                _mainWindowShown = true;
-                _mainWindowTask = new MainWindow().ShowAndWaitAsync();
-            }
+            ShowMainWindow();
 
             if (--_additionalProcessing == 0) {
                 _waiting?.SetResult(true);
             }
+        }
+
+        private void ShowMainWindow() {
+            if (_showMainWindow && _mainWindowTask == null && !_mainWindowShown) {
+                _mainWindowShown = true;
+                _mainWindowTask = new MainWindow().ShowAndWaitAsync();
+            }
+        }
+
+        private void OnTaskAdded(object sender, EventArgs e) {
+            _showMainWindow = true;
+            ShowMainWindow();
         }
 
         private static Task<bool> WaitForWindowToClose(Window window) {
@@ -114,6 +124,7 @@ namespace AcManager {
         public void Run() {
             ((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
+                ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
 
                 try {
                     if ((!Superintendent.Instance.IsReady || AcRootDirectorySelector.IsReviewNeeded()) &&
@@ -151,6 +162,7 @@ namespace AcManager {
                     Logging.Write("Shutdown…");
                     _timer.Stop();
                     _application.Shutdown();
+                    System.Windows.Forms.Application.Exit();
                 }
 
                 Logging.Write("Main loop is finished");

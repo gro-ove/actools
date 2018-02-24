@@ -60,7 +60,7 @@ namespace AcManager.Controls.UserControls.Web {
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
         public event EventHandler<PageLoadedEventArgs> Navigated;
-        public event EventHandler<UrlEventArgs> NewWindow;
+        public event EventHandler<NewWindowEventArgs> NewWindow;
         public event EventHandler<TitleChangedEventArgs> TitleChanged;
 
         public bool CanHandleAcApiRequests => false;

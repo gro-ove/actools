@@ -131,7 +131,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
-            _inner.SetZoomLevel(_zoomLevel);
+            _inner.SetZoomLevel(Math.Log(_zoomLevel, 1.2));
             if (e.Frame.IsMain) {
                 ActionExtension.InvokeInMainThreadAsync(() => Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Url)));
             }
@@ -153,7 +153,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
         public event EventHandler<PageLoadedEventArgs> Navigated;
-        public event EventHandler<UrlEventArgs> NewWindow;
+        public event EventHandler<NewWindowEventArgs> NewWindow;
         public event EventHandler<Web.TitleChangedEventArgs> TitleChanged;
 
         private void OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
@@ -206,7 +206,11 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior mode) {
-            _inner.LifeSpanHandler = new LifeSpanHandler(mode, url => { NewWindow?.Invoke(this, new UrlEventArgs(url)); });
+            _inner.LifeSpanHandler = new LifeSpanHandler(mode, url => {
+                var args = new NewWindowEventArgs(url);
+                NewWindow?.Invoke(this, args);
+                return args.Cancel;
+            });
         }
 
         public void ModifyPage() {

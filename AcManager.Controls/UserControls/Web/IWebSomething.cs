@@ -12,7 +12,7 @@ namespace AcManager.Controls.UserControls.Web {
 
         event EventHandler<PageLoadingEventArgs> Navigating;
         event EventHandler<PageLoadedEventArgs> Navigated;
-        event EventHandler<UrlEventArgs> NewWindow;
+        event EventHandler<NewWindowEventArgs> NewWindow;
         event EventHandler<TitleChangedEventArgs> TitleChanged;
 
         [NotNull]

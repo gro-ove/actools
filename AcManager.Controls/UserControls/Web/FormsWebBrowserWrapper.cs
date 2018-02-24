@@ -62,11 +62,13 @@ namespace AcManager.Controls.UserControls.Web {
                 case NewWindowsBehavior.OpenInBrowser:
                     break;
                 case NewWindowsBehavior.MultiTab:
-                    NewWindow?.Invoke(this, new UrlEventArgs(_inner.StatusText));
+                    NewWindow?.Invoke(this, new NewWindowEventArgs(_inner.StatusText));
                     args.Cancel = true;
                     break;
                 case NewWindowsBehavior.Callback:
-                    // TODO
+                    var newArgs = new NewWindowEventArgs(_inner.StatusText);
+                    NewWindow?.Invoke(this, newArgs);
+                    args.Cancel = newArgs.Cancel;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -89,7 +91,7 @@ namespace AcManager.Controls.UserControls.Web {
 
         public event EventHandler<PageLoadingEventArgs> Navigating;
         public event EventHandler<PageLoadedEventArgs> Navigated;
-        public event EventHandler<UrlEventArgs> NewWindow;
+        public event EventHandler<NewWindowEventArgs> NewWindow;
         public event EventHandler<TitleChangedEventArgs> TitleChanged;
 
         public bool CanHandleAcApiRequests => false;

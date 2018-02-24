@@ -240,9 +240,18 @@ namespace AcManager.Controls.UserControls {
         }
 
         public event EventHandler<WebTabEventArgs> PageLoaded;
+        public event EventHandler<NewWindowEventArgs> NewWindow;
 
-        private void OnTabNewWindow(object sender, UrlEventArgs e) {
-            SetCurrentTab(CreateTab(e.Url));
+        public void OpenNewTab(string url) {
+            SetCurrentTab(CreateTab(url));
+        }
+
+        private void OnTabNewWindow(object sender, NewWindowEventArgs e) {
+            if (NewWindowsBehavior == NewWindowsBehavior.MultiTab) {
+                OpenNewTab(e.Url);
+            } else {
+                NewWindow?.Invoke(this, e);
+            }
         }
 
         [CanBeNull]

@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.UserControls;
@@ -34,6 +35,7 @@ using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
+using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -88,14 +90,22 @@ namespace AcManager.Pages.Windows {
 
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
-                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
-                new InputBinding(new NavigateCommand(this, "server"), new KeyGesture(Key.F2, ModifierKeys.Control)),
-                new InputBinding(new NavigateCommand(this, "settings"), new KeyGesture(Key.F3, ModifierKeys.Control)),
-                new InputBinding(new NavigateCommand(this, "about"), new KeyGesture(Key.F4, ModifierKeys.Control)),
                 new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
                 new InputBinding(new NavigateCommand(this, "lapTimes"), new KeyGesture(Key.F2)),
                 new InputBinding(new NavigateCommand(this, "stats"), new KeyGesture(Key.F3)),
                 new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4)),
+
+                // Second group, Ctrl+F…
+                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, "server"), new KeyGesture(Key.F2, ModifierKeys.Control)),
+
+                // Settings, Alt+F…
+                new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/SettingsPage.xaml", UriKind.Relative)),
+                        new KeyGesture(Key.F1, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, new Uri("/Pages/AcSettings/AcSettingsPage.xaml", UriKind.Relative)),
+                        new KeyGesture(Key.F2, ModifierKeys.Alt)),
+                new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/PythonAppsSettings.xaml", UriKind.Relative)),
+                        new KeyGesture(Key.F3, ModifierKeys.Alt)),
             });
 
             InitializeComponent();
@@ -157,7 +167,7 @@ namespace AcManager.Pages.Windows {
 #if DEBUG
             LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #else
-            MenuLinkGroups.Remove(BrowserLinkGroup);
+        // MenuLinkGroups.Remove(BrowserLinkGroup);
 #endif
         }
 
@@ -294,6 +304,7 @@ namespace AcManager.Pages.Windows {
 
         private class NavigateCommand : CommandExt {
             private readonly MainWindow _window;
+            private readonly Uri _uri;
             private readonly string _key;
 
             public NavigateCommand(MainWindow window, [Localizable(false)] string key) : base(true, false) {
@@ -301,11 +312,23 @@ namespace AcManager.Pages.Windows {
                 _key = key;
             }
 
+            public NavigateCommand(MainWindow window, Uri uri) : base(true, false) {
+                _window = window;
+                _uri = uri;
+            }
+
             protected override bool CanExecuteOverride() {
                 return true;
             }
 
             protected override void ExecuteOverride() {
+                Logging.Debug(_uri);
+
+                if (_uri != null) {
+                    _window.NavigateTo(_uri);
+                    return;
+                }
+
                 var link = _window.TitleLinks.OfType<TitleLink>().FirstOrDefault(x => x.GroupKey == _key);
                 if (link == null || !link.IsEnabled || link.NonSelectable) return;
                 _window.NavigateTo(link.Source);
@@ -777,6 +800,9 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
+            if (e.Source.OriginalString.Contains(@"/Pages/About/")) {
+                _lastAboutSection.Value = e.Source;
+            }
             MakeSureOnlineIsReady(e.Source);
             UpdateDiscordRichPresence();
         }
@@ -791,28 +817,33 @@ namespace AcManager.Pages.Windows {
             }
         }
 
+        private static readonly Uri AboutPageUri = new Uri("/Pages/About/AboutPage.xaml", UriKind.Relative);
+        private readonly StoredValue<Uri> _lastAboutSection = Stored.Get("MainWindow.AboutSection", AboutPageUri);
+
+        [Localizable(false)]
         bool INavigateUriHandler.NavigateTo(Uri uri) {
             Logging.Debug(uri);
 
-            if (uri.ToString().Contains("/Pages/AcSettings/")) {
+            var s = uri.ToString();
+            if (s.Contains("/Pages/AcSettings/") && !s.Contains("/Pages/AcSettings/AcSettingsPage.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/AcSettings/AcSettingsPage.xaml?Uri={0}", uri));
                 return true;
             }
 
-            if (uri.ToString().Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
+            if (s.Contains("/Pages/Settings/PythonAppsSettings.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(uri);
                 return true;
             }
 
-            if (uri.ToString().Contains("/Pages/Settings/")) {
+            if (s.Contains("/Pages/Settings/") && !s.Contains("/Pages/Settings/SettingsPage.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/Settings/SettingsPage.xaml?Uri={0}", uri));
                 return true;
             }
 
-            if (uri.ToString().Contains("/Pages/About/ImportantTipsPage.xaml")) {
+            if (s.Contains("/Pages/About/ImportantTipsPage.xaml")) {
                 CurrentGroupKey = "about";
                 NavigateTo(uri);
                 return true;
@@ -875,6 +906,32 @@ namespace AcManager.Pages.Windows {
 
             NavigateTo(uri);
             return existingLink;
+        }
+
+        private void OnDownloadsPopupOpened(object sender, EventArgs e) {
+            var popup = (ModernPopup)sender;
+            var parent = ((FrameworkElement)popup.Content).FindVisualChildren<Border>().FirstOrDefault(x => x.Tag as string == @"DownloadsParent");
+            if (parent != null && parent.Child == null) {
+                parent.Child = new InstallAdditionalContentList { Width = 360 };
+            }
+        }
+
+        private void OnNavigateItemClick(object sender, RoutedEventArgs e) {
+            var item = (MenuItem)sender;
+            DownloadsPopup.IsOpen = false;
+            NavigateTo(new Uri((string)item.CommandParameter, UriKind.Relative));
+        }
+
+        private void OnNavigateAboutItemClick(object sender, RoutedEventArgs e) {
+            DownloadsPopup.IsOpen = false;
+            NavigateTo(_lastAboutSection.Value ?? AboutPageUri);
+        }
+
+        private async void OnCompleted(object sender, EventArgs e) {
+            var s = (Storyboard)sender;
+            await Task.Yield();
+            s.Stop();
+            s.Begin();
         }
     }
 }

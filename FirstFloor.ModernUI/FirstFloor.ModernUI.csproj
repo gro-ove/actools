@@ -167,6 +167,7 @@
     <Compile Include="Win32\WindowMessage.cs" />
     <Compile Include="Win32\WindowStyle.cs" />
     <Compile Include="Win32\WindowSystemCommand.cs" />
+    <Compile Include="Windows\Actions\StoryboardHelper.cs" />
     <Compile Include="Windows\AlwaysExecutable.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />

@@ -13,6 +13,7 @@
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/FancyBackgroundBrush.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernWindow.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
@@ -66,6 +67,73 @@
           </Trigger>
         </Style.Triggers>
       </Style>
+
+      <DataTemplate x:Key="MenuButtonContent">
+        <Canvas x:Name="PART_Canvas" Width="9" Height="9" ClipToBounds="True" mui:StoryboardHelper.ContinuousFiring="{Binding}"
+            mui:StoryboardHelper.ContinuousFiringInterval="0:0:1">
+          <Canvas Width="9" Height="9">
+            <FrameworkElement.RenderTransform>
+              <TranslateTransform x:Name="ArrowTransform" Y="-8" />
+            </FrameworkElement.RenderTransform>
+            <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+            <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+          </Canvas>
+          <Line X1="-1" X2="10" Y1="0.75" Y2="0.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}">
+            <Line.RenderTransform>
+              <TranslateTransform x:Name="TopLineTransform" />
+            </Line.RenderTransform>
+          </Line>
+          <Line X1="-1" X2="10" Y1="4.75" Y2="4.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}">
+            <Line.RenderTransform>
+              <TranslateTransform x:Name="MiddleLineTransform" />
+            </Line.RenderTransform>
+          </Line>
+          <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
+        </Canvas>
+        <DataTemplate.Resources>
+          <Storyboard x:Key="ArrowAnimation" TargetProperty="Y" TargetName="ArrowTransform" Completed="OnCompleted" Duration="0:0:1.000">
+            <DoubleAnimationUsingKeyFrames>
+              <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="-8" />
+              <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="8" />
+            </DoubleAnimationUsingKeyFrames>
+          </Storyboard>
+          <Storyboard x:Key="MoveLinesDown" TargetProperty="Y" TargetName="TopLineTransform">
+            <DoubleAnimation Storyboard.TargetName="TopLineTransform" Duration="0:0:0.500" To="8" />
+            <DoubleAnimation Storyboard.TargetName="MiddleLineTransform" Duration="0:0:0.250" To="4" />
+          </Storyboard>
+          <Storyboard x:Key="RestoreLines" TargetProperty="Y" TargetName="ArrowTransform">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="TopLineTransform">
+              <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="-9" />
+              <LinearDoubleKeyFrame KeyTime="0:0:0.560" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="MiddleLineTransform">
+              <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="-5" />
+              <LinearDoubleKeyFrame KeyTime="0:0:0.310" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+          </Storyboard>
+        </DataTemplate.Resources>
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding}" Value="False" />
+          <Trigger SourceName="PART_Canvas" Property="mui:StoryboardHelper.ContinuousFired" Value="True">
+            <Trigger.EnterActions>
+              <BeginStoryboard Storyboard="{StaticResource ArrowAnimation}" />
+            </Trigger.EnterActions>
+          </Trigger>
+          <Trigger SourceName="PART_Canvas" Property="mui:StoryboardHelper.ContinuousFiringActive" Value="True">
+            <Trigger.EnterActions>
+              <BeginStoryboard Storyboard="{StaticResource MoveLinesDown}" />
+            </Trigger.EnterActions>
+            <Trigger.ExitActions>
+              <BeginStoryboard Storyboard="{StaticResource RestoreLines}" />
+            </Trigger.ExitActions>
+          </Trigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
 
@@ -104,58 +172,99 @@
   </mui:ModernWindow.CloseButton>
 
   <mui:ModernWindow.TitleButtons>
-    <mui:BooleanSwitch Width="45"
-        Value="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}, Converter={StaticResource MoreConverter}}">
-      <Button Command="{Binding ShowAdditionalContentDialogCommand}" Style="{StaticResource SystemButtonGo}"
-          Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}">
-        <Button.ToolTip>
-          <ToolTip Content="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}}"
-              ContentStringFormat="{}{0} in installing queue" />
-        </Button.ToolTip>
-        <mui:BooleanSwitch Value="{Binding HasLoadingItems, Source={x:Static t:ContentInstallationManager.Instance}}">
-          <mui:BooleanSwitch.True>
-            <Canvas Width="9" Height="9" ClipToBounds="True">
-              <Canvas Width="9" Height="9">
-                <FrameworkElement.RenderTransform>
-                  <TranslateTransform />
-                </FrameworkElement.RenderTransform>
-                <FrameworkElement.Triggers>
-                  <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                    <BeginStoryboard>
-                      <Storyboard RepeatBehavior="Forever" TargetProperty="(FrameworkElement.RenderTransform).(TranslateTransform.Y)" SpeedRatio="2">
-                        <DoubleAnimationUsingKeyFrames>
-                          <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="0" />
-                          <LinearDoubleKeyFrame KeyTime="0:0:1.000" Value="8" />
-                          <DiscreteDoubleKeyFrame KeyTime="0:0:1.001" Value="-8" />
-                          <LinearDoubleKeyFrame KeyTime="0:0:2.0" Value="0" />
-                        </DoubleAnimationUsingKeyFrames>
-                      </Storyboard>
-                    </BeginStoryboard>
-                  </EventTrigger>
-                </FrameworkElement.Triggers>
-                <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                    RenderOptions.EdgeMode="Aliased"
-                    StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-                <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                    StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-              </Canvas>
-              <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-            </Canvas>
-          </mui:BooleanSwitch.True>
-          <mui:BooleanSwitch.False>
-            <Canvas Width="9" Height="9" ClipToBounds="True">
-              <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-              <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                  RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-              <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                  StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:ModernWindow}}" />
-            </Canvas>
-          </mui:BooleanSwitch.False>
-        </mui:BooleanSwitch>
-      </Button>
-    </mui:BooleanSwitch>
+
+    <mui:Cell Width="45">
+      <ToggleButton x:Name="DownloadsButton" Style="{StaticResource SystemButtonGo}"
+          Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Width="45"
+          IsHitTestVisible="{Binding ElementName=DownloadsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+        <FrameworkElement.ToolTip>
+          <ToolTip Content="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}}" ContentStringFormat="{}{0} installing"
+              Visibility="{Binding DownloadList.Count, Converter={StaticResource MoreToVisibilityConverter}, Source={x:Static t:ContentInstallationManager.Instance}}" />
+        </FrameworkElement.ToolTip>
+        <FrameworkElement.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Install all" Command="{Binding InstallAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
+              <MenuItem.Icon>
+                <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource InstallAllIconData}" HorizontalAlignment="Right"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="Remove completed" Command="{Binding RemoveCompletedCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
+              <MenuItem.Icon>
+                <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CleanUpIconData}" HorizontalAlignment="Right"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Remove all" Command="{Binding RemoveAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}"
+                Foreground="{DynamicResource Error}">
+              <MenuItem.Icon>
+                <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource TrashBinIconData}" HorizontalAlignment="Right"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              </MenuItem.Icon>
+            </MenuItem>
+          </ContextMenu>
+        </FrameworkElement.ContextMenu>
+        <ContentControl ContentTemplate="{StaticResource MenuButtonContent}"
+            Content="{Binding HasLoadingItems, Source={x:Static t:ContentInstallationManager.Instance}}" />
+      </ToggleButton>
+      <c:ModernPopup x:Name="DownloadsPopup" PlacementTarget="{Binding ElementName=DownloadsButton}" Placement="Bottom"
+          IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
+          PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
+        <DockPanel>
+          <MenuItem DockPanel.Dock="Top" Header="Settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
+              InputGestureText="Alt+F1">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource GearIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem DockPanel.Dock="Top" Header="AC settings" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml"
+              InputGestureText="Alt+F2">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource AcIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem DockPanel.Dock="Top" Header="Apps settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml"
+              InputGestureText="Alt+F3">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarSetupIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem DockPanel.Dock="Top" Header="About Content Manager" Click="OnNavigateAboutItemClick">
+            <MenuItem.Icon>
+              <Image Source="/Assets/Icons/Icon.ico" Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          <TextBlock DockPanel.Dock="Top" Text="Downloads:" Margin="8 8 8 8" Style="{StaticResource Label}" />
+          <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" DockPanel.Dock="Bottom" DataContext="{x:Static t:ContentInstallationManager.Instance}"
+              Margin="8 0 4 0">
+            <Button Style="{StaticResource Go.Button}" Command="{Binding InstallAllCommand}"
+                Visibility="{Binding HasMoreThanOneWaiting, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 8 4 8">
+              <DockPanel>
+                <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                    Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource InstallAllIconData}" />
+                <TextBlock Text="Install all" />
+              </DockPanel>
+            </Button>
+            <Button Command="{Binding RemoveCompletedCommand}"
+                Visibility="{Binding RemoveCompletedCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 8 4 8">
+              <DockPanel>
+                <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                    Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource CleanUpIconData}" />
+                <TextBlock Text="Remove completed" />
+              </DockPanel>
+            </Button>
+          </mui:SpacingUniformGrid>
+          <Border Tag="DownloadsParent" />
+        </DockPanel>
+      </c:ModernPopup>
+    </mui:Cell>
+
   </mui:ModernWindow.TitleButtons>
 
   <mui:ModernWindow.MenuLinkGroups>
@@ -294,8 +403,8 @@
     </mui:TitleLink>
     <mui:TitleLink x:Name="ServerGroup" DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False"
         Source="/Pages/Lists/ServerPresetsListPage.xaml" />
-    <mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
-    <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
+    <!--<mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
+    <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />-->
     <mui:TitleLink x:Name="OriginalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
     <mui:TitleLink Content="full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
   </mui:ModernWindow.TitleLinks>

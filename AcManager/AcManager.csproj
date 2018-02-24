@@ -780,8 +780,12 @@
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Compile Include="Tools\WheelAnglesStorage.cs" />
     <Compile Include="Tools\Win10SharingUiHelper.cs" />
+    <Compile Include="UserControls\AdditionalContentEntryTemplateSelector.cs" />
     <Compile Include="UserControls\BakedShadowsSettings.xaml.cs">
       <DependentUpon>BakedShadowsSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\InstallAdditionalContentList.xaml.cs">
+      <DependentUpon>InstallAdditionalContentList.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\ModsWebFinder.xaml.cs">
       <DependentUpon>ModsWebFinder.xaml</DependentUpon>
@@ -1655,6 +1659,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\BakedShadowsSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\InstallAdditionalContentList.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

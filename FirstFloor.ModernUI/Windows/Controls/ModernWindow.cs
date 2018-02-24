@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Markup;
 using FirstFloor.ModernUI.Presentation;
@@ -9,9 +8,6 @@ using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    /// <summary>
-    /// Represents a Modern UI styled window.
-    /// </summary>
     [ContentProperty(nameof(AdditionalContent))]
     public class ModernWindow : DpiAwareWindow {
         public static RoutedUICommand NavigateTitleLink { get; } = new RoutedUICommand(UiStrings.NavigateLink, nameof(NavigateTitleLink), typeof(LinkCommands));
@@ -20,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             DefaultStyleKey = typeof(ModernWindow);
 
             SetCurrentValue(MenuLinkGroupsProperty, new LinkGroupCollection());
-            SetCurrentValue(TitleButtonsProperty, new ObservableCollection<Control>());
+            SetCurrentValue(TitleButtonsProperty, new ObservableCollection<UIElement>());
             SetCurrentValue(TitleLinksProperty, new LinkCollection());
 
             CommandBindings.Add(new CommandBinding(SystemCommands.CloseWindowCommand, OnCloseWindow));
@@ -167,11 +163,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(MenuLinkGroupsProperty, value);
         }
 
-        public static readonly DependencyProperty TitleButtonsProperty = DependencyProperty.Register(nameof(TitleButtons), typeof(ObservableCollection<Control>),
-                typeof(ModernWindow));
+        public static readonly DependencyProperty TitleButtonsProperty = DependencyProperty.Register(nameof(TitleButtons),
+                typeof(ObservableCollection<UIElement>), typeof(ModernWindow));
 
-        public ObservableCollection<Control> TitleButtons {
-            get => (ObservableCollection<Control>)GetValue(TitleButtonsProperty);
+        public ObservableCollection<UIElement> TitleButtons {
+            get => (ObservableCollection<UIElement>)GetValue(TitleButtonsProperty);
             set => SetValue(TitleButtonsProperty, value);
         }
 

@@ -25,8 +25,6 @@ namespace AcManager.ContentRepair.Repairs {
 
         protected override void Fix(CarObject car, DataWrapper data) {
             var lights = data.GetIniFile(@"lights.ini");
-            if (lights == null) return;
-
             var max = lights.GetSections("LIGHT").Select(x => {
                 if (x.GetNonEmpty("NAME") == "NULL") return 0d;
 
@@ -38,7 +36,6 @@ namespace AcManager.ContentRepair.Repairs {
 
         private static bool CheckIfObsolete(DataWrapper data) {
             var lights = data.GetIniFile(@"lights.ini");
-            if (lights == null) return false;
 
             var found = false;
             if (lights.GetSections("LIGHT").Concat(lights.GetSections("BRAKE")).Any(x => {

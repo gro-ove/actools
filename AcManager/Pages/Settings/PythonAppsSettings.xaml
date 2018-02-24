@@ -1,9 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.PythonAppsSettings" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:c="http://acstuff.ru/app/controls"
-    mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance set:PythonAppsSettings+ViewModel}" Loaded="OnLoaded">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -14,71 +12,86 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid Margin="{StaticResource ContentMargin}">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition MinWidth="50" MaxWidth="400" />
-      <ColumnDefinition Width="9" />
-      <ColumnDefinition />
-    </Grid.ColumnDefinitions>
 
-    <!-- Link list -->
-    <ListBox ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}" Style="{StaticResource VirtualizingListBox}">
-      <ListBox.ItemContainerStyle>
-        <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="ListBoxItem">
-                <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                  <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                </Border>
-                <ControlTemplate.Triggers>
-                  <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
-                  </Trigger>
-                  <Trigger Property="IsSelected" Value="True">
-                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
-                  </Trigger>
-                </ControlTemplate.Triggers>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-        </Style>
-      </ListBox.ItemContainerStyle>
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <DockPanel IsEnabled="{Binding Enabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
-            <DockPanel.ToolTip>
-              <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
-              </ToolTip>
-            </DockPanel.ToolTip>
-            <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
-                Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
-            <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
-                Margin="0 0 4 0" ClearOnChange="True" />
-            <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
-          </DockPanel>
-          <DataTemplate.Triggers>
-            <DataTrigger Binding="{Binding IsFavourite}" Value="True">
-              <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
-            </DataTrigger>
-          </DataTemplate.Triggers>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
-
-    <!-- Separator -->
-    <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
-
-    <!-- Content -->
-    <DockPanel Grid.Column="2" Margin="20 0 20 20">
-      <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
-        <mui:BbCodeBlock
-            BbCode="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;http://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
-      </c:MessageBlock>
-      <mui:ModernTab x:Name="ConfigsTab" Layout="Tab"/>
+  <mui:Switch Value="{Binding Apps.Count}">
+    <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{StaticResource ContentMarginWithPadding}">
+      <TextBlock Text="No configurable apps found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="http://acstuff.ru/f/d/19-content-manager-python-app-configs">
+        <DockPanel IsHitTestVisible="False">
+          <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
+              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+              VerticalAlignment="Center" SnapsToDevicePixels="True" />
+          <TextBlock Text="What is it?" />
+        </DockPanel>
+      </Button>
     </DockPanel>
-  </Grid>
+
+    <Grid Margin="{StaticResource ContentMargin}">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition MinWidth="50" MaxWidth="400" />
+        <ColumnDefinition Width="9" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+
+      <!-- Link list -->
+      <ListBox ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}" Style="{StaticResource VirtualizingListBox}">
+        <ListBox.ItemContainerStyle>
+          <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="ListBoxItem">
+                  <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                      BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                  </Border>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundHover}" />
+                    </Trigger>
+                    <Trigger Property="IsSelected" Value="True">
+                      <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ItemBackgroundSelected}" />
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </ListBox.ItemContainerStyle>
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <DockPanel IsEnabled="{Binding Enabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
+              <DockPanel.ToolTip>
+                <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
+                </ToolTip>
+              </DockPanel.ToolTip>
+              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
+              <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
+                  Margin="0 0 4 0" ClearOnChange="True" />
+              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding IsFavourite}" Value="True">
+                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+
+      <!-- Separator -->
+      <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
+
+      <!-- Content -->
+      <DockPanel Grid.Column="2" Margin="20 0 20 20">
+        <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
+          <mui:BbCodeBlock
+              BbCode="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;http://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
+        </c:MessageBlock>
+        <mui:ModernTab x:Name="ConfigsTab" Layout="Tab" />
+      </DockPanel>
+    </Grid>
+  </mui:Switch>
 </UserControl>
