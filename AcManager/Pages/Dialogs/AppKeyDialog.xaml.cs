@@ -210,7 +210,7 @@ namespace AcManager.Pages.Dialogs {
             private CommandBase _getNewKeyCommand;
 
             public ICommand GetNewKeyCommand => _getNewKeyCommand ?? (_getNewKeyCommand = new DelegateCommand(() => {
-                Process.Start("http://acstuff.ru/app/cm/key/get");
+                Process.Start($"{InternalUtils.MainApiDomain}/app/cm/key/get");
             }, () => !IsValueAcceptable || string.IsNullOrWhiteSpace(Value)));
 
             public IEnumerable GetErrors(string propertyName) {

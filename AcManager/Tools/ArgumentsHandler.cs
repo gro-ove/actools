@@ -13,6 +13,7 @@ using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.UserControls;
 using AcManager.CustomShowroom;
+using AcManager.Internal;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
@@ -116,7 +117,7 @@ namespace AcManager.Tools {
                 TimeSpan extraDelay = default(TimeSpan)) {
             if (arguments == null) return ShowMainWindow.No;
 
-            var list = arguments.ToList();
+            var list = arguments.Select(FixProxiedRequest).ToList();
             if (_previousArguments?.SequenceEqual(list) == true) return ShowMainWindow.No;
             if (list.Count == 0) return ShowMainWindow.Immediately;
 
@@ -161,11 +162,20 @@ namespace AcManager.Tools {
             }
         }
 
+        private static string FixProxiedRequest(string argument) {
+            var prefix = $@"{InternalUtils.MainApiDomain}/s/q:";
+            if (argument?.StartsWith(prefix) == true) {
+                return CustomUriSchemeHelper.UriScheme + @"//" + argument.SubstringExt(prefix.Length);
+            }
+            return argument;
+        }
+
         public static bool IsCustomUriScheme(string argument) {
             return argument.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.InvariantCultureIgnoreCase);
         }
 
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {
+            argument = FixProxiedRequest(argument);
             if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
 
             if (IsCustomUriScheme(argument)) {

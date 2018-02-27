@@ -660,7 +660,7 @@
     <Compile Include="Tools\AppIconProvider.cs" />
     <Compile Include="Tools\AppRestartHelper.cs" />
     <Compile Include="Tools\ArgumentsHandler.SharedUserChampionship.cs" />
-    <Compile Include="Tools\ArgumentsHandler.Online.cs" />
+    <Compile Include="Tools\ArgumentsHandler.Race.cs" />
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />

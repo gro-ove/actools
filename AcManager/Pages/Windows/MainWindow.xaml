@@ -178,8 +178,8 @@
           Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Width="45"
           IsHitTestVisible="{Binding ElementName=DownloadsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
         <FrameworkElement.ToolTip>
-          <ToolTip Content="{Binding DownloadList.Count, Source={x:Static t:ContentInstallationManager.Instance}}" ContentStringFormat="{}{0} installing"
-              Visibility="{Binding DownloadList.Count, Converter={StaticResource MoreToVisibilityConverter}, Source={x:Static t:ContentInstallationManager.Instance}}" />
+          <ToolTip Content="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}}" ContentStringFormat="{}{0} installing"
+              Visibility="{Binding UnfinishedItemsCount, Converter={StaticResource MoreToVisibilityConverter}, Source={x:Static t:ContentInstallationManager.Instance}}" />
         </FrameworkElement.ToolTip>
         <FrameworkElement.ContextMenu>
           <ContextMenu>

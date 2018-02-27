@@ -12,6 +12,7 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.SemiGui;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
@@ -21,6 +22,27 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
+        private static async Task<ArgumentHandleResult> ProcessRaceQuick(CustomUriRequest custom) {
+            var presetData = custom.Params.Get(@"presetData");
+            var preset = presetData != null ? presetData.FromCutBase64()?.ToUtf8String() : custom.Params.Get(@"preset");
+            if (preset == null) throw new Exception(@"Settings are not specified");
+            if (!await QuickDrive.RunAsync(serializedPreset: preset)) {
+                NonfatalError.Notify(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
+                return ArgumentHandleResult.Failed;
+            }
+            return ArgumentHandleResult.Successful;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessRaceConfig(CustomUriRequest custom) {
+            var configData = custom.Params.Get(@"configData");
+            var config = configData != null ? configData.FromCutBase64()?.ToUtf8String() : custom.Params.Get(@"config");
+            if (config == null) throw new Exception(@"Settings are not specified");
+            await GameWrapper.StartAsync(new Game.StartProperties {
+                PreparedConfig = IniFile.Parse(config)
+            });
+            return ArgumentHandleResult.Successful;
+        }
+
         private static async Task<ArgumentHandleResult> ProcessRaceOnline(NameValueCollection p) {
             /* required arguments */
             var ip = p.Get(@"ip");

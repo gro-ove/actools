@@ -7,7 +7,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
+using AcManager.Internal;
 using AcManager.Pages.Drive;
+using AcManager.Pages.Miscellaneous;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.TheSetupMarket;
@@ -115,7 +117,7 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessUriRequest(string uri) {
-            if (!uri.StartsWith(CustomUriSchemeHelper.UriScheme, StringComparison.OrdinalIgnoreCase)) return ArgumentHandleResult.FailedShow;
+            if (!IsCustomUriScheme(uri)) return ArgumentHandleResult.FailedShow;
 
             var request = uri.SubstringExt(CustomUriSchemeHelper.UriScheme.Length);
             Logging.Debug("URI Request: " + request);
@@ -138,8 +140,11 @@ namespace AcManager.Tools {
 
             try {
                 switch (custom.Path.ToLowerInvariant()) {
-                    case "setsteamid":
-                        return ArgumentHandleResult.Ignore; // TODO?
+                    case "race/quick":
+                        return await ProcessRaceQuick(custom);
+
+                    case "race/config":
+                        return await ProcessRaceConfig(custom);
 
                     case "race/online":
                         return await ProcessRaceOnline(custom.Params);
@@ -147,11 +152,20 @@ namespace AcManager.Tools {
                     case "race/online/join":
                         return await ProcessRaceOnlineJoin(custom.Params);
 
+                    case "setsteamid":
+                        return ArgumentHandleResult.Ignore; // TODO?
+
                     case "loadgooglespreadsheetslocale":
                         return await ProcessGoogleSpreadsheetsLocale(custom.Params.Get(@"id"), custom.Params.Get(@"locale"), custom.Params.GetFlag(@"around"));
 
                     case "install":
-                        return (await (custom.Params.GetValues(@"url") ?? new string[0]).Select(
+                        var urls = custom.Params.GetValues(@"url") ?? new string[0];
+                        if (custom.Params.GetFlag("fromWebsite")) {
+                            Logging.Debug("From website:" + urls.JoinToString(@"; "));
+                            ModsWebBrowser.PrepareForCommand(urls, custom.Params.GetValues(@"websiteData") ?? new string[0]);
+                        }
+
+                        return (await urls.Select(
                                 x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams {
                                     CarId = custom.Params.Get(@"car"),
                                     AllowExecutables = true
@@ -193,7 +207,8 @@ namespace AcManager.Tools {
                 throw new InformativeException("ID is missing");
             }
 
-            var url = around ? $@"http://acstuff.ru/u/around?id={id}" : $@"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
+            var url = around
+                    ? $@"{InternalUtils.MainApiDomain}/u/around?id={id}" : $@"https://docs.google.com/spreadsheets/d/{id}/export?format=xlsx&authuser=0";
             await LoadRemoveFileToNew(url, LocaleHelper.GetGoogleSheetsFilename());
 
             SettingsHolder.Locale.LoadUnpacked = true;

@@ -51,7 +51,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas, reports and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Anton Malishev, cq.mysk, dr8008, /u/FolkSong, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
+            BbCode="Anton Malishev, cq.mysk, dr8008, /u/FolkSong, leBluem, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Screenshots for Discord integration:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}" BbCode="/u/CipherO32." />

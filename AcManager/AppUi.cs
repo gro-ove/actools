@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Windows;
@@ -10,6 +11,7 @@ using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Managers;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -48,7 +50,7 @@ namespace AcManager {
         private readonly DispatcherTimer _timer;
         private Window _currentWindow;
         private int _additionalProcessing;
-        private bool _showMainWindow;
+        private bool _showMainWindow, _firstWindowFocused;
         private TaskCompletionSource<bool> _waiting;
 
         private void SetCurrentWindow(Window window) {
@@ -70,6 +72,11 @@ namespace AcManager {
         private void OnWindowLoaded(object sender, RoutedEventArgs e) {
             if (sender is Window window && _currentWindow == null) {
                 SetCurrentWindow(window);
+
+                if (!_firstWindowFocused && AppArguments.GetBool(AppFlag.ForcefullyFocusFirstWindow, true)) {
+                    _firstWindowFocused = true;
+                    User32.SetForegroundWindow(new WindowInteropHelper(window).EnsureHandle());
+                }
             }
         }
 

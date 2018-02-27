@@ -41,7 +41,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
             _material = new EffectDarkMaterial.ReflectiveMaterial {
                 FresnelC = Kn5Material.GetPropertyValueAByName("fresnelC"),
-                FresnelExp = Math.Max(Kn5Material.GetPropertyValueAByName("fresnelEXP"), 1f),
+                FresnelExp = Math.Max(Kn5Material.GetPropertyValueAByName("fresnelEXP"), 0.0001f),
                 FresnelMaxLevel = Kn5Material.GetPropertyValueAByName("fresnelMaxLevel")
             };
 

@@ -92,7 +92,7 @@ namespace AcManager.Controls.UserControls {
                 MainTab = CreateTab(SaveKey != null && SettingsHolder.WebBlocks.SaveMainUrl ? ValuesStorage.Get(SaveKey, StartPage) : StartPage);
                 MainTab.IsMainTab = true;
 
-                if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs) {
+                if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs && SaveKey != null) {
                     foreach (var tab in ValuesStorage.GetStringList(SaveKey + ":tabs")) {
                         CreateTab(tab, true);
                     }
@@ -114,7 +114,7 @@ namespace AcManager.Controls.UserControls {
         private readonly Busy _saveTabsBusy = new Busy();
 
         private void SaveTabs() {
-            if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs) {
+            if (SettingsHolder.WebBlocks.SaveMainUrl && SettingsHolder.WebBlocks.SaveExtraTabs && SaveKey != null) {
                 _saveTabsBusy.Yield(() => {
                     if (Tabs.Count > 1) {
                         ValuesStorage.Storage.SetStringList(SaveKey + ":tabs", Tabs.ApartFrom(MainTab).Select(x => x.ActiveUrl));
@@ -164,6 +164,7 @@ namespace AcManager.Controls.UserControls {
             ProgressBar.Visibility = tab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
             CommandManager.InvalidateRequerySuggested();
             SaveTabs();
+            CurrentTabChanged?.Invoke(this, EventArgs.Empty);
         }
 
         private void OnTabsListSelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -239,6 +240,7 @@ namespace AcManager.Controls.UserControls {
             PageLoaded?.Invoke(this, new WebTabEventArgs(tab));
         }
 
+        public event EventHandler CurrentTabChanged;
         public event EventHandler<WebTabEventArgs> PageLoaded;
         public event EventHandler<NewWindowEventArgs> NewWindow;
 
@@ -413,6 +415,23 @@ namespace AcManager.Controls.UserControls {
             if (IsLoaded) {
                 MainTab?.Navigate(newValue);
             }
+        }
+
+        public static readonly DependencyProperty AddressBarExtraTemplateProperty = DependencyProperty.Register(nameof(AddressBarExtraTemplate), typeof(DataTemplate),
+                typeof(WebBlock), new PropertyMetadata(OnAddressBarExtraTemplateChanged));
+
+        public DataTemplate AddressBarExtraTemplate {
+            get => (DataTemplate)GetValue(AddressBarExtraTemplateProperty);
+            set => SetValue(AddressBarExtraTemplateProperty, value);
+        }
+
+        private static void OnAddressBarExtraTemplateChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((WebBlock)o).OnAddressBarExtraTemplateChanged((DataTemplate)e.NewValue);
+        }
+
+        private void OnAddressBarExtraTemplateChanged(DataTemplate newValue) {
+            AddressBarExtra.ContentTemplate = newValue;
+            AddressBarExtra.Visibility = Visibility.Visible;
         }
 
         private void OnUrlTextBoxKeyDown(object sender, KeyEventArgs e) {

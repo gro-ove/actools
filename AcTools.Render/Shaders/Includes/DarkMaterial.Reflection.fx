@@ -84,19 +84,9 @@ float3 GetReflection(float3 reflected, float specularExp) {
 }
 
 float GetReflectionStrength(float3 normalW, float3 toEyeW) {
-	// float rid = 1 - saturate(dot(toEyeW, normalW) - gReflectiveMaterial.FresnelC);
-
-	// float rid = 1 - saturate(dot(toEyeW, normalW));
-	// float rim = pow(rid, gReflectiveMaterial.FresnelExp);
-	// return min(max(rim, gReflectiveMaterial.FresnelC), gReflectiveMaterial.FresnelMaxLevel);
-
 	float rid = 1 - saturate(dot(toEyeW, normalW));
 	float rim = pow(rid, gReflectiveMaterial.FresnelExp);
 	return min(rim + gReflectiveMaterial.FresnelC, gReflectiveMaterial.FresnelMaxLevel);
-
-	//float d = dot(toEyeW, normalW);
-	//float y = 0.0 < d;
-	//return min(exp(log(abs(1.0 - d)) * gReflectiveMaterial.FresnelExp), gReflectiveMaterial.FresnelC) + y;
 }
 
 float4 CalculateReflection(float3 posW, float3 normalW) {

@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Dialogs;
@@ -247,7 +248,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 try {
                     var buffer =
-                            Encoding.UTF8.GetBytes(string.Format(@"<!DOCTYPE html><html><head><title>Content Manager</title><base href=""http://acstuff.ru/"">
+                            Encoding.UTF8.GetBytes(string.Format($@"<!DOCTYPE html><html><head><title>Content Manager</title><base href=""{InternalUtils.MainApiDomain}/"">
 <meta http-equiv=""content-type"" content=""text/html; charset=UTF-8""><link rel=""stylesheet"" href=""/s/style.css"" />
 <link rel=""shortcut icon"" type=""image/x-icon"" href=""/app/icon.ico"" sizes=""16x16"" />
 <link rel=""icon"" type=""image/x-icon"" href=""/app/icon_48.png"" sizes=""16x16"" />

@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Switch focus to the first window appearing, enabled by default.
+        /// Example: --forcefully-focus-first-window=no.
+        /// </summary>
+        ForcefullyFocusFirstWindow,
+
+        /// <summary>
         /// Load windows’ location and size, enabled by default. Example: --windows-location-management=no.
         /// </summary>
         WindowsLocationManagement,

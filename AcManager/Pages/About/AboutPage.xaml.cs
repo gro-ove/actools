@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
 using FirstFloor.ModernUI.Commands;
@@ -43,13 +44,13 @@ namespace AcManager.Pages.About {
             private ICommand _moreInformationCommand;
 
             public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewInBrowser("http://acstuff.ru/app");
+                WindowsHelper.ViewInBrowser($"{InternalUtils.MainApiDomain}/app");
             }));
 
             private ICommand _recentChangesCommand;
 
             public ICommand RecentChangesCommand => _recentChangesCommand ?? (_recentChangesCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/10-content-manager-detailed-changelog");
+                WindowsHelper.ViewInBrowser($"{InternalUtils.MainApiDomain}/f/d/10-content-manager-detailed-changelog");
             }));
 
             private const string KeyLogsSentTime = "GeneralViewModel.KeyLogsSentTime";

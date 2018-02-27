@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Internal;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -274,7 +275,7 @@ namespace AcManager.Pages.Settings {
             private ICommand _moreInformationCommand;
 
             public ICommand MoreInformationCommand => _moreInformationCommand ?? (_moreInformationCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewInBrowser("http://acstuff.ru/f/d/7-content-manager-how-to-localize");
+                WindowsHelper.ViewInBrowser($"{InternalUtils.MainApiDomain}/f/d/7-content-manager-how-to-localize");
             }));
 
             private ICommand _navigateCommand;

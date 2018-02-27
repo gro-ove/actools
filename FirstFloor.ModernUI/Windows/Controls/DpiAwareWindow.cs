@@ -281,10 +281,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             try {
                 ShowInTaskbar = false;
-                WindowState = WindowState.Minimized;
+                WindowStyle = WindowStyle.None;
+                AllowsTransparency = true;
+                Opacity = 0d;
 
                 Show();
                 Hide();
+                Opacity = 1d;
             } finally {
                 ShowInTaskbar = needToShowInTaskbar;
                 WindowState = initialWindowState;

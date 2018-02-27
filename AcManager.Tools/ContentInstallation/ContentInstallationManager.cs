@@ -244,7 +244,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
         }
 
-        private Busy _busy = new Busy();
+        private readonly Busy _busy = new Busy();
         private bool _isDirty;
 
         public void Save() {

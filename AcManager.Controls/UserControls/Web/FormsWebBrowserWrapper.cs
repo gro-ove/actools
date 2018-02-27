@@ -148,7 +148,14 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
 
             _jsBridge = factory();
             _jsBridgeSet = true;
-            _inner.ObjectForScripting = _jsBridge;
+
+            try {
+                _inner.ObjectForScripting = _jsBridge;
+            } catch (ArgumentException) {
+                Logging.Warning("Failed to set: " + (_jsBridge?.GetType().FullName ?? @"NULL"));
+                throw;
+            }
+
             return (T)_jsBridge;
         }
 

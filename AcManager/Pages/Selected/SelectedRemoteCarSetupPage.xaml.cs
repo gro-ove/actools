@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Tools;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -40,7 +41,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _shareCommand;
 
             public DelegateCommand ShareCommand => _shareCommand ?? (_shareCommand = new DelegateCommand(() => {
-                var link = $@"http://acstuff.ru/s/q:thesetupmarket/setup?id={SelectedObject.Id}";
+                var link = $@"{InternalUtils.MainApiDomain}/s/q:thesetupmarket/setup?id={SelectedObject.Id}";
                 SharingUiHelper.ShowShared("The Setup Market link", link);
             }));
         }

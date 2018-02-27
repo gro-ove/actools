@@ -3,8 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:l="clr-namespace:AcManager.Controls.UserControls" xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    PreviewMouseWheel="OnMouseWheel" PreviewMouseRightButtonDown="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnMouseRightButtonUp"
-    AllowDrop="True" Drop="OnDrop">
+    PreviewMouseWheel="OnMouseWheel" PreviewMouseRightButtonDown="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnMouseRightButtonUp" AllowDrop="True"
+    Drop="OnDrop">
   <!-- Propagate bindings to window? -->
   <DockPanel.CommandBindings>
     <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />
@@ -187,7 +187,11 @@
       <mui:Cell Grid.Column="1" MinWidth="200">
         <mui:BetterTextBox x:Name="UrlTextBox" AcceptsReturn="True" PreviewKeyDown="OnUrlTextBoxKeyDown" PreviewKeyUp="OnUrlTextBoxKeyUp"
             FontSize="{DynamicResource SmallFontSize}" Padding="2 3 1 1" />
-        <ProgressBar x:Name="ProgressBar" Height="4" VerticalAlignment="Center" Width="80" HorizontalAlignment="Right" Margin="8 0" IsIndeterminate="True" />
+        <DockPanel HorizontalAlignment="Right">
+          <ContentControl x:Name="AddressBarExtra" Visibility="Collapsed" DockPanel.Dock="Right" />
+          <ProgressBar x:Name="ProgressBar" Height="4" VerticalAlignment="Center" Width="80" HorizontalAlignment="Right" Margin="8 0" IsIndeterminate="True"
+              IsHitTestVisible="False" />
+        </DockPanel>
       </mui:Cell>
     </Grid>
   </DockPanel>

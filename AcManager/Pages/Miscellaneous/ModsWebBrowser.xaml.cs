@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,12 +15,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
+using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Loaders;
@@ -32,6 +37,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -49,11 +55,14 @@ namespace AcManager.Pages.Miscellaneous {
             if (id == null) {
                 DataContext = Instance;
             } else {
-                _model = new ViewModel(Instance.WebSources.GetByIdOrDefault(id));
+                _model = new ViewModel(Instance.WebSources.GetById(id));
                 DataContext = _model;
             }
 
             InitializeComponent();
+            if (id == null) {
+                this.FindVisualChild<WebBlock>()?.SetJsBridge<CheckingJsBridge>();
+            }
 
             InputBindings.Add(new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
                     new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)));
@@ -189,6 +198,27 @@ namespace AcManager.Pages.Miscellaneous {
             public string AutoDownloadRule {
                 get => _autoDownloadRule;
                 set => Apply(value, ref _autoDownloadRule, () => _autoSetRule = false);
+            }
+
+            [NotNull, JsonProperty("redirectsTo")]
+            public List<string> RedirectsTo { get; } = new List<string>();
+
+            public void AddRedirectsTo(string id) {
+                if (RedirectsTo.Remove(id)) {
+                    RedirectsTo.Insert(0, id);
+                } else {
+                    RedirectsTo.Add(id);
+                }
+            }
+
+            public IEnumerable<string> RedirectsToSources => RedirectsTo.Select(x => Instance.WebSources.GetByIdOrDefault(x)?.Name).NonNull();
+
+            public static bool IsScriptRule(string rule) {
+                return rule.StartsWith(@"javascript:", StringComparison.OrdinalIgnoreCase);
+            }
+
+            public static bool IsRuleSafe(string rule) {
+                return !IsScriptRule(rule);
             }
 
             public Lazier<IReadOnlyList<string>> RuleSuggestions { get; }
@@ -361,32 +391,144 @@ namespace AcManager.Pages.Miscellaneous {
             }
 
             bool ILoaderFactory.Test(string url) {
-                return WebSources.Where(x => x.IsEnabled && x.CaptureDownloads).Any(
-                        x => string.Equals(x.Url.GetDomainNameFromUrl(), url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase));
+                return GetSource(url, out _) != null;
             }
 
             ILoader ILoaderFactory.Create(string url) {
                 Logging.Debug(url);
 
-                var source = WebSources.Where(x => x.IsEnabled && x.CaptureDownloads).FirstOrDefault(
-                        x => string.Equals(x.Url.GetDomainNameFromUrl(), url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase));
-                if (source == null) {
-                    Logging.Debug("No fitting sources found");
-                    return null;
+                var source = GetSource(url, out var isVirtual);
+                if (source != null) {
+                    Logging.Debug("Fitting source: " + source.Name);
+                    return new BrowserLoader(source, isVirtual, url);
                 }
 
-                Logging.Debug("Fitting source: " + source.Name);
-                return new BrowserLoader(source, url);
+                Logging.Debug("No fitting sources found");
+
+                if (SentToInstall.Contains(url)) {
+                    Logging.Debug("Using fake source for installation command without details");
+                    return new BrowserLoader(new WebSource(null, url) {
+                        Name = url.GetDomainNameFromUrl(),
+                        CaptureDownloads = true,
+                        IsEnabled = true,
+                    }, true, url);
+                }
+
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        private static WebSource GetSource(string url, out bool isVirtual) {
+            var domain = url.GetDomainNameFromUrl();
+
+            var userSource = Instance.WebSources.Where(x => x.IsEnabled && x.CaptureDownloads).FirstOrDefault(
+                    x => string.Equals(x.Url.GetDomainNameFromUrl(), domain, StringComparison.OrdinalIgnoreCase));
+            if (userSource != null) {
+                isVirtual = false;
+                return userSource;
+            }
+
+            var virtualSource = VirtualSources.Where(x => x.IsEnabled && x.CaptureDownloads).FirstOrDefault(
+                    x => string.Equals(x.Url.GetDomainNameFromUrl(), domain, StringComparison.OrdinalIgnoreCase));
+            if (virtualSource != null) {
+                isVirtual = true;
+                return virtualSource;
+            }
+
+            isVirtual = true;
+            return null;
+        }
+
+        private static readonly List<string> SentToInstall = new List<string>();
+        private static readonly List<WebSource> VirtualSources = new List<WebSource>();
+
+        private static readonly string StopKey = @"s" + StringExtension.RandomString(20);
+        private static readonly string PauseKey = @"p" + StringExtension.RandomString(20);
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+        public class JsBridge : JsBridgeBase {
+            [CanBeNull]
+            private ModsWebFinder _finder;
+
+            [CanBeNull]
+            public ModsWebFinder Finder {
+                get => _finder;
+                set {
+                    if (Equals(_finder, value)) return;
+                    _finder = value;
+                    if (value == null) {
+                        StopCssSelector();
+                    } else {
+                        RunCssSelector();
+                    }
+                }
+            }
+
+            [UsedImplicitly]
+            public void SetCssQuery(string value) {
+                Sync(() => {
+                    if (Finder == null) return;
+                    Finder.Model.Value = value;
+                });
+            }
+
+            public override void PageLoaded(string url) {
+                if (Finder == null) return;
+                RunCssSelector();
+            }
+
+            private void StopCssSelector() {
+                Tab.Execute(@"window.$KEY && window.$KEY()".Replace(@"$KEY", StopKey));
+            }
+
+            private void RunCssSelector() {
+                Tab.Execute(@"
+if (window.$KEY) return;
+
+var CssSelectorGenerator = (function(){var a,b,c=[].indexOf||function(a){for(var b=0,c=this.length;c>b;b++)if(b in this&&this[b]===a)return b;return-1};a=function(){function a(a){null==a&&(a={}),this.options={},this.setOptions(this.default_options),this.setOptions(a)}return a.prototype.default_options={selectors:['id','class','tag','nthchild']},a.prototype.setOptions=function(a){var b,c,d;null==a&&(a={}),c=[];for(b in a)d=a[b],this.default_options.hasOwnProperty(b)?c.push(this.options[b]=d):c.push(void 0);return c},a.prototype.isElement=function(a){return!(1!==(null!=a?a.nodeType:void 0))},a.prototype.getParents=function(a){var b,c;if(c=[],this.isElement(a))for(b=a;this.isElement(b);)c.push(b),b=b.parentNode;return c},a.prototype.getTagSelector=function(a){return this.sanitizeItem(a.tagName.toLowerCase())},a.prototype.sanitizeItem=function(a){var b;return b=a.split('').map(function(a){return':'===a?'\\'+':'.charCodeAt(0).toString(16).toUpperCase()+' ':/[ !""'#$%&'()*+,.\/;<=>?@\[\\\]^`{|}~]/.test(a)?'\\'+a:escape(a).replace(/\%/g,'\\')}),b.join('')},a.prototype.getIdSelector=function(a){var b,c;return b=a.getAttribute('id'),null==b||''===b||/\s/.exec(b)||/^\d/.exec(b)||(c='#'+this.sanitizeItem(b),1!==a.ownerDocument.querySelectorAll(c).length)?null:c},a.prototype.getClassSelectors=function(a){var b,c,d;return d=[],b=a.getAttribute('class'),null!=b&&(b=b.replace(/\s+/g,' '),b=b.replace(/^\s|\s$/g,''),''!==b&&(d=function(){var a,d,e,f;for(e=b.split(/\s+/),f=[],a=0,d=e.length;d>a;a++)c=e[a],f.push('.'+this.sanitizeItem(c));return f}.call(this))),d},a.prototype.getAttributeSelectors=function(a){var b,d,e,f,g,h,i;for(i=[],d=['id','class'],g=a.attributes,e=0,f=g.length;f>e;e++)b=g[e],h=b.nodeName,c.call(d,h)<0&&i.push('['+b.nodeName+'='+b.nodeValue+']');return i},a.prototype.getNthChildSelector=function(a){var b,c,d,e,f,g;if(e=a.parentNode,null!=e)for(b=0,g=e.childNodes,c=0,d=g.length;d>c;c++)if(f=g[c],this.isElement(f)&&(b++,f===a))return b==1?':first-child':':nth-child('+b+')';return null},a.prototype.testSelector=function(a,b){var c,d;return c=!1,null!=b&&''!==b&&(d=a.ownerDocument.querySelectorAll(b),1===d.length&&d[0]===a&&(c=!0)),c},a.prototype.getAllSelectors=function(a){var b;return b={t:null,i:null,c:null,a:null,n:null},c.call(this.options.selectors,'tag')>=0&&(b.t=this.getTagSelector(a)),c.call(this.options.selectors,'id')>=0&&(b.i=this.getIdSelector(a)),c.call(this.options.selectors,'class')>=0&&(b.c=this.getClassSelectors(a)),c.call(this.options.selectors,'attribute')>=0&&(b.a=this.getAttributeSelectors(a)),c.call(this.options.selectors,'nthchild')>=0&&(b.n=this.getNthChildSelector(a)),b},a.prototype.testUniqueness=function(a,b){var c,d;return d=a.parentNode,c=d.querySelectorAll(b),1===c.length&&c[0]===a},a.prototype.testCombinations=function(a,b,c){var d,e,f,g,h,i,j;for(i=this.getCombinations(b),e=0,g=i.length;g>e;e++)if(d=i[e],this.testUniqueness(a,d))return d;if(null!=c)for(j=b.map(function(a){return c+a}),f=0,h=j.length;h>f;f++)if(d=j[f],this.testUniqueness(a,d))return d;return null},a.prototype.getUniqueSelector=function(a){var b,c,d,e,f,g;for(g=this.getAllSelectors(a),e=this.options.selectors,c=0,d=e.length;d>c;c++)switch(f=e[c]){case'id':if(null!=g.i)return g.i;break;case'class':if(null!=g.c&&0!==g.c.length&&(b=this.testCombinations(a,g.c,g.t)))return b;break;case'tag':if(null!=g.t&&this.testUniqueness(a,g.t))return g.t;break;case'attribute':if(null!=g.a&&0!==g.a.length&&(b=this.testCombinations(a,g.a,g.t)))return b;break;case'nthchild':if(null!=g.n)return g.n}return'*'},a.prototype.getSelector=function(a){var b,c,d,e,f,g,h,i,j,k;for(b=[],h=this.getParents(a),d=0,f=h.length;f>d;d++)c=h[d],j=this.getUniqueSelector(c),null!=j&&b.push(j);for(k=[],e=0,g=b.length;g>e&&b[e]!='body';e++){k.unshift(c=b[e]);if(c[0]=='#')break}return k.join(' > ')},a.prototype.getCombinations=function(a){var b,c,d,e,f,g,h;for(null==a&&(a=[]),h=[[]],b=d=0,f=a.length-1;f>=0?f>=d:d>=f;b=f>=0?++d:--d)for(c=e=0,g=h.length-1;g>=0?g>=e:e>=g;c=g>=0?++e:--e)h.push(h[c].concat(a[b]));return h.shift(),h=h.sort(function(a,b){return a.length-b.length}),h=h.map(function(a){return a.join('')})},a}();return a})();
+
+var DomOutline = function(e){e=e||{};var t={},n='$NAMESPACE',o={keyCodes:{BACKSPACE:8,ESC:27,DELETE:46},active:!1,initialized:!1,elements:{}};function d(){var e,t;!0!==o.initialized&&(e='.'+n+'{background:$ACCENT;position:absolute;z-index:1000000;}.'+n+'_label{background:$ACCENT;border-radius:2px;color:#fff;font:bold 12px/12px Helvetica, sans-serif;padding:4px 6px;position:absolute;text-shadow:0 1px 1px rgba(0, 0, 0, 0.25);z-index: 1000001;}',(t=document.getElementsByTagName('head')[0].appendChild(document.createElement('style'))).type='text/css',t.styleSheet?t.styleSheet.cssText=e:t.innerHTML=e,o.initialized=!0)}function l(e,t,n,o,d){e.style.left=t+'px',e.style.top=n+'px',e.style.width=o+'px',e.style.height=d+'px'}function i(e){if(-1===e.target.className.indexOf(n)){t.element=e.target;var d,i,a,s,m=void 0!==window.pageYOffset?window.pageYOffset:(document.documentElement||document.body.parentNode||document.body).scrollTop,c=t.element.getBoundingClientRect(),r=c.top+m;o.elements.label.style.top=Math.max(0,r-20-2,m)+'px',o.elements.label.style.left=Math.max(0,c.left-2)+'px',o.elements.label.textContent=(d=t.element,i=c.width,a=c.height,s=d.tagName.toLowerCase(),d.id&&(s+='#'+d.id),d.className&&(s+=('.'+d.className.trim().replace(/ /g,'.')).replace(/\.\.+/g,'.')),s+' ('+Math.round(i)+'×'+Math.round(a)+')'),l(o.elements.top,c.left-2,r-2,c.width+2+2,2),l(o.elements.bottom,c.left-2,r+c.height,c.width+2+2,2),l(o.elements.left,c.left-2,r,2,c.height),l(o.elements.right,c.left+c.width,r,2,c.height)}}function a(e){e.keyCode!==o.keyCodes.ESC&&e.keyCode!==o.keyCodes.BACKSPACE&&e.keyCode!==o.keyCodes.DELETE||t.stop()}function s(n){e.onClick.call(t.element,n)}return t.start=function(){d(),!0!==o.active&&(o.active=!0,function(){var e=document.createElement('div');e.classList.add(n+'_label');var t=document.createElement('div'),d=document.createElement('div'),l=document.createElement('div'),i=document.createElement('div');t.classList.add(n),d.classList.add(n),l.classList.add(n),i.classList.add(n);var a=document.body;o.elements.label=a.appendChild(e),o.elements.top=a.appendChild(t),o.elements.bottom=a.appendChild(d),o.elements.left=a.appendChild(l),o.elements.right=a.appendChild(i)}(),document.body.addEventListener('mousemove',i),document.body.addEventListener('keyup',a),setTimeout(function(){document.body.addEventListener('click',s)},50))},t.stop=function(){o.active=!1,function(){for(var e in o.elements){var t=o.elements[e];t.parentNode.removeChild(t)}}(),document.body.removeEventListener('mousemove',i),document.body.removeEventListener('keyup',a),document.body.removeEventListener('click',s)},t};
+
+var outline = DomOutline({ onClick: function (e){
+    if (window.$PAUSEKEY) return;
+    e.preventDefault(); e.stopPropagation();
+    window.external.SetCssQuery(new CssSelectorGenerator({ selectors: [ 'id', 'class', 'tag', 'nthchild' ] }).getSelector(this));
+} });
+outline.start();
+window.$KEY = outline.stop.bind(outline);
+
+".Replace(@"$ACCENT", AppAppearanceManager.Instance.AccentColor.ToHexString())
+ .Replace(@"$NAMESPACE", @"__" + StringExtension.RandomString(20))
+ .Replace(@"$KEY", StopKey)
+ .Replace(@"$PAUSEKEY", PauseKey), true);
             }
         }
 
         private class BrowserLoader : ILoader, IWebDownloadListener, ILinkNavigator {
+            [NotNull]
             private readonly WebSource _source;
+
+            private bool _isVirtual;
+
             private readonly string _url;
 
-            public BrowserLoader(WebSource source, string url) {
+            public BrowserLoader([NotNull] WebSource source, bool isVirtual, string url) {
                 _source = source;
+                _isVirtual = isVirtual;
                 _url = url;
+            }
+
+            private readonly List<BrowserLoader> _parents = new List<BrowserLoader>();
+
+            private void MarkParent(BrowserLoader parent) {
+                if (parent._source.Id == _source.Id) return;
+
+                if (!_parents.Contains(parent)) {
+                    _parents.Add(parent);
+                }
+
+                parent._source.AddRedirectsTo(_source.Id);
             }
 
             public long? TotalSize { get; private set; }
@@ -418,6 +560,13 @@ namespace AcManager.Pages.Miscellaneous {
 
                 try {
                     var newLoader = FlexibleLoader.CreateLoader(url);
+                    if (newLoader is BrowserLoader browserLoader) {
+                        browserLoader.MarkParent(this);
+                        foreach (var parent in _parents) {
+                            browserLoader.MarkParent(parent);
+                        }
+                    }
+
                     Logging.Write("Loader: " + newLoader.GetType().Name);
 
                     if (!await newLoader.PrepareAsync(webClient, _cancellation)) {
@@ -494,66 +643,18 @@ namespace AcManager.Pages.Miscellaneous {
                 });
             }
 
-            private static readonly string StopKey = @"s" + StringExtension.RandomString(20);
-            private static readonly string PauseKey = @"p" + StringExtension.RandomString(20);
+            private string GetMessage() {
+                return _isVirtual
+                        ? "Find a download button and click it to install. This website is not added to the list, [url=\"cmd://addWebsite\"]click here[/url] to add it."
+                        : PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)
+                                ? "Find a download button and click it to install, or [url=\"cmd://setRule\"]describe to CM where download button is[/url] so it could click it automatically."
+                                : "Find a download button and click it to install. Enable CefSharp plugin to get an access to extra options.";
+            }
 
-            [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-            private class JsBridge : JsBridgeBase {
-                [CanBeNull]
-                private ModsWebFinder _finder;
-
-                [CanBeNull]
-                public ModsWebFinder Finder {
-                    get => _finder;
-                    set {
-                        if (Equals(_finder, value)) return;
-                        _finder = value;
-                        if (value == null) {
-                            StopCssSelector();
-                        } else {
-                            RunCssSelector();
-                        }
-                    }
-                }
-
-                [UsedImplicitly]
-                public void SetCssQuery(string value) {
-                    Sync(() => {
-                        if (Finder == null) return;
-                        Finder.Model.Value = value;
-                    });
-                }
-
-                public override void PageLoaded(string url) {
-                    if (Finder == null) return;
-                    RunCssSelector();
-                }
-
-                private void StopCssSelector() {
-                    Tab.Execute(@"window.$KEY && window.$KEY()".Replace(@"$KEY", StopKey));
-                }
-
-                private void RunCssSelector() {
-                    Tab.Execute(@"
-if (window.$KEY) return;
-
-var CssSelectorGenerator = (function(){var a,b,c=[].indexOf||function(a){for(var b=0,c=this.length;c>b;b++)if(b in this&&this[b]===a)return b;return-1};a=function(){function a(a){null==a&&(a={}),this.options={},this.setOptions(this.default_options),this.setOptions(a)}return a.prototype.default_options={selectors:['id','class','tag','nthchild']},a.prototype.setOptions=function(a){var b,c,d;null==a&&(a={}),c=[];for(b in a)d=a[b],this.default_options.hasOwnProperty(b)?c.push(this.options[b]=d):c.push(void 0);return c},a.prototype.isElement=function(a){return!(1!==(null!=a?a.nodeType:void 0))},a.prototype.getParents=function(a){var b,c;if(c=[],this.isElement(a))for(b=a;this.isElement(b);)c.push(b),b=b.parentNode;return c},a.prototype.getTagSelector=function(a){return this.sanitizeItem(a.tagName.toLowerCase())},a.prototype.sanitizeItem=function(a){var b;return b=a.split('').map(function(a){return':'===a?'\\'+':'.charCodeAt(0).toString(16).toUpperCase()+' ':/[ !""'#$%&'()*+,.\/;<=>?@\[\\\]^`{|}~]/.test(a)?'\\'+a:escape(a).replace(/\%/g,'\\')}),b.join('')},a.prototype.getIdSelector=function(a){var b,c;return b=a.getAttribute('id'),null==b||''===b||/\s/.exec(b)||/^\d/.exec(b)||(c='#'+this.sanitizeItem(b),1!==a.ownerDocument.querySelectorAll(c).length)?null:c},a.prototype.getClassSelectors=function(a){var b,c,d;return d=[],b=a.getAttribute('class'),null!=b&&(b=b.replace(/\s+/g,' '),b=b.replace(/^\s|\s$/g,''),''!==b&&(d=function(){var a,d,e,f;for(e=b.split(/\s+/),f=[],a=0,d=e.length;d>a;a++)c=e[a],f.push('.'+this.sanitizeItem(c));return f}.call(this))),d},a.prototype.getAttributeSelectors=function(a){var b,d,e,f,g,h,i;for(i=[],d=['id','class'],g=a.attributes,e=0,f=g.length;f>e;e++)b=g[e],h=b.nodeName,c.call(d,h)<0&&i.push('['+b.nodeName+'='+b.nodeValue+']');return i},a.prototype.getNthChildSelector=function(a){var b,c,d,e,f,g;if(e=a.parentNode,null!=e)for(b=0,g=e.childNodes,c=0,d=g.length;d>c;c++)if(f=g[c],this.isElement(f)&&(b++,f===a))return b==1?':first-child':':nth-child('+b+')';return null},a.prototype.testSelector=function(a,b){var c,d;return c=!1,null!=b&&''!==b&&(d=a.ownerDocument.querySelectorAll(b),1===d.length&&d[0]===a&&(c=!0)),c},a.prototype.getAllSelectors=function(a){var b;return b={t:null,i:null,c:null,a:null,n:null},c.call(this.options.selectors,'tag')>=0&&(b.t=this.getTagSelector(a)),c.call(this.options.selectors,'id')>=0&&(b.i=this.getIdSelector(a)),c.call(this.options.selectors,'class')>=0&&(b.c=this.getClassSelectors(a)),c.call(this.options.selectors,'attribute')>=0&&(b.a=this.getAttributeSelectors(a)),c.call(this.options.selectors,'nthchild')>=0&&(b.n=this.getNthChildSelector(a)),b},a.prototype.testUniqueness=function(a,b){var c,d;return d=a.parentNode,c=d.querySelectorAll(b),1===c.length&&c[0]===a},a.prototype.testCombinations=function(a,b,c){var d,e,f,g,h,i,j;for(i=this.getCombinations(b),e=0,g=i.length;g>e;e++)if(d=i[e],this.testUniqueness(a,d))return d;if(null!=c)for(j=b.map(function(a){return c+a}),f=0,h=j.length;h>f;f++)if(d=j[f],this.testUniqueness(a,d))return d;return null},a.prototype.getUniqueSelector=function(a){var b,c,d,e,f,g;for(g=this.getAllSelectors(a),e=this.options.selectors,c=0,d=e.length;d>c;c++)switch(f=e[c]){case'id':if(null!=g.i)return g.i;break;case'class':if(null!=g.c&&0!==g.c.length&&(b=this.testCombinations(a,g.c,g.t)))return b;break;case'tag':if(null!=g.t&&this.testUniqueness(a,g.t))return g.t;break;case'attribute':if(null!=g.a&&0!==g.a.length&&(b=this.testCombinations(a,g.a,g.t)))return b;break;case'nthchild':if(null!=g.n)return g.n}return'*'},a.prototype.getSelector=function(a){var b,c,d,e,f,g,h,i,j,k;for(b=[],h=this.getParents(a),d=0,f=h.length;f>d;d++)c=h[d],j=this.getUniqueSelector(c),null!=j&&b.push(j);for(k=[],e=0,g=b.length;g>e&&b[e]!='body';e++){k.unshift(c=b[e]);if(c[0]=='#')break}return k.join(' > ')},a.prototype.getCombinations=function(a){var b,c,d,e,f,g,h;for(null==a&&(a=[]),h=[[]],b=d=0,f=a.length-1;f>=0?f>=d:d>=f;b=f>=0?++d:--d)for(c=e=0,g=h.length-1;g>=0?g>=e:e>=g;c=g>=0?++e:--e)h.push(h[c].concat(a[b]));return h.shift(),h=h.sort(function(a,b){return a.length-b.length}),h=h.map(function(a){return a.join('')})},a}();return a})();
-
-var DomOutline = function(e){e=e||{};var t={},n='$NAMESPACE',o={keyCodes:{BACKSPACE:8,ESC:27,DELETE:46},active:!1,initialized:!1,elements:{}};function d(){var e,t;!0!==o.initialized&&(e='.'+n+'{background:$ACCENT;position:absolute;z-index:1000000;}.'+n+'_label{background:$ACCENT;border-radius:2px;color:#fff;font:bold 12px/12px Helvetica, sans-serif;padding:4px 6px;position:absolute;text-shadow:0 1px 1px rgba(0, 0, 0, 0.25);z-index: 1000001;}',(t=document.getElementsByTagName('head')[0].appendChild(document.createElement('style'))).type='text/css',t.styleSheet?t.styleSheet.cssText=e:t.innerHTML=e,o.initialized=!0)}function l(e,t,n,o,d){e.style.left=t+'px',e.style.top=n+'px',e.style.width=o+'px',e.style.height=d+'px'}function i(e){if(-1===e.target.className.indexOf(n)){t.element=e.target;var d,i,a,s,m=void 0!==window.pageYOffset?window.pageYOffset:(document.documentElement||document.body.parentNode||document.body).scrollTop,c=t.element.getBoundingClientRect(),r=c.top+m;o.elements.label.style.top=Math.max(0,r-20-2,m)+'px',o.elements.label.style.left=Math.max(0,c.left-2)+'px',o.elements.label.textContent=(d=t.element,i=c.width,a=c.height,s=d.tagName.toLowerCase(),d.id&&(s+='#'+d.id),d.className&&(s+=('.'+d.className.trim().replace(/ /g,'.')).replace(/\.\.+/g,'.')),s+' ('+Math.round(i)+'×'+Math.round(a)+')'),l(o.elements.top,c.left-2,r-2,c.width+2+2,2),l(o.elements.bottom,c.left-2,r+c.height,c.width+2+2,2),l(o.elements.left,c.left-2,r,2,c.height),l(o.elements.right,c.left+c.width,r,2,c.height)}}function a(e){e.keyCode!==o.keyCodes.ESC&&e.keyCode!==o.keyCodes.BACKSPACE&&e.keyCode!==o.keyCodes.DELETE||t.stop()}function s(n){e.onClick.call(t.element,n)}return t.start=function(){d(),!0!==o.active&&(o.active=!0,function(){var e=document.createElement('div');e.classList.add(n+'_label');var t=document.createElement('div'),d=document.createElement('div'),l=document.createElement('div'),i=document.createElement('div');t.classList.add(n),d.classList.add(n),l.classList.add(n),i.classList.add(n);var a=document.body;o.elements.label=a.appendChild(e),o.elements.top=a.appendChild(t),o.elements.bottom=a.appendChild(d),o.elements.left=a.appendChild(l),o.elements.right=a.appendChild(i)}(),document.body.addEventListener('mousemove',i),document.body.addEventListener('keyup',a),setTimeout(function(){document.body.addEventListener('click',s)},50))},t.stop=function(){o.active=!1,function(){for(var e in o.elements){var t=o.elements[e];t.parentNode.removeChild(t)}}(),document.body.removeEventListener('mousemove',i),document.body.removeEventListener('keyup',a),document.body.removeEventListener('click',s)},t};
-
-var outline = DomOutline({ onClick: function (e){
-    if (window.$PAUSEKEY) return;
-    e.preventDefault(); e.stopPropagation();
-    window.external.SetCssQuery(new CssSelectorGenerator({ selectors: [ 'id', 'class', 'tag', 'nthchild' ] }).getSelector(this));
-} });
-outline.start();
-window.$KEY = outline.stop.bind(outline);
-
-".Replace(@"$ACCENT", AppAppearanceManager.Instance.AccentColor.ToHexString())
- .Replace(@"$NAMESPACE", @"__" + StringExtension.RandomString(20))
- .Replace(@"$KEY", StopKey)
- .Replace(@"$PAUSEKEY", PauseKey), true);
-                }
+            private string GetFailedMessage() {
+                return _isVirtual
+                        ? "App failed to start download, please, click the button manually. This website is not added to the list, [url=\"cmd://addWebsite\"]click here[/url] to add it."
+                        : "App failed to start download. Please, click the button manually, or [url=\"cmd://setRule\"]change the describtion of where download button is[/url]. Also, please, make sure the download button doesn’t redirect to a unknown website.";
             }
 
             async Task<string> ILoader.DownloadAsync(CookieAwareWebClient client, FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
@@ -575,24 +676,20 @@ window.$KEY = outline.stop.bind(outline);
                     DownloadListener = this,
                     Margin = new Thickness(0, 0, 0, 12),
                 };
-
+                _webBlock.PageLoaded += (sender, args) => { Logging.Warning(args.Tab.LoadedUrl); };
                 _webBlock.NewWindow += OnNewWindow;
 
                 _finder = new ModsWebFinder {
                     Margin = new Thickness(24, 0, 24, 0),
                     Visibility = Visibility.Collapsed,
-                    Model = {
-                        Value = _source.AutoDownloadRule
-                    }
+                    Model = { Value = _source.AutoDownloadRule }
                 };
 
                 DockPanel.SetDock(_finder, Dock.Bottom);
                 _webBlock.SetJsBridge<JsBridge>(x => x.Finder = null);
 
                 _message = new BbCodeBlock {
-                    BbCode = PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)
-                            ? "Find a download button and click it to install, or [url=\"cmd://setRule\"]describe to CM where download button is[/url] so it could click it automatically."
-                            : "Find a download button and click it to install. Enable CefSharp plugin to get an access to extra options.",
+                    BbCode = GetMessage(),
                     MaxWidth = 480,
                     VerticalAlignment = VerticalAlignment.Center,
                     LinkNavigator = this
@@ -615,7 +712,7 @@ window.$KEY = outline.stop.bind(outline);
                     ButtonsRowContent = _message,
                     ButtonsRowContentAlignment = HorizontalAlignment.Left,
                 };
-                _dialog.Buttons = new[] { _dialog.CancelButton };
+                _dialog.Buttons = new[] { FixButton(_dialog.CancelButton) };
 
                 var finished = false;
                 _resultTask = new TaskCompletionSource<string>();
@@ -625,6 +722,7 @@ window.$KEY = outline.stop.bind(outline);
                     AutoDownload();
                 } else {
                     _dialog.Show();
+                    _dialog.BringToFront();
                 }
 
                 cancellation.Register(Cancel);
@@ -641,12 +739,14 @@ window.$KEY = outline.stop.bind(outline);
                     _dialog.ShowInvisible();
                 }
 
-                void FailSafe() {
+                async void FailSafe() {
                     if (finished) return;
                     _ranRule = false;
                     _dialog.Show();
-                    _message.BbCode =
-                            "App failed to start download. Please, click the button manually, or [url=\"cmd://setRule\"]change the describtion of where download button is[/url].";
+                    _message.BbCode = GetFailedMessage();
+
+                    await Task.Delay(500);
+                    _dialog.BringToFront();
                 }
 
                 void Cancel() {
@@ -666,7 +766,7 @@ window.$KEY = outline.stop.bind(outline);
                 }
 
                 Logging.Write("New window: " + args.Url);
-                if (args.Url.GetDomainNameFromUrl() == _source.Url.GetDomainNameFromUrl()) {
+                if (args.Url.GetDomainNameFromUrl() == _url.GetDomainNameFromUrl()) {
                     OpenNewTab();
                     return;
                 }
@@ -718,7 +818,8 @@ try {
     (function (){ $CODE; })();
 } catch (e){
     console.warn(e);
-}".Replace(@"$CODE", rule.StartsWith(@"javascript:", StringComparison.OrdinalIgnoreCase) ? rule.SubstringExt(11)
+}".Replace(@"$CODE", WebSource.IsScriptRule(rule)
+        ? $@"eval({JsonConvert.SerializeObject(rule.SubstringExt(11))}"
         : $@"document.querySelector({JsonConvert.SerializeObject(rule)}).click();")
   .Replace(@"$PAUSEKEY", PauseKey));
             }
@@ -754,25 +855,43 @@ try {
                     if (c?.IsCancellationRequested == true) return;
                     ModernDialog.ShowMessage(triggered && _testMessage != null
                             ? "Download triggered:\n" + _testMessage
-                            : "Download wasn’t triggered.",
+                            : "Download wasn’t triggered. Please, make sure the download button doesn’t redirect to a unknown website.",
                             AppStrings.Common_Test, MessageBoxButton.OK);
                 }
             }, c => !string.IsNullOrWhiteSpace(_finder.Model.Value)).ListenOn(_finder.Model, nameof(_finder.Model.Value)));
 
-            private DelegateCommand _saveRuleCommand;
+            private AsyncCommand _saveRuleCommand;
 
-            public DelegateCommand SaveRuleCommand => _saveRuleCommand ?? (_saveRuleCommand = new DelegateCommand(Save,
+            public AsyncCommand SaveRuleCommand => _saveRuleCommand ?? (_saveRuleCommand = new AsyncCommand(Save,
                     () => !string.IsNullOrWhiteSpace(_finder.Model.Value)).ListenOn(_finder.Model, nameof(_finder.Model.Value)));
 
-            private void Save() {
-                _source.AutoDownloadRule = _finder.Model.Value;
-                _message.Text = "Please, wait for newly created rule should start download…";
+            private async Task Save() {
+                var source = _source;
+                source.AutoDownloadRule = _finder.Model.Value;
+                _message.BbCode = "Please, wait for newly created rule to start download…";
                 CancelRuleEditing();
-                RunRule(_source.AutoDownloadRule);
+
+                using (var token = new CancellationTokenSource()) {
+                    try {
+                        _onDownloadFired = false;
+                        RunRule(source.AutoDownloadRule);
+                        await Task.Delay(5000, token.Token);
+                    } catch (OperationCanceledException) { }
+                }
+
+                if (!_onDownloadFired) {
+                    _message.BbCode = GetFailedMessage();
+                }
+            }
+
+            private static Button FixButton(Button btn) {
+                btn.VerticalAlignment = VerticalAlignment.Bottom;
+                btn.Height = 21d;
+                return btn;
             }
 
             private void CancelRuleEditing() {
-                _dialog.Buttons = new[] { _dialog.CancelButton };
+                _dialog.Buttons = new[] { FixButton(_dialog.CancelButton) };
                 _message.Visibility = Visibility.Visible;
                 _finder.Visibility = Visibility.Collapsed;
                 _webBlock.SetJsBridge<JsBridge>(x => x.Finder = null);
@@ -786,9 +905,9 @@ try {
 
             private void SetRule() {
                 _dialog.Buttons = new[] {
-                    ModernDialog.CreateExtraDialogButton<AsyncButton>("Test rule", TestRuleCommand),
-                    ModernDialog.CreateExtraDialogButton("Save rule", SaveRuleCommand),
-                    ModernDialog.CreateExtraDialogButton("Cancel rule editing", CancelRuleEditing),
+                    FixButton(ModernDialog.CreateExtraDialogButton<AsyncButton>("Test rule", TestRuleCommand)),
+                    FixButton(ModernDialog.CreateExtraDialogButton("Save rule", SaveRuleCommand)),
+                    FixButton(ModernDialog.CreateExtraDialogButton("Cancel rule editing", CancelRuleEditing)),
                 };
 
                 _message.Visibility = Visibility.Hidden;
@@ -797,20 +916,194 @@ try {
             }
 
             void ILinkNavigator.Navigate(Uri uri, FrameworkElement source, string parameter) {
-                if (uri.OriginalString == "cmd://setRule") {
-                    SetRule();
+                switch (uri.OriginalString) {
+                    case "cmd://setRule":
+                        SetRule();
+                        break;
+                    case "cmd://addWebsite":
+                        if (_isVirtual) {
+                            Instance.WebSources.Add(_source);
+                            _isVirtual = false;
+                            _message.BbCode = GetMessage();
+                        }
+                        break;
                 }
             }
         }
 
         public class ViewModel : NotifyPropertyChanged {
+            [NotNull]
             public WebSource Source { get; }
 
-            public ViewModel(WebSource source) {
+            private string _downloadPageUrl;
+
+            public string DownloadPageUrl {
+                get => _downloadPageUrl;
+                set => Apply(value, ref _downloadPageUrl, () => {
+                    _installCommand?.RaiseCanExecuteChanged();
+                    _shareLinkCommand?.RaiseCanExecuteChanged();
+                });
+            }
+
+            private DelegateCommand _installCommand;
+
+            public DelegateCommand InstallCommand => _installCommand ?? (_installCommand = new DelegateCommand(
+                    () => ContentInstallationManager.Instance.InstallAsync(DownloadPageUrl), () => DownloadPageUrl != null));
+
+            private DelegateCommand _shareLinkCommand;
+
+            public DelegateCommand ShareLinkCommand => _shareLinkCommand ?? (_shareLinkCommand = new DelegateCommand(() => {
+                var link = $@"{InternalUtils.MainApiDomain}/s/q:install?url={Uri.EscapeDataString(DownloadPageUrl)}&fromWebsite=1";
+
+                foreach (var source in ListSources(Source)) {
+                    var p = SerializeSource(source);
+                    if (p != null && link.Length + p.Length < 1600) {
+                        link += $@"&websiteData[]={Uri.EscapeDataString(p)}";
+                    }
+                }
+
+                SharingUiHelper.ShowShared($"Link to install from {Source.Name}", link);
+
+                IEnumerable<WebSource> ListSources(WebSource from, List<string> returned = null) {
+                    if (returned == null) returned = new List<string>();
+                    returned.Add(from.Id);
+                    return from.RedirectsTo
+                               .Where(x => !returned.Contains(x))
+                               .Select(x => Instance.WebSources.GetByIdOrDefault(x) ?? VirtualSources.GetByIdOrDefault(x))
+                               .Where(x => x != null && WebSource.IsRuleSafe(x.AutoDownloadRule))
+                               .SelectMany(x => ListSources(x, returned)).Prepend(from);
+                }
+
+                byte[] Compress(byte[] data) {
+                    if (data == null) return null;
+                    try {
+                        using (var memory = new MemoryStream()) {
+                            using (var deflate = new DeflateStream(memory, CompressionMode.Compress)) {
+                                deflate.Write(data, 0, data.Length);
+                            }
+                            return memory.ToArray();
+                        }
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                        return null;
+                    }
+                }
+
+                string SerializeSource(WebSource s) {
+                    var c = Combine(s.Url, s.Name, s.Favicon, Source.AutoDownloadRule);
+                    if (c?.Length > 200) {
+                        c = Combine(s.Url, null, null, Source.AutoDownloadRule);
+                    }
+                    return c?.Length > 300 ? null : c;
+                }
+
+                string Combine(params string[] values) {
+                    var d = values.JoinToString('\n');
+                    return Compress(Encoding.UTF8.GetBytes(d))?.ToCutBase64();
+                }
+            }, () => DownloadPageUrl != null));
+
+            public ViewModel([NotNull] WebSource source) {
                 Source = source;
             }
         }
 
-        private void OnFindDownloadButtonClick(object sender, RoutedEventArgs e) { }
+        public static void PrepareForCommand(string[] urls, [NotNull] string[] websiteData) {
+            foreach (var piece in websiteData) {
+                var s = Decompress(piece.FromCutBase64())?.ToUtf8String().Split('\n');
+                if (s?.Length != 4) {
+                    continue;
+                }
+
+                if (GetSource(s[0], out _) != null) {
+                    continue;
+                }
+
+                VirtualSources.Add(new WebSource(null, s[0]) {
+                    Name = s[1] ?? "",
+                    Favicon = s[2],
+                    AutoDownloadRule = s[3],
+                    IsEnabled = true,
+                    CaptureDownloads = true,
+                });
+
+                byte[] Decompress(byte[] data) {
+                    if (data == null) return null;
+                    using (var input = new MemoryStream(data))
+                    using (var output = new MemoryStream()) {
+                        using (var dstream = new DeflateStream(input, CompressionMode.Decompress)) {
+                            dstream.CopyTo(output);
+                        }
+
+                        return output.ToArray();
+                    }
+                }
+            }
+
+            SentToInstall.AddRange(urls.Where(x => GetSource(x, out _) == null));
+        }
+
+        [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+        public class CheckingJsBridge : JsBridgeBase {
+            internal Action<bool> CallbackFn;
+
+            [UsedImplicitly]
+            public void Callback(bool elementFound) {
+                CallbackFn?.Invoke(elementFound);
+            }
+        }
+
+        private async void CheckWebPage(WebBlock web) {
+            var m = _model;
+            if (m == null || !m.Source.CaptureDownloads) return;
+
+            var rule = m.Source.AutoDownloadRule?.Trim();
+            if (string.IsNullOrEmpty(rule)) {
+                m.DownloadPageUrl = null;
+                return;
+            }
+
+            var tab = web.CurrentTab;
+            var url = tab?.LoadedUrl;
+            if (url == null) {
+                m.DownloadPageUrl = null;
+                return;
+            }
+
+            var ctsRef = new CancellationTokenSource[] { null };
+            bool? resultRef = null;
+
+            void ObjCallbackFn(bool v) {
+                resultRef = v;
+                ctsRef[0]?.Cancel();
+            }
+
+            using (var cts = new CancellationTokenSource()) {
+                ctsRef[0] = cts;
+                web.SetJsBridge<CheckingJsBridge>(x => x.CallbackFn = ObjCallbackFn);
+                tab.Execute(@"try {
+    (function (){ $CODE; })();
+} catch (e){
+    console.warn(e);
+}".Replace(@"$CODE", WebSource.IsScriptRule(rule)
+        ? $@"eval({JsonConvert.SerializeObject(rule.SubstringExt(11))}"
+        : $@"window.external.Callback(document.querySelector({JsonConvert.SerializeObject(rule)}) != null);"));
+
+                try {
+                    await Task.Delay(1000, cts.Token);
+                } catch (OperationCanceledException) { }
+
+                m.DownloadPageUrl = resultRef == true ? url : null;
+                ctsRef[0] = null;
+            }
+        }
+
+        private void OnCurrentTabChanged(object sender, EventArgs e) {
+            CheckWebPage((WebBlock)sender);
+        }
+
+        private void OnPageLoaded(object sender, WebTabEventArgs e) {
+            CheckWebPage((WebBlock)sender);
+        }
     }
 }
