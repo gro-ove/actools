@@ -20,7 +20,7 @@
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
         <DockPanel Margin="0 4 0 0">
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
-              CurrentTabChanged="OnCurrentTabChanged" PageLoaded="OnPageLoaded" SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
+              CurrentTabChanged="OnCurrentTabChanged" PageLoading="OnPageLoading" PageLoaded="OnPageLoaded" SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
               KeepAliveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser:{0}'}">
             <c:WebBlock.AddressBarExtraTemplate>
               <DataTemplate>
@@ -124,7 +124,11 @@
                 <c:ModernPopup x:Name="SettingsPopup" PlacementTarget="{Binding ElementName=SettingsButton}" Placement="Top"
                     IsOpen="{Binding IsChecked, ElementName=SettingsButton, Mode=TwoWay}" Padding="16 12 16 16">
                   <mui:SpacingStackPanel Spacing="8">
-                    <TextBlock Text="Load rules suggested by community automatically: " Style="{StaticResource Heading2}" />
+                    <CheckBox IsChecked="{Binding CaptureViaFileStorageLoaders, Source={x:Static t:SettingsHolder.WebBlocks}}" Margin="0 0 0 12">
+                      <Label Content="For supported file storages, capture downloads and redirect"
+                          ToolTip="List of supported storages includes Google Drive, Dropbox, OneDrive, Mega, Yandex.Disk, MediaFire, AdFly." />
+                    </CheckBox>
+                    <TextBlock Text="Load rules suggested by community automatically:" Style="{StaticResource Heading2}" />
                     <CheckBox IsChecked="{Binding ModsAutoLoadRuleForNew, Source={x:Static t:SettingsHolder.WebBlocks}}">
                       <Label Content="For newly added websites"
                           ToolTip="When you’re adding a new website, CM will set an auto-download rule automatically if somebody already shared it" />
@@ -133,8 +137,8 @@
                         IsChecked="{Binding ModsAutoLoadExtraForNew, Source={x:Static t:SettingsHolder.WebBlocks}}" Margin="20 0 0 0">
                       <Label Content="Load extra parameters as well" ToolTip="Use suggested website name and icon as well" />
                     </CheckBox>
-                    <CheckBox IsChecked="{Binding ModsAutoLoadRuleForUnknown, Source={x:Static t:SettingsHolder.WebBlocks}}" IsEnabled="False">
-                      <Label Content="For loading, if website is unknown (NOT WORKING YET, STILL WIP)"
+                    <CheckBox IsChecked="{Binding ModsAutoLoadRuleForUnknown, Source={x:Static t:SettingsHolder.WebBlocks}}">
+                      <Label Content="For loading, if website is unknown"
                           ToolTip="When downloading a file from an unknown website, CM will check shared rules to see if there is anything helpful to use temporarily" />
                     </CheckBox>
                   </mui:SpacingStackPanel>
@@ -184,6 +188,9 @@
                 <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
                 <CheckBox IsChecked="{Binding CaptureDownloads}">
                   <Label Content="Download files from website using browser" />
+                </CheckBox>
+                <CheckBox IsChecked="{Binding CaptureRedirects}">
+                  <Label Content="Download files instead of opening new tabs in any section" />
                 </CheckBox>
                 <DockPanel IsEnabled="{Binding CaptureDownloads}">
                   <Label>

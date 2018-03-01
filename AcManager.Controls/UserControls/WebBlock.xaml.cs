@@ -17,6 +17,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
+        public static event EventHandler<NewWindowEventArgs> NewTabGlobal;
+
         public WebBlock() {
             InitializeComponent();
         }
@@ -206,6 +208,7 @@ namespace AcManager.Controls.UserControls {
 
             tab.PropertyChanged += OnTabPropertyChanged;
             tab.PageLoaded += OnTabPageLoaded;
+            tab.PageLoading += OnTabPageLoading;
             tab.NewWindow += OnTabNewWindow;
             return tab;
         }
@@ -240,8 +243,14 @@ namespace AcManager.Controls.UserControls {
             PageLoaded?.Invoke(this, new WebTabEventArgs(tab));
         }
 
+        private void OnTabPageLoading(object sender, UrlEventArgs e) {
+            var tab = (WebTab)sender;
+            PageLoading?.Invoke(this, new WebTabEventArgs(tab));
+        }
+
         public event EventHandler CurrentTabChanged;
         public event EventHandler<WebTabEventArgs> PageLoaded;
+        public event EventHandler<WebTabEventArgs> PageLoading;
         public event EventHandler<NewWindowEventArgs> NewWindow;
 
         public void OpenNewTab(string url) {
@@ -250,6 +259,9 @@ namespace AcManager.Controls.UserControls {
 
         private void OnTabNewWindow(object sender, NewWindowEventArgs e) {
             if (NewWindowsBehavior == NewWindowsBehavior.MultiTab) {
+                NewTabGlobal?.Invoke(this, e);
+                if (e.Cancel) return;
+
                 OpenNewTab(e.Url);
             } else {
                 NewWindow?.Invoke(this, e);

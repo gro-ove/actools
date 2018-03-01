@@ -61,8 +61,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public bool GetAuthCredentials(IWebBrowser browserControl, IBrowser browser, IFrame frame, bool isProxy, string host, int port, string realm,
-                string scheme,
-                IAuthCallback callback) {
+                string scheme, IAuthCallback callback) {
             return true;
         }
 
@@ -127,8 +126,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response,
-                UrlRequestStatus status,
-                long receivedContentLength) { }
+                UrlRequestStatus status, long receivedContentLength) { }
 
         private class ReplaceResponseFilter : IResponseFilter {
             private static readonly Encoding Encoding = Encoding.UTF8;

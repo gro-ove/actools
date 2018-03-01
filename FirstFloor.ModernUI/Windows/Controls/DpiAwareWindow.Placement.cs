@@ -46,12 +46,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         static DpiAwareWindow() {
             SimpleSerialization.Register(Placement.FromString);
-
-            Helpers.Logging.Warning("Initializing DPI-aware windows…");
-            Helpers.Logging.Warning($"Main screen: {System.Windows.Forms.Screen.PrimaryScreen}");
-            foreach (var screen in System.Windows.Forms.Screen.AllScreens) {
-                Helpers.Logging.Warning($"Found screen: {screen}");
-            }
         }
 
         private void SetDefaultLocation() {

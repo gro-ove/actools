@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -208,16 +209,15 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             try {
                 _inner.Navigate(url);
             } catch (Exception e) {
-                if (!url.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) &&
-                        !url.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase)) {
+                if (url.IsWebUrl()) {
+                    Logging.Write("Navigation failed: " + e);
+                } else {
                     url = @"http://" + url;
                     try {
                         _inner.Navigate(url);
                     } catch (Exception ex) {
                         Logging.Write("Navigation failed: " + ex);
                     }
-                } else {
-                    Logging.Write("Navigation failed: " + e);
                 }
             }
         }

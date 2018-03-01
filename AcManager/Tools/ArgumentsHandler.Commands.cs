@@ -232,7 +232,7 @@ namespace AcManager.Tools {
         private static async Task<ArgumentHandleResult> ProcessImportWebsite(string[] data) {
             var result = await ModsWebBrowser.ImportWebsitesAsync(data, names => {
                 return Task.FromResult(ModernDialog.ShowMessage(
-                        $"Details for {names.Select(x => $"“{x}”").JoinToReadableString()} contain scripts and might be unsafe to use. Do you trust the source and want to add them anyway? You can verify them later in Content/Browser section.",
+                        $"Details for {names.Select(x => $"“{x}”").JoinToReadableString()} contain scripts which will have access to your data on those websites. Do you trust the source? You can verify scripts later in Content/Browser section.",
                         "Details with scripts", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
             }).ConfigureAwait(false);
             switch (result) {

@@ -9,14 +9,17 @@
   </ResourceDictionary.MergedDictionaries>
 
   <StackPanel x:Key="PluginSettings.CefSharp" Style="{StaticResource SettingsPanel}" Margin="20 8 0 0" DataContext="{x:Static t:SettingsHolder.Plugins}">
-    <CheckBox IsChecked="{Binding CefFilterAds}">
-      <Label Content="Filter third-party scripts and ads" />
+    <CheckBox IsChecked="{Binding Cef60Fps}">
+      <Label Content="Work in glorious 60 frames per second" />
     </CheckBox>
 
-    <c:MessageBlock>
-      <mui:BbCodeBlock
-          BbCode="Sadly, Chrome-to-WPF integration is far from best, overall loading and rendering is quite slow. I wouldn’t suggest it otherwise, but in this case, it might help to disable scripts and content of various social and advertising networks" />
-    </c:MessageBlock>
+    <CheckBox IsChecked="{Binding CefFilterAds}" VerticalContentAlignment="Top">
+      <CheckBox.ToolTip>
+        <TextBlock MaxWidth="480"
+            Text="Please, keep in mind running those servers isn’t free. On the other hand, that Chromium-to-WPF integration is several times slower than regular Chromium-based browser, so it might be necessary in some cases." />
+      </CheckBox.ToolTip>
+      <Label Content="Filter third-party scripts and ads (not recommended, but might help if you’re experiencing performance issues)" />
+    </CheckBox>
   </StackPanel>
 
   <StackPanel x:Key="PluginSettings.ImageMontage" Style="{StaticResource SettingsPanel}" Margin="20 8 0 0" DataContext="{x:Static t:SettingsHolder.Plugins}">
@@ -109,8 +112,8 @@
           <!-- Installation button -->
           <mui:AsyncButton Command="{Binding InstallCommand}" Content="{Binding DisplaySize}" Progress="{Binding Progress}" ProgressPercentage="True"
               ProgressMessage="True" CancelCommand="{Binding CancelCommand}" ContentStringFormat="{x:Static c:ControlsStrings.Plugins_DownloadAndInstall}"
-              Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}"
-              FontSize="{DynamicResource SmallFontSize}" Height="21" />
+              Visibility="{Binding AvailableToInstall, Converter={StaticResource BooleanToVisibilityConverter}}" FontSize="{DynamicResource SmallFontSize}"
+              Height="21" />
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
     </StackPanel>

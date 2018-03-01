@@ -57,6 +57,9 @@
       <HintPath>..\Libraries\AcTools.CookerHood\AcTools.CookerHood.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
+      <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="MegaApiClient, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
       <Private>False</Private>

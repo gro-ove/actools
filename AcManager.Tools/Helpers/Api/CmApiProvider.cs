@@ -19,9 +19,7 @@ namespace AcManager.Tools.Helpers.Api {
     public static class CmApiProvider {
         #region Initialization
         public static string UserAgent { get; private set; }
-
-        public static string CommonUserAgent { get; } =
-            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
+        public static string CommonUserAgent { get; }
 
         public static void OverrideUserAgent(string newValue) {
             UserAgent = newValue;
@@ -30,6 +28,7 @@ namespace AcManager.Tools.Helpers.Api {
         static CmApiProvider() {
             var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
             UserAgent = $"ContentManager/{BuildInformation.AppVersion} ({windows})";
+            CommonUserAgent = $@"Mozilla/5.0 ({windows}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36";
         }
         #endregion
 
@@ -110,7 +109,7 @@ namespace AcManager.Tools.Helpers.Api {
             if (cancellation.IsCancellationRequested) return null;
 
             if (result != null && result.Item1.Length != 0) {
-                Logging.Debug($"Fresh version of {id} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
+                Logging.Write($"Fresh version of {id} loaded, from {result.Item2?.ToString() ?? "UNKNOWN"}");
                 var lastWriteTime = result.Item2 ?? DateTime.Now;
                 await FileUtils.WriteAllBytesAsync(file.FullName, result.Item1, cancellation).ConfigureAwait(false);
                 file.Refresh();
@@ -123,7 +122,7 @@ namespace AcManager.Tools.Helpers.Api {
                 return null;
             }
 
-            Logging.Debug($"Cached {id} used");
+            Logging.Write($"Cached {id} used");
             JustLoadedStaticData.Add(id);
             return Tuple.Create(file.FullName, false);
         }

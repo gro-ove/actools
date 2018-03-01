@@ -293,6 +293,12 @@ namespace AcTools.Utils.Helpers {
             return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
         }
 
+        [ContractAnnotation(@"value: null => false")]
+        public static bool IsWebUrl(this string value) {
+            return value.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
+                    value.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
+        }
+
         [Pure, NotNull]
         public static string ApartFromLast([NotNull] this string s, int apart) {
             if (apart < 0) {

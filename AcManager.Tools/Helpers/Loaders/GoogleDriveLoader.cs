@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -7,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using HtmlAgilityPack;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public class GoogleDriveLoader : DirectLoader {
@@ -66,47 +66,29 @@ namespace AcManager.Tools.Helpers.Loaders {
                 Logging.Debug("…done");
             }
 
-            var match = Regex.Match(webPageContent, @"href=""(/uc\?export=download[^""]+)", RegexOptions.IgnoreCase);
-            if (!match.Success) {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(webPageContent);
+
+            var link = doc.DocumentNode.SelectSingleNode(@"//a[contains(@href, 'export=download')]").Attributes[@"href"].Value;
+            if (link == null) {
                 NonfatalError.Notify(ToolsStrings.Common_CannotDownloadFile, ToolsStrings.DirectLoader_GoogleDriveChanged);
                 return false;
             }
 
-            Url = "https://drive.google.com" + HttpUtility.HtmlDecode(match.Groups[1].Value);
-            Logging.Write("Google Drive download link: " + Url);
-
-            var fileNameMatch = Regex.Match(webPageContent, @"/<span class=""uc-name-size""><a[^>]*>([^<]+)");
-            Logging.Debug("File name: " + fileNameMatch);
-            FileName = fileNameMatch.Success ? fileNameMatch.Groups[1].Value : null;
+            Url = @"https://drive.google.com" + HttpUtility.HtmlDecode(link);
+            FileName = HttpUtility.HtmlDecode(doc.DocumentNode.SelectSingleNode(@"//span[@class='uc-name-size']/a")?.InnerText?.Trim());
+            Logging.Write($"Google Drive download link: {Url}");
 
             try {
-                var totalSizeMatch = Regex.Match(webPageContent, @"</a> \((\d+(?:\.\d+)?)([KMGT])\)</span> ");
-                if (totalSizeMatch.Success) {
-                    var value = double.Parse(totalSizeMatch.Groups[1].Value, CultureInfo.InvariantCulture);
-                    var unit = totalSizeMatch.Groups[2].Value;
-
-                    switch (unit.ToLowerInvariant()) {
-                        case "k":
-                            value *= 1024;
-                            break;
-
-                        case "m":
-                            value *= 1024 * 1024;
-                            break;
-
-                        case "g":
-                            value *= 1024 * 1024 * 1024;
-                            break;
-
-                        case "t":
-                            value *= 1024d * 1024 * 1024 * 1024;
-                            break;
-                    }
-
-                    TotalSize = (long)value;
+                var totalSize = HttpUtility.HtmlDecode(
+                        doc.DocumentNode.SelectSingleNode(@"//span[@class='uc-name-size']/text()")?.InnerText?.Trim(' ', '(', ')'));
+                Logging.Write($"Total size: {totalSize}");
+                if (totalSize != null && LocalizationHelper.TryParseReadableSize(totalSize, null, out var size)) {
+                    Logging.Write($"Parsed size: {size} bytes");
+                    TotalSize = size;
                 }
-            } catch (Exception) {
-                // ignored
+            } catch (Exception e) {
+                Logging.Warning(e);
             }
 
             if (OptionManualRedirect) {

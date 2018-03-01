@@ -184,9 +184,12 @@ namespace AcManager.Controls.UserControls {
             private set => Apply(value, ref _isLoading);
         }
 
+        public event EventHandler<UrlEventArgs> PageLoading;
+
         private void OnProgressChanged(object sender, PageLoadingEventArgs e) {
             ActiveUrl = e.Url;
             IsLoading = !e.Progress.IsReady;
+            PageLoading?.Invoke(this, new UrlEventArgs(e.Url ?? ""));
         }
 
         [CanBeNull]

@@ -9,6 +9,7 @@ using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
 // Localize me!
+
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
         [ContractAnnotation("null => null; notnull => notnull")]
@@ -211,17 +212,17 @@ namespace FirstFloor.ModernUI.Helpers {
 
             if (postfix == "b" || postfix == UiStrings.LocalizationHelper_ReadableSize_B.ToLower()) {
                 bytes = (long)value;
-            } else if (postfix == "kb" || postfix == UiStrings.LocalizationHelper_ReadableSize_KB.ToLower()) {
+            } else if (postfix == "kb" || postfix == "k" || postfix == UiStrings.LocalizationHelper_ReadableSize_KB.ToLower()) {
                 bytes = (long)(1024 * value);
-            } else if (postfix == "mb" || postfix == UiStrings.LocalizationHelper_ReadableSize_MB.ToLower()) {
+            } else if (postfix == "mb" || postfix == "m" || postfix == UiStrings.LocalizationHelper_ReadableSize_MB.ToLower()) {
                 bytes = (long)(1048576 * value);
-            } else if (postfix == "gb" || postfix == UiStrings.LocalizationHelper_ReadableSize_GB.ToLower()) {
+            } else if (postfix == "gb" || postfix == "g" || postfix == UiStrings.LocalizationHelper_ReadableSize_GB.ToLower()) {
                 bytes = (long)(1073741824 * value);
-            } else if (postfix == "tb" || postfix == UiStrings.LocalizationHelper_ReadableSize_TB.ToLower()) {
+            } else if (postfix == "tb" || postfix == "t" || postfix == UiStrings.LocalizationHelper_ReadableSize_TB.ToLower()) {
                 bytes = (long)(1099511627776 * value);
-            } else if (postfix == "pb" || postfix == UiStrings.LocalizationHelper_ReadableSize_PB.ToLower()) {
+            } else if (postfix == "pb" || postfix == "p" || postfix == UiStrings.LocalizationHelper_ReadableSize_PB.ToLower()) {
                 bytes = (long)(1099511627776 * value);
-            } else if (postfix == "eb" || postfix == UiStrings.LocalizationHelper_ReadableSize_EB.ToLower()) {
+            } else if (postfix == "eb" || postfix == "e" || postfix == UiStrings.LocalizationHelper_ReadableSize_EB.ToLower()) {
                 bytes = (long)(1099511627776 * value);
             } else {
                 bytes = (long)value;

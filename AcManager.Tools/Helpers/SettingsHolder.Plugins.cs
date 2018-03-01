@@ -21,6 +21,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _cef60Fps;
+
+            public bool Cef60Fps {
+                get => _cef60Fps ?? (_cef60Fps = ValuesStorage.Get("Settings.PluginsSettings.Cef60Fps", true)).Value;
+                set {
+                    if (Equals(value, _cef60Fps)) return;
+                    _cef60Fps = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.Cef60Fps", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private long? _montageMemoryLimit;
 
             public long MontageMemoryLimit {

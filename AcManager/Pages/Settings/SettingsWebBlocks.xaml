@@ -14,7 +14,6 @@
   <ScrollViewer mui:SaveScroll.Key="SettingsWebBlocks">
     <StackPanel set:Search.Category="Web" set:Search.Limited="True" x:Name="Panel" Style="{StaticResource SettingsPanel}">
       <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Staying alive in background:" />
-
       <DockPanel>
         <DockPanel.ToolTip>
           <TextBlock Text="Use this option to set how many recently used browsers should be kept alive when you switch to a different section" MaxWidth="400"
@@ -24,23 +23,39 @@
             Postfix="{Binding WebBlocks.KeepInMemory, Converter={StaticResource PluralizingConverter}, ConverterParameter=' browser'}" />
         <Slider Minimum="0" Maximum="10" Value="{Binding WebBlocks.KeepInMemory}" TickFrequency="1" TickPlacement="BottomRight" />
       </DockPanel>
-
       <CheckBox IsChecked="{Binding WebBlocks.AlwaysKeepImportantInMemory}" ToolTip="With the next option, they’ll still be unloaded before the race">
         <Label Content="Always keep important browsers alive, such as SRS one" />
       </CheckBox>
-
       <CheckBox IsChecked="{Binding WebBlocks.UnloadBeforeRace}">
         <Label Content="Before the race, unload browsers in background" />
       </CheckBox>
 
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Saving:" />
-
       <CheckBox IsChecked="{Binding WebBlocks.SaveMainUrl}">
         <Label Content="Save URL in the main tab" />
       </CheckBox>
-
       <CheckBox IsChecked="{Binding WebBlocks.SaveExtraTabs}" IsEnabled="{Binding WebBlocks.SaveMainUrl}">
         <Label Content="Save extra tabs" />
+      </CheckBox>
+
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Auto-loading:" />
+      <CheckBox IsChecked="{Binding WebBlocks.CaptureViaFileStorageLoaders}">
+        <Label Content="For supported file storages, capture new tabs and download file immediately"
+            ToolTip="List of supported storages includes Google Drive, Dropbox, OneDrive, Mega, Yandex.Disk, MediaFire, AdFly." />
+      </CheckBox>
+
+      <TextBlock Text="Load rules suggested by community automatically:" Style="{StaticResource SettingsPanel.Heading2}" />
+      <CheckBox IsChecked="{Binding WebBlocks.ModsAutoLoadRuleForNew}" x:Name="ModsAutoLoadRuleForNew">
+        <Label Content="For newly added websites"
+            ToolTip="When you’re adding a new website, CM will set an auto-download rule automatically if somebody already shared it" />
+      </CheckBox>
+      <CheckBox IsEnabled="{Binding WebBlocks.ModsAutoLoadRuleForNew}" IsChecked="{Binding WebBlocks.ModsAutoLoadExtraForNew}" Margin="20 0 0 8"
+          set:Search.LinkedTo="{Binding ElementName=ModsAutoLoadRuleForNew}">
+        <Label Content="Load extra parameters as well" ToolTip="Use suggested website name and icon as well" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding WebBlocks.ModsAutoLoadRuleForUnknown}">
+        <Label Content="For loading, if website is unknown"
+            ToolTip="When downloading a file from an unknown website, CM will check shared rules to see if there is anything helpful to use temporarily" />
       </CheckBox>
     </StackPanel>
   </ScrollViewer>

@@ -523,8 +523,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                     var bytes = memory.ToArray();
                     if (cache != null) {
-                        await Task.Run(() => File.WriteAllBytes(cache, bytes));
-                        cacheFile.LastWriteTime = response.LastModified;
+                        await Task.Run(() => {
+                            File.WriteAllBytes(cache, bytes);
+                            try {
+                                cacheFile.LastWriteTime = response.LastModified;
+                            } catch (IOException) { }
+                        });
                     }
 
                     return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);

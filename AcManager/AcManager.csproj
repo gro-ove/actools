@@ -118,6 +118,9 @@
       <HintPath>..\Libraries\AcTools.AcdEncryption\AcTools.AcdEncryption.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
+      <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>

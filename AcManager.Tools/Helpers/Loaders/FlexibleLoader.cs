@@ -49,11 +49,22 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
             // Register<AcClubLoader>(AcClubLoader.Test);
-            Register<AcDriftingProLoader>(AcDriftingProLoader.Test);
+            // Register<AcDriftingProLoader>(AcDriftingProLoader.Test);
             // Register<AssettoDbLoader>(AssettoDbLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
             Register<LongenerLoader>(LongenerLoader.Test);
+        }
+
+        public static bool IsSupportedFileStorage(string url) {
+            return AcStuffSharedLoader.Test(url) ||
+                    GoogleDriveLoader.Test(url) ||
+                    YandexDiskLoader.Test(url) ||
+                    MediaFireLoader.Test(url) ||
+                    DropboxLoader.Test(url) ||
+                    OneDriveLoader.Test(url) ||
+                    AdFlyLoader.Test(url) ||
+                    MegaLoader.Test(url);
         }
 
         [ItemCanBeNull]

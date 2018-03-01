@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
 using AcTools;
 using CefSharp;
@@ -28,8 +29,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         public static readonly string DefaultUserAgent;
 
         static CefSharpWrapper() {
-            var windows = $@"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
-            DefaultUserAgent = $@"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
+            DefaultUserAgent = CmApiProvider.CommonUserAgent;
         }
         #endregion
 
@@ -89,11 +89,14 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     BrowserSettings = {
                         FileAccessFromFileUrls = CefState.Enabled,
                         UniversalAccessFromFileUrls = CefState.Enabled,
-                        WebSecurity = CefState.Disabled,
+                        WebSecurity = CefState.Default,
                         OffScreenTransparentBackground = preferTransparentBackground,
+                        WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
+                        WebGl = CefState.Disabled,
+                        Plugins = CefState.Disabled,
                     },
-                    DownloadHandler = _downloadHandler,
-                    RequestHandler = _requestHandler,
+                    // DownloadHandler = _downloadHandler,
+                    // RequestHandler = _requestHandler,
                     MenuHandler = new MenuHandler(),
                 };
 

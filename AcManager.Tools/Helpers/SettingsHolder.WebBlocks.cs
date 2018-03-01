@@ -105,6 +105,19 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _captureViaFileStorageLoaders;
+
+            public bool CaptureViaFileStorageLoaders {
+                get => _captureViaFileStorageLoaders
+                        ?? (_captureViaFileStorageLoaders = ValuesStorage.Get("Settings.WebBlocksSettings.CaptureViaFileStorageLoaders", true)).Value;
+                set {
+                    if (Equals(value, _captureViaFileStorageLoaders)) return;
+                    _captureViaFileStorageLoaders = value;
+                    ValuesStorage.Set("Settings.WebBlocksSettings.CaptureViaFileStorageLoaders", value);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         private static WebBlocksSettings _webBlocks;

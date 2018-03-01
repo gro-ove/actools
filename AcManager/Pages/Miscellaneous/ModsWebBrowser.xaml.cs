@@ -11,6 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -35,10 +36,12 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
+using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -48,6 +51,21 @@ namespace AcManager.Pages.Miscellaneous {
 
         public static void Initialize() {
             Instance = new ListViewModel();
+            WebBlock.NewTabGlobal += OnNewTabGlobal;
+        }
+
+        private static void OnNewTabGlobal(object o, NewWindowEventArgs args) {
+            if (SettingsHolder.WebBlocks.CaptureViaFileStorageLoaders && FlexibleLoader.IsSupportedFileStorage(args.Url)) {
+                args.Cancel = true;
+                ContentInstallationManager.Instance.InstallAsync(args.Url);
+                return;
+            }
+
+            var loader = GetSource(args.Url, out var isVirtual);
+            if (isVirtual || loader?.CaptureRedirects != true) return;
+
+            args.Cancel = true;
+            ContentInstallationManager.Instance.InstallAsync(args.Url);
         }
 
         public void OnUri(Uri uri) {
@@ -222,6 +240,14 @@ namespace AcManager.Pages.Miscellaneous {
                 set => Apply(value, ref _captureDownloads);
             }
 
+            [JsonProperty("redirectsCapture")]
+            private bool _captureRedirects;
+
+            public bool CaptureRedirects {
+                get => _captureRedirects;
+                set => Apply(value, ref _captureRedirects);
+            }
+
             [JsonProperty("downloadsRule")]
             private string _autoDownloadRule;
 
@@ -276,6 +302,7 @@ namespace AcManager.Pages.Miscellaneous {
                 return @"
 window.$PAUSEKEY = true;
 var foundCallback = false;
+function downloadCallback(v){ window.external.DownloadFrom(v) }
 try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code)
                                            .Replace(@"$PAUSEKEY", PauseKey);
             }
@@ -286,6 +313,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code)
                         : $@"foundCallback(document.querySelector({JsonConvert.SerializeObject(rule)}) != null);";
                 return @"
 function foundCallback(v){ window.external.Callback(v) }
+var downloadCallback = false;
 try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             }
 
@@ -309,24 +337,37 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                         Url = url;
                     }
 
-                    var head = Regex.Match(data, @"<\s*head[\s\S]+</\s*head\s*>", RegexOptions.IgnoreCase).Value;
-                    var name = Regex.Match(head, @"<title>([^<]+)</title>").Groups[1].Value;
+                    var doc = new HtmlDocument();
+                    doc.LoadHtml(data);
+
+                    var name = HttpUtility.HtmlDecode(doc.DocumentNode.Descendants(@"title")?.FirstOrDefault()?.InnerText.Trim());
                     if (!string.IsNullOrWhiteSpace(name)) {
                         Name = name;
                     }
 
-                    var favicon = new[] {
-                        @"<link\s+rel=""(?:shortcut )?icon""\s+href=""([^""]+)",
-                        @"<link\s+rel=""apple-touch-icon""\s+href=""([^""]+)",
-                        @"<link\s+href=""([^""]+)""\s+rel=""(?:shortcut )?icon""",
-                        @"<link\s+href=""([^""]+)""\s+rel=""apple-touch-icon""",
-                    }.Select(x => Regex.Match(head, x, RegexOptions.IgnoreCase).Groups[1].Value).FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
-
+                    var favicon = doc.DocumentNode.Descendants(@"link")?.Select(x => new {
+                        Role = new[] {
+                            @"apple-touch-icon",
+                            @"apple-touch-icon-precomposed",
+                            @"icon",
+                            @"shortcut icon",
+                        }.IndexOf(x.Attributes[@"rel"]?.Value?.Trim().ToLowerInvariant()),
+                        Url = x.Attributes[@"href"]?.Value,
+                        Size = Regex.Matches(x.Attributes[@"sizes"]?.Value ?? "0", @"\d+")
+                                    .Cast<Match>().Select(y => y.Value.As<int>()).MaxOrDefault()
+                    }).Where(x => x.Role != -1 && x.Url != null).OrderByDescending(x => x.Size).ThenBy(x => x.Role).FirstOrDefault()?.Url;
                     if (!string.IsNullOrWhiteSpace(favicon)) {
-                        Favicon = favicon.StartsWith(@"/") ? url.GetWebsiteFromUrl() + favicon : favicon;
+                        Favicon = GetFullPath(favicon, url);
                     } else if (!string.IsNullOrWhiteSpace(url)) {
                         Favicon = url.GetWebsiteFromUrl() + @"/favicon.ico";
                     }
+                }
+
+                string GetFullPath(string url, string webpageUrl, Func<string> baseUrlCallback = null) {
+                    if (url.IsWebUrl()) return url;
+                    if (url.StartsWith(@"/")) return webpageUrl.GetWebsiteFromUrl() + url;
+                    var baseUrl = baseUrlCallback?.Invoke() ?? Regex.Replace(webpageUrl, @"(?<=\w/)[^/]*(?:[?#].*)?$", "", RegexOptions.IgnoreCase);
+                    return (baseUrl.EndsWith(@"/") ? baseUrl : baseUrl + @"/") + url;
                 }
             }));
 
@@ -803,11 +844,21 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class JsBridge : JsBridgeBase {
+            internal Action<string> DownloadFromCallback;
+
+            [UsedImplicitly]
+            public void DownloadFrom(string url) {
+                if (string.IsNullOrWhiteSpace(url)) return;
+                Sync(() => {
+                    DownloadFromCallback?.Invoke(url);
+                });
+            }
+
             [CanBeNull]
             private ModsWebFinder _finder;
 
             [CanBeNull]
-            public ModsWebFinder Finder {
+            internal ModsWebFinder Finder {
                 get => _finder;
                 set {
                     if (Equals(_finder, value)) return;
@@ -1027,7 +1078,7 @@ window.$KEY = outline.stop.bind(outline);
                     DownloadListener = this,
                     Margin = new Thickness(0, 0, 0, 12),
                 };
-                _webBlock.PageLoaded += (sender, args) => { Logging.Warning(args.Tab.LoadedUrl); };
+                _webBlock.PageLoaded += (sender, args) => Logging.Warning(args.Tab.LoadedUrl);
                 _webBlock.NewWindow += OnNewWindow;
 
                 _finder = new ModsWebFinder(_source) {
@@ -1036,7 +1087,10 @@ window.$KEY = outline.stop.bind(outline);
                 };
 
                 DockPanel.SetDock(_finder, Dock.Bottom);
-                _webBlock.SetJsBridge<JsBridge>(x => x.Finder = null);
+                _webBlock.SetJsBridge<JsBridge>(x => {
+                    x.DownloadFromCallback = OnDownloadFromCallback;
+                    x.Finder = null;
+                });
 
                 _message = new BbCodeBlock {
                     BbCode = GetMessage(),
@@ -1105,6 +1159,44 @@ window.$KEY = outline.stop.bind(outline);
                     if (!_dialog.IsClosed()) {
                         ActionExtension.InvokeInMainThreadAsync(() => _dialog.Close());
                     }
+                }
+            }
+
+            private async void OnDownloadFromCallback(string url) {
+                try {
+                    if (_testToken == null && !_ranRule) {
+                        // Not in auto-download mode, usual behavior
+                        OpenNewTab();
+                        return;
+                    }
+
+                    Logging.Write("Download from: " + url);
+                    if (url.GetDomainNameFromUrl() == _url.GetDomainNameFromUrl()) {
+                        OpenNewTab();
+                        return;
+                    }
+
+                    void OpenNewTab() {
+                        _webBlock.OpenNewTab(url);
+                    }
+
+                    if (await FlexibleLoader.IsSupportedAsync(url, default(CancellationToken))) {
+                        // Create a Loader and use it
+                        Logging.Write("There is a loader for URL: " + url);
+
+                        if (_testToken != null) {
+                            _testMessage = $" • Redirect to known website: {url}.";
+                            _testToken.Cancel();
+                            return;
+                        }
+
+                        LoadViaLoader(url);
+                    } else {
+                        // Not supported and unknown, skip
+                        Logging.Write("No loader for URL: " + url);
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
                 }
             }
 
@@ -1345,17 +1437,24 @@ window.$KEY = outline.stop.bind(outline);
 
         private async void CheckWebPage(WebBlock web) {
             var m = _model;
-            if (m == null || !m.Source.CaptureDownloads) return;
-
-            var rule = m.Source.AutoDownloadRule?.Trim();
-            if (string.IsNullOrEmpty(rule)) {
-                m.DownloadPageUrl = null;
-                return;
-            }
+            if (m == null) return;
 
             var tab = web.CurrentTab;
             var url = tab?.LoadedUrl;
             if (url == null) {
+                m.DownloadPageUrl = null;
+                return;
+            }
+
+            if (FlexibleLoader.IsSupportedFileStorage(url)) {
+                m.DownloadPageUrl = url;
+                return;
+            }
+
+            if (!m.Source.CaptureDownloads) return;
+
+            var rule = m.Source.AutoDownloadRule?.Trim();
+            if (string.IsNullOrEmpty(rule)) {
                 m.DownloadPageUrl = null;
                 return;
             }
@@ -1384,6 +1483,12 @@ window.$KEY = outline.stop.bind(outline);
 
         private void OnCurrentTabChanged(object sender, EventArgs e) {
             CheckWebPage((WebBlock)sender);
+        }
+
+        private void OnPageLoading(object sender, WebTabEventArgs e) {
+            if (_model != null) {
+                _model.DownloadPageUrl = null;
+            }
         }
 
         private void OnPageLoaded(object sender, WebTabEventArgs e) {

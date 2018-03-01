@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls.CefSharp {
     /// <summary>
@@ -9,24 +10,39 @@ namespace AcManager.Controls.UserControls.CefSharp {
     internal static class RequestsFiltering {
         private static readonly Regex Regex = new Regex(@"^
                 https?://(?:
-                    googleads\.g\.doubleclick\.net/ |
                     apis\.google\.com/se/0/_/\+1 |
+                    connect\.facebook\.net |
+                    cdn\.viglink\.com/images/pixel\.gif |
+                    mc\.yandex\.ru |
                     pagead2\.googlesyndication\.com/pagead |
+                    platform\.twitter\.com/widgets |
+                    ssl\.google-analytics\.com |
                     staticxx\.facebook\.com/connect |
                     syndication\.twitter\.com/i/jot |
-                    platform\.twitter\.com/widgets |
-                    www\.youtube\.com/subscribe_embed |
-                    www\.facebook\.com/connect/ping |
-                    www\.facebook\.com/plugins/like\.php )",
+                    [a-z]+\.(?:adsnative\.com|g\.doubleclick\.net) |
+                    x\.bidswitch\.net |
+                    www\.(?:
+                        google-analytics\.com |
+                        facebook\.com/(?:connect/ping|plugins/like\.php) |
+                        youtube\.com/subscribe_embed
+                    )
+                )",
                 RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
         public static bool ShouldBeBlocked(string url) {
             if (!SettingsHolder.Plugins.CefFilterAds) return false;
 
 #if DEBUG
-            // Logging.Debug(url);
-#endif
+            if (Regex.IsMatch(url)) {
+                Logging.Warning(url);
+                return true;
+            }
+
+            Logging.Debug(url);
+            return false;
+#else
             return Regex.IsMatch(url);
+#endif
         }
     }
 }

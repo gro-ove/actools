@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -144,6 +145,7 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => Proxy = oldValue);
         }
 
+        [Localizable(false)]
         public IDisposable SetUserAgent(string newUserAgent) {
             var oldValue = Headers[HttpRequestHeader.UserAgent];
             Headers[HttpRequestHeader.UserAgent] = newUserAgent;
