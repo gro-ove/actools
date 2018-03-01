@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     break;
 
                 case Key.Tab:
-                    if (Keyboard.Modifiers == ModifierKeys.Shift && this.MoveFocus(FocusNavigationDirection.Previous)) {
+                    if (!AcceptsTab && Keyboard.Modifiers == ModifierKeys.Shift && this.MoveFocus(FocusNavigationDirection.Previous)) {
                         e.Handled = true;
                     }
                     break;

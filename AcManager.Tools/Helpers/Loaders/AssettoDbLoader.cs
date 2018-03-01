@@ -11,7 +11,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public AssettoDbLoader(string url) : base(url) { }
 
-        protected override async Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation) {
+        protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             var downloadUrl = url;
 
             if (!DownloadTest(downloadUrl)) {

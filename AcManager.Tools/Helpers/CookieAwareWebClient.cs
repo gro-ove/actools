@@ -309,23 +309,22 @@ namespace AcManager.Tools.Helpers {
             return new ActionAsDisposable(() => UploadProgressChanged -= Handler);
         }
 
-        public static async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
-            using (var w = new CookieAwareWebClient())
-            using (w.SetAutoRedirect(false))
-            using (w.SetMethod("HEAD")) {
+        public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
+            using (SetAutoRedirect(false))
+            using (SetMethod("HEAD")) {
                 var newUrl = url;
                 do {
                     try {
-                        await w.DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
-                        switch (w.StatusCode) {
+                        await DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
+                        switch (StatusCode) {
                             case HttpStatusCode.OK:
                                 return newUrl;
                             case HttpStatusCode.Redirect:
                             case HttpStatusCode.MovedPermanently:
                             case HttpStatusCode.RedirectKeepVerb:
                             case HttpStatusCode.RedirectMethod:
-                                if (w.ResponseHeaders == null) return newUrl;
-                                newUrl = w.ResponseHeaders["Location"];
+                                if (ResponseHeaders == null) return newUrl;
+                                newUrl = ResponseHeaders["Location"];
                                 if (newUrl == null) return url;
                                 if (newUrl.IndexOf(@"://", StringComparison.Ordinal) == -1) {
                                     // Doesn't have a URL Schema, meaning it's a relative or absolute URL

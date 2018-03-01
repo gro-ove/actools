@@ -21,8 +21,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _alwaysKeepImportantInMemory;
 
             public bool AlwaysKeepImportantInMemory {
-                get => _alwaysKeepImportantInMemory ??
-                        (_alwaysKeepImportantInMemory = ValuesStorage.Get("Settings.WebBlocksSettings.AlwaysKeepImportantInMemory", true)).Value;
+                get => _alwaysKeepImportantInMemory
+                        ?? (_alwaysKeepImportantInMemory = ValuesStorage.Get("Settings.WebBlocksSettings.AlwaysKeepImportantInMemory", true)).Value;
                 set {
                     if (Equals(value, _alwaysKeepImportantInMemory)) return;
                     _alwaysKeepImportantInMemory = value;
@@ -63,6 +63,45 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _saveExtraTabs)) return;
                     _saveExtraTabs = value;
                     ValuesStorage.Set("Settings.WebBlocksSettings.SaveExtraTabs", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _modsAutoLoadRuleForNew;
+
+            public bool ModsAutoLoadRuleForNew {
+                get => _modsAutoLoadRuleForNew
+                        ?? (_modsAutoLoadRuleForNew = ValuesStorage.Get("Settings.WebBlocksSettings.ModsAutoLoadRuleForNew", true)).Value;
+                set {
+                    if (Equals(value, _modsAutoLoadRuleForNew)) return;
+                    _modsAutoLoadRuleForNew = value;
+                    ValuesStorage.Set("Settings.WebBlocksSettings.ModsAutoLoadRuleForNew", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _modsAutoLoadExtraForNew;
+
+            public bool ModsAutoLoadExtraForNew {
+                get => _modsAutoLoadExtraForNew
+                        ?? (_modsAutoLoadExtraForNew = ValuesStorage.Get("Settings.WebBlocksSettings.ModsAutoLoadExtraForNew", true)).Value;
+                set {
+                    if (Equals(value, _modsAutoLoadExtraForNew)) return;
+                    _modsAutoLoadExtraForNew = value;
+                    ValuesStorage.Set("Settings.WebBlocksSettings.ModsAutoLoadExtraForNew", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _modsAutoLoadRuleForUnknown;
+
+            public bool ModsAutoLoadRuleForUnknown {
+                get => _modsAutoLoadRuleForUnknown
+                        ?? (_modsAutoLoadRuleForUnknown = ValuesStorage.Get("Settings.WebBlocksSettings.ModsAutoLoadRuleForUnknown", true)).Value;
+                set {
+                    if (Equals(value, _modsAutoLoadRuleForUnknown)) return;
+                    _modsAutoLoadRuleForUnknown = value;
+                    ValuesStorage.Set("Settings.WebBlocksSettings.ModsAutoLoadRuleForUnknown", value);
                     OnPropertyChanged();
                 }
             }

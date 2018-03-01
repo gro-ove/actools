@@ -500,20 +500,31 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 // Or maybe a showroom?
-                var uiShowroom = ui.GetSubFile("ui_showroom.json");
+                var uiShowroom = ui.GetSubFile(@"ui_showroom.json");
                 if (uiShowroom != null) {
-                    var icon = await (directory.GetSubFile("preview.jpg")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                    var icon = await (directory.GetSubFile(@"preview.jpg")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                     cancellation.ThrowIfCancellationRequested();
 
                     var data = await uiShowroom.Info.ReadAsync() ?? throw new MissingContentException();
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var showroomId = directory.Name ??
-                            directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).OrderByDescending(x => x.Info.Size)
-                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
+                            directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).OrderByDescending(x => x.Info.Size)
+                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
                     if (showroomId != null) {
                         return new ShowroomContentEntry(directory.Key ?? "", showroomId,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
                     }
+                }
+            } else {
+                // Another case for showrooms
+                if (directory.Name != null
+                        && directory.HasSubFile(directory.Name + @".kn5")
+                        && directory.HasSubFile(@"colorCurves.ini") && directory.HasSubFile(@"ppeffects.ini")) {
+                    var icon = directory.HasSubFile(@"preview.jpg")
+                            ? await (directory.GetSubFile(@"preview.jpg")?.Info.ReadAsync() ?? throw new MissingContentException())
+                            : null;
+                    cancellation.ThrowIfCancellationRequested();
+                    return new ShowroomContentEntry(directory.Key ?? "", directory.Name ?? throw new ArgumentException(), iconData: icon);
                 }
             }
 

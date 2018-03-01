@@ -61,7 +61,7 @@ namespace AcManager.Pages.About {
                 try {
                     var message = Prompt.Show(
                             AppStrings.About_ReportAnIssue_Prompt,
-                            AppStrings.About_ReportAnIssue_Title, watermark: @"?", multiline: true);
+                            AppStrings.About_ReportAnIssue_Title, placeholder: @"?", multiline: true);
                     if (message == null) return;
                     await Task.Run(() => AppReporter.SendLogs(message));
                     ValuesStorage.Set(KeyLogsSentTime, DateTime.Now);

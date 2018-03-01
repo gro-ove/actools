@@ -5,8 +5,10 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.UserControls.CefSharp;
 using AcManager.Controls.UserControls.Web;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -103,6 +105,7 @@ namespace AcManager.Controls.UserControls {
 
         private string _loadedUrl;
 
+        [CanBeNull]
         public string LoadedUrl {
             get => _loadedUrl;
             private set => Apply(value, ref _loadedUrl);
@@ -110,16 +113,23 @@ namespace AcManager.Controls.UserControls {
 
         private string _activeUrl;
 
+        [CanBeNull]
         public string ActiveUrl {
             get => _activeUrl;
-            private set => Apply(value, ref _activeUrl, () => {
-                // Favicon = Regex.Replace(value, @"(?<=\w)/.+", "") + @"/favicon.ico";
-                Favicon = $@"https://www.google.com/s2/favicons?domain={Uri.EscapeDataString(value)}";
-            });
+            private set => Apply(value, ref _activeUrl, UpdateFavicon);
+        }
+
+        private void UpdateFavicon() {
+            FaviconProvider.GetFaviconAsync(ActiveUrl).ContinueWith(t => {
+                if (t.Result != null) {
+                    ActionExtension.InvokeInMainThreadAsync(() => Favicon = t.Result);
+                }
+            }, TaskContinuationOptions.OnlyOnRanToCompletion);
         }
 
         private string _favicon;
 
+        [CanBeNull]
         public string Favicon {
             get => _favicon;
             private set => Apply(value, ref _favicon);

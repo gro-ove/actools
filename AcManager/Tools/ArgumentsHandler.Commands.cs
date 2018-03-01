@@ -22,7 +22,9 @@ using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using SharpCompress.Archives.Zip;
 
@@ -171,6 +173,9 @@ namespace AcManager.Tools {
                                     AllowExecutables = true
                                 })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
+                    case "importwebsite":
+                        return await ProcessImportWebsite(custom.Params.GetValues(@"data") ?? new string[0]);
+
                     case "replay":
                         return await ProcessReplay(custom.Params.Get(@"url"), custom.Params.Get(@"uncompressed") == null);
 
@@ -222,6 +227,27 @@ namespace AcManager.Tools {
             }
 
             return ArgumentHandleResult.Successful;
+        }
+
+        private static async Task<ArgumentHandleResult> ProcessImportWebsite(string[] data) {
+            var result = await ModsWebBrowser.ImportWebsitesAsync(data, names => {
+                return Task.FromResult(ModernDialog.ShowMessage(
+                        $"Details for {names.Select(x => $"“{x}”").JoinToReadableString()} contain scripts and might be unsafe to use. Do you trust the source and want to add them anyway? You can verify them later in Content/Browser section.",
+                        "Details with scripts", MessageBoxButton.YesNo) == MessageBoxResult.Yes);
+            }).ConfigureAwait(false);
+            switch (result) {
+                case null:
+                    return ArgumentHandleResult.Failed;
+                case 0:
+                    Toast.Show("Nothing to import", data.Length == 1 ? "That website is already added" : "Those websites are already added");
+                    return ArgumentHandleResult.Successful;
+                case 1:
+                    Toast.Show("Imported", "Website has been added");
+                    return ArgumentHandleResult.Successful;
+                default:
+                    Toast.Show("Imported", $"Added {PluralizingConverter.PluralizeExt(result.Value, @"{0} website")}");
+                    return ArgumentHandleResult.Successful;
+            }
         }
 
         private static async Task<ArgumentHandleResult> ProcessReplay(string url, bool compressed) {

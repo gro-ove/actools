@@ -22,6 +22,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         private readonly string _keyLastWriteDate;
         protected string Url;
 
+        public ILoader Parent { get; set; }
         public long? TotalSize { get; protected set; }
         public string Version { get; protected set; }
         public string FileName { get; protected set; }

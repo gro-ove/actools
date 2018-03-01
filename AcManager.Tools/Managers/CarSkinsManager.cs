@@ -123,7 +123,7 @@ namespace AcManager.Tools.Managers {
 
             if (id == null) {
                 var uniqueId = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(mainDirectory, "skin")));
-                id = Prompt.Show("Choose a name for a new car skin:", "New car skin", required: true, maxLength: 80, watermark: "?",
+                id = Prompt.Show("Choose a name for a new car skin:", "New car skin", required: true, maxLength: 80, placeholder: "?",
                         defaultValue: uniqueId);
                 if (id == null) return null;
             }

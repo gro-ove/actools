@@ -23,7 +23,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             Buttons = new[] {
                 CreateExtraDialogButton("Add new list", () => {
-                    var name = Prompt.Show("Name for a new servers list:", "Add new servers list", required: true, maxLength: 255, watermark: @"?");
+                    var name = Prompt.Show("Name for a new servers list:", "Add new servers list", required: true, maxLength: 255, placeholder: @"?");
                     if (!string.IsNullOrWhiteSpace(name)) {
                         FileBasedOnlineSources.CreateList(name);
                     }

@@ -750,12 +750,12 @@ window.external.SetCars(JSON.stringify(a));", true);
 
         private void OnPageLoaded(object sender, WebTabEventArgs e) {
             var uri = e.Tab.LoadedUrl;
+            if (uri == null) return;
 
             SrsCommon();
 
             var query = Regex.Match(uri, @"/(\w+?)\d*\.php", RegexOptions.IgnoreCase);
             var page = query.Success ? query.Groups[1].Value.ToLowerInvariant() : null;
-            Logging.Debug(page);
 
             switch (page) {
                 case "select":

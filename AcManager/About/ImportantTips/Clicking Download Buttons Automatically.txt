@@ -11,12 +11,19 @@ But wait, there is more!
 
 If you have CefSharp plugin enabled (and I highly recommend that you do), you can specify for CM where to click and you won’t even have to click anything. You can either use a simple selector — the same way it works, for example, in most ad blocking browser extension — or even write a short script for that, if simple selector won’t do.
 
-For CSS rules, all you need is a selector. As soon as you switch to rules creating mode, just use your mouse and click somewhere on page to pick an item. Result should look like that:
+For simple rules, all you need is a selector. As soon as you switch to rules creating mode, just use your mouse and click somewhere on page to pick an item. Result can look like that:
 
- [mono]#content > .download-btn[/mono]
+[mono]#content > .download-btn[/mono]
 
-And if you want to make a JS rule, use “javascript:” prefix (by the way, [b]be careful if you’re using somebody else’s selector, don’t forget to check it for anything suspicious[/b]):
+If you want something more complicated, you can make a JavaScript rule with “javascript:” prefix before the script. In script, test for “foundCallback” presence: it might be either a function or non-true value. If it’s a function, use it to respond if download link is found or not. Otherwise, just start the loading. And, by the way, [b]be careful if you’re using somebody else’s selector[/b]! Don’t forget to check it for anything suspicious.
 
- [mono]javascript:document.querySelector('#content > .download-btn').click()[/mono]
+Here is an example of a script finding first link with text ending with the word “download”:
+
+[mono]javascript:
+var e = [].filter.call(
+  document.querySelectorAll('#content a'),
+  function(x){ return /\bdownload$/.test(x.textContent) })[0];
+foundCallback ? foundCallback(e != null) : e.click();[/mono]
 
 Also, take a look [url="http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically"]here[/url], maybe you’ll find some ready-to-use rules, or would like to share yours.
+

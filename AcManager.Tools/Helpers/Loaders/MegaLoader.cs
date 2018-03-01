@@ -16,6 +16,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             _uri = new Uri(url);
         }
 
+        public ILoader Parent { get; set; }
         public long? TotalSize { get; private set; }
         public string FileName { get; private set; }
         public string Version => null;

@@ -400,11 +400,11 @@ Entry type: [b]{2}[/b]</value>
     <comment>Title</comment>
   </data>
   <data name="Share_SharedMessage" xml:space="preserve">
-    <value>Link copied to clipboard</value>
+    <value>Link is copied to the clipboard</value>
     <comment>Shown in Windows notifications</comment>
   </data>
   <data name="Share_SharedMessageAlternative" xml:space="preserve">
-    <value>Click to open link</value>
+    <value>Click to open the link</value>
     <comment>Shown in Windows notifications</comment>
   </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">

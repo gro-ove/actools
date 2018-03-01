@@ -72,7 +72,7 @@ namespace AcManager.Pages.Settings {
             public ICommand DecryptHelperCommand {
                 get {
                     return _decryptHelperCommand ?? (_decryptHelperCommand = new DelegateCommand(() => {
-                        var m = Prompt.Show("DH:", "DH", watermark: "<key>=<value>");
+                        var m = Prompt.Show("DH:", "DH", placeholder: "<key>=<value>");
                         if (m == null) return;
 
                         var s = m.Split(new[] { '=' }, 2);

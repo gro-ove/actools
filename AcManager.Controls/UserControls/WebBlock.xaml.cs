@@ -225,7 +225,7 @@ namespace AcManager.Controls.UserControls {
                 if (args.PropertyName == nameof(CurrentTab.IsLoading)) {
                     ProgressBar.Visibility = CurrentTab?.IsLoading == true ? Visibility.Visible : Visibility.Collapsed;
                 } else if (args.PropertyName == nameof(CurrentTab.ActiveUrl)) {
-                    UrlTextBox.Text = tab.ActiveUrl;
+                    UrlTextBox.Text = tab.ActiveUrl ?? "";
                 }
             }
         }

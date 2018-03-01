@@ -11,7 +11,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public AdFlyLoader(string url) : base(url) {}
 
-        protected override async Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation) {
+        protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             using (client.SetUserAgent("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")) {
                 var redirectTo = Reverse(Regex.Match(await client.DownloadStringTaskAsync(url), @"ysmm\s=\s'(.*?)'").Groups[1].Value);
                 if (Test(redirectTo)) {

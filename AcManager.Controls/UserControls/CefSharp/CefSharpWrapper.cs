@@ -223,6 +223,11 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             Logging.Debug(js);
 #endif
 
+            if (!_inner.IsBrowserInitialized) {
+                Logging.Warning("Browser is not initialized yet!");
+                return;
+            }
+
             try {
                 using (var mainFrame = _inner.GetMainFrame()) {
                     mainFrame.ExecuteJavaScriptAsync(js, @"about:contentmanager");

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         private static readonly List<ILoaderFactory> Factories = new List<ILoaderFactory>();
 
         public static void Register([NotNull] ILoaderFactory factory) {
-            Factories.Insert(0, factory);
+            Factories.Add(factory);
         }
 
         public static void Register<T>([NotNull] Func<string, bool> test) where T : ILoader {
@@ -33,12 +32,12 @@ namespace AcManager.Tools.Helpers.Loaders {
                 _test = test;
             }
 
-            public bool Test(string url) {
-                return _test(url);
+            public Task<bool> TestAsync(string url, CancellationToken cancellation) {
+                return Task.FromResult(_test(url));
             }
 
-            public ILoader Create(string url) {
-                return _test(url) ? (ILoader)Activator.CreateInstance(typeof(T), url) : null;
+            public Task<ILoader> CreateAsync(string url, CancellationToken cancellation) {
+                return Task.FromResult(_test(url) ? (ILoader)Activator.CreateInstance(typeof(T), url) : null);
             }
         }
 
@@ -49,19 +48,36 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<MediaFireLoader>(MediaFireLoader.Test);
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
-            Register<AcClubLoader>(AcClubLoader.Test);
+            // Register<AcClubLoader>(AcClubLoader.Test);
             Register<AcDriftingProLoader>(AcDriftingProLoader.Test);
-            Register<AssettoDbLoader>(AssettoDbLoader.Test);
+            // Register<AssettoDbLoader>(AssettoDbLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
+            Register<LongenerLoader>(LongenerLoader.Test);
         }
 
-        public static bool IsSupported(string url) {
-            return Factories.Any(x => x.Test(url));
+        [ItemCanBeNull]
+        public static async Task<ILoaderFactory> GetFactoryAsync(string url, CancellationToken cancellation) {
+            try {
+                foreach (var factory in Factories) {
+                    if (await factory.TestAsync(url, cancellation).ConfigureAwait(false)) return factory;
+                    if (cancellation.IsCancellationRequested) break;
+                }
+            } catch (Exception e) when (e.IsCancelled()) { }
+            return null;
         }
 
-        [NotNull]
-        public static ILoader CreateLoader([NotNull] string url) {
+        public static async Task<bool> IsSupportedAsync(string url, CancellationToken cancellation) {
+            return await GetFactoryAsync(url, cancellation).ConfigureAwait(false) != null;
+        }
+
+        [ItemCanBeNull]
+        public static Task<ILoader> CreateLoaderAsync([NotNull] string url, CancellationToken cancellation) {
+            return CreateLoaderAsync(url, null, cancellation);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<ILoader> CreateLoaderAsync([NotNull] string url, [CanBeNull] ILoader parent, CancellationToken cancellation) {
             if (CmRequestHandler?.Test(url) == true) {
                 var unwrapped = CmRequestHandler.UnwrapDownloadUrl(url);
                 if (unwrapped != null) {
@@ -72,8 +88,16 @@ namespace AcManager.Tools.Helpers.Loaders {
                 }
             }
 
-            var loader = Factories.Select(x => x.Create(url)).FirstOrDefault(x => x != null);
-            return loader ?? new DirectLoader(url);
+            try {
+                var factory = await GetFactoryAsync(url, cancellation);
+                if (cancellation.IsCancellationRequested) return null;
+                var loader = factory == null ? new DirectLoader(url) : await factory.CreateAsync(url, cancellation);
+                if (loader == null) return null;
+                loader.Parent = parent;
+                return loader;
+            } catch (Exception e) when (e.IsCancelled()) {
+                return null;
+            }
         }
 
         private static IWebProxy _proxy;
@@ -83,7 +107,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default(CancellationToken)) {
-            var loader = CreateLoader(argument);
+            var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
             using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
 
@@ -103,7 +127,8 @@ namespace AcManager.Tools.Helpers.Loaders {
                 FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination, [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination,
                 Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
-            var loader = CreateLoader(argument);
+            progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Finding fitting loader…"));
+            var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
             try {
                 using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                     var client = order.Victim;
@@ -139,7 +164,8 @@ namespace AcManager.Tools.Helpers.Loaders {
                             order.Delay();
                             reportStopwatch.Restart();
                             progress?.Report(AsyncProgressEntry.CreateDownloading(args.BytesReceived, args.TotalBytesToReceive == -1
-                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive, progressStopwatch));
+                                    && loader.TotalSize.HasValue ? Math.Max(loader.TotalSize.Value, args.BytesReceived) : args.TotalBytesToReceive,
+                                    progressStopwatch));
                         };
                     }
 

@@ -228,7 +228,7 @@
       <ContentPresenter IsHitTestVisible="False" Margin="{TemplateBinding Padding}" Content="{TemplateBinding SelectionBoxItem}"
           ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
           ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  />
+          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
     </c:Cell>
     <ControlTemplate.Triggers>
       <Trigger Property="HasItems" Value="False">
@@ -273,11 +273,13 @@
       <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
           Margin="4 0 16 0" Padding="3 3" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}"
           Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" MaxLength="{TemplateBinding MaxLength}" />
+          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" MaxLength="{TemplateBinding MaxLength}"
+          AcceptsReturn="{TemplateBinding AcceptsReturn}" AcceptsTab="{TemplateBinding AcceptsTab}" TextWrapping="{TemplateBinding TextWrapping}"
+          TextAlignment="Left" />
     </c:Cell>
     <ControlTemplate.Triggers>
       <Trigger Property="HasItems" Value="False">
-        <Setter TargetName="DropDownBorder" Property="Height" Value="95" />
+        <Setter TargetName="DropDownBorder" Property="MinHeight" Value="95" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="True">
         <Setter Property="Foreground" Value="{DynamicResource InputText}" />
@@ -388,7 +390,9 @@
         <c:BetterTextBox x:Name="PART_EditableTextBox" Placeholder="{TemplateBinding Placeholder}" Style="{StaticResource BetterComboBoxEditableTextBox}"
             Margin="0 0 16 0" Padding="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}"
             IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" MaxLength="{TemplateBinding MaxLength}"
-            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
+            AcceptsReturn="{TemplateBinding AcceptsReturn}" AcceptsTab="{TemplateBinding AcceptsTab}" TextWrapping="{TemplateBinding TextWrapping}"
+            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+            TextAlignment="Left" />
       </c:Cell>
     </c:AdornedControl>
     <ControlTemplate.Triggers>

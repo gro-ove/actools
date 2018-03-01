@@ -517,7 +517,7 @@
 
           <ContentControl Content="{Binding}">
             <ContentControl.Resources>
-              <!-- directional -->
+              <!-- Directional -->
               <DataTemplate DataType="{x:Type lights:DarkDirectionalLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -528,7 +528,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- point -->
+              <!-- Point -->
               <DataTemplate DataType="{x:Type lights:DarkPointLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -539,7 +539,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- spot -->
+              <!-- Spot -->
               <DataTemplate DataType="{x:Type lights:DarkSpotLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -561,7 +561,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- spot -->
+              <!-- Plane -->
               <DataTemplate DataType="{x:Type lights:DarkPlaneLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -572,7 +572,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- area sphere -->
+              <!-- Area sphere -->
               <DataTemplate DataType="{x:Type lights:DarkAreaSphereLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -591,7 +591,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- area tube -->
+              <!-- Area tube -->
               <DataTemplate DataType="{x:Type lights:DarkAreaTubeLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <DockPanel>
@@ -615,7 +615,7 @@
                 </mui:SpacingStackPanel>
               </DataTemplate>
 
-              <!-- area plane -->
+              <!-- Area plane -->
               <DataTemplate DataType="{x:Type lights:DarkLtcPlaneLight}">
                 <mui:SpacingStackPanel Spacing="4">
                   <!--<DockPanel>

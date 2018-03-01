@@ -284,6 +284,11 @@ namespace AcTools.Utils.Helpers {
         }
 
         [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
+        public static string GetWebsiteFromUrl(this string value) {
+            return value == null ? null : Regex.Replace(value, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
+        }
+
+        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
         public static string GetDomainNameFromUrl(this string value) {
             return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
         }

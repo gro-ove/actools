@@ -8,6 +8,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Loading
         public static Size? GetImageSize(byte[] data) {
             int index = 0, limit = Math.Min(data.Length, 4000);
+            if (limit == 0) return null;
+
             try {
                 if (NextAre(0xFF, 0xD8, 0xFF)) {
                     // JPEG

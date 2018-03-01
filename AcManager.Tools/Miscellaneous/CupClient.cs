@@ -193,11 +193,13 @@ namespace AcManager.Tools.Miscellaneous {
             return _installationUrlTaskCache.Get(async () => {
                 try {
                     var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
-                    var updateUrl = await CookieAwareWebClient.GetFinalRedirectAsync(url);
-                    if (updateUrl != null) {
-                        information._updateUrl = updateUrl;
+                    using (var client = new CookieAwareWebClient()) {
+                        var updateUrl = await client.GetFinalRedirectAsync(url);
+                        if (updateUrl != null) {
+                            information._updateUrl = updateUrl;
+                        }
+                        return updateUrl;
                     }
-                    return updateUrl;
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground("Can’t download an update", e);
                     return null;

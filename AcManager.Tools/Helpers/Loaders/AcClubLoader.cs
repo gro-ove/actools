@@ -10,7 +10,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public AcClubLoader(string url) : base(url) { }
 
-        protected override async Task<string> GetRedirect(string url, CookieAwareWebClient client, CancellationToken cancellation) {
+        protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             var downloadPage = await client.DownloadStringTaskAsync(url);
             if (cancellation.IsCancellationRequested) return null;
 

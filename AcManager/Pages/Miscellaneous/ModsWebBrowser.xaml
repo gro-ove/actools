@@ -118,9 +118,30 @@
               </ListBox>
 
               <DockPanel Grid.Row="1">
+                <mui:ModernToggleButton x:Name="SettingsButton" DockPanel.Dock="Right" IconData="{StaticResource GearIconData}"
+                    IsHitTestVisible="{Binding ElementName=SettingsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"
+                    ToolTip="Settings" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                <c:ModernPopup x:Name="SettingsPopup" PlacementTarget="{Binding ElementName=SettingsButton}" Placement="Top"
+                    IsOpen="{Binding IsChecked, ElementName=SettingsButton, Mode=TwoWay}" Padding="16 12 16 16">
+                  <mui:SpacingStackPanel Spacing="8">
+                    <TextBlock Text="Load rules suggested by community automatically: " Style="{StaticResource Heading2}" />
+                    <CheckBox IsChecked="{Binding ModsAutoLoadRuleForNew, Source={x:Static t:SettingsHolder.WebBlocks}}">
+                      <Label Content="For newly added websites"
+                          ToolTip="When you’re adding a new website, CM will set an auto-download rule automatically if somebody already shared it" />
+                    </CheckBox>
+                    <CheckBox IsEnabled="{Binding ModsAutoLoadRuleForNew, Source={x:Static t:SettingsHolder.WebBlocks}}"
+                        IsChecked="{Binding ModsAutoLoadExtraForNew, Source={x:Static t:SettingsHolder.WebBlocks}}" Margin="20 0 0 0">
+                      <Label Content="Load extra parameters as well" ToolTip="Use suggested website name and icon as well" />
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding ModsAutoLoadRuleForUnknown, Source={x:Static t:SettingsHolder.WebBlocks}}" IsEnabled="False">
+                      <Label Content="For loading, if website is unknown (NOT WORKING YET, STILL WIP)"
+                          ToolTip="When downloading a file from an unknown website, CM will check shared rules to see if there is anything helpful to use temporarily" />
+                    </CheckBox>
+                  </mui:SpacingStackPanel>
+                </c:ModernPopup>
                 <mui:ModernButton Command="{Binding AddNewSourceCommand}" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Add a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
-                <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
+                <mui:ModernButton Click="OnScrollToSelectedButtonClick" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
                     ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding WebSources.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} site'}"
                     Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
@@ -128,7 +149,7 @@
             </Grid>
 
             <!-- Separator -->
-            <mui:ModernTabSplitter Grid.Column="1" SaveKey="__PythonAppsSettingsPage.Splitter" />
+            <mui:ModernTabSplitter Grid.Column="1" SaveKey="__ModsWebBrowser.Splitter" />
 
             <!-- Content -->
             <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Disabled" DataContext="{Binding SelectedSource}"
@@ -150,7 +171,14 @@
                 </DockPanel>
                 <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
                   <Button Content="Refresh name &amp; icon" Command="{Binding UpdateDisplayNameCommand}" />
-                  <Button Content="Delete site" Command="{Binding DeleteCommand}" Foreground="{DynamicResource Error}" />
+                  <Button Content="Set icon from Google" Command="{Binding SetGoogleFaviconCommand}" />
+                  <Button Command="{Binding DeleteCommand}" Foreground="{DynamicResource Error}">
+                    <DockPanel Margin="0">
+                      <Path Width="8" Height="8" VerticalAlignment="Center" Margin="0 0 0 -2" DockPanel.Dock="Left" Stretch="Uniform"
+                          Data="{StaticResource TrashBinIconData}" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                      <TextBlock Text="Delete site" VerticalAlignment="Center" Margin="4 0 0 0" />
+                    </DockPanel>
+                  </Button>
                 </mui:SpacingUniformGrid>
 
                 <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
@@ -166,20 +194,18 @@
                     </DockPanel>
                   </Label>
                   <mui:BetterComboBox Text="{Binding AutoDownloadRule, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
-                      ItemsSource="{Binding RuleSuggestions.Value}" />
+                      ItemsSource="{Binding RuleSuggestions.Value}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"
+                      FontSize="{DynamicResource SmallFontSize}" />
                 </DockPanel>
-                <DockPanel IsEnabled="{Binding CaptureDownloads}">
+                <DockPanel IsEnabled="{Binding CaptureDownloads}"
+                    Visibility="{Binding RedirectsToNames.Count, Converter={StaticResource MoreToVisibilityConverter}}">
                   <Label Content="Redirects to:" />
-                  <mui:TagsList ItemsSource="{Binding RedirectsToSources}" IsReadOnly="True" />
+                  <mui:TagsList ItemsSource="{Binding RedirectsToNames}" IsReadOnly="True" />
                 </DockPanel>
-                <c:MessageBlock Margin="0 0 0 8">
-                  <mui:BbCodeBlock
-                      BbCode="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]." />
+                <c:MessageBlock Margin="0 0 0 8" IsEnabled="{Binding CaptureDownloads}">
+                  <mui:BbCodeBlock LinkNavigator="{Binding}"
+                      BbCode="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
                 </c:MessageBlock>
-                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" IsEnabled="{Binding CaptureDownloads}"
-                    Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
-                  <Button Content="Export as link" Command="{Binding UpdateDisplayNameCommand}" />
-                </mui:SpacingUniformGrid>
               </StackPanel>
             </ScrollViewer>
           </Grid>

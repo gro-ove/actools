@@ -29,6 +29,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(MaxLengthProperty, value);
         }
 
+        public static readonly DependencyProperty TextWrappingProperty = DependencyProperty.Register(nameof(TextWrapping), typeof(TextWrapping),
+                typeof(BetterComboBox));
+
+        public TextWrapping TextWrapping {
+            get => (TextWrapping)GetValue(TextWrappingProperty);
+            set => SetValue(TextWrappingProperty, value);
+        }
+
+        public static readonly DependencyProperty AcceptsReturnProperty = DependencyProperty.Register(nameof(AcceptsReturn), typeof(bool),
+                typeof(BetterComboBox));
+
+        public bool AcceptsReturn {
+            get => (bool)GetValue(AcceptsReturnProperty);
+            set => SetValue(AcceptsReturnProperty, value);
+        }
+
+        public static readonly DependencyProperty AcceptsTabProperty = DependencyProperty.Register(nameof(AcceptsTab), typeof(bool),
+                typeof(BetterComboBox));
+
+        public bool AcceptsTab {
+            get => (bool)GetValue(AcceptsTabProperty);
+            set => SetValue(AcceptsTabProperty, value);
+        }
+
         public static readonly DependencyProperty PlaceholderProperty = DependencyProperty.Register(nameof(Placeholder), typeof(string),
                 typeof(BetterComboBox));
 
@@ -48,7 +72,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
-            FocusAdvancement.OnKeyDown(this, e);
+            switch (e.Key) {
+                case Key.Escape:
+                    e.Handled = this.RemoveFocus();
+                    break;
+
+                case Key.Enter:
+                    if (!AcceptsReturn) {
+                        e.Handled = this.MoveFocus();
+                    }
+                    break;
+
+                case Key.Tab:
+                    if (!AcceptsTab && Keyboard.Modifiers == ModifierKeys.Shift && this.MoveFocus(FocusNavigationDirection.Previous)) {
+                        e.Handled = true;
+                    }
+                    break;
+            }
 
             if (!e.Handled) {
                 base.OnPreviewKeyDown(e);

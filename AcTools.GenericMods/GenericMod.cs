@@ -54,7 +54,7 @@ namespace AcTools.GenericMods {
 
         public DelegateCommand RenameCommand => _renameCommand ?? (_renameCommand = new DelegateCommand(() => {
             try {
-                var newName = Prompt.Show("New name:", "Rename mod", DisplayName, required: true, maxLength: 120, watermark: "?");
+                var newName = Prompt.Show("New name:", "Rename mod", DisplayName, required: true, maxLength: 120, placeholder: "?");
                 if (newName == null) return;
 
                 newName = FileUtils.EnsureFileNameIsValid(newName);

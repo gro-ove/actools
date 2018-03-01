@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -20,9 +21,9 @@ namespace FirstFloor.ModernUI.Dialogs {
     public partial class Prompt : IValueConverter {
         private readonly bool _multiline;
 
-        private Prompt(string title, string description, string defaultValue, string watermark, string toolTip, bool multiline, bool passwordMode, bool required,
+        private Prompt(string title, string description, string defaultValue, string placeholder, string toolTip, bool multiline, bool passwordMode, bool required,
                 int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment) {
-            DataContext = new ViewModel(description, defaultValue, watermark, toolTip, required);
+            DataContext = new ViewModel(description, defaultValue, placeholder, toolTip, required);
             InitializeComponent();
             Buttons = new[] { OkButton, CancelButton };
             _multiline = multiline;
@@ -59,9 +60,16 @@ namespace FirstFloor.ModernUI.Dialogs {
             } else if (suggestions != null) {
                 var comboBox = new BetterComboBox {
                     IsEditable = !suggestionsFixed,
-                    IsTextSearchEnabled = true,
-                    ItemsSource = suggestions.ToList()
+                    IsTextSearchEnabled = true
                 };
+
+                if (suggestions is INotifyCollectionChanged) {
+                    comboBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding {
+                        Source = suggestions
+                    });
+                } else {
+                    comboBox.ItemsSource = suggestions.ToList();
+                }
 
                 comboBox.SetBinding(ComboBox.TextProperty, new Binding {
                     Source = DataContext,
@@ -78,8 +86,8 @@ namespace FirstFloor.ModernUI.Dialogs {
                     comboBox.Focus();
                 }
 
-                if (watermark != null) {
-                    comboBox.Placeholder = watermark;
+                if (placeholder != null) {
+                    comboBox.Placeholder = placeholder;
                 }
 
                 element = comboBox;
@@ -103,8 +111,8 @@ namespace FirstFloor.ModernUI.Dialogs {
                     textBox.Height = 240;
                 }
 
-                if (watermark != null) {
-                    textBox.Placeholder = watermark;
+                if (placeholder != null) {
+                    textBox.Placeholder = placeholder;
                 }
 
                 textBox.Focus();
@@ -150,16 +158,16 @@ namespace FirstFloor.ModernUI.Dialogs {
 
             public string Description { get; }
 
-            public string Watermark { get; }
+            public string Placeholder { get; }
 
             public string ToolTip { get; }
 
             public bool Required { get; }
 
-            public ViewModel(string description, string defaultValue, string watermark, string toolTip, bool required) {
+            public ViewModel(string description, string defaultValue, string placeholder, string toolTip, bool required) {
                 Description = description;
                 Text = defaultValue;
-                Watermark = watermark;
+                Placeholder = placeholder;
                 ToolTip = toolTip;
                 Required = required;
             }
@@ -197,7 +205,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="description">Some description, could ends with “:”.</param>
         /// <param name="title">Title, in title casing</param>
         /// <param name="defaultValue">Default value in the input area</param>
-        /// <param name="watermark">Some semi-transparent hint in the input area</param>
+        /// <param name="placeholder">Some semi-transparent hint in the input area</param>
         /// <param name="toolTip">Tooltip for the input area</param>
         /// <param name="multiline">Is the input area should be multilined.</param>
         /// <param name="passwordMode">Hide inputting value.</param>
@@ -208,14 +216,14 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="comment">Something to display in the bottom left corner.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [CanBeNull]
-        public static string Show(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
+        public static string Show(string description, string title, string defaultValue = "", string placeholder = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
                 bool suggestionsFixed = false, string comment = null) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
-            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
+            var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
                     suggestionsFixed, comment) {
                         DoNotAttachToWaitingDialogs = true
                     };
@@ -234,7 +242,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="description">Some description, could ends with “:”.</param>
         /// <param name="title">Title, in title casing</param>
         /// <param name="defaultValue">Default value in the input area</param>
-        /// <param name="watermark">Some semi-transparent hint in the input area</param>
+        /// <param name="placeholder">Some semi-transparent hint in the input area</param>
         /// <param name="toolTip">Tooltip for the input area</param>
         /// <param name="multiline">Is the input area should be multilined.</param>
         /// <param name="passwordMode">Hide inputting value.</param>
@@ -246,14 +254,14 @@ namespace FirstFloor.ModernUI.Dialogs {
         /// <param name="cancellation">Cancellation token.</param>
         /// <returns>Result string or null if user cancelled input.</returns>
         [ItemCanBeNull]
-        public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string watermark = null, string toolTip = null,
+        public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string placeholder = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
                 bool suggestionsFixed = false, string comment = null, CancellationToken cancellation = default(CancellationToken)) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");
 
-            var dialog = new Prompt(title, description, defaultValue, watermark, toolTip, multiline, passwordMode, required, maxLength, suggestions,
+            var dialog = new Prompt(title, description, defaultValue, placeholder, toolTip, multiline, passwordMode, required, maxLength, suggestions,
                     suggestionsFixed, comment);
             try {
                 await dialog.ShowAsync(cancellation);

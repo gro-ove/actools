@@ -110,9 +110,10 @@ namespace AcManager.Controls.Helpers {
                 Clipboard.SetText(link);
             }
 
-            Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
+            // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
+            Toast.Show(type,
                     SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative, () => {
-                        Process.Start(link + "#noauto");
+                        WindowsHelper.ViewInBrowser(link + "#noauto");
                     });
         }
     }

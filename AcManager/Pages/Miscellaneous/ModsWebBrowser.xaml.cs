@@ -83,41 +83,69 @@ namespace AcManager.Pages.Miscellaneous {
             list?.ScrollIntoView(list.SelectedItem);
         }
 
-        private static readonly Dictionary<string, IReadOnlyList<WebDownloadRule>> SuggestedRules = new Dictionary<string, IReadOnlyList<WebDownloadRule>>();
+        private const string SuggestedRulesKey = ".ModsWebBrowser.Suggestions";
+        private const string SuggestedRulesDateKey = ".ModsWebBrowser.SuggestionsDate";
         private static readonly TaskCache SuggestedRulesTaskCache = new TaskCache();
+        private static WebDownloadRule[] _suggestedRules;
 
-        [ItemCanBeNull]
-        public static Task<IReadOnlyList<WebDownloadRule>> GetSuggestions([NotNull] string url) {
-            var domain = url.GetDomainNameFromUrl().ToLowerInvariant();
-            lock (SuggestedRules) {
-                if (SuggestedRules.TryGetValue(domain, out var result)) return Task.FromResult(result);
+        [NotNull, ItemNotNull]
+        private static Task<IReadOnlyList<WebDownloadRule>> GetSuggestionsAsync() {
+            if (_suggestedRules != null) {
+                return Task.FromResult<IReadOnlyList<WebDownloadRule>>(_suggestedRules);
             }
 
-            return SuggestedRulesTaskCache.Get(() => Task.Run(() => {
+            return SuggestedRulesTaskCache.Get(() => Task.Run<IReadOnlyList<WebDownloadRule>>(() => {
+                var now = DateTime.Now;
+                if ((now - CacheStorage.Get<DateTime>(SuggestedRulesDateKey)).TotalHours < 24) {
+                    _suggestedRules = CacheStorage.Storage.GetObject<WebDownloadRule[]>(SuggestedRulesKey) ?? new WebDownloadRule[0];
+                    Logging.Write("Loaded from cache: " + _suggestedRules.Length);
+                    return _suggestedRules;
+                }
+
                 try {
-                    var data = InternalUtils.LoadWebDownloadRules(CmApiProvider.UserAgent, domain).ToIReadOnlyListIfItIsNot();
-                    lock (SuggestedRules) {
-                        SuggestedRules[domain] = data;
-                    }
-                    return data;
+                    _suggestedRules = InternalUtils.LoadWebDownloadRules(CmApiProvider.UserAgent).ToArray();
                 } catch (Exception e) {
                     Logging.Warning(e.Message);
-                    return null;
+                    _suggestedRules = new WebDownloadRule[0];
                 }
+
+                CacheStorage.Storage.Set(SuggestedRulesDateKey, now);
+                CacheStorage.Storage.SetObject(SuggestedRulesKey, _suggestedRules);
+                Logging.Write("Actual data loaded: " + _suggestedRules.Length);
+                return _suggestedRules;
             }));
+        }
+
+        [NotNull, ItemNotNull]
+        private static async Task<IEnumerable<WebDownloadRule>> GetSuggestionsAsync([NotNull] string url) {
+            var domain = url.GetDomainNameFromUrl();
+            return (await GetSuggestionsAsync().ConfigureAwait(false)).Where(x => x.Domain == domain);
+        }
+
+        [NotNull, ItemCanBeNull]
+        private static async Task<WebDownloadRule> GetSuggestionAsync([NotNull] string url) {
+            var domain = url.GetDomainNameFromUrl();
+            return (await GetSuggestionsAsync().ConfigureAwait(false)).FirstOrDefault(x => x.Domain == domain);
         }
 
         [CanBeNull]
         private ViewModel _model;
 
+        public enum WebSourceSerializationMode {
+            Full,
+            Compact
+        }
+
         [JsonObject(MemberSerialization.OptIn)]
-        public sealed class WebSource : NotifyPropertyChanged, IWithId {
+        public sealed class WebSource : NotifyPropertyChanged, IWithId, ILinkNavigator {
             [JsonConstructor]
             private WebSource(string id) {
                 Id = id;
-                RuleSuggestions = Lazier.CreateAsync(() => GetSuggestions(Url)
-                        .ContinueWith(t => t.Result.Select(x => x.Rule).ToIReadOnlyListIfItIsNot(), TaskContinuationOptions.OnlyOnRanToCompletion));
+                RuleSuggestions = Lazier.CreateAsync(() => GetSuggestionsAsync(Url).ContinueWith(
+                        t => t.Result.Select(x => x.Rule).ToIReadOnlyListIfItIsNot(),
+                        TaskContinuationOptions.OnlyOnRanToCompletion));
                 RuleSuggestions.PropertyChanged += OnPropertyChanged;
+                UpdateRedirectsToNames();
             }
 
             private void OnPropertyChanged(object sender, PropertyChangedEventArgs args) {
@@ -135,8 +163,7 @@ namespace AcManager.Pages.Miscellaneous {
 
                 _autoSetRule = true;
                 Url = url;
-                Favicon = url.Split('/').Take(3).JoinToString('/').TrimEnd('/') + @"/favicon.ico";
-                UpdateDisplayNameCommand.Execute();
+                Favicon = url.GetWebsiteFromUrl() + @"/favicon.ico";
             }
 
             private bool _autoSetRule;
@@ -147,6 +174,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("name")]
             private string _name;
 
+            [CanBeNull]
             public string Name {
                 get => _name;
                 set => Apply(value, ref _name);
@@ -171,6 +199,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("favicon")]
             private string _favicon;
 
+            [CanBeNull]
             public string Favicon {
                 get => _favicon;
                 set => Apply(value, ref _favicon, () => Logging.Debug(value));
@@ -179,8 +208,9 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("url")]
             private string _url;
 
+            [NotNull]
             public string Url {
-                get => _url;
+                get => _url ?? "";
                 set => Apply(value, ref _url, () => RuleSuggestions.Reset());
             }
 
@@ -195,6 +225,7 @@ namespace AcManager.Pages.Miscellaneous {
             [JsonProperty("downloadsRule")]
             private string _autoDownloadRule;
 
+            [CanBeNull]
             public string AutoDownloadRule {
                 get => _autoDownloadRule;
                 set => Apply(value, ref _autoDownloadRule, () => _autoSetRule = false);
@@ -204,17 +235,58 @@ namespace AcManager.Pages.Miscellaneous {
             public List<string> RedirectsTo { get; } = new List<string>();
 
             public void AddRedirectsTo(string id) {
+                if (string.IsNullOrWhiteSpace(id) || RedirectsTo.FirstOrDefault() == id) return;
                 if (RedirectsTo.Remove(id)) {
                     RedirectsTo.Insert(0, id);
                 } else {
                     RedirectsTo.Add(id);
                 }
+
+                UpdateRedirectsToNames();
+                OnPropertyChanged(nameof(RedirectsTo));
             }
 
-            public IEnumerable<string> RedirectsToSources => RedirectsTo.Select(x => Instance.WebSources.GetByIdOrDefault(x)?.Name).NonNull();
+            public BetterObservableCollection<string> RedirectsToNames { get; } = new BetterObservableCollection<string>();
+
+            private Busy _redirectsToNamesBusy = new Busy();
+
+            private void UpdateRedirectsToNames() {
+                _redirectsToNamesBusy.Yield(() => RedirectsToNames.ReplaceEverythingBy_Direct(
+                        RedirectsTo.Select(x => Instance.WebSources.GetByIdOrDefault(x)?.Name).NonNull()));
+            }
+
+            private static readonly string ScriptPrefix = @"javascript:";
 
             public static bool IsScriptRule(string rule) {
-                return rule.StartsWith(@"javascript:", StringComparison.OrdinalIgnoreCase);
+                return rule.StartsWith(ScriptPrefix, StringComparison.OrdinalIgnoreCase);
+            }
+
+            public static string CompactRule(string rule) {
+                if (IsScriptRule(rule)) return rule;
+
+                // Cut out spaces for CSS selector
+                var wrapped = rule.WrapQuoted(out var unwrap);
+                return unwrap(Regex.Replace(wrapped, @"\s+", ""));
+            }
+
+            public static string GetActionScript(string rule) {
+                var code = IsScriptRule(rule)
+                        ? $@"eval({JsonConvert.SerializeObject(rule.ApartFromFirst(ScriptPrefix, StringComparison.OrdinalIgnoreCase))});"
+                        : $@"document.querySelector({JsonConvert.SerializeObject(rule)}).click();";
+                return @"
+window.$PAUSEKEY = true;
+var foundCallback = false;
+try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code)
+                                           .Replace(@"$PAUSEKEY", PauseKey);
+            }
+
+            public static string GetCheckScript(string rule) {
+                var code = IsScriptRule(rule)
+                        ? $@"eval({JsonConvert.SerializeObject(rule.ApartFromFirst(ScriptPrefix, StringComparison.OrdinalIgnoreCase))});"
+                        : $@"foundCallback(document.querySelector({JsonConvert.SerializeObject(rule)}) != null);";
+                return @"
+function foundCallback(v){ window.external.Callback(v) }
+try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             }
 
             public static bool IsRuleSafe(string rule) {
@@ -237,19 +309,31 @@ namespace AcManager.Pages.Miscellaneous {
                         Url = url;
                     }
 
-                    var name = Regex.Match(data, @"<title>([^<]+)</title>").Groups[1].Value;
+                    var head = Regex.Match(data, @"<\s*head[\s\S]+</\s*head\s*>", RegexOptions.IgnoreCase).Value;
+                    var name = Regex.Match(head, @"<title>([^<]+)</title>").Groups[1].Value;
                     if (!string.IsNullOrWhiteSpace(name)) {
                         Name = name;
                     }
 
-                    var favicon = Regex.Match(data, @"<link\s+rel=""icon""\s+href=""([^""]+)").Groups[1].Value;
+                    var favicon = new[] {
+                        @"<link\s+rel=""(?:shortcut )?icon""\s+href=""([^""]+)",
+                        @"<link\s+rel=""apple-touch-icon""\s+href=""([^""]+)",
+                        @"<link\s+href=""([^""]+)""\s+rel=""(?:shortcut )?icon""",
+                        @"<link\s+href=""([^""]+)""\s+rel=""apple-touch-icon""",
+                    }.Select(x => Regex.Match(head, x, RegexOptions.IgnoreCase).Groups[1].Value).FirstOrDefault(x => !string.IsNullOrWhiteSpace(x));
+
                     if (!string.IsNullOrWhiteSpace(favicon)) {
-                        Favicon = favicon;
+                        Favicon = favicon.StartsWith(@"/") ? url.GetWebsiteFromUrl() + favicon : favicon;
                     } else if (!string.IsNullOrWhiteSpace(url)) {
-                        Favicon = url.Split('/').Take(3).JoinToString('/').TrimEnd('/') + @"/favicon.ico";
+                        Favicon = url.GetWebsiteFromUrl() + @"/favicon.ico";
                     }
                 }
             }));
+
+            private AsyncCommand _setGoogleFaviconCommand;
+
+            public AsyncCommand SetGoogleFaviconCommand => _setGoogleFaviconCommand ?? (_setGoogleFaviconCommand = new AsyncCommand(
+                    async () => Favicon = await FaviconProvider.GetFaviconAsync(Url)));
 
             private bool _isDeleted;
 
@@ -265,19 +349,221 @@ namespace AcManager.Pages.Miscellaneous {
                         != MessageBoxResult.Yes) return;
                 IsDeleted = true;
             }));
+
+            private DelegateCommand _shareLinkCommand;
+
+            public DelegateCommand ShareLinkCommand => _shareLinkCommand ?? (_shareLinkCommand = new DelegateCommand(() => {
+                var link = ExportAsLink(true);
+                if (link == null) {
+                    NonfatalError.Notify("Can’t share settings", "Possibly, there is too much data.");
+                    return;
+                }
+
+                SharingUiHelper.ShowShared($"Description for {Name}", link);
+            }));
+
+            private DelegateCommand _shareMarkdownCommand;
+
+            public DelegateCommand ShareMarkdownCommand => _shareMarkdownCommand ?? (_shareMarkdownCommand = new DelegateCommand(() => {
+                var link = ExportAsLink(true);
+                if (link == null) {
+                    NonfatalError.Notify("Can’t share settings", "Possibly, there is too much data.");
+                    return;
+                }
+
+                var piece = $@"### [![Icon]({FaviconProvider.GetFaviconAsync(Url).Result}) {Name}]({Url})
+
+```{(IsScriptRule(AutoDownloadRule) ? @"javascript" : @"css")}
+{AutoDownloadRule}
+```
+
+- [Import settings]({link}).";
+                Clipboard.SetText(piece);
+                Toast.Show($"Description for {Name}",
+                        "Message with details is copied to the clipboard",
+                        () => { WindowsHelper.ViewInBrowser(@"http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically"); });
+            }));
+
+            [CanBeNull]
+            private string ExportAsLink(bool single) {
+                foreach (var mode in new[] { WebSourceSerializationMode.Full, WebSourceSerializationMode.Compact }) {
+                    var link = $@"{InternalUtils.MainApiDomain}/s/q:importWebsite?";
+                    var count = 0;
+                    foreach (var source in single ? new[] { this } : WithChildren(false)) {
+                        var p = source.Serialize(mode);
+                        Logging.Write($"Serialized, length: {p?.Length}");
+                        if (p != null && link.Length + p.Length < 1600) {
+                            if (!link.EndsWith(@"?")) link += @"&";
+                            link += $@"data={Uri.EscapeDataString(p)}";
+                        } else if (count == 0) break;
+
+                        count++;
+                    }
+
+                    if (count > 0) {
+                        return link;
+                    }
+                }
+
+                return null;
+            }
+
+            public IEnumerable<WebSource> WithChildren(bool safeOnly) {
+                return IsRuleSafe(AutoDownloadRule) ? ListSources(this, new List<string>()) : new WebSource[0];
+
+                IEnumerable<WebSource> ListSources(WebSource from, ICollection<string> returned) {
+                    returned.Add(from.Id);
+                    return from.RedirectsTo
+                               .Where(x => !returned.Contains(x))
+                               .Select(x => Instance.WebSources.GetByIdOrDefault(x) ?? VirtualSources.GetByIdOrDefault(x))
+                               .Where(x => x != null && (!safeOnly || IsRuleSafe(x.AutoDownloadRule)))
+                               .SelectMany(x => ListSources(x, returned)).Prepend(from);
+                }
+            }
+
+            public string Serialize(WebSourceSerializationMode mode, string referenceUrl = null) {
+                if (mode == WebSourceSerializationMode.Compact) {
+                    return referenceUrl?.GetWebsiteFromUrl() == Url.GetWebsiteFromUrl()
+                            ? Combine(CompactRule(AutoDownloadRule))
+                            : Combine(Url, CompactRule(AutoDownloadRule));
+                }
+
+                return Favicon == FaviconProvider.GetFaviconAsync(Url).Result
+                        ? Combine(Url, Name, AutoDownloadRule)
+                        : Combine(Url, Name, Favicon, AutoDownloadRule);
+
+                byte[] Compress(byte[] data) {
+                    if (data == null) return null;
+                    try {
+                        using (var memory = new MemoryStream()) {
+                            using (var deflate = new DeflateStream(memory, CompressionMode.Compress)) {
+                                deflate.Write(data, 0, data.Length);
+                            }
+
+                            return memory.ToArray();
+                        }
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                        return null;
+                    }
+                }
+
+                string Combine(params string[] values) {
+                    var d = values.Select(Storage.Encode).JoinToString('\n');
+                    return Compress(Encoding.UTF8.GetBytes(d))?.ToCutBase64();
+                }
+            }
+
+            [CanBeNull]
+            public static WebSource Deserialize([NotNull] string websiteData, [CanBeNull] string targetUrl = null) {
+                return Deserialize(new[] { websiteData }, new[] { targetUrl }).FirstOrDefault();
+            }
+
+            [NotNull]
+            public static IEnumerable<WebSource> Deserialize([NotNull] string[] websiteData, [CanBeNull] string[] targetUrls = null) {
+                var urlsWebSites = targetUrls?.Select(x => x.GetWebsiteFromUrl()?.ToLowerInvariant()).NonNull().Distinct().ToList();
+                foreach (var piece in websiteData) {
+                    var s = Decompress(piece.FromCutBase64())?.ToUtf8String().Split('\n').Select(Storage.Decode).ToArray();
+                    string url = s?.FirstOrDefault(), name = null, favicon = null, autoDownloadRule = s?.LastOrDefault();
+                    switch (s?.Length) {
+                        case 1:
+                            // Auto-download rule
+                            if (urlsWebSites?.Count != 1) continue;
+                            url = urlsWebSites[0];
+                            break;
+                        case 2:
+                            // URL, auto-download rule
+                            break;
+                        case 3:
+                            // URL, name, auto-download rule
+                            name = s[1];
+                            break;
+                        case 4:
+                            // URL, name, favicon, auto-download rule
+                            name = s[1];
+                            favicon = s[2];
+                            break;
+                        default:
+                            Logging.Warning("Wrong number of pieces: " + (s == null ? "NULL" : s.Length + "\n" + s.JoinToString("\n")));
+                            continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(url)) {
+                        Logging.Warning("URL is missing");
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(autoDownloadRule)) {
+                        Logging.Warning("Rule is missing: " + url);
+                        continue;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(name)) {
+                        name = url;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(favicon)) {
+                        favicon = FaviconProvider.GetFaviconAsync(url).Result;
+                    }
+
+                    yield return new WebSource(null, url) {
+                        Name = name,
+                        Favicon = favicon,
+                        AutoDownloadRule = autoDownloadRule,
+                        IsEnabled = true,
+                        CaptureDownloads = true,
+                    };
+
+                    byte[] Decompress(byte[] data) {
+                        if (data == null) return null;
+                        using (var input = new MemoryStream(data))
+                        using (var output = new MemoryStream()) {
+                            using (var dstream = new DeflateStream(input, CompressionMode.Decompress)) {
+                                dstream.CopyTo(output);
+                            }
+
+                            return output.ToArray();
+                        }
+                    }
+                }
+            }
+
+            CommandDictionary ILinkNavigator.Commands { get; set; } = new CommandDictionary();
+
+            event EventHandler<NavigateEventArgs> ILinkNavigator.PreviewNavigate {
+                add { }
+                remove { }
+            }
+
+            public void Navigate(Uri uri, FrameworkElement source, string parameter = null) {
+                switch (uri.OriginalString) {
+                    case "cmd://shareSettings?format=link":
+                        ShareLinkCommand.Execute();
+                        break;
+                    case "cmd://shareSettings?format=markdown":
+                        ShareMarkdownCommand.Execute();
+                        break;
+                    default:
+                        BbCodeBlock.DefaultLinkNavigator.Navigate(uri, source, parameter);
+                        break;
+                }
+            }
         }
 
         private static readonly Lazier<IReadOnlyCollection<string>> FoundDomains = Lazier.CreateAsync(async () => {
-            using (WaitingDialog.Create("Wait a second…"))
-            using (var wc = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromSeconds(5)))
-            using (wc.Victim.SetUserAgent(null)) {
-                var data = await wc.Victim.DownloadStringTaskAsync(@"https://duckduckgo.com/html/?q=assetto+corsa+mods");
+            using (var wc = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromSeconds(10)))
+            using (wc.Victim.SetUserAgent(@"Seeker/1.0." + MathUtils.Random(1000, 9999))) {
+                var data = await wc.Victim.DownloadStringTaskAsync(new[] {
+                    @"https://duckduckgo.com/html/?q=assetto+corsa+mods",
+                    @"https://duckduckgo.com/html/?q=mods+assetto+corsa",
+                    @"https://duckduckgo.com/html/?q=mods+for+assetto+corsa",
+                }.RandomElement());
                 return (IReadOnlyCollection<string>)Regex.Matches(data, @"result__a"" href=""([^""]+)""").OfType<Match>()
-                                                         .Select(GetUrl).Where(SanityCheck).Take(10).ToList();
+                                                         .Select(GetUrl).Where(SanityCheck).Take(20).ToList();
             }
 
             bool SanityCheck(string v) {
-                return !new[] { 0, 1491093284, 518443847, 1564670876, 110165427 }.ArrayContains(-v?.GetHashCode() ?? 0);
+                return !new[] { 0, -2060675037, 1491093284, 518443847, 1564670876, 110165427 }.ArrayContains(-v?.GetHashCode() ?? 0);
             }
 
             string GetUrl(Match x) {
@@ -292,21 +578,24 @@ namespace AcManager.Pages.Miscellaneous {
             public ChangeableObservableCollection<WebSource> WebSources { get; }
             public BetterListCollectionView WebSourcesView { get; }
 
+            private readonly StoredValue<string> _selectedSourceId = Stored.Get<string>("ModsWebBrowser.SelectedSourceId");
+
             private WebSource _selectedSource;
 
+            [CanBeNull]
             public WebSource SelectedSource {
                 get => _selectedSource;
-                set => Apply(value, ref _selectedSource);
+                set => Apply(value, ref _selectedSource, () => { _selectedSourceId.Value = value?.Id; });
             }
 
             private readonly Storage _storage;
 
             public ListViewModel() {
-                _storage = new Storage(FilesStorage.Instance.GetFilename("Sites.data"));
+                _storage = new Storage(FilesStorage.Instance.GetFilename("Websites.data"));
                 WebSources = new ChangeableObservableCollection<WebSource>(_storage.Keys.Select(x => _storage.GetObject<WebSource>(x)).NonNull());
                 WebSources.ItemPropertyChanged += OnItemPropertyChanged;
                 WebSources.CollectionChanged += OnCollectionChanged;
-                SelectedSource = WebSources.FirstOrDefault();
+                SelectedSource = WebSources.GetByIdOrDefault(_selectedSourceId.Value) ?? WebSources.FirstOrDefault();
 
                 WebSourcesView = new BetterListCollectionView(WebSources);
                 WebSourcesView.SortDescriptions.Add(new SortDescription(nameof(WebSource.Name), ListSortDirection.Ascending));
@@ -317,16 +606,67 @@ namespace AcManager.Pages.Miscellaneous {
             private AsyncCommand _addNewSourceCommand;
 
             public AsyncCommand AddNewSourceCommand => _addNewSourceCommand ?? (_addNewSourceCommand = new AsyncCommand(async () => {
-                var url = Prompt.Show("Enter URL for new source:", "Add new source", required: true, maxLength: 80, watermark: "?",
-                        suggestions: await FoundDomains.GetValueAsync(),
-                        comment: $"Suggestions are provided by [url={BbCodeBlock.EncodeAttribute("https://duckduckgo.com/")}]DuckDuckGo[/url] search engine. "
-                                + "Content Manager doesn’t encourage you to use any of them.");
-                if (url == null) return;
+                var suggestions = new BetterObservableCollection<string>();
+                FoundDomains.GetValueAsync().ContinueWith(t => {
+                    if (t.Result != null) {
+                        suggestions.ReplaceEverythingBy_Direct(t.Result);
+                    }
+                }, TaskContinuationOptions.OnlyOnRanToCompletion).Ignore();
 
-                var newSource = new WebSource(null, url);
+                var url = await Prompt.ShowAsync("Enter URL for a new website:", "Add new website", required: true, maxLength: 80, placeholder: "?",
+                        suggestions: suggestions, comment: SuggestionsMessage());
+                if (string.IsNullOrWhiteSpace(url)) return;
+
+                var newSource = new WebSource(null, url.Trim());
+                LastStep(newSource).Ignore();
+
                 WebSources.AddSorted(newSource, this);
                 SelectedSource = newSource;
             }));
+
+            private static string SuggestionsMessage() {
+                var source = $"[url={BbCodeBlock.EncodeAttribute("https://duckduckgo.com/")}]DuckDuckGo[/url] search engine";
+                return $"Suggestions, if any, are provided by {source}.\nContent Manager doesn’t encourage you to use any of them.";
+            }
+
+            private static async Task LastStep(WebSource source) {
+                var extraDetailsLoaded = false;
+
+                if (!SettingsHolder.WebBlocks.ModsAutoLoadRuleForNew || !SettingsHolder.WebBlocks.ModsAutoLoadExtraForNew) {
+                    LoadExtraDetailsFromWebsite();
+                }
+
+                if (SettingsHolder.WebBlocks.ModsAutoLoadRuleForNew) {
+                    var suggested = await GetSuggestionAsync(source.Url);
+                    if (suggested != null) {
+                        if (string.IsNullOrEmpty(source.AutoDownloadRule)) {
+                            source.AutoDownloadRule = suggested.Rule;
+                        }
+
+                        if (SettingsHolder.WebBlocks.ModsAutoLoadExtraForNew) {
+                            var s = WebSource.Deserialize(suggested.Data).FirstOrDefault();
+                            if (s != null && s.AutoDownloadRule == suggested.Rule
+                                    && string.Equals(CleanUp(s.Url), CleanUp(source.Url), StringComparison.OrdinalIgnoreCase)) {
+                                source.Name = s.Name;
+                                source.Favicon = s.Favicon;
+                                extraDetailsLoaded = true;
+                            }
+                        }
+                    }
+                }
+
+                LoadExtraDetailsFromWebsite();
+
+                void LoadExtraDetailsFromWebsite() {
+                    if (extraDetailsLoaded) return;
+                    extraDetailsLoaded = true;
+                    source.UpdateDisplayNameCommand.ExecuteAsync().Ignore();
+                }
+
+                string CleanUp(string url) {
+                    return Regex.Replace(url, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/?(?:[\?#].+)?$", "", RegexOptions.IgnoreCase);
+                }
+            }
 
             private readonly Busy _saveBusy = new Busy();
 
@@ -390,31 +730,46 @@ namespace AcManager.Pages.Miscellaneous {
                 return x?.Name?.CompareTo(y?.Name) ?? 0;
             }
 
-            bool ILoaderFactory.Test(string url) {
-                return GetSource(url, out _) != null;
+            async Task<bool> ILoaderFactory.TestAsync(string url, CancellationToken cancellation) {
+                if (GetSource(url, out _) != null) return true;
+
+                if (SettingsHolder.WebBlocks.ModsAutoLoadRuleForUnknown) {
+                    var suggested = await GetSuggestionAsync(url);
+                    var source = suggested == null ? null : WebSource.Deserialize(suggested.Data).FirstOrDefault();
+                    if (source == null || suggested.Rule != source.AutoDownloadRule
+                            || !string.Equals(source.Url.GetDomainNameFromUrl(), url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
+                        return false;
+                    }
+
+                    Logging.Write("Suggested source is added: " + source.Name);
+                    VirtualSources.Add(source);
+                    return true;
+                }
+
+                return false;
             }
 
-            ILoader ILoaderFactory.Create(string url) {
+            Task<ILoader> ILoaderFactory.CreateAsync(string url, CancellationToken cancellation) {
                 Logging.Debug(url);
 
                 var source = GetSource(url, out var isVirtual);
                 if (source != null) {
                     Logging.Debug("Fitting source: " + source.Name);
-                    return new BrowserLoader(source, isVirtual, url);
+                    return Task.FromResult<ILoader>(new BrowserLoader(source, isVirtual, url));
                 }
 
                 Logging.Debug("No fitting sources found");
 
                 if (SentToInstall.Contains(url)) {
                     Logging.Debug("Using fake source for installation command without details");
-                    return new BrowserLoader(new WebSource(null, url) {
+                    return Task.FromResult<ILoader>(new BrowserLoader(new WebSource(null, url) {
                         Name = url.GetDomainNameFromUrl(),
                         CaptureDownloads = true,
                         IsEnabled = true,
-                    }, true, url);
+                    }, true, url));
                 }
 
-                return null;
+                return Task.FromResult<ILoader>(null);
             }
         }
 
@@ -513,21 +868,16 @@ window.$KEY = outline.stop.bind(outline);
 
             private readonly string _url;
 
+            public ILoader Parent { get; set; }
+
             public BrowserLoader([NotNull] WebSource source, bool isVirtual, string url) {
                 _source = source;
                 _isVirtual = isVirtual;
                 _url = url;
             }
 
-            private readonly List<BrowserLoader> _parents = new List<BrowserLoader>();
-
             private void MarkParent(BrowserLoader parent) {
                 if (parent._source.Id == _source.Id) return;
-
-                if (!_parents.Contains(parent)) {
-                    _parents.Add(parent);
-                }
-
                 parent._source.AddRedirectsTo(_source.Id);
             }
 
@@ -541,6 +891,12 @@ window.$KEY = outline.stop.bind(outline);
             private WebBlock _webBlock;
 
             Task<bool> ILoader.PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
+                for (var parent = Parent; parent != null; parent = parent.Parent) {
+                    if (parent is BrowserLoader browserLoader) {
+                        MarkParent(browserLoader);
+                    }
+                }
+
                 return Task.FromResult(true);
             }
 
@@ -559,13 +915,8 @@ window.$KEY = outline.stop.bind(outline);
                 _progress = null;
 
                 try {
-                    var newLoader = FlexibleLoader.CreateLoader(url);
-                    if (newLoader is BrowserLoader browserLoader) {
-                        browserLoader.MarkParent(this);
-                        foreach (var parent in _parents) {
-                            browserLoader.MarkParent(parent);
-                        }
-                    }
+                    var newLoader = await FlexibleLoader.CreateLoaderAsync(url, this, default(CancellationToken));
+                    if (newLoader == null) throw new Exception("Unexpected exception #4313");
 
                     Logging.Write("Loader: " + newLoader.GetType().Name);
 
@@ -679,10 +1030,9 @@ window.$KEY = outline.stop.bind(outline);
                 _webBlock.PageLoaded += (sender, args) => { Logging.Warning(args.Tab.LoadedUrl); };
                 _webBlock.NewWindow += OnNewWindow;
 
-                _finder = new ModsWebFinder {
+                _finder = new ModsWebFinder(_source) {
                     Margin = new Thickness(24, 0, 24, 0),
-                    Visibility = Visibility.Collapsed,
-                    Model = { Value = _source.AutoDownloadRule }
+                    Visibility = Visibility.Collapsed
                 };
 
                 DockPanel.SetDock(_finder, Dock.Bottom);
@@ -758,7 +1108,9 @@ window.$KEY = outline.stop.bind(outline);
                 }
             }
 
-            private void OnNewWindow(object o, NewWindowEventArgs args) {
+            private async void OnNewWindow(object o, NewWindowEventArgs args) {
+                args.Cancel = true;
+
                 if (_testToken == null && !_ranRule) {
                     // Not in auto-download mode, usual behavior
                     OpenNewTab();
@@ -771,10 +1123,13 @@ window.$KEY = outline.stop.bind(outline);
                     return;
                 }
 
-                if (FlexibleLoader.IsSupported(args.Url)) {
+                void OpenNewTab() {
+                    _webBlock.OpenNewTab(args.Url);
+                }
+
+                if (await FlexibleLoader.IsSupportedAsync(args.Url, default(CancellationToken))) {
                     // Create a Loader and use it
-                    Logging.Warning("There is a loader for URL: " + args.Url);
-                    args.Cancel = true;
+                    Logging.Write("There is a loader for URL: " + args.Url);
 
                     if (_testToken != null) {
                         _testMessage = $" • Redirect to known website: {args.Url}.";
@@ -783,16 +1138,9 @@ window.$KEY = outline.stop.bind(outline);
                     }
 
                     LoadViaLoader(args.Url);
-                    return;
-                }
-
-                // Not supported and unknown, skip
-                Logging.Warning("No loader for URL: " + args.Url);
-                args.Cancel = true;
-
-                void OpenNewTab() {
-                    _webBlock.OpenNewTab(args.Url);
-                    args.Cancel = true;
+                } else {
+                    // Not supported and unknown, skip
+                    Logging.Write("No loader for URL: " + args.Url);
                 }
             }
 
@@ -812,16 +1160,7 @@ window.$KEY = outline.stop.bind(outline);
             private void RunRule(string rule) {
                 rule = rule.Trim();
                 _ranRule = true;
-                _webBlock.CurrentTab?.Execute(@"
-window.$PAUSEKEY = true;
-try {
-    (function (){ $CODE; })();
-} catch (e){
-    console.warn(e);
-}".Replace(@"$CODE", WebSource.IsScriptRule(rule)
-        ? $@"eval({JsonConvert.SerializeObject(rule.SubstringExt(11))}"
-        : $@"document.querySelector({JsonConvert.SerializeObject(rule)}).click();")
-  .Replace(@"$PAUSEKEY", PauseKey));
+                _webBlock.CurrentTab?.Execute(WebSource.GetActionScript(rule));
             }
 
             private AsyncCommand<CancellationToken?> _testRuleCommand;
@@ -926,6 +1265,7 @@ try {
                             _isVirtual = false;
                             _message.BbCode = GetMessage();
                         }
+
                         break;
                 }
             }
@@ -954,53 +1294,14 @@ try {
 
             public DelegateCommand ShareLinkCommand => _shareLinkCommand ?? (_shareLinkCommand = new DelegateCommand(() => {
                 var link = $@"{InternalUtils.MainApiDomain}/s/q:install?url={Uri.EscapeDataString(DownloadPageUrl)}&fromWebsite=1";
-
-                foreach (var source in ListSources(Source)) {
-                    var p = SerializeSource(source);
+                foreach (var source in Source.WithChildren(true).Where(x => WebSource.IsRuleSafe(x.AutoDownloadRule))) {
+                    var p = source.Serialize(WebSourceSerializationMode.Compact, DownloadPageUrl);
                     if (p != null && link.Length + p.Length < 1600) {
-                        link += $@"&websiteData[]={Uri.EscapeDataString(p)}";
+                        link += $@"&websiteData={Uri.EscapeDataString(p)}";
                     }
                 }
 
                 SharingUiHelper.ShowShared($"Link to install from {Source.Name}", link);
-
-                IEnumerable<WebSource> ListSources(WebSource from, List<string> returned = null) {
-                    if (returned == null) returned = new List<string>();
-                    returned.Add(from.Id);
-                    return from.RedirectsTo
-                               .Where(x => !returned.Contains(x))
-                               .Select(x => Instance.WebSources.GetByIdOrDefault(x) ?? VirtualSources.GetByIdOrDefault(x))
-                               .Where(x => x != null && WebSource.IsRuleSafe(x.AutoDownloadRule))
-                               .SelectMany(x => ListSources(x, returned)).Prepend(from);
-                }
-
-                byte[] Compress(byte[] data) {
-                    if (data == null) return null;
-                    try {
-                        using (var memory = new MemoryStream()) {
-                            using (var deflate = new DeflateStream(memory, CompressionMode.Compress)) {
-                                deflate.Write(data, 0, data.Length);
-                            }
-                            return memory.ToArray();
-                        }
-                    } catch (Exception e) {
-                        Logging.Error(e);
-                        return null;
-                    }
-                }
-
-                string SerializeSource(WebSource s) {
-                    var c = Combine(s.Url, s.Name, s.Favicon, Source.AutoDownloadRule);
-                    if (c?.Length > 200) {
-                        c = Combine(s.Url, null, null, Source.AutoDownloadRule);
-                    }
-                    return c?.Length > 300 ? null : c;
-                }
-
-                string Combine(params string[] values) {
-                    var d = values.JoinToString('\n');
-                    return Compress(Encoding.UTF8.GetBytes(d))?.ToCutBase64();
-                }
             }, () => DownloadPageUrl != null));
 
             public ViewModel([NotNull] WebSource source) {
@@ -1008,36 +1309,25 @@ try {
             }
         }
 
+        public static async Task<int?> ImportWebsitesAsync([NotNull] string[] websiteData,
+                [CanBeNull] Func<IEnumerable<string>, Task<bool>> unsafeWarningCallback) {
+            var items = WebSource.Deserialize(websiteData).Where(x => GetSource(x.Url, out _) == null).ToList();
+            if (items.Any(x => !WebSource.IsRuleSafe(x.AutoDownloadRule))) {
+                if (unsafeWarningCallback != null && !await unsafeWarningCallback.Invoke(items.Select(x => x.Name))) {
+                    return null;
+                }
+            }
+
+            foreach (var item in items) {
+                Instance.WebSources.Add(item);
+            }
+
+            return items.Count;
+        }
+
         public static void PrepareForCommand(string[] urls, [NotNull] string[] websiteData) {
-            foreach (var piece in websiteData) {
-                var s = Decompress(piece.FromCutBase64())?.ToUtf8String().Split('\n');
-                if (s?.Length != 4) {
-                    continue;
-                }
-
-                if (GetSource(s[0], out _) != null) {
-                    continue;
-                }
-
-                VirtualSources.Add(new WebSource(null, s[0]) {
-                    Name = s[1] ?? "",
-                    Favicon = s[2],
-                    AutoDownloadRule = s[3],
-                    IsEnabled = true,
-                    CaptureDownloads = true,
-                });
-
-                byte[] Decompress(byte[] data) {
-                    if (data == null) return null;
-                    using (var input = new MemoryStream(data))
-                    using (var output = new MemoryStream()) {
-                        using (var dstream = new DeflateStream(input, CompressionMode.Decompress)) {
-                            dstream.CopyTo(output);
-                        }
-
-                        return output.ToArray();
-                    }
-                }
+            foreach (var source in WebSource.Deserialize(websiteData, urls).Where(x => GetSource(x.Url, out _) == null)) {
+                VirtualSources.Add(source);
             }
 
             SentToInstall.AddRange(urls.Where(x => GetSource(x, out _) == null));
@@ -1081,13 +1371,7 @@ try {
             using (var cts = new CancellationTokenSource()) {
                 ctsRef[0] = cts;
                 web.SetJsBridge<CheckingJsBridge>(x => x.CallbackFn = ObjCallbackFn);
-                tab.Execute(@"try {
-    (function (){ $CODE; })();
-} catch (e){
-    console.warn(e);
-}".Replace(@"$CODE", WebSource.IsScriptRule(rule)
-        ? $@"eval({JsonConvert.SerializeObject(rule.SubstringExt(11))}"
-        : $@"window.external.Callback(document.querySelector({JsonConvert.SerializeObject(rule)}) != null);"));
+                tab.Execute(WebSource.GetCheckScript(rule));
 
                 try {
                     await Task.Delay(1000, cts.Token);

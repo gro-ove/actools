@@ -383,7 +383,7 @@ namespace AcManager {
             }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"),
-                    new DelegateCommand<string>(id => { NeutralColorGradingLut.CreateNeutralLut(id.As(16)); }));
+                    new DelegateCommand<string>(id => NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {

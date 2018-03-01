@@ -296,6 +296,8 @@ namespace AcManager.Pages.Drive {
 
         private void OnPageLoaded(object sender, WebTabEventArgs e) {
             var uri = e.Tab.LoadedUrl;
+            if (uri == null) return;
+
             var match = Regex.Match(uri, @"\beventId=(\d+)");
             if (match.Success) {
                 Model.EventId = match.Groups[1].Value;

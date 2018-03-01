@@ -17,7 +17,8 @@
           <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
         </DockPanel>
       </Label>
-      <mui:BetterTextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" AcceptsReturn="True" TextWrapping="Wrap" Height="60"
+      <mui:BetterComboBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Placeholder="?"
+          ItemsSource="{Binding Source.RuleSuggestions.Value}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"
           FontSize="{DynamicResource SmallFontSize}" />
     </DockPanel>
   </StackPanel>

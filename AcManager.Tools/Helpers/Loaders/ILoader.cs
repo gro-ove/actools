@@ -5,6 +5,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.Loaders {
     public interface ILoader {
+        [CanBeNull]
+        ILoader Parent { get; set; }
+
         long? TotalSize { get; }
 
         [CanBeNull]
