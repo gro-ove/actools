@@ -17,6 +17,10 @@ using JetBrains.Annotations;
 using Path = System.IO.Path;
 
 namespace AcManager.Tools.ContentInstallation {
+    public enum AddInstallMode {
+        ShareTasks, ForceNewTask
+    }
+
     public class ContentInstallationManager : NotifyPropertyChanged {
         public static bool OptionSaveAndRestoreDownloads = false;
 
@@ -47,7 +51,7 @@ namespace AcManager.Tools.ContentInstallation {
                     if (entry.State == ContentInstallationEntryState.Finished) {
                         DownloadList.Add(entry);
                     } else {
-                        InstallAsync(entry);
+                        InstallAsync(entry, AddInstallMode.ForceNewTask);
                     }
                 }
             }
@@ -180,21 +184,25 @@ namespace AcManager.Tools.ContentInstallation {
             UnfinishedItemsCount = unfinishedItems;
         }
 
-        /*public void Cancel() {
-            foreach (var entry in DownloadList.ToList()) {
-                entry.CancelCommand.Execute();
-            }
-        }*/
-
         public event EventHandler TaskAdded;
 
         private readonly TaskCache _taskCache = new TaskCache();
 
-        private Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry) {
+        private Task<bool> InstallAsync([NotNull] ContentInstallationEntry entry, AddInstallMode mode) {
             if (entry == null) throw new ArgumentNullException(nameof(entry));
 
+            if (mode == AddInstallMode.ForceNewTask) {
+                TaskAdded?.Invoke(this, EventArgs.Empty);
+                DownloadList.Add(entry);
+                return entry.RunAsync();
+            }
+
             return _taskCache.Get(() => ActionExtension.InvokeInMainThread(async () => {
-                await Task.Yield();
+                // Most likely, it’s here to solve some issues with InstallAdditionalContentDialog. Of course,
+                // it’s no place for shit like that, but I guess it was a temporal solution. Now, there is no
+                // need for it, but just in case, maybe it does something else as well…
+                // await Task.Yield();
+
                 TaskAdded?.Invoke(this, EventArgs.Empty);
                 DownloadList.Add(entry);
                 return await entry.RunAsync();
@@ -202,7 +210,11 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
-            return InstallAsync(new ContentInstallationEntry(source, installationParams));
+            return InstallAsync(new ContentInstallationEntry(source, installationParams), AddInstallMode.ShareTasks);
+        }
+
+        public Task<bool> InstallAsync([NotNull] string source, AddInstallMode mode, ContentInstallationParams installationParams = null) {
+            return InstallAsync(new ContentInstallationEntry(source, installationParams), mode);
         }
 
         public static bool IsRemoteSource(string source) {

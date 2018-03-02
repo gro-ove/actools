@@ -585,17 +585,23 @@
   <data name="Common_PleaseWait" xml:space="preserve">
     <value>Please wait…</value>
   </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} out of {1}</value>
+  </data>
   <data name="Progress_Downloading" xml:space="preserve">
     <value>Loaded {0}</value>
   </data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>Loaded {0} of {1}</value>
+    <value>Loaded {0} out of {1}</value>
   </data>
   <data name="Progress_Uploading" xml:space="preserve">
     <value>Uploaded {0}</value>
   </data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Uploaded {0} of {1}</value>
+    <value>Uploaded {0} out of {1}</value>
   </data>
   <data name="Common_Add" xml:space="preserve">
     <value>Add</value>

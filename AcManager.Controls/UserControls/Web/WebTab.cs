@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls.UserControls.CefSharp;
-using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
@@ -16,7 +15,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace AcManager.Controls.UserControls {
+namespace AcManager.Controls.UserControls.Web {
     public class WebTab : NotifyPropertyChanged {
         [NotNull]
         private static IWebSomething GetSomething() {

@@ -506,7 +506,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var cache = GetCachedFilename(uri);
             var cacheFile = cache == null ? null : new FileInfo(cache);
             if (cacheFile?.Exists == true) {
-                httpRequest.IfModifiedSince = cacheFile.LastWriteTime;
+                var lastWriteTime = cacheFile.LastWriteTime;
+                if ((DateTime.Now - lastWriteTime).TotalDays < 1d) {
+                    // Because barely any servers respect If-Modified-Since header
+                    return LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                }
+
+                httpRequest.IfModifiedSince = lastWriteTime;
             }
 
             try {
@@ -524,8 +530,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     var bytes = memory.ToArray();
                     if (cache != null) {
                         await Task.Run(() => {
-                            File.WriteAllBytes(cache, bytes);
                             try {
+                                File.WriteAllBytes(cache, bytes);
                                 cacheFile.LastWriteTime = response.LastModified;
                             } catch (IOException) { }
                         });

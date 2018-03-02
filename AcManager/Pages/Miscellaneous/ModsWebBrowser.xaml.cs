@@ -594,17 +594,15 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         private static readonly Lazier<IReadOnlyCollection<string>> FoundDomains = Lazier.CreateAsync(async () => {
             using (var wc = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromSeconds(10)))
             using (wc.Victim.SetUserAgent(@"Seeker/1.0." + MathUtils.Random(1000, 9999))) {
-                var data = await wc.Victim.DownloadStringTaskAsync(new[] {
-                    @"https://duckduckgo.com/html/?q=assetto+corsa+mods",
-                    @"https://duckduckgo.com/html/?q=mods+assetto+corsa",
-                    @"https://duckduckgo.com/html/?q=mods+for+assetto+corsa",
-                }.RandomElement());
+                var data = await wc.Victim.DownloadStringTaskAsync(@"https://duckduckgo.com/html/?q=mods+assetto+corsa");
                 return (IReadOnlyCollection<string>)Regex.Matches(data, @"result__a"" href=""([^""]+)""").OfType<Match>()
-                                                         .Select(GetUrl).Where(SanityCheck).Take(20).ToList();
+                                                         .Select(GetUrl).Where(SanityCheck).Take(15).ToList();
             }
 
             bool SanityCheck(string v) {
-                return !new[] { 0, -2060675037, 1491093284, 518443847, 1564670876, 110165427 }.ArrayContains(-v?.GetHashCode() ?? 0);
+                return !new[] {
+                    0, -2060675037, 1491093284, 518443847, 1564670876, 110165427, 1919238839
+                }.ArrayContains(-v?.GetHashCode() ?? 0);
             }
 
             string GetUrl(Match x) {
@@ -1037,7 +1035,7 @@ window.$KEY = outline.stop.bind(outline);
                     _dialog.Hide();
 
                     try {
-                        resultTask.TrySetResult(await downloader.Download(destination.Filename, progress, _cancellation));
+                        resultTask.TrySetResult(await downloader.DownloadAsync(destination.Filename, progress, _cancellation));
                     } catch (Exception e) {
                         Logging.Warning(e);
                         resultTask.TrySetException(e);

@@ -11,7 +11,6 @@ using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
-using AcTools;
 using CefSharp;
 using CefSharp.Wpf;
 using FirstFloor.ModernUI;
@@ -44,6 +43,9 @@ namespace AcManager.Controls.UserControls.CefSharp {
         public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
             if (_inner == null) {
                 if (!Cef.IsInitialized) {
+                    // TODO: Try new way?
+                    CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+
                     var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
                     var settings = new CefSettings {
                         UserAgent = DefaultUserAgent,
@@ -59,6 +61,8 @@ namespace AcManager.Controls.UserControls.CefSharp {
                         RemoteDebuggingPort = 45451,
 #endif
                     };
+
+                    settings.SetOffScreenRenderingBestPerformanceArgs();
 
                     settings.RegisterScheme(new CefCustomScheme {
                         SchemeName = AcApiHandlerFactory.AcSchemeName,
@@ -90,14 +94,15 @@ namespace AcManager.Controls.UserControls.CefSharp {
                         FileAccessFromFileUrls = CefState.Enabled,
                         UniversalAccessFromFileUrls = CefState.Enabled,
                         WebSecurity = CefState.Default,
-                        OffScreenTransparentBackground = preferTransparentBackground,
+                        BackgroundColor = preferTransparentBackground ? 0U : 0255255255,
                         WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
                         WebGl = CefState.Disabled,
                         Plugins = CefState.Disabled,
                     },
-                    // DownloadHandler = _downloadHandler,
-                    // RequestHandler = _requestHandler,
+                    DownloadHandler = _downloadHandler,
+                    RequestHandler = _requestHandler,
                     MenuHandler = new MenuHandler(),
+                    Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White)
                 };
 
                 RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
@@ -205,7 +210,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public void SetDownloadListener(IWebDownloadListener listener) {
-            _downloadHandler.Register(_inner, new[] { @"*" }, listener);
+            _downloadHandler.Listener = listener;
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior mode) {

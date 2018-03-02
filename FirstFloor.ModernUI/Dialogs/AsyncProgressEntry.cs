@@ -26,7 +26,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             _averageSpeed += (speed - _averageSpeed) * Math.Min(1d, elapsed * Math.Max(1d, _averageSpeed / (speed + 0.001) - 1));
 
             var displaySpeed = $"{((long)_averageSpeed).ToReadableSize(1)}/s";
-            if (total == -1) return displaySpeed;
+            if (total == -1 || total < processed) return displaySpeed;
 
             var left = total - processed;
             var leftTime = TimeSpan.FromSeconds(left / _averageSpeed);
@@ -62,25 +62,39 @@ namespace FirstFloor.ModernUI.Dialogs {
         public double? Progress { get; }
 
         public static AsyncProgressEntry CreateDownloading(long receivedBytes, long totalBytes, [CanBeNull] AsyncProgressBytesStopwatch stopwatch) {
-            var message = totalBytes == -1
-                    ? string.Format(UiStrings.Progress_Downloading, receivedBytes.ToReadableSize(1))
-                    : string.Format(UiStrings.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1));
+            var knownTotal = totalBytes > receivedBytes;
+
+            string message;
             if (stopwatch != null) {
-                message += ", " + stopwatch.GetBytesProgressInTime(receivedBytes, totalBytes);
+                message = (knownTotal
+                        ? string.Format(UiStrings.Progress_Short_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1))
+                        : string.Format(UiStrings.Progress_Short, receivedBytes.ToReadableSize(1)))
+                        + ", " + stopwatch.GetBytesProgressInTime(receivedBytes, totalBytes);
+            } else {
+                message = knownTotal
+                        ? string.Format(UiStrings.Progress_Downloading_KnownTotal, receivedBytes.ToReadableSize(1), totalBytes.ToReadableSize(1))
+                        : string.Format(UiStrings.Progress_Downloading, receivedBytes.ToReadableSize(1));
             }
 
-            return totalBytes == -1 ? new AsyncProgressEntry(message, null) : new AsyncProgressEntry(message, (double)receivedBytes / totalBytes);
+            return knownTotal ? new AsyncProgressEntry(message, (double)receivedBytes / totalBytes) : new AsyncProgressEntry(message, null);
         }
 
         public static AsyncProgressEntry CreateUploading(long sentBytes, long totalBytes, [CanBeNull] AsyncProgressBytesStopwatch stopwatch) {
-            var message = totalBytes == -1
-                    ? string.Format(UiStrings.Progress_Uploading, sentBytes.ToReadableSize(1))
-                    : string.Format(UiStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1));
+            var knownTotal = totalBytes > sentBytes;
+
+            string message;
             if (stopwatch != null) {
-                message += ", " + stopwatch.GetBytesProgressInTime(sentBytes, totalBytes);
+                message = (knownTotal
+                        ? string.Format(UiStrings.Progress_Short_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1))
+                        : string.Format(UiStrings.Progress_Short, sentBytes.ToReadableSize(1)))
+                        + ", " + stopwatch.GetBytesProgressInTime(sentBytes, totalBytes);
+            } else {
+                message = knownTotal
+                        ? string.Format(UiStrings.Progress_Uploading_KnownTotal, sentBytes.ToReadableSize(1), totalBytes.ToReadableSize(1))
+                        : string.Format(UiStrings.Progress_Uploading, sentBytes.ToReadableSize(1));
             }
 
-            return totalBytes == -1 ? new AsyncProgressEntry(message, null) : new AsyncProgressEntry(message, (double)sentBytes / totalBytes);
+            return knownTotal ? new AsyncProgressEntry(message, (double)sentBytes / totalBytes) : new AsyncProgressEntry(message, null);
         }
 
         public override string ToString() {

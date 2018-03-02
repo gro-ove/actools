@@ -24,11 +24,6 @@ namespace AcManager.UserControls {
 
             DataContext = this;
             InitializeComponent();
-            // ArgumentsHandler.HandlePasteEvent(this);
-            /*Buttons = new[] {
-                CreateExtraDialogButton("Remove completed", ContentInstallationManager.Instance.RemoveCompletedCommand),
-                IsAlone ? VisualStyleElement.Window.CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None)
-            };*/
 
             this.AddWidthCondition(x => (x - 104).Clamp(120, 240)).Add(x => Resources[@"ButtonsRowWidth"] = x);
             Plugins.Ready += OnPluginsReady;
@@ -68,5 +63,12 @@ namespace AcManager.UserControls {
         }
 
         private void OnItemMouseDown(object sender, MouseButtonEventArgs e) { }
+
+        private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
+            var scrollViewer = ((FrameworkElement)sender).FindVisualChild<ScrollViewer>();
+            if (scrollViewer == null) return;
+            scrollViewer.ScrollToVerticalOffset(scrollViewer.VerticalOffset - e.Delta);
+            e.Handled = true;
+        }
     }
 }

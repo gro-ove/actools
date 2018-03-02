@@ -21,12 +21,15 @@ namespace AcManager.Tools.Managers.Plugins {
         public static readonly Tuple<string, string>[] SupportedVersions = {
             Tuple.Create("Magick", ""),
             Tuple.Create("Awesomium", ""),
+            Tuple.Create("CefSharp", ""),
             Tuple.Create("SSE", "1.4.2.1"),
             Tuple.Create(KnownPlugins.SevenZip, "17.0.1"),
         };
 
         [JsonProperty(PropertyName = @"id")]
         public string Id { get; private set; }
+
+        public string GroupId => Id.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries)[0];
 
         [JsonProperty(PropertyName = @"name")]
         private string _name;

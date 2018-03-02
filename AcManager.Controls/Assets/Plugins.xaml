@@ -16,7 +16,7 @@
     <CheckBox IsChecked="{Binding CefFilterAds}" VerticalContentAlignment="Top">
       <CheckBox.ToolTip>
         <TextBlock MaxWidth="480"
-            Text="Please, keep in mind running those servers isn’t free. On the other hand, that Chromium-to-WPF integration is several times slower than regular Chromium-based browser, so it might be necessary in some cases." />
+            Text="Please, keep in mind running those servers isn’t free. On the other hand, that Chromium-to-WPF integration is several times slower than regular Chromium-based browser, so it might be necessary in some cases." TextWrapping="Wrap" />
       </CheckBox.ToolTip>
       <Label Content="Filter third-party scripts and ads (not recommended, but might help if you’re experiencing performance issues)" />
     </CheckBox>
@@ -173,7 +173,7 @@
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
 
-      <mui:BooleanLazySwitch TrueResourceKey="{Binding Id}" TrueResourceKeyStringFormat="PluginSettings.{0}" Value="{Binding IsReady}" />
+      <mui:BooleanLazySwitch TrueResourceKey="{Binding GroupId}" TrueResourceKeyStringFormat="PluginSettings.{0}" Value="{Binding IsReady}" />
     </StackPanel>
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding CanWork}" Value="False">

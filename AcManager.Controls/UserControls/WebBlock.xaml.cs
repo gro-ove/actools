@@ -17,6 +17,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls {
     public partial class WebBlock {
+        [CanBeNull]
+        public static IWebDownloadListener DefaultDownloadListener { get; set; }
+
         public static event EventHandler<NewWindowEventArgs> NewTabGlobal;
 
         public WebBlock() {
@@ -199,8 +202,9 @@ namespace AcManager.Controls.UserControls {
                 tab.SetStyleProvider(StyleProvider);
             }
 
-            if (DownloadListener != null) {
-                tab.SetDownloadListener(DownloadListener);
+            var downloadListener = DownloadListener ?? DefaultDownloadListener;
+            if (downloadListener != null) {
+                tab.SetDownloadListener(downloadListener);
             }
 
             tab.SetNewWindowsBehavior(NewWindowsBehavior);
@@ -398,7 +402,7 @@ namespace AcManager.Controls.UserControls {
         }
 
         private void OnDownloadListenerChanged(IWebDownloadListener newValue) {
-            Tabs.ForEach(x => x.SetDownloadListener(newValue));
+            Tabs.ForEach(x => x.SetDownloadListener(newValue ?? DefaultDownloadListener));
         }
 
         public static readonly DependencyProperty SaveKeyProperty = DependencyProperty.Register(nameof(SaveKey), typeof(string),

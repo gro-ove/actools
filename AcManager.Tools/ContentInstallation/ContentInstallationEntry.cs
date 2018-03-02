@@ -576,7 +576,6 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         try {
-
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
@@ -590,7 +589,7 @@ namespace AcManager.Tools.ContentInstallation {
                                     },
                                     () => IsPaused,
                                     new Progress<AsyncProgressEntry>(v => {
-                                        var msg = string.IsNullOrWhiteSpace(v.Message) ? "Downloading…" : $"Downloading ({v.Message.ToSentenceMember()})…";
+                                        var msg = string.IsNullOrWhiteSpace(v.Message) ? "Downloading…" : v.Message;
                                         if (v.Progress == 0d || v.Progress == null) {
                                             progress.Report(AsyncProgressEntry.FromStringIndetermitate(msg));
                                             _taskbar?.Set(TaskbarState.Indeterminate, 0d);

@@ -58,16 +58,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf, Version=53.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-53.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="CefSharp.Wpf, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
@@ -202,9 +202,6 @@
     <Compile Include="UserControls\CefSharp\MenuHandler.cs" />
     <Compile Include="UserControls\CefSharp\RequestHandler.cs" />
     <Compile Include="UserControls\CefSharp\RequestsFiltering.cs" />
-    <Compile Include="UserControls\IWebDownloader.cs" />
-    <Compile Include="UserControls\IWebDownloadListener.cs" />
-    <Compile Include="UserControls\WebTab.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
@@ -219,6 +216,8 @@
     <Compile Include="UserControls\Web\CustomStyleProviderExtension.cs" />
     <Compile Include="UserControls\Web\FormsWebBrowserWrapper.cs" />
     <Compile Include="UserControls\Web\ICustomStyleProvider.cs" />
+    <Compile Include="UserControls\Web\IWebDownloader.cs" />
+    <Compile Include="UserControls\Web\IWebDownloadListener.cs" />
     <Compile Include="UserControls\Web\IWebSomething.cs" />
     <Compile Include="UserControls\Web\NewWindowEventArgs.cs" />
     <Compile Include="UserControls\Web\NewWindowsBehavior.cs" />
@@ -227,6 +226,7 @@
     <Compile Include="UserControls\Web\JsBridgeBase.cs" />
     <Compile Include="UserControls\Web\TitleChangedEventArgs.cs" />
     <Compile Include="UserControls\Web\WebInjectEventArgs.cs" />
+    <Compile Include="UserControls\Web\WebTab.cs" />
     <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
     <Compile Include="UserControls\Web\UrlEventArgs.cs" />
     <Compile Include="UserControls\Web\WebBrowserWrapper.cs" />

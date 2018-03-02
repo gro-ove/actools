@@ -12,11 +12,6 @@ namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationParams {
         public static readonly ContentInstallationParams Default = new ContentInstallationParams();
 
-        /*[NotNull]
-        public readonly List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>
-                PreInstallation = new List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>(),
-                PostInstallation = new List<Func<IProgress<AsyncProgressEntry>, CancellationToken, Task>>();*/
-
         public bool AllowExecutables { get; set; }
 
         [CanBeNull]

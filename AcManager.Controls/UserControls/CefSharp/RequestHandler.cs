@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
@@ -65,10 +66,10 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return true;
         }
 
-        /*public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates,
+        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates,
                 ISelectClientCertificateCallback callback) {
             return true;
-        }*/
+        }
 
         public void OnRenderProcessTerminated(IWebBrowser browserControl, IBrowser browser, CefTerminationStatus status) {
             Logging.Warning(status);
@@ -82,9 +83,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return true;
         }
 
-        public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, ref string newUrl) { }
-
-        /*public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) {}*/
+        public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) {}
 
         public bool OnProtocolExecution(IWebBrowser browserControl, IBrowser browser, string url) {
             return url.StartsWith(@"mailto") || url.StartsWith(@"acmanager");

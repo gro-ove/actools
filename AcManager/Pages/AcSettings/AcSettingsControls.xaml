@@ -161,7 +161,7 @@
                   </ContextMenu>
                 </mui:ContextMenuButton>
                 <TextBlock
-                    Text="{Binding Controls.DevicesScan.ScanTime, Converter={StaticResource ReadableTimeSpanConverter}, StringFormat='{}Scan time: {0}'}" />
+                    Text="{Binding Controls.DevicesScan.ScanTime, Converter={StaticResource ReadableTimeSpanConverter}, ConverterParameter=ms, StringFormat='{}Scan time: {0}'}" />
               </DockPanel>
             </StackPanel>
           </ScrollViewer>

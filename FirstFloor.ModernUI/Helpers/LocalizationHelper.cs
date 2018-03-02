@@ -85,10 +85,18 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static string ToReadableTime(this long seconds) {
-            return ToReadableTime(TimeSpan.FromSeconds(seconds));
+            return seconds.ToReadableTime(false);
         }
 
         public static string ToReadableTime(this TimeSpan span) {
+            return span.ToReadableTime(false);
+        }
+
+        public static string ToReadableTime(this long seconds, bool considerMilliseconds) {
+            return ToReadableTime(TimeSpan.FromSeconds(seconds), considerMilliseconds);
+        }
+
+        public static string ToReadableTime(this TimeSpan span, bool considerMilliseconds) {
             var result = new List<string>();
 
             var days = (int)span.TotalDays;
@@ -115,7 +123,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 result.Add(PluralizingConverter.PluralizeExt(span.Seconds, UiStrings.Time_Second));
             }
 
-            if (span.Milliseconds > 0 && result.Count == 0) {
+            if (considerMilliseconds && span.Milliseconds > 0 && result.Count == 0) {
                 result.Add($@"{span.Milliseconds} ms");
             }
 

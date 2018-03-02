@@ -340,6 +340,7 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.OfflineMode, ref AppKeyDialog.OptionOfflineMode);
 
+            WebBlock.DefaultDownloadListener = new WebDownloadListener();
             FlexibleLoader.CmRequestHandler = new CmRequestHandler();
             ContextMenus.ContextMenusProvider = new ContextMenusProvider();
             PrepareUi();

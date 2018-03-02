@@ -17,8 +17,16 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         private static readonly List<ILoaderFactory> Factories = new List<ILoaderFactory>();
 
+        public static void Unregister([NotNull] ILoaderFactory factory) {
+            Factories.Remove(factory);
+        }
+
         public static void Register([NotNull] ILoaderFactory factory) {
             Factories.Add(factory);
+        }
+
+        public static void RegisterPriority([NotNull] ILoaderFactory factory) {
+            Factories.Insert(0, factory);
         }
 
         public static void Register<T>([NotNull] Func<string, bool> test) where T : ILoader {

@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UiStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace FirstFloor.ModernUI {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1177,11 +1177,29 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loaded {0} of {1}.
+        ///   Looks up a localized string similar to Loaded {0} out of {1}.
         /// </summary>
         public static string Progress_Downloading_KnownTotal {
             get {
                 return ResourceManager.GetString("Progress_Downloading_KnownTotal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}.
+        /// </summary>
+        public static string Progress_Short {
+            get {
+                return ResourceManager.GetString("Progress_Short", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} out of {1}.
+        /// </summary>
+        public static string Progress_Short_KnownTotal {
+            get {
+                return ResourceManager.GetString("Progress_Short_KnownTotal", resourceCulture);
             }
         }
         
@@ -1195,7 +1213,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uploaded {0} of {1}.
+        ///   Looks up a localized string similar to Uploaded {0} out of {1}.
         /// </summary>
         public static string Progress_Uploading_KnownTotal {
             get {

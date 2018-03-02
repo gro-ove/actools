@@ -13,6 +13,22 @@
 
       <sys:String x:Key="ZeroWidthString">​</sys:String>
 
+      <sys:TimeSpan x:Key="ResetTime">0:0:0.5</sys:TimeSpan>
+      <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
+      <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
+      <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
+      <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
+      <Duration x:Key="IconFadeDuration">0:0:0.1</Duration>
+      <sys:TimeSpan x:Key="IconFadeDelay">0:0:0.11</sys:TimeSpan>
+
+      <!--<sys:TimeSpan x:Key="ResetTime">0:0:5.0</sys:TimeSpan>
+      <Duration x:Key="ExpandDuration">0:0:2.7</Duration>
+      <Duration x:Key="SlideUpDuration">0:0:2.1</Duration>~1~ 23 px @1@
+      <Duration x:Key="SlideRightDuration">0:0:2.1</Duration>~1~ 24 px @1@
+      <Duration x:Key="SlideLeftDuration">0:0:1.5</Duration>~1~ 16 px @1@
+      <Duration x:Key="IconFadeDuration">0:0:1.0</Duration>
+      <sys:TimeSpan x:Key="IconFadeDelay">0:0:1.1</sys:TimeSpan>-->
+
       <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type t:ContentEntryBase}">
         <DockPanel Margin="0 0 0 12">
           <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left"
@@ -20,7 +36,7 @@
 
           <!-- Name and some information -->
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
-            <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
+            <mui:BetterImage x:Name="PART_Icon" Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32" Opacity="0"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
@@ -40,7 +56,7 @@
                 <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
-            <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+            <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}" Placeholder="?" />
@@ -48,7 +64,7 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="New version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" Placeholder="?"
-                    x:Name="NewVersion" />
+                    x:Name="PART_NewVersion" />
               </DockPanel>
             </mui:SpacingUniformGrid>
           </DockPanel>
@@ -68,24 +84,50 @@
           </mui:BooleanSwitch>
 
           <!-- Update options -->
-          <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
+          <mui:BetterComboBox x:Name="PART_UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
         </DockPanel>
 
+        <DataTemplate.Resources>
+          <Storyboard x:Key="IconFadeIn" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="1" Duration="{StaticResource IconFadeDuration}" BeginTime="{StaticResource IconFadeDelay}" />
+          </Storyboard>
+          <Storyboard x:Key="IconFadeOut" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="0" Duration="{StaticResource IconFadeDuration}" />
+          </Storyboard>
+        </DataTemplate.Resources>
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding IsNew}" Value="True">
-            <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_VersionComparison" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding UpdateOptions.Count}" Value="1">
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsNewer}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsOlder}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+            <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
+          </DataTrigger>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+              <Condition Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+                  Value="True" />
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.EnterActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeIn}" />
+            </MultiDataTrigger.EnterActions>
+            <MultiDataTrigger.ExitActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeOut}" />
+            </MultiDataTrigger.ExitActions>
+          </MultiDataTrigger>
         </DataTemplate.Triggers>
       </DataTemplate>
 
@@ -96,7 +138,7 @@
 
           <!-- Name and some information -->
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
-            <c:FontIconImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
+            <c:FontIconImage x:Name="PART_Icon" Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32" Opacity="0"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
@@ -116,7 +158,7 @@
                 <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
-            <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+            <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}" Placeholder="?" />
@@ -124,7 +166,7 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="New version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" Placeholder="?"
-                    x:Name="NewVersion" />
+                    x:Name="PART_NewVersion" />
               </DockPanel>
             </mui:SpacingUniformGrid>
           </DockPanel>
@@ -144,24 +186,50 @@
           </mui:BooleanSwitch>
 
           <!-- Update options -->
-          <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
+          <mui:BetterComboBox x:Name="PART_UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
         </DockPanel>
 
+        <DataTemplate.Resources>
+          <Storyboard x:Key="IconFadeIn" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="1" Duration="{StaticResource IconFadeDuration}" BeginTime="{StaticResource IconFadeDelay}" />
+          </Storyboard>
+          <Storyboard x:Key="IconFadeOut" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="0" Duration="{StaticResource IconFadeDuration}" />
+          </Storyboard>
+        </DataTemplate.Resources>
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding IsNew}" Value="True">
-            <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_VersionComparison" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding UpdateOptions.Count}" Value="1">
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsNewer}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsOlder}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+            <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
+          </DataTrigger>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+              <Condition Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+                  Value="True" />
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.EnterActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeIn}" />
+            </MultiDataTrigger.EnterActions>
+            <MultiDataTrigger.ExitActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeOut}" />
+            </MultiDataTrigger.ExitActions>
+          </MultiDataTrigger>
         </DataTemplate.Triggers>
       </DataTemplate>
 
@@ -172,7 +240,7 @@
 
           <!-- Name and some information -->
           <DockPanel Dock="Top" IsEnabled="{Binding Active}">
-            <mui:BetterImage Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32"
+            <mui:BetterImage x:Name="PART_Icon" Source="{Binding Icon}" HideBroken="True" Margin="0 0 8 0" Height="32" Width="32" Opacity="0"
                 Visibility="{Binding Icon, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top"
@@ -190,7 +258,7 @@
                 <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
-            <mui:SpacingUniformGrid x:Name="VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
+            <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}" Placeholder="?" />
@@ -198,7 +266,7 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}" Text="New version: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" Placeholder="?"
-                    x:Name="NewVersion" />
+                    x:Name="PART_NewVersion" />
               </DockPanel>
             </mui:SpacingUniformGrid>
 
@@ -250,7 +318,7 @@
           </DockPanel>
 
           <!-- Update options -->
-          <mui:BetterComboBox x:Name="UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
+          <mui:BetterComboBox x:Name="PART_UpdateOptions" ItemsSource="{Binding UpdateOptions}" SelectedItem="{Binding SelectedOption}" Margin="0 4 0 0"
               IsEnabled="{Binding Active}" IsEditable="False" DockPanel.Dock="Top" />
 
           <DockPanel d:DataContext="{d:DesignInstance t:TrackContentEntry}" Margin="0 8 0 0"
@@ -262,23 +330,49 @@
           </DockPanel>
         </DockPanel>
 
+        <DataTemplate.Resources>
+          <Storyboard x:Key="IconFadeIn" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="1" Duration="{StaticResource IconFadeDuration}" BeginTime="{StaticResource IconFadeDelay}" />
+          </Storyboard>
+          <Storyboard x:Key="IconFadeOut" TargetProperty="(FrameworkElement.Opacity)" TargetName="PART_Icon">
+            <DoubleAnimation To="0" Duration="{StaticResource IconFadeDuration}" />
+          </Storyboard>
+        </DataTemplate.Resources>
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding IsNew}" Value="True">
-            <Setter TargetName="VersionComparison" Property="Visibility" Value="Collapsed" />
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_VersionComparison" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding NoConflictMode}" Value="True">
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding UpdateOptions.Count}" Value="1">
-            <Setter TargetName="UpdateOptions" Property="Visibility" Value="Collapsed" />
+            <Setter TargetName="PART_UpdateOptions" Property="Visibility" Value="Collapsed" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsNewer}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Go}" />
           </DataTrigger>
           <DataTrigger Binding="{Binding IsOlder}" Value="True">
-            <Setter TargetName="NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
+            <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+            <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
+          </DataTrigger>
+          <MultiDataTrigger>
+            <MultiDataTrigger.Conditions>
+              <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}" Value="True" />
+              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+              <Condition Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+                  Value="True" />
+            </MultiDataTrigger.Conditions>
+            <MultiDataTrigger.EnterActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeIn}" />
+            </MultiDataTrigger.EnterActions>
+            <MultiDataTrigger.ExitActions>
+              <BeginStoryboard Storyboard="{StaticResource IconFadeOut}" />
+            </MultiDataTrigger.ExitActions>
+          </MultiDataTrigger>
         </DataTemplate.Triggers>
       </DataTemplate>
 
@@ -308,7 +402,7 @@
         </c:MessageBlock>
       </mui:BooleanSwitch>
       <ListBox x:Name="ItemsListBox" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding DownloadListView}" Padding="0"
-          ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}">
+          ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}" PreviewMouseWheel="OnMouseWheel">
         <ListBox.ItemTemplate>
           <DataTemplate DataType="t:ContentInstallationEntry">
             <Border ClipToBounds="True" Background="Transparent">
@@ -508,12 +602,6 @@
             </Border>
             <DataTemplate.Resources>
               <ResourceDictionary>
-                <sys:TimeSpan x:Key="ResetTime">0:0:0.5</sys:TimeSpan>
-                <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
-                <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
-                <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
-                <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
-
                 <Storyboard x:Key="ExpandEverything" TargetProperty="(ScaleTransform.ScaleY)">
                   <DoubleAnimation From="0" To="1" Duration="{StaticResource ExpandDuration}" Storyboard.TargetName="PART_CollapseEntry"
                       EasingFunction="{StaticResource StandardEase}" FillBehavior="Stop" />
