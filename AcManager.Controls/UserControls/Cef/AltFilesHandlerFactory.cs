@@ -6,16 +6,18 @@ using CefSharp;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     public class AltFilesHandlerFactory : ISchemeHandlerFactory {
-        public const string SchemeName = "file";
+        public const string SchemeName = "cmfile";
 
         public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
+            Logging.Write(request.Url);
+
             if (schemeName == SchemeName) {
                 try {
                     var slice = SchemeName.Length + 4;
                     if (slice >= request.Url.Length) return null;
-                    var filename = $@"{request.Url[slice - 1].ToInvariantString()}:{request.Url.Substring(slice)}";
+                    var filename = $@"{request.Url[slice].ToInvariantString()}:{request.Url.Substring(slice + 2)}";
                     return new CustomResourceHandler(filename);
                 } catch (Exception e) {
                     Logging.Error(e);
@@ -60,7 +62,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
                 } else {
                     response.MimeType = _mimeType;
                     response.StatusCode = 200;
-                    response.StatusText = "OK";
+                    response.StatusText = @"OK";
                     response.ResponseHeaders = new NameValueCollection();
                     responseLength = _data.Length;
                 }

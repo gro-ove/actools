@@ -98,20 +98,20 @@
           <Label Content="{x:Static g:AppStrings.Settings_Live_EnableSrs}" />
         </CheckBox>
 
-        <!--<StackPanel IsEnabled="{Binding Live.SrsEnabled}">
+        <StackPanel IsEnabled="{Binding Live.SrsEnabled}">
           <CheckBox IsChecked="{Binding Live.SrsCustomStyle}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsCustomStyle_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
           </CheckBox>
 
-          <CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+          <!--<CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
           </CheckBox>
 
           <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
             <mui:BetterTextBox Text="{Binding Live.SrsAutoMask}" Placeholder="?" />
-          </DockPanel>
-        </StackPanel>-->
+          </DockPanel>-->
+        </StackPanel>
 
       </StackPanel>
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">

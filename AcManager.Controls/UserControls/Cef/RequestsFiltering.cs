@@ -1,9 +1,9 @@
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
-using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+// #define LOGGING
+
+namespace AcManager.Controls.UserControls.Cef {
     /// <summary>
     /// Vague attempt to improve poor performance of those Chromium-based engines
     /// at least a little bit.
@@ -38,7 +38,9 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     wixlabs-hcounter\.appspot\.com |
                     www\.(?:
                         google-analytics\.com |
+                        googletagmanager\.com
                         facebook\.com/(?:ajax/bz|connect/ping|plugins/like\.php) |
+                        paypalobjects\.com/.+/pixel\.gif |
                         youtube\.com/subscribe_embed
                     ) |
                     x\.bidswitch\.net |
@@ -61,17 +63,15 @@ namespace AcManager.Controls.UserControls.CefSharp {
                 RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace);
 
         public static bool ShouldBeBlocked(string url) {
-            var domain = url.GetDomainNameFromUrl();
-
             if (!SettingsHolder.Plugins.CefFilterAds) return false;
 
-#if DEBUG
+#if DEBUG && LOGGING
             if (Regex.IsMatch(url)) {
-                Logging.Warning(url);
+                FirstFloor.ModernUI.Helpers.Logging.Warning(url);
                 return true;
             }
 
-            Logging.Debug(url);
+            FirstFloor.ModernUI.Helpers.Logging.Debug(url);
             return false;
 #else
             return Regex.IsMatch(url);

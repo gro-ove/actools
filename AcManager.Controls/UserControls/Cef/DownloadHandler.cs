@@ -8,7 +8,7 @@ using CefSharp;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     internal class DownloadHandler : IDownloadHandler {
         [CanBeNull]
         public IWebDownloadListener Listener { get; set; }

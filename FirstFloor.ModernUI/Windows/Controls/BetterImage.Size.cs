@@ -28,6 +28,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     return index >= limit ? (Size?)null : size;
                 } else if (NextAre(0x00, 0x00, 0x01, 0x00)) {
                     // ICO
+                    index += 4;
                     var result = new Size();
                     for (var i = NextShort(); i > 0 && index < limit; i--, index += 14) {
                         var size = new Size(Next(), Next());
@@ -35,9 +36,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                             result = size;
                         }
                     }
-#if DEBUG
-                    Logging.Debug(result);
-#endif
                     return result;
                 }
             } catch (Exception e) {

@@ -6,7 +6,7 @@ using CefSharp.Wpf;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     internal class MenuHandler : IContextMenuHandler {
         void IContextMenuHandler.OnBeforeContextMenu(IWebBrowser browserControl, IBrowser browser, IFrame frame, IContextMenuParams parameters,
                 IMenuModel model) { }

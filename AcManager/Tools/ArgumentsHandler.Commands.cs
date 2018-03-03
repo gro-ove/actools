@@ -31,7 +31,7 @@ using SharpCompress.Archives.Zip;
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
         public static string UnwrapDownloadRequest(string request) {
-            if (!request.StartsWith(@"//", StringComparison.Ordinal)) {
+            if (!request.StartsWith($@"{CustomUriSchemeHelper.UriScheme}//", StringComparison.Ordinal)) {
                 var splitted = request.Split(new[] { '/' }, 2);
                 if (splitted.Length != 2) return null;
 
@@ -40,7 +40,7 @@ namespace AcManager.Tools {
                     splitted[1] = splitted[1].Substring(0, index);
                 }
 
-                return splitted[0] == "install" ? splitted[1] : null;
+                return splitted[0] == @"install" ? splitted[1] : null;
             }
 
             CustomUriRequest custom;

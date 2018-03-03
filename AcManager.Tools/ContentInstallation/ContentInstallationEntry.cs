@@ -576,16 +576,21 @@ namespace AcManager.Tools.ContentInstallation {
                         }
 
                         try {
+                            var properDisplayNameSet = false;
                             localFilename = await FlexibleLoader.LoadAsyncTo(Source,
                                     (url, information) => new FlexibleLoaderDestination(Path.Combine(SettingsHolder.Content.TemporaryFilesLocationValue,
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     destination => {
                                         DisplayName = Path.GetFileName(destination) ?? DisplayName;
+                                        properDisplayNameSet = true;
                                     },
                                     information => {
                                         CanPause = information.CanPause;
                                         FileName = information.FileName ?? information.FileName;
                                         Version = information.Version ?? information.Version;
+                                        if (FileName != null && !properDisplayNameSet) {
+                                            DisplayName = FileName;
+                                        }
                                     },
                                     () => IsPaused,
                                     new Progress<AsyncProgressEntry>(v => {

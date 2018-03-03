@@ -21,7 +21,7 @@
     <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static l:Srs2.Requirement}}">
       <mui:BooleanSwitch.True>
         <c:WebBlock UserAgent="Assetto Corsa Launcher" StartPage="http://www.simracingsystem.com" PreferTransparentBackground="True"
-            NewWindowsBehavior="MultiTab" Loaded="OnWebClockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2"
+            NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2"
             AlwaysKeepAlive="True" />
       </mui:BooleanSwitch.True>
       <mui:BooleanSwitch.False>

@@ -70,6 +70,10 @@
       <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="CefSharp.WinForms, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
@@ -194,14 +198,19 @@
     <Compile Include="StatEntry.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="TrackBlock.cs" />
-    <Compile Include="UserControls\CefSharp\AcApiHandlerFactory.cs" />
-    <Compile Include="UserControls\CefSharp\AltFilesHandlerFactory.cs" />
-    <Compile Include="UserControls\CefSharp\CefSharpWrapper.cs" />
-    <Compile Include="UserControls\CefSharp\DownloadHandler.cs" />
-    <Compile Include="UserControls\CefSharp\LifeSpanHandler.cs" />
-    <Compile Include="UserControls\CefSharp\MenuHandler.cs" />
-    <Compile Include="UserControls\CefSharp\RequestHandler.cs" />
-    <Compile Include="UserControls\CefSharp\RequestsFiltering.cs" />
+    <Compile Include="UserControls\Cef\AcApiHandlerFactory.cs" />
+    <Compile Include="UserControls\Cef\AltFilesHandlerFactory.cs" />
+    <Compile Include="UserControls\Cef\BrowserProcessHandler.cs" />
+    <Compile Include="UserControls\Cef\CefSharpHelper.cs" />
+    <Compile Include="UserControls\Cef\CefSharpWrapper.cs" />
+    <Compile Include="UserControls\Cef\DownloadHandler.cs" />
+    <Compile Include="UserControls\Cef\FormsCefSharpWrapper.cs" />
+    <Compile Include="UserControls\Cef\JsDialogHandler.cs" />
+    <Compile Include="UserControls\Cef\LifeSpanHandler.cs" />
+    <Compile Include="UserControls\Cef\MenuHandler.cs" />
+    <Compile Include="UserControls\Cef\RequestHandler.cs" />
+    <Compile Include="UserControls\Cef\RequestsFiltering.cs" />
+    <Compile Include="UserControls\Cef\WpfBrowserProcessHandler.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>
     </Compile>
@@ -214,6 +223,7 @@
     <Compile Include="UserControls\Web\AcApiRequestEventArgs.cs" />
     <Compile Include="UserControls\Web\AcCompatibleApiBridge.cs" />
     <Compile Include="UserControls\Web\CustomStyleProviderExtension.cs" />
+    <Compile Include="UserControls\Web\FaviconChangedEventArgs.cs" />
     <Compile Include="UserControls\Web\FormsWebBrowserWrapper.cs" />
     <Compile Include="UserControls\Web\ICustomStyleProvider.cs" />
     <Compile Include="UserControls\Web\IWebDownloader.cs" />
@@ -229,7 +239,6 @@
     <Compile Include="UserControls\Web\WebTab.cs" />
     <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
     <Compile Include="UserControls\Web\UrlEventArgs.cs" />
-    <Compile Include="UserControls\Web\WebBrowserWrapper.cs" />
     <Compile Include="Video\IVideoPlayer.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
       <DependentUpon>ModernPopup.xaml</DependentUpon>

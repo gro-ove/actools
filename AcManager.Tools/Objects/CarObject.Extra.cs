@@ -106,6 +106,7 @@ namespace AcManager.Tools.Objects {
 
                 string alreadySaved = null;
                 foreach (var skinObject in EnabledOnlySkins.ToList()) {
+                    if (!Directory.Exists(skinObject.Location)) return;
                     var location = Path.Combine(skinObject.Location, textureName);
 
                     if (data.Value != null) {

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
-using AcManager.Controls.UserControls.CefSharp;
+using AcManager.Controls.UserControls.Cef;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -70,9 +70,15 @@ namespace AcManager.Controls.UserControls.Web {
             }
         }
 
-        public override void PageInject(string url, Collection<string> toInject) {
+        public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
             if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
                 toInject.Add(@"<script>!function(){
+new MutationObserver(function(ms) {
+    for (var i = 0; i < ms.length; i++){
+        var m = ms[i].target;
+        if (m.tagName === 'IMG' && m.src.indexOf('file://') === 0) m.src = 'cm' + m.src;
+    }
+}).observe(document.documentElement, { attributes: true, subtree: true });
 window.__AC = {};
 window.__AC.CarsArray = JSON.parse(window.external.GetCars());
 window.__AC.TracksArray = JSON.parse(window.external.GetTracks());

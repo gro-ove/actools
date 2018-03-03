@@ -40,8 +40,8 @@ namespace AcManager.Tools.Helpers {
                 Value = value;
             }
 
-            public string GetUri(string s, bool allowWikipedia) {
-                if (Content.SearchWithWikipedia && allowWikipedia) {
+            public string GetUrl(string s, bool wikipediaOnly) {
+                if (Content.SearchWithWikipedia && wikipediaOnly) {
                     s = @"site:wikipedia.org " + s;
                 }
 
@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers {
 
             public string GetUri([NotNull] string id, MissingContentType type) {
                 var value = Func(type, id);
-                return ViaSearchEngine || !value.Contains(@"://") ? Content.SearchEngine.GetUri(value, false) : value;
+                return ViaSearchEngine || !value.Contains(@"://") ? Content.SearchEngine.GetUrl(value, false) : value;
             }
         }
 

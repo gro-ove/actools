@@ -8,6 +8,7 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
       </ResourceDictionary.MergedDictionaries>
@@ -20,7 +21,8 @@
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
         <DockPanel Margin="0 4 0 0">
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
-              CurrentTabChanged="OnCurrentTabChanged" PageLoading="OnPageLoading" PageLoaded="OnPageLoaded" SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
+              Loaded="OnWebBlockLoaded" CurrentTabChanged="OnCurrentTabChanged" PageLoading="OnPageLoading" PageLoaded="OnPageLoaded"
+              SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
               KeepAliveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser:{0}'}">
             <c:WebBlock.AddressBarExtraTemplate>
               <DataTemplate>
@@ -186,33 +188,55 @@
                 </mui:SpacingUniformGrid>
 
                 <TextBlock Text="Downloads:" Style="{StaticResource SettingsPanel.Heading2}" />
-                <CheckBox IsChecked="{Binding CaptureDownloads}">
-                  <Label Content="Download files from website using browser" />
-                </CheckBox>
-                <CheckBox IsChecked="{Binding CaptureRedirects}">
-                  <Label Content="Download files instead of opening new tabs in any section" />
-                </CheckBox>
-                <DockPanel IsEnabled="{Binding CaptureDownloads}">
-                  <Label>
-                    <DockPanel Style="{x:Null}">
-                      <TextBlock Text="Rule to start download:" />
-                      <Button Style="{StaticResource MoreDetailsSuperscript}"
-                          CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
-                    </DockPanel>
-                  </Label>
-                  <mui:BetterComboBox Text="{Binding AutoDownloadRule, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
-                      ItemsSource="{Binding RuleSuggestions.Value}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"
-                      FontSize="{DynamicResource SmallFontSize}" />
-                </DockPanel>
-                <DockPanel IsEnabled="{Binding CaptureDownloads}"
-                    Visibility="{Binding RedirectsToNames.Count, Converter={StaticResource MoreToVisibilityConverter}}">
-                  <Label Content="Redirects to:" />
-                  <mui:TagsList ItemsSource="{Binding RedirectsToNames}" IsReadOnly="True" />
-                </DockPanel>
-                <c:MessageBlock Margin="0 0 0 8" IsEnabled="{Binding CaptureDownloads}">
-                  <mui:BbCodeBlock LinkNavigator="{Binding}"
-                      BbCode="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
-                </c:MessageBlock>
+                <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}">
+                  <mui:BooleanSwitch.True>
+                    <StackPanel Margin="0" Style="{StaticResource SettingsPanel}">
+                      <CheckBox IsChecked="{Binding CaptureDownloads}">
+                        <Label Content="Download files from website using browser" />
+                      </CheckBox>
+                      <CheckBox IsChecked="{Binding CaptureRedirects}">
+                        <Label Content="Download files instead of opening new tabs in any section" />
+                      </CheckBox>
+                      <DockPanel IsEnabled="{Binding CaptureDownloads}">
+                        <Label>
+                          <DockPanel Style="{x:Null}">
+                            <TextBlock Text="Rule to start download:" />
+                            <Button Style="{StaticResource MoreDetailsSuperscript}"
+                                CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=autoClickdownloadButtons" />
+                          </DockPanel>
+                        </Label>
+                        <mui:BetterComboBox Text="{Binding AutoDownloadRule, UpdateSourceTrigger=PropertyChanged}" Placeholder="None"
+                            ItemsSource="{Binding RuleSuggestions.Value}" TextWrapping="Wrap" AcceptsReturn="True" Height="80"
+                            FontSize="{DynamicResource SmallFontSize}" />
+                      </DockPanel>
+                      <DockPanel IsEnabled="{Binding CaptureDownloads}"
+                          Visibility="{Binding RedirectsToNames.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+                        <Label Content="Redirects to:" />
+                        <mui:TagsList ItemsSource="{Binding RedirectsToNames}" IsReadOnly="True" />
+                      </DockPanel>
+                      <c:MessageBlock Margin="0 0 0 8" IsEnabled="{Binding CaptureDownloads}">
+                        <mui:BbCodeBlock LinkNavigator="{Binding}"
+                            BbCode="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
+                      </c:MessageBlock>
+                    </StackPanel>
+                  </mui:BooleanSwitch.True>
+                  <mui:BooleanSwitch.False>
+                    <mui:Switch Value="{Binding ListView.Count}" DataContext="{Binding Source={x:Static l:ModsWebBrowser+ListViewModel.Requirement}}"
+                        Margin="20 0 0 0">
+                      <DockPanel mui:Switch.When="0">
+                        <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+                        <TextBlock Text="CefSharp plugin is required for downloads to work." TextWrapping="Wrap" />
+                      </DockPanel>
+                      <mui:SpacingStackPanel Spacing="4">
+                        <DockPanel mui:Switch.When="0">
+                          <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" Margin="0 0 8 0" />
+                          <TextBlock Text="Plugin is required for downloads to work:" TextWrapping="Wrap" />
+                        </DockPanel>
+                        <ItemsControl ItemsSource="{Binding ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Margin="0 8 0 -12" />
+                      </mui:SpacingStackPanel>
+                    </mui:Switch>
+                  </mui:BooleanSwitch.False>
+                </mui:BooleanSwitch>
               </StackPanel>
             </ScrollViewer>
           </Grid>

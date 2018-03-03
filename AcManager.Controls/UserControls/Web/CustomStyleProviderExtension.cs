@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 namespace AcManager.Controls.UserControls.Web {
     internal static class CustomStyleProviderExtension {
         [CanBeNull, ContractAnnotation(@"provider:null => null; url:null => null")]
-        public static string ToScript([CanBeNull] this ICustomStyleProvider provider, [CanBeNull] string url) {
+        public static string ToScript([CanBeNull] this ICustomStyleProvider provider, [CanBeNull] string url, bool transparentBackgroundSupported) {
             if (provider == null || url == null) return null;
 
-            var style = provider.GetStyle(url);
+            var style = provider.GetStyle(url, transparentBackgroundSupported);
             if (style == null) return null;
 
             return $@"

@@ -56,9 +56,6 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<MediaFireLoader>(MediaFireLoader.Test);
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
-            // Register<AcClubLoader>(AcClubLoader.Test);
-            // Register<AcDriftingProLoader>(AcDriftingProLoader.Test);
-            // Register<AssettoDbLoader>(AssettoDbLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
             Register<LongenerLoader>(LongenerLoader.Test);

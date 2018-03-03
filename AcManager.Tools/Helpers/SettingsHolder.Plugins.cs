@@ -21,6 +21,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _cefWinForms;
+
+            public bool CefWinForms {
+                get => _cefWinForms ?? (_cefWinForms = ValuesStorage.Get("Settings.PluginsSettings.CefWinForms", false)).Value;
+                set {
+                    if (Equals(value, _cefWinForms)) return;
+                    _cefWinForms = value;
+                    ValuesStorage.Set("Settings.PluginsSettings.CefWinForms", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _cef60Fps;
 
             public bool Cef60Fps {

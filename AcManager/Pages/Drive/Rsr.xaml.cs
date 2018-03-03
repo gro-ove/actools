@@ -288,7 +288,7 @@ namespace AcManager.Pages.Drive {
                                       .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
             }
 
-            public string GetStyle(string url) {
+            public string GetStyle(string url, bool transparentBackgroundSupported) {
                 return SettingsHolder.Live.RsrCustomStyle && url.StartsWith(@"http://www.radiators-champ.com/RSRLiveTiming/") ?
                         GetCustomStyle() : null;
             }

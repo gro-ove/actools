@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -45,8 +46,29 @@ namespace AcManager.Controls.UserControls {
             public bool AlwaysKeepAlive { get; }
         }
 
+        public static void ResetStayingAlive() {
+            StayingAlive.ForEach(x => x.Tabs.ForEach(y => y.OnUnloaded()));
+            StayingAlive.Clear();
+        }
+
         static WebBlock() {
             GameWrapper.Started += OnGameStarted;
+            SettingsHolder.WebBlocks.PropertyChanged += OnWebBlocksSettingChanged;
+            PluginsManager.Instance.PluginEnabled += OnPluginChanged;
+            PluginsManager.Instance.PluginDisabled += OnPluginChanged;
+        }
+
+        private static void OnPluginChanged(object sender, PluginEventArgs args) {
+            if (args.PluginId == KnownPlugins.CefSharp) {
+                ResetStayingAlive();
+            }
+        }
+
+        private static void OnWebBlocksSettingChanged(object o, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(SettingsHolder.WebBlocks.KeepInMemory)
+                    || args.PropertyName == nameof(SettingsHolder.WebBlocks.AlwaysKeepImportantInMemory)) {
+                ResetStayingAlive();
+            }
         }
 
         private static void OnGameStarted(object sender, GameStartedArgs gameStartedArgs) {
@@ -113,7 +135,7 @@ namespace AcManager.Controls.UserControls {
             Tabs.CollectionChanged += OnTabsCollectionChanged;
 
             TabsList.ItemsSource = Tabs;
-            this.OnActualUnload(() => { Tabs.ForEach(x => x.OnUnloaded()); });
+            this.OnActualUnload(() => Tabs.ForEach(x => x.OnUnloaded()));
         }
 
         private readonly Busy _saveTabsBusy = new Busy();
@@ -212,7 +234,7 @@ namespace AcManager.Controls.UserControls {
 
             tab.PropertyChanged += OnTabPropertyChanged;
             tab.PageLoaded += OnTabPageLoaded;
-            tab.PageLoading += OnTabPageLoading;
+            tab.PageLoadingStarted += OnTabPageLoadingStarted;
             tab.NewWindow += OnTabNewWindow;
             return tab;
         }
@@ -247,7 +269,7 @@ namespace AcManager.Controls.UserControls {
             PageLoaded?.Invoke(this, new WebTabEventArgs(tab));
         }
 
-        private void OnTabPageLoading(object sender, UrlEventArgs e) {
+        private void OnTabPageLoadingStarted(object sender, UrlEventArgs e) {
             var tab = (WebTab)sender;
             PageLoading?.Invoke(this, new WebTabEventArgs(tab));
         }

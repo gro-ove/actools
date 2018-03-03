@@ -4,39 +4,47 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CefSharp;
-using CefSharp.Wpf;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     public class AcApiHandlerFactory : ISchemeHandlerFactory {
         public const string AcSchemeName = "ac";
 
         private class Registered {
-            public readonly WeakReference<ChromiumWebBrowser> Browser;
+            public readonly WeakReference<IWebBrowser> WebBrowser;
+
+            public Lazier<int> Identifier;
 
             [CanBeNull]
             public readonly string[] AllowedHosts;
 
             public readonly Func<string, string> Callback;
 
-            public Registered(WeakReference<ChromiumWebBrowser> browser, string[] allowedHosts, Func<string, string> callback) {
-                Browser = browser;
+            public Registered(WeakReference<IWebBrowser> webBrowser, string[] allowedHosts, Func<string, string> callback) {
+                WebBrowser = webBrowser;
                 AllowedHosts = allowedHosts;
                 Callback = callback;
+                Identifier = Lazier.Create<int>(() => {
+                    if (!WebBrowser.TryGetTarget(out var targetBrowser)) return -1;
+                    using (var browser = targetBrowser.GetBrowser()) {
+                        return browser.Identifier;
+                    }
+                });
             }
         }
 
         private readonly List<Registered> _listeners = new List<Registered>(5);
 
-        public void Register([NotNull] ChromiumWebBrowser browser, [CanBeNull] string[] allowedHosts, Func<string, string> callback) {
+        public void Register([NotNull] IWebBrowser browser, [CanBeNull] string[] allowedHosts, Func<string, string> callback) {
             if (browser == null) throw new ArgumentNullException(nameof(browser));
-            _listeners.RemoveAll(x => !x.Browser.TryGetTarget(out var b) || ReferenceEquals(b, browser));
+            _listeners.RemoveAll(x => !x.WebBrowser.TryGetTarget(out var b) || ReferenceEquals(b, browser));
             if (allowedHosts?.Length > 0) {
                 var hosts = allowedHosts.ArrayContains(@"*") ? null : allowedHosts.Select(x => x.GetDomainNameFromUrl()).Distinct().ToArray();
-                _listeners.Add(new Registered(new WeakReference<ChromiumWebBrowser>(browser), hosts, callback));
+                _listeners.Add(new Registered(new WeakReference<IWebBrowser>(browser), hosts, callback));
             }
         }
 
@@ -44,12 +52,12 @@ namespace AcManager.Controls.UserControls.CefSharp {
             if (schemeName == AcSchemeName) {
                 for (var i = 0; i < _listeners.Count; i++) {
                     var listener = _listeners[i];
-                    if (!listener.Browser.TryGetTarget(out var targetBrowser)) {
+                    if (!listener.WebBrowser.TryGetTarget(out _)) {
                         _listeners.RemoveAt(i);
                         continue;
                     }
 
-                    if (targetBrowser.GetBrowser().Identifier == browser.Identifier) {
+                    if (listener.Identifier.Value == browser.Identifier) {
                         var hostName = frame.Url.GetDomainNameFromUrl();
                         if (listener.AllowedHosts?.Contains(hostName, StringComparer.OrdinalIgnoreCase) != false) {
                             try {

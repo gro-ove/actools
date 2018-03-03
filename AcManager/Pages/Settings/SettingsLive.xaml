@@ -43,14 +43,14 @@
           <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
+        <!--<CheckBox IsChecked="{Binding LiveSettings.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
         </CheckBox>
 
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Live_SrsOnlineMask_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Live_SrsOnlineMaskLabel}" />
           <mui:BetterTextBox Text="{Binding LiveSettings.SrsAutoMask}" Placeholder="?" />
-        </DockPanel>
+        </DockPanel>-->
       </StackPanel>
     </StackPanel>
   </ScrollViewer>

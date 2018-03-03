@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _srsCustomStyle;
 
             public bool SrsCustomStyle {
-                get => _srsCustomStyle ?? (_srsCustomStyle = ValuesStorage.Get("Settings.LiveSettings.SrsCustomStyle", true)).Value;
+                get => _srsCustomStyle ?? (_srsCustomStyle = ValuesStorage.Get("Settings.LiveSettings.SrsCustomStyle", false)).Value;
                 set {
                     if (Equals(value, _srsCustomStyle)) return;
                     _srsCustomStyle = value;

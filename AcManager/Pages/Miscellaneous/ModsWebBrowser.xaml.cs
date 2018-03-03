@@ -39,7 +39,6 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
@@ -78,15 +77,15 @@ namespace AcManager.Pages.Miscellaneous {
             }
 
             InitializeComponent();
-            if (id == null) {
-                this.FindVisualChild<WebBlock>()?.SetJsBridge<CheckingJsBridge>();
-            }
-
             InputBindings.Add(new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
                     new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)));
             InputBindings.Add(new InputBinding(Instance.AddNewSourceCommand,
                     new KeyGesture(Key.N, ModifierKeys.Control | ModifierKeys.Shift)));
             Loaded += OnLoaded;
+        }
+
+        private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
+            ((WebBlock)sender).SetJsBridge<CheckingJsBridge>();
         }
 
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
@@ -614,6 +613,8 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         });
 
         public class ListViewModel : NotifyPropertyChanged, IComparer<WebSource>, ILoaderFactory {
+            public static PluginsRequirement Requirement { get; } = new PluginsRequirement(KnownPlugins.CefSharp);
+
             public ChangeableObservableCollection<WebSource> WebSources { get; }
             public BetterListCollectionView WebSourcesView { get; }
 
@@ -1365,6 +1366,8 @@ window.$KEY = outline.stop.bind(outline);
             [NotNull]
             public WebSource Source { get; }
 
+            internal int DownloadPageCheckId;
+
             private string _downloadPageUrl;
 
             public string DownloadPageUrl {
@@ -1457,8 +1460,10 @@ window.$KEY = outline.stop.bind(outline);
                 return;
             }
 
+            var checkId = ++m.DownloadPageCheckId;
             var ctsRef = new CancellationTokenSource[] { null };
             bool? resultRef = null;
+
 
             void ObjCallbackFn(bool v) {
                 resultRef = v;
@@ -1472,8 +1477,9 @@ window.$KEY = outline.stop.bind(outline);
 
                 try {
                     await Task.Delay(1000, cts.Token);
-                } catch (OperationCanceledException) { }
+                } catch (OperationCanceledException) {}
 
+                if (m.DownloadPageCheckId != checkId) return;
                 m.DownloadPageUrl = resultRef == true ? url : null;
                 ctsRef[0] = null;
             }

@@ -742,7 +742,7 @@ window.external.SetCars(JSON.stringify(a));", true);
                                       .Replace(@"#CA0030", ColorExtension.FromHsb(color.GetHue(), color.GetSaturation(), color.GetBrightness() * 0.92).ToHexString());
             }
 
-            public string GetStyle(string url) {
+            public string GetStyle(string url, bool transparentBackgroundSupported) {
                 return SettingsHolder.Live.SrsCustomStyle && url.StartsWith(@"http://www.simracingsystem.com") ?
                         GetCustomStyle() : null;
             }

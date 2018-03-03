@@ -1,5 +1,5 @@
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,8 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using AcManager.Controls.UserControls.Web;
 using AcManager.Tools.Helpers;
-using AcManager.Tools.Helpers.Api;
-using AcManager.Tools.Managers.Plugins;
+using AcTools.Utils.Helpers;
 using CefSharp;
 using CefSharp.Wpf;
 using FirstFloor.ModernUI;
@@ -20,96 +19,53 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
-using LogSeverity = CefSharp.LogSeverity;
+using Size = CefSharp.Structs.Size;
+using TitleChangedEventArgs = CefSharp.TitleChangedEventArgs;
 
-namespace AcManager.Controls.UserControls.CefSharp {
-    internal class CefSharpWrapper : IWebSomething {
-        #region Initialization
-        public static readonly string DefaultUserAgent;
-
-        static CefSharpWrapper() {
-            DefaultUserAgent = CmApiProvider.CommonUserAgent;
-        }
-        #endregion
-
+namespace AcManager.Controls.UserControls.Cef {
+    internal class CefSharpWrapper : IWebSomething, IDisplayHandler {
         private Border _wrapper;
+
+        [CanBeNull]
         private ChromiumWebBrowser _inner;
+
         private RequestHandler _requestHandler;
         private DownloadHandler _downloadHandler;
         private double _zoomLevel;
 
-        private static readonly AcApiHandlerFactory AcApiHandler = new AcApiHandlerFactory();
-
         public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
             if (_inner == null) {
-                if (!Cef.IsInitialized) {
-                    // TODO: Try new way?
-                    CefSharpSettings.LegacyJavascriptBindingEnabled = true;
-
-                    var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
-                    var settings = new CefSettings {
-                        UserAgent = DefaultUserAgent,
-                        MultiThreadedMessageLoop = true,
-                        LogSeverity = LogSeverity.Disable,
-                        CachePath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
-                        UserDataPath = FilesStorage.Instance.GetTemporaryFilename(@"Cef"),
-                        BrowserSubprocessPath = Path.Combine(path, "CefSharp.BrowserSubprocess.exe"),
-                        LocalesDirPath = Path.Combine(path, "locales"),
-                        ResourcesDirPath = Path.Combine(path),
-                        Locale = SettingsHolder.Locale.LocaleName,
-#if DEBUG
-                        RemoteDebuggingPort = 45451,
-#endif
-                    };
-
-                    settings.SetOffScreenRenderingBestPerformanceArgs();
-
-                    settings.RegisterScheme(new CefCustomScheme {
-                        SchemeName = AcApiHandlerFactory.AcSchemeName,
-                        SchemeHandlerFactory = AcApiHandler
-                    });
-
-                    settings.RegisterScheme(new CefCustomScheme {
-                        SchemeName = AltFilesHandlerFactory.SchemeName,
-                        SchemeHandlerFactory = new AltFilesHandlerFactory()
-                    });
-
-                    AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
-                        try {
-                            Cef.Shutdown();
-                        } catch (Exception e) {
-                            Logging.Error(e);
-                        }
-                    };
-
-                    Cef.Initialize(settings, false, null);
-                }
+                CefSharpHelper.EnsureInitialized();
 
                 _downloadHandler = new DownloadHandler();
-                _requestHandler = new RequestHandler { UserAgent = DefaultUserAgent };
+                _requestHandler = new RequestHandler { UserAgent = CefSharpHelper.DefaultUserAgent };
                 _requestHandler.Inject += OnRequestHandlerInject;
 
                 _inner = new ChromiumWebBrowser {
                     BrowserSettings = {
                         FileAccessFromFileUrls = CefState.Enabled,
                         UniversalAccessFromFileUrls = CefState.Enabled,
-                        WebSecurity = CefState.Default,
                         BackgroundColor = preferTransparentBackground ? 0U : 0255255255,
                         WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
                         WebGl = CefState.Disabled,
                         Plugins = CefState.Disabled,
+
+                        // For SRS to work, because IsCSPBypassing somehow doesn’t work!
+                        WebSecurity = CefState.Disabled,
                     },
+                    DisplayHandler = this,
                     DownloadHandler = _downloadHandler,
                     RequestHandler = _requestHandler,
                     MenuHandler = new MenuHandler(),
-                    Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White)
+                    JsDialogHandler = new JsDialogHandler(),
+                    Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White),
                 };
 
                 RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
                 _inner.FrameLoadStart += OnFrameLoadStart;
                 _inner.FrameLoadEnd += OnFrameLoadEnd;
-                _inner.TitleChanged += OnTitleChanged;
-
+                _inner.LoadingStateChanged += OnLoadingStateChanged;
+                _inner.LoadError += OnLoadError;
                 _wrapper = new Border { Child = _inner };
             }
 
@@ -129,7 +85,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
                     ConverterParameter = _zoomLevel
                 });
             } else {
-                _inner.LayoutTransform = null;
+                _inner.LayoutTransform = Transform.Identity;
                 _inner.ClearValue(FrameworkElement.WidthProperty);
                 _inner.ClearValue(FrameworkElement.HeightProperty);
             }
@@ -138,11 +94,30 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return _wrapper;
         }
 
+        private void OnLoadError(object sender, LoadErrorEventArgs args) {
+            if (args.ErrorCode == CefErrorCode.Aborted) return;
+            if (args.ErrorCode == CefErrorCode.NameNotResolved && args.FailedUrl == @"http://" + _attemptedToNavigateTo + @"/") {
+                args.Frame.LoadUrl(SettingsHolder.Content.SearchEngine.GetUrl(_attemptedToNavigateTo, false));
+                return;
+            }
+
+            args.Frame.LoadStringForUrl($@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
+<h2>Failed to load URL {args.FailedUrl}</h2>
+<p>Error: {args.ErrorText} ({args.ErrorCode}).</p>
+</body></html>", args.FailedUrl);
+        }
+
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
             _inner.SetZoomLevel(Math.Log(_zoomLevel, 1.2));
             if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThreadAsync(() => Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, e.Url)));
+                ActionExtension.InvokeInMainThread(() => PageLoadingStarted?.Invoke(this, new UrlEventArgs(e.Url ?? string.Empty)));
             }
+        }
+
+        private void OnLoadingStateChanged(object sender, LoadingStateChangedEventArgs e) {
+            ActionExtension.InvokeInMainThreadAsync(() => LoadingStateChanged?.Invoke(this, e.IsLoading
+                    ? new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, _inner?.Address)
+                    : new PageLoadingEventArgs(AsyncProgressEntry.Ready, _inner?.Address)));
         }
 
         private string OnAcApiRequest(string url) {
@@ -155,27 +130,24 @@ namespace AcManager.Controls.UserControls.CefSharp {
             Inject?.Invoke(this, webInjectEventArgs);
         }
 
-        private void OnTitleChanged(object o, DependencyPropertyChangedEventArgs args) {
-            TitleChanged?.Invoke(this, new Web.TitleChangedEventArgs((string)args.NewValue));
-        }
-
-        public event EventHandler<PageLoadingEventArgs> Navigating;
-        public event EventHandler<PageLoadedEventArgs> Navigated;
+        public event EventHandler<PageLoadingEventArgs> LoadingStateChanged;
+        public event EventHandler<UrlEventArgs> PageLoadingStarted;
+        public event EventHandler<UrlEventArgs> PageLoaded;
         public event EventHandler<NewWindowEventArgs> NewWindow;
         public event EventHandler<Web.TitleChangedEventArgs> TitleChanged;
+        public event EventHandler<UrlEventArgs> AddressChanged;
+        public event EventHandler<FaviconChangedEventArgs> FaviconChanged;
+
+        public bool SupportsFavicons => true;
 
         private void OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
             if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThread(() => {
-                    Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Ready, e.Url));
-                    ModifyPage();
-                    Navigated?.Invoke(this, new PageLoadedEventArgs(_inner.Address, null));
-                });
+                ActionExtension.InvokeInMainThread(() => PageLoaded?.Invoke(this, new UrlEventArgs(e.Url ?? string.Empty)));
             }
         }
 
         public string GetUrl() {
-            return _inner.Address;
+            return _inner?.Address ?? string.Empty;
         }
 
         private bool _jsBridgeSet;
@@ -192,8 +164,10 @@ namespace AcManager.Controls.UserControls.CefSharp {
             _jsBridgeSet = true;
 
             try {
-                AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
-                _inner.RegisterJsObject(@"external", _jsBridge, new BindingOptions { CamelCaseJavascriptNames = false });
+                if (_inner != null) {
+                    CefSharpHelper.AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
+                    _inner.RegisterJsObject(@"external", _jsBridge, new BindingOptions { CamelCaseJavascriptNames = false });
+                }
             } catch (Exception e) {
                 Logging.Warning(e);
             }
@@ -214,6 +188,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior mode) {
+            if (_inner == null) return;
             _inner.LifeSpanHandler = new LifeSpanHandler(mode, url => {
                 var args = new NewWindowEventArgs(url);
                 NewWindow?.Invoke(this, args);
@@ -221,17 +196,12 @@ namespace AcManager.Controls.UserControls.CefSharp {
             });
         }
 
-        public void ModifyPage() {
-            Execute(@"window.__cm_loaded = true;
-window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };");
-        }
-
         public void Execute(string js) {
 #if DEBUG
             Logging.Debug(js);
 #endif
 
-            if (!_inner.IsBrowserInitialized) {
+            if (_inner?.IsBrowserInitialized != true) {
                 Logging.Warning("Browser is not initialized yet!");
                 return;
             }
@@ -245,13 +215,18 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             }
         }
 
+        private string _attemptedToNavigateTo;
+
         public void Navigate(string url) {
             if (Equals(url, GetUrl())) {
-                _inner.Reload(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
+                _inner?.Reload(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
                 return;
             }
 
-            _inner.Address = url;
+            _attemptedToNavigateTo = url;
+            if (_inner != null) {
+                _inner.Address = url;
+            }
         }
 
         public bool CanHandleAcApiRequests => true;
@@ -266,17 +241,52 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             return filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri.Replace(@"file", AltFilesHandlerFactory.SchemeName);
         }
 
-        public ICommand BackCommand => _inner.BackCommand;
-        public ICommand ForwardCommand => _inner.ForwardCommand;
+        public ICommand BackCommand => _inner?.BackCommand ?? UnavailableCommand.Instance;
+        public ICommand ForwardCommand => _inner?.ForwardCommand ?? UnavailableCommand.Instance;
+
         private DelegateCommand<bool?> _refreshCommand;
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => { _inner.Reload(noCache == true); }));
+
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(
+                noCache => _inner.Reload(noCache == true)));
 
         public void OnLoaded() { }
-        public void OnUnloaded() { }
+
+        public void OnUnloaded() {
+            DisposeHelper.Dispose(ref _inner);
+        }
+
         public void OnError(string error, string url, int line, int column) { }
 
         public Task<string> GetImageUrlAsync(string filename) {
             return Task.FromResult(ConvertFilename(filename));
+        }
+
+        void IDisplayHandler.OnAddressChanged(IWebBrowser browserControl, AddressChangedEventArgs args) {
+            ActionExtension.InvokeInMainThreadAsync(() => AddressChanged?.Invoke(this, new UrlEventArgs(args.Address ?? string.Empty)));
+        }
+
+        bool IDisplayHandler.OnAutoResize(IWebBrowser browserControl, IBrowser browser, Size newSize) {
+            return false;
+        }
+
+        void IDisplayHandler.OnTitleChanged(IWebBrowser browserControl, TitleChangedEventArgs args) {
+            ActionExtension.InvokeInMainThreadAsync(() => TitleChanged?.Invoke(this, new Web.TitleChangedEventArgs(args.Title ?? string.Empty)));
+        }
+
+        void IDisplayHandler.OnFaviconUrlChange(IWebBrowser browserControl, IBrowser browser, IList<string> urls) {
+            ActionExtension.InvokeInMainThreadAsync(() => FaviconChanged?.Invoke(this, new FaviconChangedEventArgs(urls.FirstOrDefault())));
+        }
+
+        void IDisplayHandler.OnFullscreenModeChange(IWebBrowser browserControl, IBrowser browser, bool fullscreen) { }
+
+        bool IDisplayHandler.OnTooltipChanged(IWebBrowser browserControl, ref string text) {
+            return false;
+        }
+
+        void IDisplayHandler.OnStatusMessage(IWebBrowser browserControl, StatusMessageEventArgs statusMessageArgs) { }
+
+        bool IDisplayHandler.OnConsoleMessage(IWebBrowser browserControl, ConsoleMessageEventArgs consoleMessageArgs) {
+            return true;
         }
     }
 }

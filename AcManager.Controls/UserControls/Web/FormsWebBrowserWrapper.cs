@@ -7,7 +7,6 @@ using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 using System.Windows.Input;
-using System.Windows.Threading;
 using AcManager.Tools.Helpers;
 using AcTools;
 using AcTools.Utils;
@@ -29,7 +28,10 @@ namespace AcManager.Controls.UserControls.Web {
         }
         #endregion
 
+        [CanBeNull]
         private WebBrowser _inner;
+
+        [CanBeNull]
         private WindowsFormsHost _wrapper;
 
         [CanBeNull]
@@ -57,17 +59,17 @@ namespace AcManager.Controls.UserControls.Web {
                     args.Cancel = true;
                     break;
                 case NewWindowsBehavior.ReplaceCurrent:
-                    _inner.Navigate(_inner.StatusText);
+                    _inner?.Navigate(_inner.StatusText);
                     args.Cancel = true;
                     break;
                 case NewWindowsBehavior.OpenInBrowser:
                     break;
                 case NewWindowsBehavior.MultiTab:
-                    NewWindow?.Invoke(this, new NewWindowEventArgs(_inner.StatusText));
+                    NewWindow?.Invoke(this, new NewWindowEventArgs(_inner?.StatusText ?? string.Empty));
                     args.Cancel = true;
                     break;
                 case NewWindowsBehavior.Callback:
-                    var newArgs = new NewWindowEventArgs(_inner.StatusText);
+                    var newArgs = new NewWindowEventArgs(_inner?.StatusText ?? string.Empty);
                     NewWindow?.Invoke(this, newArgs);
                     args.Cancel = newArgs.Cancel;
                     break;
@@ -77,7 +79,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         private void OnTitleChanged(object sender, EventArgs e) {
-            TitleChanged?.Invoke(this, new TitleChangedEventArgs(_inner.DocumentTitle ?? _inner.Url.ToString()));
+            TitleChanged?.Invoke(this, new TitleChangedEventArgs(_inner?.DocumentTitle ?? _inner?.Url.ToString() ?? string.Empty));
         }
 
         public void SetDownloadListener(IWebDownloadListener listener) {
@@ -90,10 +92,15 @@ namespace AcManager.Controls.UserControls.Web {
             _newWindowsBehavior = mode;
         }
 
-        public event EventHandler<PageLoadingEventArgs> Navigating;
-        public event EventHandler<PageLoadedEventArgs> Navigated;
+
+        public event EventHandler<UrlEventArgs> PageLoadingStarted;
+        public event EventHandler<UrlEventArgs> PageLoaded;
+        public event EventHandler<PageLoadingEventArgs> LoadingStateChanged;
         public event EventHandler<NewWindowEventArgs> NewWindow;
+        public event EventHandler<UrlEventArgs> AddressChanged;
         public event EventHandler<TitleChangedEventArgs> TitleChanged;
+        public event EventHandler<FaviconChangedEventArgs> FaviconChanged;
+        public bool SupportsFavicons => false;
 
         public bool CanHandleAcApiRequests => false;
         public event EventHandler<AcApiRequestEventArgs> AcApiRequest;
@@ -108,8 +115,9 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         private void OnNavigating(object sender, WebBrowserNavigatingEventArgs args) {
-            if (_inner.Url != args.Url) return;
-            Navigating?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, args.Url.ToString()));
+            if (_inner == null || _inner.Url != args.Url) return;
+            PageLoadingStarted?.Invoke(this, new UrlEventArgs(args.Url.ToString()));
+            LoadingStateChanged?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Indetermitate, args.Url.ToString()));
         }
 
         /*private void OnLoadCompleted(object sender, NavigationEventArgs e) {
@@ -117,26 +125,19 @@ namespace AcManager.Controls.UserControls.Web {
         }*/
 
         private void OnNavigated(object sender, WebBrowserNavigatedEventArgs args) {
-            if (_inner.Url != args.Url) return;
+            if (_inner == null || _inner.Url != args.Url) return;
 
-            // AsWebBrowser2();
-            ModifyPage();
-
-            var userCss = _styleProvider?.ToScript(args.Url.OriginalString);
+            var userCss = _styleProvider?.ToScript(args.Url.OriginalString, false);
             if (userCss != null) {
                 Execute(userCss);
             }
 
-            Navigated?.Invoke(this, new PageLoadedEventArgs(args.Url.OriginalString, null));
-        }
-
-        public void ModifyPage() {
-            Execute(@"window.__cm_loaded = true;
-window.onerror = function(error, url, line, column){ window.external.OnError(error, url, line, column); };");
+            PageLoaded?.Invoke(this, new UrlEventArgs(args.Url.ToString()));
+            LoadingStateChanged?.Invoke(this, new PageLoadingEventArgs(AsyncProgressEntry.Ready, args.Url.ToString()));
         }
 
         public string GetUrl() {
-            return _inner.Url?.OriginalString ?? "";
+            return _inner?.Url?.OriginalString ?? "";
         }
 
         private bool _jsBridgeSet;
@@ -151,7 +152,9 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
             _jsBridgeSet = true;
 
             try {
-                _inner.ObjectForScripting = _jsBridge;
+                if (_inner != null) {
+                    _inner.ObjectForScripting = _jsBridge;
+                }
             } catch (ArgumentException) {
                 Logging.Warning("Failed to set: " + (_jsBridge?.GetType().FullName ?? @"NULL"));
                 throw;
@@ -177,7 +180,7 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
         public object Execute(string js) {
             try {
                 _errorHappened = false;
-                return _inner.Document?.InvokeScript(@"eval", new object[]{ js });
+                return _inner?.Document?.InvokeScript(@"eval", new object[] { js });
             } catch (InvalidOperationException e) {
                 Logging.Warning("InvalidOperationException: " + e.Message);
             } catch (COMException e) {
@@ -200,21 +203,21 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
 
         public void Navigate(string url) {
             if (Equals(url, GetUrl())) {
-                _inner.Refresh(Keyboard.Modifiers.HasFlag(ModifierKeys.Control)
+                _inner?.Refresh(Keyboard.Modifiers.HasFlag(ModifierKeys.Control)
                         ? WebBrowserRefreshOption.Completely
                         : WebBrowserRefreshOption.Normal);
                 return;
             }
 
             try {
-                _inner.Navigate(url);
+                _inner?.Navigate(url);
             } catch (Exception e) {
                 if (url.IsWebUrl()) {
                     Logging.Write("Navigation failed: " + e);
                 } else {
                     url = @"http://" + url;
                     try {
-                        _inner.Navigate(url);
+                        _inner?.Navigate(url);
                     } catch (Exception ex) {
                         Logging.Write("Navigation failed: " + ex);
                     }
@@ -224,38 +227,24 @@ window.onerror = function(error, url, line, column){ window.external.OnError(err
 
         private DelegateCommand _goBackCommand;
 
-        public ICommand BackCommand => _goBackCommand ?? (_goBackCommand = new DelegateCommand(() => { _inner.GoBack(); }, () => _inner.CanGoBack));
+        public ICommand BackCommand => _goBackCommand
+                ?? (_goBackCommand = new DelegateCommand(() => _inner?.GoBack(), () => _inner?.CanGoBack == true));
 
         private DelegateCommand _goForwardCommand;
 
-        public ICommand ForwardCommand
-            => _goForwardCommand ?? (_goForwardCommand = new DelegateCommand(() => { _inner.GoForward(); }, () => _inner.CanGoForward));
+        public ICommand ForwardCommand => _goForwardCommand
+                ?? (_goForwardCommand = new DelegateCommand(() => _inner?.GoForward(), () => _inner?.CanGoForward == true));
 
         private DelegateCommand<bool?> _refreshCommand;
 
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(noCache => {
-            _inner.Refresh(noCache == true ? WebBrowserRefreshOption.Completely : WebBrowserRefreshOption.Normal);
-        }));
+        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand<bool?>(
+                noCache => _inner?.Refresh(noCache == true ? WebBrowserRefreshOption.Completely : WebBrowserRefreshOption.Normal)));
 
-        private DispatcherTimer _timer;
-
-        public void OnLoaded() {
-            _timer = new DispatcherTimer {
-                Interval = TimeSpan.FromSeconds(0.5),
-                IsEnabled = true
-            };
-
-            _timer.Tick += OnTick;
-        }
+        public void OnLoaded() {}
 
         public void OnUnloaded() {
-            _timer.IsEnabled = false;
-            _timer = null;
-        }
-
-        private void OnTick(object sender, EventArgs e) {
-            // Logging.Debug(Execute(@"!window.__cm_loaded"));
-            // Execute(@"if (!window.__cm_loaded){ window.external.FixPage(); }");
+            DisposeHelper.Dispose(ref _inner);
+            DisposeHelper.Dispose(ref _wrapper);
         }
 
         public async Task<string> GetImageUrlAsync(string filename) {

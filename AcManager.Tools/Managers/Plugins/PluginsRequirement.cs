@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Presentation;
 namespace AcManager.Tools.Managers.Plugins {
     public class PluginsRequirement : NotifyPropertyChanged {
         private readonly Func<PluginEntry, bool> _filter;
+        private readonly string[] _required;
         public BetterListCollectionView ListView { get; }
 
         public PluginsRequirement(Func<PluginEntry, bool> filter) {
@@ -36,7 +37,9 @@ namespace AcManager.Tools.Managers.Plugins {
             return o is PluginEntry p && _filter.Invoke(p);
         }
 
-        public PluginsRequirement(params string[] ids) : this(p => ids.ArrayContains(p.Id)) {}
+        public PluginsRequirement(params string[] ids) : this(p => ids.ArrayContains(p.Id)) {
+            _required = ids;
+        }
 
         private AsyncCommand _installAllCommand;
 
@@ -55,7 +58,8 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         private void UpdateReady() {
-            IsReady = ListView.OfType<PluginEntry>().All(x => x.IsReady);
+            IsReady = _required?.All(x => PluginsManager.Instance.IsPluginEnabled(x))
+                    ?? ListView.OfType<PluginEntry>().All(x => x.IsReady);
         }
 
         public event EventHandler Ready;

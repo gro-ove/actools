@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -21,7 +22,7 @@ namespace AcManager.Controls.UserControls.Web {
             return null;
         }
 
-        public virtual void PageInject(string url, Collection<string> toInject) {}
+        public virtual void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {}
         public virtual void PageLoaded(string url) {}
 
         protected void Sync(Action action) {

@@ -212,7 +212,7 @@
           IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
         <DockPanel>
-          <MenuItem DockPanel.Dock="Top" Header="Settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
+          <MenuItem DockPanel.Dock="Top" Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
               InputGestureText="Alt+F1">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource GearIconData}" HorizontalAlignment="Center"
@@ -406,7 +406,7 @@
     <!--<mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />-->
     <mui:TitleLink x:Name="OriginalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
-    <mui:TitleLink Content="full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
+    <mui:TitleLink Content="switch to full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
   </mui:ModernWindow.TitleLinks>
 
   <mui:Cell x:Name="OverlayContentCell" ClipToBounds="True">

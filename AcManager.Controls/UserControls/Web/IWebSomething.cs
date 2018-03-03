@@ -10,10 +10,15 @@ namespace AcManager.Controls.UserControls.Web {
         [NotNull]
         FrameworkElement GetElement([CanBeNull] DpiAwareWindow parentWindow, bool preferTransparentBackground);
 
-        event EventHandler<PageLoadingEventArgs> Navigating;
-        event EventHandler<PageLoadedEventArgs> Navigated;
+        event EventHandler<UrlEventArgs> PageLoadingStarted;
+        event EventHandler<UrlEventArgs> PageLoaded;
+        event EventHandler<PageLoadingEventArgs> LoadingStateChanged;
         event EventHandler<NewWindowEventArgs> NewWindow;
+        event EventHandler<UrlEventArgs> AddressChanged;
         event EventHandler<TitleChangedEventArgs> TitleChanged;
+        event EventHandler<FaviconChangedEventArgs> FaviconChanged;
+
+        bool SupportsFavicons { get; }
 
         [NotNull]
         string GetUrl();

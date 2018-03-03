@@ -122,7 +122,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private static string GetSearchAddress(AcCommonObject obj) {
-            return SettingsHolder.Content.SearchEngine?.GetUri(obj.Name ?? obj.Id, true) ??
+            return SettingsHolder.Content.SearchEngine?.GetUrl(obj.Name ?? obj.Id, true) ??
                     $"https://duckduckgo.com/?q=site%3Awikipedia.org+{Uri.EscapeDataString(obj.Name ?? obj.Id)}&ia=web";
         }
 

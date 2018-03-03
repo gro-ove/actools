@@ -4,7 +4,7 @@ using AcManager.Tools.Helpers;
 using CefSharp;
 using FirstFloor.ModernUI;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     internal class LifeSpanHandler : ILifeSpanHandler {
         private readonly NewWindowsBehavior _mode;
         private readonly Func<string, bool> _newWindowCancelCallback;

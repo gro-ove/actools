@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using AcManager.Controls.UserControls.CefSharp;
+using AcManager.Controls.UserControls.Cef;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils.Helpers;
@@ -17,11 +18,22 @@ using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls.Web {
     public class WebTab : NotifyPropertyChanged {
+        private static bool? _cefSharpMode;
+
         [NotNull]
         private static IWebSomething GetSomething() {
-            if (PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)) return new CefSharpWrapper();
-            // return new WebBrowserWrapper();
-            return new FormsWebBrowserWrapper();
+            return PluginsManager.Instance.IsPluginEnabled(KnownPlugins.CefSharp)
+                    ? GetCefSomething()
+                    : new FormsWebBrowserWrapper();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static IWebSomething GetCefSomething() {
+            if (_cefSharpMode ?? (_cefSharpMode = SettingsHolder.Plugins.CefWinForms).Value) {
+                return new FormsCefSharpWrapper();
+            }
+
+            return new CefSharpWrapper();
         }
 
         private readonly IWebSomething _something;
@@ -31,10 +43,13 @@ namespace AcManager.Controls.UserControls.Web {
         public WebTab(string url, bool preferTransparentBackground, bool delayed) {
             _preferTransparentBackground = preferTransparentBackground;
             _something = GetSomething();
-            _something.Navigating += OnProgressChanged;
-            _something.Navigated += OnNavigated;
+            _something.LoadingStateChanged += OnLoadingStateChanged;
+            _something.PageLoadingStarted += OnPageLoadingStarted;
+            _something.PageLoaded += OnNavigated;
             _something.NewWindow += OnNewWindow;
             _something.TitleChanged += OnTitleChanged;
+            _something.AddressChanged += OnAddressChanged;
+            _something.FaviconChanged += OnFaviconChanged;
             _something.Inject += OnInject;
             _something.AcApiRequest += OnAcApiRequest;
             _something.OnLoaded();
@@ -51,6 +66,10 @@ namespace AcManager.Controls.UserControls.Web {
             } else {
                 Navigate(url);
             }
+        }
+
+        private void OnAddressChanged(object sender, UrlEventArgs e) {
+            ActiveUrl = e.Url;
         }
 
         public void EnsureLoaded() {
@@ -119,6 +138,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         private void UpdateFavicon() {
+            if (_something.SupportsFavicons) return;
             FaviconProvider.GetFaviconAsync(ActiveUrl).ContinueWith(t => {
                 if (t.Result != null) {
                     ActionExtension.InvokeInMainThreadAsync(() => Favicon = t.Result);
@@ -132,6 +152,10 @@ namespace AcManager.Controls.UserControls.Web {
         public string Favicon {
             get => _favicon;
             private set => Apply(value, ref _favicon);
+        }
+
+        private void OnFaviconChanged(object sender, FaviconChangedEventArgs e) {
+            Favicon = e.Url;
         }
 
         public void Execute(string js, bool onload = false) {
@@ -161,7 +185,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         private void OnInject(object sender, WebInjectEventArgs e) {
-            _jsBridge?.PageInject(e.Url, e.ToInject);
+            _jsBridge?.PageInject(e.Url, e.ToInject, e.Replacements);
         }
 
         private void OnAcApiRequest(object sender, AcApiRequestEventArgs e) {
@@ -183,12 +207,15 @@ namespace AcManager.Controls.UserControls.Web {
             private set => Apply(value, ref _isLoading);
         }
 
-        public event EventHandler<UrlEventArgs> PageLoading;
-
-        private void OnProgressChanged(object sender, PageLoadingEventArgs e) {
-            ActiveUrl = e.Url;
+        private void OnLoadingStateChanged(object sender, PageLoadingEventArgs e) {
             IsLoading = !e.Progress.IsReady;
-            PageLoading?.Invoke(this, new UrlEventArgs(e.Url ?? ""));
+        }
+
+        public event EventHandler<UrlEventArgs> PageLoadingStarted;
+
+        private void OnPageLoadingStarted(object sender, UrlEventArgs e) {
+            ActiveUrl = e.Url;
+            PageLoadingStarted?.Invoke(this, e);
         }
 
         [CanBeNull]
@@ -236,8 +263,6 @@ namespace AcManager.Controls.UserControls.Web {
 
         private DelegateCommand _closeCommand;
 
-        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => {
-            IsClosed = true;
-        }, () => !IsMainTab));
+        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => { IsClosed = true; }, () => !IsMainTab));
     }
 }

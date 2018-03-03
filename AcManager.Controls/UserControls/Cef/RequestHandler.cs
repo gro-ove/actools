@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using AcManager.Controls.UserControls.Web;
@@ -11,7 +10,7 @@ using CefSharp;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls.UserControls.CefSharp {
+namespace AcManager.Controls.UserControls.Cef {
     internal class RequestHandler : IRequestHandler {
         [CanBeNull]
         internal string UserAgent { get; set; }
@@ -66,7 +65,8 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return true;
         }
 
-        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port, X509Certificate2Collection certificates,
+        public bool OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port,
+                X509Certificate2Collection certificates,
                 ISelectClientCertificateCallback callback) {
             return true;
         }
@@ -83,7 +83,7 @@ namespace AcManager.Controls.UserControls.CefSharp {
             return true;
         }
 
-        public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) {}
+        public void OnResourceRedirect(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response, ref string newUrl) { }
 
         public bool OnProtocolExecution(IWebBrowser browserControl, IBrowser browser, string url) {
             return url.StartsWith(@"mailto") || url.StartsWith(@"acmanager");
@@ -109,16 +109,16 @@ namespace AcManager.Controls.UserControls.CefSharp {
 
         public IResponseFilter GetResourceResponseFilter(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response) {
             if (response.MimeType == @"text/html") {
-                var css = StyleProvider?.GetStyle(request.Url);
+                var css = StyleProvider?.GetStyle(request.Url, browserControl is CefSharp.Wpf.ChromiumWebBrowser);
                 var inject = new WebInjectEventArgs(request.Url);
                 Inject?.Invoke(this, inject);
-                return ReplaceResponseFilter.CreateCustomCss(inject.ToInject.JoinToString(), $@"
+                return new ReplaceResponseFilter(inject.Replacements.Append(ReplaceResponseFilter.CreateCustomCss(inject.ToInject.JoinToString(), $@"
 ::-webkit-scrollbar {{ width: 8px!important; height: 8px!important; }}
 ::-webkit-scrollbar-track {{ box-shadow: none!important; border-radius: 0!important; background: {_windowColor}!important; opacity: 0!important; }}
 ::-webkit-scrollbar-corner {{ background: {_windowColor}!important; }}
 ::-webkit-scrollbar-thumb {{ border: none!important; box-shadow: none!important; border-radius: 0!important; {_scrollThumbColor} }}
 ::-webkit-scrollbar-thumb:hover {{ {_scrollThumbHoverColor} }}
-::-webkit-scrollbar-thumb:active {{ {_scrollThumbDraggingColor} }}", css);
+::-webkit-scrollbar-thumb:active {{ {_scrollThumbDraggingColor} }}", css)));
             }
 
             return null;
@@ -127,104 +127,22 @@ namespace AcManager.Controls.UserControls.CefSharp {
         public void OnResourceLoadComplete(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, IResponse response,
                 UrlRequestStatus status, long receivedContentLength) { }
 
-        private class ReplaceResponseFilter : IResponseFilter {
-            private static readonly Encoding Encoding = Encoding.UTF8;
-
-            private readonly byte[] _find;
-            private readonly byte[] _replacement;
-
-            private readonly List<byte> _overflow = new List<byte>();
-            private int _findMatchOffset;
-
-            public static ReplaceResponseFilter CreateCustomCss(string prefix, params string[] css) {
-                return new ReplaceResponseFilter(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style></head>");
+        private class ReplaceResponseFilter : StreamReplacement, IResponseFilter {
+            public static KeyValuePair<string, string> CreateCustomCss(string prefix, params string[] css) {
+                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style></head>");
             }
 
-            public ReplaceResponseFilter(string find, string replace) {
-                _find = Encoding.GetBytes(find);
-                _replacement = Encoding.GetBytes(replace);
-            }
+            public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) {}
 
             bool IResponseFilter.InitFilter() {
                 return true;
             }
 
             FilterStatus IResponseFilter.Filter(Stream dataIn, out long dataInRead, Stream dataOut, out long dataOutWritten) {
-                dataOutWritten = 0;
-
-                if (dataIn == null) {
-                    dataInRead = 0;
-                    return FilterStatus.Done;
-                }
-
-                dataInRead = dataIn.Length;
-                if (_overflow.Count > 0) {
-                    WriteOverflow(dataOut, ref dataOutWritten);
-                }
-
-                for (var i = 0; i < dataInRead; ++i) {
-                    var readByte = (byte)dataIn.ReadByte();
-                    if (readByte != _find[_findMatchOffset]) {
-                        if (_findMatchOffset > 0) {
-                            WriteBytes(_find, _findMatchOffset, dataOut, ref dataOutWritten);
-                            _findMatchOffset = 0;
-                        }
-
-                        WriteSingleByte(readByte, dataOut, ref dataOutWritten);
-                    } else if (++_findMatchOffset == _find.Length) {
-                        WriteBytes(_replacement, _replacement.Length, dataOut, ref dataOutWritten);
-                        _findMatchOffset = 0;
-                    }
-                }
-
-                return _overflow.Count > 0 ? FilterStatus.NeedMoreData :
-                        _findMatchOffset > 0 ? FilterStatus.NeedMoreData : FilterStatus.Done;
+                return Filter(dataIn, out dataInRead, dataOut, out dataOutWritten) ? FilterStatus.Done : FilterStatus.NeedMoreData;
             }
 
-            private void WriteOverflow(Stream dataOut, ref long dataOutWritten) {
-                var remainingSpace = dataOut.Length - dataOutWritten;
-                var maxWrite = Math.Min(_overflow.Count, remainingSpace);
-
-                if (maxWrite > 0) {
-                    dataOut.Write(_overflow.ToArray(), 0, (int)maxWrite);
-                    dataOutWritten += maxWrite;
-                }
-
-                if (maxWrite < _overflow.Count) {
-                    _overflow.RemoveRange(0, (int)(maxWrite - 1));
-                } else {
-                    _overflow.Clear();
-                }
-            }
-
-            private void WriteBytes(byte[] bytes, int bytesCount, Stream dataOut, ref long dataOutWritten) {
-                var remainingSpace = dataOut.Length - dataOutWritten;
-                var maxWrite = Math.Min(bytesCount, remainingSpace);
-
-                if (maxWrite > 0) {
-                    dataOut.Write(bytes, 0, (int)maxWrite);
-                    dataOutWritten += maxWrite;
-                }
-
-                if (maxWrite < bytesCount) {
-                    var range = new byte[bytesCount - maxWrite];
-                    Array.Copy(bytes, maxWrite, range, 0, range.LongLength);
-                    _overflow.AddRange(range);
-                }
-            }
-
-            private void WriteSingleByte(byte data, Stream dataOut, ref long dataOutWritten) {
-                var remainingSpace = dataOut.Length - dataOutWritten;
-
-                if (remainingSpace > 0) {
-                    dataOut.WriteByte(data);
-                    dataOutWritten += 1;
-                } else {
-                    _overflow.Add(data);
-                }
-            }
-
-            public void Dispose() { }
+            void IDisposable.Dispose() { }
         }
     }
 }
