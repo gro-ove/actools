@@ -1,29 +1,114 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Miscellaneous;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
+using NAudio.CoreAudioApi;
 
 namespace AcManager.Pages.AcSettings {
-    public partial class AcSettingsAudio {
-        public AcSettingsAudio() {
+    public partial class AcSettingsAudio : ILoadableContent {
+        private readonly AudioDevices _audioDevices = new AudioDevices();
+        private IReadOnlyList<AudioDevice> _audioDevicesList;
+
+        public async Task LoadAsync(CancellationToken cancellationToken) {
+            try {
+                _audioDevicesList = await Task.Run(() => GetAudioDevicesList());
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+            }
+        }
+
+        public void Load() {
+            try {
+                _audioDevicesList = GetAudioDevicesList();
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+            }
+        }
+
+        public void Initialize() {
             InitializeComponent();
-            DataContext = new ViewModel();
+
+            this.OnActualUnload(_audioDevices);
+            _audioDevices.EndpointsChanged += OnEndpointsChanged;
+            DataContext = new ViewModel(_audioDevicesList);
+
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });
+
+            if (_audioDevices == null) {
+                DevicesHeading.Visibility = Visibility.Collapsed;
+                DevicesPanel.Visibility = Visibility.Collapsed;
+            }
         }
 
-        public ViewModel Model => (ViewModel)DataContext;
+        private void OnEndpointsChanged(object sender, EventArgs eventArgs) {
+            try {
+                _audioDevicesList = GetAudioDevicesList();
+                Model.AudioOutputDevices = _audioDevicesList;
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+            }
+        }
 
-        public class ViewModel : NotifyPropertyChanged {
-            internal ViewModel() { }
+        [CanBeNull]
+        private IReadOnlyList<AudioDevice> GetAudioDevicesList() {
+            var result = _audioDevices?.GetOutputDevices().ToList();
+            if (result == null) return null;
+
+            var current = AcSettingsHolder.Audio.EndPointName;
+            if (!string.IsNullOrWhiteSpace(current) && result.All(x => x.DisplayName != current)) {
+                var deviceName = Regex.Match(current, @"\((.+)\)").Groups[1].Value;
+                result.Insert(0, new AudioDevice(current, string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName,
+                        @"%windir%\system32\mmres.dll,-3004", DeviceState.NotPresent));
+            }
+
+            return result;
+        }
+
+        private ViewModel Model => (ViewModel)DataContext;
+
+        private class ViewModel : NotifyPropertyChanged {
+            internal ViewModel(IReadOnlyList<AudioDevice> audioDevicesList) {
+                AudioOutputDevices = audioDevicesList;
+            }
+
+            private IReadOnlyCollection<AudioDevice> _audioOutputDevices;
+
+            [CanBeNull]
+            public IReadOnlyCollection<AudioDevice> AudioOutputDevices {
+                get => _audioOutputDevices;
+                set => Apply(value, ref _audioOutputDevices, () => {
+                    _selectedAudioDevice = AudioOutputDevices?.FirstOrDefault(x => x.DisplayName == Audio.EndPointName)
+                            ?? AudioOutputDevices?.FirstOrDefault(x => x.IsDefault) ?? AudioOutputDevices?.FirstOrDefault();
+                    OnPropertyChanged(nameof(SelectedAudioDevice));
+                });
+            }
+
+            private AudioDevice _selectedAudioDevice;
+
+            [CanBeNull]
+            public AudioDevice SelectedAudioDevice {
+                get => _selectedAudioDevice;
+                set => Apply(value, ref _selectedAudioDevice, () => { Audio.EndPointName = value?.DisplayName; });
+            }
 
             public AudioSettings Audio => AcSettingsHolder.Audio;
 

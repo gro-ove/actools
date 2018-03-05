@@ -85,6 +85,13 @@ namespace AcManager {
 
         public static void CreateAndRun(bool forceSoftwareRenderingMode) {
             FilesStorage.Initialize(EntryPoint.ApplicationDataDirectory);
+
+            if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
+                var logFilename = EntryPoint.GetLogName("Main Log");
+                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename), AppArguments.GetBool(AppFlag.OptimizeLogging));
+                Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
+            }
+
             if (AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize();
                 CacheStorage.Initialize();
@@ -95,12 +102,6 @@ namespace AcManager {
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
-            }
-
-            if (!AppArguments.GetBool(AppFlag.DisableLogging)) {
-                var logFilename = EntryPoint.GetLogName("Main Log");
-                Logging.Initialize(FilesStorage.Instance.GetFilename("Logs", logFilename), AppArguments.GetBool(AppFlag.OptimizeLogging));
-                Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
             if (AppArguments.GetBool(AppFlag.NoProxy, true)) {

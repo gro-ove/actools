@@ -14,6 +14,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.Presentation;
 using AcManager.Controls.QuickSwitches;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.ViewModels;
@@ -96,8 +97,10 @@ namespace AcManager.Pages.Windows {
                 new InputBinding(new NavigateCommand(this, "media"), new KeyGesture(Key.F4)),
 
                 // Second group, Ctrl+F…
-                new InputBinding(new NavigateCommand(this, "content"), new KeyGesture(Key.F1, ModifierKeys.Control)),
-                new InputBinding(new NavigateCommand(this, "server"), new KeyGesture(Key.F2, ModifierKeys.Control)),
+                new InputBinding(new NavigateCommand(this, new Uri("/Pages/Lists/CarsListPage.xaml", UriKind.Relative)),
+                        new KeyGesture(Key.F1, ModifierKeys.Control)),
+                InternalUtils.IsAllRight ? new InputBinding(new NavigateCommand(this, new Uri("/Pages/Lists/ServerPresetsListPage.xaml", UriKind.Relative)),
+                        new KeyGesture(Key.F2, ModifierKeys.Control)) : null,
 
                 // Settings, Alt+F…
                 new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/SettingsPage.xaml", UriKind.Relative)),
@@ -106,7 +109,7 @@ namespace AcManager.Pages.Windows {
                         new KeyGesture(Key.F2, ModifierKeys.Alt)),
                 new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/PythonAppsSettings.xaml", UriKind.Relative)),
                         new KeyGesture(Key.F3, ModifierKeys.Alt)),
-            });
+            }.NonNull().ToList());
 
             InitializeComponent();
             ModsWebBrowser.Instance.RebuildLinksNow();
@@ -137,7 +140,9 @@ namespace AcManager.Pages.Windows {
             UpdateLiveTabs();
             SettingsHolder.Live.PropertyChanged += OnLiveSettingsPropertyChanged;
 
-            UpdateServerTab();
+            UpdateExtraLinks();
+            AppAppearanceManager.Instance.PropertyChanged += OnAppAppearanceSettingsPropertyChanged;
+
             UpdateMinoratingLink();
             SettingsHolder.Online.PropertyChanged += OnOnlineSettingsPropertyChanged;
 
@@ -210,17 +215,23 @@ namespace AcManager.Pages.Windows {
 
         private void OnOnlineSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
             switch (e.PropertyName) {
-                case nameof(SettingsHolder.OnlineSettings.ServerPresetsManaging):
-                    UpdateServerTab();
-                    break;
                 case nameof(SettingsHolder.OnlineSettings.IntegrateMinorating):
                     UpdateMinoratingLink();
                     break;
             }
         }
 
-        private void UpdateServerTab() {
-            ServerGroup.IsShown = SettingsHolder.Online.ServerPresetsManaging;
+        private void OnAppAppearanceSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            switch (e.PropertyName) {
+                case nameof(AppAppearanceManager.Instance.ExtraTitleLinks):
+                    UpdateExtraLinks();
+                    break;
+            }
+        }
+
+        private void UpdateExtraLinks() {
+            ContentGroup.IsShown = AppAppearanceManager.Instance.ExtraTitleLinks;
+            ServerGroup.IsShown = AppAppearanceManager.Instance.ExtraTitleLinks;
         }
 
         private void UpdateMinoratingLink() {
@@ -526,7 +537,7 @@ namespace AcManager.Pages.Windows {
             if (_closed) return;
 
             try {
-                if (SettingsHolder.Online.ServerPresetsManaging && ServerPresetsManager.Instance.IsScanned) {
+                if (ServerPresetsManager.Instance.IsScanned) {
                     var running = ServerPresetsManager.Instance.Loaded.Where(x => x.IsRunning).ToList();
                     if (running.Count > 0 && ModernDialog.ShowMessage(
                             $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{

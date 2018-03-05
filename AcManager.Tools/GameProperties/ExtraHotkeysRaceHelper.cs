@@ -389,6 +389,7 @@ namespace AcManager.Tools.GameProperties {
 
         private class MemoryListener : IDisposable {
             private static readonly string[] ShortenDelays = {
+                // "GEARUP", "GEARDN",
                 "ABS", "__CM_ABS_DECREASE",
                 "TRACTION_CONTROL", "__CM_TRACTION_CONTROL_DECREASE",
             };
@@ -398,9 +399,8 @@ namespace AcManager.Tools.GameProperties {
             private static bool _delaysAvailable;
 
             static MemoryListener() {
-                var startStopSession =
-                        new CallbackJoyCommand(
-                                () => { InternalUtils.AcControlPointExecute(_isDriving ? AcCommand.TeleportToPitsWithConfig : AcCommand.StartGame); });
+                var startStopSession = new CallbackJoyCommand(() =>
+                        InternalUtils.AcControlPointExecute(_isDriving ? AcCommand.TeleportToPitsWithConfig : AcCommand.StartGame));
 
                 ExtraCommands = new Dictionary<string, JoyCommandBase> {
                     ["__CM_START_SESSION"] = new AcJoyCommand(AcCommand.StartGame),
@@ -519,6 +519,27 @@ namespace AcManager.Tools.GameProperties {
                 var delaysAvailable = delayEnabled && (!isAcFullscreen || isCmAppInstalled);
                 _delaysAvailable = delaysAvailable;
 
+                foreach (var n in AcSettingsHolder.Controls.WheelButtonKeys) {
+                    var section = ini[n];
+                    var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
+
+                    var joy = section.GetInt("__CM_ALT_JOY", -1);
+                    var button = section.GetInt("__CM_ALT_BUTTON", -1);
+                    var pov = section.GetInt("__CM_ALT__POV", -1);
+                    var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Top);
+                    var key = section.GetInt("KEY", -1);
+
+                    if (joy == -1 || button == -1 && pov == -1 || key == -1) {
+                        continue;
+                    }
+
+                    var joyKey = button != -1 ? new JoyKey(joy, button) : new JoyKey(joy, pov, povDirection);
+                    joyToCommand[joyKey] = new HotkeyJoyCommand(Keys.RControlKey, (Keys)key) {
+                        MinInterval = delay,
+                        DelayedName = null
+                    };
+                }
+
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
                     var section = ini[n];
                     var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
@@ -599,9 +620,7 @@ namespace AcManager.Tools.GameProperties {
                     _running = true;
                 }
 
-                var devices = await DirectInputScanner.GetAsync();
-                var joysticks = DirectInputScanner.DirectInput == null ? null
-                        : devices?.Select(x => new Joystick(DirectInputScanner.DirectInput, x.InstanceGuid)).ToList();
+                var joysticks = await DirectInputScanner.GetAsync();
                 var joystickCommands = joysticks == null ? null : _joyToCommand?.GroupBy(x => x.Key.Joy).Select(x =>
                         Tuple.Create(joysticks.ElementAtOrDefault(x.Key), x.ToArray())).Where(x => x.Item1 != null).ToList();
 
@@ -610,27 +629,23 @@ namespace AcManager.Tools.GameProperties {
                 var iterations = 0;
 #endif
 
-                try {
-                    while (_running == true) {
+                while (_running == true) {
 #if DEBUG
-                        s.Start();
-                        OnTick(joystickCommands);
-                        s.Stop();
+                    s.Start();
+                    OnTick(joystickCommands);
+                    s.Stop();
 #else
-                        OnTick(joystickCommands);
+                    OnTick(joystickCommands);
 #endif
-                        Thread.Sleep(8);
+                    Thread.Sleep(8);
 
 #if DEBUG
-                        if (++iterations >= 300) {
-                            Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F2} ms");
-                            iterations = 0;
-                            s.Restart();
-                        }
-#endif
+                    if (++iterations >= 300) {
+                        Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F2} ms");
+                        iterations = 0;
+                        s.Restart();
                     }
-                } finally {
-                    DisposeHelper.Dispose(ref joysticks);
+#endif
                 }
             }
 
@@ -663,6 +678,9 @@ namespace AcManager.Tools.GameProperties {
                     } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
                         devices.RemoveAt(index);
                     } catch (DirectInputException e) {
+                        devices.RemoveAt(index);
+                        Logging.Warning(e.Message);
+                    } catch (Exception e) {
                         devices.RemoveAt(index);
                         Logging.Warning(e);
                     }

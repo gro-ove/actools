@@ -650,7 +650,18 @@ namespace AcManager.Controls.Presentation {
         #endregion
 
         #region Miscellaneous
-        private StoredValue<bool> _semiTransparentAttachedTools = Stored.Get<bool>("AppAppearanceManager.SemiTransparentAttachedTools", false);
+        private readonly StoredValue<bool> _extraTitleLinks = Stored.Get("AppAppearanceManager.ExtraTitleLinks", false);
+
+        public bool ExtraTitleLinks {
+            get => _extraTitleLinks.Value;
+            set {
+                if (Equals(value, _extraTitleLinks.Value)) return;
+                _extraTitleLinks.Value = value;
+                OnPropertyChanged();
+            }
+        }
+
+        private readonly StoredValue<bool> _semiTransparentAttachedTools = Stored.Get("AppAppearanceManager.SemiTransparentAttachedTools", false);
 
         public bool SemiTransparentAttachedTools {
             get => _semiTransparentAttachedTools.Value;

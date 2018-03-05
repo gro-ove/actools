@@ -6,11 +6,14 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Miscellaneous;
+using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Effects;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -100,9 +103,12 @@ namespace AcManager.Tools.Objects {
 
         private void SetTrackOutlineTexture([CanBeNull] string filename, [NotNull] string textureName, [CanBeNull] string textureEffect) {
             try {
-                var data = Lazier.Create(() => {
-                    return filename == null || !File.Exists(filename) ? null : ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
-                });
+                var data =
+                        Lazier.Create(
+                                () => {
+                                    return filename == null || !File.Exists(filename)
+                                            ? null : ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
+                                });
 
                 string alreadySaved = null;
                 foreach (var skinObject in EnabledOnlySkins.ToList()) {
@@ -142,5 +148,32 @@ namespace AcManager.Tools.Objects {
 
             PrepareTrackOutlineTexture(d, track);
         }
+
+        private DelegateCommand _packDataCommand;
+
+        public DelegateCommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
+            try {
+                var destination = Path.Combine(Location, "data.acd");
+                var exists = File.Exists(destination);
+
+                if (Author == AuthorKunos
+                        ? ModernDialog.ShowMessage(ContentUtils.GetString("AppStrings", "Car_PackKunosDataMessage"), ToolsStrings.Common_Warning,
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes
+                        : exists && ModernDialog.ShowMessage(ContentUtils.GetString("AppStrings", "Car_PackExistingDataMessage"), ToolsStrings.Common_Warning,
+                                MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    return;
+                }
+
+                if (exists) {
+                    FileUtils.Recycle(destination);
+                }
+
+                Acd.FromDirectory(Path.Combine(Location, "data")).Save(destination);
+                UpdateAcdData();
+                WindowsHelper.ViewFile(destination);
+            } catch (Exception e) {
+                NonfatalError.Notify(ContentUtils.GetString("AppStrings", "Car_CannotPackData"), ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
+            }
+        }, () => Directory.Exists(Path.Combine(Location, "data"))));
     }
 }

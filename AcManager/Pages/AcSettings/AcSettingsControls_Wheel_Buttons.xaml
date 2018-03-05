@@ -18,7 +18,7 @@
       </CheckBox>
 
       <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_ShiftersHeader}" />
-      <ItemsControl ItemsSource="{Binding WheelGearsButtonEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+      <ItemsControl ItemsSource="{Binding WheelGearsButtonEntries}" Margin="0 0 20 4" ItemTemplate="{StaticResource ButtonAltEntryTemplate}" />
 
       <CheckBox IsChecked="{Binding WheelUseHShifter}" Margin="0 0 0 8">
         <Label Content="{x:Static g:AppStrings.Controls_UseHShifter}" />

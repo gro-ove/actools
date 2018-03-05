@@ -40,6 +40,8 @@
   <c:ToThicknessConverter x:Key="ToThicknessConverter" />
   <c:ToUpperConverter x:Key="ToUpperConverter" />
   <c:ToUpperSpecialConverter x:Key="ToUpperSpecialConverter" />
+
+  <c:IconPathToImageConverter x:Key="IconPathToImageConverter" />
   <c:UriToCachedImageConverter x:Key="UriToCachedImageConverter" />
 
   <c:ColonConverter x:Key="ColonConverter" />

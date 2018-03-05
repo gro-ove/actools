@@ -1,0 +1,261 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NAudio</name>
+    </assembly>
+    <members>
+        <member name="T:NAudio.CoreAudioApi.DataFlow">
+            <summary>
+            The EDataFlow enumeration defines constants that indicate the direction
+            in which audio data flows between an audio endpoint device and an application
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DataFlow.Render">
+            <summary>
+            Audio rendering stream.
+            Audio data flows from the application to the audio endpoint device, which renders the stream.
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DataFlow.Capture">
+            <summary>
+            Audio capture stream. Audio data flows from the audio endpoint device that captures the stream,
+            to the application
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DataFlow.All">
+            <summary>
+            Audio rendering or capture stream. Audio data can flow either from the application to the audio
+            endpoint device, or from the audio endpoint device to the application.
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.DeviceState">
+            <summary>
+            Device State
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DeviceState.Active">
+            <summary>
+            DEVICE_STATE_ACTIVE
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DeviceState.Disabled">
+            <summary>
+            DEVICE_STATE_DISABLED
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DeviceState.NotPresent">
+            <summary>
+            DEVICE_STATE_NOTPRESENT
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DeviceState.Unplugged">
+            <summary>
+            DEVICE_STATE_UNPLUGGED
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.DeviceState.All">
+            <summary>
+            DEVICE_STATEMASK_ALL
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.IMMNotificationClient">
+            <summary>
+            IMMNotificationClient
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.IMMNotificationClient.OnDeviceStateChanged(System.String,NAudio.CoreAudioApi.DeviceState)">
+            <summary>
+            Device State Changed
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.IMMNotificationClient.OnDeviceAdded(System.String)">
+            <summary>
+            Device Added
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.IMMNotificationClient.OnDeviceRemoved(System.String)">
+            <summary>
+            Device Removed
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.IMMNotificationClient.OnDefaultDeviceChanged(NAudio.CoreAudioApi.DataFlow,NAudio.CoreAudioApi.Role,System.String)">
+            <summary>
+            Default Device Changed
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.IMMNotificationClient.OnPropertyValueChanged(System.String,NAudio.CoreAudioApi.PropertyKey)">
+            <summary>
+            Property Value Changed
+            </summary>
+            <param name="pwstrDeviceId"></param>
+            <param name="key"></param>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.IPropertyStore">
+            <summary>
+            is defined in propsys.h
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.MMDevice">
+            <summary>
+            MM Device
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.MMDevice.FriendlyName">
+            <summary>
+            Friendly name for the endpoint
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.MMDevice.DeviceFriendlyName">
+            <summary>
+            Friendly name of device
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.MMDevice.IconPath">
+            <summary>
+            Icon path of device
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.MMDevice.ID">
+            <summary>
+            Device ID
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.MMDevice.State">
+            <summary>
+            Device State
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.MMDeviceCollection">
+            <summary>
+            Multimedia Device Collection
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.MMDeviceEnumerator">
+            <summary>
+            MM Device Enumerator
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.#ctor">
+            <summary>
+            Creates a new MM Device Enumerator
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.EnumerateAudioEndPoints(NAudio.CoreAudioApi.DataFlow,NAudio.CoreAudioApi.DeviceState)">
+            <summary>
+            Enumerate Audio Endpoints
+            </summary>
+            <param name="dataFlow">Desired DataFlow</param>
+            <param name="dwStateMask">State Mask</param>
+            <returns>Device Collection</returns>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.GetDefaultAudioEndpoint(NAudio.CoreAudioApi.DataFlow,NAudio.CoreAudioApi.Role)">
+            <summary>
+            Get Default Endpoint
+            </summary>
+            <param name="dataFlow">Data Flow</param>
+            <param name="role">Role</param>
+            <returns>Device</returns>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.RegisterEndpointNotificationCallback(NAudio.CoreAudioApi.IMMNotificationClient)">
+            <summary>
+            Registers a call back for Device Events
+            </summary>
+            <param name="client">Object implementing IMMNotificationClient type casted as IMMNotificationClient interface</param>
+            <returns></returns>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.UnregisterEndpointNotificationCallback(NAudio.CoreAudioApi.IMMNotificationClient)">
+            <summary>
+            Unregisters a call back for Device Events
+            </summary>
+            <param name="client">Object implementing IMMNotificationClient type casted as IMMNotificationClient interface </param>
+            <returns></returns>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.MMDeviceEnumerator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.MMDeviceEnumeratorComObject">
+            <summary>
+            implements IMMDeviceEnumerator
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.PropertyKey">
+            <summary>
+            PROPERTYKEY is defined in wtypes.h
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.PropertyKey.FormatId">
+            <summary>
+            Format ID
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.PropertyKey.PropertyId">
+            <summary>
+            Property ID
+            </summary>
+        </member>
+        <member name="M:NAudio.CoreAudioApi.PropertyKey.#ctor(System.Guid,System.Int32)">
+            <summary>
+            <param name="formatId"></param>
+            <param name="propertyId"></param>
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.PropertyKeys">
+            <summary>
+            Property Keys
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.PropertyKeys.InterfaceFriendlyName">
+            <summary>
+            PKEY_DeviceInterface_FriendlyName
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.PropertyKeys.FriendlyName">
+            <summary>
+            PKEY _Devie_FriendlyName
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.PropertyKeys.IconPath">
+            <summary>
+            PKEY _Device_IconPath
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.PropertyStore">
+            <summary>
+            Property Store class, only supports reading properties at the moment.
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.PropVariant">
+            <summary>
+            from Propidl.h.
+            http://msdn.microsoft.com/en-us/library/aa380072(VS.85).aspx
+            contains a union so we have to do an explicit layout
+            </summary>
+        </member>
+        <member name="P:NAudio.CoreAudioApi.PropVariant.Value">
+            <summary>
+            Property value
+            </summary>
+        </member>
+        <member name="T:NAudio.CoreAudioApi.Role">
+            <summary>
+            The ERole enumeration defines constants that indicate the role
+            that the system has assigned to an audio endpoint device
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.Role.Console">
+            <summary>
+            Games, system notification sounds, and voice commands.
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.Role.Multimedia">
+            <summary>
+            Music, movies, narration, and live music recording
+            </summary>
+        </member>
+        <member name="F:NAudio.CoreAudioApi.Role.Communications">
+            <summary>
+            Voice communications (talking to another person).
+            </summary>
+        </member>
+    </members>
+</doc>

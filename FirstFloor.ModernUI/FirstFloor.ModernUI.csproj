@@ -240,6 +240,7 @@
     <Compile Include="Windows\Converters\ColonConverter.cs" />
     <Compile Include="Windows\Converters\DifferenceToVisibilityConverter.cs" />
     <Compile Include="Windows\Converters\DrawingToColorConverter.cs" />
+    <Compile Include="Windows\Converters\IconPathToImageConverter.cs" />
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />

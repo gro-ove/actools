@@ -82,6 +82,7 @@
     <Compile Include="Implementations\Options\LogitechOptions.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
+    <Compile Include="Implementations\ThrustmasterTX.cs" />
     <Compile Include="IWheelSteerLockOptionsStorage.cs" />
     <Compile Include="IWheelSteerLockSetter.cs" />
     <Compile Include="Utils\SimpleSerialization.cs" />

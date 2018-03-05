@@ -202,6 +202,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         Angle = 1.4f,
                         Color = Vector3.Normalize(emissive).ToDrawingColor(),
                         UseShadows = true,
+                        ShadowsResolution = 256,
+                        UseHighQualityShadows = true,
+                        ShadowsBlurMultiplier = 2,
                         Brightness = (emissive.Length() * x.BoundingBox.GetSize().Length() * 0.2f).Clamp(0.2f, 0.5f)
                     });
                     result++;
@@ -219,6 +222,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         Range = 13.5f,
                         Color = Vector3.Normalize(emissive).ToDrawingColor(),
                         UseShadows = true,
+                        ShadowsResolution = 512,
+                        UseHighQualityShadows = true,
+                        ShadowsBlurMultiplier = 1,
                         Brightness = (emissive.Length() * x.BoundingBox.GetSize().Length() * 0.2f).Clamp(2.0f, 3.5f)
                     });
                     result++;

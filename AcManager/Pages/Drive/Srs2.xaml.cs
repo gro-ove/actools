@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
@@ -37,7 +38,11 @@ namespace AcManager.Pages.Drive {
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
             var web = (WebBlock)sender;
             var styleProvider = new StyleProvider();
-            web.SetJsBridge<SrsFixAcCompatibleApiBridge>(b => b.StyleProvider = styleProvider);
+            var isThemeBright = ((Color)Application.Current.Resources[@"WindowBackgroundColor"]).GetBrightness() > 0.4;
+            web.SetJsBridge<SrsFixAcCompatibleApiBridge>(b => {
+                b.StyleProvider = styleProvider;
+                b.IsThemeBright = isThemeBright;
+            });
             web.StyleProvider = styleProvider;
         }
 
@@ -71,9 +76,13 @@ namespace AcManager.Pages.Drive {
             }
 
             internal StyleProvider StyleProvider { get; set; }
+            internal bool IsThemeBright { get; set; }
 
             public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
-                if (StyleProvider?.TransparentBackgroundSupported == false) {
+                if (IsThemeBright
+                        // GetStyle() is called before PageInject(), so it’s a good way to know if browser supports
+                        // transparent background or not
+                        || StyleProvider?.TransparentBackgroundSupported == false) {
                     replacements.Add(new KeyValuePair<string, string>(@"<body style=""background:none;"">", @"<body>"));
                 }
 

@@ -301,31 +301,6 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData?.IsPacked == true));
 
-            private DelegateCommand _packDataCommand;
-
-            public DelegateCommand PackDataCommand => _packDataCommand ?? (_packDataCommand = new DelegateCommand(() => {
-                try {
-                    var destination = Path.Combine(SelectedObject.Location, "data.a" + "cd");
-                    var exists = File.Exists(destination);
-
-                    if (SelectedObject.Author == AcCommonObject.AuthorKunos && ModernDialog.ShowMessage(
-                            AppStrings.Car_PackKunosDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes ||
-                            SelectedObject.Author != AcCommonObject.AuthorKunos && exists && ModernDialog.ShowMessage(
-                                    AppStrings.Car_PackExistingDataMessage, ToolsStrings.Common_Warning, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
-                        return;
-                    }
-
-                    if (exists) {
-                        FileUtils.Recycle(destination);
-                    }
-
-                    Acd.FromDirectory(DataDirectory).Save(destination);
-                    WindowsHelper.ViewFile(destination);
-                } catch (Exception e) {
-                    NonfatalError.Notify(AppStrings.Car_CannotPackData, ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
-                }
-            }, () => Directory.Exists(DataDirectory)));
-
             private DelegateCommand _extractSoundCommand;
 
             public DelegateCommand ExtractSoundCommand => _extractSoundCommand ?? (_extractSoundCommand = new DelegateCommand(async () => {
@@ -672,7 +647,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
                 new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
 
-                new InputBinding(_model.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_object.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
 
                 new InputBinding(_model.CarAnalyzerCommand, new KeyGesture(Key.A, ModifierKeys.Alt)),

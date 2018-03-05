@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:networkInformation="clr-namespace:System.Net.NetworkInformation;assembly=System"
     xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance set:SettingsOnline+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
@@ -159,15 +159,13 @@
 
         <!--connection-->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
-        <CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" mui:LimitedService.Limited="True">
+        <!--<CheckBox IsChecked="{Binding Online.ServerPresetsManaging}" mui:LimitedService.Limited="True">
           <Label Content="{x:Static g:AppStrings.Toolbar_Enable}" />
-        </CheckBox>
-        <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True"
-            IsEnabled="{Binding ServerPresetsManaging, Source={x:Static t:SettingsHolder.Online}}">
+        </CheckBox>-->
+        <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True">
           <Label Content="Update server’s data automatically before starting server" />
         </CheckBox>
         <CheckBox IsChecked="{Binding Online.ServerPresetsFitInFewerTabs}" mui:LimitedService.Limited="True"
-            IsEnabled="{Binding ServerPresetsManaging, Source={x:Static t:SettingsHolder.Online}}"
             ToolTip="You might want to enable this option if you run Content Manager fullscreen. Also, just in case, shortcuts Alt+F1…Alt+F5 allow you to switch between those tabs quickly.">
           <Label Content="Combine together main, assists, conditions and sessions tabs" />
         </CheckBox>

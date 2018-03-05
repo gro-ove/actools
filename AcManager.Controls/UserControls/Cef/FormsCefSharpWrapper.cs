@@ -57,6 +57,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     DisplayHandler = this,
                     DownloadHandler = _downloadHandler,
                     RequestHandler = _requestHandler,
+                    KeyboardHandler = new KeyboardHandler()
                     // MenuHandler = new MenuHandler(),
                     // JsDialogHandler = new JsDialogHandler(),
                 };
@@ -232,7 +233,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
         public void OnError(string error, string url, int line, int column) { }
 
-        public Task<string> GetImageUrlAsync(string filename) {
+        Task<string> IWebSomething.GetImageUrlAsync(string filename) {
             return Task.FromResult(ConvertFilename(filename));
         }
 

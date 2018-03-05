@@ -208,8 +208,21 @@
                 </TextBlock>
                 <mui:BbCodeBlock BbCode="{Binding CarObject.VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
               </StackPanel>
-              <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal"
+              <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0 2 0 0"
                   d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
+                <Button Padding="4 2" Margin="0 -4 0 0" Command="{Binding CarObject.PackDataCommand}"
+                    Visibility="{Binding CarObject.AcdData.IsPacked, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse,
+                        FallbackValue={x:Static Visibility.Collapsed}}">
+                  <Button.ToolTip>
+                    <mui:BbCodeBlock
+                        BbCode="Without packed data, anybody can change the way their car drives.[br][br][b]Warning![/b] Don’t forget to share packed data with clients, otherwise they won’t be able to join." />
+                  </Button.ToolTip>
+                  <DockPanel>
+                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                        Margin="2 2 4 0" VerticalAlignment="Center" />
+                    <TextBlock Text="Pack data" />
+                  </DockPanel>
+                </Button>
                 <Button Content="Random skin" Padding="4 2" Margin="0 -4 0 0" Command="{Binding RandomSkinCommand}" />
                 <Button Content="Store" Padding="4 2" Margin="0 -4 0 0" Command="{Binding StoreCommand}" />
                 <Button Content="Clone" Padding="4 2" Margin="0 -4 0 0" Command="{Binding CloneCommand}" />

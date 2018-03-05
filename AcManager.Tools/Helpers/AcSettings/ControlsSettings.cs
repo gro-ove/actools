@@ -294,29 +294,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private void RescanDevices([CanBeNull] IList<DeviceInstance> devices) {
+        private void RescanDevices([CanBeNull] IList<Joystick> devices) {
             _skip = true;
 
             try {
                 var directInput = DirectInputScanner.DirectInput;
                 var newDevices = devices == null || directInput == null ? new List<DirectInputDevice>()
-                        : devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x)) ??
-                                DirectInputDevice.Create(directInput, x, i)).NonNull().ToList();
-
+                        : devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x.Information)) ??
+                                DirectInputDevice.Create(x, i)).NonNull().ToList();
                 var checkedPlaceholders = new List<PlaceholderInputDevice>();
-                void EnsureIndicesMatch(PlaceholderInputDevice placeholder, DirectInputDevice actualDevice) {
-                    if (checkedPlaceholders.Contains(placeholder)) return;
-                    checkedPlaceholders.Add(placeholder);
-
-                    if (!placeholder.OriginalIniIds.Contains(actualDevice.Index)) {
-                        if (OptionDebugControlles) {
-                            Logging.Warning(
-                                    $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual — {actualDevice.Index}");
-                        }
-
-                        FixMessedOrderAsync().Forget();
-                    }
-                }
 
                 foreach (var entry in Entries.OfType<BaseEntry<DirectInputAxle>>()) {
                     var current = entry.Input?.Device;
@@ -328,14 +314,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         }
                     } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
                         entry.Input = GetPlaceholderDevice((DirectInputDevice)current).GetAxle(entry.Input.Id);
-                    }
-                }
-
-                void GetActualInput(BaseEntry<DirectInputButton> entry, IDirectInputDevice replacement) {
-                    if (entry.Input is DirectInputPov pov) {
-                        entry.Input = replacement.GetPov(entry.Input.Id, pov.Direction);
-                    } else if (entry.Input != null) {
-                        entry.Input = replacement.GetButton(entry.Input.Id);
                     }
                 }
 
@@ -384,6 +362,28 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
                     for (var i = 0; i < device.Povs.Length; i++) {
                         device.Povs[i].PropertyChanged += DevicePovEventHandler;
+                    }
+                }
+
+                void EnsureIndicesMatch(PlaceholderInputDevice placeholder, DirectInputDevice actualDevice) {
+                    if (checkedPlaceholders.Contains(placeholder)) return;
+                    checkedPlaceholders.Add(placeholder);
+
+                    if (!placeholder.OriginalIniIds.Contains(actualDevice.Index)) {
+                        if (OptionDebugControlles) {
+                            Logging.Warning(
+                                    $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual — {actualDevice.Index}");
+                        }
+
+                        FixMessedOrderAsync().Forget();
+                    }
+                }
+
+                void GetActualInput(BaseEntry<DirectInputButton> entry, IDirectInputDevice replacement) {
+                    if (entry.Input is DirectInputPov pov) {
+                        entry.Input = replacement.GetPov(entry.Input.Id, pov.Direction);
+                    } else if (entry.Input != null) {
+                        entry.Input = replacement.GetButton(entry.Input.Id);
                     }
                 }
             } finally {
@@ -622,9 +622,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _combineWithKeyboardInput);
         }
 
-        public WheelButtonCombined[] WheelGearsButtonEntries { get; } = {
-            new WheelButtonCombined("GEARUP", ToolsStrings.Controls_NextGear),
-            new WheelButtonCombined("GEARDN", ToolsStrings.Controls_PreviousGear)
+        public WheelButtonCombinedAlt[] WheelGearsButtonEntries { get; } = {
+            new WheelButtonCombinedAlt("GEARUP", ToolsStrings.Controls_NextGear),
+            new WheelButtonCombinedAlt("GEARDN", ToolsStrings.Controls_PreviousGear)
         };
 
         private bool _wheelUseHShifter;
@@ -719,7 +719,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private WheelButtonCombined[] _wheelButtonEntries;
 
-        private IEnumerable<WheelButtonCombined> WheelButtonEntries => _wheelButtonEntries ?? (_wheelButtonEntries = WheelGearsButtonEntries
+        public IEnumerable<WheelButtonCombined> WheelButtonEntries => _wheelButtonEntries ?? (_wheelButtonEntries = WheelGearsButtonEntries
                 .Union(WheelCarButtonEntries)
                 .Union(WheelCarBrakeButtonEntries)
                 .Union(WheelCarTurboButtonEntries)
@@ -730,6 +730,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 .Union(WheelViewButtonEntries)
                 .Union(WheelGesturesButtonEntries)
                 .ToArray());
+
+        [NotNull]
+        public IEnumerable<string> WheelButtonKeys => WheelButtonEntries.Select(x => x.WheelButton.Id).NonNull();
         #endregion
 
         #region Wheel FFB
@@ -1034,6 +1037,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     .Select(x => (IEntry)x)
                     .Union(WheelButtonEntries.Select(x => x.KeyboardButton))
                     .Union(WheelButtonEntries.Select(x => x.WheelButton))
+                    .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
                     .Union(WheelHShifterButtonEntries)
                     .Union(KeyboardSpecificButtonEntries)
                     .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())

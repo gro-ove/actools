@@ -69,6 +69,11 @@
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="NAudio, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\NAudio\NAudio.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SharpCompress, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Libraries\SharpCompress\SharpCompress.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -88,6 +93,7 @@
       <HintPath>..\Libraries\AcManager.Internal\AcManager.Internal.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Management" />
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -266,13 +272,17 @@
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntryCombined.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonCombined.cs" />
+    <Compile Include="Helpers\AcSettingsControls\WheelButtonCombinedAlt.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
+    <Compile Include="Helpers\AudioDevice.cs" />
+    <Compile Include="Helpers\AudioDevices.cs" />
     <Compile Include="Helpers\CamberExtravaganzaHelper.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\FaviconProvider.cs" />

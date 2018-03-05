@@ -1,0 +1,1 @@
+Modified version of NAudio, cut from 500 KB to ≈10 KB. All that’s needed in CM is to list audio devices properly.

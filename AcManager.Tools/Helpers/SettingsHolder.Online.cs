@@ -304,7 +304,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _serverPresetsManaging;
+            /*private bool? _serverPresetsManaging;
 
             public bool ServerPresetsManaging {
                 get => _serverPresetsManaging ??
@@ -315,7 +315,7 @@ namespace AcManager.Tools.Helpers {
                     ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsManaging", value);
                     OnPropertyChanged();
                 }
-            }
+            }*/
 
             private bool? _serverPresetsAutoSave;
 

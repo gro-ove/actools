@@ -268,7 +268,7 @@ namespace AcManager.Tools.Objects {
                 progress?.Report(new AsyncProgressEntry(carId, i, CarIds.Length + 1));
                 PrepareCar(carId);
 
-                await Task.Delay(10, cancellation);
+                await Task.Yield();
                 if (cancellation.IsCancellationRequested) return;
             }
 
@@ -344,8 +344,6 @@ namespace AcManager.Tools.Objects {
 
             var log = new BetterObservableCollection<string>();
             RunningLog = log;
-
-            // await
 
             if (WrapperUsed) {
                 await RunWrapper(serverExecutable, log, progress, cancellation);

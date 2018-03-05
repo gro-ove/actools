@@ -240,6 +240,113 @@
     </Grid>
   </DataTemplate>
 
+  <DataTemplate x:Key="ButtonAltEntryTemplate" DataType="{x:Type acs:WheelButtonCombinedAlt}">
+    <Grid Margin="0 0 0 4" Background="Transparent">
+      <Grid.ContextMenu>
+        <ContextMenu>
+          <MenuItem Header="{x:Static c:ControlsStrings.Controls_ClearWheelBinding}" Command="{Binding WheelButton.ClearCommand}" />
+          <MenuItem Header="{x:Static c:ControlsStrings.Controls_ClearKeyboardBinding}" Command="{Binding KeyboardButton.ClearCommand}" />
+        </ContextMenu>
+      </Grid.ContextMenu>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="160" />
+        <ColumnDefinition Width="1.5*" MinWidth="100" />
+        <ColumnDefinition Width="1.5*" MinWidth="100" />
+        <ColumnDefinition Width="1*" />
+      </Grid.ColumnDefinitions>
+
+      <TextBlock Text="{Binding WheelButton.DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Style="{StaticResource Label}"
+          Grid.Column="0" Margin="20 0 0 0" />
+
+      <Button Grid.Column="1" ToolTip="{x:Static c:ControlsStrings.Controls_SteeringWheelButton}" DataContext="{Binding WheelButton}"
+          Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
+          Style="{StaticResource WaitingButton}">
+        <Button.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          </ContextMenu>
+        </Button.ContextMenu>
+
+        <mui:Cell HorizontalAlignment="Stretch">
+          <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+            <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                TextTrimming="CharacterEllipsis" FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
+            <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
+                TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left"
+                VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                TextTrimming="CharacterEllipsis" />
+            <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+          </mui:Cell>
+          <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+              VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+              TextTrimming="CharacterEllipsis" />
+        </mui:Cell>
+      </Button>
+
+      <Button Grid.Column="2" ToolTip="Steering wheel button (secondary; binded keyboard button is required)" DataContext="{Binding WheelButtonAlt}" Margin="4 0 0 0"
+          Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
+          Style="{StaticResource WaitingButton}" ToolTipService.ShowOnDisabled="True">
+        <Button.IsEnabled>
+          <MultiBinding Converter="{StaticResource AndConverter}">
+            <Binding Path="CombineWithKeyboardInput" Source="{x:Static acset:AcSettingsHolder.Controls}" />
+            <Binding Path="IsAvailable" />
+          </MultiBinding>
+        </Button.IsEnabled>
+        <Button.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          </ContextMenu>
+        </Button.ContextMenu>
+
+        <mui:Cell HorizontalAlignment="Stretch">
+          <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+            <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                TextTrimming="CharacterEllipsis" FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
+            <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" Margin="0 8 0 0"
+                TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left"
+                VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                TextTrimming="CharacterEllipsis" />
+            <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+          </mui:Cell>
+          <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+              VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+              TextTrimming="CharacterEllipsis" />
+        </mui:Cell>
+      </Button>
+
+      <Button Grid.Column="3" ToolTip="{x:Static c:ControlsStrings.Controls_KeyboardButton}" Margin="4 0 0 0"
+          IsEnabled="{Binding CombineWithKeyboardInput, Source={x:Static acset:AcSettingsHolder.Controls}}" DataContext="{Binding KeyboardButton}"
+          Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding}"
+          Style="{StaticResource WaitingButton}">
+        <Button.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding ClearCommand}" InputGestureText="Delete" />
+          </ContextMenu>
+        </Button.ContextMenu>
+
+        <mui:Cell HorizontalAlignment="Stretch">
+          <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+            <TextBlock Text="{Binding Input.DisplayName}" Style="{StaticResource Heading2}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                TextTrimming="CharacterEllipsis" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Controls_ClickToAssign}" Style="{StaticResource Heading2}" Opacity="0.5" HorizontalAlignment="Left"
+                VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}"
+                TextTrimming="CharacterEllipsis" />
+            <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+          </mui:Cell>
+          <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" Style="{StaticResource Heading2}" HorizontalAlignment="Left"
+              VerticalAlignment="Center" FontWeight="Normal" Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+              TextTrimming="CharacterEllipsis" />
+        </mui:Cell>
+      </Button>
+    </Grid>
+  </DataTemplate>
+
   <DataTemplate x:Key="HShifterButtonEntryTemplate" DataType="{x:Type acs:WheelHShifterButtonEntry}">
     <DockPanel Margin="2" Background="Transparent">
       <DockPanel.ContextMenu>

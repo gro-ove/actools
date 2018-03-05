@@ -35,8 +35,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 section.SetIntEnum("__CM_POV_DIR", pov.Direction);
             } else {
                 section.Set("BUTTON", Input?.Id ?? -1);
-                section.Remove("__CM_POV");
-                section.Remove("__CM_POV_DIR");
+                section.Remove(@"__CM_POV");
+                section.Remove(@"__CM_POV_DIR");
             }
         }
 

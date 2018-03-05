@@ -394,8 +394,8 @@ namespace AcManager.Pages.ServerPreset {
             public AsyncCommand GoCommand => _goCommand ?? (_goCommand = new AsyncCommand(async () => {
                 try {
                     using (var waiting = new WaitingDialog()) {
-                        await PackServerDialog.EnsurePacked(SelectedObject, waiting);
-                        if (waiting.CancellationToken.IsCancellationRequested) return;
+                        // await PackServerDialog.EnsurePacked(SelectedObject, waiting);
+                        // if (waiting.CancellationToken.IsCancellationRequested) return;
                         await SelectedObject.RunServer(waiting, waiting.CancellationToken);
                     }
                 } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {

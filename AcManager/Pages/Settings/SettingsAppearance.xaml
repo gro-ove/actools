@@ -63,6 +63,10 @@
           <Label Content="Bold title links" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ExtraTitleLinks}" mui:NewMarkService.New="True">
+          <Label Content="Add title links for Content and Server sections" />
+        </CheckBox>
+
         <DockPanel>
           <mui:ValueLabel Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Converter={StaticResource PercentageConverter}}"
               mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />

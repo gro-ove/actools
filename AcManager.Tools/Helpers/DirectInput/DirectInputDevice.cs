@@ -52,7 +52,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public IReadOnlyList<DirectInputButton> VisibleButtons { get; set; }
         public IReadOnlyList<DirectInputPov> VisiblePovs { get; set; }
 
-        private Joystick _joystick;
+        private readonly Joystick _joystick;
 
         public override string ToString() {
             return $"DirectInputDevice({Id}:{DisplayName}, Ini={Index})";
@@ -77,14 +77,14 @@ namespace AcManager.Tools.Helpers.DirectInput {
             return false;
         }
 
-        private DirectInputDevice([NotNull] SlimDX.DirectInput.DirectInput directInput, [NotNull] DeviceInstance device, int index) {
-            Device = device;
+        private DirectInputDevice([NotNull] Joystick device, int index) {
+            Device = device.Information;
 
-            Id = GuidToString(device.ProductGuid);
+            Id = GuidToString(device.Information.ProductGuid);
             Index = index;
             OriginalIniIds = new List<int>();
 
-            _joystick = new Joystick(directInput, Device.InstanceGuid);
+            _joystick = device;
 
             var window = Application.Current?.MainWindow;
             if (window != null) {
@@ -141,9 +141,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         [CanBeNull]
-        public static DirectInputDevice Create([NotNull] SlimDX.DirectInput.DirectInput directInput, DeviceInstance device, int iniId) {
+        public static DirectInputDevice Create(Joystick device, int iniId) {
             try {
-                return new DirectInputDevice(directInput, device, iniId);
+                return new DirectInputDevice(device, iniId);
             } catch (DirectInputNotFoundException e) {
                 Logging.Warning(e);
                 return null;
@@ -215,7 +215,6 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public void Dispose() {
             FilesStorage.Instance.Watcher(ContentCategory.Controllers).Update -= OnDefinitionsUpdate;
-            DisposeHelper.Dispose(ref _joystick);
         }
     }
 }

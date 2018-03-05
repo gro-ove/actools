@@ -276,8 +276,10 @@ namespace AcManager.Pages.Miscellaneous {
             private Busy _redirectsToNamesBusy = new Busy();
 
             private void UpdateRedirectsToNames() {
-                _redirectsToNamesBusy.Yield(() => RedirectsToNames.ReplaceEverythingBy_Direct(
-                        RedirectsTo.Select(x => Instance.WebSources.GetByIdOrDefault(x)?.Name).NonNull()));
+                if (Instance != null) {
+                    _redirectsToNamesBusy.Yield(() => RedirectsToNames.ReplaceEverythingBy_Direct(
+                            RedirectsTo.Select(x => Instance.WebSources.GetByIdOrDefault(x)?.Name).NonNull()));
+                }
             }
 
             private static readonly string ScriptPrefix = @"javascript:";
@@ -421,7 +423,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 Clipboard.SetText(piece);
                 Toast.Show($"Description for {Name}",
                         "Message with details is copied to the clipboard",
-                        () => { WindowsHelper.ViewInBrowser(@"http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically"); });
+                        () => { WindowsHelper.ViewInBrowser(@"http://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
             }));
 
             [CanBeNull]

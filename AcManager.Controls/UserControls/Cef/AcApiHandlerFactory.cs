@@ -28,12 +28,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 WebBrowser = webBrowser;
                 AllowedHosts = allowedHosts;
                 Callback = callback;
-                Identifier = Lazier.Create<int>(() => {
-                    if (!WebBrowser.TryGetTarget(out var targetBrowser)) return -1;
-                    using (var browser = targetBrowser.GetBrowser()) {
-                        return browser.Identifier;
-                    }
-                });
+                Identifier = Lazier.Create(() => WebBrowser.TryGetTarget(out var targetBrowser) ? targetBrowser.GetBrowser().Identifier : -1);
             }
         }
 

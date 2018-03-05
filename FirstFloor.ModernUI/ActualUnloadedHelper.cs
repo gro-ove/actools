@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
@@ -16,7 +17,13 @@ namespace FirstFloor.ModernUI {
         }
 
         public static void OnActualUnload([NotNull] this FrameworkElement fe, IDisposable disposable) {
-            fe.OnActualUnload(() => disposable?.Dispose());
+            fe.OnActualUnload(() => {
+                try {
+                    disposable?.Dispose();
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+            });
         }
 
         public static async void OnActualUnload([NotNull] this FrameworkElement fe, Action action) {

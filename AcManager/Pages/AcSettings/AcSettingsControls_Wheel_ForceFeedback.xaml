@@ -161,7 +161,7 @@
         </CheckBox>
 
         <DockPanel Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Label Content="Mode:" />
+          <Label Content="Mode:" Width="80" />
           <ComboBox ItemsSource="{Binding FfPostProcess.Types}" SelectedItem="{Binding FfPostProcess.Type, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
@@ -169,14 +169,14 @@
             Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel mui:Switch.When="GAMMA" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%" Content="Gamma" />
+              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%" Content="Gamma" Width="80" />
               <Slider Minimum="0" Maximum="2" Value="{Binding FfPostProcess.Gamma, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}"
                   TickFrequency="0.2" TickPlacement="BottomRight" />
             </DockPanel>
           </StackPanel>
           <StackPanel mui:Switch.When="LUT" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <Label Content="LUT:" />
+              <Label Content="LUT:" Width="80" />
               <Button x:Name="ImportCsvButton" Content="Import CSV" Command="{Binding ImportCsvCommand}"
                   ToolTip="Import CSV from WheelCheck (just drag’n’drop it if needed)" />
               <Button Content="Import LUT" Command="{Binding ImportLutCommand}" ToolTip="Just drag’n’drop it if needed" />
@@ -184,12 +184,12 @@
             </DockPanel>
 
             <с:CustomGraphViewer Source="{Binding FfPostProcess.LutGraphData}" XAxisTitle="Input" YAxisTitle="Output" ValueBrush="{DynamicResource Accent}"
-                TrackerFormatString="{}[b]{4:F1}%[/b] at [b]{2:F1}%[/b]" Margin="0 0 0 8" />
+                TrackerFormatString="{}[b]{4:F1}%[/b] at [b]{2:F1}%[/b]" Margin="0 0 0 8" Height="200" />
 
             <с:MessageBlock x:Name="LutLibraryMessage" CloseKey="lutlibrary-dll" Margin="0 0 0 8">
               <mui:BbCodeBlock>
                 <mui:BbCodeBlock.BbCode>
-                  Put [mono]LUTLibrary.dll[/mono] from [url="www.racedepartment.com/downloads/lut-generator-for-ac.9740/"]LUT
+                  Put [mono]LUTLibrary.dll[/mono] from [url="http://www.racedepartment.com/downloads/lut-generator-for-ac.9740/"]LUT
                   Generator[/url] next to CM’s executable or to “…\AppData\Local\AcTools Content Manager\Plugins” (or just drag’n’drop it here), restart CM and
                   it’ll be able to convert CSV-files from [url="http://racingcentral.org/wheelcheck/"]WheelCheck[/url] to LUT-files.
                 </mui:BbCodeBlock.BbCode>

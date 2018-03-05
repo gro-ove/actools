@@ -45,7 +45,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     BrowserSettings = {
                         FileAccessFromFileUrls = CefState.Enabled,
                         UniversalAccessFromFileUrls = CefState.Enabled,
-                        BackgroundColor = preferTransparentBackground ? 0U : 0255255255,
+                        BackgroundColor = preferTransparentBackground ? 0U : 0xffffffff,
                         WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
                         WebGl = CefState.Disabled,
                         Plugins = CefState.Disabled,

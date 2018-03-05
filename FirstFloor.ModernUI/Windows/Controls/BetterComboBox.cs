@@ -30,7 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty TextWrappingProperty = DependencyProperty.Register(nameof(TextWrapping), typeof(TextWrapping),
-                typeof(BetterComboBox));
+                typeof(BetterComboBox), new FrameworkPropertyMetadata(TextWrapping.NoWrap));
 
         public TextWrapping TextWrapping {
             get => (TextWrapping)GetValue(TextWrappingProperty);

@@ -174,12 +174,15 @@
   <mui:ModernWindow.TitleButtons>
 
     <mui:Cell Width="45">
-      <ToggleButton x:Name="DownloadsButton" Style="{StaticResource SystemButtonGo}"
-          Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Width="45"
-          IsHitTestVisible="{Binding ElementName=DownloadsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
+      <ToggleButton x:Name="DownloadsButton" Style="{StaticResource SystemButtonGo}" Width="45"
+          IsHitTestVisible="{Binding ElementName=DownloadsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}"
+          Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Drop="OnContentTitleLinkDrop" AllowDrop="True">
         <FrameworkElement.ToolTip>
-          <ToolTip Content="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}}" ContentStringFormat="{}{0} installing"
-              Visibility="{Binding UnfinishedItemsCount, Converter={StaticResource MoreToVisibilityConverter}, Source={x:Static t:ContentInstallationManager.Instance}}" />
+          <mui:Switch Value="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}}" MaxWidth="480">
+            <TextBlock mui:Switch.When="0" Text="Drop a car or something else here to open it in the Content Management section" TextWrapping="Wrap" />
+            <TextBlock Text="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} installing'}"
+                TextWrapping="Wrap" />
+          </mui:Switch>
         </FrameworkElement.ToolTip>
         <FrameworkElement.ContextMenu>
           <ContextMenu>
@@ -212,6 +215,21 @@
           IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
         <DockPanel>
+          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Content}" Click="OnNavigateItemClick"
+              CommandParameter="/Pages/Lists/CarsListPage.xaml" InputGestureText="Ctrl+F1">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ToolsIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Server}" Click="OnNavigateItemClick"
+              CommandParameter="/Pages/Lists/ServerPresetsListPage.xaml" InputGestureText="Ctrl+F2" mui:LimitedService.Limited="True">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ServerIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
           <MenuItem DockPanel.Dock="Top" Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
               InputGestureText="Alt+F1">
             <MenuItem.Icon>
@@ -354,7 +372,7 @@
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Browser">
+    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Mod Shop">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="Manage Sources" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />
       </mui:LinkGroup.Links>
@@ -363,8 +381,8 @@
     <!-- Server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.ServerPresets}" />
-    <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
-        Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />
+    <!--<mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
+        Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />-->
 
     <!-- Settings -->
     <mui:LinkGroupFilterable GroupKey="settings" DisplayName="{x:Static g:AppStrings.Main_Settings}" AddAllLink="False" Source="/Pages/Settings/Search.xaml">
@@ -397,7 +415,7 @@
     <mui:TitleLink Content="Lap times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
     <mui:TitleLink Content="Results" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
-    <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
+    <mui:TitleLink x:Name="ContentGroup" GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="OnContentTitleLinkDrop"
           AllowDrop="True" />
     </mui:TitleLink>

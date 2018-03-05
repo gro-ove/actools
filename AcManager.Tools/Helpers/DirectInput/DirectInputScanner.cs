@@ -10,6 +10,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
+
 // ReSharper disable MemberHidesStaticFromOuterClass
 
 namespace AcManager.Tools.Helpers.DirectInput {
@@ -17,11 +18,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public static TimeSpan OptionMinRescanPeriod = TimeSpan.FromSeconds(3d);
 
         private static bool _threadStarted, _isActive;
-        private static readonly object ThreadSync = new object();
-        private static IList<DeviceInstance> _staticData;
-        private static string _staticDataFootprint;
-        private static SlimDX.DirectInput.DirectInput _directInput;
         private static TimeSpan _scanTime;
+        private static readonly object ThreadSync = new object();
+
+        [CanBeNull]
+        private static IList<Joystick> _staticData;
+
+        [CanBeNull]
+        private static string _staticDataFootprint;
+
+        [CanBeNull]
+        private static SlimDX.DirectInput.DirectInput _directInput;
 
         public static void Shutdown() {
             _isActive = false;
@@ -36,21 +43,6 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 IsBackground = true,
                 Priority = ThreadPriority.BelowNormal
             }.Start();
-        }
-
-        private static bool UpdateLists(IList<DeviceInstance> newData) {
-            var footprint = newData?.Select(x => x.InstanceGuid).JoinToString(';');
-            if (footprint == _staticDataFootprint) return false;
-
-            _staticDataFootprint = footprint;
-            _staticData = newData;
-            lock (Instances) {
-                for (var i = Instances.Count - 1; i >= 0; i--) {
-                    Instances[i].RaiseUpdate(newData);
-                }
-            }
-
-            return true;
         }
 
         private static void UpdateScanTime() {
@@ -68,20 +60,58 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 while (_isActive) {
                     var getDevices = Stopwatch.StartNew();
 
-                    IList<DeviceInstance> list;
-                    try {
-                        list = _directInput?.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
-                    } catch (Exception e) {
-                        // TODO: Try to re-initiate scanning later?
-                        Logging.Error(e);
-                        list = new List<DeviceInstance>(0);
-                        DisposeHelper.Dispose(ref _directInput);
+                    IList<Joystick> list;
+                    string footprint;
+                    bool updated;
+
+                    if (_directInput == null) {
+                        list = new List<Joystick>(0);
+                        footprint = string.Empty;
+                        updated = _staticDataFootprint != footprint;
+                    } else {
+                        try {
+                            var devices = _directInput?.GetDevices(DeviceClass.GameController, DeviceEnumerationFlags.AttachedOnly);
+                            footprint = devices?.Select(x => x.InstanceGuid).JoinToString(';');
+                            updated = _staticDataFootprint != footprint;
+                            list = updated ? devices?.Select(x => {
+                                var existing = _staticData?.FirstOrDefault(y =>
+                                        y.Information.InstanceGuid == x.InstanceGuid);
+                                if (existing != null) {
+                                    return existing;
+                                }
+
+                                var result = new Joystick(_directInput, x.InstanceGuid);
+                                if (result.Capabilities == null) {
+                                    // We don’t really need a check here, but we need to access .Capabilities here, in a background
+                                    // thread, because it might take a while to get the data which will be needed later.
+                                    throw new Exception("Never happens");
+                                }
+
+                                return result;
+                            }).ToArray() : _staticData;
+                        } catch (Exception e) {
+                            // TODO: Try to re-initiate scanning later?
+                            Logging.Error(e);
+                            list = new List<Joystick>(0);
+                            footprint = string.Empty;
+                            updated = _staticDataFootprint != footprint;
+                            DisposeHelper.Dispose(ref _directInput);
+                        }
                     }
 
                     getDevices.Stop();
                     _scanTime = getDevices.Elapsed;
 
-                    if (!UpdateLists(list)) {
+                    if (updated) {
+                        _staticData?.ApartFrom(list).DisposeEverything();
+                        _staticDataFootprint = footprint;
+                        _staticData = list;
+                        lock (Instances) {
+                            for (var i = Instances.Count - 1; i >= 0; i--) {
+                                Instances[i].RaiseUpdate(list);
+                            }
+                        }
+                    } else {
                         UpdateScanTime();
                     }
 
@@ -121,18 +151,18 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         [CanBeNull]
-        public static IList<DeviceInstance> Get() {
+        public static IList<Joystick> Get() {
             return _staticData;
         }
 
         [NotNull, ItemCanBeNull]
-        public static Task<IList<DeviceInstance>> GetAsync(CancellationToken cancellation) {
+        public static Task<IList<Joystick>> GetAsync(CancellationToken cancellation) {
             if (_staticData != null) {
                 return Task.FromResult(_staticData);
             }
 
             if (cancellation.IsCancellationRequested) {
-                return Task.FromResult<IList<DeviceInstance>>(null);
+                return Task.FromResult<IList<Joystick>>(null);
             }
 
             StartScanning();
@@ -140,23 +170,21 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         [NotNull, ItemCanBeNull]
-        public static Task<IList<DeviceInstance>> GetAsync() {
+        public static Task<IList<Joystick>> GetAsync() {
             return GetAsync(CancellationToken.None);
         }
 
         public class Watcher : NotifyPropertyChanged, IDisposable {
             public TimeSpan ScanTime => _scanTime;
 
-            private IList<DeviceInstance> _instanceData;
+            private IList<Joystick> _instanceData;
             private readonly bool _oneTime;
 
             internal void RaiseScanTimeUpdate() {
-                ActionExtension.InvokeInMainThreadAsync(() => {
-                    OnPropertyChanged(nameof(ScanTime));
-                });
+                ActionExtension.InvokeInMainThreadAsync(() => { OnPropertyChanged(nameof(ScanTime)); });
             }
 
-            internal void RaiseUpdate(IList<DeviceInstance> newData) {
+            internal void RaiseUpdate(IList<Joystick> newData) {
                 _instanceData = newData;
 
                 for (var i = _waitingFor.Count - 1; i >= 0; i--) {
@@ -175,7 +203,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 });
             }
 
-            public Watcher(IList<DeviceInstance> staticData, bool oneTime) {
+            public Watcher(IList<Joystick> staticData, bool oneTime) {
                 _instanceData = staticData;
                 _hasData = _instanceData != null;
                 _oneTime = oneTime;
@@ -195,42 +223,42 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 private set => Apply(value, ref _hasData);
             }
 
-            private List<TaskCompletionSource<IList<DeviceInstance>>> _waitingFor = new List<TaskCompletionSource<IList<DeviceInstance>>>();
+            private readonly List<TaskCompletionSource<IList<Joystick>>> _waitingFor = new List<TaskCompletionSource<IList<Joystick>>>();
 
             [CanBeNull]
-            public IList<DeviceInstance> Get() {
+            public IList<Joystick> Get() {
                 return _instanceData;
             }
 
             [NotNull, ItemCanBeNull]
-            public Task<IList<DeviceInstance>> GetAsync() {
+            public Task<IList<Joystick>> GetAsync() {
                 return GetAsync(CancellationToken.None);
             }
 
             [NotNull, ItemCanBeNull]
-            public Task<IList<DeviceInstance>> GetAsync(CancellationToken cancellation) {
+            public Task<IList<Joystick>> GetAsync(CancellationToken cancellation) {
                 if (_instanceData != null) {
                     return Task.FromResult(_instanceData);
                 }
 
                 if (cancellation.IsCancellationRequested) {
-                    return Task.FromResult<IList<DeviceInstance>>(null);
+                    return Task.FromResult<IList<Joystick>>(null);
                 }
 
-                var result = new TaskCompletionSource<IList<DeviceInstance>>();
+                var result = new TaskCompletionSource<IList<Joystick>>();
                 RegisterCancellation(result, cancellation);
                 RegisterWaiting(result);
                 return result.Task;
             }
 
-            private void RegisterCancellation(TaskCompletionSource<IList<DeviceInstance>> tcs, CancellationToken cancellation) {
+            private void RegisterCancellation(TaskCompletionSource<IList<Joystick>> tcs, CancellationToken cancellation) {
                 cancellation.Register(() => {
                     tcs.TrySetCanceled();
                     _waitingFor.Remove(tcs);
                 });
             }
 
-            private void RegisterWaiting(TaskCompletionSource<IList<DeviceInstance>> tcs) {
+            private void RegisterWaiting(TaskCompletionSource<IList<Joystick>> tcs) {
                 _waitingFor.Add(tcs);
                 tcs.Task.ContinueWith(t => _waitingFor.Remove(tcs));
             }

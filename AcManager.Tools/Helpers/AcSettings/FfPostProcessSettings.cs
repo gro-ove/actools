@@ -41,25 +41,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public double Gamma {
             get => _gamma;
-            set => Apply(value, ref _gamma);
+            set => Apply(value, ref _gamma, ReloadLut);
         }
 
         private string _lutName;
 
         public string LutName {
             get => _lutName;
-            set {
-                if (Equals(value, _lutName)) return;
-                _lutName = value;
-                OnPropertyChanged();
-                ReloadLut();
-            }
+            set => Apply(value, ref _lutName, ReloadLut);
         }
 
         private readonly Busy _lutLoading = new Busy();
 
         private void ReloadLut() {
-            _lutLoading.DoDelay(() => {
+            _lutLoading.Yield(() => {
                 try {
                     if (string.IsNullOrWhiteSpace(LutName)) {
                         LutGraphData = null;
@@ -77,7 +72,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     Logging.Warning(e);
                     LutGraphData = null;
                 }
-            }, 50);
+            });
         }
 
         private readonly Busy _rescanning = new Busy();

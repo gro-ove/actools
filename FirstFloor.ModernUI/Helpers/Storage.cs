@@ -398,7 +398,11 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public void SetEncrypted([LocalizationRequired(false)] string key, object value) {
-            if (_encryptionKey == null) return;
+            if (_encryptionKey == null) {
+                Logging.Warning($"Encryption key is not set to save {key}");
+                return;
+            }
+
             var encrypted = StringCipher.Encrypt(value.AsShort<string>() + Something, key + _encryptionKey);
             if (encrypted == null) {
                 Remove(key);

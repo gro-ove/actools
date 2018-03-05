@@ -206,10 +206,12 @@
     <Compile Include="UserControls\Cef\DownloadHandler.cs" />
     <Compile Include="UserControls\Cef\FormsCefSharpWrapper.cs" />
     <Compile Include="UserControls\Cef\JsDialogHandler.cs" />
+    <Compile Include="UserControls\Cef\KeyboardHandler.cs" />
     <Compile Include="UserControls\Cef\LifeSpanHandler.cs" />
     <Compile Include="UserControls\Cef\MenuHandler.cs" />
     <Compile Include="UserControls\Cef\RequestHandler.cs" />
     <Compile Include="UserControls\Cef\RequestsFiltering.cs" />
+    <Compile Include="UserControls\Cef\WindowsFormsExtension.cs" />
     <Compile Include="UserControls\Cef\WpfBrowserProcessHandler.cs" />
     <Compile Include="UserControls\TrackStateDescription.xaml.cs">
       <DependentUpon>TrackStateDescription.xaml</DependentUpon>

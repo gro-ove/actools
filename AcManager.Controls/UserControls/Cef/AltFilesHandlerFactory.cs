@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Specialized;
 using System.IO;
+using AcManager.Tools.Managers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using FirstFloor.ModernUI.Helpers;
@@ -8,11 +10,9 @@ using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Cef {
     public class AltFilesHandlerFactory : ISchemeHandlerFactory {
-        public const string SchemeName = "cmfile";
+        public const string SchemeName = "acfile";
 
         public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
-            Logging.Write(request.Url);
-
             if (schemeName == SchemeName) {
                 try {
                     var slice = SchemeName.Length + 4;
@@ -34,6 +34,12 @@ namespace AcManager.Controls.UserControls.Cef {
             private readonly string _mimeType;
 
             public CustomResourceHandler(string filename) {
+                if (AcRootDirectory.Instance.Value == null || !FileUtils.Affects(AcRootDirectory.Instance.RequireValue, filename)) {
+                    _data = null;
+                    _mimeType = @"application/octet-stream";
+                    return;
+                }
+
                 try {
                     _data = File.Exists(filename) ? File.OpenRead(filename) : null;
                 } catch (Exception e) {
@@ -45,7 +51,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     _mimeType = ResourceHandler.GetMimeType(Path.GetExtension(filename));
                 } catch (Exception e) {
                     Logging.Warning(e);
-                    _mimeType = "application/octet-stream";
+                    _mimeType = @"application/octet-stream";
                 }
             }
 

@@ -582,6 +582,7 @@ namespace AcManager.Tools.ContentInstallation {
                                             information.FileName ?? GetFileNameFromUrl(url)), true),
                                     destination => {
                                         DisplayName = Path.GetFileName(destination) ?? DisplayName;
+                                        FileIcon = IconManager.FindIconForFilename(DisplayName, true);
                                         properDisplayNameSet = true;
                                     },
                                     information => {

@@ -214,7 +214,7 @@
     <value>Left Arrow</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
-    <value>Number Pad {0}</value>
+    <value>Numpad {0}</value>
   </data>
   <data name="KeyPageDown" xml:space="preserve">
     <value>Page Down</value>

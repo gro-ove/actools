@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:set="clr-namespace:AcManager.Pages.Settings" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance acset:AcSettingsAudio+ViewModel}">
+    xmlns:set="clr-namespace:AcManager.Pages.Settings" xmlns:t="http://acstuff.ru/app/tools" xmlns:na="clr-namespace:NAudio.CoreAudioApi;assembly=NAudio"
+    mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsAudio+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
@@ -16,55 +16,84 @@
 
     <ScrollViewer mui:SaveScroll.Key="AcSettingsAudio">
       <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Audio}" Style="{StaticResource SettingsPanel}">
-        <!--<DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel_Tooltip}">
-                <Label Content="{x:Static g:AppStrings.AcSettings_Audio_LatencyLabel}" />
-                <ComboBox ItemsSource="{Binding Audio.Latencies}" SelectedItem="{Binding Audio.Latency}" DisplayMemberPath="DisplayName" />
-            </DockPanel>-->
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.SkidsEntryPoint}" mui:BetterTextBox.Mode="Integer" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_TyresOffset}" />
           <Slider Minimum="0" Maximum="200" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="20" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Audio_LevelsHeader}" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Output device:" x:Name="DevicesHeading" />
+        <DockPanel x:Name="DevicesPanel">
+          <Label Content="Device name:" />
+          <mui:BetterComboBox ItemsSource="{Binding AudioOutputDevices}" SelectedItem="{Binding SelectedAudioDevice}" IsEditable="False">
+            <mui:BetterComboBox.ItemContainerStyle>
+              <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
+                <Style.Triggers>
+                  <DataTrigger Binding="{Binding State}" Value="{x:Static na:DeviceState.Disabled}" d:DataContext="{d:DesignInstance t:AudioDevice}">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding State}" Value="{x:Static na:DeviceState.Unplugged}" d:DataContext="{d:DesignInstance t:AudioDevice}">
+                    <Setter Property="IsEnabled" Value="False" />
+                  </DataTrigger>
+                </Style.Triggers>
+              </Style>
+            </mui:BetterComboBox.ItemContainerStyle>
+            <mui:BetterComboBox.ItemTemplate>
+              <DataTemplate>
+                <DockPanel>
+                  <mui:Cell Margin="0 0 8 0">
+                    <Image Width="32" Height="32" Source="{Binding IconPath, Converter={StaticResource IconPathToImageConverter}}" HorizontalAlignment="Center"
+                        VerticalAlignment="Center" />
+                    <Path Width="10" Height="10" Margin="2" Stretch="Fill" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        Fill="{DynamicResource Go}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z"
+                        Visibility="{Binding IsDefault, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                  </mui:Cell>
+                  <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                  <TextBlock Text="{Binding DeviceName}" Style="{StaticResource Small}" />
+                  <TextBlock x:Name="PART_State" Text="{Binding State, StringFormat='{} ({0})', Converter={StaticResource ToLowerConverter}}" Style="{StaticResource Small}"
+                      Visibility="{Binding State, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠Active'}" />
+                </DockPanel>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding State}" Value="{x:Static na:DeviceState.NotPresent}">
+                    <Setter TargetName="PART_State" Property="Text" Value="not present" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </mui:BetterComboBox.ItemTemplate>
+          </mui:BetterComboBox>
+        </DockPanel>
 
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Audio_LevelsHeader}" />
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelMaster, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Master}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelMaster}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelTyres, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Tyres}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelTyres}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelEngine, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Engine}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelEngine}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelSurfaces, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Surface}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelSurfaces}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelWind, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Wind}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelWind}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelOpponents, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Opponents}" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Audio.LevelOpponents}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding Audio.LevelUi, StringFormat='{}{0:F0}'}" mui:BetterTextBox.Mode="Number" Postfix="%"
               Content="{x:Static g:AppStrings.AcSettings_Audio_Ui}" />

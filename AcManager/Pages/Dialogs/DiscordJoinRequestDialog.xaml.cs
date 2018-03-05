@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,7 +26,7 @@ using Keys = System.Windows.Forms.Keys;
 using Path = System.Windows.Shapes.Path;
 
 namespace AcManager.Pages.Dialogs {
-    public partial class DiscordJoinRequestDialog : INotifyPropertyChanged {
+    public partial class DiscordJoinRequestDialog {
         [CanBeNull]
         private Joystick[] _devices;
 
@@ -140,8 +138,7 @@ namespace AcManager.Pages.Dialogs {
 
         private async Task SetDevices() {
             var devices = await DirectInputScanner.GetAsync();
-            _devices = DirectInputScanner.DirectInput == null ? null
-                    : devices?.Select(x => new Joystick(DirectInputScanner.DirectInput, x.InstanceGuid)).ToArray();
+            _devices = devices?.ToArray();
             _states = _devices == null ? null : new JoystickState[_devices.Length];
         }
 
@@ -235,14 +232,6 @@ namespace AcManager.Pages.Dialogs {
         private void OnUnload() {
             _inGameApp.Dispose();
             CompositionTargetEx.Rendering -= OnRendering;
-            DisposeHelper.Dispose(ref _devices);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

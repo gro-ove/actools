@@ -502,7 +502,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number Pad {0}.
+        ///   Looks up a localized string similar to Numpad {0}.
         /// </summary>
         public static string KeyNumberPad {
             get {

@@ -785,7 +785,7 @@ namespace AcTools.Utils.Helpers {
             return condition ? source.Select(fn) : source;
         }
 
-        [Pure]
+        [NotNull, Pure]
         public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<T> additionalItems) {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (additionalItems == null) return source;

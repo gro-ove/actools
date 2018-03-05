@@ -49,6 +49,18 @@ namespace AcManager.Tools.Helpers {
         }
 
         /// <summary>
+        /// Because I messed up with strings having separate dictionaties per assembly — sometimes, some code has to
+        /// be moved to the previous assembly.
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        [Localizable(false),NotNull]
+        public static string GetString([NotNull] string category, [NotNull] string key) {
+            return Registered.GetValueOrDefault(category.ToLowerInvariant())?.GetString(key, CultureInfo.CurrentUICulture) ?? key;
+        }
+
+        /// <summary>
         /// Use this method if you want to get an icon from a non-UI thread. You still need to call
         /// the returned value in UI thread to get an icon, but bytesProvider or filenameProvider
         /// will execute from your thread, immediately.
