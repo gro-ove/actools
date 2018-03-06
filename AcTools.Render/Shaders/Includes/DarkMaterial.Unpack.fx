@@ -98,7 +98,8 @@ void Unpack_Maps(PS_IN pin, out float3 color, out float alpha, out float3 normal
 	if (HAS_FLAG(HAS_DETAILS_MAP)) {
 		float4 details = gDetailsMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
 		color = diffuseValue.rgb * lerp(details.rgb, (float3)1, mask);
-		mapsValue.x *= details.a + (1 - details.a) * details.a * diffuseValue.a * (2 - diffuseValue.a);
+		float x = mask, y = details.a, y1 = y - 1;
+		mapsValue.x *= x * x * y1 * y1 - x * y * y1 + y;
 	} else {
 		color = diffuseValue.rgb;
 	}
@@ -131,8 +132,9 @@ void Unpack_SkinnedMaps(PS_IN pin, out float3 color, out float alpha, out float3
 
 	if (HAS_FLAG(HAS_DETAILS_MAP)) {
 		float4 details = gDetailsMap.Sample(samAnisotropic, pin.Tex * gMapsMaterial.DetailsUvMultiplier);
-		color = diffuseValue.rgb * (details.rgb * (1 - mask) + mask);
-		mapsValue.x *= details.a + (1 - details.a) * details.a * diffuseValue.a * (2 - diffuseValue.a);
+		color = diffuseValue.rgb * lerp(details.rgb, (float3)1, mask);
+		float x = mask, y = details.a, y1 = y - 1;
+		mapsValue.x *= x * x * y1 * y1 - x * y * y1 + y;
 	} else {
 		color = diffuseValue.rgb;
 	}
