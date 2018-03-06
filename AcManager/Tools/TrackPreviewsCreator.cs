@@ -31,7 +31,7 @@ namespace AcManager.Tools {
 
             if (!isEnabled) return;
             if (!ValuesStorage.Get<bool>(KeyUpdatePreviewMessageShown) && ModernDialog.ShowMessage(
-                    ImportantTips.Entries.GetByIdOrDefault(@"trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OK) !=
+                    ImportantTips.Entries.GetByIdOrDefault(@"trackPreviews")?.Content, AppStrings.Common_HowTo_Title, MessageBoxButton.OKCancel) !=
                     MessageBoxResult.OK) {
                 return;
             }
