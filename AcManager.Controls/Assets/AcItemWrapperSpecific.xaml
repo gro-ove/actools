@@ -487,7 +487,7 @@
             </Border>
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <!--<mui:BetterImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Filename="{Binding BrandBadge}" />-->
-              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Padding="0 2 8 2" BbCode="Stretch" Text="{Binding DisplayName}" EmojiSupport="NothingButEmoji"
+              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Padding="0 2 8 2" BbCode="{Binding DisplayName}" EmojiSupport="NothingButEmoji"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
@@ -547,7 +547,7 @@
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" Width="18" Height="12"
                   DockPanel.Dock="Left" RenderOptions.BitmapScalingMode="HighQuality" Margin="2 0 4 0" VerticalAlignment="Center" Stretch="Uniform" />
-              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" BbCode="Stretch" Text="{Binding DisplayName}" EmojiSupport="NothingButEmoji"
+              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" BbCode="{Binding DisplayName}" EmojiSupport="NothingButEmoji"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
             <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"

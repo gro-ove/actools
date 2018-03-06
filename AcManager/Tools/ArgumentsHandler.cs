@@ -57,7 +57,7 @@ namespace AcManager.Tools {
         }
 
         public static bool OnPaste() {
-            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is ComboBox
+            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is PasswordBox || Keyboard.FocusedElement is ComboBox
                     || Application.Current?.Windows.OfType<Window>().SelectMany(VisualTreeHelperEx.FindVisualChildren<WebBlock>)
                                   .Any(x => x.IsKeyboardFocused || x.IsKeyboardFocusWithin) == true) {
                 return false;
@@ -167,9 +167,7 @@ namespace AcManager.Tools {
 
         private static IDisposable BringNewWindowsInFront() {
             DpiAwareWindow.NewWindowCreated += OnNewWindow;
-            return new ActionAsDisposable(() => {
-                DpiAwareWindow.NewWindowCreated -= OnNewWindow;
-            });
+            return new ActionAsDisposable(() => { DpiAwareWindow.NewWindowCreated -= OnNewWindow; });
 
             void OnNewWindow(object sender, EventArgs args) {
                 if (sender is DpiAwareWindow window) {
