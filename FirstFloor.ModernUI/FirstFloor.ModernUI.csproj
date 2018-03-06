@@ -206,6 +206,7 @@
     <Compile Include="Windows\Controls\DpiAwareWindow.ExtraFlags.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Logging.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
+    <Compile Include="Windows\Controls\EmojiSupport.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
     <Compile Include="Windows\Controls\FatalErrorMessage.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />

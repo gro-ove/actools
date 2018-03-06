@@ -111,15 +111,15 @@ namespace FirstFloor.ModernUI.Helpers {
                         ? PluralizingConverter.PluralizeExt(days / 7, UiStrings.Time_Week) : PluralizingConverter.PluralizeExt(days, UiStrings.Time_Day));
             }
 
-            if (span.Hours > 0) {
+            if (span.Hours > 0 && months == 0) {
                 result.Add(PluralizingConverter.PluralizeExt(span.Hours, UiStrings.Time_Hour));
             }
 
-            if (span.Minutes > 0) {
+            if (span.Minutes > 0 && months == 0) {
                 result.Add(PluralizingConverter.PluralizeExt(span.Minutes, UiStrings.Time_Minute));
             }
 
-            if (span.Seconds > 0) {
+            if (span.Seconds > 0 && span.Hours == 0 && months == 0 && days == 0) {
                 result.Add(PluralizingConverter.PluralizeExt(span.Seconds, UiStrings.Time_Second));
             }
 

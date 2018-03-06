@@ -18,10 +18,10 @@ namespace AcManager.Pages.Drive {
     public partial class Online {
         [JsonObject(MemberSerialization.OptIn)]
         public sealed class OnlineQuickFilter : Displayable, IWithId {
-            public string Description { get; }
-            public object Icon { get; }
-            public bool Exclude { get; }
-            public string Filter { get; }
+            public string Description { get; private set; }
+            public object Icon { get; private set; }
+            public bool Exclude { get; private set; }
+            public string Filter { get; private set; }
 
             private bool _isEnabled;
 
@@ -30,16 +30,28 @@ namespace AcManager.Pages.Drive {
                 set => Apply(value, ref _isEnabled);
             }
 
+            private OnlineQuickFilter() { }
+
             [JsonConstructor]
             public OnlineQuickFilter(string name, string description, string icon, bool exclude, string filter) {
                 DisplayName = ContentUtils.Translate(name);
                 Description = ContentUtils.Translate(description);
-                Icon = ContentUtils.GetIcon(icon ?? name + ".png", ContentCategory.OnlineFilters);
+                Icon = ContentUtils.GetIcon(icon ?? $@"{name}.png", ContentCategory.OnlineFilters);
                 Exclude = exclude;
                 Filter = filter;
             }
 
             public string Id => Filter;
+
+            public OnlineQuickFilter Clone() {
+                return new OnlineQuickFilter {
+                    DisplayName = DisplayName,
+                    Description = Description,
+                    Icon = Icon,
+                    Exclude = Exclude,
+                    Filter = Filter
+                };
+            }
         }
 
         public sealed class OnlineQuickFilters : ChangeableObservableCollection<OnlineQuickFilter>, IDisposable {
@@ -57,13 +69,19 @@ namespace AcManager.Pages.Drive {
                 }).ToArray();
             }
 
-            private static OnlineQuickFilter[] Load() {
+            private static IEnumerable<OnlineQuickFilter> Load() {
                 if (_filters == null) {
                     _filters = ReadFilters();
                     FilesStorage.Instance.Watcher(ContentCategory.OnlineFilters).Update += OnUpdate;
                 }
 
-                return _filters;
+                return _filters.Select(x => x.Clone());
+            }
+
+            public OnlineQuickFilters(string saveKey) : base(Load()) {
+                Instances.Add(this);
+                _saveKey = saveKey;
+                LoadState();
             }
 
             private static void OnUpdate(object sender, EventArgs eventArgs) {
@@ -89,6 +107,12 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey);
+                    Logging.Debug($"{GetHashCode():X4}/{_saveKey}: {saved}");
+
+                    foreach (var filter in this) {
+                        filter.IsEnabled = false;
+                    }
+
                     var previousIndex = 0;
                     var brackets = 0;
                     for (var i = 0; i < saved.Length; i++) {
@@ -100,6 +124,9 @@ namespace AcManager.Pages.Drive {
                             case '&' when brackets == 0:
                                 SetFilter(saved.Substring(previousIndex, i - previousIndex));
                                 previousIndex = i + 1;
+                                break;
+                            case '&':
+                                Logging.Debug($"brackets: {brackets}");
                                 break;
                             case '(':
                                 brackets++;
@@ -113,6 +140,8 @@ namespace AcManager.Pages.Drive {
                     SetFilter(saved.Substring(previousIndex));
 
                     void SetFilter(string piece) {
+                        Logging.Debug(piece);
+
                         if (piece.Length > 2 && piece[0] == '(' && piece[piece.Length - 1] == ')') {
                             piece = piece.Substring(1, piece.Length - 2);
                         }
@@ -131,12 +160,6 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public OnlineQuickFilters(string saveKey) : base(Load()) {
-                Instances.Add(this);
-                _saveKey = saveKey;
-                LoadState();
-            }
-
             private string GetFilterString() {
                 return this.Select(x => x.IsEnabled ? $"({x.Filter})" : null).NonNull().JoinToString('&');
             }
@@ -151,6 +174,7 @@ namespace AcManager.Pages.Drive {
                 base.OnItemPropertyChanged(sender, e);
                 if (!_loading && e.PropertyName == nameof(OnlineQuickFilter.IsEnabled)) {
                     Changed?.Invoke(this, EventArgs.Empty);
+                    Logging.Debug($"{GetHashCode():X4}/{_saveKey}: {GetFilterString()}");
                     LimitedStorage.Set(LimitedSpace.OnlineQuickFilter, _saveKey, GetFilterString());
                 }
             }

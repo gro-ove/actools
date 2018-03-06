@@ -1,16 +1,21 @@
 ﻿using System;
 using System.Linq;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using AcTools.Windows;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class ReplaySettings : IniSettings {
+        public static int GetQualityFrequency(int qualityValue) {
+            return new[] { 8, 12, 16, 32, 64 }.ElementAtOr(qualityValue, 16);
+        }
+
         public SettingEntry[] Qualities { get; } = {
-            new SettingEntry(0, ToolsStrings.AcSettings_Quality_Minimum),
-            new SettingEntry(1, ToolsStrings.AcSettings_Quality_Low),
-            new SettingEntry(2, ToolsStrings.AcSettings_Quality_Medium),
-            new SettingEntry(3, ToolsStrings.AcSettings_Quality_High),
-            new SettingEntry(4, ToolsStrings.AcSettings_Quality_Ultra)
+            new SettingEntry(0, $"{ToolsStrings.AcSettings_Quality_Minimum} ({GetQualityFrequency(0)} Hz)"),
+            new SettingEntry(1, $"{ToolsStrings.AcSettings_Quality_Low} ({GetQualityFrequency(1)} Hz)"),
+            new SettingEntry(2, $"{ToolsStrings.AcSettings_Quality_Medium} ({GetQualityFrequency(2)} Hz)"),
+            new SettingEntry(3, $"{ToolsStrings.AcSettings_Quality_High} ({GetQualityFrequency(3)} Hz)"),
+            new SettingEntry(4, $"{ToolsStrings.AcSettings_Quality_Ultra} ({GetQualityFrequency(4)} Hz)")
         };
 
         internal ReplaySettings() : base("replay") {}
@@ -20,10 +25,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int MaxSize {
             get => _maxSize;
             set {
-                value = value.Clamp(10, 1000);
+                value = value.Clamp(10, 8000);
                 if (Equals(value, _maxSize)) return;
                 _maxSize = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(EstimatedDuration));
             }
         }
 
@@ -42,6 +48,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public const int BytesPerCarPerEntry = 288;
+        public const int BytesPerMovablePerEntry = 24;
+        public const int CarsToEstimate = 24;
+        public const int MovablesToEstimate = 12;
+
+        public TimeSpan EstimatedDuration {
+            get {
+                var entriesPerSecond = GetQualityFrequency(Quality.IntValue ?? 2);
+                var dataPerSecond = entriesPerSecond *
+                        (BytesPerCarPerEntry * CarsToEstimate + BytesPerMovablePerEntry * MovablesToEstimate);
+                return TimeSpan.FromSeconds((double)MaxSize * 1024 * 1024 / dataPerSecond);
+            }
+        }
+
         private SettingEntry _quality;
 
         public SettingEntry Quality {
@@ -51,6 +71,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _quality)) return;
                 _quality = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(EstimatedDuration));
             }
         }
 

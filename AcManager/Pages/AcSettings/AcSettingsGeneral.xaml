@@ -2,13 +2,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsGeneral+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsGeneral+ViewModel}">
   <UserControl.Resources>
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
   <ScrollViewer mui:SaveScroll.Key="AcSettingsGeneral">
     <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Style="{StaticResource SettingsPanel}">
-      <!--exposure-->
+      <!-- Exposure -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Margin="0 0 0 8" Text="{x:Static c:ControlsStrings.Common_ExposureLabel}" />
 
       <DockPanel>
@@ -16,7 +18,7 @@
         <Slider Minimum="0" Maximum="200" Value="{Binding Exposure.Value}" TickFrequency="20" TickPlacement="BottomRight" />
       </DockPanel>
 
-      <!--pit stop-->
+      <!-- Pit stop -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Pit stops:" />
 
       <CheckBox IsChecked="{Binding PitStop.UseMouse}">
@@ -32,7 +34,7 @@
         <Slider Minimum="1" Maximum="5" Value="{Binding PitStop.PresetsCount}" TickFrequency="1" TickPlacement="BottomRight" />
       </DockPanel>
 
-      <!--replays-->
+      <!-- Replays -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_ReplaysHeader}" />
 
       <DockPanel>
@@ -52,7 +54,19 @@
         <Slider Minimum="10" Maximum="1000" Value="{Binding Replay.MaxSize}" TickFrequency="99" TickPlacement="BottomRight" />
       </DockPanel>
 
-      <!--replays autosave-->
+      <c:MessageBlock>
+        <mui:BbCodeBlock>
+          <mui:BbCodeBlock.BbCode>
+            <MultiBinding
+                StringFormat="{}Maximum duration: ≈{0} ±10% (estimated for {1} cars).">
+              <Binding Path="Replay.EstimatedDuration" Converter="{StaticResource ReadableTimeSpanConverter}" />
+              <Binding Source="{x:Static t:ReplaySettings.CarsToEstimate}" />
+            </MultiBinding>
+          </mui:BbCodeBlock.BbCode>
+        </mui:BbCodeBlock>
+      </c:MessageBlock>
+
+      <!-- Replays autosave -->
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays autosave:" />
 
       <CheckBox IsChecked="{Binding Replay.Autosave}" ToolTip="Autosave replays using new AC mechanism added in 1.14 update">

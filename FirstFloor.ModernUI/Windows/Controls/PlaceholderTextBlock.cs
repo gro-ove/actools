@@ -24,9 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private class ValueConverter : IValueConverter {
             public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                var brush = value as SolidColorBrush;
-                if (brush == null) return new SolidColorBrush();
-
+                if (!(value is SolidColorBrush brush)) return new SolidColorBrush();
                 var color = brush.Color;
                 return new SolidColorBrush(Color.FromArgb((byte)(color.A / 2.7), color.R, color.G, color.B));
             }
@@ -47,10 +45,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected void SetPlaceholder() {
-            Inlines.Clear();
+            var inlines = Inlines;
+            inlines.Clear();
             var placeholder = Placeholder;
             if (!string.IsNullOrEmpty(placeholder)) {
-                Inlines.Add(GetPlaceholder(this, placeholder));
+                inlines.Add(GetPlaceholder(this, placeholder));
             }
         }
 

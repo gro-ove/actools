@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -519,7 +520,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnCopy(object target, ExecutedRoutedEventArgs e) {
             // copies the string representation of the current content to the clipboard
-            Clipboard.SetText(Content.ToString());
+            try {
+                Clipboard.SetText(Content.ToString());
+            } catch (COMException ex) {
+                Logging.Warning(ex.Message);
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {

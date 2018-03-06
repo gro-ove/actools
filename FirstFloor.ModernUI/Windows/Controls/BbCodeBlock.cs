@@ -68,11 +68,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(LinkNavigatorProperty, value);
         }
 
-        public static readonly DependencyProperty EmojiSupportProperty = DependencyProperty.Register(nameof(EmojiSupport), typeof(bool),
-                typeof(BbCodeBlock), new PropertyMetadata(true));
+        public static readonly DependencyProperty EmojiSupportProperty = DependencyProperty.Register(nameof(EmojiSupport), typeof(EmojiSupport),
+                typeof(BbCodeBlock), new PropertyMetadata(EmojiSupport.WithEmoji));
 
-        public bool EmojiSupport {
-            get => GetValue(EmojiSupportProperty) as bool? == true;
+        public EmojiSupport EmojiSupport {
+            get => (EmojiSupport)GetValue(EmojiSupportProperty);
             set => SetValue(EmojiSupportProperty, value);
         }
 
@@ -132,7 +132,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return result.ToString();
         }
 
-        public static Inline ParseEmoji(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
             var converted = new StringBuilder();
             var lastIndex = 0;
             var complex = false;
@@ -141,7 +141,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var c = bbCode[i];
 
                 if (c == '[') {
-                    complex = true;
+                    if (allowBbCodes) {
+                        complex = true;
+                    } else {
+                        if (lastIndex != i) {
+                            converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                        }
+                        lastIndex = i + 1;
+                        converted.Append(@"\[");
+                        complex = true;
+                    }
                     continue;
                 }
 
@@ -201,8 +210,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (string.IsNullOrWhiteSpace(bbCode)) {
                 SetPlaceholder();
             } else {
-                Inlines.Clear();
-                Inlines.Add(EmojiSupport ? ParseEmoji(bbCode, this, LinkNavigator) : Parse(bbCode, this, LinkNavigator));
+                var inlines = Inlines;
+                var emojiSupport = EmojiSupport;
+                inlines.Clear();
+                inlines.Add(emojiSupport == EmojiSupport.NoEmoji
+                        ? Parse(bbCode, this, LinkNavigator)
+                        : ParseEmoji(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator));
             }
 
             _dirty = false;
@@ -329,7 +342,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
-                var item = new Paragraph(BbCodeBlock.ParseEmoji(bbCode, this, LinkNavigator)) {
+                var item = new Paragraph(BbCodeBlock.ParseEmoji(bbCode, true, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
                 };
 
