@@ -22,7 +22,6 @@ namespace AcManager.Controls.UserControls.Cef {
                     ) |
                     connect\.facebook\.net |
                     disqusads\.com |
-                    fonts\.googleapis\.com/.{120,} |
                     frog\.wix\.com |
                     live\.rezync\.com |
                     mc\.yandex\.ru |

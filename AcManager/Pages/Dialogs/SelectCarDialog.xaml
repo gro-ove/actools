@@ -132,6 +132,9 @@
       <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
+  <mui:ModernDialog.ButtonsRowContent>
+    <Button Content="→←" />
+  </mui:ModernDialog.ButtonsRowContent>
 
   <Grid>
     <Grid.ColumnDefinitions>

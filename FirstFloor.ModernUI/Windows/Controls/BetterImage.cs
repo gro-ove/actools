@@ -90,7 +90,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Total number of cached images (needed so cache won’t get expanded to like thousands of
         /// very small images).
         /// </summary>
-        public static int OptionCacheTotalEntries = 500;
+        public static int OptionCacheTotalEntries = 2000;
 
         /// <summary>
         /// Summary cache size, in bytes.
@@ -127,6 +127,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         public static string RemoteCacheDirectory;
 
+        public static void CleanUpCache() {
+            var cache = Cache;
+            lock (cache) {
+                cache.Clear();
+            }
+        }
+
         #region Wrapper with size (for solving DPI-related problems)
         public struct BitmapEntry {
             // In most cases, it’s BitmapSource.
@@ -135,7 +142,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public readonly bool Downsized;
             public readonly DateTime Date;
 
-            public int Size => Width * Height;
+            // In bytes
+            public int Size => Width * Height * 3;
 
             public static BitmapEntry Empty => new BitmapEntry();
 
@@ -943,12 +951,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 // remove old entries
-                var total = item.Value.Size;
+                long total = item.Value.Size;
                 for (var i = lastIndex - 1; i >= 0; i--) {
                     total += cache[i].Value.Size;
                     if (total > OptionCacheTotalSize) {
                         if (OptionMarkCached) {
-                            Logging.Debug($"Total cached size: {total / 1024d / 1024:F2} MB, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
+                            Logging.Debug($"Total cached size: {total.ToReadableSize()}, let’s remove first {i + 1} image{(i > 0 ? "s" : "")}");
                         }
 
                         cache.RemoveRange(0, i + 1);
@@ -957,7 +965,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 
                 if (OptionMarkCached) {
-                    Logging.Debug($"Total cached size: {total / 1024d / 1024:F2} MB, no need to remove anything");
+                    Logging.Debug($"Total cached size: {total.ToReadableSize()}, no need to remove anything");
                 }
             }
         }

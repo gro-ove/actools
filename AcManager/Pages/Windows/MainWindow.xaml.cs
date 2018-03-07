@@ -141,7 +141,6 @@ namespace AcManager.Pages.Windows {
             SettingsHolder.Live.PropertyChanged += OnLiveSettingsPropertyChanged;
 
             UpdateExtraLinks();
-            AppAppearanceManager.Instance.PropertyChanged += OnAppAppearanceSettingsPropertyChanged;
 
             UpdateMinoratingLink();
             SettingsHolder.Online.PropertyChanged += OnOnlineSettingsPropertyChanged;
@@ -221,17 +220,18 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void OnAppAppearanceSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
-            switch (e.PropertyName) {
-                case nameof(AppAppearanceManager.Instance.ExtraTitleLinks):
-                    UpdateExtraLinks();
-                    break;
-            }
+        private void UpdateExtraLinks() {
+            TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey != null)
+                      .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
+            AppAppearanceManager.Instance.TitleLinkEntries.ForEach(x => x.PropertyChanged += OnTitleLinkEnabledChanged);
         }
 
-        private void UpdateExtraLinks() {
-            ContentGroup.IsShown = AppAppearanceManager.Instance.ExtraTitleLinks;
-            ServerGroup.IsShown = AppAppearanceManager.Instance.ExtraTitleLinks;
+        private void OnTitleLinkEnabledChanged(object o, PropertyChangedEventArgs propertyChangedEventArgs) {
+            var entry = (TitleLinkEnabledEntry)o;
+            var link = TitleLinks.OfType<TitleLink>().FirstOrDefault(x => x.GroupKey == entry.Id);
+            if (link != null) {
+                link.IsShown = entry.IsEnabled;
+            }
         }
 
         private void UpdateMinoratingLink() {

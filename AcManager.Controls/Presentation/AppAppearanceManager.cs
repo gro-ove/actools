@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -46,9 +47,9 @@ namespace AcManager.Controls.Presentation {
 
         public static AppAppearanceManager Instance { get; private set; }
 
-        public static AppAppearanceManager Initialize() {
+        public static AppAppearanceManager Initialize(TitleLinkEnabledEntry[] titleLinkEnabledEntries) {
             if (Instance != null) throw new Exception(@"Already initialized");
-            Instance = new AppAppearanceManager();
+            Instance = new AppAppearanceManager(titleLinkEnabledEntries);
             Instance.InnerInitialize();
             return Instance;
         }
@@ -140,7 +141,9 @@ namespace AcManager.Controls.Presentation {
 
         private bool _loading;
 
-        private AppAppearanceManager() { }
+        private AppAppearanceManager(TitleLinkEnabledEntry[] titleLinkEnabledEntries) {
+            TitleLinkEntries = titleLinkEnabledEntries;
+        }
 
         private void InnerInitialize() {
             AppearanceManager.Instance.Initialize();
@@ -577,6 +580,7 @@ namespace AcManager.Controls.Presentation {
         private static class ToolbarsApparanceManager {
             private static readonly Uri FixedToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Fixed.xaml",
                     UriKind.Relative);
+
             private static readonly Uri PopupToolBarsSource = new Uri("/AcManager.Controls;component/Assets/SelectedObjectToolBarTray/Popup.xaml",
                     UriKind.Relative);
 
@@ -650,15 +654,10 @@ namespace AcManager.Controls.Presentation {
         #endregion
 
         #region Miscellaneous
-        private readonly StoredValue<bool> _extraTitleLinks = Stored.Get("AppAppearanceManager.ExtraTitleLinks", false);
+        public IReadOnlyList<TitleLinkEnabledEntry> TitleLinkEntries { get; }
 
-        public bool ExtraTitleLinks {
-            get => _extraTitleLinks.Value;
-            set {
-                if (Equals(value, _extraTitleLinks.Value)) return;
-                _extraTitleLinks.Value = value;
-                OnPropertyChanged();
-            }
+        public bool? IsTitleLinkVisible(string key) {
+            return TitleLinkEntries.GetByIdOrDefault(key)?.IsEnabled;
         }
 
         private readonly StoredValue<bool> _semiTransparentAttachedTools = Stored.Get("AppAppearanceManager.SemiTransparentAttachedTools", false);
@@ -672,5 +671,26 @@ namespace AcManager.Controls.Presentation {
             }
         }
         #endregion
+    }
+
+    public sealed class TitleLinkEnabledEntry : Displayable, IWithId {
+        public string Id { get; }
+
+        private readonly StoredValue<bool> _isEnabled;
+
+        public bool IsEnabled {
+            get => _isEnabled.Value;
+            set {
+                if (Equals(value, _isEnabled.Value)) return;
+                _isEnabled.Value = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public TitleLinkEnabledEntry([Localizable(false)] string key, string displayName, bool enabledByDefault = true) {
+            Id = key;
+            DisplayName = displayName;
+            _isEnabled = Stored.Get("AppAppearanceManager.TitleLink:" + key, enabledByDefault);
+        }
     }
 }

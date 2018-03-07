@@ -158,7 +158,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public void OnTick() {
             try {
-                if (_joystick.Acquire().IsFailure || _joystick.Poll().IsFailure || Result.Last.IsFailure) {
+                if (_joystick.Disposed || _joystick.Acquire().IsFailure || _joystick.Poll().IsFailure || Result.Last.IsFailure) {
                     return;
                 }
 

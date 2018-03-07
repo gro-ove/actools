@@ -45,8 +45,7 @@
                   <Thumb x:Name="PART_Thumb" Width="20" Height="20" BorderThickness="0">
                     <Thumb.Template>
                       <ControlTemplate>
-                        <Ellipse Margin="6" Width="8" Height="8" Fill="{TemplateBinding Background}"
-                            Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"
+                        <Ellipse Margin="6" Width="8" Height="8" Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1"
                             RenderTransform="{Binding RenderTransform.Inverse, ElementName=PART_Temporary}" />
                       </ControlTemplate>
                     </Thumb.Template>

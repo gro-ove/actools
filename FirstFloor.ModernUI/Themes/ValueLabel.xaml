@@ -51,7 +51,8 @@
             </MultiTrigger>
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding (c:BetterTextBox.Mode), Source={RelativeSource Self}}" Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
+                <Condition Binding="{Binding Path=(c:BetterTextBox.Mode), RelativeSource={RelativeSource Self}}"
+                    Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
@@ -126,7 +127,8 @@
             </MultiTrigger>
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding (c:BetterTextBox.Mode), Source={RelativeSource Self}}" Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
+                <Condition Binding="{Binding Path=(c:BetterTextBox.Mode), RelativeSource={RelativeSource Self}}"
+                    Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
                 <Condition Value="True">
                   <Condition.Binding>
                     <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">
@@ -196,7 +198,8 @@
                 </MultiTrigger>
                 <MultiDataTrigger>
                   <MultiDataTrigger.Conditions>
-                    <Condition Binding="{Binding (c:BetterTextBox.Mode), Source={RelativeSource Self}}" Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
+                    <Condition Binding="{Binding Path=(c:BetterTextBox.Mode), RelativeSource={RelativeSource Self}}"
+                        Value="{x:Static c:SpecialMode.IntegerOrLabel}" />
                     <Condition Value="True">
                       <Condition.Binding>
                         <MultiBinding Converter="{StaticResource EqualToBooleanConverter}">

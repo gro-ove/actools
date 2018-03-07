@@ -138,8 +138,10 @@ namespace AcManager.Tools.Managers {
                 File.WriteAllText(Path.Combine(directory, "ui_skin.json"), new JObject {
                     ["skinname"] = AcStringValues.NameFromId(id),
                     ["drivername"] = "",
+                    ["country"] = "",
                     ["team"] = "",
-                    ["number"] = ""
+                    ["number"] = "",
+                    ["priority"] = 0
                 }.ToString(Formatting.Indented));
 
                 var obj = CreateAndLoadAcObject(id, true);

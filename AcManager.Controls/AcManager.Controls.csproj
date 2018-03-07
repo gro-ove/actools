@@ -196,6 +196,7 @@
       <DependentUpon>ControlsStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="StatEntry.cs" />
+    <Compile Include="ThumbnailMode.cs" />
     <Compile Include="ToolTips.cs" />
     <Compile Include="TrackBlock.cs" />
     <Compile Include="UserControls\Cef\AcApiHandlerFactory.cs" />

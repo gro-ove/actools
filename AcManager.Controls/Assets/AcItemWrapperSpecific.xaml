@@ -421,7 +421,7 @@
   </DataTemplate>
 
   <DataTemplate x:Key="AcItemWrapperSpecific.ListItemTemplate.Thumbnail" DataType="{x:Type t:AcItemWrapper}">
-    <ContentControl DataContext="{Binding Value}" Content="{Binding}" Width="158" Height="88">
+    <ContentControl DataContext="{Binding Value}" Content="{Binding}">
       <ContentControl.Resources>
         <!-- Placeholder -->
         <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
@@ -541,8 +541,8 @@
           <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
             <mui:Cell>
-              <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="200" Stretch="UniformToFill" Margin="-8 -10 -8 0" />
-              <mui:BetterImage Filename="{Binding OutlineImage}" Margin="0 0 0 10" />
+              <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="320" Stretch="UniformToFill" Margin="-8 -10 -8 0" ClearOnChange="True" />
+              <mui:BetterImage Filename="{Binding OutlineImage}" Margin="0 0 0 10" ClearOnChange="True" />
             </mui:Cell>
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <Image Source="{Binding CountryId, IsAsync=True, Converter={StaticResource CountryIdToImageConverter}}" Width="18" Height="12"
@@ -607,12 +607,13 @@
         <DataTemplate DataType="{x:Type t:CarObject}">
           <mui:Cell x:Name="PART_Panel" mui:Draggable.Enabled="True" Background="Black" ClipToBounds="True" c:ToolTips.GenericObject="{Binding}"
               c:ContextMenus.GenericObject="{Binding}">
-            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="200" Stretch="UniformToFill"
+            <mui:BetterImage Filename="{Binding SelectedSkin.PreviewImage}" AsyncDecode="True" ClearOnChange="True" DecodeWidth="320" Stretch="UniformToFill"
                 Margin="-8 -10 -8 0" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
-              <mui:BetterImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Filename="{Binding BrandBadge}" />
+              <c:CarIconImage Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Car="{Binding}" ClearOnChange="True" />
               <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" BbCode="{Binding ShortName}" TextAlignment="Left" EmojiSupport="NothingButEmoji"
-                  Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
+                  Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal"
+                  TextWrapping="NoWrap" />
             </DockPanel>
             <Path Data="{StaticResource KunosIconData}" Width="16" Height="16" Stretch="Uniform" Visibility="Collapsed" VerticalAlignment="Top"
                 HorizontalAlignment="Left" x:Name="PART_KunosIcon" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"

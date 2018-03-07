@@ -242,12 +242,12 @@ namespace AcManager {
         /// would work best here. Also, set it to 0 if you want to disable caching at all.
         /// Example: --images-cache-limit=50MB.
         /// </summary>
-        [FlagDefaultValue("10MB")]
+        [FlagDefaultValue("120MB")]
         ImagesCacheLimit,
 
         /// <summary>
         /// Images loaded from cache will be highlighted. For debugging purposes.
-        /// Example: --images-mask-cached.
+        /// Example: --images-mark-cached.
         /// </summary>
         ImagesMarkCached,
 

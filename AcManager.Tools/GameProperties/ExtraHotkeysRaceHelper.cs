@@ -660,6 +660,11 @@ namespace AcManager.Tools.GameProperties {
                     try {
                         var item = devices[index];
                         var joystick = item.Item1;
+                        if (joystick.Disposed) {
+                            devices.RemoveAt(index);
+                            continue;
+                        }
+
                         if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure) continue;
 
                         var state = joystick.GetCurrentState();

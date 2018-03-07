@@ -174,7 +174,7 @@ namespace AcManager.Pages.Dialogs {
 
                 for (var index = _devices.Length - 1; index >= 0; index--) {
                     var joystick = _devices[index];
-                    if (joystick == null) continue;
+                    if (joystick == null || joystick.Disposed) continue;
 
                     try {
                         if (!joystick.Acquire().IsFailure && !joystick.Poll().IsFailure && !Result.Last.IsFailure) {

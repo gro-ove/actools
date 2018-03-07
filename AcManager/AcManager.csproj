@@ -670,6 +670,7 @@
     <Compile Include="Tools\ArgumentsHandler.Commands.cs" />
     <Compile Include="Tools\ArgumentsHandler.Dialogs.cs" />
     <Compile Include="Tools\ArgumentsHandler.Shared.cs" />
+    <Compile Include="Tools\BindingErrorTraceListener.cs" />
     <Compile Include="Tools\CmRequestHandler.cs" />
     <Compile Include="Tools\CommonPreviewsTools.cs" />
     <Compile Include="Tools\ContentRepairUi\CarObsoleteSoundRepair.cs" />

@@ -59,7 +59,8 @@
       </Grid.ColumnDefinitions>
 
       <DockPanel Grid.Column="0" x:Name="CarCell" Width="160" Margin="0 0 20 0">
-        <DockPanel x:Name="CarCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom">
+        <DockPanel x:Name="CarCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom"
+            IsEnabled="{Binding SelectedCar, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
           <mui:BetterComboBox Width="44" Height="24" IsEditable="False" SelectedItem="{Binding SelectedCar}" ItemsSource="{Binding TunableVersions}"
               Visibility="{Binding HasChildren, Converter={StaticResource BooleanToVisibilityConverter}}" DockPanel.Dock="Left" Margin="0 0 8 0">
             <ComboBox.ItemTemplate>
@@ -81,7 +82,7 @@
                   <DataTrigger Binding="{Binding IsChild}" Value="True">
                     <Setter TargetName="UpgradeIconImage" Property="Filename" Value="{Binding UpgradeIcon}" />
                   </DataTrigger>
-                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue={x:Null}}" Value="{x:Null}">
                     <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Name" />
                   </DataTrigger>
                 </DataTemplate.Triggers>
@@ -101,11 +102,14 @@
           </mui:BetterComboBox>
         </DockPanel>
 
-        <mui:Cell Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="OnCarBlockDrop"
+        <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="OnCarBlockDrop"
             MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
+          <TextBlock Style="{StaticResource Title}" Text="No car selected" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
+              VerticalAlignment="Center" Margin="0 0 0 20" Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
           <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-          <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedCar.DisplayName}"
-              Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+          <mui:BbCodeBlock EmojiSupport="NothingButEmoji" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+              Text="{Binding SelectedCar.DisplayName}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
+              TextTrimming="CharacterEllipsis" />
 
           <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
               Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -158,7 +162,8 @@
       </DockPanel>
 
       <DockPanel x:Name="TrackCell" Grid.Column="1" Width="160" Margin="0 0 20 0">
-        <DockPanel x:Name="TrackCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom">
+        <DockPanel x:Name="TrackCellExtra" Margin="0 8 0 0" DockPanel.Dock="Bottom"
+            IsEnabled="{Binding SelectedTrack, Converter={StaticResource NullToBooleanConverter}, ConverterParameter=inverse}">
           <mui:ReferenceSwitch Value="{Binding SelectedTrack.MainTrackObject.MultiLayouts}">
             <mui:BetterComboBox Width="44" Height="24" IsEditable="False" SelectedItem="{Binding SelectedTrack}"
                 ItemsSource="{Binding SelectedTrack.MainTrackObject.MultiLayouts}" DockPanel.Dock="Left" Margin="0 0 8 0">
@@ -170,7 +175,7 @@
                     <TextBlock Margin="4 0 0 0" x:Name="PART_Name" Text="{Binding Name}" VerticalAlignment="Top" />
                   </DockPanel>
                   <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue={x:Null}}" Value="{x:Null}">
                       <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Name" />
                     </DataTrigger>
                   </DataTemplate.Triggers>
@@ -273,7 +278,7 @@
                   </mui:BooleanSwitch.False>
                 </mui:BooleanSwitch>
                 <DataTemplate.Triggers>
-                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}}" Value="{x:Null}">
+                  <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue={x:Null}}" Value="{x:Null}">
                     <Setter Property="Value" Value="True" TargetName="PART_Switch" />
                   </DataTrigger>
                 </DataTemplate.Triggers>
@@ -282,8 +287,10 @@
           </mui:BetterComboBox>
         </DockPanel>
 
-        <mui:Cell Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True" Drop="OnTrackBlockDrop"
-            MouseLeftButtonUp="OnTrackBlockClick">
+        <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True"
+            Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
+          <TextBlock Style="{StaticResource Title}" Text="No track selected" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
+              VerticalAlignment="Center" Margin="0 0 0 20" Visibility="{Binding SelectedTrack, Converter={StaticResource NullToVisibilityConverter}}" />
           <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
               Stretch="UniformToFill" />
           <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"

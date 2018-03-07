@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -282,7 +283,17 @@ namespace AcManager {
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/
             AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
-            AppAppearanceManager.Initialize();
+            AppAppearanceManager.Initialize(new[] {
+                // new TitleLinkEnabledEntry("drive", AppStrings.Main_Drive),
+                new TitleLinkEnabledEntry("lapTimes", "Lap times"),
+                new TitleLinkEnabledEntry("stats", "Results"),
+                new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
+                new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
+                new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
+                new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
+                new TitleLinkEnabledEntry("about", AppStrings.Main_About),
+                new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
+            });
 
             ContentUtils.Register("AppStrings", AppStrings.ResourceManager);
             ContentUtils.Register("ControlsStrings", ControlsStrings.ResourceManager);
@@ -398,6 +409,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             BetterImage.RemoteUserAgent = CmApiProvider.UserAgent;
             BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;
+            GameWrapper.Started += (sender, args) => BetterImage.CleanUpCache();
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
@@ -470,9 +482,7 @@ namespace AcManager {
                 AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
                 DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
                 DiscordImage.OptionDefaultImage = "track_ks_brands_hatch";
-                GameWrapper.Started += (sender, args) => {
-                    args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
-                };
+                GameWrapper.Started += (sender, args) => args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
             }
 
             // Reshade?
@@ -494,6 +504,13 @@ namespace AcManager {
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run();
+        }
+
+        protected override void OnStartup(StartupEventArgs e) {
+            base.OnStartup(e);
+            PresentationTraceSources.Refresh();
+            PresentationTraceSources.DataBindingSource.Switch.Level = BindingErrorTraceListener.GetSourceLevels();
+            PresentationTraceSources.DataBindingSource.Listeners.Add(new BindingErrorTraceListener());
         }
 
         private class CarSetupsView : ICarSetupsView {

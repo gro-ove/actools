@@ -597,7 +597,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             using (wc.Victim.SetUserAgent(@"Seeker/1.0." + MathUtils.Random(1000, 9999))) {
                 var data = await wc.Victim.DownloadStringTaskAsync(@"https://duckduckgo.com/html/?q=mods+assetto+corsa");
                 return (IReadOnlyCollection<string>)Regex.Matches(data, @"result__a"" href=""([^""]+)""").OfType<Match>()
-                                                         .Select(GetUrl).Where(SanityCheck).Take(15).ToList();
+                                                         .Select(GetUrl).Where(SanityCheck).Take(18).ToList();
             }
 
             bool SanityCheck(string v) {
@@ -667,7 +667,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             }));
 
             private static string SuggestionsMessage() {
-                var source = $"[url={BbCodeBlock.EncodeAttribute("https://duckduckgo.com/")}]DuckDuckGo[/url] search engine";
+                var source = $"[url={BbCodeBlock.EncodeAttribute(@"https://duckduckgo.com/html/?q=mods+assetto+corsa")}]DuckDuckGo[/url] search engine";
                 return $"Suggestions, if any, are provided by {source}.\nContent Manager doesn’t encourage you to use any of them.";
             }
 

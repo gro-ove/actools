@@ -55,18 +55,6 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SmallFont}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
-          <Label Content="Larger title links" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding AppAppearanceManager.BoldTitleLinks}" set:Search.Keywords="font;text">
-          <Label Content="Bold title links" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ExtraTitleLinks}" mui:NewMarkService.New="True">
-          <Label Content="Add title links for Content and Server sections" />
-        </CheckBox>
-
         <DockPanel>
           <mui:ValueLabel Value="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Converter={StaticResource PercentageConverter}}"
               mui:BetterTextBox.Minimum="0.1" Content="UI scale" Postfix="%" />
@@ -107,6 +95,33 @@
           <ComboBox ItemsSource="{Binding AppAppearanceManager.FrameAnimations}" SelectedItem="{Binding AppAppearanceManager.FrameAnimation, Mode=TwoWay}"
               DisplayMemberPath="DisplayName" />
         </DockPanel>
+
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Title links:" />
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
+          <Label Content="Larger font" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.BoldTitleLinks}" set:Search.Keywords="font;text">
+          <Label Content="Bold font" />
+        </CheckBox>
+
+        <DockPanel>
+          <Label Content="Links:" />
+          <ListBox ItemsSource="{Binding AppAppearanceManager.TitleLinkEntries}" Style="{StaticResource VirtualizingListBox}" DisplayMemberPath="DisplayName"
+              VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True">
+            <ListBox.ItemContainerStyle>
+              <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}"
+                  d:DataContext="{d:DesignInstance c:TitleLinkEnabledEntry}">
+                <Setter Property="IsSelected" Value="{Binding IsEnabled, Mode=TwoWay}" />
+              </Style>
+            </ListBox.ItemContainerStyle>
+          </ListBox>
+        </DockPanel>
+
+        <c:MessageBlock>
+          <mui:BbCodeBlock BbCode="You can access disabled links via that menu next to window’s buttons, or via hotkeys." />
+        </c:MessageBlock>
 
       </StackPanel>
       <StackPanel set:Search.Keywords="appearance;ui" set:Search.Category="{x:Static g:AppStrings.Settings_Appearance}" Style="{StaticResource SettingsPanel}">

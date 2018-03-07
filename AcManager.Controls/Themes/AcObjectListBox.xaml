@@ -1,10 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
   <ResourceDictionary.MergedDictionaries>
-    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
-    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ListBox.xaml" />
     <ResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+    <ResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <Style TargetType="ac:AcObjectListBox">
@@ -26,7 +27,13 @@
                 VirtualizingPanel.ScrollUnit="Pixel" ScrollViewer.CanContentScroll="True" ItemsSource="{TemplateBinding InnerItemsSource}"
                 SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
                 ItemTemplate="{StaticResource AcItemWrapperSpecific.ListItemTemplate}" SelectionMode="{TemplateBinding SelectionMode}"
-                mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}" />
+                mui:SaveScroll.Key="{TemplateBinding mui:SaveScroll.Key}">
+              <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
+                  <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                </Style>
+              </ListBox.ItemContainerStyle>
+            </ListBox>
           </DockPanel>
           <ControlTemplate.Triggers>
             <Trigger Property="ActualThumbnailMode" Value="True">
@@ -34,9 +41,14 @@
               <Setter TargetName="PART_ListBox" Property="ItemsPanel">
                 <Setter.Value>
                   <ItemsPanelTemplate>
-                    <mui:VirtualizingTilePanel ItemWidth="160" ItemHeight="90" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />
-                    <!--<mui:VirtualizingTilePanel2 ItemWidth="160" ItemHeight="90" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="24,24"
-                        CacheLengthUnit="Item" />-->
+                    <!--<mui:VirtualizingTilePanel ItemWidth="160" ItemHeight="90" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True" />-->
+                    <!--<mui:VirtualizingTilePanel
+                        ItemWidth="{Binding ActualWidth, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.49, RelativeSource={RelativeSource Self}}"
+                        ItemHeight="{Binding ActualWidth, Converter={StaticResource MultiplyConverter}, ConverterParameter=0.275625, RelativeSource={RelativeSource Self}}"
+                        VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="24,24" CacheLengthUnit="Item" />-->
+                    <mui:VirtualizingColumnsPanel
+                        Columns="{Binding ActualWidth, Converter={x:Static ac:AcObjectListBox.ThumbnailColumnsConverter}, RelativeSource={RelativeSource Self}}"
+                        ItemHeightModifier="0.5625" VirtualizationMode="Recycling" IsVirtualizing="True" CacheLength="12,12" CacheLengthUnit="Item" />
                   </ItemsPanelTemplate>
                 </Setter.Value>
               </Setter>

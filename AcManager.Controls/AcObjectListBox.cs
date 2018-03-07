@@ -2,32 +2,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters;
 using AcManager.Tools.Lists;
+using AcTools.Utils;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Controls {
-    public enum ThumbnailMode {
-        Disabled, Enabled, Auto
-    }
-
     public class AcObjectListBox : Control, IComparer {
+        public static IValueConverter ThumbnailColumnsConverter { get; } = new ThumbnailColumnsConverterInner();
+
+        private class ThumbnailColumnsConverterInner : IValueConverter {
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return Math.Max((value.As(321d) / 180).FloorToInt(), 2);
+            }
+
+            public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
+                throw new NotSupportedException();
+            }
+        }
+
         public const double AutoThumbnailModeThresholdValue = 322d;
 
         static AcObjectListBox() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(AcObjectListBox), new FrameworkPropertyMetadata(typeof(AcObjectListBox)));
         }
 
-        public static readonly DependencyProperty AutoThumbnailModeThresholdProperty = DependencyProperty.Register(nameof(AutoThumbnailModeThreshold), typeof(double),
-                typeof(AcObjectListBox), new PropertyMetadata(AutoThumbnailModeThresholdValue, (o, e) => {
-                    ((AcObjectListBox)o)._autoThumbnailModeThreshold = (double)e.NewValue;
-                }));
+        public static readonly DependencyProperty AutoThumbnailModeThresholdProperty = DependencyProperty.Register(nameof(AutoThumbnailModeThreshold),
+                typeof(double), typeof(AcObjectListBox),
+                new PropertyMetadata(AutoThumbnailModeThresholdValue, (o, e) => ((AcObjectListBox)o)._autoThumbnailModeThreshold = (double)e.NewValue));
 
         private double _autoThumbnailModeThreshold = AutoThumbnailModeThresholdValue;
 
@@ -36,7 +47,8 @@ namespace AcManager.Controls {
             set => SetValue(AutoThumbnailModeThresholdProperty, value);
         }
 
-        public static readonly DependencyPropertyKey ActualThumbnailModePropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualThumbnailMode), typeof(bool),
+        public static readonly DependencyPropertyKey ActualThumbnailModePropertyKey = DependencyProperty.RegisterReadOnly(nameof(ActualThumbnailMode),
+                typeof(bool),
                 typeof(AcObjectListBox), new PropertyMetadata(false));
 
         public static readonly DependencyProperty ActualThumbnailModeProperty = ActualThumbnailModePropertyKey.DependencyProperty;
@@ -58,7 +70,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty BasicFilterProperty = DependencyProperty.Register(nameof(BasicFilter), typeof(string),
-            typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
+                typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string BasicFilter {
             get => (string)GetValue(BasicFilterProperty);
@@ -66,7 +78,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty UserFilterProperty = DependencyProperty.Register(nameof(UserFilter), typeof(string),
-            typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
+                typeof(AcObjectListBox), new PropertyMetadata(OnFilterChanged));
 
         public string UserFilter {
             get => (string)GetValue(UserFilterProperty);
@@ -86,7 +98,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty IsFilteringEnabledProperty = DependencyProperty.Register(nameof(IsFilteringEnabled), typeof(bool),
-            typeof(AcObjectListBox), new PropertyMetadata(true));
+                typeof(AcObjectListBox), new PropertyMetadata(true));
 
         public bool IsFilteringEnabled {
             get => GetValue(IsFilteringEnabledProperty) as bool? == true;
@@ -94,7 +106,7 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty SelectedItemProperty = DependencyProperty.Register(nameof(SelectedItem), typeof(AcObjectNew),
-            typeof(AcObjectListBox), new PropertyMetadata(OnSelectedItemChanged));
+                typeof(AcObjectListBox), new PropertyMetadata(OnSelectedItemChanged));
 
         private static void OnSelectedItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((AcObjectListBox)d).OnSelectedItemChanged((AcObjectNew)e.NewValue);
@@ -122,14 +134,15 @@ namespace AcManager.Controls {
         }
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(nameof(ItemsSource), typeof(IAcObjectList),
-            typeof(AcObjectListBox), new PropertyMetadata(OnItemsSourceChanged));
+                typeof(AcObjectListBox), new PropertyMetadata(OnItemsSourceChanged));
 
         private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             ((AcObjectListBox)d).OnItemsSourceChanged((IAcObjectList)e.NewValue);
         }
 
-        public static readonly DependencyProperty InnerItemsSourceProperty = DependencyProperty.Register(nameof(InnerItemsSource), typeof(AcWrapperCollectionView),
-            typeof(AcObjectListBox), new PropertyMetadata());
+        public static readonly DependencyProperty InnerItemsSourceProperty = DependencyProperty.Register(nameof(InnerItemsSource),
+                typeof(AcWrapperCollectionView),
+                typeof(AcObjectListBox), new PropertyMetadata());
 
         public IAcObjectList ItemsSource {
             get => (IAcObjectList)GetValue(ItemsSourceProperty);
@@ -224,7 +237,7 @@ namespace AcManager.Controls {
             var userFilter = UserFilter;
 
             var filter = string.IsNullOrWhiteSpace(baseFilter) ? userFilter
-                : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + @" & (" + userFilter + @")";
+                    : string.IsNullOrWhiteSpace(userFilter) ? baseFilter : baseFilter + @" & (" + userFilter + @")";
 
             InnerItemsSource.CurrentChanged -= OnItemsSourceCurrentChanged;
             using (listView.DeferRefresh()) {

@@ -107,6 +107,10 @@ namespace FirstFloor.ModernUI.Helpers {
             Write('…', s, m, p, l);
         }
 
+        public static void Caution(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            Write('⇒', s, m, p, l);
+        }
+
         public static void Here([CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
             Write('⊕', HereMessage, m, p, l);
         }
