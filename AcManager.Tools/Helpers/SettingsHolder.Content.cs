@@ -5,7 +5,6 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using StringBasedFilter;
 
 namespace AcManager.Tools.Helpers {
     public static partial class SettingsHolder {
@@ -305,19 +304,6 @@ namespace AcManager.Tools.Helpers {
                     _newContentPeriod = value;
                     ValuesStorage.Set("Settings.ContentSettings.NewContentPeriod", value.TimeSpan);
                     OnPropertyChanged();
-                }
-            }
-
-            private bool? _simpleFiltering;
-
-            public bool SimpleFiltering {
-                get => _simpleFiltering ?? (_simpleFiltering = ValuesStorage.Get("Settings.ContentSettings.SimpleFiltering", true)).Value;
-                set {
-                    if (Equals(value, _simpleFiltering)) return;
-                    _simpleFiltering = value;
-                    ValuesStorage.Set("Settings.ContentSettings.SimpleFiltering", value);
-                    OnPropertyChanged();
-                    Filter.OptionSimpleMatching = value;
                 }
             }
 

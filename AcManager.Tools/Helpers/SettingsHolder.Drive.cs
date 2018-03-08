@@ -187,18 +187,6 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _watchForSharedMemory;
-
-            public bool WatchForSharedMemory {
-                get => _watchForSharedMemory ?? (_watchForSharedMemory = ValuesStorage.Get("Settings.DriveSettings.WatchForSharedMemory", true)).Value;
-                set {
-                    if (Equals(value, _watchForSharedMemory)) return;
-                    _watchForSharedMemory = value;
-                    ValuesStorage.Set("Settings.DriveSettings.WatchForSharedMemory", value);
-                    OnPropertyChanged();
-                }
-            }
-
             private List<string> _ignoredInterfaces;
 
             public IEnumerable<string> IgnoredInterfaces {
@@ -1031,6 +1019,9 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            // Demoted from UI option to an app flag, kept here to avoid rewriting any code
+            public bool WatchForSharedMemory { get; set; }
         }
 
         private static DriveSettings _drive;

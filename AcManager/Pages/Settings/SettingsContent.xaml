@@ -22,10 +22,6 @@
               Placeholder="?" Mode="Positive" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Holder.SimpleFiltering}" ToolTip="Filter objects or servers the way which is more similar to original launcher">
-          <Label Content="Simple filtering" />
-        </CheckBox>
-
         <CheckBox IsChecked="{Binding Holder.DeleteConfirmation}" ToolTip="{x:Static g:AppStrings.Settings_Content_ConfirmBeforeRemoval_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Content_ConfirmBeforeRemoval}" />
         </CheckBox>

@@ -166,8 +166,8 @@ namespace AcManager.Tools {
                 Thread.Sleep(5);
 
 #if DEBUG
-                if (++iterations >= 300) {
-                    Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F2} ms");
+                if (++iterations >= 3000) {
+                    Logging.Debug($"Time per tick: {s.Elapsed.TotalMilliseconds / iterations:F3} ms");
                     iterations = 0;
                     s.Restart();
                 }

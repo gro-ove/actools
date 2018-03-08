@@ -110,8 +110,8 @@ namespace AcManager.Tools.Filters.Testers {
 
         public bool Test(ServerEntry obj, string key, ITestEntry value) {
             if (key == null) {
-                return SettingsHolder.Content.SimpleFiltering && value.Test(obj.TrackId) ||
-                        value.Test(obj.Id) || value.Test(obj.DisplayName) || SettingsHolder.Online.FixNamesMode.IntValue != 0 && value.Test(obj.ActualName);
+                return value.Test(obj.TrackId) || value.Test(obj.Id) || value.Test(obj.DisplayName)
+                        || SettingsHolder.Online.FixNamesMode.IntValue != 0 && value.Test(obj.ActualName);
             }
 
             switch (key) {

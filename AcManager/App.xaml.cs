@@ -415,7 +415,7 @@ namespace AcManager {
             };
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
-            Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;
+            Filter.OptionSimpleMatching = true;
 
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
@@ -475,6 +475,9 @@ namespace AcManager {
 
             // Paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
+
+            // Shared memory, now as an app flag
+            SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
 
             // Discord
             if (AppArguments.Has(AppFlag.DiscordCmd)) {

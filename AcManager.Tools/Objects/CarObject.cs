@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
                     var index = name.Length - year.Length - 1;
                     if ((!name.EndsWith(year) || index > 0 && char.IsLetterOrDigit(name[index]))
                             && !AcStringValues.GetYearFromName(name).HasValue) {
-                        return $@"{name} '{yearValue % 100:D2}";
+                        return $@"{name} ’{yearValue % 100:D2}";
                     }
                 }
 

@@ -5,6 +5,11 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Disable AC shared memory integration. Example: --disable-shared-memory.
+        /// </summary>
+        DisableSharedMemory,
+
+        /// <summary>
         /// Switch focus to the first window appearing, enabled by default.
         /// Example: --forcefully-focus-first-window=no.
         /// </summary>

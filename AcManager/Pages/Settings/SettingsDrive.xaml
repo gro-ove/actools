@@ -87,9 +87,9 @@
           <TextBlock.Text>AC’s shared memory:</TextBlock.Text>
         </TextBlock>
 
-        <CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
+        <!--<CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
           <Label Content="Watch for AC shared memory" ToolTip="Used for proper hibernation and other stuff" />
-        </CheckBox>
+        </CheckBox>-->
 
         <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
           <Label Content="Hibernate CM while racing" ToolTip="This way, CM won't waste precious CPU and/or GPU time when it's so needed" />
