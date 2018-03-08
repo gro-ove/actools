@@ -32,7 +32,7 @@
     <c:MessageBlock CloseKey="AppIconEditor.Hint" Margin="20 0 20 8" DockPanel.Dock="Top">
       <!--<mui:BbCodeBlock
           BbCode="To move image and text, hold [b]Ctrl[/b]. To adjust their size, use mouse wheel or [b]Ctrl++[/b] and [b]Ctrl+−[/b] buttons while keeping mouse above them." />-->
-      <mui:BbCodeBlock BbCode="To adjust image scale or text size, use mouse wheel or [b]+[/b] and [b]−[/b] in movement mode." />
+      <mui:BbCodeBlock Text="To adjust image scale or text size, use mouse wheel or [b]+[/b] and [b]−[/b] in movement mode." />
     </c:MessageBlock>
 
     <ItemsControl x:Name="IconsList" ItemsSource="{Binding Windows}" Style="{StaticResource ScrollingItemsControl}" MaxHeight="800">

@@ -206,6 +206,7 @@
     <Compile Include="Windows\Controls\DpiAwareWindow.ExtraFlags.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Logging.cs" />
     <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
+    <Compile Include="Windows\Controls\EmojiSpan.cs" />
     <Compile Include="Windows\Controls\EmojiSupport.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
     <Compile Include="Windows\Controls\FatalErrorMessage.cs" />
@@ -225,6 +226,7 @@
     <Compile Include="Windows\Controls\RememberingExpander.cs" />
     <Compile Include="Windows\Controls\RoundSlider.cs" />
     <Compile Include="Windows\Controls\FormattedSlider.cs" />
+    <Compile Include="Windows\Controls\SelectableBbCodeBlock.cs" />
     <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
     <Compile Include="Windows\Controls\SpecialMode.cs" />
     <Compile Include="Windows\Controls\StretchyWrapPanel.cs" />

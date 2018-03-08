@@ -30,7 +30,7 @@
     </c:PropertiesGrid>
 
     <c:MessageBlock Visibility="{Binding Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter=0}" Margin="0 20 0 0">
-      <mui:BbCodeBlock BbCode="Asterisk (“*”) will be added to mark values as wheels’ power and torque." />
+      <mui:BbCodeBlock Text="Asterisk (“*”) will be added to mark values as wheels’ power and torque." />
     </c:MessageBlock>
   </StackPanel>
 </mui:ModernDialog>

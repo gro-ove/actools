@@ -107,8 +107,6 @@ namespace AcManager.Pages.Drive {
 
                 try {
                     var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey);
-                    Logging.Debug($"{GetHashCode():X4}/{_saveKey}: {saved}");
-
                     foreach (var filter in this) {
                         filter.IsEnabled = false;
                     }
@@ -126,7 +124,6 @@ namespace AcManager.Pages.Drive {
                                 previousIndex = i + 1;
                                 break;
                             case '&':
-                                Logging.Debug($"brackets: {brackets}");
                                 break;
                             case '(':
                                 brackets++;
@@ -140,8 +137,6 @@ namespace AcManager.Pages.Drive {
                     SetFilter(saved.Substring(previousIndex));
 
                     void SetFilter(string piece) {
-                        Logging.Debug(piece);
-
                         if (piece.Length > 2 && piece[0] == '(' && piece[piece.Length - 1] == ')') {
                             piece = piece.Substring(1, piece.Length - 2);
                         }

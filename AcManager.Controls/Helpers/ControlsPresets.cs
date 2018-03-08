@@ -210,7 +210,7 @@ namespace AcManager.Controls.Helpers {
             }
 
             return new BbCodeBlock {
-                BbCode = result.ToString()
+                Text = result.ToString()
             };
         }
 

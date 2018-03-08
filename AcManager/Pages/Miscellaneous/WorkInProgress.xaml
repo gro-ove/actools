@@ -5,7 +5,7 @@
   <Grid Style="{StaticResource ContentRootWithPadding}">
     <StackPanel>
       <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Page_Wip}" />
-      <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Page_Wip_Commentary}" />
+      <mui:BbCodeBlock Text="{x:Static g:AppStrings.Page_Wip_Commentary}" />
     </StackPanel>
   </Grid>
 </UserControl>

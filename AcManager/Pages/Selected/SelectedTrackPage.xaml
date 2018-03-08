@@ -186,7 +186,7 @@
                     <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
                   </ContextMenu>
                 </FrameworkElement.ContextMenu>
-                <mui:BbCodeBlock BbCode="{Binding SelectedTrackConfiguration.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
+                <mui:BbCodeBlock Text="{Binding SelectedTrackConfiguration.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
                     TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                 <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
               </mui:Cell>

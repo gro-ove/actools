@@ -161,7 +161,7 @@
                   LabelUnchecked="Place" Height="18" Width="60" Padding="0" HorizontalAlignment="Left" />
             </DockPanel>
 
-            <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
+            <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick"
                 ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
               <c:PropertiesGrid.Label>
                 <MultiBinding Converter="{x:Static se:SelectedAcObjectViewModel.VersionInfoLabelConverter}">

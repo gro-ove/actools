@@ -57,7 +57,7 @@ namespace AcManager.Controls.Video {
                     break;
             }
 
-            ((BbCodeBlock)_switch.False).BbCode = string.Format(
+            ((BbCodeBlock)_switch.False).Text = string.Format(
                     "Can’t play file. Make sure Windows Media Player is available and {0}required codec is installed{1}, or enable VLC plugin instead.",
                     url == null ? "" : $@"[url={BbCodeBlock.EncodeAttribute(url)}]",
                     url == null ? "" : @"[/url]");

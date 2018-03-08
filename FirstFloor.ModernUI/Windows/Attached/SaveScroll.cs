@@ -9,6 +9,21 @@ namespace FirstFloor.ModernUI.Windows.Attached {
     public static class SaveScroll {
         static SaveScroll() {}
 
+        /*public static string GetTriggerLoad(DependencyObject obj) {
+            return (string)obj.GetValue(TriggerLoadProperty);
+        }
+
+        public static void SetTriggerLoad(DependencyObject obj, string value) {
+            obj.SetValue(TriggerLoadProperty, value);
+        }
+
+        public static readonly DependencyProperty TriggerLoadProperty = DependencyProperty.RegisterAttached("TriggerLoad", typeof(string),
+                typeof(SaveScroll), new UIPropertyMetadata(OnTriggerLoadChanged));
+
+        private static void OnTriggerLoadChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+            OnKeyChanged(d, e);
+        }*/
+
         public static string GetKey(DependencyObject obj) {
             return (string)obj.GetValue(KeyProperty);
         }

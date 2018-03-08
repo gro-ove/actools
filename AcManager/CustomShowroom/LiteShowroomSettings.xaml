@@ -66,10 +66,10 @@
 
       <c:MessageBlock CloseKey="cm-previews-size">
         <mui:BbCodeBlock Style="{StaticResource Small}">
-          <mui:BbCodeBlock.BbCode>
+          <mui:BbCodeBlock.Text>
             I recommend to keep the original size (1022×575) — this way, CM will load previews faster, consume less memory, be able to
             keep more of them in cache and also, UI definitely won’t go off.
-          </mui:BbCodeBlock.BbCode>
+          </mui:BbCodeBlock.Text>
         </mui:BbCodeBlock>
       </c:MessageBlock>
 
@@ -1254,11 +1254,11 @@
 
       <c:MessageBlock>
         <mui:BbCodeBlock LinkNavigator="{Binding}" Style="{StaticResource Small}"
-            BbCode="[b]Want to get the best AA?[/b] Enable accumulation DOF and set aperture size to 0, 20–50 iterations would be more than enough. Also, with this approach, it’s better to disable MSAA, FXAA and increased pixel density at all.[br][br]To enable it quickly, click [url=&quot;cmd://setAccumulationAa&quot;]here[/url]." />
+            Text="[b]Want to get the best AA?[/b] Enable accumulation DOF and set aperture size to 0, 20–50 iterations would be more than enough. Also, with this approach, it’s better to disable MSAA, FXAA and increased pixel density at all.[br][br]To enable it quickly, click [url=&quot;cmd://setAccumulationAa&quot;]here[/url]." />
       </c:MessageBlock>
 
       <c:MessageBlock CloseKey="autofocus-note">
-        <mui:BbCodeBlock LinkNavigator="{Binding}" Style="{StaticResource Small}" BbCode="Hold Ctrl and click somewhere to focus on that object." />
+        <mui:BbCodeBlock LinkNavigator="{Binding}" Style="{StaticResource Small}" Text="Hold Ctrl and click somewhere to focus on that object." />
       </c:MessageBlock>
 
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetExtraCommand}" />

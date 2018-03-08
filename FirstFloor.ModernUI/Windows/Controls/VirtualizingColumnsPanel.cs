@@ -79,23 +79,26 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             using (_generator.StartAt(startPos, GeneratorDirection.Forward, true)) {
                 for (var itemIndex = firstVisibleItemIndex; itemIndex <= lastVisibleItemIndex; ++itemIndex, ++childIndex) {
                     var child = (UIElement)_generator.GenerateNext(out var newlyRealized);
-                    if (newlyRealized) {
-                        if (childIndex >= children.Count) {
-                            AddInternalChild(child);
-                        } else {
-                            InsertInternalChild(childIndex, child);
-                        }
-                        _generator.PrepareItemContainer(child);
-                    } else if (!children.Contains(child)) {
-                        InsertInternalChild(childIndex, child);
-                        ItemContainerGenerator.PrepareItemContainer(child);
-                    }
-
+                    InsertGenerated(newlyRealized, childIndex, children, child);
                     child.Measure(new Size(ItemWidth, ItemHeight));
                 }
             }
 
             return availableSize;
+        }
+
+        private void InsertGenerated(bool newlyRealized, int childIndex, UIElementCollection children, UIElement child) {
+            if (newlyRealized) {
+                if (childIndex >= children.Count) {
+                    AddInternalChild(child);
+                } else {
+                    InsertInternalChild(childIndex, child);
+                }
+                _generator.PrepareItemContainer(child);
+            } else if (!children.Contains(child)) {
+                InsertInternalChild(childIndex, child);
+                ItemContainerGenerator.PrepareItemContainer(child);
+            }
         }
 
         private void CleanUpItems(int lastVisibleItemIndex, int firstVisibleItemIndex) {
@@ -169,6 +172,34 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
         #endregion
 
+        #region For scrolling to item
+        /*protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo) {
+            base.OnRenderSizeChanged(sizeInfo);
+            var multiplier = sizeInfo.NewSize.Width / sizeInfo.PreviousSize.Width;
+            if (double.IsNaN(multiplier) || double.IsInfinity(multiplier)) return;
+            Logging.Debug($"{VerticalOffset:F2} * {sizeInfo.NewSize.Width} / {sizeInfo.PreviousSize.Width} = {VerticalOffset * sizeInfo.NewSize.Width / sizeInfo.PreviousSize.Width}");
+            SetVerticalOffsetValue(VerticalOffset * sizeInfo.NewSize.Width / sizeInfo.PreviousSize.Width);
+        }*/
+
+        protected override void BringIndexIntoView(int index) {
+            var row = GetItemRow(index, Columns);
+            var offset = ItemHeight * row;
+            var offsetSize = offset + ItemHeight;
+            var offsetBottom = _offset.Y + _viewport.Height;
+            if (offset > _offset.Y && offsetSize < offsetBottom) {
+                return;
+            }
+
+            if (offset > _offset.Y && offsetBottom - offset < ItemHeight) {
+                offset = _offset.Y + (ItemHeight - (offsetBottom - offset));
+            } else if (Math.Floor(offsetBottom - offset) == Math.Floor(ItemHeight)) {
+                return;
+            }
+
+            SetVerticalOffset(offset);
+        }
+        #endregion
+
         #region IScrollInfo implementation
         private double GetTotalHeight() {
             var itemCount = _itemsControl.HasItems ? _itemsControl.Items.Count : 0;
@@ -180,10 +211,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return totalHeight;
         }
 
+        private double _previousWidth;
+
+        private void AdjustVerticalOffset(double width) {
+            var multiplier = width / _previousWidth;
+            if (_scrollLater == null && !double.IsNaN(multiplier) && !double.IsInfinity(multiplier) && multiplier != 1d && _extent.Height > 0d) {
+                SetVerticalOffsetValue(VerticalOffset * multiplier);
+            }
+
+            _previousWidth = width;
+        }
+
         private void UpdateScrollInfo(Size availableSize) {
             if (_itemsControl == null) return;
 
             ItemWidth = Math.Floor(availableSize.Width / Columns);
+            AdjustVerticalOffset(ItemWidth);
 
             var totalHeight = GetTotalHeight();
             if (_offset.Y > totalHeight - availableSize.Height) {
@@ -276,12 +319,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public void PageRight() { }
         public void SetHorizontalOffset(double offset) { }
 
-        public void SetVerticalOffset(double offset) {
-            if (_extent.Height == 0 && offset != 0) {
-                _scrollLater = offset;
-                return;
-            }
-
+        private void SetVerticalOffsetValue(double offset) {
             if (offset < 0 || _viewport.Height >= _extent.Height) {
                 offset = 0;
             } else if (offset + _viewport.Height >= _extent.Height) {
@@ -291,6 +329,15 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _offset.Y = offset;
             ScrollOwner?.InvalidateScrollInfo();
             _translate.Y = -offset;
+        }
+
+        public void SetVerticalOffset(double offset) {
+            if (_extent.Height == 0 && offset != 0) {
+                _scrollLater = offset;
+                return;
+            }
+
+            SetVerticalOffsetValue(offset);
             InvalidateMeasure();
         }
 

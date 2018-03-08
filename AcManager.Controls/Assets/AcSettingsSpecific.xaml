@@ -146,7 +146,7 @@
               <CheckBox IsChecked="{Binding WheelSteerScaleAutoAdjust, Source={x:Static acset:AcSettingsHolder.Controls}}" Margin="0 0 0 8">
                 <CheckBox.ToolTip>
                   <mui:BbCodeBlock MaxWidth="480"
-                      BbCode="With this option enabled, Content Manager will adjust [mono]STEER/SCALE[/mono] value to ensure virtual steering wheel is in sync with the controller.[br][br]The only drawback: turning radius will increase, since you won’t be able to put virtual steering wheel to angles beyond your steering wheel’s capacity." />
+                      Text="With this option enabled, Content Manager will adjust [mono]STEER/SCALE[/mono] value to ensure virtual steering wheel is in sync with the controller.[br][br]The only drawback: turning radius will increase, since you won’t be able to put virtual steering wheel to angles beyond your steering wheel’s capacity." />
                 </CheckBox.ToolTip>
                 <Label Content="Auto-adjust scale to match car’s steer lock" />
               </CheckBox>

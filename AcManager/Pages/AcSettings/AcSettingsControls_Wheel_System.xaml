@@ -118,7 +118,7 @@
         <Button Content="2" Style="{StaticResource MoreDetailsSuperscript}" Margin="0 4 2 0"
             Command="{Binding HighlightDetailsCommand, RelativeSource={RelativeSource AncestorType=acsc:AcSettingsControls_Wheel_System}}"
             CommandParameter="DetailsSecond" />
-        <mui:BbCodeBlock BbCode="Hold Shift for inverse operation." />
+        <mui:BbCodeBlock Text="Hold Shift for inverse operation." />
       </DockPanel>
     </Border>
 
@@ -128,7 +128,7 @@
             Command="{Binding HighlightDetailsCommand, RelativeSource={RelativeSource AncestorType=acsc:AcSettingsControls_Wheel_System}}"
             CommandParameter="DetailsFirst" />
         <mui:BbCodeBlock
-            BbCode="Non-default operations, so they will work only in Content Manager, or with [url=&quot;https://labs.assettocorsa.jp/downloads/addon/addshortcutkey&quot;]this Python app[/url]. Thanks to [url=&quot;https://twitter.com/Tsuka1427&quot;]Tsuka[/url] for the great help in implementation!" />
+            Text="Non-default operations, so they will work only in Content Manager, or with [url=&quot;https://labs.assettocorsa.jp/downloads/addon/addshortcutkey&quot;]this Python app[/url]. Thanks to [url=&quot;https://twitter.com/Tsuka1427&quot;]Tsuka[/url] for the great help in implementation!" />
       </DockPanel>
     </Border>
 
@@ -190,7 +190,7 @@
             </CheckBox>
 
             <c:MessageBlock CloseKey="povcontrols">
-              <mui:BbCodeBlock BbCode="[i]Did you know?[/i] In this section, you can use POV buttons as well." />
+              <mui:BbCodeBlock Text="[i]Did you know?[/i] In this section, you can use POV buttons as well." />
             </c:MessageBlock>
 
             <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Overlay-related options:" />
@@ -241,7 +241,7 @@
 
             <c:MessageBlock>
               <mui:BbCodeBlock
-                  BbCode="[i]Please, read me![/i] To show popups — for example, for Discord join requests — CM needs to be able to display some stuff in AC. Now, it could be done either by just showing stuff on top of AC, but [b]only if AC is not in fullscreen mode[/b]. Or, alternatively, I’ve made [url=&quot;acmanager://install?url=https%3A%2F%2Fyadi.sk%2Fd%2F4_42zhk03RtCAL&quot;]a small Python app[/url] for it. It should work, although it won’t be as nice and smooth. For example, it won’t help at all if you’ll get a join request during loading or while in pits.[br][br]If you’re developing interface apps and want to integrate this feature, please, contact me." />
+                  Text="[i]Please, read me![/i] To show popups — for example, for Discord join requests — CM needs to be able to display some stuff in AC. Now, it could be done either by just showing stuff on top of AC, but [b]only if AC is not in fullscreen mode[/b]. Or, alternatively, I’ve made [url=&quot;acmanager://install?url=https%3A%2F%2Fyadi.sk%2Fd%2F4_42zhk03RtCAL&quot;]a small Python app[/url] for it. It should work, although it won’t be as nice and smooth. For example, it won’t help at all if you’ll get a join request during loading or while in pits.[br][br]If you’re developing interface apps and want to integrate this feature, please, contact me." />
             </c:MessageBlock>
           </StackPanel>
 

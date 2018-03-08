@@ -65,8 +65,8 @@
       <StackPanel mui:Switch.When="{x:Static t:OnlineManagerStatus.Error}" Margin="40 0 40 40" HorizontalAlignment="Center" VerticalAlignment="Center">
         <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
         <StackPanel Margin="0 20" DataContext="{Binding Pack.Error}">
-          <mui:BbCodeBlock BbCode="{Binding Message}" />
-          <mui:BbCodeBlock BbCode="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
+          <mui:BbCodeBlock Text="{Binding Message}" />
+          <mui:BbCodeBlock Text="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
               Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
         </StackPanel>
         <Button Command="{Binding RefreshCommand}" CommandParameter="True" Content="{x:Static c:ControlsStrings.Common_TryAgain}"

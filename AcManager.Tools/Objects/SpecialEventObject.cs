@@ -140,7 +140,7 @@ namespace AcManager.Tools.Objects {
                 Title = ToolsStrings.Common_Warning,
                 Content = new ScrollViewer {
                     Content = new SelectableBbCodeBlock {
-                        BbCode =
+                        Text =
                             $"You’re using {SettingsHolder.Drive.SelectedStarterType.DisplayName} Starter. With it, you won’t get a Steam achievment, so progress won’t be saved. Are you sure you want to continue?",
                         Margin = new Thickness(0, 0, 0, 8)
                     },

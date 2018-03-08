@@ -295,8 +295,9 @@
               Stretch="UniformToFill" />
           <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
               ShowBroken="False" />
-          <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Text="{Binding SelectedTrack.Name}"
-              Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+          <mui:BbCodeBlock EmojiSupport="NothingButEmoji" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+              Text="{Binding SelectedTrack.Name}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
+              TextTrimming="CharacterEllipsis" />
 
           <Border Opacity="0" Background="{DynamicResource OverlayBackground}" Cursor="Hand"
               Visibility="{Binding QuickDriveFastAccessButtons, Source={x:Static t:SettingsHolder.Interface}, Converter={StaticResource BooleanToVisibilityConverter}}">

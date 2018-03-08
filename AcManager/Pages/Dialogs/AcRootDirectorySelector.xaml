@@ -16,9 +16,9 @@
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
   <StackPanel Width="500">
-    <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
+    <mui:BbCodeBlock Text="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
         Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
-    <mui:BbCodeBlock BbCode="App just has been updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
+    <mui:BbCodeBlock Text="App just has been updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
         Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
     <!-- AC root -->

@@ -38,7 +38,7 @@
 
         <c:MessageBlock CloseKey="fancy-showroom-previews">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>Custom Showroom works faster and has some additional features, such as reflections (both ground and SSLR aka local reflections), smooth shadows (using PCSS technique) or an option to turn on the lights or steer the wheels.</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.Text>Custom Showroom works faster and has some additional features, such as reflections (both ground and SSLR aka local reflections), smooth shadows (using PCSS technique) or an option to turn on the lights or steer the wheels.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 
@@ -115,7 +115,7 @@
 
         <c:MessageBlock CloseKey="bye-bye-fancy-showroom">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially compaing to the new one. And it was very slow.</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.Text>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially compaing to the new one. And it was very slow.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

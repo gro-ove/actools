@@ -900,7 +900,7 @@ namespace AcManager.CustomShowroom {
                     Title = title,
                     Content = new ScrollViewer {
                         Content = new SelectableBbCodeBlock {
-                            BbCode = text
+                            Text = text
                         },
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                         HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled

@@ -158,7 +158,7 @@
                   <TextBlock Text="{Binding ThirdPlacesGoal}" FontWeight="Bold" />
                 </StackPanel>
 
-                <mui:BbCodeBlock BbCode="{Binding DisplayChampionshipGoal}"
+                <mui:BbCodeBlock Text="{Binding DisplayChampionshipGoal}"
                     Visibility="{Binding Type, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:KunosCareerObjectType.Championship}}" />
               </StackPanel>
             </DockPanel>

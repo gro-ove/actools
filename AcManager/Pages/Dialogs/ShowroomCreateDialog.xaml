@@ -31,7 +31,7 @@
                     <StackPanel>
                         <TextBlock Text="{x:Static g:AppStrings.CreateShowroom_Panorama_Example}" Margin="4" />
                         <Image RenderOptions.BitmapScalingMode="LowQuality" Source="/Assets/Img/ShowroomPanoramaExample.jpg" />
-                        <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" BbCode="{x:Static g:AppStrings.CreateShowroom_Panorama_Commentary}"
+                        <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" Text="{x:Static g:AppStrings.CreateShowroom_Panorama_Commentary}"
                                 Margin="4 12 4 4" />
                     </StackPanel>
                 </DockPanel.ToolTip>

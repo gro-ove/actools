@@ -133,7 +133,7 @@ namespace AcManager.Tools.Helpers {
 
             object Text(string data) {
                 var p = new BbCodeBlock {
-                    BbCode = data,
+                    Text = data,
                     FontSize = 30,
                     FontWeight = FontWeights.UltraLight,
                     VerticalAlignment = VerticalAlignment.Center,

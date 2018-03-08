@@ -21,7 +21,7 @@
       <TextBlock Text="{Binding ProgressValue.Message}" />
     </mui:SpacingStackPanel>
     <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.ReadOnly.Small}"
-        BbCode="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
+        Text="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
 sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
 have proper compression already, and it will only slightly slow down AC loading.
 [br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do

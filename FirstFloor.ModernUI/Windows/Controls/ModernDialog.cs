@@ -229,7 +229,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var value = doNotAskAgainLoadSave?.Item1?.Invoke();
             if (value != null) return value.Value;
 
-            FrameworkElement content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) };
+            FrameworkElement content = new SelectableBbCodeBlock { Text = text, Margin = new Thickness(0, 0, 0, 8) };
 
             CheckBox doNotAskAgainCheckbox;
             if (doNotAskAgainLoadSave != null) {

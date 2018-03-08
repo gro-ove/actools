@@ -101,7 +101,7 @@
 
                   <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Grid.Column="1" Grid.Row="2"
                       TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                  <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
+                  <mui:BbCodeBlock Text="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
                       TextTrimming="CharacterEllipsis" />
 
                   <!-- Last row -->
@@ -236,7 +236,7 @@
 
                         <mui:PlaceholderTextBlock Text="{Binding ParentDisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Grid.Column="1"
                             Grid.Row="2" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
-                        <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
+                        <mui:BbCodeBlock Text="{Binding VersionInfoDisplay}" Placeholder="?" Grid.Column="3" Grid.Row="2" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
 
                         <!-- Last row -->

@@ -408,10 +408,10 @@
                       <ContentPresenter Width="32" Height="32" Margin="0 0 20 0" Content="{Binding Icon}" />
                       <mui:SpacingUniformGrid Rows="1" Margin="0 4 0 0" DockPanel.Dock="Bottom"
                           Visibility="{Binding Description.Value, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse hidden'}">
-                        <mui:BbCodeBlock x:Name="PART_Width" BbCode="{Binding WidthRange, StringFormat='Width: {0}'}" Style="{StaticResource Small}" />
+                        <mui:BbCodeBlock x:Name="PART_Width" Text="{Binding WidthRange, StringFormat='Width: {0}'}" Style="{StaticResource Small}" />
                         <!--<mui:BbCodeBlock x:Name="PART_RimRadius" BbCode="{Binding RimRadiusRange, StringFormat='Rims: {0}'}" Style="{StaticResource Small}" />-->
-                        <mui:BbCodeBlock x:Name="PART_Profile" BbCode="{Binding ProfileRange, StringFormat='Profile: {0}'}" Style="{StaticResource Small}" />
-                        <mui:BbCodeBlock x:Name="PART_Radius" BbCode="{Binding RadiusRange, StringFormat='Radius: {0}'}" Style="{StaticResource Small}" />
+                        <mui:BbCodeBlock x:Name="PART_Profile" Text="{Binding ProfileRange, StringFormat='Profile: {0}'}" Style="{StaticResource Small}" />
+                        <mui:BbCodeBlock x:Name="PART_Radius" Text="{Binding RadiusRange, StringFormat='Radius: {0}'}" Style="{StaticResource Small}" />
                       </mui:SpacingUniformGrid>
                       <mui:PlaceholderTextBlock Text="{Binding Description.Value}" Style="{StaticResource Label}" Margin="8 1 4 -1"
                           Placeholder="Loading details…" DockPanel.Dock="Right" />

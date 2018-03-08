@@ -230,7 +230,7 @@
         <Path.ToolTip>
           <StackPanel>
             <TextBlock Style="{StaticResource Heading2}" Text="{x:Static c:ControlsStrings.Common_Error}" Margin="4" />
-            <mui:BbCodeBlock BbCode="{Binding Errors}" Margin="4" />
+            <mui:BbCodeBlock Text="{Binding Errors}" Margin="4" />
           </StackPanel>
         </Path.ToolTip>
       </Path>

@@ -204,7 +204,7 @@ namespace AcManager.Pages.AcSettings {
             var dlg = new ModernDialog {
                 Title = AppStrings.Controls_AlreadyUsed,
                 Content = new ScrollViewer {
-                    Content = new BbCodeBlock { BbCode = message, Margin = new Thickness(0, 0, 0, 8) },
+                    Content = new BbCodeBlock { Text = message, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },

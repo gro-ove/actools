@@ -88,7 +88,7 @@
       <DockPanel Grid.Column="2" Margin="20 0 20 20">
         <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
           <mui:BbCodeBlock
-              BbCode="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;http://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
+              Text="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;http://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
         </c:MessageBlock>
         <mui:ModernTab x:Name="ConfigsTab" Layout="Tab" />
       </DockPanel>

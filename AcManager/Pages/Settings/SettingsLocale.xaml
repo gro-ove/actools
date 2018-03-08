@@ -59,7 +59,7 @@
         </DockPanel>
       </StackPanel>
 
-      <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Settings_Locale_ForceLocaleWarning}" Style="{StaticResource SettingsPanel.Warning.BbCodeBlock}"
+      <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Locale_ForceLocaleWarning}" Style="{StaticResource SettingsPanel.Warning.BbCodeBlock}"
           Visibility="{Binding ForceLocalesFlag, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
       <StackPanel Visibility="{Binding CurrentLocale.CanBeUpdated, Converter={StaticResource BooleanToVisibilityConverter}}">

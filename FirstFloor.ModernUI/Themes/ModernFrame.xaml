@@ -33,7 +33,7 @@
                                     <TextBlock Text="{x:Static mui:UiStrings.StackTrace}" FontWeight="Bold" />
                                     <TextBlock Text="{Binding}" Style="{StaticResource Monospace}" Margin="0 0 0 16" TextWrapping="Wrap" />
                                     <TextBlock Text="{x:Static mui:UiStrings.Suggestions}" FontWeight="Bold" />
-                                    <c:BbCodeBlock BbCode="{x:Static mui:UiStrings.SuggestionsMessage}">
+                                    <c:BbCodeBlock Text="{x:Static mui:UiStrings.SuggestionsMessage}">
                                         <c:BbCodeBlock.LinkNavigator>
                                             <nav:DefaultLinkNavigator />
                                         </c:BbCodeBlock.LinkNavigator>

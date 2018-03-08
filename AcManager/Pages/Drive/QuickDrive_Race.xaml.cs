@@ -380,7 +380,7 @@ namespace AcManager.Pages.Drive {
                     saved.StartingPosition.HasValue && opponentsNumber.HasValue
                             ? $"Starting position: [b]{GetDisplayPosition(saved.StartingPosition.Value, opponentsNumber.Value)}[/b]" : null,
                 }.NonNull().JoinToString(Environment.NewLine);
-                return new BbCodeBlock { BbCode = description };
+                return new BbCodeBlock { Text = description };
             }
 
             public void SetRaceGridData(string serializedRaceGrid) {

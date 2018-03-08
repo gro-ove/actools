@@ -18,8 +18,8 @@
         Visibility="{Binding Progress, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
     <controls:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center"
         Visibility="{Binding Progress, Converter={StaticResource NullToVisibilityConverter}}" />
-    <controls:BbCodeBlock x:Name="MessageBlock" BbCode="{Binding Message}" />
-    <controls:BbCodeBlock BbCode="{Binding Details}" Style="{StaticResource Small}"
+    <controls:BbCodeBlock x:Name="MessageBlock" Text="{Binding Message}" />
+    <controls:BbCodeBlock Text="{Binding Details}" Style="{StaticResource Small}"
         Visibility="{Binding Details, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
     <controls:BetterImage x:Name="Image" Visibility="Collapsed" Height="242" Width="430" ShowBroken="False" HorizontalAlignment="Left" />
   </controls:SpacingStackPanel>

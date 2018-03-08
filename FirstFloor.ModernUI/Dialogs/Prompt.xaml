@@ -4,6 +4,6 @@
     xmlns:dialogs="clr-namespace:FirstFloor.ModernUI.Dialogs" mc:Ignorable="d" d:DataContext="{d:DesignInstance dialogs:Prompt+ViewModel}"
     SizeToContent="Height" Width="720" MinHeight="160">
   <StackPanel x:Name="Panel" VerticalAlignment="Center">
-    <controls:BbCodeBlock BbCode="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" TextWrapping="Wrap" />
+    <controls:BbCodeBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" TextWrapping="Wrap" />
   </StackPanel>
 </controls:ModernDialog>

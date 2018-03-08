@@ -15,7 +15,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             var dlg = new ModernDialog {
                 Title = UiStrings.Common_Oops,
                 Content = new ScrollViewer {
-                    Content = new SelectableBbCodeBlock { BbCode = text, Margin = new Thickness(0, 0, 0, 8) },
+                    Content = new SelectableBbCodeBlock { Text = text, Margin = new Thickness(0, 0, 0, 8) },
                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                     HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
                 },

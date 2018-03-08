@@ -13,7 +13,7 @@
   </mui:ModernDialog.ButtonsRowContent>
   <mui:ReferenceSwitch Value="{Binding ErrorMessage}">
     <mui:ReferenceSwitch.NonNull>
-      <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" />
+      <mui:BbCodeBlock Text="{Binding ErrorMessage}" />
     </mui:ReferenceSwitch.NonNull>
     <mui:ReferenceSwitch.Null>
       <StackPanel>

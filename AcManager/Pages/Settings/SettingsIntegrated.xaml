@@ -29,7 +29,7 @@
 
         <c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>Get access to hundreds of various setups with [url="http://thesetupmarket.com/"]The Setup Market[/url]. And if you want to quickly install setups from browser, use [url="/Pages/About/ImportantTipsPage.xaml?Key=extension|_top"]the extension[/url].</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.Text>Get access to hundreds of various setups with [url="http://thesetupmarket.com/"]The Setup Market[/url]. And if you want to quickly install setups from browser, use [url="/Pages/About/ImportantTipsPage.xaml?Key=extension|_top"]the extension[/url].</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 
@@ -44,7 +44,7 @@
 
         <c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.Text>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

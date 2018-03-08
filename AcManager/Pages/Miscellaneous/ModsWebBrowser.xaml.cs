@@ -1094,7 +1094,7 @@ window.$KEY = outline.stop.bind(outline);
                 });
 
                 _message = new BbCodeBlock {
-                    BbCode = GetMessage(),
+                    Text = GetMessage(),
                     MaxWidth = 480,
                     VerticalAlignment = VerticalAlignment.Center,
                     LinkNavigator = this
@@ -1148,7 +1148,7 @@ window.$KEY = outline.stop.bind(outline);
                     if (finished) return;
                     _ranRule = false;
                     _dialog.Show();
-                    _message.BbCode = GetFailedMessage();
+                    _message.Text = GetFailedMessage();
 
                     await Task.Delay(500);
                     _dialog.BringToFront();
@@ -1300,7 +1300,7 @@ window.$KEY = outline.stop.bind(outline);
             private async Task Save() {
                 var source = _source;
                 source.AutoDownloadRule = _finder.Model.Value;
-                _message.BbCode = "Please, wait for newly created rule to start download…";
+                _message.Text = "Please, wait for newly created rule to start download…";
                 CancelRuleEditing();
 
                 using (var token = new CancellationTokenSource()) {
@@ -1312,7 +1312,7 @@ window.$KEY = outline.stop.bind(outline);
                 }
 
                 if (!_onDownloadFired) {
-                    _message.BbCode = GetFailedMessage();
+                    _message.Text = GetFailedMessage();
                 }
             }
 
@@ -1356,7 +1356,7 @@ window.$KEY = outline.stop.bind(outline);
                         if (_isVirtual) {
                             Instance.WebSources.Add(_source);
                             _isVirtual = false;
-                            _message.BbCode = GetMessage();
+                            _message.Text = GetMessage();
                         }
 
                         break;

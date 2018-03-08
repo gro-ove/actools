@@ -74,7 +74,7 @@
             ToolTipService.ShowOnDisabled="True">
           <CheckBox.ToolTip>
             <mui:BbCodeBlock MaxWidth="480"
-                BbCode="CM will try to adjust device’s steering lock, [b]experimental[/b].[br][br]If you adjusted [mono][b]STEER/SCALE[/b][/mono] in [mono][b]config.ini[/mono][/b], you might want to change it back, especially now when CM can sync virtual and real steering wheels automatically. Be ready to fix steering lock in device’s settings in case CM will fail to revert it back.[br][br]If you want to see your device added here and ready to do some testing of various pre-release builds, please, contact me, maybe there is a way." />
+                Text="CM will try to adjust device’s steering lock, [b]experimental[/b].[br][br]If you adjusted [mono][b]STEER/SCALE[/b][/mono] in [mono][b]config.ini[/mono][/b], you might want to change it back, especially now when CM can sync virtual and real steering wheels automatically. Be ready to fix steering lock in device’s settings in case CM will fail to revert it back.[br][br]If you want to see your device added here and ready to do some testing of various pre-release builds, please, contact me, maybe there is a way." />
           </CheckBox.ToolTip>
           <DockPanel Style="{x:Null}">
             <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}"
@@ -188,11 +188,11 @@
 
             <с:MessageBlock x:Name="LutLibraryMessage" CloseKey="lutlibrary-dll" Margin="0 0 0 8">
               <mui:BbCodeBlock>
-                <mui:BbCodeBlock.BbCode>
+                <mui:BbCodeBlock.Text>
                   Put [mono]LUTLibrary.dll[/mono] from [url="http://www.racedepartment.com/downloads/lut-generator-for-ac.9740/"]LUT
                   Generator[/url] next to CM’s executable or to “…\AppData\Local\AcTools Content Manager\Plugins” (or just drag’n’drop it here), restart CM and
                   it’ll be able to convert CSV-files from [url="http://racingcentral.org/wheelcheck/"]WheelCheck[/url] to LUT-files.
-                </mui:BbCodeBlock.BbCode>
+                </mui:BbCodeBlock.Text>
               </mui:BbCodeBlock>
             </с:MessageBlock>
           </StackPanel>

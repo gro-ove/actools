@@ -213,7 +213,7 @@
 
           <c:MessageBlock CloseKey="ac-server-wrapper" Margin="0 0 0 8">
             <mui:BbCodeBlock
-                BbCode="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url]." />
+                Text="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url]." />
           </c:MessageBlock>
 
           <CheckBox IsChecked="{Binding SelectedObject.WrapperUsed}"

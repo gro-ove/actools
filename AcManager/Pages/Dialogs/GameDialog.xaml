@@ -213,7 +213,7 @@
               <ItemsControl.ItemTemplate>
                 <DataTemplate>
                   <DockPanel>
-                    <mui:BbCodeBlock BbCode="{Binding Message}" VerticalAlignment="Center" />
+                    <mui:BbCodeBlock Text="{Binding Message}" VerticalAlignment="Center" />
                     <ContentControl ContentTemplate="{StaticResource DataGridCell.DriverName}" Content="{Binding Player}" VerticalAlignment="Center"
                         TextBlock.FontWeight="Bold" />
                     <TextBlock Text=" in " VerticalAlignment="Center" />

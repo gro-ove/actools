@@ -288,7 +288,7 @@
                         Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
                   </Button>
                   <mui:Cell>
-                    <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseLeftButtonUp="OnVersionInfoBlockClick"
+                    <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseLeftButtonUp="OnVersionInfoBlockClick"
                         TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
                     <Border Background="Transparent" MouseLeftButtonUp="OnVersionInfoBlockClick" />
                   </mui:Cell>
@@ -420,7 +420,7 @@
               </c:PropertiesGrid>
 
               <c:MessageBlock CloseKey="carpagemsg">
-                <mui:BbCodeBlock BbCode="[i]Did you know?[/i] You can right-click on a property to filter cars by it." />
+                <mui:BbCodeBlock Text="[i]Did you know?[/i] You can right-click on a property to filter cars by it." />
               </c:MessageBlock>
             </mui:SpacingStackPanel>
 

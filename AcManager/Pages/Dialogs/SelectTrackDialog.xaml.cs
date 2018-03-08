@@ -17,6 +17,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using StringBasedFilter;
@@ -52,7 +53,9 @@ namespace AcManager.Pages.Dialogs {
 
             DataContext = new ViewModel(selectedTrackConfiguration);
             InputBindings.AddRange(new[] {
-                new InputBinding(ToggleFavouriteCommand, new KeyGesture(Key.B, ModifierKeys.Control))
+                new InputBinding(ToggleFavouriteCommand, new KeyGesture(Key.B, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
+                        new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift))
             });
             InitializeComponent();
             Buttons = new Control[0];
@@ -194,6 +197,11 @@ namespace AcManager.Pages.Dialogs {
 
                 SelectedTrackConfiguration = selectedTrackConfiguration;
             }
+        }
+
+        private void OnScrollToSelectedButtonClick(object sender, RoutedEventArgs e) {
+            var list = (Tabs.Frame.Content as FrameworkElement)?.FindVisualChild<ListBox>();
+            list?.ScrollIntoView(list.SelectedItem);
         }
     }
 }

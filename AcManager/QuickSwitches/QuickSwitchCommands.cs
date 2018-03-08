@@ -33,7 +33,7 @@ namespace AcManager.QuickSwitches {
             var currentPreset = UserPresetsControl.GetCurrentFilename(RhmService.Instance.PresetableKey);
             var presetsItem = new MenuItem {
                 Header = new BbCodeBlock {
-                    BbCode = currentPreset == null ? @"Current Preset: [i]None[/i]" : "Current Preset: " + Path.GetFileNameWithoutExtension(currentPreset)
+                    Text = currentPreset == null ? @"Current Preset: [i]None[/i]" : "Current Preset: " + Path.GetFileNameWithoutExtension(currentPreset)
                 },
                 StaysOpenOnClick = true
             };

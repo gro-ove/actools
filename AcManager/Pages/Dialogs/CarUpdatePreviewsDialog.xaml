@@ -133,7 +133,7 @@
 
     <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Error}" Orientation="Vertical" VerticalAlignment="Center">
       <TextBlock Text="{x:Static c:ControlsStrings.Common_Error}" Style="{StaticResource Heading1}" />
-      <mui:BbCodeBlock BbCode="{Binding ErrorMessage}" Margin="20" />
+      <mui:BbCodeBlock Text="{Binding ErrorMessage}" Margin="20" />
     </StackPanel>
 
     <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.Result}" Orientation="Vertical" VerticalAlignment="Center">

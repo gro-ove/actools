@@ -47,7 +47,7 @@
                   RenderOptions.EdgeMode="{TemplateBinding BorderEdgeMode}" />
               <ContentPresenter x:Name="PART_Content" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Hidden" />
               <Border Margin="{Binding Margin, ElementName=PART_Content}">
-                <mui:BbCodeBlock BbCode="{Binding}" Margin="5 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
+                <mui:BbCodeBlock Text="{Binding}" Margin="5 4" TextWrapping="NoWrap" TextTrimming="None" HorizontalAlignment="Stretch"
                     VerticalAlignment="Stretch" Foreground="{DynamicResource WindowText}" />
               </Border>
             </Grid>

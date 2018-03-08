@@ -255,7 +255,7 @@
               <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                   Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
             </Button>
-            <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
+            <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
           </DockPanel>
 
           <!-- Last row -->

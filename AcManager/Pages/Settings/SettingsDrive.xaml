@@ -33,7 +33,7 @@
         </DockPanel>
 
         <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=Starter}">
-          <mui:BbCodeBlock BbCode="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
+          <mui:BbCodeBlock Text="{Binding Drive.SelectedStarterType.Description, Converter={StaticResource ToSentenceConverter}}" TextWrapping="Wrap" />
         </c:MessageBlock>
 
         <CheckBox IsChecked="{Binding Drive.StarterFallbackIfNotAvailable}"
@@ -79,7 +79,7 @@
         </DockPanel>
 
         <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=RaceResultsLimit}">
-          <mui:BbCodeBlock BbCode="When limit is exceeded, oldest results will be recycled after the end of the race." TextWrapping="Wrap" />
+          <mui:BbCodeBlock Text="When limit is exceeded, oldest results will be recycled after the end of the race." TextWrapping="Wrap" />
         </c:MessageBlock>
 
         <!-- Shared memory -->
@@ -239,7 +239,7 @@
           <DockPanel.ToolTip>
             <ToolTip>
               <StackPanel Margin="4">
-                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:AppStrings.Settings_Drive_PreCommand_Tooltip}" />
+                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Drive_PreCommand_Tooltip}" />
               </StackPanel>
             </ToolTip>
           </DockPanel.ToolTip>
@@ -251,7 +251,7 @@
           <DockPanel.ToolTip>
             <ToolTip>
               <StackPanel Margin="4">
-                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:AppStrings.Settings_Drive_PostCommand_Tooltip}" />
+                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Drive_PostCommand_Tooltip}" />
               </StackPanel>
             </ToolTip>
           </DockPanel.ToolTip>
@@ -283,10 +283,10 @@
             <Label>
               <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
             </Label>
-            <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="Supported AC versions:" />
-            <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value, Source={x:Static t:AcShadowsPatcher.SupportedVersions}}" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" Text="Supported AC versions:" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value, Source={x:Static t:AcShadowsPatcher.SupportedVersions}}" />
             <mui:BbCodeBlock Style="{StaticResource Small}"
-                BbCode="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
+                Text="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
           </mui:SpacingStackPanel>
         </CheckBox>
       </StackPanel>

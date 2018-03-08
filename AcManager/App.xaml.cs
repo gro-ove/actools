@@ -409,7 +409,10 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
             BetterImage.RemoteUserAgent = CmApiProvider.UserAgent;
             BetterImage.RemoteCacheDirectory = BbCodeBlock.OptionImageCacheDirectory;
-            GameWrapper.Started += (sender, args) => BetterImage.CleanUpCache();
+            GameWrapper.Started += (sender, args) => {
+                BetterImage.CleanUpCache();
+                GCHelper.CleanUp();
+            };
 
             AppArguments.Set(AppFlag.UseVlcForAnimatedBackground, ref DynamicBackground.OptionUseVlc);
             Filter.OptionSimpleMatching = SettingsHolder.Content.SimpleFiltering;

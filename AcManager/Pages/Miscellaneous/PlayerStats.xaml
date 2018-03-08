@@ -20,7 +20,7 @@
         <c:MessageBlock DockPanel.Dock="Top" Margin="20 20 20 0" Visibility="{Binding Filter, Converter={StaticResource NullToVisibilityConverter}}">
             <Button DockPanel.Dock="Right" Command="{Binding RebuildOverallCommand}" Content="Recalculate" Margin="4 0 0 0" />
             <mui:BbCodeBlock TextWrapping="Wrap" VerticalAlignment="Center">
-                <mui:BbCodeBlock.BbCode>Still WIP, might not work properly. Please, press Recalculate button if numbers will get weird.</mui:BbCodeBlock.BbCode>
+                <mui:BbCodeBlock.Text>Still WIP, might not work properly. Please, press Recalculate button if numbers will get weird.</mui:BbCodeBlock.Text>
             </mui:BbCodeBlock>
         </c:MessageBlock>
 

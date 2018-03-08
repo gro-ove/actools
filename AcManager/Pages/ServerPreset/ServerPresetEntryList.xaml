@@ -206,7 +206,7 @@
                     </Run.Text>
                   </Run><Run Text=" " />
                 </TextBlock>
-                <mui:BbCodeBlock BbCode="{Binding CarObject.VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                <mui:BbCodeBlock Text="{Binding CarObject.VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
               </StackPanel>
               <mui:SpacingStackPanel Spacing="4" HorizontalAlignment="Right" Orientation="Horizontal" Margin="0 2 0 0"
                   d:DataContext="{d:DesignInstance t:ServerPresetDriverEntry}">
@@ -215,7 +215,7 @@
                         FallbackValue={x:Static Visibility.Collapsed}}">
                   <Button.ToolTip>
                     <mui:BbCodeBlock
-                        BbCode="Without packed data, anybody can change the way their car drives.[br][br][b]Warning![/b] Don’t forget to share packed data with clients, otherwise they won’t be able to join." />
+                        Text="Without packed data, anybody can change the way their car drives.[br][br][b]Warning![/b] Don’t forget to share packed data with clients, otherwise they won’t be able to join." />
                   </Button.ToolTip>
                   <DockPanel>
                     <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"

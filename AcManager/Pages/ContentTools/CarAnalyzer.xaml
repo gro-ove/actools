@@ -123,11 +123,11 @@
                     <DockPanel Dock="Top" Margin="0 0 0 4">
                       <Path x:Name="PART_AlertIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
                           Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Visibility="Collapsed" />
-                      <mui:BbCodeBlock DockPanel.Dock="Right" x:Name="PART_Category" BbCode="{Binding Category}" Style="{StaticResource Small}"
+                      <mui:BbCodeBlock DockPanel.Dock="Right" x:Name="PART_Category" Text="{Binding Category}" Style="{StaticResource Small}"
                           Margin="8 2 8 0" />
-                      <mui:BbCodeBlock DockPanel.Dock="Top" BbCode="{Binding DisplayName}" FontWeight="Bold" />
+                      <mui:BbCodeBlock DockPanel.Dock="Top" Text="{Binding DisplayName}" FontWeight="Bold" />
                     </DockPanel>
-                    <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" />
+                    <mui:BbCodeBlock Text="{Binding Description}" Style="{StaticResource Small}" />
                   </DockPanel>
                   <Border Background="{DynamicResource DarkStripeBackground}" TextBlock.Foreground="{DynamicResource DarkStripeText}"
                       HorizontalAlignment="Center" VerticalAlignment="Center"

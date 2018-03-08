@@ -88,7 +88,7 @@
                 <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <ToolTip DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
                     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <c:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value}" TextAlignment="Left" />
+                  <c:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value}" TextAlignment="Left" />
                 </ToolTip>
               </c:BetterTextBox.ToolTip>
             </c:BetterTextBox>
@@ -152,7 +152,7 @@
                 <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
                 <ToolTip x:Name="ToolTip" DataContext="{Binding PlacementTarget.Tag, RelativeSource={RelativeSource Self}}"
                     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <c:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value}" />
+                  <c:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value}" />
                 </ToolTip>
               </FrameworkElement.ToolTip>
               <c:BetterTextBox x:Name="NameTextBox" IsEnabled="False" Style="{StaticResource Borderless}" Text="{Binding DisplayName}"

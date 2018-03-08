@@ -26,6 +26,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using StringBasedFilter;
 
@@ -190,7 +191,9 @@ namespace AcManager.Pages.Dialogs {
                 new InputBinding(OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
-                new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control))
+                new InputBinding(OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
+                        new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift))
             });
             InitializeComponent();
             Buttons = new Control[0];
@@ -372,6 +375,11 @@ namespace AcManager.Pages.Dialogs {
 
         void IInvokingNotifyPropertyChanged.OnPropertyChanged(string propertyName) {
             OnPropertyChanged(propertyName);
+        }
+
+        private void OnScrollToSelectedButtonClick(object sender, RoutedEventArgs e) {
+            var list = (Tabs.Frame.Content as FrameworkElement)?.FindVisualChild<ListBox>();
+            list?.ScrollIntoView(list.SelectedItem);
         }
     }
 }

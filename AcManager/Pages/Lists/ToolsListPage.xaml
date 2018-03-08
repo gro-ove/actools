@@ -20,7 +20,7 @@
                 Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
               <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
                   Margin="0 0 4 0" VerticalAlignment="Center" />
-              <mui:BbCodeBlock BbCode="{Binding NotAvailableReason}" Style="{StaticResource Small}" />
+              <mui:BbCodeBlock Text="{Binding NotAvailableReason}" Style="{StaticResource Small}" />
             </DockPanel>
             <Path Fill="{DynamicResource WindowText}" Width="32" Height="32" Margin="0 0 0 20" HorizontalAlignment="Center" DockPanel.Dock="Top"
                 Stretch="Uniform" Data="{Binding Icon}" />

@@ -51,7 +51,7 @@
                       OverlayColor="{Binding Path=(TextBlock.Foreground).(SolidColorBrush.Color), RelativeSource={RelativeSource AncestorType=DockPanel}}" />
                 </mui:BetterImage.Effect>
               </mui:BetterImage>
-              <mui:BbCodeBlock x:Name="Description" Margin="0 4 0 0" BbCode="{Binding Description}" DockPanel.Dock="Bottom" TextWrapping="Wrap"
+              <mui:BbCodeBlock x:Name="Description" Margin="0 4 0 0" Text="{Binding Description}" DockPanel.Dock="Bottom" TextWrapping="Wrap"
                   Style="{StaticResource Small}" />
               <TextBlock Text="{Binding DisplayName}" />
             </DockPanel>

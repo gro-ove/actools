@@ -37,7 +37,7 @@ namespace AcManager.Tools {
                 Title = shared.EntryType.GetDescription().ToTitle(),
                 Content = new ScrollViewer {
                     Content = new BbCodeBlock {
-                        BbCode = description + '\n' + '\n' + (
+                        Text = description + '\n' + '\n' + (
                                 saveable ? AppStrings.Arguments_Shared_ShouldApplyOrSave : AppStrings.Arguments_Shared_ShouldApply),
                         Margin = new Thickness(0, 0, 0, 8)
                     },

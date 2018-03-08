@@ -6,6 +6,26 @@
     d:DataContext="{d:DesignInstance di:SelectTrackDialog+ViewModel}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="960" MaxWidth="1600"
     MaxHeight="1200" MinWidth="745" MinHeight="580" Height="600" ShowTitle="False" LocationAndSizeKey="SelectTrackDialog_LS" WindowStartupLocation="Manual"
     ShowTopBlob="False" Padding="24" ButtonsMargin="0">
+  <mui:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
+      <DataTemplate x:Key="LayoutItemTemplate" DataType="t:TrackObjectBase">
+        <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
+        <mui:BetterImage x:Name="Image" Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" ClearOnChange="True" />
+        <DataTemplate.Triggers>
+          <DataTrigger Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+            <Setter Property="Background" Value="{DynamicResource TrackOutlineAloneBackground}" TargetName="Image" />
+            <Setter Property="Effect" Value="{DynamicResource TrackOutlineAloneEffect}" TargetName="Image" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+    </ResourceDictionary>
+  </mui:ModernDialog.Resources>
   <mui:ModernDialog.BackgroundContent>
     <Rectangle>
       <Rectangle.Fill>
@@ -38,19 +58,6 @@
       </Rectangle.Fill>
     </Rectangle>
   </mui:ModernDialog.BackgroundContent>
-  <mui:ModernDialog.Resources>
-    <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
-    <DataTemplate x:Key="LayoutItemTemplate" DataType="t:TrackObjectBase">
-      <!-- using Name instead of DisplayName, because Display Name of main track layout contains number of layouts -->
-      <mui:BetterImage x:Name="Image" Filename="{Binding OutlineImage}" Width="80" Height="60" ToolTip="{Binding Name}" ClearOnChange="True" />
-      <DataTemplate.Triggers>
-        <DataTrigger Value="False" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
-          <Setter Property="Background" Value="{DynamicResource TrackOutlineAloneBackground}" TargetName="Image" />
-          <Setter Property="Effect" Value="{DynamicResource TrackOutlineAloneEffect}" TargetName="Image" />
-        </DataTrigger>
-      </DataTemplate.Triggers>
-    </DataTemplate>
-  </mui:ModernDialog.Resources>
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition MinWidth="360" />
@@ -88,10 +95,12 @@
         VerticalAlignment="Center" />
 
     <DockPanel Grid.Column="2">
-      <StackPanel DockPanel.Dock="Bottom" Margin="0 20 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
-        <ContentPresenter Content="{Binding OkButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
-        <ContentPresenter Content="{Binding CancelButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
-      </StackPanel>
+      <DockPanel DockPanel.Dock="Bottom" Margin="0 20 0 0">
+        <ContentPresenter DockPanel.Dock="Right" Content="{Binding CancelButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
+        <ContentPresenter DockPanel.Dock="Right" Content="{Binding OkButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
+        <mui:ModernButton Click="OnScrollToSelectedButtonClick" HorizontalAlignment="Left" IconData="{StaticResource CollapsedIconData}"
+            ToolTip="Scroll to selected (Ctrl+Shift+V)" Style="{StaticResource NonTransparent}" />
+      </DockPanel>
 
       <AdornerDecorator>
         <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated"

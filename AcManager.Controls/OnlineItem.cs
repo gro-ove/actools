@@ -166,7 +166,7 @@ namespace AcManager.Controls {
 
                         var text = (BbCodeBlock)baseIcon.Child;
 
-                        text.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
+                        text.SetBinding(BbCodeBlock.TextProperty, new Binding {
                             Path = new PropertyPath(nameof(information.Label)),
                             Source = information
                         });
@@ -551,7 +551,7 @@ namespace AcManager.Controls {
 
             _pingText.Text = n.Ping?.ToString() ?? @"?";
             _clientsText.Text = n.DisplayClients;
-            _errorMessageGroup.BbCode = n.ErrorsString;
+            _errorMessageGroup.Text = n.ErrorsString;
 
             if (_timeLeftText != null) {
                 _timeLeftText.Text = n.DisplayTimeLeft;
@@ -750,7 +750,7 @@ namespace AcManager.Controls {
                     _clientsText.Text = n.DisplayClients;
                     break;
                 case nameof(ServerEntry.ErrorsString):
-                    _errorMessageGroup.BbCode = n.ErrorsString;
+                    _errorMessageGroup.Text = n.ErrorsString;
                     break;
                 case nameof(ServerEntry.DisplayTimeLeft):
                     if (_timeLeftText != null) {

@@ -22,7 +22,7 @@
               <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
                 <mui:BbCodeBlock Visibility="{TemplateBinding Content, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
                     Style="{StaticResource Label}"
-                    BbCode="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}, StringFormat={x:Static mui:UiStrings.ValueLabel_Format}}" />
+                    Text="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}, StringFormat={x:Static mui:UiStrings.ValueLabel_Format}}" />
                 <mui:BetterTextBox x:Name="PART_TextBox"
                     Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     Style="{StaticResource Borderless.Label}" />
@@ -41,7 +41,7 @@
             <ControlTemplate TargetType="{x:Type mui:ValueLabel}">
               <StackPanel Orientation="Horizontal" Margin="{TemplateBinding Padding}">
                 <mui:BbCodeBlock Visibility="{TemplateBinding Content, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
-                    Style="{StaticResource Label}" BbCode="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}, StringFormat='{}{0}='}" />
+                    Style="{StaticResource Label}" Text="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}, StringFormat='{}{0}='}" />
                 <mui:BetterTextBox x:Name="PART_TextBox"
                     Text="{Binding Value, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
                     Style="{StaticResource Borderless.Label}" />
@@ -150,7 +150,7 @@
                   </DockPanel.ContextMenu>
 
                   <DockPanel LastChildFill="False">
-                    <mui:BbCodeBlock BbCode="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Left"
+                    <mui:BbCodeBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Left"
                         Style="{StaticResource Label}" Margin="0 0 4 0" />
                     <mui:ValueLabel Style="{StaticResource ValueLabel.EqualsSign}" Content="X" Value="{Binding X, UpdateSourceTrigger=PropertyChanged}"
                         mui:BetterTextBox.Mode="Number" Padding="0 0 4 0" Margin="0" />
@@ -167,7 +167,7 @@
 
         <c:MessageBlock Margin="0 16 0 0">
           <mui:BbCodeBlock
-              BbCode="Here, you can change only numerical values for shaders, but it should be enough to fix shaders for old cars (which are less reflective then they should). Firstly, I recommend to load some Kunos cars and same their values using presets control beneath. Then, just load saved preset for an old car you want to update and you’ll get perfect values.[br][br]By the way, those presets are compatible with [url=&quot;https://ascobash.wordpress.com/2015/07/22/kseditor/&quot;]patched KsEditor’s[/url] material library." />
+              Text="Here, you can change only numerical values for shaders, but it should be enough to fix shaders for old cars (which are less reflective then they should). Firstly, I recommend to load some Kunos cars and same their values using presets control beneath. Then, just load saved preset for an old car you want to update and you’ll get perfect values.[br][br]By the way, those presets are compatible with [url=&quot;https://ascobash.wordpress.com/2015/07/22/kseditor/&quot;]patched KsEditor’s[/url] material library." />
         </c:MessageBlock>
       </mui:SpacingStackPanel>
     </mui:ReferenceSwitch.NonNull>

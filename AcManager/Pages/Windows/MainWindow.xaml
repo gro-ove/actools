@@ -144,7 +144,7 @@
             Visibility="{Binding AppUpdater.UpdateIsReady, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <Button.ToolTip>
             <ToolTip>
-              <mui:BbCodeBlock BbCode="{Binding AppUpdater.UpdateIsReady, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" MaxWidth="480"
+              <mui:BbCodeBlock Text="{Binding AppUpdater.UpdateIsReady, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" MaxWidth="480"
                   TextWrapping="Wrap" />
             </ToolTip>
           </Button.ToolTip>

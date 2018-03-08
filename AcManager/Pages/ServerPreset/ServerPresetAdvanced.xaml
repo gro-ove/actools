@@ -33,7 +33,7 @@
       <TextBlock Text="FTP data:" Style="{StaticResource SettingsPanel.Heading2}" />
       <c:MessageBlock Margin="0 0 0 8">
         <mui:BbCodeBlock
-            BbCode="This section doesn’t affect actual AC server, it only allows you to quickly upload all necessary files (including executable) to a remote server via FTP." />
+            Text="This section doesn’t affect actual AC server, it only allows you to quickly upload all necessary files (including executable) to a remote server via FTP." />
       </c:MessageBlock>
       <DockPanel>
         <Label Content="Host:" />

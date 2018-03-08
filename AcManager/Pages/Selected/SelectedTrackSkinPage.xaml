@@ -85,7 +85,7 @@
               <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
             </ContextMenu>
           </FrameworkElement.ContextMenu>
-          <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
+          <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
               TextTrimming="CharacterEllipsis" />
           <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
         </mui:Cell>

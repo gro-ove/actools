@@ -84,7 +84,7 @@
 
         <c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.BbCode>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.BbCode>
+            <mui:BbCodeBlock.Text>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

@@ -802,7 +802,7 @@ namespace AcManager.Pages.Drive {
                     Title = ToolsStrings.Common_Warning,
                     Content = new ScrollViewer {
                         Content = new SelectableBbCodeBlock {
-                            BbCode = $"Most likely, track won’t work with selected mode: {message.ToSentenceMember()}. Are you sure you want to continue?",
+                            Text = $"Most likely, track won’t work with selected mode: {message.ToSentenceMember()}. Are you sure you want to continue?",
                             Margin = new Thickness(0, 0, 0, 8)
                         },
                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,

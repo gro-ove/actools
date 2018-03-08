@@ -31,7 +31,7 @@
 
       <c:MessageBlock Visibility="{Binding ModsDirectoryWrong, Converter={StaticResource BooleanToVisibilityConverter}}">
         <mui:BbCodeBlock
-            BbCode="Selected directory is located on a different drive! Hard links won’t work, which will cause whole process of enabling and disabling mods marginally slower and will lead to wasting space." />
+            Text="Selected directory is located on a different drive! Hard links won’t work, which will cause whole process of enabling and disabling mods marginally slower and will lead to wasting space." />
       </c:MessageBlock>
 
       <!--<DockPanel ToolTip="Will be created if missing">

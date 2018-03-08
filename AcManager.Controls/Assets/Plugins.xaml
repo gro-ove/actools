@@ -64,7 +64,7 @@
 
     <c:MessageBlock>
       <mui:BbCodeBlock
-          BbCode="If you’re going to create huge screenshots, it might require quite a lot of memory to combine the piecese — for example, creating 30720×17280 image takes 4 GB of RAM. Here, you can specify how much of RAM ImageMagick is allowed to use, and, if it won’t be enough, where it should store temporary files to keep going." />
+          Text="If you’re going to create huge screenshots, it might require quite a lot of memory to combine the piecese — for example, creating 30720×17280 image takes 4 GB of RAM. Here, you can specify how much of RAM ImageMagick is allowed to use, and, if it won’t be enough, where it should store temporary files to keep going." />
     </c:MessageBlock>
   </StackPanel>
 

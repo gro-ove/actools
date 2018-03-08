@@ -8,6 +8,7 @@
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
@@ -132,9 +133,6 @@
       <mui:BindingProxy x:Key="DataContextProxy" Data="{Binding}" />
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
-  <mui:ModernDialog.ButtonsRowContent>
-    <Button Content="→←" />
-  </mui:ModernDialog.ButtonsRowContent>
 
   <Grid>
     <Grid.ColumnDefinitions>
@@ -170,10 +168,12 @@
         VerticalAlignment="Center" />
 
     <DockPanel Grid.Column="2">
-      <StackPanel DockPanel.Dock="Bottom" Margin="0 20 0 0" HorizontalAlignment="Right" Orientation="Horizontal">
-        <ContentPresenter Content="{Binding OkButton}" />
-        <ContentPresenter Content="{Binding CancelButton}" />
-      </StackPanel>
+      <DockPanel DockPanel.Dock="Bottom" Margin="0 20 0 0">
+        <ContentPresenter DockPanel.Dock="Right" Content="{Binding CancelButton}" />
+        <ContentPresenter DockPanel.Dock="Right" Content="{Binding OkButton}" />
+        <mui:ModernButton Click="OnScrollToSelectedButtonClick" HorizontalAlignment="Left" IconData="{StaticResource CollapsedIconData}"
+            ToolTip="Scroll to selected (Ctrl+Shift+V)" Style="{StaticResource NonTransparent}" />
+      </DockPanel>
 
       <AdornerDecorator>
         <mui:ModernTab Layout="TabWithTitle" x:Name="Tabs" FrameNavigated="OnTabsNavigated" mui:ModernFrame.TopSource="/Pages/SelectionLists/CarBrands.xaml"

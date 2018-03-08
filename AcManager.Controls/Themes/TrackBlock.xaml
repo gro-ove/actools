@@ -73,7 +73,7 @@
 
                   <mui:PlaceholderTextBlock Text="{Binding City}" Grid.Column="1" Grid.Row="1" Placeholder="?" TextWrapping="NoWrap"
                       TextTrimming="CharacterEllipsis" />
-                  <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Grid.Column="3"
+                  <mui:BbCodeBlock Text="{Binding VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Grid.Column="3"
                       Grid.Row="1" />
 
                   <!-- Third row -->
@@ -172,7 +172,7 @@
 
                         <mui:PlaceholderTextBlock Text="{Binding City}" Grid.Column="1" Grid.Row="1" Placeholder="?" TextWrapping="NoWrap"
                             TextTrimming="CharacterEllipsis" />
-                        <mui:BbCodeBlock BbCode="{Binding VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
+                        <mui:BbCodeBlock Text="{Binding VersionInfoDisplay}" Placeholder="?" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                             Grid.Column="3" Grid.Row="1" />
 
                         <!-- Third row -->

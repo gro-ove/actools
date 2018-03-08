@@ -48,7 +48,7 @@
         <Button Content="Fix lighting for 360° panorama showroom" Command="{Binding FixLightingCommand}">
           <Button.ToolTip>
             <mui:BbCodeBlock MaxWidth="480"
-                BbCode="To solve lighting issues (when only half of panorama is lit by sun), CM will redirect normals up, as in Kunos showrooms.[br][br]Original version will be moved to the Recycle Bin." />
+                Text="To solve lighting issues (when only half of panorama is lit by sun), CM will redirect normals up, as in Kunos showrooms.[br][br]Original version will be moved to the Recycle Bin." />
           </Button.ToolTip>
         </Button>
       </ToolBar>
@@ -122,7 +122,7 @@
               </ContextMenu>
             </DockPanel.ContextMenu>
             <TextBlock Text="{x:Static c:ControlsStrings.AcObject_AuthorLabel}" ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" />
-            <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
+            <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" />
           </DockPanel>
         </Grid>
 

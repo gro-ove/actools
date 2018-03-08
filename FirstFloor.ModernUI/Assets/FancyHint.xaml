@@ -82,8 +82,8 @@
                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
               <controls:SpacingStackPanel DockPanel.Dock="Top" Margin="0 0 0 20" Spacing="12"
                   DataContext="{Binding Hint, RelativeSource={RelativeSource TemplatedParent}}" MaxWidth="240" Effect="{DynamicResource FancyHintTextEffect}">
-                <controls:BbCodeBlock x:Name="PART_Header" Style="{StaticResource Title}" BbCode="{Binding Header}" />
-                <controls:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Description}" Width="{Binding ActualWidth, ElementName=PART_Header}" />
+                <controls:BbCodeBlock x:Name="PART_Header" Style="{StaticResource Title}" Text="{Binding Header}" />
+                <controls:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Description}" Width="{Binding ActualWidth, ElementName=PART_Header}" />
               </controls:SpacingStackPanel>
               <DockPanel Effect="{DynamicResource FancyHintButtonsEffect}">
                 <Button x:Name="PART_DisableHintsButton" Content="Disable occasional hints" DockPanel.Dock="Right" />

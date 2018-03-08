@@ -31,7 +31,7 @@
                 </mui:ReferenceSwitch>
 
                 <!--description-->
-                <mui:BbCodeBlock BbCode="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
+                <mui:BbCodeBlock Text="{Binding Description}" Style="{StaticResource Small}" TextWrapping="Wrap" />
               </DockPanel>
             </CheckBox>
           </DataTemplate>

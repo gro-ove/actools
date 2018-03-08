@@ -482,7 +482,7 @@
               <mui:SpacingStackPanel Spacing="8">
                 <c:MessageBlock Visibility="{Binding ShotMagickWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <mui:BbCodeBlock Style="{StaticResource Small}"
-                      BbCode="[b]Magick.NET plugin is not active.[/b] Please, go to Settings/Plugins and install it to make high-quality screenshots." />
+                      Text="[b]Magick.NET plugin is not active.[/b] Please, go to Settings/Plugins and install it to make high-quality screenshots." />
                 </c:MessageBlock>
 
                 <DockPanel>
@@ -532,7 +532,7 @@
                 </DockPanel>
 
                 <c:MessageBlock Visibility="{Binding ShotFormat.Tag, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <mui:BbCodeBlock BbCode="{Binding ShotFormat.Tag}" Style="{StaticResource Small}" />
+                  <mui:BbCodeBlock Text="{Binding ShotFormat.Tag}" Style="{StaticResource Small}" />
                 </c:MessageBlock>
 
                 <CheckBox IsChecked="{Binding ShotDownsizeInTwo}" Margin="0 12 0 0">

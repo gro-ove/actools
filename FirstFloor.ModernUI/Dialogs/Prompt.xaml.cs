@@ -37,7 +37,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
 
             if (comment != null) {
-                ButtonsRowContent = new BbCodeBlock { BbCode = comment, Style = (Style)FindResource(@"BbCodeBlock.Small") };
+                ButtonsRowContent = new BbCodeBlock { Text = comment, Style = (Style)FindResource(@"BbCodeBlock.Small") };
                 ButtonsRowContentAlignment = HorizontalAlignment.Left;
             }
 

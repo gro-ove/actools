@@ -16,7 +16,7 @@ namespace AcManager.Pages.About {
                     Header = license.DisplayName,
                     Items = {
                         new BbCodeBlock {
-                            BbCode = $"[url=\"{license.Url}\"]Homepage[/url]" + (license.Content == null ? "" : $"\n\n[mono]{PrepareLicense(license.Content)}[/mono]")
+                            Text = $"[url=\"{license.Url}\"]Homepage[/url]" + (license.Content == null ? "" : $"\n\n[mono]{PrepareLicense(license.Content)}[/mono]")
                         }
                     }
                 });

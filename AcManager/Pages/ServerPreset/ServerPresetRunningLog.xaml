@@ -13,7 +13,7 @@
   <ListBox ItemsSource="{Binding SelectedObject.RunningLog}" Style="{StaticResource VirtualizingListBox}" TextBlock.FontSize="11">
     <ListBox.ItemTemplate>
       <DataTemplate>
-        <mui:SelectableBbCodeBlock BbCode="{Binding Mode=OneWay}" FontWeight="Normal" FontFamily="{StaticResource MonospaceFont}" />
+        <mui:SelectableBbCodeBlock Text="{Binding Mode=OneWay}" FontWeight="Normal" FontFamily="{StaticResource MonospaceFont}" />
       </DataTemplate>
     </ListBox.ItemTemplate>
   </ListBox>

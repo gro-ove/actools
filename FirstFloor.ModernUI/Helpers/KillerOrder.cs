@@ -75,7 +75,6 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void Kill() {
-            Logging.Write(Victim);
             Killed = true;
 
             switch (Victim) {

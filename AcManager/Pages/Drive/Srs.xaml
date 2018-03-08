@@ -7,7 +7,7 @@
   <mui:ReferenceSwitch.Null>
     <StackPanel Margin="40 0 40 0" HorizontalAlignment="Center" VerticalAlignment="Center">
       <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" />
-      <mui:BbCodeBlock BbCode="{Binding Source={x:Static t:ToolsStrings.Common_SteamIdIsMissing}, StringFormat='{}{0}.'}" Margin="20" />
+      <mui:BbCodeBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_SteamIdIsMissing}, StringFormat='{}{0}.'}" Margin="20" />
     </StackPanel>
   </mui:ReferenceSwitch.Null>
   <mui:ReferenceSwitch.NonNull>
@@ -20,7 +20,7 @@
 
       <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="{x:Static g:AppStrings.Common_GotId}" />
-        <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.Srs_Commentary}" />
+        <mui:BbCodeBlock Text="{x:Static g:AppStrings.Srs_Commentary}" />
       </DockPanel>
 
       <c:WebBlock Grid.Row="1" x:Name="WebBrowser" UserAgent="Assetto Corsa Launcher" StartPage="{Binding StartPage}" PageLoaded="OnPageLoaded" />

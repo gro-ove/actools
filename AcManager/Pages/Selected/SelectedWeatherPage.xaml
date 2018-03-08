@@ -118,7 +118,7 @@
 
                         <DockPanel>
                             <DockPanel.ToolTip>
-                                <mui:BbCodeBlock BbCode="{x:Static g:AppStrings.WeatherEdit_CutOff_Tooltip}" />
+                                <mui:BbCodeBlock Text="{x:Static g:AppStrings.WeatherEdit_CutOff_Tooltip}" />
                             </DockPanel.ToolTip>
                             <mui:ValueLabel Value="{Binding SelectedObject.CloudsCutoff, Converter={StaticResource PercentageConverter}}" Postfix="%"
                                     mui:BetterTextBox.Mode="Number" Content="{x:Static g:AppStrings.WeatherEdit_CutOff}" />

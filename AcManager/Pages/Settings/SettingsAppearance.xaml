@@ -40,11 +40,11 @@
               SelectedItem="{Binding AppAppearanceManager.SelectedTheme, Mode=TwoWay}" />
         </DockPanel>
         <c:PropertiesGrid Margin="156 0 0 0" Columns="1" LabelPadding="0 0 0 4" set:Search.Include="False">
-          <mui:BbCodeBlock c:PropertiesGrid.Label="Author:" DataContext="{DynamicResource Author}" BbCode="{Binding}" Margin="0 0 0 4"
+          <mui:BbCodeBlock c:PropertiesGrid.Label="Author:" DataContext="{DynamicResource Author}" Text="{Binding}" Margin="0 0 0 4"
               Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-          <mui:BbCodeBlock c:PropertiesGrid.Label="Description:" DataContext="{DynamicResource Description}" BbCode="{Binding}" Margin="0 0 0 4"
+          <mui:BbCodeBlock c:PropertiesGrid.Label="Description:" DataContext="{DynamicResource Description}" Text="{Binding}" Margin="0 0 0 4"
               Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-          <mui:BbCodeBlock c:PropertiesGrid.Label="Version:" DataContext="{DynamicResource Version}" BbCode="{Binding}" Margin="0 0 0 4"
+          <mui:BbCodeBlock c:PropertiesGrid.Label="Version:" DataContext="{DynamicResource Version}" Text="{Binding}" Margin="0 0 0 4"
               Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
         </c:PropertiesGrid>
         <mui:BetterTextBox Text="{Binding AppAppearanceManager.ThemeError, Mode=OneWay}" Margin="156 0 0 8" FontWeight="Bold" set:Search.Include="False"
@@ -120,7 +120,7 @@
         </DockPanel>
 
         <c:MessageBlock>
-          <mui:BbCodeBlock BbCode="You can access disabled links via that menu next to window’s buttons, or via hotkeys." />
+          <mui:BbCodeBlock Text="You can access disabled links via that menu next to window’s buttons, or via hotkeys." />
         </c:MessageBlock>
 
       </StackPanel>
@@ -171,7 +171,7 @@
 
         <CheckBox IsChecked="{Binding AppearanceManager.ManageWindowsLocation, Converter={StaticResource InvertBooleanConverter}}">
           <CheckBox.ToolTip>
-            <mui:BbCodeBlock BbCode="Use it in case CM fails to position windows correctly. 😔[br][br]I’m still trying to find a solution to this problem." />
+            <mui:BbCodeBlock Text="Use it in case CM fails to position windows correctly. 😔[br][br]I’m still trying to find a solution to this problem." />
           </CheckBox.ToolTip>
           <Label Content="Do not interfere with windows’ location and size" Foreground="{DynamicResource Error}" />
         </CheckBox>
@@ -179,7 +179,7 @@
         <StackPanel Visibility="{Binding AppearanceManager.ManageWindowsLocation, Converter={StaticResource BooleanToVisibilityConverter}}">
           <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
             <Label Content="Bind to screen:" />
-            <mui:BbCodeBlock BbCode="Changes won’t affect already shown windows." DockPanel.Dock="Bottom" Style="{StaticResource BbCodeBlock.Small}"
+            <mui:BbCodeBlock Text="Changes won’t affect already shown windows." DockPanel.Dock="Bottom" Style="{StaticResource BbCodeBlock.Small}"
                 Margin="0 2 0 0" />
             <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
               <mui:BetterComboBox.ItemTemplate>

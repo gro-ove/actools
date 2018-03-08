@@ -103,7 +103,7 @@
               <Path Data="{StaticResource UpdateIconData}" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                   Fill="{DynamicResource GoButtonText}" StrokeThickness="0" Stretch="Uniform" />
             </Button>
-            <mui:BbCodeBlock BbCode="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
+            <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
                 TextTrimming="CharacterEllipsis" />
             <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
           </mui:Cell>
@@ -115,7 +115,7 @@
       </StackPanel>
 
       <c:MessageBlock CloseKey="appconfigsmoved" Margin="0 8 0 0">
-        <mui:BbCodeBlock BbCode="Configs were moved to [url=&quot;/Pages/Settings/PythonAppsSettings.xaml|_top&quot;]the Settings section[/url]." />
+        <mui:BbCodeBlock Text="Configs were moved to [url=&quot;/Pages/Settings/PythonAppsSettings.xaml|_top&quot;]the Settings section[/url]." />
       </c:MessageBlock>
     </mui:SpacingStackPanel>
 

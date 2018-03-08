@@ -118,7 +118,7 @@
 
           <c:MessageBlock Margin="0 0 0 0">
             <mui:BbCodeBlock
-                BbCode="This page allows you to manage mods in JSGME way. All JSGME-related warnings are still actual. Also, it’s not integrated with other parts of CM, so, please, use it carefully. If needed, settings are [url=&quot;/Pages/Settings/SettingsGenericMods.xaml|_top&quot;]here[/url]."
+                Text="This page allows you to manage mods in JSGME way. All JSGME-related warnings are still actual. Also, it’s not integrated with other parts of CM, so, please, use it carefully. If needed, settings are [url=&quot;/Pages/Settings/SettingsGenericMods.xaml|_top&quot;]here[/url]."
                 Style="{StaticResource Small}" />
           </c:MessageBlock>
         </mui:SpacingStackPanel>

@@ -150,7 +150,7 @@
       <mui:HistoricalTextBox Style="{StaticResource BetterComboBox.Borderless}" Placeholder="*"
           Text="{Binding FilterValue, UpdateSourceTrigger=PropertyChanged}" SaveKey="RaceGridEditorColumn:FiltersHistory">
         <mui:HistoricalTextBox.ToolTip>
-          <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="{Binding Value, Source={x:Static c:FilterHints.Cars}}" />
+          <mui:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value, Source={x:Static c:FilterHints.Cars}}" />
         </mui:HistoricalTextBox.ToolTip>
       </mui:HistoricalTextBox>
     </DockPanel>

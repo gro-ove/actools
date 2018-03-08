@@ -48,7 +48,7 @@
       <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
         <Label Content="{x:Static g:AppStrings.Settings_QuickSwitches_Enable}" />
       </CheckBox>
-      <mui:BbCodeBlock TextWrapping="Wrap" BbCode="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
+      <mui:BbCodeBlock TextWrapping="Wrap" Text="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
     </StackPanel>
 
     <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource Label}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Settings_QuickSwitches_AddedLabel}" />

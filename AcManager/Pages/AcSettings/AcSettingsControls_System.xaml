@@ -56,13 +56,13 @@
 
     <DockPanel Margin="0 8 0 0" Dock="Bottom">
       <Button Content="2" Style="{StaticResource MoreDetailsSuperscript}" Margin="0 4 2 0" />
-      <mui:BbCodeBlock DockPanel.Dock="Bottom" BbCode="Hold Shift for inverse operation." />
+      <mui:BbCodeBlock DockPanel.Dock="Bottom" Text="Hold Shift for inverse operation." />
     </DockPanel>
 
     <DockPanel Margin="0 8 0 0" Dock="Bottom">
       <Button Content="1" Style="{StaticResource MoreDetailsSuperscript}" Margin="0 4 2 0" />
       <mui:BbCodeBlock DockPanel.Dock="Bottom"
-          BbCode="Non-default operations, so they will work only in Content Manager, or with [url=&quot;https://labs.assettocorsa.jp/downloads/addon/addshortcutkey&quot;]this Python app[/url]. Thanks to [url=&quot;https://twitter.com/Tsuka1427&quot;]Tsuka[/url] for the great help in implementation!" />
+          Text="Non-default operations, so they will work only in Content Manager, or with [url=&quot;https://labs.assettocorsa.jp/downloads/addon/addshortcutkey&quot;]this Python app[/url]. Thanks to [url=&quot;https://twitter.com/Tsuka1427&quot;]Tsuka[/url] for the great help in implementation!" />
     </DockPanel>
 
     <ScrollViewer DataContext="{Binding Source={x:Static acset:AcSettingsHolder.Controls}}" mui:SaveScroll.Key="AcSettingsControls_System">

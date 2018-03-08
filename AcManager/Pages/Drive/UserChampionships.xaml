@@ -235,7 +235,7 @@
         <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
             Margin="0 0 8 0" VerticalAlignment="Center" />
         <mui:BbCodeBlock VerticalAlignment="Center" TextWrapping="Wrap">
-          <mui:BbCodeBlock.BbCode>It appears that you don’t have any championships installed. Please, go to [url="/Pages/Lists/UserChampionshipsListPage.xaml"]Content/Miscellaneuos/User Championships[/url] if you want to create one.</mui:BbCodeBlock.BbCode>
+          <mui:BbCodeBlock.Text>It appears that you don’t have any championships installed. Please, go to [url="/Pages/Lists/UserChampionshipsListPage.xaml"]Content/Miscellaneuos/User Championships[/url] if you want to create one.</mui:BbCodeBlock.Text>
         </mui:BbCodeBlock>
       </DockPanel>
     </Border>

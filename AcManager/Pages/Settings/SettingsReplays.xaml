@@ -51,13 +51,13 @@
 
       <c:MessageBlock>
         <mui:BbCodeBlock>
-          <mui:BbCodeBlock.BbCode>
+          <mui:BbCodeBlock.Text>
             <MultiBinding
                 StringFormat="{}Maximum duration: ≈{0} ±10% (estimated for {1} cars). Thanks to @Stereo for data and [url=&quot;http://assettocorsamods.net/threads/ac-replay-size-estimator.837/&quot;]@luchian[/url] for the idea.">
               <Binding Path="Replay.EstimatedDuration" Converter="{StaticResource ReadableTimeSpanConverter}" />
               <Binding Source="{x:Static t:ReplaySettings.CarsToEstimate}" />
             </MultiBinding>
-          </mui:BbCodeBlock.BbCode>
+          </mui:BbCodeBlock.Text>
         </mui:BbCodeBlock>
       </c:MessageBlock>
 
@@ -104,7 +104,7 @@
           <DockPanel.ToolTip>
             <ToolTip>
               <StackPanel Margin="4">
-                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:AppStrings.Settings_Replays_NameFormat_Tooltip}" />
+                <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Replays_NameFormat_Tooltip}" />
               </StackPanel>
             </ToolTip>
           </DockPanel.ToolTip>
@@ -119,7 +119,7 @@
         <DockPanel.ToolTip>
           <ToolTip>
             <StackPanel Margin="4">
-              <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:AppStrings.Settings_Drive_PreCommand_Tooltip}" />
+              <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Drive_PreCommand_Tooltip}" />
             </StackPanel>
           </ToolTip>
         </DockPanel.ToolTip>
@@ -131,7 +131,7 @@
         <DockPanel.ToolTip>
           <ToolTip>
             <StackPanel Margin="4">
-              <mui:BbCodeBlock TextWrapping="WrapWithOverflow" BbCode="{x:Static g:AppStrings.Settings_Drive_PostCommand_Tooltip}" />
+              <mui:BbCodeBlock TextWrapping="WrapWithOverflow" Text="{x:Static g:AppStrings.Settings_Drive_PostCommand_Tooltip}" />
             </StackPanel>
           </ToolTip>
         </DockPanel.ToolTip>

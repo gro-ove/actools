@@ -506,7 +506,7 @@
                         <DockPanel Background="Transparent" x:Name="PART_ErrorMessage">
                           <DockPanel.ToolTip>
                             <ToolTip Visibility="{Binding FailedCommentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                              <mui:BbCodeBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" BbCode="{Binding FailedCommentary}" MaxWidth="320" />
+                              <mui:BbCodeBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{Binding FailedCommentary}" MaxWidth="320" />
                             </ToolTip>
                           </DockPanel.ToolTip>
                           <Path x:Name="PART_ErrorIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"

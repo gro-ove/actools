@@ -38,6 +38,14 @@
           <ControlTemplate.Triggers>
             <Trigger Property="ActualThumbnailMode" Value="True">
               <Setter TargetName="PART_ListBox" Property="ItemTemplate" Value="{StaticResource AcItemWrapperSpecific.ListItemTemplate.Thumbnail}" />
+              <Setter TargetName="PART_ListBox" Property="mui:SaveScroll.Key">
+                <Setter.Value>
+                  <MultiBinding StringFormat="{}{0}:thumb:{1}">
+                    <Binding Path="(mui:SaveScroll.Key)" RelativeSource="{RelativeSource TemplatedParent}" />
+                    <Binding Path="ActualWidth" Converter="{x:Static ac:AcObjectListBox.ThumbnailColumnsConverter}" ElementName="PART_ListBox" />
+                  </MultiBinding>
+                </Setter.Value>
+              </Setter>
               <Setter TargetName="PART_ListBox" Property="ItemsPanel">
                 <Setter.Value>
                   <ItemsPanelTemplate>

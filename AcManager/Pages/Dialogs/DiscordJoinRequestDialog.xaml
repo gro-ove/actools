@@ -29,7 +29,7 @@
   <Border>
     <DockPanel VerticalAlignment="Center" Height="91">
       <mui:BetterImage x:Name="Image" Width="91" Height="91" Margin="0 0 20 0" Background="Black" />
-      <mui:BbCodeBlock x:Name="TitleBlock" Style="{StaticResource Title}" BbCode="User X wants to join. Allow?" DockPanel.Dock="Top" Margin="0 0 0 20" />
+      <mui:BbCodeBlock x:Name="TitleBlock" Style="{StaticResource Title}" Text="User X wants to join. Allow?" DockPanel.Dock="Top" Margin="0 0 0 20" />
       <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" Height="40">
         <Button HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Padding="0" BorderThickness="0" Command="{Binding YesCommand}">
           <mui:Cell>

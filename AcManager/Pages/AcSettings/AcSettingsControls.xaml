@@ -46,7 +46,7 @@
             <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top" />
             <TextBlock TextWrapping="Wrap" Text="Scanning…" DockPanel.Dock="Top" Margin="0 8 0 0" />
             <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 8 0 0" Style="{StaticResource Small}"
-                BbCode="If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url]." />
+                Text="If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url]." />
           </DockPanel>
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
@@ -154,7 +154,7 @@
                       <MenuItem.ToolTip>
                         <ToolTip>
                           <mui:BbCodeBlock TextWrapping="WrapWithOverflow" MaxWidth="400"
-                              BbCode="Content Manager will scan devices in advance to reduce waiting time when devices are needed. It shouldn’t negatively affect the performance." />
+                              Text="Content Manager will scan devices in advance to reduce waiting time when devices are needed. It shouldn’t negatively affect the performance." />
                         </ToolTip>
                       </MenuItem.ToolTip>
                     </MenuItem>

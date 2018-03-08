@@ -568,7 +568,7 @@ namespace AcManager.Pages.Drive {
 
                 var text = (BbCodeBlock)baseIcon.Child;
 
-                text.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
+                text.SetBinding(BbCodeBlock.TextProperty, new Binding {
                     Path = new PropertyPath(nameof(information.Label)),
                     Source = information
                 });
@@ -598,7 +598,7 @@ namespace AcManager.Pages.Drive {
                 });
 
                 var header = new BbCodeBlock();
-                header.SetBinding(BbCodeBlock.BbCodeProperty, new Binding {
+                header.SetBinding(BbCodeBlock.TextProperty, new Binding {
                     Source = tag,
                     Path = new PropertyPath(nameof(tag.DisplayName))
                 });

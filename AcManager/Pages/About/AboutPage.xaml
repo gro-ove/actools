@@ -16,7 +16,7 @@
           <Image Source="/Assets/Icons/Icon.ico" Width="48" Height="48" DockPanel.Dock="Left" Margin="0 4 12 -4" />
           <StackPanel>
             <TextBlock Style="{StaticResource Heading1}" Margin="-2 0 0 0" Text="{x:Static g:AppStrings.Main_ContentManager}" />
-            <mui:BbCodeBlock Style="{StaticResource Small}" BbCode="{x:Static g:AppStrings.About_Description}" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" Text="{x:Static g:AppStrings.About_Description}" />
           </StackPanel>
         </DockPanel>
 
@@ -41,24 +41,24 @@
         </StackPanel>
 
         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.About_ContactUsHeader}" />
-        <mui:BbCodeBlock Margin="0 8 0 40" FontSize="{DynamicResource SmallFontSize}" BbCode="{x:Static g:AppStrings.About_ContactInformation}" />
+        <mui:BbCodeBlock Margin="0 8 0 40" FontSize="{DynamicResource SmallFontSize}" Text="{x:Static g:AppStrings.About_ContactInformation}" />
 
         <TextBlock Style="{StaticResource Heading2}" Text="Thanks to:" />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Translation:" Margin="0 12 0 0" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Roberto Zagallo, Shijie Zhang (St3fan), Stanislav Minakov." />
+            Text="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Roberto Zagallo, Shijie Zhang (St3fan), Stanislav Minakov." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas, reports and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="Anton Malishev, cq.mysk, dr8008, /u/FolkSong, leBluem, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
+            Text="Anton Malishev, cq.mysk, dr8008, /u/FolkSong, leBluem, lianju, MadMat, Marco Mollace, MicaLovesKPOP, Peter Boese, Scott Shaw, Topuz, Tsuka, visionaryBlender, Zkirtaem." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Screenshots for Discord integration:" />
-        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}" BbCode="/u/CipherO32." />
+        <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}" Text="/u/CipherO32." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas for animations:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="[url=&quot;https://twitter.com/beesandbombs&quot;]Bees &amp; Bombs (/u/davebees)[/url],
+            Text="[url=&quot;https://twitter.com/beesandbombs&quot;]Bees &amp; Bombs (/u/davebees)[/url],
 [url=&quot;https://www.reddit.com/user/blueconcepts&quot;]/u/blueconcepts[/url],
 [url=&quot;https://www.reddit.com/user/FastAsUcan&quot;]/u/FastAsUcan[/url],
 [url=&quot;https://codepen.io/Akiletour/&quot;]Pascal Gault[/url],
@@ -68,7 +68,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Services used:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            BbCode="[url=&quot;https://www.dropbox.com&quot;]Dropbox[/url],
+            Text="[url=&quot;https://www.dropbox.com&quot;]Dropbox[/url],
 [url=&quot;https://www.google.com/drive/&quot;]Google Drive[/url],
 [url=&quot;https://maps.google.com/&quot;]Google Maps[/url],
 [url=&quot;https://icons8.com/&quot;]Icons8[/url],
@@ -86,8 +86,8 @@
 
     <StackPanel Grid.Row="1" Margin="20 12">
       <mui:BbCodeBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="OnElementClick" Background="Transparent"
-          BbCode="{x:Static g:AppStrings.About_Copyright}" />
-      <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" BbCode="{x:Static g:AppStrings.About_Footer}" />
+          Text="{x:Static g:AppStrings.About_Copyright}" />
+      <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" Text="{x:Static g:AppStrings.About_Footer}" />
     </StackPanel>
   </Grid>
 </UserControl>
