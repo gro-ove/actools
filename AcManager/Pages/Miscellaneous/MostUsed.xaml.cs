@@ -95,9 +95,9 @@ namespace AcManager.Pages.Miscellaneous {
                    where track.Distance > 0d
                    group track by track.MainId
                    into layouts
+                   orderby layouts.Sum(x => x.Distance) descending
                    let item = new MostUsedTrack(index++, layouts.Key, layouts.Sum(x => x.Distance),
                            layouts.Select((x, i) => new MostUsedTrackLayout(i, x.Id, x.Distance)))
-                   orderby item.TotalDistance descending
                    select item;
         }
 
@@ -162,7 +162,7 @@ namespace AcManager.Pages.Miscellaneous {
             private bool _isExpanded;
 
             public bool IsExpanded {
-                get { return _isExpanded; }
+                get => _isExpanded;
                 set => Apply(value, ref _isExpanded);
             }
         }
