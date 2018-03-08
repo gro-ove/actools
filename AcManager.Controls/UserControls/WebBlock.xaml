@@ -178,7 +178,7 @@
       <ListBox Grid.Column="0" x:Name="TabsList" SelectionChanged="OnTabsListSelectionChanged" MaxWidth="400"
           Visibility="{Binding Items.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1, RelativeSource={RelativeSource Self}}"
           ItemsPanel="{StaticResource TabsPanelTemplate}" ItemTemplate="{StaticResource TabItemTemplate}" ItemContainerStyle="{StaticResource TabItemStyle}"
-          ScrollViewer.VerticalScrollBarVisibility="Disabled" mui:FancyScrollHelper.Outside="True" mui:FancyScrollHelper.InvertLocation="True">
+          ScrollViewer.VerticalScrollBarVisibility="Disabled" mui:FancyScroll.Outside="True" mui:FancyScroll.InvertLocation="True">
         <i:Interaction.Behaviors>
           <mui:HorizontalScrollBehavior />
         </i:Interaction.Behaviors>

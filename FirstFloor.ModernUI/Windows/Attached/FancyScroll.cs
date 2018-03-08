@@ -4,7 +4,7 @@ using System.Windows.Controls.Primitives;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
-    public static class FancyScrollHelper {
+    public static class FancyScroll {
         public static bool GetInvertLocation(DependencyObject obj) {
             return obj.GetValue(InvertLocationProperty) as bool? == true;
         }
@@ -14,7 +14,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty InvertLocationProperty = DependencyProperty.RegisterAttached("InvertLocation", typeof(bool),
-                typeof(FancyScrollHelper), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+                typeof(FancyScroll), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
         public static bool GetOutside(DependencyObject obj) {
             return obj.GetValue(OutsideProperty) as bool? == true;
@@ -25,7 +25,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty OutsideProperty = DependencyProperty.RegisterAttached("Outside", typeof(bool),
-                typeof(FancyScrollHelper), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+                typeof(FancyScroll), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
 
         public static bool GetIsMouseOver(DependencyObject obj) {
@@ -37,7 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty IsMouseOverProperty = DependencyProperty.RegisterAttached("IsMouseOver", typeof(bool),
-                typeof(FancyScrollHelper), new UIPropertyMetadata(false));
+                typeof(FancyScroll), new UIPropertyMetadata(false));
 
         public static bool GetScrollParent(DependencyObject obj) {
             return (bool)obj.GetValue(ScrollParentProperty);
@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty ScrollParentProperty = DependencyProperty.RegisterAttached("ScrollParent", typeof(bool),
-                typeof(FancyScrollHelper), new UIPropertyMetadata(OnScrollParentChanged));
+                typeof(FancyScroll), new UIPropertyMetadata(OnScrollParentChanged));
 
         private static void OnScrollParentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is Panel element && e.NewValue is bool newValue) {

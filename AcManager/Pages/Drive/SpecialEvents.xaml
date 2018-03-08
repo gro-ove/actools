@@ -111,7 +111,7 @@
 
       <ListBox x:Name="ListBox" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding List}" ScrollViewer.CanContentScroll="True"
           ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Margin="-4 0 -4 12"
-          ScrollViewer.ScrollChanged="OnScrollChanged" SizeChanged="OnScrollSizeChanged" mui:FancyScrollHelper.Outside="True">
+          ScrollViewer.ScrollChanged="OnScrollChanged" SizeChanged="OnScrollSizeChanged" mui:FancyScroll.Outside="True">
         <i:Interaction.Behaviors>
           <mui:HorizontalScrollBehavior />
         </i:Interaction.Behaviors>

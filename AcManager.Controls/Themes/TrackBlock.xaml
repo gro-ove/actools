@@ -17,7 +17,7 @@
           <!-- Data section -->
           <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}"
               DataContext="{Binding Track, RelativeSource={RelativeSource TemplatedParent}}" Margin="0 8 -8 0" HorizontalScrollBarVisibility="Disabled"
-              VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0">
+              VerticalScrollBarVisibility="Auto" mui:FancyScroll.Outside="True" Padding="0 0 8 0">
             <DockPanel>
               <!-- Tags -->
               <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
@@ -114,7 +114,7 @@
                 <!-- Data section -->
                 <ScrollViewer Visibility="{Binding HasData, Converter={StaticResource BooleanToVisibilityConverter}}"
                     DataContext="{Binding Track, RelativeSource={RelativeSource TemplatedParent}}" Margin="0 8 -8 0" HorizontalScrollBarVisibility="Disabled"
-                    VerticalScrollBarVisibility="Auto" mui:FancyScrollHelper.Outside="True" Padding="0 0 8 0">
+                    VerticalScrollBarVisibility="Auto" mui:FancyScroll.Outside="True" Padding="0 0 8 0">
                   <DockPanel>
                     <!-- Tags -->
                     <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />

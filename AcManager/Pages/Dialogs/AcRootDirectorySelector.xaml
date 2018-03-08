@@ -63,7 +63,7 @@
       <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
           Visibility="{Binding Recommended.ListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
       <ItemsControl Margin="20 8 0 0" ItemsSource="{Binding Recommended.ListView, Source={x:Static t:PluginsManager.Instance}}"
-          mui:FancyScrollHelper.Outside="True" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440"
+          mui:FancyScroll.Outside="True" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440"
           Style="{StaticResource VirtualizingItemsControl}" Padding="0 0 8 0" />
     </StackPanel>
   </StackPanel>

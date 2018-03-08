@@ -169,7 +169,7 @@
               </mui:ModernTab>
             </DockPanel>
 
-            <ScrollViewer x:Key="Main" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csMain">
+            <ScrollViewer x:Key="Main" mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csMain">
               <StackPanel>
                 <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_StatsHeader}" Style="{StaticResource Heading2}" />
 
@@ -251,7 +251,7 @@
               </StackPanel>
             </ScrollViewer>
 
-            <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
+            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Selected" mui:SaveScroll.Key="__csSelected">
               <StackPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
@@ -294,7 +294,7 @@
               </StackPanel>
             </ScrollViewer>
 
-            <ScrollViewer x:Key="Camera" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
+            <ScrollViewer x:Key="Camera" mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" mui:SaveScroll.Key="__csCamera">
               <mui:SpacingStackPanel Spacing="4">
                 <Label Content="Position:" />
                 <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1" DataContext="{Binding CameraPosition}">
@@ -368,7 +368,7 @@
               </mui:SpacingStackPanel>
             </ScrollViewer>
 
-            <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
+            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
                 mui:SaveScroll.Key="__csAmbientShadows">
               <StackPanel>
                 <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -478,7 +478,7 @@
               </StackPanel>
             </ScrollViewer>
 
-            <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Shot" mui:SaveScroll.Key="__csShot">
+            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Shot" mui:SaveScroll.Key="__csShot">
               <mui:SpacingStackPanel Spacing="8">
                 <c:MessageBlock Visibility="{Binding ShotMagickWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <mui:BbCodeBlock Style="{StaticResource Small}"
@@ -591,7 +591,7 @@
               </mui:SpacingStackPanel>
             </ScrollViewer>
 
-            <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
+            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Cars" mui:SaveScroll.Key="__csCars">
               <mui:SpacingStackPanel Spacing="4">
                 <ItemsControl mui:Draggable.Destination="{x:Static cs:CarSlotWrapped.DraggableFormat}" mui:Draggable.Enabled="True"
                     ItemsSource="{Binding Cars.Slots}" ItemTemplate="{StaticResource CarSlotWrappedTemplate}" Background="Transparent" Padding="0 0 0 12" />

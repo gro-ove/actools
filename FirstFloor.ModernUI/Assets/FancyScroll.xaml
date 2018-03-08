@@ -64,21 +64,21 @@
             </Track>
           </Border>
           <ControlTemplate.Triggers>
-            <Trigger Property="a:FancyScrollHelper.Outside" Value="True">
+            <Trigger Property="a:FancyScroll.Outside" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
             </Trigger>
-            <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
+            <Trigger Property="a:FancyScroll.InvertLocation" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
               <Setter TargetName="PART_Track" Property="HorizontalAlignment" Value="Left" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
-                <Condition Property="a:FancyScrollHelper.Outside" Value="True" />
-                <Condition Property="a:FancyScrollHelper.InvertLocation" Value="True" />
+                <Condition Property="a:FancyScroll.Outside" Value="True" />
+                <Condition Property="a:FancyScroll.InvertLocation" Value="True" />
               </MultiTrigger.Conditions>
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="1 0" />
             </MultiTrigger>
-            <Trigger Property="a:FancyScrollHelper.IsMouseOver" Value="True">
+            <Trigger Property="a:FancyScroll.IsMouseOver" Value="True">
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
@@ -131,21 +131,21 @@
             </Track>
           </Border>
           <ControlTemplate.Triggers>
-            <Trigger Property="a:FancyScrollHelper.Outside" Value="True">
+            <Trigger Property="a:FancyScroll.Outside" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
             </Trigger>
-            <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
+            <Trigger Property="a:FancyScroll.InvertLocation" Value="True">
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 0" />
               <Setter TargetName="PART_Track" Property="VerticalAlignment" Value="Top" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
-                <Condition Property="a:FancyScrollHelper.Outside" Value="True" />
-                <Condition Property="a:FancyScrollHelper.InvertLocation" Value="True" />
+                <Condition Property="a:FancyScroll.Outside" Value="True" />
+                <Condition Property="a:FancyScroll.InvertLocation" Value="True" />
               </MultiTrigger.Conditions>
               <Setter TargetName="PART_Thumb" Property="RenderTransformOrigin" Value="0 1" />
             </MultiTrigger>
-            <Trigger Property="a:FancyScrollHelper.IsMouseOver" Value="True">
+            <Trigger Property="a:FancyScroll.IsMouseOver" Value="True">
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
@@ -176,7 +176,7 @@
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="{x:Type ScrollViewer}">
-              <c:Cell x:Name="Grid" HorizontalAlignment="Stretch" a:FancyScrollHelper.ScrollParent="True" Background="Transparent">
+              <c:Cell x:Name="Grid" HorizontalAlignment="Stretch" a:FancyScroll.ScrollParent="True" Background="Transparent">
                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                     CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                     Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
@@ -186,7 +186,7 @@
                     ViewportSize="{TemplateBinding ViewportHeight}" Style="{StaticResource FancyScrollBarVertical}" />
               </c:Cell>
               <ControlTemplate.Triggers>
-                <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
+                <Trigger Property="a:FancyScroll.InvertLocation" Value="True">
                   <Setter TargetName="PART_VerticalScrollBar" Property="HorizontalAlignment" Value="Left" />
                 </Trigger>
               </ControlTemplate.Triggers>
@@ -198,7 +198,7 @@
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="{x:Type ScrollViewer}">
-              <c:Cell x:Name="Grid" HorizontalAlignment="Stretch" a:FancyScrollHelper.ScrollParent="True" Background="Transparent">
+              <c:Cell x:Name="Grid" HorizontalAlignment="Stretch" a:FancyScroll.ScrollParent="True" Background="Transparent">
                 <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanContentScroll="{TemplateBinding CanContentScroll}"
                     CanHorizontallyScroll="False" CanVerticallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}"
                     Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
@@ -209,7 +209,7 @@
                     ViewportSize="{TemplateBinding ViewportWidth}" Style="{StaticResource FancyScrollBarHorizontal}" />
               </c:Cell>
               <ControlTemplate.Triggers>
-                <Trigger Property="a:FancyScrollHelper.InvertLocation" Value="True">
+                <Trigger Property="a:FancyScroll.InvertLocation" Value="True">
                   <Setter TargetName="PART_HorizontalScrollBar" Property="VerticalAlignment" Value="Top" />
                 </Trigger>
               </ControlTemplate.Triggers>

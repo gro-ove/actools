@@ -5,7 +5,7 @@
     <mui:SharedResourceDictionary Source="/CustomShowroom/LiteShowroomSettings.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <ScrollViewer mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Car" mui:SaveScroll.Key="__csCar"
+  <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="Car" mui:SaveScroll.Key="__csCar"
       d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}">
     <mui:SpacingStackPanel Spacing="4">
       <mui:BetterComboBox IsEditable="False" SelectedItem="{Binding Skin}" ItemsSource="{Binding Car.EnabledOnlySkins}">

@@ -425,7 +425,7 @@
       <Button Command="{Binding SkinSaveAsNewCommand}" Content="Save as new…" Padding="0 3 0 5" />
     </mui:SpacingUniformGrid>-->
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScrollHelper.Outside="True"
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" Margin="0 0 -8 0" Padding="0 0 8 0" mui:FancyScroll.Outside="True"
         mui:SaveScroll.Key="__csSkinItems">
       <ItemsControl ItemsSource="{Binding SkinItems}" ItemTemplate="{StaticResource PaintShopItemTemplate}" />
     </ScrollViewer>

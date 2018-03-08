@@ -48,7 +48,7 @@
 
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
 
-    <ScrollViewer Grid.Column="2" DataContext="{Binding BrokenCar}" Margin="20 0 20 0" mui:FancyScrollHelper.Outside="True">
+    <ScrollViewer Grid.Column="2" DataContext="{Binding BrokenCar}" Margin="20 0 20 0" mui:FancyScroll.Outside="True">
       <mui:SpacingStackPanel Spacing="20" d:DataContext="{d:DesignInstance {x:Type tools:CarAnalyzer+BrokenDetails}}">
         <DockPanel>
           <mui:BetterImage Width="24" Height="24" DockPanel.Dock="Left" Margin="0 0 8 0" Filename="{Binding Car.BrandBadge}" />

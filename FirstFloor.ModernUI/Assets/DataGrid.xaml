@@ -145,9 +145,9 @@
                 </Grid>
                 <ControlTemplate.Triggers>
                   <Trigger Property="IsMouseOver" Value="True">
-                    <Setter TargetName="PART_VerticalScrollBar" Property="attached:FancyScrollHelper.IsMouseOver" Value="True" />
+                    <Setter TargetName="PART_VerticalScrollBar" Property="attached:FancyScroll.IsMouseOver" Value="True" />
                   </Trigger>
-                  <Trigger Property="attached:FancyScrollHelper.InvertLocation" Value="True">
+                  <Trigger Property="attached:FancyScroll.InvertLocation" Value="True">
                     <Setter TargetName="PART_VerticalScrollBar" Property="HorizontalAlignment" Value="Left" />
                   </Trigger>
                 </ControlTemplate.Triggers>

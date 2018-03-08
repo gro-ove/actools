@@ -11,7 +11,7 @@
   </DockPanel.Resources>
   <mui:Switch Value="{Binding Entries.Count}">
     <TextBlock mui:Switch.When="0" Text="Nothing to display" Style="{StaticResource Heading1}" VerticalAlignment="Center" HorizontalAlignment="Center" />
-    <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" mui:FancyScrollHelper.Outside="True" Margin="0 0 -4 0">
+    <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" mui:FancyScroll.Outside="True" Margin="0 0 -4 0">
       <ItemsControl.ItemTemplate>
         <DataTemplate DataType="{x:Type mi:RaceResults+RaceResultsObject}">
           <mui:Cell Height="92">

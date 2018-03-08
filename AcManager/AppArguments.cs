@@ -52,11 +52,7 @@ namespace AcManager {
             }
         }
 
-        internal static string FlagToArgString(AppFlag flag) {
-            return "-" + (_regex ?? (_regex = new Regex(@"[A-Z]", RegexOptions.Compiled))).Replace(flag.ToString(), x => "-" + x.Value.ToLower());
-        }
-
-        internal static AppFlag? ArgStringToFlag(string arg) {
+        private static AppFlag? ArgStringToFlag(string arg) {
             var s = string.Join("", arg.Split('-').Where(x => x.Length > 0).Select(x => (char)(x[0] + 'A' - 'a') + (x.Length > 1 ? x.Substring(1) : "")));
             return Enum.TryParse(s, out AppFlag result) ? result : (AppFlag?)null;
         }

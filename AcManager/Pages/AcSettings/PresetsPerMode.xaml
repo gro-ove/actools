@@ -127,7 +127,7 @@
 
     <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:PresetPerMode.DraggableFormat}" ScrollViewer.CanContentScroll="False"
         ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled" Height="360" VerticalAlignment="Top"
-        mui:FancyScrollHelper.Outside="True">
+        mui:FancyScroll.Outside="True">
       <ListBox.ItemTemplateSelector>
         <c:FlexibleDataTemplateSelector DataTemplate="{StaticResource EntryDataTemplate}" />
       </ListBox.ItemTemplateSelector>

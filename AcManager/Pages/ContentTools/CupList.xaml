@@ -51,7 +51,7 @@
 
     <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
 
-    <ScrollViewer Grid.Column="2" DataContext="{Binding SelectedItem}" Margin="20 0 20 0" mui:FancyScrollHelper.Outside="True">
+    <ScrollViewer Grid.Column="2" DataContext="{Binding SelectedItem}" Margin="20 0 20 0" mui:FancyScroll.Outside="True">
       <mui:SpacingStackPanel Spacing="20" d:DataContext="{d:DesignInstance {x:Type t:ICupSupportedObject}}">
         <ContentControl Content="{Binding}">
           <ContentControl.Resources>

@@ -68,7 +68,7 @@
       </DockPanel>
 
       <ItemsControl x:Name="TyresListBox" ItemsSource="{Binding ExampleCarsModel.CommonTyresList}" Style="{StaticResource VirtualizingItemsControl}"
-          mui:FancyScrollHelper.Outside="True" DockPanel.Dock="Top" Height="200" Margin="0 0 0 8">
+          mui:FancyScroll.Outside="True" DockPanel.Dock="Top" Height="200" Margin="0 0 0 8">
         <ItemsControl.ItemTemplate>
           <DataTemplate DataType="{x:Type di:CarCreateTyresMachineDialog+CommonTyres}">
             <DockPanel Margin="2" Background="Transparent">
@@ -98,7 +98,7 @@
       </ItemsControl>
 
       <ListBox x:Name="CarsListBox" ItemsSource="{Binding ExampleCarsModel.CarsView}" Style="{StaticResource VirtualizingListBox}"
-          VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True" mui:FancyScrollHelper.Outside="True">
+          VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True" mui:FancyScroll.Outside="True">
         <ListBox.ItemContainerStyle>
           <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}"
               d:DataContext="{d:DesignInstance di:CarCreateTyresMachineDialog+CarWithTyres}">

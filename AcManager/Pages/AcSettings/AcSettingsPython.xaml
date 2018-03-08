@@ -174,7 +174,7 @@
       <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" ContentStringFormat="{}{0} (per desktop)" DockPanel.Dock="Top" />
       <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.Lite}"
           ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"
-          VirtualizingStackPanel.CacheLength="1,1" mui:FancyScrollHelper.InvertLocation="True" Padding="8 0 0 0" Margin="-8 0 0 0">
+          VirtualizingStackPanel.CacheLength="1,1" mui:FancyScroll.InvertLocation="True" Padding="8 0 0 0" Margin="-8 0 0 0">
         <DataGrid.Columns>
           <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
             <DataGridTemplateColumn.CellTemplate>

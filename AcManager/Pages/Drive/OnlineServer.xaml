@@ -241,7 +241,7 @@
               ItemTemplate="{StaticResource CarItemDataTemplate}" Margin="8 0 -16 0" TextSearch.TextPath="DisplayName" />
         </DockPanel>
 
-        <ScrollViewer x:Name="ScrollViewer" Padding="0 0 8 8" Margin="0 0 -8 0" mui:FancyScrollHelper.Outside="True">
+        <ScrollViewer x:Name="ScrollViewer" Padding="0 0 8 8" Margin="0 0 -8 0" mui:FancyScroll.Outside="True">
           <DockPanel DataContext="{Binding Entry}">
             <StackPanel DockPanel.Dock="Top" Margin="0 0 0 20" Visibility="{Binding Errors.Count, Converter={StaticResource MoreToVisibilityConverter}}"
                 x:Name="ErrorsPanel">

@@ -136,8 +136,8 @@
             <ListBox x:Name="SkinsList" ItemsSource="{Binding SelectedObject.EnabledSkinsListView}" SelectedItem="{Binding SelectedObject.SelectedSkin}"
                 ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" VirtualizingPanel.VirtualizationMode="Recycling"
                 VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel" VirtualizingPanel.IsContainerVirtualizable="True"
-                VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScrollHelper.InvertLocation="True"
-                mui:FancyScrollHelper.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}"
+                VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item" mui:FancyScroll.InvertLocation="True"
+                mui:FancyScroll.Outside="True" ItemsPanel="{StaticResource CompactSkinsPanel}"
                 mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.SkinContextMenu}, Mode=OneTime}"
                 mui:FancyHintsService.TriggerOnLoad="True" mui:FancyHintsService.HorizontalAlignment="Left" mui:FancyHintsService.VerticalAlignment="Top"
                 mui:FancyHintsService.OffsetX="18" mui:FancyHintsService.OffsetY="18" mui:FancyHintsService.HorizontalContentAlignment="Right">
