@@ -123,9 +123,5 @@ namespace AcManager.Tools.Objects {
                     NonfatalError.Notify("Can’t upload content to FTP server", e);
                 }
             }, c => !string.IsNullOrWhiteSpace(FtpHost) && !string.IsNullOrWhiteSpace(FtpLogin) && !string.IsNullOrWhiteSpace(FtpPassword)));
-
-        private Task EnsureDetailsNameIsActualAsync() {
-            throw new NotImplementedException();
-        }
     }
 }

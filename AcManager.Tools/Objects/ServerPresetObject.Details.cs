@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers.Api;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -48,6 +50,27 @@ namespace AcManager.Tools.Objects {
         public string DetailsNamePiece {
             get => _detailsNamePiece;
             set => Apply(value, ref _detailsNamePiece);
+        }
+
+        private Task EnsureDetailsNameIsActualAsync(IniFile ini) {
+            var serverSection = ini["SERVER"];
+
+            var assists = new JObject {
+                [@"absState"] = serverSection.GetInt("ABS_ALLOWED", 0),
+                [@"tcState"] = serverSection.GetInt("TC_ALLOWED", 0),
+                [@"fuelRate"] = serverSection.GetInt("FUEL_RATE", 0),
+                [@"damageMultiplier"] = serverSection.GetInt("DAMAGE_MULTIPLIER", 0),
+                [@"tyreWearRate"] = serverSection.GetInt("TYRE_WEAR_RATE", 0),
+                [@"allowedTyresOut"] = serverSection.GetInt("ALLOWED_TYRES_OUT", 0),
+                [@"stabilityAllowed"] = serverSection.GetBool(@"STABILITY_ALLOWED", false),
+                [@"autoclutchAllowed"] = serverSection.GetBool(@"AUTOCLUTCH_ALLOWED", false),
+                [@"tyreBlanketsAllowed"] = serverSection.GetBool(@"TYRE_BLANKETS_ALLOWED", false),
+                [@"forceVirtualMirror"] = serverSection.GetBool(@"FORCE_VIRTUAL_MIRROR", false),
+            };
+
+            var data = new JObject {
+
+            };
         }
 
         private string _detailsDescription;

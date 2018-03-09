@@ -296,18 +296,23 @@ namespace AcManager.Tools.Objects {
         }
 
         public override async Task SaveAsync() {
-            await EnsureDetailsNameIsActualAsync();
+            var entryIni = EntryListIniObject ?? IniFile.Empty;
+            entryIni.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
 
-            var ini = EntryListIniObject ?? IniFile.Empty;
-            ini.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+            var mainIni = IniObject ?? IniFile.Empty;
+            SaveData(mainIni);
+            await EnsureDetailsNameIsActualAsync(mainIni);
+
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                FileUtils.EnsureFileDirectoryExists(IniFilename);
                 FileUtils.EnsureFileDirectoryExists(EntryListIniFilename);
-                File.WriteAllText(EntryListIniFilename, ini.ToString());
-                await base.SaveAsync();
+                File.WriteAllText(IniFilename, mainIni.ToString());
+                File.WriteAllText(EntryListIniFilename, entryIni.ToString());
             }
 
             SaveWrapperParams();
             RemoveError(AcErrorType.Data_IniIsMissing);
+            Changed = false;
         }
 
         public override bool HandleChangedFile(string filename) {
