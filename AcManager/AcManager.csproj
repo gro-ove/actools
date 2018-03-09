@@ -576,7 +576,7 @@
     <Compile Include="Pages\ServerPreset\ServerPresetConditions.xaml.cs">
       <DependentUpon>ServerPresetConditions.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\SelectedPage.Wrapper.cs" />
+    <Compile Include="Pages\ServerPreset\SelectedPage.Details.cs" />
     <Compile Include="Pages\ServerPreset\ServerPresetCombined.xaml.cs">
       <DependentUpon>ServerPresetCombined.xaml</DependentUpon>
     </Compile>
@@ -595,9 +595,12 @@
     <Compile Include="Pages\ServerPreset\ServerPresetAdvanced.xaml.cs">
       <DependentUpon>ServerPresetAdvanced.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\ServerPreset\ServerPresetWrapped.xaml.cs">
-      <DependentUpon>ServerPresetWrapped.xaml</DependentUpon>
+    <Compile Include="Pages\ServerPreset\ServerPresetDetails.xaml.cs">
+      <DependentUpon>ServerPresetDetails.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ServerPreset\ShareMode.cs" />
+    <Compile Include="Pages\ServerPreset\WrapperContentObject.cs" />
+    <Compile Include="Pages\ServerPreset\WrapperContentObjectExtension.cs" />
     <Compile Include="Pages\Settings\PythonAppsSettings.xaml.cs">
       <DependentUpon>PythonAppsSettings.xaml</DependentUpon>
     </Compile>
@@ -1398,7 +1401,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Pages\ServerPreset\ServerPresetWrapped.xaml">
+    <Page Include="Pages\ServerPreset\ServerPresetDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

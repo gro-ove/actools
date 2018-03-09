@@ -111,7 +111,7 @@ namespace AcManager.Pages.Lists {
                     foreach (var skin in list) {
                         waiting.Report(++i, list.Count);
                         skin.Priority = 0;
-                        skin.Save();
+                        skin.SaveAsync();
                         await Task.Delay(50, waiting.CancellationToken);
                         if (waiting.CancellationToken.IsCancellationRequested) return;
                     }
@@ -356,7 +356,7 @@ namespace AcManager.Pages.Lists {
             }
 
             protected override void ApplyOverride(CarSkinObject obj) {
-                obj.Save();
+                obj.SaveAsync();
             }
         }
 

@@ -51,7 +51,7 @@ namespace AcManager.Tools.Objects {
         public override ICommand ToggleCommand => MainTrackObject.ToggleCommand;
         public override ICommand DeleteCommand => MainTrackObject.DeleteCommand;
         public override ICommand ViewInExplorerCommand => MainTrackObject.ViewInExplorerCommand;
-        public override DelegateCommand SaveCommand => MainTrackObject.SaveCommand;
+        public override AsyncCommand SaveCommand => MainTrackObject.SaveCommand;
         public override string LayoutDataDirectory => Path.Combine(MainTrackObject.Location, LayoutId);
     }
 }

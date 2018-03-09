@@ -132,7 +132,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             _inGameAppParams = new CmInGameAppJoinRequestParams(args.UserName, args.UserId, args.AvatarUrl,
-                    b => (b ? YesCommand : NoCommand).Execute());
+                    b => (b ? YesCommand : NoCommand).ExecuteAsync().Ignore());
             CompositionTargetEx.Rendering += OnRendering;
         }
 

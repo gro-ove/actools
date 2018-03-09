@@ -626,7 +626,7 @@ namespace AcManager.Controls {
         private void OnSaveAllButtonClick(object sender, RoutedEventArgs e) {
             if (_list == null) return;
             foreach (var c in _list.ItemsSource.OfType<AcItemWrapper>().Select(x => x.Value).OfType<AcCommonObject>()) {
-                c.SaveCommand.Execute();
+                c.SaveCommand.ExecuteAsync().Ignore();
             }
         }
 

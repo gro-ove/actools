@@ -14,13 +14,95 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Objects {
     public partial class ServerPresetObject {
         #region Properties
-        private bool _wrapperUsed;
+        private bool _provideDetails;
 
-        public bool WrapperUsed {
-            get => _wrapperUsed;
+        public bool ProvideDetails {
+            get => _provideDetails;
             set {
-                if (Equals(value, _wrapperUsed)) return;
-                _wrapperUsed = value;
+                if (Equals(value, _provideDetails)) return;
+                _provideDetails = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private ServerPresetDetailsMode _detailsMode;
+
+        public ServerPresetDetailsMode DetailsMode {
+            get => _detailsMode;
+            set {
+                if (Equals(value, _detailsMode)) return;
+                _detailsMode = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _detailsNamePiece;
+
+        public string DetailsNamePiece {
+            get => _detailsNamePiece;
+            set => Apply(value, ref _detailsNamePiece);
+        }
+
+        private string _detailsDescription;
+
+        public string DetailsDescription {
+            get => _detailsDescription;
+            set {
+                if (Equals(value, _detailsDescription)) return;
+                _detailsDescription = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _detailsDownloadPasswordOnly;
+
+        public bool DetailsDownloadPasswordOnly {
+            get => _detailsDownloadPasswordOnly;
+            set {
+                if (Equals(value, _detailsDownloadPasswordOnly)) return;
+                _detailsDownloadPasswordOnly = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _detailsPublishPasswordChecksum;
+
+        public bool DetailsPublishPasswordChecksum {
+            get => _detailsPublishPasswordChecksum;
+            set {
+                if (Equals(value, _detailsPublishPasswordChecksum)) return;
+                _detailsPublishPasswordChecksum = value;
+
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private JObject _detailsContentJObject;
+
+        [CanBeNull]
+        public JObject DetailsContentJObject {
+            get => _detailsContentJObject;
+            set {
+                if (Equals(value, _detailsContentJObject)) return;
+                _detailsContentJObject = value;
 
                 if (Loaded) {
                     OnPropertyChanged();
@@ -36,21 +118,6 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _wrapperPort)) return;
                 _wrapperPort = value;
-
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
-        private string _wrapperDescription;
-
-        public string WrapperDescription {
-            get => _wrapperDescription;
-            set {
-                if (Equals(value, _wrapperDescription)) return;
-                _wrapperDescription = value;
 
                 if (Loaded) {
                     OnPropertyChanged();
@@ -97,52 +164,6 @@ namespace AcManager.Tools.Objects {
                     _wrapperDownloadSpeedLimit.ToReadableSize().Split(' ').LastOrDefault(), out long parsed) ? parsed : 0;
         }
 
-        private bool _wrapperDownloadPasswordOnly;
-
-        public bool WrapperDownloadPasswordOnly {
-            get => _wrapperDownloadPasswordOnly;
-            set {
-                if (Equals(value, _wrapperDownloadPasswordOnly)) return;
-                _wrapperDownloadPasswordOnly = value;
-
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
-        private bool _wrapperPublishPasswordChecksum;
-
-        public bool WrapperPublishPasswordChecksum {
-            get => _wrapperPublishPasswordChecksum;
-            set {
-                if (Equals(value, _wrapperPublishPasswordChecksum)) return;
-                _wrapperPublishPasswordChecksum = value;
-
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
-        private JObject _wrapperContentJObject;
-
-        [CanBeNull]
-        public JObject WrapperContentJObject {
-            get => _wrapperContentJObject;
-            set {
-                if (Equals(value, _wrapperContentJObject)) return;
-                _wrapperContentJObject = value;
-
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
         public string WrapperConfigFilename { get; private set; }
         public string WrapperContentDirectory { get; private set; }
         public string WrapperContentFilename { get; private set; }
@@ -158,13 +179,14 @@ namespace AcManager.Tools.Objects {
         [ContractAnnotation("destination:null => destination:notnull; destination:notnull => destination:notnull")]
         private void SetWrapperParams(ref JObject destination) {
             destination = destination ?? new JObject();
-            destination["enabled"] = WrapperUsed;
-            destination["port"] = WrapperPort;
-            destination["downloadSpeedLimit"] = WrapperDownloadSpeedLimit;
-            destination["verboseLog"] = WrapperVerboseLog;
-            destination["description"] = WrapperDescription;
-            destination["downloadPasswordOnly"] = WrapperDownloadPasswordOnly;
-            destination["publishPasswordChecksum"] = WrapperPublishPasswordChecksum;
+            destination[@"enabled"] = ProvideDetails;
+            destination[@"detailsMode"] = (int)DetailsMode;
+            destination[@"port"] = WrapperPort;
+            destination[@"downloadSpeedLimit"] = WrapperDownloadSpeedLimit;
+            destination[@"verboseLog"] = WrapperVerboseLog;
+            destination[@"description"] = DetailsDescription;
+            destination[@"downloadPasswordOnly"] = DetailsDownloadPasswordOnly;
+            destination[@"publishPasswordChecksum"] = DetailsPublishPasswordChecksum;
         }
 
         public event EventHandler SaveWrapperContent;
@@ -173,9 +195,9 @@ namespace AcManager.Tools.Objects {
             SetWrapperParams(ref _wrapperParamsJson);
 
             try {
-                if (WrapperUsed || _wrapperLoaded) {
+                if (ProvideDetails || _wrapperLoaded) {
                     File.WriteAllText(WrapperConfigFilename, _wrapperParamsJson.ToString(Formatting.Indented));
-                }else if (File.Exists(WrapperConfigFilename)) {
+                } else if (File.Exists(WrapperConfigFilename)) {
                     File.Delete(WrapperConfigFilename);
                 }
             } catch (Exception e) {
@@ -183,7 +205,7 @@ namespace AcManager.Tools.Objects {
             }
 
             try {
-                var jObj = WrapperContentJObject ?? new JObject();
+                var jObj = DetailsContentJObject ?? new JObject();
                 if (jObj.Count > 0) {
                     FileUtils.EnsureFileDirectoryExists(WrapperContentFilename);
                     File.WriteAllText(WrapperContentFilename, jObj.ToString(Formatting.Indented));
@@ -216,23 +238,23 @@ namespace AcManager.Tools.Objects {
             }
 
             try {
-                WrapperContentJObject = File.Exists(WrapperContentFilename) ?
+                DetailsContentJObject = File.Exists(WrapperContentFilename) ?
                         JsonExtension.Parse(File.ReadAllText(WrapperContentFilename)) : null;
             } catch (Exception e) {
-                WrapperContentJObject = null;
+                DetailsContentJObject = null;
                 Logging.Warning(e);
                 AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(WrapperContentFilename));
             }
 
-            WrapperUsed = _wrapperParamsJson?.GetBoolValueOnly("enabled", true) ?? false;
-
-            var obj = _wrapperParamsJson ?? new JObject();
+            var obj = _wrapperParamsJson ?? new JObject { [@"detailsMode"] = (int)ServerPresetDetailsMode.ViaNameIdentifier };
+            ProvideDetails = _wrapperParamsJson?.GetBoolValueOnly("enabled", true) ?? false;
+            DetailsMode = (ServerPresetDetailsMode)obj.GetIntValueOnly("detailsMode", (int)ServerPresetDetailsMode.ViaWrapper);
+            DetailsDescription = obj.GetStringValueOnly("description");
+            DetailsDownloadPasswordOnly = obj.GetBoolValueOnly("downloadPasswordOnly", true);
+            DetailsPublishPasswordChecksum = obj.GetBoolValueOnly("publishPasswordChecksum", true);
             WrapperPort = obj.GetIntValueOnly("port", 80);
             WrapperDownloadSpeedLimit = (long)obj.GetDoubleValueOnly("downloadSpeedLimit", 1e6);
             WrapperVerboseLog = obj.GetBoolValueOnly("verboseLog", true);
-            WrapperDescription = obj.GetStringValueOnly("description");
-            WrapperDownloadPasswordOnly = obj.GetBoolValueOnly("downloadPasswordOnly", true);
-            WrapperPublishPasswordChecksum = obj.GetBoolValueOnly("publishPasswordChecksum", true);
         }
         #endregion
 

@@ -42,6 +42,11 @@ namespace FirstFloor.ModernUI.Commands {
             return _execute();
         }
 
+        [Obsolete]
+        public new void Execute() {
+            base.Execute();
+        }
+
         public async Task ExecuteAsync() {
             try {
                 _inProcess = true;
@@ -90,12 +95,14 @@ namespace FirstFloor.ModernUI.Commands {
             return !_inProcess && (_canExecute == null || _canExecute(parameter));
         }
 
-        public T CurrentParameter;
+        [Obsolete]
+        public new void Execute(T parameter) {
+            base.Execute(parameter);
+        }
 
         public async Task ExecuteAsync(T parameter) {
             try {
                 _inProcess = true;
-                CurrentParameter = parameter;
                 RaiseCanExecuteChanged();
 
                 await _execute(parameter);
@@ -108,7 +115,6 @@ namespace FirstFloor.ModernUI.Commands {
                 throw;
             } finally {
                 _inProcess = false;
-                CurrentParameter = default(T);
                 RaiseCanExecuteChanged();
             }
         }

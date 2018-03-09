@@ -22,7 +22,7 @@ namespace AcManager.Tools.Objects {
             Author = author;
             Url = informationUrl;
             Version = version;
-            Save();
+            SaveAsync();
         }
     }
 }

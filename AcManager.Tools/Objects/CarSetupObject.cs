@@ -218,7 +218,7 @@ namespace AcManager.Tools.Objects {
             return Path.Combine(Track?.Id ?? GenericDirectory, newName + Extension);
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             try {
                 if (_iniFile == null) {
                     _iniFile = new IniFile(Location);
@@ -231,10 +231,12 @@ namespace AcManager.Tools.Objects {
             }
 
             if (_oldName != Name || _oldTrackId != TrackId) {
+                // TODO: Await?
                 RenameAsync().Forget();
             }
 
             Changed = false;
+            return Task.Delay(0);
         }
 
         // public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.MainTrackObject.NameEditable ?? TrackId})";

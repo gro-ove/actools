@@ -9,6 +9,7 @@ using System.Windows.Input;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Managers.Plugins;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -37,7 +38,7 @@ namespace AcManager.UserControls {
             await Task.Yield();
             foreach (var entry in list) {
                 Logging.Debug(entry.DisplayName);
-                entry.RetryCommand.Execute();
+                entry.RetryCommand.ExecuteAsync().Ignore();
             }
         }
 

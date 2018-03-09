@@ -466,6 +466,7 @@
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
+    <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
@@ -475,7 +476,7 @@
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\ServerPresetObject.Properties.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
-    <Compile Include="Objects\ServerPresetObject.Wrapped.cs" />
+    <Compile Include="Objects\ServerPresetObject.Details.cs" />
     <Compile Include="Objects\ServerSessionEntry.cs" />
     <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Stats.cs" />

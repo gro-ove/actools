@@ -110,7 +110,7 @@ namespace AcManager.Pages.ContentTools {
 
             public DelegateCommand OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand(() => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute();
+                    OpenInCustomShowroomCommand.ExecuteAsync().Ignore();
                     return;
                 }
 

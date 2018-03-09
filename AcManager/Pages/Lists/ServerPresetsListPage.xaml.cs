@@ -5,6 +5,7 @@ using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using StringBasedFilter;
@@ -34,12 +35,11 @@ namespace AcManager.Pages.Lists {
         }
 
         protected override void OnItemDoubleClick(AcObjectNew obj) {
-            var server = obj as ServerPresetObject;
-            if (server == null) return;
+            if (!(obj is ServerPresetObject server)) return;
             if (server.IsRunning) {
                 server.StopServerCommand.Execute();
             } else {
-                server.RunServerCommand.Execute();
+                server.RunServerCommand.ExecuteAsync().Ignore();
             }
         }
     }

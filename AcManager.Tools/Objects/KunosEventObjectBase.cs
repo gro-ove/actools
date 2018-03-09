@@ -521,7 +521,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override void SaveData(IniFile ini) {
+        protected override void SaveData(IniFile ini) {
             throw new NotSupportedException();
         }
 

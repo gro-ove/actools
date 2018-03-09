@@ -382,7 +382,7 @@ namespace AcManager.Tools.Tyres {
                 }
 
                 if (i % 3 == 0) {
-                    await Task.Delay(10);
+                    await Task.Yield();
                 }
             }
 

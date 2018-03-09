@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetWrapped" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetDetails" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
@@ -9,6 +9,8 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <mui:BindingProxy x:Key="ShareModes" Data="{Binding ShareModes}" />
 
       <ItemsPanelTemplate x:Key="ChildSharedItemsPanel">
         <mui:SpacingStackPanel Spacing="4" />
@@ -45,7 +47,7 @@
             </DockPanel>
           </mui:Switch>
 
-          <mui:BetterComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
+          <mui:BetterComboBox ItemsSource="{Binding Data, Source={StaticResource ShareModes}}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
               Style="{StaticResource BetterComboBox.Borderless.Small}" IsEditable="False">
             <mui:BetterComboBox.ItemTemplate>
               <DataTemplate>
@@ -126,7 +128,7 @@
 
           <DockPanel Visibility="{Binding CanBePacked, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Label Content="Share mode:" />
-            <mui:BetterComboBox ItemsSource="{x:Static local:SelectedPage.ShareModes}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
+            <mui:BetterComboBox ItemsSource="{Binding Data, Source={StaticResource ShareModes}}" SelectedItem="{Binding ShareMode, Mode=TwoWay}"
                 Style="{StaticResource BetterComboBox.Borderless.Small}" IsEditable="False">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
@@ -203,49 +205,66 @@
   <ScrollViewer x:Name="ScrollViewer">
     <mui:SpacingUniformGrid x:Name="Grid" VerticalSpacing="20" HorizontalSpacing="20" Columns="1" VerticalStackMode="True">
       <ScrollViewer Padding="0 0 0 20" x:Name="ScrollViewerLeft">
-        <StackPanel Style="{StaticResource SettingsPanel}"><!--
-    <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
-      <DockPanel>
-        <TextBlock Text="AC Server Wrapper:" />
-        <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://github.com/gro-ove/ac-server-wrapper" />
-      </DockPanel>
-    </TextBlock>-->
+        <StackPanel Style="{StaticResource SettingsPanel}">
 
-          <c:MessageBlock CloseKey="ac-server-wrapper" Margin="0 0 0 8">
-            <mui:BbCodeBlock
-                Text="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url]." />
-          </c:MessageBlock>
-
-          <CheckBox IsChecked="{Binding SelectedObject.WrapperUsed}"
-              ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
-            <Label Content="Use AC Server Wrapper" />
+          <CheckBox IsChecked="{Binding SelectedObject.ProvideDetails}">
+            <Label Content="Provide extra details about the server, such as links to extra content, assists or description" />
           </CheckBox>
 
-          <DockPanel>
-            <Label Content="Wrapper port:" />
-            <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-                Maximum="65535" />
+          <DockPanel IsEnabled="{Binding SelectedObject.ProvideDetails}">
+            <Label Content="Mode to provide extra details:" />
+            <ListBox ItemContainerStyle="{StaticResource RadioBoxListItem}" ItemsSource="{Binding DetailsModes}"
+                SelectedItem="{Binding SelectedObject.DetailsMode}">
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
           </DockPanel>
 
+          <mui:Switch Value="{Binding SelectedObject.DetailsMode}">
+            <StackPanel mui:Switch.When="{x:Static t:ServerPresetDetailsMode.ViaNameIdentifier}" Style="{StaticResource SettingsPanel}" Margin="0">
+              <c:MessageBlock Margin="0 0 0 28">
+                <mui:BbCodeBlock
+                    Text="Content Manager will add a few extra symbols to server name, so that other instances of CM on client machines will be able to recognize those symbols and use them to get a full description. Doesn’t require any scripts to run, works everywhere, although a bit less functional (but provides all the important details).[br][br]For extra content, you can provide links to download." />
+              </c:MessageBlock>
+            </StackPanel>
+
+            <StackPanel mui:Switch.When="{x:Static t:ServerPresetDetailsMode.ViaWrapper}" Style="{StaticResource SettingsPanel}" Margin="0">
+              <c:MessageBlock Margin="0 0 0 28">
+                <mui:BbCodeBlock
+                    Text="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url].[br][br]For extra content, you can either provide links to download or share it from the server." />
+              </c:MessageBlock>
+
+              <DockPanel>
+                <Label Content="Wrapper port:" />
+                <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+                    Maximum="65535" />
+              </DockPanel>
+            </StackPanel>
+          </mui:Switch>
+
           <DockPanel>
-            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WrapperDescription}" AcceptsReturn="True" TextWrapping="Wrap"
+            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.DetailsDescription}" AcceptsReturn="True" TextWrapping="Wrap"
                 Placeholder="None" Height="120" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
-            <Label Content="Server description:" HorizontalAlignment="Left" />
+            <Label Content="Server description (both BB-codes and emojis are allowed):" HorizontalAlignment="Left" Width="300" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding SelectedObject.WrapperPublishPasswordChecksum}"
+          <CheckBox IsChecked="{Binding SelectedObject.DetailsPublishPasswordChecksum}"
               ToolTip="Your password won’t leak, but this way, users will be able to check if password is correct before connecting">
             <Label Content="Publish passwords’ checksums" />
           </CheckBox>
 
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading missing content" />
 
-          <CheckBox IsChecked="{Binding SelectedObject.WrapperDownloadPasswordOnly}" ToolTip="Do not allow to download missing content if password is invalid"
+          <CheckBox IsChecked="{Binding SelectedObject.DetailsDownloadPasswordOnly}" ToolTip="Do not allow to download missing content if password is invalid"
               Background="Transparent">
             <Label Content="Allow downloading only with correct password" />
           </CheckBox>
 
-          <DockPanel ToolTip="Set some limit if you want for clients downloading content from the server to not take all bandwidth" Background="Transparent">
+          <DockPanel ToolTip="Set some limit if you want for clients downloading content from the server to not take all bandwidth" Background="Transparent"
+              Visibility="{Binding SelectedObject.DetailsMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static t:ServerPresetDetailsMode.ViaWrapper}}">
             <mui:ValueLabel Padding="8 0 0 0" Value="{Binding SelectedObject.DisplayWrapperDownloadSpeedLimit}" Background="Transparent" Content="Speed limit" />
             <Slider Minimum="0" Maximum="1" TickPlacement="BottomRight" TickFrequency="0.1">
               <Slider.Value>
@@ -272,71 +291,4 @@
       </ScrollViewer>
     </mui:SpacingUniformGrid>
   </ScrollViewer>
-
-  <!--<Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="200" />
-      <ColumnDefinition Width="9" />
-      <ColumnDefinition />
-    </Grid.ColumnDefinitions>
-
-    <StackPanel Style="{StaticResource SettingsPanel}">
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}">
-        <DockPanel>
-          <TextBlock Text="AC Server Wrapper:" />
-          <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://github.com/gro-ove/ac-server-wrapper" />
-        </DockPanel>
-      </TextBlock>
-      <DockPanel>
-        <Label Content="Wrapper port:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-            Maximum="65535" />
-      </DockPanel>
-    </StackPanel>
-
-    <mui:ModernTabSplitter Grid.Column="1" SaveKey="MigrationHelper" />
-
-    <StackPanel Grid.Column="2" Style="{StaticResource SettingsPanel}">
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Remote management:" />
-
-      <DockPanel>
-        <Label Content="Remote server IP:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperIpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-
-      <DockPanel>
-        <Label Content="Remote server password:" />
-        <mui:BetterTextBox Text="{Binding SelectedObject.WrapperPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-      </DockPanel>
-
-      <Button Command="{Binding SelectedObject.ConnectWrapperCommand}" Content="Connect" />
-
-      <DockPanel>
-        <Label Content="Connected state:" />
-        <mui:BooleanSwitch Value="{Binding SelectedObject.IsWrapperConnected}">
-          <mui:BooleanSwitch.True>
-            <DockPanel>
-              <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
-                  Margin="0 0 8 0" VerticalAlignment="Center" />
-              <TextBlock TextWrapping="Wrap" Text="Connected" />
-            </DockPanel>
-          </mui:BooleanSwitch.True>
-          <mui:BooleanSwitch.False>
-            <mui:ReferenceSwitch Value="{Binding SelectedObject.WrapperConnectionFailedReason}">
-              <mui:ReferenceSwitch.NonNull>
-                <DockPanel>
-                  <Path Data="{StaticResource AlertIconData}" Width="112" Height="112" Fill="{DynamicResource Error}" Stretch="Uniform" x:Name="ErrorIcon"
-                      DockPanel.Dock="Left" Margin="0 0 8 0" />
-                  <TextBlock Text="{Binding SelectedObject.WrapperConnectionFailedReason}" />
-                </DockPanel>
-              </mui:ReferenceSwitch.NonNull>
-              <mui:ReferenceSwitch.Null>
-                <TextBlock Text="Not connected" />
-              </mui:ReferenceSwitch.Null>
-            </mui:ReferenceSwitch>
-          </mui:BooleanSwitch.False>
-        </mui:BooleanSwitch>
-      </DockPanel>
-    </StackPanel>
-  </Grid>-->
 </UserControl>

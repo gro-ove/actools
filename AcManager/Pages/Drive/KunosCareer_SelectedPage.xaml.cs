@@ -68,8 +68,10 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(() => Model.AcObject.SelectedEvent?.GoCommand.Execute()), new KeyGesture(Key.G, ModifierKeys.Control)),
-                new InputBinding(new DelegateCommand(() => KunosCareer.NavigateToCareerPage(null)), new KeyGesture(Key.W, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => Model.AcObject.SelectedEvent?.GoCommand.ExecuteAsync().Ignore()),
+                        new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => KunosCareer.NavigateToCareerPage(null)),
+                        new KeyGesture(Key.W, ModifierKeys.Control)),
             });
 
             var acObject = Model.AcObject;
@@ -158,7 +160,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ListBox_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            Model.AcObject.SelectedEvent?.GoCommand.Execute();
+            Model.AcObject.SelectedEvent?.GoCommand.ExecuteAsync().Ignore();
         }
 
         private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {

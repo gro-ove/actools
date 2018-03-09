@@ -259,7 +259,7 @@ namespace AcManager.CustomShowroom {
 
                         if (HasNumbers) {
                             skin.SkinNumber = SkinNumber.ToInvariantString();
-                            skin.Save();
+                            skin.SaveAsync();
                         }
 
                         if (!cancellation.IsCancellationRequested) {

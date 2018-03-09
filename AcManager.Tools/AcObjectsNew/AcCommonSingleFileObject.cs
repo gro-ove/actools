@@ -36,10 +36,11 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             if (OldName != Name) {
-                RenameAsync().Forget();
+                return RenameAsync();
             }
+            return Task.Delay(0);
         }
 
         public override bool HandleChangedFile(string filename) {

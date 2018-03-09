@@ -96,7 +96,7 @@ namespace AcManager.Tools.Objects {
             var result = new List<PackedEntry>();
 
             // Wrapper
-            if (WrapperUsed) {
+            if (ProvideDetails) {
                 if (saveExecutable) {
                     string wrapper;
                     switch (mode) {
@@ -138,7 +138,7 @@ namespace AcManager.Tools.Objects {
                 result.Add(PackedEntry.FromContent("cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
 
                 // Content
-                if (WrapperContentJObject != null) {
+                if (DetailsContentJObject != null) {
                     void ProcessPiece(JObject piece) {
                         var file = (string)piece?["file"];
                         if (piece == null || file == null) return;
@@ -163,7 +163,7 @@ namespace AcManager.Tools.Objects {
                         }
                     }
 
-                    var content = WrapperContentJObject.DeepClone();
+                    var content = DetailsContentJObject.DeepClone();
                     ProcessPieces(content["cars"], "skins");
                     ProcessPiece(content["track"] as JObject);
                     ProcessPieces(content["weather"]);
@@ -194,7 +194,7 @@ namespace AcManager.Tools.Objects {
                 serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
             }
 
-            if (WrapperUsed) {
+            if (ProvideDetails) {
                 serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
             }
 
@@ -320,7 +320,7 @@ namespace AcManager.Tools.Objects {
             }
 
             if (SettingsHolder.Online.ServerPresetsAutoSave) {
-                SaveCommand.Execute();
+                await SaveCommand.ExecuteAsync();
             }
 
             if (SettingsHolder.Online.ServerPresetsUpdateDataAutomatically) {
@@ -345,7 +345,7 @@ namespace AcManager.Tools.Objects {
             var log = new BetterObservableCollection<string>();
             RunningLog = log;
 
-            if (WrapperUsed) {
+            if (ProvideDetails) {
                 await RunWrapper(serverExecutable, log, progress, cancellation);
             } else {
                 await RunAcServer(serverExecutable, log, progress, cancellation);

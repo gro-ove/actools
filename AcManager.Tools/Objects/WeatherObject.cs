@@ -262,7 +262,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override void SaveData(IniFile ini) {
+        protected override void SaveData(IniFile ini) {
             ini["LAUNCHER"].Set("NAME", Name);
             ini["LAUNCHER"].Set("TEMPERATURE_COEFF", TemperatureCoefficient);
 

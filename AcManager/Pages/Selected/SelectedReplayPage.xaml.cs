@@ -231,8 +231,8 @@ namespace AcManager.Pages.Selected {
             public AsyncCommand KeepReplayCommand => _keepReplayCommand ?? (_keepReplayCommand = new AsyncCommand(async () => {
                 SelectedObject.EditableCategory = null;
 
-                await Task.Delay(10);
-                SelectedObject.SaveCommand.Execute();
+                await Task.Yield();
+                await SelectedObject.SaveCommand.ExecuteAsync();
             }, () => SelectedObject.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave))
                     .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory))
                     .ListenOnWeak(AcSettingsHolder.Replay, nameof(AcSettingsHolder.Replay.Autosave));

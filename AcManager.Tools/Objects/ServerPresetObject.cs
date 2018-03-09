@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -205,7 +206,7 @@ namespace AcManager.Tools.Objects {
             LoadEntryListData(IniFile.Empty);
         }
 
-        public override void SaveData(IniFile ini) {
+        protected override void SaveData(IniFile ini) {
             foreach (var session in Sessions) {
                 session.Save(ini);
             }
@@ -294,13 +295,15 @@ namespace AcManager.Tools.Objects {
             ftp.SetIntEnum("LINUX", FtpMode);
         }
 
-        public override void Save() {
+        public override async Task SaveAsync() {
+            await EnsureDetailsNameIsActualAsync();
+
             var ini = EntryListIniObject ?? IniFile.Empty;
             ini.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
                 FileUtils.EnsureFileDirectoryExists(EntryListIniFilename);
                 File.WriteAllText(EntryListIniFilename, ini.ToString());
-                base.Save();
+                await base.SaveAsync();
             }
 
             SaveWrapperParams();

@@ -355,7 +355,12 @@ namespace AcManager.Pages.ServerPreset {
                         UpdateWrapperContentCars();
                         break;
 
-                    case nameof(SelectedObject.WrapperContentJObject):
+                    case nameof(SelectedObject.DetailsMode):
+                        ShareModes = SelectedObject.DetailsMode == ServerPresetDetailsMode.ViaWrapper ? EnumExtension.GetValues<ShareMode>()
+                                : EnumExtension.GetValues<ShareMode>().ApartFrom(ShareMode.Directly).ToArray();
+                        break;
+
+                    case nameof(SelectedObject.DetailsContentJObject):
                         _wrapperContentCarsBusy.Do(LoadWrapperContentCars);
                         _wrapperContentTracksBusy.Do(LoadWrapperContentTracks);
                         _wrapperContentWeatherBusy.Do(LoadWrapperContentWeather);

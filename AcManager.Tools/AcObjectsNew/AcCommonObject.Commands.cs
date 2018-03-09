@@ -56,8 +56,8 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private DelegateCommand _saveCommand;
+        private AsyncCommand _saveCommand;
 
-        public virtual DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => Changed));
+        public virtual AsyncCommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(SaveAsync, () => Changed));
     }
 }

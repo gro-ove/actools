@@ -85,6 +85,44 @@
     </ControlTemplate.Triggers>
   </ControlTemplate>
 
+  <ControlTemplate x:Key="ErrorTemplate.Borderless.ExtraPadding">
+    <StackPanel>
+      <controls:Cell>
+        <AdornedElementPlaceholder x:Name="PART_Adorner" Margin="2" />
+        <Border BorderThickness="1" BorderBrush="#FFDC000C" IsHitTestVisible="False" Margin="-3" />
+        <Path Data="{StaticResource AlertIconData}" SnapsToDevicePixels="True" Stretch="Uniform" HorizontalAlignment="Right" VerticalAlignment="Center"
+            Fill="#FFDC000C" x:Name="ErrorIcon" Margin="4 0 20 0" Height="10" Width="10" />
+      </controls:Cell>
+      <Border x:Name="PART_ErrorBorder" Background="#FFDC000C" Margin="-3 2 -3 0" Opacity="0" CornerRadius="0" IsHitTestVisible="False" MinHeight="24"
+          HorizontalAlignment="Right">
+        <TextBlock Text="{Binding ElementName=PART_Adorner, Path=AdornedElement.(Validation.Errors)[0].ErrorContent}" Foreground="White" Margin="8 2 8 3"
+            TextWrapping="Wrap" MaxWidth="{Binding ActualWidth, Converter={StaticResource SumConverter}, ConverterParameter=-14, ElementName=PART_Adorner}" />
+      </Border>
+    </StackPanel>
+    <ControlTemplate.Triggers>
+      <DataTrigger Value="True">
+        <DataTrigger.Binding>
+          <Binding ElementName="PART_Adorner" Path="AdornedElement.IsKeyboardFocusWithin" />
+        </DataTrigger.Binding>
+        <DataTrigger.EnterActions>
+          <BeginStoryboard x:Name="FadeInStoryboard">
+            <Storyboard>
+              <DoubleAnimation Duration="00:00:00.15" Storyboard.TargetName="PART_ErrorBorder" Storyboard.TargetProperty="Opacity" To="1" />
+            </Storyboard>
+          </BeginStoryboard>
+        </DataTrigger.EnterActions>
+        <DataTrigger.ExitActions>
+          <StopStoryboard BeginStoryboardName="FadeInStoryboard" />
+          <BeginStoryboard x:Name="FadeOutStoryBoard">
+            <Storyboard>
+              <DoubleAnimation Duration="00:00:00" Storyboard.TargetName="PART_ErrorBorder" Storyboard.TargetProperty="Opacity" To="0" />
+            </Storyboard>
+          </BeginStoryboard>
+        </DataTrigger.ExitActions>
+      </DataTrigger>
+    </ControlTemplate.Triggers>
+  </ControlTemplate>
+
   <Style x:Key="TextBoxBase.CommonBase" TargetType="{x:Type TextBoxBase}" BasedOn="{x:Null}">
     <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
     <Setter Property="CaretBrush" Value="{DynamicResource InputText}" />

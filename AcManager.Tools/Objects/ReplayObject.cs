@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -73,12 +74,12 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             if (EditableCategory != Category) {
                 RenameAsync().Forget();
             }
 
-            base.Save();
+            return base.SaveAsync();
         }
 
         /*public async Task ReplaceWeather(string newWeatherId) {

@@ -281,7 +281,7 @@ namespace AcManager.Pages.Drive {
                                 AcObject.PlayerCarSkinId)).ToArray();
 
                         if (saveLater) {
-                            AcObject.Save();
+                            AcObject.SaveAsync();
                         }
                     }
                 } catch (Exception e) {

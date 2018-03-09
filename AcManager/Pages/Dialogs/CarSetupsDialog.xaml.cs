@@ -67,8 +67,7 @@ namespace AcManager.Pages.Dialogs {
 
         private async void SelectedCar_AcObjectOutdated(object sender, EventArgs e) {
             Hide();
-
-            await Task.Delay(10);
+            await Task.Yield();
             Close();
         }
     }
