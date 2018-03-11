@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ac="clr-namespace:AcManager.Controls;assembly=AcManager.Controls"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" xmlns:acTools="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance sel:SelectedTrackSkinPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>

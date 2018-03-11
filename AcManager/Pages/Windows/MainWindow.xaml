@@ -318,8 +318,10 @@
           </MenuItem>
           <MenuItem DockPanel.Dock="Top" Header="About Content Manager" Click="OnNavigateAboutItemClick">
             <MenuItem.Icon>
-              <Image Source="/Assets/Icons/Icon.ico" Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" />
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CmIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              <!--<Image Source="/Assets/Icons/Icon.ico" Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" />-->
             </MenuItem.Icon>
           </MenuItem>
           <Border Loaded="OnDownloadListParentLoaded" Tag="DownloadsListParent" />

@@ -1,11 +1,11 @@
-﻿using System.Windows;
+﻿/*using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
-    public static class InputBindingBehavior {
+    public static class CommandBindingBehavior {
         public static bool GetPropagateToWindow(FrameworkElement obj) {
             return obj.GetValue(PropagateToWindowProperty) as bool? == true;
         }
@@ -15,8 +15,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty PropagateToWindowProperty =
-            DependencyProperty.RegisterAttached("PropagateToWindow", typeof(bool), typeof(InputBindingBehavior),
-            new PropertyMetadata(false, OnPropagateToWindowChanged));
+                DependencyProperty.RegisterAttached("PropagateToWindow", typeof(bool), typeof(CommandBindingBehavior),
+                        new PropertyMetadata(false, OnPropagateToWindowChanged));
 
         private static void OnPropagateToWindowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = (FrameworkElement)d;
@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         public static readonly DependencyProperty WindowProperty = DependencyProperty.RegisterAttached("Window", typeof(Window),
-                typeof(InputBindingBehavior), new UIPropertyMetadata(null));
+                typeof(CommandBindingBehavior), new UIPropertyMetadata(null));
 
         private static void SetBindings(UIElement element) {
             RemoveBindings(element);
@@ -50,18 +50,18 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             SetWindow(element, window);
 
-            for (var i = element.InputBindings.Count - 1; i >= 0; i--) {
-                var binding = element.InputBindings[i];
+            for (var i = element.CommandBindings.Count - 1; i >= 0; i--) {
+                var binding = element.CommandBindings[i];
                 binding.CommandTarget = element;
-                window.InputBindings.Add(new ExtBinding(window, binding));
-                element.InputBindings.RemoveAt(i);
+                window.CommandBindings.Add(new ExtBinding(window, binding));
+                element.CommandBindings.RemoveAt(i);
             }
         }
 
-        private class ExtBinding : InputBinding {
-            internal readonly InputBinding BaseBinding;
+        private class ExtBinding : CommandBinding {
+            internal readonly CommandBinding BaseBinding;
 
-            public ExtBinding(Window window, InputBinding baseBinding) : base(new DelegateCommand<object>(o => {
+            public ExtBinding(Window window, CommandBinding baseBinding) : base(new DelegateCommand<object>(o => {
                 if ((baseBinding.Gesture as KeyGesture)?.Modifiers.HasFlag(ModifierKeys.Alt) == true) {
                     var focused = FocusManager.GetFocusedElement(window);
                     if (focused is TextBoxBase || focused is PasswordBox) return;
@@ -80,11 +80,11 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
             element.ClearValue(WindowProperty);
 
-            for (var i = window.InputBindings.Count - 1; i >= 0; i--) {
-                var binding = window.InputBindings[i];
+            for (var i = window.CommandBindings.Count - 1; i >= 0; i--) {
+                var binding = window.CommandBindings[i];
                 if (ReferenceEquals(binding.CommandTarget, element)) {
-                    window.InputBindings.RemoveAt(i);
-                    element.InputBindings.Add(binding is ExtBinding ext ? ext.BaseBinding : binding);
+                    window.CommandBindings.RemoveAt(i);
+                    element.CommandBindings.Add(binding is ExtBinding ext ? ext.BaseBinding : binding);
                 }
             }
         }
@@ -97,4 +97,4 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             SetBindings((FrameworkElement)sender);
         }
     }
-}
+}*/

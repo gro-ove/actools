@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:graphs="clr-namespace:AcManager.Controls.Graphs;assembly=AcManager.Controls"
-    mc:Ignorable="d" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    mc:Ignorable="d" mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance sel:SelectedCarPage_New+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>

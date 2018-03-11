@@ -4,7 +4,7 @@
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:g="clr-namespace:AcManager"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
     d:DataContext="{d:DesignInstance dr:KunosCareer_SelectedPage+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+    mui:InputBindingBehavior.PropagateToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

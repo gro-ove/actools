@@ -5,7 +5,7 @@
     xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
     xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI"
     xmlns:managers="clr-namespace:AcManager.Tools.Managers;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DesignHeight="300"
-    d:DesignWidth="300" attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    d:DesignWidth="300" attached:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance selected:SelectedShowroomPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>

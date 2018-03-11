@@ -115,7 +115,7 @@
     </Style.Resources>
 
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="mui:InputBindingBehavior.PropagateInputBindingsToWindow" Value="True" />
+    <Setter Property="mui:InputBindingBehavior.PropagateToWindow" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ac:AcListPage">

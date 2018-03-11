@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:selected="clr-namespace:AcManager.Pages.Selected" xmlns:serverPreset="clr-namespace:AcManager.Pages.ServerPreset" xmlns:g="clr-namespace:AcManager"
     xmlns:system="clr-namespace:System;assembly=System" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance serverPreset:SelectedPage+ViewModel}" Loaded="OnLoaded">
   <UserControl.Resources>
     <ResourceDictionary>

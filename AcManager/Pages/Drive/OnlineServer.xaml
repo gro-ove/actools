@@ -4,7 +4,7 @@
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:p="clr-namespace:AcTools.Processes;assembly=AcTools" Loaded="OnLoaded" Unloaded="OnUnloaded" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
+    mui:InputBindingBehavior.PropagateToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
     d:DataContext="{d:DesignInstance dr:OnlineServer+ViewModel}" x:Name="This" SizeChanged="OnSizeChanged">
   <UserControl.Resources>
     <ResourceDictionary>

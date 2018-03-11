@@ -936,7 +936,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Enable Quick Switches</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url="https://trello.com/c/ad89Y9rL/71-quick-switches"]here[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]using any other way[/url].</value>
+    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url="https://trello.com/c/ad89Y9rL/71-quick-switches"]here[/url] or [url="http://acstuff.ru/app/#contacts"]using any other way[/url].</value>
   </data>
   <data name="Settings_QuickSwitches_AddedLabel" xml:space="preserve">
     <value>Added:</value>
@@ -3259,7 +3259,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Report an issue</value>
   </data>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url="https://trello.com/c/w5xT6ssZ/49-contacts"]contact us[/url].</value>
+    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url="http://acstuff.ru/app/#contacts"]contact us[/url].</value>
   </data>
   <data name="About_ContactUsHeader" xml:space="preserve">
     <value>Contact us:</value>

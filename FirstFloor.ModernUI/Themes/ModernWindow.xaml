@@ -136,7 +136,7 @@
 
                         <!-- Main menu -->
                         <c:ModernMenu LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu" SaveKey="{TemplateBinding SaveKey}"
-                            DefaultSource="{TemplateBinding DefaultContentSource}" a:InputBindingBehavior.PropagateInputBindingsToWindow="True"
+                            DefaultSource="{TemplateBinding DefaultContentSource}" a:InputBindingBehavior.PropagateToWindow="True"
                             WindowChrome.IsHitTestVisibleInChrome="True" />
                       </DockPanel>
 

@@ -209,6 +209,7 @@ namespace AcManager.Controls.UserControls.Web {
 
         private void OnLoadingStateChanged(object sender, PageLoadingEventArgs e) {
             IsLoading = !e.Progress.IsReady;
+            CommandManager.InvalidateRequerySuggested();
         }
 
         public event EventHandler<UrlEventArgs> PageLoadingStarted;

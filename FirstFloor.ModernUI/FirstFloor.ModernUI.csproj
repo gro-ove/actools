@@ -172,6 +172,7 @@
     <Compile Include="Windows\AlwaysExecutable.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
+    <Compile Include="Windows\Attached\CommandBindingBehavior.cs" />
     <Compile Include="Windows\Attached\DataGridFix.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />

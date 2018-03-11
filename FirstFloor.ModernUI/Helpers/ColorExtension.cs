@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public static bool IsBright(this Color c) {
-            return c.GetLuminance() > 0.45;
+            return c.GetLuminance() > 0.55;
         }
 
         public static double GetSaturation(this Color c) {

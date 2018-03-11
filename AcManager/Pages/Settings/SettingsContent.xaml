@@ -30,10 +30,6 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically}" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}" mui:NewMarkService.New="True">
-          <Label Content="Show origin icons in lists (such as Kunos icon)" />
-        </CheckBox>
-
         <CheckBox IsChecked="{Binding Holder.MentionCmInPackedContent}"
             ToolTip="I’ve added that bit just so more people using CM would know it supports installing stuff from files or folders dragged onto it, but you can always disable it">
           <Label Content="While packing, mention in description that packed content might be installed by dragging it onto Content Manager" />
@@ -64,6 +60,19 @@
         </CheckBox>
 
         <!-- Missing content -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Origin icons:" />
+
+        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}" mui:NewMarkService.New="True">
+          <Label Content="Show origin icons in lists (such as Kunos or RSS icon)" />
+        </CheckBox>
+
+        <c:MessageBlock set:Search.Include="False">
+          <mui:BbCodeBlock>
+            <mui:BbCodeBlock.Text>If you’re making mods and want your icon to be shown there as well, please, [url=&quot;http://acstuff.ru/app/#contacts&quot;]contact us[/url] or send a pull request [url=&quot;https://github.com/gro-ove/actools-data/tree/master/Origin%20Icons&quot;]here[/url].</mui:BbCodeBlock.Text>
+          </mui:BbCodeBlock>
+        </c:MessageBlock>
+
+        <!-- Missing content -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading content:" />
 
         <DockPanel set:Search.Keywords="missing;missing content;installation;download;install">
@@ -78,11 +87,11 @@
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <c:MessageBlock set:Search.Include="False">
+        <!--<c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
             <mui:BbCodeBlock.Text>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
-        </c:MessageBlock>
+        </c:MessageBlock>-->
 
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Content}" set:Search.Keywords="content" Style="{StaticResource SettingsPanel}">
