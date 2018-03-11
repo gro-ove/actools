@@ -3,6 +3,15 @@ using System.Runtime.InteropServices;
 
 namespace FirstFloor.ModernUI.Win32 {
     internal static class NativeMethods {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Win32Point {
+            public readonly int X;
+            public readonly int Y;
+        };
+
+        [DllImport(@"user32.dll")]
+        public static extern bool GetCursorPos(ref Win32Point pt);
+
         public const int SOk = 0;
         public const int MonitorDefaultToNearest = 0x00000002;
 

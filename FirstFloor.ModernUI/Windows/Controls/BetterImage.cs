@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -311,7 +312,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 } else if (e.NewValue is byte[] by) {
                     b.ImageSource = null;
                     b.Filename = null;
-                    b.SetBitmapEntryDirectly(LoadBitmapSourceFromBytes(by));
+                    b.SetBitmapEntryDirectly(LoadBitmapSourceFromBytes(by, b.InnerDecodeWidth, sourceDebug: "bytes array"));
                 } else {
                     var source = (ImageSource)e.NewValue;
                     b.ImageSource = source;
@@ -480,8 +481,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
                     using (var stream = response.GetResponseStream()) {
                         if (stream == null) {
-                            return cacheFile == null ? BitmapEntry.Empty :
-                                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                            return cacheFile == null ? BitmapEntry.Empty
+                                    : LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                         }
 
                         stream.CopyTo(memory);
@@ -493,14 +494,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         cacheFile.LastWriteTime = response.LastModified;
                     }
 
-                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
+                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                 }
             } catch (WebException e) {
                 Logging.Error(e.Message);
             }
 
             return cacheFile == null ? BitmapEntry.Empty :
-                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
         }
 
         private static async Task<BitmapEntry> LoadRemoteBitmapAsync(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
@@ -517,7 +518,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var lastWriteTime = cacheFile.LastWriteTime;
                 if ((DateTime.Now - lastWriteTime).TotalDays < 1d) {
                     // Because barely any servers respect If-Modified-Since header
-                    return LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                    return LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                 }
 
                 httpRequest.IfModifiedSince = lastWriteTime;
@@ -528,8 +529,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 using (var response = (HttpWebResponse)await httpRequest.GetResponseAsync()) {
                     using (var stream = response.GetResponseStream()) {
                         if (stream == null) {
-                            return cacheFile == null ? BitmapEntry.Empty :
-                                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight);
+                            return cacheFile == null ? BitmapEntry.Empty
+                                    : LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                         }
 
                         await stream.CopyToAsync(memory);
@@ -545,7 +546,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         });
                     }
 
-                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
+                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
                 }
             } catch (WebException e) when ((e.Response as HttpWebResponse)?.StatusCode != HttpStatusCode.NotModified) {
                 Logging.Error(e.Message);
@@ -553,7 +554,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             if (cacheFile == null) return BitmapEntry.Empty;
             var cacheBytes = await ReadBytesAsync(cache);
-            return cacheBytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(cacheBytes, decodeWidth, decodeHeight);
+            return cacheBytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(cacheBytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
         }
 
         public static BitmapEntry LoadBitmapSource(string filename, int decodeWidth = -1, int decodeHeight = -1) {
@@ -731,8 +732,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
-        public static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0) {
-            PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight);
+        public static BitmapEntry LoadBitmapSourceFromBytes([NotNull] byte[] data, int decodeWidth = -1, int decodeHeight = -1, int attempt = 0,
+                [Localizable(false)] string sourceDebug = null) {
+            PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight, sourceDebug);
 
             try {
                 // WrappingSteam here helps to avoid memory leaks. For more information:
@@ -798,7 +800,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
 #endif
 
-                return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt);
+                return LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, attempt, sourceDebug);
             } catch (NotSupportedException e) when (e.ToString().Contains(@"0x88982F50")) {
                 Logging.Warning(e.Message);
                 return BitmapEntry.Empty;
@@ -808,13 +810,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private static void PrepareDecodeLimits(byte[] data, ref int decodeWidth, ref int decodeHeight) {
+        private static void PrepareDecodeLimits(byte[] data, ref int decodeWidth, ref int decodeHeight,
+                [Localizable(false)] string sourceDebug) {
             if (decodeWidth <= 0 && decodeHeight <= 0) return;
 
             decodeWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
             decodeHeight = (int)(decodeHeight * Math.Max(DpiInformation.MaxScaleY, 1d));
 
-            var size = GetImageSize(data) ?? new System.Drawing.Size(1, 1);
+            var size = GetImageSize(data, sourceDebug) ?? new System.Drawing.Size(1, 1);
             if (decodeHeight > 0 && decodeWidth > 0) {
                 var minimum = Math.Min((double)decodeWidth / size.Width, (double)decodeHeight / size.Height);
                 decodeWidth = minimum >= 1d ? 0 : (int)(size.Width * minimum);
@@ -825,7 +828,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
-            if (filename.StartsWith("http:") || filename.StartsWith("https:")) {
+            if (filename.StartsWith(@"http:") || filename.StartsWith(@"https:")) {
                 Uri uri;
                 try {
                     uri = new Uri(filename);
@@ -840,7 +843,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var bytes = await ReadBytesAsync(filename).ConfigureAwait(false);
-            return bytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight);
+            return bytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: filename);
         }
         #endregion
 
@@ -864,11 +867,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 #else
             RemoveFromCache(filename);
-            var app = Application.Current;
-            if (app == null) return;
-            foreach (var image in app.Windows.OfType<Window>()
-                                     .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                                     .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
+            foreach (var image in VisualTreeHelperEx.GetAllOfType<BetterImage>()
+                                                    .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
 #endif
@@ -993,7 +993,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Inner control methods
-        public int InnerDecodeWidth {
+        protected int InnerDecodeWidth {
             get {
                 var decodeWidth = DecodeWidth;
                 if (decodeWidth >= 0) return decodeWidth;
@@ -1110,7 +1110,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             InvalidateVisual();
         }
 
-        private void ClearCurrent() {
+        protected void ClearCurrent() {
             _current = BitmapEntry.Empty;
             _broken = false;
             InvalidateVisual();
@@ -1194,13 +1194,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var decodeHeight = InnerDecodeHeight;
 
             if (data.Length < OptionDecodeImageSyncThreshold && UpdateLoaded()) {
-                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
+                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename));
                 return;
             }
 
             if (AsyncDecode) {
                 _currentTask = ThreadPool.Run(() => {
-                    var current = LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight);
+                    var current = LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename);
 
                     var result = (Action)(() => {
                         _currentTask = null;
@@ -1216,14 +1216,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     }
                 });
             } else {
-                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight));
+                SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename));
             }
         }
 
         private ICancellable _currentTask;
         private bool _isLoadedHandlerSet;
 
-        private void OnFilenameChanged(string value) {
+        protected void OnFilenameChanged(string value) {
             if (!IsLoaded) {
                 if (!_isLoadedHandlerSet) {
                     Loaded += OnLoaded;

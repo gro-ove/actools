@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Net;
@@ -9,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -31,7 +31,6 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Online;
-using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -44,7 +43,6 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
@@ -57,7 +55,24 @@ using Path = System.Windows.Shapes.Path;
 using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
-    public partial class MainWindow : IFancyBackgroundListener, IPluginsNavigator, INavigateUriHandler {
+    public partial class MainWindow : IFancyBackgroundListener, INavigateUriHandler {
+        private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", "Downloads");
+
+        public static TitleLinkEnabledEntry[] GetTitleLinksEntries() {
+            return new[] {
+                // new TitleLinkEnabledEntry("drive", AppStrings.Main_Drive),
+                new TitleLinkEnabledEntry("lapTimes", "Lap times"),
+                new TitleLinkEnabledEntry("stats", "Results"),
+                new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
+                new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
+                DownloadsEntry,
+                new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
+                new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
+                new TitleLinkEnabledEntry("about", AppStrings.Main_About),
+                new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
+            };
+        }
+
         public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
         public static readonly Uri EnterKeyUrl = new Uri("cmd://enterKey");
 
@@ -89,6 +104,7 @@ namespace AcManager.Pages.Windows {
 
             InitializeSubGroups();
 
+            var downloadsNavigateCommand = new NavigateCommand(this, new Uri("/Pages/Miscellaneous/DownloadsList.xaml", UriKind.Relative));
             DataContext = new ViewModel();
             InputBindings.AddRange(new[] {
                 new InputBinding(new NavigateCommand(this, "drive"), new KeyGesture(Key.F1)),
@@ -101,6 +117,15 @@ namespace AcManager.Pages.Windows {
                         new KeyGesture(Key.F1, ModifierKeys.Control)),
                 InternalUtils.IsAllRight ? new InputBinding(new NavigateCommand(this, new Uri("/Pages/Lists/ServerPresetsListPage.xaml", UriKind.Relative)),
                         new KeyGesture(Key.F2, ModifierKeys.Control)) : null,
+
+                // Downloads hotkey
+                new InputBinding(new DelegateCommand(() => {
+                    if (AppAppearanceManager.Instance.DownloadsInSeparatePage) {
+                        downloadsNavigateCommand.Execute();
+                    } else {
+                        this.RequireChild<Popup>("DownloadsPopup").IsOpen = true;
+                    }
+                }), new KeyGesture(Key.J, ModifierKeys.Control)),
 
                 // Settings, Alt+F…
                 new InputBinding(new NavigateCommand(this, new Uri("/Pages/Settings/SettingsPage.xaml", UriKind.Relative)),
@@ -140,14 +165,11 @@ namespace AcManager.Pages.Windows {
             UpdateLiveTabs();
             SettingsHolder.Live.PropertyChanged += OnLiveSettingsPropertyChanged;
 
-            UpdateExtraLinks();
+            UpdateTitleLinks();
+            AppAppearanceManager.Instance.PropertyChanged += OnAppAppearancePropertyChanged;
 
             UpdateMinoratingLink();
             SettingsHolder.Online.PropertyChanged += OnOnlineSettingsPropertyChanged;
-
-            if (!OfficialStarterNotification() && PluginsManager.Instance.HasAnyNew()) {
-                Toast.Show("Don’t forget to install plugins!", ""); // TODO?
-            }
 
             _defaultOnlineGroupCount = OnlineGroup.FixedLinks.Count;
 
@@ -165,7 +187,7 @@ namespace AcManager.Pages.Windows {
                 LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
             }
 
-            ContentInstallationManager.PluginsNavigator = this;
+            ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
 #if DEBUG
@@ -173,6 +195,18 @@ namespace AcManager.Pages.Windows {
 #else
         // MenuLinkGroups.Remove(BrowserLinkGroup);
 #endif
+        }
+
+        private readonly Busy _openDownloadsListBusy = new Busy();
+
+        private void OnContentInstallationTaskAdded(object o, EventArgs eventArgs) {
+            _openDownloadsListBusy.Yield(() => {
+                if (IsVisible && !VisualExtension.IsInputFocused()
+                        && AppAppearanceManager.Instance.DownloadsInSeparatePage
+                        && AppAppearanceManager.Instance.DownloadsPageAutoOpen) {
+                    NavigateTo(new Uri("/Pages/Miscellaneous/DownloadsList.xaml", UriKind.Relative));
+                }
+            });
         }
 
         private void OnActivated(object sender, EventArgs e) {
@@ -220,49 +254,46 @@ namespace AcManager.Pages.Windows {
             }
         }
 
-        private void UpdateExtraLinks() {
+        private void UpdateTitleLinks() {
+            var value = AppAppearanceManager.Instance.DownloadsInSeparatePage;
+            DownloadsEntry.IsAvailable = value;
+            BrowserLinkGroup.GroupKey = value ? @"downloads" : @"content";
             TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey != null)
                       .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
             AppAppearanceManager.Instance.TitleLinkEntries.ForEach(x => x.PropertyChanged += OnTitleLinkEnabledChanged);
         }
 
-        private void OnTitleLinkEnabledChanged(object o, PropertyChangedEventArgs propertyChangedEventArgs) {
+        private Border _downloadListParent;
+
+        private void OnDownloadListParentLoaded(object sender, RoutedEventArgs e) {
+            if (!AppAppearanceManager.Instance.DownloadsInSeparatePage) {
+                _downloadListParent = (Border)sender;
+                _downloadListParent.Child = (FrameworkElement)FindResource(@"DownloadsMenuSection");
+            }
+        }
+
+        private void OnAppAppearancePropertyChanged(object o, PropertyChangedEventArgs args) {
+            if (args.PropertyName == nameof(AppAppearanceManager.Instance.DownloadsInSeparatePage)) {
+                var value = AppAppearanceManager.Instance.DownloadsInSeparatePage;
+                if (_downloadListParent != null) {
+                    _downloadListParent.Child = value ? null : (FrameworkElement)FindResource(@"DownloadsMenuSection");
+                }
+                DownloadsEntry.IsAvailable = value;
+                BrowserLinkGroup.GroupKey = value ? @"downloads" : @"content";
+                MenuLinkGroups = new LinkGroupCollection(MenuLinkGroups.ToList());
+            }
+        }
+
+        private void OnTitleLinkEnabledChanged(object o, PropertyChangedEventArgs args) {
             var entry = (TitleLinkEnabledEntry)o;
             var link = TitleLinks.OfType<TitleLink>().FirstOrDefault(x => x.GroupKey == entry.Id);
             if (link != null) {
-                link.IsShown = entry.IsEnabled;
+                link.IsShown = entry.IsEnabled && entry.IsAvailable;
             }
         }
 
         private void UpdateMinoratingLink() {
             MinoratingLink.IsShown = SettingsHolder.Online.IntegrateMinorating;
-        }
-
-        private const string KeyOfficialStarterNotification = "mw.osn";
-
-        private static bool OfficialStarterNotification() {
-            if (ValuesStorage.Get<bool>(KeyOfficialStarterNotification)) return false;
-
-            if (SettingsHolder.Drive.SelectedStarterType == SettingsHolder.DriveSettings.OfficialStarterType) {
-                ValuesStorage.Set(KeyOfficialStarterNotification, true);
-                return false;
-            }
-
-            var launcher = AcPaths.GetAcLauncherFilename(AcRootDirectory.Instance.RequireValue);
-            if (FileVersionInfo.GetVersionInfo(launcher).FileVersion.IsVersionOlderThan(@"0.16.714")) {
-                return false;
-            }
-
-            Toast.Show(AppStrings.Main_OfficialSupportNotification, AppStrings.Main_OfficialSupportNotification_Details, () => {
-                if (ModernDialog.ShowMessage(
-                        AppStrings.Main_OfficialSupportNotification_Message,
-                        Controls.ControlsStrings.Common_GoodNews, MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
-                    SettingsHolder.Drive.SelectedStarterType = SettingsHolder.DriveSettings.OfficialStarterType;
-                }
-
-                ValuesStorage.Set(KeyOfficialStarterNotification, true);
-            });
-            return true;
         }
 
         private void OnLiveSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -324,6 +355,7 @@ namespace AcManager.Pages.Windows {
             }
 
             public NavigateCommand(MainWindow window, Uri uri) : base(true, false) {
+                if (VisualExtension.IsInputFocused() && Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) return;
                 _window = window;
                 _uri = uri;
             }
@@ -333,8 +365,6 @@ namespace AcManager.Pages.Windows {
             }
 
             protected override void ExecuteOverride() {
-                Logging.Debug(_uri);
-
                 if (_uri != null) {
                     _window.NavigateTo(_uri);
                     return;
@@ -627,7 +657,7 @@ namespace AcManager.Pages.Windows {
 
         private void OnKeyDown(object sender, KeyEventArgs e) {
             if (Keyboard.Modifiers != ModifierKeys.Alt && Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Shift) ||
-                    !SettingsHolder.Drive.QuickSwitches) return;
+                    !SettingsHolder.Drive.QuickSwitches || VisualExtension.IsInputFocused()) return;
 
             switch (e.SystemKey) {
                 case Key.OemTilde:
@@ -822,12 +852,6 @@ namespace AcManager.Pages.Windows {
             MakeSureOnlineIsReady(e.LoadedUri);
         }
 
-        void IPluginsNavigator.ShowPluginsList() {
-            if (IsVisible) {
-                NavigateTo(new Uri("/Pages/Settings/SettingsPage.xaml?Category=SettingsGeneral", UriKind.Relative));
-            }
-        }
-
         private static readonly Uri AboutPageUri = new Uri("/Pages/About/AboutPage.xaml", UriKind.Relative);
         private readonly StoredValue<Uri> _lastAboutSection = Stored.Get("MainWindow.AboutSection", AboutPageUri);
 
@@ -923,7 +947,7 @@ namespace AcManager.Pages.Windows {
             var popup = (ModernPopup)sender;
             var parent = ((FrameworkElement)popup.Content).FindVisualChildren<Border>().FirstOrDefault(x => x.Tag as string == @"DownloadsParent");
             if (parent != null && parent.Child == null) {
-                parent.Child = new InstallAdditionalContentList { Width = 360 };
+                parent.Child = new InstallAdditionalContentList();
             }
         }
 

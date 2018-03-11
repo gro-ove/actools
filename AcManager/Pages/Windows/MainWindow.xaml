@@ -134,6 +134,31 @@
           </Trigger>
         </DataTemplate.Triggers>
       </DataTemplate>
+
+      <DockPanel x:Key="DownloadsMenuSection" x:Shared="False">
+        <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+        <TextBlock DockPanel.Dock="Top" Text="Downloads:" Margin="8 8 8 8" Style="{StaticResource Label}" />
+        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" DockPanel.Dock="Bottom" DataContext="{x:Static t:ContentInstallationManager.Instance}"
+            Margin="8 0 4 0">
+          <Button Command="{Binding InstallAllCommand}" Visibility="{Binding HasMoreThanOneWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Margin="0 8 4 8">
+            <DockPanel>
+              <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource InstallAllIconData}" />
+              <TextBlock Text="Install all" />
+            </DockPanel>
+          </Button>
+          <Button Command="{Binding RemoveCompletedCommand}"
+              Visibility="{Binding RemoveCompletedCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 8 4 8">
+            <DockPanel>
+              <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource CleanUpIconData}" />
+              <TextBlock Text="Remove completed" />
+            </DockPanel>
+          </Button>
+        </mui:SpacingUniformGrid>
+        <Border Tag="DownloadsParent" />
+      </DockPanel>
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
 
@@ -215,7 +240,7 @@
       <c:ModernPopup x:Name="DownloadsPopup" PlacementTarget="{Binding ElementName=DownloadsButton}" Placement="Bottom"
           IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-        <DockPanel>
+        <DockPanel Width="360">
           <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Drive}" Click="OnNavigateItemClick"
               CommandParameter="/Pages/Drive/QuickDrive.xaml" InputGestureText="F1">
             <MenuItem.Icon>
@@ -244,8 +269,6 @@
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-
-
           <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
           <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Content}" Click="OnNavigateItemClick"
               CommandParameter="/Pages/Lists/CarsListPage.xaml" InputGestureText="Ctrl+F1">
@@ -262,6 +285,16 @@
             </MenuItem.Icon>
           </MenuItem>
           <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          <MenuItem DockPanel.Dock="Top" Header="Downloads" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/DownloadsList.xaml"
+              InputGestureText="Ctrl+J"
+              Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"
+              Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <MenuItem DockPanel.Dock="Top" Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
               InputGestureText="Alt+F1">
             <MenuItem.Icon>
@@ -285,32 +318,13 @@
           </MenuItem>
           <MenuItem DockPanel.Dock="Top" Header="About Content Manager" Click="OnNavigateAboutItemClick">
             <MenuItem.Icon>
-              <Image Source="/Assets/Icons/Icon.ico" Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" />
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CmIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              <!--<Image Source="/Assets/Icons/Icon.ico" Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" />-->
             </MenuItem.Icon>
           </MenuItem>
-          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-          <TextBlock DockPanel.Dock="Top" Text="Downloads:" Margin="8 8 8 8" Style="{StaticResource Label}" />
-          <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" DockPanel.Dock="Bottom" DataContext="{x:Static t:ContentInstallationManager.Instance}"
-              Margin="8 0 4 0">
-            <Button Style="{StaticResource Go.Button}" Command="{Binding InstallAllCommand}"
-                Visibility="{Binding HasMoreThanOneWaiting, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 8 4 8">
-              <DockPanel>
-                <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                    Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource InstallAllIconData}" />
-                <TextBlock Text="Install all" />
-              </DockPanel>
-            </Button>
-            <Button Command="{Binding RemoveCompletedCommand}"
-                Visibility="{Binding RemoveCompletedCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 8 4 8">
-              <DockPanel>
-                <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                    Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource CleanUpIconData}" />
-                <TextBlock Text="Remove completed" />
-              </DockPanel>
-            </Button>
-          </mui:SpacingUniformGrid>
-          <Border Tag="DownloadsParent" />
+          <Border Loaded="OnDownloadListParentLoaded" Tag="DownloadsListParent" />
         </DockPanel>
       </c:ModernPopup>
     </mui:Cell>
@@ -410,11 +424,16 @@
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
+    <!-- Downloads -->
+    <mui:LinkGroup GroupKey="downloads" DisplayName="Downloads">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="Downloads &amp; Installations" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>
+
     <!-- Server Source="/Pages/Lists/ServerPresetsListPage.xaml" -->
     <mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerPresets}" Source="/Pages/Lists/ServerPresetsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.ServerPresets}" />
-    <!--<mui:LinkGroupFilterable GroupKey="server" DisplayName="{x:Static g:AppStrings.Main_ServerRunning}"
-        Source="/Pages/Miscellaneous/WorkInProgress.xaml?server-running" />-->
 
     <!-- Settings -->
     <mui:LinkGroupFilterable GroupKey="settings" DisplayName="{x:Static g:AppStrings.Main_Settings}" AddAllLink="False" Source="/Pages/Settings/Search.xaml">
@@ -451,6 +470,7 @@
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="OnContentTitleLinkDrop"
           AllowDrop="True" />
     </mui:TitleLink>
+    <mui:TitleLink DisplayName="Downloads" GroupKey="downloads" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
     <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />

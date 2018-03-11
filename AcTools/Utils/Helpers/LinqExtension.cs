@@ -837,7 +837,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        [Pure, NotNull]
+        [Localizable(false), Pure, NotNull]
         public static T GetById<T>([NotNull] this IEnumerable<T> source, string id) where T : IWithId {
             if (source == null) throw new ArgumentNullException(nameof(source));
             foreach (var i in source) {

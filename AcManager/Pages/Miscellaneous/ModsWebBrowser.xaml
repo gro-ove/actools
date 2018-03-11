@@ -2,7 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:AcManager.Pages.Miscellaneous"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance l:ModsWebBrowser+ListViewModel}" mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+    d:DataContext="{d:DesignInstance l:ModsWebBrowser+ListViewModel}" mui:InputBindingBehavior.PropagateToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -18,26 +18,39 @@
   <ContentControl Content="{Binding}">
     <ContentControl.Resources>
 
+      <DataTemplate x:Key="AddressBarExtraTemplate" DataType="{x:Type l:ModsWebBrowser+ViewModel}">
+        <mui:SpacingUniformGrid x:Name="Panel" Rows="1" HorizontalSpacing="2" Margin="0 0 8 0" VerticalAlignment="Center"
+            DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=c:WebBlock}}"
+            d:DataContext="{d:DesignInstance l:ModsWebBrowser+ViewModel}">
+          <mui:SpacingUniformGrid.Resources>
+            <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+          </mui:SpacingUniformGrid.Resources>
+          <Border x:Name="InstallPiece" Background="{DynamicResource Accent}">
+            <Button Command="{Binding InstallCommand}" Content="Install" FontSize="{DynamicResource SmallFontSize}" Padding="8 1 8 2" />
+          </Border>
+          <Border x:Name="SharePiece" Background="{DynamicResource Accent}">
+            <Button Command="{Binding ShareLinkCommand}" Content="Share a link" FontSize="{DynamicResource SmallFontSize}"
+                Padding="8 1 8 2" ToolTip="Copy a link to this webpage for CM to install" />
+          </Border>
+        </mui:SpacingUniformGrid>
+        <DataTemplate.Triggers>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+          <DataTrigger Binding="{Binding DataContext.InstallCommand.IsAbleToExecute, ElementName=Panel}" Value="False">
+            <Setter TargetName="InstallPiece" Property="Background" Value="{DynamicResource ButtonBackground}" />
+          </DataTrigger>
+          <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+          <DataTrigger Binding="{Binding DataContext.ShareLinkCommand.IsAbleToExecute, ElementName=Panel}" Value="False">
+            <Setter TargetName="SharePiece" Property="Background" Value="{DynamicResource ButtonBackground}" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+
       <DataTemplate DataType="{x:Type l:ModsWebBrowser+ViewModel}">
         <DockPanel Margin="0 4 0 0">
           <c:WebBlock IsAddressBarVisible="True" NewWindowsBehavior="MultiTab" UserAgent="{Binding Source.UserAgent}" StartPage="{Binding Source.Url}"
               Loaded="OnWebBlockLoaded" CurrentTabChanged="OnCurrentTabChanged" PageLoading="OnPageLoading" PageLoaded="OnPageLoaded"
               SaveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser.Location:{0}'}"
-              KeepAliveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser:{0}'}">
-            <c:WebBlock.AddressBarExtraTemplate>
-              <DataTemplate>
-                <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="2" Margin="0 0 8 0" VerticalAlignment="Center"
-                    DataContext="{Binding DataContext, RelativeSource={RelativeSource AncestorType=c:WebBlock}}">
-                  <mui:SpacingUniformGrid.Resources>
-                    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
-                  </mui:SpacingUniformGrid.Resources>
-                  <Button Command="{Binding InstallCommand}" Content="Install" FontSize="{DynamicResource SmallFontSize}" Padding="8 1 8 2" />
-                  <Button Command="{Binding ShareLinkCommand}" Content="Share a link" FontSize="{DynamicResource SmallFontSize}" Padding="8 1 8 2"
-                      ToolTip="Copy a link to this webpage for CM to install" />
-                </mui:SpacingUniformGrid>
-              </DataTemplate>
-            </c:WebBlock.AddressBarExtraTemplate>
-          </c:WebBlock>
+              KeepAliveKey="{Binding Source.Id, StringFormat='{}ModsWebBrowser:{0}'}" AddressBarExtraTemplate="{StaticResource AddressBarExtraTemplate}" />
         </DockPanel>
       </DataTemplate>
 

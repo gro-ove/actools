@@ -8,6 +8,7 @@ using AcManager.Tools.Helpers.Loaders;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Tools {
     /// <summary>
@@ -96,6 +97,10 @@ namespace AcManager.Tools {
                     reportDestinationCallback?.Invoke(destination.Filename);
 
                     try {
+                        if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
+                            Toast.Show("New download started", suggestedName ?? _url);
+                        }
+                        
                         resultTask.TrySetResult(await downloader.DownloadAsync(destination.Filename, progress, _cancellation));
                     } catch (Exception e) {
                         Logging.Warning(e);

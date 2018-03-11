@@ -1,89 +1,41 @@
 using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media;
 using JetBrains.Annotations;
-using Point = System.Windows.Point;
 
 namespace FirstFloor.ModernUI.Windows.Media {
-    public static class VisualExtension {
-        [StructLayout(LayoutKind.Sequential)]
-        private struct Win32Point {
-            public readonly int X;
-            public readonly int Y;
-        };
+    public static partial class VisualExtension {
+        private static readonly List<Type> InputTypes = new List<Type>();
 
-        [DllImport(@"user32.dll")]
-        private static extern bool GetCursorPos(ref Win32Point pt);
-
-        public static Point GetMousePosition() {
-            var mouse = new Win32Point();
-            GetCursorPos(ref mouse);
-            return new Point(mouse.X, mouse.Y);
+        public static void RegisterInput<T>() where T : FrameworkElement {
+            InputTypes.Add(typeof(T));
         }
 
-        public static Point GetMousePosition(this Visual relativeTo) {
-            return relativeTo.PointFromScreen(GetMousePosition());
-        }
+        [Pure]
+        private static IEnumerable<FrameworkElement> FindVisualChildren([NotNull] this DependencyObject depObj) {
+            if (depObj == null) throw new ArgumentNullException(nameof(depObj));
 
-        public static Point GetMousePosition(this Visual relativeTo, Point screenPoint) {
-            return relativeTo.PointFromScreen(screenPoint);
-        }
+            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
+                var child = VisualTreeHelper.GetChild(depObj, i);
+                if (child is FrameworkElement fe && InputTypes.Contains(fe.GetType())) {
+                    yield return fe;
+                }
 
-        public static bool IsMouseOverElement(this Visual target) {
-            return VisualTreeHelper.GetDescendantBounds(target).Contains(target.GetMousePosition());
-        }
-
-        public static bool IsMouseOverElement(this Visual target, Point screenPoint) {
-            return VisualTreeHelper.GetDescendantBounds(target).Contains(target.GetMousePosition(screenPoint));
-        }
-
-        [CanBeNull]
-        public static Visual GetItemVisual(this ItemsControl list, object item) {
-            return list.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated
-                    ? null : list.ItemContainerGenerator.ContainerFromItem(item) as Visual;
-        }
-
-        [CanBeNull]
-        public static Visual GetIndexVisual(this ItemsControl list, int index) {
-            return list.ItemContainerGenerator.Status != GeneratorStatus.ContainersGenerated
-                    ? null : list.ItemContainerGenerator.ContainerFromIndex(index) as Visual;
-        }
-
-        public static bool IsMouseOverIndex(this ItemsControl list, int index) {
-            return list.GetIndexVisual(index)?.IsMouseOverElement() == true;
-        }
-
-        public static bool IsMouseOverIndex(this ItemsControl list, int index, Point point) {
-            return list.GetIndexVisual(index)?.IsMouseOverElement(point) == true;
-        }
-
-        public static bool IsMouseOverItem(this ItemsControl list, object item) {
-            return list.GetItemVisual(item)?.IsMouseOverElement() == true;
-        }
-
-        public static int GetMouseItemIndex(this ItemsControl list) {
-            var screenPoint = GetMousePosition();
-
-            for (var i = 0; i < list.Items.Count; i++) {
-                if (list.IsMouseOverIndex(i, screenPoint)) {
-                    return i;
+                foreach (var childOfChild in FindVisualChildren(child)) {
+                    yield return childOfChild;
                 }
             }
-
-            return -1;
         }
 
-        public static double DistanceTo(this Point a, Point b) {
-            return Math.Sqrt(Math.Pow(a.X - b.X, 2d) + Math.Pow(a.Y - b.Y, 2d));
-        }
-
-        public static Screen GetDeviceScreen([NotNull] this Window window) {
-            return Screen.FromRectangle(new Rectangle((int)window.Left, (int)window.Top, (int)window.Width, (int)window.Height));
+        public static bool IsInputFocused() {
+            return Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is PasswordBox || Keyboard.FocusedElement is ComboBox
+                    || Application.Current?.Windows.OfType<Window>().SelectMany(FindVisualChildren)
+                                  .Any(x => x.IsKeyboardFocused || x.IsKeyboardFocusWithin) == true;
         }
     }
 }

@@ -138,6 +138,7 @@
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
     <Compile Include="Helpers\GenericObjectFactoryExtension.cs" />
+    <Compile Include="Helpers\ElementPool.cs" />
     <Compile Include="Helpers\IStorage.cs" />
     <Compile Include="Helpers\ScreenInterrogatory.cs" />
     <Compile Include="Helpers\Stored.cs" />
@@ -171,6 +172,7 @@
     <Compile Include="Windows\AlwaysExecutable.cs" />
     <Compile Include="Windows\AppIconService.cs" />
     <Compile Include="Windows\AppShortcut.cs" />
+    <Compile Include="Windows\Attached\CommandBindingBehavior.cs" />
     <Compile Include="Windows\Attached\DataGridFix.cs" />
     <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
     <Compile Include="Windows\Attached\Draggable.cs" />
@@ -422,6 +424,7 @@
     <Compile Include="Windows\IParametrizedUriContent.cs" />
     <Compile Include="Windows\Media\BrokenIcon.cs" />
     <Compile Include="Windows\Media\VisualExtension.cs" />
+    <Compile Include="Windows\Media\VisualExtension.Mouse.cs" />
     <Compile Include="Windows\Navigation\DefaultLinkNavigator.cs" />
     <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />
     <Compile Include="Windows\IContent.cs" />

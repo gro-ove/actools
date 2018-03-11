@@ -389,6 +389,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
                 if (ModernDialog.ShowMessage($"Delete bookmark to a website “{Name}”?", ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo)
                         != MessageBoxResult.Yes) return;
+                WebBlock.Unload($@"ModsWebBrowser:{Id}");
                 IsDeleted = true;
             }));
 
@@ -981,6 +982,9 @@ window.$KEY = outline.stop.bind(outline);
                     _dialog.Hide();
 
                     var result = await newLoader.DownloadAsync(webClient, destinationCallback, reportDestinationCallback, null, progress, _cancellation);
+                    if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
+                        Toast.Show("New download started", FileName ?? url);
+                    }
                     resultTask.TrySetResult(result);
                 } catch (Exception e) {
                     resultTask.TrySetException(e);
@@ -1038,6 +1042,10 @@ window.$KEY = outline.stop.bind(outline);
                     _dialog.Hide();
 
                     try {
+                        if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
+                            Toast.Show("New download started", suggestedName ?? url);
+                        }
+
                         resultTask.TrySetResult(await downloader.DownloadAsync(destination.Filename, progress, _cancellation));
                     } catch (Exception e) {
                         Logging.Warning(e);

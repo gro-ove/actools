@@ -6,6 +6,18 @@ namespace AcManager.Tools.Helpers {
         public class WebBlocksSettings : NotifyPropertyChanged {
             internal WebBlocksSettings() { }
 
+            private bool? _notifyOnWebDownloads;
+
+            public bool NotifyOnWebDownloads {
+                get => _notifyOnWebDownloads ?? (_notifyOnWebDownloads = ValuesStorage.Get("Settings.WebBlocksSettings.NotifyOnWebDownloads", true)).Value;
+                set {
+                    if (Equals(value, _notifyOnWebDownloads)) return;
+                    _notifyOnWebDownloads = value;
+                    ValuesStorage.Set("Settings.WebBlocksSettings.NotifyOnWebDownloads", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _unloadBeforeRace;
 
             public bool UnloadBeforeRace {

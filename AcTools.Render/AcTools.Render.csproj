@@ -103,6 +103,7 @@
     <Compile Include="Base\Cameras\InterpolationCamera.cs" />
     <Compile Include="Base\CommonStates.cs" />
     <Compile Include="Base\DelegateCommand.cs" />
+    <Compile Include="Base\IDeviceContextHolder.cs" />
     <Compile Include="Base\Materials\BasicMaterials.cs" />
     <Compile Include="Base\Materials\IMaterialsFactory.cs" />
     <Compile Include="Base\Objects\BaseRenderableObject.cs" />
@@ -121,7 +122,9 @@
     <Compile Include="Base\PostEffects\IRenderHelper.cs" />
     <Compile Include="Base\PostEffects\SmaaHelper.cs" />
     <Compile Include="Base\Reflections\LightProbe.cs" />
+    <Compile Include="Base\RendererClock.cs" />
     <Compile Include="Base\RendererShotFormat.cs" />
+    <Compile Include="Base\RendererStopwatch.cs" />
     <Compile Include="Base\Shaders\EffectOnlyMatrixVariable.cs" />
     <Compile Include="Base\Shaders\EffectReadyTechnique.cs" />
     <Compile Include="Base\Shadows\ShadowsBase.cs" />

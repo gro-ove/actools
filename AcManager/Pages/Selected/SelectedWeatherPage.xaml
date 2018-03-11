@@ -3,7 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:g="clr-namespace:AcManager" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:c="http://acstuff.ru/app/controls" xmlns:a="clr-namespace:AcTools;assembly=AcTools"
         xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-        mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+        mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance sel:SelectedWeatherPage+ViewModel}" x:Name="This">
     <UserControl.Resources>
         <ResourceDictionary>

@@ -38,7 +38,12 @@
         <Label Content="Save extra tabs" />
       </CheckBox>
 
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Auto-loading:" />
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloads:" />
+      <CheckBox IsChecked="{Binding WebBlocks.NotifyOnWebDownloads}">
+        <Label Content="Show a notification for new downloads" />
+      </CheckBox>
+
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Auto-downloads:" />
       <CheckBox IsChecked="{Binding WebBlocks.CaptureViaFileStorageLoaders}">
         <Label Content="For supported file storages, capture new tabs and download file immediately"
             ToolTip="List of supported storages includes Google Drive, Dropbox, OneDrive, Mega, Yandex.Disk, MediaFire, AdFly." />

@@ -7,7 +7,6 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Media;
-using AcManager.Controls.Converters;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Managers.Online;
@@ -226,7 +225,7 @@ namespace AcManager.Controls {
 
         private void UpdateCountryFlag(ServerEntry n) {
             if (_hideSourceIcons == null || Array.IndexOf(_hideSourceIcons, LanOnlineSource.Key) == -1) {
-                _countryFlagImage.Source = CountryIdToImageConverter.Convert(n.CountryId);
+                _countryFlagImage.Country = n.CountryId;
             } else if (_countryFlagImage.Visibility != Visibility.Hidden) {
                 _countryFlagImage.Visibility = Visibility.Collapsed;
 
@@ -580,7 +579,7 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         private TextBlock _timeLeftText;
-        private Image _countryFlagImage;
+        private CountryIcon _countryFlagImage;
         private TextBlock _nameText;
         private TextBlock _countryName;
         private TextBlock _trackNameText;
@@ -613,7 +612,7 @@ namespace AcManager.Controls {
             _pingText = (TextBlock)GetTemplateChild(@"PingText");
             _clientsText = (TextBlock)GetTemplateChild(@"DisplayClientsText");
             _timeLeftText = (TextBlock)GetTemplateChild(@"TimeLeftText");
-            _countryFlagImage = (Image)GetTemplateChild(@"CountryFlagImage");
+            _countryFlagImage = (CountryIcon)GetTemplateChild(@"CountryFlagImage");
             _nameText = (TextBlock)GetTemplateChild(@"DisplayNameText");
             _trackNameText = (TextBlock)GetTemplateChild(@"TrackNameText");
             _countryName = (TextBlock)GetTemplateChild(@"CountryName");

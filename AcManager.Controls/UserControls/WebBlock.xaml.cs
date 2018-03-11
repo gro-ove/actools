@@ -46,6 +46,14 @@ namespace AcManager.Controls.UserControls {
             public bool AlwaysKeepAlive { get; }
         }
 
+        public static void Unload(string keepAliveKey) {
+            var alive = StayingAlive.GetByIdOrDefault(keepAliveKey);
+            if (alive != null) {
+                alive.Tabs.ForEach(y => y.OnUnloaded());
+                StayingAlive.Remove(alive);
+            }
+        }
+
         public static void ResetStayingAlive() {
             StayingAlive.ForEach(x => x.Tabs.ForEach(y => y.OnUnloaded()));
             StayingAlive.Clear();
@@ -487,34 +495,42 @@ namespace AcManager.Controls.UserControls {
 
         private void BrowseBack_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = CurrentTab?.BackCommand.CanExecute(null) == true;
+            e.Handled = true;
         }
 
         private void BrowseBack_Executed(object sender, ExecutedRoutedEventArgs e) {
             CurrentTab?.BackCommand.Execute(null);
+            e.Handled = true;
         }
 
         private void BrowseForward_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = CurrentTab?.ForwardCommand.CanExecute(null) == true;
+            e.Handled = true;
         }
 
         private void BrowseForward_Executed(object sender, ExecutedRoutedEventArgs e) {
             CurrentTab?.ForwardCommand.Execute(null);
+            e.Handled = true;
         }
 
         private void GoToPage_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = true;
+            e.Handled = true;
         }
 
-        private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs a) {
+        private void GoToPage_Executed(object sender, ExecutedRoutedEventArgs e) {
             CurrentTab?.Navigate(UrlTextBox.Text);
+            e.Handled = true;
         }
 
         private void BrowseHome_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = true;
+            e.Handled = true;
         }
 
         private void BrowseHome_Executed(object sender, ExecutedRoutedEventArgs e) {
             CurrentTab?.Navigate(StartPage);
+            e.Handled = true;
         }
 
         private bool _usedForScrolling;

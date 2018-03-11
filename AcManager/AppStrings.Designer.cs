@@ -61,7 +61,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;https://trello.com/c/w5xT6ssZ/49-contacts&quot;]contact us[/url]..
+        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;http://acstuff.ru/app/#contacts&quot;]contact us[/url]..
         /// </summary>
         public static string About_ContactInformation {
             get {
@@ -7600,7 +7600,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url=&quot;https://trello.com/c/ad89Y9rL/71-quick-switches&quot;]here[/url] or [url=&quot;https://trello.com/c/w5xT6ssZ/49-contacts&quot;]using any other way[/url]..
+        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url=&quot;https://trello.com/c/ad89Y9rL/71-quick-switches&quot;]here[/url] or [url=&quot;http://acstuff.ru/app/#contacts&quot;]using any other way[/url]..
         /// </summary>
         public static string Settings_QuickSwitches_Description {
             get {
@@ -8603,7 +8603,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change skin’s livery.png (Ctrl+J).
+        ///   Looks up a localized string similar to Change skin’s livery.png (Alt+J).
         /// </summary>
         public static string Toolbar_ChangeLivery_Tooltip {
             get {
@@ -9170,7 +9170,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For a decent online (Ctrl+J).
+        ///   Looks up a localized string similar to For a decent online (Ctrl+Alt+J).
         /// </summary>
         public static string Toolbar_PackData_Tooltip {
             get {

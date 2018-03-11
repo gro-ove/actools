@@ -295,12 +295,12 @@
             </mui:BooleanSwitch>
             <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
                 Background="Transparent" Margin="0 0 40 30" Padding="4 0" />
-            <Image x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+            <c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
                 RenderOptions.BitmapScalingMode="LowQuality">
-              <Image.ToolTip>
+              <FrameworkElement.ToolTip>
                 <TextBlock x:Name="CountryName" />
-              </Image.ToolTip>
-            </Image>
+              </FrameworkElement.ToolTip>
+            </c:CountryIcon>
             <TextBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                 Margin="22 2 116 32" />
 
@@ -356,12 +356,12 @@
             </mui:BooleanSwitch>
             <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
                 Background="Transparent" Margin="0 0 40 30" />
-            <Image x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+            <c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
                 RenderOptions.BitmapScalingMode="LowQuality">
-              <Image.ToolTip>
+              <FrameworkElement.ToolTip>
                 <TextBlock x:Name="CountryName" />
-              </Image.ToolTip>
-            </Image>
+              </FrameworkElement.ToolTip>
+            </c:CountryIcon>
             <TextBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
                 Margin="22 2 116 32" />
 

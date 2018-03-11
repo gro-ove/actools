@@ -21,7 +21,7 @@ namespace AcManager.DiscordRpc {
         }
 
         public static long ToTimestamp(this DateTime dt) {
-            return (dt.Ticks - 621355968000000000) / 10000000;
+            return (dt.ToUniversalTime().Ticks - 621355968000000000) / 10000000;
         }
     }
 }

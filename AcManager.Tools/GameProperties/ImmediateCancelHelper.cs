@@ -61,6 +61,7 @@ namespace AcManager.Tools.GameProperties {
             }
 
             private void OnStart(object sender, EventArgs e) {
+                Logging.Write("Race started");
                 Dispose();
             }
 

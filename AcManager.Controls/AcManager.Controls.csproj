@@ -137,10 +137,11 @@
   <ItemGroup>
     <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
-    <Compile Include="CarIconImage.cs" />
+    <Compile Include="CarIcon.cs" />
     <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
+    <Compile Include="CountryIcon.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
     <Compile Include="Dialogs\CupInformationDialog.xaml.cs">
       <DependentUpon>CupInformationDialog.xaml</DependentUpon>
@@ -157,10 +158,13 @@
     <Compile Include="Helpers\CupUi.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\FilterHints.cs" />
+    <Compile Include="Helpers\IAcObjectsUriProvider.cs" />
     <Compile Include="Helpers\ILocalKeyBindings.cs" />
     <Compile Include="Helpers\LocalKeyBindingsController.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
+    <Compile Include="OriginIcon.cs" />
     <Compile Include="Presentation\ExtraProgressRings.cs" />
+    <Compile Include="Presentation\TitleLinkEnabledEntry.cs" />
     <Compile Include="RaceGridEditorTable.cs" />
     <Compile Include="TemperatureValueLabel.cs" />
     <Compile Include="AcObjectBase.cs" />
@@ -256,7 +260,6 @@
     <Compile Include="Converters\KunosCareerTypeToIconConverter.cs" />
     <Compile Include="Converters\PlaceToBrushConverter.cs" />
     <Compile Include="Converters\RealismLevelToColorConverter.cs" />
-    <Compile Include="Converters\CountryIdToImageConverter.cs" />
     <Compile Include="Helpers\DelayedPropertyWrapper.cs" />
     <Compile Include="Helpers\FancyBackgroundManager.cs" />
     <Compile Include="Helpers\PresetsMenuHelper.cs" />

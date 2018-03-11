@@ -56,6 +56,7 @@
 
   <!-- Basic color brushes -->
   <SolidColorBrush x:Key="Accent" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="AccentOverlay" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="Go" Color="{DynamicResource GoColor}" />
   <SolidColorBrush x:Key="Error" Color="{DynamicResource ErrorColor}" />
 

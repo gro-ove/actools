@@ -43,6 +43,14 @@ namespace FirstFloor.ModernUI.Helpers {
             return Math.Max(c.R, Math.Max(c.G, c.B)) / 255d;
         }
 
+        public static double GetLuminance(this Color c) {
+            return (c.R * 0.299 + c.G * 0.587 + c.B * 0.114) / 255d;
+        }
+
+        public static bool IsBright(this Color c) {
+            return c.GetLuminance() > 0.55;
+        }
+
         public static double GetSaturation(this Color c) {
             int max = Math.Max(c.R, Math.Max(c.G, c.B));
             return max == 0 ? 0 : 1d - 1d * Math.Min(c.R, Math.Min(c.G, c.B)) / max;

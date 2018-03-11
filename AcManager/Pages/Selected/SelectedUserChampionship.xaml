@@ -4,7 +4,7 @@
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:se="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True" FocusVisualStyle="{x:Null}"
+    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>

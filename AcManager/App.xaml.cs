@@ -15,7 +15,6 @@ using AcManager.AcSound;
 using AcManager.Assets;
 using AcManager.ContentRepair;
 using AcManager.Controls;
-using AcManager.Controls.Converters;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
@@ -77,6 +76,7 @@ using FirstFloor.ModernUI.Win32;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using Newtonsoft.Json;
 using StringBasedFilter;
 
@@ -212,11 +212,6 @@ namespace AcManager {
 
             LimitedSpace.Initialize();
             DataProvider.Initialize();
-            CountryIdToImageConverter.Initialize(
-                    FilesStorage.Instance.GetDirectory(FilesStorage.DataDirName, ContentCategory.CountryFlags),
-                    FilesStorage.Instance.GetDirectory(FilesStorage.DataUserDirName, ContentCategory.CountryFlags));
-            FilesStorage.Instance.Watcher(ContentCategory.CountryFlags).Update += (sender, args) => { CountryIdToImageConverter.ResetCache(); };
-
             TestKey();
 
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -280,20 +275,14 @@ namespace AcManager {
             AppArguments.Set(AppFlag.WindowsVerbose, ref DpiAwareWindow.OptionVerboseMode);
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
 
+            // Shared memory, now as an app flag
+            SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
+
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/
             AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
-            AppAppearanceManager.Initialize(new[] {
-                // new TitleLinkEnabledEntry("drive", AppStrings.Main_Drive),
-                new TitleLinkEnabledEntry("lapTimes", "Lap times"),
-                new TitleLinkEnabledEntry("stats", "Results"),
-                new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
-                new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
-                new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
-                new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
-                new TitleLinkEnabledEntry("about", AppStrings.Main_About),
-                new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
-            });
+            AppAppearanceManager.Initialize(Pages.Windows.MainWindow.GetTitleLinksEntries());
+            VisualExtension.RegisterInput<WebBlock>();
 
             ContentUtils.Register("AppStrings", AppStrings.ResourceManager);
             ContentUtils.Register("ControlsStrings", ControlsStrings.ResourceManager);
@@ -475,9 +464,6 @@ namespace AcManager {
 
             // Paint shop+livery generator?
             LiteShowroomTools.LiveryGenerator = new LiveryGenerator();
-
-            // Shared memory, now as an app flag
-            SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
 
             // Discord
             if (AppArguments.Has(AppFlag.DiscordCmd)) {

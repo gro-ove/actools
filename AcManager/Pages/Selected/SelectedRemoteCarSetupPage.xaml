@@ -4,7 +4,7 @@
     xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
     xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
     xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DataContext="{d:DesignInstance selected:SelectedRemoteCarSetupPage+ViewModel}"
-    attached:InputBindingBehavior.PropagateInputBindingsToWindow="True" x:Name="This">
+    attached:InputBindingBehavior.PropagateToWindow="True" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

@@ -3,6 +3,7 @@
   <!-- Default values for themes are taken from here. Feel free to override any of them. But you don’t have to override all. -->
   <!-- Special colors -->
   <Color x:Key="AccentColor">#1BA1E2</Color>
+  <Color x:Key="AccentOverlayColor">#FFFFFF</Color>
   <Color x:Key="ErrorColor">#FF8C00</Color>
   <Color x:Key="GoColor">#00FF00</Color>
 
@@ -86,7 +87,7 @@
   <SolidColorBrush x:Key="ButtonBorderPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="ButtonText" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ButtonTextHover" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="ButtonTextPressed" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="ButtonTextPressed" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ButtonTextDisabled" Color="#515151" />
 
   <SolidColorBrush x:Key="GoButtonBackground" Color="#333333" />
@@ -107,15 +108,15 @@
   <SolidColorBrush x:Key="DataGridCellBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridCellForeground" Color="#FFFFFF" />
   <SolidColorBrush x:Key="DataGridCellForegroundHover" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="DataGridHeaderBackground" Color="Transparent" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundHover" Color="#3E3E42" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridHeaderForeground" Color="#FFFFFF" />
   <SolidColorBrush x:Key="DataGridHeaderForegroundHover" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="DataGridGridLines" Color="#333333" />
   <SolidColorBrush x:Key="DataGridDropSeparator" Color="{DynamicResource AccentColor}" />
 
@@ -136,7 +137,7 @@
   <SolidColorBrush x:Key="ItemBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="ItemBorder" Color="#3E3E42" />
   <SolidColorBrush x:Key="ItemText" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="ItemTextSelected" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="ItemTextSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ItemTextHover" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ItemTextDisabled" Color="#717171" />
 
@@ -155,7 +156,7 @@
   <SolidColorBrush x:Key="ModernButtonBorderPressed" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ModernButtonBorderDisabled" Color="#515151" />
   <SolidColorBrush x:Key="ModernButtonIconBackgroundPressed" Color="{DynamicResource AccentColor}" />
-  <SolidColorBrush x:Key="ModernButtonIconForegroundPressed" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="ModernButtonIconForegroundPressed" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ModernButtonText" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ModernButtonTextHover" Color="#FFFFFF" />
   <SolidColorBrush x:Key="ModernButtonTextPressed" Color="#FFFFFF" />
@@ -205,7 +206,7 @@
 	<SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
 	<SolidColorBrush x:Key="FancyHintButtonText" Color="#FFFFFF" />
 	<SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#FFFFFF" />
-	<SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#FFFFFF" />
+	<SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="{DynamicResource AccentOverlayColor}" />
 	<SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->

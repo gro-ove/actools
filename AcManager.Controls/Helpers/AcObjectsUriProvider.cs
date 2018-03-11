@@ -2,10 +2,6 @@
 using AcManager.Tools.AcObjectsNew;
 
 namespace AcManager.Controls.Helpers {
-    public interface IAcObjectsUriProvider {
-        Uri GetUri(AcObjectNew obj);
-    }
-
     public static class AcObjectsUriManager {
         private static IAcObjectsUriProvider _provider;
 

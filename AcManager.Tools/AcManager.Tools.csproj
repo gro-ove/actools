@@ -191,7 +191,6 @@
     <Compile Include="ContentInstallation\Installators\IAdditionalContentInstallator.cs" />
     <Compile Include="ContentInstallation\Installators\IFileInfo.cs" />
     <Compile Include="ContentInstallation\Installators\InstallationDetails.cs" />
-    <Compile Include="ContentInstallation\IPluginsNavigator.cs" />
     <Compile Include="Data\BaseUpdater.cs" />
     <Compile Include="Data\DataUpdater.cs" />
     <Compile Include="Data\DataProvider.cs" />

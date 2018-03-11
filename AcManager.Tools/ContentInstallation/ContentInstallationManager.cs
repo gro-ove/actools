@@ -13,7 +13,6 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using Path = System.IO.Path;
 
@@ -39,8 +38,6 @@ namespace AcManager.Tools.ContentInstallation {
                 return _instance;
             }
         }
-
-        public static IPluginsNavigator PluginsNavigator { get; set; }
 
         private ContentInstallationManager() {
             DownloadList = new ChangeableObservableCollection<ContentInstallationEntry>();
@@ -211,12 +208,10 @@ namespace AcManager.Tools.ContentInstallation {
         }
 
         public Task<bool> InstallAsync([NotNull] string source, ContentInstallationParams installationParams = null) {
-            Toast.Show("New download started", source);
             return InstallAsync(new ContentInstallationEntry(source, installationParams), AddInstallMode.ShareTasks);
         }
 
         public Task<bool> InstallAsync([NotNull] string source, AddInstallMode mode, ContentInstallationParams installationParams = null) {
-            Toast.Show("New download started", source);
             return InstallAsync(new ContentInstallationEntry(source, installationParams), mode);
         }
 

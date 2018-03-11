@@ -13,6 +13,14 @@ namespace FirstFloor.ModernUI.Windows.Media {
     /// Provides addition visual tree helper methods.
     /// </summary>
     public static class VisualTreeHelperEx {
+        public static IEnumerable<T> GetAllOfType<T>() where T : DependencyObject {
+            var app = Application.Current;
+            if (app == null) yield break;
+            foreach (var image in app.Windows.OfType<Window>().SelectMany(FindVisualChildren<T>)) {
+                yield return image;
+            }
+        }
+
         [Pure]
         public static bool IsUserVisible(this FrameworkElement element, FrameworkElement container) {
             if (element.IsVisible != true) return false;

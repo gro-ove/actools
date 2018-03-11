@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -9,20 +10,30 @@ using Newtonsoft.Json;
 
 namespace AcManager.Pages.SelectionLists {
     public class SelectCategoryDescription {
+        [CanBeNull]
         public string Name { get; }
+
+        [CanBeNull]
         public string Description { get; }
+
+        [NotNull]
         public string Filter { get; }
+
         public double Order { get; }
-        public object Icon { get; }
+
+        [CanBeNull]
+        public FrameworkElement Icon { get; }
+
+        [CanBeNull]
         public string Source { get; }
 
         [JsonConstructor]
         private SelectCategoryDescription([NotNull] string name, string description, string filter, string icon, double order) {
             Name = ContentUtils.Translate(name);
             Description = ContentUtils.Translate(description);
-            Filter = filter;
+            Filter = filter ?? @"*";
             Order = order;
-            Icon = ContentUtils.GetIcon(icon ?? name + ".png", _type);
+            Icon = ContentUtils.GetIcon(icon ?? name + @".png", _type).Get();
             Source = _source;
         }
 

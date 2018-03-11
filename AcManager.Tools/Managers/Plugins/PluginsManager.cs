@@ -191,10 +191,5 @@ namespace AcManager.Tools.Managers.Plugins {
         internal void OnPluginEnabled(PluginEntry plugin, bool value) {
             (value ? PluginEnabled : PluginDisabled)?.Invoke(this, new PluginEventArgs { PluginId = plugin.Id });
         }
-
-        public bool HasAnyNew() {
-            // TODO
-            return false;
-        }
     }
 }

@@ -514,10 +514,10 @@ namespace AcManager.Pages.Dialogs {
                 if (_fake == null) {
                     var front = originalFront.Clone();
                     var rear = originalRear.Clone();
-                    front.Name = TyresName;
-                    front.ShortName = TyresShortName;
-                    rear.Name = TyresName;
-                    rear.ShortName = TyresShortName;
+                    front.Name = TyresName ?? @"Unnamed";
+                    front.ShortName = TyresShortName ?? @"…";
+                    rear.Name = TyresName ?? @"Unnamed";
+                    rear.ShortName = TyresShortName ?? @"…";
                     _fake = new TyresSet(front, rear);
                 }
                 return _fake;

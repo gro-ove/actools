@@ -3,8 +3,9 @@
 
   <!-- Light theme — whitish background, dark text -->
   <!-- Special colors -->
-  <Color x:Key="GoColor">#8BC34A</Color>
   <Color x:Key="AccentColor">#00BCD4</Color>
+  <Color x:Key="AccentOverlayColor">#FFFFFF</Color>
+  <Color x:Key="GoColor">#8BC34A</Color>
   <Color x:Key="ErrorColor">#BF360C</Color>
 
   <!-- Curves -->
@@ -80,7 +81,7 @@
   <SolidColorBrush x:Key="ButtonBorderPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="ButtonText" Color="#212122" />
   <SolidColorBrush x:Key="ButtonTextHover" Color="#212122" />
-  <SolidColorBrush x:Key="ButtonTextPressed" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="ButtonTextPressed" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ButtonTextDisabled" Color="#A1A1A1" />
 
   <SolidColorBrush x:Key="GoButtonBackground" Color="#FAFAFA" />
@@ -101,15 +102,15 @@
   <SolidColorBrush x:Key="DataGridCellBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridCellForeground" Color="#212122" />
   <SolidColorBrush x:Key="DataGridCellForegroundHover" Color="#212122" />
-  <SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="DataGridHeaderBackground" Color="Transparent" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundHover" Color="#DDDDDD" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridHeaderBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="DataGridHeaderForeground" Color="#212122" />
   <SolidColorBrush x:Key="DataGridHeaderForegroundHover" Color="#212122" />
-  <SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="#FAFAFA" />
-  <SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="DataGridGridLines" Color="#CCCCCC" />
   <SolidColorBrush x:Key="DataGridDropSeparator" Color="{DynamicResource AccentColor}" />
 
@@ -129,7 +130,7 @@
   <SolidColorBrush x:Key="ItemBackgroundSelected" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="ItemBorder" Color="#CCCCCC" />
   <SolidColorBrush x:Key="ItemText" Color="#212122" />
-  <SolidColorBrush x:Key="ItemTextSelected" Color="#FAFAFA" />
+  <SolidColorBrush x:Key="ItemTextSelected" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ItemTextHover" Color="#212122" />
   <SolidColorBrush x:Key="ItemTextDisabled" Color="#919191" />
 
@@ -148,7 +149,7 @@
   <SolidColorBrush x:Key="ModernButtonBorderPressed" Color="#212122" />
   <SolidColorBrush x:Key="ModernButtonBorderDisabled" Color="#919191" />
   <SolidColorBrush x:Key="ModernButtonIconBackgroundPressed" Color="{DynamicResource AccentColor}" />
-  <SolidColorBrush x:Key="ModernButtonIconForegroundPressed" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="ModernButtonIconForegroundPressed" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ModernButtonText" Color="#212122" />
   <SolidColorBrush x:Key="ModernButtonTextHover" Color="#212122" />
   <SolidColorBrush x:Key="ModernButtonTextPressed" Color="#212122" />
@@ -203,7 +204,7 @@
   <SolidColorBrush x:Key="FancyHintButtonBorderPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="FancyHintButtonText" Color="#FFFFFF" />
   <SolidColorBrush x:Key="FancyHintButtonTextHover" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="#FFFFFF" />
+  <SolidColorBrush x:Key="FancyHintButtonTextPressed" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="FancyHintButtonTextDisabled" Color="#515151" />
 
   <!-- Text editor, syntax highlighting -->

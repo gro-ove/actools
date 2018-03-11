@@ -1,9 +1,9 @@
 ﻿<c:AcListPage x:Class="AcManager.Pages.Lists.CarsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:li="clr-namespace:AcManager.Pages.Lists" xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded"
-    Margin="{StaticResource ContentMargin}" d:DataContext="{d:DesignInstance li:CarsListPage+ViewModel}" ItemsSource="{Binding MainList}"
-    SaveScrollKey="CarsListPage.Scroll">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" Margin="{StaticResource ContentMargin}" d:DataContext="{d:DesignInstance li:CarsListPage+ViewModel}"
+    ItemsSource="{Binding MainList}" SaveScrollKey="CarsListPage.Scroll">
   <c:AcListPage.Resources>
 
     <DataTemplate x:Key="Batch.PackCars" DataType="{x:Type li:CarsListPage+BatchAction_PackCars}">
@@ -110,6 +110,26 @@
             </DockPanel>
           </Label>
         </CheckBox>
+      </mui:SpacingStackPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="Batch.AddTag" DataType="{x:Type c:CommonBatchActions+BatchAction_AddTag}">
+      <DataTemplate.Resources>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
+      </DataTemplate.Resources>
+      <mui:SpacingStackPanel Spacing="4">
+        <DockPanel VerticalAlignment="Top">
+          <TextBlock Text="Shared tags:" Width="80" DockPanel.Dock="Left" Style="{StaticResource Label}" />
+          <mui:TagsList ItemsSource="{Binding Tags}" Margin="0 -4 0 -4" SuggestionsSource="{x:Static t:SuggestionLists.CarTagsListView}" />
+        </DockPanel>
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" HorizontalAlignment="Left">
+          <CheckBox IsChecked="{Binding CleanUp}">
+            <Label Content="Clean up tags" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding SortTags}">
+            <Label Content="Sort tags" />
+          </CheckBox>
+        </mui:SpacingUniformGrid>
       </mui:SpacingStackPanel>
     </DataTemplate>
 

@@ -35,7 +35,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             base.OnApplyTemplate();
 
             if (Popup != null) {
-                Popup.Opened -= Popup_Opened;
+                Popup.Opened -= OnPopupOpened;
             }
 
             if (_button != null) {
@@ -47,7 +47,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             _button = GetTemplateChild("PART_Button") as ToggleButton;
 
             if (Popup != null) {
-                Popup.Opened += Popup_Opened;
+                Popup.Opened += OnPopupOpened;
             }
 
             if (_button != null) {
@@ -62,10 +62,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private void Popup_Opened(object sender, EventArgs e) {
+        private void OnPopupOpened(object sender, EventArgs e) {
             _panel.OriginalColor = Color;
             _lastColorPicker = new WeakReference<ColorPicker>(this);
         }
+
+        public static readonly DependencyPropertyKey OverlayColorPropertyKey = DependencyProperty.RegisterReadOnly(nameof(OverlayColor), typeof(Color),
+                typeof(ColorPicker), new PropertyMetadata(Colors.White));
+
+        public static readonly DependencyProperty OverlayColorProperty = OverlayColorPropertyKey.DependencyProperty;
+
+        public Color OverlayColor => (Color)GetValue(OverlayColorProperty);
 
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color),
                 typeof(ColorPicker),
@@ -86,6 +93,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (_skip) return;
             if (DisplayColor.ToColor() != newValue) {
                 DisplayColor = newValue.ToHexString();
+                SetValue(OverlayColorPropertyKey, newValue.IsBright() ? Colors.Black : Colors.White);
             }
         }
 

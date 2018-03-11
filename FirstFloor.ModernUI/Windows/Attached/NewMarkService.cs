@@ -20,10 +20,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         private static void OnLimitedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (!(d is FrameworkElement u)) return;
-            u.Loaded += Control_Loaded;
+            u.Loaded += OnControlLoaded;
         }
 
-        private static void Control_Loaded(object sender, RoutedEventArgs e) {
+        private static void OnControlLoaded(object sender, RoutedEventArgs e) {
             var c = (UIElement)sender;
             if (GetNew(c)) {
                 AdornerLayer.GetAdornerLayer(c)?.Add(new NewMarkAdorner(c));

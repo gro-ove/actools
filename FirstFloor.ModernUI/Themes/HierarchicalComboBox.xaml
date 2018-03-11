@@ -166,6 +166,8 @@
   </ControlTemplate>
 
   <Style TargetType="{x:Type c:HierarchicalItem}">
+    <Setter Property="Background" Value="{DynamicResource PopupBackground}" />
+    <Setter Property="Foreground" Value="{DynamicResource ItemText}" />
     <Setter Property="Template" Value="{StaticResource SpecialMenuItemControlTemplate}" />
     <Setter Property="IsTextSearchEnabled" Value="True" />
     <Style.Triggers>

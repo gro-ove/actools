@@ -4,7 +4,7 @@
     xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}"
     SizeChanged="OnSizeChanged" Loaded="OnLoaded" Unloaded="OnUnloaded" PreviewKeyDown="OnPreviewKeyDown"
-    mui:InputBindingBehavior.PropagateInputBindingsToWindow="True">
+    mui:InputBindingBehavior.PropagateToWindow="True">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

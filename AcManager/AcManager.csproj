@@ -462,6 +462,9 @@
     <Compile Include="Pages\Miscellaneous\LapTimes_Grid.xaml.cs">
       <DependentUpon>LapTimes_Grid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Miscellaneous\DownloadsList.xaml.cs">
+      <DependentUpon>DownloadsList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Selected\CarSetupValues.cs" />
     <Compile Include="Pages\Selected\SelectedCarPage_New.xaml.cs">
       <DependentUpon>SelectedCarPage_New.xaml</DependentUpon>
@@ -475,6 +478,7 @@
     <Compile Include="Pages\Selected\SelectedUserChampionship.xaml.cs">
       <DependentUpon>SelectedUserChampionship.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SelectionLists\SelectCategory.cs" />
     <Compile Include="Pages\SelectionLists\SelectionCategoriesList.cs" />
     <Compile Include="Pages\SelectionLists\TrackDlcs.xaml.cs">
       <DependentUpon>TrackDlcs.xaml</DependentUpon>
@@ -1124,6 +1128,10 @@
     <Page Include="Pages\Miscellaneous\LapTimes_Grid.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Miscellaneous\DownloadsList.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\Selected\SelectedCarPage_New.xaml">
       <Generator>MSBuild:Compile</Generator>

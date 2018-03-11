@@ -3,7 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:web="clr-namespace:AcManager.Controls.UserControls.Web" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded" PreviewMouseWheel="OnMouseWheel"
-    PreviewMouseRightButtonDown="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnMouseRightButtonUp" AllowDrop="True" Drop="OnDrop">
+    PreviewMouseRightButtonDown="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnMouseRightButtonUp" AllowDrop="True" Drop="OnDrop"
+    mui:InputBindingBehavior.PropagateToWindow="True">
   <!-- Propagate bindings to window? -->
   <DockPanel.CommandBindings>
     <CommandBinding Command="NavigationCommands.BrowseBack" CanExecute="BrowseBack_CanExecute" Executed="BrowseBack_Executed" />

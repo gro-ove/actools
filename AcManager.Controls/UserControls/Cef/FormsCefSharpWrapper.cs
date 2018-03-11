@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -227,8 +228,20 @@ namespace AcManager.Controls.UserControls.Cef {
         public void OnLoaded() { }
 
         public void OnUnloaded() {
-            DisposeHelper.Dispose(ref _inner);
-            DisposeHelper.Dispose(ref _wrapper);
+            if (_downloadHandler.IsAnyDownloadActive) {
+                _downloadHandler.PropertyChanged += OnDownloadHandlerPropertyChanged;
+            } else {
+                DisposeHelper.Dispose(ref _inner);
+                DisposeHelper.Dispose(ref _wrapper);
+            }
+
+            void OnDownloadHandlerPropertyChanged(object sender, PropertyChangedEventArgs args) {
+                if (args.PropertyName == nameof(_downloadHandler.IsAnyDownloadActive) && !_downloadHandler.IsAnyDownloadActive) {
+                    _downloadHandler.PropertyChanged -= OnDownloadHandlerPropertyChanged;
+                    DisposeHelper.Dispose(ref _inner);
+                    DisposeHelper.Dispose(ref _wrapper);
+                }
+            }
         }
 
         public void OnError(string error, string url, int line, int column) { }

@@ -647,7 +647,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
                 new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
 
-                new InputBinding(_object.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_object.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt | ModifierKeys.Control)),
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
 
                 new InputBinding(_model.CarAnalyzerCommand, new KeyGesture(Key.A, ModifierKeys.Alt)),

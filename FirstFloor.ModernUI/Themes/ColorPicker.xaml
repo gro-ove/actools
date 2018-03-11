@@ -3,6 +3,7 @@
     xmlns:mui="clr-namespace:FirstFloor.ModernUI">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Slider.xaml" />
@@ -10,16 +11,20 @@
   </ResourceDictionary.MergedDictionaries>
 
   <Style x:Key="ColorPickerToggleButton" TargetType="{x:Type ToggleButton}">
-    <Setter Property="Width" Value="20" />
+    <Setter Property="Width" Value="23" />
     <Setter Property="Focusable" Value="False" />
     <Setter Property="Foreground" Value="{DynamicResource ModernButtonText}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ToggleButton}">
           <c:Cell Background="Transparent">
-            <Ellipse x:Name="PART_Circle" Width="20" Height="20" HorizontalAlignment="Right" VerticalAlignment="Center" Fill="{TemplateBinding Background}" />
+            <Rectangle Fill="{TemplateBinding Background}" Width="23" HorizontalAlignment="Right" />
+            <Path x:Name="Arrow" Margin="8 1 8 0" Fill="{TemplateBinding Foreground}" Data="{DynamicResource DownArrowGeometry}"
+                HorizontalAlignment="Right" VerticalAlignment="Center" IsHitTestVisible="False" />
+            <Ellipse x:Name="PART_Circle" Width="16" Height="16" Margin="2" HorizontalAlignment="Right" VerticalAlignment="Center"
+                Fill="{TemplateBinding Background}" Visibility="Collapsed" />
             <Path x:Name="PART_Icon" Width="12" Height="12" Fill="{TemplateBinding Background}" Stretch="Uniform" HorizontalAlignment="Right"
-                VerticalAlignment="Center" Margin="4"
+                VerticalAlignment="Center" Margin="4" Visibility="Collapsed"
                 Data="F1 M 38,20L 53,38L 33,58L 15,41L 24,32C 24,32 42,38 44,34C 47,29 39,28 39,30C 41,31 42,33 42,33C 42,33 22,33 19,25C 17,19 36,22 36,22L 38,20 Z M 33,24C 33,24 23,24 23,25C 23,27 29,28 29,28L 33,24 Z M 53,36L 42,23C 42,23 51,29 53,30C 54,30 57,28 60,30C 63,31 60,35 60,33C 60,32 55,33 55,33C 63,34 64,38 63,39C 61,41 59,41 59,39C 59,38 53,36 53,36 Z" />
           </c:Cell>
 
@@ -31,7 +36,7 @@
                 <Condition Property="IsChecked" Value="False" />
                 <Condition Property="IsPressed" Value="False" />
               </MultiTrigger.Conditions>
-              <Setter TargetName="PART_Circle" Property="Fill" Value="Transparent" />
+              <!--<Setter TargetName="PART_Circle" Property="Fill" Value="Transparent" />-->
             </MultiTrigger>
 
             <Trigger Property="IsMouseOver" Value="True">
@@ -331,7 +336,8 @@
             <c:BetterTextBox x:Name="PART_TextBox"
                 Text="{Binding DisplayColor, RelativeSource={RelativeSource TemplatedParent}, UpdateSourceTrigger=PropertyChanged}"
                 Padding="{TemplateBinding Padding}" Placeholder="{x:Static mui:UiStrings.SelectColor}" />
-            <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="3 2 5 0"
+            <ToggleButton x:Name="PART_Button" HorizontalAlignment="Right" Margin="2 0 0 0"
+                Foreground="{Binding OverlayColor, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static c:ColorPicker.ColorToBrushConverter}}"
                 Background="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static c:ColorPicker.ColorToBrushConverter}}"
                 Style="{StaticResource ColorPickerToggleButton}"
                 IsHitTestVisible="{Binding ElementName=PART_Popup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}" />

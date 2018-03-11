@@ -6,26 +6,26 @@ using FirstFloor.ModernUI.Commands;
 
 namespace FirstFloor.ModernUI.Windows.Attached {
     public static class InputBindingBehavior {
-        public static bool GetPropagateInputBindingsToWindow(FrameworkElement obj) {
-            return obj.GetValue(PropagateInputBindingsToWindowProperty) as bool? == true;
+        public static bool GetPropagateToWindow(FrameworkElement obj) {
+            return obj.GetValue(PropagateToWindowProperty) as bool? == true;
         }
 
-        public static void SetPropagateInputBindingsToWindow(FrameworkElement obj, bool value) {
-            obj.SetValue(PropagateInputBindingsToWindowProperty, value);
+        public static void SetPropagateToWindow(FrameworkElement obj, bool value) {
+            obj.SetValue(PropagateToWindowProperty, value);
         }
 
-        public static readonly DependencyProperty PropagateInputBindingsToWindowProperty =
-            DependencyProperty.RegisterAttached("PropagateInputBindingsToWindow", typeof(bool), typeof(InputBindingBehavior),
-            new PropertyMetadata(false, OnPropagateInputBindingsToWindowChanged));
+        public static readonly DependencyProperty PropagateToWindowProperty =
+            DependencyProperty.RegisterAttached("PropagateToWindow", typeof(bool), typeof(InputBindingBehavior),
+            new PropertyMetadata(false, OnPropagateToWindowChanged));
 
-        private static void OnPropagateInputBindingsToWindowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
+        private static void OnPropagateToWindowChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             var element = (FrameworkElement)d;
             element.Loaded += OnLoaded;
             element.Unloaded += OnUnloaded;
         }
 
         public static void UpdateBindings(FrameworkElement obj) {
-            if (obj.IsLoaded && GetPropagateInputBindingsToWindow(obj)) {
+            if (obj.IsLoaded && GetPropagateToWindow(obj)) {
                 RemoveBindings(obj);
                 SetBindings(obj);
             }
@@ -90,16 +90,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         }
 
         private static void OnUnloaded(object sender, RoutedEventArgs e) {
-            /*var element = (FrameworkElement)sender;
-            element.Unloaded -= FrameworkElement_Unloaded;
-            RemoveBindings(element);*/
             RemoveBindings((FrameworkElement)sender);
         }
 
         private static void OnLoaded(object sender, RoutedEventArgs e) {
-            /*var element = (FrameworkElement)sender;
-            element.Loaded -= FrameworkElement_Loaded;
-            SetBindings(element);*/
             SetBindings((FrameworkElement)sender);
         }
     }
