@@ -158,7 +158,7 @@ namespace FirstFloor.ModernUI.Windows.Media {
         /// <param name="dependencyObject">The dependency object</param>
         /// <returns>The parent object or null if there is no parent.</returns>
         [Pure, CanBeNull]
-        public static DependencyObject GetParent(this DependencyObject dependencyObject) {
+        public static DependencyObject GetParent([NotNull] this DependencyObject dependencyObject) {
             if (dependencyObject == null) throw new ArgumentNullException(nameof(dependencyObject));
 
             var fe = dependencyObject as FrameworkElement;
