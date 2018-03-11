@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,6 +59,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     RequestHandler = _requestHandler,
                     MenuHandler = new MenuHandler(),
                     JsDialogHandler = new JsDialogHandler(),
+                    KeyboardHandler = new KeyboardHandler(),
                     Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White),
                 };
 
@@ -252,7 +254,18 @@ namespace AcManager.Controls.UserControls.Cef {
         public void OnLoaded() { }
 
         public void OnUnloaded() {
-            DisposeHelper.Dispose(ref _inner);
+            if (_downloadHandler.IsAnyDownloadActive) {
+                _downloadHandler.PropertyChanged += OnDownloadHandlerPropertyChanged;
+            } else {
+                DisposeHelper.Dispose(ref _inner);
+            }
+
+            void OnDownloadHandlerPropertyChanged(object sender, PropertyChangedEventArgs args) {
+                if (args.PropertyName == nameof(_downloadHandler.IsAnyDownloadActive) && !_downloadHandler.IsAnyDownloadActive) {
+                    _downloadHandler.PropertyChanged -= OnDownloadHandlerPropertyChanged;
+                    DisposeHelper.Dispose(ref _inner);
+                }
+            }
         }
 
         public void OnError(string error, string url, int line, int column) { }

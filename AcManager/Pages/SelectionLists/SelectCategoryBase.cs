@@ -7,26 +7,25 @@ namespace AcManager.Pages.SelectionLists {
         private readonly string _name;
 
         protected SelectCategoryBase([NotNull] string name) {
-            if (name == null) throw new ArgumentNullException(nameof(name));
-            _name = name;
+            _name = name ?? throw new ArgumentNullException(nameof(name));
         }
 
         public sealed override string DisplayName {
-            get { return _name; }
+            get => _name;
             set { }
         }
 
         private int _itemsCount;
 
         public int ItemsCount {
-            get { return _itemsCount; }
+            get => _itemsCount;
             set => Apply(value, ref _itemsCount);
         }
 
         private bool _isNew;
 
         public bool IsNew {
-            get { return _isNew; }
+            get => _isNew;
             set => Apply(value, ref _isNew);
         }
 

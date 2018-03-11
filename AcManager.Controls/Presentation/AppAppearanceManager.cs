@@ -657,40 +657,30 @@ namespace AcManager.Controls.Presentation {
         public IReadOnlyList<TitleLinkEnabledEntry> TitleLinkEntries { get; }
 
         public bool? IsTitleLinkVisible(string key) {
-            return TitleLinkEntries.GetByIdOrDefault(key)?.IsEnabled;
+            var link = TitleLinkEntries.GetByIdOrDefault(key);
+            return link == null ? (bool?)null : link.IsAvailable && link.IsEnabled;
+        }
+
+        private readonly StoredValue<bool> _downloadsInSeparatePage = Stored.Get("AppAppearanceManager.DownloadsInSeparatePage", false);
+
+        public bool DownloadsInSeparatePage {
+            get => _downloadsInSeparatePage.Value;
+            set => Apply(value, _downloadsInSeparatePage);
+        }
+
+        private readonly StoredValue<bool> _downloadsPageAutoOpen = Stored.Get("AppAppearanceManager.DownloadsPageAutoOpen", true);
+
+        public bool DownloadsPageAutoOpen {
+            get => _downloadsPageAutoOpen.Value;
+            set => Apply(value, _downloadsPageAutoOpen);
         }
 
         private readonly StoredValue<bool> _semiTransparentAttachedTools = Stored.Get("AppAppearanceManager.SemiTransparentAttachedTools", false);
 
         public bool SemiTransparentAttachedTools {
             get => _semiTransparentAttachedTools.Value;
-            set {
-                if (Equals(value, _semiTransparentAttachedTools.Value)) return;
-                _semiTransparentAttachedTools.Value = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value, _semiTransparentAttachedTools);
         }
         #endregion
-    }
-
-    public sealed class TitleLinkEnabledEntry : Displayable, IWithId {
-        public string Id { get; }
-
-        private readonly StoredValue<bool> _isEnabled;
-
-        public bool IsEnabled {
-            get => _isEnabled.Value;
-            set {
-                if (Equals(value, _isEnabled.Value)) return;
-                _isEnabled.Value = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public TitleLinkEnabledEntry([Localizable(false)] string key, string displayName, bool enabledByDefault = true) {
-            Id = key;
-            DisplayName = displayName;
-            _isEnabled = Stored.Get("AppAppearanceManager.TitleLink:" + key, enabledByDefault);
-        }
     }
 }

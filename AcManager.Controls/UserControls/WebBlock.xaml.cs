@@ -46,6 +46,14 @@ namespace AcManager.Controls.UserControls {
             public bool AlwaysKeepAlive { get; }
         }
 
+        public static void Unload(string keepAliveKey) {
+            var alive = StayingAlive.GetByIdOrDefault(keepAliveKey);
+            if (alive != null) {
+                alive.Tabs.ForEach(y => y.OnUnloaded());
+                StayingAlive.Remove(alive);
+            }
+        }
+
         public static void ResetStayingAlive() {
             StayingAlive.ForEach(x => x.Tabs.ForEach(y => y.OnUnloaded()));
             StayingAlive.Clear();

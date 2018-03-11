@@ -173,5 +173,28 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
         #endregion
+
+        /*#region Custom attributes to save time (for UI and what have you)
+        private readonly Dictionary<string, object> _something = new Dictionary<string, object>();
+
+        public void Set<T>([NotNull] string key, [CanBeNull] T obj) where T : class {
+            _something[key] = obj;
+        }
+
+        public void Remove([NotNull] string key) {
+            _something.Remove(key);
+        }
+
+        [ContractAnnotation(@"=> result:null, false; => result:canbenull, true")]
+        public bool TryGet<T>([NotNull] string key, out T result) where T : class {
+            if (_something.TryGetValue(key, out var value) && value is T t) {
+                result = t;
+                return true;
+            }
+
+            result = default(T);
+            return false;
+        }
+        #endregion*/
     }
 }

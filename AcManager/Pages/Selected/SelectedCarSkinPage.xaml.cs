@@ -254,7 +254,7 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
 
-                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control)),
+                new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
                 new InputBinding(_model.GenerateLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.GenerateRandomLiveryCommand, new KeyGesture(Key.J, ModifierKeys.Control | ModifierKeys.Alt)),
 

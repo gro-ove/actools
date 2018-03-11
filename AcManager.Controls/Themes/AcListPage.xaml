@@ -218,10 +218,14 @@
                       <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
                     </FrameworkElement.Resources>
 
-                    <mui:HierarchicalComboBox x:Name="PART_BatchActions" BorderBrush="#44ffffff" />
+                    <mui:HierarchicalComboBox x:Name="PART_BatchActions">
+                      <mui:HierarchicalComboBox.BorderBrush>
+                        <SolidColorBrush Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+                      </mui:HierarchicalComboBox.BorderBrush>
+                    </mui:HierarchicalComboBox>
                     <TextBlock DataContext="{Binding SelectedBatchAction.Description, RelativeSource={RelativeSource TemplatedParent}}" Text="{Binding}"
                         Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" Style="{StaticResource Small}"
-                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                        TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Foreground="{DynamicResource AccentOverlay}" />
 
                     <Grid x:Name="PART_BatchBlock_ButtonsGrid" Height="27">
                       <Grid.ColumnDefinitions>
@@ -281,7 +285,7 @@
                 <FrameworkElement.Resources>
                   <mui:SharedResourceDictionary Source="AcListPage.BatchStyle.xaml" />
                 </FrameworkElement.Resources>
-                <DockPanel TextBlock.Foreground="{DynamicResource WindowText}">
+                <DockPanel TextBlock.Foreground="{DynamicResource AccentOverlay}">
                   <ContentPresenter x:Name="PART_BatchAction" Margin="20 0" />
                 </DockPanel>
               </Border>

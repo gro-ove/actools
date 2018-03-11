@@ -8,39 +8,41 @@
   </ResourceDictionary.MergedDictionaries>
 
   <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
-  <SolidColorBrush x:Key="ButtonBackgroundHover" Color="#44ffffff" />
-  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="White" />
-  <SolidColorBrush x:Key="ButtonBorder" Color="#44ffffff" />
-  <SolidColorBrush x:Key="ButtonBorderHover" Color="#44ffffff" />
-  <SolidColorBrush x:Key="ButtonBorderPressed" Color="White" />
-  <SolidColorBrush x:Key="ButtonText" Color="White" />
-  <SolidColorBrush x:Key="ButtonTextHover" Color="White" />
+  <SolidColorBrush x:Key="ButtonBackgroundHover" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+  <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="ButtonBorder" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+  <SolidColorBrush x:Key="ButtonBorderHover" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+  <SolidColorBrush x:Key="ButtonBorderPressed" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="ButtonText" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="ButtonTextHover" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="ButtonTextPressed" Color="{DynamicResource AccentColor}" />
   <SolidColorBrush x:Key="ButtonTextDisabled" Color="#919191" />
 
   <SolidColorBrush x:Key="InputBackground" Color="Transparent" />
   <SolidColorBrush x:Key="InputBackgroundHover" Color="Transparent" />
-  <SolidColorBrush x:Key="InputBorder" Color="White" />
-  <SolidColorBrush x:Key="InputBorderHover" Color="White" />
-  <SolidColorBrush x:Key="InputText" Color="White" />
-  <SolidColorBrush x:Key="InputTextHover" Color="White" />
+  <SolidColorBrush x:Key="InputBorder" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="InputBorderHover" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="InputText" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="InputTextHover" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="InputTextDisabled" Color="#919191" />
 
   <SolidColorBrush x:Key="SliderSelectionBackground" Color="Red" />
   <SolidColorBrush x:Key="SliderSelectionBorder" Color="Red" />
   <SolidColorBrush x:Key="SliderThumbBackground" Color="Transparent" />
-  <SolidColorBrush x:Key="SliderThumbBackgroundDragging" Color="White" />
-  <SolidColorBrush x:Key="SliderThumbBackgroundHover" Color="#44ffffff" />
+  <SolidColorBrush x:Key="SliderThumbBackgroundDragging" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="SliderThumbBackgroundHover" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
   <SolidColorBrush x:Key="SliderThumbBackgroundDisabled" Color="#919191" />
-  <SolidColorBrush x:Key="SliderThumbBorder" Color="#44ffffff" />
-  <SolidColorBrush x:Key="SliderThumbBorderDragging" Color="White" />
-  <SolidColorBrush x:Key="SliderThumbBorderHover" Color="#44ffffff" />
+  <SolidColorBrush x:Key="SliderThumbBorder" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+  <SolidColorBrush x:Key="SliderThumbBorderDragging" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="SliderThumbBorderHover" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
   <SolidColorBrush x:Key="SliderThumbBorderDisabled" Color="#919191" />
   <SolidColorBrush x:Key="SliderTrackBackground" Color="Transparent" />
-  <SolidColorBrush x:Key="SliderTrackBorder" Color="#44ffffff" />
-  <SolidColorBrush x:Key="SliderTick" Color="White" />
+  <SolidColorBrush x:Key="SliderTrackBorder" Color="{DynamicResource AccentOverlayColor}" Opacity="0.32" />
+  <SolidColorBrush x:Key="SliderTick" Color="{DynamicResource AccentOverlayColor}" />
   <SolidColorBrush x:Key="SliderTickDisabled" Color="#919191" />
 
-  <SolidColorBrush x:Key="WindowText" Color="White" />
-  <SolidColorBrush x:Key="FocusBorder" Color="White" />
+  <!--<SolidColorBrush x:Key="WindowBackground" Color="{DynamicResource AccentColor}" />
+  <SolidColorBrush x:Key="PopupBackground" Color="{DynamicResource AccentColor}" />-->
+  <SolidColorBrush x:Key="WindowText" Color="{DynamicResource AccentOverlayColor}" />
+  <SolidColorBrush x:Key="FocusBorder" Color="{DynamicResource AccentOverlayColor}" />
 </ResourceDictionary>

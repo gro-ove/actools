@@ -55,9 +55,59 @@ namespace AcManager.Tools.Helpers {
         /// <param name="category"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        [Localizable(false),NotNull]
+        [Localizable(false), NotNull]
         public static string GetString([NotNull] string category, [NotNull] string key) {
             return Registered.GetValueOrDefault(category.ToLowerInvariant())?.GetString(key, CultureInfo.CurrentUICulture) ?? key;
+        }
+
+        private static FrameworkElement ToImage(byte[] bytes, int? decodeWidth) {
+            return ToImage(BetterImage.LoadBitmapSourceFromBytes(bytes, decodeWidth ?? -1).BitmapSource);
+        }
+
+        private static FrameworkElement ToImage(string filename, int? decodeWidth) {
+            return ToImage(BetterImage.LoadBitmapSource(filename, decodeWidth ?? -1).BitmapSource);
+        }
+
+        private static FrameworkElement ToImage(ImageSource source) {
+            var i = new Image { Source = source, Stretch = Stretch.Uniform };
+            i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
+            i.SetResourceReference(UIElement.EffectProperty, @"TrackOutlineAloneEffect");
+            return i;
+        }
+
+        private static FrameworkElement ToPath(string geometry) {
+            return ToPath(Geometry.Parse(geometry));
+        }
+
+        private static FrameworkElement ToPath(Geometry geometry) {
+            var p = new Path { Data = geometry, Stretch = Stretch.Uniform };
+            p.SetBinding(Shape.FillProperty, new Binding { Path = new PropertyPath(TextBlock.ForegroundProperty), RelativeSource = RelativeSource.Self });
+            return p;
+        }
+
+        private static FrameworkElement ToBbCodeBlock(string text, int? decodeWidth) {
+            var p = new BbCodeBlock {
+                Text = text,
+                FontSize = (decodeWidth ?? 60d) / 2,
+                FontWeight = decodeWidth < 20 ? FontWeights.Bold
+                        : decodeWidth < 40 ? FontWeights.Normal : FontWeights.UltraLight,
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center
+            };
+            p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+            return p;
+        }
+
+        private static FrameworkElement ToBbCodeBlock(BbCodeBlock original) {
+            var p = new BbCodeBlock {
+                Text = original.Text,
+                FontSize = original.FontSize,
+                FontWeight = original.FontWeight,
+                VerticalAlignment = VerticalAlignment.Center,
+                TextAlignment = TextAlignment.Center
+            };
+            p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
+            return p;
         }
 
         /// <summary>
@@ -65,93 +115,80 @@ namespace AcManager.Tools.Helpers {
         /// the returned value in UI thread to get an icon, but bytesProvider or filenameProvider
         /// will execute from your thread, immediately.
         /// </summary>
-        [CanBeNull]
-        public static Func<object> GetIconInTwoSteps([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
-            if (iconValue == null) return null;
+        [NotNull]
+        public static Func<ElementPool> GetIconInTwoSteps([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null,
+                Func<string, string> filenameProvider = null, int? decodeWidth = null) {
+            if (iconValue == null) return () => ElementPool.EmptyPool;
 
             try {
-                if (iconValue.StartsWith("path:", StringComparison.OrdinalIgnoreCase) || iconValue.StartsWith("F1 ") && iconValue.EndsWith("Z")) {
-                    return () => Vector(iconValue.ApartFromFirst("path:", StringComparison.OrdinalIgnoreCase));
+                if (iconValue.StartsWith(@"path:", StringComparison.OrdinalIgnoreCase) || iconValue.StartsWith(@"F1 ") && iconValue.EndsWith("Z")) {
+                    return () => new IconPool(ToPath(iconValue.ApartFromFirst(@"path:", StringComparison.OrdinalIgnoreCase)));
                 }
 
-                if (iconValue.StartsWith("text:", StringComparison.OrdinalIgnoreCase)) {
-                    return () => Text(iconValue.ApartFromFirst("text:", StringComparison.OrdinalIgnoreCase));
+                if (iconValue.StartsWith(@"text:", StringComparison.OrdinalIgnoreCase)) {
+                    return () => new IconPool(ToBbCodeBlock(iconValue.ApartFromFirst(@"text:", StringComparison.OrdinalIgnoreCase), decodeWidth));
                 }
 
                 var filename = filenameProvider?.Invoke(iconValue);
                 if (filename != null) {
-                    if (filename.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
+                    if (filename.EndsWith(@".path", StringComparison.OrdinalIgnoreCase)) {
                         var text = File.ReadAllText(filename);
-                        return () => Vector(text);
+                        return () => new IconPool(ToPath(text));
                     }
 
-                    if (filename.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
+                    if (filename.EndsWith(@".txt", StringComparison.OrdinalIgnoreCase)) {
                         var text = File.ReadAllText(filename);
-                        return () => Text(text);
+                        return () => new IconPool(ToBbCodeBlock(text, decodeWidth));
                     }
 
-                    return () => RasterFromFile(filename);
+                    return () => new IconPool(ToImage(filename, decodeWidth));
                 }
 
                 var data = bytesProvider?.Invoke(iconValue);
                 if (data != null) {
-                    if (iconValue.EndsWith(".path", StringComparison.OrdinalIgnoreCase)) {
-                        return () => Vector(data.ToUtf8String());
+                    if (iconValue.EndsWith(@".path", StringComparison.OrdinalIgnoreCase)) {
+                        return () => new IconPool(ToPath(data.ToUtf8String()));
                     }
 
-                    if (iconValue.EndsWith(".txt", StringComparison.OrdinalIgnoreCase)) {
-                        return () => Text(data.ToUtf8String());
+                    if (iconValue.EndsWith(@".txt", StringComparison.OrdinalIgnoreCase)) {
+                        return () => new IconPool(ToBbCodeBlock(data.ToUtf8String(), decodeWidth));
                     }
 
-                    return () => Raster(data);
+                    return () => new IconPool(ToImage(data, decodeWidth));
                 }
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t load icon", e);
             }
 
-            return null;
-
-            object Raster(byte[] data) {
-                var i = new BetterImage { Source = data, ClearOnChange = true };
-                i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
-                i.SetResourceReference(UIElement.EffectProperty, "TrackOutlineAloneEffect");
-                return i;
-            }
-
-            object RasterFromFile(string filename) {
-                var i = new BetterImage { Filename = filename, ClearOnChange = true };
-                i.SetValue(RenderOptions.BitmapScalingModeProperty, BitmapScalingMode.HighQuality);
-                i.SetResourceReference(UIElement.EffectProperty, "TrackOutlineAloneEffect");
-                return i;
-            }
-
-            object Vector(string data) {
-                var p = new Path { Data = Geometry.Parse(data), Stretch = Stretch.Uniform };
-                p.SetBinding(Shape.FillProperty, new Binding { Path = new PropertyPath(TextBlock.ForegroundProperty), RelativeSource = RelativeSource.Self });
-                return p;
-            }
-
-            object Text(string data) {
-                var p = new BbCodeBlock {
-                    Text = data,
-                    FontSize = 30,
-                    FontWeight = FontWeights.UltraLight,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    TextAlignment = TextAlignment.Center
-                };
-                p.SetValue(TextOptions.TextFormattingModeProperty, TextFormattingMode.Ideal);
-                return p;
-            }
+            return () => ElementPool.EmptyPool;
         }
 
-        [CanBeNull]
-        public static object GetIcon([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null) {
-            return GetIconInTwoSteps(iconValue, bytesProvider, filenameProvider)?.Invoke();
+        [NotNull]
+        public static ElementPool GetIcon([CanBeNull] string iconValue, Func<string, byte[]> bytesProvider = null, Func<string, string> filenameProvider = null,
+                int? decodeWidth = null) {
+            return GetIconInTwoSteps(iconValue, bytesProvider, filenameProvider, decodeWidth).Invoke();
         }
 
-        [CanBeNull]
-        public static object GetIcon(string iconValue, string contentCategory) {
-            return GetIcon(iconValue, filenameProvider: k => FilesStorage.Instance.GetContentFile(contentCategory, k).Filename);
+        [NotNull]
+        public static ElementPool GetIcon(string iconValue, string contentCategory, int? decodeWidth = null) {
+            return GetIcon(iconValue, filenameProvider: k => FilesStorage.Instance.GetContentFile(contentCategory, k).Filename, decodeWidth: decodeWidth);
+        }
+
+        private class IconPool : ElementPool {
+            public IconPool([CanBeNull] FrameworkElement original) : base(original) { }
+
+            protected override FrameworkElement CloneContentIcon() {
+                switch (Original) {
+                    case Image image:
+                        return ToImage(image.Source);
+                    case Path path:
+                        return ToPath(path.Data);
+                    case BbCodeBlock bbCodeBlock:
+                        return ToBbCodeBlock(bbCodeBlock);
+                    default:
+                        return null;
+                }
+            }
         }
     }
 }

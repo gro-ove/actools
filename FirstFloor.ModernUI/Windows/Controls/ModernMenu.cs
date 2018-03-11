@@ -74,35 +74,35 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         #region Browser-like commands
         private void NewTab() {
-            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
+            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             var textBox = _subMenuListBox.ItemContainerGenerator
-                    .ContainerFromIndex(_subMenuListBox.Items.Count - 1)?.FindChild<TextBox>("NameTextBox");
+                                         .ContainerFromIndex(_subMenuListBox.Items.Count - 1)?.FindChild<TextBox>("NameTextBox");
             if (textBox == null) return;
             textBox.Focus();
             textBox.SelectAll();
         }
 
         private void CloseTab() {
-            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
+            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             _subMenuListBox.ItemContainerGenerator
-                    .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<Button>("CloseButton")?.Command?.Execute(null);
+                           .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<Button>("CloseButton")?.Command?.Execute(null);
             _subMenuListBox.Focus();
         }
 
         private void RestoreTab() {
-            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
+            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             ((LinkGroupFilterable)SelectedLinkGroup).RestoreLastClosed();
             _subMenuListBox.Focus();
         }
 
         private void FocusCurrentTab() {
-            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null) return;
+            if (!(SelectedLinkGroup is LinkGroupFilterable) || _subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             _subMenuListBox.ItemContainerGenerator
-                    .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<TextBox>("NameTextBox")?.Focus();
+                           .ContainerFromIndex(_subMenuListBox.SelectedIndex)?.FindChild<TextBox>("NameTextBox")?.Focus();
         }
 
         private void SwitchTab(int index, bool cycle) {
-            if (_subMenuListBox == null) return;
+            if (_subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             var count = _subMenuListBox.Items.Count - (SelectedLinkGroup is LinkGroupFilterable ? 1 : 0);
             _subMenuListBox.SelectedIndex = index >= count ? cycle ? 0 : count - 1 :
                     index < 0 ? cycle ? count - 1 : 0 : index;
@@ -110,7 +110,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void SwitchSection(int index, bool cycle) {
-            if (_subMenuListBox == null) return;
+            if (_subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             var count = VisibleLinkGroups.Count;
             var group = VisibleLinkGroups.ElementAtOrDefault(index >= count ? cycle ? 0 : count - 1 :
                     index < 0 ? cycle ? count - 1 : 0 : index);
@@ -119,12 +119,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void NextTab() {
-            if (_subMenuListBox == null) return;
+            if (_subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             SwitchTab(_subMenuListBox.SelectedIndex + 1, true);
         }
 
         private void PreviousTab() {
-            if (_subMenuListBox == null) return;
+            if (_subMenuListBox == null || VisualExtension.IsInputFocused()) return;
             SwitchTab(_subMenuListBox.SelectedIndex - 1, true);
         }
         #endregion
@@ -281,10 +281,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             group.OnDrop(widget, destination.GetMouseItemIndex());
         }
 
-        private bool SelectUriIfLinkExists(Uri uri) {
+        private bool SelectUriIfLinkExists(Uri uri, string groupKey = null) {
             if (uri != null) {
                 RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
-                var selected = LinkGroups.SelectMany(g => g.Links).FirstOrDefault(t => t.Source?.ToString() == uri.ToString());
+                var selected = LinkGroups.Where(x => groupKey == null || x.GroupKey == groupKey)
+                                         .SelectMany(g => g.Links).FirstOrDefault(t => t.Source?.ToString() == uri.ToString());
                 if (selected != null) {
                     SelectedLink = selected;
                     return true;
@@ -295,7 +296,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void SwitchToGroupByKey(string key) {
-            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}__{key}"))) {
+            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}__{key}"), key)) {
                 SelectedLink = (from g in LinkGroups
                                 where g.GroupKey == key
                                 from l in g.Links

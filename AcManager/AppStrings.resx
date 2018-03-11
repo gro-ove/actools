@@ -1299,7 +1299,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Replace sound</value>
   </data>
   <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
-    <value>For a decent online (Ctrl+J)</value>
+    <value>For a decent online (Ctrl+Alt+J)</value>
   </data>
   <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
     <value>For development purposes only (Alt+J)</value>
@@ -1508,7 +1508,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Update skin’s preview (Ctrl+P)</value>
   </data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
-    <value>Change skin’s livery.png (Ctrl+J)</value>
+    <value>Change skin’s livery.png (Alt+J)</value>
   </data>
   <data name="AcObject_TeamLabel" xml:space="preserve">
     <value>Team:</value>

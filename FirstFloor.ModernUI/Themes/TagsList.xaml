@@ -45,7 +45,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="c:TagsList">
           <Border Background="Transparent">
-            <ItemsControl ItemTemplateSelector="{StaticResource TagsListDataTemplateSelector}">
+            <ItemsControl ItemTemplateSelector="{StaticResource TagsListDataTemplateSelector}" FocusVisualStyle="{x:Null}">
               <ItemsControl.Resources>
                 <CollectionViewSource x:Key="TagsCollection" Source="{Binding ItemsSource, RelativeSource={RelativeSource TemplatedParent}}" />
               </ItemsControl.Resources>

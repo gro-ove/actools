@@ -114,7 +114,7 @@
               </Expander.CacheMode>-->
               <Expander.Header>
                 <DockPanel>
-                  <c:CarIconImage DecodeWidth="16" Car="{Binding Car}" Margin="0 0 8 0" Width="16" Height="16" ClearOnChange="True" />
+                  <c:CarIcon DecodeWidth="16" Car="{Binding Car}" Margin="0 0 8 0" Width="16" Height="16" ClearOnChange="True" />
                   <TextBlock Text="{Binding CheckedCount}" DockPanel.Dock="Right" ToolTip="{Binding DisplayChecked}"
                       Visibility="{Binding CheckedCount, Converter={StaticResource MoreToVisibilityConverter}}" Margin="4 0" />
                   <TextBlock Text="{Binding Car.DisplayName}" TextTrimming="CharacterEllipsis" />

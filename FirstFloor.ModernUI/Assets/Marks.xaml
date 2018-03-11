@@ -22,7 +22,7 @@
     <Setter Property="FontSize" Value="10" />
     <Setter Property="Margin" Value="0 4 2 0" />
     <Setter Property="Background" Value="{DynamicResource Accent}" />
-    <Setter Property="Foreground" Value="White" />
+    <Setter Property="Foreground" Value="{DynamicResource AccentOverlay}" />
     <Setter Property="Padding" Value="2" />
   </Style>
 </ResourceDictionary>

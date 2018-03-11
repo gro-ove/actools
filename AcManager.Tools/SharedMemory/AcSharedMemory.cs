@@ -26,7 +26,7 @@ namespace AcManager.Tools.SharedMemory {
         private Timer _timer;
 
         private AcSharedMemory() {
-            SettingsHolder.Drive.PropertyChanged += Drive_PropertyChanged;
+            SettingsHolder.Drive.PropertyChanged += OnDrivePropertyChanged;
 
             _timer = new Timer { AutoReset = true };
             _timer.Elapsed += Update;
@@ -35,7 +35,7 @@ namespace AcManager.Tools.SharedMemory {
                     AcSharedMemoryStatus.Disabled;
         }
 
-        private void Drive_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void OnDrivePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(SettingsHolder.Drive.WatchForSharedMemory)) {
                 Status = SettingsHolder.Drive.WatchForSharedMemory ? AcSharedMemoryStatus.Disconnected :
                         AcSharedMemoryStatus.Disabled;

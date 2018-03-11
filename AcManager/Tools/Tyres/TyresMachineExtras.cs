@@ -1,15 +1,18 @@
 ﻿using System.IO.Compression;
+using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.NeuralTyres;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Tyres {
     public class TyresMachineExtras : NotifyPropertyChanged, ITyresMachineExtras {
         private string _tyresName;
 
+        [CanBeNull]
         public string TyresName {
             get => _tyresName;
             set => Apply(value, ref _tyresName);
@@ -17,14 +20,16 @@ namespace AcManager.Tools.Tyres {
 
         private string _tyresShortName;
 
+        [CanBeNull]
         public string TyresShortName {
             get => _tyresShortName;
             set => Apply(value, ref _tyresShortName);
         }
 
-        private object _icon;
+        private FrameworkElement _icon;
 
-        public object Icon {
+        [CanBeNull]
+        public FrameworkElement Icon {
             get => _icon;
             set => Apply(value, ref _icon);
         }
@@ -39,7 +44,7 @@ namespace AcManager.Tools.Tyres {
             var tyresName = manifest.GetStringValueOnly("tyresName");
             var tyresShortName = manifest.GetStringValueOnly("tyresShortName");
             ActionExtension.InvokeInMainThreadAsync(() => {
-                Icon = icon?.Invoke();
+                Icon = icon.Invoke().Get();
                 TyresName = tyresName;
                 TyresShortName = tyresShortName;
             });

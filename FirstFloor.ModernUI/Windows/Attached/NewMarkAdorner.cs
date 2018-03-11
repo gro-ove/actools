@@ -15,6 +15,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 Style = FindResource(@"NewMarkStyle") as Style
             };
 
+            if (adornedElement is CheckBox cb && cb.HorizontalAlignment == HorizontalAlignment.Left) {
+                _contentPresenter.Margin = new Thickness(0, 0, -26, 0);
+            }
+
             SetBinding(VisibilityProperty, new Binding(@"IsVisible") {
                 Source = adornedElement,
                 Converter = new BooleanToVisibilityConverter()

@@ -31,7 +31,7 @@
         </CheckBox>
 
         <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}" mui:NewMarkService.New="True">
-          <Label Content="Mark Kunos content with Assetto Corsa icon" />
+          <Label Content="Show origin icons in lists (such as Kunos icon)" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Holder.MentionCmInPackedContent}"

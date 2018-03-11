@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:g="clr-namespace:AcManager" xmlns:in="http://acstuff.ru/app/internal"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d"
-    ClipToBounds="True" Background="Transparent" d:DataContext="{d:DesignInstance uc:InstallAdditionalContentList}">
+    ClipToBounds="True" Background="Transparent" d:DataContext="{d:DesignInstance uc:InstallAdditionalContentList}" VerticalContentAlignment="Center">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -111,7 +111,8 @@
             <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
           <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+              Value="False">
             <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
           </DataTrigger>
           <MultiDataTrigger>
@@ -213,7 +214,8 @@
             <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
           <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+              Value="False">
             <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
           </DataTrigger>
           <MultiDataTrigger>
@@ -356,7 +358,8 @@
             <Setter TargetName="PART_NewVersion" Property="Foreground" Value="{DynamicResource Error}" />
           </DataTrigger>
           <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}" Value="False">
+          <DataTrigger Binding="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch}}"
+              Value="False">
             <Setter TargetName="PART_Icon" Property="Opacity" Value="1" />
           </DataTrigger>
           <MultiDataTrigger>
@@ -387,7 +390,8 @@
   </UserControl.Resources>
 
   <mui:Switch Value="{Binding DownloadListView.Count}">
-    <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="No active downloads" Margin="8 0 0 8" VerticalAlignment="Center" />
+    <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="No active downloads" Margin="8 0 0 8"
+        VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType=uc:InstallAdditionalContentList}}" />
     <DockPanel>
       <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding Plugins.IsReady, Converter={StaticResource InvertBooleanConverter}}">
         <c:MessageBlock Margin="0 0 0 20">

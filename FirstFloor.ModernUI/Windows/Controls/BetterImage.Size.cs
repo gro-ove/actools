@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using FirstFloor.ModernUI.Helpers;
@@ -6,7 +7,7 @@ using FirstFloor.ModernUI.Helpers;
 namespace FirstFloor.ModernUI.Windows.Controls {
     public partial class BetterImage {
         #region Loading
-        public static Size? GetImageSize(byte[] data) {
+        public static Size? GetImageSize(byte[] data, [Localizable(false)] string sourceDebug) {
             int index = 0, limit = Math.Min(data.Length, 4000);
             if (limit == 0) return null;
 
@@ -43,7 +44,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
 #if DEBUG
-            Logging.Warning("Failed to determine size: " + data);
+            Logging.Warning($"Failed to determine size ({sourceDebug ?? @"?"}): {data}");
 
             // TODO: Remove me!
             if (Directory.Exists(@"U:\test")) {

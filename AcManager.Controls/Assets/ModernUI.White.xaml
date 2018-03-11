@@ -11,14 +11,14 @@
 	<SolidColorBrush x:Key="CardHeaderBackground" Color="#ffffff" />
 	<Color x:Key="WindowBackgroundColor">#ffffff</Color>
 	<SolidColorBrush x:Key="ButtonBackground" Color="#ffffff" />
-	<SolidColorBrush x:Key="ButtonTextPressed" Color="#ffffff" />
+	<SolidColorBrush x:Key="ButtonTextPressed" Color="{DynamicResource AccentOverlayColor}" />
 	<SolidColorBrush x:Key="GoButtonBackground" Color="#ffffff" />
 	<SolidColorBrush x:Key="GoButtonTextPressed" Color="#ffffff" />
-	<SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="#ffffff" />
-	<SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="#ffffff" />
-	<SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="#ffffff" />
+	<SolidColorBrush x:Key="DataGridCellForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
+	<SolidColorBrush x:Key="DataGridHeaderForegroundPressed" Color="{DynamicResource AccentOverlayColor}" />
+	<SolidColorBrush x:Key="DataGridHeaderForegroundSelected" Color="{DynamicResource AccentOverlayColor}" />
 	<SolidColorBrush x:Key="InputBackground" Color="#ffffff" />
 	<SolidColorBrush x:Key="InputBackgroundHover" Color="#ffffff" />
-	<SolidColorBrush x:Key="ItemTextSelected" Color="#ffffff" />
+	<SolidColorBrush x:Key="ItemTextSelected" Color="{DynamicResource AccentOverlayColor}" />
 	<SolidColorBrush x:Key="SliderThumbBackground" Color="#ffffff" />
 </ResourceDictionary>

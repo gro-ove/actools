@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
@@ -18,9 +19,15 @@ namespace AcManager.Pages.Drive {
     public partial class Online {
         [JsonObject(MemberSerialization.OptIn)]
         public sealed class OnlineQuickFilter : Displayable, IWithId {
+            [CanBeNull]
             public string Description { get; private set; }
-            public object Icon { get; private set; }
+
+            [CanBeNull]
+            public FrameworkElement Icon { get; private set; }
+
             public bool Exclude { get; private set; }
+
+            [CanBeNull]
             public string Filter { get; private set; }
 
             private bool _isEnabled;
@@ -36,11 +43,12 @@ namespace AcManager.Pages.Drive {
             public OnlineQuickFilter(string name, string description, string icon, bool exclude, string filter) {
                 DisplayName = ContentUtils.Translate(name);
                 Description = ContentUtils.Translate(description);
-                Icon = ContentUtils.GetIcon(icon ?? $@"{name}.png", ContentCategory.OnlineFilters);
+                Icon = ContentUtils.GetIcon(icon ?? $@"{name}.png", ContentCategory.OnlineFilters).Get();
                 Exclude = exclude;
                 Filter = filter;
             }
 
+            [CanBeNull]
             public string Id => Filter;
 
             public OnlineQuickFilter Clone() {

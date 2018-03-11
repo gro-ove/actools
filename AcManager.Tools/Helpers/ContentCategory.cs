@@ -12,6 +12,7 @@
         public static readonly string Miscellaneous = "Miscellaneous";
         public static readonly string NeuralTyresMachines = "Neural Tyres Machines";
         public static readonly string OnlineFilters = "Online Filters";
+        public static readonly string OriginIcons = "Origin Icons";
         public static readonly string PaintShop = "Paint Shop";
         public static readonly string PresetsPerModeConditions = "Presets Per Mode Conditions";
         public static readonly string TrackCategories = "Track Categories";

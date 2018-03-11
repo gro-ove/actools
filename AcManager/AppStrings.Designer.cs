@@ -8603,7 +8603,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Change skin’s livery.png (Ctrl+J).
+        ///   Looks up a localized string similar to Change skin’s livery.png (Alt+J).
         /// </summary>
         public static string Toolbar_ChangeLivery_Tooltip {
             get {
@@ -9170,7 +9170,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to For a decent online (Ctrl+J).
+        ///   Looks up a localized string similar to For a decent online (Ctrl+Alt+J).
         /// </summary>
         public static string Toolbar_PackData_Tooltip {
             get {

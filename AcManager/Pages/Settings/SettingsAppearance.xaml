@@ -96,7 +96,17 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Title links:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Title links and menu:" />
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsInSeparatePage, Converter={StaticResource InvertBooleanConverter}}"
+            mui:NewMarkService.New="True">
+          <Label Content="Show downloads &amp; installations list in that menu in the upper right corner" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsPageAutoOpen}" IsEnabled="{Binding AppAppearanceManager.DownloadsInSeparatePage}"
+            mui:NewMarkService.New="True">
+          <Label Content="Automatically navigate to downloads page when new download is started" />
+        </CheckBox>
 
         <CheckBox IsChecked="{Binding AppAppearanceManager.LargerTitleLinks}" set:Search.Keywords="font;text">
           <Label Content="Larger font" />
@@ -114,6 +124,7 @@
               <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}"
                   d:DataContext="{d:DesignInstance c:TitleLinkEnabledEntry}">
                 <Setter Property="IsSelected" Value="{Binding IsEnabled, Mode=TwoWay}" />
+                <Setter Property="Visibility" Value="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </Style>
             </ListBox.ItemContainerStyle>
           </ListBox>
@@ -238,7 +249,7 @@
           <Button Visibility="{Binding SoftwareRenderingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
               Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2" />
           <CheckBox IsChecked="{Binding SoftwareRendering}">
-            <Label Content="Disable hardware acceleration for UI (not recommended!)" TextBlock.Foreground="{DynamicResource Error}" />
+            <Label Content="Disable hardware acceleration for UI (not recommended)" TextBlock.Foreground="{DynamicResource Error}" />
           </CheckBox>
         </DockPanel>
       </StackPanel>

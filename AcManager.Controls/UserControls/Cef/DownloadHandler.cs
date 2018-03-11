@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using AcManager.Controls.UserControls.Web;
 using AcTools.Utils.Helpers;
 using CefSharp;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls.UserControls.Cef {
-    internal class DownloadHandler : IDownloadHandler {
+    internal class DownloadHandler : NotifyPropertyChanged, IDownloadHandler {
         [CanBeNull]
         public IWebDownloadListener Listener { get; set; }
 
@@ -47,6 +49,7 @@ namespace AcManager.Controls.UserControls.Cef {
                         if (loader.Data != null) {
                             callback.Continue(loader.Data.Destination, false);
                             _downloads[downloadItem.Id] = loader.Data;
+                            UpdateIsAnyDownloadActive();
                         }
                     }
                 }
@@ -79,16 +82,30 @@ namespace AcManager.Controls.UserControls.Cef {
                         data.Progress.Report(downloadItem.ReceivedBytes);
                     } else {
                         _downloads.Remove(downloadItem.Id);
+                        UpdateIsAnyDownloadActive();
                         data.TaskCompletionSource.TrySetResult(downloadItem.FullPath);
                     }
                 } catch (Exception e) when (e.IsCancelled()) {
                     _downloads.Remove(downloadItem.Id);
+                    UpdateIsAnyDownloadActive();
                     data.TaskCompletionSource.TrySetCanceled();
                 } catch (Exception e) {
                     _downloads.Remove(downloadItem.Id);
+                    UpdateIsAnyDownloadActive();
                     data.TaskCompletionSource.TrySetException(e);
                 }
             }
+        }
+
+        private void UpdateIsAnyDownloadActive() {
+            ActionExtension.InvokeInMainThreadAsync(() => IsAnyDownloadActive = _downloads.Count > 0);
+        }
+
+        private bool _isAnyDownloadActive;
+
+        public bool IsAnyDownloadActive {
+            get => _isAnyDownloadActive;
+            set => Apply(value, ref _isAnyDownloadActive);
         }
     }
 }

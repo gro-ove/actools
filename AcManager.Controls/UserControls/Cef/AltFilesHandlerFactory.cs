@@ -18,7 +18,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     var slice = SchemeName.Length + 4;
                     if (slice >= request.Url.Length) return null;
                     var filename = $@"{request.Url[slice].ToInvariantString()}:{request.Url.Substring(slice + 2)}";
-                    return new CustomResourceHandler(filename);
+                    return new CustomResourceHandler(Uri.UnescapeDataString(filename));
                 } catch (Exception e) {
                     Logging.Error(e);
                 }

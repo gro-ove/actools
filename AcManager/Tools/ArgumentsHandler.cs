@@ -7,8 +7,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.UserControls;
@@ -56,10 +54,8 @@ namespace AcManager.Tools {
             };
         }
 
-        public static bool OnPaste() {
-            if (Keyboard.FocusedElement is TextBoxBase || Keyboard.FocusedElement is PasswordBox || Keyboard.FocusedElement is ComboBox
-                    || Application.Current?.Windows.OfType<Window>().SelectMany(VisualTreeHelperEx.FindVisualChildren<WebBlock>)
-                                  .Any(x => x.IsKeyboardFocused || x.IsKeyboardFocusWithin) == true) {
+        private static bool OnPaste() {
+            if (VisualExtension.IsInputFocused()) {
                 return false;
             }
 

@@ -5,6 +5,7 @@
     <Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
     <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
     <Setter Property="Foreground" Value="{DynamicResource WindowText}" />
+    <Setter Property="HorizontalAlignment" Value="Left" />
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="BorderThickness" Value="1" />
     <Setter Property="Template">

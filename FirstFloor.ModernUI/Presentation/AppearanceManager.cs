@@ -19,6 +19,9 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private const string KeyAccentColor = "AccentColor";
         private const string KeyAccent = "Accent";
+        private const string KeyAccentOverlayColor = "AccentOverlayColor";
+        private const string KeyAccentOverlay = "AccentOverlay";
+
         private const string KeyDefaultFontSize = "DefaultFontSize";
         private const string KeyFixedFontSize = "FixedFontSize";
         private const string KeySubMenuFontSize = "ModernSubMenuFontSize";
@@ -155,6 +158,10 @@ namespace FirstFloor.ModernUI.Presentation {
             set {
                 Application.Current.Resources[KeyAccentColor] = value;
                 Application.Current.Resources[KeyAccent] = new SolidColorBrush(value);
+
+                var overlay = value.IsBright() ? Colors.Black : Colors.White;
+                Application.Current.Resources[KeyAccentOverlayColor] = overlay;
+                Application.Current.Resources[KeyAccentOverlay] = new SolidColorBrush(overlay);
 
                 if (CurrentThemeDictionary != null) {
                     if (CurrentThemeDictionary.Source != null) {
