@@ -129,6 +129,15 @@ namespace FirstFloor.ModernUI.Serialization {
         public static object As([CanBeNull] this object value, [NotNull] Type type) {
             return value.As(type, type.GetDefaultValue());
         }
+
+        public static bool IsSupported(Type type) {
+            var t = Nullable.GetUnderlyingType(type) ?? type;
+            return t.IsEnum || Type.GetTypeCode(t) != TypeCode.Object || Registered.ContainsKey(t);
+        }
+
+        public static bool IsSupported<T>() {
+            return IsSupported(typeof(T));
+        }
         #endregion
 
         #region Registered types and custom conversions
