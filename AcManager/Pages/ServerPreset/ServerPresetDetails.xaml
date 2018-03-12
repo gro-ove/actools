@@ -251,11 +251,6 @@
             <Label Content="Server description (both BB-codes and emojis are allowed):" HorizontalAlignment="Left" Width="300" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding SelectedObject.DetailsPublishPasswordChecksum}"
-              ToolTip="Your password won’t leak, but this way, users will be able to check if password is correct before connecting">
-            <Label Content="Publish passwords’ checksums" />
-          </CheckBox>
-
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading missing content" />
 
           <CheckBox IsChecked="{Binding SelectedObject.DetailsDownloadPasswordOnly}" ToolTip="Do not allow to download missing content if password is invalid"

@@ -278,6 +278,10 @@
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
+    <Compile Include="Helpers\Api\Kunos\InvertConverter.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationComplete.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationExtended.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationExtendedAssists.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />

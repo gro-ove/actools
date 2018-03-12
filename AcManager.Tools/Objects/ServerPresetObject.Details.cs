@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -52,25 +53,79 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _detailsNamePiece);
         }
 
-        private Task EnsureDetailsNameIsActualAsync(IniFile ini) {
-            var serverSection = ini["SERVER"];
-
-            var assists = new JObject {
-                [@"absState"] = serverSection.GetInt("ABS_ALLOWED", 0),
-                [@"tcState"] = serverSection.GetInt("TC_ALLOWED", 0),
-                [@"fuelRate"] = serverSection.GetInt("FUEL_RATE", 0),
-                [@"damageMultiplier"] = serverSection.GetInt("DAMAGE_MULTIPLIER", 0),
-                [@"tyreWearRate"] = serverSection.GetInt("TYRE_WEAR_RATE", 0),
-                [@"allowedTyresOut"] = serverSection.GetInt("ALLOWED_TYRES_OUT", 0),
-                [@"stabilityAllowed"] = serverSection.GetBool(@"STABILITY_ALLOWED", false),
-                [@"autoclutchAllowed"] = serverSection.GetBool(@"AUTOCLUTCH_ALLOWED", false),
-                [@"tyreBlanketsAllowed"] = serverSection.GetBool(@"TYRE_BLANKETS_ALLOWED", false),
-                [@"forceVirtualMirror"] = serverSection.GetBool(@"FORCE_VIRTUAL_MIRROR", false),
-            };
+        private async Task EnsureDetailsNameIsActualAsync(IniFile ini) {
+            // var serverSection = ini["SERVER"];
+            var geoParams = await Task.Run(() => IpGeoProvider.Get());
 
             var data = new JObject {
-
+                [@"frequency"] = SendIntervalHz,
+                [@"durations"] = new JArray(Sessions.Select(x => x.Time.TotalSeconds.RoundToInt())),
+                [@"assists"] = new JObject {
+                    [@"absState"] = Convert.ToInt32(Abs),
+                    [@"tcState"] = Convert.ToInt32(TractionControl),
+                    [@"fuelRate"] = FuelRate,
+                    [@"damageMultiplier"] = DamageRate,
+                    [@"tyreWearRate"] = TyreWearRate,
+                    [@"allowedTyresOut"] = AllowTyresOut,
+                    [@"stabilityAllowed"] = StabilityControl,
+                    [@"autoclutchAllowed"] = AutoClutch,
+                    [@"tyreBlanketsAllowed"] = TyreBlankets,
+                    [@"forceVirtualMirror"] = ForceVirtualMirror,
+                },
+                [@"passwordChecksum"] = new JArray {
+                    PasswordChecksum(Password),
+                    PasswordChecksum(AdminPassword),
+                },
             };
+
+            if (geoParams != null) {
+                data[@"ip"] = geoParams.Ip;
+                data[@"country"] = new JArray {
+                    AcStringValues.GetCountryFromId(geoParams.Country),
+                    geoParams.Country
+                };
+                data[@"city"] = geoParams.City;
+            }
+
+            var weather = Weather.FirstOrDefault();
+            if (weather != null) {
+                data[@"ambientTemperature"] = weather.BaseAmbientTemperature;
+                data[@"roadTemperature"] = weather.BaseRoadTemperature;
+                data[@"currentWeatherId"] = weather.WeatherId;
+                data[@"windSpeed"] = (weather.WindSpeedMin + weather.WindSpeedMax) / 2d;
+                data[@"windDirection"] = weather.WindDirection;
+            }
+
+            if (DynamicTrackEnabled) {
+                data[@"grip"] = TrackProperties.SessionStart;
+                data[@"gripTransfer"] = TrackProperties.SessionTransfer;
+            }
+
+            if (MaxCollisionsPerKm != -1) {
+                data[@"maxContactsPerKm"] = MaxCollisionsPerKm;
+            }
+
+            if (TrackLayoutId == null && TrackId.IndexOf('-') == -1) {
+                data[@"trackBase"] = TrackId;
+            }
+
+            if (!string.IsNullOrWhiteSpace(DetailsDescription)) {
+                data[@"description"] = DetailsDescription;
+            }
+
+            if (DetailsContentJObject != null) {
+                if (DetailsDownloadPasswordOnly && !string.IsNullOrWhiteSpace(Password)) {
+                    data[@"content"] = StringCipher.Encrypt(DetailsContentJObject.ToString(), PasswordChecksum(Password)).ToCutBase64();
+                } else {
+                    data[@"content"] = DetailsContentJObject;
+                }
+            }
+
+
+
+            string PasswordChecksum(string password) {
+                return password == null ? null : (@"apatosaur" + Name + password).GetChecksum();
+            }
         }
 
         private string _detailsDescription;
@@ -95,21 +150,6 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _detailsDownloadPasswordOnly)) return;
                 _detailsDownloadPasswordOnly = value;
-
-                if (Loaded) {
-                    OnPropertyChanged();
-                    Changed = true;
-                }
-            }
-        }
-
-        private bool _detailsPublishPasswordChecksum;
-
-        public bool DetailsPublishPasswordChecksum {
-            get => _detailsPublishPasswordChecksum;
-            set {
-                if (Equals(value, _detailsPublishPasswordChecksum)) return;
-                _detailsPublishPasswordChecksum = value;
 
                 if (Loaded) {
                     OnPropertyChanged();
@@ -209,7 +249,7 @@ namespace AcManager.Tools.Objects {
             destination[@"verboseLog"] = WrapperVerboseLog;
             destination[@"description"] = DetailsDescription;
             destination[@"downloadPasswordOnly"] = DetailsDownloadPasswordOnly;
-            destination[@"publishPasswordChecksum"] = DetailsPublishPasswordChecksum;
+            destination[@"publishPasswordChecksum"] = true;
         }
 
         public event EventHandler SaveWrapperContent;
@@ -274,7 +314,6 @@ namespace AcManager.Tools.Objects {
             DetailsMode = (ServerPresetDetailsMode)obj.GetIntValueOnly("detailsMode", (int)ServerPresetDetailsMode.ViaWrapper);
             DetailsDescription = obj.GetStringValueOnly("description");
             DetailsDownloadPasswordOnly = obj.GetBoolValueOnly("downloadPasswordOnly", true);
-            DetailsPublishPasswordChecksum = obj.GetBoolValueOnly("publishPasswordChecksum", true);
             WrapperPort = obj.GetIntValueOnly("port", 80);
             WrapperDownloadSpeedLimit = (long)obj.GetDoubleValueOnly("downloadSpeedLimit", 1e6);
             WrapperVerboseLog = obj.GetBoolValueOnly("verboseLog", true);
