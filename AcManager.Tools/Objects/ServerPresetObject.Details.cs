@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -121,7 +122,16 @@ namespace AcManager.Tools.Objects {
                 }
             }
 
+            try {
+                Apply(await InternalUtils.PostOnlineDataAsync(data.ToString(Formatting.None), CmApiProvider.UserAgent));
+            } catch (Exception e) {
+                Logging.Warning(e);
+                Apply(null);
+            }
 
+            void Apply(string namePiece) {
+                DetailsNamePiece = namePiece;
+            }
 
             string PasswordChecksum(string password) {
                 return password == null ? null : (@"apatosaur" + Name + password).GetChecksum();
