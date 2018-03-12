@@ -1,6 +1,5 @@
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
@@ -271,7 +270,7 @@ namespace AcManager.Pages.Drive {
 
             public ICommand SwitchLocalWeatherCommand => _switchLocalWeatherCommand ?? (_switchLocalWeatherCommand = new AsyncCommand(async () => {
                 if (string.IsNullOrWhiteSpace(SettingsHolder.Drive.LocalAddress)) {
-                    var entry = await Task.Run(() => IpGeoProvider.Get());
+                    var entry = await IpGeoProvider.GetAsync();
                     var localAddress = entry == null ? "" : $"{entry.City}, {entry.Country}";
 
                     var address = Prompt.Show("Where are you?", "Local address", localAddress, @"?", required: true);

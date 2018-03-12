@@ -26,6 +26,19 @@ namespace AcTools.Utils {
     }
 
     public class Lazier<T> : INotifyPropertyChanged {
+        public Lazier([CanBeNull] Func<T> fn) {
+            _fn = fn;
+        }
+
+        public Lazier([CanBeNull] T obj) {
+            _value = obj;
+        }
+
+        public Lazier([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
+            _fnTask = fn;
+            _loadingValue = loadingValue;
+        }
+
         [CanBeNull]
         private readonly Func<T> _fn;
 
@@ -144,19 +157,6 @@ namespace AcTools.Utils {
                 _isSettingId++;
                 _settingTask = null;
             }
-        }
-
-        public Lazier([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
-            _fnTask = fn;
-            _loadingValue = loadingValue;
-        }
-
-        public Lazier([CanBeNull] Func<T> fn) {
-            _fn = fn;
-        }
-
-        public Lazier([CanBeNull] T obj) {
-            _value = obj;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
