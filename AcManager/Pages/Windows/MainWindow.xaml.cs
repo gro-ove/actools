@@ -268,7 +268,10 @@ namespace AcManager.Pages.Windows {
         private void OnDownloadListParentLoaded(object sender, RoutedEventArgs e) {
             if (!AppAppearanceManager.Instance.DownloadsInSeparatePage) {
                 _downloadListParent = (Border)sender;
-                _downloadListParent.Child = (FrameworkElement)FindResource(@"DownloadsMenuSection");
+                if (_downloadListParent.Child == null) {
+                    _downloadListParent.Child = (FrameworkElement)FindResource(@"DownloadsMenuSection");
+                    _downloadsListSet = false;
+                }
             }
         }
 
@@ -943,11 +946,15 @@ namespace AcManager.Pages.Windows {
             return existingLink;
         }
 
+        private bool _downloadsListSet;
+
         private void OnDownloadsPopupOpened(object sender, EventArgs e) {
+            if (_downloadsListSet) return;
             var popup = (ModernPopup)sender;
             var parent = ((FrameworkElement)popup.Content).FindVisualChildren<Border>().FirstOrDefault(x => x.Tag as string == @"DownloadsParent");
             if (parent != null && parent.Child == null) {
                 parent.Child = new InstallAdditionalContentList();
+                _downloadsListSet = true;
             }
         }
 
