@@ -87,6 +87,11 @@ namespace AcManager.Tools.Helpers {
             return DataProvider.Instance.CountryToIds.GetValueOrDefault(CountryFromTag(countryNameOrTag) ?? countryNameOrTag);
         }
 
+        [CanBeNull]
+        public static string GetCountryFromId([NotNull] string countryId) {
+            return DataProvider.Instance.CountryToIds.FirstOrDefault(x => string.Equals(x.Value, countryId, StringComparison.OrdinalIgnoreCase)).Key;
+        }
+
         private static readonly Regex SplitWordsRegex = new Regex(@"[\s_]+|(?<=[a-z])-?(?=[A-Z])|(?<=[a-z]{2})-?(?=[A-Z\d])", RegexOptions.Compiled);
         private static readonly Regex UpperRegex = new Regex(@"\b[a-z]", RegexOptions.Compiled);
 
