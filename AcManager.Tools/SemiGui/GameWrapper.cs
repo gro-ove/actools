@@ -347,6 +347,8 @@ namespace AcManager.Tools.SemiGui {
                 StartAsync_PrepareRace(properties);
             }
 
+            Logging.Debug(_uiFactory);
+
             return _uiFactory == null ? StartAsync_NoUi(properties, mode) : StartAsync_Ui(properties, mode);
         }
     }

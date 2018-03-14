@@ -25,7 +25,16 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int? PortExtended {
             get => _portExtended;
-            set => Apply(value, ref _portExtended);
+            private set => Apply(value, ref _portExtended);
+        }
+
+        private string _detailsId;
+
+        public string DetailsId {
+            get => _detailsId;
+            set => Apply(value, ref _detailsId, () => {
+                _previousPassword = null;
+            });
         }
 
         private bool _extendedMode;
@@ -182,7 +191,7 @@ namespace AcManager.Tools.Managers.Online {
             Updates
         }
 
-        private void UpdateValuesExtended([CanBeNull] ServerInformationExtended extended) {
+        private void UpdateValuesExtended([CanBeNull] IServerInformationExtra extended) {
             if (extended == null) {
                 extended = new ServerInformationExtended();
                 ExtendedMode = false;
@@ -204,15 +213,23 @@ namespace AcManager.Tools.Managers.Online {
             TrackBaseId = extended.TrackBase?.Trim();
             FrequencyHz = extended.FrequencyHz ?? 0;
             MaxContactsPerKm = extended.MaxContactsPerKm;
+            _missingContentPrivateReferences = extended.ContentPrivate;
             _missingContentReferences = extended.Content;
+            DecryptContentIfNeeded();
         }
+
+        private string _previousPassword;
+        private bool _previousChecksumPass;
 
         private bool CheckPasswordChecksum() {
             if (PasswordChecksum == null) return true;
-            using (var sha1 = SHA1.Create()) {
-                return PasswordChecksum.ArrayContains(sha1.ComputeHash(Encoding.UTF8.GetBytes("apatosaur" + ActualName + Password))
-                                                     .ToHexString().ToLowerInvariant());
-            }
+
+            var password = Password;
+            if (_previousPassword == password) return _previousChecksumPass;
+
+            _previousPassword = password;
+            var checksum = ServerDetailsUtils.PasswordChecksum(Password, DetailsId == null ? ActualName : null);
+            return _previousChecksumPass = PasswordChecksum.ArrayContains(checksum);
         }
 
         private bool IsPasswordValid() {
@@ -220,6 +237,26 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         #region Missing content
+        private void DecryptContentIfNeeded() {
+            var password = Password;
+            if (_missingContentPrivateReferences == null || _missingContentReferences != null
+                    || string.IsNullOrEmpty(password) || !IsPasswordValid()) return;
+
+            try {
+                var decrypted = StringCipher.Decrypt(_missingContentPrivateReferences, ServerDetailsUtils.EncryptedContentKey(password));
+                Logging.Debug(decrypted);
+
+                if (decrypted != null) {
+                    _missingContentReferences = JObject.Parse(decrypted);
+                    CheckPostUpdate();
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
+        private string _missingContentPrivateReferences;
+
         [CanBeNull]
         private JObject _missingContentReferences;
 
@@ -231,52 +268,47 @@ namespace AcManager.Tools.Managers.Online {
 
             var passwordPostfix = Lazier.Create(() => {
                 using (var sha1 = SHA1.Create()) {
-                    return "?password=" + sha1.ComputeHash(Encoding.UTF8.GetBytes("tanidolizedhoatzin" + Password))
-                               .ToHexString().ToLowerInvariant();
+                    return @"?password=" + sha1.ComputeHash(Encoding.UTF8.GetBytes(@"tanidolizedhoatzin" + Password))
+                                               .ToHexString().ToLowerInvariant();
                 }
             });
 
-            var cars = mref["cars"] as JObject;
-            if (cars != null) {
+            if (mref[@"cars"] is JObject cars) {
                 foreach (var carPair in cars) {
                     var car = CarsManager.Instance.GetById(carPair.Key);
 
                     if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
                         if (!IsAvailableToInstall(carPair.Value)) continue;
                         var url = carPair.Value.GetStringValueOnly("url") ??
-                                $"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
+                                $@"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
                         yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                             FallbackId = carPair.Key,
                             Checksum = carPair.Value.GetStringValueOnly("checksum")
                         });
-                    } else {
-                        var skins = carPair.Value["skins"] as JObject;
-                        if (skins != null) {
-                            foreach (var skinPair in skins) {
-                                if (car.SkinsManager.GetWrapperById(skinPair.Key) != null ||
-                                        !IsAvailableToInstall(skinPair.Value)) continue;
+                    } else if (carPair.Value[@"skins"] is JObject skins) {
+                        foreach (var skinPair in skins) {
+                            if (car.SkinsManager.GetWrapperById(skinPair.Key) != null ||
+                                    !IsAvailableToInstall(skinPair.Value)) continue;
 
-                                var url = skinPair.Value.GetStringValueOnly("url") ??
-                                        $"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
-                                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
-                                    CarId = carPair.Key,
-                                    FallbackId = skinPair.Key,
-                                    Checksum = skinPair.Value.GetStringValueOnly("checksum")
-                                });
-                            }
+                            var url = skinPair.Value.GetStringValueOnly("url") ??
+                                    $@"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
+                            yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                                CarId = carPair.Key,
+                                FallbackId = skinPair.Key,
+                                Checksum = skinPair.Value.GetStringValueOnly("checksum")
+                            });
                         }
                     }
                 }
             }
 
-            var weather = mref["weather"] as JObject;
-            if (weather != null) {
+            if (mref[@"weather"] is JObject weather) {
                 foreach (var weatherPair in weather) {
                     if (WeatherManager.Instance.GetWrapperById(weatherPair.Key) != null ||
                             !IsAvailableToInstall(weatherPair.Value)) continue;
 
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
-                            $"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
+                            $@"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                         FallbackId = weatherPair.Key,
                         Checksum = weatherPair.Value.GetStringValueOnly("checksum")
@@ -284,10 +316,10 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
-            var track = mref["track"] as JObject;
-            if (track != null && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
+            if (mref[@"track"] is JObject track
+                    && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
                 var url = track.GetStringValueOnly("url") ??
-                        $"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
+                        $@"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                     FallbackId = TrackBaseId,
                     Checksum = track.GetStringValueOnly("checksum")
@@ -297,20 +329,21 @@ namespace AcManager.Tools.Managers.Online {
 
         private DelegateCommand _installMissingContentCommand;
 
-        public DelegateCommand InstallMissingContentCommand => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(async () => {
-            if (_missingContentReferences?.GetBoolValueOnly("password") == true && !IsPasswordValid()) {
-                ModernDialog.ShowMessage("Can’t install content, password is required.", "Can’t install content", MessageBoxButton.OK);
-                return;
-            }
+        public DelegateCommand InstallMissingContentCommand
+            => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(async () => {
+                if (_missingContentReferences?.GetBoolValueOnly("password") == true && !IsPasswordValid()) {
+                    ModernDialog.ShowMessage("Can’t install content, password is required.", "Can’t install content", MessageBoxButton.OK);
+                    return;
+                }
 
-            try {
-                await InstallMissingContentTasks().WhenAll();
-            } catch (Exception e) {
-                NonfatalError.Notify("Can’t install content", e);
-            }
-        }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
-                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
-                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates));
+                try {
+                    await InstallMissingContentTasks().WhenAll();
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t install content", e);
+                }
+            }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
+                    IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
+                    IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates));
 
         private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
 
@@ -327,10 +360,10 @@ namespace AcManager.Tools.Managers.Online {
         [Pure]
         private static bool IsAvailableToInstall([CanBeNull] JToken token) {
             if (token == null) return false;
-            if ((string)token["url"] != null) return true;
+            if ((string)token[@"url"] != null) return true;
 
             try {
-                if ((bool?)token["direct"] == false) return false;
+                if ((bool?)token[@"direct"] == false) return false;
             } catch (Exception e) {
                 Logging.Warning(e.Message);
             }
@@ -339,9 +372,7 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private static IEnumerable<string> GetKeys([CanBeNull] JToken token) {
-            var obj = token as JObject;
-            if (obj == null) yield break;
-
+            if (!(token is JObject obj)) yield break;
             foreach (var p in obj) {
                 if (IsAvailableToInstall(p.Value)) {
                     yield return p.Key;
@@ -350,11 +381,11 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private string GetRequiredCarVersion(string carId) {
-            return _missingContentReferences?["cars"]?[carId]?.GetStringValueOnly("version");
+            return _missingContentReferences?[@"cars"]?[carId]?.GetStringValueOnly("version");
         }
 
         private string GetRequiredTrackVersion() {
-            return _missingContentReferences?["track"]?.GetStringValueOnly("version");
+            return _missingContentReferences?[@"track"]?.GetStringValueOnly("version");
         }
 
         private ServerStatus? UpdateMissingContentExtended(bool alreadyMissingSomething) {
@@ -373,8 +404,7 @@ namespace AcManager.Tools.Managers.Online {
             var missingSomething = false;
             var somethingIsObsolete = false;
 
-            var cars = mref["cars"] as JObject;
-            if (cars != null) {
+            if (mref[@"cars"] is JObject cars) {
                 var missingSkins = new List<string>();
 
                 foreach (var carPair in cars) {
@@ -389,8 +419,7 @@ namespace AcManager.Tools.Managers.Online {
                         somethingIsObsolete = true;
                     }
 
-                    var skins = carPair.Value["skins"] as JObject;
-                    if (skins != null) {
+                    if (carPair.Value["skins"] is JObject skins) {
                         foreach (var skinPair in skins) {
                             if (IsAvailableToInstall(skinPair.Value) && car.SkinsManager.GetWrapperById(skinPair.Key) == null) {
                                 missingSkins.Add($"“{skinPair.Key}” ({car.DisplayName})");
@@ -408,7 +437,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             if (Track != null) {
-                var track = mref["track"];
+                var track = mref[@"track"];
                 var version = track?.GetStringValueOnly("version");
                 if (IsAvailableToInstall(track) && version.IsVersionNewerThan(Track.Version)) {
                     _updateMissingExtendedErrors.Add($"{Track.Name} is obsolete (installed: {Track.Version}; server runs: {version})");
@@ -417,7 +446,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
-            var missingWeatherIds = GetKeys(mref["weather"]).Where(x => WeatherManager.Instance.GetWrapperById(x) == null).ToList();
+            var missingWeatherIds = GetKeys(mref[@"weather"]).Where(x => WeatherManager.Instance.GetWrapperById(x) == null).ToList();
             if (missingWeatherIds.Any()) {
                 _updateMissingExtendedErrors.Add(string.Format(ToolsStrings.Online_Server_WeatherIsMissing,
                         missingWeatherIds.Select(x => $"“{x}”").JoinToReadableString()));
@@ -433,13 +462,13 @@ namespace AcManager.Tools.Managers.Online {
 
                 var missingCarsIds = Cars?.Where(x => !x.CarExists).Select(x => x.Id).ToList();
                 if (missingCarsIds?.Count > 0) {
-                    var availableCarsIds = GetKeys(mref["cars"]).ToList();
+                    var availableCarsIds = GetKeys(mref[@"cars"]).ToList();
                     var missingButAvailable = missingCarsIds.Where(availableCarsIds.Contains).ToList();
                     allCarsAvailable = missingCarsIds.Count == missingButAvailable.Count;
                 }
 
                 if (Track == null) {
-                    trackAvailable = IsAvailableToInstall(mref["track"]);
+                    trackAvailable = IsAvailableToInstall(mref[@"track"]);
                 }
 
                 state = allCarsAvailable && trackAvailable

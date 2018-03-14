@@ -114,7 +114,7 @@ namespace AcManager.Tools.Objects {
                                       .Append(MainExecutingFile.Location).Append('/')
                                       .Append(Environment.UserName).Append('/')
                                       .Append(Environment.MachineName).Append('/')
-                                      .Append("is8grzju0rlc6nxw")
+                                      .Append(@"is8grzju0rlc6nxw")
                                       .ToString().GetChecksum();
         }
 
@@ -125,8 +125,10 @@ namespace AcManager.Tools.Objects {
 
             IsPickupModeAvailable = !Sessions.GetById(@"BOOK").IsEnabled;
 
+            var cmSection = ini["__CM_SERVER"];
             var section = ini["SERVER"];
-            Name = section.GetPossiblyEmpty("NAME");
+            Name = cmSection.GetPossiblyEmpty("NAME") ?? section.GetPossiblyEmpty("NAME");
+            DetailsNamePiece = cmSection.GetNonEmpty("DETAILS_ID");
             Password = section.GetNonEmpty("PASSWORD");
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);

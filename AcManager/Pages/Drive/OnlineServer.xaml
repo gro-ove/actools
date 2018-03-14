@@ -447,7 +447,7 @@
                       <ToolTip Content="{Binding GripTransfer}" ContentStringFormat="{}Grip transfer: {0:F1}%" />
                     </TextBlock.ToolTip>
                   </TextBlock>
-                  <c:TemperatureBlock c:PropertiesGrid.Label="Temperature:" Text="{Binding AmbientTemperature, TargetNullValue='?'}" Background="Transparent" />
+                  <c:TemperatureBlock c:PropertiesGrid.Label="Ambient:" Text="{Binding AmbientTemperature, TargetNullValue='?'}" Background="Transparent" />
                   <TextBlock c:PropertiesGrid.Label="Wind:" Background="Transparent">
                     <TextBlock.Text>
                       <MultiBinding StringFormat="{}{0:F0} km/h ({1})">
@@ -456,7 +456,7 @@
                       </MultiBinding>
                     </TextBlock.Text>
                   </TextBlock>
-                  <c:TemperatureBlock c:PropertiesGrid.Label="Road temp.:" Text="{Binding RoadTemperature, TargetNullValue='?'}" Background="Transparent" />
+                  <c:TemperatureBlock c:PropertiesGrid.Label="Road:" Text="{Binding RoadTemperature, TargetNullValue='?'}" Background="Transparent" />
                   <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="Maximum amount of contacts per kilometer"
                       Text="{Binding MaxContactsPerKm, StringFormat='{}{0:F1} per km', TargetNullValue='not limited'}" Background="Transparent" />
                 </c:PropertiesGrid>

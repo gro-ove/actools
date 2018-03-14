@@ -2,10 +2,10 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AcManager.Internal;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -16,6 +16,55 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Objects {
+    public static class ServerDetailsUtils {
+        private const string ChecksumChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+        [ContractAnnotation(@"password: null => null; password: notnull => notnull")]
+        public static string PasswordChecksum(string password, string serverName = null) {
+            return password == null ? null : (@"apatosaur" + serverName + password).GetChecksum().ToLowerInvariant();
+        }
+
+        [ContractAnnotation(@"password: null => null; password: notnull => notnull")]
+        public static string EncryptedContentKey(string password) {
+            return password == null ? null : (@"tgys3cqpcwpbssphb0j46tak8ykldaub" + password).GetChecksum().ToCutBase64();
+        }
+
+        public static string InsertDetailsId(string namePiece) {
+            var s = ChecksumChars[(117 + namePiece.Sum(x => (int)x)) % ChecksumChars.Length];
+            return $@"x:{namePiece}{s}";
+        }
+
+        public static string ExtractDetailsId(string name, out string detailsId) {
+            try {
+                var index = name.LastIndexOf(@"x:", StringComparison.OrdinalIgnoreCase);
+                if (index >= 1 && !char.IsLetterOrDigit(name[index - 1])) {
+                    int l = 0, u = 117;
+                    for (var i = index + 2; i < name.Length && IsIdChar(name[i]); i++, l++) {
+                        u += name[i];
+                    }
+
+                    if (l >= 2) {
+                        var s = name[index + l + 1];
+                        if (ChecksumChars[(u - s) % ChecksumChars.Length] == s) {
+                            detailsId = name.Substring(index + 2, l - 1);
+                            return name.Substring(0, index).TrimEnd() + (index + l + 3 < name.Length ? name.Substring(index + l + 2) : "");
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+
+            }
+
+            detailsId = null;
+            return name;
+
+            bool IsIdChar(char c) {
+                return char.IsLetterOrDigit(c) || c == '-' || c == '_';
+            }
+        }
+    }
+
     public partial class ServerPresetObject {
         #region Properties
         private bool _provideDetails;
@@ -25,7 +74,6 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _provideDetails)) return;
                 _provideDetails = value;
-
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
@@ -56,85 +104,83 @@ namespace AcManager.Tools.Objects {
 
         private async Task EnsureDetailsNameIsActualAsync(IniFile ini) {
             // var serverSection = ini["SERVER"];
-            var geoParams = await Task.Run(() => IpGeoProvider.Get());
+            var geoParams = await IpGeoProvider.GetAsync();
 
-            var data = new JObject {
-                [@"frequency"] = SendIntervalHz,
-                [@"durations"] = new JArray(Sessions.Select(x => x.Time.TotalSeconds.RoundToInt())),
-                [@"assists"] = new JObject {
-                    [@"absState"] = Convert.ToInt32(Abs),
-                    [@"tcState"] = Convert.ToInt32(TractionControl),
-                    [@"fuelRate"] = FuelRate,
-                    [@"damageMultiplier"] = DamageRate,
-                    [@"tyreWearRate"] = TyreWearRate,
-                    [@"allowedTyresOut"] = AllowTyresOut,
-                    [@"stabilityAllowed"] = StabilityControl,
-                    [@"autoclutchAllowed"] = AutoClutch,
-                    [@"tyreBlanketsAllowed"] = TyreBlankets,
-                    [@"forceVirtualMirror"] = ForceVirtualMirror,
+            var data = new ServerInformationExtra {
+                FrequencyHz = SendIntervalHz,
+                Durations = Sessions.Select(x => (long)x.Time.TotalSeconds.RoundToInt()).ToArray(),
+                Assists = new ServerInformationExtendedAssists {
+                    AbsState = Abs,
+                    TractionControlState = TractionControl,
+                    FuelRate = FuelRate,
+                    DamageMultiplier = DamageRate,
+                    TyreWearRate = TyreWearRate,
+                    AllowedTyresOut = AllowTyresOut,
+                    StabilityAllowed = StabilityControl,
+                    AutoclutchAllowed = AutoClutch,
+                    TyreBlankets = TyreBlankets,
+                    ForceVirtualMirror = ForceVirtualMirror,
                 },
-                [@"passwordChecksum"] = new JArray {
-                    PasswordChecksum(Password),
-                    PasswordChecksum(AdminPassword),
+                PasswordChecksum = new[] {
+                    ServerDetailsUtils.PasswordChecksum(Password),
+                    ServerDetailsUtils.PasswordChecksum(AdminPassword),
                 },
             };
 
             if (geoParams != null) {
-                data[@"ip"] = geoParams.Ip;
-                data[@"country"] = new JArray {
+                data.Country = new[] {
                     AcStringValues.GetCountryFromId(geoParams.Country),
                     geoParams.Country
                 };
-                data[@"city"] = geoParams.City;
+                data.City = geoParams.City;
             }
 
             var weather = Weather.FirstOrDefault();
             if (weather != null) {
-                data[@"ambientTemperature"] = weather.BaseAmbientTemperature;
-                data[@"roadTemperature"] = weather.BaseRoadTemperature;
-                data[@"currentWeatherId"] = weather.WeatherId;
-                data[@"windSpeed"] = (weather.WindSpeedMin + weather.WindSpeedMax) / 2d;
-                data[@"windDirection"] = weather.WindDirection;
+                data.AmbientTemperature = weather.BaseAmbientTemperature;
+                data.RoadTemperature = weather.BaseRoadTemperature;
+                data.WeatherId = weather.WeatherId;
+                data.WindSpeed = (weather.WindSpeedMin + weather.WindSpeedMax) / 2d;
+                data.WindDirection = weather.WindDirection;
             }
 
             if (DynamicTrackEnabled) {
-                data[@"grip"] = TrackProperties.SessionStart;
-                data[@"gripTransfer"] = TrackProperties.SessionTransfer;
+                data.Grip = TrackProperties.SessionStart;
+                data.GripTransfer = TrackProperties.SessionTransfer;
             }
 
             if (MaxCollisionsPerKm != -1) {
-                data[@"maxContactsPerKm"] = MaxCollisionsPerKm;
+                data.MaxContactsPerKm = MaxCollisionsPerKm;
             }
 
             if (TrackLayoutId == null && TrackId.IndexOf('-') == -1) {
-                data[@"trackBase"] = TrackId;
+                data.TrackBase = TrackId;
             }
 
             if (!string.IsNullOrWhiteSpace(DetailsDescription)) {
-                data[@"description"] = DetailsDescription;
+                data.Description = DetailsDescription;
             }
 
             if (DetailsContentJObject != null) {
                 if (DetailsDownloadPasswordOnly && !string.IsNullOrWhiteSpace(Password)) {
-                    data[@"content"] = StringCipher.Encrypt(DetailsContentJObject.ToString(), PasswordChecksum(Password)).ToCutBase64();
+                    data.ContentPrivate = StringCipher.Encrypt(DetailsContentJObject.ToString(Formatting.None), ServerDetailsUtils.EncryptedContentKey(Password));
                 } else {
-                    data[@"content"] = DetailsContentJObject;
+                    data.Content = DetailsContentJObject;
                 }
             }
 
             try {
-                Apply(await InternalUtils.PostOnlineDataAsync(data.ToString(Formatting.None), CmApiProvider.UserAgent));
+                Apply(await CmApiProvider.PostOnlineDataAsync(data));
             } catch (Exception e) {
                 Logging.Warning(e);
                 Apply(null);
             }
 
             void Apply(string namePiece) {
+                ini["__CM_SERVER"].Set("NAME", Name);
+                ini["__CM_SERVER"].Set("DETAILS_ID", namePiece);
+                ini["SERVER"].Set("NAME", (char.IsLetterOrDigit(Name?.LastOrDefault() ?? '.') ? Name + @" " : Name) + ServerDetailsUtils.InsertDetailsId(namePiece));
                 DetailsNamePiece = namePiece;
-            }
-
-            string PasswordChecksum(string password) {
-                return password == null ? null : (@"apatosaur" + Name + password).GetChecksum();
             }
         }
 

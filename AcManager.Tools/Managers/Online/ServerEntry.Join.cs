@@ -22,7 +22,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public IReadOnlyList<string> NonAvailableReasons {
-            get { return _naReasons; }
+            get => _naReasons;
             set => Apply(value, ref _naReasons);
         }
 
@@ -83,7 +83,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _isBooked;
 
         public bool IsBooked {
-            get { return _isBooked; }
+            get => _isBooked;
             set {
                 if (Equals(value, _isBooked)) return;
                 _isBooked = value;
@@ -95,19 +95,14 @@ namespace AcManager.Tools.Managers.Online {
         private DateTime _startTime;
 
         public DateTime StartTime {
-            get { return _startTime; }
-            set {
-                if (Equals(value, _startTime)) return;
-                _startTime = value;
-                OnPropertyChanged();
-                OnPropertyChanged(nameof(BookingTimeLeft));
-            }
+            get => _startTime;
+            set => Apply(value, ref _startTime, nameof(BookingTimeLeft));
         }
 
         private string _bookingErrorMessage;
 
         public string BookingErrorMessage {
-            get { return _bookingErrorMessage; }
+            get => _bookingErrorMessage;
             set => Apply(value, ref _bookingErrorMessage);
         }
 
@@ -223,7 +218,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public Game.AssistsProperties Assists {
-            get { return _assists; }
+            get => _assists;
             set => Apply(value, ref _assists);
         }
 

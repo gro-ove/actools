@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Internal;
+using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -239,10 +240,40 @@ namespace AcManager.Tools.Helpers.Api {
                 var json = await GetContentStringAsync(url, cancellation);
                 if (cancellation.IsCancellationRequested) return default(T);
                 return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
-            } catch (Exception e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 Logging.Warning(e);
-                return default(T);
             }
+            return default(T);
+        }
+
+        [ItemCanBeNull]
+        public static async Task<string> PostOnlineDataAsync(ServerInformationExtra data, CancellationToken cancellation = default(CancellationToken)) {
+            try {
+                var json = JsonConvert.SerializeObject(data);
+                var key = ".PostedOnlineData:" + json.GetChecksum();
+                var uploaded = CacheStorage.Get<string>(key);
+                if (uploaded != null) return uploaded;
+
+                var id = await InternalUtils.PostOnlineDataAsync(json, UserAgent, cancellation);
+                if (id != null) {
+                    CacheStorage.Set(key, id);
+                    LazierCached.Set(@".OnlineData:" + id, data);
+                }
+
+                return id;
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
+                Logging.Warning(e);
+            }
+            return null;
+        }
+
+        [ItemCanBeNull]
+        public static Task<ServerInformationExtra> GetOnlineDataAsync(string id, CancellationToken cancellation = default(CancellationToken)) {
+            return LazierCached.CreateAsync(@".OnlineData:" + id,
+                    () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
+                            r => JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result),
+                            TaskContinuationOptions.OnlyOnRanToCompletion)
+                    ).GetValueAsync();
         }
     }
 }

@@ -203,8 +203,9 @@ namespace AcManager.Pages.Dialogs {
 
             public AsyncCommand PackCommand => _packCommand ?? (_packCommand = new AsyncCommand(async () => {
                 try {
-                    var destination = CommonBatchActions.GetPackedFilename(Server, Mode == ServerPresetPackMode.Windows ?
-                            PackIntoSingle && !Server.ProvideDetails ? ".exe" : ".zip" : ".tar.gz");
+                    var packIntoSingle = PackIntoSingle && (!Server.ProvideDetails || Server.DetailsMode == ServerPresetDetailsMode.ViaNameIdentifier);
+                    var destination = CommonBatchActions.GetPackedFilename(Server, Mode != ServerPresetPackMode.Windows ? @".tar.gz"
+                            : packIntoSingle ? @".exe" : @".zip");
                     if (destination == null) return;
 
                     using (var waiting = new WaitingDialog()) {

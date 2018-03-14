@@ -74,7 +74,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static string ToHexString([NotNull] this byte[] data) {
-            var lookup = new[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+            const string lookup = "0123456789ABCDEF";
             int i = -1, p = -1, l = data.Length;
             var c = new char[l-- * 2];
             while (i < l) {

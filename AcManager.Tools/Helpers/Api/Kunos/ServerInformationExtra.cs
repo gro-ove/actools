@@ -1,19 +1,26 @@
-﻿using System;
-using System.ComponentModel;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.Api.Kunos {
-    // It’s like ServerInformationExtended, but to store and load from CM server
-
-    [Localizable(false)]
-    public class ServerInformationExtended : ServerInformationComplete, IServerInformationExtra {
-        [JsonProperty(PropertyName = "wrappedPort")]
-        public int PortExtended { get; set; }
+    public class ServerInformationExtra : IServerInformationExtra {
+        /// <summary>
+        /// Name and ID.
+        /// </summary>
+        [JsonProperty(PropertyName = "country")]
+        public string[] Country { get; set; }
 
         [JsonProperty(PropertyName = "city")]
         public string City { get; set; }
 
+        /// <summary>
+        /// In seconds.
+        /// </summary>
+        [JsonProperty(PropertyName = "durations")]
+        public long[] Durations { get; set; }
+
+        /// <summary>
+        /// Usual and admin passwords.
+        /// </summary>
         [JsonProperty(PropertyName = "passwordChecksum")]
         public string[] PasswordChecksum { get; set; }
 
@@ -27,7 +34,7 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
         public ServerInformationExtendedAssists Assists { get; set; }
 
         [JsonProperty(PropertyName = "contentPrivate")]
-        public string ContentPrivate { get; }
+        public string ContentPrivate { get; set; }
 
         [JsonProperty(PropertyName = "content")]
         public JObject Content { get; set; }
@@ -61,11 +68,5 @@ namespace AcManager.Tools.Helpers.Api.Kunos {
 
         [JsonProperty(PropertyName = "maxContactsPerKm")]
         public double? MaxContactsPerKm { get; set; }
-
-        [JsonProperty(PropertyName = "until")]
-        public long Until { get; set; }
-
-        [JsonIgnore]
-        public DateTime UntilLocal { get; set; }
     }
 }

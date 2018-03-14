@@ -88,7 +88,8 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!IsFullyLoaded || information != null) {
                 int? extPort = null;
-                var displayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort);
+                string detailsId = null;
+                var displayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort, out detailsId);
 
                 if (baseInformation is ServerInformationExtended ext) {
                     PortExtended = ext.PortExtended;
@@ -99,6 +100,12 @@ namespace AcManager.Tools.Managers.Online {
                     UpdateValuesExtended(null);
                 } else {
                     return null;
+                }
+
+                if (PortExtended == null && detailsId != null) {
+                    DetailsId = detailsId;
+                } else {
+                    DetailsId = null;
                 }
 
                 DisplayName = displayName;

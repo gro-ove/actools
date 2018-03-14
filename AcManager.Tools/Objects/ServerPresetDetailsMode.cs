@@ -2,7 +2,7 @@
 
 namespace AcManager.Tools.Objects {
     public enum ServerPresetDetailsMode {
-        [Description("Via identifier within server’s name (recommended)")]
+        [Description("Via ID in name (recommended)")]
         ViaNameIdentifier = 1,
 
         [Description("Via AC Server Wrapper")]

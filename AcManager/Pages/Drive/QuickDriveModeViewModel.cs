@@ -103,7 +103,7 @@ namespace AcManager.Pages.Drive {
         /// </summary>
         [CanBeNull]
         public Tuple<string, Action<TrackObjectBase>> TrackDoesNotFit {
-            get { return _trackDoesNotFit; }
+            get => _trackDoesNotFit;
             set => Apply(value, ref _trackDoesNotFit);
         }
 

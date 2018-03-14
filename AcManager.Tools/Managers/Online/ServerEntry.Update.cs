@@ -163,6 +163,20 @@ namespace AcManager.Tools.Managers.Online {
                         UpdateValuesExtended(null);
                         return;
                     }
+                } else if (DetailsId != null) {
+                    try {
+                        var extended = await CmApiProvider.GetOnlineDataAsync(DetailsId);
+                        if (extended != null){
+                            Country = extended.Country?.FirstOrDefault() ?? Country;
+                            CountryId = extended.Country?.ArrayElementAtOrDefault(1) ?? CountryId;
+                            Sessions?.ForEach((x, i) => x.Duration = extended.Durations?.ElementAtOrDefault(i) ?? x.Duration);
+                        }
+                        UpdateValuesExtended(extended);
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                        UpdateValuesExtended(null);
+                        return;
+                    }
                 } else {
                     UpdateValuesExtended(null);
                 }
@@ -340,7 +354,8 @@ namespace AcManager.Tools.Managers.Online {
                         entry.Available = 0;
                         entry.IsAvailable = true;
                     } else {
-                        var cars = carsInformation.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
+                        var cars =
+                                carsInformation.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
                         string availableSkinId;
 
                         if (BookingMode) {

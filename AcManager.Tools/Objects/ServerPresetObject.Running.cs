@@ -71,11 +71,11 @@ namespace AcManager.Tools.Objects {
                 return _content ?? (_filename != null && File.Exists(_filename) ? File.ReadAllBytes(_filename) : null);
             }
 
-            public static PackedEntry FromFile(string key, string filename) {
+            public static PackedEntry FromFile([Localizable(false)] string key, string filename) {
                 return new PackedEntry(key, filename, null);
             }
 
-            public static PackedEntry FromContent(string key, string content) {
+            public static PackedEntry FromContent([Localizable(false)] string key, string content) {
                 return new PackedEntry(key, null, Encoding.UTF8.GetBytes(content));
             }
 
@@ -96,7 +96,7 @@ namespace AcManager.Tools.Objects {
             var result = new List<PackedEntry>();
 
             // Wrapper
-            if (ProvideDetails) {
+            if (ProvideDetails && DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
                 if (saveExecutable) {
                     string wrapper;
                     switch (mode) {
@@ -121,13 +121,13 @@ namespace AcManager.Tools.Objects {
 
                     // Actual wrapper, compiled to a single exe-file
                     result.Add(PackedEntry.FromFile(
-                            mode == ServerPresetPackMode.Windows ? "acServerWrapper.exe" : "acServerWrapper",
+                            mode == ServerPresetPackMode.Windows ? @"acServerWrapper.exe" : @"acServerWrapper",
                             wrapper));
 
                     // For EVB
                     if (evbMode) {
                         result.Add(PackedEntry.FromContent("arguments.json", new JArray {
-                            "--copy-executable-to=acServer_tmp.exe",
+                            @"--copy-executable-to=acServer_tmp.exe",
                         }.ToString(Formatting.Indented)));
                     }
                 }
@@ -135,17 +135,17 @@ namespace AcManager.Tools.Objects {
                 // Params
                 var wrapperParams = _wrapperParamsJson?.DeepClone() as JObject;
                 SetWrapperParams(ref wrapperParams);
-                result.Add(PackedEntry.FromContent("cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
+                result.Add(PackedEntry.FromContent(@"cfg/cm_wrapper_params.json", wrapperParams.ToString(Formatting.Indented)));
 
                 // Content
                 if (DetailsContentJObject != null) {
                     void ProcessPiece(JObject piece) {
-                        var file = (string)piece?["file"];
+                        var file = (string)piece?[@"file"];
                         if (piece == null || file == null) return;
 
                         var filename = Path.IsPathRooted(file) ? file : Path.Combine(WrapperContentDirectory, file);
                         if (!FileUtils.ArePathsEqual(WrapperContentDirectory, Path.GetDirectoryName(filename))) {
-                            piece["file"] = Path.GetFileName(filename);
+                            piece[@"file"] = Path.GetFileName(filename);
                         }
 
                         result.Add(PackedEntry.FromFile($"cfg/cm_content/{Path.GetFileName(filename)}", filename));
@@ -164,12 +164,12 @@ namespace AcManager.Tools.Objects {
                     }
 
                     var content = DetailsContentJObject.DeepClone();
-                    ProcessPieces(content["cars"], "skins");
-                    ProcessPiece(content["track"] as JObject);
-                    ProcessPieces(content["weather"]);
+                    ProcessPieces(content[@"cars"], @"skins");
+                    ProcessPiece(content[@"track"] as JObject);
+                    ProcessPieces(content[@"weather"]);
                     result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", content.ToString(Formatting.Indented)));
                 } else {
-                    result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", "{}"));
+                    result.Add(PackedEntry.FromContent("cfg/cm_content/content.json", @"{}"));
                 }
             }
 
@@ -177,8 +177,8 @@ namespace AcManager.Tools.Objects {
             if (saveExecutable) {
                 var serverDirectory = ServerPresetsManager.ServerDirectory;
                 result.Add(PackedEntry.FromFile(
-                        mode == ServerPresetPackMode.Windows ? "acServer.exe" : "acServer",
-                        Path.Combine(serverDirectory, mode == ServerPresetPackMode.Windows ? "acServer.exe" : "acServer")));
+                        mode == ServerPresetPackMode.Windows ? @"acServer.exe" : @"acServer",
+                        Path.Combine(serverDirectory, mode == ServerPresetPackMode.Windows ? @"acServer.exe" : @"acServer")));
             }
 
             // Welcome message
@@ -345,7 +345,7 @@ namespace AcManager.Tools.Objects {
             var log = new BetterObservableCollection<string>();
             RunningLog = log;
 
-            if (ProvideDetails) {
+            if (ProvideDetails && DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
                 await RunWrapper(serverExecutable, log, progress, cancellation);
             } else {
                 await RunAcServer(serverExecutable, log, progress, cancellation);

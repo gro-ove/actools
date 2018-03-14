@@ -208,7 +208,9 @@
         <StackPanel Style="{StaticResource SettingsPanel}">
 
           <CheckBox IsChecked="{Binding SelectedObject.ProvideDetails}">
-            <Label Content="Provide extra details about the server, such as links to extra content, assists or description" />
+            <Label>
+              <TextBlock Text="Provide extra details about the server, such as links to extra content, assists or description" TextWrapping="Wrap" />
+            </Label>
           </CheckBox>
 
           <DockPanel IsEnabled="{Binding SelectedObject.ProvideDetails}">
@@ -227,14 +229,20 @@
             <StackPanel mui:Switch.When="{x:Static t:ServerPresetDetailsMode.ViaNameIdentifier}" Style="{StaticResource SettingsPanel}" Margin="0">
               <c:MessageBlock Margin="0 0 0 28">
                 <mui:BbCodeBlock
-                    Text="Content Manager will add a few extra symbols to server name, so that other instances of CM on client machines will be able to recognize those symbols and use them to get a full description. Doesn’t require any scripts to run, works everywhere, although a bit less functional (but provides all the important details).[br][br]For extra content, you can provide links to download." />
+                    Text="Content Manager will add a few extra symbols to server name, and then apps on client machines will use them to get a full description. Doesn’t require any scripts to run, works everywhere. A bit less functional, but provides all the important details.[br][br]To share extra cars and track, you can provide links to download them." />
               </c:MessageBlock>
+
+              <DockPanel ToolTip="Will be updated automatically on saving if needed">
+                <Label Content="Details ID:" />
+                <mui:BetterTextBox Text="{Binding SelectedObject.DetailsNamePiece, Mode=OneWay}" Placeholder="{x:Static t:ToolsStrings.Common_None}"
+                    IsReadOnly="True" />
+              </DockPanel>
             </StackPanel>
 
             <StackPanel mui:Switch.When="{x:Static t:ServerPresetDetailsMode.ViaWrapper}" Style="{StaticResource SettingsPanel}" Margin="0">
               <c:MessageBlock Margin="0 0 0 28">
                 <mui:BbCodeBlock
-                    Text="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. Apart from that, it allows clients to download missing content and control server remotely (WIP). It’s a fully open-source project, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url].[br][br]For extra content, you can either provide links to download or share it from the server." />
+                    Text="AC Server Wrapper is a small script which wraps around acServer, starts another HTTP-server next to it and provides more detailed responses. It allows clients to download missing content and control server remotely. It’s a fully open-source side-project and still heavily WIP, more information might be found [url=&quot;https://github.com/gro-ove/ac-server-wrapper&quot;]here[/url].[br][br]To share extra cars and track, you can either provide links to download or share them from the server." />
               </c:MessageBlock>
 
               <DockPanel>
