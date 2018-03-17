@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class FatalErrorMessage : ModernDialog {
@@ -27,11 +28,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private ICommand _copyCommand;
 
-        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => { Clipboard.SetText(StackTrace); }));
+        public ICommand CopyCommand => _copyCommand ?? (_copyCommand = new DelegateCommand(() => ClipboardHelper.SetText(StackTrace)));
 
         private ICommand _restartCommand;
 
-        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => { _restartHelper?.Restart(); }));
+        public ICommand RestartCommand => _restartCommand ?? (_restartCommand = new DelegateCommand(() => _restartHelper?.Restart()));
 
         private ICommand _exitCommand;
 

@@ -8,7 +8,6 @@ using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
 using AcManager.Internal;
 using AcManager.Tools.ContentInstallation.Entries;
@@ -60,7 +59,7 @@ namespace AcManager.Tools.ContentInstallation {
             Version = InstallationParams.Version;
 
             if (InstallationParams.CupType.HasValue) {
-                var manager = CupClient.Instance.GetAssociatedManager(InstallationParams.CupType.Value);
+                var manager = CupClient.Instance?.GetAssociatedManager(InstallationParams.CupType.Value);
                 DisplayUpdateFor = InstallationParams.IdsToUpdate?.Select(x => manager?.GetObjectById(x)?.ToString()).JoinToReadableString();
                 if (string.IsNullOrWhiteSpace(DisplayUpdateFor)) {
                     DisplayUpdateFor = null;
@@ -480,7 +479,7 @@ namespace AcManager.Tools.ContentInstallation {
         private DelegateCommand _copySourceToClipboardCommand;
 
         public DelegateCommand CopySourceToClipboardCommand => _copySourceToClipboardCommand ?? (_copySourceToClipboardCommand = new DelegateCommand(() => {
-            Clipboard.SetText(Source);
+            ClipboardHelper.SetText(Source);
             Toast.Show("Copied to clipboard", "Source reference is copied to clipboard");
         }));
 

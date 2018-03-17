@@ -16,7 +16,6 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Clipboard = System.Windows.Clipboard;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
 namespace AcManager.Controls.Helpers {
@@ -107,7 +106,7 @@ namespace AcManager.Controls.Helpers {
             if (_custom?.ShowShared(type, link) == true) return;
 
             if (SettingsHolder.Sharing.CopyLinkToClipboard) {
-                Clipboard.SetText(link);
+                ClipboardHelper.SetText(link);
             }
 
             // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),

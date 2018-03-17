@@ -72,7 +72,7 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add(_missingTrackError);
             }
 
-            if (PortExtended != null) {
+            if (HasDetails) {
                 errors.AddRange(_updateMissingExtendedErrors);
             }
 
@@ -139,7 +139,7 @@ namespace AcManager.Tools.Managers.Online {
                 var informationLoadedExtended = false;
                 ServerCarsInformation carsInformation = null;
 
-                if (PortExtended != null) {
+                if (DetailsPort != null) {
                     try {
                         var extended = await GetExtendedInformationDirectly();
                         var update = UpdateValues(extended, false, true);
@@ -159,7 +159,7 @@ namespace AcManager.Tools.Managers.Online {
                         informationLoadedExtended = true;
                     } catch (Exception e) {
                         Logging.Warning(e);
-                        PortExtended = null;
+                        DetailsPort = null;
                         UpdateValuesExtended(null);
                         return;
                     }

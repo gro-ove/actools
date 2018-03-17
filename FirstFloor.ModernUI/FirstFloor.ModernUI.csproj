@@ -137,6 +137,7 @@
     <Compile Include="Effects\NorEffect.cs" />
     <Compile Include="Effects\OverlayColorEffect.cs" />
     <Compile Include="Helpers\Busy.cs" />
+    <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\GenericObjectFactoryExtension.cs" />
     <Compile Include="Helpers\ElementPool.cs" />
     <Compile Include="Helpers\IStorage.cs" />

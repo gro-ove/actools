@@ -10,6 +10,8 @@ using FirstFloor.ModernUI.Presentation;
 namespace AcManager.Pages.ContentTools {
     public partial class CupList {
         protected override async Task<bool> LoadAsyncOverride(IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            if (CupClient.Instance == null) return false;
+
             progress.Report("Loading list of updates…", 0.01);
             await CupClient.Instance.LoadRegistries();
 

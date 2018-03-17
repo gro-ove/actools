@@ -521,7 +521,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnCopy(object target, ExecutedRoutedEventArgs e) {
             // copies the string representation of the current content to the clipboard
             try {
-                Clipboard.SetText(Content.ToString());
+                ClipboardHelper.SetText(Content.ToString());
             } catch (COMException ex) {
                 Logging.Warning(ex.Message);
             }

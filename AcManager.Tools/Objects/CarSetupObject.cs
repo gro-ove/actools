@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -354,7 +353,7 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand CopyUrlCommand => _copyUrlCommand ?? (_copyUrlCommand = new DelegateCommand(() => {
             if (_information.Url == null) return;
-            Clipboard.SetText(_information.Url);
+            ClipboardHelper.SetText(_information.Url);
             Toast.Show("Link copied", "Link to The Setup Market copied to the clipboard");
         }, () => _information.Url != null));
 

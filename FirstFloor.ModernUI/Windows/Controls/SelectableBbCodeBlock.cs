@@ -52,7 +52,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 clipboard += textRange.Start.Parent is EmojiSpan span ? span.Text : textRange.Text;
             }
 
-            Clipboard.SetText(clipboard);
+            ClipboardHelper.SetText(clipboard);
             e.Handled = true;
             e.CancelCommand();
         }

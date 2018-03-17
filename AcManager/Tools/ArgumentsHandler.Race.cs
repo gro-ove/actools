@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,7 +25,9 @@ namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
         private static async Task<ArgumentHandleResult> ProcessRaceQuick(CustomUriRequest custom) {
             var presetData = custom.Params.Get(@"presetData");
-            var preset = presetData != null ? presetData.FromCutBase64()?.ToUtf8String() : custom.Params.Get(@"preset");
+            var presetFile = custom.Params.Get(@"presetFile");
+            var preset = presetData != null ? presetData.FromCutBase64()?.ToUtf8String()
+                    : presetFile != null ? File.ReadAllText(presetFile) : custom.Params.Get(@"preset");
             if (preset == null) throw new Exception(@"Settings are not specified");
             if (!await QuickDrive.RunAsync(serializedPreset: preset)) {
                 NonfatalError.Notify(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
@@ -35,7 +38,9 @@ namespace AcManager.Tools {
 
         private static async Task<ArgumentHandleResult> ProcessRaceConfig(CustomUriRequest custom) {
             var configData = custom.Params.Get(@"configData");
-            var config = configData != null ? configData.FromCutBase64()?.ToUtf8String() : custom.Params.Get(@"config");
+            var configFile = custom.Params.Get(@"configFile");
+            var config = configData != null ? configData.FromCutBase64()?.ToUtf8String()
+                    : configFile != null ? File.ReadAllText(configFile) : custom.Params.Get(@"config");
             if (config == null) throw new Exception(@"Settings are not specified");
             await GameWrapper.StartAsync(new Game.StartProperties {
                 PreparedConfig = IniFile.Parse(config)
@@ -44,13 +49,13 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceOnline(NameValueCollection p) {
-            /* required arguments */
+            // Required arguments
             var ip = p.Get(@"ip");
             var port = FlexibleParser.TryParseInt(p.Get(@"port"));
             var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
             var carId = p.Get(@"car");
 
-            /* optional arguments */
+            // Optional arguments
             var allowWithoutSteamId = p.GetFlag("allowWithoutSteamId");
             var carSkinId = p.Get(@"skin");
             var trackId = p.Get(@"track");
@@ -203,7 +208,7 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceOnlineJoin(NameValueCollection p) {
-            /* required arguments */
+            // Required arguments
             var ip = p.Get(@"ip");
             var httpPort = FlexibleParser.TryParseInt(p.Get(@"httpPort"));
             var password = p.Get(@"plainPassword");

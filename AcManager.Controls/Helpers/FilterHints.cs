@@ -11,13 +11,13 @@ namespace AcManager.Controls.Helpers {
         public static string GetReadableType(this KeywordType type) {
             switch (type) {
                 case KeywordType.Child | KeywordType.String:
-                    return "Text or child entity";
+                    return "Text or sub-filter";
                 case KeywordType.TimeSpan | KeywordType.Flag:
                     return "Duration or existence";
                 case KeywordType.String:
                     return "Text";
                 case KeywordType.Child:
-                    return "Child entity";
+                    return "Sub-filter";
                 case KeywordType.Flag:
                     return "Flag";
                 case KeywordType.Number:
@@ -36,11 +36,39 @@ namespace AcManager.Controls.Helpers {
         }
 
         private static string GetShortList_Line(KeywordDescription x) {
-            return x.Unit != null
-                    ? $" • [mono][b]{x.Key}[/b][/mono]: {x.Description.ToSentenceMember()} ({GetReadableType(x.Type).ToSentenceMember()}, in {x.Unit} by default" +
-                            (x.AlternativeKeys.Length > 0 ? $", alt.: {x.AlternativeKeys.Select(y => $"[mono][b]{y}[/b][/mono]").First()}" : "") + ");"
-                    : $" • [mono][b]{x.Key}[/b][/mono]: {x.Description.ToSentenceMember()} ({GetReadableType(x.Type).ToSentenceMember()}" +
-                            (x.AlternativeKeys.Length > 0 ? $", alt.: {x.AlternativeKeys.Select(y => $"[mono][b]{y}[/b][/mono]").First()}" : "") + ");";
+            string codeExample;
+            string extras;
+
+            if (x.Key == @"tag") {
+                codeExample = "#[i]tag[/i]";
+                extras = null;
+            } else {
+                switch (x.Type) {
+                    case KeywordType.Child:
+                        codeExample = $"{x.Key}([i]{GetReadableType(x.Type).ToSentenceMember()}[/i])";
+                        break;
+                    case KeywordType.Child | KeywordType.String:
+                        codeExample = $"{x.Key}: [i]{GetReadableType(x.Type).ToSentenceMember()}[/i]";
+                        break;
+                    case KeywordType.Flag:
+                        codeExample = $"{x.Key}+";
+                        break;
+                    default:
+                        codeExample = $"{x.Key}: [i]{GetReadableType(x.Type).ToSentenceMember()}[/i]";
+                        break;
+                }
+
+                var altKeys = x.AlternativeKeys.Count(y => y.Length < x.Key.Length) > 0
+                        ? $"shortcut: {x.AlternativeKeys.Where(y => y.Length < x.Key.Length).Select(y => $"[mono][b]{y}[/b][/mono]").First()}"
+                        : null;
+                var units = x.Unit != null ? $"in {x.Unit} by default" : null;
+                extras = new[] { units, altKeys }.JoinToString(@", ");
+                if (extras.Length > 0) {
+                    extras = $" ({extras})";
+                }
+            }
+
+            return $" • [mono][b]{codeExample}[/b][/mono] – {x.Description.ToSentenceMember()}{extras};";
         }
 
         public static string GetShortList(ITesterDescription descriptions) {
@@ -52,7 +80,7 @@ namespace AcManager.Controls.Helpers {
         }
 
         private static string GetHint(ITesterDescription descriptions) {
-            return $"Supported properties:\n\n{GetShortList(descriptions).ToSentence()}\n\nTo learn more about filtering, go to [b]About/Everything About Filtering[/b] section";
+            return $"Supported properties (for numbers, you can use “<” or “>” instead of “:”):\n\n{GetShortList(descriptions).ToSentence()}\n\nTo learn more about filtering, go to [b]About/Everything About Filtering[/b] section";
         }
 
         public static Lazy<string> Cars { get; } = new Lazy<string>(() => GetHint(CarObjectTester.Instance));

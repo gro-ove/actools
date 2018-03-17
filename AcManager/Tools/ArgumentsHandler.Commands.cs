@@ -85,7 +85,6 @@ namespace AcManager.Tools {
             switch (key) {
                 case "quickdrive":
                     var preset = Convert.FromBase64String(param).ToUtf8String();
-                    Logging.Debug(preset);
                     if (!await QuickDrive.RunAsync(serializedPreset: preset)) {
                         NonfatalError.Notify(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                         return ArgumentHandleResult.Failed;

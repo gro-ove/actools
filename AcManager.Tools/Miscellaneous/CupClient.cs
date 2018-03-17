@@ -21,6 +21,7 @@ namespace AcManager.Tools.Miscellaneous {
         private static ApiCacheThing _cache;
         private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(1)));
 
+        [CanBeNull]
         public static CupClient Instance { get; private set; }
 
         public static void Initialize() {
@@ -42,6 +43,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public void Register<T>(BaseAcManager<T> manager, CupContentType type) where T : AcObjectNew, ICupSupportedObject {
+            if (Instance == null) return;
             _managers.Add(type, manager);
             Instance.NewLatestVersion += (sender, args) => {
                 if (args.Key.Type != type) return;

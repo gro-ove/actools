@@ -547,7 +547,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) {
-            ArgumentsHandler.OnDragEnter(sender, e);
+            ArgumentsHandler.OnDragEnter(e);
         }
 
         private void OnClosed(object sender, EventArgs e) {

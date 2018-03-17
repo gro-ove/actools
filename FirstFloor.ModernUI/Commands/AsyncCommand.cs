@@ -39,7 +39,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected virtual Task ExecuteInner() {
-            return _execute();
+            return _execute() ?? Task.Delay(0);
         }
 
         [Obsolete]
@@ -105,7 +105,7 @@ namespace FirstFloor.ModernUI.Commands {
                 _inProcess = true;
                 RaiseCanExecuteChanged();
 
-                await _execute(parameter);
+                await (_execute(parameter) ?? Task.FromResult(default(T)));
 
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);

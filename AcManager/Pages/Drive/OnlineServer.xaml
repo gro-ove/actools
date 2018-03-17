@@ -255,19 +255,19 @@
               <mui:SelectableBbCodeBlock Text="{Binding ErrorsString}" Margin="40 0 0 12" />
 
               <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" Margin="20 0 0 0" DockPanel.Dock="Top">
-                <Button Content="Install missing content" ToolTip="Download and install missing content from the server"
+                <mui:AsyncButton Content="Install missing content" ToolTip="Download and install missing content from the server"
                     Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.AllOfIt}}"
                     Command="{Binding InstallMissingContentCommand}" />
-                <Button Content="Install some content" ToolTip="Download and install some of missing content from the server"
+                <mui:AsyncButton Content="Install some content" ToolTip="Download and install some of missing content from the server"
                     Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Partially}}"
                     Command="{Binding InstallMissingContentCommand}" />
-                <Button Content="Install updates" ToolTip="Download and install updates for content from the server"
+                <mui:AsyncButton Content="Install updates" ToolTip="Download and install updates for content from the server"
                     Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
                       ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Updates}}"
                     Command="{Binding InstallMissingContentCommand}" />
-                <Button Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" />
+                <mui:AsyncButton Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" />
               </mui:SpacingUniformGrid>
             </StackPanel>
 

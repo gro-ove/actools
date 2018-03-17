@@ -79,7 +79,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private void OnDragEnter(object sender, DragEventArgs e) {
-            ArgumentsHandler.OnDragEnter(sender, e);
+            ArgumentsHandler.OnDragEnter(e);
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e) {

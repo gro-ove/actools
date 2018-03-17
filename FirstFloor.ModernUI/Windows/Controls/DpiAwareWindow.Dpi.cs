@@ -69,6 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void RefreshMonitorDpi() {
+            if (IsAnyLogicDisabled()) return;
             var dpi = _dpi;
             Logging.Debug($"DPI: {dpi}, per-monitor DPI-aware: {IsPerMonitorDpiAware}, HWND src.: {_hwndSource}");
             if (!IsPerMonitorDpiAware || _hwndSource == null || dpi == null) return;
@@ -97,11 +98,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     OnDragged(false);
                     break;
                 case WindowMessage.DpiChanged:
-                    var dpiX = (double)(wParam.ToInt32() >> 16);
-                    var dpiY = (double)(wParam.ToInt32() & 0x0000FFFF);
-                    Logging.Debug($"DPI changed: {dpiX}, {dpiY}");
-                    if (_dpi != null && _dpi.UpdateMonitorDpi(dpiX, dpiY)) {
-                        UpdateScaleRelatedParams();
+                    if (!IsAnyLogicDisabled()) {
+                        var dpiX = (double)(wParam.ToInt32() >> 16);
+                        var dpiY = (double)(wParam.ToInt32() & 0x0000FFFF);
+                        Logging.Debug($"DPI changed: {dpiX}, {dpiY}");
+                        if (_dpi != null && _dpi.UpdateMonitorDpi(dpiX, dpiY)) {
+                            UpdateScaleRelatedParams();
+                        }
                     }
                     handled = true;
                     break;
@@ -185,6 +188,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _firstRun = true;
 
         private void UpdateScaleRelatedParams() {
+            if (IsAnyLogicDisabled()) return;
             if (_isBeingDragged) {
                 Logging.Debug("Window is being dragged at the moment, skipping");
                 return;

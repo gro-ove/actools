@@ -18,24 +18,29 @@ using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
-        private int? _portExtended;
+        private int? _detailsPort;
 
         /// <summary>
         /// For extended information via CM-wrapper.
         /// </summary>
-        public int? PortExtended {
-            get => _portExtended;
-            private set => Apply(value, ref _portExtended);
+        public int? DetailsPort {
+            get => _detailsPort;
+            private set => Apply(value, ref _detailsPort, nameof(HasDetails));
         }
 
         private string _detailsId;
 
+        /// <summary>
+        /// For extended information via ID in server’s name.
+        /// </summary>
         public string DetailsId {
             get => _detailsId;
             set => Apply(value, ref _detailsId, () => {
                 _previousPassword = null;
-            });
+            }, nameof(HasDetails));
         }
+
+        public bool HasDetails => DetailsId != null || DetailsPort != null;
 
         private bool _extendedMode;
 
@@ -280,7 +285,7 @@ namespace AcManager.Tools.Managers.Online {
                     if (car == null || carPair.Value.GetStringValueOnly("version").IsVersionNewerThan(car.Version)) {
                         if (!IsAvailableToInstall(carPair.Value)) continue;
                         var url = carPair.Value.GetStringValueOnly("url") ??
-                                $@"http://{Ip}:{PortExtended}/content/car/{carPair.Key}{passwordPostfix.Value}";
+                                $@"http://{Ip}:{DetailsPort}/content/car/{carPair.Key}{passwordPostfix.Value}";
                         yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                             FallbackId = carPair.Key,
                             Checksum = carPair.Value.GetStringValueOnly("checksum")
@@ -291,7 +296,7 @@ namespace AcManager.Tools.Managers.Online {
                                     !IsAvailableToInstall(skinPair.Value)) continue;
 
                             var url = skinPair.Value.GetStringValueOnly("url") ??
-                                    $@"http://{Ip}:{PortExtended}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
+                                    $@"http://{Ip}:{DetailsPort}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
                             yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                                 CarId = carPair.Key,
                                 FallbackId = skinPair.Key,
@@ -308,7 +313,7 @@ namespace AcManager.Tools.Managers.Online {
                             !IsAvailableToInstall(weatherPair.Value)) continue;
 
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
-                            $@"http://{Ip}:{PortExtended}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
+                            $@"http://{Ip}:{DetailsPort}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
                     yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                         FallbackId = weatherPair.Key,
                         Checksum = weatherPair.Value.GetStringValueOnly("checksum")
@@ -319,7 +324,7 @@ namespace AcManager.Tools.Managers.Online {
             if (mref[@"track"] is JObject track
                     && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
                 var url = track.GetStringValueOnly("url") ??
-                        $@"http://{Ip}:{PortExtended}/content/track{passwordPostfix.Value}";
+                        $@"http://{Ip}:{DetailsPort}/content/track{passwordPostfix.Value}";
                 yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
                     FallbackId = TrackBaseId,
                     Checksum = track.GetStringValueOnly("checksum")
@@ -327,10 +332,10 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
-        private DelegateCommand _installMissingContentCommand;
+        private AsyncCommand _installMissingContentCommand;
 
-        public DelegateCommand InstallMissingContentCommand
-            => _installMissingContentCommand ?? (_installMissingContentCommand = new DelegateCommand(async () => {
+        public AsyncCommand InstallMissingContentCommand
+            => _installMissingContentCommand ?? (_installMissingContentCommand = new AsyncCommand(async () => {
                 if (_missingContentReferences?.GetBoolValueOnly("password") == true && !IsPasswordValid()) {
                     ModernDialog.ShowMessage("Can’t install content, password is required.", "Can’t install content", MessageBoxButton.OK);
                     return;
@@ -413,13 +418,14 @@ namespace AcManager.Tools.Managers.Online {
                     if (car == null) continue;
 
                     var version = carPair.Value.GetStringValueOnly("version");
+
                     if (version.IsVersionNewerThan(car.Version)) {
                         _updateMissingExtendedErrors.Add($"{car.DisplayName} is obsolete (installed: {car.Version}; server runs: {version})");
                         _carVersionIsWrong = true;
                         somethingIsObsolete = true;
                     }
 
-                    if (carPair.Value["skins"] is JObject skins) {
+                    if (carPair.Value[@"skins"] is JObject skins) {
                         foreach (var skinPair in skins) {
                             if (IsAvailableToInstall(skinPair.Value) && car.SkinsManager.GetWrapperById(skinPair.Key) == null) {
                                 missingSkins.Add($"“{skinPair.Key}” ({car.DisplayName})");
@@ -479,6 +485,7 @@ namespace AcManager.Tools.Managers.Online {
                 state = IsAbleToInstallMissingContent.Updates;
             }
 
+            Logging.Debug($"Result: {state}");
             IsAbleToInstallMissingContentState = state;
             return missingSomething ? ServerStatus.MissingContent : (ServerStatus?)null;
         }

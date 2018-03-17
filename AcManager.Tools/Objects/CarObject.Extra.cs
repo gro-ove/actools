@@ -29,8 +29,8 @@ namespace AcManager.Tools.Objects {
 
         string ICupSupportedObject.InstalledVersion => Version;
         public CupContentType CupContentType => CupContentType.Car;
-        public bool IsCupUpdateAvailable => CupClient.Instance.ContainsAnUpdate(CupContentType.Car, Id, Version);
-        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance.GetInformation(CupContentType.Car, Id);
+        public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType.Car, Id, Version) ?? false;
+        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType.Car, Id);
 
         protected override void OnVersionChanged() {
             OnPropertyChanged(nameof(ICupSupportedObject.InstalledVersion));

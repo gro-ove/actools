@@ -1,7 +1,6 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
@@ -92,17 +91,17 @@ namespace AcManager.Tools.Managers.Online {
                 var displayName = baseInformation.Name == null ? Id : CleanUp(baseInformation.Name, DisplayName, out extPort, out detailsId);
 
                 if (baseInformation is ServerInformationExtended ext) {
-                    PortExtended = ext.PortExtended;
-                } else if (extPort.HasValue || !PortExtended.HasValue) {
-                    PortExtended = extPort;
+                    DetailsPort = ext.PortExtended;
+                } else if (extPort.HasValue || !DetailsPort.HasValue) {
+                    DetailsPort = extPort;
                 } else if (forceExtendedDisabling) {
-                    PortExtended = null;
+                    DetailsPort = null;
                     UpdateValuesExtended(null);
                 } else {
                     return null;
                 }
 
-                if (PortExtended == null && detailsId != null) {
+                if (DetailsPort == null && detailsId != null) {
                     DetailsId = detailsId;
                 } else {
                     DetailsId = null;
@@ -278,17 +277,15 @@ namespace AcManager.Tools.Managers.Online {
             AvailableUpdate();
         }*/
 
-        private CommandBase _addToRecentCommand;
+        private DelegateCommand _addToRecentCommand;
 
-        public ICommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new DelegateCommand(() => {
+        public DelegateCommand AddToRecentCommand => _addToRecentCommand ?? (_addToRecentCommand = new DelegateCommand(() => {
             //RecentManagerOld.Instance.AddRecentServer(OriginalInformation);
         }, () => Status == ServerStatus.Ready /*&& RecentManagerOld.Instance.GetWrapperById(Id) == null*/));
 
-        private ICommand _refreshCommand;
+        private AsyncCommand _refreshCommand;
 
-        public ICommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new DelegateCommand(() => {
-            Update(UpdateMode.Full).Forget();
-        }));
+        public AsyncCommand RefreshCommand => _refreshCommand ?? (_refreshCommand = new AsyncCommand(() => Update(UpdateMode.Full)));
 
         /// <summary>
         /// For FileBasedOnlineSources.

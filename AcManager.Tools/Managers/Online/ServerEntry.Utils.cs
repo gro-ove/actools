@@ -122,7 +122,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private bool _carVersionIsWrong;
         public void OnCarVersionChanged(CarObject car) {
-            if (!_carVersionIsWrong || !PortExtended.HasValue ||
+            if (!_carVersionIsWrong || !HasDetails ||
                     Cars?.Any(x => x.CarObjectWrapper?.Value == car) != true) return;
             CheckPostUpdate();
         }
@@ -148,7 +148,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private bool _trackVersionIsWrong;
         public void OnTrackVersionChanged(TrackObjectBase track) {
-            if (!_trackVersionIsWrong || !PortExtended.HasValue || Track != track) return;
+            if (!_trackVersionIsWrong || !HasDetails || Track != track) return;
             CheckPostUpdate();
         }
 

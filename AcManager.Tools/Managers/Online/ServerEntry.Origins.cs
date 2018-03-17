@@ -194,7 +194,7 @@ namespace AcManager.Tools.Managers.Online {
         [ItemNotNull]
         private async Task<ServerInformationExtended> GetExtendedInformationDirectly() {
             var result = await KunosApiProvider.GetExtendedInformationDirectAsync(Ip,
-                    PortExtended ?? throw new Exception("Extended port is not set"),
+                    DetailsPort ?? throw new Exception("Extended port is not set"),
                     _extendedDataLastModified?.Item2);
 
             if (result.Item1 != null) {

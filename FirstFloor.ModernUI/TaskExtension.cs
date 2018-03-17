@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI {
@@ -13,9 +14,27 @@ namespace FirstFloor.ModernUI {
             return false;
         }
 
-        internal static void Forget(this Task task) {}
-        internal static void Forget<T>(this Task<T> task) {}
+        /// <summary>
+        /// Use .Ignore() instead, it captures exceptions properly.
+        /// </summary>
+        public static void Forget(this Task task) { }
 
+        /// <summary>
+        /// Use .Ignore() instead, it captures exceptions properly.
+        /// </summary>
+        public static void Forget<T>(this Task<T> task) { }
+
+        public static void Ignore(this Task task) {
+            task.ContinueWith(x => {
+                Logging.Warning(x.Exception?.Flatten());
+            }, TaskContinuationOptions.NotOnRanToCompletion);
+        }
+
+        public static void Ignore<T>(this Task<T> task) {
+            task.ContinueWith(x => {
+                Logging.Warning(x.Exception?.Flatten());
+            }, TaskContinuationOptions.OnlyOnFaulted);
+        }
 
         public static ConfiguredTaskYieldAwaitable ConfigureAwait(this YieldAwaitable yieldAwaitable, bool continueOnCapturedContext) {
             return new ConfiguredTaskYieldAwaitable(continueOnCapturedContext);

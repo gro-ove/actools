@@ -165,6 +165,9 @@ namespace AcManager {
                     } while (await WaitForWindowToClose(_application.Windows.OfType<DpiAwareWindow>().FirstOrDefault(x => x.IsVisible)));
 
                     Logging.Write("No more windows");
+                } catch (Exception e){
+                    FatalErrorHandler.OnFatalError(e);
+                    Logging.Error(e);
                 } finally {
                     Logging.Write("Shutdown…");
                     _timer.Stop();

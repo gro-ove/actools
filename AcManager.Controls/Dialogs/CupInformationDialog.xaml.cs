@@ -30,13 +30,16 @@ namespace AcManager.Controls.Dialogs {
             InitializeComponent();
             DataContext = new ViewModel(obj);
 
-            Buttons = new[] {
-                CreateCloseDialogButton("Update", true, false, MessageBoxResult.OK, new AsyncCommand(() =>
-                        CupClient.Instance.InstallUpdateAsync(obj.CupContentType, obj.Id))),
-                CreateCloseDialogButton("Report update as broken", false, true, MessageBoxResult.No,
-                        new AsyncCommand(() => CupClient.Instance.ReportUpdateAsync(obj.CupContentType, obj.Id))),
-                CloseButton
-            };
+            var client = CupClient.Instance;
+            if (client != null) {
+                Buttons = new[] {
+                    CreateCloseDialogButton("Update", true, false, MessageBoxResult.OK, new AsyncCommand(() =>
+                            client.InstallUpdateAsync(obj.CupContentType, obj.Id))),
+                    CreateCloseDialogButton("Report update as broken", false, true, MessageBoxResult.No,
+                            new AsyncCommand(() => client.ReportUpdateAsync(obj.CupContentType, obj.Id))),
+                    CloseButton
+                };
+            }
         }
 
         private void OnClosing(object sender, CancelEventArgs e) {}
