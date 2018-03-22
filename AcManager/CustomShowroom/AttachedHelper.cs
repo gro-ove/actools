@@ -281,8 +281,13 @@ namespace AcManager.CustomShowroom {
                 location.Y = screen.WorkingArea.Bottom - _child.DeviceHeight;
             }
 
-            if (location.X < screen.WorkingArea.Left) location.X = screen.WorkingArea.Left;
-            if (location.Y < screen.WorkingArea.Top) location.Y = screen.WorkingArea.Top;
+            if (location.X < screen.WorkingArea.Left) {
+                location.X = screen.WorkingArea.Left;
+            }
+
+            if (location.Y < screen.WorkingArea.Top) {
+                location.Y = screen.WorkingArea.Top;
+            }
 
             if (_verbose) {
                 Logging.Debug($"Set: {location.X}, {location.Y}");

@@ -39,7 +39,12 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         protected virtual Task ExecuteInner() {
-            return _execute();
+            return _execute() ?? Task.Delay(0);
+        }
+
+        [Obsolete]
+        public new void Execute() {
+            base.Execute();
         }
 
         public async Task ExecuteAsync() {
@@ -90,15 +95,17 @@ namespace FirstFloor.ModernUI.Commands {
             return !_inProcess && (_canExecute == null || _canExecute(parameter));
         }
 
-        public T CurrentParameter;
+        [Obsolete]
+        public new void Execute(T parameter) {
+            base.Execute(parameter);
+        }
 
         public async Task ExecuteAsync(T parameter) {
             try {
                 _inProcess = true;
-                CurrentParameter = parameter;
                 RaiseCanExecuteChanged();
 
-                await _execute(parameter);
+                await (_execute(parameter) ?? Task.FromResult(default(T)));
 
                 if (_additionalDelay != 0) {
                     await Task.Delay(_additionalDelay);
@@ -108,7 +115,6 @@ namespace FirstFloor.ModernUI.Commands {
                 throw;
             } finally {
                 _inProcess = false;
-                CurrentParameter = default(T);
                 RaiseCanExecuteChanged();
             }
         }

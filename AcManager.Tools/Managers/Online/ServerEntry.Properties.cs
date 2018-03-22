@@ -106,6 +106,7 @@ namespace AcManager.Tools.Managers.Online {
                 InvalidatePasswordIsWrong();
                 PasswordWasWrong = false;
                 AvailableUpdate();
+                DecryptContentIfNeeded();
             }
         }
 

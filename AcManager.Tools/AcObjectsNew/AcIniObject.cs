@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -95,10 +96,9 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         protected abstract void LoadData(IniFile ini);
+        protected abstract void SaveData(IniFile ini);
 
-        public abstract void SaveData(IniFile ini);
-
-        public override void Save() {
+        public override Task SaveAsync() {
             var ini = IniObject ?? IniFile.Empty;
             SaveData(ini);
 
@@ -107,6 +107,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             Changed = false;
+            return Task.Delay(0);
         }
         #endregion
     }

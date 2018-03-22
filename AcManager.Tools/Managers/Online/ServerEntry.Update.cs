@@ -72,7 +72,7 @@ namespace AcManager.Tools.Managers.Online {
                 errors.Add(_missingTrackError);
             }
 
-            if (PortExtended != null) {
+            if (HasDetails) {
                 errors.AddRange(_updateMissingExtendedErrors);
             }
 
@@ -139,7 +139,7 @@ namespace AcManager.Tools.Managers.Online {
                 var informationLoadedExtended = false;
                 ServerCarsInformation carsInformation = null;
 
-                if (PortExtended != null) {
+                if (DetailsPort != null) {
                     try {
                         var extended = await GetExtendedInformationDirectly();
                         var update = UpdateValues(extended, false, true);
@@ -159,7 +159,21 @@ namespace AcManager.Tools.Managers.Online {
                         informationLoadedExtended = true;
                     } catch (Exception e) {
                         Logging.Warning(e);
-                        PortExtended = null;
+                        DetailsPort = null;
+                        UpdateValuesExtended(null);
+                        return;
+                    }
+                } else if (DetailsId != null) {
+                    try {
+                        var extended = await CmApiProvider.GetOnlineDataAsync(DetailsId);
+                        if (extended != null){
+                            Country = extended.Country?.FirstOrDefault() ?? Country;
+                            CountryId = extended.Country?.ArrayElementAtOrDefault(1) ?? CountryId;
+                            Sessions?.ForEach((x, i) => x.Duration = extended.Durations?.ElementAtOrDefault(i) ?? x.Duration);
+                        }
+                        UpdateValuesExtended(extended);
+                    } catch (Exception e) {
+                        Logging.Warning(e);
                         UpdateValuesExtended(null);
                         return;
                     }
@@ -340,7 +354,8 @@ namespace AcManager.Tools.Managers.Online {
                         entry.Available = 0;
                         entry.IsAvailable = true;
                     } else {
-                        var cars = carsInformation.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
+                        var cars =
+                                carsInformation.Cars.Where(x => x.IsEntryList && string.Equals(x.CarId, entry.Id, StringComparison.OrdinalIgnoreCase)).ToList();
                         string availableSkinId;
 
                         if (BookingMode) {

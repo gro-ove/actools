@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -160,7 +161,7 @@ namespace AcManager.Tools.AcObjectsNew {
         protected void LoadCountry(JObject json) {
             var value = json.GetStringValueOnly("country")?.Trim();
             Country = value != null ? AcStringValues.CountryFromTag(value) ?? value :
-                Tags.Select(AcStringValues.CountryFromTag).FirstOrDefault(x => x != null);
+                    Tags.Select(AcStringValues.CountryFromTag).FirstOrDefault(x => x != null);
         }
 
         protected void LoadDescription(JObject json) {
@@ -232,17 +233,16 @@ namespace AcManager.Tools.AcObjectsNew {
             json[@"url"] = Url;
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             var json = JsonObject;
-            if (json == null) return;
-
-            SaveData(json);
-
-            using (CarsManager.Instance.IgnoreChanges()) {
-                File.WriteAllText(JsonFilename, json.ToString());
+            if (json != null) {
+                SaveData(json);
+                using (CarsManager.Instance.IgnoreChanges()) {
+                    File.WriteAllText(JsonFilename, json.ToString());
+                }
+                Changed = false;
             }
-
-            Changed = false;
+            return Task.Delay(0);
         }
         #endregion
 

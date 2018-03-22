@@ -160,7 +160,7 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand<object> OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute();
+                    OpenInCustomShowroomCommand.ExecuteAsync().Ignore();
                     return;
                 }
 

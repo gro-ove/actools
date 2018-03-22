@@ -195,9 +195,9 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _testCommand;
 
-            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand<string>(o => {
-                SelectedObject.SaveCommand.Execute();
-                return QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o, out var time) ? time : (int?)null);
+            public ICommand TestCommand => _testCommand ?? (_testCommand = new AsyncCommand<string>(async o => {
+                await SelectedObject.SaveCommand.ExecuteAsync();
+                await QuickDrive.RunAsync(weatherId: SelectedObject.Id, time: FlexibleParser.TryParseTime(o, out var time) ? time : (int?)null);
             }, o => SelectedObject.Enabled));
 
             private ICommand _viewTemperatureReadmeCommand;

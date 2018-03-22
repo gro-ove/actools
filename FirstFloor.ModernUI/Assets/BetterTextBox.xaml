@@ -445,7 +445,7 @@
     <Setter Property="BorderBrush" Value="Transparent" />
     <Setter Property="Padding" Value="0" />
     <Setter Property="Template" Value="{StaticResource BetterComboBoxTemplate.Basic.Borderless}" />
-    <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless}" />
+    <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ErrorTemplate.Borderless.ExtraPadding}" />
     <Style.Triggers>
       <Trigger Property="IsEditable" Value="True">
         <Setter Property="IsTabStop" Value="True" />

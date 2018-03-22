@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -27,12 +28,12 @@ namespace AcManager.Tools.Objects {
             _preparedForEditing = false;
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             if (_preparedForEditing && Changed && SaveEdited()) {
                 Changed = false;
             }
 
-            base.Save();
+            return base.SaveAsync();
         }
 
         public override bool HandleChangedFile(string filename) {

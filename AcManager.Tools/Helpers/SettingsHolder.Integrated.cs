@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -112,6 +115,46 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            private bool? _dBoxIntegration;
+
+            public bool DBoxIntegration {
+                get => _dBoxIntegration ?? (_dBoxIntegration = ValuesStorage.Get("Settings.IntegratedSettings.DBoxIntegration", false)).Value;
+                set {
+                    if (Equals(value, _dBoxIntegration)) return;
+                    _dBoxIntegration = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.DBoxIntegration", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private string _dBoxLocation;
+
+            public string DBoxLocation {
+                get => _dBoxLocation ?? (_dBoxLocation = ValuesStorage.Get("Settings.IntegratedSettings.DBoxLocation", ""));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _dBoxLocation)) return;
+                    _dBoxLocation = value;
+                    ValuesStorage.Set("Settings.IntegratedSettings.DBoxLocation", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private DelegateCommand _selectDBoxLocationCommand;
+
+            public DelegateCommand SelectDBoxLocationCommand => _selectDBoxLocationCommand ?? (_selectDBoxLocationCommand = new DelegateCommand(() => {
+                DBoxLocation = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = "dbox",
+                    Filters = {
+                        new DialogFilterPiece("D-Box Helper", "ACWithLiveMotion.exe"),
+                        DialogFilterPiece.Applications,
+                        DialogFilterPiece.AllFiles,
+                    },
+                    Title = "Select D-Box application",
+                    DefaultFileName = Path.GetFileName(DBoxLocation),
+                }) ?? DBoxLocation;
+            }));
         }
 
         private static IntegratedSettings _integrated;

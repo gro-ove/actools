@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
-        public static readonly string ExtendedSeparator = "ℹ";
+        public static readonly string ExtendedSeparator = @"ℹ";
         private static readonly string TrashSymbols = @"|/#☆★.:=<>+-";
 
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
@@ -19,8 +19,9 @@ namespace AcManager.Tools.Managers.Online {
                 RegexOptions.Compiled);
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
-        private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort) {
+        private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort, out string detailsId) {
             var originalName = name;
+            name = ServerDetailsUtils.ExtractDetailsId(name, out detailsId);
 
             var specialIndex = name.IndexOf(ExtendedSeparator, StringComparison.InvariantCulture);
             if (specialIndex != -1) {
@@ -53,7 +54,7 @@ namespace AcManager.Tools.Managers.Online {
             UpdateMissingContent();
 
             var missingSomething = _missingCarsError != null || _missingTrackError != null;
-            if (PortExtended != null) {
+            if (_missingContentReferences != null) {
                 missingSomething |= UpdateMissingContentExtended(missingSomething) == ServerStatus.MissingContent;
             }
 
@@ -121,7 +122,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private bool _carVersionIsWrong;
         public void OnCarVersionChanged(CarObject car) {
-            if (!_carVersionIsWrong || !PortExtended.HasValue ||
+            if (!_carVersionIsWrong || !HasDetails ||
                     Cars?.Any(x => x.CarObjectWrapper?.Value == car) != true) return;
             CheckPostUpdate();
         }
@@ -147,7 +148,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private bool _trackVersionIsWrong;
         public void OnTrackVersionChanged(TrackObjectBase track) {
-            if (!_trackVersionIsWrong || !PortExtended.HasValue || Track != track) return;
+            if (!_trackVersionIsWrong || !HasDetails || Track != track) return;
             CheckPostUpdate();
         }
 

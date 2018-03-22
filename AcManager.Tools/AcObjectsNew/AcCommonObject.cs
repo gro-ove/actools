@@ -148,7 +148,7 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }
 
-        public abstract void Save();
+        public abstract Task SaveAsync();
 
         public virtual void ViewInExplorer() {
             if (File.GetAttributes(Location).HasFlag(FileAttributes.Directory)) {

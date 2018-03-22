@@ -10,7 +10,7 @@ namespace AcTools.Utils {
 
         public static bool IsAcRoot([NotNull] string directory) {
             return Directory.Exists(Path.Combine(directory, "content", "cars")) && Directory.Exists(Path.Combine(directory, "apps"))
-                    && File.Exists(Path.Combine(directory, "acs.exe"));
+                    && (File.Exists(Path.Combine(directory, "acs.exe")) || File.Exists(Path.Combine(directory, "acs_pro.exe")));
         }
 
         [NotNull, Pure]

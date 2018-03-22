@@ -214,7 +214,7 @@ namespace AcManager.Tools.GameProperties {
 
             for (var i = 0; i < 100; i++) {
                 if (SetVisibility(false)) return true;
-                await Task.Delay(10);
+                await Task.Yield();
             }
 
             NonfatalError.Notify("Can’t find app’s window");

@@ -9,6 +9,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class PathTrimmingTextBlock : RichTextBox, IValueConverter {
@@ -34,7 +35,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void CopyCommand(object sender, DataObjectEventArgs e) {
             e.Handled = true;
             e.CancelCommand();
-            Clipboard.SetText(Text);
+            ClipboardHelper.SetText(Text);
         }
 
         private void Update() {

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -40,7 +41,7 @@ namespace AcManager.Tools.Objects {
             return base.LoadJsonOrThrow();
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             var json = JsonObject ?? new JObject();
             SaveData(json);
 
@@ -49,6 +50,7 @@ namespace AcManager.Tools.Objects {
             }
 
             Changed = false;
+            return Task.Delay(0);
         }
 
         protected override void ClearData() {

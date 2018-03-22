@@ -183,7 +183,7 @@ namespace AcManager.Pages.Selected {
                 _loadingRaceGrid = true;
 
                 try {
-                    await Task.Delay(10);
+                    await Task.Yield();
                     LoadRaceGrid();
                 } finally {
                     _loadingRaceGrid = false;

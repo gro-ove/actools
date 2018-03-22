@@ -278,7 +278,13 @@
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
+    <Compile Include="Helpers\Api\Kunos\InvertConverter.cs" />
+    <Compile Include="Helpers\Api\Kunos\IServerInformationExtra.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationComplete.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationExtended.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationExtendedAssists.cs" />
     <Compile Include="Helpers\Api\IpGeoEntry.cs" />
+    <Compile Include="Helpers\Api\Kunos\ServerInformationExtra.cs" />
     <Compile Include="Helpers\Api\RemoteSetupInformation.cs" />
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />
@@ -467,6 +473,7 @@
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
+    <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
@@ -476,7 +483,7 @@
     <Compile Include="Objects\ServerPresetDriverEntry.cs" />
     <Compile Include="Objects\ServerPresetObject.Properties.cs" />
     <Compile Include="Objects\ServerPresetObject.Running.cs" />
-    <Compile Include="Objects\ServerPresetObject.Wrapped.cs" />
+    <Compile Include="Objects\ServerPresetObject.Details.cs" />
     <Compile Include="Objects\ServerSessionEntry.cs" />
     <Compile Include="Objects\ServerWeatherEntry.cs" />
     <Compile Include="Objects\TrackObjectBase.Stats.cs" />

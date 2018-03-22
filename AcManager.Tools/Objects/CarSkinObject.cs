@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -49,7 +50,7 @@ namespace AcManager.Tools.Objects {
             return base.LoadJsonOrThrow();
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             var json = new JObject();
             SaveData(json);
 
@@ -62,6 +63,8 @@ namespace AcManager.Tools.Objects {
                     Culture = CultureInfo.InvariantCulture
                 }));
             }
+
+            return Task.Delay(0);
         }
 
         protected override void ClearData() {

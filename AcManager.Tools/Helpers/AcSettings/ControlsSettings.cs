@@ -1374,13 +1374,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public void FixControllersOrder() {
             if (Devices.Count == 0) {
                 Logging.Warning("Devices are not yet scanned, scanning…");
-                var fixTimeout = TimeSpan.FromSeconds(1);
-                using (var timeout = new CancellationTokenSource(fixTimeout)) {
-                    var list = DirectInputScanner.GetAsync(timeout.Token).Result;
-                    Logging.Write("Scanned result: " + (list == null ? @"failed to scan" : $@"{list.Count} device(s)"));
-                    if (list == null) return;
+                var fixTimeout = TimeSpan.FromSeconds(2);
+                try {
+                    using (var timeout = new CancellationTokenSource(fixTimeout)) {
+                        var list = DirectInputScanner.GetAsync(timeout.Token).Result;
+                        Logging.Write("Scanned result: " + (list == null ? @"failed to scan" : $@"{list.Count} device(s)"));
+                        if (list == null) return;
 
-                    RescanDevices(list);
+                        RescanDevices(list);
+                    }
+                } catch (Exception e) when (e.IsCancelled()) {
+                    Logging.Warning("Failed to scan the devices in given time");
                 }
             }
 

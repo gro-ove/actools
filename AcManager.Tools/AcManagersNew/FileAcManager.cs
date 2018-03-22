@@ -27,7 +27,7 @@ namespace AcManager.Tools.AcManagersNew {
 
         private void SuperintendentSavingAll(object sender, EventArgs e) {
             foreach (var item in InnerWrappersList.Select(x => x.Value).OfType<T>().Where(x => x.Changed)) {
-                item.Save();
+                item.SaveAsync();
             }
         }
 

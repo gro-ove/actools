@@ -491,7 +491,7 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public override void SaveData(IniFile ini) {
+        protected override void SaveData(IniFile ini) {
             ini["SERIES"].Set("NAME", Name);
             ini["SERIES"].Set("CODE", Code);
             ini["SERIES"].Set("DESCRIPTION", AcStringValues.EncodeDescription(Description));

@@ -247,7 +247,7 @@ namespace AcManager.Pages.Lists {
                 if (_enabler == null || Enabled == null || Disabled == null) return;
 
                 _busy.Task(async () => {
-                    await Task.Delay(10);
+                    await Task.Yield();
 
                     var names = data.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
                     var enabled = Enabled.OfType<GenericMod>().OrderByDescending(x => x.AppliedOrder).ToList();
@@ -294,9 +294,9 @@ namespace AcManager.Pages.Lists {
             if (!((sender as FrameworkElement)?.DataContext is GenericMod item)) return;
 
             if (item.IsEnabled) {
-                Model.DisableCommand.Execute();
+                Model.DisableCommand.ExecuteAsync().Ignore();
             } else {
-                Model.EnableCommand.Execute();
+                Model.EnableCommand.ExecuteAsync().Ignore();
             }
 
             e.Handled = true;

@@ -209,7 +209,7 @@ namespace AcManager.Pages.Drive {
         private async void ScrollLayoutUpdated(object sender, EventArgs e) {
             if (_positionLoaded) return;
             var value = ValuesStorage.Get<double>(KeyScrollValue);
-            await Task.Delay(10);
+            await Task.Yield();
             _scroll?.ScrollToHorizontalOffset(OptionScalableTiles ? value / (Equals(_scale, 0d) ? 1d : _scale) : value);
             _positionLoaded = true;
         }

@@ -56,7 +56,7 @@ namespace AcManager.Pages.Selected {
             private DelegateCommand _createJsonCommand;
 
             public DelegateCommand CreateJsonCommand => _createJsonCommand ?? (_createJsonCommand = new DelegateCommand(() => {
-                SelectedObject.Save();
+                SelectedObject.SaveAsync();
             }));
 
             private DelegateCommand _deleteJsonCommand;
@@ -169,7 +169,7 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand<object> OpenInShowroomCommand => _openInShowroomCommand ?? (_openInShowroomCommand = new DelegateCommand<object>(o => {
                 if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt)) {
-                    OpenInCustomShowroomCommand.Execute();
+                    OpenInCustomShowroomCommand.ExecuteAsync().Ignore();
                     return;
                 }
 

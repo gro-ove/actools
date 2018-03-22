@@ -55,7 +55,8 @@
                   <!-- Title bar -->
                   <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar">
                     <!-- Window system buttons-->
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+                    <StackPanel x:Name="PART_SystemButtonsPanel" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top"
+                        WindowChrome.IsHitTestVisibleInChrome="True">
                       <StackPanel.RenderTransform>
                         <TranslateTransform X="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}}"
                             Y="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource MultiplyConverter}, ConverterParameter=-1}" />
@@ -177,6 +178,13 @@
               <Setter TargetName="Restore" Property="Visibility" Value="Visible" />
               <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
               <Setter TargetName="PART_TitleBar" Property="Margin" Value="0 7 7 0" />
+              <Setter TargetName="PART_SystemButtonsPanel" Property="RenderTransform">
+                <Setter.Value>
+                  <TranslateTransform
+                      X="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource MultiplyConverter}, ConverterParameter=2}"
+                      Y="{Binding IconPathThickness, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource MultiplyConverter}, ConverterParameter=-3}" />
+                </Setter.Value>
+              </Setter>
             </Trigger>
             <Trigger Property="PreferredFullscreenMode" Value="True">
               <Setter TargetName="Maximize" Property="Visibility" Value="Collapsed" />
@@ -214,7 +222,7 @@
     </Setter>
     <Setter Property="WindowChrome.WindowChrome">
       <Setter.Value>
-        <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
+        <WindowChrome CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
       </Setter.Value>
     </Setter>
     <Style.Triggers>

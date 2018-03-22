@@ -73,8 +73,8 @@ namespace AcManager.Pages.Lists {
             protected override async Task ApplyOverrideAsync(ReplayObject obj) {
                 if (obj.EditableCategory == ReplayObject.AutosaveCategory && AcSettingsHolder.Replay.Autosave) {
                     obj.EditableCategory = null;
-                    await Task.Delay(10);
-                    obj.SaveCommand.Execute();
+                    await Task.Yield();
+                    await obj.SaveCommand.ExecuteAsync();
                 }
             }
         }

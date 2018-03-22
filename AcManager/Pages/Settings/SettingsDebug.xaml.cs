@@ -174,7 +174,7 @@ namespace AcManager.Pages.Settings {
                             ImageUtils.ApplyPreviewImageMagick(from, to, 1022, 575, new AcPreviewImageInformation());
                         });
                         w.Report(PluralizingConverter.PluralizeExt(++i, "Copied {0} time"));
-                        await Task.Delay(10);
+                        await Task.Yield();
                     }
                 }
             }));

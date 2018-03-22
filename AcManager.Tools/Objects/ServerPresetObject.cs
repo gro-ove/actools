@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -113,7 +114,7 @@ namespace AcManager.Tools.Objects {
                                       .Append(MainExecutingFile.Location).Append('/')
                                       .Append(Environment.UserName).Append('/')
                                       .Append(Environment.MachineName).Append('/')
-                                      .Append("is8grzju0rlc6nxw")
+                                      .Append(@"is8grzju0rlc6nxw")
                                       .ToString().GetChecksum();
         }
 
@@ -124,8 +125,10 @@ namespace AcManager.Tools.Objects {
 
             IsPickupModeAvailable = !Sessions.GetById(@"BOOK").IsEnabled;
 
+            var cmSection = ini["__CM_SERVER"];
             var section = ini["SERVER"];
-            Name = section.GetPossiblyEmpty("NAME");
+            Name = cmSection.GetPossiblyEmpty("NAME") ?? section.GetPossiblyEmpty("NAME");
+            DetailsNamePiece = cmSection.GetNonEmpty("DETAILS_ID");
             Password = section.GetNonEmpty("PASSWORD");
             AdminPassword = section.GetNonEmpty("ADMIN_PASSWORD");
             ShowOnLobby = section.GetBool("REGISTER_TO_LOBBY", true);
@@ -205,7 +208,7 @@ namespace AcManager.Tools.Objects {
             LoadEntryListData(IniFile.Empty);
         }
 
-        public override void SaveData(IniFile ini) {
+        protected override void SaveData(IniFile ini) {
             foreach (var session in Sessions) {
                 session.Save(ini);
             }
@@ -294,17 +297,24 @@ namespace AcManager.Tools.Objects {
             ftp.SetIntEnum("LINUX", FtpMode);
         }
 
-        public override void Save() {
-            var ini = EntryListIniObject ?? IniFile.Empty;
-            ini.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+        public override async Task SaveAsync() {
+            var entryIni = EntryListIniObject ?? IniFile.Empty;
+            entryIni.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+
+            var mainIni = IniObject ?? IniFile.Empty;
+            SaveData(mainIni);
+            await EnsureDetailsNameIsActualAsync(mainIni);
+
             using ((FileAcManager as IIgnorer)?.IgnoreChanges()) {
+                FileUtils.EnsureFileDirectoryExists(IniFilename);
                 FileUtils.EnsureFileDirectoryExists(EntryListIniFilename);
-                File.WriteAllText(EntryListIniFilename, ini.ToString());
-                base.Save();
+                File.WriteAllText(IniFilename, mainIni.ToString());
+                File.WriteAllText(EntryListIniFilename, entryIni.ToString());
             }
 
             SaveWrapperParams();
             RemoveError(AcErrorType.Data_IniIsMissing);
+            Changed = false;
         }
 
         public override bool HandleChangedFile(string filename) {

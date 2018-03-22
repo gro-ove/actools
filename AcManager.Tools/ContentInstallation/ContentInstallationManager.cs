@@ -111,7 +111,7 @@ namespace AcManager.Tools.ContentInstallation {
                 if (toRemove.Count > 3) {
                     DownloadList.Remove(finished);
                 } else {
-                    finished.DeleteDelayCommand.Execute();
+                    finished.DeleteDelayCommand.ExecuteAsync().Ignore();
                 }
             }
         }, () => DownloadList.Any(x => x.State == ContentInstallationEntryState.Finished)));
@@ -125,7 +125,7 @@ namespace AcManager.Tools.ContentInstallation {
                 if (toRemove.Count > 3) {
                     DownloadList.Remove(finished);
                 } else {
-                    finished.DeleteDelayCommand.Execute();
+                    finished.DeleteDelayCommand.ExecuteAsync().Ignore();
                 }
             }
         }, () => DownloadList.Count > 0));

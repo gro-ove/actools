@@ -15,7 +15,7 @@
       <system:Uri x:Key="RunningLogUri">/Pages/ServerPreset/ServerPresetRunningLog.xaml</system:Uri>
       <system:Uri x:Key="EntryListUri">/Pages/ServerPreset/ServerPresetEntryList.xaml</system:Uri>
       <system:Uri x:Key="AdvancedUri">/Pages/ServerPreset/ServerPresetAdvanced.xaml</system:Uri>
-      <system:Uri x:Key="WrappedUri">/Pages/ServerPreset/ServerPresetWrapped.xaml</system:Uri>
+      <system:Uri x:Key="DetailsUri">/Pages/ServerPreset/ServerPresetDetails.xaml</system:Uri>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -90,7 +90,7 @@
           <mui:Link x:Name="ConditionsLink" DisplayName="Conditions" Source="/Pages/ServerPreset/ServerPresetConditions.xaml" />
           <mui:Link x:Name="SessionsLink" DisplayName="Sessions" Source="/Pages/ServerPreset/ServerPresetSessions.xaml" />
           <mui:Link DisplayName="Advanced" Source="{StaticResource AdvancedUri}" />
-          <mui:Link DisplayName="Wrapper" Source="{StaticResource WrappedUri}" />
+          <mui:Link DisplayName="Details" Source="{StaticResource DetailsUri}" />
         </mui:ModernTab.Links>
       </mui:ModernTab>
 

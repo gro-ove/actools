@@ -421,7 +421,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 ```
 
 - [Import settings]({link}).";
-                Clipboard.SetText(piece);
+                ClipboardHelper.SetText(piece);
                 Toast.Show($"Description for {Name}",
                         "Message with details is copied to the clipboard",
                         () => { WindowsHelper.ViewInBrowser(@"http://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
@@ -962,6 +962,7 @@ window.$KEY = outline.stop.bind(outline);
 
                 if (destinationCallback == null) return;
 
+                var firstDownload = !_onDownloadFired;
                 _onDownloadFired = true;
                 _destinationCallback = null;
                 _reportDestinationCallback = null;
@@ -981,10 +982,11 @@ window.$KEY = outline.stop.bind(outline);
                     FileName = newLoader.FileName;
                     _dialog.Hide();
 
-                    var result = await newLoader.DownloadAsync(webClient, destinationCallback, reportDestinationCallback, null, progress, _cancellation);
-                    if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
+                    if (firstDownload && SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
                         Toast.Show("New download started", FileName ?? url);
                     }
+
+                    var result = await newLoader.DownloadAsync(webClient, destinationCallback, reportDestinationCallback, null, progress, _cancellation);
                     resultTask.TrySetResult(result);
                 } catch (Exception e) {
                     resultTask.TrySetException(e);
@@ -1005,6 +1007,7 @@ window.$KEY = outline.stop.bind(outline);
             private bool _onDownloadFired;
 
             void IWebDownloadListener.OnDownload(string url, string suggestedName, long totalSize, IWebDownloader downloader) {
+                var firstDownload = !_onDownloadFired;
                 _onDownloadFired = true;
                 ActionExtension.InvokeInMainThread(async () => {
                     Logging.Write("URL to download: " + url);
@@ -1042,7 +1045,7 @@ window.$KEY = outline.stop.bind(outline);
                     _dialog.Hide();
 
                     try {
-                        if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
+                        if (firstDownload && SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
                             Toast.Show("New download started", suggestedName ?? url);
                         }
 

@@ -14,12 +14,16 @@ namespace FirstFloor.ModernUI.Helpers {
         // This constant determines the number of iterations for the password bytes generation function.
         private const int DerivationIterations = 1000;
 
-        public static byte[] Encrypt(byte[] decryptesBytes, string passPhrase) {
-            if (decryptesBytes == null) return null;
-
+        [UsedImplicitly]
+        public static byte[] Encrypt([NotNull] byte[] decryptesBytes, [NotNull] string passPhrase) {
             try {
-                var salt = Generate256BitsOfRandomEntropy();
-                var iv = Generate256BitsOfRandomEntropy();
+                byte[] salt, iv;
+
+                using (var sha1 = SHA256.Create()) {
+                    // Sorry, security, but encrypted strings should be the same.
+                    salt = sha1.ComputeHash(decryptesBytes);
+                    iv = sha1.ComputeHash(salt);
+                }
 
                 using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations)) {
                     var keyBytes = password.GetBytes(Keysize / 8);
@@ -33,7 +37,6 @@ namespace FirstFloor.ModernUI.Helpers {
                     using (var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write)) {
                         cryptoStream.Write(decryptesBytes, 0, decryptesBytes.Length);
                         cryptoStream.FlushFinalBlock();
-
                         return salt.Concat(iv).Concat(memoryStream.ToArray()).ToArray();
                     }
                 }
@@ -43,14 +46,12 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        private static byte[] Decrypt(byte[] input, [NotNull] string passPhrase) {
-            if (input == null) return null;
-
+        [UsedImplicitly]
+        public static byte[] Decrypt([NotNull] byte[] input, [NotNull] string passPhrase) {
             try {
                 var salt = input.Take(Keysize / 8).ToArray();
                 var iv = input.Skip(Keysize / 8).Take(Keysize / 8).ToArray();
                 var actual = input.Skip(Keysize / 8 * 2).Take(input.Length - Keysize / 8 * 2).ToArray();
-
                 using (var password = new Rfc2898DeriveBytes(passPhrase, salt, DerivationIterations)) {
                     var keyBytes = password.GetBytes(Keysize / 8);
                     using (var symmetricKey = new RijndaelManaged {
@@ -72,23 +73,23 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        [CanBeNull]
         public static string Encrypt([CanBeNull] string input, [NotNull] string pass) {
             try {
                 if (input == null) return null;
-
                 var encrypted = Encrypt(Encoding.UTF8.GetBytes(input), pass);
-                return encrypted == null ? null : Convert.ToBase64String(encrypted);
+                return encrypted?.ToCutBase64();
             } catch (Exception e) {
                 Logging.Warning(e.Message);
                 return null;
             }
         }
 
+        [CanBeNull]
         public static string Decrypt([CanBeNull] string input, [NotNull] string pass) {
             try {
                 if (input == null) return null;
-
-                var decrypted = Decrypt(Convert.FromBase64String(input), pass);
+                var decrypted = Decrypt(input.FromCutBase64(), pass);
                 return decrypted == null ? null : Encoding.UTF8.GetString(decrypted);
             } catch (Exception e) {
                 Logging.Warning(e.Message);
@@ -96,12 +97,39 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        private static byte[] Generate256BitsOfRandomEntropy() {
-            var result = new byte[32];
-            using (var provider = new RNGCryptoServiceProvider()) {
-                provider.GetBytes(result);
+        [Pure, NotNull]
+        private static byte[] FromCutBase64([CanBeNull] this string encoded) {
+            if (string.IsNullOrWhiteSpace(encoded)) return new byte[0];
+
+            var padding = 4 - encoded.Length % 4;
+            if (padding > 0 && padding < 4) {
+                encoded = encoded + @"=".RepeatString(padding);
             }
-            return result;
+            return Convert.FromBase64String(encoded);
+        }
+
+        [Pure, CanBeNull]
+        private static string ToCutBase64([CanBeNull] this byte[] decoded) {
+            return decoded != null ? Convert.ToBase64String(decoded).TrimEnd('=') : null;
+        }
+
+        [Pure, ContractAnnotation("s:null=>null")]
+        private static string RepeatString([CanBeNull] this string s, int number) {
+            if (s == null) return null;
+            switch (number) {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return s;
+                case 2:
+                    return s + s;
+                default:
+                    var b = new StringBuilder();
+                    for (var i = 0; i < number; i++) {
+                        b.Append(s);
+                    }
+                    return b.ToString();
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using AcManager.Tools.AcErrors;
@@ -934,7 +935,7 @@ namespace AcManager.Tools.Objects {
 
         private DateTime _lastSavedData, _lastSavedExtended;
 
-        public override void Save() {
+        public override Task SaveAsync() {
             // Base version would rename file if name changed, we don’t need this
 
             if (ChangedData) {
@@ -956,6 +957,8 @@ namespace AcManager.Tools.Objects {
                     NonfatalError.Notify("Can’t save extra data", e);
                 }
             }
+
+            return Task.Delay(0);
         }
 
         public override bool HandleChangedFile(string filename) {

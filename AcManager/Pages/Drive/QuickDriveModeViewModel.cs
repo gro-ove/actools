@@ -7,6 +7,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.Processes;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -103,7 +104,7 @@ namespace AcManager.Pages.Drive {
         /// </summary>
         [CanBeNull]
         public Tuple<string, Action<TrackObjectBase>> TrackDoesNotFit {
-            get { return _trackDoesNotFit; }
+            get => _trackDoesNotFit;
             set => Apply(value, ref _trackDoesNotFit);
         }
 
@@ -120,6 +121,7 @@ namespace AcManager.Pages.Drive {
                 string serializedQuickDrivePreset);
 
         protected Task StartAsync(Game.StartProperties properties) {
+            Logging.Here();
             return GameWrapper.StartAsync(properties);
         }
 

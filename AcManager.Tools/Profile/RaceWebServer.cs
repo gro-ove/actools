@@ -296,32 +296,12 @@ new WebSocket('ws://' + location.host + '/api/ws/shared').onmessage = function(e
             DisposeHelper.Dispose(ref _server);
         }
 
-        public void Info(object message) {
-            Logging.Write(message);
-        }
-
-        public void Error(object message) {
-            Logging.Error(message);
-        }
-
-        public void Error(object message, Exception exception) {
-            Logging.Error($"{message}; {exception}");
-        }
-
-        public void InfoFormat(string format, params object[] args) {
-            Logging.Write(string.Format(format, args));
-        }
-
-        public void WarnFormat(string format, params object[] args) {
-            Logging.Warning(string.Format(format, args));
-        }
-
-        public void ErrorFormat(string format, params object[] args) {
-            Logging.Error(string.Format(format, args));
-        }
-
-        public void DebugFormat(string format, params object[] args) {
-            Logging.Debug(string.Format(format, args));
-        }
+        void ILog.Info(object message) => Logging.Write(message);
+        void ILog.Error(object message) => Logging.Error(message);
+        void ILog.Error(object message, Exception exception) => Logging.Error($"{message}; {exception}");
+        void ILog.InfoFormat(string format, params object[] args) => Logging.Write(string.Format(format, args));
+        void ILog.WarnFormat(string format, params object[] args) => Logging.Warning(string.Format(format, args));
+        void ILog.ErrorFormat(string format, params object[] args) => Logging.Error(string.Format(format, args));
+        void ILog.DebugFormat(string format, params object[] args) => Logging.Debug(string.Format(format, args));
     }
 }

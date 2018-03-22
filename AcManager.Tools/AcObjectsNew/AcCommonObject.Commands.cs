@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract partial class AcCommonObject {
@@ -13,15 +13,15 @@ namespace AcManager.Tools.AcObjectsNew {
         public ICommand CopyIdCommand => _copyIdCommand ?? (_copyIdCommand = new DelegateCommand<string>(o => {
             switch (o) {
                 case "name":
-                    Clipboard.SetText(DisplayName);
+                    ClipboardHelper.SetText(DisplayName);
                     break;
 
                 case "path":
-                    Clipboard.SetText(Location);
+                    ClipboardHelper.SetText(Location);
                     break;
 
                 default:
-                    Clipboard.SetText(Id);
+                    ClipboardHelper.SetText(Id);
                     break;
             }
         }));
@@ -56,8 +56,8 @@ namespace AcManager.Tools.AcObjectsNew {
             }
         }));
 
-        private DelegateCommand _saveCommand;
+        private AsyncCommand _saveCommand;
 
-        public virtual DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand = new DelegateCommand(Save, () => Changed));
+        public virtual AsyncCommand SaveCommand => _saveCommand ?? (_saveCommand = new AsyncCommand(SaveAsync, () => Changed));
     }
 }

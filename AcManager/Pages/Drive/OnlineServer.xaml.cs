@@ -500,7 +500,7 @@ namespace AcManager.Pages.Drive {
                     UpdateCarsView();
                     break;
                 case nameof(ServerEntry.PasswordRequired):
-                case nameof(ServerEntry.PortExtended):
+                case nameof(ServerEntry.HasDetails):
                 case nameof(ServerEntry.Description):
                     ResizingStuff();
                     break;

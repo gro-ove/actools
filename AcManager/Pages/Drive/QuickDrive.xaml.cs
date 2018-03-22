@@ -893,6 +893,8 @@ namespace AcManager.Pages.Drive {
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
                 }
+
+                Logging.Here();
             }
 
             private ICommand _shareCommand;
@@ -1027,7 +1029,12 @@ namespace AcManager.Pages.Drive {
 
             var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time,
                     mode: mode, serializedRaceGrid: serializedRaceGrid);
-            if (!model.GoCommand.CanExecute(null)) return false;
+            if (!model.GoCommand.CanExecute(null)) {
+                Logging.Warning("Can’t start the race");
+                return false;
+            }
+
+            Logging.Write("Starting the race…");
             await model.Go();
             return true;
         }

@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -218,7 +217,7 @@ namespace AcManager.Tools.Objects {
             return Path.Combine(Track?.Id ?? GenericDirectory, newName + Extension);
         }
 
-        public override void Save() {
+        public override Task SaveAsync() {
             try {
                 if (_iniFile == null) {
                     _iniFile = new IniFile(Location);
@@ -231,10 +230,12 @@ namespace AcManager.Tools.Objects {
             }
 
             if (_oldName != Name || _oldTrackId != TrackId) {
+                // TODO: Await?
                 RenameAsync().Forget();
             }
 
             Changed = false;
+            return Task.Delay(0);
         }
 
         // public override string DisplayName => TrackId == null ? Name : $"{Name} ({Track?.MainTrackObject.NameEditable ?? TrackId})";
@@ -352,7 +353,7 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand CopyUrlCommand => _copyUrlCommand ?? (_copyUrlCommand = new DelegateCommand(() => {
             if (_information.Url == null) return;
-            Clipboard.SetText(_information.Url);
+            ClipboardHelper.SetText(_information.Url);
             Toast.Show("Link copied", "Link to The Setup Market copied to the clipboard");
         }, () => _information.Url != null));
 

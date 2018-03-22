@@ -93,7 +93,7 @@ namespace AcManager.Tools {
             ActionExtension.InvokeInMainThreadAsync(() => e.Handled ? Task.Delay(0) : ProcessArguments(data, true));
         }
 
-        public static void OnDragEnter(object sender, DragEventArgs e) {
+        public static void OnDragEnter(DragEventArgs e) {
             if (e.AllowedEffects.HasFlag(DragDropEffects.All) &&
                     (e.Data.GetDataPresent(DataFormats.FileDrop) || e.Data.GetDataPresent(DataFormats.UnicodeText))) {
                 e.Effects = DragDropEffects.All;
@@ -198,18 +198,6 @@ namespace AcManager.Tools {
                 return await ProcessUriRequest(argument);
             }
 
-            /*if (ContentInstallationManager.IsRemoteSource(argument)) {
-                //argument = await LoadRemoveFile(argument);
-                //if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
-                return await ProcessInstallableContent(argument);
-            }*/
-
-            /*try {
-                if (!FileUtils.Exists(argument)) return ArgumentHandleResult.FailedShow;
-            } catch (Exception) {
-                return ArgumentHandleResult.FailedShow;
-            }*/
-
             return await ProcessInputFile(argument);
         }
 
@@ -275,16 +263,5 @@ namespace AcManager.Tools {
 
             return ArgumentHandleResult.FailedShow;
         }
-
-        /*private static async Task<ArgumentHandleResult> ProcessInstallableContent(string source) {
-            try {
-                await ContentInstallationManager.Instance.InstallAsync(source);
-            } catch (Exception e) {
-                NonfatalError.Notify(AppStrings.Arguments_CannotInstallAdditionalContent, e);
-                return ArgumentHandleResult.Failed;
-            }
-
-            return ArgumentHandleResult.Successful;
-        }*/
     }
 }

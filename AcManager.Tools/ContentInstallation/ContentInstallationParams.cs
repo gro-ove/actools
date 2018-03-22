@@ -48,7 +48,7 @@ namespace AcManager.Tools.ContentInstallation {
         public async Task PostInstallation(IProgress<AsyncProgressEntry> progress, CancellationToken token) {
             if (!CupType.HasValue || IdsToUpdate == null) return;
 
-            var manager = CupClient.Instance.GetAssociatedManager(CupType.Value);
+            var manager = CupClient.Instance?.GetAssociatedManager(CupType.Value);
             if (manager == null) return;
 
             // TODO: Make it firmer

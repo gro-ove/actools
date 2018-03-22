@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -6,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 
@@ -208,6 +210,29 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Logging.Error(e.Message);
             } catch (Exception e) {
                 Logging.Error(e);
+            }
+        }
+        #endregion
+
+        #region Fix for Alt+<> bindings
+        // TODO: Test and debug if needed
+        protected override void OnPreviewKeyDown(KeyEventArgs e) {
+            if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && VisualExtension.IsInputFocused()) {
+                var toRemove = InputBindings.OfType<InputBinding>().Where(x =>
+                        x.Gesture is KeyGesture gesture && gesture.Modifiers.HasFlag(ModifierKeys.Alt)).ToList();
+                foreach (var binding in toRemove) {
+                    InputBindings.Remove(binding);
+                }
+                RestoreBindingsLater(toRemove).Forget();
+            }
+
+            base.OnPreviewKeyDown(e);
+        }
+
+        private async Task RestoreBindingsLater(IEnumerable<InputBinding> bindings) {
+            await Task.Yield();
+            foreach (var binding in bindings) {
+                InputBindings.Add(binding);
             }
         }
         #endregion

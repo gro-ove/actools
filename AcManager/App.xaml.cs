@@ -103,6 +103,9 @@ namespace AcManager {
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
+                if (MathUtils.Random(0, 10) == 0) {
+                    LazierCached.Purge();
+                }
             }
 
             if (AppArguments.GetBool(AppFlag.NoProxy, true)) {
@@ -579,7 +582,7 @@ namespace AcManager {
         private static async void BackgroundInitialization() {
             try {
 #if DEBUG
-                CupClient.Instance.LoadRegistries().Forget();
+                CupClient.Instance?.LoadRegistries().Forget();
 #endif
 
                 await Task.Delay(500);

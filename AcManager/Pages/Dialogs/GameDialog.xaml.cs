@@ -4,8 +4,10 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
 using AcManager.Controls;
@@ -21,6 +23,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -32,6 +35,10 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Converters;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
+using DataGrid = System.Windows.Controls.DataGrid;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
@@ -64,10 +71,37 @@ namespace AcManager.Pages.Dialogs {
             OnResult(readyResult, null);
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e) {
+        private IDisposable _disabledWindowHandling;
+
+        protected override void OnLoadedOverride() {
+            base.OnLoadedOverride();
+
             if (ProgressRing.Effect is DropShadowEffect effect) {
                 effect.BlurRadius *= ProgressRing.DensityMultiplier;
             }
+
+            PrepareToFixSize().Ignore();
+        }
+
+        private async Task PrepareToFixSize() {
+            await Task.Yield();
+            if (_disabledWindowHandling != null) return;
+
+            var video = new IniFile(AcPaths.GetCfgVideoFilename())["VIDEO"];
+            var width = video.GetInt("WIDTH", 1920);
+            var height = video.GetInt("HEIGHT", 1080);
+            var isAcFullscreen = video.GetBool("FULLSCREEN", false);
+            if (isAcFullscreen && (Screen.AllScreens.Any(x => x.Bounds.Width > width) || Screen.AllScreens.Any(x => x.Bounds.Height > height))) {
+                Logging.Here();
+                _disabledWindowHandling = DisableAnyLogic();
+            }
+        }
+
+        private async Task RevertSizeFix() {
+            if (_disabledWindowHandling == null) return;
+            await Task.Delay(800);
+            Logging.Here();
+            DisposeHelper.Dispose(ref _disabledWindowHandling);
         }
 
         protected override void OnClosingOverride(CancelEventArgs e) {
@@ -78,6 +112,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             base.OnClosingOverride(e);
+            RevertSizeFix().Ignore();
         }
 
         public void Dispose() {
@@ -121,6 +156,7 @@ namespace AcManager.Pages.Dialogs {
                             _mode == GameMode.Replay ? AppStrings.Race_WaitingReplay : AppStrings.Race_WaitingBenchmark;
                     break;
                 case Game.ProgressState.Finishing:
+                    RevertSizeFix().Ignore();
                     Model.WaitingStatus = AppStrings.Race_CleaningUp;
                     break;
                 default:
@@ -479,6 +515,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public void OnResult(Game.Result result, ReplayHelper replayHelper) {
+            RevertSizeFix().Ignore();
+
             var practiceMode = SettingsHolder.Drive.SkipPracticeResults
                     && !_resultsViewMode // If we got here before dialog is opened, user wants to see results anyway
                     && result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
@@ -498,8 +536,8 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            /* save replay button * /
-            Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ?
+            // Save replay button
+            /* Func<string> buttonText = () => replayHelper?.IsReplayRenamed == true ?
                     AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;
 
             var saveReplayButton = CreateExtraDialogButton(buttonText(), () => {
@@ -519,9 +557,9 @@ namespace AcManager.Pages.Dialogs {
                         saveReplayButton.Content = buttonText();
                     }
                 };
-            }
+            }*/
 
-            /* save replay alt button */
+            // Save replay alt button
             ButtonWithComboBox saveReplayButton;
             if (replayHelper != null && replayHelper.IsAvailable) {
                 string ButtonText() => replayHelper.IsKept ? AppStrings.RaceResult_UnsaveReplay : AppStrings.RaceResult_SaveReplay;

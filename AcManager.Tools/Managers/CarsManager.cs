@@ -18,7 +18,7 @@ namespace AcManager.Tools.Managers {
         }
 
         private CarsManager() {
-            CupClient.Instance.Register(this, CupContentType.Car);
+            CupClient.Instance?.Register(this, CupContentType.Car);
         }
 
         public override IAcDirectories Directories => AcRootDirectory.Instance.CarsDirectories;

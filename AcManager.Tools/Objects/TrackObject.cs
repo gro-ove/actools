@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Data;
@@ -384,12 +385,12 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public override void Save() {
-            base.Save();
+        public override async Task SaveAsync() {
+            await base.SaveAsync();
 
             if (MultiLayouts == null) return;
             foreach (var layout in MultiLayouts.Skip(1)) {
-                layout.Save();
+                await layout.SaveAsync();
             }
         }
 

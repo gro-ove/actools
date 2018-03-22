@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,38 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public abstract partial class DpiAwareWindow {
+        private static readonly List<IDisposable> DisableAnyLogicList = new List<IDisposable>();
+
+        private static bool IsAnyLogicDisabled() {
+            return DisableAnyLogicList.Count > 0;
+        }
+
+        public static IDisposable DisableAnyLogic() {
+            IDisposable[] instance = { null };
+            instance[0] = new ActionAsDisposable(() => {
+                if (DisableAnyLogicList.Remove(instance[0]) && !IsAnyLogicDisabled()) {
+                    Helpers.Logging.Caution("Reload location and size");
+                    foreach (var window in Application.Current.Windows.OfType<DpiAwareWindow>()) {
+                        window.LoadLocationAndSize();
+                    }
+                }
+            });
+            DisableAnyLogicList.Add(instance[0]);
+            return instance[0];
+        }
+
+        protected class ActionAsDisposable : IDisposable {
+            private readonly Action _action;
+
+            public ActionAsDisposable(Action action) {
+                _action = action;
+            }
+
+            public void Dispose() {
+                _action.Invoke();
+            }
+        }
+
         public static readonly DependencyProperty LocationAndSizeKeyProperty = DependencyProperty.Register(nameof(LocationAndSizeKey), typeof(string),
                 typeof(DpiAwareWindow), new PropertyMetadata(null, (o, e) => {
                     var d = (DpiAwareWindow)o;
@@ -49,7 +82,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void SetDefaultLocation() {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -113,7 +146,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private bool _locationAndSizeInitialized;
 
         private void LoadLocationAndSize() {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -246,7 +279,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void UpdatePreferredFullscreenMode([NotNull] WpfScreen screen, bool maximized = false, bool centerAlign = false) {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -294,7 +327,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected virtual void CenterOnScreen([NotNull] WpfScreen screen) {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -307,6 +340,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private const string DefaultScreenKey = @"DefaultScreen";
 
         private void SaveDefaultScreen() {
+            if (IsAnyLogicDisabled()) return;
             Logging.Here();
 
             if (WindowState == WindowState.Minimized) {
@@ -342,6 +376,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private readonly Busy _locationAndSizeBusy = new Busy();
 
         private void SaveLocationAndSize() {
+            if (IsAnyLogicDisabled()) return;
+
             var key = LocationAndSizeKey;
             if (key == null || WindowState == WindowState.Minimized || !_locationAndSizeInitialized
                     || AppearanceManager.Instance.PreferFullscreenMode) return;
@@ -368,7 +404,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void EnsurePositionOnScreen(WpfScreen screen) {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -393,7 +429,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void EnsureOnScreen(WpfScreen screen) {
-            if (!AppearanceManager.Instance.ManageWindowsLocation) {
+            if (!AppearanceManager.Instance.ManageWindowsLocation || IsAnyLogicDisabled()) {
                 Logging.Debug("Location management is disabled");
                 return;
             }
@@ -429,6 +465,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void EnsureOnScreen() {
+            if (IsAnyLogicDisabled()) return;
+
             Logging.Here();
             EnsureOnScreen(GetScreen());
         }

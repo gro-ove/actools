@@ -395,6 +395,7 @@ namespace AcTools.Utils.Helpers {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();
             foreach (var e in enumerable) {
+                if (e == null) continue;
                 if (sb.Length > 0) {
                     sb.Append(s);
                 }
@@ -409,9 +410,22 @@ namespace AcTools.Utils.Helpers {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var sb = new StringBuilder();
             foreach (var e in enumerable) {
+                if (e == null) continue;
                 if (sb.Length > 0) {
                     sb.Append(s);
                 }
+                sb.Append(e);
+            }
+
+            return sb.ToString();
+        }
+
+        [NotNull]
+        public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            var sb = new StringBuilder();
+            foreach (var e in enumerable) {
+                if (e == null) continue;
                 sb.Append(e);
             }
 
@@ -423,17 +437,6 @@ namespace AcTools.Utils.Helpers {
             using (var e = enumerable.GetEnumerator()) {
                 while (e.MoveNext()) { }
             }
-        }
-
-        [NotNull]
-        public static string JoinToString<T>([NotNull] this IEnumerable<T> enumerable) {
-            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
-            var sb = new StringBuilder();
-            foreach (var e in enumerable) {
-                sb.Append(e);
-            }
-
-            return sb.ToString();
         }
 
         [NotNull]
