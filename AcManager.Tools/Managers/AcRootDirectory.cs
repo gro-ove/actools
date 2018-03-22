@@ -147,7 +147,7 @@ namespace AcManager.Tools.Managers {
             }
 
             if (!AcPaths.OptionEaseAcRootCheck) {
-                // We don’ use AcPaths.IsAcRoot() here to get a nice message telling what’s wrong, but logic is similar
+                // We don’t use AcPaths.IsAcRoot() here to get a nice message telling what’s wrong, but logic is similar
 
                 if (!Directory.Exists(directory)) {
                     reason = ToolsStrings.AcRootDirectory_Missing;
@@ -169,7 +169,7 @@ namespace AcManager.Tools.Managers {
                     return false;
                 }
 
-                if (!File.Exists(Path.Combine(directory, @"acs.exe"))) {
+                if (!File.Exists(Path.Combine(directory, @"acs.exe")) && !File.Exists(Path.Combine(directory, @"acs_pro.exe"))) {
                     reason = string.Format(ToolsStrings.AcRootDirectory_MissingFile, @"acs.exe");
                     return false;
                 }

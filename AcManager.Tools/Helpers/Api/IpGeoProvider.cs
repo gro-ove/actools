@@ -1,7 +1,6 @@
 using System;
-using System.Net;
 using System.Threading.Tasks;
-using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 
@@ -11,15 +10,10 @@ namespace AcManager.Tools.Helpers.Api {
 
         private static readonly LazierCached<IpGeoEntry> Cached = LazierCached.CreateAsync(@".IpGeoInformation", GetAsyncFn, TimeSpan.FromDays(1));
 
-        private static Task<IpGeoEntry> GetAsyncFn() {
-            return Task.Run(() => {
-                var httpRequest = WebRequest.Create(RequestUri);
-                httpRequest.Method = "GET";
-                using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
-                    return response.StatusCode != HttpStatusCode.OK
-                            ? null : JsonConvert.DeserializeObject<IpGeoEntry>(response.GetResponseStream()?.ReadAsStringAndDispose());
-                }
-            });
+        private static async Task<IpGeoEntry> GetAsyncFn() {
+            using (var killer = KillerOrder.Create(new CookieAwareWebClient(), 10000)) {
+                return JsonConvert.DeserializeObject<IpGeoEntry>(await killer.Victim.DownloadStringTaskAsync(RequestUri));
+            }
         }
 
         [ItemCanBeNull]

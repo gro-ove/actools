@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
@@ -11,6 +12,7 @@ namespace FirstFloor.ModernUI.Dialogs {
     public sealed class DialogFilterPiece : Displayable {
         public static readonly DialogFilterPiece AllFiles = new DialogFilterPiece("All files", "*.*");
         public static readonly DialogFilterPiece DdsFiles = new DialogFilterPiece("DDS files", "*.dds");
+        public static readonly DialogFilterPiece XmlFiles = new DialogFilterPiece("XML Files", "*.xml");
         public static readonly DialogFilterPiece JpegFiles = new DialogFilterPiece("JPEG files", "*.jpg", "*.jpeg");
         public static readonly DialogFilterPiece PngFiles = new DialogFilterPiece("PNG files", "*.png");
         public static readonly DialogFilterPiece DdsAndTiffFiles = new DialogFilterPiece("DDS & TIFF files", "*.dds", "*.tif", "*.tiff");
@@ -25,7 +27,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
-        public DialogFilterPiece([NotNull] string displayName, [NotNull] params string[] filter) {
+        public DialogFilterPiece([NotNull] string displayName, [Localizable(false),NotNull] params string[] filter) {
             Filter = string.Join(";", filter);
             ShortName = displayName;
             DisplayName = $"{ShortName} ({Filter})";
@@ -52,7 +54,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         [CanBeNull]
         public string InitialDirectory { get; set; }
 
-        [CanBeNull]
+        [Localizable(false),CanBeNull]
         public string DirectorySaveKey { get; set; }
 
         [CanBeNull]

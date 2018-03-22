@@ -174,32 +174,49 @@
         </c:MessageBlock>
 
         <!-- Real Head Motion -->
-        <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}">
+        <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}" set:Search.Keywords="real head motion;rhm">
           <TextBlock Text="Real Head Motion:" Style="{StaticResource Heading2}" />
           <Button Style="{StaticResource MoreDetailsSuperscript}"
               CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
+        <CheckBox IsChecked="{Binding Drive.RhmIntegration}" set:Search.Keywords="real head motion;rhm">
           <Label Content="RHM integration" />
         </CheckBox>
 
-        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}" set:Search.Keywords="real head motion;rhm">
           <Label Content="RHM location:" />
           <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
           <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
-        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
+        <DockPanel IsEnabled="{Binding Drive.RhmIntegration}" set:Search.Keywords="real head motion;rhm">
           <Label Content="RHM settings location:" />
-          <Button Content="Browse" Command="{Binding Drive.SelectRhmSettingsLocationCommand}" />
+          <Button Content="Browse" Command="{Binding Drive.SelectRhmSettingsCommand}" />
           <mui:BetterTextBox Text="{Binding Drive.RhmSettingsLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
-        <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)">
+        <DockPanel ToolTip="How long RHM will be running after the race (to avoid restarting it over and over)" set:Search.Keywords="real head motion;rhm">
           <Label Content="Keep alive for:" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Drive.RhmKeepAlivePeriods}" SelectedItem="{Binding Drive.RhmKeepAlivePeriod}"
               DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <!-- D-BOX -->
+        <DockPanel set:Search.SubCategory="D-BOX:" Margin="0 20 0 8" Style="{x:Null}">
+          <TextBlock Text="D-BOX:" Style="{StaticResource Heading2}" />
+          <Button Style="{StaticResource MoreDetailsSuperscript}"
+              CommandParameter="http://www.d-box.com/training-and-simulation/racing-simulation/" />
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding Integrated.DBoxIntegration}" set:Search.Keywords="real head motion;rhm">
+          <Label Content="D-BOX integration" />
+        </CheckBox>
+
+        <DockPanel IsEnabled="{Binding Integrated.DBoxIntegration}">
+          <Label Content="D-BOX location:" />
+          <Button Content="Browse" Command="{Binding Integrated.SelectDBoxLocationCommand}" />
+          <mui:BetterTextBox Text="{Binding Integrated.DBoxLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
       </StackPanel>
 

@@ -11,11 +11,11 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 
 // ReSharper disable RedundantArgumentDefaultValue
 
@@ -941,33 +941,34 @@ namespace AcManager.Tools.Helpers {
             private DelegateCommand _selectRhmLocationCommand;
 
             public DelegateCommand SelectRhmLocationCommand => _selectRhmLocationCommand ?? (_selectRhmLocationCommand = new DelegateCommand(() => {
-                var dialog = new OpenFileDialog {
-                    Filter = "Real Head Motion|RealHeadMotionAssettoCorsa.exe|Applications (*.exe)|*.exe|All files (*.*)|*.*",
+                RhmLocation = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = "rhm",
+                    Filters = {
+                        new DialogFilterPiece("Real Head Motion", "RealHeadMotionAssettoCorsa.exe"),
+                        DialogFilterPiece.Applications,
+                        DialogFilterPiece.AllFiles,
+                    },
                     Title = "Select Real Head Motion application",
                     InitialDirectory = Path.GetDirectoryName(RhmLocation) ?? "",
-                    FileName = Path.GetFileName(RhmLocation) ?? ""
-                };
-
-                if (dialog.ShowDialog() == true) {
-                    RhmLocation = dialog.FileName;
-                }
+                    DefaultFileName = Path.GetFileName(RhmLocation),
+                }) ?? RhmLocation;
             }));
 
-            private DelegateCommand _selectRhmSettingsLocationCommand;
+            private DelegateCommand _selectRhmSettingsCommand;
 
-            public DelegateCommand SelectRhmSettingsLocationCommand
-                => _selectRhmSettingsLocationCommand ?? (_selectRhmSettingsLocationCommand = new DelegateCommand(() => {
-                    var dialog = new OpenFileDialog {
-                        Filter = "Real Head Motion Settings|Settings.xml|XML Files (*.xml)|*.xml|All files (*.*)|*.*",
-                        Title = "Select Real Head Motion settings",
-                        InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation) ?? "",
-                        FileName = Path.GetFileName(RhmSettingsLocation) ?? ""
-                    };
-
-                    if (dialog.ShowDialog() == true) {
-                        RhmSettingsLocation = dialog.FileName;
-                    }
-                }));
+            public DelegateCommand SelectRhmSettingsCommand => _selectRhmSettingsCommand ?? (_selectRhmSettingsCommand = new DelegateCommand(() => {
+                RhmSettingsLocation = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = "rhmsettings",
+                    Filters = {
+                        new DialogFilterPiece("Real Head Motion Settings", "Settings.xml"),
+                        DialogFilterPiece.XmlFiles,
+                        DialogFilterPiece.AllFiles
+                    },
+                    Title = "Select Real Head Motion settings",
+                    InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation) ?? "",
+                    DefaultFileName = Path.GetFileName(RhmSettingsLocation),
+                }) ?? RhmSettingsLocation;
+            }));
 
             private bool? _checkAndFixControlsOrder;
 

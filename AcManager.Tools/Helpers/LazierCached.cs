@@ -66,7 +66,6 @@ namespace AcManager.Tools.Helpers {
                     Logging.Warning($"Cancelled: {key}");
                 }
 
-                Store(default(T));
                 return default(T);
             });
 

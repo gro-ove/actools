@@ -50,15 +50,7 @@ namespace AcManager.Controls {
         private static readonly TaskCache TaskCache = new TaskCache();
 
         private static bool IsCountryId(string key) {
-            if (key.Length == 2) {
-                return char.IsUpper(key[0]) && char.IsUpper(key[1]);
-            }
-
-            if (key.Length == 2) {
-                return char.IsUpper(key[0]) && char.IsUpper(key[1]) && key[2] == '-';
-            }
-
-            return false;
+            return (key.Length == 2 || key.Length == 6 && key[2] == '-') && char.IsUpper(key[0]) && char.IsUpper(key[1]);
         }
 
         private static Task<BitmapEntry> LoadEntry([CanBeNull] string key, int decodeWidth) {

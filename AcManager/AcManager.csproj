@@ -227,6 +227,7 @@
     <Compile Include="CustomShowroom\CmPreviewsTools.xaml.cs">
       <DependentUpon>CmPreviewsTools.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomShowroom\Coordinates.cs" />
     <Compile Include="CustomShowroom\CustomShowroomWrapper.cs" />
     <Compile Include="CustomShowroom\DarkRendererCars.cs" />
     <Compile Include="CustomShowroom\DarkRendererSettings.cs" />
