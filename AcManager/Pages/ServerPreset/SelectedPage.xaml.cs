@@ -113,6 +113,9 @@ namespace AcManager.Pages.ServerPreset {
             }));
 
             public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
+                _shareModes = SelectedObject.DetailsMode == ServerPresetDetailsMode.ViaWrapper ? EnumExtension.GetValues<ShareMode>()
+                        : EnumExtension.GetValues<ShareMode>().ApartFrom(ShareMode.Directly).ToArray();
+
                 SelectedObject.PropertyChanged += OnAcObjectPropertyChanged;
                 SelectedObject.DriverPropertyChanged += OnDriverPropertyChanged;
                 SelectedObject.DriverCollectionChanged += OnDriverCollectionChanged;

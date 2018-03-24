@@ -96,12 +96,13 @@ namespace AcManager {
             if (AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize();
                 CacheStorage.Initialize();
+                AuthenticationStorage.Initialize();
             } else {
                 ValuesStorage.Initialize(FilesStorage.Instance.GetFilename("Values.data"),
                         InternalUtils.GetValuesStorageEncryptionKey(),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 CacheStorage.Initialize(FilesStorage.Instance.GetFilename("Cache.data"), AppArguments.GetBool(AppFlag.DisableValuesCompression));
-                LargeFileUploaderParams.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"),
+                AuthenticationStorage.Initialize(FilesStorage.Instance.GetFilename("Authentication.data"),
                         AppArguments.GetBool(AppFlag.DisableValuesCompression));
                 if (MathUtils.Random(0, 10) == 0) {
                     LazierCached.Purge();

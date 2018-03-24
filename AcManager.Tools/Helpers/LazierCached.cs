@@ -47,8 +47,9 @@ namespace AcManager.Tools.Helpers {
 
         private static Task<T> Fn(string key, Func<Task<T>> fn, TimeSpan maxAge) {
             var timeKey = key + LazierCached.Postfix;
+            var cachedAt = CacheStorage.Get<DateTime>(timeKey);
 
-            if (DateTime.Now - CacheStorage.Get<DateTime>(timeKey) < maxAge) {
+            if (cachedAt != default(DateTime) && DateTime.Now - cachedAt < maxAge) {
                 return Task.FromResult(SimpleSerialization.IsSupported<T>()
                         ? CacheStorage.Get<T>(key)
                         : CacheStorage.Storage.GetObject<T>(key));

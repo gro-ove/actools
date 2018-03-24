@@ -82,13 +82,13 @@ namespace AcManager.LargeFilesSharing {
         }
 
         [ContractAnnotation("=> halt")]
-        public void RaiseUploadFailedException(string reason = null) {
+        protected void RaiseUploadFailedException(string reason = null) {
             throw new InformativeException(ToolsStrings.Uploader_CannotUploadToGoogleDrive.Replace("Google Drive", DisplayName),
                     reason ?? ToolsStrings.Common_MakeSureThereIsEnoughSpace);
         }
 
         [ContractAnnotation("=> halt")]
-        public void RaiseShareFailedException(string reason = null) {
+        protected void RaiseShareFailedException(string reason = null) {
             throw new InformativeException(ToolsStrings.Uploader_CannotShareGoogleDrive.Replace("Google Drive", DisplayName), reason);
         }
 

@@ -64,7 +64,7 @@ namespace AcManager.Pages.Selected {
                 using (var waiting = new WaitingDialog(ControlsStrings.Common_Uploading)) {
                     waiting.Report(ControlsStrings.Common_Preparing);
 
-                    var uploader = LargeFileUploaderParams.Sharing.SelectedUploader;
+                    var uploader = LargeFileUploaderParams.ShareReplays.SelectedUploader;
                     await uploader.SignInAsync(waiting.CancellationToken);
 
                     waiting.Report(ControlsStrings.Common_Compressing);

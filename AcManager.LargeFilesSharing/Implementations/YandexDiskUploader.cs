@@ -12,10 +12,12 @@ using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.LargeFilesSharing.Implementations {
+    [UsedImplicitly]
     public class YandexDiskUploader : FileUploaderBase {
         public YandexDiskUploader(IStorage storage) : base(storage, "Yandex.Disk (App Folder)",
                 new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/YandexDisk.png", UriKind.Relative),

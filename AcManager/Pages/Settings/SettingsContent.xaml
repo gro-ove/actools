@@ -87,6 +87,29 @@
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
+        <!-- Mega credentials -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mega.nz credentials:"
+            ToolTip="Optional, but help with download quotas. Just in case, CM doesn’t store your password, but instead, it stores access tokens." />
+
+        <mui:BooleanSwitch Value="{Binding MegaReady}">
+          <mui:BooleanSwitch.True>
+            <DockPanel>
+              <mui:AsyncButton Content="Log out" DockPanel.Dock="Right" Margin="8 0 0 0" Command="{Binding MegaLogOutCommand}" />
+              <TextBlock Text="Signed as: " />
+              <mui:BetterTextBox Text="{Binding MegaUserEmail}" Style="{StaticResource Borderless}" IsReadOnly="True" VerticalAlignment="Center" />
+            </DockPanel>
+          </mui:BooleanSwitch.True>
+          <mui:BooleanSwitch.False>
+            <DockPanel>
+              <mui:AsyncButton Content="Log in" DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding MegaLogInCommand}" />
+              <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
+                <mui:BetterTextBox Text="{Binding MegaUserEmail}" Placeholder="E-mail" />
+                <mui:ProperPasswordBox Password="{Binding MegaUserPassword}" Placeholder="Password" />
+              </mui:SpacingUniformGrid>
+            </DockPanel>
+          </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
+
         <!--<c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
             <mui:BbCodeBlock.Text>If you want to install content from AcClub or Assetto-DB in one click, you can use a browser extension: one for [url="https://chrome.google.com/webstore/detail/ac-content-manager-instal/oeobjfofgcnppddidihknmjhnddfilbo"]Chromium-based browsers[/url], another for [url="https://addons.mozilla.org/en-US/firefox/addon/ac-cm-installation-buttons/"]Firefox[/url], and, as a temporary solution, [url="https://greasyfork.org/en/scripts/30672-ac-content-manager-installation-buttons"]userscript for Edge[/url] (use [url="https://www.microsoft.com/ru-ru/store/p/tampermonkey/9nblggh5162s"]Tampermonkey[/url] to install it).</mui:BbCodeBlock.Text>

@@ -5,13 +5,16 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcManager.Tools;
 using AcTools.Utils.Helpers;
 using CG.Web.MegaApiClient;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 
 namespace AcManager.LargeFilesSharing.Implementations {
+    [UsedImplicitly]
     public class MegaUploader : FileUploaderBase {
         public MegaUploader(IStorage storage) : base(storage, "Mega",
                 new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/Mega.png", UriKind.Relative),
@@ -72,7 +75,11 @@ namespace AcManager.LargeFilesSharing.Implementations {
             await PrepareAsync(cancellation);
             if (IsReady || cancellation.IsCancellationRequested) return;
 
-            var client = new MegaApiClient();
+            if (string.IsNullOrWhiteSpace(UserEmail) || string.IsNullOrWhiteSpace(UserPassword)) {
+                throw new InformativeException("Nothing to log in with to Mega.nz");
+            }
+
+            var client = new MegaApiClient(new Options(InternalUtils.GetMegaAppKey().Item1));
             _token = await client.LoginAsync(MegaApiClient.GenerateAuthInfos(UserEmail, UserPassword));
             Storage.SetEncrypted(KeySession, _token.SessionId);
             Storage.SetEncrypted(KeyToken, _token.MasterKey);
@@ -138,7 +145,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                 throw new Exception(ToolsStrings.Uploader_AuthenticationTokenIsMissing);
             }
 
-            var client = new MegaApiClient();
+            var client = new MegaApiClient(new Options(InternalUtils.GetMegaAppKey().Item1));
             await client.LoginAsync(_token);
             cancellation.ThrowIfCancellationRequested();
 
@@ -154,7 +161,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
 
         public override async Task<UploadResult> UploadAsync(string name, string originalName, string mimeType, string description, Stream data, UploadAs uploadAs,
                 IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            var client = new MegaApiClient();
+            var client = new MegaApiClient(new Options(InternalUtils.GetMegaAppKey().Item1));
             await client.LoginAsync(_token);
             cancellation.ThrowIfCancellationRequested();
 

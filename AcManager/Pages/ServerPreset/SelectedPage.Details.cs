@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Pages.ServerPreset {
     public partial class SelectedPage {
         public partial class ViewModel {
-            private ShareMode[] _shareModes = EnumExtension.GetValues<ShareMode>();
+            private ShareMode[] _shareModes;
 
             public ShareMode[] ShareModes {
                 get => _shareModes;

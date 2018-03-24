@@ -5,10 +5,13 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class Substorage : IStorage {
+        [CanBeNull]
         private readonly IStorage _baseStorage;
+
+        [NotNull]
         private readonly string _prefix;
 
-        public Substorage([NotNull] IStorage baseStorage, [NotNull, LocalizationRequired(false)] string prefix) {
+        public Substorage([CanBeNull] IStorage baseStorage, [NotNull, LocalizationRequired(false)] string prefix) {
             _baseStorage = baseStorage;
             _prefix = prefix;
         }
@@ -67,37 +70,38 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         public bool Contains(string key) {
-            return _baseStorage.Contains(_prefix + key);
+            return _baseStorage != null && _baseStorage.Contains(_prefix + key);
         }
 
         public T Get<T>(string key, T defaultValue = default(T)) {
-            return _baseStorage.Get(_prefix + key, defaultValue);
+            return _baseStorage == null ? default(T) : _baseStorage.Get(_prefix + key, defaultValue);
         }
 
         public IEnumerable<string> GetStringList(string key, IEnumerable<string> defaultValue = null) {
-            return _baseStorage.GetStringList(_prefix + key, defaultValue);
+            return _baseStorage?.GetStringList(_prefix + key, defaultValue) ?? new string[0];
         }
 
         public T GetEncrypted<T>(string key, T defaultValue = default(T)) {
-            return _baseStorage.GetEncrypted(_prefix + key, defaultValue);
+            return _baseStorage == null ? default(T) : _baseStorage.GetEncrypted(_prefix + key, defaultValue);
         }
 
         public void Set(string key, object value) {
-            _baseStorage.Set(_prefix + key, value);
+            _baseStorage?.Set(_prefix + key, value);
         }
 
         public void SetStringList(string key, IEnumerable<string> value) {
-            _baseStorage.SetStringList(_prefix + key, value);
+            _baseStorage?.SetStringList(_prefix + key, value);
         }
 
         public void SetEncrypted(string key, object value) {
-            _baseStorage.SetEncrypted(_prefix + key, value);
+            _baseStorage?.SetEncrypted(_prefix + key, value);
         }
 
         public bool Remove(string key) {
-            return _baseStorage.Remove(_prefix + key);
+            return _baseStorage?.Remove(_prefix + key) ?? false;
         }
 
-        public IEnumerable<string> Keys => _baseStorage.Keys.Where(x => x.StartsWith(_prefix)).Select(x => x.Substring(_prefix.Length));
+        public IEnumerable<string> Keys => _baseStorage?.Keys.Where(x => x.StartsWith(_prefix)).Select(x => x.Substring(_prefix.Length))
+                ?? new string[0];
     }
 }

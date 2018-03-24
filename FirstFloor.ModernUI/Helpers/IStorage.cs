@@ -23,6 +23,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         bool Remove([NotNull, LocalizationRequired(false)] string key);
 
+        [NotNull]
         IEnumerable<string> Keys { get; }
     }
 }

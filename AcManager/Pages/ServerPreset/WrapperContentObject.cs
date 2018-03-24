@@ -5,9 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Controls;
+using AcManager.LargeFilesSharing;
+using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
@@ -320,9 +324,8 @@ namespace AcManager.Pages.ServerPreset {
             }
         }
 
-        public async Task Repack(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
-            var filename = Filename;
-
+        private async Task<string> RepackToContentDirectory(IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
             FileUtils.EnsureDirectoryExists(_contentDirectory);
             var newFilename = FileUtils.EnsureUnique(Path.Combine(_contentDirectory, GetTypePrefix()), "-{0}", true, 0);
 
@@ -351,15 +354,48 @@ namespace AcManager.Pages.ServerPreset {
             packParams.ShowInExplorer = false;
             packParams.Progress = progress;
             packParams.Cancellation = cancellation;
+            return await AcObject.TryToPack(packParams) ? newFilename : null;
+        }
 
-            if (!await AcObject.TryToPack(packParams) || filename != Filename) return;
-
+        public async Task Repack(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+            var filename = Filename;
+            var newFilename = await RepackToContentDirectory(progress, cancellation);
+            if (newFilename == null || filename != Filename) return;
             RemoveCurrentIfNeeded();
             Filename = newFilename;
         }
 
         private AsyncCommand _repackCommand;
         public AsyncCommand RepackCommand => _repackCommand ?? (_repackCommand = new AsyncCommand(() => Repack()));
+
+        public async Task RepackAndUpload() {
+            try {
+                using (var waiting = WaitingDialog.Create("Packing and uploading…")) {
+                    waiting.Report(ControlsStrings.Common_Preparing);
+                    var uploader = LargeFileUploaderParams.ShareContent.SelectedUploader;
+                    await uploader.SignInAsync(waiting.CancellationToken);
+
+                    var packed = await RepackToContentDirectory(waiting, waiting.CancellationToken);
+                    waiting.CancellationToken.ThrowIfCancellationRequested();
+                    if (packed == null) return;
+
+                    using (var file = File.OpenRead(packed)) {
+                        var result = await uploader.UploadAsync(AcObject.Name ?? AcObject.Id,
+                                Path.GetFileNameWithoutExtension(packed) + @".zip",
+                                @"application/zip", null, file, UploadAs.Content, waiting,
+                                waiting.CancellationToken);
+                        if (result.DirectUrl != null) {
+                            DownloadUrl = result.DirectUrl;
+                        }
+                    }
+                }
+            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
+                NonfatalError.Notify("Can’t pack and upload", e);
+            }
+        }
+
+        private AsyncCommand _repackAndUploadCommand;
+        public AsyncCommand RepackAndUploadCommand => _repackAndUploadCommand ?? (_repackAndUploadCommand = new AsyncCommand(() => RepackAndUpload()));
 
         private void RemoveCurrentIfNeeded() {
             var filename = Filename;

@@ -29,7 +29,7 @@ namespace AcManager.Tools.Objects {
             return password == null ? null : (@"tgys3cqpcwpbssphb0j46tak8ykldaub" + password).GetChecksum().ToCutBase64();
         }
 
-        public static string InsertDetailsId(string namePiece) {
+        public static string InsertDetailsId([NotNull] string namePiece) {
             var s = ChecksumChars[(117 + namePiece.Sum(x => (int)x)) % ChecksumChars.Length];
             return $@"x:{namePiece}{s}";
         }
@@ -177,9 +177,13 @@ namespace AcManager.Tools.Objects {
             }
 
             void Apply(string namePiece) {
-                ini["__CM_SERVER"].Set("NAME", Name);
-                ini["__CM_SERVER"].Set("DETAILS_ID", namePiece);
-                ini["SERVER"].Set("NAME", (char.IsLetterOrDigit(Name?.LastOrDefault() ?? '.') ? Name + @" " : Name) + ServerDetailsUtils.InsertDetailsId(namePiece));
+                if (namePiece != null) {
+                    ini["__CM_SERVER"].Set("NAME", Name);
+                    ini["__CM_SERVER"].Set("DETAILS_ID", namePiece);
+                    ini["SERVER"].Set("NAME",
+                            (char.IsLetterOrDigit(Name?.LastOrDefault() ?? '.') ? Name + @" " : Name) + ServerDetailsUtils.InsertDetailsId(namePiece));
+                }
+
                 DetailsNamePiece = namePiece;
             }
         }

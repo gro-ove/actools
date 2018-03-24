@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using CG.Web.MegaApiClient;
 using FirstFloor.ModernUI.Helpers;
 
@@ -25,10 +25,21 @@ namespace AcManager.Tools.Helpers.Loaders {
         public string FileName { get; private set; }
         public string Version => null;
 
+        private const string KeySession = "session";
+        private const string KeyToken = "token";
+
         public async Task<bool> PrepareAsync(CookieAwareWebClient client, CancellationToken cancellation) {
-            _client = new MegaApiClient(new Options(@"87RCjZyB"));
-            // await _client.LoginAsync();
-            await _client.LoginAnonymousAsync();
+            _client = new MegaApiClient(new Options(InternalUtils.GetMegaAppKey().Item1));
+
+            var storage = SettingsHolder.Content.MegaAuthenticationStorage;
+            var token = new MegaApiClient.LogonSessionToken(
+                    storage.GetEncrypted<string>(KeySession),
+                    storage.GetEncrypted<byte[]>(KeyToken));
+            if (!string.IsNullOrWhiteSpace(token.SessionId) && token.MasterKey != null) {
+                await _client.LoginAsync(token);
+            } else {
+                await _client.LoginAnonymousAsync();
+            }
 
             var information = await _client.GetNodeFromLinkAsync(_uri);
             TotalSize = information.Size;

@@ -11,9 +11,11 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.LargeFilesSharing.Implementations {
+    [UsedImplicitly]
     public class DropboxUploader : FileUploaderBase {
         public DropboxUploader(IStorage storage) : base(storage, "Dropbox (App Folder)",
                 new Uri("/AcManager.LargeFilesSharing;component/Assets/Icons/Dropbox.png", UriKind.Relative),

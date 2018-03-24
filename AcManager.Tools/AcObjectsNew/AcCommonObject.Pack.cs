@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -127,6 +128,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
             [CanBeNull]
             private IProgress<string> _progress;
+
             private CancellationToken _cancellation;
 
             public void SetProgress([CanBeNull] IProgress<string> progress, CancellationToken cancellation) {
@@ -149,7 +151,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
             private string GetKey(string name) {
                 return name.StartsWith("/") ? name.Substring(1) :
-                    FileUtils.NormalizePath(_basePath == null ? name : Path.Combine(_basePath, name));
+                        FileUtils.NormalizePath(_basePath == null ? name : Path.Combine(_basePath, name));
             }
 
             private IWriter _writer;
@@ -217,7 +219,7 @@ namespace AcManager.Tools.AcObjectsNew {
                 return names.Select(Add);
             }
 
-            [Pure]
+            [Localizable(false), Pure]
             protected IEnumerable Add(params string[] names) {
                 return names.Select(Add);
             }

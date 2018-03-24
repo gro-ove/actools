@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using AcManager.Tools.AcManagersNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -415,6 +416,8 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }
+
+            public IStorage MegaAuthenticationStorage { get; } = new Substorage(AuthenticationStorage.GeneralStorage, "Mega:");
         }
 
         private static ContentSettings _content;

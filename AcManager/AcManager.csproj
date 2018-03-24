@@ -121,6 +121,9 @@
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="MegaApiClient, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\MegaApiClient\MegaApiClient.dll</HintPath>
+    </Reference>
     <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\NAudio\NAudio.dll</HintPath>
     </Reference>

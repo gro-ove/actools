@@ -594,7 +594,7 @@ namespace AcManager.Tools.Objects {
         string IDraggable.DraggableFormat => DraggableFormat;
 
         #region Packing
-        public new static string OptionCanBePackedFilter = "k-&!id:`^ad_`&!author:Race Sim Studio";
+        public new static string OptionCanBePackedFilter = @"k-&!id:`^ad_`&!author:Race Sim Studio";
 
         private static readonly Lazy<IFilter<CarObject>> CanBePackedFilterObj = new Lazy<IFilter<CarObject>>(() =>
                 Filter.Create(CarObjectTester.Instance, OptionCanBePackedFilter));
@@ -663,9 +663,9 @@ namespace AcManager.Tools.Objects {
             protected override PackedDescription GetDescriptionOverride(CarObject t) {
                 return new PackedDescription(t.Id, t.Name,
                     new Dictionary<string, string> {
-                        ["Version"] = t.Version,
-                        ["Made by"] = t.Author,
-                        ["Webpage"] = t.Url,
+                        [@"Version"] = t.Version,
+                        [@"Made by"] = t.Author,
+                        [@"Webpage"] = t.Url,
                     }, CarsManager.Instance.Directories.GetMainDirectory(), true);
             }
         }

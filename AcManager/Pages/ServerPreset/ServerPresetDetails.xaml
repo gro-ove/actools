@@ -143,8 +143,8 @@
             <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
               <ContextMenu>
                 <MenuItem Header="Select existing archive" Command="{Binding SelectFileCommand}" />
-                <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
                 <Separator Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <MenuItem Header="Repack" Command="{Binding RepackCommand}" />
                 <MenuItem Header="Pack car data" IsCheckable="True" IsChecked="{Binding Value, Source={x:Static local:WrapperContentObject.PackCarData}}"
                     StaysOpenOnClick="True" Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </ContextMenu>
@@ -163,6 +163,13 @@
           </DockPanel>
 
           <DockPanel Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter={x:Static local:ShareMode.Url}}">
+            <mui:ContextMenuButton Padding="4 0" DockPanel.Dock="Right">
+              <ContextMenu>
+                <MenuItem Header="Repack &amp; upload" Command="{Binding RepackAndUploadCommand}" />
+                <MenuItem Header="Pack car data" IsCheckable="True" IsChecked="{Binding Value, Source={x:Static local:WrapperContentObject.PackCarData}}"
+                    StaysOpenOnClick="True" Visibility="{Binding IsCarObject, Converter={StaticResource BooleanToVisibilityConverter}}" />
+              </ContextMenu>
+            </mui:ContextMenuButton>
             <Label Content="Download from:" />
             <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="None" Style="{StaticResource Borderless.Small}" />
           </DockPanel>

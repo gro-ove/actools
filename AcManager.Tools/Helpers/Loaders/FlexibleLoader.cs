@@ -59,6 +59,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<AdFlyLoader>(AdFlyLoader.Test);
             Register<MegaLoader>(MegaLoader.Test);
             Register<LongenerLoader>(LongenerLoader.Test);
+            Register<YouTubeDescriptionLoader>(YouTubeDescriptionLoader.Test);
         }
 
         public static bool IsSupportedFileStorage(string url) {

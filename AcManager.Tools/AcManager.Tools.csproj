@@ -206,6 +206,7 @@
     <Compile Include="Data\KunosCareerProgressEntry.cs" />
     <Compile Include="Data\KunosDlcInformation.cs" />
     <Compile Include="Data\KunosLauncherDataWatcher.cs" />
+    <Compile Include="Data\AuthenticationStorage.cs" />
     <Compile Include="Data\NameNationality.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
@@ -296,6 +297,7 @@
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
     <Compile Include="Helpers\Loaders\ILoaderFactory.cs" />
     <Compile Include="Helpers\Loaders\LongenerLoader.cs" />
+    <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />

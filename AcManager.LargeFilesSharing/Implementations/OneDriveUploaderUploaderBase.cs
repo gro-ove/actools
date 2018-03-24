@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AcManager.Internal;
 using AcManager.Tools;
 using AcManager.Tools.Miscellaneous;
 using AcTools.Utils;
@@ -15,34 +14,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.LargeFilesSharing.Implementations {
-    public abstract class OneDriveUploaderUploader : OneDriveUploaderUploaderBase {
-        public OneDriveUploaderUploader(IStorage storage) : base(storage, "Microsoft OneDrive",
-                "Offers 5 GB of space by default. Situation with downloading isn’t the best, but it’s better than Google Drive. This version requires an access to all files, but allows to select destination.",
-                true, true) {
-            // Scopes = new[] { @"Files.ReadWrite.AppFolder" };
-        }
-
-        protected override Tuple<string, string> GetCredentials() {
-            throw new NotImplementedException();
-            // return InternalUtils.GetOneDriveCredentials();
-        }
-    }
-
-    public class OneDriveUploaderAppFolderUploader : OneDriveUploaderUploaderBase {
-        public OneDriveUploaderAppFolderUploader(IStorage storage) : base(storage, "Microsoft OneDrive (App Folder)",
-                "Offers 5 GB of space by default. Situation with downloading isn’t the best, but it’s better than Google Drive. This version only accesses app’s folder.",
-                true, true) {
-            Scopes = new[] {
-                @"offline_access",
-                @"files.readwrite.appfolder"
-            };
-        }
-
-        protected override Tuple<string, string> GetCredentials() {
-            return InternalUtils.GetOneDriveAppFolderCredentials();
-        }
-    }
-
     public abstract class OneDriveUploaderUploaderBase : FileUploaderBase {
         protected OneDriveUploaderUploaderBase(IStorage storage, string name, string description, bool supportsSigning, bool supportsDirectories) :
                 base(storage, name,
