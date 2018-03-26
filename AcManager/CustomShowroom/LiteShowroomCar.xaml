@@ -115,7 +115,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <CheckBox IsChecked="{Binding Active}">
+            <CheckBox IsChecked="{Binding IsActive}">
               <Label Content="{Binding DisplayName}" />
             </CheckBox>
           </DataTemplate>
@@ -129,7 +129,7 @@
         </ItemsControl.ItemsPanel>
         <ItemsControl.ItemTemplate>
           <DataTemplate>
-            <CheckBox IsChecked="{Binding Active}">
+            <CheckBox IsChecked="{Binding IsActive}">
               <Label Content="{Binding DisplayName}" />
             </CheckBox>
           </DataTemplate>

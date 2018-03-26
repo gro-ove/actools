@@ -1146,13 +1146,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             public string DisplayName { get; }
 
-            private bool _active;
+            private bool _isActive;
 
-            public bool Active {
-                get => _active;
+            public bool IsActive {
+                get => _isActive;
                 set {
-                    if (Equals(value, _active)) return;
-                    _active = value;
+                    if (Equals(value, _isActive)) return;
+                    _isActive = value;
                     OnPropertyChanged();
                     OnActiveChanged(value);
                 }

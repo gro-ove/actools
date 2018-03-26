@@ -733,6 +733,7 @@ namespace AcManager.CustomShowroom {
 
             Renderer.PropertyChanged += OnRendererPropertyChanged;
             Renderer.LightPropertyChanged += OnLightPropertyChanged;
+            Renderer.CarNode.SubscribeWeak(OnCarPropertyChanged);
 
             PushCamera(true);
         }
@@ -966,8 +967,14 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.BlurCorrectAmbientShadows):
                     ActionExtension.InvokeInMainThread(SyncCarAmbientShadowsMode);
                     break;
+
+                case nameof(Renderer.CarNode):
+                    Renderer.CarNode.SubscribeWeak(OnCarPropertyChanged);
+                    break;
             }
         }
+
+        protected virtual void OnCarPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {}
 
         private void SyncAll() {
             SyncMsaaMode();

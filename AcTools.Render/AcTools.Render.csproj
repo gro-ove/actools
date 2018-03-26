@@ -144,6 +144,7 @@
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.Properties.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.SplitShot.cs" />
     <Compile Include="Kn5SpecificForwardDark\DarkKn5ObjectRenderer.UserInput.cs" />
+    <Compile Include="Kn5SpecificForwardDark\DarkPreviewsOptions.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaLightBase.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkLtcPlaneLight.cs" />
     <Compile Include="Kn5SpecificForwardDark\Lights\DarkAreaTubeLight.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
     <Compile Include="Kn5SpecificSpecial\ShadowsRendererBase.cs" />
     <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
+    <Compile Include="Kn5Specific\Animations\KsAnimExtension.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />

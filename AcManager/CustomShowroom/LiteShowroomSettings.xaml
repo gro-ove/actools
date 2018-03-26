@@ -46,8 +46,8 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Previews.Size" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <Grid>
         <Grid.ColumnDefinitions>
@@ -180,8 +180,8 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Previews.Car" d:DataContext="{d:DesignInstance cs:CmPreviewsSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <DockPanel>
         <mui:ValueLabel Value="{Binding SteerDeg, StringFormat='{}{0:F1}'}" mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Steer" Postfix="°" />
@@ -206,6 +206,22 @@
         </CheckBox>
       </mui:SpacingUniformGrid>
 
+      <ItemsControl ItemsSource="{Binding ExtraAnimationEntries}"
+          Visibility="{Binding ExtraAnimationEntries.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+        <ItemsControl.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="4" VerticalSpacing="4" />
+          </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+        <ItemsControl.ItemTemplate>
+          <DataTemplate>
+            <CheckBox IsChecked="{Binding IsActive}">
+              <Label Content="{Binding DisplayName}" />
+            </CheckBox>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+
       <CheckBox IsChecked="{Binding ShowDriver}">
         <Label Content="Show driver" />
       </CheckBox>
@@ -223,8 +239,8 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Scene" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Background:" Style="{StaticResource Heading2}" />
 
@@ -679,8 +695,8 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Lights" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Main light:" Style="{StaticResource Heading2}" />
 
@@ -877,8 +893,8 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Quality" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Antialiasing:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 
@@ -1121,8 +1137,8 @@
     </mui:SpacingStackPanel>
   </ScrollViewer>
 
-  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True"
-      Margin="0 0 -12 0" Padding="0 0 12 0" x:Shared="False">
+  <ScrollViewer x:Key="VisualSettings.Extra" d:DataContext="{d:DesignInstance cs:DarkRendererSettings}" mui:FancyScroll.Outside="True" Margin="0 0 -12 0"
+      Padding="0 0 12 0" x:Shared="False">
     <mui:SpacingStackPanel Spacing="4">
       <TextBlock Text="Wireframe &amp; Mesh:" Style="{StaticResource Heading2}" Margin="0 0 0 0" />
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -18,9 +19,11 @@ using AcTools.Render.Forward;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,6 +40,9 @@ namespace AcManager.CustomShowroom {
             if (LockCamera) {
                 Renderer.LockCamera = true;
             }
+
+            SetCarAnimationsListeners();
+            ExtraAnimationEntries.ItemPropertyChanged += OnItemPropertyChanged;
         }
 
         public new static void ResetHeavy() {
@@ -103,7 +109,8 @@ namespace AcManager.CustomShowroom {
                 ShowDriver = ShowDriver,
                 TryToGuessCarLights = Renderer.TryToGuessCarLights,
                 LoadCarLights = Renderer.LoadCarLights,
-                LoadShowroomLights = Renderer.LoadShowroomLights
+                LoadShowroomLights = Renderer.LoadShowroomLights,
+                ExtraActiveAnimations = ExtraAnimationEntries.Where(x => x.IsActive).Select(x => x.DisplayName).ToArray(),
             };
 
             Save(obj);
@@ -157,6 +164,18 @@ namespace AcManager.CustomShowroom {
             LeftDoorOpen = o.LeftDoorOpen;
             RightDoorOpen = o.RightDoorOpen;
             ShowDriver = o.ShowDriver;
+
+            if (o.ExtraActiveAnimations == null) return;
+            foreach (var name in o.ExtraActiveAnimations) {
+                var existing = ExtraAnimationEntries.FirstOrDefault(x => x.DisplayName == name);
+                if (existing != null) {
+                    existing.IsActive = true;
+                } else {
+                    ExtraAnimationEntries.AddSorted(new ExtraAnimationEntry(name) {
+                        IsActive = true
+                    }, ExtraAnimationEntry.Comparer);
+                }
+            }
         }
 
         protected void Load(SaveableData o) {
@@ -219,6 +238,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("CubemapAmbientValue")]
             public override float CubemapAmbient { get; set; }
+
             public override bool CubemapAmbientWhite { get; set; } = true;
             public override bool EnableShadows { get; set; } = true;
             public override bool FlatMirror { get; set; }
@@ -255,11 +275,16 @@ namespace AcManager.CustomShowroom {
             [JsonProperty("SsaoOpacity")]
             public override float AoOpacity { get; set; } = 0.3f;
 
+            [CanBeNull]
+            public string[] ExtraActiveAnimations { get; set; }
+
             public int Width = CommonAcConsts.PreviewWidth, Height = CommonAcConsts.PreviewHeight;
+
             public bool SoftwareDownsize, AlignCar = true,
                     AlignCameraHorizontally, AlignCameraVertically, AlignCameraHorizontallyOffsetRelative, AlignCameraVerticallyOffsetRelative,
                     HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver,
                     TryToGuessCarLights = true, LoadCarLights, LoadShowroomLights;
+
             public string FileName { get; set; } = "preview.jpg";
 
             public override bool UseDof { get; set; } = true;
@@ -291,15 +316,12 @@ namespace AcManager.CustomShowroom {
                     AmbientUp = AmbientUpColor.ToColor(),
                     BackgroundColor = BackgroundColor.ToColor(),
                     LightColor = LightColor.ToColor(),
-
                     UseMsaa = MsaaMode != 0,
                     MsaaSampleCount = MsaaMode,
                     SsaaMultiplier = Math.Sqrt(SsaaMode),
                     ShadowMapSize = ShadowMapSize,
-
                     Showroom = ShowroomId,
                     ColorGradingData = UseColorGrading ? ColorGradingData : null,
-
                     CubemapAmbient = CubemapAmbient,
                     CubemapAmbientWhite = CubemapAmbientWhite,
                     EnableShadows = EnableShadows,
@@ -320,7 +342,6 @@ namespace AcManager.CustomShowroom {
                     ReflectionCubemapAtCamera = ReflectionCubemapAtCamera,
                     ReflectionsWithShadows = ReflectionsWithShadows,
                     ReflectionsWithMultipleLights = ReflectionsWithMultipleLights,
-
                     AmbientBrightness = AmbientBrightness,
                     BackgroundBrightness = BackgroundBrightness,
                     FlatMirrorReflectiveness = FlatMirrorReflectiveness,
@@ -332,13 +353,11 @@ namespace AcManager.CustomShowroom {
                     ToneExposure = ToneExposure,
                     ToneGamma = ToneGamma,
                     ToneWhitePoint = ToneWhitePoint,
-
                     PcssSceneScale = PcssSceneScale,
                     PcssLightScale = PcssLightScale,
                     BloomRadiusMultiplier = BloomRadiusMultiplier,
                     AoOpacity = AoOpacity,
                     AoRadius = AoRadius,
-
                     UseDof = UseDof,
                     DofFocusPlane = DofFocusPlane,
                     DofScale = DofScale,
@@ -346,10 +365,8 @@ namespace AcManager.CustomShowroom {
                     AccumulationDofBokeh = AccumulationDofBokeh,
                     AccumulationDofIterations = AccumulationDofIterations,
                     AccumulationDofApertureSize = AccumulationDofApertureSize,
-
                     PreviewWidth = Width,
                     PreviewHeight = Height,
-
                     SoftwareDownsize = SoftwareDownsize,
                     AlignCar = AlignCar,
                     AlignCameraHorizontally = AlignCameraHorizontally,
@@ -361,7 +378,6 @@ namespace AcManager.CustomShowroom {
                     LeftDoorOpen = LeftDoorOpen,
                     RightDoorOpen = RightDoorOpen,
                     ShowDriver = ShowDriver,
-
                     CameraPosition = CameraPosition,
                     CameraLookAt = CameraLookAt,
                     CameraTilt = CameraTilt,
@@ -369,18 +385,16 @@ namespace AcManager.CustomShowroom {
                     AlignCameraHorizontallyOffset = AlignCameraHorizontallyOffset,
                     AlignCameraVerticallyOffset = AlignCameraVerticallyOffset,
                     SteerDeg = SteerDeg,
-
                     TryToGuessCarLights = TryToGuessCarLights,
                     LoadCarLights = LoadCarLights,
-                    LoadShowroomLights= LoadShowroomLights,
-
+                    LoadShowroomLights = LoadShowroomLights,
                     DelayedConvertation = false,
                     MeshDebugMode = false,
                     SuspensionDebugMode = false,
                     PreviewName = FileName,
                     WireframeMode = false,
                     SerializedLights = ExtraLights != null ? new JArray(ExtraLights.OfType<object>()).ToString() : null,
-
+                    ExtraActiveAnimations = ExtraActiveAnimations,
                     // FixedChecksum = keepChecksum ? Checksum : null
                 };
             }
@@ -390,17 +404,6 @@ namespace AcManager.CustomShowroom {
             if (Renderer.ShotInProcess) return;
 
             switch (e.PropertyName) {
-                /*case nameof(Renderer.UseSsaa):
-                    if (!HighQualityPreview) {
-                        //SyncSsaaMode();
-                        return;
-                    }
-                    break;
-
-                case nameof(Renderer.ResolutionMultiplier):
-                    if (!HighQualityPreview) return;
-                    break;*/
-
                 case nameof(Renderer.ActualWidth):
                 case nameof(Renderer.ActualHeight):
                     SyncSize();
@@ -723,6 +726,77 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        public ChangeableObservableCollection<ExtraAnimationEntry> ExtraAnimationEntries { get; }
+            = new ChangeableObservableCollection<ExtraAnimationEntry>();
+
+        public sealed class ExtraAnimationEntry : Displayable {
+            public ExtraAnimationEntry(string name) {
+                DisplayName = name;
+            }
+
+            private bool _isActive;
+
+            public bool IsActive {
+                get => _isActive;
+                set => Apply(value, ref _isActive);
+            }
+
+            private sealed class ComparerInner : Comparer<ExtraAnimationEntry> {
+                public override int Compare(ExtraAnimationEntry x, ExtraAnimationEntry y) {
+                    return ReferenceEquals(x, y) ? 0 : ReferenceEquals(null, y) ? 1 : x?.IsActive.CompareTo(y.IsActive) ?? -1;
+                }
+            }
+
+            public static Comparer<ExtraAnimationEntry> Comparer { get; } = new ComparerInner();
+        }
+
+        private void OnItemPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            var item = (ExtraAnimationEntry)sender;
+            var extra = GetCarExtraAnimations().FirstOrDefault(x => x.DisplayName == item.DisplayName);
+            if (extra != null) {
+                extra.IsActive = item.IsActive;
+            }
+            SaveLater();
+        }
+
+        private void SetCarAnimationsListeners() {
+            foreach (var animation in GetCarExtraAnimations()) {
+                var existing = ExtraAnimationEntries.FirstOrDefault(x => x.DisplayName == animation.DisplayName);
+                if (existing != null) {
+                    existing.IsActive = animation.IsActive;
+                } else {
+                    ExtraAnimationEntries.AddSorted(new ExtraAnimationEntry(animation.DisplayName) {
+                        IsActive = animation.IsActive
+                    }, ExtraAnimationEntry.Comparer);
+                }
+
+                animation.SubscribeWeak(OnCarAnimationPropertyChanged);
+            }
+        }
+
+        private void OnCarAnimationPropertyChanged(object s, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(Kn5RenderableCar.AnimationEntryBase.IsActive)) {
+                var item = (Kn5RenderableCar.AnimationEntryBase)s;
+                var animationEntry = ExtraAnimationEntries.FirstOrDefault(x => x.DisplayName == item.DisplayName);
+                if (animationEntry != null) {
+                    animationEntry.IsActive = item.IsActive;
+                }
+
+                SaveLater();
+            }
+        }
+
+        [NotNull]
+        private IEnumerable<Kn5RenderableCar.AnimationEntryBase> GetCarExtraAnimations() {
+            return Renderer.CarNode?.Wings.OfType<Kn5RenderableCar.AnimationEntryBase>().Concat(Renderer.CarNode.Extras)
+                    ?? new Kn5RenderableCar.AnimationEntryBase[0];
+        }
+
+        protected override void OnCarPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+            base.OnCarPropertyChanged(sender, propertyChangedEventArgs);
+            SetCarAnimationsListeners();
+        }
+
         private bool _showDriver;
 
         public bool ShowDriver {
@@ -789,6 +863,8 @@ namespace AcManager.CustomShowroom {
                 data.HeadlightsEnabled = car.HeadlightsEnabled;
                 data.BrakeLightsEnabled = car.BrakeLightsEnabled;
                 data.ShowDriver = car.IsDriverVisible;
+                data.ExtraActiveAnimations = car.Wings.OfType<Kn5RenderableCar.AnimationEntryBase>().Concat(car.Extras)
+                                                .Where(x => x.IsActive).Select(x => x.DisplayName).ToArray();
             }
 
             return data;
