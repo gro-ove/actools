@@ -52,6 +52,7 @@ namespace AcManager.Tools.Helpers.Api {
         private class LoadedData {
             [CanBeNull]
             public string Data;
+
             public DateTime LastModified;
             public long ServerTimeStamp;
         }
@@ -130,23 +131,37 @@ namespace AcManager.Tools.Helpers.Api {
             for (var i = 0; i < ServersNumber && ServerUri != null; i++) {
                 if (progress != null) {
                     var j = i;
-                    ActionExtension.InvokeInMainThread(() => {
-                        progress.Report(j);
-                    });
+                    ActionExtension.InvokeInMainThread(() => { progress.Report(j); });
                 }
 
                 var uri = ServerUri;
                 var requestUri = $@"http://{uri}/lobby.ashx/list?guid={SteamIdHelper.Instance.Value}";
+                ServerInformationComplete[] parsed;
+
                 try {
                     var watch = Stopwatch.StartNew();
-                    var parsed = LoadList(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
+                    parsed = LoadList(requestUri, OptionWebRequestTimeout, ServerInformationComplete.Deserialize);
                     Logging.Write($"{watch.Elapsed.TotalMilliseconds:F1} ms");
-                    return parsed;
                 } catch (Exception e) {
                     Logging.Warning(e);
+                    NextServer();
+                    continue;
                 }
 
-                NextServer();
+                if (parsed.Length == 0) return parsed;
+
+                var ip = parsed[0].Ip;
+                if (!ip.StartsWith(@"192")) return parsed;
+
+                for (var j = parsed.Length - 1; j >= 0; j--) {
+                    var p = parsed[j];
+                    if (p.Ip != ip) {
+                        return parsed;
+                    }
+                }
+
+                throw new InformativeException("Kunos server returned gibberish instead of list of servers",
+                        "Could it be that you’re using Steam ID without AC linked to it?");
             }
 
             return null;
@@ -215,7 +230,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {
-            if (result.Ip != ip) { // because, loaded directly, IP might different from global IP
+            if (result.Ip != ip) {
+                // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
             }
 
@@ -239,7 +255,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         private static ServerInformationExtended PrepareLoadedDirectly(ServerInformationExtended result, string ip, long serverTime) {
-            if (result.Ip != ip) { // because, loaded directly, IP might different from global IP
+            if (result.Ip != ip) {
+                // because, loaded directly, IP might different from global IP
                 result.Ip = ip;
             }
 
@@ -319,7 +336,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [CanBeNull]
-        public static async Task<BookingResult> TryToBookAsync(string ip, int portC, string password, string carId, string skinId, string driverName, string teamName) {
+        public static async Task<BookingResult> TryToBookAsync(string ip, int portC, string password, string carId, string skinId, string driverName,
+                string teamName) {
             var steamId = SteamIdHelper.Instance.Value ?? @"-1";
             var arguments = new[] { carId, skinId, driverName, teamName, steamId, password }.Select(x => x ?? "").JoinToString('|');
             var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlPathEncode(arguments)}";

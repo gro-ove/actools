@@ -62,14 +62,14 @@ namespace AcTools.Tests {
         public void LimitedShuffleTest() {
             var array = Enumerable.Range(1, 10).ToArray();
 
-            Debug.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.1).Take(array.Length)));
-            Debug.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.2).Take(array.Length)));
-            Debug.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.3).Take(array.Length)));
+            Console.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.1).Take(array.Length)));
+            Console.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.2).Take(array.Length)));
+            Console.WriteLine(string.Join(", ", LimitedShuffle.Get(array, 0.3).Take(array.Length)));
 
             foreach (var i in Enumerable.Range(1, 4)) {
                 var v = Enumerable.Range(4 - i, 1 + 2 * i).Select(x => CountAverage(() => LimitedShuffle.Get(array, 0.1 * i).IndexOf(5), y => y == x)).ToList();
                 var t = 1d / (1 + 2 * i);
-                Debug.WriteLine($"{v.Select(x => $"{x * 100:F1}%").JoinToString(", ")} (target: {t * 100:F1}%)");
+                Console.WriteLine($"{v.Select(x => $"{x * 100:F1}%").JoinToString(", ")} (target: {t * 100:F1}%)");
                 foreach (var d in v) {
                     Assert.AreEqual(t, d, 0.06, "something wrong at " + i);
                 }

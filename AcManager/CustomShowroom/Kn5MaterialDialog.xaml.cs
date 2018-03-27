@@ -54,7 +54,7 @@ namespace AcManager.CustomShowroom {
                 });
             }
 
-            DataContext = new ViewModel(renderer, kn5, activeSkin, materialId) { Close = () => Close() };
+            DataContext = new ViewModel(renderer, kn5, activeSkin, materialId) { Close = Close };
 
             InitializeComponent();
             Buttons = new[] {
@@ -98,7 +98,7 @@ namespace AcManager.CustomShowroom {
             }
 
             public override string DisplayName {
-                get { return IsChanged ? $"[i]{_name}[/i]" : _name; }
+                get => IsChanged ? $"[i]{_name}[/i]" : _name;
                 set { }
             }
 

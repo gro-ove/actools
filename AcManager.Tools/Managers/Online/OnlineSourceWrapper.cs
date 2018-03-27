@@ -20,12 +20,11 @@ namespace AcManager.Tools.Managers.Online {
         public bool IsFatal { get; }
 
         public ErrorInformation(Exception e) {
-            var informative = e as InformativeException;
-            if (informative != null) {
-                Message = informative.Message;
+            if (e is InformativeException informative) {
+                Message = informative.Message.ToSentence();
                 Commentary = informative.SolutionCommentary;
             } else {
-                Message = e.Message;
+                Message = e.Message.ToSentence();
                 IsFatal = true;
             }
         }
@@ -256,13 +255,11 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private Task<bool> GetSourceLoadTask(CancellationToken cancellation) {
-            var list = _source as IOnlineListSource;
-            if (list != null) {
+            if (_source is IOnlineListSource list) {
                 return list.LoadAsync(Add, this, cancellation);
             }
 
-            var background = _source as IOnlineBackgroundSource;
-            if (background != null) {
+            if (_source is IOnlineBackgroundSource background) {
                 if (_first) {
                     _first = false;
                 } else {
