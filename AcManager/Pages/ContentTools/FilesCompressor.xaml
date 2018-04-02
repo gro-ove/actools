@@ -20,7 +20,7 @@
       <ProgressBar IsIndeterminate="{Binding ProgressValue.IsIndeterminate}" Maximum="1" Value="{Binding ProgressValue.Progress, Mode=OneWay}" Height="4" />
       <TextBlock Text="{Binding ProgressValue.Message}" />
     </mui:SpacingStackPanel>
-    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.ReadOnly.Small}"
+    <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.Small.ReadOnly}"
         Text="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
 sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
 have proper compression already, and it will only slightly slow down AC loading.

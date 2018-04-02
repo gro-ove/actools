@@ -48,12 +48,12 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayId, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayId, Mode=OneWay}" />
               </DockPanel>
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
             <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
@@ -151,12 +151,12 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayId, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayId, Mode=OneWay}" />
               </DockPanel>
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
             <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
@@ -252,12 +252,12 @@
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_IdFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayId, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayId, Mode=OneWay}" />
               </DockPanel>
               <DockPanel>
                 <TextBlock Style="{StaticResource Small}"
                     Text="{Binding StringFormat={x:Static g:AppStrings.AdditionalContent_PathFormat}, Source={StaticResource ZeroWidthString}}" />
-                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.ReadOnly.Small}" Text="{Binding DisplayPath, Mode=OneWay}" />
+                <mui:PathTrimmingTextBlock Style="{StaticResource RichTextBox.Small.ReadOnly}" Text="{Binding DisplayPath, Mode=OneWay}" />
               </DockPanel>
             </mui:SpacingUniformGrid>
             <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">

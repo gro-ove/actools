@@ -574,7 +574,7 @@ namespace AcManager.Pages.Windows {
                     var running = ServerPresetsManager.Instance.Loaded.Where(x => x.IsRunning).ToList();
                     if (running.Count > 0 && ModernDialog.ShowMessage(
                             $@"{"If you’ll close app, running servers will be stopped as well. Are you sure?"}{Environment.NewLine}{Environment.NewLine}{
-                                    running.Select(x => $@" • {x.DisplayName}").JoinToString(Environment.NewLine)}",
+                                    running.Select(x => $@" • {BbCodeBlock.Encode(x.DisplayName)}").JoinToString(Environment.NewLine)}",
                             "Some servers are running", MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
                         e.Cancel = true;
                         return;

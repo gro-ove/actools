@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
-using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.DataFile;
@@ -121,19 +120,23 @@ namespace AcManager.Tools.Objects {
                     TyreBlankets = TyreBlankets,
                     ForceVirtualMirror = ForceVirtualMirror,
                 },
-                PasswordChecksum = new[] {
-                    ServerDetailsUtils.PasswordChecksum(Password),
-                    ServerDetailsUtils.PasswordChecksum(AdminPassword),
-                },
             };
 
-            if (geoParams != null) {
+            if (Password != null || AdminPassword != null) {
+                data.PasswordChecksum = new[] {
+                    ServerDetailsUtils.PasswordChecksum(Password),
+                    ServerDetailsUtils.PasswordChecksum(AdminPassword),
+                };
+            }
+
+            // No need to store geo params: preset might be used somewhere else!
+            /*if (geoParams != null) {
                 data.Country = new[] {
                     AcStringValues.GetCountryFromId(geoParams.Country),
                     geoParams.Country
                 };
                 data.City = geoParams.City;
-            }
+            }*/
 
             var weather = Weather.FirstOrDefault();
             if (weather != null) {

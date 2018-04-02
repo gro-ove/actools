@@ -81,6 +81,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public bool IsPrimary => _screen.Primary;
             public string DeviceName => _screen.DeviceName;
 
+            public Rect Bounds => new Rect(
+                    new Point(_screen.Bounds.Left * _scaleX, _screen.Bounds.Top * _scaleY),
+                    new Size(_screen.Bounds.Width * _scaleX, _screen.Bounds.Height * _scaleY));
+
             public Rect WorkingArea => new Rect(
                     new Point(_screen.WorkingArea.Left * _scaleX, _screen.WorkingArea.Top * _scaleY),
                     new Size(_screen.WorkingArea.Width * _scaleX, _screen.WorkingArea.Height * _scaleY));

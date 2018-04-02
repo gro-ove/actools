@@ -64,7 +64,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             #region Constructing system entries
             SystemRaceButtonEntries = new[] {
-                new SystemButtonEntryCombined("__CM_PAUSE", "Pause race", fixedValueCallback: x => new[]{ Keys.Escape }),
+                new SystemButtonEntryCombined("__CM_PAUSE", "Pause race", fixedValueCallback: x => new[] { Keys.Escape }),
                 new SystemButtonEntryCombined("__CM_START_SESSION", "Start race", customCommand: true),
                 new SystemButtonEntryCombined("__CM_START_STOP_SESSION", "Start/setup", customCommand: true,
                         toolTip: "Combined command: if you’re in pits, driving will started, otherwise, you’ll get to pits", delayed: true),
@@ -96,13 +96,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             };
 
             SystemOnlineButtonEntries = new[] {
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[]{ Keys.Y }, delayed: true),
-                new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[]{ Keys.N }, delayed: true)
+                new SystemButtonEntryCombined("__CM_ONLINE_POLL_YES", "Poll: vote Yes", fixedValueCallback: x => new[] { Keys.Y }, delayed: true),
+                new SystemButtonEntryCombined("__CM_ONLINE_POLL_NO", "Poll: vote No", fixedValueCallback: x => new[] { Keys.N }, delayed: true)
             };
 
             SystemDiscordButtonEntries = new[] {
-                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_ACCEPT", "Accept join request", fixedValueCallback: x => new[]{ Keys.Enter }, delayed: true),
-                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_DENY", "Deny join request", fixedValueCallback: x => new[]{ Keys.Back }, delayed: true)
+                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_ACCEPT", "Accept join request", fixedValueCallback: x => new[] { Keys.Enter }, delayed: true),
+                new SystemButtonEntryCombined("__CM_DISCORD_REQUEST_DENY", "Deny join request", fixedValueCallback: x => new[] { Keys.Back }, delayed: true)
             };
 
             var systemAbs = new SystemButtonEntryCombined("ABS", "ABS", true, defaultKey: Keys.A);
@@ -113,11 +113,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI", defaultKey: Keys.C),
                 new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter", defaultKey: Keys.G),
                 systemAbs,
-                new SystemButtonEntryCombined("__CM_ABS_DECREASE", "ABS (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
+                new SystemButtonEntryCombined("__CM_ABS_DECREASE", "ABS (decrease)", fixedValueCallback: key => key.HasValue ? new[] {
                     Keys.Control, Keys.Shift, key.Value
                 } : null, buttonReference: systemAbs.SystemButton),
                 systemTractionControl,
-                new SystemButtonEntryCombined("__CM_TRACTION_CONTROL_DECREASE", "Traction c. (decrease)", fixedValueCallback: key => key.HasValue ? new [] {
+                new SystemButtonEntryCombined("__CM_TRACTION_CONTROL_DECREASE", "Traction c. (decrease)", fixedValueCallback: key => key.HasValue ? new[] {
                     Keys.Control, Keys.Shift, key.Value
                 } : null, buttonReference: systemTractionControl.SystemButton),
                 // new SystemButtonEntryCombined("KERS", "KERS", defaultKey: Keys.K),
@@ -229,9 +229,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private DelegateCommand _runControlPanelCommand;
 
-        public DelegateCommand RunControlPanelCommand => _runControlPanelCommand ?? (_runControlPanelCommand = new DelegateCommand(() => {
-            Devices.FirstOrDefault()?.RunControlPanel();
-        }));
+        public DelegateCommand RunControlPanelCommand
+            => _runControlPanelCommand ?? (_runControlPanelCommand = new DelegateCommand(() => { Devices.FirstOrDefault()?.RunControlPanel(); }));
 
         private Stopwatch _rescanStopwatch;
 
@@ -299,10 +298,23 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             try {
                 var directInput = DirectInputScanner.DirectInput;
-                var newDevices = devices == null || directInput == null ? new List<DirectInputDevice>()
-                        : devices.Select((x, i) => Devices.FirstOrDefault(y => y.Same(x.Information)) ??
-                                DirectInputDevice.Create(x, i)).NonNull().ToList();
                 var checkedPlaceholders = new List<PlaceholderInputDevice>();
+                var newDevices = new List<DirectInputDevice>();
+                if (devices != null && directInput != null) {
+                    newDevices = new List<DirectInputDevice>();
+                    for (var i = 0; i < devices.Count; i++) {
+                        var device = devices[i];
+                        if (device == null) continue;
+
+                        if (SettingsHolder.Drive.SameControllersKeepFirst) {
+                            newDevices.RemoveAll(y => y.Same(device.Information));
+                        } else if (newDevices.Any(y => y.Same(device.Information))) {
+                            continue;
+                        }
+
+                        newDevices.Add(Devices.FirstOrDefault(y => y.Same(device.Information)) ?? DirectInputDevice.Create(device, i));
+                    }
+                }
 
                 foreach (var entry in Entries.OfType<BaseEntry<DirectInputAxle>>()) {
                     var current = entry.Input?.Device;
@@ -946,12 +958,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public SystemButtonEntryCombined[] SystemDiscordButtonEntries { get; }
 
         [NotNull]
-        public IEnumerable<SystemButtonEntryCombined> SystemButtonEntries  => SystemRaceButtonEntries
-                    .Concat(SystemCarButtonEntries)
-                    .Concat(SystemUiButtonEntries)
-                    .Concat(SystemReplayButtonEntries)
-                    .Concat(SystemOnlineButtonEntries)
-                    .Concat(SystemDiscordButtonEntries);
+        public IEnumerable<SystemButtonEntryCombined> SystemButtonEntries => SystemRaceButtonEntries
+                .Concat(SystemCarButtonEntries)
+                .Concat(SystemUiButtonEntries)
+                .Concat(SystemReplayButtonEntries)
+                .Concat(SystemOnlineButtonEntries)
+                .Concat(SystemDiscordButtonEntries);
 
         [NotNull]
         public IEnumerable<string> SystemButtonKeys => SystemButtonEntries.Select(x => x.WheelButton.Id).NonNull();
@@ -1054,7 +1066,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     if (senderEntry?.Id == HandbrakeId) {
                         try {
                             _skip = true;
-                            foreach (var entry in Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId && x.Device?.Same(senderEntry.Device) != true)) {
+                            foreach (
+                                    var entry in
+                                            Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId && x.Device?.Same(senderEntry.Device) != true)) {
                                 entry.Clear();
                             }
                         } finally {

@@ -154,8 +154,7 @@ namespace AcManager.Controls {
                 case KunosOnlineSource.Key:
                     return null;
                 default:
-                    Inline result;
-                    if (!_customIcons.TryGetValue(originId, out result)) {
+                    if (!_customIcons.TryGetValue(originId, out var result)) {
                         var information = FileBasedOnlineSources.Instance.GetInformation(originId);
 
                         var baseIcon = (Decorator)TryFindResource(@"BaseIcon");
@@ -219,7 +218,7 @@ namespace AcManager.Controls {
                 var inlines = _nameText.Inlines;
                 inlines.Clear();
                 inlines.Add(_icons);
-                inlines.Add(new Run { Text = n.DisplayName });
+                inlines.Add(BbCodeBlock.ParseEmoji(n.DisplayName, false, this));
             }
         }
 
@@ -334,17 +333,17 @@ namespace AcManager.Controls {
 
         private static readonly List<TextBlockBindable> CarsPool = new List<TextBlockBindable>(CarsPoolSize);
 
-        private class TextBlockBindable : TextBlock {
+        private class TextBlockBindable : BbCodeBlock {
             internal CarDisplayNameBind Bind;
         }
 
         private class CarDisplayNameBind : IDisposable {
-            private readonly TextBlock _text;
+            private readonly BbCodeBlock _text;
             private readonly AcItemWrapper _wrapper;
 
             public AcItemWrapper Wrapper => _wrapper;
 
-            public CarDisplayNameBind(TextBlock text, AcItemWrapper wrapper) {
+            public CarDisplayNameBind(BbCodeBlock text, AcItemWrapper wrapper) {
                 _text = text;
                 _wrapper = wrapper;
 
@@ -424,7 +423,6 @@ namespace AcManager.Controls {
 
         private void UpdateCars(ServerEntry n) {
             var array = n.Cars;
-
             var children = _carsPanel.Children;
             var carsCount = Math.Min(array?.Count ?? 0, OptionCarsLimit);
 
@@ -580,9 +578,9 @@ namespace AcManager.Controls {
         [CanBeNull]
         private TextBlock _timeLeftText;
         private CountryIcon _countryFlagImage;
-        private TextBlock _nameText;
+        private BbCodeBlock _nameText;
         private TextBlock _countryName;
-        private TextBlock _trackNameText;
+        private BbCodeBlock _trackNameText;
         private Panel _sessionsPanel;
         private Panel _carsPanel;
 
@@ -613,8 +611,8 @@ namespace AcManager.Controls {
             _clientsText = (TextBlock)GetTemplateChild(@"DisplayClientsText");
             _timeLeftText = (TextBlock)GetTemplateChild(@"TimeLeftText");
             _countryFlagImage = (CountryIcon)GetTemplateChild(@"CountryFlagImage");
-            _nameText = (TextBlock)GetTemplateChild(@"DisplayNameText");
-            _trackNameText = (TextBlock)GetTemplateChild(@"TrackNameText");
+            _nameText = (BbCodeBlock)GetTemplateChild(@"DisplayNameText");
+            _trackNameText = (BbCodeBlock)GetTemplateChild(@"TrackNameText");
             _countryName = (TextBlock)GetTemplateChild(@"CountryName");
             _sessionsPanel = (Panel)GetTemplateChild(@"SessionsPanel");
             _carsPanel = (Panel)GetTemplateChild(@"CarsPanel");

@@ -1008,6 +1008,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _sameControllersKeepFirst;
+
+            public bool SameControllersKeepFirst {
+                get => _sameControllersKeepFirst
+                        ?? (_sameControllersKeepFirst = ValuesStorage.Get("Settings.DriveSettings.SameControllersKeepFirst", false)).Value;
+                set {
+                    if (Equals(value, _sameControllersKeepFirst)) return;
+                    _sameControllersKeepFirst = value;
+                    ValuesStorage.Set("Settings.DriveSettings.SameControllersKeepFirst", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _patchAcToDisableShadows;
 
             public bool PatchAcToDisableShadows {

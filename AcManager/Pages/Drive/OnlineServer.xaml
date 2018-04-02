@@ -4,8 +4,8 @@
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:p="clr-namespace:AcTools.Processes;assembly=AcTools" Loaded="OnLoaded" Unloaded="OnUnloaded" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp"
-    d:DataContext="{d:DesignInstance dr:OnlineServer+ViewModel}" x:Name="This" SizeChanged="OnSizeChanged">
+    mui:InputBindingBehavior.PropagateToWindow="True" MouseRightButtonUp="OnMouseRightButtonUp" d:DataContext="{d:DesignInstance dr:OnlineServer+ViewModel}"
+    x:Name="This" SizeChanged="OnSizeChanged">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -30,7 +30,7 @@
           <TextBlock DockPanel.Dock="Right" Visibility="{Binding Total, Converter={StaticResource MoreToVisibilityConverter}}">
             <Run Text=" (" /><Run Text="{Binding Available, Mode=OneWay}" /><Run Text="/" /><Run Text="{Binding Total, Mode=OneWay}" /><Run Text=")" />
           </TextBlock>
-          <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+          <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
         </DockPanel>
 
         <DataTemplate.Triggers>
@@ -188,7 +188,7 @@
         <TextBox Style="{StaticResource TextBoxAsTextBlock.Small.ReadOnly}" VerticalAlignment="Center" Text="{Binding Id, Mode=OneWay}" />
       </DockPanel>
       <c:FavouriteButton DockPanel.Dock="Right" Margin="4 0 0 0" IsChecked="{Binding IsFavourite, Mode=TwoWay}" />
-      <TextBox x:Name="Title" Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource TextBoxAsTextBlock.Heading2.ReadOnly}" TextWrapping="NoWrap" />
+      <mui:SelectableBbCodeBlock x:Name="Title" Text="{Binding DisplayName, Mode=OneWay}" Style="{StaticResource RichTextBox.Heading2.ReadOnly}" />
     </DockPanel>
 
     <mui:Switch Value="{Binding Entry.Status}">
@@ -355,7 +355,7 @@
                           </Border>
                           <mui:ContextMenuButton VerticalAlignment="Center" Padding="6 0 6 0" Margin="0 -4 -4 -4" DockPanel.Dock="Right"
                               LookForParentMenu="True" />
-                          <TextBlock Text="{Binding DisplayName}" />
+                          <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding DisplayName}" />
                         </DockPanel>
                         <Border.Style>
                           <Style TargetType="Border">
@@ -435,13 +435,13 @@
               <!-- Conditions -->
               <StackPanel Visibility="{Binding ExtendedMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 20 0 0">
                 <c:PropertiesGrid Columns="2">
-                  <TextBlock c:PropertiesGrid.Label="Weather:" Text="{Binding WeatherDisplayName}">
-                    <TextBlock.ToolTip>
+                  <mui:BbCodeBlock Mode="NothingButEmoji" c:PropertiesGrid.Label="Weather:" Text="{Binding WeatherDisplayName}">
+                    <FrameworkElement.ToolTip>
                       <ToolTip Visibility="{Binding WeatherObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                         <mui:BetterImage Filename="{Binding WeatherObject.PreviewImage}" MaxWidth="400" />
                       </ToolTip>
-                    </TextBlock.ToolTip>
-                  </TextBlock>
+                    </FrameworkElement.ToolTip>
+                  </mui:BbCodeBlock>
                   <TextBlock c:PropertiesGrid.Label="Grip:" Text="{Binding Grip, StringFormat='{}{0:F1}%'}" Background="Transparent">
                     <TextBlock.ToolTip>
                       <ToolTip Content="{Binding GripTransfer}" ContentStringFormat="{}Grip transfer: {0:F1}%" />
@@ -517,14 +517,14 @@
                           <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" ClearOnChange="True">
                             <mui:BetterImage.ToolTip>
                               <StackPanel>
-                                <TextBlock Text="{Binding CarSkin.DisplayName}" Margin="4" />
+                                <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding CarSkin.DisplayName}" Margin="4" />
                                 <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
                               </StackPanel>
                             </mui:BetterImage.ToolTip>
                           </mui:BetterImage>
 
-                          <TextBlock DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}" TextWrapping="NoWrap"
-                              TextTrimming="CharacterEllipsis" />
+                          <mui:BbCodeBlock Mode="NothingButEmoji" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
+                              TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                           <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">
                             <ItemsControl.ItemTemplate>

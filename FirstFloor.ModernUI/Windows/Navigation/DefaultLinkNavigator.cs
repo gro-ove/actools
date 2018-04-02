@@ -55,6 +55,10 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
                 throw new ArgumentNullException(nameof(uri));
             }
 
+            if (uri.OriginalString.StartsWith(@"www.")) {
+                uri = new Uri("http://" + uri.OriginalString);
+            }
+
             var args = new NavigateEventArgs(uri);
             PreviewNavigate?.Invoke(this, args);
             if (args.Cancel) return;

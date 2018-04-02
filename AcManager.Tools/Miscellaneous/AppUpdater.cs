@@ -326,6 +326,16 @@ namespace AcManager.Tools.Miscellaneous {
                     return true;
                 }
 
+                return false;
+            } catch (Exception e) {
+                MessageBox.Show(string.Format(ToolsStrings.AppUpdater_CannotUpdate_Message, e.Message.ToSentenceMember()), ToolsStrings.AppUpdater_UpdateFailed,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+        }
+
+        public static bool OnUniqueStartup(string[] args) {
+            try {
                 var updateLocation = UpdateLocation;
                 if (File.Exists(updateLocation)) {
                     if (FileVersionInfo.GetVersionInfo(updateLocation).FileVersion.IsVersionNewerThan(BuildInformation.AppVersion)) {

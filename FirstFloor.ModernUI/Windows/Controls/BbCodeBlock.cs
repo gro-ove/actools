@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -67,12 +68,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(LinkNavigatorProperty, value);
         }
 
-        public static readonly DependencyProperty EmojiSupportProperty = DependencyProperty.Register(nameof(EmojiSupport), typeof(EmojiSupport),
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(EmojiSupport),
                 typeof(BbCodeBlock), new PropertyMetadata(EmojiSupport.WithEmoji));
 
-        public EmojiSupport EmojiSupport {
-            get => (EmojiSupport)GetValue(EmojiSupportProperty);
-            set => SetValue(EmojiSupportProperty, value);
+        public EmojiSupport Mode {
+            get => (EmojiSupport)GetValue(ModeProperty);
+            set => SetValue(ModeProperty, value);
         }
 
         /// <summary>
@@ -131,7 +132,52 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return result.ToString();
         }
 
-        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        private static bool IsUrl(string s, int index, out int urlLength) {
+            int start = index, length = s.Length;
+
+            if (start > 0) {
+                var previous = s[start - 1];
+                if (previous == '=' || previous == '"' || char.IsLetterOrDigit(previous)) {
+                    urlLength = 0;
+                    return false;
+                }
+            }
+
+            if (Expect("http")) {
+                if (char.ToLowerInvariant(s[index]) == 's') {
+                    index++;
+                }
+                if (!Expect("://")) {
+                    urlLength = 0;
+                    return false;
+                }
+            } else if (!Expect("www")) {
+                urlLength = 0;
+                return false;
+            }
+
+            var prefix = index - start;
+            var last = '\0';
+            for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
+                last = c;
+            }
+
+            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
+            return urlLength > prefix;
+
+            bool Expect(string p) {
+                for (var i = 0; i < p.Length; i++) {
+                    var j = index + i;
+                    if (j >= length || char.ToLowerInvariant(s[j]) != p[i]) return false;
+                }
+
+                index += p.Length;
+                return true;
+            }
+        }
+
+        [CanBeNull]
+        private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
             var converted = new StringBuilder();
             var lastIndex = 0;
             var complex = false;
@@ -140,42 +186,46 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 var c = bbCode[i];
 
                 if (c == '[') {
-                    if (allowBbCodes) {
-                        complex = true;
-                    } else {
-                        if (lastIndex != i) {
+                    if (!allowBbCodes) {
+                        if (lastIndex < i) {
                             converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
                         }
                         lastIndex = i + 1;
                         converted.Append(@"\[");
-                        complex = true;
                     }
+                    complex = true;
                     continue;
                 }
 
-                if (Emoji.IsEmoji(bbCode, i, out var length)) {
-                    if (lastIndex != i) {
+                if (IsUrl(bbCode, i, out var urlLength)) {
+                    var url = bbCode.Substring(i, urlLength);
+                    converted.Append($"[url={EncodeAttribute(url)}]{Encode(url)}[/url]");
+                    lastIndex = i + urlLength;
+                    complex = true;
+                }
+
+                if (Emoji.IsEmoji(bbCode, i, out var emojiLength)) {
+                    if (lastIndex < i) {
                         converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
                     }
-
-                    var emoji = bbCode.Substring(i, length);
+                    var emoji = bbCode.Substring(i, emojiLength);
                     converted.Append($"[img=\"emoji://{EmojiToNumber(emoji)}\"]{emoji}[/img]");
-                    lastIndex = i + length;
+                    lastIndex = i + emojiLength;
                     complex = true;
                 }
 
                 // Even if it’s not an emoji, it still would be better to jump over high surrogates
-                if (length > 1) {
-                    i += length - 1;
+                if (emojiLength > 1) {
+                    i += emojiLength - 1;
                 }
             }
 
-            if (converted.Length > 0) {
-                converted.Append(bbCode.Substring(lastIndex));
-                bbCode = converted.ToString();
-            }
-
             if (complex) {
+                if (converted.Length > 0) {
+                    converted.Append(bbCode.Substring(lastIndex));
+                    bbCode = converted.ToString();
+                }
+
                 try {
                     return new BbCodeParser(bbCode, element) {
                         Commands = (navigator ?? DefaultLinkNavigator).Commands
@@ -185,10 +235,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
-            return new Run { Text = bbCode };
+            return null;
         }
 
-        private static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        [NotNull]
+        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
+            return ParseEmojiOrNull(bbCode, allowBbCodes, element, navigator) ?? new Run { Text = bbCode };
+        }
+
+        [CanBeNull]
+        private static Inline ParseOrNull(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
             if (bbCode.IndexOf('[') != -1) {
                 try {
                     return new BbCodeParser(bbCode, element) {
@@ -199,7 +255,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
-            return new Run { Text = bbCode };
+            return null;
+        }
+
+        [NotNull]
+        public static Inline Parse(string bbCode, FrameworkElement element = null, ILinkNavigator navigator = null) {
+            return ParseOrNull(bbCode, element, navigator) ?? new Run { Text = bbCode };
         }
 
         private void Update() {
@@ -210,11 +271,17 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 SetPlaceholder();
             } else {
                 var inlines = Inlines;
-                var emojiSupport = EmojiSupport;
-                inlines.Clear();
-                inlines.Add(emojiSupport == EmojiSupport.NoEmoji
-                        ? Parse(bbCode, this, LinkNavigator)
-                        : ParseEmoji(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator));
+                var emojiSupport = Mode;
+
+                var inline = emojiSupport == EmojiSupport.NoEmoji
+                        ? ParseOrNull(bbCode, this, LinkNavigator)
+                        : ParseEmojiOrNull(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator);
+                if (inline == null) {
+                    SetValue(TextBlock.TextProperty, bbCode);
+                } else {
+                    inlines.Clear();
+                    inlines.Add(inline);
+                }
             }
 
             _dirty = false;

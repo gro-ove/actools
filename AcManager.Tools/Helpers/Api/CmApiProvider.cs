@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.Helpers.Api {
     [Localizable(false)]
@@ -261,8 +263,24 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 return id;
-            } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
-                Logging.Warning(e);
+            } catch (Exception e) when (e.IsCancelled()) { } catch (WebException e) when (e.Response is HttpWebResponse h) {
+                try {
+                    var s = h.GetResponseStream()?.ReadAsStringAndDispose();
+                    if (s != null) {
+                        var o = JObject.Parse(s);
+                        if (o["error"] != null) {
+                            NonfatalError.NotifyBackground($"Can’t share online data: {o["error"].ToString().ToSentenceMember()}",
+                                    o["details"]?.ToString().ToSentence());
+                            return null;
+                        }
+                    }
+                    NonfatalError.NotifyBackground($"Can’t share online data: {h.StatusDescription.ToLower()}", e);
+                } catch (Exception ex) {
+                    Logging.Warning(ex);
+                    NonfatalError.NotifyBackground("Can’t share online data", e);
+                }
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t share online data", e);
             }
             return null;
         }
@@ -271,7 +289,10 @@ namespace AcManager.Tools.Helpers.Api {
         public static Task<ServerInformationExtra> GetOnlineDataAsync(string id, CancellationToken cancellation = default(CancellationToken)) {
             return LazierCached.CreateAsync(@".OnlineData:" + id,
                     () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
-                            r => JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result),
+                            r => {
+                                Logging.Debug(JsonConvert.SerializeObject(r.Result));
+                                return JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result);
+                            },
                             TaskContinuationOptions.OnlyOnRanToCompletion)
                     ).GetValueAsync();
         }

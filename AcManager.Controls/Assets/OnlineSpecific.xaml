@@ -301,13 +301,13 @@
                 <TextBlock x:Name="CountryName" />
               </FrameworkElement.ToolTip>
             </c:CountryIcon>
-            <TextBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                Margin="22 2 116 32" />
+            <mui:BbCodeBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />
 
             <!-- Second row -->
             <Rectangle Fill="#11888888" Margin="20 30 0 0" />
-            <TextBlock x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="NoWrap"
-                TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
+            <mui:BbCodeBlock Mode="NothingButEmoji" x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
             <StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="146 30 0 0" />
             <StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="240 30 0 0" />
           </mui:Cell>
@@ -362,13 +362,13 @@
                 <TextBlock x:Name="CountryName" />
               </FrameworkElement.ToolTip>
             </c:CountryIcon>
-            <TextBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis"
-                Margin="22 2 116 32" />
+            <mui:BbCodeBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />
 
             <!-- Second row -->
             <Rectangle Fill="#11888888" Margin="20 30 0 0" />
-            <TextBlock x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch" TextWrapping="NoWrap"
-                TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
+            <mui:BbCodeBlock Mode="NothingButEmoji" x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
             <TextBlock x:Name="TimeLeftText" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="146 30 0 3" TextAlignment="Right" />
             <mui:SpacingStackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />
             <mui:SpacingStackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />

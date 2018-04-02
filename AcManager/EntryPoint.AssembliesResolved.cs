@@ -57,13 +57,15 @@ namespace AcManager {
             using (var mutex = new Mutex(false, mutexId)) {
                 _secondInstanceMessage = User32.RegisterWindowMessage(mutexId);
                 if (mutex.WaitOne(0, false)) {
+                    if (AppUpdater.OnUniqueStartup(args)) return;
+
                     _initialized = true;
+                    App.CreateAndRun(false);
                     /*if (args.Length == 0) {
                         TryToRunAppSafely();
                     } else {
                         App.CreateAndRun(false);
                     }*/
-                    App.CreateAndRun(false);
                 } else {
                     PassArgsToRunningInstance(args);
                 }

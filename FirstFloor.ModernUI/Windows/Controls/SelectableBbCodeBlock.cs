@@ -89,6 +89,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(LineHeightProperty, value);
         }
 
+        public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(EmojiSupport),
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(EmojiSupport.WithEmoji));
+
+        public EmojiSupport Mode {
+            get => (EmojiSupport)GetValue(ModeProperty);
+            set => SetValue(ModeProperty, value);
+        }
+
         private void Update() {
             if (!IsLoaded || !_dirty) {
                 return;
@@ -98,7 +106,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
-                var item = new Paragraph(BbCodeBlock.ParseEmoji(bbCode, true, this, LinkNavigator)) {
+                var emojiSupport = Mode;
+                var item = new Paragraph(emojiSupport == EmojiSupport.NoEmoji
+                        ? BbCodeBlock.Parse(bbCode, this, LinkNavigator)
+                        : BbCodeBlock.ParseEmoji(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
                 };
 

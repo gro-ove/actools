@@ -181,6 +181,7 @@
     <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
     <Compile Include="Windows\Attached\FancyHintsService.cs" />
     <Compile Include="Windows\Attached\FancyScroll.cs" />
+    <Compile Include="Windows\Attached\HyperlinkHelper.cs" />
     <Compile Include="Windows\Attached\IsPressedAdvancement.cs" />
     <Compile Include="Windows\Attached\ListBoxHelper.cs" />
     <Compile Include="Windows\Attached\Resources.cs" />
