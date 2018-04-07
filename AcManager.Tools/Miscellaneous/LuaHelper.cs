@@ -40,6 +40,7 @@ namespace AcManager.Tools.Miscellaneous {
                     UserData.RegisterType<TrackObject>();
                     UserData.RegisterType<TrackExtraLayoutObject>();
                     UserData.RegisterType<TrackObjectBase>();
+                    UserData.RegisterType<WeatherObject>();
                     UserData.RegisterType<TagsCollection>();
                     _registered = true;
                 }

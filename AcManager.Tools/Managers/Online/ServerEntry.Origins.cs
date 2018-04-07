@@ -42,7 +42,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public string ReferencesString => _referencesString ?? (_referencesString = _references.JoinToString(','));
 
-        public IEnumerable<string> GetReferencesIds() {
+        public IList<string> GetReferencesIds() {
             return _references;
         }
 

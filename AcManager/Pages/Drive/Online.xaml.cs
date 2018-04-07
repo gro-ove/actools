@@ -64,8 +64,10 @@ namespace AcManager.Pages.Drive {
             SetHideIcon();
 
             InputBindings.AddRange(new[] {
-                new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
-                new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control))
+                new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control)),
+                new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
+                        new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)),
+            new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
             });
 
             InitializeComponent();
@@ -76,6 +78,11 @@ namespace AcManager.Pages.Drive {
             this.OnActualUnload(() => pack.UnsubscribeWeak(OnPackPropertyChanged));
 
             BigButtonsParent.AddWidthCondition(430).Add(FilteringComboBox);
+        }
+
+        private void OnScrollToSelectedButtonClick(object sender, object args) {
+            var list = this.FindChild<ListBox>("ServersListBox");
+            list?.ScrollIntoView(list.SelectedItem);
         }
 
         private async void OnPackPropertyChanged(object sender, PropertyChangedEventArgs args) {
@@ -131,13 +138,7 @@ namespace AcManager.Pages.Drive {
                 } else {
                     var factory = new FrameworkElementFactory(typeof(OnlineItem));
                     factory.SetBinding(OnlineItem.ServerProperty, new Binding());
-
-                    if (value == ListMode.DetailedPlus) {
-                        factory.SetValue(StyleProperty, FindResource(@"OnlineItem.Plus"));
-                    }
-
                     factory.SetValue(OnlineItem.HideSourceIconsProperty, _hideIconSourceIds);
-
                     ServersListBox.ItemTemplate = new DataTemplate(typeof(OnlineItem)) {
                         VisualTree = factory
                     };
@@ -175,26 +176,13 @@ namespace AcManager.Pages.Drive {
         }
 
         private TaskbarHolder _taskbarProgress;
-        private bool _scrolling;
-
-        private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
-                child.SetScrolling(_scrolling);
-            }
-        }
 
         private void OnScrollStarted(object sender, DragStartedEventArgs e) {
-            _scrolling = true;
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
-                child.SetScrolling(true);
-            }
+            OnlineItem.SetScrolling(true);
         }
 
         private void OnScrollCompleted(object sender, DragCompletedEventArgs e) {
-            _scrolling = false;
-            foreach (var child in ServersListBox.FindVisualChildren<OnlineItem>()) {
-                child.SetScrolling(false);
-            }
+            OnlineItem.SetScrolling(false);
         }
 
         public class CombinedFilter<T> : IFilter<T> {
@@ -723,7 +711,6 @@ namespace AcManager.Pages.Drive {
             var viewer = scrollViewer?.FindVisualChild<Thumb>();
 
             if (viewer != null) {
-                scrollViewer.ScrollChanged += OnScrollChanged;
                 viewer.DragStarted += OnScrollStarted;
                 viewer.DragCompleted += OnScrollCompleted;
             }

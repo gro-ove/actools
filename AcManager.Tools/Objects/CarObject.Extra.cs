@@ -51,11 +51,11 @@ namespace AcManager.Tools.Objects {
         }
 
         [CanBeNull]
-        private JObject ReadCmTextures() {
-            if (!File.Exists(CmTexturesFilename)) return null;
+        private JObject ReadCmTexturesJson() {
+            if (!File.Exists(CmTexturesJsonFilename)) return null;
 
             try {
-                return JObject.Parse(File.ReadAllText(CmTexturesFilename));
+                return JObject.Parse(File.ReadAllText(CmTexturesJsonFilename));
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t load car’s textures description", e);
                 return null;
@@ -63,20 +63,45 @@ namespace AcManager.Tools.Objects {
         }
 
         [CanBeNull]
-        private ShaderEffect GetEffect([CanBeNull] string textureEffect) {
-            switch (textureEffect?.ToLowerInvariant()) {
+        private string ReadCmTexturesScript(out ExtraDataProvider dataProvider) {
+            if (!File.Exists(CmTexturesScriptFilename)) {
+                dataProvider = null;
+                return null;
+            }
+
+            try {
+                dataProvider = new ExtraDataProvider(CmTexturesScriptFilename);
+                return File.ReadAllText(CmTexturesScriptFilename);
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t load car’s textures description", e);
+                dataProvider = null;
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        private static ShaderEffect GetEffect([CanBeNull] string textureEffect) {
+            if (textureEffect == null) return null;
+            var s = textureEffect.Split(':');
+            switch (s[0].ToLowerInvariant()) {
                 case "grayscale":
                     return new GrayscaleEffect();
                 case "invert":
                     return new InvertEffect();
+                case "color":
+                case "colour":
+                    return new OverlayColorEffect { OverlayColor = s[1].ToColor() ?? Colors.White };
                 case "invertkeepcolor":
                 case "invertkeepcolors":
+                case "invertkeepcolour":
+                case "invertkeepcolours":
                     return new InvertKeepColorEffect();
                 default:
                     return null;
             }
         }
 
+        [NotNull]
         private byte[] PrepareTexture(string filename, string textureEffect) {
             var effect = GetEffect(textureEffect);
             if (effect == null) return File.ReadAllBytes(filename);
@@ -101,38 +126,46 @@ namespace AcManager.Tools.Objects {
             return bmp.ToBytes();
         }
 
-        private void SetTrackOutlineTexture([CanBeNull] string filename, [NotNull] string textureName, [CanBeNull] string textureEffect) {
+        private void SaveExtraCmTexture([NotNull] string textureName, [NotNull] Func<byte[]> actualSave) {
             try {
-                var data =
-                        Lazier.Create(
-                                () => {
-                                    return filename == null || !File.Exists(filename)
-                                            ? null : ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
-                                });
+                var alreadySaved = false;
+                string alreadySavedFilename = null;
 
-                string alreadySaved = null;
                 foreach (var skinObject in EnabledOnlySkins.ToList()) {
                     if (!Directory.Exists(skinObject.Location)) return;
                     var location = Path.Combine(skinObject.Location, textureName);
 
-                    if (data.Value != null) {
-                        if (alreadySaved != null) {
-                            FileUtils.HardLinkOrCopy(alreadySaved, location, true);
+                    if (alreadySaved) {
+                        if (alreadySavedFilename == null) {
+                            FileUtils.TryToDelete(location);
                         } else {
-                            try {
-                                File.WriteAllBytes(location, data.Value);
-                                alreadySaved = location;
-                            } catch (Exception e) {
-                                Logging.Error(e);
-                            }
+                            FileUtils.HardLinkOrCopy(alreadySavedFilename, location, true);
                         }
                     } else {
-                        FileUtils.TryToDelete(location);
+                        try {
+                            alreadySaved = true;
+                            var data = actualSave();
+                            if (data == null) {
+                                FileUtils.TryToDelete(location);
+                            } else {
+                                File.WriteAllBytes(location, data);
+                                alreadySavedFilename = location;
+                            }
+                        } catch (Exception e) {
+                            Logging.Error(e);
+                        }
                     }
                 }
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t set track outline texture", e);
+                NonfatalError.NotifyBackground($"Can’t set texture “{textureName}”", e);
             }
+        }
+
+        private void SetTrackOutlineTexture([CanBeNull] string filename, [NotNull] string textureName, [CanBeNull] string textureEffect) {
+            SaveExtraCmTexture(textureName, () => {
+                if (filename == null || !File.Exists(filename)) return null;
+                return ActionExtension.InvokeInMainThread(() => PrepareTexture(filename, textureEffect));
+            });
         }
 
         private void PrepareTrackOutlineTexture([NotNull] JToken cmTextures, [CanBeNull] TrackObjectBase track) {
@@ -142,11 +175,39 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public void PrepareRaceTextures([CanBeNull] TrackObjectBase track) {
-            var d = ReadCmTextures();
-            if (d == null) return;
+        private void RunCmTexturesJson([NotNull] JObject jObject, [NotNull] RaceTexturesContext texturesContext) {
+            PrepareTrackOutlineTexture(jObject, texturesContext.Track);
+        }
 
-            PrepareTrackOutlineTexture(d, track);
+        public class RaceTexturesContext {
+            [CanBeNull]
+            public TrackObjectBase Track;
+
+            [CanBeNull]
+            public WeatherObject Weather;
+
+            public double? Temperature, Wind, WindDirection;
+        }
+
+        public void PrepareRaceTextures([NotNull] RaceTexturesContext texturesContext) {
+            var d = ReadCmTexturesJson();
+            if (d != null) {
+                try {
+                    RunCmTexturesJson(d, texturesContext);
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t prepare car textures", e);
+                }
+            }
+
+            var s = ReadCmTexturesScript(out var data);
+            if (s != null) {
+                try {
+                    RunCmTexturesScript(s, data, texturesContext,
+                            (textureName, textureData) => SaveExtraCmTexture(textureName, () => textureData));
+                } catch (Exception e) {
+                    NonfatalError.NotifyBackground("Can’t run car textures script", e);
+                }
+            }
         }
 
         private DelegateCommand _packDataCommand;

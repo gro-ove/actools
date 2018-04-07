@@ -85,7 +85,7 @@
   </InlineUIContainer>
 
   <!-- Car & track previews -->
-  <ToolTip x:Key="CarPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}">
+  <ToolTip x:Key="CarPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry+CarEntry}" x:Shared="False">
     <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
       <mui:BooleanSwitch.True>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
@@ -106,7 +106,7 @@
     </mui:BooleanSwitch>
   </ToolTip>
 
-  <ToolTip x:Key="TrackPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry}">
+  <ToolTip x:Key="TrackPreviewTooltip.Online" d:DataContext="{d:DesignInstance t:ServerEntry}" x:Shared="False">
     <mui:ReferenceSwitch Value="{Binding Track}" Margin="4">
       <mui:ReferenceSwitch.NonNull>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
@@ -129,7 +129,7 @@
 
   <!-- Online -->
   <!-- Driver & car name -->
-  <DataTemplate x:Key="OnlineDriverEntry" DataType="{x:Type t:ServerEntry+CurrentDriver}">
+  <DataTemplate x:Key="OnlineDriverEntry" DataType="{x:Type t:ServerEntry+CurrentDriver}" x:Shared="False">
     <DockPanel Width="200">
       <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="4" ClearOnChange="True" />
       <TextBlock Text="{Binding Name}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" DockPanel.Dock="Top" />
@@ -138,20 +138,36 @@
   </DataTemplate>
 
   <!-- Tooltips for clients -->
-  <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}"
+  <ToolTip x:Key="ClientsTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}" x:Shared="False"
       Visibility="{Binding CurrentDrivers.Count, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
-    <StackPanel Margin="4">
-      <TextBlock Text="{x:Static c:ControlsStrings.Online_DriversOnlineLabel}" Style="{StaticResource Label}" />
-      <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="480" MaxWidth="450"
-          ItemTemplate="{StaticResource OnlineDriverEntry}" ItemsPanel="{StaticResource WrapItemsPanel}" />
-    </StackPanel>
+    <mui:Switch Value="{Binding CurrentDrivers.Count, FallbackValue=0}">
+      <TextBlock mui:Switch.When="0" Text="No drivers connected" />
+      <StackPanel Margin="4">
+        <TextBlock Text="{x:Static c:ControlsStrings.Online_DriversOnlineLabel}" Style="{StaticResource Label}" />
+        <ItemsControl ItemsSource="{Binding CurrentDrivers}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" MaxHeight="480" MaxWidth="450"
+            ItemTemplate="{StaticResource OnlineDriverEntry}" ItemsPanel="{StaticResource WrapItemsPanel}" />
+      </StackPanel>
+    </mui:Switch>
   </ToolTip>
 
-  <ToolTip x:Key="SessionItemTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+Session}">
+  <ToolTip x:Key="SessionItemTooltip" d:DataContext="{d:DesignInstance t:ServerEntry+Session}" x:Shared="False">
     <StackPanel>
       <TextBlock Text="{Binding DisplayType}" HorizontalAlignment="Left" Style="{StaticResource Heading2}" />
       <TextBlock Text="{Binding DisplayDuration}" HorizontalAlignment="Left" Margin="0 4 0 0" />
     </StackPanel>
+  </ToolTip>
+
+  <ToolTip x:Key="SessionsItemTooltip" d:DataContext="{d:DesignInstance t:ServerEntry}" x:Shared="False">
+    <ItemsControl ItemsSource="{Binding Sessions}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate>
+          <DockPanel>
+            <TextBlock Text="{Binding DisplayType, StringFormat='{}{0}: '}" FontWeight="Bold" />
+            <TextBlock Text="{Binding DisplayDuration}" Margin="0 0 0 0" />
+          </DockPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
   </ToolTip>
 
   <!-- Session block -->
@@ -248,17 +264,17 @@
     </DataTemplate.Triggers>
   </DataTemplate>
 
-  <Style TargetType="c:OnlineItem">
+  <Style TargetType="c:OnlineItem2">
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-    <Setter Property="CacheMode">
+    <!--<Setter Property="CacheMode">
       <Setter.Value>
         <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}"
             EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
       </Setter.Value>
-    </Setter>
+    </Setter>-->
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="c:OnlineItem">
+        <ControlTemplate TargetType="c:OnlineItem2">
           <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
             <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="4">
               <!-- Optional booked-for-player icon -->
@@ -293,33 +309,33 @@
                 </StackPanel>
               </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
-            <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
-                Background="Transparent" Margin="0 0 40 30" Padding="4 0" />
-            <c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+            <!--<TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                Background="Transparent" Margin="0 0 40 30" Padding="4 0" />-->
+            <!--<c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
                 RenderOptions.BitmapScalingMode="LowQuality">
               <FrameworkElement.ToolTip>
                 <TextBlock x:Name="CountryName" />
               </FrameworkElement.ToolTip>
-            </c:CountryIcon>
-            <mui:BbCodeBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap"
-                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />
+            </c:CountryIcon>-->
+            <!--<mui:BbCodeBlock x:Name="DisplayNameText" Style="{StaticResource Heading2}" FontWeight="Normal" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />-->
 
             <!-- Second row -->
             <Rectangle Fill="#11888888" Margin="20 30 0 0" />
             <mui:BbCodeBlock Mode="NothingButEmoji" x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch"
                 TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
-            <StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="146 30 0 0" />
-            <StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="240 30 0 0" />
+            <!--<StackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="146 30 0 0" />-->
+            <!--<StackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="240 30 0 0" />-->
           </mui:Cell>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
   </Style>
 
-  <Style x:Key="OnlineItem.Plus" TargetType="c:OnlineItem" BasedOn="{StaticResource {x:Type c:OnlineItem}}">
+  <Style x:Key="OnlineItem.Plus" TargetType="c:OnlineItem2" BasedOn="{StaticResource {x:Type c:OnlineItem2}}">
     <Setter Property="Template">
       <Setter.Value>
-        <ControlTemplate TargetType="c:OnlineItem">
+        <ControlTemplate TargetType="c:OnlineItem2">
           <mui:Cell Height="60" DataContext="{TemplateBinding Server}">
             <mui:SpacingStackPanel VerticalAlignment="Center" HorizontalAlignment="Left" Margin="6 1 0 4" Spacing="4">
               <!-- Optional booked-for-player icon -->
@@ -336,7 +352,7 @@
             </mui:SpacingStackPanel>
 
             <!-- First row -->
-            <mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
+            <!--<mui:BooleanSwitch x:Name="HasErrorsGroup" Width="40" HorizontalAlignment="Right" VerticalAlignment="Top" Height="30">
               <mui:BooleanSwitch.True>
                 <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" VerticalAlignment="Center">
                   <Path.ToolTip>
@@ -353,25 +369,25 @@
                   <TextBlock Text="{x:Static c:ControlsStrings.Common_MillisecondsPostfix}" Opacity="0.5" Style="{StaticResource Small}" />
                 </StackPanel>
               </mui:BooleanSwitch.False>
-            </mui:BooleanSwitch>
-            <TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
-                Background="Transparent" Margin="0 0 40 30" />
-            <c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
+            </mui:BooleanSwitch>-->
+            <!--<TextBlock x:Name="DisplayClientsText" Width="40" Style="{StaticResource Small}" HorizontalAlignment="Right" VerticalAlignment="Center"
+                Background="Transparent" Margin="0 0 40 30" />-->
+            <!--<c:CountryIcon x:Name="CountryFlagImage" Width="24" Height="16" Margin="0 7 84 30" HorizontalAlignment="Right" VerticalAlignment="Top"
                 RenderOptions.BitmapScalingMode="LowQuality">
               <FrameworkElement.ToolTip>
                 <TextBlock x:Name="CountryName" />
               </FrameworkElement.ToolTip>
-            </c:CountryIcon>
-            <mui:BbCodeBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
-                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />
+            </c:CountryIcon>-->
+            <!--<mui:BbCodeBlock x:Name="DisplayNameText" FontWeight="Normal" Style="{StaticResource Heading2}" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" Margin="22 2 116 32" Mode="NothingButEmoji" />-->
 
             <!-- Second row -->
-            <Rectangle Fill="#11888888" Margin="20 30 0 0" />
-            <mui:BbCodeBlock Mode="NothingButEmoji" x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch"
-                TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />
-            <TextBlock x:Name="TimeLeftText" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="146 30 0 3" TextAlignment="Right" />
-            <mui:SpacingStackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />
-            <mui:SpacingStackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />
+            <!--<Rectangle Fill="#11888888" Margin="20 30 0 0" />-->
+            <!--<mui:BbCodeBlock Mode="NothingButEmoji" x:Name="TrackNameText" Width="120" HorizontalAlignment="Left" VerticalAlignment="Stretch"
+                TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Padding="2" Margin="22 35 0 5" />-->
+            <!--<TextBlock x:Name="TimeLeftText" Width="80" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="146 30 0 3" TextAlignment="Right" />-->
+            <!--<mui:SpacingStackPanel x:Name="SessionsPanel" Orientation="Horizontal" Width="90" HorizontalAlignment="Left" Margin="230 30 0 0" />-->
+            <!--<mui:SpacingStackPanel x:Name="CarsPanel" Orientation="Horizontal" HorizontalAlignment="Left" Margin="324 30 0 0" />-->
           </mui:Cell>
         </ControlTemplate>
       </Setter.Value>
@@ -383,9 +399,10 @@
     <c:OnlineItem Server="{Binding}" />
   </DataTemplate>
 
-  <DataTemplate x:Key="DetailedListItem.Plus" DataType="{x:Type t:ServerEntry}" x:Shared="False">
-    <c:OnlineItem Style="{StaticResource OnlineItem.Plus}" Server="{Binding}" />
-  </DataTemplate>
+  <!--<DataTemplate x:Key="DetailedListItem.Plus" DataType="{x:Type t:ServerEntry}" x:Shared="False">
+    ~1~Style="{StaticResource OnlineItem.Plus}" @1@
+    <c:OnlineItem Server="{Binding}" />
+  </DataTemplate>-->
 
   <Style x:Key="SimpledListItemContainer" TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}" />
 

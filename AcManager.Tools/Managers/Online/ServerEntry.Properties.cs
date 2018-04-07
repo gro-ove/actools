@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -301,7 +303,13 @@ namespace AcManager.Tools.Managers.Online {
         [CanBeNull]
         public TrackObjectBase Track {
             get => _track;
-            set => Apply(value, ref _track);
+            set {
+                var oldValue = _track;
+                Apply(value, ref _track, () => {
+                    oldValue?.UnsubscribeWeak(OnContentNameChanged);
+                    value?.SubscribeWeak(OnContentNameChanged);
+                });
+            }
         }
 
         [CanBeNull]
@@ -312,10 +320,31 @@ namespace AcManager.Tools.Managers.Online {
             get => _cars;
             private set {
                 if (Equals(value, _cars)) return;
+
+                var oldCars = _cars;
                 _cars = value?.ToListIfItIsNot();
                 OnPropertyChanged();
+
+                if (oldCars != null) {
+                    foreach (var car in oldCars) {
+                        var wrapper = car?.CarObjectWrapper;
+                        if (wrapper?.IsLoaded == true) {
+                            wrapper.Value.UnsubscribeWeak(OnContentNameChanged);
+                        }
+                    }
+                }
             }
         }
+
+        private void OnContentNameChanged(object sender, PropertyChangedEventArgs args) {
+            Logging.Debug(args.PropertyName);
+            if (args.PropertyName == nameof(AcObjectNew.DisplayName)) {
+                ContentNameChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        [UsedImplicitly]
+        public event EventHandler ContentNameChanged;
 
         private int _connectedDrivers;
 
@@ -421,12 +450,14 @@ namespace AcManager.Tools.Managers.Online {
             }
         }
 
+        private string _errorsString;
+
         /// <summary>
         /// Errors, already joined to one string, for optimization purposes.
         /// </summary>
         [CanBeNull]
-        public string ErrorsString => _errors == null ? null : (_errorsString ?? (_errorsString = _errors.JoinToString('\n')));
-        private string _errorsString;
+        public string ErrorsString => _errors == null ? null : (_errorsString
+                ?? (_errorsString = _errors.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => $@"• {x.Trim()}").JoinToString('\n')));
 
         private bool _hasErrors;
 

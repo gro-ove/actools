@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -9,6 +10,7 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 
@@ -113,6 +115,14 @@ namespace AcManager.Tools.Managers.Online {
                     ServerInformationComplete loaded;
                     try {
                         loaded = await GetInformationDirectly();
+                    } catch (HttpRequestException e) {
+                        if (e.InnerException is WebException webException) {
+                            _updateWebException = webException;
+                        } else {
+                            _updateException = e;
+                        }
+                        resultStatus = ServerStatus.Error;
+                        return;
                     } catch (WebException e) {
                         _updateWebException = e;
                         resultStatus = ServerStatus.Error;
@@ -335,6 +345,8 @@ namespace AcManager.Tools.Managers.Online {
                             await Task.Delay(fast ? 10 : 50);
                             car = (CarObject)await wrapper.LoadedAsync();
                         }
+
+                        car.SubscribeWeak(OnContentNameChanged);
                     } else {
                         car = null;
                     }

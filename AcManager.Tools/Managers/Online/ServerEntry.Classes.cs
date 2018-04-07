@@ -185,7 +185,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             public override string DisplayName {
-                get { return CarObjectWrapper?.Value.DisplayName ?? Id; }
+                get => CarObjectWrapper?.Value.DisplayName ?? Id;
                 set { }
             }
 

@@ -73,7 +73,7 @@
             </ToolTip>
           </mui:ButtonWithComboBox.ButtonToolTip>
 
-          <MenuItem InputGestureText="Ctrl+Shift+H" Command="{Binding Entry.ToggleHiddenCommand}">
+          <MenuItem InputGestureText="Ctrl+Shift+H" Command="{Binding Entry.ToggleHiddenCommand}" StaysOpenOnClick="True">
             <MenuItem.Header>
               <mui:BooleanSwitch Value="{Binding Entry.IsExcluded}">
                 <mui:BooleanSwitch.True>
@@ -104,6 +104,8 @@
           <MenuItem Header="{x:Static mui:UiStrings.Toolbar_Invite_IncludePasswordHeader}" IsChecked="{Binding CopyPasswordToInviteLink}" IsCheckable="True"
               IsEnabled="{Binding Entry.PasswordRequired}" StaysOpenOnClick="True" />
         </mui:ButtonWithComboBox>
+
+        <!-- TODO -->
         <Button Content="Join TS server" Command="{Binding JoinTsCommand}"
             Visibility="{Binding JoinTsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Separator />
@@ -210,7 +212,7 @@
               Text="{Binding Source={StaticResource SomeNumber}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.AcObject_ErrorsHeader}}" />
         </DockPanel>
 
-        <mui:SelectableBbCodeBlock Text="{Binding Entry.ErrorsString}" Margin="40 0 0 12" />
+        <mui:SelectableBbCodeBlock Text="{Binding Entry.ErrorsString}" Margin="20 0 0 12" />
         <Button Command="{Binding Entry.RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" Margin="20 0 0 0" />
       </StackPanel>
 

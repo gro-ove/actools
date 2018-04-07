@@ -298,6 +298,7 @@
     <Compile Include="Helpers\Loaders\ILoaderFactory.cs" />
     <Compile Include="Helpers\Loaders\LongenerLoader.cs" />
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
+    <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
@@ -425,6 +426,7 @@
     <Compile Include="Managers\Online\OnlineManager.cs" />
     <Compile Include="Managers\Online\IOnlineSource.cs" />
     <Compile Include="Managers\Online\KunosOnlineSource.cs" />
+    <Compile Include="Managers\Online\OnlineSourceInformation.cs" />
     <Compile Include="Managers\Online\OnlineSourceWrapper.cs" />
     <Compile Include="Managers\Online\ServerEntry.AutoJoin.cs" />
     <Compile Include="Managers\Online\ServerEntry.Extended.cs" />
@@ -460,9 +462,11 @@
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.CustomData.cs" />
+    <Compile Include="Objects\CarObject.Extra.CmTexturesScript.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
     <Compile Include="Objects\CarSkinComparer.cs" />
+    <Compile Include="Objects\FontObjectBitmap.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />

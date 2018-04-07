@@ -152,6 +152,7 @@ namespace AcManager.Pages.Drive {
             _listsButtonInitialized = true;
 
             UpdateMenuItems();
+            FileBasedOnlineSources.Instance.Update -= OnUserSourcesUpdated;
             FileBasedOnlineSources.Instance.Update += OnUserSourcesUpdated;
         }
 
@@ -242,7 +243,8 @@ namespace AcManager.Pages.Drive {
                         IsChecked = entry.ReferencedFrom(source.Id),
                         Tag = source.Id,
                         Command = ToggleSourceCommand,
-                        CommandParameter = source.Id
+                        CommandParameter = source.Id,
+                        StaysOpenOnClick = true
                     }, MenuComparer.Instance);
                 }
             }
@@ -372,9 +374,8 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand _manageListsCommand;
 
-            public DelegateCommand ManageListsCommand => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => {
-                new OnlineListsManager().ShowDialog();
-            }));
+            public DelegateCommand ManageListsCommand
+                => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => { new OnlineListsManager().ShowDialog(); }));
 
             private bool _copyPasswordToInviteLink = IncludePasswordToInviteLink;
 
@@ -610,9 +611,7 @@ namespace AcManager.Pages.Drive {
                     IsCheckable = true
                 };
 
-                item.Click += (o, args) => {
-                    (((MenuItem)o).IsChecked ? driver.AddTagCommand : driver.RemoveTagCommand).Execute(tag.Id);
-                };
+                item.Click += (o, args) => { (((MenuItem)o).IsChecked ? driver.AddTagCommand : driver.RemoveTagCommand).Execute(tag.Id); };
 
                 menu.Items.Add(item);
             }
@@ -621,16 +620,12 @@ namespace AcManager.Pages.Drive {
 
             menu.Items.Add(new MenuItem {
                 Header = "New Tag…",
-                Command = new DelegateCommand(() => {
-                    new OnlineNewDriverTag(driver).ShowDialog();
-                })
+                Command = new DelegateCommand(() => { new OnlineNewDriverTag(driver).ShowDialog(); })
             });
 
             menu.Items.Add(new MenuItem {
                 Header = "Edit Tags…",
-                Command = new DelegateCommand(() => {
-                    new OnlineDriverTags().ShowDialog();
-                })
+                Command = new DelegateCommand(() => { new OnlineDriverTags().ShowDialog(); })
             });
 
             e.Menu = menu;

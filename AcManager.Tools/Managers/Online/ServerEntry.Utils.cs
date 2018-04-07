@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
@@ -9,17 +10,56 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Managers.Online {
     public partial class ServerEntry {
         public static readonly string ExtendedSeparator = @"ℹ";
-        private static readonly string TrashSymbols = @"|/#☆★.:=<>+-";
+        private static readonly string TrashSymbols = @")|/#☆★.:=<>+_-";
 
+        private static readonly Regex InvisibleCleanUpRegex = new Regex(@"\u0007", RegexOptions.Compiled);
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
-        private static readonly Regex SortingCheats1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
+        private static readonly Regex SortingFix1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
 
-        private static readonly Regex SortingCheats2Regex = new Regex(
-                // I would like to use this opportunity to say hello to www.rennsimulanten.de
-                @"^(?:AA+|[\u0007 !-]+|A(?![b-zB-Z0-9])+)+| ?-$",
+        private static readonly Regex SortingFix2Regex = new Regex(
+                @"^(?:AA+|\([A-Z]\)|[ !-]+|A?(?![b-zB-Z0-9])+)+| ?-$",
                 RegexOptions.Compiled);
 
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
+
+        private static string InvisibleCleanUp(string s) {
+            var r = new StringBuilder();
+            int j = 0, i = 0;
+            for (; i < s.Length; i++) {
+                var insert = '\0';
+
+                var c = s[i];
+                switch (c) {
+                    case '\t':
+                        insert = ' ';
+                        break;
+                    default:
+                        if (IsControl(c)) {
+                            break;
+                        } else {
+                            continue;
+                        }
+                }
+
+                if (i > j) {
+                    r.Append(s.Substring(j, i - j));
+                }
+
+                if (insert != '\0') {
+                    r.Append(insert);
+                }
+
+                j = i + 1;
+            }
+
+            if (j == 0) return s;
+            r.Append(s.Substring(j));
+            return r.ToString();
+
+            bool IsControl(char c) {
+                return c <= '\u0008' || c >= '\u000A' && c <= '\u000C' || c >= '\u000A' && c <= '\u001F';
+            }
+        }
 
         private static string CleanUp(string name, [CanBeNull] string oldName, out int? extPort, out string detailsId) {
             var originalName = name;
@@ -33,14 +73,15 @@ namespace AcManager.Tools.Managers.Online {
                 extPort = null;
             }
 
+            name = InvisibleCleanUpRegex.Replace(name, "");
             name = SpacesCollapseRegex.Replace(name.Trim(), " ");
 
             var fixMode = SettingsHolder.Online.FixNamesMode.IntValue ?? 0;
             if (fixMode != 0) {
-                name = SortingCheats2Regex.Replace(name, "");
+                name = SortingFix2Regex.Replace(name, "");
 
                 if (fixMode == 2) {
-                    var v = SortingCheats1Regex.Replace(name, " ");
+                    var v = SortingFix1Regex.Replace(name, " ");
                     if (v != name) {
                         name = SpacesCollapseRegex.Replace(v, " ").Trim();
                     }

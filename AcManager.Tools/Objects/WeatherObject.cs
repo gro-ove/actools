@@ -145,7 +145,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private static WeatherType TryToDetectWeatherTypeById(string id) {
+        public static WeatherType TryToDetectWeatherTypeById(string id) {
             var l = id.ToLower();
 
             if (l.Contains(@"fog")) {

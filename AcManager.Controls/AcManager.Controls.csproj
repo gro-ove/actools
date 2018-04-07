@@ -162,6 +162,7 @@
     <Compile Include="Helpers\ILocalKeyBindings.cs" />
     <Compile Include="Helpers\LocalKeyBindingsController.cs" />
     <Compile Include="Helpers\WeatherPreviewProvider.cs" />
+    <Compile Include="OnlineItem2.cs" />
     <Compile Include="OriginIcon.cs" />
     <Compile Include="Presentation\ExtraProgressRings.cs" />
     <Compile Include="Presentation\TitleLinkEnabledEntry.cs" />

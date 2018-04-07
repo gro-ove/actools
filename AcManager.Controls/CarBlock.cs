@@ -184,7 +184,7 @@ namespace AcManager.Controls {
             if (ShowDescription) {
                 var textBox = new RichTextBox {
                     Margin = new Thickness(0, 8, 0, 0),
-                    Style = (Style)FindResource("RichTextBox.ReadOnly.Small")
+                    Style = (Style)FindResource(@"RichTextBox.Small.ReadOnly")
                 };
 
                 var carDescription = car.Description?.Trim();

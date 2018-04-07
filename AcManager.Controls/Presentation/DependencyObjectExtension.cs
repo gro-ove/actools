@@ -11,8 +11,7 @@ namespace AcManager.Controls.Presentation {
 
             for (var i = 0; i < VisualTreeHelper.GetChildrenCount(depObj); i++) {
                 var child = VisualTreeHelper.GetChild(depObj, i);
-                var children = child as T;
-                if (children != null) {
+                if (child is T children) {
                     yield return children;
                 }
 
@@ -20,6 +19,11 @@ namespace AcManager.Controls.Presentation {
                     yield return childOfChild;
                 }
             }
+        }
+
+        public static T Seal<T>([NotNull] this T depObj) where T : Freezable {
+            depObj.Freeze();
+            return depObj;
         }
     }
 }

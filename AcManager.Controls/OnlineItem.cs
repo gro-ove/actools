@@ -1,83 +1,419 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
-using AcManager.Tools.AcManagersNew;
-using AcManager.Tools.AcObjectsNew;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using System.Windows.Threading;
+using AcManager.Controls.Presentation;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using FirstFloor.ModernUI.Windows.Converters;
+using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    public class OnlineItem : Control {
-        // TODO: add option
-        public static int OptionCarsLimit = 10;
-
-        private const int CarsPoolSize = 50;
-        private const int SessionsPoolSize = 15;
-
-        private Brush _blockText;
-        private Brush _blockTextActive;
-        private Brush _blockBackground;
-        private Brush _blockBackgroundActive;
-
-        private static Style _labelStyle;
-
-        private void InitializeBrushes() {
-            if (_blockText != null) return;
-
-            _blockText = (Brush)FindResource(@"ButtonText");
-            _blockTextActive = (Brush)FindResource(@"ButtonTextPressed");
-            _blockBackground = (Brush)FindResource(@"ButtonBackground");
-            _blockBackgroundActive = (Brush)FindResource(@"ButtonBackgroundPressed");
-
-            if (_labelStyle == null) {
-                _labelStyle = (Style)FindResource(@"Label");
-            }
-        }
+    public class OnlineItem : Panel {
+        private readonly BbCodeBlock _name;
 
         static OnlineItem() {
             AppearanceManager.Instance.ThemeChange += OnThemeChange;
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(OnlineItem), new FrameworkPropertyMetadata(typeof(OnlineItem)));
+            AppearanceManager.Instance.PropertyChanged += OnThemeChange;
+            FileBasedOnlineSources.Instance.Update += OnUserSourcesUpdated;
+            FileBasedOnlineSources.Instance.LabelUpdate += OnUserSourcesUpdated;
+        }
+
+        private static void OnUserSourcesUpdated(object sender, EventArgs e) {
+            CustomIcons.Clear();
+            UpdateAll(s => {
+                s._origins = null;
+                s.UpdateReferences(s._server);
+            });
+        }
+
+        private static void UpdateAll(Action<OnlineItem> callback) {
+            foreach (var item in VisualTreeHelperEx.GetAllOfType<OnlineItem>()) {
+                callback(item);
+                item.Render();
+            }
         }
 
         private static void OnThemeChange(object sender, EventArgs e) {
-            CarsPool.Clear();
-            SessionsPool.Clear();
+            OnlineResources.Reset();
+            ResetResources();
+            ResetIcons();
         }
 
-        private readonly List<Inline> _errorIcons = new List<Inline>(4);
+        public OnlineItem() {
+            Height = 60d;
+            Background = new SolidColorBrush(Colors.Transparent);
+            RenderOptions.SetBitmapScalingMode(this, BitmapScalingMode.LowQuality);
 
-        private Inline GetErrorIconInline() {
-            var c = _errorIcons.Count;
-            if (c > 0) {
-                var result = _errorIcons[c - 1];
-                _errorIcons.RemoveAt(c - 1);
-                return result;
+            _name = new BbCodeBlock {
+                FontSize = 16d,
+                FontWeight = FontWeights.Normal,
+                TextWrapping = TextWrapping.NoWrap,
+                TextTrimming = TextTrimming.CharacterEllipsis,
+                Margin = new Thickness(22, 2, 116, 32),
+                Mode = EmojiSupport.NothingButEmoji
+            };
+            Children.Add(_name);
+        }
+
+        private static bool _scrolling;
+
+        public static void SetScrolling(bool value) {
+            _scrolling = value;
+        }
+
+        private static long _toolTipId;
+        private static string _toolTipKey;
+        private static int _toolTipOwner;
+        private static ToolTip _toolTip;
+        private static DateTime _lastClosed;
+
+        private async void ShowToolTip([CanBeNull] string key, [CanBeNull] Func<object> contentFn, [CanBeNull] Func<object> contextFn = null) {
+            var owner = GetHashCode();
+            if (_toolTipKey == key && _toolTipOwner == owner) {
+                return;
             }
 
-            return (Inline)TryFindResource(@"WarningIconInline");
+            var id = ++_toolTipId;
+            if (key == null) {
+                if (owner == _toolTipOwner) {
+                    _toolTipKey = null;
+                    if (_toolTip != null) {
+                        _toolTip.IsOpen = false;
+                        _toolTip.Content = null;
+                        _toolTip = null;
+                        _lastClosed = DateTime.Now;
+                    }
+                }
+
+                return;
+            }
+
+            _toolTipOwner = owner;
+            _toolTipKey = key;
+
+            if (_toolTip != null) {
+                _toolTip.IsOpen = false;
+                _toolTip.Content = null;
+                _toolTip = null;
+                // _lastClosed = DateTime.Now;
+            }
+
+            _toolTip = new ToolTip();
+
+            if (contentFn != null) {
+                if (DateTime.Now - _lastClosed > TimeSpan.FromMilliseconds(300)) {
+                    await Task.Delay(300);
+                }
+
+                if (id == _toolTipId && _toolTip != null) {
+                    var content = contentFn();
+                    if (content is ToolTip toolTip) {
+                        var child = toolTip.Content;
+                        if (child is FrameworkElement fe) {
+                            fe.DataContext = contextFn?.Invoke() ?? _server;
+                        }
+                        toolTip.Content = null;
+                        _toolTip.Content = child;
+                    } else {
+                        _toolTip.Content = content is string s ? new BbCodeBlock {
+                            Text = s,
+                            MaxWidth = 400
+                        } : content;
+                    }
+                    _toolTip.IsOpen = true;
+                }
+            }
         }
 
-        private void ReleaseErrorIconInline(Inline released) {
-            _errorIcons.Add(released);
+        private void ShowContextMenu([CanBeNull] ContextMenu menu) {
+            if (menu != null) {
+                menu.IsOpen = true;
+            }
+        }
+
+        protected override void OnPreviewMouseRightButtonUp(MouseButtonEventArgs e) {
+            if (_scrolling) return;
+
+            var size = _size;
+            var width = size.Width;
+
+            var pos = this.GetMousePosition();
+            var handled = e.Handled;
+            e.Handled = true;
+
+            if (!_fullyLoaded) return;
+
+            if (GetTrackRect().Contains(pos)) {
+                ShowContextMenu(_currentTrack == null ? null : ContextMenus.GetTrackContextMenu(null, _currentTrack));
+                return;
+            }
+
+            var carsOffset = _wideMode ? 324d : 240d;
+            if (GetCarsRect(carsOffset, width).Contains(pos)) {
+                var cars = _cars;
+                for (var i = 0; i < cars.Length; i++) {
+                    var c = cars[i];
+                    if (c == null || carsOffset > width) break;
+
+                    var rect = new Rect(carsOffset, 34, c.Item1.Width + (c.Item2 ? 8 : 24), 22);
+                    if (rect.Contains(pos)) {
+                        var car = _server.Cars?.ElementAtOrDefault(i);
+                        ShowContextMenu(car?.CarObject == null ? null : ContextMenus.GetCarContextMenu(null, car.CarObject, car.AvailableSkin));
+                        return;
+                    }
+                    carsOffset += rect.Width + 8;
+                }
+            }
+
+            e.Handled = handled;
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e) {
+            if (_scrolling) return;
+
+            var size = _size;
+            var width = size.Width;
+
+            var pos = this.GetMousePosition();
+
+            var referenceIconOffset = 22d;
+            for (var i = 0; i < _icons.Length; i++) {
+                var icon = _icons[i];
+                if (icon == null) break;
+
+                var iconWidth = icon.Width;
+                var rect = new Rect(referenceIconOffset, 5, iconWidth, ReferenceIconSize);
+                if (rect.Contains(pos)) {
+                    ShowToolTip($@"ref:{i}", () => _iconToolTips.ArrayElementAtOrDefault(i));
+                    return;
+                }
+                referenceIconOffset += iconWidth + ReferenceIconMargin;
+            }
+
+            if (!_fullyLoaded) return;
+
+            var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
+            var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
+            if (pieces > 0) {
+                const double iconHeight = 12d;
+                const double iconMargin = 4d;
+                if (_bookedForPlayer) {
+                    if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
+                        ShowToolTip(@"iconBooked", () => "There is a place booked for you");
+                    }
+                    iconOffset += iconHeight + iconMargin;
+                }
+                if (_passwordRequired) {
+                    if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
+                        ShowToolTip(@"iconPassword", () => ControlsStrings.Online_PasswordRequired);
+                    }
+                }
+                if (_hasFriends) {
+                    if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
+                        ShowToolTip(@"iconFriends", () => "Your friend is here");
+                    }
+                    iconOffset += iconHeight + iconMargin;
+                }
+            }
+
+            if (new Rect(width - 80, 0, 40, 30).Contains(pos)) {
+                ShowToolTip(@"clients", () => FindStaticResource<ToolTip>(@"ClientsTooltip"));
+                return;
+            }
+
+            if (new Rect(width - 40, 0, 40, 30).Contains(pos)) {
+                if (_errorFlag) {
+                    ShowToolTip(@"error", () => _server.ErrorsString?.Trim());
+                } else {
+                    ShowToolTip(@"ping", () => $"Ping: {(_server.Ping.HasValue ? _server.Ping + " ms" : "not checked yet")}");
+                }
+                return;
+            }
+
+            if (GetCountryRect(width).Contains(pos)) {
+                ShowToolTip(@"country", () => _server.Country);
+                return;
+            }
+
+            if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
+                ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}");
+                return;
+            }
+
+            if (GetTrackRect().Contains(pos)) {
+                ShowToolTip(@"track", () => FindStaticResource<ToolTip>(@"TrackPreviewTooltip.Online"));
+                return;
+            }
+
+            if (new Rect(146d, 35, _sessionsCount * 20 + (_wideMode ? 84d : 0), 20).Contains(pos)) {
+                ShowToolTip(@"sessions", () => FindStaticResource<ToolTip>(@"SessionsItemTooltip"));
+                return;
+            }
+
+            var carsOffset = _wideMode ? 324d : 240d;
+            if (GetCarsRect(carsOffset, width).Contains(pos)) {
+                var cars = _cars;
+                for (var i = 0; i < cars.Length; i++) {
+                    var c = cars[i];
+                    if (c == null || carsOffset > width) break;
+
+                    var rect = new Rect(carsOffset, 34, c.Item1.Width + (c.Item2 ? 8 : 24), 22);
+                    if (rect.Contains(pos)) {
+                        ShowToolTip($@"car:{i}", () => FindStaticResource<ToolTip>(@"CarPreviewTooltip.Online"),
+                                () => _server.Cars?.ElementAtOrDefault(i));
+                        return;
+                    }
+                    carsOffset += rect.Width + 8;
+                }
+            }
+
+            ShowToolTip(null, null);
+        }
+
+        private static Rect GetCarsRect(double carsOffset, double width) {
+            return new Rect(carsOffset, 34, width - carsOffset, 22);
+        }
+
+        private static Rect GetTrackRect() {
+            return new Rect(20, 30, 120, 30);
+        }
+
+        protected override void OnMouseLeave(MouseEventArgs e) {
+            ShowToolTip(null, null);
+        }
+
+        public static readonly DependencyProperty ServerProperty = DependencyProperty.Register(nameof(Server), typeof(ServerEntry),
+                typeof(OnlineItem), new PropertyMetadata(null, (o, e) => ((OnlineItem)o).SetServer((ServerEntry)e.NewValue)));
+
+        private bool _dirty;
+        private ServerEntry _server;
+
+        public ServerEntry Server {
+            get => _server;
+            set => SetValue(ServerProperty, value);
+        }
+
+        private void SetServer(ServerEntry server) {
+            OnServerChanged(_server, server);
+            _server = server;
+            _dirty = true;
+            Render();
+            RenderTimeLeft();
+        }
+
+        private static Style _labelStyle;
+        private static SolidColorBrush _areaBrush;
+        private static Typeface _typeface, _labelTypeface;
+        private static Brush _blockText, _blockTextActive, _blockBackground, _blockBackgroundActive;
+        private static BitmapSource _alertIcon, _passwordIcon, _bookedIcon, _friendsIcon;
+        private static TextFormattingMode _formattingMode;
+        private static Brush _foreground, _hint;
+
+        private void InitializeResources() {
+            if (_labelStyle != null) return;
+
+            _labelStyle = FindStaticResource<Style>(@"Label");
+            _areaBrush = new SolidColorBrush(Color.FromArgb(0x11, 0x88, 0x88, 0x88)).Seal();
+            _typeface = new Typeface(new FontFamily(@"Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
+            _labelTypeface = new Typeface(
+                    new FontFamily(new Uri(@"pack://application:,,,/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed", UriKind.Absolute),
+                            @"Segoe Condensed Bold"),
+                    FontStyles.Normal, FontWeights.Bold, FontStretches.Normal);
+
+            _blockText = FindStaticResource<Brush>(@"ButtonText");
+            _blockTextActive = FindStaticResource<Brush>(@"ButtonTextPressed");
+            _blockBackground = FindStaticResource<Brush>(@"ButtonBackground");
+            _blockBackgroundActive = FindStaticResource<Brush>(@"ButtonBackgroundPressed");
+
+            _alertIcon = ToBitmap(@"AlertIconData", @"Error");
+            _passwordIcon = ToBitmap(@"LockIconData", @"WindowText");
+            _bookedIcon = ToBitmap(@"TriangleFlagIconData", @"Go");
+            _friendsIcon = ToBitmap(@"MultiplePeopleIconData", @"WindowText");
+
+            _foreground = (Brush)GetValue(TextBlock.ForegroundProperty);
+            _hint = _foreground is SolidColorBrush solidColorBrush ? GetHalfTransparent(solidColorBrush) : _foreground;
+            _formattingMode = GetValue(TextOptions.TextFormattingModeProperty) as TextFormattingMode? ?? TextFormattingMode.Display;
+        }
+
+        private static void ResetResources() {
+            _labelStyle = null;
+            _pingPostfix = null;
+        }
+
+        private void Update() {
+            if (!_dirty) return;
+            _dirty = false;
+
+            InitializeResources();
+            InitializeStatic();
+
+            var server = _server;
+            UpdateName(server);
+            UpdateReferences(server);
+            UpdateFullyLoaded(server);
+            UpdatePasswordState(server);
+            UpdateBookedState(server);
+            UpdateFriendsState(server);
+            UpdatePing(server);
+            UpdateTimeLeft(server);
+            UpdateDisplayClients(server);
+            UpdateCountryFlag(server);
+            UpdateErrorFlag(server);
+            UpdateTrack(server);
+            UpdateCars(server);
+            UpdateSessions(server);
+        }
+
+        private const int MaxReferenceIcons = 6;
+        private const int MaxCarsCount = 10;
+        private const int MaxSessionsCount = 4;
+
+        private static double _textHeight, _textPadding;
+
+        [CanBeNull]
+        private static FormattedText _pingPostfix;
+
+        [CanBeNull]
+        private FormattedText _displayClients, _pingValue, _timeLeft, _track;
+
+        [CanBeNull]
+        private TrackObjectBase _currentTrack;
+
+        private BetterImage.BitmapEntry _countryBitmap;
+        private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends;
+        private int _sessionsCount;
+
+        [NotNull]
+        private readonly Tuple<FormattedText, bool>[] _cars = new Tuple<FormattedText, bool>[MaxCarsCount],
+                _sessions = new Tuple<FormattedText, bool>[MaxSessionsCount];
+
+        private static void InitializeStatic() {
+            if (_pingPostfix == null) {
+                _pingPostfix = GetText(ControlsStrings.Common_MillisecondsPostfix ?? string.Empty, isHint: true);
+                _textHeight = _pingPostfix.Height;
+                _textPadding = (30 - _textHeight) / 2;
+            }
         }
 
         public static readonly DependencyProperty HideSourceIconsProperty = DependencyProperty.Register(nameof(HideSourceIcons), typeof(string[]),
-                typeof(OnlineItem), new PropertyMetadata(null, (o, e) => {
-                    ((OnlineItem)o)._hideSourceIcons = (string[])e.NewValue;
-                }));
+                typeof(OnlineItem), new PropertyMetadata(null, (o, e) => ((OnlineItem)o)._hideSourceIcons = (string[])e.NewValue));
 
+        [CanBeNull]
         private string[] _hideSourceIcons;
 
         /// <summary>
@@ -88,698 +424,583 @@ namespace AcManager.Controls {
             set => SetValue(HideSourceIconsProperty, value);
         }
 
-        private Inline _minoratingIcon;
+        private static readonly Lazier<BitmapSource> MinoratingIcon = Lazier.Create(() => ToBitmap(@"MinoratingIcon", 0, ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> LanIcon = Lazier.Create(() => ToBitmap(@"LanIcon", ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> FavouritesIcon = Lazier.Create(() => ToBitmap(@"FavouriteIcon", ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> HiddenIcon = Lazier.Create(() => ToBitmap(@"HiddenIcon", ReferenceIconSize));
+        private static readonly Lazier<BitmapSource> RecentIcon = Lazier.Create(() => ToBitmap(@"RecentIcon", ReferenceIconSize));
+        private static readonly Dictionary<string, Tuple<BitmapSource, string>> CustomIcons = new Dictionary<string, Tuple<BitmapSource, string>>();
 
-        private Inline GetMinoratingIconInline() {
-            return _minoratingIcon ?? (_minoratingIcon = (Inline)TryFindResource(@"MinoratingIconInline"));
+        private static void ResetIcons() {
+            MinoratingIcon.Reset();
+            LanIcon.Reset();
+            FavouritesIcon.Reset();
+            HiddenIcon.Reset();
+            RecentIcon.Reset();
+            CustomIcons.Clear();
         }
-
-        private Inline _lanIcon;
-
-        private Inline GetLanIconInline() {
-            return _lanIcon ?? (_lanIcon = (Inline)TryFindResource(@"LanIconInline"));
-        }
-
-        private Inline _favouritesIcon;
-
-        private Inline GetFavouritesIconInline() {
-            return _favouritesIcon ?? (_favouritesIcon = (Inline)TryFindResource(@"FavouriteIconInline"));
-        }
-
-        private Inline _hiddenIcon;
-
-        private Inline GetHiddenIconInline() {
-            return _hiddenIcon ?? (_hiddenIcon = (Inline)TryFindResource(@"HiddenIconInline"));
-        }
-
-        private Inline _recentIcon;
-
-        private Inline GetRecentIconInline() {
-            return _recentIcon ?? (_recentIcon = (Inline)TryFindResource(@"RecentIconInline"));
-        }
-
-        public static readonly DependencyProperty ServerProperty = DependencyProperty.Register(nameof(Server), typeof(ServerEntry),
-                typeof(OnlineItem), new PropertyMetadata(OnServerChanged));
-
-        public ServerEntry Server {
-            get => (ServerEntry)GetValue(ServerProperty);
-            set => SetValue(ServerProperty, value);
-        }
-
-        private static void OnServerChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
-            try {
-                ((OnlineItem)o).OnServerChanged((ServerEntry)e.OldValue, (ServerEntry)e.NewValue);
-            } catch (Exception ex) {
-                Logging.Error(ex);
-            }
-        }
-
-        private readonly Dictionary<string, Inline> _customIcons = new Dictionary<string, Inline>();
 
         [CanBeNull]
-        private Inline GetIcon(string originId) {
-            if (_hideSourceIcons != null && Array.IndexOf(_hideSourceIcons, originId) != -1) return null;
+        private BitmapSource GetReferenceIcon(string originId, out string toolTip) {
+            if (_hideSourceIcons != null && Array.IndexOf(_hideSourceIcons, originId) != -1) {
+                toolTip = null;
+                return null;
+            }
 
             switch (originId) {
                 case FileBasedOnlineSources.FavouritesKey:
-                    return GetFavouritesIconInline();
+                    toolTip = "Favourite";
+                    return FavouritesIcon.Value;
                 case FileBasedOnlineSources.HiddenKey:
-                    return GetHiddenIconInline();
+                    toolTip = "Hidden";
+                    return HiddenIcon.Value;
                 case FileBasedOnlineSources.RecentKey:
-                    return GetRecentIconInline();
+                    toolTip = "Recently used";
+                    return RecentIcon.Value;
                 case MinoratingOnlineSource.Key:
-                    return GetMinoratingIconInline();
+                    toolTip = "Minorating";
+                    return MinoratingIcon.Value;
                 case LanOnlineSource.Key:
-                    return GetLanIconInline();
+                    toolTip = "LAN";
+                    return LanIcon.Value;
                 case KunosOnlineSource.Key:
+                    toolTip = null;
                     return null;
                 default:
-                    if (!_customIcons.TryGetValue(originId, out var result)) {
+                    if (!CustomIcons.TryGetValue(originId, out var result)) {
                         var information = FileBasedOnlineSources.Instance.GetInformation(originId);
+                        if (string.IsNullOrWhiteSpace(information?.Label)) {
+                            toolTip = null;
+                            return null;
+                        }
 
                         var baseIcon = (Decorator)TryFindResource(@"BaseIcon");
                         if (baseIcon == null) {
+                            toolTip = null;
                             return null;
                         }
 
                         var text = (BbCodeBlock)baseIcon.Child;
-
-                        text.SetBinding(BbCodeBlock.TextProperty, new Binding {
-                            Path = new PropertyPath(nameof(information.Label)),
-                            Source = information
-                        });
-
-                        text.SetBinding(TextBlock.ForegroundProperty, new Binding {
-                            Path = new PropertyPath(nameof(information.Color)),
-                            TargetNullValue = new SolidColorBrush(Colors.White),
-                            Converter = ColorPicker.ColorToBrushConverter,
-                            Source = information
-                        });
-
-                        var block = new Border {
-                            Margin = (Thickness)TryFindResource(@"InlineIconMargin"),
-                            Child = baseIcon
-                        };
-
-                        block.SetBinding(VisibilityProperty, new Binding {
-                            Path = new PropertyPath(nameof(information.Label)),
-                            Source = information,
-                            Converter = new NullToVisibilityConverter(),
-                            ConverterParameter = @"inverse"
-                        });
-
-                        result = new InlineUIContainer { Child = block };
-                        _customIcons[originId] = result;
+                        text.Text = information.Label;
+                        text.Foreground = new SolidColorBrush(information.Color ?? Colors.White);
+                        text.ForceUpdate();
+                        result = Tuple.Create(ToBitmap(baseIcon, 0, ReferenceIconSize), originId.ToTitle());
+                        CustomIcons[originId] = result;
                     }
 
-                    return result;
+                    toolTip = result.Item2;
+                    return result.Item1;
             }
         }
 
         private string _origins;
-        private Span _icons;
 
-        private void UpdateName(ServerEntry n) {
-            if (n.ReferencesString != _origins) {
-                _origins = n.ReferencesString;
-
-                var icons = n.GetReferencesIds().Select(GetIcon).NonNull().ToList();
-                if (icons.Any()) {
-                    _icons = new Span();
-                    _icons.Inlines.AddRange(icons);
-                } else {
-                    _icons = null;
-                }
-            }
-
-            if (_icons == null) {
-                _nameText.Text = n.DisplayName;
-            } else {
-                var inlines = _nameText.Inlines;
-                inlines.Clear();
-                inlines.Add(_icons);
-                inlines.Add(BbCodeBlock.ParseEmoji(n.DisplayName, false, this));
-            }
+        private void UpdateName(ServerEntry server) {
+            _name.Text = server.DisplayName;
         }
 
-        private void UpdateCountryFlag(ServerEntry n) {
-            if (_hideSourceIcons == null || Array.IndexOf(_hideSourceIcons, LanOnlineSource.Key) == -1) {
-                _countryFlagImage.Country = n.CountryId;
-            } else if (_countryFlagImage.Visibility != Visibility.Hidden) {
-                _countryFlagImage.Visibility = Visibility.Collapsed;
+        private readonly BitmapSource[] _icons = new BitmapSource[MaxReferenceIcons];
+        private readonly string[] _iconToolTips = new string[MaxReferenceIcons];
+        private int _iconsCount;
 
-                var margin = _nameText.Margin;
-                _nameText.Margin = new Thickness(margin.Left, margin.Top, margin.Right - 28, margin.Bottom);
-            }
-        }
+        private const int ReferenceIconSize = 18;
+        private const int ReferenceIconHeight = 12;
+        private const int ReferenceIconMargin = 4;
 
-        private TrackObjectBase _bindedTrack;
+        private void UpdateReferences(ServerEntry server) {
+            if (server.ReferencesString != _origins) {
+                _origins = server.ReferencesString;
 
-        private void UpdateTrack(ServerEntry n) {
-            if (_bindedTrack != null) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(_bindedTrack, nameof(INotifyPropertyChanged.PropertyChanged),
-                        BindedTrack_PropertyChanged);
-            }
+                var list = server.GetReferencesIds();
+                var index = 0;
+                var totalWidth = 0d;
 
-            var existingIcon = _trackNameText.Inlines.FirstInline as InlineUIContainer;
-
-            _bindedTrack = n.Track;
-            if (_bindedTrack != null) {
-                _trackNameText.Text = _bindedTrack.Name;
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(_bindedTrack, nameof(INotifyPropertyChanged.PropertyChanged),
-                        BindedTrack_PropertyChanged);
-            } else if (n.TrackId != null) {
-                _trackNameText.Inlines.Clear();
-                _trackNameText.Inlines.AddRange(new [] {
-                    existingIcon ?? GetErrorIconInline(),
-                    new Run { Text = n.TrackId }
-                }.NonNull());
-                return;
-            } else {
-                _trackNameText.Text = "No information";
-            }
-
-            if (existingIcon != null) {
-                ReleaseErrorIconInline(existingIcon);
-            }
-        }
-
-        private void BindedTrack_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(TrackObjectBase.Name) && _bindedTrack != null) {
-                _trackNameText.Text = _bindedTrack.Name;
-            }
-        }
-
-        private static readonly List<TextBlock> SessionsPool = new List<TextBlock>(SessionsPoolSize);
-
-        private void UpdateSession(TextBlock child, ServerEntry.Session session) {
-            if (ReferenceEquals(child.DataContext, session)) return;
-
-            if (_scrolling) {
-                _sessionsTooltipsSet = false;
-                child.ToolTip = null;
-            }
-
-            child.DataContext = session;
-            child.Text = session.DisplayTypeShort;
-            if (session.IsActive) {
-                child.Foreground = _blockTextActive;
-                child.Background = _blockBackgroundActive;
-            } else {
-                child.Foreground = _blockText;
-                child.Background = _blockBackground;
-            }
-        }
-
-        private void UpdateSessions(ServerEntry n) {
-            InitializeBrushes();
-
-            var array = n.Sessions;
-            var children = _sessionsPanel.Children;
-            for (var i = children.Count - array?.Count ?? children.Count; i > 0; i--) {
-                var last = children.Count - 1;
-                if (SessionsPool.Count < SessionsPoolSize) {
-                    SessionsPool.Add((TextBlock)children[last]);
-                }
-                children.RemoveAt(last);
-            }
-
-            if (array == null) return;
-            for (var i = 0; i < array.Count; i++) {
-                TextBlock child;
-                if (i < children.Count) {
-                    child = (TextBlock)children[i];
-                } else {
-                    if (SessionsPool.Count > 0) {
-                        var last = SessionsPool.Count - 1;
-                        child = SessionsPool[last];
-                        SessionsPool.RemoveAt(last);
-                    } else {
-                        child = new TextBlock {
-                            TextAlignment = TextAlignment.Center,
-                            Style = _labelStyle,
-                            Padding = new Thickness(0, 2, 0, 0),
-                            Height = 20d,
-                            Width = 20d
-                        };
+                for (var i = 0; i < list.Count && index < MaxReferenceIcons; i++) {
+                    var icon = GetReferenceIcon(list[i], out var toolTip);
+                    if (icon != null) {
+                        _icons[index] = icon;
+                        _iconToolTips[index++] = toolTip;
+                        totalWidth += icon.Width + ReferenceIconMargin;
                     }
-
-                    children.Add(child);
                 }
 
-                UpdateSession(child, array[i]);
-            }
-        }
-
-        private static readonly List<TextBlockBindable> CarsPool = new List<TextBlockBindable>(CarsPoolSize);
-
-        private class TextBlockBindable : BbCodeBlock {
-            internal CarDisplayNameBind Bind;
-        }
-
-        private class CarDisplayNameBind : IDisposable {
-            private readonly BbCodeBlock _text;
-            private readonly AcItemWrapper _wrapper;
-
-            public AcItemWrapper Wrapper => _wrapper;
-
-            public CarDisplayNameBind(BbCodeBlock text, AcItemWrapper wrapper) {
-                _text = text;
-                _wrapper = wrapper;
-
-                WeakEventManager<AcItemWrapper, WrappedValueChangedEventArgs>.AddHandler(wrapper, nameof(AcItemWrapper.ValueChanged), Wrapper_ValueChanged);
-                if (wrapper.IsLoaded) {
-                    WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(wrapper.Value, nameof(INotifyPropertyChanged.PropertyChanged),
-                            Value_PropertyChanged);
+                _iconsCount = index;
+                for (; index < MaxReferenceIcons; index++) {
+                    _icons[index] = null;
                 }
 
-                _text.Text = wrapper.Value.DisplayName;
-            }
-
-            private void Wrapper_ValueChanged(object sender, WrappedValueChangedEventArgs args) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(args.OldValue, nameof(INotifyPropertyChanged.PropertyChanged),
-                        Value_PropertyChanged);
-
-                var wrapper = (AcItemWrapper)sender;
-                if (wrapper.IsLoaded) {
-                    WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(args.NewValue, nameof(INotifyPropertyChanged.PropertyChanged),
-                            Value_PropertyChanged);
-                }
-
-                _text.Text = args.NewValue.DisplayName;
-            }
-
-            private void Value_PropertyChanged(object sender, PropertyChangedEventArgs e) {
-                if (e.PropertyName == nameof(AcPlaceholderNew.DisplayName)) {
-                    _text.Text = ((AcPlaceholderNew)sender).DisplayName;
-                }
-            }
-
-            public void Dispose() {
-                WeakEventManager<AcItemWrapper, WrappedValueChangedEventArgs>.RemoveHandler(_wrapper, nameof(AcItemWrapper.ValueChanged), Wrapper_ValueChanged);
-                if (_wrapper.IsLoaded) {
-                    WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(_wrapper.Value, nameof(INotifyPropertyChanged.PropertyChanged),
-                            Value_PropertyChanged);
-                }
-            }
-        }
-
-        private void UpdateCar(TextBlockBindable child, ServerEntry.CarEntry car) {
-            if (ReferenceEquals(car, child.DataContext) &&
-                    // Additional check, in case CarObjectWrapper changed
-                    ReferenceEquals(child.Bind?.Wrapper, car.CarObjectWrapper)) {
-                return;
-            }
-
-            InitializeBrushes();
-
-            DisposeHelper.Dispose(ref child.Bind);
-            if (_scrolling) {
-                _carsTooltipsSet = false;
-                child.ToolTip = null;
-            }
-
-            var existingIcon = child.Inlines.FirstInline as InlineUIContainer;
-
-            child.DataContext = car;
-            var wrapper = car.CarObjectWrapper;
-            if (wrapper != null) {
-                child.Bind = new CarDisplayNameBind(child, wrapper);
-            } else {
-                child.Inlines.Clear();
-                child.Inlines.AddRange(new [] {
-                    existingIcon ?? GetErrorIconInline(),
-                    new Run { Text = car.Id }
-                }.NonNull());
-                return;
-            }
-
-            if (existingIcon != null) {
-                ReleaseErrorIconInline(existingIcon);
-            }
-        }
-
-        private static Style _smallStyle;
-
-        private void UpdateCars(ServerEntry n) {
-            var array = n.Cars;
-            var children = _carsPanel.Children;
-            var carsCount = Math.Min(array?.Count ?? 0, OptionCarsLimit);
-
-            for (var i = children.Count - carsCount; i > 0; i--) {
-                var last = children.Count - 1;
-                var child = (TextBlockBindable)children[last];
-                DisposeHelper.Dispose(ref child.Bind);
-
-                if (CarsPool.Count < CarsPoolSize) {
-                    CarsPool.Add(child);
-                }
-                children.RemoveAt(last);
-            }
-
-            if (array == null) return;
-            for (var i = 0; i < carsCount; i++) {
-                TextBlockBindable child;
-                if (i < children.Count) {
-                    child = (TextBlockBindable)children[i];
-                } else {
-                    if (CarsPool.Count > 0) {
-                        var last = CarsPool.Count - 1;
-                        child = CarsPool[last];
-                        CarsPool.RemoveAt(last);
-                    } else {
-                        if (_smallStyle == null) {
-                            _smallStyle = (Style)FindResource(@"Small");
-                        }
-
-                        child = new TextBlockBindable {
-                            Style = _smallStyle,
-                            Margin = new Thickness(4, 0, 4, 0),
-                            Padding = new Thickness(2),
-                            Height = 20d,
-                            Foreground = _blockText,
-                            Background = _blockBackground
-                        };
-                    }
-
-                    children.Add(child);
-                }
-
-                UpdateCar(child, array[i]);
+                _name.Padding = new Thickness(_iconsCount > 0 ? 4 + totalWidth : 0, 0, 0, 0);
+                Render();
             }
         }
 
         private void UpdateFullyLoaded(ServerEntry n) {
-            if (_passwordIcon == null) return;
-
-            var loaded = n.IsFullyLoaded;
-            var visibility = loaded ? Visibility.Visible : Visibility.Collapsed;
-            if (visibility == _countryFlagImage.Visibility) return;
-
-            _nameText.FontStyle = loaded ? FontStyles.Normal : FontStyles.Italic;
-
-            if (!n.FromLan) {
-                _countryName.Visibility = visibility;
-                _countryFlagImage.Visibility = visibility;
-            }
-
-            _pingText.Visibility = visibility;
-            _clientsText.Visibility = visibility;
-
-            if (_timeLeftText != null) {
-                _timeLeftText.Visibility = visibility;
-            }
+            if (_fullyLoaded == n.IsFullyLoaded) return;
+            _fullyLoaded = n.IsFullyLoaded;
+            _name.FontStyle = _fullyLoaded ? FontStyles.Normal : FontStyles.Italic;
         }
-
-        private void UpdateErrorFlag(ServerEntry n) {
-            _hasErrorsGroup.Value = n.HasErrors || !n.IsFullyLoaded;
-        }
-
-        private bool? _password;
 
         private void UpdatePasswordState(ServerEntry n) {
-            if (_password != n.PasswordRequired) {
-                if (_passwordIcon != null) {
-                    _password = n.PasswordRequired;
-                    _passwordIcon.Visibility = n.PasswordRequired ? Visibility.Visible : Visibility.Collapsed;
-                }
-            } else if (_passwordIcon == null) {
-                _password = null;
-            }
+            _passwordRequired = n.PasswordRequired;
         }
-
-        private bool _friends;
-
-        private void UpdateFriendsState(ServerEntry n) {
-            if (_friends != n.HasFriends) {
-                _friends = n.HasFriends;
-                _friendsIcon.Visibility = _friends ? Visibility.Visible : Visibility.Collapsed;
-            }
-        }
-
-        private bool _bookedForPlayer;
 
         private void UpdateBookedState(ServerEntry n) {
-            if (_bookedForPlayer != n.IsBookedForPlayer) {
-                _bookedForPlayer = n.IsBookedForPlayer;
-                _bookedIcon.Visibility = _bookedForPlayer ? Visibility.Visible : Visibility.Collapsed;
-                if (_bookedForPlayer) {
-                    _nameText.SetValue(TextBlock.ForegroundProperty, (Brush)TryFindResource(@"Go"));
+            _bookedForPlayer = n.IsBookedForPlayer;
+        }
+
+        private void UpdateFriendsState(ServerEntry n) {
+            _hasFriends = n.HasFriends;
+        }
+
+        private void UpdateDisplayClients(ServerEntry server) {
+            _displayClients = GetText(server.DisplayClients, TextAlignment.Center, 32d);
+        }
+
+        private void UpdatePing(ServerEntry server) {
+            _pingValue = GetText(server.Ping?.ToString() ?? @"?");
+        }
+
+        private void UpdateTimeLeft(ServerEntry server) {
+            _timeLeft = GetText(server.DisplayTimeLeft);
+        }
+
+        private void UpdateCountryFlag(ServerEntry server) {
+            _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result;
+        }
+
+        private void UpdateErrorFlag(ServerEntry server) {
+            _errorFlag = server.HasErrors || !server.IsFullyLoaded;
+        }
+
+        private void UpdateTrack(ServerEntry server) {
+            var track = server.Track;
+            if (ReferenceEquals(_currentTrack, track)) return;
+
+            _currentTrack = track;
+            var trackLabel = track?.Name ?? server.TrackId;
+            _track = trackLabel == null
+                    ? GetText("No information", maxWidth: 120)
+                    : GetText(trackLabel, maxWidth: track == null ? 104 : 120);
+        }
+
+        private void UpdateCars(ServerEntry server) {
+            var c = server.Cars;
+            var i = 0;
+            if (c != null) {
+                for (; i < MaxCarsCount && i < c.Count; i++) {
+                    var x = c[i];
+                    _cars[i] = Tuple.Create(GetText(x.CarObject?.DisplayName ?? x.Id, isBlock: true), x.CarExists);
+                }
+            }
+
+            for (; i < MaxCarsCount; i++) {
+                _cars[i] = null;
+            }
+
+            _blocks = null;
+        }
+
+        private void UpdateSessions(ServerEntry server) {
+            var c = server.Sessions;
+            var i = 0;
+            if (c != null) {
+                for (; i < MaxSessionsCount && i < c.Count; i++) {
+                    var x = c[i];
+                    _sessions[i] = Tuple.Create(GetText(x.DisplayTypeShort, isBlock: true, isLabel: true, isHint: x.IsActive), x.IsActive);
+                }
+            }
+
+            _sessionsCount = i;
+            for (; i < MaxSessionsCount; i++) {
+                _sessions[i] = null;
+            }
+
+            _blocks = null;
+        }
+
+        private static readonly NumberSubstitution NumberSubstitution = new NumberSubstitution();
+
+        [ContractAnnotation(@"text: null => null; text: notnull => notnull")]
+        private static FormattedText GetText([CanBeNull] string text, TextAlignment textAlignment = TextAlignment.Left, double maxWidth = double.NaN,
+                bool isHint = false, bool isBlock = false, bool isLabel = false) {
+            if (text == null) return null;
+            var formattedText = new FormattedText(text, CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
+                    isLabel ? _labelTypeface : _typeface, isLabel ? 12d : 11d,
+                    isBlock ? isHint ? _blockTextActive : _blockText : isHint ? _hint : _foreground,
+                    NumberSubstitution, _formattingMode) {
+                        Trimming = TextTrimming.CharacterEllipsis,
+                        TextAlignment = textAlignment,
+                        MaxLineCount = 1
+                    };
+            if (!double.IsNaN(maxWidth)) {
+                formattedText.MaxTextWidth = maxWidth;
+            }
+
+            return formattedText;
+        }
+
+        private Size _size;
+        private bool _onceMeasured;
+
+        protected override Size MeasureOverride(Size constraint) {
+            if (_size != constraint) {
+                _size = constraint;
+                _onceMeasured = false;
+                _blocks = null;
+                _wideMode = constraint.Width > 600d;
+            }
+
+            if (!_onceMeasured) {
+                _onceMeasured = true;
+                _name.Measure(constraint);
+            }
+
+            return constraint;
+        }
+
+        protected override Size ArrangeOverride(Size arrangeBounds) {
+            Update();
+
+            var rect = new Rect(arrangeBounds);
+            _name.Arrange(rect);
+            return arrangeBounds;
+        }
+
+        private static SolidColorBrush GetHalfTransparent(SolidColorBrush solidColorBrush1) {
+            var result = new SolidColorBrush(solidColorBrush1.Color) { Opacity = 0.5 };
+            result.Freeze();
+            return result;
+        }
+
+        private static readonly Lazier<ResourceDictionary> OnlineResources = Lazier.Create(() => {
+            var result = new ResourceDictionary {
+                Source = new Uri("/AcManager.Controls;component/Assets/OnlineSpecific.xaml", UriKind.Relative)
+            };
+            result.MergedDictionaries.Add(Application.Current.Resources);
+            return result;
+        });
+
+        [CanBeNull]
+        private static T FindStaticResource<T>(object key) where T : class {
+            return OnlineResources.RequireValue[key] as T;
+        }
+
+        [CanBeNull]
+        private static BitmapSource ToBitmap(string iconKey, string colorKey, int width = 12, int height = -1) {
+            return ToBitmap(new Path {
+                Data = FindStaticResource<Geometry>(iconKey),
+                Fill = FindStaticResource<Brush>(colorKey),
+                Stretch = Stretch.Uniform
+            }, width, height);
+        }
+
+        [CanBeNull]
+        private static BitmapSource ToBitmap(string resourceKey, int width = 12, int height = -1) {
+            return ToBitmap(FindStaticResource<FrameworkElement>(resourceKey), width, height);
+        }
+
+        [CanBeNull]
+        private static BitmapSource ToBitmap(FrameworkElement block, int width = 12, int height = -1) {
+            if (block == null) {
+                return null;
+            }
+
+            if (height == -1) {
+                height = width;
+            }
+
+            var size = new Size(width == 0 ? double.PositiveInfinity : width, height == 0 ? double.PositiveInfinity : height);
+            block.Measure(size);
+
+            if (double.IsPositiveInfinity(size.Width)) {
+                size.Width = block.DesiredSize.Width;
+            }
+
+            if (double.IsPositiveInfinity(size.Height)) {
+                size.Height = block.DesiredSize.Height;
+            }
+
+            block.Arrange(new Rect(size));
+            block.ApplyTemplate();
+            block.UpdateLayout();
+
+            var renderWidth = (int)(size.Width * AppearanceManager.Instance.BitmapCacheScale).Ceiling();
+            var renderHeight = (int)(size.Height * AppearanceManager.Instance.BitmapCacheScale).Ceiling();
+            var renderDpi = 96 * AppearanceManager.Instance.BitmapCacheScale;
+            var bmp = new RenderTargetBitmap(renderWidth, renderHeight, renderDpi, renderDpi, PixelFormats.Pbgra32);
+            bmp.Render(block);
+            return bmp;
+        }
+
+        private StreamGeometry _blocks;
+
+        private readonly DrawingGroup _backingStore = new DrawingGroup();
+        private readonly DrawingGroup _backingTimeLeftStore = new DrawingGroup();
+
+        private void RenderTimeLeft() {
+            if (_wideMode) {
+                if (_renderTimeInProcess) return;
+                _renderTimeInProcess = true;
+                Dispatcher.BeginInvoke((Action)RenderInner, DispatcherPriority.Render);
+            }
+
+            void RenderInner() {
+                _renderTimeInProcess = false;
+
+                var timeLeft = _timeLeft;
+                if (timeLeft == null) return;
+
+                var dc = _backingTimeLeftStore.Open();
+                dc.DrawText(timeLeft, new Point(218 - timeLeft.Width, 29 + _textPadding));
+                dc.Close();
+            }
+        }
+
+        private bool _wideMode = true;
+        private bool _renderInProcess, _renderTimeInProcess;
+
+        private static Rect GetCountryRect(double width) {
+            return new Rect(width - 108, 7, 24, 16);
+        }
+
+        private void Render() {
+            if (_renderInProcess) return;
+
+            _renderInProcess = true;
+            Dispatcher.BeginInvoke((Action)RenderInner, DispatcherPriority.Render);
+
+            void RenderInner() {
+                Update();
+                _renderInProcess = false;
+
+                var dc = _backingStore.Open();
+
+                var size = _size;
+                var width = size.Width;
+
+                var referenceIconOffset = 22d;
+                for (var i = 0; i < _icons.Length; i++) {
+                    var icon = _icons[i];
+                    if (icon == null) break;
+
+                    var iconWidth = icon.Width;
+                    dc.DrawImage(icon, new Rect(referenceIconOffset, 5, iconWidth, ReferenceIconSize));
+                    referenceIconOffset += iconWidth + ReferenceIconMargin;
+                }
+
+                if (_errorFlag) {
+                    dc.DrawImage(_alertIcon, new Rect(width - 40 + 14, 9, 12, 12));
+                } else if (_pingValue != null) {
+                    dc.DrawText(_pingValue, new Point(width - 40, _textPadding));
+                    dc.DrawText(_pingPostfix, new Point(width - 40 + _pingValue.Width, _textPadding));
+                }
+
+                dc.DrawRectangle(_areaBrush, null, new Rect(20, 30, width - 18, size.Height - 30));
+
+                if (!_fullyLoaded) {
+                    dc.DrawText(_track, new Point(24, 39));
                 } else {
-                    _nameText.ClearValue(TextBlock.ForegroundProperty);
+                    if (_currentTrack == null) {
+                        dc.DrawImage(_alertIcon, new Rect(22, 39, 12, 12));
+                        dc.DrawText(_track, new Point(38, 39));
+                    } else {
+                        dc.DrawText(_track, new Point(24, 39));
+                    }
+
+                    var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
+                    if (pieces > 0) {
+                        var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
+                        if (_bookedForPlayer) {
+                            dc.DrawImage(_bookedIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                        }
+                        if (_passwordRequired) {
+                            dc.DrawImage(_passwordIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                        }
+                        if (_hasFriends) {
+                            dc.DrawImage(_friendsIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                        }
+                    }
+
+                    dc.DrawImage(_countryBitmap.BitmapSource, GetCountryRect(width));
+                    dc.DrawText(_displayClients, new Point(width - 80, _textPadding));
+
+                    var cars = _cars;
+                    var sessions = _sessions;
+
+                    var carsOffset = _wideMode ? 324d : 240d;
+                    var sessionsOffset = _wideMode ? 230d : 146d;
+
+                    if (_blocks == null) {
+                        _blocks = CreateCarsBackgroundsGeometry(cars, _sessionsCount, carsOffset, sessionsOffset, width);
+                    }
+
+                    dc.DrawGeometry(_blockBackground, null, _blocks);
+
+                    for (var i = 0; i < sessions.Length; i++) {
+                        var c = sessions[i];
+                        if (c == null || sessionsOffset > width) break;
+
+                        if (c.Item2) {
+                            dc.DrawRectangle(_blockBackgroundActive, null, new Rect(sessionsOffset, 35, 20, 20));
+                        }
+
+                        dc.DrawText(c.Item1, new Point(sessionsOffset + 7, 28 + _textPadding));
+                        sessionsOffset += 20;
+                    }
+
+                    for (var i = 0; i < cars.Length; i++) {
+                        var c = cars[i];
+                        if (c == null || carsOffset > width) break;
+
+                        var cWidth = c.Item1.Width;
+                        if (c.Item2) {
+                            dc.DrawText(c.Item1, new Point(carsOffset + 4, 30 + _textPadding));
+                            carsOffset += cWidth + 16;
+                        } else {
+                            dc.DrawImage(_alertIcon, new Rect(carsOffset + 4, 39, 12, 12));
+                            dc.DrawText(c.Item1, new Point(carsOffset + 20, 30 + _textPadding));
+                            carsOffset += cWidth + 32;
+                        }
+                    }
+                }
+
+                dc.Close();
+            }
+        }
+
+        private static StreamGeometry CreateCarsBackgroundsGeometry(Tuple<FormattedText, bool>[] cars, int sessionsCount,
+                double carsOffset, double sessionsOffset, double width) {
+            var streamGeometry = new StreamGeometry();
+            using (var gc = streamGeometry.Open()) {
+                if (sessionsCount > 0) {
+                    gc.BeginFigure(new Point(sessionsOffset, 35), true, true);
+                    gc.LineTo(new Point(sessionsOffset + sessionsCount * 20, 35), true, true);
+                    gc.LineTo(new Point(sessionsOffset + sessionsCount * 20, 55), true, true);
+                    gc.LineTo(new Point(sessionsOffset, 55), true, true);
+                }
+
+                for (var i = 0; i < cars.Length; i++) {
+                    var c = cars[i];
+                    if (c == null) continue;
+
+                    var cWidth = c.Item1.Width;
+                    if (c.Item2) {
+                        gc.BeginFigure(new Point(carsOffset, 34), true, true);
+                        gc.LineTo(new Point(carsOffset + cWidth + 8, 34), true, true);
+                        gc.LineTo(new Point(carsOffset + cWidth + 8, 56), true, true);
+                        gc.LineTo(new Point(carsOffset, 56), true, true);
+                        carsOffset += cWidth + 16;
+                    } else {
+                        gc.BeginFigure(new Point(carsOffset, 34), true, true);
+                        gc.LineTo(new Point(carsOffset + cWidth + 24, 34), true, true);
+                        gc.LineTo(new Point(carsOffset + cWidth + 24, 56), true, true);
+                        gc.LineTo(new Point(carsOffset, 56), true, true);
+                        carsOffset += cWidth + 32;
+                    }
+
+                    if (carsOffset > width) break;
                 }
             }
+
+            streamGeometry.Freeze();
+            return streamGeometry;
         }
 
-        private void Update(ServerEntry n) {
-            if (n == null || _passwordIcon == null) return;
+        protected override void OnRender(DrawingContext dc) {
+            base.OnRender(dc);
 
-            if (_scrolling) {
-                _trackNameText.ToolTip = null;
-                _trackTooltipSet = false;
+            Render();
+            RenderTimeLeft();
 
-                _clientsText.ToolTip = null;
-                _clientsTooltipSet = false;
-            }
-
-            if (!n.FromLan) {
-                _countryName.Text = n.Country;
-            }
-
-            _pingText.Text = n.Ping?.ToString() ?? @"?";
-            _clientsText.Text = n.DisplayClients;
-            _errorMessageGroup.Text = n.ErrorsString;
-
-            if (_timeLeftText != null) {
-                _timeLeftText.Text = n.DisplayTimeLeft;
-            }
-
-            UpdateName(n);
-            UpdateCountryFlag(n);
-            UpdateTrack(n);
-            UpdateSessions(n);
-            UpdateCars(n);
-            UpdateFullyLoaded(n);
-            UpdateErrorFlag(n);
-            UpdatePasswordState(n);
-            UpdateFriendsState(n);
-            UpdateBookedState(n);
-        }
-
-        [CanBeNull]
-        private FrameworkElement _passwordIcon;
-        private FrameworkElement _bookedIcon;
-        private FrameworkElement _friendsIcon;
-        private BooleanSwitch _hasErrorsGroup;
-        private BbCodeBlock _errorMessageGroup;
-        private TextBlock _pingText;
-        private TextBlock _clientsText;
-
-        [CanBeNull]
-        private TextBlock _timeLeftText;
-        private CountryIcon _countryFlagImage;
-        private BbCodeBlock _nameText;
-        private TextBlock _countryName;
-        private BbCodeBlock _trackNameText;
-        private Panel _sessionsPanel;
-        private Panel _carsPanel;
-
-        public override void OnApplyTemplate() {
-            if (_carsPanel != null) {
-                _carsPanel.MouseEnter -= CarsPanel_MouseEnter;
-            }
-
-            if (_carsPanel != null) {
-                _sessionsPanel.MouseEnter -= SessionsPanel_MouseEnter;
-            }
-
-            if (_trackNameText != null) {
-                _trackNameText.MouseEnter -= TrackNameText_MouseEnter;
-            }
-
-            if (_clientsText != null) {
-                _clientsText.MouseEnter -= ClientsText_MouseEnter;
-            }
-
-            base.OnApplyTemplate();
-            _passwordIcon = (FrameworkElement)GetTemplateChild(@"PasswordIcon");
-            _bookedIcon = (FrameworkElement)GetTemplateChild(@"BookedForPlayerIcon");
-            _friendsIcon = (FrameworkElement)GetTemplateChild(@"FriendsIcon");
-            _hasErrorsGroup = (BooleanSwitch)GetTemplateChild(@"HasErrorsGroup");
-            _errorMessageGroup = (BbCodeBlock)GetTemplateChild(@"ErrorMessageGroup");
-            _pingText = (TextBlock)GetTemplateChild(@"PingText");
-            _clientsText = (TextBlock)GetTemplateChild(@"DisplayClientsText");
-            _timeLeftText = (TextBlock)GetTemplateChild(@"TimeLeftText");
-            _countryFlagImage = (CountryIcon)GetTemplateChild(@"CountryFlagImage");
-            _nameText = (BbCodeBlock)GetTemplateChild(@"DisplayNameText");
-            _trackNameText = (BbCodeBlock)GetTemplateChild(@"TrackNameText");
-            _countryName = (TextBlock)GetTemplateChild(@"CountryName");
-            _sessionsPanel = (Panel)GetTemplateChild(@"SessionsPanel");
-            _carsPanel = (Panel)GetTemplateChild(@"CarsPanel");
-            Update(Server);
-
-            if (_carsPanel != null) {
-                _carsPanel.MouseEnter += CarsPanel_MouseEnter;
-            }
-
-            if (_sessionsPanel != null) {
-                _sessionsPanel.MouseEnter += SessionsPanel_MouseEnter;
-            }
-
-            if (_trackNameText != null) {
-                _trackNameText.MouseEnter += TrackNameText_MouseEnter;
-            }
-
-            if (_clientsText != null) {
-                _clientsText.MouseEnter += ClientsText_MouseEnter;
+            dc.DrawDrawing(_backingStore);
+            if (_wideMode) {
+                dc.DrawDrawing(_backingTimeLeftStore);
             }
         }
 
-        private bool _scrolling;
-
-        public void SetScrolling(bool scrolling) {
-            _scrolling = scrolling;
-            // _clientsText.Background = new SolidColorBrush(_scrolling ? Colors.DarkMagenta : Colors.DarkOliveGreen);
-
-            if (scrolling) {
-            } else {
-                if (_carsPanel?.IsMouseOver == true) {
-                    SetCarsTooltips();
-                } else if (_sessionsPanel?.IsMouseOver == true) {
-                    SetSessionsTooltips();
-                } else if (_trackNameText?.IsMouseOver == true) {
-                    SetTrackTooltip();
-                }
-            }
-        }
-
-        private bool _clientsTooltipSet;
-
-        private void SetClientsTooltip() {
-            if (_clientsTooltipSet) return;
-            _clientsText.ToolTip = FindResource(@"ClientsTooltip");
-            _clientsTooltipSet = true;
-        }
-
-        private void ClientsText_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
-            SetClientsTooltip();
-        }
-
-        private bool _trackTooltipSet;
-
-        private void SetTrackTooltip() {
-            if (_trackTooltipSet) return;
-            _trackNameText.ToolTip = FindResource(@"TrackPreviewTooltip.Online");
-            _trackTooltipSet = true;
-        }
-
-        private void TrackNameText_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
-            SetTrackTooltip();
-        }
-
-        private bool _sessionsTooltipsSet;
-
-        private void SetSessionsTooltips() {
-            if (_sessionsTooltipsSet) return;
-
-            var toolTip = FindResource(@"SessionItemTooltip");
-            foreach (var item in _sessionsPanel.Children.Cast<TextBlock>()) {
-                item.ToolTip = toolTip;
-            }
-
-            _sessionsTooltipsSet = true;
-        }
-
-        private void SessionsPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
-            SetSessionsTooltips();
-        }
-
-        private bool _carsTooltipsSet;
-
-        private void SetCarsTooltips() {
-            if (_carsTooltipsSet) return;
-
-            var toolTip = FindResource(@"CarPreviewTooltip.Online");
-            foreach (var item in _carsPanel.Children.Cast<TextBlock>()) {
-                item.ToolTip = toolTip;
-            }
-
-            _carsTooltipsSet = true;
-        }
-
-        private void CarsPanel_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e) {
-            SetCarsTooltips();
-        }
-
-        private void Handler(object sender, PropertyChangedEventArgs e) {
-            if (_passwordIcon == null) return;
-
-            var n = (ServerEntry)sender;
+        private void OnServerPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            var server = (ServerEntry)sender;
             switch (e.PropertyName) {
-                case nameof(ServerEntry.ReferencesString):
                 case nameof(ServerEntry.DisplayName):
-                    UpdateName(n);
+                    UpdateName(server);
+                    break;
+                case nameof(ServerEntry.ReferencesString):
+                    UpdateReferences(server);
                     break;
                 case nameof(ServerEntry.PasswordRequired):
-                    UpdatePasswordState(n);
+                    UpdatePasswordState(server);
                     break;
                 case nameof(ServerEntry.IsBookedForPlayer):
-                    UpdateBookedState(n);
+                    UpdateBookedState(server);
                     break;
                 case nameof(ServerEntry.HasFriends):
-                    UpdateFriendsState(n);
+                    UpdateFriendsState(server);
                     break;
                 case nameof(ServerEntry.HasErrors):
-                    UpdateErrorFlag(n);
+                    UpdateErrorFlag(server);
                     break;
                 case nameof(ServerEntry.CountryId):
-                    UpdateCountryFlag(n);
-                    break;
-                case nameof(ServerEntry.Country):
-                    if (!n.FromLan) {
-                        _countryName.Text = n.Country;
-                    }
+                    UpdateCountryFlag(server);
                     break;
                 case nameof(ServerEntry.Ping):
-                    _pingText.Text = n.Ping?.ToString() ?? @"?";
+                    UpdatePing(server);
                     break;
                 case nameof(ServerEntry.DisplayClients):
-                    _clientsText.Text = n.DisplayClients;
-                    break;
-                case nameof(ServerEntry.ErrorsString):
-                    _errorMessageGroup.Text = n.ErrorsString;
+                    UpdateDisplayClients(server);
                     break;
                 case nameof(ServerEntry.DisplayTimeLeft):
-                    if (_timeLeftText != null) {
-                        _timeLeftText.Text = n.DisplayTimeLeft;
-                    }
-                    break;
+                    UpdateTimeLeft(server);
+                    RenderTimeLeft();
+                    return;
                 case nameof(ServerEntry.Track):
                 case nameof(ServerEntry.TrackId):
-                    UpdateTrack(n);
+                    UpdateTrack(server);
                     break;
                 case nameof(ServerEntry.Sessions):
-                    UpdateSessions(n);
+                case nameof(ServerEntry.CurrentSessionType):
+                    UpdateSessions(server);
                     break;
                 case nameof(ServerEntry.Cars):
-                    UpdateCars(n);
+                    UpdateCars(server);
                     break;
                 case nameof(ServerEntry.IsFullyLoaded):
-                    UpdateErrorFlag(n);
-                    UpdateFullyLoaded(n);
+                    UpdateErrorFlag(server);
+                    UpdateFullyLoaded(server);
                     break;
+                default:
+                    return;
             }
+
+            Render();
+        }
+
+        private void OnContentNameChanged(object sender, EventArgs e) {
+            var track = _currentTrack;
+            if (track != null) {
+                _track = GetText(track.Name, maxWidth: 120);
+            }
+
+            UpdateCars(_server);
+            Render();
         }
 
         private void OnServerChanged([CanBeNull] ServerEntry o, [CanBeNull] ServerEntry n) {
             if (o != null) {
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(o, nameof(INotifyPropertyChanged.PropertyChanged), Handler);
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.RemoveHandler(o, nameof(ServerEntry.PropertyChanged), OnServerPropertyChanged);
+                WeakEventManager<ServerEntry, EventArgs>.RemoveHandler(o, nameof(ServerEntry.ContentNameChanged), OnContentNameChanged);
             }
 
             if (n != null) {
-                Update(n);
-                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(n, nameof(INotifyPropertyChanged.PropertyChanged), Handler);
+                WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(n, nameof(ServerEntry.PropertyChanged), OnServerPropertyChanged);
+                WeakEventManager<ServerEntry, EventArgs>.AddHandler(n, nameof(ServerEntry.ContentNameChanged), OnContentNameChanged);
             }
         }
+
+        // TODO: Replace warning triangles with download icons if content is available to download
+        // TODO: Context menus
+        // TODO: Icons for cars and tracks?
+        // TODO: Emojis in car/track names?
     }
 }

@@ -53,7 +53,8 @@ namespace AcManager.Tools.Managers.Online {
                             Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
                         }
 
-                        await (priorityFilter == null ? List : List.Where(priorityFilter.Test).Concat(List.Where(x => !priorityFilter.Test(x)))).ToList().Select
+                        var ordered = List.OrderByDescending(x => (priorityFilter?.Test(x) == true ? 1000 : 0) + x.ConnectedDrivers).ToList();
+                        await ordered.Select
                                 (async x => {
                                     // ReSharper disable once AccessToDisposedClosure
                                     if (linked.IsCancellationRequested) return;

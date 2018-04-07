@@ -247,6 +247,7 @@ namespace AcManager.Tools.Helpers.Api {
 
             using (var order = KillerOrder.Create(new WebClient(), 5000)) {
                 var data = await order.Victim.DownloadStringTaskAsync(requestUri);
+                Logging.Debug(data);
 
                 XDocument doc;
                 try {

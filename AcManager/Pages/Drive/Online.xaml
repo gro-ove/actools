@@ -195,6 +195,8 @@
                         <StackPanel Orientation="Horizontal">
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource AddIconData}" Command="{Binding AddNewServerCommand}"
                               Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                          <mui:ModernButton Click="OnScrollToSelectedButtonClick"  DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
+                              ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}" />
                         </StackPanel>
                       </mui:BooleanSwitch.False>
@@ -266,7 +268,7 @@
 
                 <ListBox Grid.Row="1" x:Name="ServersListBox" ItemsSource="{Binding MainList}" IsSynchronizedWithCurrentItem="True"
                     ItemTemplate="{StaticResource SimpleListItem}" mui:SaveScroll.Key="{Binding Key}" SelectionChanged="ServersListBox_OnSelectionChanged"
-                    Style="{StaticResource VirtualizingListBox}" TextSearch.TextPath="DisplayName" />
+                    Style="{StaticResource VirtualizingListBox}" TextSearch.TextPath="DisplayName" VirtualizingPanel.CacheLengthUnit="Item" />
               </Grid>
 
               <Rectangle Visibility="{Binding ServerSelected, Converter={StaticResource BooleanToVisibilityConverter}}"

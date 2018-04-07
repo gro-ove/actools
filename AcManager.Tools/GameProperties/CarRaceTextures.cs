@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Objects;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils.Helpers;
@@ -25,11 +26,18 @@ namespace AcManager.Tools.GameProperties {
             try {
                 var trackId = file["RACE"].GetNonEmpty("TRACK");
                 var configurationId = file["RACE"].GetNonEmpty("CONFIG_TRACK");
-                if (trackId == null) return;
+                var weatherId = file["WEATHER"].GetNonEmpty("NAME");
 
-                var track = TracksManager.Instance.GetLayoutById(trackId, configurationId);
+                var details = new CarObject.RaceTexturesContext {
+                    Track = TracksManager.Instance.GetLayoutById(trackId ?? string.Empty, configurationId),
+                    Weather = WeatherManager.Instance.GetById(weatherId ?? string.Empty),
+                    Temperature = file["TEMPERATURE"].GetDoubleNullable("AMBIENT"),
+                    Wind = (file["WIND"].GetDoubleNullable("SPEED_KMH_MIN") + file["WIND"].GetDoubleNullable("SPEED_KMH_MAX")) / 2d,
+                    WindDirection = file["WIND"].GetDoubleNullable("DIRECTION_DEG"),
+                };
+
                 foreach (var car in GetCarIds(file).NonNull().Distinct().Select(x => CarsManager.Instance.GetById(x)).NonNull()) {
-                    car.PrepareRaceTextures(track);
+                    car.PrepareRaceTextures(details);
                 }
             } finally {
                 Logging.Write($"Time taken: {s.Elapsed.TotalMilliseconds:F2} ms");

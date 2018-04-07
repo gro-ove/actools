@@ -132,55 +132,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return result.ToString();
         }
 
-        private static bool IsUrl(string s, int index, out int urlLength) {
-            int start = index, length = s.Length;
-
-            if (start > 0) {
-                var previous = s[start - 1];
-                if (previous == '=' || previous == '"' || char.IsLetterOrDigit(previous)) {
-                    urlLength = 0;
-                    return false;
-                }
-            }
-
-            if (Expect("http")) {
-                if (char.ToLowerInvariant(s[index]) == 's') {
-                    index++;
-                }
-                if (!Expect("://")) {
-                    urlLength = 0;
-                    return false;
-                }
-            } else if (!Expect("www")) {
-                urlLength = 0;
-                return false;
-            }
-
-            var prefix = index - start;
-            var last = '\0';
-            for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
-                last = c;
-            }
-
-            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
-            return urlLength > prefix;
-
-            bool Expect(string p) {
-                for (var i = 0; i < p.Length; i++) {
-                    var j = index + i;
-                    if (j >= length || char.ToLowerInvariant(s[j]) != p[i]) return false;
-                }
-
-                index += p.Length;
-                return true;
-            }
-        }
-
         [CanBeNull]
         private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
             var converted = new StringBuilder();
             var lastIndex = 0;
             var complex = false;
+            var urlSkipNext = false;
 
             for (var i = 0; i < bbCode.Length; i++) {
                 var c = bbCode[i];
@@ -194,14 +151,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         converted.Append(@"\[");
                     }
                     complex = true;
+                    urlSkipNext = false;
                     continue;
                 }
 
-                if (IsUrl(bbCode, i, out var urlLength)) {
-                    var url = bbCode.Substring(i, urlLength);
-                    converted.Append($"[url={EncodeAttribute(url)}]{Encode(url)}[/url]");
-                    lastIndex = i + urlLength;
-                    complex = true;
+                var isSymbol = char.IsLetterOrDigit(c);
+                if (isSymbol) {
+                    if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, out var urlLength)) {
+                        var url = bbCode.Substring(i, urlLength);
+                        if (lastIndex < i) {
+                            converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                        }
+                        lastIndex = i + urlLength;
+                        converted.Append($"[url={EncodeAttribute(url.Urlify())}]{Encode(url)}[/url]");
+                        complex = true;
+                    }
+
+                    urlSkipNext = true;
+                } else {
+                    urlSkipNext = false;
                 }
 
                 if (Emoji.IsEmoji(bbCode, i, out var emojiLength)) {
@@ -263,9 +231,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return ParseOrNull(bbCode, element, navigator) ?? new Run { Text = bbCode };
         }
 
-        private void Update() {
-            if (!IsLoaded || !_dirty) return;
-
+        public void ForceUpdate() {
             var bbCode = Text;
             if (string.IsNullOrWhiteSpace(bbCode)) {
                 SetPlaceholder();
@@ -285,6 +251,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             _dirty = false;
+        }
+
+        private void Update() {
+            if (!IsLoaded || !_dirty) return;
+            ForceUpdate();
         }
 
         private void OnRequestNavigate(object sender, RequestNavigateEventArgs e) {

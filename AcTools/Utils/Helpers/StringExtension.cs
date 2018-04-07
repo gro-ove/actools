@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -281,28 +280,6 @@ namespace AcTools.Utils.Helpers {
             }
 
             return from <= 0 ? s : s.Substring(from);
-        }
-
-        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
-        public static string GetWebsiteFromUrl(this string value) {
-            return value == null ? null : Regex.Replace(value, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
-        }
-
-        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
-        public static string GetDomainNameFromUrl(this string value) {
-            return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
-        }
-
-        [ContractAnnotation(@"value: null => false")]
-        public static bool IsWebUrl(this string value) {
-            return value.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
-                    value.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
-        }
-
-        public static IEnumerable<string> GetUrls([CanBeNull] this string value) {
-            return value == null ? new string[0]
-                    : Regex.Matches(value, @"\b((?:https?://|www\.)([^,\.;:!\s]+|[,\.;:!](?=\S))+)").OfType<Match>()
-                           .Select(x => x.Value.IsWebUrl() ? x.Value : $"http://{x.Value}");
         }
 
         [Pure, NotNull]

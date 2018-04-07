@@ -36,13 +36,7 @@ namespace AcManager.Controls {
         }
 
         private async void OnCountryChanged(string newValue) {
-            var decodeWidth = InnerDecodeWidth;
-            var key = $@"{newValue?.ToLowerInvariant()}:{decodeWidth}";
-            if (!Cache.TryGetValue(key, out var entry)) {
-                Cache[key] = entry = await LoadEntry(newValue, decodeWidth);
-                if (Country != newValue) return;
-            }
-            SetCurrent(entry, null);
+            SetCurrent(await LoadEntryAsync(newValue, InnerDecodeWidth), null);
         }
 
         private static readonly Dictionary<string, BitmapEntry> Cache = new Dictionary<string, BitmapEntry>();
@@ -53,12 +47,32 @@ namespace AcManager.Controls {
             return (key.Length == 2 || key.Length == 6 && key[2] == '-') && char.IsUpper(key[0]) && char.IsUpper(key[1]);
         }
 
-        private static Task<BitmapEntry> LoadEntry([CanBeNull] string key, int decodeWidth) {
+        private static Task<BitmapEntry> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth) {
             key = (key == null ? null : IsCountryId(key) ? key : AcStringValues.GetCountryId(key)) ?? @"default";
             return TaskCache.Get(() => Task.Run(() => {
                 var badge = FilesStorage.Instance.GetContentFile(ContentCategory.CountryFlags, $@"{key}.png");
                 return badge.Exists ? LoadBitmapSourceFromBytes(File.ReadAllBytes(badge.Filename), decodeWidth) : BitmapEntry.Empty;
             }), key);
+        }
+
+        public static async Task<BitmapEntry> LoadEntryAsync([CanBeNull] string countryId, int decodeWidth) {
+            var key = $@"{countryId?.ToLowerInvariant()}:{decodeWidth}";
+
+            bool got;
+            BitmapEntry entry;
+
+            lock (Cache) {
+                got = Cache.TryGetValue(key, out entry);
+            }
+
+            if (!got) {
+                entry = await LoadEntryAsyncInner(countryId, decodeWidth).ConfigureAwait(false);
+                lock (Cache) {
+                    Cache[key] = entry;
+                }
+            }
+
+            return entry;
         }
     }
 }

@@ -81,8 +81,9 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         private readonly FrameworkElement _source;
         private readonly List<Tuple<Uri, string>> _imageUrls = new List<Tuple<Uri, string>>();
 
+        /// <inheritdoc />
         /// <summary>
-        /// Initializes a new instance of the <see cref="T:BBCodeParser"/> class.
+        /// Initializes a new instance of the <see cref="T:BBCodeParser" /> class.
         /// </summary>
         /// <param name="value">The value.</param>
         /// <param name="source">The framework source element this parser operates in.</param>
@@ -301,12 +302,17 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                                 RenderOptions.SetBitmapScalingMode(image, BitmapScalingMode.LowQuality);
                             } else {
                                 if (Equals(maxSize, 0d)) {
-                                    image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
-                                        Path = new PropertyPath(nameof(TextBlock.FontSize)),
-                                        FallbackValue = 16d,
-                                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
-                                        Converter = new MultiplyConverter(),
-                                    });
+                                    if (_source is TextBlock tb) {
+                                        image.MaxHeight = MultiplyConverter.Instance.Convert(tb.FontSize);
+                                    } else {
+                                        image.SetBinding(FrameworkElement.MaxHeightProperty, new Binding {
+                                            Path = new PropertyPath(nameof(TextBlock.FontSize)),
+                                            FallbackValue = 16d,
+                                            RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(TextBlock), 1),
+                                            Converter = new MultiplyConverter(),
+                                        });
+                                    }
+
                                     image.Margin = new Thickness(1, -1, 1, -1);
                                 } else {
                                     image.MaxWidth = maxSize;
@@ -361,11 +367,17 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         }
 
         private class MultiplyConverter : IValueConverter {
-            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
-                var v = value.As(0d) * parameter.As(1d);
+            public static MultiplyConverter Instance = new MultiplyConverter();
+
+            public double Convert(double v) {
+                if (v < 12) return v * 1.25;
                 if (v < 15) return v * 1.15;
                 if (v < 20) return v * 1.08;
                 return v;
+            }
+
+            public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+                return Convert(value.As(0d) * parameter.As(1d));
             }
 
             public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture) {
