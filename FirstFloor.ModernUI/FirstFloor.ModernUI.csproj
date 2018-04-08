@@ -64,6 +64,10 @@
     <Reference Include="SmartThreadPool">
       <HintPath>..\Libraries\SmartThreadPool\SmartThreadPool.dll</HintPath>
     </Reference>
+    <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\Noesis.WebP\Noesis.Drawing.Imaging.WebP.dll</HintPath>
+    </Reference>-->
   </ItemGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
