@@ -1,10 +1,10 @@
-﻿/* ZIP-support: option to load images from ZIP-archives. With it enabled, BetterImage
- * would look for a special separator in file’s path, and if found, load image from
- * a ZIP-archive instead. Experimental feature, don’t know if it’s a good idea or not. */
-// #define ZIP_SUPPORT
+﻿/* Warn about EndInit() multithread-related crashes and calculate success rate. */
 
-/* Warn about EndInit() multithread-related crashes and calculate success rate. */
 // #define DEBUG_ENDINIT_CRASHES
+
+/* WebP support (500 KB library is required; converting of 1920×1080 image takes about 100 ms) */
+
+// #define WEBP_SUPPORT
 
 using System;
 using System.Collections.Generic;
@@ -27,15 +27,15 @@ using System.Windows.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
+#if WEBP_SUPPORT
+using System.Drawing.Imaging;
+using Noesis.Drawing.Imaging.WebP;
+#endif
 using Brushes = System.Windows.Media.Brushes;
 using Color = System.Windows.Media.Color;
 using FontFamily = System.Windows.Media.FontFamily;
 using Point = System.Windows.Point;
 using Size = System.Windows.Size;
-
-#if ZIP_SUPPORT
-using System.IO.Compression;
-#endif
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public enum ImageCropMode {
@@ -462,48 +462,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return Path.Combine(RemoteCacheDirectory, fileName);
         }
 
-        private static BitmapEntry LoadRemoteBitmap(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
-            var httpRequest = (HttpWebRequest)WebRequest.Create(uri);
-            httpRequest.Method = "GET";
-
-            if (RemoteUserAgent != null) {
-                httpRequest.UserAgent = RemoteUserAgent;
-            }
-
-            var cache = GetCachedFilename(uri);
-            var cacheFile = cache == null ? null : new FileInfo(cache);
-            if (cacheFile?.Exists == true) {
-                httpRequest.IfModifiedSince = cacheFile.LastWriteTime;
-            }
-
-            try {
-                using (var memory = new MemoryStream())
-                using (var response = (HttpWebResponse)httpRequest.GetResponse()) {
-                    using (var stream = response.GetResponseStream()) {
-                        if (stream == null) {
-                            return cacheFile == null ? BitmapEntry.Empty
-                                    : LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
-                        }
-
-                        stream.CopyTo(memory);
-                    }
-
-                    var bytes = memory.ToArray();
-                    if (cache != null) {
-                        File.WriteAllBytes(cache, bytes);
-                        cacheFile.LastWriteTime = response.LastModified;
-                    }
-
-                    return LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
-                }
-            } catch (WebException e) {
-                Logging.Error(e.Message);
-            }
-
-            return cacheFile == null ? BitmapEntry.Empty :
-                    LoadBitmapSourceFromBytes(File.ReadAllBytes(cache), decodeWidth, decodeHeight, sourceDebug: uri.OriginalString);
-        }
-
         private static async Task<BitmapEntry> LoadRemoteBitmapAsync(Uri uri, int decodeWidth = -1, int decodeHeight = -1) {
             var httpRequest = (HttpWebRequest)WebRequest.Create(uri);
             httpRequest.Method = "GET";
@@ -562,73 +520,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return BitmapEntry.Empty;
             }
 
-#if ZIP_SUPPORT
-            string zipFilename, entryName;
-            if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
-                using (var zip = ZipFile.OpenRead(zipFilename)) {
-                    var entry = zip.Entries.First(x => x.Name == entryName);
-                    using (var s = entry.Open())
-                    using (var m = new MemoryStream((int)entry.Length)) {
-                        s.CopyTo(m);
-                        return LoadBitmapSourceFromBytes(m.ToArray(), decodeWidth, decodeHeight);
-                    }
-                }
-            }
-#endif
-
-            Uri uri;
-            try {
-                uri = new Uri(filename);
-            } catch (Exception) {
-                return BitmapEntry.Empty;
-            }
-
-            var remote = uri.Scheme == "http" || uri.Scheme == "https";
-            if (remote) {
-                return LoadRemoteBitmap(uri);
-            }
-
-            try {
-                var bi = new BitmapImage();
-                bi.BeginInit();
-
-                var width = 0;
-                var height = 0;
-                var downsized = false;
-
-                if (decodeWidth > 0) {
-                    bi.DecodePixelWidth = (int)(decodeWidth * Math.Max(DpiInformation.MaxScaleX, 1d));
-                    width = decodeWidth;
-                    downsized = true;
-                }
-
-                if (decodeHeight > 0) {
-                    bi.DecodePixelHeight = (int)(decodeHeight * Math.Max(DpiInformation.MaxScaleY, 1d));
-                    height = decodeHeight;
-                    downsized = true;
-                }
-
-                bi.CreateOptions = BitmapCreateOptions.IgnoreImageCache;
-                bi.CacheOption = BitmapCacheOption.OnLoad;
-                bi.UriSource = uri;
-                bi.EndInit();
-                bi.Freeze();
-
-                if (decodeWidth <= 0) {
-                    width = bi.PixelWidth;
-                }
-
-                if (decodeHeight <= 0) {
-                    height = bi.PixelHeight;
-                }
-
-                return new BitmapEntry(bi, width, height, downsized);
-            } catch (FileNotFoundException) {
-                return BitmapEntry.Empty;
-            } catch (Exception e) {
-                Logging.Warning(e);
-                return BitmapEntry.Empty;
-            }
+            return LoadBitmapSourceAsync(filename, decodeWidth, decodeHeight).Result;
         }
 
         /// <summary>
@@ -639,21 +531,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (filename == null) return null;
 
             try {
-#if ZIP_SUPPORT
-        // Loading from ZIP file
-                string zipFilename, entryName;
-                if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
-                    using (var zip = ZipFile.OpenRead(zipFilename)) {
-                        var entry = zip.Entries.First(x => x.Name == entryName);
-                        using (var s = entry.Open())
-                        using (var m = new MemoryStream((int)entry.Length)) {
-                            s.CopyTo(m);
-                            return m.ToArray();
-                        }
-                    }
-                }
-#endif
-
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
@@ -676,6 +553,43 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
+        private static byte[] ConvertSpecial(byte[] input) {
+#if WEBP_SUPPORT
+            if (IsWebPImage(input)) {
+                return ConvertWebPImage(input);
+            }
+#endif
+
+            return input;
+        }
+
+        private static Task<byte[]> ConvertSpecialAsync(byte[] input) {
+#if WEBP_SUPPORT
+            if (IsWebPImage(input)) {
+                return Task.Run(() => ConvertWebPImage(input));
+            }
+#endif
+
+            return Task.FromResult(input);
+        }
+
+#if WEBP_SUPPORT
+        private static byte[] ConvertWebPImage(byte[] input) {
+            using (var stream = new MemoryStream())
+            using (var image = WebPFormat.Load(input)) {
+                image.Save(stream, ImageFormat.Bmp);
+                return stream.ToArray();
+            }
+        }
+
+        private static bool IsWebPImage(byte[] input) {
+            return input.Length > 15 && input[0] == 0x52 && input[1] == 0x49 && input[2] == 0x46 && input[3] == 0x46 &&
+                    input[4] == 0xA6 && input[5] == 0x5B && input[6] == 0x07 && input[7] == 0x00 && input[8] == 0x57 &&
+                    input[9] == 0x45 && input[10] == 0x42 && input[11] == 0x50 && input[12] == 0x56 && input[13] == 0x50 &&
+                    input[14] == 0x38;
+        }
+#endif
+
         /// <summary>
         /// Safe (handles all exceptions inside).
         /// </summary>
@@ -684,29 +598,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (filename == null) return null;
 
             try {
-#if ZIP_SUPPORT
-        // Loading from ZIP file
-                string zipFilename, entryName;
-                if (TryToParseZipPath(filename, out zipFilename, out entryName)) {
-                    using (var zip = ZipFile.OpenRead(zipFilename)) {
-                        var entry = zip.Entries.First(x => x.Name == entryName);
-                        using (var s = entry.Open())
-                        using (var m = new MemoryStream((int)entry.Length)) {
-                            await s.CopyToAsync(m);
-                            return m.ToArray();
-                        }
-                    }
-                }
-#endif
-
                 // Loading from application resources (I think, there is an issue here)
                 if (filename.StartsWith(@"/")) {
                     var stream = Application.GetResourceStream(new Uri(filename, UriKind.Relative))?.Stream;
                     if (stream != null) {
                         using (stream) {
                             var result = new byte[stream.Length];
-                            await stream.ReadAsync(result, 0, (int)stream.Length, cancellation);
-                            return result;
+                            await stream.ReadAsync(result, 0, (int)stream.Length, cancellation).ConfigureAwait(false);
+                            return await ConvertSpecialAsync(result);
                         }
                     }
                 }
@@ -714,8 +613,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // Regular loading
                 using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                     var result = new byte[stream.Length];
-                    await stream.ReadAsync(result, 0, result.Length, cancellation);
-                    return result;
+                    await stream.ReadAsync(result, 0, result.Length, cancellation).ConfigureAwait(false);
+                    return await ConvertSpecialAsync(result).ConfigureAwait(false);
                 }
             } catch (FileNotFoundException) {
                 return null;
@@ -737,6 +636,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             PrepareDecodeLimits(data, ref decodeWidth, ref decodeHeight, sourceDebug);
 
             try {
+                data = ConvertSpecial(data);
+
                 // WrappingSteam here helps to avoid memory leaks. For more information:
                 // https://code.logos.com/blog/2008/04/memory_leak_with_bitmapimage_and_memorystream.html
                 using (var memory = new MemoryStream(data))
@@ -828,7 +729,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static async Task<BitmapEntry> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
-            if (filename.StartsWith(@"http:") || filename.StartsWith(@"https:")) {
+            if (filename.IsWebUrl()) {
                 Uri uri;
                 try {
                     uri = new Uri(filename);
@@ -836,13 +737,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     return BitmapEntry.Empty;
                 }
 
-                var remote = uri.Scheme == "http" || uri.Scheme == "https";
-                if (remote) {
-                    return await LoadRemoteBitmapAsync(uri).ConfigureAwait(false);
-                }
+                return await LoadRemoteBitmapAsync(uri).ConfigureAwait(false);
             }
 
-            var bytes = await ReadBytesAsync(filename).ConfigureAwait(false);
+            var bytes = await ConvertSpecialAsync(await ReadBytesAsync(filename).ConfigureAwait(false)).ConfigureAwait(false);
             return bytes == null ? BitmapEntry.Empty : LoadBitmapSourceFromBytes(bytes, decodeWidth, decodeHeight, sourceDebug: filename);
         }
         #endregion
@@ -855,23 +753,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static void Refresh([CanBeNull] string filename) {
             if (string.IsNullOrWhiteSpace(filename)) return;
 
-#if ZIP_SUPPORT
-            filename = GetActualFilename(filename);
-            RemoveFromCache(filename);
-            var app = Application.Current;
-            if (app == null) return;
-            foreach (var image in app.Windows.OfType<Window>()
-                    .SelectMany(VisualTreeHelperEx.FindVisualChildren<BetterImage>)
-                    .Where(x => string.Equals(GetActualFilename(x._filename), filename, StringComparison.OrdinalIgnoreCase))) {
-                image.OnFilenameChanged(filename);
-            }
-#else
             RemoveFromCache(filename);
             foreach (var image in VisualTreeHelperEx.GetAllOfType<BetterImage>()
                                                     .Where(x => string.Equals(x.Filename, filename, StringComparison.OrdinalIgnoreCase))) {
                 image.OnFilenameChanged(filename);
             }
-#endif
         }
         #endregion
 
@@ -889,13 +775,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var cache = Cache;
             lock (cache) {
                 for (var i = cache.Count - 1; i >= 0; i--) {
-                    if (string.Equals(
-#if ZIP_SUPPORT
-                            GetActualFilename(cache[i].Key)
-#else
-                            cache[i].Key,
-#endif
-                            filename, OptionCacheStringComparison)) {
+                    if (string.Equals(cache[i].Key, filename, OptionCacheStringComparison)) {
                         cache.RemoveAt(i);
                     }
                 }
@@ -1116,35 +996,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             InvalidateVisual();
         }
 
-#if ZIP_SUPPORT
-        public static readonly string ZipSeparator = @"/.//";
-
-        private static bool TryToParseZipPath([CanBeNull] string filename, out string zipFilename, out string entryName) {
-            if (filename == null) {
-                zipFilename = entryName = null;
-                return false;
-            }
-
-            var index = filename.IndexOf(ZipSeparator, StringComparison.Ordinal);
-            if (index == -1) {
-                zipFilename = entryName = null;
-                return false;
-            }
-
-            zipFilename = filename.Substring(0, index);
-            entryName = filename.Substring(index + ZipSeparator.Length);
-            return zipFilename.Length > 0 && entryName.Length > 0;
-        }
-#endif
-
         [ContractAnnotation(@"filename:null => null; filename:notnull => notnull")]
         private static string GetActualFilename([CanBeNull] string filename) {
-#if ZIP_SUPPORT
-            string zipFilename, entryName;
-            return TryToParseZipPath(filename, out zipFilename, out entryName) ? zipFilename : filename;
-#else
             return filename;
-#endif
         }
 
         private static readonly List<DateTime> RecentlyLoaded = new List<DateTime>(50);
