@@ -5,6 +5,7 @@ using System.Windows;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Tools.Managers.Plugins {
@@ -18,7 +19,14 @@ namespace AcManager.Tools.Managers.Plugins {
 
             ListView = new BetterListCollectionView(PluginsManager.Instance.List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
-            ListView.Filter = Filter;
+
+            try {
+                ListView.Filter = Filter;
+            } catch (Exception e) {
+                // What the hell is that?
+                Logging.Error(e);
+            }
+
             UpdateReady();
 
             if (!IsReady) {

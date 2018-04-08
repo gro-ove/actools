@@ -240,8 +240,13 @@
       <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
       <Button Command="{Binding ShareCommand}" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}"
           Margin="0 0 4 0" />
-      <Button Command="{Binding BenchmarkCommand}" ToolTip="{x:Static g:AppStrings.AcSettings_Video_Benchmark_Tooltip}"
-          Content="{x:Static g:AppStrings.AcSettings_Video_Benchmark}" Style="{StaticResource Go.Button}" />
+      <mui:ButtonWithComboBox Command="{Binding BenchmarkCommand}" Content="{x:Static g:AppStrings.AcSettings_Video_Benchmark}"
+          ButtonToolTip="{x:Static g:AppStrings.AcSettings_Video_Benchmark_Tooltip}" Style="{StaticResource Go.ButtonWithComboBox}">
+        <mui:ButtonWithComboBox.MenuItems>
+          <MenuItem Command="{Binding BenchmarkFastCommand}" Header="Time-limited benchmark"
+              ToolTip="Use it to get similar results if you need to compare settings" InputGestureText="Ctrl+Shift+G" />
+        </mui:ButtonWithComboBox.MenuItems>
+      </mui:ButtonWithComboBox>
     </StackPanel>
   </Grid>
 </UserControl>

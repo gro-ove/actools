@@ -53,7 +53,7 @@ namespace AcManager.Pages.Dialogs {
                         using (_servers.DeferRefresh()) {
                             _servers.Filter = FilterTest;
 
-                            _sorting = new Online.SortingName();
+                            _sorting = new Online.SortingCleanedName();
                             _servers.CustomSort = _sorting;
                         }
 

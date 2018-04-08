@@ -21,6 +21,7 @@ using AcManager.Tools.Helpers.AcLog;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -132,6 +133,10 @@ namespace AcManager.Pages.Dialogs {
 
             ShowDialogAsync().Forget();
             Model.WaitingStatus = AppStrings.Race_Initializing;
+
+            if (SettingsHolder.Drive.WatchForSharedMemory && mode == GameMode.Benchmark) {
+                AcSharedMemory.Instance.MonitorFramesPerSecond = true;
+            }
         }
 
         public void OnProgress(string progress) {
@@ -521,6 +526,25 @@ namespace AcManager.Pages.Dialogs {
                     && !_resultsViewMode // If we got here before dialog is opened, user wants to see results anyway
                     && result != null && result.NumberOfSessions == 1 && result.Sessions?.Length == 1
                     && result.Sessions[0].Type == Game.SessionType.Practice;
+
+            if (SettingsHolder.Drive.WatchForSharedMemory) {
+                AcSharedMemory.Instance.MonitorFramesPerSecond = false;
+            }
+
+            if (_properties?.BenchmarkProperties != null && SettingsHolder.Drive.WatchForSharedMemory) {
+                var data = AcSharedMemory.Instance.GetFpsDetails();
+                if (data != null) {
+                    Model.CurrentState = ViewModel.State.BenchmarkResult;
+                    Model.BenchmarkResults = $@"• Average FPS: [b]{data.AverageFps:F1}[/b] ([b]{1000 / data.AverageFps:F3}[/b] ms);
+• Minimum FPS: {(data.MinimumFps != null ? $"[b]{data.MinimumFps.Value:F1}[/b] ([b]{1000 / data.MinimumFps.Value:F3}[/b] ms)" : "[b]N/A[/b]")};
+• Taken: [b]{PluralizingConverter.PluralizeExt(data.SamplesTaken, "{0} sample")}[/b];
+• Test time: [b]{TimeSpan.FromSeconds(data.SamplesTaken * AcSharedMemory.MonitorFramesPerSecondSampleFrequency.TotalSeconds).ToMillisecondsString()}[/b].";
+                    Model.BenchmarkPassed = data.MinimumFps > 55;
+                    Buttons = new[] { CloseButton };
+                    return;
+                }
+            }
+
             var isNoResultsMode = _properties?.GetAdditional<WhatsGoingOn>() == null
                     && (_properties?.ReplayProperties != null || _properties?.BenchmarkProperties != null);
 
@@ -682,7 +706,10 @@ namespace AcManager.Pages.Dialogs {
                 Cancelled,
 
                 [ControlsLocalizedDescription("Common_Error")]
-                Error
+                Error,
+
+                [Description("Benchmark")]
+                BenchmarkResult
             }
 
             private State _currentState;
@@ -711,12 +738,22 @@ namespace AcManager.Pages.Dialogs {
             [CanBeNull]
             public string ErrorMessage {
                 get => _errorMessage;
-                set {
-                    value = value?.ToSentence();
-                    if (Equals(value, _errorMessage)) return;
-                    _errorMessage = value;
-                    OnPropertyChanged();
-                }
+                set => Apply(value?.ToSentence(), ref _errorMessage);
+            }
+
+            private bool _benchmarkPassed;
+
+            public bool BenchmarkPassed {
+                get => _benchmarkPassed;
+                set => Apply(value, ref _benchmarkPassed);
+            }
+
+            private string _benchmarkResults;
+
+            [CanBeNull]
+            public string BenchmarkResults {
+                get => _benchmarkResults;
+                set => Apply(value, ref _benchmarkResults);
             }
 
             private string _errorDescription = AppStrings.Common_MoreInformationInMainLog;

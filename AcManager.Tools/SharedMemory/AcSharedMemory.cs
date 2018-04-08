@@ -63,13 +63,16 @@ namespace AcManager.Tools.SharedMemory {
                 switch (_statusValue) {
                     case AcSharedMemoryStatus.Disabled:
                         _timer.Enabled = false;
+                        ResetFpsCounter();
                         break;
                     case AcSharedMemoryStatus.Connected:
                         _timer.Interval = OptionNotLiveReadingInterval;
                         _timer.Enabled = true;
+                        ResetFpsCounter();
                         break;
                     case AcSharedMemoryStatus.Connecting:
                         _timer.Enabled = false;
+                        ResetFpsCounter();
                         break;
                     case AcSharedMemoryStatus.Live:
                         _timer.Interval = OptionLiveReadingInterval;
@@ -80,6 +83,7 @@ namespace AcManager.Tools.SharedMemory {
                         _timer.Interval = OptionDisconnectedReadingInterval;
                         _timer.Enabled = true;
                         _previousPacketId = null;
+                        ResetFpsCounter();
                         break;
                 }
             }
@@ -105,6 +109,13 @@ namespace AcManager.Tools.SharedMemory {
         public DateTime PauseTime {
             get => _pauseTime;
             private set => Apply(value, ref _pauseTime);
+        }
+
+        private bool _monitorFramesPerSecond;
+
+        public bool MonitorFramesPerSecond {
+            get => _monitorFramesPerSecond;
+            set => Apply(value, ref _monitorFramesPerSecond, ResetFpsCounter);
         }
 
         private AcShared _shared;
@@ -139,10 +150,95 @@ namespace AcManager.Tools.SharedMemory {
 
         private Stopwatch _samePackedIdTime;
 
-        private void UpdatePhysics() {
+        private int _graphicsPacketId, _graphicsFrames, _fpsSamples;
+        private Stopwatch _graphicsTime;
+        private double _averageFps;
+        private double? _minimumFps;
+
+        public class FpsDetails {
+            public FpsDetails(double averageFps, double? minimumFps, int samplesTaken) {
+                AverageFps = averageFps;
+                MinimumFps = minimumFps;
+                SamplesTaken = samplesTaken;
+            }
+
+            public double AverageFps { get; }
+            public double? MinimumFps { get; }
+            public int SamplesTaken { get; }
+        }
+
+        private FpsDetails _lastFpsDetails;
+
+        [CanBeNull]
+        public FpsDetails GetFpsDetails() {
+            return _fpsSamples > 0 ? new FpsDetails(_averageFps, _minimumFps, _fpsSamples) : _lastFpsDetails;
+        }
+
+        private void ResetFpsCounter() {
+            if (_fpsSamples > 0) {
+                MonitorFramesPerSecondEnd?.Invoke(this, EventArgs.Empty);
+            }
+
+            _lastFpsDetails = _fpsSamples > 0 ? new FpsDetails(_averageFps, _minimumFps, _fpsSamples) : null;
+            _graphicsTime = null;
+            _graphicsFrames = 0;
+            _fpsSamples = 0;
+            _averageFps = 0;
+            _minimumFps = null;
+        }
+
+        public static readonly TimeSpan MonitorFramesPerSecondSampleFrequency = TimeSpan.FromSeconds(2d);
+
+        public event EventHandler MonitorFramesPerSecondBegin;
+        public event EventHandler MonitorFramesPerSecondEnd;
+
+        private void UpdateData() {
             if (_physicsFile == null) return;
 
             try {
+                AcSharedGraphics graphics;
+
+                if (MonitorFramesPerSecond) {
+                    graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
+
+                    var delta = graphics.PacketId - _graphicsPacketId;
+                    _graphicsPacketId = graphics.PacketId;
+
+                    if (_graphicsTime == null) {
+                        _graphicsTime = new Stopwatch();
+                    }
+
+                    if (delta > 0) {
+                        if (_graphicsTime.IsRunning) {
+                            _graphicsFrames += delta;
+                            var seconds = _graphicsTime.Elapsed.TotalSeconds;
+                            if (seconds > MonitorFramesPerSecondSampleFrequency.TotalSeconds) {
+                                var fps = _graphicsFrames / seconds / 2;
+
+                                if (_fpsSamples == 0) {
+                                    MonitorFramesPerSecondBegin?.Invoke(this, EventArgs.Empty);
+                                }
+
+                                _averageFps = (_averageFps * _fpsSamples + fps) / (_fpsSamples + 1);
+                                _fpsSamples++;
+                                if (_fpsSamples > 1 && (!_minimumFps.HasValue || _minimumFps > fps)) {
+                                    _minimumFps = fps;
+                                }
+
+                                Logging.Debug($"FPS: {fps:F1}");
+                                _graphicsFrames = 0;
+                                _graphicsTime.Restart();
+                            }
+                        }
+
+                        _graphicsTime.Start();
+                    } else {
+                        _graphicsTime.Stop();
+                    }
+                } else {
+                    graphics = null;
+                }
+
                 var physics = _physicsFile.ToStruct<AcSharedPhysics>(AcSharedPhysics.Buffer);
                 if (physics.PacketId != _previousPacketId) {
                     var firstPacket = !_previousPacketId.HasValue;
@@ -161,7 +257,10 @@ namespace AcManager.Tools.SharedMemory {
                         KnownProcess = _gameProcess != null;
                     }
 
-                    var graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
+                    if (graphics == null) {
+                        graphics = _graphicsFile.ToStruct<AcSharedGraphics>(AcSharedGraphics.Buffer);
+                    }
+
                     var staticInfo = _staticInfoFile.ToStruct<AcSharedStaticInfo>(AcSharedStaticInfo.Buffer);
                     Shared = new AcShared(physics, graphics, staticInfo);
                 } else if (_gameProcess?.HasExitedSafe() ?? (DateTime.Now - _previousPacketTime).TotalSeconds > 1d) {
@@ -217,13 +316,13 @@ namespace AcManager.Tools.SharedMemory {
             switch (Status) {
                 case AcSharedMemoryStatus.Disconnected:
                     if (Reconnect()) {
-                        UpdatePhysics();
+                        UpdateData();
                     }
                     break;
 
                 case AcSharedMemoryStatus.Connected:
                 case AcSharedMemoryStatus.Live:
-                    UpdatePhysics();
+                    UpdateData();
                     break;
 
                 case AcSharedMemoryStatus.Connecting:

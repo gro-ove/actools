@@ -157,7 +157,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 var isSymbol = char.IsLetterOrDigit(c);
                 if (isSymbol) {
-                    if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, out var urlLength)) {
+                    if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, true, out var urlLength)) {
                         var url = bbCode.Substring(i, urlLength);
                         if (lastIndex < i) {
                             converted.Append(bbCode.Substring(lastIndex, i - lastIndex));

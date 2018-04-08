@@ -28,7 +28,7 @@ namespace FirstFloor.ModernUI.Helpers {
         public static IEnumerable<string> GetUrls([CanBeNull] this string s) {
             if (s == null) yield break;
             for (var i = 0; i < s.Length; i++){
-                if (IsWebUrl(s, i, out var l)) {
+                if (IsWebUrl(s, i, false, out var l)) {
                     yield return s.Substring(i, l).Urlify();
                 }
             }
@@ -229,52 +229,52 @@ console.log(result);
                         d = s[index + 2];
                         return (c == 'r' || c == 'R') && (d == 'o' || d == 'O');
                 }
-            } else if (length == 4 || length == 6) {
+            } else if (length == 4) {
                 switch (s[index]) {
                     case 'a':
                     case 'A':
-                        return Contains("ero", "rpa");
+                        return Contains(@"ero", @"rpa");
                     case 'c':
                     case 'C':
-                        return Contains("oop");
+                        return Contains(@"oop", @"lub");
                     case 'i':
                     case 'I':
-                        return Contains("nfo");
+                        return Contains(@"nfo");
                     case 'j':
                     case 'J':
-                        return Contains("obs");
+                        return Contains(@"obs");
                     case 'm':
                     case 'M':
-                        return Contains("obi", "useum");
+                        return Contains(@"obi");
                     case 'n':
                     case 'N':
-                        return Contains("ame");
+                        return Contains(@"ame");
+                }
+            } else if (length == 6) {
+                switch (s[index]) {
+                    case 'm':
+                    case 'M':
+                        return Contains(@"useum");
                     case 't':
                     case 'T':
-                        return Contains("ravel");
+                        return Contains(@"ravel");
                 }
             }
 
             return false;
 
             bool Contains(params string[] o) {
-                string a = null;
-                for (var i = 0; i < o.Length; i++) {
-                    var p = o[i];
-                    if (p.Length == length - 1) {
-                        if (a == null) {
-                            a = s.Substring(index + 1, length - 1);
-                        }
-                        if (string.Equals(a, p, StringComparison.OrdinalIgnoreCase)) {
-                            return true;
-                        }
+                var a = s.Substring(index + 1, length - 1);
+                for (var i = o.Length - 1; i >= 0; i--) {
+                    if (string.Equals(a, o[i], StringComparison.OrdinalIgnoreCase)) {
+                        return true;
                     }
                 }
                 return false;
             }
         }
 
-        internal static bool IsWebUrl(string s, int index, out int urlLength) {
+        internal static bool IsWebUrl(string s, int index, bool bbCodeMode, out int urlLength) {
             int start = index, length = s.Length;
 
             if (start > 0) {
@@ -288,7 +288,6 @@ console.log(result);
                 }
             }
 
-            int prefix;
             if (Expect(@"http")) {
                 if (char.ToLowerInvariant(s[index]) == 's') {
                     index++;
@@ -297,36 +296,46 @@ console.log(result);
                     urlLength = 0;
                     return false;
                 }
-                prefix = index - start;
-            } else if (Expect(@"www.")) {
-                prefix = index - start;
+            }
+
+            var lastDot = -1;
+            for (; index < length; index++) {
+                var c = s[index];
+                if (c == '.') {
+                    if (lastDot == index - 1){
+                        urlLength = 0;
+                        return false;
+                    }
+
+                    lastDot = index;
+                } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-')) {
+                    break;
+                }
+            }
+
+            if (lastDot <= 0 || index - start <= 3 || !IsDomainZone(s, lastDot + 1, index - lastDot - 1)) {
+                urlLength = 0;
+                return false;
+            }
+
+            if (index >= length || s[index] != '/') {
+                urlLength = index - start;
             } else {
-                var lastDot = -1;
-                for (; index < length; index++) {
-                    var c = s[index];
-                    if (c == '.') {
-                        lastDot = index;
-                    } else if (!(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z' || c >= '0' && c <= '9' || c == '-')) {
-                        break;
+                var last = '\0';
+                if (bbCodeMode) {
+                    for (char c; index < length && !char.IsWhiteSpace(c = s[index]) && c != '[' && c != ']'; index++) {
+                        last = c;
+                    }
+                } else {
+                    for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
+                        last = c;
                     }
                 }
 
-                var nonPrefixed = index - start;
-                if (lastDot > 0 && nonPrefixed > 3 && IsDomainZone(s, lastDot + 1, index - lastDot - 1)) {
-                    prefix = -1;
-                } else {
-                    urlLength = 0;
-                    return false;
-                }
+                urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
             }
 
-            var last = '\0';
-            for (char c; index < length && !char.IsWhiteSpace(c = s[index]); index++) {
-                last = c;
-            }
-
-            urlLength = last == '.' || last == ',' || last == ':' || last == ';' || last == '!' || last == ']' ? index - start - 1 : index - start;
-            return urlLength > prefix;
+            return true;
 
             bool Expect(string p) {
                 for (var i = 0; i < p.Length; i++) {

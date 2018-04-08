@@ -31,6 +31,8 @@ namespace AcManager {
                 if (!_added) {
                     AcSharedMemory.Instance.Start += OnStart;
                     AcSharedMemory.Instance.Finish += OnFinish;
+                    AcSharedMemory.Instance.MonitorFramesPerSecondBegin += OnStart;
+                    AcSharedMemory.Instance.MonitorFramesPerSecondEnd += OnFinish;
                     GameWrapper.Started += OnGameWrapperStarted;
                     GameWrapper.Ended += OnGameWrapperEnded;
                     _added = true;
@@ -38,6 +40,8 @@ namespace AcManager {
             } else if (_added) {
                 AcSharedMemory.Instance.Start -= OnStart;
                 AcSharedMemory.Instance.Finish -= OnFinish;
+                AcSharedMemory.Instance.MonitorFramesPerSecondBegin -= OnStart;
+                AcSharedMemory.Instance.MonitorFramesPerSecondEnd -= OnFinish;
                 GameWrapper.Started -= OnGameWrapperStarted;
                 GameWrapper.Ended -= OnGameWrapperEnded;
                 _added = false;

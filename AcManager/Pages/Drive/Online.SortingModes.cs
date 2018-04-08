@@ -32,6 +32,16 @@ namespace AcManager.Pages.Drive {
             }
         }
 
+        public class SortingCleanedName : ServerEntrySorter {
+            public override int Compare(ServerEntry x, ServerEntry y) {
+                return string.Compare(x.SortingName, y.SortingName, StringComparison.CurrentCultureIgnoreCase);
+            }
+
+            public override bool IsAffectedBy(string propertyName) {
+                return propertyName == nameof(ServerEntry.DisplayName);
+            }
+        }
+
         public class SortingFavourites : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 if (x.IsFavourite ^ y.IsFavourite) return x.IsFavourite ? -1 : 1;
@@ -114,8 +124,10 @@ namespace AcManager.Pages.Drive {
                     return new SortingCarsNumberCount();
                 case "ping":
                     return new SortingPing();
-                case "name":
+                case "nameOriginal":
                     return new SortingName();
+                case "name":
+                    return new SortingCleanedName();
                 default:
                     return null;
             }
@@ -123,6 +135,7 @@ namespace AcManager.Pages.Drive {
 
         private static SettingEntry[] DefaultSortingModes { get; } = {
             new SettingEntry("name", AppStrings.Online_Sorting_Name),
+            new SettingEntry("nameOriginal", "Name (w/o cleaning)"),
             new SettingEntry("favourites", "Favourites"),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
             new SettingEntry("connected", "Connected drivers"),

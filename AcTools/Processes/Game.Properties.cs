@@ -495,9 +495,9 @@ namespace AcTools.Processes {
                 }
             }
 
-            private int? _sessionStart;
+            private double? _sessionStart;
 
-            public int? SessionStart {
+            public double? SessionStart {
                 get => _sessionStart;
                 set {
                     if (value.Equals(_sessionStart)) return;
@@ -506,9 +506,9 @@ namespace AcTools.Processes {
                 }
             }
 
-            private int? _randomness;
+            private double? _randomness;
 
-            public int? Randomness {
+            public double? Randomness {
                 get => _randomness;
                 set {
                     if (value.Equals(_randomness)) return;
@@ -517,9 +517,9 @@ namespace AcTools.Processes {
                 }
             }
 
-            private int? _lapGain;
+            private double? _lapGain;
 
-            public int? LapGain {
+            public double? LapGain {
                 get => _lapGain;
                 set {
                     if (value.Equals(_lapGain)) return;
@@ -528,9 +528,9 @@ namespace AcTools.Processes {
                 }
             }
 
-            private int? _sessionTransfer;
+            private double? _sessionTransfer;
 
-            public int? SessionTransfer {
+            public double? SessionTransfer {
                 get => _sessionTransfer;
                 set {
                     if (value.Equals(_sessionTransfer)) return;
@@ -546,10 +546,10 @@ namespace AcTools.Processes {
             public static TrackProperties Load(IniFileSection section) {
                 return new TrackProperties {
                     Preset = section.GetIntNullable("Preset"),
-                    SessionStart = section.GetInt("SESSION_START", 95),
-                    Randomness = section.GetInt("RANDOMNESS", 2),
-                    LapGain = section.GetInt("LAP_GAIN", 10),
-                    SessionTransfer = section.GetInt("SESSION_TRANSFER", 90)
+                    SessionStart = section.GetDouble("SESSION_START", 95),
+                    Randomness = section.GetDouble("RANDOMNESS", 2),
+                    LapGain = section.GetDouble("LAP_GAIN", 10),
+                    SessionTransfer = section.GetDouble("SESSION_TRANSFER", 90)
                 };
             }
 

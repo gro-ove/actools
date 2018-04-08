@@ -25,23 +25,23 @@
 
   <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" VerticalSpacing="8">
     <StackPanel>
-      <mui:ValueLabel Content="Initial grip" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" Postfix="%"
+      <mui:ValueLabel Content="Initial grip" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}}" Postfix="%"
           ToolTip="Amount of grip at the session start" />
-      <Slider Minimum="85" Maximum="100" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="3"
+      <Slider Minimum="85" Maximum="100" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" TickFrequency="3"
           TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Grip transfer" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" Postfix="%"
+      <mui:ValueLabel Content="Grip transfer" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}}" Postfix="%"
           ToolTip="How much of added grip will transfer to the next session" />
-      <Slider Minimum="0" Maximum="100" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=1}" TickFrequency="10"
+      <Slider Minimum="0" Maximum="100" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" TickFrequency="10"
           TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Grip randomization" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+      <mui:ValueLabel Content="Grip randomization" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}}"
           Postfix="%" />
-      <Slider Minimum="0" Maximum="100" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+      <Slider Minimum="0" Maximum="100" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
           TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 

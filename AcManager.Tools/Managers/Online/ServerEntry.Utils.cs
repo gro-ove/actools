@@ -12,15 +12,28 @@ namespace AcManager.Tools.Managers.Online {
         public static readonly string ExtendedSeparator = @"ℹ";
         private static readonly string TrashSymbols = @")|/#☆★.:=<>+_-";
 
-        private static readonly Regex InvisibleCleanUpRegex = new Regex(@"\u0007", RegexOptions.Compiled);
         private static readonly Regex SpacesCollapseRegex = new Regex(@"\s+", RegexOptions.Compiled);
         private static readonly Regex SortingFix1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
 
         private static readonly Regex SortingFix2Regex = new Regex(
-                @"^(?:AA+|\([A-Z]\)|[ !-]+|A?(?![b-zB-Z0-9])+)+| ?-$",
+                @"^(?:AA+|[ !-]+|A?(?![b-zB-Z0-9])+)+| ?-$",
                 RegexOptions.Compiled);
 
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
+
+        private static string GetSortingName(string name) {
+            if (name == null) return null;
+
+            var r = new StringBuilder();
+            var p = '\0';
+            for (var i = 0; i < name.Length; i++) {
+                var c = name[i];
+                if (char.IsLetterOrDigit(c)) {
+                    r.Append(c);
+                }
+            }
+            return r.ToString();
+        }
 
         private static string InvisibleCleanUp(string s) {
             var r = new StringBuilder();
@@ -73,8 +86,8 @@ namespace AcManager.Tools.Managers.Online {
                 extPort = null;
             }
 
-            name = InvisibleCleanUpRegex.Replace(name, "");
-            name = SpacesCollapseRegex.Replace(name.Trim(), " ");
+            name = InvisibleCleanUp(name.Trim());
+            name = SpacesCollapseRegex.Replace(name, " ");
 
             var fixMode = SettingsHolder.Online.FixNamesMode.IntValue ?? 0;
             if (fixMode != 0) {

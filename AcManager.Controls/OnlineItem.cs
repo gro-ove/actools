@@ -250,10 +250,10 @@ namespace AcManager.Controls {
                 return;
             }
 
-            if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
+            /*if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
                 ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}");
                 return;
-            }
+            }*/
 
             if (GetTrackRect().Contains(pos)) {
                 ShowToolTip(@"track", () => FindStaticResource<ToolTip>(@"TrackPreviewTooltip.Online"));

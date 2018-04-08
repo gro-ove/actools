@@ -110,8 +110,24 @@
         <Path Data="{StaticResource AlertIconData}" Width="24" Height="24" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" Margin="4" />
         <TextBlock Text="{x:Static g:AppStrings.RaceResult_ErrorHeader}" Style="{StaticResource Heading1}" />
       </DockPanel>
-      <TextBlock Text="{Binding ErrorMessage}" Margin="0 0 0 12" />
-      <TextBlock Text="{Binding ErrorDescription}" FontStyle="Italic" />
+      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorMessage}" Margin="0 0 0 12" />
+      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorDescription}" FontStyle="Italic" />
+    </StackPanel>
+
+    <!-- Benchmark -->
+    <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.BenchmarkResult}" VerticalAlignment="Center" HorizontalAlignment="Center">
+      <DockPanel Margin="0 0 0 4">
+        <mui:BooleanSwitch Value="{Binding BenchmarkPassed}" Width="24" Height="24" DockPanel.Dock="Left" Margin="4">
+          <mui:BooleanSwitch.True>
+            <Path Data="{StaticResource CheckIconData}" Fill="{DynamicResource Go}" Stretch="Uniform" />
+          </mui:BooleanSwitch.True>
+          <mui:BooleanSwitch.False>
+            <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" />
+          </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
+        <TextBlock Text="Benchmark:" Style="{StaticResource Heading1}" />
+      </DockPanel>
+      <mui:SelectableBbCodeBlock Text="{Binding BenchmarkResults}" Width="240" />
     </StackPanel>
 
     <!-- Finished -->

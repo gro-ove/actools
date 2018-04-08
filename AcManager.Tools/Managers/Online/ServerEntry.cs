@@ -5,6 +5,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -18,11 +19,11 @@ namespace AcManager.Tools.Managers.Online {
 
         public ServerEntry([NotNull] ServerInformation information) {
             if (information == null) throw new ArgumentNullException(nameof(information));
+            _sortingName = Lazier.Create(() => GetSortingName(DisplayName));
 
             Id = information.Id;
             Ip = information.Ip;
             PortHttp = information.PortHttp;
-
             Ping = null;
 
             PrepareErrorsList();
@@ -30,6 +31,18 @@ namespace AcManager.Tools.Managers.Online {
             Status = status == ServerStatus.MissingContent ? ServerStatus.Unloaded : status ?? ServerStatus.Unloaded;
             UpdateErrorsList();
         }
+
+        public override string DisplayName {
+            get => base.DisplayName;
+            set {
+                if (Equals(value, base.DisplayName)) return;
+                base.DisplayName = value;
+                _sortingName.Reset();
+            }
+        }
+
+        private readonly Lazier<string> _sortingName;
+        public string SortingName => _sortingName.Value;
 
         public void UpdateValues([NotNull] ServerInformation information) {
             PrepareErrorsList();

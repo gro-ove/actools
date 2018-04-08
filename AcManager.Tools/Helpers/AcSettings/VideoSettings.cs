@@ -368,7 +368,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public int FramerateLimit {
             get => _framerateLimit;
             set {
-                value = value.Clamp(30, 240);
+                value = value.Clamp(1, 240);
                 if (Equals(value, _framerateLimit)) return;
                 _framerateLimit = value;
                 OnPropertyChanged();

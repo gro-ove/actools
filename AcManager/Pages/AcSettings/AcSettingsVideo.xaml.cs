@@ -6,12 +6,14 @@ using System.Windows;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
+using AcManager.Internal;
 using AcManager.Pages.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
+using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
@@ -23,27 +25,53 @@ namespace AcManager.Pages.AcSettings {
             internal ViewModel() {}
 
             public VideoSettings Video => AcSettingsHolder.Video;
-
             public OculusSettings Oculus => AcSettingsHolder.Oculus;
-
             public GraphicsSettings Graphics => AcSettingsHolder.Graphics;
-
             public IUserPresetable Presets => AcSettingsHolder.VideoPresets;
 
-            private ICommand _manageFiltersCommand;
+            private DelegateCommand _manageFiltersCommand;
 
-            public ICommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {
+            public DelegateCommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {
                 (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
             }));
 
-            private ICommand _benchmarkCommand;
+            private AsyncCommand _benchmarkCommand;
 
-            public ICommand BenchmarkCommand => _benchmarkCommand ??
+            public AsyncCommand BenchmarkCommand => _benchmarkCommand ??
                     (_benchmarkCommand = new AsyncCommand(() => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
 
-            private ICommand _shareCommand;
+            private AsyncCommand _benchmarkFastCommand;
 
-            public ICommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
+            public AsyncCommand BenchmarkFastCommand => _benchmarkFastCommand ??
+                    (_benchmarkFastCommand = new AsyncCommand(() => {
+                        Task[] task = { null };
+
+
+                        if (SettingsHolder.Drive.WatchForSharedMemory) {
+                            AcSharedMemory.Instance.MonitorFramesPerSecondBegin += OnMonitorFramesPerSecondBegin;
+                        } else {
+                            DelayAndShutdown(true);
+                        }
+
+                        task[0] = GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()));
+                        return task[0];
+
+                        void DelayAndShutdown(bool extraDelay) {
+                            Task.Delay(TimeSpan.FromSeconds(extraDelay ? 60 : 30)).ContinueWith(t => {
+                                if (task[0] == null || task[0].IsCompleted || task[0].IsCanceled || task[0].IsFaulted) return;
+                                InternalUtils.AcControlPointExecute(InternalUtils.AcControlPointCommand.Shutdown);
+                            });
+                        }
+
+                        void OnMonitorFramesPerSecondBegin(object sender, EventArgs eventArgs) {
+                            AcSharedMemory.Instance.MonitorFramesPerSecondBegin -= OnMonitorFramesPerSecondBegin;
+                            DelayAndShutdown(false);
+                        }
+                    }));
+
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(Share));
 
             private async Task Share() {
                 var data = Presets.ExportToPresetData();
@@ -70,6 +98,7 @@ namespace AcManager.Pages.AcSettings {
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.BenchmarkCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(Model.BenchmarkFastCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });

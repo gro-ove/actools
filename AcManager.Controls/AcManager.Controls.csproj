@@ -303,6 +303,7 @@
     <Compile Include="ViewModels\RaceGridPlayerEntry.cs" />
     <Compile Include="ViewModels\RaceGridViewModel.cs" />
     <Compile Include="ViewModels\RealismLevel.cs" />
+    <Compile Include="ViewModels\TrackStatesHelper.cs" />
     <Compile Include="ViewModels\TrackStateViewModel.cs" />
     <Compile Include="ViewModels\TrackStateViewModelBase.cs" />
     <Compile Include="ViewModels\UploaderParams.cs" />
