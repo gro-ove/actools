@@ -140,7 +140,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private void ShowContextMenu([CanBeNull] ContextMenu menu) {
+        private static void ShowContextMenu([CanBeNull] ContextMenu menu) {
             if (menu != null) {
                 menu.IsOpen = true;
             }
@@ -250,10 +250,12 @@ namespace AcManager.Controls {
                 return;
             }
 
-            /*if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
-                ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}");
+#if DEBUG
+            if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
+                ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}\nSorting name: {_server.SortingName}");
                 return;
-            }*/
+            }
+#endif
 
             if (GetTrackRect().Contains(pos)) {
                 ShowToolTip(@"track", () => FindStaticResource<ToolTip>(@"TrackPreviewTooltip.Online"));
@@ -394,7 +396,7 @@ namespace AcManager.Controls {
         [CanBeNull]
         private TrackObjectBase _currentTrack;
 
-        private BetterImage.BitmapEntry _countryBitmap;
+        private ImageSource _countryBitmap;
         private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends;
         private int _sessionsCount;
 
@@ -565,7 +567,7 @@ namespace AcManager.Controls {
         }
 
         private void UpdateCountryFlag(ServerEntry server) {
-            _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result;
+            _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result.BitmapSource;
         }
 
         private void UpdateErrorFlag(ServerEntry server) {
@@ -823,7 +825,7 @@ namespace AcManager.Controls {
                         }
                     }
 
-                    dc.DrawImage(_countryBitmap.BitmapSource, GetCountryRect(width));
+                    dc.DrawImage(_countryBitmap, GetCountryRect(width));
                     dc.DrawText(_displayClients, new Point(width - 80, _textPadding));
 
                     var cars = _cars;

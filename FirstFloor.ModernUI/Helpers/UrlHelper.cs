@@ -138,7 +138,7 @@ console.log(result);
                                 || c >= 'r' && c <= 'v' || c == 'y';
                     case 'm':
                     case 'M':
-                        return c == 'A' || c == 'C' || c == 'D' || c == 'G' || c == 'H' || c >= 'K' && c <= 'Z' || c == 'a' || c == 'c' || c == 'd' || c == 'g'
+                        return c == 'A' || c >= 'C' && c <= 'E' || c == 'G' || c == 'H' || c >= 'K' && c <= 'Z' || c == 'a' || c >= 'c' && c <= 'e' || c == 'g'
                                 || c == 'h' || c >= 'k' && c <= 'z';
                     case 'n':
                     case 'N':

@@ -192,6 +192,10 @@
     <Compile Include="Windows\Attached\Resources.cs" />
     <Compile Include="Windows\Attached\SaveScroll.cs" />
     <Compile Include="Windows\Attached\VisibilityAnimation.cs" />
+    <Compile Include="Windows\Bindings\BooleanBinding.cs" />
+    <Compile Include="Windows\Bindings\MapBinding.cs" />
+    <Compile Include="Windows\Bindings\MapValue.cs" />
+    <Compile Include="Windows\Bindings\MapValues.cs" />
     <Compile Include="Windows\CompositionTargetEx.cs" />
     <Compile Include="Windows\Controls\AdornedControl.cs" />
     <Compile Include="Windows\Controls\AsyncButton.cs" />

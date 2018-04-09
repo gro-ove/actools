@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class LimitedStorage {
@@ -34,6 +35,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 }
             }
 
+            [CanBeNull]
             public string Get(string key) {
                 var l = _values;
                 for (var i = l.Length - 1; i >= 0; i--) {
@@ -129,6 +131,7 @@ namespace FirstFloor.ModernUI.Helpers {
             foreach (var space in Spaces.Values) space.ForceSave();
         }
 
+        [CanBeNull]
         public static string Get(string space, string key) {
             return Spaces.TryGetValue(space, out var l) ? l.Get(key) : null;
         }

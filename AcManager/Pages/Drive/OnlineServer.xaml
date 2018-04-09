@@ -49,53 +49,12 @@
             Command="{Binding Entry.RefreshCommand}" />
         <Separator />
 
-        <mui:ButtonWithComboBox x:Name="ListsButton" Command="{Binding Entry.ToggleFavouriteCommand}" PreviewMouseDown="ListsButton_OnPreviewMouseDown">
-          <mui:ButtonWithComboBox.Content>
-            <mui:BooleanSwitch Value="{Binding Entry.IsFavourite}">
-              <mui:BooleanSwitch.True>
-                <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unfavourite}" />
-              </mui:BooleanSwitch.True>
-              <mui:BooleanSwitch.False>
-                <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Favourite}" />
-              </mui:BooleanSwitch.False>
-            </mui:BooleanSwitch>
-          </mui:ButtonWithComboBox.Content>
-          <mui:ButtonWithComboBox.ButtonToolTip>
-            <ToolTip>
-              <mui:BooleanSwitch Value="{Binding Entry.IsFavourite}">
-                <mui:BooleanSwitch.True>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unfavourite_Tooltip}" />
-                </mui:BooleanSwitch.True>
-                <mui:BooleanSwitch.False>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Favourite_Tooltip}" />
-                </mui:BooleanSwitch.False>
-              </mui:BooleanSwitch>
-            </ToolTip>
-          </mui:ButtonWithComboBox.ButtonToolTip>
-
-          <MenuItem InputGestureText="Ctrl+Shift+H" Command="{Binding Entry.ToggleHiddenCommand}" StaysOpenOnClick="True">
-            <MenuItem.Header>
-              <mui:BooleanSwitch Value="{Binding Entry.IsExcluded}">
-                <mui:BooleanSwitch.True>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unhide}" />
-                </mui:BooleanSwitch.True>
-                <mui:BooleanSwitch.False>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Hide}" />
-                </mui:BooleanSwitch.False>
-              </mui:BooleanSwitch>
-            </MenuItem.Header>
-            <MenuItem.ToolTip>
-              <mui:BooleanSwitch Value="{Binding Entry.IsExcluded}">
-                <mui:BooleanSwitch.True>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Unhide_Tooltip}" />
-                </mui:BooleanSwitch.True>
-                <mui:BooleanSwitch.False>
-                  <TextBlock Text="{x:Static mui:UiStrings.Toolbar_Hide_Tooltip}" />
-                </mui:BooleanSwitch.False>
-              </mui:BooleanSwitch>
-            </MenuItem.ToolTip>
-          </MenuItem>
-
+        <mui:ButtonWithComboBox x:Name="ListsButton" Command="{Binding Entry.ToggleFavouriteCommand}" PreviewMouseDown="ListsButton_OnPreviewMouseDown"
+            Content="{mui:BooleanBinding Entry.IsFavourite, TrueValue={x:Static mui:UiStrings.Toolbar_Unfavourite}, FalseValue={x:Static mui:UiStrings.Toolbar_Favourite}}"
+            ButtonToolTip="{mui:BooleanBinding Entry.IsFavourite, TrueValue={x:Static mui:UiStrings.Toolbar_Unfavourite_Tooltip}, FalseValue={x:Static mui:UiStrings.Toolbar_Favourite_Tooltip}}">
+          <MenuItem InputGestureText="Ctrl+Shift+H" Command="{Binding Entry.ToggleHiddenCommand}" StaysOpenOnClick="True"
+              Header="{mui:BooleanBinding Entry.IsExcluded, TrueValue={x:Static mui:UiStrings.Toolbar_Unhide}, FalseValue={x:Static mui:UiStrings.Toolbar_Hide}}"
+              ToolTip="{mui:BooleanBinding Entry.IsExcluded, TrueValue={x:Static mui:UiStrings.Toolbar_Unhide_Tooltip}, FalseValue={x:Static mui:UiStrings.Toolbar_Hide_Tooltip}}" />
           <Separator />
           <MenuItem Header="{x:Static mui:UiStrings.Toolbar_OnlineManageLists}" InputGestureText="Ctrl+Shift+D" Command="{Binding ManageListsCommand}" />
         </mui:ButtonWithComboBox>

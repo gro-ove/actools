@@ -22,6 +22,9 @@
         <MenuItem Header="{x:Static g:AppStrings.Online_SortByPing}" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
             IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='ping', Mode=OneWay}" />
         <Separator />
+        <MenuItem Header="Set sorting as default for new tabs" Command="{Binding SetAsDefaultSortingCommand}" />
+        <MenuItem Header="Set filters as default for new tabs" Command="{Binding SetAsDefaultFiltersCommand}" />
+        <Separator />
         <MenuItem Header="{x:Static g:AppStrings.Toolbar_Reload}" InputGestureText="Ctrl+R" Command="{Binding RefreshCommand}" />
         <MenuItem Header="{x:Static g:AppStrings.Online_AddByIp}" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}"
             Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -169,8 +172,8 @@
                           </ItemsControl.ItemsPanel>
                           <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                              <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" Width="16"
-                                  Height="16" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                              <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}"
+                                  Width="16" Height="16" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
                                 <mui:Cell>
                                   <ContentPresenter Content="{Binding Icon}" Margin="0" />
                                   <Path x:Name="PART_Hidden" Data="F1 M 62,0 L0,62 L2,64 L64,2 Z" Fill="Red" Stretch="Uniform"
@@ -195,7 +198,7 @@
                         <StackPanel Orientation="Horizontal">
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource AddIconData}" Command="{Binding AddNewServerCommand}"
                               Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                          <mui:ModernButton Click="OnScrollToSelectedButtonClick"  DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
+                          <mui:ModernButton Click="OnScrollToSelectedButtonClick" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
                               ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}" />
                         </StackPanel>
@@ -223,11 +226,18 @@
                       Height="2" />
                 </mui:Cell>
 
-                <DockPanel Grid.Row="0" HorizontalAlignment="Left"
+                <DockPanel Grid.Row="0" Background="Transparent" HorizontalAlignment="Left"
                     Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+                  <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="-28 0 0 0" Panel.ZIndex="1">
+                    <ContextMenu>
+                      <MenuItem Header="Set sorting as default for new tabs" Command="{Binding SetAsDefaultSortingCommand}" />
+                      <MenuItem Header="Set filters as default for new tabs" Command="{Binding SetAsDefaultFiltersCommand}" />
+                    </ContextMenu>
+                  </mui:ContextMenuButton>
+
                   <StackPanel x:Name="FilteringComboBox" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8 0 8 16" DockPanel.Dock="Right">
                     <TextBlock Style="{StaticResource Label}" Margin="0 0 0 8" Text="{x:Static g:AppStrings.Online_SortByLabel}" />
-                    <ComboBox Width="120" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}" DisplayMemberPath="DisplayName" />
+                    <ComboBox Width="150" ItemsSource="{Binding SortingModes}" SelectedItem="{Binding SortingMode}" DisplayMemberPath="DisplayName" />
                   </StackPanel>
 
                   <ItemsControl ItemsSource="{Binding Filters}" Margin="16 0 0 16">
@@ -239,8 +249,9 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                       <DataTemplate>
-                        <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" MaxWidth="48"
-                            Height="48" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                        <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}"
+                            MaxWidth="48" Height="48" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                            Foreground="{DynamicResource ItemText}">
                           <mui:Cell>
                             <DockPanel Margin="4 4 4 2">
                               <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Bottom" Style="{StaticResource Label}" HorizontalAlignment="Center"

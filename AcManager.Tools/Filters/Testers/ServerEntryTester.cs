@@ -261,7 +261,8 @@ namespace AcManager.Tools.Filters.Testers {
                     break;
 
                 case "name":
-                    return value.Test(obj.DisplayName);
+                    return value.Test(obj.DisplayName)
+                            || SettingsHolder.Online.FixNamesMode.IntValue != 0 && value.Test(obj.ActualName);
 
                 default:
                     return false;

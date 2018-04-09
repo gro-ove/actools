@@ -114,7 +114,7 @@ namespace AcManager.Pages.Drive {
                 _loading = true;
 
                 try {
-                    var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey);
+                    var saved = LimitedStorage.Get(LimitedSpace.OnlineQuickFilter, _saveKey) ?? DefaultQuickFilters.Value ?? "";
                     foreach (var filter in this) {
                         filter.IsEnabled = false;
                     }
@@ -163,7 +163,7 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private string GetFilterString() {
+            public string GetFilterString() {
                 return this.Select(x => x.IsEnabled ? $"({x.Filter})" : null).NonNull().JoinToString('&');
             }
 
@@ -177,7 +177,6 @@ namespace AcManager.Pages.Drive {
                 base.OnItemPropertyChanged(sender, e);
                 if (!_loading && e.PropertyName == nameof(OnlineQuickFilter.IsEnabled)) {
                     Changed?.Invoke(this, EventArgs.Empty);
-                    Logging.Debug($"{GetHashCode():X4}/{_saveKey}: {GetFilterString()}");
                     LimitedStorage.Set(LimitedSpace.OnlineQuickFilter, _saveKey, GetFilterString());
                 }
             }

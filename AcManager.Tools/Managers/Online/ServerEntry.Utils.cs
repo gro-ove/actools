@@ -22,17 +22,92 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);
 
         private static string GetSortingName(string name) {
-            if (name == null) return null;
+            if (string.IsNullOrEmpty(name)){
+                return @"zzzz";
+            }
 
-            var r = new StringBuilder();
+            if (IsUnlikelyToBeCheat(char.ToLowerInvariant(name[0]))){
+                return name.ToLowerInvariant();
+            }
+
+            var r = new StringBuilder(name.Length);
+            var l = 0;
+
             var p = '\0';
+            var pFits = false;
+
             for (var i = 0; i < name.Length; i++) {
                 var c = name[i];
-                if (char.IsLetterOrDigit(c)) {
-                    r.Append(c);
+                if (c == '.') continue;
+
+                c = char.ToLowerInvariant(c);
+                if (c == 'v'){
+                    var skip = false;
+                    for (var j = i + 1; j < name.Length; j++){
+                        if (char.IsDigit(name[j]) || name[j] == '.'){
+                            skip = true;
+                            i++;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (skip){
+                        continue;
+                    }
+                }
+
+                var cFits = (char.IsLetter(c) || pFits && char.IsDigit(c))
+                        && (c != p || l > 0 || IsUnlikelyToBeCheat(c));
+
+                if (pFits) {
+                    if (l < 2 && cFits && p == 'a' && c == 'c' && !NextIsLetter()) {
+                        pFits = false;
+                        continue;
+                    }
+
+                    if (cFits || l > 0) {
+                        l++;
+                        r.Append(p);
+                    }
+                }
+
+                if (l > 5){
+                    return r.Append(name.Substring(i)).ToString();
+                }
+
+                p = c;
+                pFits = cFits;
+
+                bool NextIsLetter(){
+                    return i + 1 < name.Length && char.IsLetter(name[i + 1]);
                 }
             }
-            return r.ToString();
+
+            if (pFits) {
+                r.Append(p);
+            }
+
+            if (l > 0){
+                return r.ToString();
+            }
+
+            var lettersOnly = LettersOnly(name);
+            return lettersOnly.Length > 0 ? lettersOnly : @"zzz:" + name;
+
+            bool IsUnlikelyToBeCheat(char c){
+                return c > 'c' && c <= 'z';
+            }
+
+            string LettersOnly(string s){
+                var o = new StringBuilder(s.Length);
+                for (var i = 0; i < s.Length; i++){
+                    if (char.IsLetterOrDigit(s[i])){
+                        o.Append(char.ToLowerInvariant(s[i]));
+                    }
+                }
+                return o.ToString();
+            }
         }
 
         private static string InvisibleCleanUp(string s) {

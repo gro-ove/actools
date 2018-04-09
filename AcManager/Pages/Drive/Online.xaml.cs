@@ -394,7 +394,8 @@ namespace AcManager.Pages.Drive {
                 SortingModes = sources?.Length == 1 && sources[0] == FileBasedOnlineSources.RecentKey
                         ? DefaultSortingModes.Prepend(new SettingEntry(null, "Default")).ToArray() : DefaultSortingModes;
 
-                SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key)) ?? SortingModes[0];
+                SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key))
+                        ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];
                 // ListFilter.Second = CreateQuickFilter();
 
                 Filters = new OnlineQuickFilters(Key);
@@ -617,10 +618,22 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            private CommandBase _changeSortingCommand;
+            private DelegateCommand<string> _changeSortingCommand;
 
-            public ICommand ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(o => {
-                SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes[0];
+            public DelegateCommand<string> ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(o => {
+                SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];
+            }));
+
+            private DelegateCommand _setAsDefaultSortingCommand;
+
+            public DelegateCommand SetAsDefaultSortingCommand => _setAsDefaultSortingCommand ?? (_setAsDefaultSortingCommand = new DelegateCommand(() => {
+                DefaultSortingMode.Value = SortingMode.Id;
+            }));
+
+            private DelegateCommand _setAsDefaultFiltersCommand;
+
+            public DelegateCommand SetAsDefaultFiltersCommand => _setAsDefaultFiltersCommand ?? (_setAsDefaultFiltersCommand = new DelegateCommand(() => {
+                DefaultQuickFilters.Value = Filters.GetFilterString();
             }));
 
             private ICommand _addNewServerCommand;

@@ -2,6 +2,7 @@
 using System.Collections;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
@@ -24,7 +25,7 @@ namespace AcManager.Pages.Drive {
 
         public class SortingName : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
-                return string.Compare(x.DisplayName, y.DisplayName, StringComparison.CurrentCultureIgnoreCase);
+                return string.Compare(x.ActualName, y.ActualName, StringComparison.CurrentCultureIgnoreCase);
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -135,7 +136,7 @@ namespace AcManager.Pages.Drive {
 
         private static SettingEntry[] DefaultSortingModes { get; } = {
             new SettingEntry("name", AppStrings.Online_Sorting_Name),
-            new SettingEntry("nameOriginal", "Name (w/o cleaning)"),
+            new SettingEntry("nameOriginal", "Name (original)"),
             new SettingEntry("favourites", "Favourites"),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
             new SettingEntry("connected", "Connected drivers"),
@@ -143,5 +144,8 @@ namespace AcManager.Pages.Drive {
             new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
             new SettingEntry("ping", AppStrings.Online_Sorting_Ping)
         };
+
+        private static readonly StoredValue<string> DefaultSortingMode = Stored.Get("/Online.DefaultSortingMode", "name");
+        private static readonly StoredValue<string> DefaultQuickFilters = Stored.Get("/Online.DefaultQuickFilters", "(haserrors- & missing-)");
     }
 }
