@@ -34,8 +34,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.5027")]
-[assembly: AssemblyFileVersion("1.0.1.5027")]
+[assembly: AssemblyVersion("1.0.1.5424")]
+[assembly: AssemblyFileVersion("1.0.1.5424")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.Tools.AcManagersNew")]
@@ -61,4 +61,4 @@ using System.Windows.Markup;
 
 // For testing
 [assembly: InternalsVisibleTo("AcManager.Tools.Tests")]
-// Modified at: 18/02/24 02:43:35
+// Modified at: 18/04/09 01:52:22
