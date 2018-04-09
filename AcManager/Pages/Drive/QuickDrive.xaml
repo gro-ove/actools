@@ -107,7 +107,7 @@
           <TextBlock Style="{StaticResource Title}" Text="No car selected" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
               VerticalAlignment="Center" Margin="0 0 0 20" Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
           <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-          <mui:BbCodeBlock Mode="NothingButEmoji" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+          <mui:BbCodeBlock Mode="WithoutBbCodes" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
               Text="{Binding SelectedCar.DisplayName}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
               TextTrimming="CharacterEllipsis" />
 
@@ -295,7 +295,7 @@
               Stretch="UniformToFill" />
           <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
               ShowBroken="False" />
-          <mui:BbCodeBlock Mode="NothingButEmoji" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+          <mui:BbCodeBlock Mode="WithoutBbCodes" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
               Text="{Binding SelectedTrack.Name}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
               TextTrimming="CharacterEllipsis" />
 

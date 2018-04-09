@@ -89,8 +89,8 @@
     <mui:BooleanSwitch Value="{Binding CarExists}" Margin="4">
       <mui:BooleanSwitch.True>
         <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-          <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarObjectWrapper.Value.DisplayName}" Margin="0 0 0 4" />
-          <c:CarBlock Car="{Binding CarObjectWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="640" ShowDescription="False" />
+          <TextBlock Style="{StaticResource Heading2}" Text="{Binding CarWrapper.Value.DisplayName}" Margin="0 0 0 4" />
+          <c:CarBlock Car="{Binding CarWrapper.Value}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="640" ShowDescription="False" />
         </StackPanel>
       </mui:BooleanSwitch.True>
       <mui:BooleanSwitch.False>
@@ -185,7 +185,7 @@
 
   <!-- Car block -->
   <DataTemplate x:Key="CarItem" DataType="{x:Type t:ServerEntry+CarEntry}">
-    <TextBlock Text="{Binding CarObjectWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center"
+    <TextBlock Text="{Binding CarWrapper.Value.DisplayName}" x:Name="TextBlock" HorizontalAlignment="Center"
         ToolTip="{StaticResource CarPreviewTooltip.Online}" Style="{StaticResource Small}" Margin="4 0" Height="20" Padding="2"
         Background="{DynamicResource ButtonBackground}" />
     <DataTemplate.Triggers>

@@ -223,7 +223,7 @@ namespace AcManager.Tools.Managers.Online {
 
             for (var i = cars.Count - 1; i >= 0; i--) {
                 var car = cars[i];
-                if (car.CarObjectWrapper != CarsManager.Instance.GetWrapperById(car.Id)) {
+                if (car.CarWrapper != CarsManager.Instance.GetWrapperById(car.Id)) {
                     goto Dirty;
                 }
             }
@@ -255,7 +255,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public void OnCarVersionChanged(CarObject car) {
             if (!_carVersionIsWrong || !HasDetails ||
-                    Cars?.Any(x => x.CarObjectWrapper?.Value == car) != true) return;
+                    Cars?.Any(x => x.CarWrapper?.Value == car) != true) return;
             CheckPostUpdate();
         }
 

@@ -333,7 +333,7 @@ namespace AcManager.Tools.Managers.Online {
                 for (int i = 0, c = Cars.Count; i < c; i++) {
                     var entry = Cars[i];
 
-                    var wrapper = entry.CarObjectWrapper;
+                    var wrapper = entry.CarWrapper;
                     CarObject car;
 
                     // Load car if not loaded

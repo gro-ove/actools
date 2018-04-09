@@ -85,14 +85,14 @@ namespace AcManager.Tools.Managers.Online {
             public string Id { get; }
 
             [CanBeNull]
-            private AcItemWrapper _carObjectWrapper;
+            private AcItemWrapper _carWrapper;
 
             [CanBeNull]
-            public AcItemWrapper CarObjectWrapper {
-                get => _carObjectWrapper;
+            public AcItemWrapper CarWrapper {
+                get => _carWrapper;
                 set {
-                    if (Equals(value, _carObjectWrapper)) return;
-                    _carObjectWrapper = value;
+                    if (Equals(value, _carWrapper)) return;
+                    _carWrapper = value;
                     _availableSkinSet = false;
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(CarObject));
@@ -103,22 +103,22 @@ namespace AcManager.Tools.Managers.Online {
                 }
             }
 
-            public bool CarExists => CarObjectWrapper != null;
+            public bool CarExists => CarWrapper != null;
 
             [CanBeNull]
-            public CarObject CarObject => (CarObject)CarObjectWrapper?.Loaded();
+            public CarObject CarObject => (CarObject)CarWrapper?.Loaded();
 
-            private CarEntry(string carId, AcItemWrapper carObjectWrapper) {
+            private CarEntry(string carId, AcItemWrapper carWrapper) {
                 Id = carId;
-                CarObjectWrapper = carObjectWrapper;
+                CarWrapper = carWrapper;
             }
 
             public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) {}
 
             public bool UpdateCarObject() {
                 var co = CarsManager.Instance.GetWrapperById(Id);
-                if (co != CarObjectWrapper) {
-                    CarObjectWrapper = co;
+                if (co != CarWrapper) {
+                    CarWrapper = co;
                     return true;
                 }
 
@@ -185,7 +185,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             public override string DisplayName {
-                get => CarObjectWrapper?.Value.DisplayName ?? Id;
+                get => CarWrapper?.Value is CarObject car ? (SettingsHolder.Online.ShowBrandBadges ? car.ShortName : car.DisplayName) : Id;
                 set { }
             }
 

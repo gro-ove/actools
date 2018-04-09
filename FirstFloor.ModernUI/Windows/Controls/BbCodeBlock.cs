@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(EmojiSupport),
-                typeof(BbCodeBlock), new PropertyMetadata(EmojiSupport.WithEmoji));
+                typeof(BbCodeBlock), new PropertyMetadata(EmojiSupport.Extended));
 
         public EmojiSupport Mode {
             get => (EmojiSupport)GetValue(ModeProperty);
@@ -106,6 +106,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Update();
         }
 
+        public static readonly DependencyProperty HighlightUrlsProperty = DependencyProperty.Register(nameof(HighlightUrls), typeof(bool),
+                typeof(BbCodeBlock), new PropertyMetadata(true, (o, e) => ((BbCodeBlock)o)._highlightUrls = (bool)e.NewValue));
+
+        private bool _highlightUrls = true;
+
+        public bool HighlightUrls {
+            get => _highlightUrls;
+            set => SetValue(HighlightUrlsProperty, value);
+        }
+
         private static string EmojiToNumber(string emoji) {
             var result = new StringBuilder();
 
@@ -133,7 +143,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         [CanBeNull]
-        private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
+        private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, bool highlightUrls, FrameworkElement element = null,
+                ILinkNavigator navigator = null) {
             var converted = new StringBuilder();
             var lastIndex = 0;
             var complex = false;
@@ -155,21 +166,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     continue;
                 }
 
-                var isSymbol = char.IsLetterOrDigit(c);
-                if (isSymbol) {
-                    if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, true, out var urlLength)) {
-                        var url = bbCode.Substring(i, urlLength);
-                        if (lastIndex < i) {
-                            converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                if (highlightUrls) {
+                    var isSymbol = char.IsLetterOrDigit(c);
+                    if (isSymbol) {
+                        if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, true, out var urlLength)) {
+                            var url = bbCode.Substring(i, urlLength);
+                            if (lastIndex < i) {
+                                converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                            }
+                            lastIndex = i + urlLength;
+                            converted.Append($"[url={EncodeAttribute(url.Urlify())}]{Encode(url)}[/url]");
+                            complex = true;
                         }
-                        lastIndex = i + urlLength;
-                        converted.Append($"[url={EncodeAttribute(url.Urlify())}]{Encode(url)}[/url]");
-                        complex = true;
-                    }
 
-                    urlSkipNext = true;
-                } else {
-                    urlSkipNext = false;
+                        urlSkipNext = true;
+                    } else {
+                        urlSkipNext = false;
+                    }
                 }
 
                 if (Emoji.IsEmoji(bbCode, i, out var emojiLength)) {
@@ -207,8 +220,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         [NotNull]
-        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, FrameworkElement element = null, ILinkNavigator navigator = null) {
-            return ParseEmojiOrNull(bbCode, allowBbCodes, element, navigator) ?? new Run { Text = bbCode };
+        public static Inline ParseEmoji(string bbCode, bool allowBbCodes, bool highlightUrls, FrameworkElement element = null, ILinkNavigator navigator = null) {
+            return ParseEmojiOrNull(bbCode, allowBbCodes, highlightUrls, element, navigator) ?? new Run { Text = bbCode };
         }
 
         [CanBeNull]
@@ -238,10 +251,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 var inlines = Inlines;
                 var emojiSupport = Mode;
+                var highlightUrls = HighlightUrls;
 
-                var inline = emojiSupport == EmojiSupport.NoEmoji
+                var inline = emojiSupport == EmojiSupport.Simple
                         ? ParseOrNull(bbCode, this, LinkNavigator)
-                        : ParseEmojiOrNull(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator);
+                        : ParseEmojiOrNull(bbCode, emojiSupport != EmojiSupport.WithoutBbCodes, highlightUrls, this, LinkNavigator);
                 if (inline == null) {
                     SetValue(TextBlock.TextProperty, bbCode);
                 } else {

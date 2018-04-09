@@ -327,7 +327,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 if (oldCars != null) {
                     foreach (var car in oldCars) {
-                        var wrapper = car?.CarObjectWrapper;
+                        var wrapper = car?.CarWrapper;
                         if (wrapper?.IsLoaded == true) {
                             wrapper.Value.UnsubscribeWeak(OnContentNameChanged);
                         }

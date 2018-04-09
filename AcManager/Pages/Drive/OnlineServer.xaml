@@ -30,7 +30,7 @@
           <TextBlock DockPanel.Dock="Right" Visibility="{Binding Total, Converter={StaticResource MoreToVisibilityConverter}}">
             <Run Text=" (" /><Run Text="{Binding Available, Mode=OneWay}" /><Run Text="/" /><Run Text="{Binding Total, Mode=OneWay}" /><Run Text=")" />
           </TextBlock>
-          <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
+          <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" />
         </DockPanel>
 
         <DataTemplate.Triggers>
@@ -316,7 +316,7 @@
                           </Border>
                           <mui:ContextMenuButton VerticalAlignment="Center" Padding="6 0 6 0" Margin="0 -4 -4 -4" DockPanel.Dock="Right"
                               LookForParentMenu="True" />
-                          <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding DisplayName}" />
+                          <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding DisplayName}" />
                         </DockPanel>
                         <Border.Style>
                           <Style TargetType="Border">
@@ -396,7 +396,7 @@
               <!-- Conditions -->
               <StackPanel Visibility="{Binding ExtendedMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 20 0 0">
                 <c:PropertiesGrid Columns="2">
-                  <mui:BbCodeBlock Mode="NothingButEmoji" c:PropertiesGrid.Label="Weather:" Text="{Binding WeatherDisplayName}">
+                  <mui:BbCodeBlock Mode="WithoutBbCodes" c:PropertiesGrid.Label="Weather:" Text="{Binding WeatherDisplayName}">
                     <FrameworkElement.ToolTip>
                       <ToolTip Visibility="{Binding WeatherObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                         <mui:BetterImage Filename="{Binding WeatherObject.PreviewImage}" MaxWidth="400" />
@@ -478,13 +478,13 @@
                           <mui:BetterImage Filename="{Binding CarSkin.LiveryImage}" Width="16" Height="16" Margin="0 0 4 0" ClearOnChange="True">
                             <mui:BetterImage.ToolTip>
                               <StackPanel>
-                                <mui:BbCodeBlock Mode="NothingButEmoji" Text="{Binding CarSkin.DisplayName}" Margin="4" />
+                                <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding CarSkin.DisplayName}" Margin="4" />
                                 <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" Width="256" Height="144" Margin="4" />
                               </StackPanel>
                             </mui:BetterImage.ToolTip>
                           </mui:BetterImage>
 
-                          <mui:BbCodeBlock Mode="NothingButEmoji" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
+                          <mui:BbCodeBlock Mode="WithoutBbCodes" DockPanel.Dock="Bottom" Text="{Binding Car.DisplayName}" Style="{StaticResource Small}"
                               TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
 
                           <ItemsControl ItemsSource="{Binding Tags}" DockPanel.Dock="Left" Height="16" VerticalAlignment="Bottom">

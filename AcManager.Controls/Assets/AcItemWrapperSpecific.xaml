@@ -56,7 +56,7 @@
       <ContentControl.Resources>
         <!-- Placeholder -->
         <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
-          <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 2 2"
+          <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 2 2"
               FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -79,7 +79,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
@@ -125,7 +125,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
@@ -183,7 +183,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
@@ -242,7 +242,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
@@ -300,7 +300,7 @@
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText"
                 VerticalAlignment="Center" />
           </DockPanel>
@@ -364,7 +364,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2"
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
                 FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText"
                 VerticalAlignment="Center" />
           </DockPanel>
@@ -414,7 +414,7 @@
       <ContentControl.Resources>
         <!-- Placeholder -->
         <DataTemplate DataType="{x:Type t:AcPlaceholderNew}">
-          <mui:BbCodeBlock Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}"
+          <mui:BbCodeBlock Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 2 2" FontSize="{DynamicResource SmallFontSize}"
               TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">
@@ -433,7 +433,7 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock Text="{Binding DisplayName}" Mode="NothingButEmoji" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}"
+            <mui:BbCodeBlock Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2" FontSize="{DynamicResource SmallFontSize}"
                 TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
           </DockPanel>
           <DataTemplate.Triggers>
@@ -464,7 +464,7 @@
                   VerticalAlignment="Center" Margin="0 0 0 20" />
             </Border>
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
-              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Padding="0 2 8 2" Text="{Binding DisplayName}" Mode="NothingButEmoji"
+              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Padding="0 2 8 2" Text="{Binding DisplayName}" Mode="WithoutBbCodes"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
             <DockPanel VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0 4 0 0">
@@ -516,7 +516,7 @@
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <c:CountryIcon Country="{Binding Country}" Width="18" Height="12" DockPanel.Dock="Left" RenderOptions.BitmapScalingMode="HighQuality"
                   Margin="2 0 4 0" VerticalAlignment="Center" Stretch="Uniform" />
-              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding DisplayName}" Mode="NothingButEmoji"
+              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding DisplayName}" Mode="WithoutBbCodes"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal" />
             </DockPanel>
             <c:OriginIcon Author="{Binding Author}" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="4"
@@ -567,7 +567,7 @@
                 Margin="-8 -10 -8 0" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom">
               <c:CarIcon Width="12" Height="12" DockPanel.Dock="Left" Margin="2 0 4 0" VerticalAlignment="Center" Car="{Binding}" ClearOnChange="True" />
-              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left" Mode="NothingButEmoji"
+              <mui:BbCodeBlock x:Name="PART_DisplayNameText" Margin="0 1 0 3" Text="{Binding ShortName}" TextAlignment="Left" Mode="WithoutBbCodes"
                   Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" FontWeight="Normal"
                   TextWrapping="NoWrap" />
             </DockPanel>

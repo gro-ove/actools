@@ -46,20 +46,15 @@ namespace AcManager.Controls {
                 return;
             }
 
-            var decodeWidth = InnerDecodeWidth;
-            var key = $@"{brand.ToLowerInvariant()}:{decodeWidth}";
-
-            if (!Cache.TryGetValue(key, out var entry)) {
-                Cache[key] = entry = await LoadEntry(brand, decodeWidth, newValue.BrandBadge);
-                if (Car != newValue) return;
+            var icon = await LoadEntryAsync(brand, InnerDecodeWidth, newValue.BrandBadge);
+            if (Car == newValue) {
+                SetCurrent(icon, null);
             }
-
-            SetCurrent(entry, null);
         }
 
         private static readonly TaskCache TaskCache = new TaskCache();
 
-        private static Task<BitmapEntry> LoadEntry([NotNull] string key, int decodeWidth, string fallbackFilename) {
+        private static Task<BitmapEntry> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth, string fallbackFilename) {
             return TaskCache.Get(() => Task.Run(() => {
                 var badge = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $@"{key}.png");
                 string filename;
@@ -74,6 +69,33 @@ namespace AcManager.Controls {
                 }
                 return LoadBitmapSourceFromBytes(File.ReadAllBytes(filename), decodeWidth);
             }), key);
+        }
+
+        public static BitmapEntry GetCached(string brandName, int decodeWidth) {
+            var key = $@"{brandName?.ToLowerInvariant()}:{decodeWidth}";
+            lock (Cache) {
+                return Cache.TryGetValue(key, out var entry) ? entry : BitmapEntry.Empty;
+            }
+        }
+
+        public static async Task<BitmapEntry> LoadEntryAsync([CanBeNull] string brandName, int decodeWidth, string fallbackFilename) {
+            var key = $@"{brandName?.ToLowerInvariant()}:{decodeWidth}";
+
+            bool got;
+            BitmapEntry entry;
+
+            lock (Cache) {
+                got = Cache.TryGetValue(key, out entry);
+            }
+
+            if (!got) {
+                entry = await LoadEntryAsyncInner(brandName, decodeWidth, fallbackFilename).ConfigureAwait(false);
+                lock (Cache) {
+                    Cache[key] = entry;
+                }
+            }
+
+            return entry;
         }
     }
 }

@@ -90,11 +90,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(EmojiSupport),
-                typeof(SelectableBbCodeBlock), new PropertyMetadata(EmojiSupport.WithEmoji));
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(EmojiSupport.Extended));
 
         public EmojiSupport Mode {
             get => (EmojiSupport)GetValue(ModeProperty);
             set => SetValue(ModeProperty, value);
+        }
+
+        public static readonly DependencyProperty HighlightUrlsProperty = DependencyProperty.Register(nameof(HighlightUrls), typeof(bool),
+                typeof(SelectableBbCodeBlock), new PropertyMetadata(true, (o, e) => ((SelectableBbCodeBlock)o)._highlightUrls = (bool)e.NewValue));
+
+        private bool _highlightUrls = true;
+
+        public bool HighlightUrls {
+            get => _highlightUrls;
+            set => SetValue(HighlightUrlsProperty, value);
         }
 
         private void Update() {
@@ -107,9 +117,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Document.Blocks.Clear();
             if (!string.IsNullOrWhiteSpace(bbCode)) {
                 var emojiSupport = Mode;
-                var item = new Paragraph(emojiSupport == EmojiSupport.NoEmoji
+                var item = new Paragraph(emojiSupport == EmojiSupport.Simple
                         ? BbCodeBlock.Parse(bbCode, this, LinkNavigator)
-                        : BbCodeBlock.ParseEmoji(bbCode, emojiSupport != EmojiSupport.NothingButEmoji, this, LinkNavigator)) {
+                        : BbCodeBlock.ParseEmoji(bbCode, emojiSupport != EmojiSupport.WithoutBbCodes, HighlightUrls, this, LinkNavigator)) {
                     TextAlignment = TextAlignment.Left
                 };
 

@@ -36,7 +36,10 @@ namespace AcManager.Controls {
         }
 
         private async void OnCountryChanged(string newValue) {
-            SetCurrent(await LoadEntryAsync(newValue, InnerDecodeWidth), null);
+            var icon = await LoadEntryAsync(newValue, InnerDecodeWidth);
+            if (Country == newValue) {
+                SetCurrent(icon, null);
+            }
         }
 
         private static readonly Dictionary<string, BitmapEntry> Cache = new Dictionary<string, BitmapEntry>();
