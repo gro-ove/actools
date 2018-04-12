@@ -18,6 +18,7 @@ using AcManager.Tools;
 using AcManager.Tools.Data.GameSpecific;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
@@ -43,6 +44,8 @@ using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
+        public static bool OptionBenchmarkReplays = false;
+
         public static readonly int DefinitelyNonPrizePlace = 99999;
         private static GoodShuffle<string> _progressStyles;
 
@@ -134,7 +137,8 @@ namespace AcManager.Pages.Dialogs {
             ShowDialogAsync().Forget();
             Model.WaitingStatus = AppStrings.Race_Initializing;
 
-            if (SettingsHolder.Drive.WatchForSharedMemory && mode == GameMode.Benchmark) {
+            if (SettingsHolder.Drive.WatchForSharedMemory
+                    && (SettingsHolder.Drive.MonitorFramesPerSecond || mode == GameMode.Benchmark || mode == GameMode.Replay && OptionBenchmarkReplays)) {
                 AcSharedMemory.Instance.MonitorFramesPerSecond = true;
             }
         }
@@ -531,9 +535,15 @@ namespace AcManager.Pages.Dialogs {
                 AcSharedMemory.Instance.MonitorFramesPerSecond = false;
             }
 
-            if (_properties?.BenchmarkProperties != null && SettingsHolder.Drive.WatchForSharedMemory) {
-                var data = AcSharedMemory.Instance.GetFpsDetails();
-                if (data != null) {
+            var data = AcSharedMemory.Instance.GetFpsDetails();
+
+            if (SettingsHolder.Drive.MonitorFramesPerSecond) {
+                AcSettingsHolder.Video.LastSessionPerformanceData = data;
+            }
+
+            if (data != null) {
+                if ((_properties?.BenchmarkProperties != null || OptionBenchmarkReplays && _properties?.ReplayProperties != null)
+                        && SettingsHolder.Drive.WatchForSharedMemory) {
                     Model.CurrentState = ViewModel.State.BenchmarkResult;
                     Model.BenchmarkResults = $@"• Average FPS: [b]{data.AverageFps:F1}[/b] ([b]{1000 / data.AverageFps:F3}[/b] ms);
 • Minimum FPS: {(data.MinimumFps != null ? $"[b]{data.MinimumFps.Value:F1}[/b] ([b]{1000 / data.MinimumFps.Value:F3}[/b] ms)" : "[b]N/A[/b]")};

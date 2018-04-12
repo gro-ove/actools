@@ -100,7 +100,8 @@
                   <ItemsControl.ItemTemplate>
                     <DataTemplate>
                       <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}" MaxWidth="48"
-                          Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="48">
+                          Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="48"
+                          Foreground="{DynamicResource ItemText}">
                         <mui:Cell>
                           <DockPanel Margin="0">
                             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Bottom" Style="{StaticResource Label}" HorizontalAlignment="Center" />
@@ -173,7 +174,8 @@
                           <ItemsControl.ItemTemplate>
                             <DataTemplate>
                               <ToggleButton BorderThickness="0" Background="Transparent" ToolTip="{Binding Description}" IsChecked="{Binding IsEnabled}"
-                                  Width="16" Height="16" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch">
+                                  Width="16" Height="16" Padding="0" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                                  Foreground="{DynamicResource ItemText}">
                                 <mui:Cell>
                                   <ContentPresenter Content="{Binding Icon}" Margin="0" />
                                   <Path x:Name="PART_Hidden" Data="F1 M 62,0 L0,62 L2,64 L64,2 Z" Fill="Red" Stretch="Uniform"

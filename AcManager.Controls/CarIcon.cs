@@ -37,7 +37,7 @@ namespace AcManager.Controls {
             ((CarIcon)o).OnCarChanged((CarObject)e.NewValue);
         }
 
-        private static readonly Dictionary<string, BitmapEntry> Cache = new Dictionary<string, BitmapEntry>();
+        private static readonly Dictionary<string, Image> Cache = new Dictionary<string, Image>();
 
         private async void OnCarChanged(CarObject newValue) {
             var brand = newValue.Brand;
@@ -54,7 +54,7 @@ namespace AcManager.Controls {
 
         private static readonly TaskCache TaskCache = new TaskCache();
 
-        private static Task<BitmapEntry> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth, string fallbackFilename) {
+        private static Task<Image> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth, string fallbackFilename) {
             return TaskCache.Get(() => Task.Run(() => {
                 var badge = FilesStorage.Instance.GetContentFile(ContentCategory.BrandBadges, $@"{key}.png");
                 string filename;
@@ -64,25 +64,25 @@ namespace AcManager.Controls {
 #if DEBUG
                     Logging.Warning("Not found: " + badge.Filename);
 #endif
-                    if (!File.Exists(fallbackFilename)) return BitmapEntry.Empty;
+                    if (!File.Exists(fallbackFilename)) return Image.Empty;
                     filename = fallbackFilename;
                 }
                 return LoadBitmapSourceFromBytes(File.ReadAllBytes(filename), decodeWidth);
             }), key);
         }
 
-        public static BitmapEntry GetCached(string brandName, int decodeWidth) {
+        public static Image GetCached(string brandName, int decodeWidth) {
             var key = $@"{brandName?.ToLowerInvariant()}:{decodeWidth}";
             lock (Cache) {
-                return Cache.TryGetValue(key, out var entry) ? entry : BitmapEntry.Empty;
+                return Cache.TryGetValue(key, out var entry) ? entry : Image.Empty;
             }
         }
 
-        public static async Task<BitmapEntry> LoadEntryAsync([CanBeNull] string brandName, int decodeWidth, string fallbackFilename) {
+        public static async Task<Image> LoadEntryAsync([CanBeNull] string brandName, int decodeWidth, string fallbackFilename) {
             var key = $@"{brandName?.ToLowerInvariant()}:{decodeWidth}";
 
             bool got;
-            BitmapEntry entry;
+            Image entry;
 
             lock (Cache) {
                 got = Cache.TryGetValue(key, out entry);

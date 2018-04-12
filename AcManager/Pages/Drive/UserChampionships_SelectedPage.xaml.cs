@@ -502,16 +502,16 @@ namespace AcManager.Pages.Drive {
 
             await carObject.SkinsManager.EnsureLoadedAsync();
 
-            var skins = carObject.EnabledOnlySkins.ToList();
-            var viewer = new ImageViewer(
-                    skins.Select(x => x.PreviewImage),
-                    skins.IndexOf(carSkin),
-                    CommonAcConsts.PreviewWidth,
-                    details: CarBlock.GetSkinImageViewerDetailsCallback(carObject));
+            var viewer = new ImageViewer<CarSkinObject>(
+                    carObject.EnabledOnlySkins,
+                    carObject.EnabledOnlySkins.IndexOf(carSkin),
+                    CarBlock.ImageViewerImageCallback,
+                    CarBlock.ImageViewerDetailsCallback) {
+                        MaxImageWidth = CommonAcConsts.PreviewWidth
+                    };
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                var selected = viewer.ShowDialogInSelectMode();
-                Model.AcObject.PlayerCarSkin = skins.ElementAtOrDefault(selected ?? -1) ?? carSkin;
+                Model.AcObject.PlayerCarSkin = viewer.SelectDialog() ?? carSkin;
             } else {
                 viewer.ShowDialog();
             }

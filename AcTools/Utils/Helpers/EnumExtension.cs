@@ -5,7 +5,8 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class EnumExtension {
-        public static string GetDescription([NotNull] this Enum value) {
+        [CanBeNull]
+        public static T GetAttribute<T>([NotNull] this Enum value) where T : Attribute {
             if (value == null) throw new ArgumentNullException(nameof(value));
             var type = value.GetType();
             var name = Enum.GetName(type, value);
@@ -14,18 +15,21 @@ namespace AcTools.Utils.Helpers {
             var field = type.GetField(name);
             if (field == null) return null;
 
-            var attr = Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute)) as DescriptionAttribute;
-            return attr?.Description;
+            return Attribute.GetCustomAttribute(field, typeof(T)) as T;
+        }
+
+        public static string GetDescription([NotNull] this Enum value) {
+            return value.GetAttribute<DescriptionAttribute>()?.Description;
         }
 
         public static T FindClosest<T>(this int value) where T : struct {
-            if (Enum.IsDefined(typeof(T), value)){
+            if (Enum.IsDefined(typeof(T), value)) {
                 return (T)(object)value;
             }
 
             var minDistance = int.MaxValue;
             var minValue = default(T);
-            foreach (var enumValue in Enum.GetValues(typeof(T))){
+            foreach (var enumValue in Enum.GetValues(typeof(T))) {
                 var intValue = (int)enumValue;
                 if (intValue == value) return (T)enumValue;
                 var distance = Math.Abs(intValue - value);

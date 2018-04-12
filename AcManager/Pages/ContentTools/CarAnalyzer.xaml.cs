@@ -323,7 +323,7 @@ All found similarities:
                             new RatingEntry(
                                     frontGeometry ? $"Suspension geometry is similar to {zip.Front.Car}" : $"Suspension is similar to {zip.Front.Car}",
                                     $"{(zip.Front.Simular.Value + zip.Rear.Simular.Value) * 50d:F1}% match.", null, () => {
-                                        return $@"Of course, it’s not a bad thing. A lot of cars are built on the same chassis.
+                                        return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
 {zipList.Select(x => $" • {x.Front.Car.DisplayName}: {(x.Front.Simular.Value + x.Rear.Simular.Value) * 50:F1}%").JoinToString(";\n")}.";
@@ -337,7 +337,7 @@ All found similarities:
                             frontGeometry ? $"Front suspension geometry is similar to {similarFront[0].Car}" : $"Front suspension is similar to {similarFront[0].Car}",
                             $"{similarFront[0].Simular.Value * 100:F1}% match.", null,
                             () => {
-                                return $@"Of course, it’s not a bad thing. A lot of cars are built on the same chassis.
+                                return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
 {similarFront.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";
@@ -349,7 +349,7 @@ All found similarities:
                             rearGeometry ? $"Rear suspension geometry is similar to {similarRear[0].Car}" : $"Rear suspension is similar to {similarRear[0].Car}",
                             $"{similarRear[0].Simular.Value * 100:F1}% match.", null,
                             () => {
-                                return $@"Of course, it’s not a bad thing. A lot of cars are built on the same chassis.
+                                return $@"Of course, it’s not always a bad thing. A lot of cars are built on the same chassis.
 
 All found similarities:
 {similarRear.Select(x => $" • {x.Car.DisplayName}: {x.Simular.Value * 100:F1}%").JoinToString(";\n")}.";

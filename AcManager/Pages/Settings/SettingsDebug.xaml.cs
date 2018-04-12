@@ -94,7 +94,7 @@ namespace AcManager.Pages.Settings {
                 if (dialog.ShowDialog() == true) {
                     var copy = FileUtils.EnsureUnique(dialog.FileName);
                     File.Copy(dialog.FileName, copy);
-                    new Storage(copy, disableCompression: true).ForceSave();
+                    new Storage(copy).ForceSave();
                     WindowsHelper.ViewFile(copy);
                 }
             }));
@@ -194,7 +194,7 @@ namespace AcManager.Pages.Settings {
                     Content = new Image {
                         Width = CommonAcConsts.TrackOutlineWidth,
                         Height = CommonAcConsts.TrackOutlineHeight,
-                        Source = BetterImage.LoadBitmapSource(track.OutlineImage).BitmapSource,
+                        Source = BetterImage.LoadBitmapSource(track.OutlineImage).ImageSource,
                         Effect = new InvertKeepColorEffect(),
                     },
                 };
@@ -206,11 +206,9 @@ namespace AcManager.Pages.Settings {
 
                 var bmp = new RenderTargetBitmap(CommonAcConsts.TrackOutlineWidth, CommonAcConsts.TrackOutlineHeight, 96, 96, PixelFormats.Pbgra32);
                 bmp.Render(result);
-                bmp.SaveAsPng(filename);
+                bmp.SaveTo(filename);
                 WindowsHelper.ViewFile(filename);
             }));
-
-            private static readonly Action EmptyDelegate = delegate {};
 
             private static BitmapImage LoadBitmapImage(string filename) {
                 var bi = new BitmapImage();
@@ -239,8 +237,7 @@ namespace AcManager.Pages.Settings {
                 var bitmap = new RenderTargetBitmap((int)collage.DesiredSize.Width, (int)collage.DesiredSize.Height,
                         96, 96, PixelFormats.Default);
                 bitmap.Render(collage);
-
-                bitmap.SaveAsPng(outputFilename);
+                bitmap.SaveTo(outputFilename);
             }
 
             private DelegateCommand _testCommand;

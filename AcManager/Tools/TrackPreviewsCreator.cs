@@ -53,12 +53,10 @@ namespace AcManager.Tools {
 
             ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
 
-            var shot = new ImageViewer(newShots, details: x => Path.GetFileName(x as string)) {
-                Model = {
-                    MaxImageHeight = CommonAcConsts.TrackPreviewHeight,
-                    MaxImageWidth = CommonAcConsts.TrackPreviewWidth
-                }
-            }.ShowDialogInSelectFileMode();
+            var shot = new ImageViewer<string>(newShots, null, Path.GetFileName) {
+                MaxImageHeight = CommonAcConsts.TrackPreviewHeight,
+                MaxImageWidth = CommonAcConsts.TrackPreviewWidth
+            }.SelectDialog();
             if (shot == null) return;
 
             ApplyExistring(shot, filename);
@@ -76,7 +74,7 @@ namespace AcManager.Tools {
             try {
                 var cropped = ImageEditor.Proceed(source, new Size(CommonAcConsts.TrackPreviewWidth, CommonAcConsts.TrackPreviewHeight));
                 using (var t = FileUtils.RecycleOriginal(previewImage)) {
-                    cropped?.SaveAsPng(t.Filename);
+                    cropped?.SaveTo(t.Filename);
                 }
             } catch (Exception e) {
                 NonfatalError.Notify(ControlsStrings.AcObject_CannotUpdatePreview, e);

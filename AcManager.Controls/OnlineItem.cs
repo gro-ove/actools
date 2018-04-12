@@ -610,7 +610,7 @@ namespace AcManager.Controls {
 
         private void UpdateCountryFlag(ServerEntry server) {
             try {
-                _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result.BitmapSource;
+                _countryBitmap = CountryIcon.LoadEntryAsync(server.CountryId, 24).Result.ImageSource;
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -682,8 +682,8 @@ namespace AcManager.Controls {
 
                 ImageSource icon;
                 try {
-                    icon = badges ? CarIcon.GetCached(car.Brand, 12).BitmapSource
-                            ?? CarIcon.LoadEntryAsync(car.Brand, 12, car.BrandBadge).Result.BitmapSource : null;
+                    icon = badges ? CarIcon.GetCached(car.Brand, 12).ImageSource
+                            ?? CarIcon.LoadEntryAsync(car.Brand, 12, car.BrandBadge).Result.ImageSource : null;
                 } catch (Exception e) {
                     icon = null;
                     Logging.Error(e);

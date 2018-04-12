@@ -280,6 +280,7 @@ console.log(result);
             if (start > 0) {
                 var previous = s[start - 1];
                 if (previous == '=' || previous == '.' || previous == '-'
+                        || previous == '%' || previous == '&' || previous == '?' || previous == '='
                         || previous == '"' || previous == '\'' || previous == '`'
                         || previous == '/' || previous == '\\'
                         || char.IsLetterOrDigit(previous)) {

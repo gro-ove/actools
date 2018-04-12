@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -114,7 +115,7 @@ namespace AcManager.Tools.Objects {
 
                 ActionExtension.InvokeInMainThread(() => {
                     var image = new Image {
-                        Source = BetterImage.LoadBitmapSourceFromBytes(data).BitmapSource,
+                        Source = BetterImage.LoadBitmapSourceFromBytes(data).ImageSource,
                         Stretch = v[@"stretch"].As(Stretch.Uniform),
                         Effect = GetEffect(v[@"effect"]?.ToString())
                     };
@@ -134,7 +135,7 @@ namespace AcManager.Tools.Objects {
 
                 ActionExtension.InvokeInMainThread(() => {
                     var image = new BetterImage {
-                        Source = BetterImage.LoadBitmapSourceFromBytes(File.ReadAllBytes(filename)).BitmapSource,
+                        Source = BetterImage.LoadBitmapSourceFromBytes(File.ReadAllBytes(filename)).ImageSource,
                         CropTransparentAreas = v[@"cropTransparent"].As(true),
                         Stretch = v[@"stretch"].As(Stretch.Uniform),
                         Effect = GetEffect(v[@"effect"]?.ToString())
@@ -181,7 +182,7 @@ namespace AcManager.Tools.Objects {
 
                 ActionExtension.InvokeInMainThread(() => {
                     var image = new Image {
-                        Source = BetterImage.LoadBitmapSourceFromBytes(data).BitmapSource,
+                        Source = BetterImage.LoadBitmapSourceFromBytes(data).ImageSource,
                         Stretch = v[@"stretch"].As(Stretch.Uniform),
                         Effect = GetEffect(v[@"effect"]?.ToString())
                     };
@@ -208,7 +209,7 @@ namespace AcManager.Tools.Objects {
                     var bmp = new RenderTargetBitmap((_canvas.Width * _scale).RoundToInt(), (_canvas.Height * _scale).RoundToInt(),
                             dpi, dpi, PixelFormats.Pbgra32);
                     bmp.Render(_canvas);
-                    _saveCallback.Invoke(name, bmp.ToBytes());
+                    _saveCallback.Invoke(name, bmp.ToBytes(ImageFormat.Png));
                 });
             }
 

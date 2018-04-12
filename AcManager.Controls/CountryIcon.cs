@@ -42,7 +42,7 @@ namespace AcManager.Controls {
             }
         }
 
-        private static readonly Dictionary<string, BitmapEntry> Cache = new Dictionary<string, BitmapEntry>();
+        private static readonly Dictionary<string, Image> Cache = new Dictionary<string, Image>();
 
         private static readonly TaskCache TaskCache = new TaskCache();
 
@@ -50,19 +50,19 @@ namespace AcManager.Controls {
             return (key.Length == 2 || key.Length == 6 && key[2] == '-') && char.IsUpper(key[0]) && char.IsUpper(key[1]);
         }
 
-        private static Task<BitmapEntry> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth) {
+        private static Task<Image> LoadEntryAsyncInner([CanBeNull] string key, int decodeWidth) {
             key = (key == null ? null : IsCountryId(key) ? key : AcStringValues.GetCountryId(key)) ?? @"default";
             return TaskCache.Get(() => Task.Run(() => {
                 var badge = FilesStorage.Instance.GetContentFile(ContentCategory.CountryFlags, $@"{key}.png");
-                return badge.Exists ? LoadBitmapSourceFromBytes(File.ReadAllBytes(badge.Filename), decodeWidth) : BitmapEntry.Empty;
+                return badge.Exists ? LoadBitmapSourceFromBytes(File.ReadAllBytes(badge.Filename), decodeWidth) : Image.Empty;
             }), key);
         }
 
-        public static async Task<BitmapEntry> LoadEntryAsync([CanBeNull] string countryId, int decodeWidth) {
+        public static async Task<Image> LoadEntryAsync([CanBeNull] string countryId, int decodeWidth) {
             var key = $@"{countryId?.ToLowerInvariant()}:{decodeWidth}";
 
             bool got;
-            BitmapEntry entry;
+            Image entry;
 
             lock (Cache) {
                 got = Cache.TryGetValue(key, out entry);

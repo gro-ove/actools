@@ -67,7 +67,7 @@ namespace AcManager.Pages.Dialogs {
             bmp.Render(NewIcon);
 
             try {
-                bmp.SaveAsPng(Car.UpgradeIcon);
+                bmp.SaveTo(Car.UpgradeIcon);
                 BetterImage.Refresh(Car.UpgradeIcon);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);

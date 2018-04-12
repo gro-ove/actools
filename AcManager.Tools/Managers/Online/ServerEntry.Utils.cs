@@ -16,7 +16,7 @@ namespace AcManager.Tools.Managers.Online {
         private static readonly Regex SortingFix1Regex = new Regex($@"[{TrashSymbols}]{{2,}}|^[{TrashSymbols}]", RegexOptions.Compiled);
 
         private static readonly Regex SortingFix2Regex = new Regex(
-                @"^(?:AA+|[ !-]+|A?(?![b-zB-Z0-9])+)+| ?-$",
+                @"^(?:AA+|[ !-]+|A?(?![b-zB-Z0-9)])+)+| ?-$",
                 RegexOptions.Compiled);
 
         private static readonly Regex SimpleCleanUpRegex = new Regex(@"^AA+\s*", RegexOptions.Compiled);

@@ -421,10 +421,12 @@ namespace AcManager.Pages.Selected {
         private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
             if (e.Handled) return;
             e.Handled = true;
-            new ImageViewer(
-                    _model.CarSkin.PreviewImage,
-                    CommonAcConsts.PreviewWidth,
-                    details: CarBlock.GetSkinImageViewerDetailsCallback(_model.Car)).ShowDialog();
+            new ImageViewer<CarSkinObject>(
+                    _model.CarSkin,
+                    CarBlock.ImageViewerImageCallback,
+                    CarBlock.ImageViewerDetailsCallback) {
+                        MaxImageWidth = CommonAcConsts.PreviewWidth
+                    }.ShowDialog();
         }
     }
 }

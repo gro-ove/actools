@@ -11,8 +11,13 @@ using Newtonsoft.Json;
 
 namespace AcManager.Tools {
     public static class DiscordImages {
+        [CanBeNull]
         private static string[] _knownCarBrands;
+
+        [CanBeNull]
         private static string[] _knownMiscellaneous;
+
+        [CanBeNull]
         private static string[] _knownTracks;
 
         private static void InitializeKnownIds() {
@@ -37,8 +42,12 @@ namespace AcManager.Tools {
 
         public static DiscordRichPresence Default([NotNull] this DiscordRichPresence presence, string comment = null) {
             InitializeKnownIds();
-            var random = _knownMiscellaneous.RandomElementOrDefault() ?? "0";
-            presence.LargeImage = new DiscordImage($@"misc_{random}", comment ?? "");
+
+            if (_knownMiscellaneous != null) {
+                var random = _knownMiscellaneous.RandomElementOrDefault() ?? "0";
+                presence.LargeImage = new DiscordImage($@"misc_{random}", comment ?? "");
+            }
+
             return presence;
         }
 
@@ -47,7 +56,7 @@ namespace AcManager.Tools {
 
             if (car != null) {
                 var carBrand = car.Brand?.ToLowerInvariant().Replace(" ", "_");
-                if (!_knownCarBrands.ArrayContains(carBrand)) {
+                if (_knownCarBrands == null || !_knownCarBrands.ArrayContains(carBrand)) {
                     carBrand = "various";
                 }
 
@@ -62,7 +71,7 @@ namespace AcManager.Tools {
 
             if (track != null) {
                 var trackId = track.MainTrackObject.Id.ToLowerInvariant();
-                if (!_knownTracks.ArrayContains(trackId)) {
+                if (_knownTracks == null || !_knownTracks.ArrayContains(trackId)) {
                     return presence.Default(track.Name ?? track.Id);
                 }
 

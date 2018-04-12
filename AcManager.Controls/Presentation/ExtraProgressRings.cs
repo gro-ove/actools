@@ -30,7 +30,7 @@ namespace AcManager.Controls.Presentation {
 
         private static void LoadStylesImmediately() {
             try {
-                var filename = FilesStorage.Instance.GetTemporaryFilename("Static", $"{DataId}.zip");
+                var filename = FilesStorage.Instance.GetFilename("Static", $"{DataId}.zip");
                 if (File.Exists(filename)) {
                     using (var stream = File.OpenRead(filename)) {
                         SetStylesFromArchive(stream);

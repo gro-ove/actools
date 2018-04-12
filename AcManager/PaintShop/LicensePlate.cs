@@ -327,7 +327,7 @@ namespace AcManager.PaintShop {
         public override JObject Serialize() {
             if (SelectedStyleEntry == null || SelectedStyle == null) return null;
 
-            var obj = new JObject { ["style"] = SelectedStyleEntry.Name };
+            var obj = new JObject { [@"style"] = SelectedStyleEntry.Name };
             foreach (var p in SelectedStyle.InputParams.Where(x => x.Value != null)) {
                 obj[@"param" + PaintShop.NameToId(p.Name, true)] = p.Value;
             }
@@ -338,7 +338,7 @@ namespace AcManager.PaintShop {
         public override void Deserialize(JObject data) {
             if (data == null) return;
 
-            var style = data["style"]?.ToString();
+            var style = data[@"style"]?.ToString();
             var selected = Styles?.FirstOrDefault(x => string.Equals(x?.Name, style, StringComparison.OrdinalIgnoreCase));
             if (selected == null) {
                 Logging.Warning($"Style not found: {style}");

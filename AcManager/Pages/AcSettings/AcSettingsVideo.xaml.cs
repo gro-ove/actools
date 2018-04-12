@@ -20,9 +20,13 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.AcSettings {
-    public partial class AcSettingsVideo: ILoadableContent {
-        public class ViewModel : NotifyPropertyChanged {
-            internal ViewModel() {}
+    public partial class AcSettingsVideo : ILoadableContent {
+        public partial class ViewModel : NotifyPropertyChanged {
+            private readonly AcSettingsVideo _uiParent;
+
+            internal ViewModel(AcSettingsVideo uiParent) {
+                _uiParent = uiParent;
+            }
 
             public VideoSettings Video => AcSettingsHolder.Video;
             public OculusSettings Oculus => AcSettingsHolder.Oculus;
@@ -32,42 +36,46 @@ namespace AcManager.Pages.AcSettings {
             private DelegateCommand _manageFiltersCommand;
 
             public DelegateCommand ManageFiltersCommand => _manageFiltersCommand ?? (_manageFiltersCommand = new DelegateCommand(() => {
-                (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml", UriKind.RelativeOrAbsolute));
+                (Application.Current?.MainWindow as MainWindow)?.NavigateTo(new Uri("/Pages/Lists/PpFiltersListPage.xaml",
+                        UriKind.RelativeOrAbsolute));
             }));
 
             private AsyncCommand _benchmarkCommand;
 
-            public AsyncCommand BenchmarkCommand => _benchmarkCommand ??
-                    (_benchmarkCommand = new AsyncCommand(() => GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()))));
+            public AsyncCommand BenchmarkCommand => _benchmarkCommand ?? (_benchmarkCommand = new AsyncCommand(() => {
+                if (Keyboard.Modifiers == ModifierKeys.Shift) {
+                    return BenchmarkFastCommand.ExecuteAsync();
+                }
+
+                return GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()));
+            }));
 
             private AsyncCommand _benchmarkFastCommand;
 
-            public AsyncCommand BenchmarkFastCommand => _benchmarkFastCommand ??
-                    (_benchmarkFastCommand = new AsyncCommand(() => {
-                        Task[] task = { null };
+            public AsyncCommand BenchmarkFastCommand => _benchmarkFastCommand ?? (_benchmarkFastCommand = new AsyncCommand(() => {
+                Task[] task = { null };
 
+                if (SettingsHolder.Drive.WatchForSharedMemory) {
+                    AcSharedMemory.Instance.MonitorFramesPerSecondBegin += OnMonitorFramesPerSecondBegin;
+                } else {
+                    DelayAndShutdown(true);
+                }
 
-                        if (SettingsHolder.Drive.WatchForSharedMemory) {
-                            AcSharedMemory.Instance.MonitorFramesPerSecondBegin += OnMonitorFramesPerSecondBegin;
-                        } else {
-                            DelayAndShutdown(true);
-                        }
+                task[0] = GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()));
+                return task[0];
 
-                        task[0] = GameWrapper.StartBenchmarkAsync(new Game.StartProperties(new Game.BenchmarkProperties()));
-                        return task[0];
+                void DelayAndShutdown(bool extraDelay) {
+                    Task.Delay(TimeSpan.FromSeconds(extraDelay ? 60 : 30)).ContinueWith(t => {
+                        if (task[0] == null || task[0].IsCompleted || task[0].IsCanceled || task[0].IsFaulted) return;
+                        InternalUtils.AcControlPointExecute(InternalUtils.AcControlPointCommand.Shutdown);
+                    });
+                }
 
-                        void DelayAndShutdown(bool extraDelay) {
-                            Task.Delay(TimeSpan.FromSeconds(extraDelay ? 60 : 30)).ContinueWith(t => {
-                                if (task[0] == null || task[0].IsCompleted || task[0].IsCanceled || task[0].IsFaulted) return;
-                                InternalUtils.AcControlPointExecute(InternalUtils.AcControlPointCommand.Shutdown);
-                            });
-                        }
-
-                        void OnMonitorFramesPerSecondBegin(object sender, EventArgs eventArgs) {
-                            AcSharedMemory.Instance.MonitorFramesPerSecondBegin -= OnMonitorFramesPerSecondBegin;
-                            DelayAndShutdown(false);
-                        }
-                    }));
+                void OnMonitorFramesPerSecondBegin(object sender, EventArgs eventArgs) {
+                    AcSharedMemory.Instance.MonitorFramesPerSecondBegin -= OnMonitorFramesPerSecondBegin;
+                    DelayAndShutdown(false);
+                }
+            }));
 
             private AsyncCommand _shareCommand;
 
@@ -93,7 +101,7 @@ namespace AcManager.Pages.AcSettings {
         public ViewModel Model => (ViewModel)DataContext;
 
         public void Initialize() {
-            DataContext = new ViewModel();
+            DataContext = new ViewModel(this);
             InitializeComponent();
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
             InputBindings.AddRange(new[] {

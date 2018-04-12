@@ -426,7 +426,7 @@ namespace AcManager.Tools {
             if (Skin == null) return;
             var bmp = new RenderTargetBitmap(CommonAcConsts.LiveryWidth, CommonAcConsts.LiveryHeight, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(result);
-            bmp.SaveAsPng(Skin.LiveryImage);
+            bmp.SaveTo(Skin.LiveryImage);
         }
         #endregion
 

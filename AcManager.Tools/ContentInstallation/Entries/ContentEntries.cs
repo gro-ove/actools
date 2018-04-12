@@ -193,8 +193,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         [ItemCanBeNull]
         protected abstract Task<string> GetDestination(CancellationToken cancellation);
 
-        private BetterImage.BitmapEntry? _icon;
-        public BetterImage.BitmapEntry? Icon => IconData == null ? null :
+        private BetterImage.Image? _icon;
+        public BetterImage.Image? Icon => IconData == null ? null :
                 _icon ?? (_icon = BetterImage.LoadBitmapSourceFromBytes(IconData, 32));
 
         #region From Wrapper

@@ -104,7 +104,7 @@ namespace AcManager.Pages.Dialogs {
             if (cropped == null) return;
 
             try {
-                cropped.SaveAsPng(Car.BrandBadge);
+                cropped.SaveTo(Car.BrandBadge);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.BrandBadge_CannotChange, AppStrings.BrandBadge_CannotChange_Commentary, ex);
                 return;

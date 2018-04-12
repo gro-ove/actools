@@ -99,9 +99,9 @@ namespace AcManager.Tools.Helpers.Api {
         /// </summary>
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
-        public static async Task<Tuple<string, bool>> GetStaticDataAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
+        public static async Task<Tuple<string, bool>> GetStaticDataAsync([NotNull] string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Static", $"{id}.zip"));
+            var file = new FileInfo(FilesStorage.Instance.GetFilename("Static", $"{id}.zip"));
 
             if (file.Exists && (JustLoadedStaticData.Contains(id) || DateTime.Now - file.LastWriteTime < maxAge)) {
                 return Tuple.Create(file.FullName, false);

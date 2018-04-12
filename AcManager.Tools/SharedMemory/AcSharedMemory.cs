@@ -9,6 +9,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 
 namespace AcManager.Tools.SharedMemory {
     public class AcSharedMemory : NotifyPropertyChanged, IDisposable {
@@ -156,14 +157,20 @@ namespace AcManager.Tools.SharedMemory {
         private double? _minimumFps;
 
         public class FpsDetails {
+            [JsonConstructor]
             public FpsDetails(double averageFps, double? minimumFps, int samplesTaken) {
                 AverageFps = averageFps;
                 MinimumFps = minimumFps;
                 SamplesTaken = samplesTaken;
             }
 
+            [JsonProperty("averageFps")]
             public double AverageFps { get; }
+
+            [JsonProperty("minimumFps")]
             public double? MinimumFps { get; }
+
+            [JsonProperty("samplesTaken")]
             public int SamplesTaken { get; }
         }
 

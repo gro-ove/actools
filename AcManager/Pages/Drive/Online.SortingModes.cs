@@ -57,7 +57,7 @@ namespace AcManager.Pages.Drive {
         private class SortingDriversCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 var dif = -x.CurrentDriversCount.CompareTo(y.CurrentDriversCount);
-                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -68,7 +68,7 @@ namespace AcManager.Pages.Drive {
         private class SortingConnectedDriversCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 var dif = -x.ConnectedDrivers.CompareTo(y.ConnectedDrivers);
-                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -79,7 +79,7 @@ namespace AcManager.Pages.Drive {
         private class SortingCapacityCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 var dif = -x.Capacity.CompareTo(y.Capacity);
-                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -90,7 +90,7 @@ namespace AcManager.Pages.Drive {
         private class SortingCarsNumberCount : ServerEntrySorter {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 var dif = -(x.Cars?.Count ?? 0).CompareTo(y.Cars?.Count ?? 0);
-                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {
@@ -102,7 +102,7 @@ namespace AcManager.Pages.Drive {
             public override int Compare(ServerEntry x, ServerEntry y) {
                 const long maxPing = 999999;
                 var dif = (x.Ping ?? maxPing).CompareTo(y.Ping ?? maxPing);
-                return dif == 0 ? string.Compare(x.DisplayName, y.DisplayName, StringComparison.Ordinal) : dif;
+                return dif == 0 ? string.Compare(x.SortingName, y.SortingName, StringComparison.Ordinal) : dif;
             }
 
             public override bool IsAffectedBy(string propertyName) {

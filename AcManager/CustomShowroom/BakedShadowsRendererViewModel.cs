@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -334,19 +335,20 @@ namespace AcManager.CustomShowroom {
                 var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
                         $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} Original ({uniquePostfix}).tmp");
                 if (File.Exists(originalTexture)) {
-                    new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
+                    new ImageViewer(new[] { filename, originalTexture }, detailsCallback: DetailsCallback) {
+                        MaxImageWidth = resultSize.Width,
+                        MaxImageHeight = resultSize.Height,
                         Model = {
                             Saveable = true,
                             SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                             SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                            MaxImageWidth = resultSize.Width,
-                            MaxImageHeight = resultSize.Height,
                             SaveDialogFilterPieces = {
                                 DialogFilterPiece.DdsFiles,
                                 DialogFilterPiece.JpegFiles,
                                 DialogFilterPiece.PngFiles,
                             },
-                            SaveAction = SaveAction,
+                            SaveCallback = SaveCallback,
+                            CanBeSavedCallback = i => i == 0
                         },
                         ShowInTaskbar = true
                     }.ShowDialog();
@@ -356,20 +358,21 @@ namespace AcManager.CustomShowroom {
                 if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
                     var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
                     if (image != null) {
-                        image.Image?.SaveAsPng(originalTexture);
-                        new ImageViewer(new object[] { filename, originalTexture }, details: x => Equals(x, filename) ? "Generated AO map" : "Original texture") {
+                        image.Image?.ToBytes(ImageFormat.Png);
+                        new ImageViewer(new[] { filename, originalTexture }, detailsCallback: DetailsCallback) {
+                            MaxImageWidth = resultSize.Width,
+                            MaxImageHeight = resultSize.Height,
                             Model = {
                                 Saveable = true,
                                 SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
                                 SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                                MaxImageWidth = resultSize.Width,
-                                MaxImageHeight = resultSize.Height,
                                 SaveDialogFilterPieces = {
                                     DialogFilterPiece.DdsFiles,
                                     DialogFilterPiece.JpegFiles,
                                     DialogFilterPiece.PngFiles,
                                 },
-                                SaveAction = SaveAction,
+                                SaveCallback = SaveCallback,
+                                CanBeSavedCallback = i => i == 0
                             },
                             ShowInTaskbar = true
                         }.ShowDialog();
@@ -387,31 +390,37 @@ namespace AcManager.CustomShowroom {
                             DialogFilterPiece.JpegFiles,
                             DialogFilterPiece.PngFiles,
                         },
-                        SaveAction = SaveAction,
+                        SaveCallback = SaveCallback
                     },
                     ShowInTaskbar = true,
                     ImageMargin = new Thickness()
                 }.ShowDialog();
+
+                object DetailsCallback(int index) {
+                    return index == 0 ? "Generated AO map" : "Original texture";
+                }
+
+                Task SaveCallback(int index, string destination) {
+                    return Task.Run(() => {
+                        var extension = Path.GetExtension(destination)?.ToLowerInvariant();
+                        switch (extension) {
+                            case ".dds":
+                                DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(filename), PreferredDdsFormat.LuminanceTransparency, null);
+                                break;
+                            case ".jpg":
+                            case ".jpeg":
+                                ImageUtils.Convert(filename, destination);
+                                break;
+                            default:
+                                File.Copy(filename, destination, true);
+                                break;
+                        }
+                    });
+                }
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t create AO map", e);
             }
         }));
-
-        private static void SaveAction(string source, string destination) {
-            var extension = Path.GetExtension(destination)?.ToLowerInvariant();
-            switch (extension) {
-                case ".dds":
-                    DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(source), PreferredDdsFormat.LuminanceTransparency, null);
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    ImageUtils.Convert(source, destination);
-                    break;
-                default:
-                    File.Copy(source, destination, true);
-                    break;
-            }
-        }
         #endregion
 
         #region Presetable

@@ -143,6 +143,7 @@
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CountryIcon.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
+    <Compile Include="Dialogs\BlurredPiece.cs" />
     <Compile Include="Dialogs\CupInformationDialog.xaml.cs">
       <DependentUpon>CupInformationDialog.xaml</DependentUpon>
     </Compile>

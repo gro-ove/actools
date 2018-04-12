@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -669,12 +668,13 @@ namespace AcManager.Pages.Selected {
                 }
             } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-                var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
-                new ImageViewer(
-                        from skin in skins select skin.PreviewImage,
-                        skins.IndexOf(_model.SelectedObject.SelectedSkin),
-                        CommonAcConsts.PreviewWidth,
-                        details: CarBlock.GetSkinImageViewerDetailsCallback(_model.SelectedObject)).ShowDialog();
+                new ImageViewer<CarSkinObject>(
+                        _model.SelectedObject.EnabledOnlySkins,
+                        _model.SelectedObject.EnabledOnlySkins.IndexOf(_model.SelectedObject.SelectedSkin),
+                        CarBlock.ImageViewerImageCallback,
+                        CarBlock.ImageViewerDetailsCallback) {
+                            MaxImageWidth = CommonAcConsts.PreviewWidth
+                        }.ShowDialog();
             }
         }
 

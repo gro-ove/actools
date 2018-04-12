@@ -228,9 +228,8 @@
           <Label Content="Semi-transparent tools in Custom Showroom and DirectX-specific tools" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.BlurImageViewerBackground}" set:Search.Keywords="images;viewers;image viewer"
-            ToolTip="Works only on Windows 7 or Windows 10" mui:NewMarkService.New="True">
-          <Label Content="Blur Image Viewer’s background" />
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="With this option disabled, you can drag them by close button">
+          <Label Content="Show draggable areas next to search boxes" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Interface.QuickDriveFastAccessButtons}">
@@ -240,6 +239,18 @@
         <CheckBox IsChecked="{Binding Interface.SkinsSetupsNewWindow}"
             ToolTip="If disabled, hold Ctrl while opening skins or setups to open them in a new window anyway">
           <Label Content="Open skins and setups lists in new window" />
+        </CheckBox>
+
+        <!-- Image viewer -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Image viewer:" />
+
+        <CheckBox IsChecked="{Binding Value, Source={x:Static c:BlurredPiece.IsActive}}" set:Search.Keywords="images;viewers;image viewer" mui:NewMarkService.New="True">
+          <Label Content="Blur buttons’ background (might decrease performance)" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppAppearanceManager.BlurImageViewerBackground}" set:Search.Keywords="images;viewers;image viewer"
+            ToolTip="Works only on Windows 7 or Windows 10">
+          <Label Content="Blur Image Viewer’s background" />
         </CheckBox>
 
         <!-- System -->

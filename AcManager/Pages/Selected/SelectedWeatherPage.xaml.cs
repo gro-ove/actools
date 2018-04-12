@@ -90,9 +90,9 @@ namespace AcManager.Pages.Selected {
             public string DisplayTime {
                 get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
                 set {
-                    int time;
-                    if (!FlexibleParser.TryParseTime(value, out time)) return;
-                    Time = time;
+                    if (FlexibleParser.TryParseTime(value, out var time)) {
+                        Time = time;
+                    }
                 }
             }
 
@@ -202,9 +202,10 @@ namespace AcManager.Pages.Selected {
 
             private ICommand _viewTemperatureReadmeCommand;
 
-            public ICommand ViewTemperatureReadmeCommand => _viewTemperatureReadmeCommand ?? (_viewTemperatureReadmeCommand = new DelegateCommand(() => {
-                ModernDialog.ShowMessage(AppStrings.Weather_KunosReadme);
-            }));
+            public ICommand ViewTemperatureReadmeCommand
+                =>
+                        _viewTemperatureReadmeCommand
+                                ?? (_viewTemperatureReadmeCommand = new DelegateCommand(() => { ModernDialog.ShowMessage(AppStrings.Weather_KunosReadme); }));
 
             private const string KeyUpdatePreviewMessageShown = "swp.upms";
 
@@ -239,12 +240,10 @@ namespace AcManager.Pages.Selected {
 
                 ValuesStorage.Set(KeyUpdatePreviewMessageShown, true);
 
-                var shot = new ImageViewer(newShots, details: x => Path.GetFileName(x as string)) {
-                    Model = {
-                        MaxImageHeight = CommonAcConsts.PreviewHeight,
-                        MaxImageWidth = CommonAcConsts.PreviewWidth
-                    }
-                }.ShowDialogInSelectFileMode();
+                var shot = new ImageViewer<string>(newShots, null, x => x) {
+                    MaxImageHeight = CommonAcConsts.PreviewHeight,
+                    MaxImageWidth = CommonAcConsts.PreviewWidth
+                }.SelectDialog();
                 if (shot == null) return;
 
                 try {

@@ -13,7 +13,7 @@ namespace AcManager.Controls.Services {
         }
 
         public static readonly DependencyProperty ImageProperty = DependencyProperty.RegisterAttached("Image",
-            typeof(string), typeof(ImageViewerService), new FrameworkPropertyMetadata(null, OnImageChanged));
+                typeof(string), typeof(ImageViewerService), new FrameworkPropertyMetadata(null, OnImageChanged));
 
         public static double GetMaxWidth(DependencyObject obj) {
             return obj.GetValue(MaxWidthProperty) as double? ?? 0d;
@@ -24,7 +24,7 @@ namespace AcManager.Controls.Services {
         }
 
         public static readonly DependencyProperty MaxWidthProperty = DependencyProperty.RegisterAttached("MaxWidth",
-            typeof(double), typeof(ImageViewerService), new FrameworkPropertyMetadata(double.MaxValue));
+                typeof(double), typeof(ImageViewerService), new FrameworkPropertyMetadata(double.MaxValue));
 
         public static double GetMaxHeight(DependencyObject obj) {
             return obj.GetValue(MaxHeightProperty) as double? ?? 0d;
@@ -35,7 +35,7 @@ namespace AcManager.Controls.Services {
         }
 
         public static readonly DependencyProperty MaxHeightProperty = DependencyProperty.RegisterAttached("MaxHeight",
-            typeof(double), typeof(ImageViewerService), new FrameworkPropertyMetadata(double.MaxValue));
+                typeof(double), typeof(ImageViewerService), new FrameworkPropertyMetadata(double.MaxValue));
 
         private static void OnImageChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (!(d is UIElement control)) return;
@@ -49,7 +49,10 @@ namespace AcManager.Controls.Services {
             if (e.Handled) return;
             var d = (DependencyObject)sender;
             e.Handled = true;
-            new ImageViewer(GetImage(d), GetMaxWidth(d), GetMaxHeight(d)).ShowDialog();
+            new ImageViewer(GetImage(d)) {
+                MaxImageWidth = GetMaxWidth(d),
+                MaxImageHeight = GetMaxHeight(d),
+            }.ShowDialog();
         }
     }
 }

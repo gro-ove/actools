@@ -306,10 +306,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         var device = devices[i];
                         if (device == null) continue;
 
-                        if (SettingsHolder.Drive.SameControllersKeepFirst) {
-                            newDevices.RemoveAll(y => y.Same(device.Information));
-                        } else if (newDevices.Any(y => y.Same(device.Information))) {
-                            continue;
+                        if (device.Information.ProductName.Contains(@"FANATEC CSL Elite")) {
+                            if (SettingsHolder.Drive.SameControllersKeepFirst) {
+                                newDevices.RemoveAll(y => y.Same(device.Information));
+                            } else if (newDevices.Any(y => y.Same(device.Information))) {
+                                continue;
+                            }
                         }
 
                         newDevices.Add(Devices.FirstOrDefault(y => y.Same(device.Information)) ?? DirectInputDevice.Create(device, i));

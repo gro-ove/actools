@@ -58,9 +58,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
 
-            this.AddSizeCondition(c => c.ActualHeight > 640).Add(v => {
-                BestLapBlock.Margin = v ? new Thickness(0, 16, 0, 0) : new Thickness();
-            });
+            this.AddSizeCondition(c => c.ActualHeight > 640).Add(v => { BestLapBlock.Margin = v ? new Thickness(0, 16, 0, 0) : new Thickness(); });
 
             /*Dispatcher.InvokeAsync(async () => {
                 await Task.Delay(1000);
@@ -214,7 +212,7 @@ namespace AcManager.Pages.Drive {
             _positionLoaded = true;
         }
 
-        private void OnScrollSizeChanged(object sender, SizeChangedEventArgs e) {}
+        private void OnScrollSizeChanged(object sender, SizeChangedEventArgs e) { }
 
         private void OnScrollChanged(object sender, ScrollChangedEventArgs e) {
             if (_scroll == null || !_positionLoaded) return;
@@ -267,10 +265,12 @@ namespace AcManager.Pages.Drive {
         private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
             if (e.Handled || Model.Selected == null) return;
             e.Handled = true;
-            new ImageViewer(
-                    Model.Selected.CarSkin.PreviewImage,
-                    CommonAcConsts.PreviewWidth,
-                    details: CarBlock.GetSkinImageViewerDetailsCallback(Model.Selected.CarObject)).ShowDialog();
+            new ImageViewer<CarSkinObject>(
+                    Model.Selected.CarSkin,
+                    CarBlock.ImageViewerImageCallback,
+                    CarBlock.ImageViewerDetailsCallback) {
+                        MaxImageWidth = CommonAcConsts.PreviewWidth
+                    }.ShowDialog();
         }
     }
 }

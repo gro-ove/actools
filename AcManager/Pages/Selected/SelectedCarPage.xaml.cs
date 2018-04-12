@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -381,12 +380,13 @@ namespace AcManager.Pages.Selected {
                 CarOpenInShowroomDialog.Run(_model.SelectedObject, _model.SelectedObject.SelectedSkin?.Id);
             } else if (e.ClickCount == 1 && ReferenceEquals(sender, SelectedSkinPreviewImage) && !Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-                var skins = _model.SelectedObject.EnabledOnlySkins.ToList();
-                new ImageViewer(
-                        from skin in skins select skin.PreviewImage,
-                        skins.IndexOf(_model.SelectedObject.SelectedSkin),
-                        CommonAcConsts.PreviewWidth,
-                        details: CarBlock.GetSkinImageViewerDetailsCallback(_model.SelectedObject)).ShowDialog();
+                new ImageViewer<CarSkinObject>(
+                        _model.SelectedObject.EnabledOnlySkins,
+                        _model.SelectedObject.EnabledOnlySkins.IndexOf(_model.SelectedObject.SelectedSkin),
+                        CarBlock.ImageViewerImageCallback,
+                        CarBlock.ImageViewerDetailsCallback) {
+                            MaxImageWidth = CommonAcConsts.PreviewWidth
+                        }.ShowDialog();
             }
         }
 

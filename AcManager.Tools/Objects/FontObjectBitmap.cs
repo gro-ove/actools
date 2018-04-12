@@ -17,7 +17,7 @@ namespace AcManager.Tools.Objects {
                 this(UriToCachedImageConverter.Convert(bitmapFilename), File.ReadAllBytes(fontFilename)) {}
 
         public FontObjectBitmap(byte[] bitmapData, byte[] fontData) :
-                this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).BitmapSource, fontData) {}
+                this((BitmapSource)BetterImage.LoadBitmapSourceFromBytes(bitmapData).ImageSource, fontData) {}
 
         private FontObjectBitmap(BitmapSource font, byte[] fontData) {
             _fontBitmapImage = font;

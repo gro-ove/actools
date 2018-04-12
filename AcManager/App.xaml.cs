@@ -278,6 +278,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FancyHintsMinimumDelay, ref FancyHint.OptionMinimumDelay);
             AppArguments.Set(AppFlag.WindowsVerbose, ref DpiAwareWindow.OptionVerboseMode);
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
+            AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -653,9 +654,11 @@ namespace AcManager {
         }
 
         private void OnBbImageClick(object sender, BbCodeImageEventArgs e) {
-            (e.BlockImages?.Select(x => x.Item1).Contains(e.ImageUrl) == true ?
-                    new ImageViewer(e.BlockImages.Select(x => x.Item1), e.BlockImages.Select(x => x.Item1).IndexOf(e.ImageUrl),
-                            details: i => e.BlockImages.FirstOrDefault(x => x.Item1 == i as string)?.Item2) {
+            var index = e.BlockImages?.Select(x => x.Url).IndexOf(e.ImageUrl);
+            (index > -1 ?
+                    new ImageViewer<BbCodeImageInformation>(e.BlockImages, index.Value,
+                            x => Task.FromResult((object)x.Url),
+                            x => x.Description) {
                                 HorizontalDetailsAlignment = HorizontalAlignment.Center
                             } :
                     new ImageViewer(e.ImageUrl)).ShowDialog();

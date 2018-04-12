@@ -138,23 +138,30 @@ namespace LicensePlates {
         private TextSize TextFn(string v, double x, double y, int? position, bool measureOnly) {
             EnsureTextLayerIsCreated();
 
-            _textLayer.Settings.FillColor = new MagickColor(_textParams.Color);
-            _textLayer.Settings.Font = Path.Combine(_directory, _textParams.Font);
-            _textLayer.Settings.FontPointsize = _textParams.Size * _plateParams.SizeMultipler;
-            _textLayer.Settings.FontWeight = (FontWeight)_textParams.Weight;
-            _textLayer.Settings.TextKerning = _textParams.Kerning * _plateParams.SizeMultipler;
+            var current = Environment.CurrentDirectory;
+            try {
+                Environment.CurrentDirectory = _directory;
 
-            if (_textParams.LineSpacing.HasValue) {
-                _textLayer.Settings.TextInterlineSpacing = _textParams.LineSpacing.Value * _plateParams.SizeMultipler;
+                _textLayer.Settings.FillColor = new MagickColor(_textParams.Color);
+                _textLayer.Settings.Font = _textParams.Font;
+                _textLayer.Settings.FontPointsize = _textParams.Size * _plateParams.SizeMultipler;
+                _textLayer.Settings.FontWeight = (FontWeight)_textParams.Weight;
+                _textLayer.Settings.TextKerning = _textParams.Kerning * _plateParams.SizeMultipler;
+
+                if (_textParams.LineSpacing.HasValue) {
+                    _textLayer.Settings.TextInterlineSpacing = _textParams.LineSpacing.Value * _plateParams.SizeMultipler;
+                }
+
+                var spaces = _textParams.GetSpaces()?.ToArray() ?? new double[0];
+                for (int i = 0; i < spaces.Length; i++) {
+                    spaces[i] = spaces[i] * _plateParams.SizeMultipler;
+                }
+
+                return DrawText(_textLayer, v, spaces, x * _plateParams.SizeMultipler, y * _plateParams.SizeMultipler,
+                        position.HasValue ? (Gravity)position : Gravity.Northwest, measureOnly);
+            } finally {
+                Environment.CurrentDirectory = current;
             }
-
-            var spaces = _textParams.GetSpaces()?.ToArray() ?? new double[0];
-            for (int i = 0; i < spaces.Length; i++) {
-                spaces[i] = spaces[i] * _plateParams.SizeMultipler;
-            }
-
-            return DrawText(_textLayer, v, spaces, x * _plateParams.SizeMultipler, y * _plateParams.SizeMultipler,
-                    position.HasValue ? (Gravity)position : Gravity.Northwest, measureOnly);
         }
 
         private TextSize GetTextSize(string v, double x, double y, int? position) {

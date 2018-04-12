@@ -9,14 +9,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _allowUnsupportedDx10;
 
         public bool AllowUnsupportedDx10 {
-            get { return _allowUnsupportedDx10; }
+            get => _allowUnsupportedDx10;
             set => Apply(value, ref _allowUnsupportedDx10);
         }
 
         private int _mipLodBias;
 
         public int MipLodBias {
-            get { return _mipLodBias; }
+            get => _mipLodBias;
             set {
                 value = value.Clamp(-4, 0);
                 if (Equals(value, _mipLodBias)) return;
@@ -28,7 +28,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _skyboxReflectionGain;
 
         public int SkyboxReflectionGain {
-            get { return _skyboxReflectionGain; }
+            get => _skyboxReflectionGain;
             set {
                 value = value.Clamp(-1000, 9000);
                 if (Equals(value, _skyboxReflectionGain)) return;
@@ -40,7 +40,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private int _maximumFrameLatency;
 
         public int MaximumFrameLatency {
-            get { return _maximumFrameLatency; }
+            get => _maximumFrameLatency;
             set {
                 value = value.Clamp(0, 10);
                 if (Equals(value, _maximumFrameLatency)) return;

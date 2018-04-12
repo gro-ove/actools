@@ -90,7 +90,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         using (_taskbar = TaskbarService.Create(1200)) {
                             await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token);
                             if (_commandPercentageProgress) {
-                                Report(new AsyncProgressEntry(Progress.Message, 1d));
+                                // Report(new AsyncProgressEntry(Progress.Message, 1d));
+                                Report(AsyncProgressEntry.Finished);
                             }
                         }
                     } catch (Exception e) when (e.IsCanceled()) { } catch (Exception e) {

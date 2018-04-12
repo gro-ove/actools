@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -43,10 +42,6 @@ namespace AcManager.Controls {
 
         static CarBlock() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CarBlock), new FrameworkPropertyMetadata(typeof(CarBlock)));
-        }
-
-        public CarBlock() {
-            // DataContextChanged += (sender, args) => { UpdateDescription(); };
         }
 
         [CanBeNull]
@@ -243,40 +238,41 @@ namespace AcManager.Controls {
             set => SetValue(PreviewContentProperty, value);
         }
 
-        public static ImageViewerDetailsCallback GetSkinImageViewerDetailsCallback(CarObject car) {
-            var lazy = Lazier.Create(() => {
-                var livery = new BetterImage {
-                    Width = 48,
-                    Height = 48,
-                    Margin = new Thickness(0, 0, 8, 0),
-                    VerticalAlignment = VerticalAlignment.Center
-                };
-
-                livery.SetBinding(BetterImage.FilenameProperty, new Binding(nameof(CarSkinObject.LiveryImage)));
-                return new DockPanel {
-                    Children = {
-                        livery,
-                        new ContentControl {
-                            Content = ToolTips.GetCarSkinToolTip()?.Content as FrameworkElement
-                        }
-                    }
-                };
-            });
-
-            return image => {
-                var skin = car.EnabledOnlySkins.FirstOrDefault(x => x.PreviewImage == image as string);
-                if (skin == null) return null;
-
-                lazy.Value?.SetValue(DataContextProperty, skin);
-                return lazy.Value;
-            };
+        public static Task<object> ImageViewerImageCallback(CarSkinObject x) {
+            return Task.FromResult((object)x.PreviewImage);
         }
 
+        public static object ImageViewerDetailsCallback(CarSkinObject skin) {
+            if (skin == null) return null;
+            ImageViewerSkinDetails.Value?.SetValue(DataContextProperty, skin);
+            return ImageViewerSkinDetails.Value;
+        }
+
+        private static readonly Lazier<DockPanel> ImageViewerSkinDetails = Lazier.Create(() => {
+            var livery = new BetterImage {
+                Width = 48,
+                Height = 48,
+                Margin = new Thickness(0, 0, 8, 0),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+
+            livery.SetBinding(BetterImage.FilenameProperty, new Binding(nameof(CarSkinObject.LiveryImage)));
+            return new DockPanel {
+                Children = {
+                    livery,
+                    new ContentControl {
+                        Content = ToolTips.GetCarSkinToolTip()?.Content as FrameworkElement
+                    }
+                }
+            };
+        });
+
         private void OnPreviewImageClick(object sender, MouseButtonEventArgs e) {
-            var list = Car.SkinsManager.Enabled.Select(x => x.PreviewImage).ToList();
-            var selected = new ImageViewer(list, list.IndexOf(SelectedSkin.PreviewImage),
-                    details: GetSkinImageViewerDetailsCallback(Car)).ShowDialogInSelectMode();
-            SelectedSkin = Car.EnabledOnlySkins.ElementAtOrDefault(selected ?? -1) ?? SelectedSkin;
+            var selected = new ImageViewer<CarSkinObject>(Car.SkinsManager.Enabled, Car.SkinsManager.Enabled.IndexOf(SelectedSkin),
+                    ImageViewerImageCallback, ImageViewerDetailsCallback).SelectDialog();
+            if (selected != null) {
+                SelectedSkin = selected;
+            }
         }
 
         public static void OnShowroomButtonClick(CarObject car, CarSkinObject skin = null) {

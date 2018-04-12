@@ -84,7 +84,7 @@ namespace AcManager.Pages.Dialogs {
             if (cropped == null) return;
 
             try {
-                cropped.SaveAsPng(Car.UpgradeIcon);
+                cropped.SaveTo(Car.UpgradeIcon);
             } catch (IOException ex) {
                 NonfatalError.Notify(AppStrings.UpgradeIcon_CannotChange, AppStrings.UpgradeIcon_CannotChange_Commentary, ex);
                 return;

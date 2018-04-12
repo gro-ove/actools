@@ -1,8 +1,9 @@
 ﻿<mui:ModernDialog x:Class="AcManager.Controls.Dialogs.ImageViewer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:di="clr-namespace:AcManager.Controls.Dialogs" mc:Ignorable="d" Title="{Binding CurrentImageName}" MouseUp="OnMouseUp" KeyDown="OnKeyDown"
-    KeyUp="OnKeyUp" Loaded="OnLoaded" d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}">
+    xmlns:di="clr-namespace:AcManager.Controls.Dialogs" xmlns:pr="clr-namespace:AcManager.Controls.Presentation"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{Binding Current.DisplayName}" MouseUp="OnMouseUp" KeyDown="OnKeyDown"
+    KeyUp="OnKeyUp" Loaded="OnLoaded" d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}" PreviewMouseRightButtonUp="OnMouseRightButtonUp">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -10,66 +11,218 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <Style TargetType="{x:Type di:BlurredPiece}">
+        <Setter Property="BlurRadius" Value="30" />
+        <Setter Property="Background" Value="#44000000" />
+        <Setter Property="Tag" Value="{Binding Value, Source={x:Static di:BlurredPiece.IsActive}}" />
+        <Setter Property="Template">
+          <Setter.Value>
+            <ControlTemplate TargetType="{x:Type di:BlurredPiece}">
+              <Border Background="{TemplateBinding Background}">
+                <Border Background="#22000000" />
+              </Border>
+            </ControlTemplate>
+          </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+          <Trigger Property="Tag">
+            <Trigger.Value>
+              <sys:Boolean>True</sys:Boolean>
+            </Trigger.Value>
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type di:BlurredPiece}">
+                  <mui:Cell ClipToBounds="True">
+                    <mui:Cell.CacheMode>
+                      <BitmapCache RenderAtScale="{Binding BitmapCacheScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}"
+                          EnableClearType="{Binding BitmapCacheClearType, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
+                    </mui:Cell.CacheMode>
+                    <Border Margin="{TemplateBinding InnerMargin}" Background="#606060">
+                      <FrameworkElement.Effect>
+                        <BlurEffect Radius="{Binding BlurRadius, RelativeSource={RelativeSource TemplatedParent}}" KernelType="Gaussian"
+                            RenderingBias="{mui:BooleanBinding SoftwareRenderingMode, Source={x:Static pr:AppAppearanceManager.Instance},
+                                TrueValue={x:Static RenderingBias.Performance}, FalseValue={x:Static RenderingBias.Quality}}" />
+                      </FrameworkElement.Effect>
+                      <Border>
+                        <Border.Background>
+                          <VisualBrush Visual="{Binding Visual, RelativeSource={RelativeSource TemplatedParent}}" Stretch="None" TileMode="None"
+                              ViewboxUnits="Absolute" Viewbox="{Binding Viewbox, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Border.Background>
+                      </Border>
+                    </Border>
+                    <Border BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}"
+                        Background="{TemplateBinding Background}" />
+                  </mui:Cell>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+
+      <Style x:Key="FadingBorder" TargetType="Border">
+        <Setter Property="Opacity" Value="0" />
+        <Style.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Trigger.EnterActions>
+              <BeginStoryboard>
+                <Storyboard>
+                  <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.05" Duration="0:0:0.25" />
+                </Storyboard>
+              </BeginStoryboard>
+            </Trigger.EnterActions>
+            <Trigger.ExitActions>
+              <BeginStoryboard>
+                <Storyboard>
+                  <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.35" Duration="0:0:0.25" />
+                </Storyboard>
+              </BeginStoryboard>
+            </Trigger.ExitActions>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
     </ResourceDictionary>
   </mui:ModernDialog.Resources>
   <mui:ModernDialog.Style>
-    <Style TargetType="{x:Type mui:ModernDialog}" BasedOn="{StaticResource FullscreenDialog}">
+    <Style TargetType="{x:Type di:ImageViewer}" BasedOn="{StaticResource FullscreenDialog}">
       <Setter Property="Template">
         <Setter.Value>
-          <ControlTemplate TargetType="mui:ModernDialog">
+          <ControlTemplate TargetType="di:ImageViewer">
             <Grid Background="{TemplateBinding Background}" Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}"
                 d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}">
               <AdornerDecorator>
-                <Grid>
-                  <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{StaticResource FullscreenDialog.ButtonGridLength}" />
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="{StaticResource FullscreenDialog.ButtonGridLength}" />
-                  </Grid.ColumnDefinitions>
+                <mui:Cell x:Name="MainCell" MaxWidth="{TemplateBinding MaxAreaWidth}" MaxHeight="{TemplateBinding MaxAreaHeight}" HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
 
-                  <Button Command="{Binding PreviousCommand}" Style="{StaticResource FullscreenDialogButton}">
-                    <Path Data="{StaticResource PreviousIconData}" />
-                  </Button>
+                  <!-- Content -->
+                  <mui:TransitioningContentControl x:Name="ContentPiece" Content="{TemplateBinding Content}" />
 
-                  <!-- content -->
-                  <mui:TransitioningContentControl Margin="10" Grid.Column="1" Content="{TemplateBinding Content}" />
+                  <Border x:Name="LeftSide" Background="Transparent" Width="{StaticResource FullscreenDialog.MouseArea}" Opacity="0" HorizontalAlignment="Left">
+                    <mui:Cell HorizontalAlignment="Left">
+                      <di:BlurredPiece Visual="{Binding ElementName=ContentPiece}" Background="Transparent"
+                          Opacity="{Binding Path=(Button.Background).(SolidColorBrush.Opacity), ElementName=PreviousButton}" />
+                      <Button x:Name="PreviousButton" Command="{Binding PreviousCommand}" Style="{StaticResource FullscreenDialogButton.ForBlurredPiece}"
+                          Width="{StaticResource FullscreenDialog.ButtonSize}">
+                        <Path Data="{StaticResource PreviousIconData}" />
+                      </Button>
+                    </mui:Cell>
+                  </Border>
 
-                  <Grid Grid.Column="2">
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="{StaticResource FullscreenDialog.ButtonGridLength}" />
-                      <RowDefinition />
-                      <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                  <Border x:Name="RightSide" Background="Transparent" Width="{StaticResource FullscreenDialog.MouseArea}" Opacity="0"
+                      HorizontalAlignment="Right">
+                    <DockPanel Width="{StaticResource FullscreenDialog.ButtonSize}" HorizontalAlignment="Right">
+                      <mui:Cell DockPanel.Dock="Top">
+                        <di:BlurredPiece Visual="{Binding ElementName=ContentPiece}" Background="Transparent"
+                            Opacity="{Binding Path=(Button.Background).(SolidColorBrush.Opacity), ElementName=CloseDialogButton}" />
+                        <Button x:Name="CloseDialogButton" Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnCloseButtonClick"
+                            Style="{StaticResource FullscreenDialogButton.ForBlurredPiece}">
+                          <Path Data="{StaticResource CloseIconData}" />
+                        </Button>
+                      </mui:Cell>
+                      <mui:Cell DockPanel.Dock="Bottom">
+                        <di:BlurredPiece Visual="{Binding ElementName=ContentPiece}" Background="Transparent"
+                            Opacity="{Binding Path=(Button.Background).(SolidColorBrush.Opacity), ElementName=SelectButton}" />
+                        <Button x:Name="SelectButton" Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnApplyButtonClick"
+                            Visibility="{Binding SelectionMode, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource FullscreenDialogButton.ForBlurredPiece}">
+                          <Path Data="{StaticResource CheckIconData}" />
+                        </Button>
+                      </mui:Cell>
+                      <mui:Cell DockPanel.Dock="Bottom">
+                        <di:BlurredPiece Visual="{Binding ElementName=ContentPiece}" Background="Transparent"
+                            Opacity="{Binding Path=(Button.Background).(SolidColorBrush.Opacity), ElementName=SaveButton}" />
+                        <Button x:Name="SaveButton" Height="{StaticResource FullscreenDialog.ButtonSize}" Command="{Binding SaveCommand}"
+                            Visibility="{Binding Saveable, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            Style="{StaticResource FullscreenDialogButton.ForBlurredPiece}">
+                          <Path Data="{StaticResource SaveIconData}" />
+                        </Button>
+                      </mui:Cell>
+                      <mui:Cell>
+                        <di:BlurredPiece Visual="{Binding ElementName=ContentPiece}" Background="Transparent"
+                            Opacity="{Binding Path=(Button.Background).(SolidColorBrush.Opacity), ElementName=NextButton}" />
+                        <Button x:Name="NextButton" Command="{Binding NextCommand}" Style="{StaticResource FullscreenDialogButton.ForBlurredPiece}">
+                          <Path Data="{StaticResource NextIconData}" />
+                        </Button>
+                      </mui:Cell>
+                    </DockPanel>
+                  </Border>
 
-                    <Button Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnCloseButtonClick" Style="{StaticResource FullscreenDialogButton}">
-                      <Path Data="{StaticResource CloseIconData}" />
-                    </Button>
-                    <Button Grid.Row="1" Command="{Binding NextCommand}" Style="{StaticResource FullscreenDialogButton}">
-                      <Path Data="{StaticResource NextIconData}" />
-                    </Button>
-                    <Button Grid.Row="2" Height="{StaticResource FullscreenDialog.ButtonSize}" Click="OnApplyButtonClick"
-                        Style="{StaticResource FullscreenDialogButton}"
-                        Visibility="{Binding SelectionMode, Converter={StaticResource BooleanToVisibilityConverter}}">
-                      <Path Data="{StaticResource CheckIconData}" />
-                    </Button>
-                    <Button Grid.Row="2" Height="{StaticResource FullscreenDialog.ButtonSize}" Command="{Binding SaveCommand}"
-                        Visibility="{Binding Saveable, Converter={StaticResource BooleanToVisibilityConverter}}"
-                        Style="{StaticResource FullscreenDialogButton}">
-                      <Path Data="{StaticResource SaveIconData}" />
-                    </Button>
-                  </Grid>
-                </Grid>
+                  <ContentControl Content="{TemplateBinding Tag}" Margin="{StaticResource FullscreenDialog.ContentMargin}" />
+                </mui:Cell>
               </AdornerDecorator>
             </Grid>
+
+            <ControlTemplate.Triggers>
+              <Trigger Property="MaxAreaWidth" Value="{x:Static sys:Double.PositiveInfinity}">
+                <Setter TargetName="MainCell" Property="HorizontalAlignment" Value="Stretch" />
+              </Trigger>
+              <Trigger Property="MaxAreaHeight" Value="{x:Static sys:Double.PositiveInfinity}">
+                <Setter TargetName="MainCell" Property="VerticalAlignment" Value="Stretch" />
+              </Trigger>
+              <Trigger SourceName="LeftSide" Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="LeftSide" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.02" Duration="0:0:0.12" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="LeftSide" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.35" Duration="0:0:0.25" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.ExitActions>
+              </Trigger>
+              <Trigger SourceName="RightSide" Property="IsMouseOver" Value="True">
+                <Trigger.EnterActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="RightSide" Storyboard.TargetProperty="Opacity" To="1" BeginTime="0:0:0.02" Duration="0:0:0.12" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.EnterActions>
+                <Trigger.ExitActions>
+                  <BeginStoryboard>
+                    <Storyboard>
+                      <DoubleAnimation Storyboard.TargetName="RightSide" Storyboard.TargetProperty="Opacity" To="0" BeginTime="0:0:0.35" Duration="0:0:0.25" />
+                    </Storyboard>
+                  </BeginStoryboard>
+                </Trigger.ExitActions>
+              </Trigger>
+            </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
       </Setter>
     </Style>
   </mui:ModernDialog.Style>
-  <mui:Cell d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}" x:Name="Wrapper">
+  <mui:ModernDialog.Tag>
+    <Border x:Name="DetailsWrapper" MinHeight="240" Background="Transparent" VerticalAlignment="Bottom">
+      <mui:Cell x:Name="Details" HorizontalAlignment="Center" VerticalAlignment="Bottom"
+          Visibility="{Binding Current.Details, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+        <Border Padding="20">
+          <ContentControl Content="{Binding Current.Details}" TextBlock.Foreground="White" />
+        </Border>
+      </mui:Cell>
+    </Border>
+  </mui:ModernDialog.Tag>
+  <mui:Cell d:DataContext="{d:DesignInstance di:ImageViewer+ViewModel}">
+    <mui:BooleanSwitch Value="{Binding Current.IsFailedToLoad}" IsHitTestVisible="False">
+      <mui:BooleanSwitch.True>
+        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+          <TextBlock Text="Image failed to load" Style="{StaticResource Title}" Margin="0 0 0 8" DockPanel.Dock="Top" />
+          <TextBlock Text="{Binding Current.ErrorMessage}" Style="{StaticResource Small}" />
+        </DockPanel>
+      </mui:BooleanSwitch.True>
+      <mui:BooleanSwitch.False>
+        <mui:BooleanSwitch Value="{Binding Current.IsLoading}">
+          <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        </mui:BooleanSwitch>
+      </mui:BooleanSwitch.False>
+    </mui:BooleanSwitch>
     <mui:BetterImage x:Name="Image" RenderOptions.BitmapScalingMode="HighQuality" Stretch="Uniform" StretchDirection="DownOnly"
-        MaxWidth="{Binding MaxImageWidth}" MaxHeight="{Binding MaxImageHeight}" Source="{Binding CurrentImage}" Margin="0 40" />
-    <ContentControl x:Name="Details" Content="{Binding CurrentDetails}" Margin="0 8" HorizontalAlignment="Center" VerticalAlignment="Bottom"
-        TextBlock.Foreground="White" IsHitTestVisible="False" />
+        Source="{Binding Current.Image}" ShowBroken="False" IsHitTestVisible="False" />
   </mui:Cell>
 </mui:ModernDialog>

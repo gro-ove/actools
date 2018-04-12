@@ -6,6 +6,8 @@
   </ResourceDictionary.MergedDictionaries>
 
   <system:Double x:Key="FullscreenDialog.ButtonSize">90</system:Double>
+  <system:Double x:Key="FullscreenDialog.MouseArea">400</system:Double>
+  <Thickness x:Key="FullscreenDialog.ContentMargin">90 0</Thickness>
   <GridLength x:Key="FullscreenDialog.ButtonGridLength">90</GridLength>
 
   <Style x:Key="FullscreenDialogButton" TargetType="{x:Type Button}">
@@ -23,7 +25,11 @@
     <Setter Property="Foreground" Value="White" />
     <Setter Property="Opacity" Value="0" />
     <Setter Property="BorderThickness" Value="0" />
-    <Setter Property="Background" Value="#00000000" />
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Color="#55000000" Opacity="0" />
+      </Setter.Value>
+    </Setter>
 
     <Setter Property="Template">
       <Setter.Value>
@@ -58,7 +64,7 @@
         <Trigger.EnterActions>
           <BeginStoryboard>
             <Storyboard>
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" To="#48000000" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Opacity)" To="1" Duration="0:0:0.1" />
               <DoubleAnimation Storyboard.TargetProperty="Opacity" To="1" Duration="0:0:0.1" />
             </Storyboard>
           </BeginStoryboard>
@@ -66,13 +72,21 @@
         <Trigger.ExitActions>
           <BeginStoryboard>
             <Storyboard FillBehavior="Stop">
-              <ColorAnimation Storyboard.TargetProperty="Background.Color" From="#48000000" To="#00000000" Duration="0:0:0.1" />
+              <DoubleAnimation Storyboard.TargetProperty="Background.(SolidColorBrush.Opacity)" To="0" Duration="0:0:0.1" />
               <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.6" Duration="0:0:0.1" />
             </Storyboard>
           </BeginStoryboard>
         </Trigger.ExitActions>
       </Trigger>
     </Style.Triggers>
+  </Style>
+
+  <Style x:Key="FullscreenDialogButton.ForBlurredPiece" TargetType="{x:Type Button}" BasedOn="{StaticResource FullscreenDialogButton}">
+    <Setter Property="Background">
+      <Setter.Value>
+        <SolidColorBrush Color="#22000000" Opacity="0" />
+      </Setter.Value>
+    </Setter>
   </Style>
 
   <Style x:Key="FullscreenDialog" TargetType="{x:Type mui:ModernDialog}" BasedOn="{StaticResource {x:Type mui:ModernDialog}}">

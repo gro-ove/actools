@@ -5,7 +5,38 @@
     xmlns:hel="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsVideo+ViewModel}">
   <UserControl.Resources>
-    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+
+      <DockPanel x:Key="SettingDescription" Width="400" x:Shared="False" Margin="80 20">
+        <DockPanel Dock="Top" Margin="0 0 0 8">
+          <TextBlock x:Name="SettingName" Style="{StaticResource Title}" />
+          <TextBlock Text="{Binding Source='', StringFormat={x:Static mui:ColonConverter.Format}}" Style="{StaticResource Title}" />
+          <TextBlock x:Name="SettingValue" Style="{StaticResource Title}" FontWeight="Bold" />
+        </DockPanel>
+        <DockPanel x:Name="PerformanceHitPanel" Dock="Top" Margin="0 0 0 28" Background="Transparent"
+            ToolTip="Huge approximation, might not correlate with reality. Measured in 1920×1080 resolution.">
+          <TextBlock Text="Performance hit: " Style="{StaticResource Heading2}" FontWeight="Normal" />
+          <TextBlock x:Name="PerformanceHit" Style="{StaticResource Heading2}" />
+        </DockPanel>
+        <mui:BbCodeBlock x:Name="Description" />
+      </DockPanel>
+
+      <Path x:Key="DescriptionIcon" x:Shared="False" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Width="12" Height="12"
+          Stretch="Uniform"
+          Data="F1 M 31.6666,30.0834L 42.7499,30.0834L 42.7499,33.2501L 42.7499,52.2501L 45.9165,52.2501L 45.9165,57.0001L 31.6666,57.0001L 31.6666,52.2501L 34.8332,52.2501L 34.8332,34.8335L 31.6666,34.8335L 31.6666,30.0834 Z M 38.7917,19C 40.9778,19 42.75,20.7722 42.75,22.9583C 42.75,25.1445 40.9778,26.9167 38.7917,26.9167C 36.6055,26.9167 34.8333,25.1445 34.8333,22.9583C 34.8333,20.7722 36.6055,19 38.7917,19 Z" />
+
+      <Style x:Key="DescriptionButton" TargetType="mui:AsyncButton" BasedOn="{StaticResource {x:Type mui:AsyncButton}}">
+        <Setter Property="DockPanel.Dock" Value="Right" />
+        <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+        <Setter Property="Padding" Value="12 1 12 3" />
+        <Setter Property="Margin" Value="8 0 0 0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Content" Value="{StaticResource DescriptionIcon}" />
+      </Style>
+    </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid>
@@ -18,6 +49,39 @@
       <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True" Margin="0">
 
         <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Video}" Style="{StaticResource SettingsPanel}">
+
+          <mui:BooleanSwitch Value="{Binding MonitorFramesPerSecond, Source={x:Static t:SettingsHolder.Drive}}" CollapseOnFalse="True">
+            <c:MessageBlock Margin="0 0 0 28">
+              <mui:ReferenceSwitch Value="{Binding Video.LastSessionPerformanceData}">
+                <mui:ReferenceSwitch.Null>
+                  <DockPanel Margin="0">
+                    <TextBlock Style="{StaticResource Label}" Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="0 0 0 4" />
+                    <TextBlock Style="{StaticResource Title}" Text="N/A" />
+                  </DockPanel>
+                </mui:ReferenceSwitch.Null>
+                <mui:ReferenceSwitch.NonNull>
+                  <DockPanel Margin="0">
+                    <DockPanel.ToolTip>
+                      <c:PropertiesGrid Columns="1">
+                        <TextBlock c:PropertiesGrid.Label="Average:"
+                            Text="{Binding Video.LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
+                        <TextBlock c:PropertiesGrid.Label="Minimum:"
+                            Text="{Binding Video.LastSessionPerformanceData.MinimumFps, StringFormat='{}{0:F1} frames per second', TargetNullValue='?'}" />
+                        <TextBlock c:PropertiesGrid.Label="Taken:"
+                            Text="{Binding Video.LastSessionPerformanceData.SamplesTaken, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} sample'}" />
+                      </c:PropertiesGrid>
+                    </DockPanel.ToolTip>
+                    <TextBlock Style="{StaticResource Label}" Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="0 0 0 8" />
+                    <TextBlock Style="{StaticResource Title}"
+                        Text="{Binding Video.LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
+                  </DockPanel>
+                </mui:ReferenceSwitch.NonNull>
+              </mui:ReferenceSwitch>
+            </c:MessageBlock>
+          </mui:BooleanSwitch>
+
+          <!-- Resolution -->
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Resolution and FPS:" />
 
           <CheckBox IsChecked="{Binding Video.Fullscreen}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fullscreen}" />
@@ -57,16 +121,6 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_VerticalSyncronization}" />
           </CheckBox>
 
-          <DockPanel>
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_AnitrosopicFilteringLabel}" />
-            <ComboBox ItemsSource="{Binding Video.AnisotropicLevels}" SelectedItem="{Binding Video.AnisotropicLevel}" DisplayMemberPath="DisplayName" />
-          </DockPanel>
-
-          <DockPanel>
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_AntiAliasingLabel}" />
-            <ComboBox ItemsSource="{Binding Video.AntiAliasingLevels}" SelectedItem="{Binding Video.AntiAliasingLevel}" DisplayMemberPath="DisplayName" />
-          </DockPanel>
-
           <CheckBox IsChecked="{Binding Video.FramerateLimitEnabled}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_LimitFramerate}" />
           </CheckBox>
@@ -81,12 +135,26 @@
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_QualityHeader}" />
 
           <DockPanel>
+            <Label Content="{x:Static g:AppStrings.AcSettings_Video_AntiAliasingLabel}" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMsaaCommand}" />
+            <ComboBox ItemsSource="{Binding Video.AntiAliasingLevels}" SelectedItem="{Binding Video.AntiAliasingLevel}" DisplayMemberPath="DisplayName" />
+          </DockPanel>
+
+          <DockPanel>
+            <Label Content="{x:Static g:AppStrings.AcSettings_Video_AnitrosopicFilteringLabel}" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionAnisotropicCommand}" />
+            <ComboBox ItemsSource="{Binding Video.AnisotropicLevels}" SelectedItem="{Binding Video.AnisotropicLevel}" DisplayMemberPath="DisplayName" />
+          </DockPanel>
+
+          <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_WorldDetalLabel}" />
-            <ComboBox ItemsSource="{Binding Video.WorldDetailLevels}" SelectedItem="{Binding Video.WorldDetail}" DisplayMemberPath="DisplayName" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionWorldCommand}" />
+            <ComboBox ItemsSource="{Binding Video.WorldDetailsLevels}" SelectedItem="{Binding Video.WorldDetails}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ShadowResolutionLabel}" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionShadowCommand}" />
             <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
@@ -105,70 +173,12 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_SmokeInMirrors}" />
           </CheckBox>
 
-          <!-- Effects -->
-          <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_PostProcessingHeader}" />
-
-          <CheckBox IsChecked="{Binding Video.PostProcessing}">
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_EnablePostProcessing}" />
-          </CheckBox>
-
-          <StackPanel Visibility="{Binding Video.PostProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <DockPanel>
-              <Label Content="{x:Static c:ControlsStrings.Common_FilterLabel}" />
-              <Button Command="{Binding ManageFiltersCommand}" Content="{x:Static g:AppStrings.Common_Manage}" />
-              <mui:BetterComboBox ItemsSource="{Binding Enabled, Source={x:Static t:PpFiltersManager.Instance}}"
-                  SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName" IsEditable="False"
-                  Placeholder="{Binding Video.PostProcessingFilter}" />
-            </DockPanel>
-
-            <DockPanel>
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_OverallQualityLabel}" />
-              <ComboBox ItemsSource="{Binding Video.PostProcessingQualities}" SelectedItem="{Binding Video.PostProcessingQuality}"
-                  DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
-            <DockPanel>
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_GlareQualityLabel}" />
-              <ComboBox ItemsSource="{Binding Video.GlareQualities}" SelectedItem="{Binding Video.GlareQuality}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
-            <DockPanel>
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_DepthOfFieldLabel}" />
-              <ComboBox ItemsSource="{Binding Video.DepthOfFieldQualities}" SelectedItem="{Binding Video.DepthOfFieldQuality}" DisplayMemberPath="DisplayName" />
-            </DockPanel>
-
-            <DockPanel>
-              <mui:ValueLabel Value="{Binding Video.ColorSaturation}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Video_Saturation}" />
-              <Slider Minimum="0" Maximum="120" Value="{Binding Video.ColorSaturation}" TickFrequency="12" TickPlacement="BottomRight" />
-            </DockPanel>
-
-            <DockPanel>
-              <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static hel:AcSettingsHolder.ZeroToOffConverter}}"
-                  mui:BetterTextBox.Mode="IntegerOrZeroLabel" Content="{x:Static g:AppStrings.AcSettings_Video_MotionBlur}" />
-              <Slider Minimum="0" Maximum="12" Value="{Binding Video.MotionBlur}" TickFrequency="2" TickPlacement="BottomRight" />
-            </DockPanel>
-
-            <CheckBox IsChecked="{Binding Video.HeatShimmering}">
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_HeatShimmering}" />
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding Video.RaysOfGod}">
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_CrepuscularRays}" />
-            </CheckBox>
-
-            <CheckBox IsChecked="{Binding Video.Fxaa}">
-              <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fxaa}" />
-            </CheckBox>
-          </StackPanel>
-
-        </StackPanel>
-        <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Video}" Style="{StaticResource SettingsPanel}">
-
           <!-- Reflections -->
-          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_ReflectionsHeader}" />
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_ReflectionsHeader}" />
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_ReflectionsResolutionLabel}" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionCubemapResolutionCommand}" />
             <ComboBox ItemsSource="{Binding Video.CubemapResolutions}" SelectedItem="{Binding Video.CubemapResolution}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
@@ -180,9 +190,87 @@
             </DockPanel>
 
             <DockPanel>
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionCubemapDistanceCommand}" />
               <mui:ValueLabel Value="{Binding Video.CubemapDistance}" Postfix="{x:Static c:ControlsStrings.Common_MetersPostfix}"
                   Content="{x:Static g:AppStrings.AcSettings_Video_RenderingDistance}" />
-              <Slider Minimum="0" Maximum="1200" Value="{Binding Video.CubemapDistance}" TickFrequency="120" TickPlacement="BottomRight" />
+              <Slider Minimum="0" Maximum="2400"
+                  Value="{Binding Video.CubemapDistance, Converter={StaticResource SliderRoundConverter}, ConverterParameter=30}" TickFrequency="240"
+                  TickPlacement="BottomRight" />
+            </DockPanel>
+          </StackPanel>
+
+        </StackPanel>
+        <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Video}" Style="{StaticResource SettingsPanel}">
+
+          <!-- Effects -->
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_PostProcessingHeader}" />
+
+          <DockPanel>
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionPpCommand}" />
+            <CheckBox IsChecked="{Binding Video.PostProcessing}">
+              <Label Content="{x:Static g:AppStrings.AcSettings_Video_EnablePostProcessing}" />
+            </CheckBox>
+          </DockPanel>
+
+          <StackPanel Visibility="{Binding Video.PostProcessing, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <DockPanel>
+              <Label Content="{x:Static c:ControlsStrings.Common_FilterLabel}" />
+              <Button Command="{Binding ManageFiltersCommand}" Content="{x:Static g:AppStrings.Common_Manage}" Height="23" />
+              <mui:BetterComboBox ItemsSource="{Binding Enabled, Source={x:Static t:PpFiltersManager.Instance}}"
+                  SelectedItem="{Binding Video.PostProcessingFilterObject}" DisplayMemberPath="DisplayName" IsEditable="False"
+                  Placeholder="{Binding Video.PostProcessingFilter}" />
+            </DockPanel>
+
+            <DockPanel>
+              <Label Content="{x:Static g:AppStrings.AcSettings_Video_OverallQualityLabel}" />
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionPpQualityCommand}" />
+              <ComboBox ItemsSource="{Binding Video.PostProcessingQualities}" SelectedItem="{Binding Video.PostProcessingQuality}"
+                  DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <DockPanel>
+              <Label Content="{x:Static g:AppStrings.AcSettings_Video_GlareQualityLabel}" />
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionGlareCommand}" />
+              <ComboBox ItemsSource="{Binding Video.GlareQualities}" SelectedItem="{Binding Video.GlareQuality}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <DockPanel>
+              <Label Content="{x:Static g:AppStrings.AcSettings_Video_DepthOfFieldLabel}" />
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionDofCommand}" />
+              <ComboBox ItemsSource="{Binding Video.DepthOfFieldQualities}" SelectedItem="{Binding Video.DepthOfFieldQuality}" DisplayMemberPath="DisplayName" />
+            </DockPanel>
+
+            <DockPanel>
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMotionBlurCommand}" />
+              <mui:ValueLabel Value="{Binding Video.MotionBlur, Converter={x:Static hel:AcSettingsHolder.ZeroToOffConverter}}"
+                  mui:BetterTextBox.Mode="IntegerOrZeroLabel" Content="{x:Static g:AppStrings.AcSettings_Video_MotionBlur}" />
+              <Slider Minimum="0" Maximum="12" Value="{Binding Video.MotionBlur}" TickFrequency="2" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+              <mui:ValueLabel Value="{Binding Video.ColorSaturation}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Video_Saturation}" />
+              <Slider Minimum="0" Maximum="120" Value="{Binding Video.ColorSaturation}" TickFrequency="12" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel>
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionHeatCommand}" />
+              <CheckBox IsChecked="{Binding Video.HeatShimmering}">
+                <Label Content="{x:Static g:AppStrings.AcSettings_Video_HeatShimmering}" />
+              </CheckBox>
+            </DockPanel>
+
+            <DockPanel>
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionSunraysCommand}" />
+              <CheckBox IsChecked="{Binding Video.Sunrays}">
+                <Label Content="{x:Static g:AppStrings.AcSettings_Video_CrepuscularRays}" />
+              </CheckBox>
+            </DockPanel>
+
+            <DockPanel>
+              <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionFxaaCommand}" />
+              <CheckBox IsChecked="{Binding Video.Fxaa}" Margin="0">
+                <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fxaa}" />
+              </CheckBox>
             </DockPanel>
           </StackPanel>
 
@@ -191,12 +279,16 @@
 
           <DockPanel>
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_MirrorResolutionLabel}" />
-            <ComboBox ItemsSource="{Binding Video.MirrorResolutions}" SelectedItem="{Binding Video.MirrorResolution}" DisplayMemberPath="DisplayName" />
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMirrorsResolutionCommand}" />
+            <ComboBox ItemsSource="{Binding Video.MirrorsResolutions}" SelectedItem="{Binding Video.MirrorsResolution}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding Video.MirrorHighQuality}">
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_HighQuality}" />
-          </CheckBox>
+          <DockPanel Visibility="{Binding Video.MirrorsResolution.Value, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMirrorsHqCommand}" />
+            <CheckBox IsChecked="{Binding Video.MirrorsHighQuality}">
+              <Label Content="{x:Static g:AppStrings.AcSettings_Video_HighQuality}" />
+            </CheckBox>
+          </DockPanel>
 
           <!-- Oculus -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_OculusHeader}" />
@@ -214,11 +306,13 @@
           </CheckBox>
 
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_SkyboxReflection_Tooltip}">
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionSkyboxReflectionCommand}" />
             <mui:ValueLabel Value="{Binding Graphics.SkyboxReflectionGain}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Video_SkyboxReflection}" />
             <Slider Minimum="0" Maximum="300" Value="{Binding Graphics.SkyboxReflectionGain}" TickFrequency="30" TickPlacement="BottomRight" />
           </DockPanel>
 
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MipLodBias_Tooltip}">
+            <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMipLodBiasCommand}" />
             <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Content="{x:Static g:AppStrings.AcSettings_Video_MipLodBias}" />
             <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="BottomRight" />
           </DockPanel>

@@ -193,14 +193,14 @@ namespace AcManager.Controls.Presentation {
 
         #region Background
         private async Task UpdateBackgroundImageBrush() {
-            var image = _backgroundFilename == null ? BetterImage.BitmapEntry.Empty : await BetterImage.LoadBitmapSourceAsync(_backgroundFilename);
+            var image = _backgroundFilename == null ? BetterImage.Image.Empty : await BetterImage.LoadBitmapSourceAsync(_backgroundFilename);
 
             ImageBrush brush;
-            if (image.BitmapSource == null) {
+            if (image.ImageSource == null) {
                 brush = null;
             } else {
                 brush = new ImageBrush {
-                    ImageSource = image.BitmapSource,
+                    ImageSource = image.ImageSource,
                     Opacity = _backgroundOpacity,
                     Stretch = _backgroundStretch,
                     AlignmentX = AlignmentX.Center,

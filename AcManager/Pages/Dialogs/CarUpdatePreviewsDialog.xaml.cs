@@ -44,7 +44,6 @@ namespace AcManager.Pages.Dialogs {
     // properly back then.
     public partial class CarUpdatePreviewsDialog : IInvokingNotifyPropertyChanged, IProgress<Showroom.ShootingProgress>, IUserPresetable {
         #region Options
-
         private bool _disableSweetFx;
 
         public bool DisableSweetFx {
@@ -342,7 +341,8 @@ namespace AcManager.Pages.Dialogs {
 
                 if (data == null) {
                     dialog.Close();
-                    NonfatalError.Notify(string.Format(AppStrings.CarPreviews_CannotDownloadShowroom, showroomName), ToolsStrings.Common_CannotDownloadFile_Commentary);
+                    NonfatalError.Notify(string.Format(AppStrings.CarPreviews_CannotDownloadShowroom, showroomName),
+                            ToolsStrings.Common_CannotDownloadFile_Commentary);
                     return;
                 }
 
@@ -381,12 +381,13 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public CarUpdatePreviewsDialog(CarObject carObject, UpdatePreviewMode mode, string loadPreset = null)
-            : this(carObject, null, mode, loadPreset) { }
+                : this(carObject, null, mode, loadPreset) { }
 
         public CarUpdatePreviewsDialog(CarObject carObject, [CanBeNull] string[] skinIds, UpdatePreviewMode mode, string loadPreset = null)
-                : this(new [] { new ToUpdatePreview(carObject, skinIds) }, mode, loadPreset) {}
+                : this(new[] { new ToUpdatePreview(carObject, skinIds) }, mode, loadPreset) { }
 
-        public CarUpdatePreviewsDialog([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, UpdatePreviewMode mode, string loadPreset = null, bool? applyImmediately = null) {
+        public CarUpdatePreviewsDialog([NotNull] IReadOnlyList<ToUpdatePreview> toUpdate, UpdatePreviewMode mode, string loadPreset = null,
+                bool? applyImmediately = null) {
             if (toUpdate == null) throw new ArgumentNullException(nameof(toUpdate));
             if (toUpdate.Count == 0) throw new ArgumentException("Value cannot be an empty collection.", nameof(toUpdate));
 
@@ -545,7 +546,11 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public enum Phase {
-            Options, Waiting, Result, ResultSummary, Error
+            Options,
+            Waiting,
+            Result,
+            ResultSummary,
+            Error
         }
 
         private Phase _currentPhase;
@@ -712,9 +717,9 @@ namespace AcManager.Pages.Dialogs {
                             new AcPreviewImageInformation {
                                 Name = toUpdate.Car.DisplayName,
                                 Style = Path.GetFileNameWithoutExtension(UserPresetsControl.SelectedPresetFilename)
-                            }, new Progress<Tuple<string, double?>>(t => {
-                                Progress = new AsyncProgressEntry($"Applying freshly made previews ({t.Item1})…", t.Item2);
-                            }), cancellation);
+                            },
+                            new Progress<Tuple<string, double?>>(
+                                    t => { Progress = new AsyncProgressEntry($"Applying freshly made previews ({t.Item1})…", t.Item2); }), cancellation);
                 }
             } else {
                 if (_resultDirectory == null) {
@@ -727,7 +732,6 @@ namespace AcManager.Pages.Dialogs {
                             var id = Path.GetFileNameWithoutExtension(x).ToLower();
                             return new ResultPreviewComparison {
                                 Name = toUpdate.Car.GetSkinById(id)?.DisplayName ?? id,
-
                                 /* custom paths, because theoretically skin might no longer exist at this point */
                                 LiveryImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"livery.png"),
                                 OriginalImage = Path.Combine(toUpdate.Car.Location, @"skins", id, @"preview.jpg"),
@@ -740,7 +744,7 @@ namespace AcManager.Pages.Dialogs {
         private async Task RunShootingProcess(bool manualMode = false) {
             if (SelectedShowroom == null) {
                 if (ShowMessage(AppStrings.CarPreviews_ShowroomIsMissingOptions, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) ==
-                    MessageBoxResult.Yes) {
+                        MessageBoxResult.Yes) {
                     SelectPhase(Phase.Options);
                 } else {
                     _cancelled = true;
@@ -753,7 +757,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (SelectedFilter == null) {
                 if (ShowMessage(AppStrings.CarPreviews_FilterIsMissingOptions, AppStrings.Common_OneMoreThing, MessageBoxButton.YesNo) ==
-                    MessageBoxResult.Yes) {
+                        MessageBoxResult.Yes) {
                     SelectPhase(Phase.Options);
                 } else {
                     _cancelled = true;
@@ -837,14 +841,16 @@ namespace AcManager.Pages.Dialogs {
 
         public void Report(Showroom.ShootingProgress value) {
             Progress = new AsyncProgressEntry(
-                string.Format(AppStrings.CarPreviews_Progress, _currentCar?.GetSkinById(value.SkinId)?.DisplayName ?? value.SkinId, value.SkinNumber + 1,
-                    value.TotalSkins),
-                value.SkinNumber, value.TotalSkins);
+                    string.Format(AppStrings.CarPreviews_Progress, _currentCar?.GetSkinById(value.SkinId)?.DisplayName ?? value.SkinId, value.SkinNumber + 1,
+                            value.TotalSkins),
+                    value.SkinNumber, value.TotalSkins);
         }
 
         private void ImageViewer(bool showUpdated) {
             var current = (ResultPreviewComparison)ResultPreviewComparisonsView.CurrentItem;
-            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0, CommonAcConsts.PreviewWidth).ShowDialog();
+            new ImageViewer(new[] { current.OriginalImage, current.UpdatedImage }, showUpdated ? 1 : 0) {
+                MaxImageWidth = CommonAcConsts.PreviewWidth
+            }.ShowDialog();
         }
 
         private void OriginalPreview_OnMouseDown(object sender, MouseButtonEventArgs e) {

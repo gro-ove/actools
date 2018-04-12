@@ -61,11 +61,11 @@ namespace AcManager.Tools.Helpers {
         }
 
         private static FrameworkElement ToImage(byte[] bytes, int? decodeWidth) {
-            return ToImage(BetterImage.LoadBitmapSourceFromBytes(bytes, decodeWidth ?? -1).BitmapSource);
+            return ToImage(BetterImage.LoadBitmapSourceFromBytes(bytes, decodeWidth ?? -1).ImageSource);
         }
 
         private static FrameworkElement ToImage(string filename, int? decodeWidth) {
-            return ToImage(BetterImage.LoadBitmapSource(filename, decodeWidth ?? -1).BitmapSource);
+            return ToImage(BetterImage.LoadBitmapSource(filename, decodeWidth ?? -1).ImageSource);
         }
 
         private static FrameworkElement ToImage(ImageSource source) {

@@ -327,6 +327,7 @@
     <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
       <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsVideo.Descriptions.cs" />
     <Compile Include="Pages\AcSettings\AcSettingsView.xaml.cs">
       <DependentUpon>AcSettingsView.xaml</DependentUpon>
     </Compile>

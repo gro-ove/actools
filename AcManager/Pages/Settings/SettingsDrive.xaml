@@ -103,6 +103,13 @@
           <Label Content="Continue race if Escape pressed" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
+          <CheckBox.ToolTip>
+            <mui:BbCodeBlock Text="You’ll see the result in [b]Settings/Assetto Corsa/Video[/b]" />
+          </CheckBox.ToolTip>
+          <Label Content="Monitor FPS during the race" />
+        </CheckBox>
+
         <!-- Quick Drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 

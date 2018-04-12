@@ -39,12 +39,12 @@ namespace AcManager.Pages.Dialogs {
 
         public sealed class TextureEntry : Displayable {
             public string Key { get; }
-            public BetterImage.BitmapEntry Image { get; }
+            public BetterImage.Image Image { get; }
             public string SourceKn5 { get; }
             public long Size { get; }
             public bool IsOverwritten { get; }
 
-            public TextureEntry(string name, BetterImage.BitmapEntry image, string sourceKn5, long size, bool isOverwritten) {
+            public TextureEntry(string name, BetterImage.Image image, string sourceKn5, long size, bool isOverwritten) {
                 Key = name;
                 Image = image;
                 SourceKn5 = sourceKn5;
@@ -85,7 +85,7 @@ namespace AcManager.Pages.Dialogs {
 
             public AsyncCommand ZoomCommand => _zoomCommand ?? (_zoomCommand = new AsyncCommand(async () => {
                 try {
-                    Tuple<BetterImage.BitmapEntry, Format> data;
+                    Tuple<BetterImage.Image, Format> data;
                     using (WaitingDialog.Create("Loading texture…")) {
                         data = await Task.Run(() => {
                             var loader = new SingleTextureLoader(Key);
@@ -99,12 +99,12 @@ namespace AcManager.Pages.Dialogs {
                         });
                     }
 
-                    new ImageViewer(new object[] { data.Item1 }, details: GetDetails).ShowDialog();
+                    new ImageViewer(data.Item1, GetDetails).ShowDialog();
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t load texture", e);
                 }
 
-                object GetDetails(object o) => $"File name: {BbCodeBlock.Encode(Key)}\n"
+                object GetDetails(int index) => $"File name: {BbCodeBlock.Encode(Key)}\n"
                         + $"Size: {BbCodeBlock.Encode(Size.ToReadableSize())}\n"
                         + $"Source: {BbCodeBlock.Encode(SourceKn5)}";
             }));

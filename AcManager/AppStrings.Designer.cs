@@ -1053,7 +1053,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Crepuscular rays.
+        ///   Looks up a localized string similar to Sunrays.
         /// </summary>
         public static string AcSettings_Video_CrepuscularRays {
             get {
@@ -1332,7 +1332,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Shadow resolution:.
+        ///   Looks up a localized string similar to Shadows resolution:.
         /// </summary>
         public static string AcSettings_Video_ShadowResolutionLabel {
             get {
@@ -1395,7 +1395,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to World detail:.
+        ///   Looks up a localized string similar to World details:.
         /// </summary>
         public static string AcSettings_Video_WorldDetalLabel {
             get {

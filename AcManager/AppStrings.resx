@@ -3154,10 +3154,10 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Quality:</value>
   </data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
-    <value>World detail:</value>
+    <value>World details:</value>
   </data>
   <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
-    <value>Shadow resolution:</value>
+    <value>Shadows resolution:</value>
   </data>
   <data name="AcSettings_Video_SmokeGenerationLabel" xml:space="preserve">
     <value>Smoke generation:</value>
@@ -3190,7 +3190,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Saturation</value>
   </data>
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
-    <value>Crepuscular rays</value>
+    <value>Sunrays</value>
   </data>
   <data name="AcSettings_Video_Fxaa" xml:space="preserve">
     <value>FXAA</value>

@@ -182,7 +182,7 @@ namespace AcManager.CustomShowroom {
                         break;
 
                     default:
-                        width = height = size ?? 1024;
+                        width = height = size.Value;
                         break;
                 }
 
@@ -204,27 +204,28 @@ namespace AcManager.CustomShowroom {
                             DialogFilterPiece.DdsFiles,
                             DialogFilterPiece.JpegFiles,
                         },
-                        SaveAction = SaveAction,
-                    },
-                    ImageMargin = new Thickness()
+                        SaveCallback = SaveCallback,
+                    }
                 }.ShowDialog();
-            }));
 
-            private static void SaveAction(string source, string destination) {
-                var extension = Path.GetExtension(destination)?.ToLowerInvariant();
-                switch (extension) {
-                    case ".dds":
-                        DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(source), PreferredDdsFormat.RGBA4444, null);
-                        break;
-                    case ".jpg":
-                    case ".jpeg":
-                        ImageUtils.Convert(source, destination);
-                        break;
-                    default:
-                        File.Copy(source, destination, true);
-                        break;
+                Task SaveCallback(int selected, string destination) {
+                    return Task.Run(() => {
+                        var extension = Path.GetExtension(destination)?.ToLowerInvariant();
+                        switch (extension) {
+                            case ".dds":
+                                DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(filename), PreferredDdsFormat.RGBA4444, null);
+                                break;
+                            case ".jpg":
+                            case ".jpeg":
+                                ImageUtils.Convert(filename, destination);
+                                break;
+                            default:
+                                File.Copy(filename, destination, true);
+                                break;
+                        }
+                    });
                 }
-            }
+            }));
 
             private CommandBase _exportCommand;
 
@@ -470,7 +471,7 @@ namespace AcManager.CustomShowroom {
 
         private void OnPreviewClick(object sender, MouseButtonEventArgs e) {
             e.Handled = true;
-            new ImageViewer(Model.PreviewImage) { Owner = null, ImageMargin = new Thickness() }.ShowDialog();
+            new ImageViewer(Model.PreviewImage).ShowDialog();
         }
     }
 }

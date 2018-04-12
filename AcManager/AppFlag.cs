@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Rate performance and show the performance message during replays.
+        /// Example: --benchmark-replays.
+        /// </summary>
+        BenchmarkReplays,
+
+        /// <summary>
         /// Disable AC shared memory integration. Example: --disable-shared-memory.
         /// </summary>
         DisableSharedMemory,

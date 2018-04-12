@@ -98,7 +98,7 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private BetterImage.BitmapEntry _image;
+        private BetterImage.Image _image;
         private readonly CropModel _model;
 
         public BitmapSource Result { get; private set; }
@@ -153,7 +153,7 @@ namespace AcManager.Pages.Dialogs {
 
             Buttons = new[] {
                 allowNoCrop ? CreateExtraDialogButton(AppStrings.CropImage_Skip, new DelegateCommand(() => {
-                    Result = (BitmapSource)_image.BitmapSource;
+                    Result = (BitmapSource)_image.ImageSource;
                     ResultRect = new Int32Rect(0, 0, _image.Width, _image.Height);
                     ResultRectRelative = new Rect(0d, 0d, 1d, 1d);
                     Close();
@@ -166,7 +166,7 @@ namespace AcManager.Pages.Dialogs {
                             (double)rect.X / _image.Width, (double)rect.Y / _image.Height,
                             (double)rect.Width / _image.Width, (double)rect.Height / _image.Height);
 
-                    var cropped = new CroppedBitmap((BitmapSource)_image.BitmapSource, rect);
+                    var cropped = new CroppedBitmap((BitmapSource)_image.ImageSource, rect);
                     Result = cropped.Resize((int)_model.TargetWidth, (int)_model.TargetHeight);
                 }, () => !_image.IsBroken)),
                 CancelButton
@@ -178,7 +178,7 @@ namespace AcManager.Pages.Dialogs {
 
         private async Task LoadImage(string filename, Rect? startRect) {
             _image = await BetterImage.LoadBitmapSourceAsync(filename);
-            OriginalImage.SetCurrentValue(Image.SourceProperty, _image.BitmapSource);
+            OriginalImage.SetCurrentValue(Image.SourceProperty, _image.ImageSource);
             CommandManager.InvalidateRequerySuggested();
 
             if (_image.IsBroken) {

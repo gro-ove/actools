@@ -1034,6 +1034,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _monitorFramesPerSecond;
+
+            public bool MonitorFramesPerSecond {
+                get => _monitorFramesPerSecond ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", false)).Value;
+                set {
+                    if (Equals(value, _monitorFramesPerSecond)) return;
+                    _monitorFramesPerSecond = value;
+                    ValuesStorage.Set("Settings.DriveSettings.MonitorFramesPerSecond", value);
+                    OnPropertyChanged();
+                }
+            }
+
             // Demoted from UI option to an app flag, kept here to avoid rewriting any code
             public bool WatchForSharedMemory { get; set; }
         }

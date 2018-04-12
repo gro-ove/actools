@@ -127,8 +127,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             set => Apply(value, ref _existingLayout);
         }
 
-        private BetterImage.BitmapEntry? _icon;
-        public BetterImage.BitmapEntry? Icon => IconData == null ? null :
+        private BetterImage.Image? _icon;
+        public BetterImage.Image? Icon => IconData == null ? null :
                 _icon ?? (_icon = BetterImage.LoadBitmapSourceFromBytes(IconData, 32));
     }
 

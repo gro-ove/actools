@@ -119,7 +119,7 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private class SaveableData {}
+            private class SaveableData { }
 
             private ISaveHelper Saveable { get; }
 
@@ -139,9 +139,7 @@ namespace AcManager.CustomShowroom {
                 Skin = skinId == null ? Car.SelectedSkin : Car.GetSkinById(skinId);
                 Car.SkinsManager.EnsureLoadedAsync().Forget();
 
-                Saveable = new SaveHelper<SaveableData>("__CmPreviewsTools", () => new SaveableData(), o => {}, () => {
-                    Reset(false);
-                });
+                Saveable = new SaveHelper<SaveableData>("__CmPreviewsTools", () => new SaveableData(), o => { }, () => { Reset(false); });
             }
 
             private void Reset(bool saveLater) {
@@ -192,28 +190,23 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
-            private void OnRendererTick(object sender, AcTools.Render.Base.TickEventArgs args) {}
+            private void OnRendererTick(object sender, AcTools.Render.Base.TickEventArgs args) { }
 
-            public void OnTick() {}
+            public void OnTick() { }
 
             #region Commands
             private ICommand _nextSkinCommand;
 
-            public ICommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new DelegateCommand(() => {
-                Renderer.SelectNextSkin();
-            }));
+            public ICommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new DelegateCommand(() => { Renderer.SelectNextSkin(); }));
 
             private ICommand _previewSkinCommand;
 
-            public ICommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new DelegateCommand(() => {
-                Renderer.SelectPreviousSkin();
-            }));
+            public ICommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new DelegateCommand(() => { Renderer.SelectPreviousSkin(); }));
 
             private CommandBase _openSkinDirectoryCommand;
 
-            public ICommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => {
-                Skin?.ViewInExplorer();
-            }, () => Skin != null));
+            public ICommand OpenSkinDirectoryCommand
+                => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => { Skin?.ViewInExplorer(); }, () => Skin != null));
             #endregion
 
             #region Apply, test
@@ -281,8 +274,10 @@ namespace AcManager.CustomShowroom {
                     if (new ImageViewer(new[] {
                         temporary,
                         filename
-                    }, 0, Settings.Width, Settings.Height,
-                            i => i as string == temporary ? "Newly generated preview" : "Current preview").ShowDialogInSelectMode() != null) {
+                    }, detailsCallback: i => i == 0 ? "Newly generated preview" : "Current preview") {
+                        MaxImageWidth = Settings.Width,
+                        MaxImageHeight = Settings.Height
+                    }.SelectDialog() == 0) {
                         if (File.Exists(filename)) {
                             FileUtils.Recycle(filename);
                         }
@@ -494,7 +489,8 @@ namespace AcManager.CustomShowroom {
                             await Task.Run(() => FileUtils.Recycle(filename));
                         }
 
-                        _waiting.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix, _verySingleMode ? 0d : subprogress + halfstep));
+                        _waiting.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix,
+                                _verySingleMode ? 0d : subprogress + halfstep));
 
                         try {
                             await _updater.ShotAsync(_currentCar.Id, _currentSkin.Id, filename, _currentCar.AcdData,
@@ -516,7 +512,8 @@ namespace AcManager.CustomShowroom {
                 _finished = true;
 
                 if (_errors.Count > 0) {
-                    NonfatalError.Notify("Can’t update previews:\n" + _errors.Select(x => @"• " + x.Message.ToSentence()).JoinToString(";" + Environment.NewLine));
+                    NonfatalError.Notify("Can’t update previews:\n"
+                            + _errors.Select(x => @"• " + x.Message.ToSentence()).JoinToString(";" + Environment.NewLine));
                 }
 
                 return _errors;
@@ -631,7 +628,7 @@ namespace AcManager.CustomShowroom {
         /// </summary>
         public ToUpdatePreview([NotNull] CarObject car, [CanBeNull] CarSkinObject skin) {
             Car = car;
-            Skins = new [] { skin };
+            Skins = new[] { skin };
         }
 
         /// <summary>
@@ -644,7 +641,9 @@ namespace AcManager.CustomShowroom {
     }
 
     public enum UpdatePreviewMode {
-        Options, Start, StartManual
+        Options,
+        Start,
+        StartManual
     }
 
     public class UpdatePreviewError {

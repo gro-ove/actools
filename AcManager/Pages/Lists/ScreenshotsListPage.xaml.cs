@@ -19,6 +19,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
 using StringBasedFilter;
 
 namespace AcManager.Pages.Lists {
@@ -38,9 +39,8 @@ namespace AcManager.Pages.Lists {
 
         private DelegateCommand _viewInExplorerCommand;
 
-        public DelegateCommand ViewInExplorerCommand => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => {
-            WindowsHelper.ViewFile(Filename);
-        }));
+        public DelegateCommand ViewInExplorerCommand
+            => _viewInExplorerCommand ?? (_viewInExplorerCommand = new DelegateCommand(() => { WindowsHelper.ViewFile(Filename); }));
 
         private bool _isDeleted;
 
@@ -160,18 +160,29 @@ namespace AcManager.Pages.Lists {
         private void OnItemClick(object sender, MouseButtonEventArgs e) {
             if (Keyboard.Modifiers == ModifierKeys.None && !e.Handled && (sender as FrameworkElement)?.DataContext is Screenshot screenshot) {
                 e.Handled = true;
-                new ImageViewer(Model.Screenshots.Select(x => x.Filename), Model.Screenshots.IndexOf(screenshot),
-                        4000, details: x => Path.GetFileName(x as string)).ShowDialog();
+
+                new ImageViewer<Screenshot>(Model.Screenshots, Model.Screenshots.IndexOf(screenshot),
+                        x => Task.FromResult((object)x.Filename), x => Path.GetFileNameWithoutExtension(x.Filename)) {
+                            MaxImageWidth = 3840,
+                            AutoHideDescriptionIfExpanded = true,
+                            Model = { ContextMenuCallback = ShowContextMenu }
+                        }.ShowDialog();
             }
+        }
+
+        private void ShowContextMenu([CanBeNull] Screenshot image) {
+            if (image == null) return;
+            new ContextMenu()
+                    .AddItem("Open in system", () => WindowsHelper.OpenFile(image.Filename))
+                    .AddItem("Show in folder", image.ViewInExplorerCommand)
+                    .AddItem("Remove to the Recycle Bin", image.DeleteCommand)
+                    .IsOpen = true;
         }
 
         private void OnContextMenu(object sender, MouseButtonEventArgs e) {
             if (!e.Handled && ((FrameworkElement)sender).DataContext is Screenshot image) {
                 e.Handled = true;
-                new ContextMenu()
-                        .AddItem("Show in folder", image.ViewInExplorerCommand)
-                        .AddItem("Remove to the Recycle Bin", image.DeleteCommand)
-                        .IsOpen = true;
+                ShowContextMenu(image);
             }
         }
 

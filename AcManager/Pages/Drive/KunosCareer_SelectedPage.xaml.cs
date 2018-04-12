@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -79,7 +78,7 @@ namespace AcManager.Pages.Drive {
 
             if (File.Exists(acObject.StartVideo)) {
                 //if (VideoViewer.IsSupported()) {
-                    new VideoViewer(acObject.StartVideo, acObject.Name).ShowDialog();
+                new VideoViewer(acObject.StartVideo, acObject.Name).ShowDialog();
                 //}
             }
 
@@ -220,16 +219,14 @@ namespace AcManager.Pages.Drive {
 
             await ev.CarObject.SkinsManager.EnsureLoadedAsync();
 
-            var skins = ev.CarObject.EnabledOnlySkins.ToList();
-            var viewer = new ImageViewer(
-                skins.Select(x => x.PreviewImage),
-                skins.IndexOf(ev.CarSkin),
-                CommonAcConsts.PreviewWidth,
-                details: CarBlock.GetSkinImageViewerDetailsCallback(ev.CarObject));
+            var viewer = new ImageViewer<CarSkinObject>(
+                    ev.CarObject.EnabledOnlySkins, ev.CarObject.EnabledOnlySkins.IndexOf(ev.CarSkin),
+                    CarBlock.ImageViewerImageCallback, CarBlock.ImageViewerDetailsCallback) {
+                        MaxImageWidth = CommonAcConsts.PreviewWidth
+                    };
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                var selected = viewer.ShowDialogInSelectMode();
-                ev.CarSkin = skins.ElementAtOrDefault(selected ?? -1) ?? ev.CarSkin;
+                ev.CarSkin = viewer.SelectDialog() ?? ev.CarSkin;
             } else {
                 viewer.ShowDialog();
             }

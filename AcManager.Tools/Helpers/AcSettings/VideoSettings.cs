@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -134,7 +135,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new SettingEntry("4096", @"4096×4096")
         };
 
-        public SettingEntry[] WorldDetailLevels { get; } = {
+        public SettingEntry[] WorldDetailsLevels { get; } = {
             new SettingEntry("0", ToolsStrings.AcSettings_Quality_Minimum),
             new SettingEntry("1", ToolsStrings.AcSettings_Quality_Low),
             new SettingEntry("2", ToolsStrings.AcSettings_Quality_Medium),
@@ -152,7 +153,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new SettingEntry("5", ToolsStrings.AcSettings_Quality_Maximum)
         };
 
-        public SettingEntry[] PostProcessingQualities => WorldDetailLevels;
+        public SettingEntry[] PostProcessingQualities => WorldDetailsLevels;
 
         public SettingEntry[] GlareQualities { get; } = {
             new SettingEntry("0", ToolsStrings.AcSettings_Off),
@@ -165,7 +166,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public SettingEntry[] DepthOfFieldQualities => GlareQualities;
 
-        public SettingEntry[] MirrorResolutions { get; } = {
+        public SettingEntry[] MirrorsResolutions { get; } = {
             new SettingEntry("0", ToolsStrings.AcSettings_Off),
             new SettingEntry("256", @"64×256"),
             new SettingEntry("512", @"128×512"),
@@ -391,14 +392,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private SettingEntry _worldDetail;
+        private SettingEntry _worldDetails;
 
-        public SettingEntry WorldDetail {
-            get => _worldDetail;
+        public SettingEntry WorldDetails {
+            get => _worldDetails;
             set {
-                if (!WorldDetailLevels.ArrayContains(value)) value = WorldDetailLevels[0];
-                if (Equals(value, _worldDetail)) return;
-                _worldDetail = value;
+                if (!WorldDetailsLevels.ArrayContains(value)) value = WorldDetailsLevels[0];
+                if (Equals(value, _worldDetails)) return;
+                _worldDetails = value;
                 OnPropertyChanged();
             }
         }
@@ -502,11 +503,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private bool _raysOfGod;
+        private bool _sunrays;
 
-        public bool RaysOfGod {
-            get => _raysOfGod;
-            set => Apply(value, ref _raysOfGod);
+        public bool Sunrays {
+            get => _sunrays;
+            set => Apply(value, ref _sunrays);
         }
 
         private bool _heatShimmering;
@@ -549,23 +550,23 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Reflections
-        private SettingEntry _mirrorResolution;
+        private SettingEntry _mirrorsResolution;
 
-        public SettingEntry MirrorResolution {
-            get => _mirrorResolution;
+        public SettingEntry MirrorsResolution {
+            get => _mirrorsResolution;
             set {
-                if (!MirrorResolutions.ArrayContains(value)) value = MirrorResolutions[0];
-                if (Equals(value, _mirrorResolution)) return;
-                _mirrorResolution = value;
+                if (!MirrorsResolutions.ArrayContains(value)) value = MirrorsResolutions[0];
+                if (Equals(value, _mirrorsResolution)) return;
+                _mirrorsResolution = value;
                 OnPropertyChanged();
             }
         }
 
-        private bool _mirrorHighQuality;
+        private bool _mirrorsHighQuality;
 
-        public bool MirrorHighQuality {
-            get => _mirrorHighQuality;
-            set => Apply(value, ref _mirrorHighQuality);
+        public bool MirrorsHighQuality {
+            get => _mirrorsHighQuality;
+            set => Apply(value, ref _mirrorsHighQuality);
         }
 
         private SettingEntry _cubemapResolution;
@@ -627,6 +628,18 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _lockSteeringWheel);
         }
 
+        private AcSharedMemory.FpsDetails _lastSessionPerformanceData = ValuesStorage.Storage.GetObject<AcSharedMemory.FpsDetails>("LastSessionPerformanceData");
+
+        [CanBeNull]
+        public AcSharedMemory.FpsDetails LastSessionPerformanceData {
+            get => _lastSessionPerformanceData;
+            set {
+                if (Equals(value, _lastSessionPerformanceData)) return;
+                _lastSessionPerformanceData = value;
+                OnPropertyChanged();
+                ValuesStorage.Storage.SetObject("LastSessionPerformanceData", value);
+            }
+        }
         #endregion
 
         public void EnsureResolutionIsCorrect() {
@@ -686,7 +699,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             HideArms = section.GetBool("HIDE_ARMS", false);
             HideSteeringWheel = section.GetBool("HIDE_STEER", false);
             LockSteeringWheel = section.GetBool("LOCK_STEER", false);
-            WorldDetail = section.GetEntry("WORLD_DETAIL", WorldDetailLevels, "4");
+            WorldDetails = section.GetEntry("WORLD_DETAIL", WorldDetailsLevels, "4");
 
             MotionBlur = Ini["EFFECTS"].GetInt("MOTION_BLUR", 6);
             SmokeInMirrors = Ini["EFFECTS"].GetBool("RENDER_SMOKE_IN_MIRROR", false);
@@ -699,13 +712,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             PostProcessingFilter = section.GetNonEmpty("FILTER", "default");
             GlareQuality = section.GetEntry("GLARE", GlareQualities, "4");
             DepthOfFieldQuality = section.GetEntry("DOF", DepthOfFieldQualities, "4");
-            RaysOfGod = section.GetBool("RAYS_OF_GOD", true);
+            Sunrays = section.GetBool("RAYS_OF_GOD", true);
             HeatShimmering = section.GetBool("HEAT_SHIMMER", true);
             Fxaa = section.GetBool("FXAA", true);
             ColorSaturation = Ini["SATURATION"].GetInt("LEVEL", 100);
 
-            MirrorHighQuality = Ini["MIRROR"].GetBool("HQ", false);
-            MirrorResolution = Ini["MIRROR"].GetEntry("SIZE", MirrorResolutions, "512");
+            MirrorsHighQuality = Ini["MIRROR"].GetBool("HQ", false);
+            MirrorsResolution = Ini["MIRROR"].GetEntry("SIZE", MirrorsResolutions, "512");
 
             section = Ini["CUBEMAP"];
             CubemapResolution = section.GetEntry("SIZE", CubemapResolutions, "1024");
@@ -737,7 +750,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("HIDE_ARMS", HideArms);
             section.Set("HIDE_STEER", HideSteeringWheel);
             section.Set("LOCK_STEER", LockSteeringWheel);
-            section.Set("WORLD_DETAIL", WorldDetail);
+            section.Set("WORLD_DETAIL", WorldDetails);
 
             ini["EFFECTS"].Set("MOTION_BLUR", MotionBlur);
             ini["EFFECTS"].Set("RENDER_SMOKE_IN_MIRROR", SmokeInMirrors);
@@ -749,13 +762,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("FILTER", PostProcessingFilter);
             section.Set("GLARE", GlareQuality);
             section.Set("DOF", DepthOfFieldQuality);
-            section.Set("RAYS_OF_GOD", RaysOfGod);
+            section.Set("RAYS_OF_GOD", Sunrays);
             section.Set("HEAT_SHIMMER", HeatShimmering);
             section.Set("FXAA", Fxaa);
             ini["SATURATION"].Set("LEVEL", ColorSaturation);
 
-            ini["MIRROR"].Set("HQ", MirrorHighQuality);
-            ini["MIRROR"].Set("SIZE", MirrorResolution);
+            ini["MIRROR"].Set("HQ", MirrorsHighQuality);
+            ini["MIRROR"].Set("SIZE", MirrorsResolution);
 
             section = ini["CUBEMAP"];
             if (CubemapResolution.Value == "0") {

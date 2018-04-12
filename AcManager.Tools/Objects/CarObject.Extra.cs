@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -112,7 +113,7 @@ namespace AcManager.Tools.Objects {
             var result = new Image {
                 Width = image.Width,
                 Height = image.Height,
-                Source = image.BitmapSource,
+                Source = image.ImageSource,
                 Effect = effect,
             };
 
@@ -123,7 +124,7 @@ namespace AcManager.Tools.Objects {
 
             var bmp = new RenderTargetBitmap(image.Width, image.Height, 96, 96, PixelFormats.Pbgra32);
             bmp.Render(result);
-            return bmp.ToBytes();
+            return bmp.ToBytes(ImageFormat.Png);
         }
 
         private void SaveExtraCmTexture([NotNull] string textureName, [NotNull] Func<byte[]> actualSave) {
