@@ -76,7 +76,7 @@
     </Reference>
     <Reference Include="Nvidia.TextureTools.Compress, Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\Nvidia.TextureTools.Compress-$(ActualPlatform)\Nvidia.TextureTools.Compress.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
   </ItemGroup>

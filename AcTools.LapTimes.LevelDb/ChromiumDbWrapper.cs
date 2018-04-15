@@ -63,8 +63,8 @@ namespace AcTools.LapTimes.LevelDb {
         private static Dictionary<string, string> ParseBits(byte[] bits) {
             var result = new Dictionary<string, string>(4);
             using (var b = new BinaryReader(new MemoryStream(bits))) {
-                var header = b.ReadBytes(5);
-                Debug.WriteLine($"header: [{string.Join(", ", header.Select(x => $"0x{x:X}"))}]");
+                // var header = b.ReadBytes(5);
+                // Debug.WriteLine($"header: [{string.Join(", ", header.Select(x => $"0x{x:X}"))}]");
 
                 string key = null;
                 while (b.BaseStream.Position < b.BaseStream.Length - 1) {
