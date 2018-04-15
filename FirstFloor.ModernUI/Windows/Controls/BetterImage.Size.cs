@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.IO;
 using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -45,11 +44,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 #if DEBUG
             Logging.Warning($"Failed to determine size ({sourceDebug ?? @"?"}): {data}");
-
-            // TODO: Remove me!
-            if (Directory.Exists(@"U:\test")) {
-                File.WriteAllBytes(@"U:\test\failed.bin", data);
-            }
 #endif
 
             return null;

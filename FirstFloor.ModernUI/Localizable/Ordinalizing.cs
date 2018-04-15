@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Localizable {
     /// <summary>
@@ -81,9 +80,6 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         private static EsGenger EsGetGenger(string s) {
-#if DEBUG
-            Logging.Debug("gender: " + s);
-#endif
             if (string.IsNullOrEmpty(s)) return EsGenger.Default;
 
             var lower = s.ToLower(CultureInfo.CurrentUICulture);
@@ -160,9 +156,6 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         private static PtGenger PtGetGenger(string s) {
-#if DEBUG
-            Logging.Debug("gender: " + s);
-#endif
             if (string.IsNullOrEmpty(s)) return PtGenger.Default;
 
             var lower = s.ToLower(CultureInfo.CurrentUICulture);
@@ -259,7 +252,7 @@ namespace FirstFloor.ModernUI.Localizable {
         }
 
         /// <summary>
-        /// Base version, takes strings from resources. Doesn’t consider different genders, 
+        /// Base version, takes strings from resources. Doesn’t consider different genders,
         /// forms and everything.
         /// </summary>
         /// <param name="v">Value</param>

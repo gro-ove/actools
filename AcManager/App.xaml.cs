@@ -635,7 +635,7 @@ namespace AcManager {
                 CustomUriSchemeHelper.Initialize();
 
 #if !DEBUG
-                CupClient.Instance.LoadRegistries().Forget();
+                CupClient.Instance?.LoadRegistries().Forget();
 #endif
 
                 await Task.Delay(5000);

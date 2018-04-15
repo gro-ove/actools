@@ -1,11 +1,14 @@
+using NUnit.Framework;
+
+#if DEBUG
 using System.Text;
 using FirstFloor.ModernUI.Helpers;
-using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+#endif
 
 namespace FirstFloor.ModernUI.Tests {
     [TestFixture]
     public class LzfTest {
+#if DEBUG
         [Test]
         public void TestStream() {
             var data = "Loyal Guernseycow Improbable Cheerful Indochinesetiger Able Kindly Heron";
@@ -15,5 +18,6 @@ namespace FirstFloor.ModernUI.Tests {
             var d0 = Lzf.Decompress(c0, 0, c0.Length);
             Assert.AreEqual(data, Encoding.UTF8.GetString(d0));
         }
+#endif
     }
 }

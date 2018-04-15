@@ -30,7 +30,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.Profile;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -124,16 +123,6 @@ namespace AcManager.Pages.Drive {
                     if (selectedCar == null) return;
                     new CarOpenInShowroomDialog(selectedCar, selectedCar.SelectedSkin?.Id).ShowDialog();
                 }), new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
-
-#if DEBUG
-                new InputBinding(new AsyncCommand(() => {
-                    var selectedCar = Model.SelectedCar;
-                    if (selectedCar == null) return Task.Delay(0);
-                    return LapTimesManager.Instance.AddEntry(
-                            selectedCar.Id, Model.SelectedTrack.IdWithLayout,
-                            DateTime.Now, TimeSpan.FromSeconds(MathUtils.Random(10d, 20d)));
-                }), new KeyGesture(Key.T, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
-#endif
 
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarSkinCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Alt)),

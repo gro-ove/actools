@@ -1,11 +1,15 @@
-﻿using System;
+﻿using NUnit.Framework;
+
+#if DEBUG
+using System;
 using System.Collections.Generic;
 using FirstFloor.ModernUI.Windows.Controls.BbCode;
-using NUnit.Framework;
+#endif
 
 namespace FirstFloor.ModernUI.Tests {
     [TestFixture]
     public class EmojiTest {
+#if DEBUG
         private static IEnumerable<string> ToInts(string source) {
             for (var i = 0; i < source.Length; i++) {
                 if (char.IsHighSurrogate(source, i)) {
@@ -19,6 +23,7 @@ namespace FirstFloor.ModernUI.Tests {
 
         private static string ConvertEmoji(string source) {
             var result = "";
+
             for (var i = 0; i < source.Length; i++) {
                 if (Emoji.IsEmoji(source, i, out var length)) {
                     result += "[" + source.Substring(i, length) + "]";
@@ -52,5 +57,6 @@ namespace FirstFloor.ModernUI.Tests {
             Console.WriteLine(string.Join(", ", ToInts(s)));
             Assert.AreEqual("[👩‍❤️‍💋‍👩]", ConvertEmoji(s));
         }*/
+#endif
     }
 }

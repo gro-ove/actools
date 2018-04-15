@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -16,6 +15,10 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 namespace AcManager.Controls {
     public class UserPresetsControl : Control, IHierarchicalItemPreviewProvider {

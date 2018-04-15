@@ -6,7 +6,6 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -61,9 +60,6 @@ namespace AcManager.Controls {
                 if (badge.Exists) {
                     filename = badge.Filename;
                 } else {
-#if DEBUG
-                    Logging.Warning("Not found: " + badge.Filename);
-#endif
                     if (!File.Exists(fallbackFilename)) return Image.Empty;
                     filename = fallbackFilename;
                 }

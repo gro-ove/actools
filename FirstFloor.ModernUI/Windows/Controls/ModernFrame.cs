@@ -219,7 +219,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         var failedArgs = new NavigationFailedEventArgs {
                             Frame = this,
                             Source = newValue,
-                            Error = e?.InnerException,
+                            Error = e.InnerException,
                             Handled = false
                         };
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,11 @@ using System.Windows.Forms;
 using AcTools.Windows;
 using AcTools.Windows.Input;
 using FirstFloor.ModernUI;
+
+#if DEBUG
+using System.Diagnostics;
 using FirstFloor.ModernUI.Helpers;
+#endif
 
 namespace AcManager.Tools {
     public class KeyboardListener : IKeyboardListener {

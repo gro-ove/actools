@@ -226,19 +226,23 @@ namespace AcManager.Controls {
                 if (_bookedForPlayer) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
                         ShowToolTip(@"iconBooked", () => "There is a place booked for you");
+                        return;
                     }
                     iconOffset += iconHeight + iconMargin;
                 }
                 if (_passwordRequired) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
                         ShowToolTip(@"iconPassword", () => ControlsStrings.Online_PasswordRequired);
+                        return;
                     }
+                    iconOffset += iconHeight + iconMargin;
                 }
                 if (_hasFriends) {
                     if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
                         ShowToolTip(@"iconFriends", () => "Your friend is here");
+                        return;
                     }
-                    iconOffset += iconHeight + iconMargin;
+                    // iconOffset += iconHeight + iconMargin;
                 }
             }
 
@@ -262,7 +266,7 @@ namespace AcManager.Controls {
             }
 
 #if DEBUG
-            if (new Rect(iconOffset, 0, width - iconOffset, 30).Contains(pos)) {
+            if (new Rect(0, 0, width, 30).Contains(pos)) {
                 ShowToolTip(@"name", () => $"Actual name: {BbCodeBlock.Encode(_server.ActualName)}\nSorting name: {_server.SortingName}");
                 return;
             }

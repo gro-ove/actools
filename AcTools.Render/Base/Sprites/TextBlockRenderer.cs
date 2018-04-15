@@ -11,7 +11,6 @@ using SlimDX.Direct2D;
 using SlimDX.Direct3D10;
 using SlimDX.DirectWrite;
 using SlimDX.DXGI;
-using Debug = System.Diagnostics.Debug;
 using Device1 = SlimDX.Direct3D10_1.Device1;
 using Factory = SlimDX.DirectWrite.Factory;
 using FactoryType = SlimDX.DirectWrite.FactoryType;
@@ -20,6 +19,10 @@ using FontStyle = SlimDX.DirectWrite.FontStyle;
 using FontWeight = SlimDX.DirectWrite.FontWeight;
 using Resource = SlimDX.DXGI.Resource;
 using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
+
+#if DEBUG
+using Debug = System.Diagnostics.Debug;
+#endif
 
 namespace AcTools.Render.Base.Sprites {
     /// <summary>
@@ -298,7 +301,7 @@ namespace AcTools.Render.Base.Sprites {
                 tl[i] = GetTextLayout(Convert.ToChar(i + (bytePrefix << 8)).ToString());
                 var charWidth = 2 + (int)Math.Ceiling(tl[i].Metrics.LayoutWidth + tl[i].OverhangMetrics.Left + tl[i].OverhangMetrics.Right);
                 var charHeight = 2 + (int)Math.Ceiling(tl[i].Metrics.LayoutHeight + tl[i].OverhangMetrics.Top + tl[i].OverhangMetrics.Bottom);
-                        // TODO: LayoutWidth?
+                // TODO: LayoutWidth?
                 line = Math.Max(line, charHeight);
                 if (xPos + charWidth >= sizeX) {
                     xPos = 0;
@@ -312,7 +315,8 @@ namespace AcTools.Render.Base.Sprites {
             sizeY = (int)Math.Pow(2, Math.Ceiling(Math.Log(sizeY, 2)));
         }
 
-        private static void GenerateDrawCalls(int sizeX, int sizeY, int kernelAdjustment, TextLayout[] tl, out CharTableDescription tableDesc, out CharRenderCall[] drawCalls) {
+        private static void GenerateDrawCalls(int sizeX, int sizeY, int kernelAdjustment, TextLayout[] tl, out CharTableDescription tableDesc,
+                out CharRenderCall[] drawCalls) {
             drawCalls = new CharRenderCall[256];
             tableDesc = new CharTableDescription();
             int line = 0, xPos = 0, yPos = 0;
@@ -522,7 +526,6 @@ namespace AcTools.Render.Base.Sprites {
             if (desc != null && desc.ReferenceCount == 0) {
                 desc.DisposeAll();
                 DeviceDescriptors.Remove(GetType());
-
             }
         }
 
@@ -554,7 +557,6 @@ namespace AcTools.Render.Base.Sprites {
                 _disposed = true;
             }
         }
-
         #endregion
     }
 }
