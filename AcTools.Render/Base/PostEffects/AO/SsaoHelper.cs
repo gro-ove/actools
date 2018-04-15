@@ -24,7 +24,7 @@ namespace AcTools.Render.Base.PostEffects.AO {
                 samplesKernel[i].Normalize();
 
                 var scale = (float)i / samplesKernel.Length;
-                scale = 0.1f.Lerp(1f, scale * scale);
+                scale = (scale * scale).Lerp(0.1f, 1f);
                 samplesKernel[i] *= scale;
             }
 

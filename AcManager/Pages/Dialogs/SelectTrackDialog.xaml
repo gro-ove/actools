@@ -70,7 +70,7 @@
         <c:FavouriteButton DockPanel.Dock="Right" VerticalAlignment="Center" IsChecked="{Binding SelectedTrack.IsFavourite}" Margin="0 0 8 0" />
         <mui:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly" Filename="{Binding SelectedTrackConfiguration.OutlineImage}"
             CropTransparentAreas="True" />
-        <TextBlock Text="{Binding SelectedTrackConfiguration.Name}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
+        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedTrackConfiguration.Name}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
             TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
       </DockPanel>
 

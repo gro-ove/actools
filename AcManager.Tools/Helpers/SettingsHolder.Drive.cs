@@ -1034,6 +1034,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _allowDecimalTrackState;
+
+            public bool AllowDecimalTrackState {
+                get => _allowDecimalTrackState ?? (_allowDecimalTrackState = ValuesStorage.Get("Settings.DriveSettings.AllowDecimalTrackState", false)).Value;
+                set {
+                    if (Equals(value, _allowDecimalTrackState)) return;
+                    _allowDecimalTrackState = value;
+                    ValuesStorage.Set("Settings.DriveSettings.AllowDecimalTrackState", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _monitorFramesPerSecond;
 
             public bool MonitorFramesPerSecond {

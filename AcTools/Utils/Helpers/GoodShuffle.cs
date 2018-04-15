@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace AcTools.Utils.Helpers {
     public class GoodShuffle {
-        public static GoodShuffle<T> Get<T>(IList<T> list) {
+        public static GoodShuffle<T> Get<T>(List<T> list) {
             return new GoodShuffle<T>(list);
         }
 
@@ -16,7 +16,7 @@ namespace AcTools.Utils.Helpers {
     }
 
     public class GoodShuffle<T> : BaseShuffle<T> {
-        public GoodShuffle(IList<T> list) : base(list) { }
+        public GoodShuffle(List<T> list) : base(list) { }
 
         protected override void Shuffle(int[] buffer) {
             for (var i = 0; i < buffer.Length; i++) {
@@ -40,7 +40,7 @@ namespace AcTools.Utils.Helpers {
     public class LimitedShuffle {
         public static bool OptionUseKuhn = true;
 
-        public static LimitedShuffle<T> Get<T>(IList<T> list, double randomization) {
+        public static LimitedShuffle<T> Get<T>(List<T> list, double randomization) {
             return new LimitedShuffle<T>(list, randomization);
         }
 
@@ -52,7 +52,7 @@ namespace AcTools.Utils.Helpers {
     public class LimitedShuffle<T> : GoodShuffle<T> {
         private readonly double _randomization;
 
-        public LimitedShuffle(IList<T> list, double randomization) : base(list) {
+        public LimitedShuffle(List<T> list, double randomization) : base(list) {
             _randomization = randomization;
         }
 
@@ -169,15 +169,16 @@ namespace AcTools.Utils.Helpers {
     }
 
     public abstract class BaseShuffle<T> : GoodShuffle, IEnumerable<T> {
-        private readonly IList<T> _list;
+        public IReadOnlyList<T> OriginalList => _list;
+
+        private readonly List<T> _list;
         private int[] _buffer;
         private int _bufferPosition;
 
-        public int Size { get; private set; }
-
+        public int Size { get; }
         public int Limit { get; private set; }
 
-        internal BaseShuffle(IList<T> list) {
+        internal BaseShuffle(List<T> list) {
             if (list.Count == 0) {
                 throw new ArgumentException("Value cannot be an empty collection.", nameof(list));
             }

@@ -20,6 +20,9 @@ namespace AcManager.Controls.ViewModels {
             get => _gripStart;
             set {
                 value = value.Clamp(0d, 2d);
+                if (!SettingsHolder.Drive.AllowDecimalTrackState) {
+                    value = value.Round(0.01);
+                }
                 if (Equals(value, _gripStart)) return;
                 _gripStart = value;
                 OnPropertyChanged();
@@ -33,6 +36,9 @@ namespace AcManager.Controls.ViewModels {
             get => _gripTransfer;
             set {
                 value = value.Clamp(0d, 2d);
+                if (!SettingsHolder.Drive.AllowDecimalTrackState) {
+                    value = value.Round(0.01);
+                }
                 if (Equals(value, _gripTransfer)) return;
                 _gripTransfer = value;
                 OnPropertyChanged();
@@ -46,6 +52,9 @@ namespace AcManager.Controls.ViewModels {
             get => _gripRandomness;
             set {
                 value = value.Clamp(0d, 2d);
+                if (!SettingsHolder.Drive.AllowDecimalTrackState) {
+                    value = value.Round(0.01);
+                }
                 if (Equals(value, _gripRandomness)) return;
                 _gripRandomness = value;
                 OnPropertyChanged();
@@ -83,12 +92,16 @@ namespace AcManager.Controls.ViewModels {
         private class SaveableData {
             [JsonProperty("s")]
             public double GripStart = 95d;
+
             [JsonProperty("t")]
             public double GripTransfer = 90d;
+
             [JsonProperty("r")]
             public double GripRandomness = 2d;
+
             [JsonProperty("g")]
             public int LapGain = 132;
+
             [JsonProperty("d")]
             public string Description;
         }
@@ -123,10 +136,14 @@ namespace AcManager.Controls.ViewModels {
             return new Game.TrackProperties {
                 Preset = null,
                 LapGain = LapGain,
-                Randomness = (GripRandomness * 100d).RoundToInt(),
-                SessionStart = (GripStart * 100d).RoundToInt(),
-                SessionTransfer = (GripTransfer * 100d).RoundToInt(),
+                Randomness = RoundIfNeeded(GripRandomness),
+                SessionStart = RoundIfNeeded(GripStart),
+                SessionTransfer = RoundIfNeeded(GripTransfer)
             };
+
+            double RoundIfNeeded(double v) {
+                return SettingsHolder.Drive.AllowDecimalTrackState ? v * 100d : (v * 100d).RoundToInt();
+            }
         }
         #endregion
 

@@ -38,6 +38,7 @@ namespace AcManager.Controls.ViewModels {
      * Apparently, _saveable is only used for ExportToPresetData() and ImportFromPresetData()!
      * Wouldn’t it be better to disable SaveLater() at all then? Also, what about LoadSerializedPreset()
      * and keySaveable parameter? */
+
     public class RaceGridViewModel : NotifyPropertyChanged, IDisposable, IComparer, IUserPresetable {
         public static bool OptionNfsPorscheNames = false;
 
@@ -71,6 +72,7 @@ namespace AcManager.Controls.ViewModels {
             public string ModeId;
             public string FilterValue;
             public string RandomSkinsFilter;
+            public bool SequentialSkins;
 
             [CanBeNull]
             public string[] CarIds;
@@ -122,6 +124,10 @@ namespace AcManager.Controls.ViewModels {
                     w.Write("RandomSkinsFilter", RandomSkinsFilter);
                 }
 
+                if (SequentialSkins) {
+                    w.Write("SequentialSkins", SequentialSkins);
+                }
+
                 w.Write("CarIds", CarIds);
                 w.Write("CandidatePriorities", CandidatePriorities);
                 w.Write("AiLevels", AiLevels);
@@ -164,44 +170,31 @@ namespace AcManager.Controls.ViewModels {
 
         public bool IgnoreStartingPosition {
             get => _ignoreStartingPosition;
-            set {
-                if (Equals(value, _ignoreStartingPosition)) return;
-                _ignoreStartingPosition = value;
-                OnPropertyChanged();
-                UpdatePlayerEntry();
-            }
+            set => Apply(value, ref _ignoreStartingPosition, UpdatePlayerEntry);
         }
 
         private double _playerBallast;
 
         public double PlayerBallast {
             get => _playerBallast;
-            set {
-                if (Equals(value, _playerBallast)) return;
-                _playerBallast = value;
-                OnPropertyChanged();
+            set => Apply(value, ref _playerBallast, () => {
                 SaveLater();
-
                 if (PlayerEntry != null) {
                     PlayerEntry.Ballast = value;
                 }
-            }
+            });
         }
 
         private double _playerRestrictor;
 
         public double PlayerRestrictor {
             get => _playerRestrictor;
-            set {
-                if (Equals(value, _playerRestrictor)) return;
-                _playerRestrictor = value;
-                OnPropertyChanged();
+            set => Apply(value, ref _playerRestrictor, () => {
                 SaveLater();
-
                 if (PlayerEntry != null) {
                     PlayerEntry.Restrictor = value;
                 }
-            }
+            });
         }
 
         public RaceGridViewModel(bool ignoreStartingPosition = false, [CanBeNull] string keySaveable = KeySaveable) {
@@ -212,21 +205,19 @@ namespace AcManager.Controls.ViewModels {
                     ModeId = Mode.Id,
                     FilterValue = FilterValue,
                     RandomSkinsFilter = RandomSkinsFilter,
+                    SequentialSkins = SequentialSkins,
                     ShuffleCandidates = ShuffleCandidates,
                     VarietyLimitation = VarietyLimitation,
                     OpponentsNumber = OpponentsNumber,
                     StartingPosition = StartingPosition,
-
                     AiLevel = AiLevel,
                     AiLevelMin = AiLevelMin,
                     AiLevelArrangeRandom = AiLevelArrangeRandom,
                     AiLevelArrangeReverse = AiLevelArrangeReverse,
-
                     AiAggression = AiAggression,
                     AiAggressionMin = AiAggressionMin,
                     AiAggressionArrangeRandom = AiAggressionArrangeRandom,
                     AiAggressionArrangeReverse = AiAggressionArrangeReverse,
-
                     PlayerBallast = PlayerBallast,
                     PlayerRestrictor = PlayerRestrictor,
                 };
@@ -328,7 +319,7 @@ namespace AcManager.Controls.ViewModels {
                                 Name = data.Names?.ArrayElementAtOrDefault(i),
                                 Nationality = data.Nationalities?.ArrayElementAtOrDefault(i),
                                 CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
-                                AiLimitationDetailsData =  data.AiLimitations?.ArrayElementAtOrDefault(i),
+                                AiLimitationDetailsData = data.AiLimitations?.ArrayElementAtOrDefault(i),
                             };
                         }).NonNull());
                         _setPropertiesLater = null;
@@ -355,7 +346,7 @@ namespace AcManager.Controls.ViewModels {
                             Name = data.Names?.ArrayElementAtOrDefault(i),
                             Nationality = data.Nationalities?.ArrayElementAtOrDefault(i),
                             CarSkin = carSkinId != null ? x.GetSkinById(carSkinId) : null,
-                            AiLimitationDetailsData =  data.AiLimitations?.ArrayElementAtOrDefault(i),
+                            AiLimitationDetailsData = data.AiLimitations?.ArrayElementAtOrDefault(i),
                         };
                     }).NonNull() ?? new RaceGridEntry[0]);
                     _setPropertiesLater = null;
@@ -378,9 +369,7 @@ namespace AcManager.Controls.ViewModels {
                 BuiltInGridMode.SameCar,
                 _randomGroup,
                 BuiltInGridMode.Custom,
-                _presetsHelper.Create(PresetableCategory, p => {
-                    ImportFromPresetData(p.ReadData());
-                }, ControlsStrings.Common_Presets)
+                _presetsHelper.Create(PresetableCategory, p => { ImportFromPresetData(p.ReadData()); }, ControlsStrings.Common_Presets)
             };
 
             NonfilteredList.CollectionChanged += OnCollectionChanged;
@@ -575,7 +564,6 @@ namespace AcManager.Controls.ViewModels {
                     Ballast = PlayerBallast,
                     Restrictor = PlayerRestrictor
                 };
-
             }
 
             if (PlayerEntry == null) return;
@@ -660,9 +648,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _switchModeCommand;
 
-        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(o => {
-            Mode = o;
-        }, o => o != null));
+        public ICommand SetModeCommand => _switchModeCommand ?? (_switchModeCommand = new DelegateCommand<BuiltInGridMode>(o => { Mode = o; }, o => o != null));
 
         private void UpdateRandomModes() {
             var items = new List<object> {
@@ -918,12 +904,14 @@ namespace AcManager.Controls.ViewModels {
 
         public string RandomSkinsFilter {
             get => _randomSkinsFilter;
-            set {
-                if (Equals(value, _randomSkinsFilter)) return;
-                _randomSkinsFilter = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value, ref _randomSkinsFilter, SaveLater);
+        }
+
+        private bool _sequentialSkins;
+
+        public bool SequentialSkins {
+            get => _sequentialSkins;
+            set => Apply(value, ref _sequentialSkins, SaveLater);
         }
         #endregion
 
@@ -987,14 +975,11 @@ namespace AcManager.Controls.ViewModels {
 
         public int TrackPitsNumber {
             get => _trackPitsNumber;
-            set {
-                if (Equals(value, _trackPitsNumber)) return;
-                _trackPitsNumber = value;
-                OnPropertyChanged();
+            set => Apply(value, ref _trackPitsNumber, () => {
                 OnPropertyChanged(nameof(OpponentsNumberLimit));
                 OnPropertyChanged(nameof(OpponentsNumberLimited));
                 UpdateExceeded();
-            }
+            });
         }
 
         public int OpponentsNumberLimit => TrackPitsNumber - 1;
@@ -1018,25 +1003,17 @@ namespace AcManager.Controls.ViewModels {
 
         public bool ShuffleCandidates {
             get => _shuffleCandidates;
-            set {
-                if (Equals(value, _shuffleCandidates)) return;
-                _shuffleCandidates = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value, ref _shuffleCandidates, SaveLater);
         }
 
         private int _varietyLimitation;
 
         public int VarietyLimitation {
             get => _varietyLimitation;
-            set {
-                if (Equals(value, _varietyLimitation)) return;
-                _varietyLimitation = value;
-                OnPropertyChanged();
+            set => Apply(value, ref _varietyLimitation, () => {
                 OnPropertyChanged(nameof(DisplayVarietyLimitation));
                 SaveLater();
-            }
+            });
         }
 
         public string DisplayVarietyLimitation {
@@ -1092,25 +1069,14 @@ namespace AcManager.Controls.ViewModels {
 
         public double AiLevelArrangeRandom {
             get => _aiLevelArrangeRandom;
-            set {
-                value = value.Round(0.01);
-                if (Equals(value, _aiLevelArrangeRandom)) return;
-                _aiLevelArrangeRandom = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value.Round(0.01), ref _aiLevelArrangeRandom, SaveLater);
         }
 
         private bool _aiLevelArrangeReverse;
 
         public bool AiLevelArrangeReverse {
             get => _aiLevelArrangeReverse;
-            set {
-                if (Equals(value, _aiLevelArrangeReverse)) return;
-                _aiLevelArrangeReverse = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value, ref _aiLevelArrangeReverse, SaveLater);
         }
 
         public bool AiLevelInDriverName {
@@ -1168,25 +1134,14 @@ namespace AcManager.Controls.ViewModels {
 
         public double AiAggressionArrangeRandom {
             get => _aiAggressionArrangeRandom;
-            set {
-                value = value.Round(0.01);
-                if (Equals(value, _aiAggressionArrangeRandom)) return;
-                _aiAggressionArrangeRandom = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value.Round(0.01), ref _aiAggressionArrangeRandom, SaveLater);
         }
 
         private bool _aiAggressionArrangeReverse;
 
         public bool AiAggressionArrangeReverse {
             get => _aiAggressionArrangeReverse;
-            set {
-                if (Equals(value, _aiAggressionArrangeReverse)) return;
-                _aiAggressionArrangeReverse = value;
-                OnPropertyChanged();
-                SaveLater();
-            }
+            set => Apply(value, ref _aiAggressionArrangeReverse, SaveLater);
         }
 
         public bool AiAggressionInDriverName {
@@ -1358,13 +1313,15 @@ namespace AcManager.Controls.ViewModels {
                 return new Game.AiCar[0];
             }
 
-            var skins = await GenerateGameEntries_Skins(cancellation);
+            var skinsFilter = GetSkinsFilter();
+            var skins = await GenerateGameEntries_Skins(cancellation, skinsFilter);
+            var skinsInOrder = SequentialSkins;
             if (cancellation.IsCancellationRequested) return null;
 
             var nameNationalities = GenerateGameEntries_NameNationalities(opponentsNumber);
             var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber);
             var aiAggressions = GenerateGameEntries_AiAggressions(opponentsNumber);
-            var final = GenerateGameEntries_FinalStep(opponentsNumber);
+            var final = GenerateGameEntries_FinalStep(opponentsNumber, skinsFilter);
 
             if (_playerCar != null) {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
@@ -1375,7 +1332,20 @@ namespace AcManager.Controls.ViewModels {
                 var level = entry.AiLevel ?? aiLevels?[i] ?? AiLevel;
                 var aggression = entry.AiAggression ?? aiAggressions?[i] ?? AiAggression;
 
-                var skin = entry.CarSkin ?? skins.GetValueOrDefault(entry.Car.Id)?.Next;
+                CarSkinObject skin;
+                if (entry.CarSkin != null) {
+                    skin = entry.CarSkin;
+                } else {
+                    var shuffle = skins.GetValueOrDefault(entry.Car.Id);
+                    if (shuffle == null) {
+                        skin = null;
+                    } else if (skinsInOrder) {
+                        skin = entry.GetSkinFor(i) ?? shuffle.Next;
+                    } else {
+                        skin = shuffle.Next;
+                    }
+                }
+
                 var name = entry.Name;
                 if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames) {
                     var skinDriverNames = skin?.DriverName?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
@@ -1437,9 +1407,14 @@ namespace AcManager.Controls.ViewModels {
             }).ToList();
         }
 
+        [CanBeNull]
+        private IFilter<CarSkinObject> GetSkinsFilter() {
+            return string.IsNullOrWhiteSpace(RandomSkinsFilter) ? null : Filter.Create(CarSkinObjectTester.Instance, RandomSkinsFilter);
+        }
+
         [NotNull]
-        private async Task<Dictionary<string, GoodShuffle<CarSkinObject>>> GenerateGameEntries_Skins(CancellationToken cancellation) {
-            var skinsFilter = string.IsNullOrWhiteSpace(RandomSkinsFilter) ? null : Filter.Create(CarSkinObjectTester.Instance, RandomSkinsFilter);
+        private async Task<Dictionary<string, GoodShuffle<CarSkinObject>>> GenerateGameEntries_Skins(CancellationToken cancellation,
+                [CanBeNull] IFilter<CarSkinObject> skinsFilter) {
             var skins = new Dictionary<string, GoodShuffle<CarSkinObject>>();
             foreach (var car in FilteredView.OfType<RaceGridEntry>().Where(x => x.CarSkin == null).Select(x => x.Car).Distinct()) {
                 await car.SkinsManager.EnsureLoadedAsync();
@@ -1512,7 +1487,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         [NotNull]
-        private IEnumerable<RaceGridEntry> GenerateGameEntries_FinalStep(int opponentsNumber) {
+        private IEnumerable<RaceGridEntry> GenerateGameEntries_FinalStep(int opponentsNumber, IFilter<CarSkinObject> skinsFilter) {
             if (!Mode.CandidatesMode) return NonfilteredList.Where(x => !x.SpecialEntry);
 
             var allowed = VarietyLimitation <= 0 ? null
@@ -1522,11 +1497,11 @@ namespace AcManager.Controls.ViewModels {
 
             if (!ShuffleCandidates) {
                 var skip = _playerCar;
-                return LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
+                return FixLinearSkinsIfNeeded(LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
                     if (x.Car != skip) return true;
                     skip = null;
                     return false;
-                }).Take(opponentsNumber);
+                }).Take(opponentsNumber));
             }
 
             var shuffled = GoodShuffle.Get(list);
@@ -1536,7 +1511,27 @@ namespace AcManager.Controls.ViewModels {
                     shuffled.IgnoreOnce(same);
                 }
             }
-            return shuffled.Take(opponentsNumber);
+
+            return FixLinearSkinsIfNeeded(shuffled.Take(opponentsNumber));
+
+            IEnumerable<RaceGridEntry> FixLinearSkinsIfNeeded(IEnumerable<RaceGridEntry> input) {
+                return !SequentialSkins ? input : FixLinearSkins(input);
+            }
+
+            IEnumerable<RaceGridEntry> FixLinearSkins(IEnumerable<RaceGridEntry> input) {
+                var inputList = input.ToList();
+                RaceGridEntry.InitializeSequentialSkins(inputList, skinsFilter);
+
+                var index = 0;
+                foreach (var entry in inputList) {
+                    var entryIndex = index++;
+                    if (!entry.HasSkinFor(entryIndex)) {
+                        yield return list.Where(x => x.HasSkinFor(entryIndex)).RandomElementOrDefault() ?? entry;
+                    } else {
+                        yield return entry;
+                    }
+                }
+            }
         }
         #endregion
     }

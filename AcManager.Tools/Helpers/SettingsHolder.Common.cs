@@ -59,9 +59,9 @@ namespace AcManager.Tools.Helpers {
             private SettingEntry[] _registryModes;
 
             public SettingEntry[] RegistryModes => _registryModes ?? (_registryModes = new[] {
-                new SettingEntry("off", "Disabled (Not Recommended, Shared Links Won’t Work)"),
-                new SettingEntry("protocolOnly", "Content Manager Protocol Only (For Shared Links)"),
-                new SettingEntry("protocolAndFiles", "Full Integration (Protocol And Files)")
+                new SettingEntry("off", "Disabled (not recommended, shared links won’t work)"),
+                new SettingEntry("protocolOnly", "Content Manager protocol only (for shared links)"),
+                new SettingEntry("protocolAndFiles", "Full integration (protocol and files)")
             });
 
             private SettingEntry _registryMode;

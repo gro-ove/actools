@@ -170,8 +170,8 @@ namespace AcTools.Utils {
         public static TimeSpan Max(this TimeSpan a, TimeSpan b) => a > b ? a : b;
         public static TimeSpan Min(this TimeSpan a, TimeSpan b) => a < b ? a : b;
 
-        public static float Lerp(this float v0, float v1, float t) => (1f - t) * v0 + t * v1;
-        public static double Lerp(this double v0, double v1, double t) => (1d - t) * v0 + t * v1;
+        public static float Lerp(this float t, float v0, float v1) => (1f - t) * v0 + t * v1;
+        public static double Lerp(this double t, double v0, double v1) => (1d - t) * v0 + t * v1;
 
         /// <summary>
         /// For normalized and saturated X.

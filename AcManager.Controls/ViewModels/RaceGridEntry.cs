@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Tools.Helpers;
@@ -8,10 +10,12 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
+using StringBasedFilter;
 
 namespace AcManager.Controls.ViewModels {
     public class RaceGridEntry : Displayable, IDraggable, IDraggableCloneable {
@@ -267,5 +271,38 @@ namespace AcManager.Controls.ViewModels {
             return GetType().Name == other.GetType().Name && Car == other.Car &&
                     CarSkin == other.CarSkin && Name == other.Name && Nationality == other.Nationality && AiLevel == other.AiLevel;
         }
+
+        #region Sequential skins stuff
+        private int? _sequentialSkinsMaxNumber;
+        private Dictionary<int, GoodShuffle<CarSkinObject>> _sequentialSkins;
+
+        public static void InitializeSequentialSkins([NotNull] IReadOnlyList<RaceGridEntry> entries, [CanBeNull] IFilter<CarSkinObject> filter) {
+            var availableNumbers = entries.SelectMany(x => x.GetSkins(filter).Select(y => y.SkinNumber.As(-1)))
+                                          .Where(x => x > 0).OrderBy(x => x).Distinct().ToList();
+            var maxNumber = availableNumbers.MaxOrDefault();
+            foreach (var entry in entries) {
+                entry._sequentialSkinsMaxNumber = maxNumber > 1 ? maxNumber : (int?)null;
+                entry._sequentialSkins = entry.GetSkins(filter).GroupBy(x => x.SkinNumber.As(-1)).Where(x => x.Key > 0)
+                                              .ToDictionary(x => availableNumbers.IndexOf(x.Key), GoodShuffle.Get);
+            }
+        }
+
+        private IEnumerable<CarSkinObject> GetSkins(IFilter<CarSkinObject> filter) {
+            return Car.EnabledOnlySkins.Where(y => filter == null || filter.Test(y));
+        }
+
+        public bool HasSkinFor(int zeroBasedIndex) {
+            return _sequentialSkins?.ContainsKey(GetSkinNumber(zeroBasedIndex)) == true;
+        }
+
+        [CanBeNull]
+        public CarSkinObject GetSkinFor(int zeroBasedIndex) {
+            return _sequentialSkins?.GetValueOrDefault(GetSkinNumber(zeroBasedIndex))?.Next;
+        }
+
+        private int GetSkinNumber(int zeroBasedIndex) {
+            return _sequentialSkinsMaxNumber > 2 ? zeroBasedIndex % _sequentialSkinsMaxNumber.Value : zeroBasedIndex;
+        }
+        #endregion
     }
 }

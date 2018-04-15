@@ -172,7 +172,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Lights {
             light.DirectionW.Normalize();
             light.Range = Range;
             light.SpotlightCosMin = Angle.Cos();
-            light.SpotlightCosMax = light.SpotlightCosMin.Lerp(1f, SpotFocus);
+            light.SpotlightCosMax = SpotFocus.Lerp(light.SpotlightCosMin, 1f);
         }
 
         public override void InvalidateShadows() {

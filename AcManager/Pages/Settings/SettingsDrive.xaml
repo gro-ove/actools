@@ -153,6 +153,11 @@
           <mui:BetterTextBox Text="{Binding Drive.LocalAddress}" Placeholder="?" />
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Drive.AllowDecimalTrackState}" ToolTip="Might cause issues with some apps if used" set:Search.Keywords="quick;drive"
+            mui:NewMarkService.New="True">
+          <Label Content="Allow decimal values for track state" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"
             ToolTip="Very experimental feature which might be removed later">
           <Label>
@@ -165,7 +170,7 @@
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveAllowCustomData}"
             ToolTip="If found, temporary replace packed data by unpacked; for more information, go to About section and look for Custom Car Data post"
-            mui:NewMarkService.New="True" set:Search.Keywords="quick;drive;modding">
+            set:Search.Keywords="quick;drive;modding">
           <Label>
             <DockPanel Style="{x:Null}">
               <TextBlock Text="Allow to use custom car’s data" />

@@ -909,67 +909,73 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// </summary>
         /// <returns>Returns true if image will be loaded later, and false if image is ready.</returns>
         private bool ReloadImage() {
-            if (_currentTask != null) {
-                _currentTask.Cancel();
-                _currentTask = null;
-            }
+            try {
+                if (_currentTask != null) {
+                    _currentTask.Cancel();
+                    _currentTask = null;
+                }
 
-            if (Filename == null) {
-                SetCurrent(Image.Empty);
-                return false;
-            }
+                if (Filename == null) {
+                    SetCurrent(Image.Empty);
+                    return false;
+                }
 
-            if (IsRemoteImage()) {
-                LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(
-                        v => ActionExtension.InvokeInMainThread(() => SetCurrent(v.IsCompleted ? v.Result : Image.Empty)));
-                return true;
-            }
+                if (IsRemoteImage()) {
+                    LoadRemoteBitmapAsync(new Uri(Filename, UriKind.RelativeOrAbsolute), InnerDecodeWidth, InnerDecodeHeight).ContinueWith(
+                            v => ActionExtension.InvokeInMainThread(() => SetCurrent(v.IsCompleted ? v.Result : Image.Empty)));
+                    return true;
+                }
 
-            if (OptionCacheTotalSize > 0 && Filename.Length > 0 && Filename[0] != '/') {
-                var cached = GetCached(Filename);
-                var innerDecodeWidth = InnerDecodeWidth;
-                if (cached.ImageSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
-                    try {
-                        if (OptionEnsureCacheIsFresh) {
-                            var actual = GetActualFilename(Filename);
-                            // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                            // ReSharper disable HeuristicUnreachableCode
-                            if (actual == null) {
-                                RemoveFromCache(Filename);
-                            } else {
-                                var info = new FileInfo(actual);
-                                if (!info.Exists) {
-                                    SetCurrent(Image.Empty, true);
-                                    return false;
-                                }
-
-                                if (info.LastWriteTime > cached.Date) {
+                if (OptionCacheTotalSize > 0 && Filename.Length > 0 && Filename[0] != '/') {
+                    var cached = GetCached(Filename);
+                    var innerDecodeWidth = InnerDecodeWidth;
+                    if (cached.ImageSource != null && (innerDecodeWidth == -1 ? !cached.Downsized : cached.Width >= innerDecodeWidth)) {
+                        try {
+                            if (OptionEnsureCacheIsFresh) {
+                                var actual = GetActualFilename(Filename);
+                                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                                // ReSharper disable HeuristicUnreachableCode
+                                if (actual == null) {
                                     RemoveFromCache(Filename);
                                 } else {
-                                    SetCurrent(cached, true);
-                                    return false;
+                                    var info = new FileInfo(actual);
+                                    if (!info.Exists) {
+                                        SetCurrent(Image.Empty, true);
+                                        return false;
+                                    }
+
+                                    if (info.LastWriteTime > cached.Date) {
+                                        RemoveFromCache(Filename);
+                                    } else {
+                                        SetCurrent(cached, true);
+                                        return false;
+                                    }
                                 }
+                                // ReSharper restore HeuristicUnreachableCode
+                            } else {
+                                SetCurrent(cached, true);
+                                return false;
                             }
-                            // ReSharper restore HeuristicUnreachableCode
-                        } else {
-                            SetCurrent(cached, true);
+                        } catch (Exception) {
+                            // If there will be any problems with FileInfo
+                            SetCurrent(Image.Empty, true);
                             return false;
                         }
-                    } catch (Exception) {
-                        // If there will be any problems with FileInfo
-                        SetCurrent(Image.Empty, true);
-                        return false;
                     }
                 }
-            }
 
-            if (DelayedCreation) {
-                ReloadImageAsync();
-                return true;
-            }
+                if (DelayedCreation) {
+                    ReloadImageAsync();
+                    return true;
+                }
 
-            SetCurrent(LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight));
-            return false;
+                SetCurrent(LoadBitmapSource(Filename, InnerDecodeWidth, InnerDecodeHeight));
+                return false;
+            } catch (Exception e) {
+                Logging.Error($"Failed to load “{Filename}”: {e}");
+                SetCurrent(Image.Empty, true);
+                return false;
+            }
         }
 
         private Image _current;

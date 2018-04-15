@@ -66,9 +66,9 @@
         <uc:ModernPopup mui:PopupHelper.Group="1">
           <DockPanel MaxWidth="240">
             <Button DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding RandomSkinCommand}" Content="Random" />
-            <ListBox ItemsSource="{Binding Car.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-                Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}" VerticalAlignment="Top" BorderThickness="0"
-                ItemTemplate="{StaticResource CarSkinItemTemplate}">
+            <ListBox ItemsSource="{Binding Car.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.CanContentScroll="True" Margin="4" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}" VerticalAlignment="Top"
+                BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}">
               <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                   <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True"
@@ -272,6 +272,10 @@
                   Placeholder="None" />
               <mui:HistoricalTextBox co:PropertiesGrid.Label="Random skins filter:"
                   Text="{Binding Model.RandomSkinsFilter, RelativeSource={RelativeSource TemplatedParent}}" Placeholder="*" SaveKey="__randomSkinsFilters" />
+              <CheckBox IsChecked="{Binding Model.SequentialSkins, RelativeSource={RelativeSource TemplatedParent}}"
+                  ToolTip="App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed">
+                <Label Content="Pick skins sequentially" />
+              </CheckBox>
             </co:PropertiesGrid>
 
             <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 8 0 0" HorizontalAlignment="Right">

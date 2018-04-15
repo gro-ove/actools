@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
-    xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
+    xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached"
+    xmlns:pr="clr-namespace:FirstFloor.ModernUI.Presentation">
   <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
     <Setter Property="OverridesDefaultStyle" Value="True" />
     <Setter Property="IsTabStop" Value="False" />
@@ -34,6 +35,7 @@
 
   <system:Double x:Key="FancyScrollBar.Width">2</system:Double>
   <system:Double x:Key="FancyScrollBar.ScaleMultipler">5</system:Double>
+  <system:Double x:Key="FancyScrollBar.HalfScaleMultipler">5</system:Double>
 
   <Style x:Key="FancyScrollBarVertical" TargetType="{x:Type ScrollBar}">
     <Setter Property="Stylus.IsPressAndHoldEnabled" Value="False" />
@@ -57,7 +59,7 @@
                 <Thumb Style="{StaticResource ScrollBarThumbStyle}" Width="{StaticResource FancyScrollBar.Width}" x:Name="PART_Thumb"
                     RenderTransformOrigin="1 0">
                   <Thumb.RenderTransform>
-                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                    <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="1" />
                   </Thumb.RenderTransform>
                 </Thumb>
               </Track.Thumb>
@@ -82,7 +84,7 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)"
+                    <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleX"
                         To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.04" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
@@ -90,12 +92,19 @@
               <Trigger.ExitActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleX)" To="1"
+                    <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleX" To="1"
                         BeginTime="0:0:0.46" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.ExitActions>
             </Trigger>
+            <DataTrigger Binding="{Binding PopupScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="False">
+              <Setter TargetName="PART_Thumb" Property="RenderTransform">
+                <Setter.Value>
+                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="{StaticResource FancyScrollBar.HalfScaleMultipler}" ScaleY="1" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
@@ -124,7 +133,7 @@
                 <Thumb x:Name="PART_Thumb" Style="{StaticResource ScrollBarThumbStyle}" Height="{StaticResource FancyScrollBar.Width}"
                     RenderTransformOrigin="0 1">
                   <Thumb.RenderTransform>
-                    <ScaleTransform ScaleX="1" ScaleY="1" />
+                    <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="1" />
                   </Thumb.RenderTransform>
                 </Thumb>
               </Track.Thumb>
@@ -149,7 +158,7 @@
               <Trigger.EnterActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)"
+                    <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleY"
                         To="{StaticResource FancyScrollBar.ScaleMultipler}" BeginTime="0:0:0.12" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
@@ -157,12 +166,19 @@
               <Trigger.ExitActions>
                 <BeginStoryboard>
                   <Storyboard>
-                    <DoubleAnimation Storyboard.TargetName="PART_Thumb" Storyboard.TargetProperty="RenderTransform.(ScaleTransform.ScaleY)" To="1"
+                    <DoubleAnimation Storyboard.TargetName="PART_ThumbScale" Storyboard.TargetProperty="ScaleY" To="1"
                         BeginTime="0:0:0.86" Duration="0:0:0.08" />
                   </Storyboard>
                 </BeginStoryboard>
               </Trigger.ExitActions>
             </Trigger>
+            <DataTrigger Binding="{Binding PopupScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="False">
+              <Setter TargetName="PART_Thumb" Property="RenderTransform">
+                <Setter.Value>
+                  <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="{StaticResource FancyScrollBar.HalfScaleMultipler}" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>

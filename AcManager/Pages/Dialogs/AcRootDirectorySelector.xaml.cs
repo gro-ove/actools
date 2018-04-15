@@ -155,7 +155,7 @@ namespace AcManager.Pages.Dialogs {
                 SetSteamId(InternalUtils.GetPackedSteamId(packed, AdditionalSalt));
             }
 
-            public async void SetSteamId(string steamId) {
+            private async void SetSteamId(string steamId) {
                 if (steamId == null) return;
 
                 _cancellationTokenSource?.Cancel();

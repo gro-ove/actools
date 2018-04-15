@@ -76,13 +76,13 @@
                         <Path Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="Red" StrokeThickness="0" Stretch="Uniform"
                             Data="F1 M 38,19C 48.4934,19 57,27.5066 57,38C 57,48.4934 48.4934,57 38,57C 27.5066,57 19,48.4934 19,38C 19,27.5066 27.5066,19 38,19 Z M 34.0417,25.7292L 36.0208,41.9584L 39.9792,41.9583L 41.9583,25.7292L 34.0417,25.7292 Z M 38,44.3333C 36.2511,44.3333 34.8333,45.7511 34.8333,47.5C 34.8333,49.2489 36.2511,50.6667 38,50.6667C 39.7489,50.6667 41.1667,49.2489 41.1667,47.5C 41.1667,45.7511 39.7489,44.3333 38,44.3333 Z" />
                       </Button>
-                      <Button Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Minimize}"
+                      <Button x:Name="PART_MinimizeButton" Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}" ToolTip="{x:Static mui:UiStrings.Minimize}"
                           Style="{StaticResource SystemButton}" RenderOptions.EdgeMode="Aliased">
                         <Path Data="M0,5 L9,5 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
                             Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                             StrokeThickness="{TemplateBinding IconPathThickness}" />
                       </Button>
-                      <c:Cell
+                      <c:Cell x:Name="PART_MaximizeButton"
                           Visibility="{Binding PreferFullscreenMode, Source={x:Static presentation:AppearanceManager.Instance},
                               Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                         <Button x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}"
@@ -208,6 +208,13 @@
             <Trigger Property="WindowState" Value="Normal">
               <Setter TargetName="Maximize" Property="Visibility" Value="Visible" />
               <Setter TargetName="Restore" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="ResizeMode" Value="CanMinimize">
+              <Setter TargetName="PART_MaximizeButton" Property="Visibility" Value="Collapsed" />
+            </Trigger>
+            <Trigger Property="ResizeMode" Value="NoResize">
+              <Setter TargetName="PART_MinimizeButton" Property="Visibility" Value="Collapsed" />
+              <Setter TargetName="PART_MaximizeButton" Property="Visibility" Value="Collapsed" />
             </Trigger>
             <MultiTrigger>
               <MultiTrigger.Conditions>
