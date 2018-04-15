@@ -90,12 +90,16 @@ namespace AcManager {
             AppArguments.AddFromFile(Path.Combine(ApplicationDataDirectory, "Arguments.txt"));
             RenameContentToData();
 
+#if COSTURA
+            CosturaUtility.Initialize();
+#else
             var logFilename = AppArguments.GetBool(AppFlag.LogPacked) ? GetLogName("Packed Log") : null;
             AppArguments.Set(AppFlag.DirectAssembliesLoading, ref PackedHelper.OptionDirectLoading);
 
             var packedHelper = new PackedHelper("AcTools_ContentManager", "References", logFilename);
             packedHelper.PrepareUnmanaged("LevelDB");
             AppDomain.CurrentDomain.AssemblyResolve += packedHelper.Handler;
+#endif
 
             MainInner(a);
         }

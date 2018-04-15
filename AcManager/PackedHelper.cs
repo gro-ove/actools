@@ -1,4 +1,6 @@
-﻿// #define LOCALIZABLE
+﻿#if !COSTURA
+
+// #define LOCALIZABLE
 // #define UNSAFE_XOR
 
 using System;
@@ -475,3 +477,5 @@ namespace AcManager {
         private static extern bool SetDllDirectory(string lpPathName);
     }
 }
+
+#endif
