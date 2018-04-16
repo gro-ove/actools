@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class UiStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace FirstFloor.ModernUI {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("FirstFloor.ModernUI.UiStrings", typeof(UiStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1537,7 +1537,7 @@ namespace FirstFloor.ModernUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update to version [b]{0}[/b] is ready.[br][br]Click to restart Content Manager and apply it, or hold [b]Alt[/b] and click to simply close the app and install the update later.[br][br]There is also a context menu here, by the way..
+        ///   Looks up a localized string similar to Update to version [b]{0}[/b].
         /// </summary>
         public static string UpdateAvailable {
             get {

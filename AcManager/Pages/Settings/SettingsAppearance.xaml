@@ -224,6 +224,10 @@
           <Label Content="Popup scrollbars" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowMainWindowBackButton}" mui:NewMarkService.New="True">
+          <Label Content="Show back button in the main window" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding AppearanceManager.ForceMenuAtTopInFullscreenMode}">
           <Label Content="Stick main menu at the top in fullscreen mode" />
         </CheckBox>

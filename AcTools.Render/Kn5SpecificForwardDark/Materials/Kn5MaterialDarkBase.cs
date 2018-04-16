@@ -92,11 +92,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             }
         }
 
-        private SpecialRenderMode _mode = SpecialRenderMode.SimpleTransparent | SpecialRenderMode.Simple | SpecialRenderMode.Outline |
-                SpecialRenderMode.Reflection | SpecialRenderMode.Shadow | SpecialRenderMode.GBuffer;
+        private const SpecialRenderMode Mode = SpecialRenderMode.SimpleTransparent | SpecialRenderMode.Simple
+                | SpecialRenderMode.Outline | SpecialRenderMode.Reflection | SpecialRenderMode.Shadow | SpecialRenderMode.GBuffer;
 
         public virtual bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if ((mode & _mode) == 0) return false;
+            if ((mode & Mode) == 0) return false;
             PrepareStates(contextHolder, mode);
             return true;
         }
@@ -176,9 +176,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                         var v = materialParams.WireframeColor.ToVector3() * materialParams.WireframeBrightness;
                         Effect.FxMaterial.Set(CreateWireframeMaterial());
                         Effect.FxReflectiveMaterial.Set(new EffectDarkMaterial.ReflectiveMaterial { FresnelC = v.X, FresnelExp = v.Y, FresnelMaxLevel = v.Z });
-                        (IsBlending ? Effect.TechDebug : Effect.TechDebug_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                        GetColoredWireframeTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
                     } else {
-                        (IsBlending ? Effect.TechStandard : Effect.TechStandard_NoAlpha).DrawAllPasses(contextHolder.DeviceContext, indices);
+                        GetFilledWireframeTechnique().DrawAllPasses(contextHolder.DeviceContext, indices);
                     }
                     contextHolder.DeviceContext.OutputMerger.DepthStencilState = depth;
                     contextHolder.DeviceContext.Rasterizer.State = null;
@@ -186,6 +186,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        protected virtual EffectReadyTechnique GetFilledWireframeTechnique() {
+            return IsBlending ? Effect.TechStandard : Effect.TechStandard_NoAlpha;
+        }
+
+        protected virtual EffectReadyTechnique GetColoredWireframeTechnique() {
+            return IsBlending ? Effect.TechDebug : Effect.TechDebug_NoAlpha;
         }
 
         public virtual void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {

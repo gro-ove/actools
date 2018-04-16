@@ -681,6 +681,13 @@ namespace AcManager.Controls.Presentation {
             get => _semiTransparentAttachedTools.Value;
             set => Apply(value, _semiTransparentAttachedTools);
         }
+
+        private readonly StoredValue<bool> _showMainWindowBackButton = Stored.Get("AppAppearanceManager.ShowMainWindowBackButton", true);
+
+        public bool ShowMainWindowBackButton {
+            get => _showMainWindowBackButton.Value;
+            set => Apply(value, _showMainWindowBackButton);
+        }
         #endregion
     }
 }

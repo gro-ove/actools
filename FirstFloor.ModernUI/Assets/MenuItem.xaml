@@ -48,14 +48,17 @@
       </Trigger>
       <Trigger Property="IsHighlighted" Value="True">
         <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Accent}" />
-        <Setter TargetName="Fg" Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="Fg" Property="Control.Foreground" Value="{DynamicResource ItemTextDisabled}" />
         <Setter TargetName="Glyph" Property="Fill" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+
   <ControlTemplate x:Key="{ComponentResourceKey TypeInTargetAssembly={x:Type MenuItem}, ResourceId=SubmenuHeaderTemplateKey}" TargetType="{x:Type MenuItem}">
     <c:Cell SnapsToDevicePixels="True">
       <Rectangle x:Name="Bg" Fill="{TemplateBinding MenuItem.Background}" />
@@ -102,7 +105,8 @@
       </Trigger>
       <Trigger Property="IsHighlighted" Value="True">
         <Setter TargetName="Bg" Property="Fill" Value="{DynamicResource Accent}" />
-        <Setter TargetName="Fg" Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextSelected}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
       </Trigger>
       <Trigger Property="Icon" Value="{x:Null}">
         <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
@@ -112,12 +116,14 @@
         <Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
       </Trigger>
       <Trigger Property="IsEnabled" Value="False">
-        <Setter TargetName="Fg" Property="Control.Foreground" Value="{DynamicResource ItemTextDisabled}" />
         <Setter TargetName="Glyph" Property="Fill" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="Control.Foreground" Value="{DynamicResource ItemTextDisabled}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextDisabled}" />
         <Setter TargetName="RightArrow" Property="Fill" Value="{DynamicResource ItemTextDisabled}" />
       </Trigger>
     </ControlTemplate.Triggers>
   </ControlTemplate>
+
   <Style x:Key="{x:Type MenuItem}" TargetType="{x:Type MenuItem}">
     <!--<Setter Property="HorizontalContentAlignment"
         Value="{Binding Path=HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}" />

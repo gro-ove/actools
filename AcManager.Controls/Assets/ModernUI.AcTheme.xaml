@@ -3,7 +3,7 @@
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ModernUI.Dark.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
-  <Color x:Key="ErrorColor">#FF8C00</Color>
+  <Color x:Key="ErrorColor">#FF5C00</Color>
   <Color x:Key="GoColor">GreenYellow</Color>
 
   <!--<Color x:Key="WindowBackgroundColor">#262626</Color>-->

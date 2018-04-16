@@ -138,6 +138,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             return IsBlending ? Effect.TechSkinnedMaps : Effect.TechSkinnedMaps_NoAlpha;
         }
 
+        protected override EffectReadyTechnique GetFilledWireframeTechnique() {
+            return IsBlending ? Effect.TechSkinnedStandard : Effect.TechSkinnedStandard_NoAlpha;
+        }
+
+        protected override EffectReadyTechnique GetColoredWireframeTechnique() {
+            return IsBlending ? Effect.TechSkinnedDebug : Effect.TechSkinnedDebug_NoAlpha;
+        }
+
         void ISkinnedMaterial.SetBones(Matrix[] bones) {
             SetBones(bones);
         }

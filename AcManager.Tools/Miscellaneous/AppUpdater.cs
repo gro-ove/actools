@@ -1,4 +1,5 @@
 ﻿// #define FORCE_UPDATE
+// #define SKIP_ACTUAL_UPDATE
 
 using System;
 using System.Collections.Generic;
@@ -135,14 +136,17 @@ namespace AcManager.Tools.Miscellaneous {
             public string Version;
         }
 
-        private string _updateIsReady;
+        public bool IsUpdateReady => _readyToUpdateVersion != null;
 
-        public string UpdateIsReady {
-            get => _updateIsReady;
+        private string _readyToUpdateVersion;
+
+        public string ReadyToUpdateVersion {
+            get => _readyToUpdateVersion;
             set {
-                if (Equals(value, _updateIsReady)) return;
-                _updateIsReady = value;
+                if (Equals(value, _readyToUpdateVersion)) return;
+                _readyToUpdateVersion = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsUpdateReady));
                 _finishUpdateCommand?.RaiseCanExecuteChanged();
                 _ignoreUpdateCommand?.RaiseCanExecuteChanged();
                 _disableAutoUpdatesCommand?.RaiseCanExecuteChanged();
@@ -162,7 +166,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             if (_isPreparing) return false;
             _isPreparing = true;
-            UpdateIsReady = null;
+            ReadyToUpdateVersion = null;
 
             try {
                 var data = await CmApiProvider.GetDataAsync($"app/get/{Branch}");
@@ -184,8 +188,10 @@ namespace AcManager.Tools.Miscellaneous {
                             File.Delete(UpdateLocation);
                         }
 
+#if !SKIP_ACTUAL_UPDATE
                         archive.GetEntry(@"Content Manager.exe").ExtractToFile(UpdateLocation);
                         Logging.Write($"New version {preparedVersion} was extracted to “{UpdateLocation}”");
+#endif
                     }
                 });
 
@@ -193,7 +199,7 @@ namespace AcManager.Tools.Miscellaneous {
                     return false;
                 }
 
-                UpdateIsReady = preparedVersion;
+                ReadyToUpdateVersion = preparedVersion;
                 return true;
             } catch (UnauthorizedAccessException) {
                 NonfatalError.Notify(ToolsStrings.AppUpdater_AccessIsDenied,
@@ -222,23 +228,23 @@ namespace AcManager.Tools.Miscellaneous {
         }));
 
         private void RemovePreparedAutoUpdate() {
-            UpdateIsReady = null;
+            ReadyToUpdateVersion = null;
             CleanUpUpdateExeAsync().Forget();
         }
 
         private DelegateCommand _ignoreUpdateCommand;
 
         public DelegateCommand IgnoreUpdateCommand => _ignoreUpdateCommand ?? (_ignoreUpdateCommand = new DelegateCommand(() => {
-            CacheStorage.Set($".AppUpdater.IgnoreUpdate:{UpdateIsReady}", true);
+            CacheStorage.Set($".AppUpdater.IgnoreUpdate:{ReadyToUpdateVersion}", true);
             RemovePreparedAutoUpdate();
-        }, () => UpdateIsReady != null));
+        }, () => ReadyToUpdateVersion != null));
 
         private DelegateCommand _disableAutoUpdatesCommand;
 
         public DelegateCommand DisableAutoUpdatesCommand => _disableAutoUpdatesCommand ?? (_disableAutoUpdatesCommand = new DelegateCommand(() => {
             SettingsHolder.Common.UpdatePeriod = SettingsHolder.CommonSettings.PeriodDisabled;
             RemovePreparedAutoUpdate();
-        }, () => UpdateIsReady != null));
+        }, () => ReadyToUpdateVersion != null));
 
         private DelegateCommand<string> _finishUpdateCommand;
 
@@ -255,7 +261,7 @@ namespace AcManager.Tools.Miscellaneous {
                         ModernDialog.ShowMessage(string.Format(ToolsStrings.AppUpdater_CannotUpdate_Message, e.Message.ToSentenceMember()),
                                 ToolsStrings.AppUpdater_UpdateFailed, MessageBoxButton.OK);
                     }
-                }, s => UpdateIsReady != null));
+                }, s => ReadyToUpdateVersion != null));
 
         private const string ExecutableExtension = ".exe";
         private const string UpdatePostfix = ".update" + ExecutableExtension;

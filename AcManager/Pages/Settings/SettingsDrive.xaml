@@ -293,7 +293,7 @@
             Margin="0 12 0 0" VerticalContentAlignment="Top" ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”.">
           <mui:SpacingStackPanel Spacing="2">
             <Label>
-              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
+              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" />
             </Label>
             <mui:BbCodeBlock Style="{StaticResource Small}" Text="Supported AC versions:" />
             <mui:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value, Source={x:Static t:AcShadowsPatcher.SupportedVersions}}" />

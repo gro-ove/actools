@@ -283,6 +283,11 @@ namespace AcManager.Controls.Dialogs {
             return IsSelected ? Model.CurrentPosition : (int?)null;
         }
 
+        public new void ShowDialog() {
+            if ((DateTime.Now - LastActiveWindow?.LastActivated)?.TotalSeconds < 0.3) return;
+            base.ShowDialog();
+        }
+
         private void OnApplyButtonClick(object sender, RoutedEventArgs routedEventArgs) {
             IsSelected = true;
             Close();

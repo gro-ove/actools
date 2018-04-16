@@ -670,7 +670,8 @@ namespace AcManager.Controls {
             return result;
         }
 
-        private static bool IsComplex(string name) {
+        private static bool IsComplex([CanBeNull] string name) {
+            if (name == null) return false;
             for (var i = name.Length - 1; i >= 0; i--) {
                 if (name[i] >= 0x203c) return true;
             }

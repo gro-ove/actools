@@ -689,7 +689,7 @@ namespace AcManager {
 
         private void OnAppUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_NewVersion,
-                    string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.UpdateIsReady),
+                    string.Format(AppStrings.App_NewVersion_Details, AppUpdater.Instance.ReadyToUpdateVersion),
                     () => AppUpdater.Instance.FinishUpdateCommand.Execute(null));
         }
 

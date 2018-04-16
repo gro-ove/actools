@@ -31,6 +31,22 @@ technique10 Standard_NoAlpha {
 	}
 }
 
+technique10 SkinnedStandard {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Standard(true)));
+	}
+}
+
+technique10 SkinnedStandard_NoAlpha {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_skinned()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_Standard(false)));
+	}
+}
+
 //// Sky
 
 float4 ps_Sky(PS_IN pin) : SV_Target {

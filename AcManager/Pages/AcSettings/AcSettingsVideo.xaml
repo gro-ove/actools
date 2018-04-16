@@ -161,7 +161,7 @@
           <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}" mui:NewMarkService.New="True"
               set:Search.Keywords="drive events;video;graphics;shadows"
               ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section.">
-            <Label Content="If shadows are disabled, patch AC to fully disable them (global)" Foreground="{DynamicResource Error}" />
+            <Label Content="If shadows are disabled, patch AC to fully disable them (global)" />
           </CheckBox>
 
           <DockPanel>

@@ -236,6 +236,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(BackButtonVisibilityProperty, value);
         }
 
+        public static readonly DependencyProperty ShowErrorsButtonProperty = DependencyProperty.Register(nameof(ShowErrorsButton), typeof(bool),
+                typeof(ModernWindow), new PropertyMetadata(true));
+
+        public bool ShowErrorsButton {
+            get => (bool)GetValue(ShowErrorsButtonProperty);
+            set => SetValue(ShowErrorsButtonProperty, value);
+        }
+
         public static readonly DependencyProperty CloseButtonProperty = DependencyProperty.Register(nameof(CloseButton), typeof(object),
                 typeof(ModernWindow));
 

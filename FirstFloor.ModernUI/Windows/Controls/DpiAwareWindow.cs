@@ -46,10 +46,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         [CanBeNull]
         public static DpiAwareWindow LastActiveWindow { get; private set; }
 
+        public DateTime LastActivated { get; private set; }
+
         protected sealed override void OnActivated(EventArgs e) {
             Logging.Here();
             base.OnActivated(e);
             LastActiveWindow = this;
+            LastActivated = DateTime.Now;
             SaveDefaultScreen();
             OnActivatedOverride();
         }

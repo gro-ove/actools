@@ -8,7 +8,8 @@
     Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance windows:MainWindow+ViewModel}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window">
+    LocationAndSizeKey="MainWindow_LS" x:Name="Window" ShowErrorsButton="False"
+    BackButtonVisibility="{Binding ShowMainWindowBackButton, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -98,33 +99,39 @@
       </Style>
 
       <DataTemplate x:Key="MenuButtonContent">
-        <Canvas x:Name="PART_Canvas" Width="9" Height="9" ClipToBounds="True" mui:StoryboardHelper.ContinuousFiring="{Binding}"
-            mui:StoryboardHelper.ContinuousFiringInterval="0:0:1">
-          <Canvas Width="9" Height="9">
-            <FrameworkElement.RenderTransform>
-              <TranslateTransform x:Name="ArrowTransform" Y="-8" />
-            </FrameworkElement.RenderTransform>
-            <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+        <mui:Cell>
+          <Canvas x:Name="MainCanvas" Width="9" Height="9" ClipToBounds="True" mui:StoryboardHelper.ContinuousFiring="{Binding}"
+              mui:StoryboardHelper.ContinuousFiringInterval="0:0:1">
+            <Canvas Width="9" Height="9">
+              <FrameworkElement.RenderTransform>
+                <TranslateTransform x:Name="ArrowTransform" Y="-8" />
+              </FrameworkElement.RenderTransform>
+              <Line X1="4.51" X2="4.51" Y1="0" Y2="8.5" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  RenderOptions.EdgeMode="Aliased"
+                  StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
+              <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                  StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
+            </Canvas>
+            <Line X1="-1" X2="10" Y1="0.75" Y2="0.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}">
+              <Line.RenderTransform>
+                <TranslateTransform x:Name="TopLineTransform" />
+              </Line.RenderTransform>
+            </Line>
+            <Line X1="-1" X2="10" Y1="4.75" Y2="4.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}">
+              <Line.RenderTransform>
+                <TranslateTransform x:Name="MiddleLineTransform" />
+              </Line.RenderTransform>
+            </Line>
+            <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                 RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
-            <Path Data="M-0.01,3.99 L4.51,7.49 M4.49,7.49 L9.01,3.99" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
           </Canvas>
-          <Line X1="-1" X2="10" Y1="0.75" Y2="0.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}">
-            <Line.RenderTransform>
-              <TranslateTransform x:Name="TopLineTransform" />
-            </Line.RenderTransform>
-          </Line>
-          <Line X1="-1" X2="10" Y1="4.75" Y2="4.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}">
-            <Line.RenderTransform>
-              <TranslateTransform x:Name="MiddleLineTransform" />
-            </Line.RenderTransform>
-          </Line>
-          <Line X1="-1" X2="10" Y1="8.75" Y2="8.75" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-              RenderOptions.EdgeMode="Aliased" StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
-        </Canvas>
+          <Ellipse x:Name="UpdateMark" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 -2 -4 0" Width="6" Height="6"
+              Fill="{DynamicResource Accent}" />
+        </mui:Cell>
         <DataTemplate.Resources>
+          <PathGeometry x:Key="MarkClip">F1 M 0,0L 5.10002,0C 5.03443,0.323109 5,0.657536 5,1C 5,3.41896 6.71776,5.43672 9,5.89999L 9,9L 0,9L 0,0 Z</PathGeometry>
           <Storyboard x:Key="ArrowAnimation" TargetProperty="Y" TargetName="ArrowTransform" Completed="OnCompleted" Duration="0:0:1.000">
             <DoubleAnimationUsingKeyFrames>
               <DiscreteDoubleKeyFrame KeyTime="0:0:0.000" Value="-8" />
@@ -147,13 +154,22 @@
           </Storyboard>
         </DataTemplate.Resources>
         <DataTemplate.Triggers>
-          <DataTrigger Binding="{Binding}" Value="False" />
-          <Trigger SourceName="PART_Canvas" Property="mui:StoryboardHelper.ContinuousFired" Value="True">
+          <DataTrigger Binding="{Binding HasUnseen, Source={x:Static mui:NonfatalError.Instance}}" Value="True">
+            <Setter TargetName="UpdateMark" Property="Visibility" Value="Visible" />
+            <Setter TargetName="UpdateMark" Property="Fill" Value="{DynamicResource Error}" />
+            <Setter TargetName="MainCanvas" Property="Clip" Value="{StaticResource MarkClip}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding IsUpdateReady, Source={x:Static t:AppUpdater.Instance}}" Value="True">
+            <Setter TargetName="UpdateMark" Property="Visibility" Value="Visible" />
+            <Setter TargetName="UpdateMark" Property="Fill" Value="{DynamicResource Accent}" />
+            <Setter TargetName="MainCanvas" Property="Clip" Value="{StaticResource MarkClip}" />
+          </DataTrigger>
+          <Trigger SourceName="MainCanvas" Property="mui:StoryboardHelper.ContinuousFired" Value="True">
             <Trigger.EnterActions>
               <BeginStoryboard Storyboard="{StaticResource ArrowAnimation}" />
             </Trigger.EnterActions>
           </Trigger>
-          <Trigger SourceName="PART_Canvas" Property="mui:StoryboardHelper.ContinuousFiringActive" Value="True">
+          <Trigger SourceName="MainCanvas" Property="mui:StoryboardHelper.ContinuousFiringActive" Value="True">
             <Trigger.EnterActions>
               <BeginStoryboard Storyboard="{StaticResource MoveLinesDown}" />
             </Trigger.EnterActions>
@@ -190,41 +206,6 @@
       </DockPanel>
     </ResourceDictionary>
   </mui:ModernWindow.Resources>
-
-  <mui:ModernWindow.CloseButton>
-    <mui:ReferenceSwitch Value="{Binding AppUpdater.UpdateIsReady, Mode=OneWay}" Null="{StaticResource WindowCloseButtonDefault}">
-      <mui:ReferenceSwitch.NonNull>
-        <Button Command="{Binding AppUpdater.FinishUpdateCommand}" Style="{StaticResource SystemButtonGo.ResizeTweaked}"
-            Tag="{StaticResource SystemButtonActive}"
-            Visibility="{Binding AppUpdater.UpdateIsReady, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-          <Button.ToolTip>
-            <ToolTip>
-              <mui:BbCodeBlock Text="{Binding AppUpdater.UpdateIsReady, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" MaxWidth="480"
-                  TextWrapping="Wrap" />
-            </ToolTip>
-          </Button.ToolTip>
-          <Button.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="View changelog" Command="{Binding ViewChangelogCommand}" />
-              <MenuItem Header="Update manually" Command="{Binding AppUpdater.UpdateManuallyCommand}" />
-              <Separator />
-              <MenuItem Header="Ignore this update" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
-              <MenuItem Header="Disable auto-updates" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
-              <Separator />
-              <MenuItem Header="Apply update and restart" Command="{Binding AppUpdater.FinishUpdateCommand}" CommandParameter="force" />
-              <MenuItem Header="Close and apply update next time" Command="{Binding AppUpdater.FinishUpdateCommand}" CommandParameter="close" />
-            </ContextMenu>
-          </Button.ContextMenu>
-          <Canvas Width="10" Height="6" ClipToBounds="True">
-            <Line X1="-0.01" X2="15.01" Y1="-5.71" Y2="12.01" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
-            <Line X1="10.01" X2="-5.01" Y1="-5.71" Y2="12.01" Stroke="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                StrokeThickness="{Binding IconPathThickness, RelativeSource={RelativeSource AncestorType=mui:DpiAwareWindow}}" />
-          </Canvas>
-        </Button>
-      </mui:ReferenceSwitch.NonNull>
-    </mui:ReferenceSwitch>
-  </mui:ModernWindow.CloseButton>
 
   <mui:ModernWindow.TitleButtons>
 
@@ -270,83 +251,113 @@
       <c:ModernPopup x:Name="DownloadsPopup" PlacementTarget="{Binding ElementName=DownloadsButton}" Placement="Bottom"
           IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-        <DockPanel Width="360">
-          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Drive}" Click="OnNavigateItemClick"
-              CommandParameter="/Pages/Drive/QuickDrive.xaml" InputGestureText="F1">
+        <StackPanel Width="360">
+
+          <StackPanel Visibility="{Binding AppUpdater.ReadyToUpdateVersion, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <MenuItem Command="{Binding AppUpdater.FinishUpdateCommand}">
+              <MenuItem.Resources>
+                <!-- ReSharper disable once Xaml.RedundantResource -->
+                <SolidColorBrush x:Key="ItemText" Color="{DynamicResource AccentColor}" />
+              </MenuItem.Resources>
+              <MenuItem.Icon>
+                <Path Width="12" Height="12" Margin="4 2 -2 -2" Stretch="Uniform" Data="{StaticResource UpdateIconData}" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              </MenuItem.Icon>
+              <MenuItem.Header>
+                <mui:BbCodeBlock Text="{Binding AppUpdater.ReadyToUpdateVersion, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" />
+              </MenuItem.Header>
+            </MenuItem>
+            <MenuItem Header="View changelog" Command="{Binding ViewChangelogCommand}" />
+            <MenuItem Header="Skip this update" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
+            <MenuItem Header="Disable auto-updates" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
+            <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          </StackPanel>
+
+          <StackPanel Visibility="{Binding HasUnseen, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <MenuItem Command="{Binding ViewErrorsCommand, Source={x:Static mui:NonfatalError.Instance}}"
+                Header="{Binding Errors.Count, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource PluralizingConverter}, ConverterParameter='Barely handled: {0} {error}'}">
+              <MenuItem.Resources>
+                <!-- ReSharper disable once Xaml.RedundantResource -->
+                <SolidColorBrush x:Key="ItemText" Color="{DynamicResource ErrorColor}" />
+              </MenuItem.Resources>
+              <MenuItem.Icon>
+                <Path Width="12" Height="12" Margin="4 2 -2 -2" Stretch="Uniform" Data="{StaticResource ErrorIconData}" HorizontalAlignment="Center"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+              </MenuItem.Icon>
+            </MenuItem>
+            <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          </StackPanel>
+
+          <MenuItem Header="{x:Static g:AppStrings.Main_Drive}" Click="OnNavigateItemClick" CommandParameter="/Pages/Drive/QuickDrive.xaml"
+              InputGestureText="F1">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarsIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="Lap times" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/LapTimes_Recent.xaml"
-              InputGestureText="F2">
+          <MenuItem Header="Lap times" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/LapTimes_Recent.xaml" InputGestureText="F2">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource TimerIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="Results" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/PlayerStats.xaml"
-              InputGestureText="F3">
+          <MenuItem Header="Results" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/PlayerStats.xaml" InputGestureText="F3">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ListCheckIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Media}" Click="OnNavigateItemClick"
-              CommandParameter="/Pages/Lists/ReplaysListPage.xaml" InputGestureText="F4">
+          <MenuItem Header="{x:Static g:AppStrings.Main_Media}" Click="OnNavigateItemClick" CommandParameter="/Pages/Lists/ReplaysListPage.xaml"
+              InputGestureText="F4">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource VideoIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Content}" Click="OnNavigateItemClick"
-              CommandParameter="/Pages/Lists/CarsListPage.xaml" InputGestureText="Ctrl+F1">
+          <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          <MenuItem Header="{x:Static g:AppStrings.Main_Content}" Click="OnNavigateItemClick" CommandParameter="/Pages/Lists/CarsListPage.xaml"
+              InputGestureText="Ctrl+F1">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ToolsIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="{x:Static g:AppStrings.Main_Server}" Click="OnNavigateItemClick"
-              CommandParameter="/Pages/Lists/ServerPresetsListPage.xaml" InputGestureText="Ctrl+F2" mui:LimitedService.Limited="True">
+          <MenuItem Header="{x:Static g:AppStrings.Main_Server}" Click="OnNavigateItemClick" CommandParameter="/Pages/Lists/ServerPresetsListPage.xaml"
+              InputGestureText="Ctrl+F2" mui:LimitedService.Limited="True">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ServerIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-          <MenuItem DockPanel.Dock="Top" Header="Downloads" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/DownloadsList.xaml"
-              InputGestureText="Ctrl+J"
+          <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          <MenuItem Header="Downloads" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/DownloadsList.xaml" InputGestureText="Ctrl+J"
               Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"
+          <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"
               Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-          <MenuItem DockPanel.Dock="Top" Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml"
-              InputGestureText="Alt+F1">
+          <MenuItem Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml" InputGestureText="Alt+F1">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource GearIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="AC settings" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml"
-              InputGestureText="Alt+F2">
+          <MenuItem Header="AC settings" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml" InputGestureText="Alt+F2">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource AcIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="Apps settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml"
-              InputGestureText="Alt+F3">
+          <MenuItem Header="Apps settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml" InputGestureText="Alt+F3">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarSetupIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem DockPanel.Dock="Top" Header="About Content Manager" Click="OnNavigateAboutItemClick">
+          <MenuItem Header="About Content Manager" Click="OnNavigateAboutItemClick">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CmIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
@@ -355,7 +366,7 @@
             </MenuItem.Icon>
           </MenuItem>
           <Border Loaded="OnDownloadListParentLoaded" Tag="DownloadsListParent" />
-        </DockPanel>
+        </StackPanel>
       </c:ModernPopup>
     </mui:Cell>
 

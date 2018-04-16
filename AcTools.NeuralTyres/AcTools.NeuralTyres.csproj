@@ -52,7 +52,7 @@
       <Private>False</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Newtonsoft.Json, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />

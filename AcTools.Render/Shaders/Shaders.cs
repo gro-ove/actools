@@ -228,7 +228,7 @@ namespace AcTools.Render.Shaders {
         public ShaderSignature InputSignaturePT, InputSignaturePNTG, InputSignaturePNTGW4B;
         public InputLayout LayoutPT, LayoutPNTG, LayoutPNTGW4B;
 
-		public EffectReadyTechnique TechStandard, TechStandard_NoAlpha, TechSky, TechAlpha, TechAlpha_NoAlpha, TechReflective, TechReflective_NoAlpha, TechNm, TechNm_NoAlpha, TechNmUvMult, TechNmUvMult_NoAlpha, TechAtNm, TechAtNm_NoAlpha, TechMaps, TechMaps_NoAlpha, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechSkinnedMaps_NoAlpha, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechWindscreen_NoAlpha, TechCollider, TechDebug, TechSkinnedDebug, TechDebug_NoAlpha, TechSkinnedDebug_NoAlpha, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatTextureMirrorNoGround, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
+		public EffectReadyTechnique TechStandard, TechStandard_NoAlpha, TechSkinnedStandard, TechSkinnedStandard_NoAlpha, TechSky, TechAlpha, TechAlpha_NoAlpha, TechReflective, TechReflective_NoAlpha, TechNm, TechNm_NoAlpha, TechNmUvMult, TechNmUvMult_NoAlpha, TechAtNm, TechAtNm_NoAlpha, TechMaps, TechMaps_NoAlpha, TechMaps_TesselatePhong, TechMaps_TesselatePn, TechSkinnedMaps, TechSkinnedMaps_NoAlpha, TechTyres, TechGl, TechSkinnedGl, TechWindscreen, TechWindscreen_NoAlpha, TechCollider, TechDebug, TechSkinnedDebug, TechDebug_NoAlpha, TechSkinnedDebug_NoAlpha, TechDepthOnly, TechSkinnedDepthOnly, TechAmbientShadow, TechMirror, TechFlatMirror, TechTransparentGround, TechFlatTextureMirror, TechFlatTextureMirrorNoGround, TechFlatBackgroundGround, TechFlatAmbientGround, TechGPass_Standard, TechGPass_Alpha, TechGPass_Reflective, TechGPass_Nm, TechGPass_NmUvMult, TechGPass_AtNm, TechGPass_Maps, TechGPass_SkinnedMaps, TechGPass_Tyres, TechGPass_Gl, TechGPass_SkinnedGl, TechGPass_FlatMirror, TechGPass_FlatMirror_SslrFix, TechGPass_Debug, TechGPass_SkinnedDebug;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorld, FxWorldInvTranspose, FxWorldViewProj, FxViewProj;
@@ -297,6 +297,8 @@ namespace AcTools.Render.Shaders {
 
 			TechStandard = new EffectReadyTechnique(E.GetTechniqueByName("Standard"));
 			TechStandard_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Standard_NoAlpha"));
+			TechSkinnedStandard = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedStandard"));
+			TechSkinnedStandard_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("SkinnedStandard_NoAlpha"));
 			TechSky = new EffectReadyTechnique(E.GetTechniqueByName("Sky"));
 			TechAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha"));
 			TechAlpha_NoAlpha = new EffectReadyTechnique(E.GetTechniqueByName("Alpha_NoAlpha"));
@@ -360,10 +362,10 @@ namespace AcTools.Render.Shaders {
 			}
 			if (InputSignaturePNTG == null) throw new System.Exception("input signature (DarkMaterial, PNTG, Standard) == null");
 			LayoutPNTG = new InputLayout(device, InputSignaturePNTG, InputLayouts.VerticePNTG.InputElementsValue);
-			for (var i = 0; i < TechSkinnedMaps.Description.PassCount && InputSignaturePNTGW4B == null; i++) {
-				InputSignaturePNTGW4B = TechSkinnedMaps.GetPassByIndex(i).Description.Signature;
+			for (var i = 0; i < TechSkinnedStandard.Description.PassCount && InputSignaturePNTGW4B == null; i++) {
+				InputSignaturePNTGW4B = TechSkinnedStandard.GetPassByIndex(i).Description.Signature;
 			}
-			if (InputSignaturePNTGW4B == null) throw new System.Exception("input signature (DarkMaterial, PNTGW4B, SkinnedMaps) == null");
+			if (InputSignaturePNTGW4B == null) throw new System.Exception("input signature (DarkMaterial, PNTGW4B, SkinnedStandard) == null");
 			LayoutPNTGW4B = new InputLayout(device, InputSignaturePNTGW4B, InputLayouts.VerticePNTGW4B.InputElementsValue);
 
 			FxWorld = new EffectOnlyMatrixVariable(E.GetVariableByName("gWorld"));
