@@ -376,13 +376,13 @@ namespace AcManager.Controls {
 
         #region Utils
         [CanBeNull]
-        private static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension, bool forceSeveralName = false) {
+        private static string GetPackedFilename([NotNull] IEnumerable<AcObjectNew> o, string extension, bool forceSeveralName = false, bool useNames = false) {
             var objs = o.ToIReadOnlyListIfItIsNot();
             if (objs.Count == 0) return null;
 
             var last = $"-{DateTime.Now:yyyyMMdd-HHmmss}{extension}";
-            var name = !forceSeveralName && objs.Count == 1 ? $"{objs[0].Id}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
-                    $"{objs.Select(x => x.Id).OrderBy(x => x).JoinToString('-')}{last}";
+            var name = !forceSeveralName && objs.Count == 1 ? $"{GetObjectName(objs[0])}-{(objs[0] as IAcObjectVersionInformation)?.Version ?? "0"}{last}" :
+                    $"{objs.Select(GetObjectName).OrderBy(x => x).JoinToString('-')}{last}";
             if (name.Length > 160) {
                 name = name.Substring(0, 160 - last.Length) + last;
             }
@@ -397,11 +397,15 @@ namespace AcManager.Controls {
                 DirectorySaveKey = "packDir",
                 DefaultFileName = name
             });
+
+            string GetObjectName(AcObjectNew x) {
+                return useNames ? FileUtils.EnsureFileNameIsValid(x.DisplayName) : x.Id;
+            }
         }
 
         [CanBeNull]
-        public static string GetPackedFilename([NotNull] AcObjectNew o, string extension) {
-            return GetPackedFilename(new[] { o }, extension);
+        public static string GetPackedFilename([NotNull] AcObjectNew o, string extension, bool useNames = false) {
+            return GetPackedFilename(new[] { o }, extension, useNames: useNames);
         }
         #endregion
     }
