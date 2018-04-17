@@ -195,7 +195,11 @@ namespace AcManager.Tools.Objects {
             }
 
             if (ProvideDetails) {
-                serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
+                if (DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
+                    serverCfg["SERVER"].Set("NAME", $"{Name} {ServerEntry.ExtendedSeparator}{WrapperPort}");
+                } else {
+                    await EnsureDetailsNameIsActualAsync(serverCfg);
+                }
             }
 
             result.Add(PackedEntry.FromContent("cfg/server_cfg.ini", serverCfg.Stringify()));

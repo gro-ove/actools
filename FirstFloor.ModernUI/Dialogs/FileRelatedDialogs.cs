@@ -96,19 +96,36 @@ namespace FirstFloor.ModernUI.Dialogs {
     }
 
     public static class FileRelatedDialogs {
-        private static string OpenFallback() {
+        private static string OpenFallback([CanBeNull] string key) {
             var dialog = new OpenFileDialog();
-            return dialog.ShowDialog() == true ? dialog.FileName : null;
+
+            if (dialog.ShowDialog() != true) {
+                return null;
+            }
+
+            if (key != null) {
+                ValuesStorage.Set(key, Path.GetDirectoryName(dialog.FileName));
+            }
+
+            return dialog.FileName;
         }
 
-        private static string SaveFallback() {
+        private static string SaveFallback([CanBeNull] string key) {
             var dialog = new SaveFileDialog();
-            return dialog.ShowDialog() == true ? dialog.FileName : null;
+            if (dialog.ShowDialog() != true) {
+                return null;
+            }
+
+            if (key != null) {
+                ValuesStorage.Set(key, Path.GetDirectoryName(dialog.FileName));
+            }
+
+            return dialog.FileName;
         }
 
-        public static string Open(OpenDialogParams p, string currentFilename = null) {
+        public static string Open([NotNull] OpenDialogParams p, string currentFilename = null) {
+            var key = p.ActualSaveKey;
             try {
-                var key = p.ActualSaveKey;
                 var filters = p.GetFilters().ToList();
                 var dialog = new OpenFileDialog {
                     Filter = string.Join("|", filters.Select(x => x.WinFilter)),
@@ -153,13 +170,13 @@ namespace FirstFloor.ModernUI.Dialogs {
                 return dialog.FileName;
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t use Open File Dialog properly", e);
-                return OpenFallback();
+                return OpenFallback(key);
             }
         }
 
-        public static string Save(SaveDialogParams p, string currentFilename = null) {
+        public static string Save([NotNull] SaveDialogParams p, string currentFilename = null) {
+            var key = p.ActualSaveKey;
             try {
-                var key = p.ActualSaveKey;
                 var filters = p.GetFilters().ToList();
                 var dialog = new SaveFileDialog {
                     Filter = string.Join("|", filters.Select(x => $"{x.DisplayName}|{x.Filter}")),
@@ -211,7 +228,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 return dialog.FileName;
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t use Save File Dialog properly", e);
-                return SaveFallback();
+                return SaveFallback(key);
             }
         }
     }
