@@ -71,7 +71,7 @@ namespace AcManager.Tools.Objects {
             base.ClearData();
             DriverName = null;
             Team = null;
-            SkinNumber = null;
+            SkinNumber = GetSkinNumberFromId();
             Priority = null;
         }
 
@@ -193,10 +193,24 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private string GetSkinNumberFromId() {
+            var id = Id;
+            var start = 0;
+            for (var i = 0; i < id.Length && i < 4; i++) {
+                var c = id[i];
+                if (c == '0' && start == i) {
+                    start++;
+                } else if (!char.IsDigit(c)) {
+                    return i == 0 ? null : start == i ? @"0" : id.Substring(start, i - start);
+                }
+            }
+            return null;
+        }
+
         private void LoadSkinRelated(JObject json) {
             DriverName = json.GetStringValueOnly("drivername")?.Trim();
             Team = json.GetStringValueOnly("team")?.Trim();
-            SkinNumber = json.GetStringValueOnly("number")?.Trim();
+            SkinNumber = json.GetStringValueOnly("number")?.Trim() ?? GetSkinNumberFromId();
             Priority = json.GetIntValueOnly("priority");
 
             var carSkins = DataProvider.Instance.KunosSkins.GetValueOrDefault(CarId);

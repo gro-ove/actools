@@ -67,7 +67,16 @@
         <!-- TODO -->
         <Button Content="Join TS server" Command="{Binding JoinTsCommand}"
             Visibility="{Binding JoinTsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-        <Separator />
+      </ToolBar>
+      <ToolBar ToolBarTray.IsLocked="True" Band="1" BandIndex="1">
+        <mui:AsyncButton Command="{Binding Entry.InstallMissingContentCommand}"
+            Visibility="{Binding Entry.IsInstallMissingContentCommandAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <DockPanel>
+            <Path Data="{StaticResource DownloadIconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" Margin="0 0 6 -1" VerticalAlignment="Center"
+                Width="12" Height="12" />
+            <TextBlock Text="{Binding Entry.IsAbleToInstallMissingContentState, Converter={StaticResource EnumToDescriptionConverter}}" />
+          </DockPanel>
+        </mui:AsyncButton>
 
         <ToggleButton x:Name="AssistsButton" Content="{x:Static t:ToolsStrings.Assists_Title}"
             IsHitTestVisible="{Binding ElementName=AssistsPopup, Path=IsOpen, Mode=OneWay, Converter={StaticResource InvertBooleanConverter}}">
@@ -215,21 +224,35 @@
               <!-- <TextBlock Style="{StaticResource Heading1}" Text="Error" /> -->
               <mui:SelectableBbCodeBlock Text="{Binding ErrorsString}" Margin="40 0 0 12" />
 
-              <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8" Margin="20 0 0 0" DockPanel.Dock="Top">
-                <mui:AsyncButton Content="Install missing content" ToolTip="Download and install missing content from the server"
-                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.AllOfIt}}"
-                    Command="{Binding InstallMissingContentCommand}" />
-                <mui:AsyncButton Content="Install some content" ToolTip="Download and install some of missing content from the server"
-                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Partially}}"
-                    Command="{Binding InstallMissingContentCommand}" />
-                <mui:AsyncButton Content="Install updates" ToolTip="Download and install updates for content from the server"
-                    Visibility="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToVisibilityConverter},
-                      ConverterParameter={x:Static t:ServerEntry+IsAbleToInstallMissingContent.Updates}}"
-                    Command="{Binding InstallMissingContentCommand}" />
-                <mui:AsyncButton Command="{Binding RefreshCommand}" Content="{x:Static c:ControlsStrings.Common_TryAgain}" />
-              </mui:SpacingUniformGrid>
+              <mui:BooleanSwitch Value="{Binding IsInstallMissingContentCommandAvailable}" Margin="20 0 0 0" DockPanel.Dock="Top">
+                <mui:BooleanSwitch.False>
+                  <mui:AsyncButton Command="{Binding RefreshCommand}">
+                    <DockPanel>
+                      <Path Data="{StaticResource RefreshIconData}" Stretch="Uniform" Width="12" Height="12"
+                          Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Margin="0 0 6 -1" VerticalAlignment="Center" />
+                      <TextBlock Text="{x:Static c:ControlsStrings.Common_TryAgain}" />
+                    </DockPanel>
+                  </mui:AsyncButton>
+                </mui:BooleanSwitch.False>
+                <mui:BooleanSwitch.True>
+                  <DockPanel>
+                    <mui:AsyncButton Command="{Binding RefreshCommand}">
+                      <DockPanel>
+                        <Path Data="{StaticResource RefreshIconData}" Stretch="Uniform" Width="12" Height="12"
+                            Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" Margin="0 0 6 -1" VerticalAlignment="Center" />
+                        <TextBlock Text="{x:Static c:ControlsStrings.Common_TryAgain}" />
+                      </DockPanel>
+                    </mui:AsyncButton>
+                    <mui:AsyncButton Margin="8 0 0 0" Command="{Binding InstallMissingContentCommand}">
+                      <DockPanel>
+                        <Path Data="{StaticResource DownloadIconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" Margin="0 0 6 -1"
+                            VerticalAlignment="Center" Width="12" Height="12" />
+                        <TextBlock Text="{Binding IsAbleToInstallMissingContentState, Converter={StaticResource EnumToDescriptionConverter}}" />
+                      </DockPanel>
+                    </mui:AsyncButton>
+                  </DockPanel>
+                </mui:BooleanSwitch.True>
+              </mui:BooleanSwitch>
             </StackPanel>
 
             <!-- Password -->
@@ -403,11 +426,8 @@
                       </ToolTip>
                     </FrameworkElement.ToolTip>
                   </mui:BbCodeBlock>
-                  <TextBlock c:PropertiesGrid.Label="Grip:" Text="{Binding Grip, StringFormat='{}{0:F1}%'}" Background="Transparent">
-                    <TextBlock.ToolTip>
-                      <ToolTip Content="{Binding GripTransfer}" ContentStringFormat="{}Grip transfer: {0:F1}%" />
-                    </TextBlock.ToolTip>
-                  </TextBlock>
+                  <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="Maximum amount of contacts per kilometer"
+                      Text="{Binding MaxContactsPerKm, StringFormat='{}{0:F1} per km', TargetNullValue='not limited'}" Background="Transparent" />
                   <c:TemperatureBlock c:PropertiesGrid.Label="Ambient:" Text="{Binding AmbientTemperature, TargetNullValue='?'}" Background="Transparent" />
                   <TextBlock c:PropertiesGrid.Label="Wind:" Background="Transparent">
                     <TextBlock.Text>
@@ -418,8 +438,12 @@
                     </TextBlock.Text>
                   </TextBlock>
                   <c:TemperatureBlock c:PropertiesGrid.Label="Road:" Text="{Binding RoadTemperature, TargetNullValue='?'}" Background="Transparent" />
-                  <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="Maximum amount of contacts per kilometer"
-                      Text="{Binding MaxContactsPerKm, StringFormat='{}{0:F1} per km', TargetNullValue='not limited'}" Background="Transparent" />
+                  <TextBlock c:PropertiesGrid.Label="Grip:" Text="{Binding Grip, StringFormat='{}{0:F1}%'}" Background="Transparent"
+                      Visibility="{Binding Grip.HasValue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock.ToolTip>
+                      <ToolTip Content="{Binding GripTransfer}" ContentStringFormat="{}Grip transfer: {0:F1}%" />
+                    </TextBlock.ToolTip>
+                  </TextBlock>
                 </c:PropertiesGrid>
               </StackPanel>
 

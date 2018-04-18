@@ -414,6 +414,9 @@ namespace AcManager.Controls {
         [CanBeNull]
         private TrackObjectBase _currentTrack;
 
+        [CanBeNull]
+        private string _currentTrackId;
+
         private ImageSource _countryBitmap;
         private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends;
         private int _sessionsCount;
@@ -625,10 +628,13 @@ namespace AcManager.Controls {
         }
 
         private void UpdateTrack(ServerEntry server) {
-            var track = server.Track;
-            if (ReferenceEquals(_currentTrack, track)) return;
+            var trackId = server.TrackId;
+            if (ReferenceEquals(_currentTrackId, trackId)) return;
 
+            var track = server.Track;
             _currentTrack = track;
+            _currentTrackId = trackId;
+
             if (server.TrackId == null) {
                 _track = new ObjToRender(null, "No information", isBlock: false, isComplex: false, maxWidth: 120);
             } else if (track == null) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -191,8 +192,14 @@ namespace AcManager.Tools.Managers.Online {
         public enum IsAbleToInstallMissingContent {
             NoMissingContent,
             NotAbleTo,
+
+            [Description("Install some content")]
             Partially,
+
+            [Description("Install missing content")]
             AllOfIt,
+
+            [Description("Install updates")]
             Updates
         }
 
@@ -346,9 +353,7 @@ namespace AcManager.Tools.Managers.Online {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t install content", e);
                 }
-            }, () => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
-                    IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
-                    IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates));
+            }, () => IsInstallMissingContentCommandAvailable));
 
         private IsAbleToInstallMissingContent _isAbleToInstallMissingContentState = IsAbleToInstallMissingContent.NoMissingContent;
 
@@ -358,9 +363,14 @@ namespace AcManager.Tools.Managers.Online {
                 if (Equals(value, _isAbleToInstallMissingContentState)) return;
                 _isAbleToInstallMissingContentState = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsInstallMissingContentCommandAvailable));
                 _installMissingContentCommand?.RaiseCanExecuteChanged();
             }
         }
+
+        public bool IsInstallMissingContentCommandAvailable => IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Partially ||
+                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.AllOfIt ||
+                IsAbleToInstallMissingContentState == IsAbleToInstallMissingContent.Updates;
 
         [Pure]
         private static bool IsAvailableToInstall([CanBeNull] JToken token) {
@@ -414,6 +424,7 @@ namespace AcManager.Tools.Managers.Online {
 
                 foreach (var carPair in cars) {
                     var carId = carPair.Key;
+
                     var car = CarsManager.Instance.GetById(carId);
                     if (car == null) continue;
 

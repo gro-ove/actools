@@ -88,6 +88,11 @@
                 <Slider Minimum="0" Maximum="25" Value="{Binding VarietyLimitation}" TickFrequency="5" TickPlacement="BottomRight" />
               </DockPanel>
 
+              <CheckBox IsChecked="{Binding SequentialSkins}"
+                  ToolTip="App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed">
+                <Label Content="Pick skins sequentially" />
+              </CheckBox>
+
               <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
               <CheckBox IsChecked="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Margin="0">
                 <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />

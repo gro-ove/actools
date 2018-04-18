@@ -5,14 +5,14 @@ namespace AcManager.Tools.Managers.Online {
         private bool _autoJoinAvailable;
 
         public bool AutoJoinAvailable {
-            get { return _autoJoinAvailable; }
+            get => _autoJoinAvailable;
             set => Apply(value, ref _autoJoinAvailable);
         }
 
         private bool _autoJoinAnyCarAvailable;
 
         public bool AutoJoinAnyCarAvailable {
-            get { return _autoJoinAnyCarAvailable; }
+            get => _autoJoinAnyCarAvailable;
             set => Apply(value, ref _autoJoinAnyCarAvailable);
         }
 

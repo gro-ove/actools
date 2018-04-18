@@ -64,9 +64,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _randomSkinCommand;
 
-        public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
-            CarSkin = null;
-        }));
+        public ICommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => { CarSkin = null; }));
 
         private DelegateCommand _skinDialogCommand;
 
@@ -241,9 +239,7 @@ namespace AcManager.Controls.ViewModels {
 
         private ICommand _deleteCommand;
 
-        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            IsDeleted = true;
-        }));
+        public ICommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => { IsDeleted = true; }));
 
         public override string ToString() {
             return DisplayName;
@@ -276,19 +272,20 @@ namespace AcManager.Controls.ViewModels {
         private int? _sequentialSkinsMaxNumber;
         private Dictionary<int, GoodShuffle<CarSkinObject>> _sequentialSkins;
 
-        public static void InitializeSequentialSkins([NotNull] IReadOnlyList<RaceGridEntry> entries, [CanBeNull] IFilter<CarSkinObject> filter) {
-            var availableNumbers = entries.SelectMany(x => x.GetSkins(filter).Select(y => y.SkinNumber.As(-1)))
+        public static void InitializeSequentialSkins([NotNull] IReadOnlyList<RaceGridEntry> entries, [CanBeNull] IFilter<CarSkinObject> filter,
+                int ignoreNumber) {
+            var availableNumbers = entries.SelectMany(x => x.GetSkins(filter, ignoreNumber).Select(y => y.SkinNumber.As(-1)))
                                           .Where(x => x > 0).OrderBy(x => x).Distinct().ToList();
             var maxNumber = availableNumbers.MaxOrDefault();
             foreach (var entry in entries) {
                 entry._sequentialSkinsMaxNumber = maxNumber > 1 ? maxNumber : (int?)null;
-                entry._sequentialSkins = entry.GetSkins(filter).GroupBy(x => x.SkinNumber.As(-1)).Where(x => x.Key > 0)
+                entry._sequentialSkins = entry.GetSkins(filter, ignoreNumber).GroupBy(x => x.SkinNumber.As(-1)).Where(x => x.Key > 0)
                                               .ToDictionary(x => availableNumbers.IndexOf(x.Key), GoodShuffle.Get);
             }
         }
 
-        private IEnumerable<CarSkinObject> GetSkins(IFilter<CarSkinObject> filter) {
-            return Car.EnabledOnlySkins.Where(y => filter == null || filter.Test(y));
+        private IEnumerable<CarSkinObject> GetSkins(IFilter<CarSkinObject> filter, int ignoreNumber) {
+            return Car.EnabledOnlySkins.Where(y => (filter == null || filter.Test(y)) && y.SkinNumber.As(-1) != ignoreNumber);
         }
 
         public bool HasSkinFor(int zeroBasedIndex) {

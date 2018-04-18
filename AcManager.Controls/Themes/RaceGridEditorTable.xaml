@@ -272,7 +272,7 @@
                   Placeholder="None" />
               <mui:HistoricalTextBox co:PropertiesGrid.Label="Random skins filter:"
                   Text="{Binding Model.RandomSkinsFilter, RelativeSource={RelativeSource TemplatedParent}}" Placeholder="*" SaveKey="__randomSkinsFilters" />
-              <CheckBox IsChecked="{Binding Model.SequentialSkins, RelativeSource={RelativeSource TemplatedParent}}"
+              <CheckBox IsChecked="{Binding Model.SequentialSkins, RelativeSource={RelativeSource TemplatedParent}}" Margin="-120 -4 0 4"
                   ToolTip="App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed">
                 <Label Content="Pick skins sequentially" />
               </CheckBox>

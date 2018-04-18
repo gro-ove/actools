@@ -277,6 +277,9 @@ namespace AcManager.Controls.ViewModels {
                 ShuffleCandidates = data.ShuffleCandidates ?? true;
                 VarietyLimitation = data.VarietyLimitation ?? 0;
 
+                RandomSkinsFilter = data.RandomSkinsFilter;
+                SequentialSkins = data.SequentialSkins;
+
                 AiLevel = data.AiLevel;
                 AiLevelMin = data.AiLevelMin;
                 AiLevelArrangeRandom = data.AiLevelArrangeRandomly.HasValue ? (data.AiLevelArrangeRandomly.Value ? 1d : 0d) :
@@ -400,6 +403,9 @@ namespace AcManager.Controls.ViewModels {
         public void Reset() {
             ShuffleCandidates = true;
             VarietyLimitation = 0;
+
+            RandomSkinsFilter = null;
+            SequentialSkins = false;
 
             AiLevel = 95;
             AiLevelMin = 85;
@@ -1017,7 +1023,9 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public string DisplayVarietyLimitation {
-            get => _varietyLimitation == 0 ? ToolsStrings.AssistState_Off : PluralizingConverter.PluralizeExt(_varietyLimitation, "{0} car");
+            get => _varietyLimitation == 0
+                    ? ToolsStrings.AssistState_Off.ToSentenceMember()
+                    : PluralizingConverter.PluralizeExt(_varietyLimitation, "{0} car");
             set => VarietyLimitation = value.As<int>();
         }
         #endregion
@@ -1519,8 +1527,9 @@ namespace AcManager.Controls.ViewModels {
             }
 
             IEnumerable<RaceGridEntry> FixLinearSkins(IEnumerable<RaceGridEntry> input) {
+                var ignoreNumber = (_playerCar?.SelectedSkin?.SkinNumber).As(-1);
                 var inputList = input.ToList();
-                RaceGridEntry.InitializeSequentialSkins(inputList, skinsFilter);
+                RaceGridEntry.InitializeSequentialSkins(inputList, skinsFilter, ignoreNumber);
 
                 var index = 0;
                 foreach (var entry in inputList) {
