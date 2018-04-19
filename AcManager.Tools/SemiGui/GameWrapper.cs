@@ -150,7 +150,11 @@ namespace AcManager.Tools.SemiGui {
             CarCustomDataHelper.Revert();
 
             if (SettingsHolder.Drive.CheckAndFixControlsOrder) {
-                AcSettingsHolder.Controls.FixControllersOrder();
+                try {
+                    AcSettingsHolder.Controls.FixControllersOrder();
+                } catch (Exception e) {
+                    VisualCppTool.OnException(e, null);
+                }
             }
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {

@@ -40,6 +40,9 @@ namespace AcManager.Controls.UserControls.Web {
         private readonly bool _preferTransparentBackground;
         private string _delayedUrl;
 
+        private readonly bool _broken;
+        private readonly Exception _exception;
+
         public WebTab(string url, bool preferTransparentBackground, bool delayed) {
             _preferTransparentBackground = preferTransparentBackground;
             _something = GetSomething();
@@ -56,7 +59,14 @@ namespace AcManager.Controls.UserControls.Web {
 
             // We need to initialize element first to be able to use Navigate().
             // TODO: Find a better way without overcomplicating everything?
-            _something.GetElement(null, preferTransparentBackground);
+            try {
+                _something.GetElement(null, preferTransparentBackground);
+            } catch (Exception e) {
+                NonfatalError.NotifyBackground("Can’t initialize browser engine", e);
+                _broken = true;
+                _exception = e;
+                return;
+            }
 
             Title = url;
             LoadedUrl = ActiveUrl = url;
@@ -73,14 +83,34 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public void EnsureLoaded() {
+            if (_broken) return;
             var delayedUrl = _delayedUrl;
             if (delayedUrl == null) return;
             _delayedUrl = null;
             Navigate(delayedUrl);
         }
 
+        [CanBeNull]
         public FrameworkElement GetElement([CanBeNull] DpiAwareWindow parentWindow) {
+            if (_broken) {
+                return new ExceptionDetails {
+                    Title = "Failed to initialize browser engine",
+                    Exception = _exception,
+                    Suggestions = GetBrokenSuggestions()
+                };
+            }
+
             return _something.GetElement(parentWindow, _preferTransparentBackground);
+        }
+
+        private string GetBrokenSuggestions() {
+            if (_something is CefSharpWrapper || _something is FormsCefSharpWrapper) {
+                var directory = @"file://" + PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);
+                return
+                        $"Try to reinstall CefSharp plugin, its installation could be damaged. To do that, [url={BbCodeBlock.EncodeAttribute(directory)}]remove this directory[/url] (you’ll need to close the app to be able to remove it).";
+            }
+
+            return null;
         }
 
         private string _title;
@@ -94,11 +124,12 @@ namespace AcManager.Controls.UserControls.Web {
             Title = e.Title;
         }
 
-        public ICommand BackCommand => _something.BackCommand;
-        public ICommand ForwardCommand => _something.ForwardCommand;
-        public ICommand RefreshCommand => _something.RefreshCommand;
+        public ICommand BackCommand => _broken ? UnavailableCommand.Instance : _something.BackCommand;
+        public ICommand ForwardCommand => _broken ? UnavailableCommand.Instance : _something.ForwardCommand;
+        public ICommand RefreshCommand => _broken ? UnavailableCommand.Instance : _something.RefreshCommand;
 
         public void Navigate([CanBeNull] string url) {
+            if (_broken) return;
             url = url ?? @"about:blank";
             if (_delayedUrl != null) {
                 _delayedUrl = url;
@@ -109,15 +140,16 @@ namespace AcManager.Controls.UserControls.Web {
 
         [ContractAnnotation(@"filename: null => null; filename: notnull => notnull")]
         public string ConvertFilename([CanBeNull] string filename) {
-            return _something.ConvertFilename(filename);
+            return _broken ? filename : _something.ConvertFilename(filename);
         }
 
         [ItemCanBeNull]
         public Task<string> GetImageUrlAsync([CanBeNull] string filename) {
-            return _something.GetImageUrlAsync(filename);
+            return _broken ? Task.FromResult<string>(null) : _something.GetImageUrlAsync(filename);
         }
 
         public void OnError(string error, string url, int line, int column) {
+            if (_broken) return;
             _something.OnError(error, url, line, column);
         }
 
@@ -138,6 +170,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         private void UpdateFavicon() {
+            if (_broken) return;
             if (_something.SupportsFavicons) return;
             FaviconProvider.GetFaviconAsync(ActiveUrl).ContinueWith(t => {
                 if (t.Result != null) {
@@ -159,6 +192,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public void Execute(string js, bool onload = false) {
+            if (_broken) return;
             try {
                 _something.Execute(onload ?
                         @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
@@ -169,10 +203,12 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public void Execute(string fnName, params object[] args) {
+            if (_broken) return;
             Execute(fnName, false, args);
         }
 
         public void Execute(string fnName, bool onload, params object[] args) {
+            if (_broken) return;
             var js = $"{fnName}({args.Select(JsonConvert.SerializeObject).JoinToString(',')})";
             Execute(js, onload);
         }
@@ -222,29 +258,36 @@ namespace AcManager.Controls.UserControls.Web {
         [CanBeNull]
         private JsBridgeBase _jsBridge;
 
+        [CanBeNull]
         public T GetJsBridge<T>([CanBeNull] Func<WebTab, T> jsBridgeFactory) where T : JsBridgeBase {
+            if (_broken) return null;
             var result = _something.GetJsBridge(() => jsBridgeFactory?.Invoke(this));
             _jsBridge = result;
             return result;
         }
 
         public void SetUserAgent(string userAgent) {
+            if (_broken) return;
             _something.SetUserAgent(userAgent);
         }
 
         public void SetStyleProvider(ICustomStyleProvider styleProvider) {
+            if (_broken) return;
             _something.SetStyleProvider(styleProvider);
         }
 
         public void SetDownloadListener(IWebDownloadListener downloadListener) {
+            if (_broken) return;
             _something.SetDownloadListener(downloadListener);
         }
 
         public void SetNewWindowsBehavior(NewWindowsBehavior newWindowsBehavior) {
+            if (_broken) return;
             _something.SetNewWindowsBehavior(newWindowsBehavior);
         }
 
         public void OnUnloaded() {
+            if (_broken) return;
             _something.OnUnloaded();
         }
 
@@ -264,6 +307,6 @@ namespace AcManager.Controls.UserControls.Web {
 
         private DelegateCommand _closeCommand;
 
-        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => { IsClosed = true; }, () => !IsMainTab));
+        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => IsClosed = true, () => !IsMainTab));
     }
 }

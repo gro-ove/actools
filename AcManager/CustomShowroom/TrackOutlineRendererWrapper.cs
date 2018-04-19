@@ -2,8 +2,10 @@ using System;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -36,7 +38,28 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        public static async Task Run(TrackObjectBase track) {
+        protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
+            if (button == MouseButtons.Left) {
+                Renderer.OffsetX -= (float)(dx * Renderer.ResolutionMultiplier);
+                Renderer.OffsetY -= (float)(dy * Renderer.ResolutionMultiplier);
+            }
+        }
+
+        protected override void OnMouseWheel(float value) {
+            Renderer.Scale *= 1f + value / 10f;
+        }
+
+        public static Task Run(TrackObjectBase track) {
+            try {
+                return RunInner(track);
+            } catch (Exception e) {
+                VisualCppTool.OnException(e, "Can’t update outline");
+                return Task.Delay(0);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static async Task RunInner(TrackObjectBase track) {
             if (!File.Exists(track.MapImage)) {
                 ModernDialog.ShowMessage("Map not found");
                 return;
@@ -56,7 +79,17 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        public static async Task UpdateAsync(TrackObjectBase track) {
+        public static Task UpdateAsync(TrackObjectBase track) {
+            try {
+                return UpdateAsyncInner(track);
+            } catch (Exception e) {
+                VisualCppTool.OnException(e, "Can’t update outline");
+                return Task.Delay(0);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static async Task UpdateAsyncInner(TrackObjectBase track) {
             if (!File.Exists(track.MapImage)) {
                 ModernDialog.ShowMessage("Map not found");
                 return;
@@ -83,17 +116,6 @@ namespace AcManager.CustomShowroom {
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t update outline", e);
             }
-        }
-
-        protected override void OnMouseMove(MouseButtons button, int dx, int dy) {
-            if (button == MouseButtons.Left) {
-                Renderer.OffsetX -= (float)(dx * Renderer.ResolutionMultiplier);
-                Renderer.OffsetY -= (float)(dy * Renderer.ResolutionMultiplier);
-            }
-        }
-
-        protected override void OnMouseWheel(float value) {
-            Renderer.Scale *= 1f + value / 10f;
         }
     }
 }

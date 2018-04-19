@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using AcManager.AcSound;
 using AcManager.Controls;
@@ -41,7 +42,17 @@ namespace AcManager.CustomShowroom {
             wrapper.InvertMouseButtons = SettingsHolder.CustomShowroom.AlternativeControlScheme;
         }
 
-        public static async Task StartAsync(string kn5, string skinId = null, string presetFilename = null) {
+        public static Task StartAsync(string kn5, string skinId = null, string presetFilename = null) {
+            try {
+                return StartAsyncInner(kn5, skinId, presetFilename);
+            } catch (Exception e) {
+                VisualCppTool.OnException(e, ControlsStrings.CustomShowroom_CannotStart);
+                return Task.Delay(0);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static async Task StartAsyncInner(string kn5, string skinId = null, string presetFilename = null) {
             if (_starting) return;
             _starting = true;
 
@@ -122,14 +133,10 @@ namespace AcManager.CustomShowroom {
             return StartAsync(AcPaths.GetMainCarFilename(car.Location, car.AcdData), skin?.Id, presetFilename);
         }
 
-        /*Task ICustomShowroomWrapper.StartAsync(string kn5, string skinId, string presetFilename) {
-            return StartAsync(kn5, skinId, presetFilename);
-        }*/
-
         Task ICustomShowroomWrapper.StartAsync(CarObject car, CarSkinObject skin, string presetFilename) {
             return StartAsync(car, skin, presetFilename);
         }
 
-        string ICustomShowroomWrapper.PresetableKeyValue => DarkRendererSettings.DefaultPresetableKeyValue;
+        string ICustomShowroomWrapper.PresetableKeyValue => DarkRendererSettingsValues.DefaultPresetableKeyValue;
     }
 }

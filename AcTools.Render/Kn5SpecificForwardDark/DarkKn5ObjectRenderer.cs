@@ -235,7 +235,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private readonly bool _showroom;
 
-        public DarkKn5ObjectRenderer(CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
+        public DarkKn5ObjectRenderer([CanBeNull] CarDescription car, string showroomKn5 = null) : base(car, showroomKn5) {
             AllowSkinnedObjects = true;
 
             if (showroomKn5 != null) {

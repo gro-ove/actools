@@ -2084,6 +2084,10 @@
   <PropertyGroup Condition="Exists('$(EditBinLocation)')">
     <PostBuildEvent>"$(EditBinLocation)" /largeaddressaware /nologo "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <!-- This command deliberetely breaks SlimDX to debug how CM works without it. -->
+    <!--<PostBuildEvent>cp "$(TargetDir)\Content Manager.exe.manifest" "$(TargetDir)\SlimDX.dll"</PostBuildEvent>-->
+  </PropertyGroup>
   <Import Project="..\packages\Fody.3.0.0\build\Fody.targets" Condition="'$(UseCosturaToPack)' == 'true'" />
   <Import Project="..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets" Condition="'$(UseCosturaToPack)' == 'true'" />
 </Project>

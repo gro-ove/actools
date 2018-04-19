@@ -7,15 +7,22 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Plugins {
     public class PluginsRequirement : NotifyPropertyChanged {
+        [NotNull]
         private readonly Func<PluginEntry, bool> _filter;
+
+        [CanBeNull]
         private readonly string[] _required;
+
+        [NotNull]
         public BetterListCollectionView ListView { get; }
 
-        public PluginsRequirement(Func<PluginEntry, bool> filter) {
-            _filter = filter;
+        private PluginsRequirement([CanBeNull] Func<PluginEntry, bool> filter, string[] ids) {
+            _required = ids;
+            _filter = filter ?? (p => ids.ArrayContains(p.Id));
 
             ListView = new BetterListCollectionView(PluginsManager.Instance.List);
             ListView.SortDescriptions.Add(new SortDescription(nameof(PluginEntry.Name), ListSortDirection.Ascending));
@@ -45,15 +52,14 @@ namespace AcManager.Tools.Managers.Plugins {
             return o is PluginEntry p && _filter.Invoke(p);
         }
 
-        public PluginsRequirement(params string[] ids) : this(p => ids.ArrayContains(p.Id)) {
-            _required = ids;
-        }
+        public PluginsRequirement(Func<PluginEntry, bool> filter) : this(filter, null) { }
+        public PluginsRequirement(params string[] ids) : this(null, ids) { }
 
         private AsyncCommand _installAllCommand;
 
-        public AsyncCommand InstallAllCommand => _installAllCommand ?? (_installAllCommand = new AsyncCommand(() => {
-            return ListView.OfType<PluginEntry>().Select(x => x.InstallCommand.ExecuteAsync(null)).WhenAll();
-        }, () => !IsReady));
+        public AsyncCommand InstallAllCommand => _installAllCommand ?? (_installAllCommand = new AsyncCommand(
+                () => ListView.OfType<PluginEntry>().Select(x => x.InstallCommand.ExecuteAsync(null)).WhenAll(),
+                () => !IsReady));
 
         private bool _isReady;
 
@@ -66,6 +72,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         private void UpdateReady() {
+            Logging.Debug(_required?.JoinToReadableString());
             IsReady = _required?.All(x => PluginsManager.Instance.IsPluginEnabled(x))
                     ?? ListView.OfType<PluginEntry>().All(x => x.IsReady);
         }

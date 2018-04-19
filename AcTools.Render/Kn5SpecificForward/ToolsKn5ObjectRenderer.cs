@@ -14,7 +14,7 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificForward {
     public partial class ToolsKn5ObjectRenderer : ForwardKn5ObjectRenderer {
-        public ToolsKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) { }
+        public ToolsKn5ObjectRenderer([CanBeNull] CarDescription car, string showroomKn5Filename = null) : base(car, showroomKn5Filename) { }
 
         protected override void ClearBeforeChangingCar() {
             SelectedObject = null;

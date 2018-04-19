@@ -415,6 +415,7 @@
     <Compile Include="Helpers\SharpCompressExtension.cs" />
     <Compile Include="Helpers\TemperatureUnitMode.cs" />
     <Compile Include="Helpers\Vdf.cs" />
+    <Compile Include="Helpers\VisualCppTool.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelAxleEntry.cs" />
     <Compile Include="Helpers\WindowsHelper.cs" />

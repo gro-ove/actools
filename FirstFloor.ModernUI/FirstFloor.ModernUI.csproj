@@ -221,6 +221,7 @@
     <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
     <Compile Include="Windows\Controls\EmojiSpan.cs" />
     <Compile Include="Windows\Controls\EmojiSupport.cs" />
+    <Compile Include="Windows\Controls\ExceptionDetails.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
     <Compile Include="Windows\Controls\FatalErrorMessage.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
@@ -460,6 +461,10 @@
     <Compile Include="WrappedFilteredCollection.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Assets\ExceptionDetails.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Assets\AsyncButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

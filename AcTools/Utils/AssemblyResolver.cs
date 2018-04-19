@@ -10,6 +10,19 @@ using AcTools.Windows;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils {
+    public class AssemblyResolverErrorEventArgs : EventArgs {
+        public AssemblyName AssemblyName { get; }
+        public string Filename { get; }
+        public Exception Exception { get; }
+        public bool Handled { get; set; }
+
+        public AssemblyResolverErrorEventArgs(AssemblyName assemblyName, string filename, Exception exception) {
+            AssemblyName = assemblyName;
+            Filename = filename;
+            Exception = exception;
+        }
+    }
+
     public class AssemblyResolver {
         public bool IsInitialized => Directory != null;
 
@@ -42,8 +55,7 @@ namespace AcTools.Utils {
             AppDomain.CurrentDomain.AssemblyResolve += Resolve;
 
             if (RegisterDllDirectory) {
-                AcToolsLogging.Write(directory);
-                Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + directory);
+                Kernel32.AddDllDirectory(directory);
             }
 
             foreach (var name in Imports) {
@@ -58,24 +70,31 @@ namespace AcTools.Utils {
 
         private const string DllExtension = ".dll";
 
-        private Assembly Load(string name) {
+        private Assembly Load(AssemblyName name) {
             if (Directory == null) return null;
 
-            var filename = Path.Combine(Directory, name + DllExtension);
+            var filename = Path.Combine(Directory, name.Name + DllExtension);
             try {
                 FileUtils.Unblock(filename);
                 return File.Exists(filename) ? Assembly.LoadFrom(filename) : null;
             } catch (Exception e) when (e.Message.Contains("0x80131515")) {
-                throw new FileLoadException($"Can’t load locked binary {name}; you can unlock it in file properties", e);
+                throw new FileLoadException($"Can’t load locked binary {name.Name}; you can unlock it in file properties", e);
+            } catch (Exception e) {
+                var args = new AssemblyResolverErrorEventArgs(name, filename, e);
+                Error?.Invoke(this, args);
+                if (args.Handled) return null;
+                throw;
             }
         }
 
-        private Assembly Resolve(object sender, ResolveEventArgs args) {
-            var name = new AssemblyName(args.Name).Name;
-            if (!_filters.RequireValue.Any(x => x.IsMatch(name))) return null;
+        public event EventHandler<AssemblyResolverErrorEventArgs> Error;
 
-            if (!_resolved.TryGetValue(name, out var result)) {
-                _resolved[name] = result = Load(name);
+        private Assembly Resolve(object sender, ResolveEventArgs args) {
+            var name = new AssemblyName(args.Name);
+            if (!_filters.RequireValue.Any(x => x.IsMatch(name.Name))) return null;
+
+            if (!_resolved.TryGetValue(name.Name, out var result)) {
+                _resolved[name.Name] = result = Load(name);
             }
 
             return result;

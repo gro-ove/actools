@@ -34,9 +34,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             private static int _id;
             public readonly int Id;
 
+            [NotNull]
             private readonly ForwardKn5ObjectRenderer _renderer;
 
+            [CanBeNull]
             private CarDescription _car;
+
             private bool _selectSkinLater;
             private string _selectSkin = Kn5RenderableCar.DefaultSkin;
 
@@ -44,7 +47,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             private List<PreviousCar> PreviousCars => _renderer._previousCars;
 
-            internal CarSlot(ForwardKn5ObjectRenderer renderer, CarDescription car, int? id) {
+            internal CarSlot([NotNull] ForwardKn5ObjectRenderer renderer, [CanBeNull] CarDescription car, int? id) {
                 Id = id ?? ++_id;
 
                 _renderer = renderer;

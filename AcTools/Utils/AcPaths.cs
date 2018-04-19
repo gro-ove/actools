@@ -19,7 +19,7 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
-        public static string GetSystemCfgDirectory(string acRoot) {
+        public static string GetSystemCfgDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "system", "cfg");
         }
 
@@ -64,27 +64,27 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
-        public static string GetCarsDirectory(string acRoot) {
+        public static string GetCarsDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "cars");
         }
 
         [NotNull, Pure]
-        public static string GetTracksDirectory(string acRoot) {
+        public static string GetTracksDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "tracks");
         }
 
         [NotNull, Pure]
-        public static string GetCarDirectory(string acRoot, string carName) {
+        public static string GetCarDirectory([NotNull] string acRoot, [NotNull] string carName) {
             return Path.Combine(GetCarsDirectory(acRoot), carName);
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename(string carDir) {
+        public static string GetMainCarFilename([NotNull] string carDir) {
             return GetMainCarFilename(carDir, (DataWrapper)null);
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename(string carDir, [CanBeNull] DataWrapper data) {
+        public static string GetMainCarFilename([NotNull] string carDir, [CanBeNull] DataWrapper data) {
             var iniFile = (data ?? DataWrapper.FromCarDirectory(carDir)).GetIniFile("lods.ini");
             if (!iniFile.IsEmptyOrDamaged()) {
                 var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
@@ -97,7 +97,7 @@ namespace AcTools.Utils {
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename(string acRoot, string carName) {
+        public static string GetMainCarFilename([NotNull] string acRoot, [NotNull] string carName) {
             return GetMainCarFilename(GetCarDirectory(acRoot, carName));
         }
 
@@ -107,57 +107,57 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
-        public static string GetCarSetupsDirectory(string carName) {
+        public static string GetCarSetupsDirectory([NotNull] string carName) {
             return Path.Combine(GetDocumentsDirectory(), "setups", carName);
         }
 
         [NotNull, Pure]
-        public static string GetCarSkinsDirectory(string carDir) {
+        public static string GetCarSkinsDirectory([NotNull] string carDir) {
             return Path.Combine(carDir, "skins");
         }
 
         [NotNull, Pure]
-        public static string GetCarSkinsDirectory(string acRoot, string carName) {
+        public static string GetCarSkinsDirectory([NotNull] string acRoot, [NotNull] string carName) {
             return GetCarSkinsDirectory(GetCarDirectory(acRoot, carName));
         }
 
         [NotNull, Pure]
-        public static string GetCarSkinDirectory(string acRoot, string carName, string skinName) {
+        public static string GetCarSkinDirectory([NotNull] string acRoot, [NotNull] string carName, [NotNull] string skinName) {
             return Path.Combine(GetCarSkinsDirectory(acRoot, carName), skinName);
         }
 
         [NotNull, Pure]
-        public static string GetShowroomsDirectory(string acRoot) {
+        public static string GetShowroomsDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "showroom");
         }
 
         [NotNull, Pure]
-        public static string GetFontsDirectory(string acRoot) {
+        public static string GetFontsDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "fonts");
         }
 
         [NotNull, Pure]
-        public static string GetWeatherDirectory(string acRoot) {
+        public static string GetWeatherDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "weather");
         }
 
         [NotNull, Pure]
-        public static string GetPpFiltersDirectory(string acRoot) {
+        public static string GetPpFiltersDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "system", "cfg", "ppfilters");
         }
 
         [NotNull, Pure]
-        public static string GetDriverModelsDirectory(string acRoot) {
+        public static string GetDriverModelsDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "driver");
         }
 
         [NotNull, Pure]
-        public static string GetPythonAppsDirectory(string acRoot) {
+        public static string GetPythonAppsDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "apps", "python");
         }
 
         [NotNull, Pure]
-        public static string GetKunosCareerDirectory(string acRoot) {
+        public static string GetKunosCareerDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "career");
         }
 
@@ -167,17 +167,17 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
-        public static string GetShowroomDirectory(string acRoot, string showroomName) {
+        public static string GetShowroomDirectory([NotNull] string acRoot, [NotNull] string showroomName) {
             return Path.Combine(GetShowroomsDirectory(acRoot), showroomName);
         }
 
         [NotNull, Pure]
-        public static string GetAcLogoFilename(string acRoot) {
+        public static string GetAcLogoFilename([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "gui", "logo_ac_app.png");
         }
 
         [NotNull, Pure]
-        public static string GetAcLauncherFilename(string acRoot) {
+        public static string GetAcLauncherFilename([NotNull] string acRoot) {
             return Path.Combine(acRoot, "AssettoCorsa.exe");
         }
 
@@ -202,17 +202,17 @@ namespace AcTools.Utils {
         }
 
         [NotNull, Pure]
-        public static string GetSfxDirectory(string acRoot) {
+        public static string GetSfxDirectory([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "sfx");
         }
 
         [NotNull, Pure]
-        public static string GetSfxGuidsFilename(string acRoot) {
+        public static string GetSfxGuidsFilename([NotNull] string acRoot) {
             return Path.Combine(GetSfxDirectory(acRoot), "GUIDs.txt");
         }
 
         [NotNull, Pure]
-        public static string GetGuiIconsFilename(string acRoot) {
+        public static string GetGuiIconsFilename([NotNull] string acRoot) {
             return Path.Combine(acRoot, "content", "gui", "icons");
         }
 

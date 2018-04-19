@@ -111,7 +111,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private readonly string _showroomKn5Filename;
 
-        public ForwardKn5ObjectRenderer(CarDescription car, string showroomKn5Filename = null) {
+        public ForwardKn5ObjectRenderer([CanBeNull] CarDescription car, string showroomKn5Filename = null) {
             _showroomKn5Filename = showroomKn5Filename;
             CurrentShowroomKn5 = showroomKn5Filename;
 

@@ -1,67 +1,47 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
-        xmlns:nav="clr-namespace:FirstFloor.ModernUI.Windows.Navigation" xmlns:mui="clr-namespace:FirstFloor.ModernUI">
-    <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
-        <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
-    </ResourceDictionary.MergedDictionaries>
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+    <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
+  </ResourceDictionary.MergedDictionaries>
 
-    <Style TargetType="c:ModernFrame">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="BorderBrush" Value="{x:Null}" />
-        <Setter Property="HorizontalAlignment" Value="Stretch" />
-        <Setter Property="VerticalAlignment" Value="Stretch" />
-        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        <Setter Property="VerticalContentAlignment" Value="Stretch" />
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="c:ModernFrame">
-                    <ControlTemplate.Resources>
-                        <!-- render a nicely formatted error page when content is an exception -->
-                        <DataTemplate DataType="{x:Type sys:Exception}">
-                            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                                <StackPanel Margin="20">
-                                    <TextBlock Text="{Binding Source={x:Static mui:UiStrings.NavigationFailed}, Converter={StaticResource ToTitleConverter}}"
-                                            Style="{StaticResource Heading1}" />
-                                    <TextBlock Text="{Binding Message}" FontWeight="Bold" Foreground="#e51400" Margin="0 0 0 8" TextWrapping="Wrap" />
-                                    <TextBlock Text="{x:Static mui:UiStrings.Source}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding Source, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=c:ModernFrame}}"
-                                            Margin="0 0 0 8" />
-                                    <TextBlock Text="{x:Static mui:UiStrings.StackTrace}" FontWeight="Bold" />
-                                    <TextBlock Text="{Binding}" Style="{StaticResource Monospace}" Margin="0 0 0 16" TextWrapping="Wrap" />
-                                    <TextBlock Text="{x:Static mui:UiStrings.Suggestions}" FontWeight="Bold" />
-                                    <c:BbCodeBlock Text="{x:Static mui:UiStrings.SuggestionsMessage}">
-                                        <c:BbCodeBlock.LinkNavigator>
-                                            <nav:DefaultLinkNavigator />
-                                        </c:BbCodeBlock.LinkNavigator>
-                                    </c:BbCodeBlock>
-                                </StackPanel>
-                            </ScrollViewer>
-                        </DataTemplate>
-                    </ControlTemplate.Resources>
+  <Style TargetType="c:ModernFrame">
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="BorderBrush" Value="{x:Null}" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="VerticalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+    <Setter Property="VerticalContentAlignment" Value="Stretch" />
+    <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="c:ModernFrame">
+          <ControlTemplate.Resources>
+            <!-- render a nicely formatted error page when content is an exception -->
+            <DataTemplate DataType="{x:Type sys:Exception}">
+              <c:ExceptionDetails Exception="{Binding}" />
+            </DataTemplate>
+          </ControlTemplate.Resources>
 
-                    <Border HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                            Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                        <c:Cell HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"
-                                c:ModernFrame.KeepContentAlive="False">
-                            <c:TransitioningContentControl Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
-                                    ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Margin="{TemplateBinding Padding}"
-                                    Transition="{TemplateBinding TransitionName}" />
+          <Border HorizontalAlignment="{TemplateBinding HorizontalAlignment}" VerticalAlignment="{TemplateBinding VerticalAlignment}"
+              Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+            <c:Cell HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                Margin="{TemplateBinding Padding}" c:ModernFrame.KeepContentAlive="False">
+              <c:TransitioningContentControl Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}"
+                  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Margin="{TemplateBinding Padding}"
+                  Transition="{TemplateBinding TransitionName}" />
 
-                            <!-- display progress bar while content is being loaded -->
-                            <c:BooleanSwitch Value="{TemplateBinding IsLoadingContent}">
-                                <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0" />
-                            </c:BooleanSwitch>
-                        </c:Cell>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+              <!-- display progress bar while content is being loaded -->
+              <c:BooleanSwitch Value="{TemplateBinding IsLoadingContent}">
+                <ProgressBar IsIndeterminate="True" HorizontalAlignment="Stretch" VerticalAlignment="Top" Height="4" Margin="20 0 20 0" />
+              </c:BooleanSwitch>
+            </c:Cell>
+          </Border>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
 
 </ResourceDictionary>

@@ -201,7 +201,7 @@ namespace AcManager.CustomShowroom {
                         if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
-                        /*} else {
+                            /*} else {
                             LoadSkinItems();*/
                         }
                     }
@@ -227,9 +227,7 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand<Mode> _selectModeCommand;
 
-            public DelegateCommand<Mode> SelectModeCommand => _selectModeCommand ?? (_selectModeCommand = new DelegateCommand<Mode>(m => {
-                Mode = m;
-            }));
+            public DelegateCommand<Mode> SelectModeCommand => _selectModeCommand ?? (_selectModeCommand = new DelegateCommand<Mode>(m => { Mode = m; }));
 
             private DelegateCommand _transferToCmPreviewsCommand;
 
@@ -323,19 +321,45 @@ namespace AcManager.CustomShowroom {
 
             private class SaveableData {
                 public bool LiveReload;
-                [JsonProperty("cp")] public double[] CameraPosition = { 3.194, 0.342, 13.049 };
-                [JsonProperty("cl")] public double[] CameraLookAt = { 0, 0, 0 };
-                [JsonProperty("ti")] public float CameraTilt;
-                [JsonProperty("cf")] public float CameraFov = 36f;
-                [JsonProperty("co")] public bool CameraOrbit = true;
-                [JsonProperty("cr")] public bool CameraAutoRotate = true;
-                [JsonProperty("cd")] public double CameraAutoRotateSpeed = 1d;
-                [JsonProperty("cg")] public bool CameraAutoAdjustTarget = true;
-                [JsonProperty("sw")] public int ShotWidth = 1920;
-                [JsonProperty("sh")] public int ShotHeight = 1080;
-                [JsonProperty("sm")] public int ShotSizeMultiplier = 1;
-                [JsonProperty("sf")] public int ShotFormat = (int)RendererShotFormat.Jpeg;
-                [JsonProperty("sd")] public bool ShotDownsizeInTwo = true;
+
+                [JsonProperty("cp")]
+                public double[] CameraPosition = { 3.194, 0.342, 13.049 };
+
+                [JsonProperty("cl")]
+                public double[] CameraLookAt = { 0, 0, 0 };
+
+                [JsonProperty("ti")]
+                public float CameraTilt;
+
+                [JsonProperty("cf")]
+                public float CameraFov = 36f;
+
+                [JsonProperty("co")]
+                public bool CameraOrbit = true;
+
+                [JsonProperty("cr")]
+                public bool CameraAutoRotate = true;
+
+                [JsonProperty("cd")]
+                public double CameraAutoRotateSpeed = 1d;
+
+                [JsonProperty("cg")]
+                public bool CameraAutoAdjustTarget = true;
+
+                [JsonProperty("sw")]
+                public int ShotWidth = 1920;
+
+                [JsonProperty("sh")]
+                public int ShotHeight = 1080;
+
+                [JsonProperty("sm")]
+                public int ShotSizeMultiplier = 1;
+
+                [JsonProperty("sf")]
+                public int ShotFormat = (int)RendererShotFormat.Jpeg;
+
+                [JsonProperty("sd")]
+                public bool ShotDownsizeInTwo = true;
             }
 
             protected ISaveHelper Saveable { get; }
@@ -363,7 +387,6 @@ namespace AcManager.CustomShowroom {
 
                 Saveable = new SaveHelper<SaveableData>(KeySavedData, () => new SaveableData {
                     LiveReload = renderer.MagickOverride,
-
                     CameraPosition = CameraPosition.ToArray(),
                     CameraLookAt = CameraLookAt.ToArray(),
                     CameraTilt = CameraTilt,
@@ -372,7 +395,6 @@ namespace AcManager.CustomShowroom {
                     CameraAutoRotate = CameraAutoRotate,
                     CameraAutoRotateSpeed = CameraAutoRotateSpeed,
                     CameraAutoAdjustTarget = CameraAutoAdjustTarget,
-
                     ShotWidth = ShotWidth,
                     ShotHeight = ShotHeight,
                     ShotSizeMultiplier = ShotSizeMultiplier,
@@ -432,13 +454,14 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand<string> _shotSetResolutionCommand;
 
-            public DelegateCommand<string> ShotSetResolutionCommand => _shotSetResolutionCommand ?? (_shotSetResolutionCommand = new DelegateCommand<string>(s => {
-                var d = s?.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
-                if (d?.Length == 2) {
-                    ShotWidth = d[0].As<int>();
-                    ShotHeight = d[1].As<int>();
-                }
-            }));
+            public DelegateCommand<string> ShotSetResolutionCommand
+                => _shotSetResolutionCommand ?? (_shotSetResolutionCommand = new DelegateCommand<string>(s => {
+                    var d = s?.Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (d?.Length == 2) {
+                        ShotWidth = d[0].As<int>();
+                        ShotHeight = d[1].As<int>();
+                    }
+                }));
 
             public string DisplayShotSize => $"{ShotWidth * ShotSizeMultiplier}×{ShotHeight * ShotSizeMultiplier}";
 
@@ -638,16 +661,16 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _resetCameraCommand;
 
-            public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => {
-                Renderer?.ResetCamera();
-            }));
+            public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(() => { Renderer?.ResetCamera(); }));
 
             private DelegateCommand _loadPresetCameraCommand;
 
             public DelegateCommand LoadPresetCameraCommand => _loadPresetCameraCommand ?? (_loadPresetCameraCommand = new DelegateCommand(() => {
                 try {
-                    var showroomPresetsDirectory = PresetsManager.Instance.EnsureDirectory(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue));
-                    var previewsPresetsDirectory = PresetsManager.Instance.EnsureDirectory(new PresetsCategory(CmPreviewsSettings.DefaultPresetableKeyValue));
+                    var showroomPresetsDirectory =
+                            PresetsManager.Instance.EnsureDirectory(new PresetsCategory(DarkRendererSettingsValues.DefaultPresetableKeyValue));
+                    var previewsPresetsDirectory =
+                            PresetsManager.Instance.EnsureDirectory(new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue));
 
                     var dialog = new OpenFileDialog {
                         InitialDirectory = showroomPresetsDirectory,
@@ -802,9 +825,7 @@ namespace AcManager.CustomShowroom {
                         break;
 
                     case nameof(Renderer.SelectedMaterial):
-                        ActionExtension.InvokeInMainThread(() => {
-                            _viewMaterialCommand?.RaiseCanExecuteChanged();
-                        });
+                        ActionExtension.InvokeInMainThread(() => { _viewMaterialCommand?.RaiseCanExecuteChanged(); });
                         break;
                 }
             }
@@ -812,15 +833,15 @@ namespace AcManager.CustomShowroom {
             private DelegateCommand _toggleAmbientShadowModeCommand;
 
             public DelegateCommand ToggleAmbientShadowModeCommand
-                => _toggleAmbientShadowModeCommand ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => {
-                    Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows;
-                }));
+                =>
+                        _toggleAmbientShadowModeCommand
+                                ?? (_toggleAmbientShadowModeCommand =
+                                        new DelegateCommand(() => { Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows; }));
 
             private DelegateCommand _mainModeCommand;
 
-            public DelegateCommand MainModeCommand => _mainModeCommand ?? (_mainModeCommand = new DelegateCommand(() => {
-                Mode = Mode.Main;
-            }, () => Mode != Mode.Main));
+            public DelegateCommand MainModeCommand
+                => _mainModeCommand ?? (_mainModeCommand = new DelegateCommand(() => { Mode = Mode.Main; }, () => Mode != Mode.Main));
 
             private AsyncCommand _updateKn5Command;
 
@@ -838,21 +859,17 @@ namespace AcManager.CustomShowroom {
             #region Commands
             private DelegateCommand _nextSkinCommand;
 
-            public DelegateCommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new DelegateCommand(() => {
-                Renderer?.SelectNextSkin();
-            }));
+            public DelegateCommand NextSkinCommand => _nextSkinCommand ?? (_nextSkinCommand = new DelegateCommand(() => { Renderer?.SelectNextSkin(); }));
 
             private DelegateCommand _previewSkinCommand;
 
-            public DelegateCommand PreviewSkinCommand => _previewSkinCommand ?? (_previewSkinCommand = new DelegateCommand(() => {
-                Renderer?.SelectPreviousSkin();
-            }));
+            public DelegateCommand PreviewSkinCommand
+                => _previewSkinCommand ?? (_previewSkinCommand = new DelegateCommand(() => { Renderer?.SelectPreviousSkin(); }));
 
             private DelegateCommand _openSkinDirectoryCommand;
 
-            public DelegateCommand OpenSkinDirectoryCommand => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => {
-                Skin.ViewInExplorer();
-            }, () => Skin != null));
+            public DelegateCommand OpenSkinDirectoryCommand
+                => _openSkinDirectoryCommand ?? (_openSkinDirectoryCommand = new DelegateCommand(() => { Skin.ViewInExplorer(); }, () => Skin != null));
 
             private AsyncCommand _unpackKn5Command;
 
@@ -914,7 +931,7 @@ namespace AcManager.CustomShowroom {
                     MaxWidth = 640
                 };
 
-                dlg.Buttons = buttons?.Invoke(dlg).Append(dlg.OkButton) ?? new[]{ dlg.OkButton };
+                dlg.Buttons = buttons?.Invoke(dlg).Append(dlg.OkButton) ?? new[] { dlg.OkButton };
                 AttachedHelper.GetInstance(_renderer)?.Attach(text, dlg);
             }
 
@@ -974,7 +991,7 @@ namespace AcManager.CustomShowroom {
                     sb.Append(material.TextureMappings.Select(x => $"    • {x.Name}: [b]{x.Texture}[/b]").JoinToString('\n'));
                 }
 
-                ShowMessage(sb.ToString(), material.Name, d => new [] {
+                ShowMessage(sb.ToString(), material.Name, d => new[] {
                     d.CreateCloseDialogButton("Change values", false, false, MessageBoxResult.OK, ChangeMaterialCommand)
                 });
             }, () => Renderer?.SelectedMaterial != null));

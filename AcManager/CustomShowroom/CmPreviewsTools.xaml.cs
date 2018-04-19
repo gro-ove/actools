@@ -336,7 +336,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private static string GetPresetName() {
-            return Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(CmPreviewsSettings.DefaultPresetableKeyValue));
+            return Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(CmPreviewsSettingsValues.DefaultPresetableKeyValue));
         }
 
         private static ImageUtils.ImageInformation GetInformation(CarObject car, CarSkinObject skin, string presetName, string checksum) {
@@ -356,15 +356,24 @@ namespace AcManager.CustomShowroom {
         }
 
         private class Updater {
+            [NotNull]
             private readonly IReadOnlyList<ToUpdatePreview> _entries;
+
+            [NotNull]
             private readonly DarkPreviewsOptions _options;
+
+            [CanBeNull]
             private readonly string _presetName;
+
+            [NotNull]
             private readonly DarkPreviewsUpdater _updater;
+
             private readonly bool _localUpdater;
             private readonly List<UpdatePreviewError> _errors = new List<UpdatePreviewError>();
             private DispatcherTimer _dispatcherTimer;
 
-            public Updater(IReadOnlyList<ToUpdatePreview> entries, DarkPreviewsOptions options, string presetName, DarkPreviewsUpdater updater) {
+            public Updater([NotNull] IReadOnlyList<ToUpdatePreview> entries, [NotNull] DarkPreviewsOptions options, [CanBeNull] string presetName,
+                    [CanBeNull] DarkPreviewsUpdater updater) {
                 _entries = entries;
                 _options = options;
                 _presetName = presetName;
@@ -579,8 +588,8 @@ namespace AcManager.CustomShowroom {
         }
 
         [ItemCanBeNull]
-        private static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync(IReadOnlyList<ToUpdatePreview> entries, DarkPreviewsOptions options,
-                string presetName = null, DarkPreviewsUpdater updater = null) {
+        private static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync([NotNull] IReadOnlyList<ToUpdatePreview> entries,
+                [NotNull] DarkPreviewsOptions options, string presetName = null, DarkPreviewsUpdater updater = null) {
             return new Updater(entries, options, presetName, updater).Run();
         }
 
@@ -589,14 +598,21 @@ namespace AcManager.CustomShowroom {
         /// </summary>
         [ItemCanBeNull]
         public static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync(IReadOnlyList<ToUpdatePreview> entries, string presetFilename = null) {
-            return UpdatePreviewAsync(entries, CmPreviewsSettings.GetSavedOptions(presetFilename), GetPresetName());
+            try {
+                return UpdatePreviewAsync(entries, CmPreviewsSettings.GetSavedOptions(presetFilename) ?? throw new Exception("Can’t load options"),
+                        GetPresetName());
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t update preview", e);
+                return null;
+            }
         }
 
         /// <summary>
         /// Get checksum of specified preset.
         /// </summary>
+        [CanBeNull]
         public static string GetChecksum(string presetFilename = null) {
-            return CmPreviewsSettings.GetSavedOptions(presetFilename).GetChecksum();
+            return CmPreviewsSettings.GetSavedOptions(presetFilename)?.GetChecksum();
         }
     }
 

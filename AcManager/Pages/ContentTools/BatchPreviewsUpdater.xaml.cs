@@ -435,7 +435,7 @@ namespace AcManager.Pages.ContentTools {
             if (UpdatePreviewsPresets == null) {
                 UpdatePreviewsPresets = _helper.Create(
                         new PresetsCategory(SettingsHolder.CustomShowroom.CustomShowroomPreviews
-                                ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
+                                ? CmPreviewsSettingsValues.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                         p => {
                             if (_runButtonClicked) {
                                 Run(p.VirtualFilename).Forget();

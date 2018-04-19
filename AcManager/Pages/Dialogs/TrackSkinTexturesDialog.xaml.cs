@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Controls.Dialogs;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools;
@@ -262,7 +263,7 @@ namespace AcManager.Pages.Dialogs {
                     Owner = Application.Current?.MainWindow
                 }.ShowDialog();
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t load textures", e);
+                VisualCppTool.OnException(e, "Can’t load textures");
             }
         }
 

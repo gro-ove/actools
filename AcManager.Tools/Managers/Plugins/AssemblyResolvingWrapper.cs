@@ -1,4 +1,5 @@
-﻿using AcTools.Utils;
+﻿using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Managers.Plugins {
@@ -10,6 +11,13 @@ namespace AcManager.Tools.Managers.Plugins {
         public AssemblyResolvingWrapper([NotNull] string id, AssemblyResolver resolver) {
             Id = id;
             _resolver = resolver;
+            _resolver.Error += OnResolverError;
+        }
+
+        private void OnResolverError(object sender, AssemblyResolverErrorEventArgs args) {
+            if (VisualCppTool.OnException(args.Exception, null)) {
+                args.Handled = true;
+            }
         }
 
         public void Enable() {

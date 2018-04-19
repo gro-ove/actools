@@ -1,12 +1,17 @@
 using System;
+using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class NonfatalErrorSolution : AsyncCommand {
+        public static Uri IconsDictionary { get; set; }
+
         [CanBeNull]
         private readonly NonfatalErrorEntry _entry;
 
@@ -15,6 +20,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [NotNull]
         public string DisplayName { get; }
+
+        [CanBeNull]
+        public string IconKey { get; }
+
+        [CanBeNull]
+        public Geometry IconData => IconKey == null || IconsDictionary == null ? null :
+                new SharedResourceDictionary { Source = IconsDictionary }[IconKey] as Geometry;
 
         private bool _solved;
 
@@ -28,11 +40,12 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public NonfatalErrorSolution([CanBeNull] string displayName, [CanBeNull] NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute)
-                : base(() => Task.Delay(0), () => execute != null) {
+        public NonfatalErrorSolution([CanBeNull] string displayName, [CanBeNull] NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute,
+                [Localizable(false)] string iconKey = null) : base(() => Task.Delay(0), () => execute != null) {
+            DisplayName = displayName ?? "Fix it";
+            IconKey = iconKey;
             _entry = entry;
             _execute = execute;
-            DisplayName = displayName ?? "Fix it";
         }
 
         protected override bool CanExecuteOverride() {

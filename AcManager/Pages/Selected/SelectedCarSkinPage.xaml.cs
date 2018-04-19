@@ -140,7 +140,7 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeCustomShowroomPresets() {
                 if (CustomShowroomPresets == null) {
-                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettings.DefaultPresetableKeyValue), p => {
+                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettingsValues.DefaultPresetableKeyValue), p => {
                         CustomShowroomWrapper.StartAsync(Car, SelectedObject, p.VirtualFilename);
                     });
                 }
@@ -158,7 +158,7 @@ namespace AcManager.Pages.Selected {
                 if (UpdatePreviewsPresets == null) {
                     UpdatePreviewsPresets = _helper.Create(new PresetsCategory(
                             SettingsHolder.CustomShowroom.CustomShowroomPreviews
-                                    ? CmPreviewsSettings.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
+                                    ? CmPreviewsSettingsValues.DefaultPresetableKeyValue : CarUpdatePreviewsDialog.PresetableKeyValue),
                             p => new ToUpdatePreview(Car, SelectedObject).Run(p.VirtualFilename));
                 }
             }

@@ -50,10 +50,12 @@ namespace AcManager.CustomShowroom {
         Blurred = 2
     }
 
-    public class DarkRendererSettings : NotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider, ILinkNavigator {
+    public class DarkRendererSettingsValues {
         public static readonly string DefaultKey = "__DarkRendererSettings";
         public static readonly string DefaultPresetableKeyValue = "Custom Showroom";
+    }
 
+    public class DarkRendererSettings : NotifyPropertyChanged, IUserPresetable, IDarkLightsDescriptionProvider, ILinkNavigator {
         [NotNull]
         public DarkKn5ObjectRenderer Renderer { get; }
 
@@ -106,10 +108,10 @@ namespace AcManager.CustomShowroom {
                            .ToArray();
 
         public static void ResetHeavy() {
-            if (!ValuesStorage.Contains(DefaultKey)) return;
+            if (!ValuesStorage.Contains(DarkRendererSettingsValues.DefaultKey)) return;
 
             try {
-                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(DefaultKey));
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(DarkRendererSettingsValues.DefaultKey));
                 data.MsaaMode = 0;
                 data.SsaaMode = 1;
                 data.ShadowMapSize = 2048;
@@ -121,7 +123,7 @@ namespace AcManager.CustomShowroom {
                 data.UseDof = false;
                 data.UseAccumulationDof = false;
                 data.FlatMirrorBlurred = false;
-                ValuesStorage.Set(DefaultKey, JsonConvert.SerializeObject(data));
+                ValuesStorage.Set(DarkRendererSettingsValues.DefaultKey, JsonConvert.SerializeObject(data));
             } catch (Exception e) {
                 Logging.Warning(e);
             }
@@ -695,7 +697,7 @@ namespace AcManager.CustomShowroom {
 
         [NotNull]
         protected virtual ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, () => Save(CreateSaveableData()), Load);
+            return new SaveHelper<SaveableData>(DarkRendererSettingsValues.DefaultKey, () => Save(CreateSaveableData()), Load);
         }
 
         internal bool HasSavedData {
@@ -825,7 +827,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        public DarkRendererSettings(DarkKn5ObjectRenderer renderer) : this(renderer, DefaultPresetableKeyValue) {
+        public DarkRendererSettings(DarkKn5ObjectRenderer renderer) : this(renderer, DarkRendererSettingsValues.DefaultPresetableKeyValue) {
             // Initialize(false);
         }
 

@@ -23,8 +23,10 @@ namespace AcManager.Controls {
     public interface ICustomShowroomWrapper {
         // Task StartAsync(string kn5, string skinId = null, string presetFilename = null);
 
-        Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null);
+        [NotNull]
+        Task StartAsync([CanBeNull] CarObject car, CarSkinObject skin = null, string presetFilename = null);
 
+        [NotNull]
         string PresetableKeyValue { get; }
     }
 
@@ -319,9 +321,10 @@ namespace AcManager.Controls {
             contextMenu.Items.Add(item);
 
             // presets
-            if (CustomShowroomWrapper != null) {
+            var value = CustomShowroomWrapper?.PresetableKeyValue;
+            if (value != null) {
                 item = new MenuItem { Header = "Custom showroom presets" };
-                foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(CustomShowroomWrapper.PresetableKeyValue),
+                foreach (var menuItem in PresetsMenuHelper.GroupPresets(new PresetsCategory(value),
                         p => CustomShowroomWrapper.StartAsync(car, skin, p.VirtualFilename))) {
                     item.Items.Add(menuItem);
                 }

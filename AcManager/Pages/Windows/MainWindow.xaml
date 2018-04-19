@@ -275,7 +275,7 @@
 
           <StackPanel Visibility="{Binding HasUnseen, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <MenuItem Command="{Binding ViewErrorsCommand, Source={x:Static mui:NonfatalError.Instance}}"
-                Header="{Binding Errors.Count, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource PluralizingConverter}, ConverterParameter='Barely handled: {0} {error}'}">
+                Header="{Binding Errors.Count, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource PluralizingConverter}, ConverterParameter='Caught {0} {error}'}">
               <MenuItem.Resources>
                 <!-- ReSharper disable once Xaml.RedundantResource -->
                 <SolidColorBrush x:Key="ItemText" Color="{DynamicResource ErrorColor}" />

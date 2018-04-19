@@ -59,16 +59,5 @@ namespace AcManager.Tools {
             var dialog = new CarUpdatePreviewsDialog(list, actualMode, presetFilename);
             return Task.FromResult<IReadOnlyList<UpdatePreviewError>>(dialog.ShowDialog() ? dialog.Errors.ToList() : null);
         }
-
-        /*public static Task Run(this ToUpdatePreview toUpdate, UpdatePreviewMode? mode = null) {
-            return new[] { toUpdate }.Run(mode);
-        }
-
-        public static async Task Run(this IEnumerable<ToUpdatePreview> toUpdate, UpdatePreviewMode? mode = null) {
-            var errors = await toUpdate.Try(mode);
-            if (errors?.Count > 0) {
-                NonfatalError.Notify("Can’t update previews", errors.Select(x => x.Message.ToSentence()).JoinToString(Environment.NewLine));
-            }
-        }*/
     }
 }

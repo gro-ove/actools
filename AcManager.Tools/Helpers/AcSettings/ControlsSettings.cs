@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -1387,6 +1388,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
         #endregion
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public void FixControllersOrder() {
             if (Devices.Count == 0) {
                 Logging.Warning("Devices are not yet scanned, scanning…");

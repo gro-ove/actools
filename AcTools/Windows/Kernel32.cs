@@ -134,8 +134,17 @@ namespace AcTools.Windows {
             }
         }
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode)]
-        public static extern int AddDllDirectory(string newDirectory);
+        [DllImport("kernel32", EntryPoint = "AddDllDirectory", CharSet = CharSet.Unicode)]
+        private static extern int AddDllDirectoryInner(string directory);
+
+        public static void AddDllDirectory(string directory) {
+            try {
+                AddDllDirectoryInner(directory);
+            } catch (Exception e) {
+                AcToolsLogging.Write(e.Message);
+                Environment.SetEnvironmentVariable("PATH", Environment.GetEnvironmentVariable("PATH") + ";" + directory);
+            }
+        }
 
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]

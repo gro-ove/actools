@@ -125,7 +125,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
-                            PresetsManager.Instance.GetDirectory(DarkRendererSettings.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
+                            PresetsManager.Instance.GetDirectory(DarkRendererSettingsValues.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     return ArgumentHandleResult.SuccessfulShow;
@@ -139,7 +139,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                     var filename = FileUtils.EnsureUnique(Path.Combine(
-                            PresetsManager.Instance.GetDirectory(CmPreviewsSettings.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
+                            PresetsManager.Instance.GetDirectory(CmPreviewsSettingsValues.DefaultPresetableKeyValue), @"Loaded", shared.GetFileName()));
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     return ArgumentHandleResult.SuccessfulShow;

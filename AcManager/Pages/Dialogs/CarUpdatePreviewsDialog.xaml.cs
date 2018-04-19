@@ -216,7 +216,7 @@ namespace AcManager.Pages.Dialogs {
             }
 
             public void EnsureInstalled() {
-                var destination = Path.Combine(AcPaths.GetPpFiltersDirectory(AcRootDirectory.Instance.Value), Filename);
+                var destination = Path.Combine(AcPaths.GetPpFiltersDirectory(AcRootDirectory.Instance.RequireValue), Filename);
                 if (File.Exists(destination) && new FileInfo(destination).Length == Content.Length) return;
 
                 // don’t ignore changes because why? list will be updated, but it’s not a bad thing
@@ -336,7 +336,7 @@ namespace AcManager.Pages.Dialogs {
             using (var dialog = new WaitingDialog(showroomName)) {
                 dialog.Report(ControlsStrings.Common_Downloading);
 
-                var destination = AcPaths.GetShowroomsDirectory(AcRootDirectory.Instance.Value);
+                var destination = AcPaths.GetShowroomsDirectory(AcRootDirectory.Instance.RequireValue);
                 var data = await CmApiProvider.GetStaticDataBytesAsync(showroomId, TimeSpan.FromDays(3), dialog, dialog.CancellationToken);
 
                 if (data == null) {

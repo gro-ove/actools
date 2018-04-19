@@ -19,6 +19,7 @@
 
     <ResourceDictionary Source="DatePicker.xaml" />
     <ResourceDictionary Source="Easing.xaml" />
+    <ResourceDictionary Source="ExceptionDetails.xaml" />
     <ResourceDictionary Source="Expander.xaml" />
     <ResourceDictionary Source="Fonts.xaml" />
     <ResourceDictionary Source="GridSplitter.xaml" />

@@ -15,8 +15,7 @@
   </co:ModernDialog.Resources>
   <ListBox x:Name="List" SelectionMode="Extended" ItemsSource="{Binding Errors}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling" ScrollViewer.CanContentScroll="True"
-      VirtualizingPanel.ScrollUnit="Pixel" SelectionChanged="OnSelectionChanged" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}"
-      Margin="-24 0">
+      VirtualizingPanel.ScrollUnit="Pixel" SelectionChanged="OnSelectionChanged" ItemContainerStyle="{StaticResource RibbonListBoxItem.Left}" Margin="-24 0">
     <ListBox.ItemTemplate>
       <DataTemplate>
         <DockPanel Margin="0 4 0 4" TextBlock.FontWeight="Normal">
@@ -24,7 +23,13 @@
               Visibility="{Binding HasSolutions, Converter={StaticResource BooleanToVisibilityConverter}}">
             <ItemsControl.ItemTemplate>
               <DataTemplate DataType="{x:Type h:NonfatalErrorSolution}">
-                <Button Content="{Binding DisplayName}" Command="{Binding}" />
+                <Button Command="{Binding}">
+                  <DockPanel>
+                    <Path Data="{Binding IconData}" Stretch="Uniform" Fill="{DynamicResource Accent}" Margin="0 0 6 -1" VerticalAlignment="Center" Width="12"
+                        Height="12" Visibility="{Binding IconData, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBlock Text="{Binding DisplayName}" />
+                  </DockPanel>
+                </Button>
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>

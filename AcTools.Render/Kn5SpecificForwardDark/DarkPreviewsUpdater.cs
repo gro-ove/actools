@@ -45,7 +45,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        public void SetOptions(DarkPreviewsOptions options) {
+        public void SetOptions([NotNull] DarkPreviewsOptions options) {
             _options = options;
 
             if (_renderer != null) {
@@ -55,13 +55,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private CarDescription GetCarDescription(string carId, [CanBeNull] DataWrapper carData) {
+        private CarDescription GetCarDescription([NotNull] string carId, [CanBeNull] DataWrapper carData) {
             var carDirectory = AcPaths.GetCarDirectory(_acRoot, carId);
             var carKn5 = carData == null ? AcPaths.GetMainCarFilename(carDirectory) : AcPaths.GetMainCarFilename(carDirectory, carData);
             return new CarDescription(carKn5, carDirectory);
         }
 
-        private static Vector3 ToVector3(double[] v) {
+        private static Vector3 ToVector3([NotNull] double[] v) {
             return new Vector3((float)v[0], (float)v[1], (float)v[2]);
         }
 
@@ -81,7 +81,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         [CanBeNull]
-        private static string GetShowroomKn5(string acRoot, string showroomValue) {
+        private static string GetShowroomKn5([NotNull] string acRoot, [CanBeNull] string showroomValue) {
             try {
                 if (showroomValue == null || File.Exists(showroomValue)) return showroomValue;
                 var kn5 = Path.Combine(AcPaths.GetShowroomDirectory(acRoot, showroomValue), $"{showroomValue}.kn5");
@@ -92,7 +92,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        private static DarkKn5ObjectRenderer CreateRenderer(string acRoot, DarkPreviewsOptions options, CarDescription initialCar, string initialSkinId) {
+        private static DarkKn5ObjectRenderer CreateRenderer([NotNull] string acRoot, [NotNull] DarkPreviewsOptions options,
+                [CanBeNull] CarDescription initialCar, [CanBeNull] string initialSkinId) {
             var renderer = new DarkKn5ObjectRenderer(initialCar, GetShowroomKn5(acRoot, options.Showroom)) {
                 LoadCarLights = true,
                 LoadShowroomLights = true
@@ -105,7 +106,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return renderer;
         }
 
-        private static void SetRendererOptions(string acRoot, DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {
+        private static void SetRendererOptions([NotNull] string acRoot, [NotNull] DarkKn5ObjectRenderer renderer, [NotNull] DarkPreviewsOptions options) {
             var showroomKn5 = GetShowroomKn5(acRoot, options.Showroom);
             if (showroomKn5 != renderer.CurrentShowroomKn5) {
                 renderer.SetShowroom(showroomKn5);
@@ -200,7 +201,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.LoadShowroomLights = options.LoadShowroomLights;
         }
 
-        private static void SetRendererCarOptions(DarkKn5ObjectRenderer renderer, DarkPreviewsOptions options) {
+        private static void SetRendererCarOptions([NotNull] DarkKn5ObjectRenderer renderer, [NotNull] DarkPreviewsOptions options) {
             var car = renderer.CarNode;
             if (car != null) {
                 car.HeadlightsEnabled = options.HeadlightsEnabled;
@@ -232,7 +233,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private long _processingNow;
 
-        private void ProcessConvertation(Action action, Action disposal) {
+        private void ProcessConvertation([NotNull] Action action, [NotNull] Action disposal) {
             if (!_options.DelayedConvertation) {
                 try {
                     action.Invoke();
@@ -265,7 +266,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             return dispose.Dispose;
         }
 
-        private void ShotInner(string carId, string skinId, string destination, ImageUtils.ImageInformation information, Action callback) {
+        private void ShotInner([NotNull] string carId, [NotNull] string skinId, [CanBeNull] string destination,
+                [CanBeNull] ImageUtils.ImageInformation information, [CanBeNull] Action callback) {
             if (destination == null) {
                 destination = Path.Combine(AcPaths.GetCarSkinDirectory(_acRoot, carId, skinId), _options.PreviewName);
             }
@@ -289,7 +291,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }, DisposeCallback(shotStream));
         }
 
-        private Task ShotInnerAsync(string carId, string skinId, string destination, ImageUtils.ImageInformation information, Action callback) {
+        private Task ShotInnerAsync([NotNull] string carId, [NotNull] string skinId, [CanBeNull] string destination,
+                [CanBeNull] ImageUtils.ImageInformation information, [CanBeNull] Action callback) {
             return Task.Run(() => ShotInner(carId, skinId, destination, information, callback));
         }
 
@@ -302,7 +305,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         /// <param name="carData">Car data (provide it only if it’s already loaded, so Updater won’t load it again).</param>
         /// <param name="information">Some lines for EXIF data, optional.</param>
         /// <param name="callback">Callback in sync version? Because, with Delayed Convertation enabled, even sync version is not so sync.</param>
-        public void Shot(string carId, string skinId, string destination = null, DataWrapper carData = null, ImageUtils.ImageInformation information = null,
+        public void Shot([NotNull] string carId, [NotNull] string skinId, string destination = null, DataWrapper carData = null, ImageUtils.ImageInformation information = null,
                 Action callback = null) {
             if (_carId != carId) {
                 if (_renderer == null) {
@@ -329,7 +332,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         /// <param name="carData">Car data (provide it only if it’s already loaded, so Updater won’t load it again).</param>
         /// <param name="information">Some lines for EXIF data, optional.</param>
         /// <param name="callback">Callback in Task version? Because, with Delayed Convertation enabled, image might be saved later.</param>
-        public async Task ShotAsync(string carId, string skinId, string destination = null, DataWrapper carData = null,
+        public async Task ShotAsync([NotNull] string carId, [NotNull] string skinId, string destination = null, DataWrapper carData = null,
                 ImageUtils.ImageInformation information = null, Action callback = null) {
             if (_carId != carId) {
                 if (_renderer == null) {

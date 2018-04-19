@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -107,6 +108,8 @@ namespace AcManager {
                 if (MathUtils.Random(0, 10) == 0) {
                     LazierCached.Purge();
                 }
+
+                FatalErrorHandler.FatalError += OnFatalError;
             }
 
             if (AppArguments.GetBool(AppFlag.NoProxy, true)) {
@@ -141,6 +144,15 @@ namespace AcManager {
             }
 
             app.Run();
+        }
+
+        private static void OnFatalError(object o, FatalErrorEventArgs args) {
+            try {
+                ValuesStorage.Remove("MainWindow_link");
+                ValuesStorage.Remove("MainWindow__drive");
+            } catch {
+                // ignored
+            }
         }
 
         public static bool IsSoftwareRenderingModeEnabled() {
@@ -285,6 +297,7 @@ namespace AcManager {
 
             /*AppAppearanceManager.OptionIdealFormattingModeDefaultValue = AppArguments.GetBool(AppFlag.IdealFormattingMode,
                     !Equals(DpiAwareWindow.OptionScale, 1d));*/
+            NonfatalErrorSolution.IconsDictionary = new Uri("/AcManager.Controls;component/Assets/IconData.xaml", UriKind.Relative);
             AppearanceManager.DefaultValuesSource = new Uri("/AcManager.Controls;component/Assets/ModernUI.Default.xaml", UriKind.Relative);
             AppAppearanceManager.Initialize(Pages.Windows.MainWindow.GetTitleLinksEntries());
             VisualExtension.RegisterInput<WebBlock>();
@@ -452,17 +465,23 @@ namespace AcManager {
 
             AppArguments.Set(AppFlag.RunRaceInformationWebserver, ref PlayerStatsManager.OptionRunStatsWebserver);
             AppArguments.Set(AppFlag.RaceInformationWebserverFile, ref PlayerStatsManager.OptionWebserverFilename);
+
             PlayerStatsManager.Instance.SetListener();
+            RhmService.Instance.SetListener();
 
             WheelOptionsBase.SetStorage(new WheelAnglesStorage());
-
-            // AppArguments.Set(AppFlag.RhmKeepAlive, ref RhmService.OptionKeepRunning);
-            RhmService.Instance.SetListener();
 
             _hibernator = new AppHibernator();
             _hibernator.SetListener();
 
-            AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
+            VisualCppTool.Initialize(FilesStorage.Instance.GetDirectory("Plugins", "NativeLibs"));
+
+            try {
+                SetRenderersOptions();
+            } catch (Exception e) {
+                VisualCppTool.OnException(e, null);
+            }
+
             CommonFixes.Initialize();
 
             CmPreviewsTools.MissingShowroomHelper = new CarUpdatePreviewsDialog.MissingShowroomHelper();
@@ -478,7 +497,7 @@ namespace AcManager {
             if (SettingsHolder.Integrated.DiscordIntegration) {
                 AppArguments.Set(AppFlag.DiscordVerbose, ref DiscordConnector.OptionVerboseMode);
                 DiscordConnector.Initialize(AppArguments.Get(AppFlag.DiscordClientId) ?? InternalUtils.GetDiscordClientId(), new DiscordHandler());
-                DiscordImage.OptionDefaultImage = "track_ks_brands_hatch";
+                DiscordImage.OptionDefaultImage = @"track_ks_brands_hatch";
                 GameWrapper.Started += (sender, args) => args.StartProperties.SetAdditional(new GameDiscordPresence(args.StartProperties, args.Mode));
             }
 
@@ -501,6 +520,11 @@ namespace AcManager {
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void SetRenderersOptions() {
+            AppArguments.Set(AppFlag.TrackMapGeneratorMaxSize, ref TrackMapRenderer.OptionMaxSize);
         }
 
         protected override void OnStartup(StartupEventArgs e) {
@@ -591,7 +615,11 @@ namespace AcManager {
                 AppArguments.Set(AppFlag.SimilarThreshold, ref CarAnalyzer.OptionSimilarThreshold);
 
                 if (SettingsHolder.Drive.ScanControllersAutomatically) {
-                    DirectInputScanner.GetAsync().Forget();
+                    try {
+                        InitializeDirectInputScanner();
+                    } catch (Exception e) {
+                        VisualCppTool.OnException(e, null);
+                    }
                 }
 
                 string additional = null;
@@ -705,15 +733,29 @@ namespace AcManager {
             TrackStatesHelper.Initialize();
         }
 
-        private void OnProcessExit(object sender, EventArgs e) {
+        private void OnProcessExit(object sender, EventArgs args) {
             Logging.Flush();
             Storage.SaveBeforeExit();
             KunosCareerProgress.SaveBeforeExit();
             UserChampionshipsProgress.SaveBeforeExit();
             RhmService.Instance.Dispose();
             DiscordConnector.Instance?.Dispose();
-            DirectInputScanner.Shutdown();
+            try {
+                ShutdownDirectInputScanner();
+            } catch (Exception e) {
+                Logging.Error(e.Message);
+            }
             Dispose();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void InitializeDirectInputScanner() {
+            DirectInputScanner.GetAsync().Forget();
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void ShutdownDirectInputScanner() {
+            DirectInputScanner.Shutdown();
         }
 
         public void Dispose() {

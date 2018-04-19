@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.AiFile;
 using AcTools.Kn5File;
@@ -18,12 +19,13 @@ namespace AcManager.CustomShowroom {
     public class TrackMapRendererWrapper : BaseKn5FormWrapper {
         private AttachedHelper _helper;
 
-        protected class TrackMapCameraControlHelper : Kn5WrapperCameraControlHelper {
+        private class TrackMapCameraControlHelper : Kn5WrapperCameraControlHelper {
             public override void CameraMouseRotate(IKn5ObjectRenderer renderer, double dx, double dy, double height, double width) {
                 var preparationRenderer = (TrackMapPreparationRenderer)renderer;
                 var camera = preparationRenderer.CameraOrtho;
                 if (camera != null) {
-                    camera.Move(new Vector3((float)(-dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
+                    camera.Move(new Vector3((float)(-dx * camera.Width / preparationRenderer.Width), 0f,
+                            (float)(-dy * camera.Height / preparationRenderer.Height)));
                     preparationRenderer.AutoResetCamera = false;
                     preparationRenderer.IsDirty = true;
                 }
@@ -33,7 +35,8 @@ namespace AcManager.CustomShowroom {
                 var preparationRenderer = (TrackMapPreparationRenderer)renderer;
                 var camera = preparationRenderer.CameraOrtho;
                 if (camera != null) {
-                    camera.Move(new Vector3((float)(dx * camera.Width / preparationRenderer.Width), 0f, (float)(-dy * camera.Height / preparationRenderer.Height)));
+                    camera.Move(new Vector3((float)(dx * camera.Width / preparationRenderer.Width), 0f,
+                            (float)(-dy * camera.Height / preparationRenderer.Height)));
                     preparationRenderer.AutoResetCamera = false;
                     preparationRenderer.IsDirty = true;
                 }
@@ -50,8 +53,6 @@ namespace AcManager.CustomShowroom {
             return new TrackMapCameraControlHelper();
         }
 
-        public new TrackMapPreparationRenderer Renderer => (TrackMapPreparationRenderer)base.Renderer;
-
         public TrackMapRendererWrapper(TrackObjectBase track, TrackMapPreparationRenderer renderer) : base(renderer, track.Name, 680, 680) {
             _helper = new AttachedHelper(this, new TrackMapRendererTools(track, renderer), 240);
         }
@@ -61,7 +62,16 @@ namespace AcManager.CustomShowroom {
             Helper.CameraMouseZoom(Kn5ObjectRenderer, 0f, value, Form.ClientSize.Height, Form.ClientSize.Width);
         }
 
-        public static async Task Run(TrackObjectBase track, bool aiLane) {
+        public static Task Run(TrackObjectBase track, bool aiLane) {
+            try {
+                return RunInner(track, aiLane);
+            } catch (Exception e) {
+                VisualCppTool.OnException(e, "Can’t update map");
+                return Task.Delay(0);
+            }
+        }
+
+        private static async Task RunInner(TrackObjectBase track, bool aiLane) {
             string modelsFilename = null, kn5Filename = null, aiLaneFilename = null;
 
             if (!aiLane) {

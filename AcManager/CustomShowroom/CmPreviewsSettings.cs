@@ -30,12 +30,15 @@ using Newtonsoft.Json.Linq;
 using SlimDX;
 
 namespace AcManager.CustomShowroom {
+    public class CmPreviewsSettingsValues {
+        public static readonly string DefaultKey = "__CmPreviewsSettings";
+        public static readonly string DefaultPresetableKeyValue = "Custom Previews";
+    }
+
     public class CmPreviewsSettings : DarkRendererSettings {
-        public new static readonly string DefaultKey = "__CmPreviewsSettings";
-        public new static readonly string DefaultPresetableKeyValue = "Custom Previews";
         protected override string KeyLockCamera => ".cmPsLc";
 
-        public CmPreviewsSettings(DarkKn5ObjectRenderer renderer) : base(renderer, DefaultPresetableKeyValue) {
+        public CmPreviewsSettings(DarkKn5ObjectRenderer renderer) : base(renderer, CmPreviewsSettingsValues.DefaultPresetableKeyValue) {
             renderer.VisibleUi = false;
             if (LockCamera) {
                 Renderer.LockCamera = true;
@@ -46,10 +49,10 @@ namespace AcManager.CustomShowroom {
         }
 
         public new static void ResetHeavy() {
-            if (!ValuesStorage.Contains(DefaultKey)) return;
+            if (!ValuesStorage.Contains(CmPreviewsSettingsValues.DefaultKey)) return;
 
             try {
-                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(DefaultKey));
+                var data = JsonConvert.DeserializeObject<SaveableData>(ValuesStorage.Get<string>(CmPreviewsSettingsValues.DefaultKey));
                 data.Width = CommonAcConsts.PreviewWidth;
                 data.Height = CommonAcConsts.PreviewHeight;
                 data.SsaaMode = 1;
@@ -64,7 +67,7 @@ namespace AcManager.CustomShowroom {
                 data.UseDof = false;
                 data.UseAccumulationDof = false;
                 data.FlatMirrorBlurred = false;
-                ValuesStorage.Set(DefaultKey, JsonConvert.SerializeObject(data));
+                ValuesStorage.Set(CmPreviewsSettingsValues.DefaultKey, JsonConvert.SerializeObject(data));
             } catch (Exception e) {
                 Logging.Warning(e);
             }
@@ -76,7 +79,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected override ISaveHelper CreateSaveable() {
-            return new SaveHelper<SaveableData>(DefaultKey, Save, Load, () => Reset(false));
+            return new SaveHelper<SaveableData>(CmPreviewsSettingsValues.DefaultKey, Save, Load, () => Reset(false));
         }
 
         protected override DarkRendererSettings.SaveableData CreateSaveableData() {
@@ -123,6 +126,7 @@ namespace AcManager.CustomShowroom {
             return obj;
         }
 
+        [NotNull]
         public DarkPreviewsOptions ToPreviewsOptions() {
             return ToSaveableData().ToPreviewsOptions(true);
         }
@@ -188,27 +192,43 @@ namespace AcManager.CustomShowroom {
             base.Load(o);
         }
 
-        [NotNull]
+        [CanBeNull]
         public static DarkPreviewsOptions GetSavedOptions(string presetFilename = null) {
-            if (presetFilename != null && !File.Exists(presetFilename)) {
-                var builtIn = PresetsManager.Instance.GetBuiltInPreset(new PresetsCategory(DefaultPresetableKeyValue), presetFilename);
-                if (builtIn != null) {
-                    return (SaveHelper<SaveableData>.LoadSerialized(builtIn.ReadData()) ?? new SaveableData())
-                            .ToPreviewsOptions(true);
+            Exception toWarnWith = null;
+            string warningMessage = null;
+
+            try {
+                if (presetFilename != null && !File.Exists(presetFilename)) {
+                    var builtIn = PresetsManager.Instance.GetBuiltInPreset(new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue), presetFilename);
+                    if (builtIn != null) {
+                        return (SaveHelper<SaveableData>.LoadSerialized(builtIn.ReadData()) ?? new SaveableData())
+                                .ToPreviewsOptions(true);
+                    }
+
+                    warningMessage = $"File “{presetFilename}” not found.";
+                } else {
+                    try {
+                        return ((presetFilename != null ?
+                                SaveHelper<SaveableData>.LoadSerialized(File.ReadAllText(presetFilename)) :
+                                SaveHelper<SaveableData>.Load(CmPreviewsSettingsValues.DefaultKey)) ?? new SaveableData()).ToPreviewsOptions(true);
+                    } catch (Exception e) {
+                        toWarnWith = e;
+                    }
                 }
 
-                NonfatalError.NotifyBackground("Can’t load preset", $"File “{presetFilename}” not found.");
-            } else {
-                try {
-                    return ((presetFilename != null ?
-                            SaveHelper<SaveableData>.LoadSerialized(File.ReadAllText(presetFilename)) :
-                            SaveHelper<SaveableData>.Load(DefaultKey)) ?? new SaveableData()).ToPreviewsOptions(true);
-                } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t load preset", e);
+                return new SaveableData().ToPreviewsOptions(true);
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t load preset", e);
+                toWarnWith = null;
+                warningMessage = null;
+                return null;
+            } finally {
+                if (toWarnWith != null) {
+                    NonfatalError.NotifyBackground("Can’t load preset", toWarnWith);
+                } else if (warningMessage != null) {
+                    NonfatalError.NotifyBackground("Can’t load preset", warningMessage);
                 }
             }
-
-            return new SaveableData().ToPreviewsOptions(true);
         }
 
         protected new sealed class SaveableData : DarkRendererSettings.SaveableData {
@@ -833,7 +853,7 @@ namespace AcManager.CustomShowroom {
             var data = ExportToPresetData();
             if (data == null) return;
             await SharingUiHelper.ShareAsync(SharedEntryType.CustomPreviewsPreset,
-                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(DefaultPresetableKeyValue)), null,
+                    Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(CmPreviewsSettingsValues.DefaultPresetableKeyValue)), null,
                     data);
         }
 
@@ -873,13 +893,13 @@ namespace AcManager.CustomShowroom {
         public static void Transfer(DarkRendererSettings settings, DarkKn5ObjectRenderer renderer) {
             var data = ToSaveableData(settings, renderer);
 
-            var filename = UserPresetsControl.GetCurrentFilename(DarkRendererSettings.DefaultPresetableKeyValue);
+            var filename = UserPresetsControl.GetCurrentFilename(DarkRendererSettingsValues.DefaultPresetableKeyValue);
             if (filename != null) {
-                var relative = FileUtils.GetPathWithin(filename, PresetsManager.Instance.Combine(DarkRendererSettings.DefaultPresetableKeyValue));
-                filename = relative == null ? null : Path.Combine(PresetsManager.Instance.Combine(DefaultPresetableKeyValue), relative);
+                var relative = FileUtils.GetPathWithin(filename, PresetsManager.Instance.Combine(DarkRendererSettingsValues.DefaultPresetableKeyValue));
+                filename = relative == null ? null : Path.Combine(PresetsManager.Instance.Combine(CmPreviewsSettingsValues.DefaultPresetableKeyValue), relative);
             }
 
-            PresetsManager.Instance.SavePresetUsingDialog(null, new PresetsCategory(DefaultPresetableKeyValue),
+            PresetsManager.Instance.SavePresetUsingDialog(null, new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue),
                     SaveHelper<SaveableData>.Serialize(data), filename);
         }
     }
