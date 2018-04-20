@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
+using System.Security;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SharedMemory;
@@ -95,9 +98,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         internal VideoSettings() : base(@"video") {
-            CustomResolution.PropertyChanged += (sender, args) => {
-                Save();
-            };
+            CustomResolution.PropertyChanged += (sender, args) => { Save(); };
         }
 
         #region Entries lists
@@ -208,10 +209,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private static string AcVideoModesLibrary => Path.Combine(AcRootDirectory.Instance.RequireValue, "acVideoModes.dll");
 
+        [MethodImpl(MethodImplOptions.NoInlining), HandleProcessCorruptedStateExceptions, SecurityCritical]
         private static IReadOnlyList<ResolutionEntry> GetResolutions() {
             if (File.Exists(AcVideoModesLibrary)) {
                 try {
                     return AcVideoModes.GetResolutionEntries().ToList();
+                } catch (AccessViolationException e) {
+                    NonfatalError.NotifyBackground(ToolsStrings.AcSettings_CannotGetResolutions,
+                            "Assetto Corsa library acVideoModes.dll refuses to work properly.", e);
                 } catch (Exception e) {
                     NonfatalError.NotifyBackground(ToolsStrings.AcSettings_CannotGetResolutions, e);
                 }

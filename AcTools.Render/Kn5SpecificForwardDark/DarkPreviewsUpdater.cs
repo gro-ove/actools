@@ -11,7 +11,6 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -252,7 +251,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 try {
                     action.Invoke();
                 } catch (Exception e) {
-                    Logging.Error("Convertation error: " + e);
+                    AcToolsLogging.Write(e);
                 } finally {
                     disposal.Invoke();
                     Interlocked.Decrement(ref _processingNow);

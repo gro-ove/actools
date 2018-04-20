@@ -12,7 +12,6 @@ using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
-using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -60,7 +59,6 @@ namespace AcManager.CustomShowroom {
 
             ForwardKn5ObjectRenderer renderer = null;
             Logging.Write("Custom Showroom: Magick.NET IsSupported=" + ImageUtils.IsMagickSupported);
-            RenderLogging.Initialize(Logging.Filename, true);
 
             try {
                 var carDirectory = Path.GetDirectoryName(kn5);

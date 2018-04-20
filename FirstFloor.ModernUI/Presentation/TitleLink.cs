@@ -24,6 +24,13 @@ namespace FirstFloor.ModernUI.Presentation {
             set => Apply(value, ref _groupKey);
         }
 
+        private bool _isActive;
+
+        public bool IsActive {
+            get => _isActive;
+            set => Apply(value, ref _isActive);
+        }
+
         private bool _isAccented;
 
         public bool IsAccented {

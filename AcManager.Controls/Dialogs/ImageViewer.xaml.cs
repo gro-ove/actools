@@ -136,6 +136,11 @@ namespace AcManager.Controls.Dialogs {
             FinishInitialization(new ViewModel(i => Task.FromResult((object)list.ElementAtOrDefault(i)), list.Count, position, detailsCallback));
         }
 
+        public ImageViewer(IEnumerable<object> images, int position = 0, ImageViewerDetailsCallback detailsCallback = null) {
+            var list = images.ToList();
+            FinishInitialization(new ViewModel(i => Task.FromResult(list.ElementAtOrDefault(i)), list.Count, position, detailsCallback));
+        }
+
         public ImageViewer([NotNull] ImageViewerImageCallback imageCallback, int count, int position,
                 [CanBeNull] ImageViewerDetailsCallback detailsCallback = null) {
             FinishInitialization(new ViewModel(imageCallback, count, position, detailsCallback));
@@ -284,7 +289,7 @@ namespace AcManager.Controls.Dialogs {
         }
 
         public new void ShowDialog() {
-            if ((DateTime.Now - LastActiveWindow?.LastActivated)?.TotalSeconds < 0.3) return;
+            if (!Model.Saveable && (DateTime.Now - LastActiveWindow?.LastActivated)?.TotalSeconds < 0.3) return;
             base.ShowDialog();
         }
 

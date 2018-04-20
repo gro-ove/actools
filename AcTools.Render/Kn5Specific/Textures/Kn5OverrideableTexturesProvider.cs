@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using AcTools.DataFile;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -491,7 +490,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                             texture.Override = null;
                         }
                     } catch (Exception e) {
-                        Logging.Warning("Can’t load override texture: " + e.Message);
+                        AcToolsLogging.Write(e);
                         texture.Override = null;
                     }
                 }

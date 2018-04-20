@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -22,17 +23,36 @@ namespace AcManager.Tools.Helpers {
 
         public static void Initialize([CanBeNull] string directory) {
             _directory = directory;
-            Kernel32.AddDllDirectory(directory);
+
+            if (directory != null && Directory.Exists(directory)) {
+                var s = Stopwatch.StartNew();
+                var backup = Environment.CurrentDirectory;
+                try {
+                    Environment.CurrentDirectory = directory;
+                    Kernel32.SetDllDirectory(directory);
+                    Environment.SetEnvironmentVariable(@"PATH", Environment.GetEnvironmentVariable("PATH") + Path.PathSeparator + directory);
+                    foreach (var file in Directory.GetFiles(directory, "*.dll")) {
+                        Kernel32.LoadLibrary(file);
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                } finally {
+                    Environment.CurrentDirectory = backup;
+                }
+
+                Logging.Write($"Libraries load time: {s.Elapsed.TotalMilliseconds:F1} ms");
+                Logging.Write($"Current directory: {Environment.CurrentDirectory}");
+            }
         }
 
         private static bool _shown;
-        private static List<string> _previousMessages = new List<string>();
+        private static readonly List<string> PreviousMessages = new List<string>();
 
         public static bool OnException([CanBeNull] Exception e, string fallbackMessage) {
             if (IsVisualCppRelatedException(e)) {
                 var msg = e?.ToString();
-                if (!_previousMessages.Contains(msg)) {
-                    _previousMessages.Add(msg);
+                if (!PreviousMessages.Contains(msg)) {
+                    PreviousMessages.Add(msg);
                     Logging.Error(msg);
                 }
 
@@ -41,7 +61,8 @@ namespace AcManager.Tools.Helpers {
                 } else {
                     _shown = true;
                     if (IsVisualCppInstalled()) {
-                        NonfatalError.Notify("Looks like app can’t load native library, even though it’s installed", "Maybe it’s damaged?", e);
+                        NonfatalError.Notify("Looks like app can’t load native library, even though it’s installed",
+                                "Maybe it’s damaged? Or, possibly, some system libraries are missing.", e);
                     } else {
                         ShowMessage(e);
                     }
@@ -66,13 +87,27 @@ namespace AcManager.Tools.Helpers {
 
         private static bool IsVisualCppInstalled() {
             var directory = _directory ?? MainExecutingFile.Directory;
-            var checksumsFile = Path.Combine(directory, "Checksums.txt");
+            var checksumsFile = Path.Combine(directory, "VisualCppManifest.txt");
             if (!File.Exists(checksumsFile)) return false;
 
             try {
+                string version = null;
                 return File.ReadAllLines(checksumsFile).All(s => {
                     s = s.Trim();
-                    if (s.StartsWith(@"#")) return true;
+                    if (s.StartsWith(@"#")) {
+                        var keyValue = s.TrimStart('#', ' ').Split(new[] { ':' }, 2);
+                        if (keyValue.Length == 2) {
+                            var key = keyValue[0].Trim().ToLowerInvariant();
+                            var value = keyValue[1].Trim();
+                            Logging.Debug($"{key}={version}");
+                            switch (key) {
+                                case "version":
+                                    version = value;
+                                    break;
+                            }
+                        }
+                        return true;
+                    }
 
                     var x = s.Split(new[] { @" *" }, StringSplitOptions.RemoveEmptyEntries);
                     if (x.Length != 2) return true;
@@ -81,9 +116,12 @@ namespace AcManager.Tools.Helpers {
                     if (!File.Exists(filename)) return false;
                     var bytes = File.ReadAllBytes(filename);
                     using (var sha1 = SHA1.Create()) {
-                        return string.Equals(sha1.ComputeHash(bytes).ToHexString(), x[0], StringComparison.OrdinalIgnoreCase);
+                        var actual = sha1.ComputeHash(bytes).ToHexString();
+                        if (string.Equals(actual, x[0], StringComparison.OrdinalIgnoreCase)) return true;
+                        Logging.Warning($"Checksums don’t match for {x[1]}: {x[0]}≠{actual}");
+                        return false;
                     }
-                });
+                }) && !version.IsVersionOlderThan(@"2");
             } catch (Exception e) {
                 Logging.Error(e);
                 return false;

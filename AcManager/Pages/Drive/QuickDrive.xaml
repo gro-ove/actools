@@ -3,8 +3,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
-    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}"
-    mui:InputBindingBehavior.PropagateToWindow="True" x:Name="This">
+    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateToWindow="True"
+    x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -235,51 +235,49 @@
             </mui:BetterComboBox.Template>
             <ComboBox.ItemTemplate>
               <DataTemplate>
-                <mui:BooleanSwitch x:Name="PART_Switch" Value="False">
-                  <mui:BooleanSwitch.False>
-                    <CheckBox IsChecked="{Binding IsActive}" Margin="0 -1 0 1" Height="18">
-                      <CheckBox.Template>
-                        <ControlTemplate TargetType="{x:Type CheckBox}">
-                          <Border Background="Transparent" Margin="-10 -2" Padding="10 2">
-                            <DockPanel x:Name="LayoutRoot">
-                              <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
-                                  BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">
-                                <Path x:Name="CheckMark" Width="10" Height="10" Margin="2" Visibility="Collapsed" Stretch="Fill"
-                                    Fill="{TemplateBinding Foreground}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z " />
-                              </Border>
-                              <ContentPresenter VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
-                            </DockPanel>
+                <CheckBox x:Name="PART_Content" IsChecked="{Binding IsActive}" Margin="0 -1 0 1" Height="18">
+                  <CheckBox.Template>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                      <Border Background="Transparent" Margin="-10 -2" Padding="10 2">
+                        <DockPanel x:Name="LayoutRoot">
+                          <Border x:Name="CheckBorder" Width="16" Height="16" Margin="0 1 4 0" Background="{TemplateBinding Background}"
+                              BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" DockPanel.Dock="Left">
+                            <Path x:Name="CheckMark" Width="10" Height="10" Margin="2" Visibility="Collapsed" Stretch="Fill"
+                                Fill="{TemplateBinding Foreground}" Data="F1 M 15,21L 22,28L 32.9999,14.0001L 35.9999,17.0001L 22,34L 12.0001,24L 15,21 Z " />
                           </Border>
-                          <ControlTemplate.Triggers>
-                            <Trigger Property="IsEnabled" Value="False">
-                              <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
-                            </Trigger>
-                            <Trigger Property="IsChecked" Value="True">
-                              <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="True">
-                              <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
-                              <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
-                              <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                              <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
-                              <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource DataGridForeground}" />
-                              <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource DataGridForeground}" />
-                            </Trigger>
-                          </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                      </CheckBox.Template>
-                      <DockPanel Margin="0 1 0 -1">
-                        <mui:BetterImage Margin="4 0 4 0" ClearOnChange="True" Filename="{Binding PreviewImage}" Width="24" Height="18" Stretch="UniformToFill" />
-                        <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
-                      </DockPanel>
-                    </CheckBox>
-                  </mui:BooleanSwitch.False>
-                </mui:BooleanSwitch>
+                          <ContentPresenter VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
+                        </DockPanel>
+                      </Border>
+                      <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                          <Setter Property="Foreground" Value="{DynamicResource ButtonTextDisabled}" />
+                        </Trigger>
+                        <DataTrigger Binding="{Binding IsHighlighted, RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue=False}"
+                            Value="True">
+                          <Setter Property="TextBlock.Foreground" Value="{DynamicResource ItemTextSelected}" />
+                          <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundHover}" />
+                          <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource ButtonBorderHover}" />
+                          <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource ButtonTextHover}" />
+                        </DataTrigger>
+                        <Trigger Property="IsChecked" Value="True">
+                          <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                          <Setter TargetName="CheckBorder" Property="Background" Value="{DynamicResource ButtonBackgroundPressed}" />
+                          <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{DynamicResource DataGridForeground}" />
+                          <Setter TargetName="CheckMark" Property="Fill" Value="{DynamicResource DataGridForeground}" />
+                        </Trigger>
+                      </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                  </CheckBox.Template>
+                  <DockPanel Margin="0 1 0 -1">
+                    <mui:BetterImage Margin="4 0 4 0" ClearOnChange="True" Filename="{Binding PreviewImage}" Width="24" Height="18" Stretch="UniformToFill" />
+                    <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Top" />
+                  </DockPanel>
+                </CheckBox>
                 <DataTemplate.Triggers>
                   <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType=ComboBoxItem}, FallbackValue={x:Null}}" Value="{x:Null}">
-                    <Setter Property="Value" Value="True" TargetName="PART_Switch" />
+                    <Setter Property="Visibility" Value="Collapsed" TargetName="PART_Content" />
                   </DataTrigger>
                 </DataTemplate.Triggers>
               </DataTemplate>

@@ -558,6 +558,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var hasCockpitLr = false;
             var hasCockpitHr = false;
             var cockpitLrActive = true;
+            var cockpitHrActive = true;
             var hasSeatbeltOn = false;
             var hasSeatbeltOff = false;
             var seatbeltOnActive = true;
@@ -567,12 +568,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
             foreach (var dummy in _currentLodObject.Renderable.GetAllChildren().OfType<Kn5RenderableList>()) {
                 switch (dummy.OriginalNode.Name) {
                     case "COCKPIT_LR":
-                    case "STEER_LR":
                         hasCockpitLr = true;
                         cockpitLrActive &= dummy.IsEnabled;
                         break;
                     case "COCKPIT_HR":
                         hasCockpitHr = true;
+                        cockpitHrActive &= dummy.IsEnabled;
                         break;
                     case "CINTURE_ON":
                         hasSeatbeltOn = true;
@@ -606,7 +607,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 OnPropertyChanged(nameof(HasCockpitBoth));
             }
 
-            cockpitLrActive &= hasCockpitLr;
+            cockpitLrActive &= hasCockpitLr && (!hasCockpitHr || !cockpitHrActive);
             if (_cockpitLrActive != cockpitLrActive) {
                 _cockpitLrActive = cockpitLrActive;
                 OnPropertyChanged(nameof(CockpitLrActive));

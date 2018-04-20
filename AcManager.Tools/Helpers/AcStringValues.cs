@@ -78,8 +78,25 @@ namespace AcManager.Tools.Helpers {
 
         [CanBeNull]
         public static string CountryFromTag([NotNull] string tag) {
-            var key = tag.Trim().ToLower();
-            return DataProvider.Instance.TagCountries.GetValueOrDefault(key) ?? DataProvider.Instance.Countries.GetValueOrDefault(key);
+            var key = tag.ToLower();
+
+            var firstPass = Pass(key);
+            if (firstPass != null) return firstPass;
+
+            if (key.IndexOfAny(new[]{ '(', ',', ';' }) != -1) {
+                var pieces = key.Split(new[] { '(', ')', ',', ';' }, StringSplitOptions.RemoveEmptyEntries);
+                for (var i = pieces.Length - 1; i >= 0; i--) {
+                    var extraPass = Pass(pieces[i]);
+                    if (extraPass != null) return extraPass;
+                }
+            }
+
+            return null;
+
+            string Pass(string k) {
+                k = k.Trim();
+                return DataProvider.Instance.TagCountries.GetValueOrDefault(k) ?? DataProvider.Instance.Countries.GetValueOrDefault(k);
+            }
         }
 
         [CanBeNull]

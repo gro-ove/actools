@@ -72,31 +72,31 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <c:Cell x:Name="Root">
+            <c:Cell x:Name="Root" ClipToBounds="True">
               <Border x:Name="PART_Track" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
                   Background="{TemplateBinding Background}" />
-              <c:Cell x:Name="IndeterminateRoot" Visibility="Collapsed" ClipToBounds="True" IsHitTestVisible="False">
-                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R1" Opacity="0">
+              <c:Cell x:Name="IndeterminateRoot" Visibility="Collapsed" IsHitTestVisible="False">
+                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R1" Opacity="0" HorizontalAlignment="Left">
                   <Rectangle.RenderTransform>
                     <TranslateTransform x:Name="R1TT" />
                   </Rectangle.RenderTransform>
                 </Rectangle>
-                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R2" Opacity="0">
+                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R2" Opacity="0" HorizontalAlignment="Left">
                   <Rectangle.RenderTransform>
                     <TranslateTransform x:Name="R2TT" />
                   </Rectangle.RenderTransform>
                 </Rectangle>
-                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R3" Opacity="0">
+                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R3" Opacity="0" HorizontalAlignment="Left">
                   <Rectangle.RenderTransform>
                     <TranslateTransform x:Name="R3TT" />
                   </Rectangle.RenderTransform>
                 </Rectangle>
-                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R4" Opacity="0">
+                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R4" Opacity="0" HorizontalAlignment="Left">
                   <Rectangle.RenderTransform>
                     <TranslateTransform x:Name="R4TT" />
                   </Rectangle.RenderTransform>
                 </Rectangle>
-                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R5" Opacity="0">
+                <Rectangle Fill="{TemplateBinding Foreground}" Height="4" Width="4" x:Name="R5" Opacity="0" HorizontalAlignment="Left">
                   <Rectangle.RenderTransform>
                     <TranslateTransform x:Name="R5TT" />
                   </Rectangle.RenderTransform>

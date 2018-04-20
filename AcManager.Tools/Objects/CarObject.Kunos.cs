@@ -14,7 +14,7 @@ namespace AcManager.Tools.Objects {
         private static bool TestIfKunosUsingGuids(string id) {
             if (_kunosCarsIds == null) {
                 try {
-                    _kunosCarsIds = File.ReadAllLines(AcPaths.GetSfxGuidsFilename(AcRootDirectory.Instance.Value))
+                    _kunosCarsIds = File.ReadAllLines(AcPaths.GetSfxGuidsFilename(AcRootDirectory.Instance.RequireValue))
                                        .Select(x => x.Split('/'))
                                        .Where(x => x.Length > 3 && x[1] == @"cars" && x[0].EndsWith(@"event:"))
                                        .Select(x => x[2].ToLowerInvariant())

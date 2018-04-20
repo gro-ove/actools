@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AcTools.Render.Base;
-using AcTools.Render.Temporary;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -146,7 +145,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                     }
                     break;
                 } catch (Exception e) {
-                    Logging.Warning("UpdateOverrideLater(): " + e.Message);
+                    AcToolsLogging.Write(e);
                 }
             }
 
@@ -191,7 +190,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
                         texture.Resource = null;
                     }
                 } catch (Exception e) {
-                    Logging.Warning("Can’t load override texture: " + e.Message);
+                    AcToolsLogging.Write(e);
                     texture.Override = null;
                 }
             }

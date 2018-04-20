@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -13,6 +12,7 @@ using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
 using AcTools.Kn5File;
 using AcTools.Render.Base;
+using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Utils;
@@ -242,7 +242,8 @@ namespace AcManager.CustomShowroom {
         #region Generating
         private const string KeyDimensions = "__BakedShadowsRendererViewModel.Dimensions";
 
-        public async Task<Size?> CalculateAo(int? size, string filename, [CanBeNull] CarObject car) {
+        [ItemCanBeNull]
+        private async Task<Tuple<byte[], Size>> CalculateAo(int? size, [CanBeNull] CarObject car) {
             int width, height;
             switch (size) {
                 case null:
@@ -278,12 +279,13 @@ namespace AcManager.CustomShowroom {
             }
 
             using (var waiting = new WaitingDialog(reportValue: "Rendering…") {
-                Topmost = false
+                Topmost = false,
+                ShowProgressBar = true
             }) {
                 var cancellation = waiting.CancellationToken;
                 var progress = (IProgress<double>)waiting;
 
-                await Task.Run(() => {
+                return await Task.Run(() => {
                     using (var renderer = new BakedShadowsRenderer(_kn5, car?.AcdData) {
                         ΘFromDeg = (float)From,
                         ΘToDeg = (float)To,
@@ -301,86 +303,22 @@ namespace AcManager.CustomShowroom {
                         renderer.CopyStateFrom(_renderer as ToolsKn5ObjectRenderer);
                         renderer.Width = width;
                         renderer.Height = height;
-                        renderer.Shot(filename, TextureName, ObjectPath, progress, cancellation);
+                        return Tuple.Create(renderer.Shot(TextureName, ObjectPath, progress, cancellation), new Size(width, height));
                     }
                 });
-
-                if (cancellation.IsCancellationRequested) return null;
             }
-
-            return new Size(width, height);
-        }
-
-        private static string GetShortChecksum(string s) {
-            var f = s.Length / 2;
-            var h = s.Substring(f, s.Length - f).GetHashCode();
-            var g = s.Substring(0, f).GetHashCode();
-            var r = new byte[8];
-            Array.Copy(BitConverter.GetBytes(h), 0, r, 0, 4);
-            Array.Copy(BitConverter.GetBytes(g), 0, r, 4, 4);
-            return Convert.ToBase64String(r).TrimEnd('=');
         }
 
         private AsyncCommand<string> _calculateAoCommand;
 
         public AsyncCommand<string> CalculateAoCommand => _calculateAoCommand ?? (_calculateAoCommand = new AsyncCommand<string>(async o => {
             try {
-                var filename = FilesStorage.Instance.GetTemporaryFilename(
-                        $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} AO.png");
-                var resultSizeN = await CalculateAo(FlexibleParser.TryParseInt(o), filename, _car);
-                if (!resultSizeN.HasValue) return;
+                var calculated = await CalculateAo(FlexibleParser.TryParseInt(o), _car);
+                if (calculated == null) return;
 
-                var resultSize = resultSizeN.Value;
-                var uniquePostfix = GetShortChecksum(_kn5.OriginalFilename);
-                var originalTexture = FilesStorage.Instance.GetTemporaryFilename(
-                        $"{FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName))} Original ({uniquePostfix}).tmp");
-                if (File.Exists(originalTexture)) {
-                    new ImageViewer(new[] { filename, originalTexture }, detailsCallback: DetailsCallback) {
-                        MaxImageWidth = resultSize.Width,
-                        MaxImageHeight = resultSize.Height,
-                        Model = {
-                            Saveable = true,
-                            SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                            SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                            SaveDialogFilterPieces = {
-                                DialogFilterPiece.DdsFiles,
-                                DialogFilterPiece.JpegFiles,
-                                DialogFilterPiece.PngFiles,
-                            },
-                            SaveCallback = SaveCallback,
-                            CanBeSavedCallback = i => i == 0
-                        },
-                        ShowInTaskbar = true
-                    }.ShowDialog();
-                    return;
-                }
-
-                if (_renderer != null && _kn5.TexturesData.TryGetValue(TextureName, out var data)) {
-                    var image = Kn5TextureDialog.LoadImageUsingDirectX(_renderer, data);
-                    if (image != null) {
-                        image.Image?.ToBytes(ImageFormat.Png);
-                        new ImageViewer(new[] { filename, originalTexture }, detailsCallback: DetailsCallback) {
-                            MaxImageWidth = resultSize.Width,
-                            MaxImageHeight = resultSize.Height,
-                            Model = {
-                                Saveable = true,
-                                SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
-                                SaveDirectory = Path.GetDirectoryName(_kn5.OriginalFilename),
-                                SaveDialogFilterPieces = {
-                                    DialogFilterPiece.DdsFiles,
-                                    DialogFilterPiece.JpegFiles,
-                                    DialogFilterPiece.PngFiles,
-                                },
-                                SaveCallback = SaveCallback,
-                                CanBeSavedCallback = i => i == 0
-                            },
-                            ShowInTaskbar = true
-                        }.ShowDialog();
-                        return;
-                    }
-                }
-
-                new ImageViewer(filename) {
+                new ImageViewer(new object[] { calculated.Item1, await GetOriginal() }.NonNull(), detailsCallback: DetailsCallback) {
+                    MaxImageWidth = calculated.Item2.Width,
+                    MaxImageHeight = calculated.Item2.Height,
                     Model = {
                         Saveable = true,
                         SaveableTitle = ControlsStrings.CustomShowroom_ViewMapping_Export,
@@ -390,11 +328,20 @@ namespace AcManager.CustomShowroom {
                             DialogFilterPiece.JpegFiles,
                             DialogFilterPiece.PngFiles,
                         },
-                        SaveCallback = SaveCallback
+                        SaveCallback = SaveCallback,
+                        CanBeSavedCallback = i => i == 0
                     },
-                    ShowInTaskbar = true,
-                    ImageMargin = new Thickness()
+                    ShowInTaskbar = true
                 }.ShowDialog();
+
+                Task<byte[]> GetOriginal() {
+                    if (_renderer == null || !_kn5.TexturesData.TryGetValue(TextureName, out var data)) {
+                        return Task.FromResult<byte[]>(null);
+                    }
+
+                    return Task.Run(() => new TextureReader().ToPng(data, true,
+                            new System.Drawing.Size(calculated.Item2.Width.RoundToInt(), calculated.Item2.Height.RoundToInt())));
+                }
 
                 object DetailsCallback(int index) {
                     return index == 0 ? "Generated AO map" : "Original texture";
@@ -405,14 +352,17 @@ namespace AcManager.CustomShowroom {
                         var extension = Path.GetExtension(destination)?.ToLowerInvariant();
                         switch (extension) {
                             case ".dds":
-                                DdsEncoder.SaveAsDds(destination, File.ReadAllBytes(filename), PreferredDdsFormat.LuminanceTransparency, null);
+                                DdsEncoder.SaveAsDds(destination, calculated.Item1, PreferredDdsFormat.LuminanceTransparency, null);
                                 break;
                             case ".jpg":
                             case ".jpeg":
-                                ImageUtils.Convert(filename, destination);
+                                using (var stream = new MemoryStream(calculated.Item1))
+                                using (var output = File.OpenWrite(destination)) {
+                                    ImageUtils.Convert(stream, output, 97);
+                                }
                                 break;
                             default:
-                                File.Copy(filename, destination, true);
+                                File.WriteAllBytes(destination, calculated.Item1);
                                 break;
                         }
                     });

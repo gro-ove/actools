@@ -137,8 +137,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool ShownAsDialog => (bool)GetValue(ShownAsDialogProperty);
 
         public new bool? ShowDialog() {
-            if (Owner != null && (!Owner.IsVisible || DoNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
-                Owner = GetDefaultOwner(false);
+            var doNotAttachToWaitingDialogs = DoNotAttachToWaitingDialogs;
+            if (Owner != null && (!Owner.IsVisible || doNotAttachToWaitingDialogs && Owner is WaitingDialog)) {
+                var defaultOwner = GetDefaultOwner(false);
+                Owner = doNotAttachToWaitingDialogs && defaultOwner is WaitingDialog ? null : defaultOwner;
             }
 
             Logging.Debug("Show dialog! Owner: " + (Owner == null ? @"none" : $@"W{Owner?.GetHashCode():X8}"));

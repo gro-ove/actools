@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Markup;
@@ -29,7 +30,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public event EventHandler<NavigatingCancelEventArgs> FrameNavigating;
         public event EventHandler<NavigationEventArgs> FrameNavigated;
+
+        [CanBeNull]
         private ModernMenu _menu;
+
+        [CanBeNull]
         private ModernFrame _frame;
 
         [CanBeNull]
@@ -41,40 +46,35 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             base.OnApplyTemplate();
 
             if (_frame != null) {
-                _frame.Navigating -= Frame_Navigating;
-                _frame.Navigated -= Frame_Navigated;
+                _frame.Navigating -= OnFrameNavigating;
+                _frame.Navigated -= OnFrameNavigated;
             }
 
             _frame = GetTemplateChild("ContentFrame") as ModernFrame;
 
             if (_frame != null) {
-                _frame.Navigating += Frame_Navigating;
-                _frame.Navigated += Frame_Navigated;
+                _frame.Navigating += OnFrameNavigating;
+                _frame.Navigated += OnFrameNavigated;
             }
 
             _menu = GetTemplateChild("PART_Menu") as ModernMenu;
         }
 
-        private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
+        private void OnFrameNavigated(object sender, NavigationEventArgs navigationEventArgs) {
             FrameNavigated?.Invoke(this, navigationEventArgs);
+
+            var activeKey = _menu?.SelectedLinkGroup?.GroupKey;
+            foreach (var link in TitleLinks.OfType<TitleLink>()) {
+                link.IsActive = link.GroupKey == activeKey;
+            }
         }
 
-        private void Frame_Navigating(object sender, NavigatingCancelEventArgs navigationEventArgs) {
+        private void OnFrameNavigating(object sender, NavigatingCancelEventArgs navigationEventArgs) {
             FrameNavigating?.Invoke(this, navigationEventArgs);
         }
 
         private void OnCanNavigateTitleLink(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = true;
-        }
-
-        public string CurrentGroupKey {
-            get => _menu?.SelectedLinkGroup?.GroupKey;
-            set => _menu?.SwitchToGroupByKey(value);
-        }
-
-        public void NavigateTo(Uri uri) {
-            if (_menu == null) return;
-            _menu.SelectedSource = uri;
         }
 
         private void OnNavigateTitleLink(object sender, ExecutedRoutedEventArgs e) {
@@ -90,6 +90,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
+        }
+
+        public string CurrentGroupKey {
+            get => _menu?.SelectedLinkGroup?.GroupKey;
+            set => _menu?.SwitchToGroupByKey(value);
+        }
+
+        public void NavigateTo(Uri uri) {
+            if (_menu == null) return;
+            _menu.SelectedSource = uri;
         }
 
         private void OnCanNavigateLink(object sender, CanExecuteRoutedEventArgs e) {

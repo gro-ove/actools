@@ -372,7 +372,10 @@ namespace AcManager.Pages.Dialogs {
 
             public double TestWidth {
                 get => _testWidth.Value;
-                set => Apply(value.Saturate(), _testWidth, UpdatePlotModel, linked: nameof(DisplayTestWidth));
+                set => Apply(value.Saturate(), _testWidth, () => {
+                    UpdatePlotModel();
+                    OnPropertyChanged(nameof(DisplayTestWidth));
+                });
             }
 
             public string DisplayTestWidth {
@@ -386,7 +389,10 @@ namespace AcManager.Pages.Dialogs {
 
             public double TestProfile {
                 get => _testProfile.Value;
-                set => Apply(value.Saturate(), _testProfile, UpdatePlotModel, linked: nameof(DisplayTestProfile));
+                set => Apply(value.Saturate(), _testProfile, () => {
+                    UpdatePlotModel();
+                    OnPropertyChanged(nameof(DisplayTestProfile));
+                });
             }
 
             public string DisplayTestProfile {
@@ -400,7 +406,10 @@ namespace AcManager.Pages.Dialogs {
 
             public double TestRadius {
                 get => _testRadius.Value;
-                set => Apply(value.Saturate(), _testRadius, UpdatePlotModel, linked: nameof(DisplayTestRadius));
+                set => Apply(value.Saturate(), _testRadius, () => {
+                    UpdatePlotModel();
+                    OnPropertyChanged(nameof(DisplayTestRadius));
+                });
             }
 
             public string DisplayTestRadius {

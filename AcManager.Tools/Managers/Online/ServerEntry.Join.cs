@@ -96,7 +96,7 @@ namespace AcManager.Tools.Managers.Online {
 
         public DateTime StartTime {
             get => _startTime;
-            set => Apply(value, ref _startTime, nameof(BookingTimeLeft));
+            set => Apply(value, ref _startTime, () => OnPropertyChanged(nameof(BookingTimeLeft)));
         }
 
         private string _bookingErrorMessage;

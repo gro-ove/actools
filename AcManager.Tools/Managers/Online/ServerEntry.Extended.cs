@@ -26,7 +26,9 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int? DetailsPort {
             get => _detailsPort;
-            private set => Apply(value, ref _detailsPort, nameof(HasDetails));
+            private set => Apply(value, ref _detailsPort, () => {
+                OnPropertyChanged(nameof(HasDetails));
+            });
         }
 
         private string _detailsId;

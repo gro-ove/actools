@@ -159,6 +159,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty SelectedLinkGroupProperty = DependencyProperty.Register("SelectedLinkGroup", typeof(LinkGroup),
                 typeof(ModernMenu), new PropertyMetadata(OnSelectedLinkGroupChanged));
 
+        [CanBeNull]
         public LinkGroup SelectedLinkGroup => (LinkGroup)GetValue(SelectedLinkGroupProperty);
 
         [CanBeNull]
@@ -202,11 +203,11 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnSelectedLinkChanged(Link oldValue, Link newValue) {
             if (oldValue != null) {
-                oldValue.PropertyChanged -= Link_PropertyChanged;
+                oldValue.PropertyChanged -= OnLinkPropertyChanged;
             }
 
             if (newValue != null) {
-                newValue.PropertyChanged += Link_PropertyChanged;
+                newValue.PropertyChanged += OnLinkPropertyChanged;
             }
 
             SelectedSource = newValue?.NonSelectable == false ? newValue.Source : null;
@@ -304,7 +305,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private void Link_PropertyChanged(object sender, PropertyChangedEventArgs args) {
+        private void OnLinkPropertyChanged(object sender, PropertyChangedEventArgs args) {
             if (args.PropertyName != nameof(Link.Source)) return;
             var link = sender as Link;
             SelectedSource = link?.Source;

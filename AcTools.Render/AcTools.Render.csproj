@@ -228,6 +228,7 @@
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
     <Compile Include="Kn5SpecificSpecial\ShadowsRendererBase.cs" />
     <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
+    <Compile Include="Kn5SpecificSpecial\UtilsRendererBase.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimExtension.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
@@ -330,7 +331,6 @@
       <DependentUpon>SmaaResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Special\PiecesBlender.cs" />
-    <Compile Include="Temporary\Logging.cs" />
     <Compile Include="Temporary\TestingCube.cs" />
     <Compile Include="Temporary\TestingCubeRendererUsingEffect.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

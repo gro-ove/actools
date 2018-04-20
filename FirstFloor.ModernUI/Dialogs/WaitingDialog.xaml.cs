@@ -37,17 +37,13 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public void SetMultiline(bool multiline) {
             lock (_lock) {
-                Dispatcher.Invoke(() => {
-                    MessageBlock.MinHeight = multiline ? 40d : 0d;
-                });
+                Dispatcher.Invoke(() => { MessageBlock.MinHeight = multiline ? 40d : 0d; });
             }
         }
 
         public void SetDetails([CanBeNull] IEnumerable<string> details) {
             lock (_lock) {
-                Dispatcher.Invoke(() => {
-                    Details = details == null ? null : string.Join(Environment.NewLine, details);
-                });
+                Dispatcher.Invoke(() => { Details = details == null ? null : string.Join(Environment.NewLine, details); });
             }
         }
 
@@ -64,17 +60,24 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
         }
 
+        public bool ShowProgressBar {
+            get => ProgressBarSwitch.Value;
+            set => ProgressBarSwitch.Value = value;
+        }
+
         private double? _progress;
 
         public double? Progress {
             get => _progress;
-            private set => this.Apply(value, ref _progress);
+            private set => this.Apply(value, ref _progress, () => {
+                OnPropertyChanged(nameof(ProgressIndetermitate));
+            });
         }
 
         private bool _progressIndetermitate;
 
         public bool ProgressIndetermitate {
-            get => _progressIndetermitate;
+            get => _progressIndetermitate || ShowProgressBar && Progress == null;
             private set => this.Apply(value, ref _progressIndetermitate);
         }
 
@@ -243,7 +246,7 @@ namespace FirstFloor.ModernUI.Dialogs {
                 _taskbarProgress = TaskbarService.Create(1000d);
             }
 
-            if (ProgressIndetermitate) {
+            if (_progressIndetermitate) {
                 _taskbarProgress.Set(TaskbarState.Indeterminate, 0.5);
             } else {
                 _taskbarProgress.Set(TaskbarState.Normal, value);

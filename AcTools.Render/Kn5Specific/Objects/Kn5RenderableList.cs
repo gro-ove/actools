@@ -27,19 +27,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
-        private Vector3? _originalScale;
-
-        public Vector3 GetOriginalScale() {
-            if (!_originalScale.HasValue) {
-                Vector3 translation, scale;
-                Quaternion rotation;
-                OriginalNode.Transform.ToMatrix().Decompose(out scale, out rotation, out translation);
-                _originalScale = scale;
-            }
-
-            return _originalScale.Value;
-        }
-
         public override void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
             if (_dirNode != null && !_dirTargetSet) {
                 _dirTargetSet = true;

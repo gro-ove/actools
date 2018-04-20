@@ -1,26 +1,37 @@
-﻿<controls:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.WaitingDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<c:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.WaitingDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
     xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation" xmlns:dialogs="clr-namespace:FirstFloor.ModernUI.Dialogs" mc:Ignorable="d" Width="480"
     SizeToContent="Height" d:DataContext="{d:DesignInstance dialogs:WaitingDialog}" Initialized="OnLoaded" MinHeight="40" Padding="24 20 24 0"
     WindowStyle="None" AllowsTransparency="True">
-  <controls:ModernDialog.Resources>
+  <c:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
         <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
-  </controls:ModernDialog.Resources>
+  </c:ModernDialog.Resources>
 
-  <controls:SpacingStackPanel Spacing="20">
-    <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding Progress, Mode=OneWay}" IsIndeterminate="{Binding ProgressIndetermitate}"
-        Visibility="{Binding Progress, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-    <controls:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center"
-        Visibility="{Binding Progress, Converter={StaticResource NullToVisibilityConverter}}" />
-    <controls:BbCodeBlock x:Name="MessageBlock" Text="{Binding Message}" />
-    <controls:BbCodeBlock Text="{Binding Details}" Style="{StaticResource Small}"
+  <c:SpacingStackPanel Spacing="20">
+    <c:BooleanSwitch x:Name="ProgressBarSwitch">
+      <c:BooleanSwitch.True>
+        <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding Progress, Mode=OneWay}" IsIndeterminate="{Binding ProgressIndetermitate}" />
+      </c:BooleanSwitch.True>
+      <c:BooleanSwitch.False>
+        <c:ReferenceSwitch Value="{Binding Progress}">
+          <c:ReferenceSwitch.Null>
+            <c:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" />
+          </c:ReferenceSwitch.Null>
+          <c:ReferenceSwitch.NonNull>
+            <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding Progress, Mode=OneWay}" IsIndeterminate="{Binding ProgressIndetermitate}" />
+          </c:ReferenceSwitch.NonNull>
+        </c:ReferenceSwitch>
+      </c:BooleanSwitch.False>
+    </c:BooleanSwitch>
+    <c:BbCodeBlock x:Name="MessageBlock" Text="{Binding Message}" />
+    <c:BbCodeBlock Text="{Binding Details}" Style="{StaticResource Small}"
         Visibility="{Binding Details, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-    <controls:BetterImage x:Name="Image" Visibility="Collapsed" Height="242" Width="430" ShowBroken="False" HorizontalAlignment="Left" />
-  </controls:SpacingStackPanel>
-</controls:ModernDialog>
+    <c:BetterImage x:Name="Image" Visibility="Collapsed" Height="242" Width="430" ShowBroken="False" HorizontalAlignment="Left" />
+  </c:SpacingStackPanel>
+</c:ModernDialog>

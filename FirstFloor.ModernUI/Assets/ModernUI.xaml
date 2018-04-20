@@ -88,8 +88,11 @@
       <DataTrigger Binding="{Binding IsShown}" Value="False">
         <Setter Property="Visibility" Value="Collapsed" />
       </DataTrigger>
+      <DataTrigger Binding="{Binding IsActive}" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" TargetName="PART_Button" />
+      </DataTrigger>
       <DataTrigger Binding="{Binding IsAccented}" Value="True">
-        <Setter Property="Foreground" Value="#FFdc000c" TargetName="PART_Button" />
+        <Setter Property="Foreground" Value="{DynamicResource Error}" TargetName="PART_Button" />
         <Setter Property="FontWeight" Value="Bold" TargetName="PART_Button" />
       </DataTrigger>
     </DataTemplate.Triggers>
@@ -115,8 +118,11 @@
       <DataTrigger Binding="{Binding IsShown}" Value="False">
         <Setter Property="Visibility" Value="Collapsed" />
       </DataTrigger>
+      <DataTrigger Binding="{Binding IsActive}" Value="True">
+        <Setter Property="Foreground" Value="{DynamicResource MenuTextSelected}" TargetName="PART_Button" />
+      </DataTrigger>
       <DataTrigger Binding="{Binding IsAccented}" Value="True">
-        <Setter Property="Foreground" Value="#FFdc000c" TargetName="PART_Button" />
+        <Setter Property="Foreground" Value="{DynamicResource Error}" TargetName="PART_Button" />
         <Setter Property="FontWeight" Value="Bold" TargetName="PART_Button" />
       </DataTrigger>
     </DataTemplate.Triggers>

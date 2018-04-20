@@ -15,7 +15,6 @@ using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark;
 using AcTools.Render.Kn5SpecificSpecial;
-using AcTools.Render.Temporary;
 using AcTools.Render.Wrapper;
 using CommandLine;
 
@@ -117,13 +116,7 @@ namespace CustomShowroom {
             var filename = Assembly.GetEntryAssembly().Location;
             if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
                     || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
-                var log = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Log.txt");
-                try {
-                    File.WriteAllBytes(log, new byte[0]);
-                    RenderLogging.Initialize(log);
-                } catch (Exception e) {
-                    MessageBox.Show("Can’t setup logging: " + e, @"Oops!", MessageBoxButtons.OK);
-                }
+                // TODO
             }
 
             var inputItems = options.Items;

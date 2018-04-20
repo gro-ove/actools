@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using AcTools.DataFile;
@@ -122,6 +123,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private class UvProjectedObject {
             public static int OptionUvProjectMaximumArea = 10;
+
+            public string Name => _mesh.Name;
 
             private readonly TrianglesRenderableObject<InputLayouts.VerticePT> _mesh;
             private readonly Vector2[] _offsets;
@@ -299,23 +302,29 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public bool UseFxaa = true;
 
-        public void Shot(string outputFile, string textureName, [CanBeNull] string objectPath, [CanBeNull] IProgress<double> progress,
+        [CanBeNull]
+        public byte[] Shot(string textureName, [CanBeNull] string objectPath, [CanBeNull] IProgress<double> progress,
                 CancellationToken cancellation) {
             if (!Initialized) {
                 Initialize();
-                if (cancellation.IsCancellationRequested) return;
+                if (cancellation.IsCancellationRequested) return null;
             }
 
             _filteredNodes = Flatten(Kn5, Scene, textureName, objectPath).OfType<TrianglesRenderableObject<InputLayouts.VerticePT>>()
                                                                          .Select(x => new UvProjectedObject(x)).ToArray();
+            AcToolsLogging.Write("Filtered nodes:\n" + _filteredNodes.Select(x => x.Name).JoinToString('\n'));
+
             PrepareBuffers(MapSize);
             SetBodyShadowCamera();
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested) return null;
 
             Draw(1f, progress, cancellation);
-            if (cancellation.IsCancellationRequested) return;
+            if (cancellation.IsCancellationRequested) return null;
 
-            Texture2D.ToFile(DeviceContext, RenderBuffer, ImageFileFormat.Png, outputFile);
+            using (var stream = new MemoryStream()) {
+                Texture2D.ToStream(DeviceContext, RenderBuffer, ImageFileFormat.Png, stream);
+                return stream.ToArray();
+            }
         }
 
         protected override void OnTickOverride(float dt) { }
