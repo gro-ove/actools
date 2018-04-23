@@ -10,10 +10,10 @@
     <RootNamespace>AcManager.DiscordRpc</RootNamespace>
     <AssemblyName>AcManager.DiscordRpc</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <FileAlignment>512</FileAlignment>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>

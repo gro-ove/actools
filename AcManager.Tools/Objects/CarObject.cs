@@ -522,7 +522,9 @@ namespace AcManager.Tools.Objects {
         #region Loading
         [Localizable(false)]
         protected override void LoadData(JObject json) {
+            var m = Measure();
             base.LoadData(json);
+            m?.Step("Basic data is ready");
 
             Brand = json.GetStringValueOnly("brand");
             if (string.IsNullOrEmpty(Brand)) {
@@ -535,6 +537,7 @@ namespace AcManager.Tools.Objects {
 
             CarClass = json.GetStringValueOnly("class");
             ParentId = json.GetStringValueOnly("parent");
+            m?.Step("Extra values are ready");
 
             var specsObj = json["specs"] as JObject;
             SpecsBhp = specsObj?.GetStringValueOnly("bhp");
@@ -546,6 +549,7 @@ namespace AcManager.Tools.Objects {
 
             SpecsTorqueCurve = new GraphData(json["torqueCurve"] as JArray);
             SpecsPowerCurve = new GraphData(json["powerCurve"] as JArray);
+            m?.Step("Spec values are ready");
         }
 
         protected override void LoadYear(JObject json) {

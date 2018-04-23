@@ -10,11 +10,11 @@
     <RootNamespace>AcTools</RootNamespace>
     <AssemblyName>AcTools</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>894b5421</NuGetPackageImportStamp>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>

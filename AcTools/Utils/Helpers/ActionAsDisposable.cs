@@ -2,6 +2,8 @@
 
 namespace AcTools.Utils.Helpers {
     public class ActionAsDisposable : IDisposable {
+        public static IDisposable Empty { get; } = new ActionAsDisposable(null);
+
         private readonly Action _action;
 
         public ActionAsDisposable(Action action) {
@@ -9,7 +11,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public void Dispose() {
-            _action.Invoke();
+            _action?.Invoke();
         }
     }
 }

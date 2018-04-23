@@ -72,7 +72,6 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         private void UpdateReady() {
-            Logging.Debug(_required?.JoinToReadableString());
             IsReady = _required?.All(x => PluginsManager.Instance.IsPluginEnabled(x))
                     ?? ListView.OfType<PluginEntry>().All(x => x.IsReady);
         }

@@ -219,6 +219,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.GoogleDriveLoaderDebugMode, ref GoogleDriveLoader.OptionDebugMode);
             AppArguments.Set(AppFlag.GoogleDriveLoaderManualRedirect, ref GoogleDriveLoader.OptionManualRedirect);
             AppArguments.Set(AppFlag.DebugPing, ref ServerEntry.OptionDebugPing);
+            AppArguments.Set(AppFlag.DebugContentId, ref AcObjectNew.OptionDebugLoading);
             AppArguments.Set(AppFlag.JpegQuality, ref ImageUtilsOptions.JpegQuality);
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 

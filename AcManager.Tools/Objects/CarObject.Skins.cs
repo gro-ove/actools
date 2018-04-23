@@ -19,10 +19,12 @@ namespace AcManager.Tools.Objects {
         public string SkinsDirectory { get; private set; }
 
         private CarSkinsManager InitializeSkins() {
+            var m = Measure();
             var manager = new CarSkinsManager(Id, new InheritingAcDirectories(FileAcManager.Directories, SkinsDirectory), OnSkinsCollectionReady) {
                 ScanWrapper = this
             };
             manager.Created += OnSkinsManagerCreated;
+            m?.Step("Ready");
             return manager;
         }
 
@@ -50,8 +52,6 @@ namespace AcManager.Tools.Objects {
             _errors.Remove(ac.Errors);
         }
         #endregion
-
-        /* for UI car’s skins manager */
 
         [NotNull]
         public CarSkinsManager SkinsManager { get; }
@@ -92,6 +92,7 @@ namespace AcManager.Tools.Objects {
         }
 
         void IAcManagerScanWrapper.AcManagerScan() {
+            var m = Measure("Scanning skins…");
             ClearErrors(AcErrorCategory.CarSkins);
 
             try {
@@ -103,7 +104,9 @@ namespace AcManager.Tools.Objects {
                 return;
             }
 
+            m?.Step("Skins are scanned");
             SelectPreviousOrDefaultSkin();
+            m?.Step("Selected skin is restored");
         }
 
         [CanBeNull]

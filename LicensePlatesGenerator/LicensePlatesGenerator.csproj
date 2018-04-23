@@ -10,6 +10,7 @@
     <RootNamespace>LicensePlatesGenerator</RootNamespace>
     <AssemblyName>LicensePlatesGenerator</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <FileAlignment>512</FileAlignment>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>

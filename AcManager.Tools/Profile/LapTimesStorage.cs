@@ -82,12 +82,12 @@ namespace AcManager.Tools.Profile {
             return Remove(GetKey(carId, trackAnyId));
         }
 
-        public bool IsActual(ILapTimesReader reader) {
-            return LastModified.HasValue && reader.GetLastModified() < LastModified.Value;
+        public bool IsActual([NotNull] ILapTimesReader reader) {
+            return LastModified.HasValue && reader.GetLastModified() <= LastModified.Value + TimeSpan.FromSeconds(1d);
         }
 
         [NotNull]
-        public IReadOnlyList<LapTimeEntry> UpdateCached(ILapTimesReader reader) {
+        public IReadOnlyList<LapTimeEntry> UpdateCached([NotNull] ILapTimesReader reader) {
             CleanUp(x => x.StartsWith(KeyPrefix));
 
             var list = reader.Import(_displayName).ToList();
@@ -100,7 +100,7 @@ namespace AcManager.Tools.Profile {
         }
 
         [ItemNotNull]
-        public Task<IReadOnlyList<LapTimeEntry>> UpdateCachedAsync(ILapTimesReader reader) {
+        public Task<IReadOnlyList<LapTimeEntry>> UpdateCachedAsync([NotNull] ILapTimesReader reader) {
             return Task.Run(() => UpdateCached(reader));
         }
 

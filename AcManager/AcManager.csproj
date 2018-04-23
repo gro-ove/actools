@@ -15,13 +15,13 @@
     <RootNamespace>AcManager</RootNamespace>
     <AssemblyName>Content Manager</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>e5b75b59</NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

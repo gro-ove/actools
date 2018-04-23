@@ -131,6 +131,12 @@ namespace AcManager {
         DebugPing,
 
         /// <summary>
+        /// Detailed logging for loading a car/track/etc. with given ID.
+        /// Example: --debug-content-id=abarth500.
+        /// </summary>
+        DebugContentId,
+
+        /// <summary>
         /// For testing.
         /// Example: --sidekick-optimal-range-threshold=0.01.
         /// </summary>

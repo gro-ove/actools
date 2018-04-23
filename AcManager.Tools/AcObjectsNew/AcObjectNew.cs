@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -7,6 +9,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcObjectNew : AcPlaceholderNew {
+        public static string OptionDebugLoading = @"abarth500";
+
         protected readonly IAcManagerNew Manager;
 
         // Not really a nullable, but don’t rely on it too much.
@@ -26,6 +30,35 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public virtual void Reload() {
             Manager.Reload(Id);
+        }
+
+        protected class Measurement {
+            private readonly string _m;
+            private readonly string _p;
+            private readonly Stopwatch _s;
+
+            public Measurement(string s, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+                Logging.Debug(s == null ? "Measurement started" : "Measurement started: " + s, m, p, l);
+                _s = Stopwatch.StartNew();
+                _m = m;
+                _p = p;
+            }
+
+            public void Step(string s, [CallerLineNumber] int l = -1) {
+                Logging.Debug($"{s}: {_s.Elapsed.TotalMilliseconds:F1} ms", _m, _p, l);
+                _s.Restart();
+            }
+        }
+
+        [CanBeNull]
+        protected Measurement Measure(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            return OptionDebugLoading == @"*" || OptionDebugLoading == Id ? new Measurement(s?.ToString() ?? $@"0x{GetHashCode():X6}", m, p, l) : null;
+        }
+
+        protected void Verbose(object s = null, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {
+            if (OptionDebugLoading == @"*" || OptionDebugLoading == Id) {
+                Logging.Debug(s, m, p, l);
+            }
         }
 
         public abstract void Load();

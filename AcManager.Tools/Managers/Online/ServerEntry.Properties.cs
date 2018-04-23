@@ -337,7 +337,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         private void OnContentNameChanged(object sender, PropertyChangedEventArgs args) {
-            Logging.Debug(args.PropertyName);
             if (args.PropertyName == nameof(AcObjectNew.DisplayName)) {
                 ContentNameChanged?.Invoke(this, EventArgs.Empty);
             }

@@ -217,9 +217,9 @@ namespace AcManager.Tools.Profile {
                     string.Equals(x.TrackAcId, trackId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public async Task AddEntry(string carId, string trackId, DateTime date, TimeSpan time) {
-            await EnabledSources.Where(x => x.AutoAddEntries).Select(x => x.AddEntryAsync(new LapTimeEntry(x.DisplayName, carId, trackId, date, time))).WhenAll(
-                    2);
+        private async Task AddEntry(string carId, string trackId, DateTime date, TimeSpan time) {
+            await EnabledSources.Where(x => x.AutoAddEntries).Select(x => x.AddEntryAsync(new LapTimeEntry(x.DisplayName, carId, trackId, date, time)))
+                                .WhenAll(2);
             RaiseEntriesChanged();
         }
 

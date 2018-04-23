@@ -174,14 +174,27 @@ namespace AcTools.LapTimes {
             }
         }
 
+        private DateTime _lastModified;
+        private DateTime _lastModifiedReadAt;
+
         public DateTime GetLastModified() {
-            var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
-            return directory.Exists ? directory.GetFiles("*_pb.ini").Select(f => f.LastWriteTime)
-                                               .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default(DateTime) : default(DateTime);
+            var n = DateTime.Now;
+            var p = n - _lastModifiedReadAt;
+            if (p.TotalMinutes > 5) {
+                var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
+                if (!directory.Exists) return default(DateTime);
+
+                _lastModifiedReadAt = n;
+                _lastModified = directory.GetFiles("*_pb.ini").Select(f => f.LastWriteTime)
+                                         .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default(DateTime);
+            }
+
+            return _lastModified;
         }
 
         public void Dispose() { }
 
         public bool CanExport => true;
+        public bool CanStay => true;
     }
 }

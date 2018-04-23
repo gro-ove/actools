@@ -48,6 +48,7 @@ namespace AcTools.LapTimes {
         }
 
         public bool CanExport => true;
+        public bool CanStay => true;
 
         public DateTime GetLastModified() {
             var file = new FileInfo(Path.Combine(_ov1Directory, "userdata", "best_lap.ini"));

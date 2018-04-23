@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +16,9 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Profile {
     public sealed class LapTimesSource : Displayable, IWithId {
         [CanBeNull]
-        private readonly Func<ILapTimesReader> _readerFunc;
+        private readonly Func<ILapTimesReader> _readerFn;
 
-        private readonly Func<Task> _preparationFunc;
+        private readonly Func<Task> _preparationFn;
         private LapTimesStorage _storage;
 
         private readonly string _enabledKey;
@@ -55,14 +56,29 @@ namespace AcManager.Tools.Profile {
             }
         }
 
+        private ILapTimesReader _stayedReader;
+
+        [NotNull]
+        public IDisposable GetReader([CanBeNull] out ILapTimesReader reader) {
+            var r = _stayedReader ?? _readerFn?.Invoke();
+            reader = r;
+
+            if (r?.CanStay == true) {
+                _stayedReader = r;
+                return ActionAsDisposable.Empty;
+            }
+
+            return r ?? ActionAsDisposable.Empty;
+        }
+
         public List<LapTimesExtraTool> ExtraTools { get; } = new List<LapTimesExtraTool>();
 
         public LapTimesSource([NotNull] string id, string displayName, string description, string enabledKey, bool enabledByDefault,
-                bool autoAddAllowed, [CanBeNull] Func<ILapTimesReader> readerFunc, Func<Task> preparationFunc) {
+                bool autoAddAllowed, [CanBeNull] Func<ILapTimesReader> readerFn, Func<Task> preparationFn) {
             _changeId = id.GetHashCode();
 
-            _readerFunc = readerFunc;
-            _preparationFunc = preparationFunc;
+            _readerFn = readerFn;
+            _preparationFn = preparationFn;
 
             Id = id;
             DisplayName = displayName;
@@ -72,7 +88,7 @@ namespace AcManager.Tools.Profile {
             _storage = new LapTimesStorage(DisplayName, Id);
 
             _enabledKey = enabledKey;
-            _autoAddKey = _enabledKey + ":autoAdd";
+            _autoAddKey = _enabledKey + @":autoAdd";
             var enabledByDefault1 = enabledByDefault;
             _isEnabled = ValuesStorage.Get(_enabledKey, enabledByDefault1);
             _autoAddEntries = ValuesStorage.Get(_autoAddKey, enabledByDefault1);
@@ -88,7 +104,7 @@ namespace AcManager.Tools.Profile {
         public int? EntriesCount {
             get {
                 if (!IsEnabled) return null;
-                EnsureActualAsync().Forget();
+                EnsureActualAsync(false).Forget();
                 return _list?.Count;
             }
         }
@@ -109,9 +125,9 @@ namespace AcManager.Tools.Profile {
 
         public int ChangeId {
             get {
-                if (_readerFunc != null && (DateTime.Now - _lastLoaded).TotalSeconds > 10d) {
-                    using (var reader = _readerFunc()) {
-                        if (!_storage.IsActual(reader)) {
+                if ((DateTime.Now - _lastLoaded).TotalSeconds > 10d) {
+                    using (GetReader(out var reader)) {
+                        if (reader != null && !_storage.IsActual(reader)) {
                             _changeId++;
                         }
                     }
@@ -129,27 +145,26 @@ namespace AcManager.Tools.Profile {
             _list = null;
         }
 
-        public async Task EnsureActualAsync() {
+        private async Task EnsureActualAsync(bool force) {
             if (_busy) return;
             _busy = true;
 
             try {
-                if (_readerFunc != null) {
-                    using (var reader = _readerFunc()) {
-                        if (!_storage.IsActual(reader)) {
-                            IsLoading = true;
-                            if (_preparationFunc != null) {
-                                await _preparationFunc();
-                            }
-
-                            _listChangeId = _changeId;
-                            _list = await _storage.UpdateCachedAsync(reader);
-                            _lastLoaded = DateTime.Now;
-                            OnPropertyChanged(nameof(EntriesCount));
-                            OnPropertyChanged(nameof(LastModified));
-                            IsLoading = false;
-                            return;
+                using (GetReader(out var reader)) {
+                    if (reader != null && (force || !_storage.IsActual(reader))) {
+                        IsLoading = true;
+                        if (_preparationFn != null) {
+                            await _preparationFn();
                         }
+
+                        _listChangeId = _changeId;
+                        _list = await _storage.UpdateCachedAsync(reader);
+
+                        _lastLoaded = DateTime.Now;
+                        OnPropertyChanged(nameof(EntriesCount));
+                        OnPropertyChanged(nameof(LastModified));
+                        IsLoading = false;
+                        return;
                     }
                 }
 
@@ -165,14 +180,16 @@ namespace AcManager.Tools.Profile {
         [ItemNotNull]
         public async Task<IReadOnlyList<LapTimeEntry>> GetEntriesAsync() {
             if (_listChangeId != ChangeId || _list == null) {
-                await EnsureActualAsync().ConfigureAwait(false);
+                var s = Stopwatch.StartNew();
+                await EnsureActualAsync(_list != null).ConfigureAwait(false);
+                Logging.Debug($"{Id}: {s.Elapsed.TotalMilliseconds:F1} ms");
             }
 
             return _list ?? new LapTimeEntry[0];
         }
 
         public async Task AddEntryAsync(LapTimeEntry entry) {
-            await EnsureActualAsync();
+            await EnsureActualAsync(false);
 
             try {
                 if (!_storage.IsBetter(entry)) {
@@ -185,8 +202,8 @@ namespace AcManager.Tools.Profile {
                 SetDirty();
                 _storage.Set(entry);
 
-                if (_readerFunc != null) {
-                    using (var reader = _readerFunc()) {
+                using (GetReader(out var reader)) {
+                    if (reader != null) {
                         reader.Export(new[] { entry });
                         _storage.SyncLastModified(reader);
                     }
@@ -200,13 +217,13 @@ namespace AcManager.Tools.Profile {
         }
 
         public async Task<bool> RemoveAsync(string carId, string trackId) {
-            await EnsureActualAsync();
+            await EnsureActualAsync(false);
             if (!_storage.Remove(carId, trackId)) return false;
 
             SetDirty();
 
-            if (_readerFunc != null) {
-                using (var reader = _readerFunc()) {
+            using (GetReader(out var reader)) {
+                if (reader != null) {
                     await Task.Run(() => reader.Remove(carId, trackId));
                     _storage.SyncLastModified(reader);
                 }
@@ -218,7 +235,7 @@ namespace AcManager.Tools.Profile {
         }
 
         public void ClearCache() {
-            if (_readerFunc == null) return;
+            if (_readerFn == null) return;
             // if reader is null, storage is the only source of lap times — don’t clear it!
 
             var filename = _storage.Filename;
@@ -233,16 +250,18 @@ namespace AcManager.Tools.Profile {
         public async Task AddEntriesAsync(IEnumerable<LapTimeEntry> entries) {
             SetDirty();
 
-            if (_readerFunc == null) {
+            if (_readerFn == null) {
                 foreach (var entry in entries) {
                     _storage.Set(entry);
                 }
 
                 _storage.SyncLastModified();
             } else {
-                using (var reader = _readerFunc()) {
-                    await Task.Run(() => reader.Export(entries));
-                    _storage.SyncLastModified(reader);
+                using (GetReader(out var reader)) {
+                    if (reader != null) {
+                        await Task.Run(() => reader.Export(entries));
+                        _storage.SyncLastModified(reader);
+                    }
                 }
             }
 
@@ -256,16 +275,12 @@ namespace AcManager.Tools.Profile {
 
         private ICommand _clearCacheCommand;
 
-        public ICommand ClearCacheCommand => _clearCacheCommand ?? (_clearCacheCommand = _readerFunc == null ? UnavailableCommand.Instance
+        public ICommand ClearCacheCommand => _clearCacheCommand ?? (_clearCacheCommand = _readerFn == null ? UnavailableCommand.Instance
                 : new DelegateCommand(ClearCache));
 
         private bool CanExport() {
-            if (_readerFunc == null) {
-                return true;
-            }
-
-            using (var reader = _readerFunc()) {
-                return reader.CanExport;
+            using (GetReader(out var reader)) {
+                return reader?.CanExport ?? true;
             }
         }
 
@@ -283,6 +298,6 @@ namespace AcManager.Tools.Profile {
             }
         }));
 
-        public bool ReaderBased => _readerFunc != null;
+        public bool ReaderBased => _readerFn != null;
     }
 }

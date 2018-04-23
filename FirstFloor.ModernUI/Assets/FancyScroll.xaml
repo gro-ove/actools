@@ -44,6 +44,7 @@
     <Setter Property="MinWidth" Value="8" />
     <Setter Property="Width" Value="8" />
     <Setter Property="MaxWidth" Value="8" />
+    <Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="{x:Type ScrollBar}">

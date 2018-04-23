@@ -10,6 +10,7 @@ namespace AcTools.LapTimes {
         void Remove(string carId, string trackId);
 
         bool CanExport { get; }
+        bool CanStay { get; }
 
         DateTime GetLastModified();
     }

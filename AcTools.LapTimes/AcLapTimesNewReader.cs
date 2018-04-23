@@ -11,8 +11,7 @@ namespace AcTools.LapTimes {
         private readonly IAcIdsProvider _provider;
 
         public TrackIdsFixer(IAcIdsProvider provider) {
-            if (provider == null) throw new ArgumentNullException(nameof(provider));
-            _provider = provider;
+            _provider = provider ?? throw new ArgumentNullException(nameof(provider));
         }
 
         private IReadOnlyList<Tuple<string, string>> _trackLayoutIds;
@@ -71,9 +70,7 @@ namespace AcTools.LapTimes {
                 var time = p.Value.GetDouble("TIME", 0);
                 if (time <= 1 || date <= 1) return null;
 
-                string carId, trackLayoutId;
-                if (!TryToGuessCarAndTrack(p.Key, out carId, out trackLayoutId)) return null;
-
+                if (!TryToGuessCarAndTrack(p.Key, out var carId, out var trackLayoutId)) return null;
                 return new LapTimeEntry(sourceName, carId, trackLayoutId,
                         new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(date).ToLocalTime(),
                         TimeSpan.FromMilliseconds(time));
@@ -105,5 +102,6 @@ namespace AcTools.LapTimes {
         }
 
         public bool CanExport => true;
+        public bool CanStay => true;
     }
 }

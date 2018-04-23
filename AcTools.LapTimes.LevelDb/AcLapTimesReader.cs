@@ -80,5 +80,6 @@ namespace AcTools.LapTimes.LevelDb {
         }
 
         public bool CanExport => false;
+        public bool CanStay => false;
     }
 }

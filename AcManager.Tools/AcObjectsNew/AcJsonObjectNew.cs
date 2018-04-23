@@ -105,9 +105,11 @@ namespace AcManager.Tools.AcObjectsNew {
 
         protected virtual bool LoadJsonOrThrow() {
             string text;
+            var m = Measure();
 
             try {
                 text = FileUtils.ReadAllText(JsonFilename);
+                m?.Step("Data’s read");
             } catch (FileNotFoundException) {
                 AddError(AcErrorType.Data_JsonIsMissing, Path.GetFileName(JsonFilename));
                 return false;
@@ -118,12 +120,14 @@ namespace AcManager.Tools.AcObjectsNew {
 
             try {
                 JsonObject = JsonExtension.Parse(text);
+                m?.Step("JSON’s parsed");
             } catch (Exception) {
                 AddError(AcErrorType.Data_JsonIsDamaged, Path.GetFileName(JsonFilename));
                 return false;
             }
 
             LoadData(JsonObject);
+            m?.Step("Data’s loaded");
             return true;
         }
 
