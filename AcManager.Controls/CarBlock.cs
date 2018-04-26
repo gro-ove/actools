@@ -47,6 +47,9 @@ namespace AcManager.Controls {
         }
 
         [CanBeNull]
+        public TagsList TagsList { get; private set; }
+
+        [CanBeNull]
         public FrameworkElement BrandArea { get; private set; }
 
         [CanBeNull]
@@ -99,6 +102,7 @@ namespace AcManager.Controls {
             }
 
             // Various areas and footer
+            TagsList = GetTemplateChild("PART_TagsList") as TagsList;
             BrandArea = GetTemplateChild("PART_BrandArea") as FrameworkElement;
             ClassArea = GetTemplateChild("PART_ClassArea") as FrameworkElement;
             YearArea = GetTemplateChild("PART_YearArea") as FrameworkElement;

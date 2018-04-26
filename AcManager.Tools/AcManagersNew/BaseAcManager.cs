@@ -143,15 +143,16 @@ namespace AcManager.Tools.AcManagersNew {
             IsLoaded = false;
             IsScanning = true;
 
+            var list = InnerWrappersList;
             try {
-                foreach (var obj in InnerWrappersList.Select(x => x.Value).OfType<T>()) {
+                foreach (var obj in list.Select(x => x.Value).OfType<T>()) {
                     obj.Outdate();
                 }
 
-                InnerWrappersList.ReplaceEverythingBy(ScanOverride().Select(x => new AcItemWrapper(this, x)));
+                list.ReplaceEverythingBy_Direct(ScanOverride().Select(x => new AcItemWrapper(this, x)));
             } catch(Exception e) {
                 Logging.Error($"[{GetType().Name}] Scanning error: {e}");
-                InnerWrappersList.Clear();
+                list.Clear();
                 throw;
             } finally {
                 IsScanning = false;

@@ -145,8 +145,8 @@
       <DockPanel Dock="Top" Margin="0 0 0 20">
         <c:FavouriteButton DockPanel.Dock="Right" VerticalAlignment="Center" IsChecked="{Binding SelectedCar.IsFavourite}" Margin="0 0 8 0" />
         <mui:BetterImage Margin="4 4 8 0" Width="28" Height="28" StretchDirection="DownOnly" Filename="{Binding SelectedCar.BrandBadge}" />
-        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedCar.DisplayName}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light" FontSize="24"
-            TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
+        <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedCar.DisplayName}" FontFamily="{StaticResource DefaultFont}" FontWeight="Light"
+            FontSize="24" TextOptions.TextFormattingMode="Ideal" TextTrimming="CharacterEllipsis" />
       </DockPanel>
 
       <c:CarBlock x:Name="CarBlock" Car="{Binding SelectedCar, Mode=OneWay}" SelectedSkin="{Binding SelectedSkin, Mode=TwoWay}" SelectSkin="True">

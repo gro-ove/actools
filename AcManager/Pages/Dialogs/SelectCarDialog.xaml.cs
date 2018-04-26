@@ -171,7 +171,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static Uri TagUri(string tag) {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=car&Filter={0}&Title={1}",
-                    $"enabled+&tag:{Filter.Encode(tag)}", tag);
+                    $"enabled+&tag:{Filter.Encode(tag)}", "#" + tag);
         }
 
         public static Uri CountryUri(string country) {
@@ -245,19 +245,27 @@ namespace AcManager.Pages.Dialogs {
             CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
 
             if (CarBlock.BrandArea != null) {
-                CarBlock.BrandArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = BrandUri(SelectedCar.Brand);
+                CarBlock.BrandArea.PreviewMouseLeftButtonUp += (s, args) => Tabs.SelectedSource = BrandUri(SelectedCar.Brand);
             }
 
             if (CarBlock.ClassArea != null) {
-                CarBlock.ClassArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = ClassUri(SelectedCar.CarClass);
+                CarBlock.ClassArea.PreviewMouseLeftButtonUp += (s, args) => Tabs.SelectedSource = ClassUri(SelectedCar.CarClass);
             }
 
             if (CarBlock.YearArea != null) {
-                CarBlock.YearArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = YearUri(SelectedCar.Year);
+                CarBlock.YearArea.PreviewMouseLeftButtonUp += (s, args) => Tabs.SelectedSource = YearUri(SelectedCar.Year);
             }
 
             if (CarBlock.CountryArea != null) {
-                CarBlock.CountryArea.PreviewMouseLeftButtonDown += (s, args) => Tabs.SelectedSource = CountryUri(SelectedCar.Country);
+                CarBlock.CountryArea.PreviewMouseLeftButtonUp += (s, args) => Tabs.SelectedSource = CountryUri(SelectedCar.Country);
+            }
+
+            if (CarBlock.TagsList != null) {
+                CarBlock.TagsList.PreviewMouseLeftButtonUp += (s, args) => {
+                    if (CarBlock.TagsList.FindVisualChild<ItemsControl>().GetMouseItem() is string mouseTag) {
+                        Tabs.SelectedSource = TagUri(mouseTag);
+                    }
+                };
             }
         }
 

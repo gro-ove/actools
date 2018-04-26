@@ -22,7 +22,7 @@
               VerticalScrollBarVisibility="Auto" mui:FancyScroll.Outside="True" Padding="0 0 8 0" Background="{TemplateBinding Background}">
             <DockPanel>
               <!-- Tags -->
-              <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
+              <mui:TagsList x:Name="PART_TagsList" ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
 
               <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
                   Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
@@ -150,7 +150,7 @@
                     VerticalScrollBarVisibility="Auto" mui:FancyScroll.Outside="True" Padding="0 0 8 0">
                   <DockPanel>
                     <!-- Tags -->
-                    <mui:TagsList ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
+                    <mui:TagsList x:Name="PART_TagsList" ItemsSource="{Binding Tags}" IsReadOnly="True" DockPanel.Dock="Top" Margin="0 0 0 8" />
 
                     <StackPanel DockPanel.Dock="Right" Margin="20 0 0 0" Width="240"
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">

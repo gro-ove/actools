@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
@@ -154,7 +155,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 if (start) {
                     var token = La(1);
                     if (token.TokenType != BbCodeLexer.TokenAttribute) return;
-                    context.NavigateUri = token.Value;
+                    context.NavigateUri = token.Value.Urlify();
                     Consume();
                 } else {
                     context.NavigateUri = null;
@@ -182,7 +183,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         // parse uri value for optional parameter and/or target, eg [url=cmd://foo|parameter|target]
                         if (NavigationHelper.TryParseUriWithParameters(context.NavigateUri, out var parsedUri, out var parsedParameter,
                                 out var parsedTargetName)) {
-                            var link = new Hyperlink();
+                            var link = new Hyperlink { ToolTip = context.NavigateUri };
 
                             if (context.IconGeometry != null) {
                                 link.TextDecorations.Clear();

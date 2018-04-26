@@ -57,6 +57,19 @@ namespace FirstFloor.ModernUI.Windows.Media {
             return list.GetItemVisual(item)?.IsMouseOverElement() == true;
         }
 
+        [CanBeNull]
+        public static object GetMouseItem(this ItemsControl list) {
+            var screenPoint = GetMousePosition();
+
+            for (var i = 0; i < list.Items.Count; i++) {
+                if (list.IsMouseOverIndex(i, screenPoint)) {
+                    return list.Items[i];
+                }
+            }
+
+            return null;
+        }
+
         public static int GetMouseItemIndex(this ItemsControl list) {
             var screenPoint = GetMousePosition();
 

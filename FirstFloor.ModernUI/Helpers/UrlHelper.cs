@@ -5,29 +5,31 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class UrlHelper {
-        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
-        public static string GetWebsiteFromUrl(this string value) {
-            return value == null ? null : Regex.Replace(value, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
+        [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
+        public static string GetWebsiteFromUrl(this string s) {
+            return s == null ? null : Regex.Replace(s, @"(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
         }
 
-        [ContractAnnotation(@"value: null => null; value: notnull => notnull")]
-        public static string GetDomainNameFromUrl(this string value) {
-            return value == null ? null : Regex.Replace(value, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
+        [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
+        public static string GetDomainNameFromUrl(this string s) {
+            return s == null ? null : Regex.Replace(s, @"^(?:(?:https?)?://)?(?:www\.)?|(?<=\w)/.*$", "", RegexOptions.IgnoreCase);
         }
 
-        [ContractAnnotation(@"value: null => false")]
-        public static bool IsWebUrl(this string value) {
-            return value.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
-                    value.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
+        [ContractAnnotation(@"s: null => false")]
+        public static bool IsWebUrl(this string s) {
+            return s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
+                    s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
         }
 
+        [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string Urlify([CanBeNull] this string s) {
-            return s.IsWebUrl() ? s : @"http://" + s;
+            if (s == null) return null;
+            return s.IsWebUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
         }
 
         public static IEnumerable<string> GetUrls([CanBeNull] this string s) {
             if (s == null) yield break;
-            for (var i = 0; i < s.Length; i++){
+            for (var i = 0; i < s.Length; i++) {
                 if (IsWebUrl(s, i, false, out var l)) {
                     yield return s.Substring(i, l).Urlify();
                 }
@@ -281,6 +283,7 @@ console.log(result);
                 var previous = s[start - 1];
                 if (previous == '=' || previous == '.' || previous == '-'
                         || previous == '%' || previous == '&' || previous == '?' || previous == '='
+                        || previous == '@' || previous == '#'
                         || previous == '"' || previous == '\'' || previous == '`'
                         || previous == '/' || previous == '\\'
                         || char.IsLetterOrDigit(previous)) {
@@ -303,7 +306,7 @@ console.log(result);
             for (; index < length; index++) {
                 var c = s[index];
                 if (c == '.') {
-                    if (lastDot == index - 1){
+                    if (lastDot == index - 1) {
                         urlLength = 0;
                         return false;
                     }
