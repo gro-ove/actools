@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Interop;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -16,6 +17,16 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [ContractAnnotation(@"s: null => false")]
+        public static bool IsAnyUrl(this string s) {
+            var i = s.IndexOf(@"://", StringComparison.Ordinal);
+            if (i == -1) return false;
+            for (; i > 0; i--) {
+                if (!char.IsLetterOrDigit(s[i - 1])) return false;
+            }
+            return true;
+        }
+
+        [ContractAnnotation(@"s: null => false")]
         public static bool IsWebUrl(this string s) {
             return s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
                     s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
@@ -24,7 +35,7 @@ namespace FirstFloor.ModernUI.Helpers {
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string Urlify([CanBeNull] this string s) {
             if (s == null) return null;
-            return s.IsWebUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
+            return s.IsAnyUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
         }
 
         public static IEnumerable<string> GetUrls([CanBeNull] this string s) {
