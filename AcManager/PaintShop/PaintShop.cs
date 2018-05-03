@@ -861,12 +861,12 @@ namespace AcManager.PaintShop {
             foreach (var item in array) {
                 if (item.Type == JTokenType.String) {
                     var s = (string)item;
-                    if (!s.StartsWith("@")) {
+                    if (!s.StartsWith(@"@")) {
                         var inherited = GetCarPaintableItems(s, kn5, previousIds);
                         if (inherited != null) {
                             result.AddRange(inherited);
                         }
-                    } else if (string.Equals(s, "@guess", StringComparison.OrdinalIgnoreCase)) {
+                    } else if (string.Equals(s, @"@guess", StringComparison.OrdinalIgnoreCase)) {
                         result.AddRange(GuessPaintableItems(kn5));
                     }
                 } else {
@@ -901,15 +901,15 @@ namespace AcManager.PaintShop {
             var refSolver = new ReferenceSolver();
             using (var zip = ZipFile.OpenRead(downloadedData))
             using (refSolver.SetDataProvider(zip)) {
-                var manifest = zip.GetEntry("Manifest.json")?.Open().ReadAsStringAndDispose();
+                var manifest = zip.GetEntry(@"Manifest.json")?.Open().ReadAsStringAndDispose();
                 if (manifest == null) return new PaintableItem[0];
 
                 var jObj = JsonExtension.UnwrapReferences(JObject.Parse(manifest));
                 if (jObj.GetStringValueOnly("id") != carId) {
-                    throw new Exception($"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");
+                    throw new Exception($@"ID is wrong: {jObj.GetStringValueOnly("id")}≠{carId}");
                 }
 
-                var list = GetJArrayPaintableItems((JArray)jObj["entries"], kn5, previousIds, refSolver);
+                var list = GetJArrayPaintableItems((JArray)jObj[@"entries"], kn5, previousIds, refSolver);
                 refSolver.SetRefList(list);
                 return list;
             }
@@ -922,7 +922,7 @@ namespace AcManager.PaintShop {
             previousIds.Add(carIdLower);
 
             var car = CarsManager.Instance.GetById(carId);
-            var candidate = car == null ? null : Path.Combine(car.Location, "ui", "cm_paintshop.json");
+            var candidate = car == null ? null : Path.Combine(car.Location, @"ui", @"cm_paintshop.json");
             if (car != null && File.Exists(candidate)) {
                 try {
                     var t = JsonExtension.UnwrapReferences(JToken.Parse(File.ReadAllText(candidate)));

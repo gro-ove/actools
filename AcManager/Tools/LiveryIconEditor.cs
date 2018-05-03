@@ -247,7 +247,7 @@ namespace AcManager.Tools {
                 SelectedShape = Shapes.GetByIdOrDefault(ValuesStorage.Get<string>(KeyShape)) ?? Shapes.FirstOrDefault();
             }
 
-            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == @"0"
+            SelectedNumbers = string.IsNullOrWhiteSpace(skin.SkinNumber) || skin.SkinNumber == @"0" || skin.SkinNumberFromId
                     ? Numbers.FirstOrDefault() : Numbers.GetByIdOrDefault(ValuesStorage.Get<string>(KeyNumbers)) ?? Numbers.FirstOrDefault();
             SelectedStyle = Styles.GetByIdOrDefault(ValuesStorage.Get<string>(KeyStyle)) ?? Styles.FirstOrDefault();
 

@@ -72,6 +72,7 @@ namespace AcManager.Tools.Objects {
             DriverName = null;
             Team = null;
             SkinNumber = GetSkinNumberFromId();
+            SkinNumberFromId = true;
             Priority = null;
         }
 
@@ -162,6 +163,13 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _skinNumberFromId;
+
+        public bool SkinNumberFromId {
+            get => _skinNumberFromId;
+            set => Apply(value, ref _skinNumberFromId);
+        }
+
         private string _skinNumber;
 
         [CanBeNull]
@@ -174,6 +182,7 @@ namespace AcManager.Tools.Objects {
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;
+                    SkinNumberFromId = false;
                 }
             }
         }
@@ -210,7 +219,16 @@ namespace AcManager.Tools.Objects {
         private void LoadSkinRelated(JObject json) {
             DriverName = json.GetStringValueOnly("drivername")?.Trim();
             Team = json.GetStringValueOnly("team")?.Trim();
-            SkinNumber = json.GetStringValueOnly("number")?.Trim() ?? GetSkinNumberFromId();
+
+            var skinNumber = json.GetStringValueOnly("number")?.Trim();
+            if (skinNumber != null) {
+                SkinNumber = skinNumber;
+                SkinNumberFromId = false;
+            } else {
+                SkinNumber = GetSkinNumberFromId();
+                SkinNumberFromId = true;
+            }
+
             Priority = json.GetIntValueOnly("priority");
 
             var carSkins = DataProvider.Instance.KunosSkins.GetValueOrDefault(CarId);
@@ -223,6 +241,7 @@ namespace AcManager.Tools.Objects {
             json[@"drivername"] = DriverName ?? string.Empty;
             json[@"team"] = Team ?? string.Empty;
             json[@"number"] = SkinNumber ?? string.Empty;
+            SkinNumberFromId = false;
 
             if (Priority.HasValue && !SettingsHolder.Content.SkinsSkipPriority) {
                 json[@"priority"] = Priority.Value;

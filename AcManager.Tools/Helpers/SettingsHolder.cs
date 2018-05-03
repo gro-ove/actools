@@ -20,6 +20,20 @@ namespace AcManager.Tools.Helpers {
                 TimeSpan = TimeSpan.MaxValue;
                 DisplayName = displayName;
             }
+
+            private bool Equals(DelayEntry other) {
+                return TimeSpan.Equals(other.TimeSpan);
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                return obj is DelayEntry entry && Equals(entry);
+            }
+
+            public override int GetHashCode() {
+                return TimeSpan.GetHashCode();
+            }
         }
 
         public sealed class DelayEntry : Displayable {
@@ -29,6 +43,20 @@ namespace AcManager.Tools.Helpers {
                 TimeSpan = timeSpan;
                 DisplayName = displayName ?? (timeSpan == TimeSpan.Zero ? ToolsStrings.Common_Disabled :
                         timeSpan.ToReadableTime());
+            }
+
+            private bool Equals(DelayEntry other) {
+                return TimeSpan.Equals(other.TimeSpan);
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                return obj is DelayEntry entry && Equals(entry);
+            }
+
+            public override int GetHashCode() {
+                return TimeSpan.GetHashCode();
             }
         }
 

@@ -121,8 +121,8 @@ namespace AcManager.CustomShowroom {
                     }));
 
             private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
-                var paintShopFile = Path.Combine(Car.Location, "ui", "cm_paintshop.json");
-                var paintShopDirectory = Path.Combine(Car.Location, "ui", "cm_paintshop");
+                var paintShopFile = Path.Combine(Car.Location, @"ui", @"cm_paintshop.json");
+                var paintShopDirectory = Path.Combine(Car.Location, @"ui", @"cm_paintshop");
                 if (FileUtils.Affects(args.Filename, paintShopFile)
                         || FileUtils.Affects(args.Filename, paintShopDirectory)) {
                     OnPaintShopDataChanged(sender, args);
@@ -259,10 +259,10 @@ namespace AcManager.CustomShowroom {
 
                         if (HasNumbers) {
                             skin.SkinNumber = SkinNumber.ToInvariantString();
-                            skin.SaveAsync();
+                            await skin.SaveAsync();
                         }
 
-                        if (!cancellation.IsCancellationRequested) {
+                        if (!cancellation.IsCancellationRequested && saveAsNew) {
                             var carPaint = skinsItems.OfType<CarPaint>().FirstOrDefault(x => x.Enabled);
                             if (carPaint != null && LiveryGenerator != null) {
                                 var liveryStyle = (carPaint.PatternEnabled ? carPaint.CurrentPattern?.LiveryStyle : null) ?? carPaint.LiveryStyle;
