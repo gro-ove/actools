@@ -275,6 +275,7 @@
     <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonCombinedAlt.cs" />
+    <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />

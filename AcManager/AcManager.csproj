@@ -3,6 +3,23 @@
   <PropertyGroup>
     <!-- There is also a custom packer made for this app, that’s why there is an option. -->
     <UseCosturaToPack>true</UseCosturaToPack>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ProductName>Content Manager</ProductName>
+    <PublisherName>AcClub</PublisherName>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,23 +39,6 @@
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ProductName>Content Manager</ProductName>
-    <PublisherName>AcClub</PublisherName>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Icons\Icon.ico</ApplicationIcon>
@@ -140,6 +140,9 @@
     </Reference>
     <Reference Include="NAudio, Version=1.8.4.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\NAudio\NAudio.dll</HintPath>
+    </Reference>
+    <Reference Include="Interop.D3DImageEx, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\Interop.D3DImageEx\Interop.D3DImageEx.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
@@ -331,6 +334,9 @@
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsControls_Wheel_Buttons.xaml.cs">
       <DependentUpon>AcSettingsControls_Wheel_Buttons.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsChaseCamera.xaml.cs">
+      <DependentUpon>AcSettingsChaseCamera.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsPython.xaml.cs">
       <DependentUpon>AcSettingsPython.xaml</DependentUpon>
@@ -943,6 +949,10 @@
     <Page Include="Pages\AcSettings\AcSettingsControls_Wheel_Buttons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsChaseCamera.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsPython.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -206,6 +206,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Miscellaneous
+        private static CameraChaseSettings _cameraChase;
+        public static CameraChaseSettings CameraChase => _cameraChase ?? (_cameraChase = new CameraChaseSettings());
+
+
         private static CameraOnboardSettings _cameraOnboard;
         public static CameraOnboardSettings CameraOnboard => _cameraOnboard ?? (_cameraOnboard = new CameraOnboardSettings());
 

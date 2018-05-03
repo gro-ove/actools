@@ -7,49 +7,49 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private bool _practice;
 
         public bool Practice {
-            get { return _practice; }
+            get => _practice;
             set => Apply(value, ref _practice);
         }
 
         private bool _qualify;
 
         public bool Qualify {
-            get { return _qualify; }
+            get => _qualify;
             set => Apply(value, ref _qualify);
         }
 
         private bool _race;
 
         public bool Race {
-            get { return _race; }
+            get => _race;
             set => Apply(value, ref _race);
         }
 
         private Color _backgroundColor;
 
         public Color BackgroundColor {
-            get { return _backgroundColor; }
+            get => _backgroundColor;
             set => Apply(value, ref _backgroundColor);
         }
 
         private double _backgroundOpacity;
 
         public double BackgroundOpacity {
-            get { return _backgroundOpacity; }
+            get => _backgroundOpacity;
             set => Apply(value, ref _backgroundOpacity);
         }
 
         private Color _foregroundColor;
 
         public Color ForegroundColor {
-            get { return _foregroundColor; }
+            get => _foregroundColor;
             set => Apply(value, ref _foregroundColor);
         }
 
         private double _foregroundOpacity;
 
         public double ForegroundOpacity {
-            get { return _foregroundOpacity; }
+            get => _foregroundOpacity;
             set => Apply(value, ref _foregroundOpacity);
         }
 

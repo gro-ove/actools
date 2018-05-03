@@ -12,7 +12,8 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Controls}" Source="/Pages/AcSettings/AcSettingsControls.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Miscellaneous}" Source="/Pages/AcSettings/AcSettingsGeneral.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsSystem.xaml" />
-        <mui:Link DisplayName="Damage displayer" Source="/Pages/AcSettings/AcSettingsDamageDisplayer.xaml" IsNew="True" />
+        <mui:Link DisplayName="Chase camera" Source="/Pages/AcSettings/AcSettingsChaseCamera.xaml" IsNew="True" />
+        <mui:Link DisplayName="Damage displayer" Source="/Pages/AcSettings/AcSettingsDamageDisplayer.xaml" />
         <mui:Link DisplayName="Presets per mode" Source="/Pages/AcSettings/PresetsPerMode.xaml" />
       </mui:ModernTab.Links>
     </mui:ModernTab>
