@@ -424,7 +424,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 ClipboardHelper.SetText(piece);
                 Toast.Show($"Description for {Name}",
                         "Message with details is copied to the clipboard",
-                        () => { WindowsHelper.ViewInBrowser(@"http://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
+                        () => { WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
             }));
 
             [CanBeNull]

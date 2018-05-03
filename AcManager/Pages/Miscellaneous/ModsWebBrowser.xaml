@@ -229,7 +229,7 @@
                       </DockPanel>
                       <c:MessageBlock Margin="0 0 0 8" IsEnabled="{Binding CaptureDownloads}">
                         <mui:BbCodeBlock LinkNavigator="{Binding}"
-                            Text="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;http://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
+                            Text="To set that rule easily, just start a download (for example, by pasting link to a file into CM via Ctrl+V) and go from there. Or, you can find some ready-to-use rules [url=&quot;https://acstuff.ru/f/d/24-content-manager-rules-for-clicking-download-buttons-automatically&quot;]here[/url]. Also, click [url=&quot;cmd://shareSettings?format=link&quot;]here[/url] if you want to share your settings as a link, or [url=&quot;cmd://shareSettings?format=markdown&quot;]here[/url] if you want to share them in that thread and help other users." />
                       </c:MessageBlock>
                     </StackPanel>
                   </mui:BooleanSwitch.True>

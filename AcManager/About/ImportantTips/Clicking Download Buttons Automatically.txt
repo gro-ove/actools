@@ -25,5 +25,5 @@ var e = [].filter.call(
   function(x){ return /\bdownload$/.test(x.textContent) })[0];
 foundCallback ? foundCallback(e != null) : e.click();[/mono]
 
-Also, take a look [url="http://acstuff.ru/f/d/24-content-manager-websites-with-mods"]here[/url], maybe you’ll find some ready-to-use rules, or would like to share yours.
+Also, take a look [url="https://acstuff.ru/f/d/24-content-manager-websites-with-mods"]here[/url], maybe you’ll find some ready-to-use rules, or would like to share yours.
 

@@ -68,7 +68,7 @@
 
         <c:MessageBlock set:Search.Include="False">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.Text>If you’re making mods and want your icon to be shown there as well, please, [url=&quot;http://acstuff.ru/app/#contacts&quot;]contact us[/url] or send a pull request [url=&quot;https://github.com/gro-ove/actools-data/tree/master/Origin%20Icons&quot;]here[/url].</mui:BbCodeBlock.Text>
+            <mui:BbCodeBlock.Text>If you’re making mods and want your icon to be shown there as well, please, [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact us[/url] or send a pull request [url=&quot;https://github.com/gro-ove/actools-data/tree/master/Origin%20Icons&quot;]here[/url].</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

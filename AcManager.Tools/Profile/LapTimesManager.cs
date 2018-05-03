@@ -90,7 +90,7 @@ namespace AcManager.Tools.Profile {
                         },
                 new LapTimesSource(Ov1InfoSourceId,
                         "Rivali OV1 Info",
-                        "Sadly, there is no information about entries date. If you need a patch for 64-bit AC or layouts support, you can get it [url=\"http://acstuff.ru/f/d/15-rivali-ov1-info\"]here[/url].",
+                        "Sadly, there is no information about entries date. If you need a patch for 64-bit AC or layouts support, you can get it [url=\"https://acstuff.ru/f/d/15-rivali-ov1-info\"]here[/url].",
                         "Settings.LapTimesSettings.SourceOv1Info", false, false,
                         () => new Ov1InfoLapTimesReader(
                                 Path.Combine(AcPaths.GetPythonAppsDirectory(AcRootDirectory.Instance.RequireValue), "OV1Info"),

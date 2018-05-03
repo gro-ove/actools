@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;http://acstuff.ru/app/#contacts&quot;]contact us[/url]..
+        ///   Looks up a localized string similar to If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please [url=&quot;https://acstuff.ru/app/#contacts&quot;]contact us[/url]..
         /// </summary>
         public static string About_ContactInformation {
             get {
@@ -7600,7 +7600,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you want some new option, write it [url=&quot;https://trello.com/c/ad89Y9rL/71-quick-switches&quot;]here[/url] or [url=&quot;http://acstuff.ru/app/#contacts&quot;]using any other way[/url]..
+        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url=&quot;https://acstuff.ru/app/#contacts&quot;]feel free to contact us[/url]..
         /// </summary>
         public static string Settings_QuickSwitches_Description {
             get {
