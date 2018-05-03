@@ -567,15 +567,16 @@ namespace AcManager.CustomShowroom {
         }
 
         protected virtual void PushCamera(bool force = false) {
-            if (!force && !LoadCameraEnabled && Keyboard.Modifiers != ModifierKeys.Control) return;
-            CameraBusy.Do(() => {
-                Renderer.AutoAdjustTarget = false;
-                if (CameraOrbitMode) {
-                    Renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
-                } else {
-                    Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
-                }
-            });
+            if (force || LoadCameraEnabled ^ (Keyboard.Modifiers == ModifierKeys.Control)) {
+                CameraBusy.Do(() => {
+                    Renderer.AutoAdjustTarget = false;
+                    if (CameraOrbitMode) {
+                        Renderer.SetCameraOrbit(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
+                    } else {
+                        Renderer.SetCamera(CameraPosition.ToVector(), CameraLookAt.ToVector(), CameraFov.ToRadians(), CameraTilt.ToRadians());
+                    }
+                });
+            }
         }
 
         public void LoadCamera(string serializedData) {

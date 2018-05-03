@@ -670,8 +670,15 @@
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center"
               mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.MoreDriveAssists}}" Click="OnAssistsContextMenuButtonClick">
             <c:ModernPopup Padding="16 12 16 16">
-              <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-              <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+              <DockPanel>
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <CheckBox IsChecked="{Binding Data.LoadAssistsWithPreset.Value, Source={StaticResource Model}}" Margin="0 0 0 12" DockPanel.Dock="Top">
+                  <Label Content="Load assists with Quick Drive presets (global)" />
+                </CheckBox>
+                <Separator Margin="0 0 0 12" DockPanel.Dock="Top" Background="{DynamicResource SeparatorBackground}" />
+                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+              </DockPanel>
             </c:ModernPopup>
           </mui:ContextMenuButton>
 

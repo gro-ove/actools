@@ -57,14 +57,14 @@ namespace AcManager.Pages.Drive {
         private const string ModeWeekendPath = "/Pages/Drive/QuickDrive_Weekend.xaml";
         private const string ModeTimeAttackPath = "/Pages/Drive/QuickDrive_TimeAttack.xaml";
         private const string ModeDragPath = "/Pages/Drive/QuickDrive_Drag.xaml";
-        public static readonly Uri ModeDrift =  new Uri(ModeDriftPath, UriKind.Relative);
-        public static readonly Uri ModeHotlap =  new Uri(ModeHotlapPath, UriKind.Relative);
-        public static readonly Uri ModePractice =  new Uri(ModePracticePath, UriKind.Relative);
-        public static readonly Uri ModeRace =  new Uri(ModeRacePath, UriKind.Relative);
-        public static readonly Uri ModeTrackday =  new Uri(ModeTrackdayPath, UriKind.Relative);
-        public static readonly Uri ModeWeekend =  new Uri(ModeWeekendPath, UriKind.Relative);
-        public static readonly Uri ModeTimeAttack =  new Uri(ModeTimeAttackPath, UriKind.Relative);
-        public static readonly Uri ModeDrag =  new Uri(ModeDragPath, UriKind.Relative);
+        public static readonly Uri ModeDrift = new Uri(ModeDriftPath, UriKind.Relative);
+        public static readonly Uri ModeHotlap = new Uri(ModeHotlapPath, UriKind.Relative);
+        public static readonly Uri ModePractice = new Uri(ModePracticePath, UriKind.Relative);
+        public static readonly Uri ModeRace = new Uri(ModeRacePath, UriKind.Relative);
+        public static readonly Uri ModeTrackday = new Uri(ModeTrackdayPath, UriKind.Relative);
+        public static readonly Uri ModeWeekend = new Uri(ModeWeekendPath, UriKind.Relative);
+        public static readonly Uri ModeTimeAttack = new Uri(ModeTimeAttackPath, UriKind.Relative);
+        public static readonly Uri ModeDrag = new Uri(ModeDragPath, UriKind.Relative);
 
         private ViewModel Model => (ViewModel)DataContext;
         private readonly DiscordRichPresence _discordPresence = new DiscordRichPresence(10, "Preparing to race", "Quick Drive");
@@ -107,7 +107,6 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.GoCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)),
-
                 new InputBinding(new DelegateCommand(() => {
                     var selectedCar = Model.SelectedCar;
                     if (selectedCar == null) return;
@@ -123,7 +122,6 @@ namespace AcManager.Pages.Drive {
                     if (selectedCar == null) return;
                     new CarOpenInShowroomDialog(selectedCar, selectedCar.SelectedSkin?.Id).ShowDialog();
                 }), new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
-
                 new InputBinding(Model.RandomizeCommand, new KeyGesture(Key.R, ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarSkinCommand, new KeyGesture(Key.R, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomCarCommand, new KeyGesture(Key.D1, ModifierKeys.Control | ModifierKeys.Alt)),
@@ -187,7 +185,15 @@ namespace AcManager.Pages.Drive {
             public double Temperature;
             public int Time, TimeMultipler;
 
+            [JsonProperty(@"tpc")]
+            public bool TrackPropertiesChanged;
+
             public string TrackPropertiesPresetFilename, TrackPropertiesData;
+
+            [JsonProperty(@"asc")]
+            public bool AssistsChanged;
+
+            public string AssistsPresetFilename, AssistsData;
 
             [JsonProperty(@"ico")]
             public bool IdealConditions;
@@ -207,13 +213,10 @@ namespace AcManager.Pages.Drive {
             [JsonProperty(@"rwd")]
             public bool RandomWindDirection;
 
-            [JsonProperty(@"tpc")]
-            public bool TrackPropertiesChanged;
-
             // Obsolete
             [JsonProperty(@"TrackPropertiesPreset")]
 #pragma warning disable 649
-            public string ObsTrackPropertiesPreset;
+                    public string ObsTrackPropertiesPreset;
 #pragma warning restore 649
 
             [JsonProperty(@"rcTimezones")]
@@ -353,7 +356,7 @@ namespace AcManager.Pages.Drive {
                     return;
                 }
 
-                TunableVersions.ReplaceEverythingBy_Direct(new [] { parent }.Where(x => x.Enabled).Concat(children));
+                TunableVersions.ReplaceEverythingBy_Direct(new[] { parent }.Where(x => x.Enabled).Concat(children));
             }
 
             private void OnListItemPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -518,6 +521,12 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             private readonly DiscordRichPresence _presence;
 
+            public StoredValue<bool> LoadAssistsWithPreset { get; } = Stored.Get("__QuickDrive_LoadAssistsWithPreset", false);
+
+            private bool IsToLoadAssists() {
+                return LoadAssistsWithPreset.Value ^ (Keyboard.Modifiers == ModifierKeys.Control);
+            }
+
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null) {
@@ -556,6 +565,9 @@ namespace AcManager.Pages.Drive {
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
+                    AssistsData = AssistsViewModel.ExportToPresetData(),
+                    AssistsChanged = UserPresetsControl.IsChanged(AssistsViewModel.PresetableKey),
+                    AssistsPresetFilename = UserPresetsControl.GetCurrentFilename(AssistsViewModel.PresetableKey),
                     Temperature = Temperature,
                     Time = Time,
                     TimeMultipler = TimeMultiplier,
@@ -621,6 +633,18 @@ namespace AcManager.Pages.Drive {
                         SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
                     }
 
+                    if (IsToLoadAssists()) {
+                        if (o.AssistsPresetFilename != null && o.AssistsData != null) {
+                            UserPresetsControl.LoadPreset(AssistsViewModel.PresetableKey, o.AssistsPresetFilename, o.AssistsData, o.AssistsChanged);
+                        } else if (o.AssistsPresetFilename != null &&
+                                (PresetsManager.Instance.HasBuiltInPreset(AssistsViewModel.PresetableCategory, o.AssistsPresetFilename) ||
+                                        File.Exists(o.AssistsPresetFilename))) {
+                            UserPresetsControl.LoadPreset(AssistsViewModel.PresetableKey, o.AssistsPresetFilename);
+                        } else if (o.AssistsData != null) {
+                            UserPresetsControl.LoadSerializedPreset(AssistsViewModel.PresetableKey, o.AssistsData);
+                        }
+                    }
+
                     if (o.TrackPropertiesPresetFilename != null && o.TrackPropertiesData != null) {
                         UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename, o.TrackPropertiesData, o.TrackPropertiesChanged);
                     } else if (o.TrackPropertiesPresetFilename != null &&
@@ -646,6 +670,11 @@ namespace AcManager.Pages.Drive {
                     SelectedWeather = WeatherManager.Instance.GetDefault();
 
                     UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Green");
+
+                    if (IsToLoadAssists()) {
+                        UserPresetsControl.LoadBuiltInPreset(AssistsViewModel.PresetableKey, AssistsViewModel.PresetableCategory,
+                                ControlsStrings.AssistsPreset_Pro);
+                    }
 
                     Temperature = 12.0;
                     Time = 12 * 60 * 60;
@@ -765,15 +794,13 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand _manageCarCommand;
 
-            public DelegateCommand ManageCarCommand => _manageCarCommand ?? (_manageCarCommand = new DelegateCommand(() => {
-                CarsListPage.Show(SelectedCar);
-            }));
+            public DelegateCommand ManageCarCommand => _manageCarCommand ?? (_manageCarCommand = new DelegateCommand(() => { CarsListPage.Show(SelectedCar); }))
+                ;
 
             private DelegateCommand _manageTrackCommand;
 
-            public DelegateCommand ManageTrackCommand => _manageTrackCommand ?? (_manageTrackCommand = new DelegateCommand(() => {
-                TracksListPage.Show(SelectedTrack);
-            }));
+            public DelegateCommand ManageTrackCommand
+                => _manageTrackCommand ?? (_manageTrackCommand = new DelegateCommand(() => { TracksListPage.Show(SelectedTrack); }));
 
             private QuickDriveModeViewModel _selectedModeViewModel;
 
@@ -783,7 +810,9 @@ namespace AcManager.Pages.Drive {
                     new AsyncCommand(Go, () => SelectedCar != null && SelectedTrack != null && SelectedModeViewModel != null));
 
             private enum TrackDoesNotFitRespond {
-                Cancel, Go, FixAndGo
+                Cancel,
+                Go,
+                FixAndGo
             }
 
             private static TrackDoesNotFitRespond ShowTrackDoesNotFitMessage(string message) {
@@ -868,13 +897,10 @@ namespace AcManager.Pages.Drive {
                     }, AssistsViewModel.ToGameProperties(), new Game.ConditionProperties {
                         AmbientTemperature = temperature,
                         RoadTemperature = roadTemperature,
-
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
                         TimeMultipler = TimeMultiplier,
                         CloudSpeed = 0.2,
-
                         WeatherName = weather?.Id,
-
                         WindDirectionDeg = RandomWindDirection ? MathUtils.Random(0, 360) : WindDirection,
                         WindSpeedMin = RandomWindSpeed ? 2 : WindSpeedMin,
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,

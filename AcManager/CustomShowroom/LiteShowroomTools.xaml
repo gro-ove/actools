@@ -359,7 +359,7 @@
                   <Label Content="Auto-align car" />
                 </CheckBox>
 
-                <CheckBox IsChecked="{Binding Settings.LoadCameraEnabled}">
+                <CheckBox IsChecked="{Binding Settings.LoadCameraEnabled}" ToolTip="Hold Ctrl while selecting preset to invert this behavior that one time">
                   <Label Content="Load camera position with preset" />
                 </CheckBox>
 
@@ -368,8 +368,7 @@
               </mui:SpacingStackPanel>
             </ScrollViewer>
 
-            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows"
-                mui:SaveScroll.Key="__csAmbientShadows">
+            <ScrollViewer mui:FancyScroll.Outside="True" Margin="0 0 -4 0" Padding="0 0 4 0" x:Key="AmbientShadows" mui:SaveScroll.Key="__csAmbientShadows">
               <StackPanel>
                 <StackPanel Background="Transparent" mui:ContextMenuAdvancement.PropagateToChildren="True">
                   <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 8"
@@ -561,11 +560,11 @@
                   <StackPanel
                       Visibility="{Binding MontageRequirement.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                     <mui:Switch Value="{Binding MontageRequirement.ListView.Count}">
-                      <TextBlock mui:Switch.When="0" Text="ImageMagick Montage plugin is required to make super-resolution screenshots." Style="{StaticResource Label}"
-                          Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
+                      <TextBlock mui:Switch.When="0" Text="ImageMagick Montage plugin is required to make super-resolution screenshots."
+                          Style="{StaticResource Label}" Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
                       <mui:SpacingStackPanel Spacing="4">
-                        <TextBlock Text="Plugin is required to make super-resolution screenshots:" Style="{StaticResource Label}" Foreground="{DynamicResource Error}"
-                            TextWrapping="Wrap" />
+                        <TextBlock Text="Plugin is required to make super-resolution screenshots:" Style="{StaticResource Label}"
+                            Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
                         <ItemsControl ItemsSource="{Binding MontageRequirement.ListView}" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}"
                             Margin="0 0 0 -12" />
                       </mui:SpacingStackPanel>
