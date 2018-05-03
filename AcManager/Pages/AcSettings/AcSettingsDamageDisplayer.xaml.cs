@@ -1,14 +1,18 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using AcManager.Tools.Helpers.AcSettings;
+using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.InnerHelpers;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -18,14 +22,14 @@ using FirstFloor.ModernUI.Windows.Controls;
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsDamageDisplayer {
         private static readonly string[] Images = {
-            "engine", "flatspot_fl", "flatspot_fr", "flatspot_rl", "flatspot_rr", "front", "gearbox", "left",
-            "rear", "right", "sus_fl", "sus_fr", "sus_rl", "sus_rr", "tyre_fl", "tyre_fr", "tyre_rl", "tyre_rr"
+            @"engine", @"flatspot_fl", @"flatspot_fr", @"flatspot_rl", @"flatspot_rr", @"front", @"gearbox", @"left",
+            @"rear", @"right", @"sus_fl", @"sus_fr", @"sus_rl", @"sus_rr", @"tyre_fl", @"tyre_fr", @"tyre_rl", @"tyre_rr"
         };
 
         private readonly string _directory;
 
         public AcSettingsDamageDisplayer() {
-            _directory = Path.Combine(AcRootDirectory.Instance.RequireValue, "content", "texture", "damage");
+            _directory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"texture", @"damage");
 
             InitializeComponent();
             DataContext = new ViewModel();
@@ -37,9 +41,22 @@ namespace AcManager.Pages.AcSettings {
             AcSettingsHolder.Video.SubscribeWeak(this, OnVideoPropertyChanged);
             UpdateResolution();
 
-            var watcher = new DirectoryWatcher(_directory, "*.png");
+            var watcher = new DirectoryWatcher(_directory, @"*.png");
             watcher.Update += OnWatcherUpdate;
             this.OnActualUnload(watcher);
+
+            LoadBackgroundAsync().Ignore();
+        }
+
+        private async Task LoadBackgroundAsync() {
+            var data = await CmApiProvider.GetStaticDataBytesAsync("damagedisplayer_bg", TimeSpan.MaxValue);
+            if (data != null) {
+                using (var stream = new MemoryStream(data))
+                using (var zip = new ZipArchive(stream, ZipArchiveMode.Read)) {
+                    BackgroundImageProgress.IsActive = false;
+                    BackgroundImage.Source = zip.GetEntry(@"image.jpg")?.Open().ReadAsBytesAndDispose();
+                }
+            }
         }
 
         private void OnVideoPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -58,6 +75,8 @@ namespace AcManager.Pages.AcSettings {
             YSlider.TickFrequency = (height + 512d) / 10d;
             MainCanvas.Width = width;
             MainCanvas.Height = height;
+            BackgroundImageCell.Width = width;
+            BackgroundImageCell.Height = height;
         }
 
         private readonly Busy _reloadBusy = new Busy(true);

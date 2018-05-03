@@ -7,13 +7,17 @@
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
   </UserControl.Resources>
 
-  <ScrollViewer mui:SaveScroll.Key="AcSettingsSystem">
+  <ScrollViewer mui:SaveScroll.Key="AcSettingsDamageDisplayer">
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
 
       <StackPanel Style="{StaticResource SettingsPanel}">
         <Viewbox Stretch="Uniform" StretchDirection="DownOnly" VerticalAlignment="Top">
           <Canvas x:Name="MainCanvas" Width="1920" Height="1080" Background="#404040" ClipToBounds="True">
-            <mui:BetterImage Filename="https://acstuff.ru/images/damagedisplayer_bg.jpg" Opacity="1" Stretch="UniformToFill" />
+            <mui:Cell x:Name="BackgroundImageCell">
+              <mui:ModernProgressRing x:Name="BackgroundImageProgress" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Width="80"
+                  Height="80" />
+              <mui:BetterImage x:Name="BackgroundImage" Opacity="1" Stretch="UniformToFill" />
+            </mui:Cell>
 
             <Thumb x:Name="ImagesThumb" DragDelta="OnThumbDragDelta" Cursor="SizeAll">
               <Thumb.Template>
