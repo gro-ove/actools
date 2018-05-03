@@ -38,8 +38,8 @@ namespace FirstFloor.ModernUI.Presentation {
                 [CallerMemberName] string propertyName = null) {
             if (Equals(value, backendValue)) return false;
             backendValue = value;
-            target.OnPropertyChanged(propertyName);
             onChangeCallback?.Invoke();
+            target.OnPropertyChanged(propertyName);
             return true;
         }
 
@@ -47,8 +47,8 @@ namespace FirstFloor.ModernUI.Presentation {
                 [CallerMemberName] string propertyName = null) {
             if (Equals(value, backendValue)) return false;
             backendValue.Value = value;
-            target.OnPropertyChanged(propertyName);
             onChangeCallback?.Invoke();
+            target.OnPropertyChanged(propertyName);
             return true;
         }
     }

@@ -1,17 +1,16 @@
 ﻿<UserControl x:Class="AcManager.Pages.Selected.SelectedRemoteCarSetupPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:controls="clr-namespace:AcManager.Controls;assembly=AcManager.Controls" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
-    xmlns:attached="clr-namespace:FirstFloor.ModernUI.Windows.Attached;assembly=FirstFloor.ModernUI" xmlns:g="clr-namespace:AcManager"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DataContext="{d:DesignInstance selected:SelectedRemoteCarSetupPage+ViewModel}"
-    attached:InputBindingBehavior.PropagateToWindow="True" x:Name="This">
+    xmlns:sel="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" d:DataContext="{d:DesignInstance sel:SelectedRemoteCarSetupPage+ViewModel}"
+    mui:InputBindingBehavior.PropagateToWindow="True" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
-      <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type selected:CarSetupValues+SetupEntry}">
+      <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type t:CarSetupEntry}">
         <Border ToolTip="{Binding HelpInformation}" Background="Transparent">
           <mui:ReferenceSwitch Value="{Binding Values}">
             <mui:ReferenceSwitch.NonNull>
@@ -39,8 +38,8 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <controls:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding Car.BrandBadge}" IsNameReadOnly="True" Scrollable="False">
-    <controls:AcObjectBase.ToolBars>
+  <c:AcObjectBase AcObject="{Binding SelectedObject}" ShowIcon="True" Icon="{Binding Car.BrandBadge}" IsNameReadOnly="True" Scrollable="False">
+    <c:AcObjectBase.ToolBars>
       <ToolBar ToolBarTray.IsLocked="True" Band="0" BandIndex="0">
         <Button Content="View in browser" Command="{Binding SelectedObject.ViewInBrowserCommand}" ToolTip="View setup’s page in the webbrowser (Ctrl+F)" />
         <Button Content="Copy URL" Command="{Binding SelectedObject.CopyUrlCommand}" ToolTip="Copy URL to this setup to the clipboard (Ctrl+Alt+Page Up)" />
@@ -51,7 +50,7 @@
         <Button Content="Install as generic" Command="{Binding SelectedObject.InstallCommand}" CommandParameter="{x:Static t:CarSetupObject.GenericDirectory}"
             ToolTip="Install setup as generic (Ctrl+Alt+S)" />
       </ToolBar>
-    </controls:AcObjectBase.ToolBars>
+    </c:AcObjectBase.ToolBars>
 
     <DockPanel>
       <mui:SpacingUniformGrid HorizontalSpacing="20" Columns="2" DockPanel.Dock="Top">
@@ -62,7 +61,7 @@
               <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding SelectedObject.Track.MainTrackObject.Name, Mode=OneWay}"
                   Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
               <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding SelectedObject.TrackId, Mode=OneWay}"
-                  Placeholder="{x:Static controls:ControlsStrings.Common_Generic}"
+                  Placeholder="{x:Static c:ControlsStrings.Common_Generic}"
                   Visibility="{Binding SelectedObject.Track, Converter={StaticResource NullToVisibilityConverter}}" />
             </Grid>
           </DockPanel>
@@ -80,7 +79,7 @@
 
           <DockPanel>
             <Label Content="Your rating (local):" />
-            <controls:RatingBar Rating="{Binding SelectedObject.Rating}" HorizontalAlignment="Left" />
+            <c:RatingBar Rating="{Binding SelectedObject.Rating}" HorizontalAlignment="Left" />
           </DockPanel>
 
           <DockPanel>
@@ -108,7 +107,7 @@
 
           <DockPanel>
             <Label Content="Community rating:" />
-            <controls:RatingBar Rating="{Binding SelectedObject.CommunityRating, Mode=OneWay}" IsReadOnly="True" HorizontalAlignment="Left" />
+            <c:RatingBar Rating="{Binding SelectedObject.CommunityRating, Mode=OneWay}" IsReadOnly="True" HorizontalAlignment="Left" />
           </DockPanel>
         </StackPanel>
       </mui:SpacingUniformGrid>
@@ -146,5 +145,5 @@
         </ItemsControl>
       </ScrollViewer>
     </DockPanel>
-  </controls:AcObjectBase>
+  </c:AcObjectBase>
 </UserControl>

@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
     public class RtoDataFile : DataFileBase {
         public RtoDataFile(string filename) : base(filename) {}
         public RtoDataFile() {}
 
+        [NotNull]
         public readonly Dictionary<string, double> Values = new Dictionary<string, double>();
 
         protected override void ParseString(string data) {
@@ -17,8 +19,7 @@ namespace AcTools.DataFile {
                 var sep = line.LastIndexOf('|');
                 if (sep == -1) continue;
 
-                double value;
-                if (FlexibleParser.TryParseDouble(line.Substring(sep + 1), out value)) {
+                if (FlexibleParser.TryParseDouble(line.Substring(sep + 1), out var value)) {
                     Values[line.Substring(0, sep).Replace("//", "/")] = value;
                 }
             }

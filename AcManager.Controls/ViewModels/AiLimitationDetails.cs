@@ -76,24 +76,58 @@ namespace AcManager.Controls.ViewModels {
             }
         }
 
-        private ChangeableObservableCollection<AiLimitationTyre> _tyres;
+        public AiLimitationDetails([NotNull] CarObject car) {
+            _car = car ?? throw new ArgumentNullException(nameof(car));
 
-        public ChangeableObservableCollection<AiLimitationTyre> Tyres {
-            get {
-                if (_tyres == null) {
-                    _tyres = new ChangeableObservableCollection<AiLimitationTyre>(
-                            _car.AcdData?.GetIniFile("tyres.ini").GetSections("FRONT", -1).Select(x => new AiLimitationTyre(x)).ToList());
-                    _tyres.ItemPropertyChanged += OnTyrePropertyChanged;
-                }
-                return _tyres;
-            }
+            _finalGearRatio = Lazier.Create(() => {
+                var data = _car.AcdData;
+                if (data == null) return null;
+
+                var entry = new CarSetupEntry("FINAL_GEAR_RATIO", null, data);
+                if (!(entry.Values?.Count > 1)) return null;
+
+                entry.Value = entry.DefaultValue;
+                entry.PropertyChanged += OnGearRatioPropertyChanged;
+                CarSetupEntry.UpdateRatioMaxSpeed(new[]{ entry }, data, null, false);
+                return entry;
+            });
+
+            _tyres = Lazier.Create(() => {
+                var result = new ChangeableObservableCollection<AiLimitationTyre>(
+                        _car.AcdData?.GetIniFile("tyres.ini").GetSections("FRONT", -1).Select(x => new AiLimitationTyre(x)).ToList());
+                result.ItemPropertyChanged += OnTyrePropertyChanged;
+                return result;
+            });
         }
+
+        private readonly Lazier<CarSetupEntry> _finalGearRatio;
+
+        [CanBeNull]
+        public CarSetupEntry FinalGearRatio => _finalGearRatio.Value;
+
+        private readonly Lazier<ChangeableObservableCollection<AiLimitationTyre>> _tyres;
+
+        [NotNull]
+        public ChangeableObservableCollection<AiLimitationTyre> Tyres => _tyres.RequireValue;
 
         public event EventHandler Changed;
 
         private void UpdateIsActive() {
-            IsAnySet = Tyres.Any(x => !x.IsAllowed) || TyresWearMultiplier != 1d || FuelMaxMultiplier != 1d;
+            IsAnySet = TyresWearMultiplier != 1d || FuelMaxMultiplier != 1d
+                    || _tyres.IsSet && Tyres.Any(x => !x.IsAllowed)
+                    || _finalGearRatio.IsSet && FinalGearRatio?.Value != FinalGearRatio?.DefaultValue;
             IsActive = IsEnabled && IsAnySet && SettingsHolder.Drive.QuickDriveAiLimitations;
+        }
+
+        private void OnGearRatioPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(CarSetupEntry.Value)) {
+                UpdateIsActive();
+                Changed?.Invoke(this, EventArgs.Empty);
+
+                if (_car.AcdData != null && FinalGearRatio != null) {
+                    CarSetupEntry.UpdateRatioMaxSpeed(new[] { FinalGearRatio }, _car.AcdData, null, false);
+                }
+            }
         }
 
         private void OnTyrePropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -131,10 +165,6 @@ namespace AcManager.Controls.ViewModels {
                     .IsOpen = true;
         }));
 
-        public AiLimitationDetails([NotNull] CarObject car) {
-            _car = car ?? throw new ArgumentNullException(nameof(car));
-        }
-
         public string GetChecksum() {
             var result = TyresWearMultiplier.GetHashCode();
 
@@ -142,10 +172,16 @@ namespace AcManager.Controls.ViewModels {
                 result = (result * 397) ^ FuelMaxMultiplier.GetHashCode();
             }
 
-            foreach (var tyre in Tyres) {
-                if (!tyre.IsAllowed) {
-                    result = (result * 397) ^ tyre.DisplayName.GetHashCode();
+            if (_tyres.IsSet) {
+                foreach (var tyre in Tyres) {
+                    if (!tyre.IsAllowed) {
+                        result = (result * 397) ^ tyre.DisplayName.GetHashCode();
+                    }
                 }
+            }
+
+            if (_finalGearRatio.IsSet && FinalGearRatio?.Value != FinalGearRatio?.DefaultValue) {
+                result = (result * 397) ^ FinalGearRatio.Value.GetHashCode();
             }
 
             return BitConverter.GetBytes(result).ToHexString().ToLowerInvariant();
@@ -154,19 +190,11 @@ namespace AcManager.Controls.ViewModels {
         public string Apply() {
             if (!IsActive || !SettingsHolder.Drive.QuickDriveAiLimitations) return _car.Id;
 
-            var newId = "__cm_tmp_" + _car.Id + "_" + GetChecksum();
+            var newId = $@"__cm_tmp_{_car.Id}_{GetChecksum()}";
             FakeCarsHelper.CreateFakeCar(_car, newId, acd => {
                 var data = _car.AcdData;
                 if (data != null) {
                     var tyresIni = data.GetIniFile("tyres.ini").Clone();
-
-                    if (Tyres.Any(x => !x.IsAllowed)) {
-                        var toRemovalNames = Tyres.Where(x => !x.IsAllowed).Select(x => x.DisplayName).ToList();
-                        tyresIni.SetSections("FRONT", -1, tyresIni.GetSections("FRONT", -1).Where(x => !toRemovalNames.Contains(x.GetTyreName())).ToList());
-                        tyresIni.SetSections("REAR", -1, tyresIni.GetSections("REAR", -1).Where(x => !toRemovalNames.Contains(x.GetTyreName())).ToList());
-                        tyresIni["COMPOUND_DEFAULT"].Set("INDEX", 0);
-                        acd.SetEntry("tyres.ini", tyresIni.ToString());
-                    }
 
                     var wear = TyresWearMultiplier.Round(0.01);
                     var multiplier = 1d / Math.Max(wear, 0.00001);
@@ -192,6 +220,25 @@ namespace AcManager.Controls.ViewModels {
 
                         acd.SetEntry("car.ini", carIni.ToString());
                     }
+
+                    if (_tyres.IsSet && Tyres.Any(x => !x.IsAllowed)) {
+                        var toRemovalNames = Tyres.Where(x => !x.IsAllowed).Select(x => x.DisplayName).ToList();
+                        tyresIni.SetSections("FRONT", -1, tyresIni.GetSections("FRONT", -1).Where(x => !toRemovalNames.Contains(x.GetTyreName())).ToList());
+                        tyresIni.SetSections("REAR", -1, tyresIni.GetSections("REAR", -1).Where(x => !toRemovalNames.Contains(x.GetTyreName())).ToList());
+                        tyresIni["COMPOUND_DEFAULT"].Set("INDEX", 0);
+                        acd.SetEntry("tyres.ini", tyresIni.ToString());
+                    }
+
+                    if (_finalGearRatio.IsSet && FinalGearRatio?.Value != FinalGearRatio?.DefaultValue) {
+                        var newValue = FinalGearRatio.ValuePair.Value;
+                        var drivetrainIni = data.GetIniFile("drivetrain.ini");
+                        drivetrainIni["GEARS"].Set("FINAL", newValue);
+                        acd.SetEntry("drivetrain.ini", drivetrainIni.ToString());
+
+                        var setupIni = data.GetIniFile("setup.ini");
+                        setupIni.Remove("FINAL_GEAR_RATIO");
+                        acd.SetEntry("setup.ini", setupIni.ToString());
+                    }
                 }
             });
 
@@ -204,19 +251,23 @@ namespace AcManager.Controls.ViewModels {
             var j = new JObject();
 
             if (IsEnabled) {
-                j["enabled"] = true;
-            }
-
-            if (Tyres.Any(x => !x.IsAllowed)) {
-                j["disabledTyres"] = new JArray(Tyres.Where(x => !x.IsAllowed).Select(x => x.DisplayName));
+                j[@"enabled"] = true;
             }
 
             if (TyresWearMultiplier != 1d) {
-                j["wearMultiplier"] = TyresWearMultiplier;
+                j[@"wearMultiplier"] = TyresWearMultiplier;
             }
 
             if (FuelMaxMultiplier != 1d) {
-                j["fuelMultiplier"] = FuelMaxMultiplier;
+                j[@"fuelMultiplier"] = FuelMaxMultiplier;
+            }
+
+            if (_tyres.IsSet && Tyres.Any(x => !x.IsAllowed)) {
+                j[@"disabledTyres"] = new JArray(Tyres.Where(x => !x.IsAllowed).Select(x => x.DisplayName));
+            }
+
+            if (_finalGearRatio.IsSet && FinalGearRatio?.Value != FinalGearRatio?.DefaultValue) {
+                j[@"finalGearRatio"] = FinalGearRatio.Value;
             }
 
             return j.ToString(Formatting.None);
@@ -224,28 +275,36 @@ namespace AcManager.Controls.ViewModels {
 
         public void Load(string serialized) {
             try {
-                if (!string.IsNullOrWhiteSpace(serialized)) {
-                    var j = JObject.Parse(serialized);
-                    var tyres = (j["disabledTyres"] as JArray)?.Select(x => x?.ToString()).ToList();
-                    IsEnabled = j.GetBoolValueOnly("enabled") ?? false;
+                var j = string.IsNullOrWhiteSpace(serialized) ? new JObject() : JObject.Parse(serialized);
+                IsEnabled = j.GetBoolValueOnly("enabled") ?? false;
+                TyresWearMultiplier = j.GetDoubleValueOnly("wearMultiplier") ?? 1d;
+                FuelMaxMultiplier = j.GetDoubleValueOnly("fuelMultiplier") ?? 1d;
+
+                var tyres = (j[@"disabledTyres"] as JArray)?.Select(x => x?.ToString()).ToList();
+                if (tyres != null || _tyres.IsSet) {
                     Tyres.ForEach(x => x.IsAllowed = tyres?.Contains(x.DisplayName) != false);
-                    TyresWearMultiplier = j.GetDoubleValueOnly("wearMultiplier") ?? 1d;
-                    FuelMaxMultiplier = j.GetDoubleValueOnly("fuelMultiplier") ?? 1d;
-                    return;
+                }
+
+                var finalGearRatio = j.GetDoubleValueOnly("finalGearRatio");
+                if ((finalGearRatio.HasValue || _finalGearRatio.IsSet) && FinalGearRatio != null) {
+                    FinalGearRatio.Value = finalGearRatio ?? FinalGearRatio.DefaultValue;
                 }
             } catch (Exception e) {
                 Logging.Warning(e);
             }
-
-            Tyres.ForEach(x => x.IsAllowed = true);
-            TyresWearMultiplier = 1d;
-            FuelMaxMultiplier = 1d;
         }
 
         public void CopyFrom(AiLimitationDetails a) {
-            Tyres.ForEach(x => x.IsAllowed = a.Tyres.GetByIdOrDefault(x.DisplayName)?.IsAllowed != false);
             TyresWearMultiplier = a.TyresWearMultiplier;
             FuelMaxMultiplier = a.FuelMaxMultiplier;
+
+            if (_tyres.IsSet || a._tyres.IsSet) {
+                Tyres.ForEach(x => x.IsAllowed = a.Tyres.GetByIdOrDefault(x.DisplayName)?.IsAllowed != false);
+            }
+
+            if ((_finalGearRatio.IsSet || a._finalGearRatio.IsSet) && FinalGearRatio != null) {
+                FinalGearRatio.Value = a.FinalGearRatio?.Value ?? FinalGearRatio.DefaultValue;
+            }
         }
     }
 }

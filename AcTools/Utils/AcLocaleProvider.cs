@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
@@ -40,7 +41,7 @@ namespace AcTools.Utils {
         private IniFile _ini;
 
         [CanBeNull]
-        public string GetString(string category, [CanBeNull] string key) {
+        public string GetString([Localizable(false)] string category, [CanBeNull] string key) {
             if (!_exists || key == null) return null;
             if (category == CategoryTag) {
                 if (_tag == null) {

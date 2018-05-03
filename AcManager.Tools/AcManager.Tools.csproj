@@ -466,8 +466,12 @@
     <Compile Include="Objects\CarObject.Extra.CmTexturesScript.cs" />
     <Compile Include="Objects\CarObject.Extra.cs" />
     <Compile Include="Objects\CarObject.Sfx.cs" />
+    <Compile Include="Objects\CarSetupEntry.cs" />
+    <Compile Include="Objects\CarSetupObjectExtension.cs" />
+    <Compile Include="Objects\CarSetupStepsMode.cs" />
     <Compile Include="Objects\CarSkinComparer.cs" />
     <Compile Include="Objects\FontObjectBitmap.cs" />
+    <Compile Include="Objects\ICarSetupObject.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
@@ -480,6 +484,7 @@
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
+    <Compile Include="Objects\RemoteCarSetupObject.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
