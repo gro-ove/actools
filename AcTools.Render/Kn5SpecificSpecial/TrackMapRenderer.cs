@@ -18,7 +18,6 @@ using AcTools.Render.Base.Utils;
 using AcTools.Render.Data;
 using AcTools.Render.Kn5Specific;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -142,7 +141,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             sprite.Flush();
         }
 
-        protected virtual void DrawSpritesInner() {
+        protected void DrawSpritesInner() {
             if (!VisibleUi) return;
 
             if (_textBlock == null) {
@@ -535,7 +534,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected bool ShotMode { get; private set; }
 
         protected override void DrawOverride() {
-            EnsureAiLaneAllRight();
+            EnsureAiLaneIsAllRight();
             Camera.UpdateViewMatrix();
 
             // just in case
@@ -568,7 +567,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             }
         }
 
-        protected void EnsureAiLaneAllRight() {
+        protected void EnsureAiLaneIsAllRight() {
             if (_aiLaneDirty) {
                 RebuildAiLane();
             }
@@ -593,7 +592,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     Initialize();
                 }
 
-                EnsureAiLaneAllRight();
+                EnsureAiLaneIsAllRight();
                 Prepare();
                 Draw();
                 SaveResultAs(outputFile);
@@ -614,115 +613,5 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             // DisposeHelper.Dispose(ref _materialsProvider);
             base.DisposeOverride();
         }
-    }
-
-    public class TrackMapMaterialsFactory : IMaterialsFactory {
-        public IRenderableMaterial CreateMaterial(object key) {
-            if (BasicMaterials.DepthOnlyKey.Equals(key)) {
-                return new Kn5MaterialTrackMap();
-            }
-
-            return new InvisibleMaterial();
-        }
-    }
-
-    public class TrackMapRenderHelper : IRenderHelper {
-        private EffectSpecialTrackMap _effect;
-
-        public void OnInitialize(DeviceContextHolder holder) {
-            _effect = holder.GetEffect<EffectSpecialTrackMap>();
-        }
-
-        public void OnResize(DeviceContextHolder holder) { }
-
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
-            holder.DeviceContext.OutputMerger.SetTargets(target);
-            holder.PrepareQuad(_effect.LayoutPT);
-            _effect.FxInputMap.SetResource(view);
-            _effect.TechPp.DrawAllPasses(holder.DeviceContext, 6);
-        }
-
-        public void Final(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target, bool checkedBackground) {
-            holder.DeviceContext.OutputMerger.SetTargets(target);
-            holder.PrepareQuad(_effect.LayoutPT);
-            _effect.FxInputMap.SetResource(view);
-            (checkedBackground ? _effect.TechFinalCheckers : _effect.TechFinal).DrawAllPasses(holder.DeviceContext, 6);
-        }
-
-        public void Dispose() {}
-    }
-
-    public class TrackMapBlurRenderHelper : IRenderHelper {
-        private EffectSpecialTrackMap _effect;
-
-        public void OnInitialize(DeviceContextHolder holder) {
-            _effect = holder.GetEffect<EffectSpecialTrackMap>();
-        }
-
-        public void OnResize(DeviceContextHolder holder) {
-            _effect.FxScreenSize.Set(new Vector4(holder.Width, holder.Height, 1f / holder.Width, 1f / holder.Height));
-        }
-
-        public void Draw(DeviceContextHolder holder, ShaderResourceView view) {
-            BlurHorizontally(holder, view);
-        }
-
-        public void BlurHorizontally(DeviceContextHolder holder, ShaderResourceView view) {
-            holder.DeviceContext.OutputMerger.BlendState = null;
-            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            _effect.FxInputMap.SetResource(view);
-            _effect.TechPpHorizontalBlur.DrawAllPasses(holder.DeviceContext, 6);
-        }
-
-        public void BlurVertically(DeviceContextHolder holder, ShaderResourceView view) {
-            holder.DeviceContext.OutputMerger.BlendState = null;
-            holder.QuadBuffers.Prepare(holder.DeviceContext, _effect.LayoutPT);
-            _effect.FxInputMap.SetResource(view);
-            _effect.TechPpVerticalBlur.DrawAllPasses(holder.DeviceContext, 6);
-        }
-
-        public void Blur(DeviceContextHolder holder, TargetResourceTexture source, TargetResourceTexture temporary, int iterations = 1,
-                TargetResourceTexture target = null) {
-            for (var i = 0; i < iterations; i++) {
-                holder.DeviceContext.OutputMerger.SetTargets(temporary.TargetView);
-                BlurHorizontally(holder, (i == 0 ? null : target?.View) ?? source.View);
-                holder.DeviceContext.OutputMerger.SetTargets(target?.TargetView ?? source.TargetView);
-                BlurVertically(holder, temporary.View);
-            }
-        }
-
-        public void Dispose() { }
-    }
-
-    public class Kn5MaterialTrackMap : IRenderableMaterial {
-        private EffectSpecialTrackMap _effect;
-
-        internal Kn5MaterialTrackMap() { }
-
-        public void EnsureInitialized(IDeviceContextHolder contextHolder) {
-            if (_effect != null) return;
-            _effect = contextHolder.GetEffect<EffectSpecialTrackMap>();
-        }
-
-        public void Refresh(IDeviceContextHolder contextHolder) {}
-
-        public bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
-            if (mode != SpecialRenderMode.Simple) return false;
-            contextHolder.DeviceContext.InputAssembler.InputLayout = _effect.LayoutP;
-            contextHolder.DeviceContext.OutputMerger.BlendState = null;
-            return true;
-        }
-
-        public void SetMatrices(Matrix objectTransform, ICamera camera) {
-            _effect.FxWorldViewProj.SetMatrix(objectTransform * camera.ViewProj);
-        }
-
-        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
-            _effect.TechMain.DrawAllPasses(contextHolder.DeviceContext, indices);
-        }
-
-        public bool IsBlending => false;
-
-        public void Dispose() { }
     }
 }

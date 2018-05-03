@@ -42,6 +42,8 @@ namespace AcTools.Render.Base.Objects {
             return IndicesCount / 3;
         }
 
+        public bool OptimizedBoundingBoxUpdate { get; set; } = true;
+
         private Matrix? _parentMatrix;
         private Vector3[] _positions, _temporary;
 
@@ -130,7 +132,11 @@ namespace AcTools.Render.Base.Objects {
             _parentMatrix = parentMatrix;
 
             if (_positions == null) {
-                PrepareSmart();
+                if (OptimizedBoundingBoxUpdate) {
+                    PrepareSmart();
+                } else {
+                    Prepare();
+                }
                 if (_positions == null) return;
             }
 

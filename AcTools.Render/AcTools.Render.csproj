@@ -224,7 +224,11 @@
     <Compile Include="Kn5SpecificSpecial\AiLaneObject.cs" />
     <Compile Include="Kn5SpecificSpecial\BakedShadowsRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\DepthMaterialsFactory.cs" />
+    <Compile Include="Kn5SpecificSpecial\Kn5MaterialTrackMap.cs" />
     <Compile Include="Kn5SpecificSpecial\ShadowsRendererBase.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackMapBlurRenderHelper.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackMapMaterialsFactory.cs" />
+    <Compile Include="Kn5SpecificSpecial\TrackMapRenderHelper.cs" />
     <Compile Include="Kn5SpecificSpecial\TrackOutlineRenderer.cs" />
     <Compile Include="Kn5SpecificSpecial\UtilsRendererBase.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimExtension.cs" />
