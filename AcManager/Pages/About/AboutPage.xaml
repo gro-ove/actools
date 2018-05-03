@@ -85,7 +85,7 @@
     </ScrollViewer>
 
     <StackPanel Grid.Row="1" Margin="20 12">
-      <mui:BbCodeBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="OnElementClick" Background="Transparent"
+      <mui:BbCodeBlock Style="{StaticResource Small}" PreviewMouseLeftButtonDown="OnVersionClick" Background="Transparent"
           Text="{x:Static g:AppStrings.About_Copyright}" />
       <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}" Text="{x:Static g:AppStrings.About_Footer}" />
     </StackPanel>

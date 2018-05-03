@@ -31,15 +31,6 @@ namespace AcManager.Pages.About {
             }
         }
 
-        private void OnElementClick(object sender, MouseButtonEventArgs e) {
-            if (Keyboard.Modifiers != (ModifierKeys.Alt | ModifierKeys.Control)) _clicks += 11;
-            if (!SettingsHolder.Common.MsMode && (_clicks += 99) == 990 &&
-                    ModernDialog.ShowMessage(@"Enable most secret mode? Using it might cause data corruption.", @"Most Secret Mode", MessageBoxButton.YesNo) ==
-                            MessageBoxResult.Yes) {
-                SettingsHolder.Common.MsMode = true;
-            }
-        }
-
         public class ViewModel : NotifyPropertyChanged {
             private ICommand _moreInformationCommand;
 

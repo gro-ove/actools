@@ -43,7 +43,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Sharing_VerifyParams}" />
         </CheckBox>
 
-        <StackPanel Visibility="{Binding MsMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <StackPanel Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
           <!-- Special options -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Sharing_SpecialHeader}" />
 

@@ -261,7 +261,7 @@ namespace AcManager.Pages.Selected {
                 } catch (Exception e) {
                     NonfatalError.Notify(ToolsStrings.Common_CannotReadData, e);
                 }
-            }, () => SettingsHolder.Common.MsMode && SelectedObject.AcdData?.IsPacked == true));
+            }, () => SettingsHolder.Common.DeveloperMode && SelectedObject.AcdData?.IsPacked == true));
 
             private CommandBase _packDataCommand;
 

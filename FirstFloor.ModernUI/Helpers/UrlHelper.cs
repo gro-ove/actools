@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Windows.Interop;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
