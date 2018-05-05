@@ -138,8 +138,11 @@ namespace AcTools.Render.Base.Reflections {
             new Vector3(0, 1, 0),
         };
 
+        private bool _onceUpdated;
+
         public void Update(Vector3 center) {
-            if (_cameras[0] != null && (center - _previousCenter).LengthSquared() < 0.01) return;
+            if (_onceUpdated && (center - _previousCenter).LengthSquared() < 0.01) return;
+            _onceUpdated = true;
 
             for (var i = 0; i < 6; i++) {
                 _cameras[i].LookAt(center, center + _targets[i], _ups[i]);

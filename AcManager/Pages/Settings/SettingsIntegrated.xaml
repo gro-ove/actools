@@ -203,7 +203,7 @@
         </DockPanel>
 
         <!-- D-BOX -->
-        <DockPanel set:Search.SubCategory="D-BOX:" Margin="0 20 0 8" Style="{x:Null}">
+        <!--<DockPanel set:Search.SubCategory="D-BOX:" Margin="0 20 0 8" Style="{x:Null}">
           <TextBlock Text="D-BOX:" Style="{StaticResource Heading2}" />
           <Button Style="{StaticResource MoreDetailsSuperscript}"
               CommandParameter="http://www.d-box.com/training-and-simulation/racing-simulation/" />
@@ -217,7 +217,7 @@
           <Label Content="D-BOX location:" />
           <Button Content="Browse" Command="{Binding Integrated.SelectDBoxLocationCommand}" />
           <mui:BetterTextBox Text="{Binding Integrated.DBoxLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-        </DockPanel>
+        </DockPanel>-->
       </StackPanel>
 
     </mui:SpacingUniformGrid>

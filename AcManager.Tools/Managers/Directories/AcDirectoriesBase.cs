@@ -127,7 +127,7 @@ So, please, open “{disabledDirectory}” and either remove or rename {sameIds.
         public abstract void Dispose();
 
         public bool CheckIfEnabled(string location) {
-            return DisabledDirectory == null || FileUtils.Affects(EnabledDirectory, location);
+            return DisabledDirectory == null || FileUtils.IsAffectedBy(location, EnabledDirectory);
         }
     }
 

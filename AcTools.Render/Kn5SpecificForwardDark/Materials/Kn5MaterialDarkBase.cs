@@ -206,7 +206,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
             }
         }
 
-        public void Dispose() {}
+        public virtual void Dispose() {}
 
         #region Bones
         /// <summary>

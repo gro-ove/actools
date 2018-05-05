@@ -508,7 +508,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static readonly string UserPresetsDirectory;
 
         protected override void OnFileChanged(string filename) {
-            if (FileUtils.Affects(PresetsDirectory, filename) || FileUtils.Affects(filename, PresetsDirectory)) {
+            if (FileUtils.IsAffectedBy(filename, PresetsDirectory) || FileUtils.IsAffectedBy(PresetsDirectory, filename)) {
                 PresetsUpdated?.Invoke(this, EventArgs.Empty);
             }
 

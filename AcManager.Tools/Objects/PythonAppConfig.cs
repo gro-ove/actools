@@ -89,7 +89,7 @@ namespace AcManager.Tools.Objects {
         }
 
         internal bool IsAffectedBy(string changed) {
-            return FileUtils.Affects(changed, Filename) || _defaultsFilename != null && FileUtils.Affects(changed, _defaultsFilename);
+            return FileUtils.IsAffectedBy(Filename, changed) || _defaultsFilename != null && FileUtils.IsAffectedBy(_defaultsFilename, changed);
         }
 
         [NotNull]

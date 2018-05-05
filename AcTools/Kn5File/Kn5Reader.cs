@@ -140,14 +140,14 @@ namespace AcTools.Kn5File {
                     node.IsVisible = ReadBoolean();
                     node.IsTransparent = ReadBoolean();
 
-                    node.Vertices = new Kn5Node.Vertice[ReadUInt32()];
+                    node.Vertices = new Kn5Node.Vertex[ReadUInt32()];
                     for (var i = 0; i < node.Vertices.Length; i++) {
                         // 44 bytes per vertice
-                        node.Vertices[i] = new Kn5Node.Vertice {
-                            Co = ReadSingle3D(),
+                        node.Vertices[i] = new Kn5Node.Vertex {
+                            Position = ReadSingle3D(),
                             Normal = ReadSingle3D(),
-                            Uv = ReadSingle2D(),
-                            Tangent = ReadSingle3D()
+                            TexC = ReadSingle2D(),
+                            TangentU = ReadSingle3D()
                         };
                     }
 
@@ -182,15 +182,15 @@ namespace AcTools.Kn5File {
                         };
                     }
             
-                    node.Vertices = new Kn5Node.Vertice[ReadUInt32()];
+                    node.Vertices = new Kn5Node.Vertex[ReadUInt32()];
                     node.VerticeWeights = new Kn5Node.VerticeWeight[node.Vertices.Length];
                     for (var i = 0; i < node.Vertices.Length; i++) {
                         // 76 bytes per vertice
-                        node.Vertices[i] = new Kn5Node.Vertice {
-                            Co = ReadSingle3D(),
+                        node.Vertices[i] = new Kn5Node.Vertex {
+                            Position = ReadSingle3D(),
                             Normal = ReadSingle3D(),
-                            Uv = ReadSingle2D(),
-                            Tangent = ReadSingle3D()
+                            TexC = ReadSingle2D(),
+                            TangentU = ReadSingle3D()
                         };
 
                         node.VerticeWeights[i] = new Kn5Node.VerticeWeight {
@@ -243,7 +243,7 @@ namespace AcTools.Kn5File {
                     node.IsVisible = ReadBoolean();
                     node.IsTransparent = ReadBoolean();
 
-                    node.Vertices = new Kn5Node.Vertice[0];
+                    node.Vertices = new Kn5Node.Vertex[0];
                     node.Indices = new ushort[0];
 
                     Skip((int)(44 * ReadUInt32()));
@@ -267,7 +267,7 @@ namespace AcTools.Kn5File {
                     node.IsTransparent = ReadBoolean();
 
                     node.Bones = new Kn5Node.Bone[0];
-                    node.Vertices = new Kn5Node.Vertice[0];
+                    node.Vertices = new Kn5Node.Vertex[0];
                     node.VerticeWeights = new Kn5Node.VerticeWeight[0];
                     node.Indices = new ushort[0];
                     

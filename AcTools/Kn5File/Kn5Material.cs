@@ -103,36 +103,4 @@ namespace AcTools.Kn5File {
             return null;
         }
     }
-
-    public enum Kn5MaterialBlendMode {
-        [Description("Opaque")]
-        Opaque = 0,
-
-        [Description("Alpha blend")]
-        AlphaBlend = 1,
-
-        [Description("Alpha to coverage")]
-        AlphaToCoverage = 2
-    }
-
-    public enum Kn5MaterialDepthMode {
-        [Description("Normal")]
-        DepthNormal = 0,
-
-        [Description("Read-only")]
-        DepthNoWrite = 1,
-
-        [Description("Off")]
-        DepthOff = 2
-    }
-
-    internal static class Kn5MaterialExtension {
-        public static bool IsValidDepthMode(this int v) {
-            return v >= 0 && v <= 2;
-        }
-
-        public static bool IsValidBlendMode(this byte v) {
-            return v <= 2;
-        }
-    }
 }

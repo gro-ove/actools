@@ -35,8 +35,8 @@ namespace AcManager.Tools.Managers.Directories {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private bool TestArgs(FileSystemEventArgs e) {
-            return FileUtils.Affects(EnabledDirectory, e.FullPath) ||
-                   DisabledDirectory != null && FileUtils.Affects(DisabledDirectory, e.FullPath);
+            return FileUtils.IsAffectedBy(e.FullPath, EnabledDirectory) ||
+                   DisabledDirectory != null && FileUtils.IsAffectedBy(e.FullPath, DisabledDirectory);
         }
 
         public void FileOrDirectoryChanged(object sender, FileSystemEventArgs e) {

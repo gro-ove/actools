@@ -104,7 +104,7 @@ namespace AcTools.Render.Base.Objects {
             var indices = new List<ushort>();
 
             var box = GeometryGenerator.CreateLinesBox(size);
-            for (var i = 0; i < box.Vertices.Count; i++) {
+            for (var i = 0; i < box.Vertices.Length; i++) {
                 vertices.Add(new InputLayouts.VerticePC(box.Vertices[i].Position, color));
             }
 

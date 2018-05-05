@@ -34,7 +34,7 @@ namespace AcManager.Controls.UserControls.Cef {
             private readonly string _mimeType;
 
             public CustomResourceHandler(string filename) {
-                if (AcRootDirectory.Instance.Value == null || !FileUtils.Affects(AcRootDirectory.Instance.RequireValue, filename)) {
+                if (AcRootDirectory.Instance.Value == null || !FileUtils.IsAffectedBy(filename, AcRootDirectory.Instance.RequireValue)) {
                     _data = null;
                     _mimeType = @"application/octet-stream";
                     return;

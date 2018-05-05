@@ -318,8 +318,8 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            var iniChanged = FileUtils.Affects(filename, IniFilename) || FileUtils.Affects(filename, EntryListIniFilename);
-            if (iniChanged || FileUtils.Affects(filename, WrapperConfigFilename) || FileUtils.Affects(filename, WrapperContentFilename)) {
+            var iniChanged = FileUtils.IsAffectedBy(IniFilename, filename) || FileUtils.IsAffectedBy(EntryListIniFilename, filename);
+            if (iniChanged || FileUtils.IsAffectedBy(WrapperConfigFilename, filename) || FileUtils.IsAffectedBy(WrapperContentFilename, filename)) {
                 if (!Changed || ModernDialog.ShowMessage(iniChanged ?
                         ToolsStrings.AcObject_ReloadAutomatically_Ini : ToolsStrings.AcObject_ReloadAutomatically_Json,
                         ToolsStrings.AcObject_ReloadAutomatically, MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {

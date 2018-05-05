@@ -884,14 +884,17 @@ namespace AcManager.CustomShowroom {
                     using (var waiting = new WaitingDialog(ToolsStrings.Common_Exporting)) {
                         await Task.Delay(1);
 
-                        if (FileUtils.Exists(destination) &&
-                                ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), ToolsStrings.Common_Destination,
-                                        MessageBoxButton.YesNo) == MessageBoxResult.No) {
-                            var temp = destination;
-                            var i = 1;
-                            do {
-                                destination = $"{temp}-{i++}";
-                            } while (FileUtils.Exists(destination));
+                        if (FileUtils.Exists(destination)) {
+                            var response = ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), ToolsStrings.Common_Destination,
+                                    MessageBoxButton.YesNoCancel);
+                            if (response == MessageBoxResult.Cancel) return;
+                            if (response == MessageBoxResult.No) {
+                                var temp = destination;
+                                var i = 1;
+                                do {
+                                    destination = $"{temp}-{i++}";
+                                } while (FileUtils.Exists(destination));
+                            }
                         }
 
                         var name = kn5.RootNode.Name.StartsWith(@"FBX: ") ? kn5.RootNode.Name.Substring(5) :

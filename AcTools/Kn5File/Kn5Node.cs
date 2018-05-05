@@ -17,7 +17,7 @@ namespace AcTools.Kn5File {
         /* Mesh */
         public bool CastShadows, IsVisible, IsTransparent, IsRenderable;
         public Bone[] Bones;
-        public Vertice[] Vertices;
+        public Vertex[] Vertices;
         public VerticeWeight[] VerticeWeights;
         public ushort[] Indices;
         public uint MaterialId, Layer;
@@ -32,8 +32,15 @@ namespace AcTools.Kn5File {
         public string UniqueName;
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct Vertice {
-            public float[] Co, Normal, Uv, Tangent;
+        public struct Vertex {
+            public float[] Position, Normal, TexC, TangentU;
+
+            public Vertex(float[] position, float[] normal, float[] texC, float[] tangentU) {
+                Position = position;
+                Normal = normal;
+                TexC = texC;
+                TangentU = tangentU;
+            }
         }
 
         [StructLayout(LayoutKind.Sequential)]

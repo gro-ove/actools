@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using AcTools.Kn5File;
+using AcTools.Render.Base.Utils;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -44,16 +45,16 @@ namespace AcTools.Render.Base.Structs {
             public InputElement[] InputElements => InputElementsValue;
 
             Vector3 IPositionLayout.Position => Position;
-            
-            public static VerticeP[] Convert(Kn5Node.Vertice[] vertices) {
+
+            public static VerticeP[] Convert(Kn5Node.Vertex[] vertices) {
                 var size = vertices.Length;
                 var result = new VerticeP[size];
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Co[0];
-                    result[i].Position.Y = x.Co[1];
-                    result[i].Position.Z = x.Co[2];
+                    result[i].Position.X = x.Position[0];
+                    result[i].Position.Y = x.Position[1];
+                    result[i].Position.Z = x.Position[2];
                 }
 
                 return result;
@@ -80,20 +81,20 @@ namespace AcTools.Render.Base.Structs {
             public int Stride => StrideValue;
 
             public InputElement[] InputElements => InputElementsValue;
-            
+
             Vector3 IPositionLayout.Position => Position;
 
-            public static VerticePT[] Convert(Kn5Node.Vertice[] vertices) {
+            public static VerticePT[] Convert(Kn5Node.Vertex[] vertices) {
                 var size = vertices.Length;
                 var result = new VerticePT[size];
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Co[0];
-                    result[i].Position.Y = x.Co[1];
-                    result[i].Position.Z = x.Co[2];
-                    result[i].Tex.X = x.Uv[0];
-                    result[i].Tex.Y = x.Uv[1];
+                    result[i].Position.X = x.Position[0];
+                    result[i].Position.Y = x.Position[1];
+                    result[i].Position.Z = x.Position[2];
+                    result[i].Tex.X = x.TexC[0];
+                    result[i].Tex.Y = x.TexC[1];
                 }
 
                 return result;
@@ -155,20 +156,20 @@ namespace AcTools.Render.Base.Structs {
 
             Vector3 IPositionLayout.Position => Position;
 
-            public static VerticePNT[] Convert(Kn5Node.Vertice[] vertices) {
+            public static VerticePNT[] Convert(Kn5Node.Vertex[] vertices) {
                 var size = vertices.Length;
                 var result = new VerticePNT[size];
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Co[0];
-                    result[i].Position.Y = x.Co[1];
-                    result[i].Position.Z = x.Co[2];
+                    result[i].Position.X = x.Position[0];
+                    result[i].Position.Y = x.Position[1];
+                    result[i].Position.Z = x.Position[2];
                     result[i].Normal.X = x.Normal[0];
                     result[i].Normal.Y = x.Normal[1];
                     result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.Uv[0];
-                    result[i].Tex.Y = x.Uv[1];
+                    result[i].Tex.X = x.TexC[0];
+                    result[i].Tex.Y = x.TexC[1];
                 }
 
                 return result;
@@ -204,23 +205,45 @@ namespace AcTools.Render.Base.Structs {
 
             Vector3 IPositionLayout.Position => Position;
 
-            public static VerticePNTG[] Convert(Kn5Node.Vertice[] vertices) {
+            public static VerticePNTG[] Convert(Kn5Node.Vertex[] vertices) {
                 var size = vertices.Length;
                 var result = new VerticePNTG[size];
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Co[0];
-                    result[i].Position.Y = x.Co[1];
-                    result[i].Position.Z = x.Co[2];
+                    result[i].Position.X = x.Position[0];
+                    result[i].Position.Y = x.Position[1];
+                    result[i].Position.Z = x.Position[2];
                     result[i].Normal.X = x.Normal[0];
                     result[i].Normal.Y = x.Normal[1];
                     result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.Uv[0];
-                    result[i].Tex.Y = x.Uv[1];
-                    result[i].Tangent.X = x.Tangent[0];
-                    result[i].Tangent.Y = x.Tangent[1];
-                    result[i].Tangent.Z = x.Tangent[2];
+                    result[i].Tex.X = x.TexC[0];
+                    result[i].Tex.Y = x.TexC[1];
+                    result[i].Tangent.X = x.TangentU[0];
+                    result[i].Tangent.Y = x.TangentU[1];
+                    result[i].Tangent.Z = x.TangentU[2];
+                }
+
+                return result;
+            }
+
+            public static VerticePNTG[] Convert(GeometryGenerator.Vertex[] vertices) {
+                var size = vertices.Length;
+                var result = new VerticePNTG[size];
+
+                for (var i = 0; i < size; i++) {
+                    var x = vertices[i];
+                    result[i].Position.X = x.Position.X;
+                    result[i].Position.Y = x.Position.Y;
+                    result[i].Position.Z = x.Position.Z;
+                    result[i].Normal.X = x.Normal.X;
+                    result[i].Normal.Y = x.Normal.Y;
+                    result[i].Normal.Z = x.Normal.Z;
+                    result[i].Tex.X = x.TexC.X;
+                    result[i].Tex.Y = x.TexC.Y;
+                    result[i].Tangent.X = x.TangentU.X;
+                    result[i].Tangent.Y = x.TangentU.Y;
+                    result[i].Tangent.Z = x.TangentU.Z;
                 }
 
                 return result;
@@ -262,23 +285,23 @@ namespace AcTools.Render.Base.Structs {
 
             Vector3 IPositionLayout.Position => Position;
 
-            public static VerticePNTGW4B[] Convert(Kn5Node.Vertice[] vertices, Kn5Node.VerticeWeight[] weights) {
+            public static VerticePNTGW4B[] Convert(Kn5Node.Vertex[] vertices, Kn5Node.VerticeWeight[] weights) {
                 var size = vertices.Length;
                 var result = new VerticePNTGW4B[size];
 
                 for (var i = 0; i < size; i++) {
                     var x = vertices[i];
-                    result[i].Position.X = x.Co[0];
-                    result[i].Position.Y = x.Co[1];
-                    result[i].Position.Z = x.Co[2];
+                    result[i].Position.X = x.Position[0];
+                    result[i].Position.Y = x.Position[1];
+                    result[i].Position.Z = x.Position[2];
                     result[i].Normal.X = x.Normal[0];
                     result[i].Normal.Y = x.Normal[1];
                     result[i].Normal.Z = x.Normal[2];
-                    result[i].Tex.X = x.Uv[0];
-                    result[i].Tex.Y = x.Uv[1];
-                    result[i].Tangent.X = x.Tangent[0];
-                    result[i].Tangent.Y = x.Tangent[1];
-                    result[i].Tangent.Z = x.Tangent[2];
+                    result[i].Tex.X = x.TexC[0];
+                    result[i].Tex.Y = x.TexC[1];
+                    result[i].Tangent.X = x.TangentU[0];
+                    result[i].Tangent.Y = x.TangentU[1];
+                    result[i].Tangent.Z = x.TangentU[2];
 
                     var w = weights[i];
                     result[i].BonesWeights.X = w.Weights[0];

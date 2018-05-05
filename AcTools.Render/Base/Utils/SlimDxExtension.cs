@@ -89,6 +89,10 @@ namespace AcTools.Render.Base.Utils {
             return new Vector3(vec.X, vec.Y, vec.Z);
         }
 
+        public static float[] ToArray(this Vector2 vec) {
+            return new []{ vec.X, vec.Y };
+        }
+
         public static float[] ToArray(this Vector3 vec) {
             return new []{ vec.X, vec.Y, vec.Z };
         }

@@ -32,7 +32,7 @@ namespace AcManager.Tools.Objects {
         public sealed override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
 
-            if (FileUtils.Affects(filename, PreviewImage)) {
+            if (FileUtils.IsAffectedBy(PreviewImage, filename)) {
                 OnImageChangedValue(PreviewImage);
                 return true;
             }

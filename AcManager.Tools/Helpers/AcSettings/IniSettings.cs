@@ -56,7 +56,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected virtual void OnFileChanged(string filename) {
-            if (FileUtils.Affects(filename, Filename)) {
+            if (FileUtils.IsAffectedBy(Filename, filename)) {
                 ReloadLater();
             }
         }

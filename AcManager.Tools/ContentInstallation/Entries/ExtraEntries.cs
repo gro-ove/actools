@@ -42,7 +42,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     FileUtils.Recycle(ExistingInstallation().ToArray());
                 }
 
-                return _toInstall.Contains(info.Key) || _toInstall.Any(x => FileUtils.Affects(x, info.Key))
+                return _toInstall.Contains(info.Key) || _toInstall.Any(x => FileUtils.IsAffectedBy(info.Key, x))
                         ? Path.Combine(AcRootDirectory.Instance.RequireValue, info.Key) : null;
             });
         }
@@ -104,7 +104,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return new CopyCallback(info => {
                 var filename = info.Key;
                 return FileUtils.ArePathsEqual(filename, xaml) ? Path.Combine(destination, Path.GetFileName(xaml))
-                        : FileUtils.Affects(resources, filename) ? Path.Combine(destination, FileUtils.GetRelativePath(filename, resources)) : null;
+                        : FileUtils.IsAffectedBy(filename, resources) ? Path.Combine(destination, FileUtils.GetRelativePath(filename, resources)) : null;
             });
         }
 
@@ -142,7 +142,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var path = EntryPath;
             return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
-                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
+                if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);
@@ -186,7 +186,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var path = EntryPath;
             return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
-                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
+                if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);
@@ -230,7 +230,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var path = EntryPath;
             return new CopyCallback(fileInfo => {
                 var filename = fileInfo.Key;
-                if (path != string.Empty && !FileUtils.Affects(path, filename)) return null;
+                if (path != string.Empty && !FileUtils.IsAffectedBy(filename, path)) return null;
 
                 var subFilename = FileUtils.GetRelativePath(filename, path);
                 return Path.Combine(destination, subFilename);

@@ -108,6 +108,7 @@
     <Compile Include="Base\Objects\DebugObject.cs" />
     <Compile Include="Base\Objects\IRenderableObject.cs" />
     <Compile Include="Base\Objects\LinesRenderableObject.cs" />
+    <Compile Include="Base\Objects\MaterialObject.cs" />
     <Compile Include="Base\Objects\MoveableHelper.cs" />
     <Compile Include="Base\Objects\RenderableList.cs" />
     <Compile Include="Base\Objects\SpecialRenderMode.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialDarkReflective.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialDarkSky.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\Kn5MaterialDarkWindscreen.cs" />
+    <Compile Include="Kn5SpecificForwardDark\Materials\GenericMaterialDark.cs" />
     <Compile Include="Kn5SpecificForwardDark\Materials\MaterialsProviderDark.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoHelper.cs" />
     <Compile Include="Base\PostEffects\AO\SsaoAltHelper.cs" />
@@ -234,7 +236,9 @@
     <Compile Include="Kn5Specific\Animations\KsAnimExtension.cs" />
     <Compile Include="Kn5Specific\Animations\KsAnimAnimator.cs" />
     <Compile Include="Kn5Specific\IAcCarSoundFactory.cs" />
+    <Compile Include="Kn5Specific\Materials\Kn5AmbientShadowMaterialDescription.cs" />
     <Compile Include="Kn5Specific\Materials\Kn5MaterialDescription.cs" />
+    <Compile Include="Kn5Specific\Materials\Kn5SharedMaterials.cs" />
     <Compile Include="Kn5Specific\Objects\AcDynamicMaterialParams.cs" />
     <Compile Include="Kn5Specific\Objects\CarDescription.cs" />
     <Compile Include="Kn5Specific\Objects\ExtraModels.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
@@ -26,6 +27,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
@@ -34,7 +36,6 @@ using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
-using Microsoft.Win32;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -149,6 +150,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("CubemapAmbientValue")]
             public virtual float CubemapAmbient { get; set; } = 0.5f;
+
             public virtual bool CubemapAmbientWhite { get; set; } = true;
             public virtual bool EnableShadows { get; set; } = true;
             public virtual bool AnyGround { get; set; } = true;
@@ -189,6 +191,7 @@ namespace AcManager.CustomShowroom {
 
             [JsonProperty("SsaoOpacity")]
             public virtual float AoOpacity { get; set; } = 0.3f;
+
             public virtual float AoRadius { get; set; } = 1f;
 
             public virtual bool MeshDebug { get; set; }
@@ -197,6 +200,10 @@ namespace AcManager.CustomShowroom {
             public virtual bool IsWireframeColored { get; set; } = true;
             public virtual Color WireframeColor { get; set; } = Colors.White;
             public virtual float WireframeBrightness { get; set; } = 2.5f;
+
+            public virtual bool UseCustomReflectionCubemap { get; set; }
+            public virtual float CustomReflectionBrightness { get; set; } = 1.5f;
+            public virtual string CustomReflectionCubemap { get; set; }
 
             public virtual bool UseDof { get; set; } = true;
             public virtual float DofFocusPlane { get; set; } = 1.6f;
@@ -214,6 +221,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             public virtual double[] CameraLookAt { get; set; } = { -0.53, 0.49, 0.11 };
+
             public virtual float CameraTilt { get; set; }
             public virtual float CameraFov { get; set; } = 32f;
             public virtual bool CameraOrbitMode { get; set; } = true;
@@ -249,13 +257,49 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            private static byte[] GetBytes(string data) {
+                if (data == null) return null;
+
+                if (data.StartsWith(@"path:")) {
+                    var filename = FileUtils.GetFullPath(data.ApartFromFirst(@"path:"), FilesStorage.Instance.RootDirectory);
+                    var result = File.ReadAllBytes(filename);
+                    ResourcesMap[result.GetHashCode()] = filename;
+                    return result;
+                }
+
+                try {
+                    return Decompress(Convert.FromBase64String(data));
+                } catch (Exception e) {
+                    Logging.Error(e);
+                    return null;
+                }
+            }
+
+            private static string SetBytes(byte[] data) {
+                if (data == null) return null;
+
+                var path = ResourcesMap.GetValueOrDefault(data.GetHashCode());
+                if (path != null) {
+                    if (FileUtils.IsAffectedBy(path, FilesStorage.Instance.RootDirectory)) {
+                        path = FileUtils.GetRelativePath(path, FilesStorage.Instance.RootDirectory);
+                    }
+                    return @"path:" + path;
+                }
+
+                var c = Compress(data);
+                return c == null ? null : Convert.ToBase64String(c);
+            }
+
             [JsonIgnore]
             public byte[] ColorGradingData {
-                get => ColorGrading == null ? null : Decompress(Convert.FromBase64String(ColorGrading));
-                set {
-                    var c = Compress(value);
-                    ColorGrading = c == null ? null : Convert.ToBase64String(c);
-                }
+                get => GetBytes(ColorGrading);
+                set => ColorGrading = SetBytes(value);
+            }
+
+            [JsonIgnore]
+            public byte[] CustomReflectionCubemapData {
+                get => GetBytes(CustomReflectionCubemap);
+                set => CustomReflectionCubemap = SetBytes(value);
             }
         }
 
@@ -338,6 +382,15 @@ namespace AcManager.CustomShowroom {
 
             obj.ShowroomId = (Showroom as ShowroomObject)?.Id;
             obj.ColorGradingData = Renderer.UseColorGrading ? Renderer.ColorGradingData : null;
+
+            obj.UseCustomReflectionCubemap = Renderer.UseCustomReflectionCubemap;
+            obj.CustomReflectionBrightness = Renderer.CustomReflectionBrightness;
+
+            if (Renderer.UseCustomReflectionCubemap) {
+                obj.CustomReflectionCubemapData = Renderer.CustomReflectionCubemap;
+            } else {
+                obj.CustomReflectionCubemapData = null;
+            }
 
             obj.CubemapAmbient = Renderer.CubemapAmbient;
             obj.CubemapAmbientWhite = Renderer.CubemapAmbientWhite;
@@ -436,7 +489,7 @@ namespace AcManager.CustomShowroom {
                     }
 
                     NonfatalError.Notify("Can’t fully load the preset: showroom “{showroomId}” is missing",
-                            "Maybe you can find it online?", solutions: new [] {
+                            "Maybe you can find it online?", solutions: new[] {
                                 new NonfatalErrorSolution("Search for showroom", null, token => {
                                     WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(showroomId,
                                             SettingsHolder.MissingContentType.Showroom));
@@ -606,6 +659,10 @@ namespace AcManager.CustomShowroom {
             Renderer.FlatMirrorBlurred = o.FlatMirrorBlurred;
             Renderer.FlatMirrorBlurMuiltiplier = o.FlatMirrorBlurMuiltiplier;
             Renderer.CarShadowsOpacity = o.CarShadowsOpacity;
+
+            Renderer.UseCustomReflectionCubemap = o.UseCustomReflectionCubemap;
+            Renderer.CustomReflectionBrightness = o.CustomReflectionBrightness;
+            Renderer.CustomReflectionCubemap = o.CustomReflectionCubemapData;
 
             Renderer.AmbientBrightness = o.AmbientBrightness;
             Renderer.BackgroundBrightness = o.BackgroundBrightness;
@@ -896,6 +953,9 @@ namespace AcManager.CustomShowroom {
                 case nameof(Renderer.WireframeMode):
                 case nameof(Renderer.IsWireframeColored):
                 case nameof(Renderer.WireframeBrightness):
+                case nameof(Renderer.UseCustomReflectionCubemap):
+                case nameof(Renderer.CustomReflectionBrightness):
+                case nameof(Renderer.CustomReflectionCubemap):
                     ActionExtension.InvokeInMainThread(SaveLater);
                     break;
 
@@ -977,7 +1037,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected virtual void OnCarPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {}
+        protected virtual void OnCarPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) { }
 
         private void SyncAll() {
             SyncMsaaMode();
@@ -1156,19 +1216,45 @@ namespace AcManager.CustomShowroom {
 
         public DelegateCommand SetColorGradingTextureCommand => _setColorGradingTextureCommand ?? (_setColorGradingTextureCommand = new DelegateCommand(() => {
             try {
-                var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.TexturesAllFilter,
-                    Title = "Select color grading texture"
-                };
+                var filename = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = "colorgradingtexture",
+                    Filters = { DialogFilterPiece.ImageFiles },
+                    Title = "Select color grading texture",
+                });
 
-                if (dialog.ShowDialog() == true) {
-                    Renderer.ColorGradingData = File.ReadAllBytes(dialog.FileName);
+                if (filename != null) {
+                    Renderer.ColorGradingData = File.ReadAllBytes(filename);
                     Renderer.LoadColorGradingData();
                 }
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t load color grading texture", "Make sure it’s a volume DDS texture.", e);
             }
         }));
+
+        private DelegateCommand _setReflectionsTextureCommand;
+
+        public DelegateCommand SetReflectionsTextureCommand => _setReflectionsTextureCommand ?? (_setReflectionsTextureCommand = new DelegateCommand(() => {
+            try {
+                var filename = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = "reflectionstexture",
+                    Filters = { DialogFilterPiece.ImageFiles },
+                    Title = "Select reflections texture",
+                });
+
+                if (filename != null) {
+                    Renderer.CustomReflectionCubemap = File.ReadAllBytes(filename);
+                    if (Renderer.CustomReflectionCubemap.Length > 200000) {
+                        ResourcesMap[Renderer.CustomReflectionCubemap.GetHashCode()] = filename;
+                    }
+
+                    Renderer.LoadCustomReflectionCubemap();
+                }
+            } catch (Exception e) {
+                NonfatalError.Notify("Can’t load color grading texture", "Make sure it’s a volume DDS texture.", e);
+            }
+        }));
+
+        private static readonly Dictionary<int, string> ResourcesMap = new Dictionary<int, string>();
 
         #region Lights
         private const string KeyTryToGuessCarLights = "__TryToGuessCarLights";
@@ -1191,9 +1277,7 @@ namespace AcManager.CustomShowroom {
 
         private DelegateCommand _addLightCommand;
 
-        public DelegateCommand AddLightCommand => _addLightCommand ?? (_addLightCommand = new DelegateCommand(() => {
-            Renderer.AddLight();
-        }));
+        public DelegateCommand AddLightCommand => _addLightCommand ?? (_addLightCommand = new DelegateCommand(() => { Renderer.AddLight(); }));
 
         private DelegateCommand _saveCarLightsCommand;
 

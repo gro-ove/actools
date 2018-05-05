@@ -37,7 +37,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private static void FixVertice(ref Kn5Node.Vertice v, Vector3 normalToSet) {
+        private static void FixVertice(ref Kn5Node.Vertex v, Vector3 normalToSet) {
             v.Normal[0] = normalToSet.X;
             v.Normal[1] = normalToSet.Y;
             v.Normal[2] = normalToSet.Z;

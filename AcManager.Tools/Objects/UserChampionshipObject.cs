@@ -962,7 +962,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (FileUtils.Affects(filename, PreviewImage)) {
+            if (FileUtils.IsAffectedBy(PreviewImage, filename)) {
                 // OnImageChanged(nameof(PreviewImage));
                 OnImageChangedValue(PreviewImage);
                 return true;

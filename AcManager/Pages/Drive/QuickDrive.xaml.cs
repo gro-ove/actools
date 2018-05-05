@@ -89,7 +89,7 @@ namespace AcManager.Pages.Drive {
                     track: _selectNextTrack, trackSkin: _selectNextTrackSkin,
                     weatherId: _selectNextWeather?.Id,
                     mode: _selectNextMode, serializedRaceGrid: _selectNextSerializedRaceGrid,
-                    presence: _discordPresence);
+                    presence: _discordPresence, forceAssistsLoading: _selectNextForceAssistsLoading);
 
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(Model.TrackState, nameof(INotifyPropertyChanged.PropertyChanged),
                     OnTrackStateChanged);
@@ -139,6 +139,7 @@ namespace AcManager.Pages.Drive {
             _selectNextWeather = null;
             _selectNextMode = null;
             _selectNextSerializedRaceGrid = null;
+            _selectNextForceAssistsLoading = false;
 
             this.AddSizeCondition(x => x.ActualHeight > 600 && SettingsHolder.Drive.ShowExtraComboBoxes).Add(CarCellExtra).Add(TrackCellExtra);
             this.AddSizeCondition(x => 180 + ((x.ActualWidth - 800) / 2d).Clamp(0, 60).Round()).Add(x => LeftPanel.Width = x);
@@ -521,15 +522,13 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             private readonly DiscordRichPresence _presence;
 
-            public StoredValue<bool> LoadAssistsWithPreset { get; } = Stored.Get("__QuickDrive_LoadAssistsWithPreset", false);
-
             private bool IsToLoadAssists() {
-                return LoadAssistsWithPreset.Value ^ (Keyboard.Modifiers == ModifierKeys.Control);
+                return SettingsHolder.Drive.LoadAssistsWithQuickDrivePreset ^ (Keyboard.Modifiers == ModifierKeys.Control);
             }
 
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
-                    Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null) {
+                    Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null, bool forceAssistsLoading = false) {
                 if (uiMode && SettingsHolder.Drive.ShowExtraComboBoxes) {
                     CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
                     CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
@@ -633,28 +632,53 @@ namespace AcManager.Pages.Drive {
                         SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
                     }
 
-                    if (IsToLoadAssists()) {
-                        if (o.AssistsPresetFilename != null && o.AssistsData != null) {
-                            UserPresetsControl.LoadPreset(AssistsViewModel.PresetableKey, o.AssistsPresetFilename, o.AssistsData, o.AssistsChanged);
-                        } else if (o.AssistsPresetFilename != null &&
-                                (PresetsManager.Instance.HasBuiltInPreset(AssistsViewModel.PresetableCategory, o.AssistsPresetFilename) ||
-                                        File.Exists(o.AssistsPresetFilename))) {
-                            UserPresetsControl.LoadPreset(AssistsViewModel.PresetableKey, o.AssistsPresetFilename);
-                        } else if (o.AssistsData != null) {
-                            UserPresetsControl.LoadSerializedPreset(AssistsViewModel.PresetableKey, o.AssistsData);
-                        }
+                    if (forceAssistsLoading || IsToLoadAssists()) {
+                        LoadPreset(AssistsViewModel, o.AssistsPresetFilename, o.AssistsData, o.AssistsChanged);
                     }
 
-                    if (o.TrackPropertiesPresetFilename != null && o.TrackPropertiesData != null) {
-                        UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename, o.TrackPropertiesData, o.TrackPropertiesChanged);
-                    } else if (o.TrackPropertiesPresetFilename != null &&
-                            (PresetsManager.Instance.HasBuiltInPreset(TrackStateViewModelBase.PresetableCategory, o.TrackPropertiesPresetFilename) ||
-                                    File.Exists(o.TrackPropertiesPresetFilename))) {
-                        UserPresetsControl.LoadPreset(TrackState.PresetableKey, o.TrackPropertiesPresetFilename);
-                    } else if (o.TrackPropertiesData != null) {
-                        UserPresetsControl.LoadSerializedPreset(TrackState.PresetableKey, o.TrackPropertiesData);
-                    } else if (o.ObsTrackPropertiesPreset != null) {
-                        UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, o.ObsTrackPropertiesPreset);
+                    if (!LoadPreset(TrackState, o.TrackPropertiesPresetFilename, o.TrackPropertiesData, o.TrackPropertiesChanged)
+                            && o.ObsTrackPropertiesPreset != null
+                            && !UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory,
+                                    o.ObsTrackPropertiesPreset)) {
+                        TrackState.ImportFromPresetData(o.ObsTrackPropertiesPreset);
+                    }
+
+                    bool LoadPreset(IUserPresetable p, string filename, string data, bool isChanged) {
+                        try {
+                            if (filename != null) {
+                                if (data != null) {
+                                    if (!UserPresetsControl.LoadPreset(p.PresetableKey, filename, data, isChanged)) {
+                                        p.ImportFromPresetData(data);
+                                    }
+                                    return true;
+                                }
+
+                                if (PresetsManager.Instance.HasBuiltInPreset(p.PresetableCategory, filename)) {
+                                    if (!UserPresetsControl.LoadPreset(p.PresetableKey, filename)) {
+                                        p.ImportFromPresetData(
+                                                PresetsManager.Instance.GetBuiltInPreset(p.PresetableCategory, filename).ReadData());
+                                    }
+                                    return true;
+                                }
+
+                                if (File.Exists(filename)) {
+                                    if (!UserPresetsControl.LoadPreset(p.PresetableKey, filename)) {
+                                        p.ImportFromPresetData(File.ReadAllText(filename));
+                                    }
+                                    return true;
+                                }
+                            }
+
+                            if (data != null) {
+                                if (!UserPresetsControl.LoadSerializedPreset(p.PresetableKey, data)) {
+                                    p.ImportFromPresetData(data);
+                                }
+                                return true;
+                            }
+                        } catch (Exception e) {
+                            NonfatalError.NotifyBackground($"Can’t load settings for {p.PresetableKey}: {e}");
+                        }
+                        return false;
                     }
                 }, () => {
                     RealConditions = false;
@@ -671,7 +695,7 @@ namespace AcManager.Pages.Drive {
 
                     UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Green");
 
-                    if (IsToLoadAssists()) {
+                    if (forceAssistsLoading || IsToLoadAssists()) {
                         UserPresetsControl.LoadBuiltInPreset(AssistsViewModel.PresetableKey, AssistsViewModel.PresetableCategory,
                                 ControlsStrings.AssistsPreset_Pro);
                     }
@@ -993,13 +1017,15 @@ namespace AcManager.Pages.Drive {
         private static WeatherObject _selectNextWeather;
         private static Uri _selectNextMode;
         private static string _selectNextSerializedRaceGrid;
+        private static bool _selectNextForceAssistsLoading;
 
         public static void Show(
                 CarObject car = null, string carSkinId = null, string carSetupId = null,
                 TrackObjectBase track = null, TrackSkinObject trackSkin = null,
                 string weatherId = null, int? time = null,
                 string serializedPreset = null, string presetFilename = null,
-                Uri mode = null, string serializedRaceGrid = null) {
+                Uri mode = null, string serializedRaceGrid = null,
+                bool forceAssistsLoading = false) {
             var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);
 
             if (_current != null && _current.TryGetTarget(out var current) && current.IsLoaded) {
@@ -1018,6 +1044,8 @@ namespace AcManager.Pages.Drive {
 
             if (Application.Current?.MainWindow is MainWindow) {
                 _selectNextSerializedPreset = serializedPreset ?? (presetFilename != null ? File.ReadAllText(presetFilename) : null);
+                _selectNextForceAssistsLoading = forceAssistsLoading;
+
                 _selectNextCar = car;
                 _selectNextCarSkinId = carSkinId;
                 // TODO: carSetupId?
@@ -1037,13 +1065,14 @@ namespace AcManager.Pages.Drive {
                 TrackObjectBase track = null, TrackSkinObject trackSkin = null,
                 string weatherId = null, int? time = null,
                 string serializedPreset = null, string presetFilename = null,
-                Uri mode = null, string serializedRaceGrid = null) {
+                Uri mode = null, string serializedRaceGrid = null,
+                bool forceAssistsLoading = false) {
             if (serializedPreset == null) {
                 serializedPreset = presetFilename != null ? File.ReadAllText(presetFilename) : string.Empty;
             }
 
             var model = new ViewModel(serializedPreset, false, car, carSkinId, carSetupId, track, trackSkin, weatherId, time,
-                    mode: mode, serializedRaceGrid: serializedRaceGrid);
+                    mode: mode, serializedRaceGrid: serializedRaceGrid, forceAssistsLoading: forceAssistsLoading);
             if (!model.GoCommand.CanExecute(null)) {
                 Logging.Warning("Can’t start the race");
                 return false;

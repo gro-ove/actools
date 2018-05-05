@@ -113,13 +113,17 @@
         <!-- Quick Drive -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_QuickDriveHeader}" />
 
+        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="Hold Ctrl while selecting preset to invert this behavior that one time"
+            mui:NewMarkService.New="True">
+          <Label Content="Load assists with Quick Drive presets" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Drive.QuickDriveTrackDayViaPractice}" ToolTip="This way, there'll be a crew for pitstops, but bots might be more passive"
             set:Search.Keywords="quick;drive;trackday">
           <Label Content="For Track Day, use Practice as a session type" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="Might slightly show app down" set:Search.Keywords="quick;drive;appearance;ui"
-            mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="Might slightly show app down" set:Search.Keywords="quick;drive;appearance;ui">
           <Label Content="Show extra drop-down lists for skins, car modification and track layout" />
         </CheckBox>
 

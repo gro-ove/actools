@@ -3,7 +3,7 @@ using System.IO;
 
 namespace AcManager.Tools.Helpers {
     public class AbstractFilesStorage : AbstractSubdirectoryWatcherProvider {
-        protected string RootDirectory { get; }
+        public string RootDirectory { get; }
 
         protected AbstractFilesStorage(string path) {
             RootDirectory = path;

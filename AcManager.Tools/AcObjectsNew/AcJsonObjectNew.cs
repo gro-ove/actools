@@ -70,7 +70,7 @@ namespace AcManager.Tools.AcObjectsNew {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (!FileUtils.Affects(filename, JsonFilename)) return false;
+            if (!FileUtils.IsAffectedBy(JsonFilename, filename)) return false;
 
             if (!Changed || ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Json, ToolsStrings.AcObject_ReloadAutomatically,
                     MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {

@@ -68,10 +68,10 @@ namespace AcTools.Utils {
         /// <summary>
         /// Is A in any way a parent of B?
         /// </summary>
-        /// <param name="parent">For example, “C:\Windows”</param>
         /// <param name="child">For example, “c:/windows/system32”</param>
+        /// <param name="parent">For example, “C:\Windows”</param>
         /// <returns>For example, true</returns>
-        public static bool Affects([NotNull] string parent, [NotNull] string child) {
+        public static bool IsAffectedBy([NotNull] string child, [NotNull] string parent) {
             if (parent == null) throw new ArgumentNullException(nameof(parent));
             if (child == null) throw new ArgumentNullException(nameof(child));
 

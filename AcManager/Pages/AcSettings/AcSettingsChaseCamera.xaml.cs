@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -48,12 +49,16 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
+        private bool _loaded;
+
         private void OnLoaded(object sender, EventArgs e) {
-            EnableRenderer();
+            _loaded = true;
+            _enableRendererBusy.Task(EnableRenderer);
         }
 
         private void OnUnloaded(object sender, EventArgs e) {
-            DisableRenderer();
+            _loaded = false;
+            _enableRendererBusy.Task(DisableRenderer);
         }
 
         private D3DImageEx _imageEx;
@@ -65,13 +70,22 @@ namespace AcManager.Pages.AcSettings {
         private double _carLength;
         private string _carId;
 
-        private void EnableRenderer() {
+        private Busy _enableRendererBusy = new Busy();
+
+        private async Task EnableRenderer() {
+            if (!_loaded) {
+                await DisableRenderer();
+                return;
+            }
+
             try {
                 _carId = ValuesStorage.Storage.GetObject<JObject>("__QuickDrive_Main")?.GetStringValueOnly("CarId") ?? @"abarth500";
 
                 var car = CarsManager.Instance.GetById(_carId);
                 if (_imageEx != null || car == null) return;
 
+                Progress.IsActive = true;
+                var panoramaBg = new Uri("pack://application:,,,/Content Manager;component/Assets/Img/ShowroomPanoramaExample.jpg", UriKind.Absolute);
                 var renderer = new DarkKn5ObjectRenderer(CarDescription.FromDirectory(car.Location, car.AcdData)) {
                     WpfMode = true,
                     UseMsaa = false,
@@ -79,15 +93,15 @@ namespace AcManager.Pages.AcSettings {
                     TryToGuessCarLights = false,
                     LoadCarLights = false,
                     AnyGround = true,
-                    BackgroundColor = Colors.Black.ToColor(),
+                    BackgroundColor = System.Drawing.Color.FromArgb(0x444444),
                     BackgroundBrightness = 1f,
-                    LightColor = Colors.WhiteSmoke.ToColor(),
-                    LightBrightness = 1f,
+                    LightBrightness = 0f,
                     AmbientDown = System.Drawing.Color.FromArgb(0x444444),
                     AmbientUp = System.Drawing.Color.FromArgb(0xffffff),
-                    AmbientBrightness = 2f,
-                    Light = Vector3.Normalize(new Vector3(-1, 10, -1)),
+                    AmbientBrightness = 4f,
+                    Light = Vector3.Normalize(new Vector3(-0.1f, 10, -0.1f)),
                     ShadowMapSize = 512,
+                    EnableShadows = false,
                     AutoRotate = false,
                     AutoAdjustTarget = false,
                     UseDof = true,
@@ -96,10 +110,14 @@ namespace AcManager.Pages.AcSettings {
                     AccumulationDofIterations = 20,
                     AccumulationDofBokeh = false,
                     UseFxaa = false,
-                    UseSslr = false,
+                    UseSslr = true,
                     UseAo = false,
                     UseDither = true,
-                    MaterialsReflectiveness = 1f
+                    MaterialsReflectiveness = 1.5f,
+                    UseCustomReflectionCubemap = true,
+                    CustomReflectionCubemap = Application.GetResourceStream(panoramaBg)?.Stream.ReadAsBytesAndDispose(),
+                    CubemapAmbientWhite = false,
+                    CubemapAmbient = 0.6f,
                 };
 
                 var data = car.AcdData;
@@ -115,7 +133,7 @@ namespace AcManager.Pages.AcSettings {
                     _lookAt = new Vector3(go.X, go.Y - suspensions["FRONT"].GetFloat("BASEY", 0.25f), go.Z + center);
                 }
 
-                renderer.Initialize();
+                await Task.Run(() => renderer.Initialize());
                 renderer.SetCameraHigher = false;
                 SetRendererSize(renderer);
 
@@ -123,9 +141,10 @@ namespace AcManager.Pages.AcSettings {
                     // renderer.SelectSkin(car.SelectedSkin?.Id);
                     renderer.CarNode.BrakeLightsEnabled = true;
                     renderer.CarNode.CockpitLrActive = true;
-                    renderer.CarNode.CurrentLod = 1;
+                    renderer.CarNode.CurrentLod = renderer.CarNode.LodsCount > 1 ? 1 : 0;
                 }
 
+                await Task.Run(() => renderer.Draw());
                 _renderer = renderer;
 
                 _imageEx = new D3DImageEx();
@@ -138,6 +157,8 @@ namespace AcManager.Pages.AcSettings {
                 UpdateCamera();
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t display chase camera preview", e);
+            } finally {
+                Progress.IsActive = false;
             }
         }
 
@@ -149,7 +170,12 @@ namespace AcManager.Pages.AcSettings {
             _renderer.SetCamera(origin, origin + pitch, 60f.ToRadians(), pitch.Z < 0 ? MathF.PI : 0);
         }
 
-        private void DisableRenderer() {
+        private async Task DisableRenderer() {
+            if (_loaded) {
+                await EnableRenderer();
+                return;
+            }
+
             if (_imageEx == null) return;
 
             try {

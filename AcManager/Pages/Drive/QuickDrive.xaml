@@ -1,9 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools"
     xmlns:c="http://acstuff.ru/app/controls" xmlns:uc="clr-namespace:AcManager.UserControls" xmlns:a="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d"
-    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateToWindow="True"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" mui:InputBindingBehavior.PropagateToWindow="True"
     x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
@@ -357,7 +357,7 @@
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <c:ModernPopup Padding="16 12 16 16">
                 <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}"
-                    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" Width="160">
+                    d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" Width="160">
                   <CheckBox IsChecked="{Binding RandomTime}">
                     <Label Content="Random time" />
                   </CheckBox>
@@ -449,7 +449,7 @@
             <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
               <c:ModernPopup Padding="16 12 16 16">
                 <mui:SpacingStackPanel Spacing="8" DataContext="{Binding Data, Source={StaticResource Model}}"
-                    d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" Width="240">
+                    d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" Width="240">
                   <CheckBox IsChecked="{Binding RandomTemperature}">
                     <Label Content="Random temperature" />
                   </CheckBox>
@@ -567,9 +567,9 @@
               <MenuItem Header="Wind speed in relative range" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
               <MenuItem Header="Wind direction in degrees" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
               <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindSpeed}" Header="Random wind speed"
-                  DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" />
+                  DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" />
               <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindDirection}" Header="Random wind direction"
-                  DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance drive:QuickDrive+ViewModel}" />
+                  DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" />
             </ContextMenu>
           </DockPanel.ContextMenu>
 
@@ -670,14 +670,13 @@
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center"
               mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.MoreDriveAssists}}" Click="OnAssistsContextMenuButtonClick">
             <c:ModernPopup Padding="16 12 16 16">
-              <DockPanel>
-                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                <CheckBox IsChecked="{Binding Data.LoadAssistsWithPreset.Value, Source={StaticResource Model}}" Margin="0 0 0 12" DockPanel.Dock="Top">
+              <DockPanel DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance {x:Type dr:QuickDrive+ViewModel}}">
+                <CheckBox IsChecked="{Binding LoadAssistsWithQuickDrivePreset, Source={x:Static t:SettingsHolder.Drive}}" Margin="0 0 0 12"
+                    DockPanel.Dock="Top" ToolTip="Hold Ctrl while selecting preset to invert this behavior that one time">
                   <Label Content="Load assists with Quick Drive presets (global)" />
                 </CheckBox>
                 <Separator Margin="0 0 0 12" DockPanel.Dock="Top" Background="{DynamicResource SeparatorBackground}" />
-                <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
-                <uc:AssistsEditor DataContext="{Binding Data.AssistsViewModel, Source={StaticResource Model}}" />
+                <uc:AssistsEditor DataContext="{Binding AssistsViewModel}" />
               </DockPanel>
             </c:ModernPopup>
           </mui:ContextMenuButton>
@@ -709,7 +708,7 @@
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0 0 0 20" FrameMargin="0 0 0 4" LinksHorizontalAlignment="Left"
           SelectedSource="{Binding SelectedMode, Mode=TwoWay}" x:Name="ModeTab" FrameNavigated="OnModeTabNavigated" VerticalAlignment="Stretch"
-          ContentLoader="{x:Static drive:QuickDrive.ContentLoader}">
+          ContentLoader="{x:Static dr:QuickDrive.ContentLoader}">
         <mui:ModernTab.LinksListBoxTemplate>
           <ControlTemplate>
             <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" HorizontalAlignment="Left" />

@@ -80,10 +80,10 @@ namespace AcTools.Kn5File {
                     Write(node.Vertices.Length);
                     for (var i = 0; i < node.Vertices.Length; i++) {
                         var v = node.Vertices[i];
-                        Write(v.Co);
+                        Write(v.Position);
                         Write(v.Normal);
-                        Write(v.Uv);
-                        Write(v.Tangent);
+                        Write(v.TexC);
+                        Write(v.TangentU);
                     }
 
                     Write(node.Indices.Length);
@@ -118,10 +118,10 @@ namespace AcTools.Kn5File {
                     Write(node.Vertices.Length);
                     for (var i = 0; i < node.Vertices.Length; i++) {
                         var v = node.Vertices[i];
-                        Write(v.Co);
+                        Write(v.Position);
                         Write(v.Normal);
-                        Write(v.Uv);
-                        Write(v.Tangent);
+                        Write(v.TexC);
+                        Write(v.TangentU);
 
                         var w = node.VerticeWeights[i];
                         Write(w.Weights);

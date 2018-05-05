@@ -167,13 +167,17 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 if (Initialized) {
                     SetShadowsDirty();
-                    SetReflectionCubemapDirty();
+
+                    if (!UseCustomReflectionCubemap) {
+                        SetReflectionCubemapDirty();
+                    }
+
                     IsDirty = true;
                 }
             }
         }
 
-        protected virtual void OnCarSlotRemoved(CarSlot slot){}
+        protected virtual void OnCarSlotRemoved(CarSlot slot) { }
 
         public void AddSlot(CarSlot slot) {
             var updated = new CarSlot[_carSlots.Length + 1];
@@ -268,9 +272,13 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         protected virtual void OnShowroomChanged() {
             _sceneDirty = true;
-            IsCubemapReflectionActive = ShowroomNode != null;
+            IsCubemapReflectionActive = ShowroomNode != null || UseCustomReflectionCubemap;
             IsDirty = true;
-            SetReflectionCubemapDirty();
+
+            if (!UseCustomReflectionCubemap) {
+                SetReflectionCubemapDirty();
+            }
+
             SetShadowsDirty();
         }
 
@@ -306,6 +314,81 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
+        private byte[] _customReflectionCubemap;
+
+        public byte[] CustomReflectionCubemap {
+            get => _customReflectionCubemap;
+            set {
+                if (Equals(value, _customReflectionCubemap)) return;
+                _customReflectionCubemap = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                _customReflectionLoaded = false;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        private bool _useCustomReflectionCubemap;
+
+        public bool UseCustomReflectionCubemap {
+            get => _useCustomReflectionCubemap;
+            set {
+                if (Equals(value, _useCustomReflectionCubemap)) return;
+                _useCustomReflectionCubemap = value;
+                IsCubemapReflectionActive = ShowroomNode != null || UseCustomReflectionCubemap;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+            }
+        }
+
+        protected virtual void DrawSceneForReflectionPrepare(ICamera camera) {
+            DrawPrepareEffect(camera.Position, Light, null, null, true);
+        }
+
+        public sealed override void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera) {
+            IRenderableObject showroomNode;
+
+            if (UseCustomReflectionCubemap) {
+                if (!_customReflectionLoaded) {
+                    LoadCustomReflectionCubemap();
+                }
+                showroomNode = _customReflectionObject;
+            } else {
+                showroomNode = ShowroomNode;
+            }
+
+            if (showroomNode == null) return;
+
+            DrawSceneForReflectionPrepare(camera);
+            DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
+            showroomNode.Draw(holder, camera, SpecialRenderMode.Reflection);
+            DeviceContext.Rasterizer.State = null;
+        }
+
+        private IRenderableObject _customReflectionObject;
+        private bool _customReflectionLoaded;
+
+        protected virtual IRenderableMaterial GetCustomReflectionsMaterial([CanBeNull] byte[] textureData) {
+            return new InvisibleMaterial();
+        }
+
+        public void LoadCustomReflectionCubemap() {
+            _customReflectionLoaded = true;
+            DisposeHelper.Dispose(ref _customReflectionObject);
+
+            try {
+                var sphere = GeometryGenerator.CreateSphere(10f, 20, 20);
+                _customReflectionObject = new MaterialObject(Matrix.Identity, sphere, false) {
+                    Material = GetCustomReflectionsMaterial(CustomReflectionCubemap),
+                    ParentMatrix = Matrix.Identity
+                };
+            } catch (Exception) {
+                DisposeHelper.Dispose(ref _customReflectionObject);
+                throw;
+            }
+        }
+
         private bool _isCubemapReflectionActive;
 
         public bool IsCubemapReflectionActive {
@@ -325,11 +408,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                 IsDirty = true;
                 OnPropertyChanged();
-                OnCubemapReflectionChanged();
             }
         }
-
-        protected void OnCubemapReflectionChanged() {}
 
         private bool _enableShadows;
 
@@ -464,7 +544,11 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _light = value;
                 _sceneDirty = true;
                 IsDirty = true;
-                SetReflectionCubemapDirty();
+
+                if (!UseCustomReflectionCubemap) {
+                    SetReflectionCubemapDirty();
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -484,7 +568,9 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         private void OnTexturesUpdated(object sender, EventArgs e) {
-            SetReflectionCubemapDirty();
+            if (!UseCustomReflectionCubemap) {
+                SetReflectionCubemapDirty();
+            }
         }
 
         protected virtual void UpdateShadows(ShadowsDirectional shadows, Vector3 center) {
@@ -561,7 +647,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             var reflectionPosition = ReflectionCubemapPosition;
             if (_reflectionCubemap != null) {
-                _reflectionCubemap.Update(reflectionPosition);
+                _reflectionCubemap.Update(UseCustomReflectionCubemap ? Vector3.Zero : reflectionPosition);
                 _reflectionCubemap.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
 
                 _reflectionCubemap.DrawScene(DeviceContextHolder, this,
@@ -795,7 +881,11 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
         }
 
         public enum CarCameraMode {
-            None, FirstPerson, Dashboard, Bonnet, Bumper
+            None,
+            FirstPerson,
+            Dashboard,
+            Bonnet,
+            Bumper
         }
 
         [CanBeNull]

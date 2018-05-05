@@ -115,7 +115,8 @@ namespace AcManager.Tools.Helpers {
             private bool? _developerMode;
 
             public bool DeveloperMode {
-                get => _developerMode ?? (_developerMode = ValuesStorage.Get("Settings.CommonSettings.DeveloperModeN", false)).Value;
+                get => _developerMode ?? (_developerMode = ValuesStorage.Get("Settings.CommonSettings.DeveloperMode", false)
+                        || ValuesStorage.Get("Settings.CommonSettings.DeveloperModeN", false)).Value;
                 set {
                     if (Equals(value, _developerMode)) return;
                     _developerMode = value;

@@ -701,12 +701,12 @@ namespace AcManager.Tools.Objects {
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
 
-            if (FileUtils.Affects(filename, PreviewImage)) {
+            if (FileUtils.IsAffectedBy(PreviewImage, filename)) {
                 OnImageChangedValue(PreviewImage);
                 return true;
             }
 
-            if (_loadedExtended && FileUtils.Affects(filename, ColorCurvesIniFilename)) {
+            if (_loadedExtended && FileUtils.IsAffectedBy(ColorCurvesIniFilename, filename)) {
                 if (!Changed ||
                         ModernDialog.ShowMessage(ToolsStrings.AcObject_ReloadAutomatically_Ini, ToolsStrings.AcObject_ReloadAutomatically,
                                 MessageBoxButton.YesNo, "autoReload") == MessageBoxResult.Yes) {

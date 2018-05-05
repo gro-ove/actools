@@ -123,8 +123,8 @@ namespace AcManager.CustomShowroom {
             private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
                 var paintShopFile = Path.Combine(Car.Location, @"ui", @"cm_paintshop.json");
                 var paintShopDirectory = Path.Combine(Car.Location, @"ui", @"cm_paintshop");
-                if (FileUtils.Affects(args.Filename, paintShopFile)
-                        || FileUtils.Affects(args.Filename, paintShopDirectory)) {
+                if (FileUtils.IsAffectedBy(paintShopFile, args.Filename)
+                        || FileUtils.IsAffectedBy(paintShopDirectory, args.Filename)) {
                     OnPaintShopDataChanged(sender, args);
                 }
             }

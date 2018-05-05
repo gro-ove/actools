@@ -64,16 +64,16 @@ namespace AcManager.Tools.SharedMemory {
                 switch (_statusValue) {
                     case AcSharedMemoryStatus.Disabled:
                         _timer.Enabled = false;
-                        ResetFpsCounter();
+                        ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Connected:
                         _timer.Interval = OptionNotLiveReadingInterval;
                         _timer.Enabled = true;
-                        ResetFpsCounter();
+                        ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Connecting:
                         _timer.Enabled = false;
-                        ResetFpsCounter();
+                        ResetFpsCounter(false);
                         break;
                     case AcSharedMemoryStatus.Live:
                         _timer.Interval = OptionLiveReadingInterval;
@@ -84,7 +84,7 @@ namespace AcManager.Tools.SharedMemory {
                         _timer.Interval = OptionDisconnectedReadingInterval;
                         _timer.Enabled = true;
                         _previousPacketId = null;
-                        ResetFpsCounter();
+                        ResetFpsCounter(false);
                         break;
                 }
             }
@@ -116,7 +116,7 @@ namespace AcManager.Tools.SharedMemory {
 
         public bool MonitorFramesPerSecond {
             get => _monitorFramesPerSecond;
-            set => Apply(value, ref _monitorFramesPerSecond, ResetFpsCounter);
+            set => Apply(value, ref _monitorFramesPerSecond, () => ResetFpsCounter(value));
         }
 
         private AcShared _shared;
@@ -181,12 +181,17 @@ namespace AcManager.Tools.SharedMemory {
             return _fpsSamples > 0 ? new FpsDetails(_averageFps, _minimumFps, _fpsSamples) : _lastFpsDetails;
         }
 
-        private void ResetFpsCounter() {
+        private void ResetFpsCounter(bool resetLastDetails) {
             if (_fpsSamples > 0) {
                 MonitorFramesPerSecondEnd?.Invoke(this, EventArgs.Empty);
             }
 
-            _lastFpsDetails = _fpsSamples > 0 ? new FpsDetails(_averageFps, _minimumFps, _fpsSamples) : null;
+            if (resetLastDetails) {
+                _lastFpsDetails = null;
+            } else if (_fpsSamples > 0) {
+                _lastFpsDetails = new FpsDetails(_averageFps, _minimumFps, _fpsSamples);
+            }
+
             _graphicsTime = null;
             _graphicsFrames = 0;
             _fpsSamples = 0;

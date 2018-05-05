@@ -555,6 +555,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 return File.ReadAllBytes(filename);
             } catch (FileNotFoundException) {
                 return null;
+            } catch (DirectoryNotFoundException) {
+                return null;
             } catch (Exception e) {
                 Logging.Warning(e);
                 return null;

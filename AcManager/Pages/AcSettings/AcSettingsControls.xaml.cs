@@ -67,11 +67,11 @@ namespace AcManager.Pages.AcSettings {
                     CustomPlaces = {
                         new FileDialogCustomPlace(ControlsSettings.UserPresetsDirectory)
                     }
-                }, filename != null && FileUtils.Affects(ControlsSettings.UserPresetsDirectory, filename)
+                }, filename != null && FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)
                         && o == null ? filename : null);
                 if (filename == null) return;
 
-                if (!FileUtils.Affects(ControlsSettings.UserPresetsDirectory, filename)) {
+                if (!FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)) {
                     if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
                             ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));

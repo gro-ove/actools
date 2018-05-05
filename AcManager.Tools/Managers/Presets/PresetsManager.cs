@@ -162,7 +162,7 @@ namespace AcManager.Tools.Managers.Presets {
             }, filename);
             if (filename == null) return false;
 
-            if (!FileUtils.Affects(presetsDirectory, filename)) {
+            if (!FileUtils.IsAffectedBy(filename, presetsDirectory)) {
                 if (ModernDialog.ShowMessage(ToolsStrings.Presets_ChooseFileInInitialDirectory,
                         ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                     return SavePresetUsingDialog(key, category, data, ref filename);

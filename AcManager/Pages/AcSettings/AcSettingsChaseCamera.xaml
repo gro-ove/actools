@@ -13,7 +13,9 @@
       <DockPanel Width="400">
         <ListBox ItemsSource="{Binding Cameras}" SelectedItem="{Binding SelectedCamera}" DisplayMemberPath="DisplayName"
             ItemContainerStyle="{StaticResource RadioBoxListItem}" Margin="20 20 0 0" DockPanel.Dock="Bottom" />
-        <mui:Cell x:Name="Wrapper" Width="400" Height="225" Background="DimGray">
+        <mui:Cell x:Name="Wrapper" Width="400" Height="225" Background="#222222">
+          <mui:ModernProgressRing x:Name="Progress" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Width="80"
+              Height="80" />
           <Image x:Name="Scene" Stretch="Fill" />
         </mui:Cell>
       </DockPanel>

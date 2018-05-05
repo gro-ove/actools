@@ -52,24 +52,24 @@ namespace AcManager.Tools.Objects {
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
 
-            if (FileUtils.Affects(filename, PreviewImage)) {
+            if (FileUtils.IsAffectedBy(PreviewImage, filename)) {
                 OnImageChangedValue(PreviewImage);
                 CheckPreview();
-            } else if (FileUtils.Affects(filename, OutlineImage)) {
+            } else if (FileUtils.IsAffectedBy(OutlineImage, filename)) {
                 OnImageChangedValue(OutlineImage);
                 CheckOutline();
-            } else if (FileUtils.Affects(filename, MapImage)) {
+            } else if (FileUtils.IsAffectedBy(MapImage, filename)) {
                 OnImageChangedValue(MapImage);
                 CheckMap();
-            } else if (FileUtils.Affects(filename, AiLaneFastFilename)) {
+            } else if (FileUtils.IsAffectedBy(AiLaneFastFilename, filename)) {
                 _aiLaneFastExists = null;
                 OnPropertyChanged(nameof(AiLaneFastExists));
-            } else if (FileUtils.Affects(filename, AiLaneFastCandidateFilename)) {
+            } else if (FileUtils.IsAffectedBy(AiLaneFastCandidateFilename, filename)) {
                 _aiLaneFastCandidateExists = null;
                 OnPropertyChanged(nameof(AiLaneFastCandidateExists));
                 OnPropertyChanged(nameof(AiLaneCandidateExists));
                 _applyAiLaneCandidatesCommand?.RaiseCanExecuteChanged();
-            } else if (FileUtils.Affects(filename, AiLanePitCandidateFilename)) {
+            } else if (FileUtils.IsAffectedBy(AiLanePitCandidateFilename, filename)) {
                 _aiLanePitCandidateExists = null;
                 OnPropertyChanged(nameof(AiLanePitCandidateExists));
                 OnPropertyChanged(nameof(AiLaneCandidateExists));

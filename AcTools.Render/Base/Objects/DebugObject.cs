@@ -15,25 +15,8 @@ namespace AcTools.Render.Base.Objects {
             Transform = transform;
         }
 
-        public DebugObject(Matrix transform, GeometryGenerator.MeshData meshData) : base(null, GetVertices(meshData), GetIndices(meshData)) {
+        public DebugObject(Matrix transform, GeometryGenerator.MeshData meshData) : base(null, InputLayouts.VerticePNTG.Convert(meshData.Vertices), meshData.Indices) {
             Transform = transform;
-        }
-
-        private static InputLayouts.VerticePNTG[] GetVertices(GeometryGenerator.MeshData data) {
-            var result = new InputLayouts.VerticePNTG[data.Vertices.Count];
-            for (var i = data.Vertices.Count - 1; i >= 0; i--) {
-                var v = data.Vertices[i];
-                result[i] = new InputLayouts.VerticePNTG(v.Position, v.Normal, v.TexC, v.TangentU);
-            }
-            return result;
-        }
-
-        private static ushort[] GetIndices(GeometryGenerator.MeshData data) {
-            var result = new ushort[data.Indices.Count];
-            for (var i = data.Indices.Count - 1; i >= 0; i--) {
-                result[i] = (ushort)data.Indices[i];
-            }
-            return result;
         }
 
         private static ushort[] GetIndices(int verticesCount) {

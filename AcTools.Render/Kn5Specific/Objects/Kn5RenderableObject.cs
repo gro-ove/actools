@@ -55,6 +55,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
         }
 
+        public void SetCustomMaterial(IRenderableMaterial material) {
+            _material = material;
+        }
+
         private IRenderableMaterial Material => _debugMaterial ?? _mirrorMaterial ?? _material;
 
         [CanBeNull]
@@ -101,8 +105,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
         protected override void Initialize(IDeviceContextHolder contextHolder) {
             base.Initialize(contextHolder);
 
-            _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
-            _material.EnsureInitialized(contextHolder);
+            if (_material == null) {
+                _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
+                _material.EnsureInitialized(contextHolder);
+            }
+
             _mirrorMaterial?.EnsureInitialized(contextHolder);
             _debugMaterial?.EnsureInitialized(contextHolder);
 

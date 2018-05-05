@@ -87,13 +87,13 @@ namespace AcManager.Tools.Objects {
                 return true;
             }
 
-            if (FileUtils.Affects(filename, PreviewImage)) {
+            if (FileUtils.IsAffectedBy(PreviewImage, filename)) {
                 OnImageChangedValue(PreviewImage);
                 CheckPreview();
                 return true;
             }
 
-            if (FileUtils.Affects(filename, LiveryImage)) {
+            if (FileUtils.IsAffectedBy(LiveryImage, filename)) {
                 OnImageChangedValue(LiveryImage);
                 CheckLivery();
                 return true;

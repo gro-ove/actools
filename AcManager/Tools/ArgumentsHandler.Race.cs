@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using AcManager.Controls;
+using AcManager.Controls.ViewModels;
 using AcManager.Pages.Drive;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -23,25 +24,43 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools {
     public static partial class ArgumentsHandler {
+        [CanBeNull]
+        private static string GetSettings(NameValueCollection requestParams, string key) {
+            var presetData = requestParams.Get(key + @"Data");
+            var presetFile = requestParams.Get(key + @"File");
+            return presetData != null ? presetData.FromCutBase64()?.ToUtf8String()
+                    : presetFile != null ? File.ReadAllText(presetFile) : requestParams.Get(key);
+        }
+
         private static async Task<ArgumentHandleResult> ProcessRaceQuick(CustomUriRequest custom) {
-            var presetData = custom.Params.Get(@"presetData");
-            var presetFile = custom.Params.Get(@"presetFile");
-            var preset = presetData != null ? presetData.FromCutBase64()?.ToUtf8String()
-                    : presetFile != null ? File.ReadAllText(presetFile) : custom.Params.Get(@"preset");
-            if (preset == null) throw new Exception(@"Settings are not specified");
-            if (!await QuickDrive.RunAsync(serializedPreset: preset)) {
+            var preset = GetSettings(custom.Params, @"preset") ?? throw new Exception(@"Settings are not specified");
+
+            var assists = GetSettings(custom.Params, @"assists");
+            if (assists != null && !UserPresetsControl.LoadSerializedPreset(AssistsViewModel.Instance.PresetableKey, assists)) {
+                AssistsViewModel.Instance.ImportFromPresetData(assists);
+            }
+
+            if (custom.Params.GetFlag("loadPreset")) {
+                QuickDrive.Show(serializedPreset: preset, forceAssistsLoading: custom.Params.GetFlag("loadAssists"));
+                return ArgumentHandleResult.SuccessfulShow;
+            }
+
+            if (!await QuickDrive.RunAsync(serializedPreset: preset, forceAssistsLoading: custom.Params.GetFlag("loadAssists"))) {
                 NonfatalError.Notify(AppStrings.Common_CannotStartRace, AppStrings.Arguments_CannotStartRace_Commentary);
                 return ArgumentHandleResult.Failed;
             }
+
             return ArgumentHandleResult.Successful;
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceConfig(CustomUriRequest custom) {
-            var configData = custom.Params.Get(@"configData");
-            var configFile = custom.Params.Get(@"configFile");
-            var config = configData != null ? configData.FromCutBase64()?.ToUtf8String()
-                    : configFile != null ? File.ReadAllText(configFile) : custom.Params.Get(@"config");
-            if (config == null) throw new Exception(@"Settings are not specified");
+            var config = GetSettings(custom.Params, @"config") ?? throw new Exception(@"Settings are not specified");
+
+            var assists = GetSettings(custom.Params, @"assists");
+            if (assists != null && !UserPresetsControl.LoadSerializedPreset(AssistsViewModel.Instance.PresetableKey, assists)) {
+                AssistsViewModel.Instance.ImportFromPresetData(assists);
+            }
+
             await GameWrapper.StartAsync(new Game.StartProperties {
                 PreparedConfig = IniFile.Parse(config)
             });

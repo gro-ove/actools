@@ -13,6 +13,7 @@ using AcTools.Render.Base.Shadows;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
+using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5SpecificForward;
 using AcTools.Render.Kn5SpecificForwardDark.Lights;
 using AcTools.Render.Kn5SpecificForwardDark.Materials;
@@ -350,6 +351,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         [NotNull]
         private EffectDarkMaterial Effect => _effect ?? (_effect = DeviceContextHolder.GetEffect<EffectDarkMaterial>());
+
         private EffectDarkMaterial _effect;
 
         private Vector3 _light;
@@ -418,18 +420,53 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        public override void DrawSceneForReflection(DeviceContextHolder holder, ICamera camera) {
-            var showroomNode = ShowroomNode;
-            if (showroomNode == null) return;
+        private float _customReflectionBrightness = 1.5f;
+        private GenericMaterialDark _customReflectionsLastMaterial;
 
+        public float CustomReflectionBrightness {
+            get => _customReflectionBrightness;
+            set {
+                if (Equals(value, _customReflectionBrightness)) return;
+                _customReflectionBrightness = value;
+                OnPropertyChanged();
+                IsDirty = true;
+                SetReflectionCubemapDirty();
+
+                if (_customReflectionsLastMaterial != null) {
+                    _customReflectionsLastMaterial.Material.Emissive = new Vector3(value, value, value);
+                }
+            }
+        }
+
+        protected override IRenderableMaterial GetCustomReflectionsMaterial(byte[] textureData) {
+            DisposeHelper.Dispose(ref _customReflectionsLastMaterial);
+            var brightness = CustomReflectionBrightness;
+            return _customReflectionsLastMaterial = new GenericMaterialDark(false) {
+                Material = {
+                    Ambient = 0f,
+                    Diffuse = 0f,
+                    Emissive = new Vector3(brightness, brightness, brightness),
+                    Flags = EffectDarkMaterial.AlphaTest
+                },
+                TxDiffuse = LoadTexture(textureData)
+            };
+
+            RenderableTexture LoadTexture(byte[] data) {
+                if (data == null) return null;
+                var texture = new RenderableTexture();
+                texture.Load(DeviceContextHolder, data);
+                return texture;
+            }
+        }
+
+        protected override void DrawSceneForReflectionPrepare(ICamera camera) {
             if (UseAo || UseCorrectAmbientShadows) {
                 Effect.FxUseAo.Set(false);
             }
 
-            DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows ? _shadows : null, null, !ReflectionsWithMultipleLights);
-            DeviceContext.Rasterizer.State = DeviceContextHolder.States.InvertedState;
-            showroomNode.Draw(holder, camera, SpecialRenderMode.Reflection);
-            DeviceContext.Rasterizer.State = null;
+            var custom = UseCustomReflectionCubemap;
+            DrawPrepareEffect(camera.Position, Light, ReflectionsWithShadows && !custom ? _shadows : null, null,
+                    custom || !ReflectionsWithMultipleLights);
         }
 
         private float FxCubemapAmbientValue => CubemapAmbientWhite ? -CubemapAmbient : CubemapAmbient;
@@ -515,7 +552,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 var sh = shs[i];
                 var center = slots[i].GetCarBoundingBox()?.GetCenter();
                 if (center.HasValue) {
-                    sh.Update(center.Value);
+                    sh.Update(UseCustomReflectionCubemap ? Vector3.Zero : center.Value);
                     sh.BackgroundColor = (Color4)BackgroundColor * BackgroundBrightness;
                     if (!sh.IsDirty) continue;
 
@@ -554,7 +591,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             // For lighted reflection later
             _light = light;
 
-            // Simlified lighting
+            // Simplified lighting
             effect.FxLightDir.Set(light);
             effect.FxLightColor.Set(LightColor.ToVector3() * LightBrightness);
 
@@ -854,6 +891,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         }
 
         private int _flatMirrorSide;
+
         private void SetFlatMirrorSide(int side) {
             if (ActualCamera.Position.Y <= 0f) side = 0;
             if (_flatMirrorSide == side) return;
@@ -1192,6 +1230,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         protected override Vector3 AutoAdjustedTarget => base.AutoAdjustedTarget + Vector3.UnitY * (SetCameraHigher ? 0f : 0.2f);
 
         protected override void DisposeOverride() {
+            DisposeHelper.Dispose(ref _customReflectionsLastMaterial);
             DisposeHelper.Dispose(ref _sslr);
             DisposeHelper.Dispose(ref _dof);
 

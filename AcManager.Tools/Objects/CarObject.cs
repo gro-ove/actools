@@ -177,21 +177,21 @@ namespace AcManager.Tools.Objects {
         public override bool HandleChangedFile(string filename) {
             if (base.HandleChangedFile(filename)) return true;
 
-            if (FileUtils.Affects(filename, LogoIcon)) {
+            if (FileUtils.IsAffectedBy(LogoIcon, filename)) {
                 OnImageChangedValue(LogoIcon);
-            } else if (FileUtils.Affects(filename, BrandBadge)) {
+            } else if (FileUtils.IsAffectedBy(BrandBadge, filename)) {
                 CheckBrandBadge();
                 OnImageChangedValue(BrandBadge);
-            } else if (FileUtils.Affects(filename, UpgradeIcon)) {
+            } else if (FileUtils.IsAffectedBy(UpgradeIcon, filename)) {
                 CheckUpgradeIcon();
                 OnImageChangedValue(UpgradeIcon);
-            } else if (FileUtils.Affects(filename, SoundbankFilename)) {
+            } else if (FileUtils.IsAffectedBy(SoundbankFilename, filename)) {
                 _soundDonorId = null;
                 _soundDonor = null;
                 _soundDonorSet = false;
                 OnPropertyChanged(nameof(SoundDonorId));
                 OnPropertyChanged(nameof(SoundDonor));
-            } else if (_acdDataRead && FileUtils.Affects(filename, Path.Combine(Location, "data.acd"))) {
+            } else if (_acdDataRead && FileUtils.IsAffectedBy(Path.Combine(Location, "data.acd"), filename)) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));
@@ -201,7 +201,7 @@ namespace AcManager.Tools.Objects {
 
                 _steerLock.Reset();
                 OnPropertyChanged(nameof(SteerLock));
-            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.Affects(Path.Combine(Location, "data"), filename)) {
+            } else if (_acdDataRead && _acdData?.IsPacked != true && FileUtils.IsAffectedBy(filename, Path.Combine(Location, "data"))) {
                 if (_acdData == null) {
                     _acdDataRead = false;
                     OnPropertyChanged(nameof(AcdData));
@@ -209,7 +209,7 @@ namespace AcManager.Tools.Objects {
                     _acdData.Refresh(FileUtils.GetRelativePath(filename, Path.Combine(Location, "data")).ToLowerInvariant());
                 }
 
-                if (FileUtils.Affects(filename, Path.Combine(Location, "data", "car.ini"))) {
+                if (FileUtils.IsAffectedBy(Path.Combine(Location, "data", "car.ini"), filename)) {
                     _steerLock.Reset();
                     OnPropertyChanged(nameof(SteerLock));
                 }

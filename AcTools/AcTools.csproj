@@ -124,6 +124,9 @@
     <Compile Include="Kn5File\Kn5.Stats.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbxIni.cs" />
     <Compile Include="Kn5File\Kn5.ExportFbx.cs" />
+    <Compile Include="Kn5File\Kn5MaterialBlendMode.cs" />
+    <Compile Include="Kn5File\Kn5MaterialDepthMode.cs" />
+    <Compile Include="Kn5File\Kn5MaterialExtension.cs" />
     <Compile Include="KnhFile\Knh.Save.cs" />
     <Compile Include="KnhFile\KnhWriter.cs" />
     <Compile Include="KsAnimFile\KsAnim.Save.cs" />

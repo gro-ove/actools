@@ -386,6 +386,46 @@
             TickFrequency="15" TickPlacement="BottomRight" />
       </DockPanel>
 
+      <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0">
+        <mui:SpacingStackPanel.Visibility>
+          <MultiBinding Converter="{StaticResource OrConverter}">
+            <Binding Path="Showroom" Converter="{StaticResource EnumToVisibilityConverter}" ConverterParameter="≠null" />
+            <Binding Path="Renderer.UseCustomReflectionCubemap" />
+          </MultiBinding>
+        </mui:SpacingStackPanel.Visibility>
+        <DockPanel DataContext="{Binding Renderer}">
+          <mui:ValueLabel Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+              mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Ambient from surroundings" Postfix="%" />
+          <Slider Minimum="0" Maximum="100" Value="{Binding CubemapAmbient, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+              TickFrequency="10" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding Renderer.CubemapAmbientWhite}"
+            IsEnabled="{Binding Renderer.CubemapAmbient, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}">
+          <Label Content="White ambient as neutral" />
+        </CheckBox>
+      </mui:SpacingStackPanel>
+
+      <mui:SpacingStackPanel Spacing="4" Margin="0 20 0 0"
+          Visibility="{Binding Showroom, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='null'}">
+        <DockPanel Margin="0">
+          <TextBlock Style="{StaticResource Heading2}" Text="Custom reflections:" />
+          <!--<Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=colorGrading" />-->
+        </DockPanel>
+
+        <CheckBox IsChecked="{Binding Renderer.UseCustomReflectionCubemap}">
+          <Label Content="Enabled" />
+        </CheckBox>
+        <Button Content="Set custom reflections texture" Command="{Binding SetReflectionsTextureCommand}" />
+
+        <DockPanel DataContext="{Binding Renderer}">
+          <mui:ValueLabel Value="{Binding CustomReflectionBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+              mui:BetterTextBox.Mode="Number" DockPanel.Dock="Top" Content="Brightness" Postfix="%" />
+          <Slider Minimum="30" Maximum="280" Value="{Binding CustomReflectionBrightness, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
+              TickFrequency="25" TickPlacement="BottomRight" />
+        </DockPanel>
+      </mui:SpacingStackPanel>
+
       <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetSceneCommand}" />
     </mui:SpacingStackPanel>
   </ScrollViewer>

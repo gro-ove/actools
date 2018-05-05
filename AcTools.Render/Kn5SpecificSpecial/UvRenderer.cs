@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using AcTools.Kn5File;
@@ -10,6 +12,7 @@ using AcTools.Render.Base.PostEffects;
 using AcTools.Render.Base.TargetTextures;
 using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Shaders;
+using AcTools.Utils.Helpers;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
@@ -42,23 +45,64 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public bool UseAntialiazing = true;
         public bool UseFxaa = false;
 
+        private class ToDrawAt {
+            public readonly int X, Y;
+
+            public ToDrawAt(int x, int y) {
+                X = x;
+                Y = y;
+            }
+
+            public ToDrawAt(float[] texC) {
+                X = (int)Math.Floor(texC[0]);
+                Y = (int)Math.Floor(texC[1]);
+            }
+
+            private bool Equals(ToDrawAt other) {
+                return X == other.X && Y == other.Y;
+            }
+
+            public override bool Equals(object obj) {
+                if (ReferenceEquals(null, obj)) return false;
+                return ReferenceEquals(this, obj) || obj.GetType() == GetType() && Equals((ToDrawAt)obj);
+            }
+
+            public override int GetHashCode() {
+                unchecked {
+                    return (X * 397) ^ Y;
+                }
+            }
+        }
+
         private void RenderUv() {
             var effect = DeviceContextHolder.GetEffect<EffectSpecialUv>();
-
-            var s = Stopwatch.StartNew();
-            var j = 0;
-            for (var x = -2f; x <= 2f; x++) {
-                for (var y = -2f; y <= 2f; y++) {
-                    effect.FxOffset.Set(new Vector2(x, y));
-                    for (var i = 0; i < _filteredNodes.Length; i++) {
-                        _filteredNodes[i].Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
+            var a = new List<ToDrawAt>(1);
+            for (var i = _filteredNodes.Length - 1; i >= 0; i--) {
+                var v = _filteredNodes[i].OriginalNode.Vertices;
+                var w = new List<ToDrawAt>(1);
+                for (var j = v.Length - 1; j >= 0; j--) {
+                    var t = new ToDrawAt(v[j].TexC);
+                    if (!w.Contains(t)) {
+                        w.Add(t);
                     }
 
-                    j++;
+                    if (w.Count >= 16) break;
+                }
+
+                a.AddRange(w.ApartFrom(a).ToList());
+            }
+
+            AcToolsLogging.Write($"Affected sectors: {a.Select(x => $"[X: {x.X}, Y: {x.Y}]").JoinToString("; ")}");
+
+            var s = Stopwatch.StartNew();
+            foreach (var w in a) {
+                effect.FxOffset.Set(new Vector2(-w.X, -w.Y));
+                for (var i = _filteredNodes.Length - 1; i >= 0; i--) {
+                    _filteredNodes[i].Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
                 }
             }
 
-            AcToolsLogging.Write($"Performance: {s.Elapsed.TotalMilliseconds / j:F1} ms per iteration; {j} iterations");
+            AcToolsLogging.Write($"Performance: {s.Elapsed.TotalMilliseconds / a.Count:F1} ms per sector; {a.Count} sectors; {_filteredNodes.Length} node(s)");
         }
 
         protected override void DrawOverride() {

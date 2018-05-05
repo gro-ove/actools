@@ -481,7 +481,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("float_array");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-positions-array");
             xml.WriteAttributeString("count", vertexCount * 3);
-            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Co).JoinToString(" "));
+            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => x.Position).JoinToString(" "));
             xml.WriteEndElement(); // float_array
 
             xml.WriteStartElement("technique_common");
@@ -539,7 +539,7 @@ namespace AcTools.Kn5File {
             xml.WriteStartElement("float_array");
             xml.WriteAttributeStringSafe("id", $"{name}-mesh-map-0-array");
             xml.WriteAttributeString("count", vertexCount * 2);
-            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => new[] { x.Uv[0], -x.Uv[1] }).JoinToString(" "));
+            xml.WriteString(nodes.SelectMany(x => x.Vertices).SelectMany(x => new[] { x.TexC[0], -x.TexC[1] }).JoinToString(" "));
             xml.WriteEndElement(); // float_array
 
             xml.WriteStartElement("technique_common");

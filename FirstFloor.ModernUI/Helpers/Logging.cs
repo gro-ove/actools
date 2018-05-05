@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
@@ -84,6 +86,14 @@ namespace FirstFloor.ModernUI.Helpers {
                 s = $"[{p}:{l}] {m}()";
             } else {
                 s = o?.ToString().Replace("\n", "\n\t") ?? "<NULL>";
+
+                if (s.IndexOf("%FROM%", StringComparison.OrdinalIgnoreCase) != -1) {
+                    var frame = new StackTrace().GetFrame(3);
+                    s = Regex.Replace(s, @"%(?:CALLEE|FROM)%",
+                            _ => $"From: [{Path.GetFileName(frame.GetFileName())}:{frame.GetFileLineNumber()}] {frame.GetMethod().Name}");
+                }
+
+
                 if (m != null && (s.Length == 0 || s[0] != '[' || s.Length > 1 && !char.IsLetter(s[1]))) {
                     s = $"[{p}:{l}] {m}(): {s}";
                 }

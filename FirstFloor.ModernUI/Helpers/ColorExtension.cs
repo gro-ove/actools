@@ -13,6 +13,10 @@ namespace FirstFloor.ModernUI.Helpers {
             return Color.FromArgb(alpha, color.R, color.G, color.B);
         }
 
+        public static System.Drawing.Color SetAlpha(this System.Drawing.Color color, byte alpha) {
+            return System.Drawing.Color.FromArgb(alpha, color.R, color.G, color.B);
+        }
+
         public static Color ToColor(this System.Drawing.Color color) {
             return Color.FromArgb(color.A, color.R, color.G, color.B);
         }

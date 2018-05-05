@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
@@ -116,7 +113,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _dBoxIntegration;
+            /*private bool? _dBoxIntegration;
 
             public bool DBoxIntegration {
                 get => _dBoxIntegration ?? (_dBoxIntegration = ValuesStorage.Get("Settings.IntegratedSettings.DBoxIntegration", false)).Value;
@@ -154,7 +151,7 @@ namespace AcManager.Tools.Helpers {
                     Title = "Select D-Box application",
                     DefaultFileName = Path.GetFileName(DBoxLocation),
                 }) ?? DBoxLocation;
-            }));
+            }));*/
         }
 
         private static IntegratedSettings _integrated;

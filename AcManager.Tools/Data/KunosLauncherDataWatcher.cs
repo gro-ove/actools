@@ -45,13 +45,13 @@ namespace AcManager.Tools.Data {
             };
 
             FileSystemEventHandler handler = (sender, e) => {
-                if (FileUtils.Affects(e.FullPath, filename) && ignoreChanges?.Invoke() != true) {
+                if (FileUtils.IsAffectedBy(filename, e.FullPath) && ignoreChanges?.Invoke() != true) {
                     reloadLater?.Invoke();
                 }
             };
 
             RenamedEventHandler renamedHandler = (sender, e) => {
-                if ((FileUtils.Affects(e.FullPath, filename) || FileUtils.Affects(e.OldFullPath, filename)) && ignoreChanges?.Invoke() != true) {
+                if ((FileUtils.IsAffectedBy(filename, e.FullPath) || FileUtils.IsAffectedBy(filename, e.OldFullPath)) && ignoreChanges?.Invoke() != true) {
                     reloadLater?.Invoke();
                 }
             };
