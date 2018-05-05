@@ -9,6 +9,7 @@
     <Unmanaged32Assemblies>
       SlimDX
       Nvidia.TextureTools.Compress
+      Interop.D3DImageEx
     </Unmanaged32Assemblies>  
     <ExcludeAssemblies>
       JetBrains.Annotations
