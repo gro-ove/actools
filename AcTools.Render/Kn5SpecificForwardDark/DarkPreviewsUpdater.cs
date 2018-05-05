@@ -166,6 +166,11 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             renderer.LightBrightness = (float)options.LightBrightness;
             renderer.Light = ToVector3(options.LightDirection);
 
+            // Custom reflections
+            renderer.UseCustomReflectionCubemap = options.UseCustomReflectionCubemap;
+            renderer.CustomReflectionBrightness = (float)options.CustomReflectionBrightness;
+            renderer.CustomReflectionCubemap = options.CustomReflectionCubemapData;
+
             // Color
             renderer.ToneMapping = options.ToneMapping;
             renderer.UseDither = options.UseDither;

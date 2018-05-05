@@ -83,7 +83,15 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public double ToneExposure = 0.8;
         public double ToneGamma = 1.0;
         public double ToneWhitePoint = 1.66;
+
+        [CanBeNull]
         public byte[] ColorGradingData = null;
+
+        public bool UseCustomReflectionCubemap = false;
+        public double CustomReflectionBrightness = 1.5;
+
+        [CanBeNull]
+        public byte[] CustomReflectionCubemapData = null;
 
         public double MaterialsReflectiveness = 1.2;
         public double CarShadowsOpacity = 1.0;
@@ -215,6 +223,12 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ AoOpacity.GetHashCode();
                 hashCode = (hashCode * 397) ^ AoRadius.GetHashCode();
                 if (SerializedLights != null) hashCode = (hashCode * 397) ^ SerializedLights.GetHashCode();
+
+                if (UseCustomReflectionCubemap) {
+                    hashCode = (hashCode * 397) ^ UseCustomReflectionCubemap.GetHashCode();
+                    hashCode = (hashCode * 397) ^ CustomReflectionBrightness.GetHashCode();
+                    hashCode = (hashCode * 397) ^ (CustomReflectionCubemapData?.Length ?? -1).GetHashCode();
+                }
 
                 if (ExtraActiveAnimations?.Length > 0) {
                     hashCode = (hashCode * 397) ^ ExtraActiveAnimations.GetEnumerableHashCode();

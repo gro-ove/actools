@@ -199,7 +199,8 @@ namespace AcManager.CustomShowroom {
 
             try {
                 if (presetFilename != null && !File.Exists(presetFilename)) {
-                    var builtIn = PresetsManager.Instance.GetBuiltInPreset(new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue), presetFilename);
+                    var builtIn = PresetsManager.Instance.GetBuiltInPreset(new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue),
+                            presetFilename);
                     if (builtIn != null) {
                         return (SaveHelper<SaveableData>.LoadSerialized(builtIn.ReadData()) ?? new SaveableData())
                                 .ToPreviewsOptions(true);
@@ -342,6 +343,9 @@ namespace AcManager.CustomShowroom {
                     ShadowMapSize = ShadowMapSize,
                     Showroom = ShowroomId,
                     ColorGradingData = UseColorGrading ? ColorGradingData : null,
+                    UseCustomReflectionCubemap = UseCustomReflectionCubemap,
+                    CustomReflectionCubemapData = UseCustomReflectionCubemap ? CustomReflectionCubemapData : null,
+                    CustomReflectionBrightness = CustomReflectionBrightness,
                     CubemapAmbient = CubemapAmbient,
                     CubemapAmbientWhite = CubemapAmbientWhite,
                     EnableShadows = EnableShadows,
@@ -892,13 +896,7 @@ namespace AcManager.CustomShowroom {
 
         public static void Transfer(DarkRendererSettings settings, DarkKn5ObjectRenderer renderer) {
             var data = ToSaveableData(settings, renderer);
-
             var filename = UserPresetsControl.GetCurrentFilename(DarkRendererSettingsValues.DefaultPresetableKeyValue);
-            if (filename != null) {
-                var relative = FileUtils.GetPathWithin(filename, PresetsManager.Instance.Combine(DarkRendererSettingsValues.DefaultPresetableKeyValue));
-                filename = relative == null ? null : Path.Combine(PresetsManager.Instance.Combine(CmPreviewsSettingsValues.DefaultPresetableKeyValue), relative);
-            }
-
             PresetsManager.Instance.SavePresetUsingDialog(null, new PresetsCategory(CmPreviewsSettingsValues.DefaultPresetableKeyValue),
                     SaveHelper<SaveableData>.Serialize(data), filename);
         }

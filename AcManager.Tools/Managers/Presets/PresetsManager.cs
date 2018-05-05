@@ -152,6 +152,10 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             var presetsDirectory = EnsureDirectory(category);
+            if (!FileUtils.IsAffectedBy(filename, presetsDirectory)) {
+                filename = Path.Combine(presetsDirectory, Path.GetFileName(filename));
+            }
+
             filename = FileRelatedDialogs.Save(new SaveDialogParams {
                 Filters = { new DialogFilterPiece("Presets", "*" + category.Extension) },
                 InitialDirectory = presetsDirectory,

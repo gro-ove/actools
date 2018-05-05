@@ -585,7 +585,7 @@
                   <Button Content="Make a shot" Command="{Binding ShotCommand}" />
                 </DockPanel>
 
-                <Button Content="Save as previews preset" Command="{Binding ShotCommand}" Margin="0 -4 0 0"
+                <Button Content="Save as previews preset" Command="{Binding TransferToCmPreviewsCommand}" Margin="0 -4 0 0"
                     Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </mui:SpacingStackPanel>
             </ScrollViewer>
