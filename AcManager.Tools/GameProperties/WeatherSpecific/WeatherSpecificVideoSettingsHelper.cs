@@ -55,7 +55,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
 
         private string _destination;
 
-        protected override bool SetOverride(WeatherObject weather) {
+        protected override bool SetOverride(WeatherObject weather, IniFile file) {
             var videoCfg = AcPaths.GetCfgVideoFilename();
             if (!File.Exists(videoCfg)) return false;
 

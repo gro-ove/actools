@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 
 namespace AcManager.Tools.GameProperties.WeatherSpecific {
     public class WeatherSpecificTyreSmokeHelper : WeatherSpecificHelperBase {
@@ -14,7 +15,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
         }
 
-        protected override bool SetOverride(WeatherObject weather) {
+        protected override bool SetOverride(WeatherObject weather, IniFile file) {
             return Replacements.Aggregate(false, (current, replacement) => replacement.Apply(weather) || current);
         }
 

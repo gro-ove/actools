@@ -37,7 +37,9 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 if (!_registered) {
                     UserData.RegisterType<CarObject>();
+                    UserData.RegisterType<CarSkinObject>();
                     UserData.RegisterType<TrackObject>();
+                    UserData.RegisterType<TrackSkinObject>();
                     UserData.RegisterType<TrackExtraLayoutObject>();
                     UserData.RegisterType<TrackObjectBase>();
                     UserData.RegisterType<WeatherObject>();

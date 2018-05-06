@@ -17,14 +17,14 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
 
                 var weatherId = file["WEATHER"].GetNonEmpty("NAME");
                 var weather = weatherId == null ? null : WeatherManager.Instance.GetById(weatherId);
-                _requiresDisposal = weather != null && SetOverride(weather);
+                _requiresDisposal = weather != null && SetOverride(weather, file);
             } catch (Exception e) {
                 Logging.Warning($"[{GetType().Name}] Set(): " + e);
                 _requiresDisposal = false;
             }
         }
 
-        protected abstract bool SetOverride(WeatherObject weather);
+        protected abstract bool SetOverride(WeatherObject weather, IniFile file);
 
         public void Dispose() {
             if (_requiresDisposal) {

@@ -262,6 +262,7 @@
     <Compile Include="GameProperties\RsrMark.cs" />
     <Compile Include="GameProperties\SrsMark.cs" />
     <Compile Include="GameProperties\WeatherSpecific\IWeatherSpecificReplacement.cs" />
+    <Compile Include="GameProperties\WeatherSpecific\WeatherProceduralHelper.cs" />
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificCloudsHelper.cs" />
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificDirectoryReplacementBase.cs" />
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificFileReplacementBase.cs" />
