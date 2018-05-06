@@ -1428,10 +1428,20 @@ namespace AcManager.Controls.ViewModels {
                 await car.SkinsManager.EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) break;
 
-                skins[car.Id] = GoodShuffle.Get(skinsFilter == null ? car.EnabledOnlySkins : car.EnabledOnlySkins.Where(skinsFilter.Test));
-                if (skins[car.Id].Size == 0) {
-                    throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
+                IReadOnlyList<CarSkinObject> candidates;
+                if (skinsFilter == null) {
+                    candidates = car.EnabledOnlySkins;
+                    if (skins[car.Id].Size == 0) {
+                        throw new InformativeException($"Skins for car {car.DisplayName} not found");
+                    }
+                } else {
+                    candidates = car.EnabledOnlySkins.Where(skinsFilter.Test).ToList();
+                    if (skins[car.Id].Size == 0) {
+                        throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
+                    }
                 }
+
+                skins[car.Id] = GoodShuffle.Get(candidates);
             }
             return skins;
         }

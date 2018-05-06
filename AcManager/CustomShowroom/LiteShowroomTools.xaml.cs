@@ -78,7 +78,7 @@ namespace AcManager.CustomShowroom {
             this.OnActualUnload(() => Model.Dispose());
 
             if (_verbose) {
-                Logging.Debug($"Window created");
+                Logging.Debug("Window created");
             }
         }
 

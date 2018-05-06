@@ -435,8 +435,13 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _meshDebug = value;
                 IsDirty = true;
                 OnPropertyChanged();
-                UpdateMeshDebug(CarNode);
+
+                foreach (var carSlot in CarSlots) {
+                    UpdateMeshDebug(carSlot.CarNode);
+                }
+
                 UpdateMeshDebug(ShowroomNode);
+                SetReflectionCubemapDirty();
             }
         }
 

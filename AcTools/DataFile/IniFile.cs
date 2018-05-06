@@ -41,7 +41,7 @@ namespace AcTools.DataFile {
 
         public IniFileMode IniFileMode => _trickIniFileMode ?? _iniFileMode;
 
-        public IniFile(string filename, IniFileMode mode = IniFileMode.Normal) : base(InnerIniFileModeTrick(filename, mode)) {
+        public IniFile([CanBeNull] string filename, IniFileMode mode = IniFileMode.Normal) : base(InnerIniFileModeTrick(filename, mode)) {
             _trickIniFileMode = null;
             _iniFileMode = mode;
         }
