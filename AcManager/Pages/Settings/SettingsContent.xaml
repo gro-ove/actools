@@ -166,10 +166,10 @@
           <Label Content="Display steer lock" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}"
+        <!--<CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}"
             ToolTip="Old layout for Content/Cars page, with vertical list of skins">
           <Label Content="Old layout" />
-        </CheckBox>
+        </CheckBox>-->
 
         <!-- Car skins specific -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Car skins:" />

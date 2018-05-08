@@ -197,6 +197,20 @@ namespace AcManager.Pages.Windows {
 #endif
         }
 
+        private static Uri _navigateOnOpen;
+
+        public static void NavigateOnOpen(Uri uri) {
+            _navigateOnOpen = uri;
+        }
+
+        protected override void OnLoadedOverride() {
+            if (_navigateOnOpen != null) {
+                NavigateTo(_navigateOnOpen);
+                this.FindVisualChild<ModernMenu>()?.SkipLoading();
+                _navigateOnOpen = null;
+            }
+        }
+
         private readonly Busy _openDownloadsListBusy = new Busy();
 
         private void OnContentInstallationTaskAdded(object o, EventArgs eventArgs) {

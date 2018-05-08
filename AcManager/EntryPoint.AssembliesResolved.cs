@@ -23,6 +23,7 @@ using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace AcManager {
@@ -124,33 +125,39 @@ namespace AcManager {
 
         private static string CommunicationFilename => Path.Combine(Path.GetTempPath(), "__cm_cuymbo6r");
 
-        [Localizable(false)]
-        private static string PackArgs(IEnumerable<string> args) {
-            return args.Select(x => "\n" + x.Replace(@"\", @"\\").Replace("\n", @"\n")).JoinToString();
+        [NotNull, Localizable(false)]
+        private static string PackArgs([CanBeNull] IEnumerable<string> args) {
+            return args?.Select(x => "\n" + x.Replace(@"\", @"\\").Replace("\n", @"\n")).JoinToString() ?? "";
         }
 
-        [Localizable(false)]
-        private static IEnumerable<string> UnpackArgs(string packed) {
-            return packed.Split('\n').Select(x => x.Replace(@"\n", "\n").Replace(@"\\", @"\")).Skip(1);
+        [NotNull, Localizable(false)]
+        private static IEnumerable<string> UnpackArgs([CanBeNull] string packed) {
+            return packed?.Split('\n').Select(x => x.Replace(@"\n", "\n").Replace(@"\\", @"\")).Skip(1) ?? new string[0];
         }
 
         public static void PassSomeData(IEnumerable<string> data) {
             try {
-                File.WriteAllText(CommunicationFilename, PackArgs(data));
+                File.WriteAllText(CommunicationFilename, $"{Environment.CurrentDirectory}\n{PackArgs(data)}");
             } catch (Exception) {
                 // ignored
             }
         }
 
-        private static IEnumerable<string> ReceiveSomeData() {
-            if (!File.Exists(CommunicationFilename)) return new string[] { };
+        [NotNull]
+        private static IEnumerable<string> ReceiveSomeData([CanBeNull] out string currentDirectory) {
+            if (!File.Exists(CommunicationFilename)) {
+                currentDirectory = null;
+                return new string[] { };
+            }
 
             try {
-                var text = File.ReadAllText(CommunicationFilename);
-                File.Delete(CommunicationFilename);
-                return UnpackArgs(text);
+                var text = File.ReadAllText(CommunicationFilename).Split(new[] { '\n' }, 2);
+                FileUtils.TryToDelete(CommunicationFilename);
+                currentDirectory = text.FirstOrDefault();
+                return UnpackArgs(text.ArrayElementAtOrDefault(1));
             } catch (Exception e) {
-                Logging.Warning("Cannot receive data: " + e);
+                Logging.Warning(e);
+                currentDirectory = null;
                 return new string[] { };
             }
         }
@@ -275,7 +282,11 @@ namespace AcManager {
             HwndSourceHook hook = (IntPtr handle, int message, IntPtr wParam, IntPtr lParam, ref bool handled) => {
                 if (message == _secondInstanceMessage) {
                     try {
-                        if (handler(ReceiveSomeData())) {
+                        var data = ReceiveSomeData(out var currentDirectory);
+                        if (!string.IsNullOrWhiteSpace(currentDirectory)) {
+                            Environment.CurrentDirectory = currentDirectory;
+                        }
+                        if (handler(data)) {
                             (window as DpiAwareWindow)?.BringToFront();
                         }
                     } catch (Exception e) {

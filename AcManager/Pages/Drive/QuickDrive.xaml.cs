@@ -1002,7 +1002,14 @@ namespace AcManager.Pages.Drive {
         private static readonly Uri QuickDriveUri = new Uri("/Pages/Drive/QuickDrive.xaml", UriKind.Relative);
 
         public static void NavigateToPage() {
-            (Application.Current?.MainWindow as MainWindow)?.NavigateTo(QuickDriveUri);
+            switch (Application.Current?.MainWindow) {
+                case MainWindow mainWindow:
+                    mainWindow.NavigateTo(QuickDriveUri);
+                    break;
+                case null:
+                    MainWindow.NavigateOnOpen(QuickDriveUri);
+                    break;
+            }
         }
 
         public static bool IsActive() {
@@ -1042,7 +1049,8 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            if (Application.Current?.MainWindow is MainWindow) {
+            var mainWindow = Application.Current?.MainWindow;
+            if (mainWindow == null || mainWindow is MainWindow) {
                 _selectNextSerializedPreset = serializedPreset ?? (presetFilename != null ? File.ReadAllText(presetFilename) : null);
                 _selectNextForceAssistsLoading = forceAssistsLoading;
 

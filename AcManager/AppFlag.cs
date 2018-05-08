@@ -5,6 +5,12 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// Old layout for content/cars section.
+        /// Example: --cars-old-layout.
+        /// </summary>
+        CarsOldLayout,
+
+        /// <summary>
         /// Rate performance and show the performance message during replays.
         /// Example: --benchmark-replays.
         /// </summary>

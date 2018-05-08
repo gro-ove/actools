@@ -37,7 +37,9 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _oldLayout;
+            public bool OldLayout { get; set; }
+
+            /*private bool? _oldLayout;
 
             public bool OldLayout {
                 get => _oldLayout ?? (_oldLayout = ValuesStorage.Get("Settings.ContentSettings.OldLayout", false)).Value;
@@ -47,7 +49,7 @@ namespace AcManager.Tools.Helpers {
                     ValuesStorage.Set("Settings.ContentSettings.OldLayout", value);
                     OnPropertyChanged();
                 }
-            }
+            }*/
 
             private bool? _markKunosContent;
 

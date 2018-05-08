@@ -104,12 +104,12 @@
           <MenuItem Command="{Binding ForkCommand}"
               Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               IsEnabled="{Binding IsForkAvailable}" ToolTip="Fork texture to be used only in this material" Header="{Binding Material.Name}">
-            <MenuItem.HeaderStringFormat>Fork Texture For Material “{0}”</MenuItem.HeaderStringFormat>
+            <MenuItem.HeaderStringFormat>Fork texture for material “{0}”</MenuItem.HeaderStringFormat>
           </MenuItem>
           <MenuItem Command="{Binding ChangeTextureCommand}"
               Visibility="{Binding Material, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               IsEnabled="{Binding IsChangeAvailable}" ToolTip="Change texture in this material" Header="{Binding Material.Name}">
-            <MenuItem.HeaderStringFormat>Change Texture For Material “{0}”</MenuItem.HeaderStringFormat>
+            <MenuItem.HeaderStringFormat>Change texture for material “{0}”</MenuItem.HeaderStringFormat>
           </MenuItem>
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>

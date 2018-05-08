@@ -1431,12 +1431,12 @@ namespace AcManager.Controls.ViewModels {
                 IReadOnlyList<CarSkinObject> candidates;
                 if (skinsFilter == null) {
                     candidates = car.EnabledOnlySkins;
-                    if (skins[car.Id].Size == 0) {
+                    if (candidates.Count == 0) {
                         throw new InformativeException($"Skins for car {car.DisplayName} not found");
                     }
                 } else {
                     candidates = car.EnabledOnlySkins.Where(skinsFilter.Test).ToList();
-                    if (skins[car.Id].Size == 0) {
+                    if (candidates.Count == 0) {
                         throw new InformativeException($"Skins for car {car.DisplayName} not found", "Make sure filter is not too strict.");
                     }
                 }

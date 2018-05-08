@@ -50,14 +50,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _frame.Navigated -= OnFrameNavigated;
             }
 
-            _frame = GetTemplateChild("ContentFrame") as ModernFrame;
+            _frame = GetTemplateChild(@"ContentFrame") as ModernFrame;
 
             if (_frame != null) {
                 _frame.Navigating += OnFrameNavigating;
                 _frame.Navigated += OnFrameNavigated;
             }
 
-            _menu = GetTemplateChild("PART_Menu") as ModernMenu;
+            _menu = GetTemplateChild(@"PART_Menu") as ModernMenu;
         }
 
         private void OnFrameNavigated(object sender, NavigationEventArgs navigationEventArgs) {
@@ -99,6 +99,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public void NavigateTo(Uri uri) {
             if (_menu == null) return;
+            if (uri == _menu.SelectedSource) {
+                _menu.SelectedSource = new Uri("about:blank");
+            }
             _menu.SelectedSource = uri;
         }
 

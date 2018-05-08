@@ -428,6 +428,7 @@ namespace AcManager {
             GameResultExtension.RegisterNameProvider(new GameSessionNameProvider());
             CarBlock.CustomShowroomWrapper = new CustomShowroomWrapper();
             CarBlock.CarSetupsView = new CarSetupsView();
+            SettingsHolder.Content.OldLayout = AppArguments.GetBool(AppFlag.CarsOldLayout);
 
             var acRootIsFine = Superintendent.Instance.IsReady && !AcRootDirectorySelector.IsReviewNeeded();
             if (acRootIsFine && SteamStarter.Initialize(AcRootDirectory.Instance.Value)) {

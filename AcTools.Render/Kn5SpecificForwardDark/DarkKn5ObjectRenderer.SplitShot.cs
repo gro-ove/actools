@@ -4,6 +4,7 @@ using System.Threading;
 using AcTools.Render.Base;
 using AcTools.Render.Special;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 using SlimDX;
 
@@ -16,7 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private delegate void SplitCallback(Action<Stream> stream, int x, int y, int width, int height);
 
-        private void SplitShot(int width, int height, double downscale, SplitCallback callback, out int cuts,
+        private void SplitShot(int width, int height, double downscale, RendererShotFormat format, SplitCallback callback, out int cuts,
                 [CanBeNull] IProgress<Tuple<string, double?>> progress, CancellationToken cancellation) {
             ShotInProcessValue++;
 
@@ -27,6 +28,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             TimeFactor = 0f;
 
             cuts = Math.Ceiling(width / OptionMaxWidth).FloorToInt();
+            if (cuts < 1) {
+                cuts = 1;
+            }
+
             width /= cuts;
             height /= cuts;
 
@@ -58,14 +63,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         progress?.Report(new Tuple<string, double?>($"X={x}, Y={y}, piece by piece", (double)i / (cuts * cuts) * 0.5));
                         if (cancellation.IsCancellationRequested) return;
 
-                        var xR = 2f * x / (cuts - 1) - 1f;
-                        var yR = 1f - 2f * y / (cuts - 1);
-                        Camera.CutProj = Matrix.Transformation2D(new Vector2(xR, yR), 0f, new Vector2(cuts), Vector2.Zero, 0f, Vector2.Zero) * baseCut;
-                        Camera.SetLens(Camera.Aspect);
-
-                        var filename = Path.Combine(temporary, $"tmp-{y:D2}-{x:D2}.png");
+                        SetCutProjection(cuts, x, y, baseCut);
+                        var filename = Path.Combine(temporary, $"tmp-{y:D2}-{x:D2}{format.GetExtension()}");
                         using (var stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
-                            Shot(extraWidth, extraHeight, downscale, 1d, stream, RendererShotFormat.Png);
+                            Shot(extraWidth, extraHeight, downscale, 1d, stream, format);
                         }
                     }
 
@@ -82,9 +83,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                             progress?.Report(new Tuple<string, double?>($"X={x}, Y={y}, smoothing", (double)i / (cuts * cuts) * 0.5 + 0.5));
                             if (cancellation.IsCancellationRequested) return;
 
-                            callback(s => {
-                                blender.Process(new Pieces(temporary, "tmp-{0:D2}-{1:D2}.png", y, x), s);
-                            }, x, y, shotWidth, shotHeight);
+                            callback(s => blender.Process(new Pieces(temporary, $"tmp-{{0:D2}}-{{1:D2}}{format.GetExtension()}", y, x), s),
+                                    x, y, shotWidth, shotHeight);
                         }
                     }
 
@@ -96,15 +96,9 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                         progress?.Report(new Tuple<string, double?>($"X={x}, Y={y}", (double)i / (cuts * cuts)));
                         if (cancellation.IsCancellationRequested) return;
 
-                        var xR = 2f * x / (cuts - 1) - 1f;
-                        var yR = 1f - 2f * y / (cuts - 1);
-                        Camera.CutProj = Matrix.Transformation2D(new Vector2(xR, yR), 0f, new Vector2(cuts), Vector2.Zero, 0f, Vector2.Zero) * baseCut;
-                        Camera.SetLens(Camera.Aspect);
-
-                        callback(s => {
-                            Shot(extraWidth, extraHeight, downscale, expand ? OptionGBufferExtra : 1d, s, RendererShotFormat.Png);
-                        }, x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
-
+                        SetCutProjection(cuts, x, y, baseCut);
+                        callback(s => Shot(extraWidth, extraHeight, downscale, expand ? OptionGBufferExtra : 1d, s, format),
+                                x, y, (original.Width * downscale).RoundToInt(), (original.Height * downscale).RoundToInt());
                     }
                 }
             } finally {
@@ -120,40 +114,34 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
             }
         }
 
-        /*public MagickImage SplitShot(int width, int height, double downscale, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            var original = new { Width, Height };
-            var cuts = Math.Ceiling(multiplier / OptionMaxMultipler).FloorToInt();
-            var result = new MagickImage(MagickColors.Black,
-                    (original.Width * cuts * downscale).RoundToInt(),
-                    (original.Height * cuts * downscale).RoundToInt());
-
-            SplitShot(multiplier, downscale, (c, x, y, width, height) => {
-                using (var stream = new MemoryStream()) {
-                    c(stream);
-                    if (cancellation.IsCancellationRequested) return;
-
-                    stream.Position = 0;
-                    using (var piece = new MagickImage(stream)) {
-                        result.Composite(piece, x * width, y * height);
-                    }
-                }
-            }, progress, cancellation);
-            return result;
-        }*/
-
-        public class SplitShotInformation {
-            public string Extension;
-            public int Cuts;
+        private void SetCutProjection(int cuts, int x, int y, Matrix baseCut) {
+            if (cuts > 1) {
+                var xR = 2f * x / (cuts - 1) - 1f;
+                var yR = 1f - 2f * y / (cuts - 1);
+                Camera.CutProj = Matrix.Transformation2D(new Vector2(xR, yR), 0f, new Vector2(cuts), Vector2.Zero, 0f, Vector2.Zero) * baseCut;
+            } else {
+                Camera.CutProj = baseCut;
+            }
+            Camera.SetLens(Camera.Aspect);
         }
 
-        public SplitShotInformation SplitShot(int width, int height, double downscale, string destination, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
-            const string extension = "png";
+        public class SplitShotInformation {
+            public RendererShotFormat Format;
+            public int Cuts;
 
+            public string GetMagickCommand(long memoryLimit) {
+                var extension = Format.GetExtension();
+                var limit = memoryLimit.ToInvariantString();
+                var cuts = Cuts.ToInvariantString();
+                return $"montage piece-*-*{extension} -limit memory {limit} -limit map {limit} -tile {cuts}x{cuts} -background none -geometry +0+0 out{extension}";
+            }
+        }
+
+        public SplitShotInformation SplitShot(int width, int height, double downscale, string destination, RendererShotFormat format,
+                IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellation = default(CancellationToken)) {
             Directory.CreateDirectory(destination);
-            SplitShot(width, height, downscale, (c, x, y, w, h) => {
-                var filename = Path.Combine(destination, $"piece-{y:D2}-{x:D2}.{extension}");
+            SplitShot(width, height, downscale, format, (c, x, y, w, h) => {
+                var filename = Path.Combine(destination, $"piece-{y:D2}-{x:D2}{format.GetExtension()}");
                 using (var stream = File.Open(filename, FileMode.Create, FileAccess.ReadWrite)) {
                     c(stream);
                 }
@@ -161,7 +149,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
             return new SplitShotInformation {
                 Cuts = cuts,
-                Extension = extension
+                Format = format
             };
         }
     }

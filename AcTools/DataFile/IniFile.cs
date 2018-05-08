@@ -54,14 +54,14 @@ namespace AcTools.DataFile {
             _iniFileMode = IniFileMode.Normal;
         }
 
-        public readonly Dictionary<string, IniFileSection> Content = new Dictionary<string, IniFileSection>();
+        private readonly Dictionary<string, IniFileSection> _content = new Dictionary<string, IniFileSection>();
 
-        public Dictionary<string, IniFileSection>.KeyCollection Keys => Content.Keys;
+        public Dictionary<string, IniFileSection>.KeyCollection Keys => _content.Keys;
 
-        public Dictionary<string, IniFileSection>.ValueCollection Values => Content.Values;
+        public Dictionary<string, IniFileSection>.ValueCollection Values => _content.Values;
 
         public IEnumerator<KeyValuePair<string, IniFileSection>> GetEnumerator() {
-            return Content.GetEnumerator();
+            return _content.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator() {
@@ -72,13 +72,13 @@ namespace AcTools.DataFile {
         public IniFileSection this[[NotNull, LocalizationRequired(false)] string key] {
             get {
                 IniFileSection result;
-                if (Content.TryGetValue(key, out result)) return result;
+                if (_content.TryGetValue(key, out result)) return result;
 
                 result = new IniFileSection(Data);
-                Content[key] = result;
+                _content[key] = result;
                 return result;
             }
-            set => Content[key] = value;
+            set => _content[key] = value;
         }
 
         private static void ParseStringFinish(IniFileSection currentSection, string data, int nonSpace, ref string key, ref int started) {
@@ -327,7 +327,7 @@ namespace AcTools.DataFile {
         }
 
         public override void Clear() {
-            Content.Clear();
+            _content.Clear();
         }
 
         private void Prepare(string v, StringBuilder s) {
@@ -378,7 +378,7 @@ namespace AcTools.DataFile {
             var commentaryPrefix = IniFileMode == IniFileMode.ValuesWithSemicolons ||
                     IniFileMode == IniFileMode.SquareBracketsWithin ? " // " : " ; ";
 
-            foreach (var pair in Content) {
+            foreach (var pair in _content) {
                 var section = pair.Value;
                 if (section.Count == 0) continue;
 
@@ -590,17 +590,17 @@ namespace AcTools.DataFile {
         }
 
         public bool ContainsKey(string key) {
-            return Content.ContainsKey(key);
+            return _content.ContainsKey(key);
         }
 
         public void Remove([Localizable(false)] string key) {
-            if (Content.ContainsKey(key)) {
-                Content.Remove(key);
+            if (_content.ContainsKey(key)) {
+                _content.Remove(key);
             }
         }
 
         public bool IsEmptyOrDamaged() {
-            return Content.Count == 0;
+            return _content.Count == 0;
         }
 
         public static void Write(string path, [Localizable(false)] string section, [Localizable(false)] string key, [Localizable(false)] string value) {

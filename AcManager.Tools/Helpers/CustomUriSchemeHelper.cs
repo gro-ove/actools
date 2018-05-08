@@ -102,7 +102,7 @@ namespace AcManager.Tools.Helpers {
 
         public static void RegisterDiscordClass(string discordAppId) {
             try {
-                RegisterClass($"discord-{discordAppId}", AppTitle, true, 0, true, @"{0} ""--discord-cmd=%1""");
+                RegisterClass($@"discord-{discordAppId}", AppTitle, true, 0, true, @"{0} ""--discord-cmd=%1""");
             } catch (Exception e) {
                 Logging.Warning("Can’t register: " + e);
             }

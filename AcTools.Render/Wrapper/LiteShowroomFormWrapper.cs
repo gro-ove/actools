@@ -230,21 +230,21 @@ namespace AcTools.Render.Wrapper {
 
         protected virtual void SplitShotPieces(Size size, bool downscale, string filename, RendererShotFormat format, IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            if (format.IsHdr()) {
+            /*if (format.IsHdr()) {
                 throw new NotSupportedException("Can’t make an HDR-screenshot in super-resolution");
-            }
+            }*/
 
             var dark = (DarkKn5ObjectRenderer)Renderer;
             var destination = filename.ApartFromLast(Path.GetExtension(filename), StringComparison.OrdinalIgnoreCase);
-            var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, progress, cancellation);
+            var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, format, progress, cancellation);
             File.WriteAllText(Path.Combine(destination, "join.bat"), $@"@echo off
 rem Use magick.exe from ImageMagick for Windows to run this script
 rem and combine images: https://www.imagemagick.org/script/binary-releases.php
 set MAGICK_TMPDIR=tmp
 mkdir tmp
-magick.exe montage piece-*-*.{information.Extension} -limit memory {OptionMontageMemoryLimit.ToInvariantString()} -limit map {OptionMontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out{format.GetExtension()}
+magick.exe {information.GetMagickCommand(OptionMontageMemoryLimit)}
 rmdir /q tmp
-echo @del *-*.{information.Extension} delete-pieces.bat join.bat > delete-pieces.bat");
+echo @del *-*{information.Format.GetExtension()} delete-pieces.bat join.bat > delete-pieces.bat");
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]

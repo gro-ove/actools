@@ -60,15 +60,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public Uri LoadedUri { get; }
         }
 
+        private bool _skipLoading;
+
+        public void SkipLoading() {
+            _skipLoading = true;
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs routedEventArgs) {
             foreach (var linkGroup in LinkGroups) {
                 linkGroup.Initialize();
             }
 
-            var saved = ValuesStorage.Get<Uri>($"{SaveKey}_link");
-            if (!SelectUriIfLinkExists(saved)) {
-                Logging.Debug("Can’t find link: " + saved);
-                SelectUriIfLinkExists(DefaultSource);
+            if (!_skipLoading) {
+                var saved = ValuesStorage.Get<Uri>($"{SaveKey}_link");
+                if (!SelectUriIfLinkExists(saved)) {
+                    Logging.Debug("Can’t find link: " + saved);
+                    SelectUriIfLinkExists(DefaultSource);
+                }
             }
         }
 

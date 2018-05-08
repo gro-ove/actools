@@ -97,9 +97,9 @@ namespace AcManager.CustomShowroom {
         protected override void SplitShotPieces(Size size, bool downscale, string filename, RendererShotFormat format,
                 IProgress<Tuple<string, double?>> progress = null,
                 CancellationToken cancellation = default(CancellationToken)) {
-            if (format.IsHdr()) {
+            /*if (format.IsHdr()) {
                 throw new NotSupportedException("Can’t make an HDR-screenshot in super-resolution");
-            }
+            }*/
 
             PiecesBlender.OptionMaxCacheSize = SettingsHolder.Plugins.MontageVramCache;
 
@@ -119,7 +119,7 @@ namespace AcManager.CustomShowroom {
                 // For pre-smoothed files, in case somebody would want to use super-resolution with SSLR/SSAO
                 DarkKn5ObjectRenderer.OptionTemporaryDirectory = destination;
 
-                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination,
+                var information = dark.SplitShot(size.Width, size.Height, downscale ? 0.5d : 1d, destination, format,
                         progress.SubrangeTuple(0.001, 0.95, "Rendering ({0})…"), cancellation);
 
                 progress?.Report(new Tuple<string, double?>("Combining pieces…", 0.97));
@@ -130,13 +130,12 @@ namespace AcManager.CustomShowroom {
                     FirstFloor.ModernUI.Windows.Toast.Show("Montage plugin is obsolete", "Please, update it, and it’ll consume twice less power");
                 }
 
-                Environment.SetEnvironmentVariable("MAGICK_TMPDIR", destination);
+                Environment.SetEnvironmentVariable(@"MAGICK_TMPDIR", destination);
                 using (var process = new Process {
                     StartInfo = {
                         FileName = magick,
                         WorkingDirectory = destination,
-                        Arguments =
-                            $"montage piece-*-*.{information.Extension} -limit memory {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -limit map {SettingsHolder.Plugins.MontageMemoryLimit.ToInvariantString()} -tile {information.Cuts.ToInvariantString()}x{information.Cuts.ToInvariantString()} -geometry +0+0 out{format.GetExtension()}",
+                        Arguments = information.GetMagickCommand(SettingsHolder.Plugins.MontageMemoryLimit),
                         CreateNoWindow = true,
                         RedirectStandardInput = true,
                         RedirectStandardOutput = true,

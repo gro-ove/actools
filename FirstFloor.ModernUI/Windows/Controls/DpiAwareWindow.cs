@@ -220,7 +220,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #endregion
 
         #region Fix for Alt+<> bindings
-        // TODO: Test and debug if needed
         protected override void OnPreviewKeyDown(KeyEventArgs e) {
             if (Keyboard.Modifiers.HasFlag(ModifierKeys.Alt) && VisualExtension.IsInputFocused()) {
                 var toRemove = InputBindings.OfType<InputBinding>().Where(x =>

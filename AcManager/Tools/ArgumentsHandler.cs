@@ -191,14 +191,19 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessArgument(string argument) {
-            argument = FixProxiedRequest(argument);
-            if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
+            Logging.Debug($"Processing argument: {argument}");
+            try {
+                argument = FixProxiedRequest(argument);
+                if (string.IsNullOrWhiteSpace(argument)) return ArgumentHandleResult.FailedShow;
 
-            if (IsCustomUriScheme(argument)) {
-                return await ProcessUriRequest(argument);
+                if (IsCustomUriScheme(argument)) {
+                    return await ProcessUriRequest(argument);
+                }
+
+                return await ProcessInputFile(argument);
+            } finally {
+                Logging.Debug($"Argument processed: {argument}");
             }
-
-            return await ProcessInputFile(argument);
         }
 
         /// <summary>

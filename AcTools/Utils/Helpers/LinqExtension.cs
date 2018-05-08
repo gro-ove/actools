@@ -8,6 +8,15 @@ using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class LinqExtension {
+        public static int GetEnumerableHashCode<T>([CanBeNull] this T[] items) {
+            if (items == null) return 0;
+            int result = 0;
+            for (var i = 0; i < items.Length; i++) {
+                result = (result * 397) ^ items[i].GetHashCode();
+            }
+            return result;
+        }
+
         public static int GetEnumerableHashCode<T>([CanBeNull] this IEnumerable<T> items) {
             return items?.Aggregate(0, (x, o) => (x * 397) ^ o.GetHashCode()) ?? 0;
         }

@@ -47,7 +47,8 @@ namespace AcManager.Tools {
                 MinHeight = 0,
                 MinWidth = 0,
                 MaxHeight = 480,
-                MaxWidth = 640
+                MaxWidth = 640,
+                DoNotAttachToWaitingDialogs = true
             };
 
             dlg.Buttons = new[] {

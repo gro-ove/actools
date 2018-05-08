@@ -55,6 +55,7 @@ namespace AcManager.Tools.Miscellaneous {
                 };
 
                 state.Globals["strutils"] = new Table(state) {
+                    ["split"] = (Func<string, string, string[]>)((i, s) => i.Split(new[]{ s }, StringSplitOptions.None)),
                     ["equals"] = (Func<string, string, bool>)CompareStrings,
                     ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase
                 };

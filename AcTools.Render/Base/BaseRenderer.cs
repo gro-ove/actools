@@ -670,7 +670,7 @@ namespace AcTools.Render.Base {
                     }
 
                     DrawShot(null, progress.SubrangeDouble(0.05, 0.9), cancellation);
-                    Texture2D.ToStream(DeviceContext, _renderBuffer, ImageFileFormat.Png, outputStream);
+                    Texture2D.ToStream(DeviceContext, _renderBuffer, shotFormat.ToImageFileFormat(), outputStream);
 
                     var desc = _renderBuffer.Description;
                     LastShotWidth = desc.Width;
