@@ -152,7 +152,7 @@ namespace AcManager.Tools.Managers.Presets {
             }
 
             var presetsDirectory = EnsureDirectory(category);
-            if (!FileUtils.IsAffectedBy(filename, presetsDirectory)) {
+            if (filename != null && !FileUtils.IsAffectedBy(filename, presetsDirectory)) {
                 filename = Path.Combine(presetsDirectory, Path.GetFileName(filename));
             }
 

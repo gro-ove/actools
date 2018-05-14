@@ -35,7 +35,7 @@
     <VisualBrush.Visual>
       <Canvas Width="8" Height="8">
         <Rectangle Fill="{DynamicResource GoldBrush}" Width="8" Height="8" />
-        <Rectangle Fill="Green" Margin="0 4 0 0" Width="8" Height="4" />
+        <Rectangle Fill="MediumSeaGreen" Margin="0 4 0 0" Width="8" Height="4" />
         <Path Fill="{DynamicResource GoldBrush}" Width="8" Height="8">
           <Path.Data>
             <PathGeometry>

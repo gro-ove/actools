@@ -19,7 +19,7 @@
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
         <Grid Background="Black" ClipToBounds="True" MinHeight="100">
-          <mui:BetterImage Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" ForceFill="True" />
+          <mui:BetterImage x:Name="PreviewImage" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" ForceFill="True" />
           <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}"
               Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}">
             <TextBlock.RenderTransform>
@@ -40,6 +40,13 @@
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding ConditionType}" Value="{x:Null}">
             <Setter TargetName="PlaceEllipse" Property="Fill" Value="{Binding TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding TakenPlace}" Value="1">
+            <Setter TargetName="PreviewImage" Property="Effect">
+              <Setter.Value>
+                <mui:GrayscaleEffect SaturationFactor="0" />
+              </Setter.Value>
+            </Setter>
           </DataTrigger>
           <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Value="True">
             <DataTrigger.EnterActions>
@@ -173,10 +180,10 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <!--event errors-->
+        <!-- Event errors -->
         <c:AcObjectErrorsSection AcObject="{Binding}" Grid.ColumnSpan="2" />
 
-        <!--event params-->
+        <!-- Event params -->
         <DockPanel Grid.Column="0" Grid.Row="1">
           <Label Content="{x:Static g:AppStrings.KunosCareer_TimeLabel}" />
           <TextBlock Text="{Binding DisplayTime}" Style="{StaticResource Value}" />
@@ -197,16 +204,15 @@
           <TextBlock Text="{Binding TrackPreset.Name}" Style="{StaticResource Value}" />
         </DockPanel>
 
-        <!--race params-->
+        <!-- Race params -->
         <DockPanel Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2"
             Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <Label Content="{x:Static g:AppStrings.KunosCareer_StartingPositionLabel}" />
           <TextBlock Style="{StaticResource Value}">
-            <Run
-                Text="{Binding StartingPosition, Converter={StaticResource OrdinalizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_Ordinal_Parameter}, Mode=OneWay}" />
-            <Run Text="(" /><Run
-                                Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run
-                                                                                                                                                                                                            Text=")" />
+            <Run Text="{Binding StartingPosition, Mode=OneWay,
+                Converter={StaticResource OrdinalizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_Ordinal_Parameter}}" />
+            <Run Text="(" /><Run Text="{Binding OpponentsCount, Mode=OneWay,
+                Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run Text=")" />
           </TextBlock>
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="4">
@@ -241,7 +247,7 @@
         </DockPanel>
       </Grid>
 
-      <!--car and track previews-->
+      <!-- Car and track previews -->
       <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding Selected}" HorizontalScrollBarVisibility="Disabled"
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
@@ -301,8 +307,8 @@
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Disabled" Margin="0 0 0 12">
           <mui:SpacingStackPanel Spacing="4">
             <TextBlock Text="{Binding Selected.DisplayDescription}" TextWrapping="Wrap" />
-            <c:BestLapsList x:Name="BestLapBlock" CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}" VerticalAlignment="Top"
-                Margin="0 16 0 0" />
+            <c:BestLapsList x:Name="BestLapBlock" CarId="{Binding Selected.CarId}" TrackId="{Binding Selected.TrackObject.IdWithLayout}"
+                VerticalAlignment="Top" Margin="0 16 0 0" />
             <TextBlock Text="Best lap on this track:" Style="{StaticResource Label}" />
             <c:BestLapsList TrackId="{Binding Selected.TrackObject.IdWithLayout}" Limit="1" Order="FastestFirst" ShowTitle="False" EntryPadding="0" />
           </mui:SpacingStackPanel>

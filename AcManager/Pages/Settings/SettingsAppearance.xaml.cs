@@ -77,7 +77,8 @@ namespace AcManager.Pages.Settings {
             }
 
             internal ViewModel() {
-                Screens = Screen.AllScreens.Select(x => new SettingEntry(x.DeviceName, GetScreenName(x))).ToArray();
+                var friendlyNames = ScreenInterrogatory.GetFriendlyNames();
+                Screens = Screen.AllScreens.Select(x => new SettingEntry(x.DeviceName, GetScreenName(x, friendlyNames?.GetValueOrDefault(x)))).ToArray();
                 _forceScreen = Screens.GetByIdOrDefault(AppearanceManager.Instance.ForceScreenName);
 
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
@@ -94,8 +95,8 @@ namespace AcManager.Pages.Settings {
                 }
             }
 
-            private static string GetScreenName(Screen x) {
-                return $@"{x.GetFriendlyName() ?? x.DeviceName} ({x.Bounds.ToString().Replace(@",", @", ").TrimStart('{').TrimEnd('}')})";
+            private static string GetScreenName(Screen x, [CanBeNull] string friendlyName) {
+                return $@"{friendlyName ?? x.DeviceName} ({x.Bounds.ToString().Replace(@",", @", ").TrimStart('{').TrimEnd('}')})";
             }
 
             public class BitmapScalingEntry : Displayable {

@@ -48,7 +48,8 @@ namespace AcManager.Tools.Miscellaneous {
         protected override async Task<bool> CheckAndUpdateIfNeededInner() {
             if (InstalledVersion == null) return false;
 
-            var data = await CmApiProvider.GetDataAsync($"locales/update/{SettingsHolder.Locale.LocaleName}/{InstalledVersion}");
+            var installedVersion = File.Exists(GetPackageFilename(SettingsHolder.Locale.LocaleName)) ? InstalledVersion : @"0";
+            var data = await CmApiProvider.GetDataAsync($"locales/update/{SettingsHolder.Locale.LocaleName}/{installedVersion}");
             if (data == null) {
                 LatestError = ToolsStrings.BaseUpdater_CannotDownloadInformation;
                 Logging.Warning("Cannot get locales/update");
@@ -67,7 +68,7 @@ namespace AcManager.Tools.Miscellaneous {
                     if (manifest == null) throw new Exception("Manifest is missing");
                 }
 
-                var package = FilesStorage.Instance.GetFilename("Locales", manifest.Id + ".pak");
+                var package = GetPackageFilename(manifest.Id);
                 await FileUtils.WriteAllBytesAsync(package, data);
                 Logging.Write("Locale updated");
 
@@ -77,6 +78,10 @@ namespace AcManager.Tools.Miscellaneous {
                 Logging.Warning("Cannot update locale: " + e);
                 return false;
             }
+        }
+
+        private static string GetPackageFilename(string localeId) {
+            return FilesStorage.Instance.GetFilename("Locales", localeId + ".pak");
         }
 
         public async Task<string> InstallCustom(string id, IProgress<AsyncProgressEntry> progress = null,

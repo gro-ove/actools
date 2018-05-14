@@ -37,20 +37,23 @@ namespace AcManager {
             SystemCultureName = CultureInfo.CurrentUICulture.Name;
 
             var langId = AppArguments.Get(AppFlag.ForceLocale) ?? SettingsHolder.Locale.LocaleName;
+            Logging.Write($"Language ID: {langId}");
 
             bool found;
             if (IsSupported(langId)) {
+                Logging.Write("Supported officially");
                 found = true;
             } else {
                 var package = FilesStorage.Instance.GetFilename("Locales", langId + ".pak");
                 if (File.Exists(package)) {
+                    Logging.Write($"Package is found: {package}");
                     await LoadPackage(langId, package);
                     found = true;
                 } else {
                     found = await TryToLoadPackage(langId, package);
-                    if (found) {
-                        Logging.Write("Package loaded");
-                    }
+                    Logging.Write(found
+                            ? $"Package is loaded: {package}"
+                            : $"Failed to load package is loaded: {package}");
                 }
             }
 
@@ -107,9 +110,7 @@ namespace AcManager {
             AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => {
                 var splitted = args.Name.Split(',');
                 var name = splitted[0];
-
-                Assembly result;
-                return package.TryGetValue(name, out result) ? result : null;
+                return package.TryGetValue(name, out var result) ? result : null;
             };
         }
 
@@ -117,12 +118,15 @@ namespace AcManager {
         private static async Task<byte[]> LoadPackageTimeout(string langId, string version = "0") {
             if (!SettingsHolder.Locale.UpdateOnStart) return null;
             using (var cancellation = new CancellationTokenSource()) {
-                cancellation.CancelAfter(500);
+                cancellation.CancelAfter(50);
                 var data = await CmApiProvider.GetDataAsync($"locales/update/{langId}/{version}",
                         cancellation: cancellation.Token);
 
                 if (cancellation.IsCancellationRequested) {
                     Logging.Write("Timeout exceeded");
+
+                    // Load locale later on, during locale update stage
+                    LoadedVersion = "0";
                 }
 
                 return data == null || data.Length == 0 ? null : data;
@@ -163,7 +167,7 @@ namespace AcManager {
                 using (var zip = new ZipArchive(fs)) {
                     var manifest = LocalePackageManifest.FromArchive(zip);
                     if (manifest == null) throw new Exception("Manifest is missing");
-                    
+
                     LoadedVersion = manifest.Version;
                     update = await LoadPackageTimeout(langId, manifest.Version);
 

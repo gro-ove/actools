@@ -63,7 +63,7 @@
           Visibility="{Binding ForceLocalesFlag, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
       <StackPanel Visibility="{Binding CurrentLocale.CanBeUpdated, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <!--versions-->
+        <!-- Versions -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
         <DockPanel>
@@ -71,7 +71,7 @@
           <ComboBox ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Locale.UpdatePeriod}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <!--app version-->
+        <!-- App version -->
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Locale_VersionLabel}" />
           <Button Command="{Binding LocaleUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
@@ -105,24 +105,6 @@
           <Label Content="{x:Static g:AppStrings.Settings_Locale_LoadCustom}" />
         </CheckBox>
       </DockPanel>
-
-      <!--<StackPanel Visibility="{Binding Locale.LoadUnpacked, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <CheckBox IsChecked="{Binding Locale.UpdateCustom}"
-                        ToolTip="If you're working on a proper localization, enable this option and app will regularly download new strings">
-                    <Label Content="Update custom locale with new strings" />
-                </CheckBox>
-
-                <DockPanel>
-                    <Label Content="Unpacked locale version:" />
-                    <Button Command="{Binding LocaleUpdater.CheckAndUpdateBaseIfNeededCommand}"
-                            Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
-                    <TextBox Style="{StaticResource TextBoxAsTextBlock.ReadOnly}" Text="{Binding LocaleUpdater.InstalledBaseVersion, Mode=OneWay}"
-                            mui:WatermarkService.Watermark="?" />
-                </DockPanel>
-
-                <TextBlock Text="{Binding LocaleUpdater.LatestBaseError}" Style="{StaticResource SettingsPanel.Warning}"
-                        Visibility="{Binding LocaleUpdater.LatestBaseError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-            </StackPanel>-->
 
       <TextBlock Style="{StaticResource SettingsPanel.Small}" Text="{x:Static g:AppStrings.Settings_Locale_RestartMessage}" />
       <Button Content="{x:Static g:AppStrings.Settings_Locale_RestartApp}" Command="{Binding RestartCommand}"

@@ -21,8 +21,9 @@ namespace AcManager.Tools.Data {
             UpdatePeriod = GetUpdatePeriod();
             SetListener();
 
+            Logging.Write($"Installed version for {GetType().Name}: {installedVersion}");
             InstalledVersion = installedVersion;
-            if (UpdatePeriod != TimeSpan.Zero) {
+            if (UpdatePeriod != TimeSpan.Zero || installedVersion == @"0") {
                 CheckUpdateABitLater();
             }
         }
@@ -42,6 +43,7 @@ namespace AcManager.Tools.Data {
         }
 
         private async void CheckUpdateABitLater() {
+            // What the hell is that? What was I thinking? ಠ_ಠ
             await Task.Delay(MathUtils.Random(10, 1000));
             FirstCheck();
         }
