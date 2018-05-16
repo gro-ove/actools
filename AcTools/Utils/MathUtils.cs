@@ -1,5 +1,6 @@
 ﻿using System;
 using AcTools.Utils.Helpers;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils {
     // TODO: Remove MathF
@@ -158,7 +159,10 @@ namespace AcTools.Utils {
 
         [ThreadStatic]
         private static Random _random;
+
+        [NotNull]
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
+
         public static int Random(int maxValueExclusive) => RandomInstance.Next(maxValueExclusive);
         public static int Random(int minValueInclusive, int maxValueExclusive) => RandomInstance.Next(minValueInclusive, maxValueExclusive);
         public static double Random() => RandomInstance.NextDouble();

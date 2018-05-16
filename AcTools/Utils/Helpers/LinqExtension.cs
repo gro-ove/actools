@@ -360,18 +360,28 @@ namespace AcTools.Utils.Helpers {
         public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable.ToIReadOnlyListIfItIsNot();
-            var random = MathUtils.Random(0, list.Count);
-            return list[random];
+            return list[MathUtils.Random(0, list.Count)];
         }
 
         [Pure, CanBeNull]
         public static T RandomElementOrDefault<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable.ToIReadOnlyListIfItIsNot();
-            if (list.Count == 0) return default(T);
+            return list.Count == 0 ? default(T) : list[MathUtils.Random(0, list.Count)];
+        }
 
-            var random = MathUtils.Random(0, list.Count);
-            return list[random];
+        [Pure]
+        public static T RandomElement<T>([NotNull] this IEnumerable<T> enumerable, Random random) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            var list = enumerable.ToIReadOnlyListIfItIsNot();
+            return list[random.Next(0, list.Count)];
+        }
+
+        [Pure, CanBeNull]
+        public static T RandomElementOrDefault<T>([NotNull] this IEnumerable<T> enumerable, Random random) {
+            if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            var list = enumerable.ToIReadOnlyListIfItIsNot();
+            return list.Count == 0 ? default(T) : list[random.Next(0, list.Count)];
         }
 
         [Pure, NotNull]

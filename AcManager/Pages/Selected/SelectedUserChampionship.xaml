@@ -4,8 +4,8 @@
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:se="clr-namespace:AcManager.Pages.Selected" xmlns:g="clr-namespace:AcManager"
     xmlns:dr="clr-namespace:AcManager.Pages.Drive" xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls"
     xmlns:a="clr-namespace:AcTools;assembly=AcTools" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
+    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance se:SelectedUserChampionship+ViewModel}"
+    Loaded="OnLoaded" Unloaded="OnUnloaded" x:Name="This">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -61,14 +61,17 @@
               <mui:SpacingStackPanel Spacing="4"
                   Visibility="{Binding DataContext.ShowWeatherControls, ElementName=This, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static g:AppStrings.Drive_WeatherLabel}" Style="{StaticResource Label.Padding}" />
-                <ComboBox ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}">
+                <!--<ComboBox ItemsSource="{Binding Enabled, Source={x:Static t:WeatherManager.Instance}}" SelectedItem="{Binding Weather}">
                   <ComboBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ComboBoxItem}" BasedOn="{StaticResource {x:Type ComboBoxItem}}">
-                      <!-- TODO: Replace by WeatherPreviewToolTip from ToolTips.xaml? -->
+                      ~1~ TODO: Replace by WeatherPreviewToolTip from ToolTips.xaml? @1@
                       <Setter Property="ToolTip" Value="{StaticResource WeatherPreviewToolTip}" />
                     </Style>
                   </ComboBox.ItemContainerStyle>
-                </ComboBox>
+                </ComboBox>-->
+
+                <c:WeatherComboBox SelectedItem="{Binding Weather}" AllowRandomWeather="True" AllowWeatherByType="True"
+                    c:ToolTips.Weather="{Binding WeatherObject}" />
               </mui:SpacingStackPanel>
 
               <mui:SpacingStackPanel Spacing="4">

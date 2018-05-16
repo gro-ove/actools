@@ -3,32 +3,46 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public class GoodShuffle {
-        public static GoodShuffle<T> Get<T>(List<T> list) {
+        [NotNull]
+        public static GoodShuffle<T> Get<T>([NotNull] List<T> list) {
             return new GoodShuffle<T>(list);
         }
 
-        public static GoodShuffle<T> Get<T>(IEnumerable<T> list) {
+        [NotNull]
+        public static GoodShuffle<T> Get<T>([NotNull] IEnumerable<T> list) {
             return new GoodShuffle<T>(list.ToList());
+        }
+
+        [NotNull]
+        public static GoodShuffle<T> Get<T>([NotNull] List<T> list, [NotNull] Random random) {
+            return new GoodShuffle<T>(list, random);
+        }
+
+        [NotNull]
+        public static GoodShuffle<T> Get<T>([NotNull] IEnumerable<T> list, [NotNull] Random random) {
+            return new GoodShuffle<T>(list.ToList(), random);
         }
     }
 
     public class GoodShuffle<T> : BaseShuffle<T> {
-        public GoodShuffle(List<T> list) : base(list) { }
+        public GoodShuffle([NotNull] List<T> list) : base(list, MathUtils.RandomInstance) { }
+        public GoodShuffle([NotNull] List<T> list, [NotNull] Random random) : base(list, random) { }
 
-        protected override void Shuffle(int[] buffer) {
+        protected override void Shuffle(int[] buffer, Random random) {
             for (var i = 0; i < buffer.Length; i++) {
                 buffer[i] = i;
             }
 
-            ShuffleArray(buffer);
+            ShuffleArray(buffer, random);
         }
 
-        protected static void ShuffleArray(int[] list) {
+        protected static void ShuffleArray([NotNull] int[] list, [NotNull] Random random) {
             for (var i = 0; i < list.Length; i++) {
-                var n = MathUtils.Random(list.Length);
+                var n = random.Next(list.Length);
                 if (n == i) continue;
                 var w = list[i];
                 list[i] = list[n];
@@ -40,23 +54,37 @@ namespace AcTools.Utils.Helpers {
     public class LimitedShuffle {
         public static bool OptionUseKuhn = true;
 
-        public static LimitedShuffle<T> Get<T>(List<T> list, double randomization) {
+        [NotNull]
+        public static LimitedShuffle<T> Get<T>([NotNull] List<T> list, double randomization) {
             return new LimitedShuffle<T>(list, randomization);
         }
 
-        public static LimitedShuffle<T> Get<T>(IEnumerable<T> list, double randomization) {
+        [NotNull]
+        public static LimitedShuffle<T> Get<T>([NotNull] IEnumerable<T> list, double randomization) {
             return new LimitedShuffle<T>(list.ToList(), randomization);
+        }
+
+        [NotNull]
+        public static LimitedShuffle<T> Get<T>([NotNull] List<T> list, double randomization, [NotNull] Random random) {
+            return new LimitedShuffle<T>(list, randomization, random);
+        }
+
+        [NotNull]
+        public static LimitedShuffle<T> Get<T>([NotNull] IEnumerable<T> list, double randomization, [NotNull] Random random) {
+            return new LimitedShuffle<T>(list.ToList(), randomization, random);
         }
     }
 
     public class LimitedShuffle<T> : GoodShuffle<T> {
         private readonly double _randomization;
 
-        public LimitedShuffle(List<T> list, double randomization) : base(list) {
+        public LimitedShuffle([NotNull] List<T> list, double randomization) : this(list, randomization, MathUtils.RandomInstance) {}
+
+        public LimitedShuffle([NotNull] List<T> list, double randomization, [NotNull] Random random) : base(list, random) {
             _randomization = randomization;
         }
 
-        private static void Shuffle(int[] buffer, int limit) {
+        private static void Shuffle([NotNull] int[] buffer, int limit, [NotNull] Random random) {
             for (var i = 0; i < buffer.Length; i++) {
                 buffer[i] = i;
             }
@@ -66,7 +94,7 @@ namespace AcTools.Utils.Helpers {
                 var a = Math.Max(t - limit, 0);
                 var b = Math.Min(t + limit, buffer.Length - 1);
 
-                var n = MathUtils.Random(a, b + 1);
+                var n = random.Next(a, b + 1);
                 if (n != i) {
                     var ai = Math.Max(i - limit, 0);
                     var bi = Math.Min(i + limit, buffer.Length - 1);
@@ -79,7 +107,7 @@ namespace AcTools.Utils.Helpers {
                 }
             }
         }
-        private static bool TryKuhn(bool[] used, int[][] g, int[] mt, int v) {
+        private static bool TryKuhn([NotNull] bool[] used, [NotNull] int[][] g, [NotNull] int[] mt, int v) {
             if (used[v]) return false;
             used[v] = true;
             for (var i = 0; i < g[v].Length; i++) {
@@ -92,7 +120,7 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
-        private static void ShuffleKuhn(int[] buffer, int limit) {
+        private static void ShuffleKuhn([NotNull] int[] buffer, int limit, [NotNull] Random random) {
             var size = buffer.Length;
 
             var g = new int[size][];
@@ -103,7 +131,7 @@ namespace AcTools.Utils.Helpers {
                 for (var j = f; j <= t; j++) {
                     g[i][j - f] = j;
                 }
-                ShuffleArray(g[i]);
+                ShuffleArray(g[i], random);
             }
 
             var mt = new int[size];
@@ -122,7 +150,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        protected override void Shuffle(int[] buffer) {
+        protected override void Shuffle(int[] buffer, Random random) {
             var offset = (int)Math.Round(_randomization * (buffer.Length - 1));
 
             if (offset <= 0) {
@@ -135,15 +163,15 @@ namespace AcTools.Utils.Helpers {
 
             if (offset >= buffer.Length - 1) {
                 /* maximum shuffling */
-                base.Shuffle(buffer);
+                base.Shuffle(buffer, random);
                 return;
             }
 
             if (LimitedShuffle.OptionUseKuhn) {
-                ShuffleKuhn(buffer, offset);
+                ShuffleKuhn(buffer, offset, random);
             } else {
                 for (var k = 0; k < 1000; k++) {
-                    Shuffle(buffer, offset);
+                    Shuffle(buffer, offset, random);
                     for (var i = 0; i < buffer.Length; i++) {
                         var delta = Math.Abs(i - buffer[i]);
                         if (delta > offset) {
@@ -172,18 +200,21 @@ namespace AcTools.Utils.Helpers {
         public IReadOnlyList<T> OriginalList => _list;
 
         private readonly List<T> _list;
+        private readonly Random _random;
         private int[] _buffer;
         private int _bufferPosition;
 
         public int Size { get; }
         public int Limit { get; private set; }
 
-        internal BaseShuffle(List<T> list) {
+        internal BaseShuffle([NotNull] List<T> list, [NotNull] Random random) {
             if (list.Count == 0) {
                 throw new ArgumentException("Value cannot be an empty collection.", nameof(list));
             }
 
             _list = list;
+            _random = random;
+
             Limit = _list.Count * 1000;
             Size = _list.Count;
         }
@@ -195,14 +226,14 @@ namespace AcTools.Utils.Helpers {
             _ignoredItem = item;
         }
 
-        protected abstract void Shuffle(int[] buffer);
+        protected abstract void Shuffle([NotNull] int[] buffer, [NotNull] Random random);
 
         private void Shuffle() {
             if (_buffer == null) {
                 _buffer = new int[_list.Count];
             }
 
-            Shuffle(_buffer);
+            Shuffle(_buffer, _random);
             _bufferPosition = 0;
         }
 

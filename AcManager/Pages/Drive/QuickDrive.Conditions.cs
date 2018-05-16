@@ -150,15 +150,11 @@ namespace AcManager.Pages.Drive {
 
             public WeatherType SelectedWeatherType {
                 get => _selectedWeatherType;
-                set {
-                    if (Equals(value, _selectedWeatherType)) return;
-                    _selectedWeatherType = value;
-                    OnPropertyChanged();
-
+                set => Apply(value, ref _selectedWeatherType, () => {
                     if (_selectedWeatherType != WeatherType.None && !RealConditions) {
                         TryToSetWeather();
                     }
-                }
+                });
             }
 
             private object _selectedWeather;
@@ -169,13 +165,9 @@ namespace AcManager.Pages.Drive {
             [CanBeNull]
             public object SelectedWeather {
                 get => _selectedWeather;
-                set {
-                    if (Equals(value, _selectedWeather)) return;
-                    _selectedWeather = value;
-
+                set => Apply(value, ref _selectedWeather, () => {
                     RefreshSelectedWeatherObject();
 
-                    OnPropertyChanged();
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
 
@@ -185,14 +177,14 @@ namespace AcManager.Pages.Drive {
                             IsTimeOutOfWeatherRange = weather.TimeDiapason?.TimeDiapasonContains(Time) == false;
                         }
                     }
-                }
+                });
             }
 
             [CanBeNull]
             public WeatherObject SelectedWeatherObject { get; private set; }
 
             private void RefreshSelectedWeatherObject() {
-                var o = WeatherComboBox.Unwrap(SelectedWeather, Time, Temperature);
+                var o = WeatherTypeWrapped.Unwrap(SelectedWeather, Time, Temperature);
                 if (o != SelectedWeatherObject) {
                     SelectedWeatherObject = o;
                     OnPropertyChanged(nameof(SelectedWeatherObject));

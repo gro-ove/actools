@@ -15,49 +15,14 @@ using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
-using JetBrains.Annotations;
 
 namespace AcManager.Controls {
-    public sealed class WeatherTypeWrapped : Displayable {
-        public WeatherType Type { get; }
-
-        public WeatherTypeWrapped(WeatherType type) {
-            Type = type;
-            DisplayName = type.GetDescription();
-        }
-
-        private bool Equals(WeatherTypeWrapped other) {
-            return Type == other.Type;
-        }
-
-        public override bool Equals(object obj) {
-            return !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj is WeatherTypeWrapped w && Equals(w));
-        }
-
-        public override int GetHashCode() {
-            return (int)Type;
-        }
-
-        public override string ToString() {
-            return $@"W. TYPE: {Type}";
-        }
-    }
-
     /// <summary>
     /// Bind to SelectedItem if you’re gonna use Random or Select-By-Type features, or to SelectedWeather otherwise.
     /// </summary>
     public class WeatherComboBox : HierarchicalComboBox {
         public static AcEnabledOnlyCollection<WeatherObject> WeatherList { get; } = WeatherManager.Instance.Enabled;
-        public static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
-
-        [CanBeNull]
-        public static WeatherObject Unwrap(object obj, int? time, double? temperature) {
-            return obj is WeatherTypeWrapped weatherTypeWrapped
-                    ? WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault()
-                    : obj as WeatherObject;
-        }
 
         public static readonly DependencyProperty TimeProperty = DependencyProperty.Register(nameof(Time), typeof(int?),
                 typeof(WeatherComboBox), new PropertyMetadata(null, (o, e) => {
@@ -124,7 +89,7 @@ namespace AcManager.Controls {
         private readonly Busy _busy = new Busy();
 
         private void OnItemSelected(object sender, SelectedItemChangedEventArgs selectedItemChangedEventArgs) {
-            _busy.Do(() => SelectedWeather = Unwrap(SelectedItem, Time, Temperature));
+            _busy.Do(() => SelectedWeather = WeatherTypeWrapped.Unwrap(SelectedItem, Time, Temperature));
             WeatherChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -151,7 +116,7 @@ namespace AcManager.Controls {
                     c.UpdateHierarchicalWeatherList().Forget();
                 }));
 
-        private bool _allowRandomWeather = false;
+        private bool _allowRandomWeather;
 
         public bool AllowRandomWeather {
             get => _allowRandomWeather;
@@ -201,13 +166,13 @@ namespace AcManager.Controls {
             HierarchicalGroup list;
             if (WeatherList.All(IsKunosWeather)) {
                 if (AllowRandomWeather) {
-                    list = new HierarchicalGroup { RandomWeather, new Separator() };
+                    list = new HierarchicalGroup { WeatherTypeWrapped.RandomWeather, new Separator() };
                     list.AddRange(WeatherList);
                 } else {
                     list = new HierarchicalGroup(WeatherList);
                 }
             } else {
-                list = AllowRandomWeather ? new HierarchicalGroup { RandomWeather } : new HierarchicalGroup();
+                list = AllowRandomWeather ? new HierarchicalGroup { WeatherTypeWrapped.RandomWeather } : new HierarchicalGroup();
 
                 if (WeatherList.Any(IsKunosWeather)) {
                     list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original, WeatherList.Where(IsKunosWeather)));

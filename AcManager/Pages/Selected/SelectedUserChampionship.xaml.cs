@@ -91,7 +91,7 @@ namespace AcManager.Pages.Selected {
 
             public IReadOnlyList<Game.TrackPropertiesPreset> TrackPropertiesPresets => Game.DefaultTrackPropertiesPresets;
 
-            public IReadOnlyList<string> DifficultyList => new [] {
+            public IReadOnlyList<string> DifficultyList => new[] {
                 "Easy", "Average", "Hard", "Very hard"
             };
 
@@ -105,7 +105,10 @@ namespace AcManager.Pages.Selected {
 
                 acObject.PropertyChanged += OnAcObjectPropertyChanged;
 
-                RaceGridViewModel = new RaceGridViewModel(true);
+                RaceGridViewModel = new RaceGridViewModel(true) {
+                    ForceFixedSeed = true
+                };
+
                 LoadRaceGrid();
                 RaceGridViewModel.Changed += OnRaceGridViewModelChanged;
             }
@@ -331,7 +334,7 @@ namespace AcManager.Pages.Selected {
 
                 var lastLength = last?.Track?.GuessApproximateLapDuration().TotalSeconds * last?.LapsCount;
                 var lapsCount = lastLength.HasValue ? (int)(lastLength.Value / track.GuessApproximateLapDuration().TotalSeconds) : 2;
-                SelectedObject.ExtendedRounds.Add(new UserChampionshipRoundExtended (track){
+                SelectedObject.ExtendedRounds.Add(new UserChampionshipRoundExtended(track) {
                     Weather = last?.Weather ?? WeatherManager.Instance.GetDefault(),
                     TrackProperties = last?.TrackProperties ?? Game.DefaultTrackPropertiesPresets[0],
                     LapsCount = lapsCount
@@ -393,7 +396,7 @@ namespace AcManager.Pages.Selected {
                     await Task.Run(() => {
                         using (var memory = new MemoryStream()) {
                             using (var writer = WriterFactory.Open(memory, ArchiveType.Zip, CompressionType.Deflate)) {
-                                foreach (var filename in new [] {
+                                foreach (var filename in new[] {
                                     SelectedObject.Location,
                                     SelectedObject.ExtendedFilename,
                                     SelectedObject.PreviewImage
@@ -484,14 +487,14 @@ namespace AcManager.Pages.Selected {
         private void SetModel() {
             _model?.Unload();
             InitializeAcObjectPage(_model = new ViewModel(_object));
-            InputBindings.AddRange(new [] {
+            InputBindings.AddRange(new[] {
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(_model.UpdatePreviewDirectCommand, new KeyGesture(Key.P, ModifierKeys.Control)),
                 new InputBinding(_model.AddNewRoundCommand, new KeyGesture(Key.N, ModifierKeys.Control))
             });
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {}
+        private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnRoundTrackClick(object sender, MouseButtonEventArgs e) {
             if (e.Handled) return;
@@ -548,7 +551,6 @@ namespace AcManager.Pages.Selected {
             var list = _model.SelectedObject.ExtendedRounds;
             var oldIndex = list.IndexOf(roundObject);
             if (newIndex != oldIndex) {
-
                 if (oldIndex != -1) {
                     if (newIndex == -1 || newIndex >= list.Count) {
                         list.Move(oldIndex, list.Count - 1);

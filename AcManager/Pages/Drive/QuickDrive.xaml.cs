@@ -560,7 +560,7 @@ namespace AcManager.Pages.Drive {
                     ModeData = SelectedModeViewModel?.ToSerializedString(),
                     CarId = SelectedCar?.Id,
                     TrackId = SelectedTrack?.IdWithLayout,
-                    WeatherId = SelectedWeather is WeatherTypeWrapped wrapped ? $@"*{((int)wrapped.Type).ToInvariantString()}" : SelectedWeatherObject?.Id,
+                    WeatherId = WeatherTypeWrapped.Serialize(SelectedWeather),
                     TrackPropertiesData = TrackState.ExportToPresetData(),
                     TrackPropertiesChanged = UserPresetsControl.IsChanged(TrackState.PresetableKey),
                     TrackPropertiesPresetFilename = UserPresetsControl.GetCurrentFilename(TrackState.PresetableKey),
@@ -618,19 +618,7 @@ namespace AcManager.Pages.Drive {
                     if (o.CarId != null) SelectedCar = CarsManager.Instance.GetById(o.CarId) ?? SelectedCar;
                     if (o.TrackId != null) SelectedTrack = TracksManager.Instance.GetLayoutById(o.TrackId) ?? SelectedTrack;
 
-                    if (_weatherId != null) {
-                        SelectedWeather = WeatherManager.Instance.GetById(_weatherId);
-                    } else if (o.WeatherId == null) {
-                        SelectedWeather = WeatherComboBox.RandomWeather;
-                    } else if (o.WeatherId.StartsWith(@"*")) {
-                        try {
-                            SelectedWeather = new WeatherTypeWrapped((WeatherType)(FlexibleParser.TryParseInt(o.WeatherId.Substring(1)) ?? 0));
-                        } catch (Exception e) {
-                            Logging.Error(e);
-                        }
-                    } else {
-                        SelectedWeather = WeatherManager.Instance.GetById(o.WeatherId) ?? SelectedWeather;
-                    }
+                    SelectedWeather = WeatherTypeWrapped.Deserialize(_weatherId ?? o.WeatherId) ?? SelectedWeather;
 
                     if (forceAssistsLoading || IsToLoadAssists()) {
                         LoadPreset(AssistsViewModel, o.AssistsPresetFilename, o.AssistsData, o.AssistsChanged);

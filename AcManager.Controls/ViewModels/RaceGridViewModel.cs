@@ -372,7 +372,7 @@ namespace AcManager.Controls.ViewModels {
                 BuiltInGridMode.SameCar,
                 _randomGroup,
                 BuiltInGridMode.Custom,
-                _presetsHelper.Create(PresetableCategory, p => { ImportFromPresetData(p.ReadData()); }, ControlsStrings.Common_Presets)
+                _presetsHelper.Create(PresetableCategory, p => ImportFromPresetData(p.ReadData()), ControlsStrings.Common_Presets)
             };
 
             NonfilteredList.CollectionChanged += OnCollectionChanged;
@@ -745,10 +745,11 @@ namespace AcManager.Controls.ViewModels {
                 OnPropertyChanged(nameof(IsBusy));
                 ErrorMessage = null;
 
-                Again:
-                var mode = Mode;
-                var candidates = await FindCandidates();
-                if (mode != Mode) goto Again;
+                IReadOnlyList<RaceGridEntry> candidates = null;
+                for (IRaceGridMode mode = null; mode != Mode;) {
+                    mode = Mode;
+                    candidates = await FindCandidates();
+                }
 
                 // I’ve seen that XKCD comic, but I still think goto is more
                 // suitable than a loop here.
@@ -1309,6 +1310,16 @@ namespace AcManager.Controls.ViewModels {
         #endregion
 
         #region Generation
+        private bool _forceFixedSeed;
+
+        /// <summary>
+        /// With fixed seed, exactly the same game entries will be generated if settings are the same.
+        /// </summary>
+        public bool ForceFixedSeed {
+            get => _forceFixedSeed;
+            set => Apply(value, ref _forceFixedSeed);
+        }
+
         [ItemCanBeNull]
         public async Task<IList<Game.AiCar>> GenerateGameEntries(CancellationToken cancellation = default(CancellationToken)) {
             if (IsBusy) {
@@ -1321,15 +1332,19 @@ namespace AcManager.Controls.ViewModels {
                 return new Game.AiCar[0];
             }
 
+            var random = ForceFixedSeed
+                    ? new Random(_saveable.ToSerializedString()?.GetHashCode() ?? 0)
+                    : MathUtils.RandomInstance;
+
             var skinsFilter = GetSkinsFilter();
-            var skins = await GenerateGameEntries_Skins(cancellation, skinsFilter);
+            var skins = await GenerateGameEntries_Skins(cancellation, skinsFilter, random);
             var skinsInOrder = SequentialSkins;
             if (cancellation.IsCancellationRequested) return null;
 
-            var nameNationalities = GenerateGameEntries_NameNationalities(opponentsNumber);
-            var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber);
-            var aiAggressions = GenerateGameEntries_AiAggressions(opponentsNumber);
-            var final = GenerateGameEntries_FinalStep(opponentsNumber, skinsFilter);
+            var nameNationalities = GenerateGameEntries_NameNationalities(opponentsNumber, random);
+            var aiLevels = GenerateGameEntries_AiLevels(opponentsNumber, random);
+            var aiAggressions = GenerateGameEntries_AiAggressions(opponentsNumber, random);
+            var final = GenerateGameEntries_FinalStep(opponentsNumber, skinsFilter, random);
 
             if (_playerCar != null) {
                 skins.GetValueOrDefault(_playerCar.Id)?.IgnoreOnce(_playerCar.SelectedSkin);
@@ -1358,7 +1373,7 @@ namespace AcManager.Controls.ViewModels {
                 if (string.IsNullOrWhiteSpace(name) && SettingsHolder.Drive.QuickDriveUseSkinNames) {
                     var skinDriverNames = skin?.DriverName?.Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
                     if (skinDriverNames?.Count > 0) {
-                        name = GoodShuffle.Get(skinDriverNames).Take(skinDriverNames.Count).FirstOrDefault(x => !takenNames.Contains(x)) ?? name;
+                        name = GoodShuffle.Get(skinDriverNames, random).Take(skinDriverNames.Count).FirstOrDefault(x => !takenNames.Contains(x)) ?? name;
                         takenNames.Add(name);
                     }
                 }
@@ -1422,7 +1437,7 @@ namespace AcManager.Controls.ViewModels {
 
         [NotNull]
         private async Task<Dictionary<string, GoodShuffle<CarSkinObject>>> GenerateGameEntries_Skins(CancellationToken cancellation,
-                [CanBeNull] IFilter<CarSkinObject> skinsFilter) {
+                [CanBeNull] IFilter<CarSkinObject> skinsFilter, [NotNull] Random random) {
             var skins = new Dictionary<string, GoodShuffle<CarSkinObject>>();
             foreach (var car in FilteredView.OfType<RaceGridEntry>().Where(x => x.CarSkin == null).Select(x => x.Car).Distinct()) {
                 await car.SkinsManager.EnsureLoadedAsync();
@@ -1441,13 +1456,13 @@ namespace AcManager.Controls.ViewModels {
                     }
                 }
 
-                skins[car.Id] = GoodShuffle.Get(candidates);
+                skins[car.Id] = GoodShuffle.Get(candidates, random);
             }
             return skins;
         }
 
         [CanBeNull]
-        private static NameNationality[] GenerateGameEntries_NameNationalities(int opponentsNumber) {
+        private static NameNationality[] GenerateGameEntries_NameNationalities(int opponentsNumber, [NotNull] Random random) {
             if (opponentsNumber == 7 && OptionNfsPorscheNames) {
                 return new[] {
                     new NameNationality { Name = "Dylan", Nationality = "Wales" },
@@ -1461,12 +1476,12 @@ namespace AcManager.Controls.ViewModels {
             }
 
             return DataProvider.Instance.NationalitiesAndNames.Any()
-                    ? GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList).Take(opponentsNumber).ToArray()
+                    ? GoodShuffle.Get(DataProvider.Instance.NationalitiesAndNamesList, random).Take(opponentsNumber).ToArray()
                     : null;
         }
 
         [CanBeNull]
-        private List<double> GenerateGameEntries_AiLevels(int opponentsNumber) {
+        private List<double> GenerateGameEntries_AiLevels(int opponentsNumber, [NotNull] Random random) {
             if (AiLevelFixed) return null;
 
             var aiLevelsInner = from i in Enumerable.Range(0, opponentsNumber)
@@ -1476,16 +1491,16 @@ namespace AcManager.Controls.ViewModels {
             }
 
             if (Equals(AiLevelArrangeRandom, 1d)) {
-                aiLevelsInner = GoodShuffle.Get(aiLevelsInner);
+                aiLevelsInner = GoodShuffle.Get(aiLevelsInner, random);
             } else if (AiLevelArrangeRandom > 0d) {
-                aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom);
+                aiLevelsInner = LimitedShuffle.Get(aiLevelsInner, AiLevelArrangeRandom, random);
             }
 
             return aiLevelsInner.Take(opponentsNumber).ToList();
         }
 
         [CanBeNull]
-        private List<double> GenerateGameEntries_AiAggressions(int opponentsNumber) {
+        private List<double> GenerateGameEntries_AiAggressions(int opponentsNumber, [NotNull] Random random) {
             if (AiAggressionFixed) return null;
 
             var aiAggressionsInner = from i in Enumerable.Range(0, opponentsNumber)
@@ -1496,33 +1511,33 @@ namespace AcManager.Controls.ViewModels {
             }
 
             if (Equals(AiAggressionArrangeRandom, 1d)) {
-                aiAggressionsInner = GoodShuffle.Get(aiAggressionsInner);
+                aiAggressionsInner = GoodShuffle.Get(aiAggressionsInner, random);
             } else if (AiAggressionArrangeRandom > 0d) {
-                aiAggressionsInner = LimitedShuffle.Get(aiAggressionsInner, AiAggressionArrangeRandom);
+                aiAggressionsInner = LimitedShuffle.Get(aiAggressionsInner, AiAggressionArrangeRandom, random);
             }
 
             return aiAggressionsInner.Take(opponentsNumber).ToList();
         }
 
         [NotNull]
-        private IEnumerable<RaceGridEntry> GenerateGameEntries_FinalStep(int opponentsNumber, IFilter<CarSkinObject> skinsFilter) {
+        private IEnumerable<RaceGridEntry> GenerateGameEntries_FinalStep(int opponentsNumber, IFilter<CarSkinObject> skinsFilter, [NotNull] Random random) {
             if (!Mode.CandidatesMode) return NonfilteredList.Where(x => !x.SpecialEntry);
 
             var allowed = VarietyLimitation <= 0 ? null
-                    : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct()).Take(VarietyLimitation.Clamp(1, 1000)).ToList();
+                    : GoodShuffle.Get(FilteredView.OfType<RaceGridEntry>().Select(x => x.Car).Distinct(), random).Take(VarietyLimitation.Clamp(1, 1000)).ToList();
             var list = FilteredView.OfType<RaceGridEntry>().SelectMany(x => allowed?.Contains(x.Car) != false
                     ? new[] { x }.Repeat(x.CandidatePriority) : new RaceGridEntry[0]).ToList();
 
             if (!ShuffleCandidates) {
                 var skip = _playerCar;
-                return FixLinearSkinsIfNeeded(LinqExtension.RangeFrom().Select(x => list.RandomElement()).Where(x => {
+                return FixLinearSkinsIfNeeded(LinqExtension.RangeFrom().Select(x => list.RandomElement(random)).Where(x => {
                     if (x.Car != skip) return true;
                     skip = null;
                     return false;
                 }).Take(opponentsNumber));
             }
 
-            var shuffled = GoodShuffle.Get(list);
+            var shuffled = GoodShuffle.Get(list, random);
             if (_playerCar != null) {
                 var same = list.FirstOrDefault(x => x.Car == _playerCar);
                 if (same != null) {
@@ -1545,7 +1560,7 @@ namespace AcManager.Controls.ViewModels {
                 foreach (var entry in inputList) {
                     var entryIndex = index++;
                     if (!entry.HasSkinFor(entryIndex)) {
-                        yield return list.Where(x => x.HasSkinFor(entryIndex)).RandomElementOrDefault() ?? entry;
+                        yield return list.Where(x => x.HasSkinFor(entryIndex)).RandomElementOrDefault(random) ?? entry;
                     } else {
                         yield return entry;
                     }

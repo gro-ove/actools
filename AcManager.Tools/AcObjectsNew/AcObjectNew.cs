@@ -9,7 +9,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcObjectsNew {
     public abstract class AcObjectNew : AcPlaceholderNew {
-        public static string OptionDebugLoading = @"abarth500";
+        public static string OptionDebugLoading = null;
 
         protected readonly IAcManagerNew Manager;
 

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Windows.Input;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
@@ -90,7 +91,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public double RoadTemperature => Game.ConditionProperties.GetRoadTemperature(Time, Temperature,
-                Weather?.TemperatureCoefficient ?? 0d);
+                WeatherObject?.TemperatureCoefficient ?? 0d);
 
         private int _lapsCount = 5;
 
@@ -105,17 +106,28 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private WeatherObject _weather;
+        private object _weather;
 
         [JsonIgnore, CanBeNull]
-        public WeatherObject Weather {
+        public object Weather {
             get => _weather;
-            set => Apply(value, ref _weather);
+            set => Apply(value, ref _weather, RefreshWeatherObject);
+        }
+
+        [CanBeNull]
+        public WeatherObject WeatherObject { get; private set; }
+
+        private void RefreshWeatherObject() {
+            var o = WeatherTypeWrapped.Unwrap(Weather, Time, Temperature);
+            if (o != WeatherObject) {
+                WeatherObject = o;
+                OnPropertyChanged(nameof(WeatherObject));
+            }
         }
 
         [JsonProperty(@"weather")]
         public string WeatherId {
-            get { return Weather?.Id; }
+            get { return WeatherTypeWrapped.Serialize(Weather); }
             private set {
                 // ignored
             }
@@ -177,7 +189,7 @@ namespace AcManager.Tools.Objects {
 
             TrackId = track ?? TracksManager.Instance.GetDefault()?.IdWithLayout ?? @"imola";
             Track = TracksManager.Instance.GetLayoutById(TrackId);
-            Weather = weather == null ? null : WeatherManager.Instance.GetById(weather);
+            Weather = WeatherTypeWrapped.Deserialize(weather);
             TrackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(surface) ?? Game.GetDefaultTrackPropertiesPreset();
         }
 

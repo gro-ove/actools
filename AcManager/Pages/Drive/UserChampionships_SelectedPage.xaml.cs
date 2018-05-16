@@ -174,8 +174,8 @@ namespace AcManager.Pages.Drive {
                 if (!round.IsAvailable) return;
 
                 var time = round.Time;
-                var weather = round.Weather;
                 var temperature = round.Temperature;
+                var weather = WeatherTypeWrapped.Unwrap(round.Weather, time, temperature);
 
                 if (_acObject.RealConditions) {
                     if (ConditionsLoading) {
@@ -311,7 +311,7 @@ namespace AcManager.Pages.Drive {
                 if (!_currentSet || !_acObject.RealConditions) {
                     _currentSet = true;
                     _currentRoundTemperature = round.Temperature;
-                    _currentRoundWeather = round.Weather;
+                    _currentRoundWeather = WeatherTypeWrapped.Unwrap(round.Weather, _currentRoundTime, _currentRoundTemperature);
                 }
 
                 if (!_acObject.RealConditions) {

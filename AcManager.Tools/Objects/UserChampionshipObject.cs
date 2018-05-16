@@ -98,24 +98,14 @@ namespace AcManager.Tools.Objects {
 
         public bool ChangedData {
             get => _changedData;
-            private set {
-                if (Equals(value, _changedData)) return;
-                _changedData = value;
-                OnPropertyChanged();
-                UpdateChanged();
-            }
+            private set => Apply(value, ref _changedData, UpdateChanged);
         }
 
         private bool _changedExtended;
 
         public bool ChangedExtended {
             get => _changedExtended;
-            private set {
-                if (Equals(value, _changedExtended)) return;
-                _changedExtended = value;
-                OnPropertyChanged();
-                UpdateChanged();
-            }
+            private set => Apply(value, ref _changedExtended, UpdateChanged);
         }
 
         #region Original properties
