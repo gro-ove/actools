@@ -193,7 +193,7 @@ namespace AcManager.Pages.Drive {
 
             private void RefreshSelectedWeatherObject() {
                 var o = WeatherComboBox.Unwrap(SelectedWeather, Time, Temperature);
-                if (o != null && o != SelectedWeatherObject) {
+                if (o != SelectedWeatherObject) {
                     SelectedWeatherObject = o;
                     OnPropertyChanged(nameof(SelectedWeatherObject));
                 }

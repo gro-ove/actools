@@ -18,7 +18,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public int Index {
-            get { return _index; }
+            get => _index;
             set => Apply(value, ref _index);
         }
 
@@ -37,7 +37,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore, CanBeNull]
         public TrackObjectBase Track {
-            get { return _track; }
+            get => _track;
             set {
                 if (Equals(value, _track)) return;
                 _track = value;
@@ -65,7 +65,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty(@"time")]
         public int Time {
-            get { return _time; }
+            get => _time;
             set {
                 value = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                 if (Equals(value, _time)) return;
@@ -78,7 +78,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty(@"temperature")]
         public double Temperature {
-            get { return _temperature; }
+            get => _temperature;
             set {
                 value = value.Round(0.5).Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
                 if (Equals(value, _temperature)) return;
@@ -96,7 +96,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty(@"laps")]
         public int LapsCount {
-            get { return _lapsCount; }
+            get => _lapsCount;
             set {
                 value = value.Clamp(1, 999);
                 if (Equals(value, _lapsCount)) return;
@@ -109,7 +109,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore, CanBeNull]
         public WeatherObject Weather {
-            get { return _weather; }
+            get => _weather;
             set => Apply(value, ref _weather);
         }
 
@@ -125,7 +125,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public Game.TrackPropertiesPreset TrackProperties {
-            get { return _trackProperties; }
+            get => _trackProperties;
             set => Apply(value, ref _trackProperties);
         }
 
@@ -136,7 +136,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty(@"description")]
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (value != null) {
                     value = value.Trim();
@@ -193,7 +193,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public int TakenPlace {
-            get { return _takenPlace; }
+            get => _takenPlace;
             set => Apply(value, ref _takenPlace);
         }
 
@@ -201,7 +201,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public bool IsAvailable {
-            get { return _isAvailable; }
+            get => _isAvailable;
             set => Apply(value, ref _isAvailable);
         }
 
@@ -209,7 +209,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonIgnore]
         public bool IsPassed {
-            get { return _isPassed; }
+            get => _isPassed;
             set => Apply(value, ref _isPassed);
         }
         #endregion

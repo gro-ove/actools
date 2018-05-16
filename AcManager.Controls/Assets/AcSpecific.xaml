@@ -35,7 +35,7 @@
     <VisualBrush.Visual>
       <Canvas Width="8" Height="8">
         <Rectangle Fill="{DynamicResource GoldBrush}" Width="8" Height="8" />
-        <Rectangle Fill="MediumSeaGreen" Margin="0 4 0 0" Width="8" Height="4" />
+        <Rectangle Fill="OliveDrab" Margin="0 4 0 0" Width="8" Height="4" />
         <Path Fill="{DynamicResource GoldBrush}" Width="8" Height="8">
           <Path.Data>
             <PathGeometry>
@@ -53,6 +53,15 @@
             </PathGeometry>
           </Path.Data>
         </Path>
+      </Canvas>
+    </VisualBrush.Visual>
+  </VisualBrush>
+
+  <VisualBrush x:Key="UltimateBrushEllipse">
+    <VisualBrush.Visual>
+      <Canvas Width="8" Height="8">
+        <Rectangle Fill="DarkOliveGreen" Width="8" Height="8" />
+        <Ellipse Fill="{DynamicResource GoldBrush}" Width="5" Height="7" Margin="1.5 -2 1.5 3" />
       </Canvas>
     </VisualBrush.Visual>
   </VisualBrush>
