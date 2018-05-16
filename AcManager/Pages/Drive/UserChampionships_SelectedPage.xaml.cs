@@ -218,7 +218,7 @@ namespace AcManager.Pages.Drive {
                     var trackId = round.TrackId.Split('/');
                     await GameWrapper.StartAsync(new Game.StartProperties(new Game.BasicProperties {
                         CarId = userCar.CarId,
-                        CarSkinId = userCar.SkinId,
+                        CarSkinId = userCar.CarSkinId,
                         TrackId = trackId[0],
                         TrackConfigurationId = trackId.ArrayElementAtOrDefault(1)
                     }, o?.ToGameProperties(), conditions, round.TrackProperties.Properties, new Game.WeekendProperties {
@@ -466,7 +466,7 @@ namespace AcManager.Pages.Drive {
             if (userCar?.Car == null) return;
 
             var carObject = userCar.Car;
-            var carSkin = userCar.Skin;
+            var carSkin = userCar.CarSkin;
 
             var control = new CarBlock {
                 Car = carObject,
@@ -489,7 +489,7 @@ namespace AcManager.Pages.Drive {
             dialog.ShowDialog();
 
             if (dialog.IsResultOk && SettingsHolder.Drive.KunosCareerUserSkin) {
-                userCar.Skin = control.SelectedSkin;
+                userCar.CarSkin = control.SelectedSkin;
             }
         }
 
@@ -498,7 +498,7 @@ namespace AcManager.Pages.Drive {
             if (userCar?.Car == null) return;
 
             var carObject = userCar.Car;
-            var carSkin = userCar.Skin;
+            var carSkin = userCar.CarSkin;
 
             await carObject.SkinsManager.EnsureLoadedAsync();
 
@@ -511,7 +511,7 @@ namespace AcManager.Pages.Drive {
                     };
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                userCar.Skin = viewer.SelectDialog() ?? carSkin;
+                userCar.CarSkin = viewer.SelectDialog() ?? carSkin;
             } else {
                 viewer.ShowDialog();
             }

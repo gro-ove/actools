@@ -132,7 +132,7 @@ namespace AcManager.Tools.Objects {
                     Ballast = x.Ballast,
                     Restrictor = x.Restrictor,
                     Nationality = x.Nationality
-                }).Prepend(userCar == null ? null : new UserChampionshipDriver(UserChampionshipDriver.PlayerName, userCar.CarId, userCar.SkinId))
+                }).Prepend(userCar == null ? null : new UserChampionshipDriver(UserChampionshipDriver.PlayerName, userCar.CarId, userCar.CarSkinId))
                                        .NonNull().ToArray();
             } finally {
                 _setDriversQuietly = false;
@@ -313,35 +313,35 @@ namespace AcManager.Tools.Objects {
             [NotNull]
             public string CarId { get; }
 
-            public PlayerCarEntry(string carId, string skinId) {
+            public PlayerCarEntry(string carId, string carSkinId) {
                 _car = Lazier.Create(() => CarsManager.Instance.GetById(CarId));
-                _skin = Lazier.Create(() => SkinId == null ? null : Car?.GetSkinById(SkinId));
+                _carSkin = Lazier.Create(() => CarSkinId == null ? null : Car?.GetSkinById(CarSkinId));
 
                 CarId = carId;
-                SkinId = skinId;
+                CarSkinId = carSkinId;
             }
 
-            public PlayerCarEntry(CarObject car, CarSkinObject skin) : this(car.Id, skin.Id) {}
+            public PlayerCarEntry(CarObject car, CarSkinObject carSkin) : this(car.Id, carSkin.Id) {}
 
             private readonly Lazier<CarObject> _car;
-            private readonly Lazier<CarSkinObject> _skin;
+            private readonly Lazier<CarSkinObject> _carSkin;
 
             [CanBeNull]
             public CarObject Car => _car.Value;
 
-            public CarSkinObject Skin {
-                get => _skin.Value;
-                set => SkinId = value?.Id;
+            public CarSkinObject CarSkin {
+                get => _carSkin.Value;
+                set => CarSkinId = value?.Id;
             }
 
-            private string _skinId;
+            private string _carSkinId;
 
             [CanBeNull]
-            public string SkinId {
-                get => _skinId;
-                set => Apply(value, ref _skinId, () => {
-                    _skin.Reset();
-                    OnPropertyChanged(nameof(Skin));
+            public string CarSkinId {
+                get => _carSkinId;
+                set => Apply(value, ref _carSkinId, () => {
+                    _carSkin.Reset();
+                    OnPropertyChanged(nameof(CarSkin));
                 });
             }
         }
@@ -508,7 +508,7 @@ namespace AcManager.Tools.Objects {
             return result;
         }
 
-        private void OnExtendedRoundsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
+        private void OnExtendedRoundsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
             UpdateExtendedRoundsIndex();
             UpdateCoherentTime();
             UpdateMaxCars();
@@ -800,7 +800,7 @@ namespace AcManager.Tools.Objects {
             // outside, don’t forget to update Drivers array as well.
             var playerCar = MainPlayerCarEntry;
             var player = playerCar != null
-                    ? new UserChampionshipDriver(UserChampionshipDriver.PlayerName, playerCar.CarId, playerCar.SkinId?.ToLowerInvariant())
+                    ? new UserChampionshipDriver(UserChampionshipDriver.PlayerName, playerCar.CarId, playerCar.CarSkinId?.ToLowerInvariant())
                     : null;
             json[@"opponents"] = JArray.FromObject(Drivers.Where(x => !x.IsPlayer).Prepend(player).NonNull());
 
@@ -1090,7 +1090,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private void OnUserCarSkinChanged(object s, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(PlayerCarEntry.SkinId)) {
+            if (e.PropertyName == nameof(PlayerCarEntry.CarSkinId)) {
                 OnPropertyChanged(nameof(UserCarSkin));
             }
         }
@@ -1099,7 +1099,7 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public CarSkinObject UserCarSkin {
-            get => _userPlayerCarSkin ?? UserCar?.Skin;
+            get => _userPlayerCarSkin ?? UserCar?.CarSkin;
             set => Apply(value, ref _userPlayerCarSkin);
         }
 

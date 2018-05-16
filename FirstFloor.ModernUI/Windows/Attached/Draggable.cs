@@ -128,14 +128,19 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             if (e.Property == EnabledProperty && (GetData(element) != null || e.OldValue as bool? != false)) return;
 
             MouseEventHandler handler;
-            if (element is DataGrid grid) {
-                handler = OnDataGridMouseMove;
-            } else if (element is ListBox) {
-                handler = OnListBoxMouseMove;
-            } else if (element is ItemsControl) {
-                handler = OnItemsControlMouseMove;
-            } else {
-                handler = OnElementMouseMove;
+            switch (element) {
+                case DataGrid _:
+                    handler = OnDataGridMouseMove;
+                    break;
+                case ListBox _:
+                    handler = OnListBoxMouseMove;
+                    break;
+                case ItemsControl _:
+                    handler = OnItemsControlMouseMove;
+                    break;
+                default:
+                    handler = OnElementMouseMove;
+                    break;
             }
 
             if (e.Property == DataProperty && e.NewValue != null ||

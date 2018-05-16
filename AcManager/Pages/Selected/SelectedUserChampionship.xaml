@@ -310,20 +310,20 @@
         </Grid.ColumnDefinitions>
 
         <mui:SpacingStackPanel Spacing="20" Margin="0 8 20 0">
-          <ItemsControl ItemsSource="{Binding SelectedObject.PlayerCarEntries}">
+          <ItemsControl ItemsSource="{Binding SelectedObject.PlayerCarEntries}" Drop="OnCarBlockDrop">
             <ItemsControl.ItemTemplate>
               <DataTemplate>
                 <DockPanel Margin="4 0">
                   <!--Drop="OnCarBlockDrop"-->
                   <mui:Cell Width="160" Height="120" Background="Gray" mui:Draggable.Data="{Binding Car}" AllowDrop="True" MouseLeftButtonUp="OnCarBlockClick"
                       ClipToBounds="True">
-                    <mui:BetterImage Filename="{Binding Skin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                    <mui:BetterImage Filename="{Binding CarSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
                     <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
                         Text="{Binding Car.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
                   </mui:Cell>
 
                   <ListBox ItemsSource="{Binding Car.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                      ScrollViewer.CanContentScroll="True" Margin="8 0 0 0" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding Skin}"
+                      ScrollViewer.CanContentScroll="True" Margin="8 0 0 0" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding CarSkin}"
                       VerticalAlignment="Top" MaxHeight="120" BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}">
                     <ListBox.ItemsPanel>
                       <ItemsPanelTemplate>
@@ -336,7 +336,6 @@
               </DataTemplate>
             </ItemsControl.ItemTemplate>
           </ItemsControl>
-
 
           <mui:SpacingUniformGrid Columns="1" VerticalSpacing="8">
             <StackPanel>

@@ -500,24 +500,11 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        /*private void OnCarBlockDrop(object sender, DragEventArgs e) {
-            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
-            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
-
-            if (raceGridEntry == null && carObject == null) {
-                e.Effects = DragDropEffects.None;
-                return;
-            }
-
-            _model.SelectedObject.SetPlayerCar(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin ?? carObject?.SelectedSkin);
-            e.Effects = DragDropEffects.Copy;
-        }*/
-
         private void OnCarBlockClick(object sender, RoutedEventArgs e) {
             if (e.Handled) return;
             if (((FrameworkElement)sender).DataContext is UserChampionshipObject.PlayerCarEntry playerCar) {
                 var dialog = new SelectCarDialog(playerCar.Car) {
-                    SelectedSkin = playerCar.Skin
+                    SelectedSkin = playerCar.CarSkin
                 };
 
                 dialog.ShowDialog();
@@ -527,6 +514,25 @@ namespace AcManager.Pages.Selected {
 
                 e.Handled = true;
             }
+        }
+
+        private void OnCarBlockDrop(object sender, DragEventArgs e) {
+            // TODO
+            var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
+            var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
+
+            if (raceGridEntry == null && carObject == null) {
+                e.Effects = DragDropEffects.None;
+                return;
+            }
+
+            _model.SelectedObject.PlayerCarEntries.ReplaceEverythingBy_Direct(new[] {
+                raceGridEntry == null
+                        ? new UserChampionshipObject.PlayerCarEntry(carObject, carObject.SelectedSkin)
+                        : new UserChampionshipObject.PlayerCarEntry(raceGridEntry.Car, raceGridEntry.CarSkin)
+            });
+
+            e.Effects = DragDropEffects.Copy;
         }
 
         private void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {
