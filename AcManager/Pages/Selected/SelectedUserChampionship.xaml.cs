@@ -152,8 +152,9 @@ namespace AcManager.Pages.Selected {
                     case nameof(UserChampionshipObject.SerializedRaceGridData):
                         LoadRaceGridLaterAsync().Forget();
                         break;
-                    case nameof(UserChampionshipObject.PlayerCar):
-                        RaceGridViewModel.PlayerCar = SelectedObject.PlayerCar;
+                    case nameof(UserChampionshipObject.MainPlayerCarEntry):
+                        // TODO: Several cars
+                        RaceGridViewModel.PlayerCar = SelectedObject.MainPlayerCarEntry?.Car;
                         break;
                     case nameof(UserChampionshipObject.MaxCars):
                         RaceGridViewModel.TrackPitsNumber = SelectedObject.MaxCars;
@@ -237,7 +238,8 @@ namespace AcManager.Pages.Selected {
                         RaceGridViewModel.FinishLoading();
                     }
 
-                    RaceGridViewModel.PlayerCar = SelectedObject.PlayerCar;
+                    // TODO: Several cars
+                    RaceGridViewModel.PlayerCar = SelectedObject.MainPlayerCarEntry?.Car;
                     RaceGridViewModel.TrackPitsNumber = SelectedObject.MaxCars;
                 } finally {
                     RaceGridViewModel.LoadingFromOutside = false;
@@ -300,14 +302,8 @@ namespace AcManager.Pages.Selected {
                         var generated = await RaceGridViewModel.GenerateGameEntries(tokenSource.Token);
                         if (generated == null) return;
 
-                        SetDrivers(generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
-                            AiLevel = x.AiLevel,
-                            AiAggression = x.AiAggression,
-                            Ballast = x.Ballast,
-                            Restrictor = x.Restrictor,
-                            Nationality = x.Nationality
-                        }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, SelectedObject.PlayerCarId,
-                                SelectedObject.PlayerCarSkinId)).ToArray());
+                        SelectedObject.UpdateDriversSilently(generated);
+                        UpdatePointsArray();
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t create race grid", e);
@@ -341,7 +337,7 @@ namespace AcManager.Pages.Selected {
                 });
             }));
 
-            private ICommand _changeCarCommand;
+            /*private ICommand _changeCarCommand;
 
             public ICommand ChangeCarCommand => _changeCarCommand ?? (_changeCarCommand = new DelegateCommand(() => {
                 var dialog = new SelectCarDialog(SelectedObject.PlayerCar) {
@@ -352,7 +348,7 @@ namespace AcManager.Pages.Selected {
                 if (dialog.IsResultOk && dialog.SelectedCar != null) {
                     SelectedObject.SetPlayerCar(dialog.SelectedCar, dialog.SelectedSkin);
                 }
-            }));
+            }));*/
 
             private CommandBase _updatePreviewDirectCommand;
 
@@ -504,7 +500,7 @@ namespace AcManager.Pages.Selected {
             }
         }
 
-        private void OnCarBlockDrop(object sender, DragEventArgs e) {
+        /*private void OnCarBlockDrop(object sender, DragEventArgs e) {
             var raceGridEntry = e.Data.GetData(RaceGridEntry.DraggableFormat) as RaceGridEntry;
             var carObject = e.Data.GetData(CarObject.DraggableFormat) as CarObject;
 
@@ -515,11 +511,22 @@ namespace AcManager.Pages.Selected {
 
             _model.SelectedObject.SetPlayerCar(carObject ?? raceGridEntry.Car, raceGridEntry?.CarSkin ?? carObject?.SelectedSkin);
             e.Effects = DragDropEffects.Copy;
-        }
+        }*/
 
         private void OnCarBlockClick(object sender, RoutedEventArgs e) {
             if (e.Handled) return;
-            _model.ChangeCarCommand.Execute(null);
+            if (((FrameworkElement)sender).DataContext is UserChampionshipObject.PlayerCarEntry playerCar) {
+                var dialog = new SelectCarDialog(playerCar.Car) {
+                    SelectedSkin = playerCar.Skin
+                };
+
+                dialog.ShowDialog();
+                if (dialog.IsResultOk && dialog.SelectedCar != null) {
+                    _model.SelectedObject.PlayerCarEntries.Replace(playerCar, new UserChampionshipObject.PlayerCarEntry(dialog.SelectedCar, dialog.SelectedSkin));
+                }
+
+                e.Handled = true;
+            }
         }
 
         private void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {

@@ -37,6 +37,7 @@ namespace AcManager.Pages.Dialogs {
 
         private CarSkinObject _selectedSkin;
 
+        [CanBeNull]
         public CarSkinObject SelectedSkin {
             get => _selectedSkin;
             set {
@@ -49,6 +50,7 @@ namespace AcManager.Pages.Dialogs {
 
         private readonly DelayedPropertyWrapper<CarObject> _selectedCar;
 
+        [CanBeNull]
         public CarObject SelectedCar {
             get => _selectedCar.Value;
             set => _selectedCar.Value = value ?? SelectedCar;
@@ -56,6 +58,7 @@ namespace AcManager.Pages.Dialogs {
 
         private CarObject _selectedTunableVersion;
 
+        [CanBeNull]
         public CarObject SelectedTunableVersion {
             get => _selectedTunableVersion;
             set {
@@ -100,7 +103,7 @@ namespace AcManager.Pages.Dialogs {
                 return;
             }
 
-            var parent = SelectedCar.ParentId == null ? SelectedCar : SelectedCar.Parent;
+            var parent = SelectedCar?.ParentId == null ? SelectedCar : SelectedCar.Parent;
             if (parent == _previousTunableParent) {
                 return;
             }
@@ -179,7 +182,7 @@ namespace AcManager.Pages.Dialogs {
                     $"enabled+&country:{Filter.Encode(country)}", country);
         }
 
-        public SelectCarDialog(CarObject car, string defaultFilter = null) {
+        public SelectCarDialog([CanBeNull] CarObject car, string defaultFilter = null) {
             _selectedCar = new DelayedPropertyWrapper<CarObject>(SelectedCarChanged);
 
             SelectedCar = car;
@@ -239,7 +242,7 @@ namespace AcManager.Pages.Dialogs {
 
         private bool _loaded;
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (_loaded) return;
+            if (_loaded || SelectedCar == null) return;
             _loaded = true;
             CarsManager.Instance.WrappersList.ItemPropertyChanged += OnListItemPropertyChanged;
             CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
@@ -344,6 +347,7 @@ namespace AcManager.Pages.Dialogs {
         private DelegateCommand _toggleFavouriteCommand;
 
         public DelegateCommand ToggleFavouriteCommand => _toggleFavouriteCommand ?? (_toggleFavouriteCommand = new DelegateCommand(() => {
+            if (SelectedCar == null) return;
             SelectedCar.IsFavourite = !SelectedCar.IsFavourite;
         }, () => SelectedCar != null));
 

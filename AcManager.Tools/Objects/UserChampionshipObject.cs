@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
@@ -21,6 +22,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -51,7 +53,10 @@ namespace AcManager.Tools.Objects {
         // ReSharper disable once NotNullMemberIsNotInitialized
         // InitializeLocations() will be called immediately
         public UserChampionshipObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+                : base(manager, id, enabled) {
+            PlayerCarEntries.CollectionChanged += OnPlayerCarsCollectionChanged;
+            PlayerCarEntries.ItemPropertyChanged += OnPlayerCarsPropertyChanged;
+        }
 
         protected override void InitializeLocations() {
             base.InitializeLocations();
@@ -116,6 +121,25 @@ namespace AcManager.Tools.Objects {
             private set => Apply(value, ref _rules);
         }
 
+        public void UpdateDriversSilently(IEnumerable<Game.AiCar> generatedGrid) {
+            _setDriversQuietly = true;
+
+            try {
+                var userCar = UserCar;
+                Drivers = generatedGrid.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
+                    AiLevel = x.AiLevel,
+                    AiAggression = x.AiAggression,
+                    Ballast = x.Ballast,
+                    Restrictor = x.Restrictor,
+                    Nationality = x.Nationality
+                }).Prepend(userCar == null ? null : new UserChampionshipDriver(UserChampionshipDriver.PlayerName, userCar.CarId, userCar.SkinId))
+                                       .NonNull().ToArray();
+            } finally {
+                _setDriversQuietly = false;
+            }
+        }
+
+        private bool _setDriversQuietly;
         private List<UserChampionshipDriver> _drivers;
 
         public IReadOnlyList<UserChampionshipDriver> Drivers {
@@ -135,15 +159,18 @@ namespace AcManager.Tools.Objects {
 
                 _drivers = value?.ToListIfItIsNot();
 
-                if (Loaded) {
+                if (Loaded && !_setDriversQuietly) {
                     OnPropertyChanged();
                     ChangedData = true;
                 }
 
                 if (value != null) {
-                    var player = value.First(x => x.IsPlayer);
-                    PlayerCarId = player.CarId;
-                    PlayerCarSkinId = player.SkinId;
+                    if (!_setDriversQuietly) {
+                        var player = value.First(x => x.IsPlayer);
+                        PlayerCarEntries.ReplaceEverythingBy_Direct(new [] {
+                            new PlayerCarEntry(player.CarId, player.SkinId),
+                        });
+                    }
 
                     var aiLevelTo = 0d;
                     var aiLevelFrom = 100d;
@@ -282,80 +309,59 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         #region Car and car’s skin
-        private string _playerCarId;
+        public class PlayerCarEntry : NotifyPropertyChanged {
+            [NotNull]
+            public string CarId { get; }
 
-        public string PlayerCarId {
-            get => _playerCarId;
-            private set {
-                if (Equals(value, _playerCarId)) return;
+            public PlayerCarEntry(string carId, string skinId) {
+                _car = Lazier.Create(() => CarsManager.Instance.GetById(CarId));
+                _skin = Lazier.Create(() => SkinId == null ? null : Car?.GetSkinById(SkinId));
 
-                _playerCarId = value;
-                _playerCar = null;
-                _playerCarSet = false;
+                CarId = carId;
+                SkinId = skinId;
+            }
 
-                _playerCarSkin = null;
-                _playerCarSkinSet = false;
+            public PlayerCarEntry(CarObject car, CarSkinObject skin) : this(car.Id, skin.Id) {}
 
-                if (Loaded) {
-                    OnPropertyChanged();
-                    ChangedData = true;
-                    OnPropertyChanged(nameof(PlayerCar));
+            private readonly Lazier<CarObject> _car;
+            private readonly Lazier<CarSkinObject> _skin;
 
-                    UpdateCoherentTime();
-                }
+            [CanBeNull]
+            public CarObject Car => _car.Value;
+
+            public CarSkinObject Skin {
+                get => _skin.Value;
+                set => SkinId = value?.Id;
+            }
+
+            private string _skinId;
+
+            [CanBeNull]
+            public string SkinId {
+                get => _skinId;
+                set => Apply(value, ref _skinId, () => {
+                    _skin.Reset();
+                    OnPropertyChanged(nameof(Skin));
+                });
             }
         }
 
-        private CarObject _playerCar;
-        private bool _playerCarSet;
+        private PlayerCarEntry _mainPlayerCarEntry;
 
-        public CarObject PlayerCar {
-            get {
-                if (!_playerCarSet) {
-                    _playerCarSet = true;
-                    _playerCar = _playerCarId == null ? null : CarsManager.Instance.GetById(_playerCarId);
-                }
-                return _playerCar;
-            }
-            private set => PlayerCarId = value?.Id;
+        public PlayerCarEntry MainPlayerCarEntry {
+            get => _mainPlayerCarEntry;
+            set => Apply(value, ref _mainPlayerCarEntry);
         }
 
-        private string _playerCarSkinId;
+        public ChangeableObservableCollection<PlayerCarEntry> PlayerCarEntries { get; } = new ChangeableObservableCollection<PlayerCarEntry>();
 
-        public string PlayerCarSkinId {
-            get => _playerCarSkinId;
-            private set {
-                if (Equals(value, _playerCarSkinId)) return;
-                _playerCarSkinId = value;
-                _playerCarSkin = null;
-                _playerCarSkinSet = false;
+        private void OnPlayerCarsPropertyChanged(object sender, PropertyChangedEventArgs args) {}
 
-                if (Loaded) {
-                    OnPropertyChanged();
-                    ChangedData = true;
-                    OnPropertyChanged(nameof(PlayerCarSkin));
-                    OnPropertyChanged(nameof(UserPlayerCarSkin));
-                }
+        private void OnPlayerCarsCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
+            MainPlayerCarEntry = PlayerCarEntries.FirstOrDefault();
+            if (!PlayerCarEntries.Contains(UserCar)) {
+                UserCar = MainPlayerCarEntry;
             }
-        }
-
-        private CarSkinObject _playerCarSkin;
-        private bool _playerCarSkinSet;
-
-        public CarSkinObject PlayerCarSkin {
-            get {
-                if (!_playerCarSkinSet) {
-                    _playerCarSkinSet = true;
-                    _playerCarSkin = _playerCarSkinId == null ? null : PlayerCar.GetSkinById(_playerCarSkinId);
-                }
-                return _playerCarSkin;
-            }
-            set => PlayerCarSkinId = value?.Id;
-        }
-
-        public void SetPlayerCar(CarObject car, CarSkinObject carSkin = null) {
-            PlayerCar = car;
-            PlayerCarSkin = carSkin;
         }
         #endregion
 
@@ -452,7 +458,7 @@ namespace AcManager.Tools.Objects {
                 _updatingCoherentTime = true;
 
                 var time = rounds[0].Time;
-                var playerCar = PlayerCar;
+                var playerCar = MainPlayerCarEntry?.Car;
                 var interval = 20 * 60;
 
                 for (var i = 0; i < rounds.Count; i++) {
@@ -730,7 +736,7 @@ namespace AcManager.Tools.Objects {
                 var weather = (WeatherObject)WeatherManager.Instance.WrappersList.Where(y => y.Value.Enabled).ElementAtOrDefault(x.Weather)?.Loaded() ??
                         WeatherManager.Instance.GetDefault();
                 var trackProperties = Game.DefaultTrackPropertiesPresets.ElementAtOrDefault(x.Surface) ?? Game.GetDefaultTrackPropertiesPreset();
-                return new UserChampionshipRoundExtended (track) {
+                return new UserChampionshipRoundExtended(track) {
                     LapsCount = x.LapsCount,
                     TrackProperties = trackProperties,
                     Weather = weather
@@ -792,8 +798,11 @@ namespace AcManager.Tools.Objects {
             // Important note: while extended rounds are here, we can automatically convert them
             // to Kunos ones while saving, but it won’t work with extended racing grid. So, while changing it
             // outside, don’t forget to update Drivers array as well.
-            var player = new UserChampionshipDriver(UserChampionshipDriver.PlayerName, PlayerCarId, PlayerCarSkinId?.ToLowerInvariant());
-            json[@"opponents"] = JArray.FromObject(Drivers.Where(x => !x.IsPlayer).Prepend(player));
+            var playerCar = MainPlayerCarEntry;
+            var player = playerCar != null
+                    ? new UserChampionshipDriver(UserChampionshipDriver.PlayerName, playerCar.CarId, playerCar.SkinId?.ToLowerInvariant())
+                    : null;
+            json[@"opponents"] = JArray.FromObject(Drivers.Where(x => !x.IsPlayer).Prepend(player).NonNull());
 
             // Writing to a file
             File.WriteAllText(Location, json.ToString(Formatting.Indented));
@@ -1025,15 +1034,10 @@ namespace AcManager.Tools.Objects {
 
         #region Mimicking KunosCareerObject (might be useful later)
         public bool IsAvailable { get; } = true;
-
         public string DisplayRequired { get; } = null;
-
         public KunosCareerObjectType Type { get; } = KunosCareerObjectType.Championship;
-
         public int FirstPlacesGoal { get; } = 0;
-
         public int SecondPlacesGoal { get; } = 0;
-
         public int ThirdPlacesGoal { get; } = 0;
         #endregion
 
@@ -1055,9 +1059,8 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _resetUserAiLevelCommand;
 
-        public DelegateCommand ResetUserAiLevelCommand => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => {
-            UserAiLevelMultipler = 1d;
-        }));
+        public DelegateCommand ResetUserAiLevelCommand
+            => _resetUserAiLevelCommand ?? (_resetUserAiLevelCommand = new DelegateCommand(() => { UserAiLevelMultipler = 1d; }));
 
         public double UserAiLevelFrom => Math.Min(AiLevelFrom * UserAiLevelMultipler, 100d);
 
@@ -1068,13 +1071,35 @@ namespace AcManager.Tools.Objects {
 
         #region Progress
         public void ResetSkinToDefault() {
-            UserPlayerCarSkin = null;
+            UserCarSkin = null;
+        }
+
+        private PlayerCarEntry _userCar;
+
+        [CanBeNull]
+        public PlayerCarEntry UserCar {
+            get => _userCar ?? MainPlayerCarEntry;
+            set {
+                var oldValue = _userCar;
+                Apply(value, ref _userCar, () => {
+                    OnPropertyChanged(nameof(UserCarSkin));
+                    oldValue.UnsubscribeWeak(OnUserCarSkinChanged);
+                    value.SubscribeWeak(OnUserCarSkinChanged);
+                });
+            }
+        }
+
+        private void OnUserCarSkinChanged(object s, PropertyChangedEventArgs e) {
+            if (e.PropertyName == nameof(PlayerCarEntry.SkinId)) {
+                OnPropertyChanged(nameof(UserCarSkin));
+            }
         }
 
         private CarSkinObject _userPlayerCarSkin;
 
-        public CarSkinObject UserPlayerCarSkin {
-            get => _userPlayerCarSkin ?? PlayerCarSkin;
+        [CanBeNull]
+        public CarSkinObject UserCarSkin {
+            get => _userPlayerCarSkin ?? UserCar?.Skin;
             set => Apply(value, ref _userPlayerCarSkin);
         }
 
@@ -1115,8 +1140,10 @@ namespace AcManager.Tools.Objects {
         }
 
         public string DisplayChampionshipGoal
-            => ChampionshipPointsGoalType ? $@"[b]{ChampionshipPointsGoal}[/b] {PluralizingConverter.Pluralize(ChampionshipPointsGoal, ToolsStrings.KunosCareer_Point)}"
-                    : $@"[b]{ChampionshipRankingGoal.ToOrdinalShort(ToolsStrings.KunosCareer_Place)}[/b] {ToolsStrings.KunosCareer_Place}";
+            =>
+                    ChampionshipPointsGoalType
+                            ? $@"[b]{ChampionshipPointsGoal}[/b] {PluralizingConverter.Pluralize(ChampionshipPointsGoal, ToolsStrings.KunosCareer_Point)}"
+                            : $@"[b]{ChampionshipRankingGoal.ToOrdinalShort(ToolsStrings.KunosCareer_Place)}[/b] {ToolsStrings.KunosCareer_Place}";
 
         public string DisplayType => Type.GetDescription();
 
@@ -1372,9 +1399,16 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _championshipResetCommand;
 
-        public DelegateCommand ChampionshipResetCommand => _championshipResetCommand ?? (_championshipResetCommand = new DelegateCommand(() => {
-            UserChampionshipsProgress.Instance.UpdateEntry(Id.ApartFromLast(FileExtension), new UserChampionshipProgressEntry(0, null, 0, null), true);
-        }, () => Type == KunosCareerObjectType.Championship));
+        public DelegateCommand ChampionshipResetCommand
+            =>
+                    _championshipResetCommand
+                            ?? (_championshipResetCommand =
+                                    new DelegateCommand(
+                                            () => {
+                                                UserChampionshipsProgress.Instance.UpdateEntry(Id.ApartFromLast(FileExtension),
+                                                        new UserChampionshipProgressEntry(0, null, 0, null), true);
+                                            },
+                                            () => Type == KunosCareerObjectType.Championship));
         #endregion
     }
 }

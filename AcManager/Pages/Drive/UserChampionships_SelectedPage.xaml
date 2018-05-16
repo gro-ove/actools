@@ -107,7 +107,7 @@
   </UserControl.Resources>
 
   <mui:Cell Style="{StaticResource ContentRootWithPadding}">
-    <!--career errors-->
+    <!-- Career errors -->
     <c:AcObjectErrorsSection AcObject="{Binding AcObject}" />
 
     <Grid Visibility="{Binding AcObject.HasErrors, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" x:Name="ContentGrid">
@@ -129,7 +129,7 @@
             <DockPanel>
               <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Margin="0 9 0 -9">
                 <Button PreviewMouseLeftButtonUp="OnResetButtonClick" Margin="0 0 4 0" Content="{x:Static c:ControlsStrings.Common_Reset}" />
-                <!--<mui:Cell
+                <!-- <mui:C ell
                                         Visibility="{Binding NextCareerObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
                                     <mui:Cell.ToolTip>
                                         <ToolTip>
@@ -270,10 +270,10 @@
           <RowDefinition />
         </Grid.RowDefinitions>
 
-        <!--event errors-->
+        <!-- Event errors -->
         <c:AcObjectErrorsSection AcObject="{Binding}" Grid.ColumnSpan="2" />
 
-        <!--event params-->
+        <!-- Event params -->
         <DockPanel Grid.Column="0" Grid.Row="1">
           <Label Content="{x:Static g:AppStrings.KunosCareer_TimeLabel}" />
           <TextBlock Text="{Binding CurrentRoundTime, Converter={StaticResource AcTimeDisplayConverter}}" Style="{StaticResource Value}" />
@@ -308,7 +308,7 @@
           <TextBlock Text="Real conditions…" VerticalAlignment="Center" />
         </DockPanel>
 
-        <!--race params-->
+        <!-- Race params -->
         <DockPanel Grid.Column="0" Grid.Row="4">
           <Label Content="{x:Static g:AppStrings.KunosCareer_OpponentsLabel}" />
           <TextBlock Style="{StaticResource Value}"
@@ -348,13 +348,13 @@
         </DockPanel>
       </Grid>
 
-      <!--car and track previews-->
+      <!-- Car and track previews -->
       <ScrollViewer Grid.Row="2" Grid.Column="0" Width="240" Margin="0 0 24 0" DataContext="{Binding AcObject}" HorizontalScrollBarVisibility="Disabled"
           VerticalScrollBarVisibility="Auto"
           Visibility="{Binding ActualWidth, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=1000}">
         <mui:SpacingStackPanel Spacing="8">
-          <mui:Cell c:ContextMenus.Car="{Binding PlayerCar}" c:ContextMenus.CarSkin="{Binding PlayerCarSkin}" c:ToolTips.Car="{Binding PlayerCar}"
-              mui:Draggable.Data="{Binding PlayerCar}" MouseLeftButtonUp="OnCarPreviewClick">
+          <mui:Cell c:ContextMenus.Car="{Binding UserCar.Car}" c:ContextMenus.CarSkin="{Binding UserCarSkin}" c:ToolTips.Car="{Binding UserCar.Car}"
+              mui:Draggable.Data="{Binding UserCar.Car}" MouseLeftButtonUp="OnCarPreviewClick">
             <c:ContextMenus.AdditionalItems>
               <c:ContextMenusItems>
                 <MenuItem Header="{x:Static c:ControlsStrings.Common_ChangeSkin}"
@@ -363,17 +363,17 @@
               </c:ContextMenusItems>
             </c:ContextMenus.AdditionalItems>
 
-            <mui:BetterImage Filename="{Binding UserPlayerCarSkin.PreviewImage}" Width="240" />
+            <mui:BetterImage Filename="{Binding UserCarSkin.PreviewImage}" Width="240" />
             <DockPanel Background="{DynamicResource DarkStripeBackground}" VerticalAlignment="Bottom" TextBlock.Foreground="{DynamicResource DarkStripeText}">
-              <mui:BetterImage Filename="{Binding PlayerCar.BrandBadge}" Width="16" Height="16" Margin="4 4 0 4"
-                  Visibility="{Binding PlayerCar, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+              <mui:BetterImage Filename="{Binding UserCar.Car.BrandBadge}" Width="16" Height="16" Margin="4 4 0 4"
+                  Visibility="{Binding UserCar.Car, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
               <mui:ContextMenuButton Padding="2 0 6 0" DockPanel.Dock="Right" LookForParentMenu="True" />
-              <TextBlock Text="{Binding PlayerCar.DisplayName}" Padding="4" />
+              <TextBlock Text="{Binding UserCar.Car.DisplayName}" Padding="4" />
             </DockPanel>
           </mui:Cell>
 
-          <ListBox ItemsSource="{Binding PlayerCar.EnabledSkinsListView}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
-              IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding UserPlayerCarSkin}" MaxHeight="36"
+          <ListBox ItemsSource="{Binding UserCar.Car.EnabledSkinsListView}" ScrollViewer.VerticalScrollBarVisibility="Disabled"
+              ScrollViewer.CanContentScroll="True" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding UserCarSkin}" MaxHeight="36"
               ItemTemplate="{StaticResource CarSkinItemTemplate}" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.VirtualizationMode="Recycling"
               VirtualizingPanel.ScrollUnit="Pixel">
             <ListBox.Visibility>

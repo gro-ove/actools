@@ -11,7 +11,6 @@ using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
 using AcManager.Controls.ViewModels;
 using AcManager.DiscordRpc;
-using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
@@ -170,77 +169,86 @@ namespace AcManager.Pages.Drive {
             private AsyncCommand<AssistsViewModel> _goCommand;
 
             public AsyncCommand<AssistsViewModel> GoCommand => _goCommand ?? (_goCommand = new AsyncCommand<AssistsViewModel>(async o => {
-                var round = _acObject.CurrentRound;
-                if (!round.IsAvailable) return;
+                try {
+                    var round = _acObject.CurrentRound;
+                    if (!round.IsAvailable) return;
 
-                var time = round.Time;
-                var temperature = round.Temperature;
-                var weather = WeatherTypeWrapped.Unwrap(round.Weather, time, temperature);
+                    var time = round.Time;
+                    var temperature = round.Temperature;
+                    var weather = WeatherTypeWrapped.Unwrap(round.Weather, time, temperature);
 
-                if (_acObject.RealConditions) {
-                    if (ConditionsLoading) {
-                        WeatherDescription description = null;
+                    if (_acObject.RealConditions) {
+                        if (ConditionsLoading) {
+                            WeatherDescription description = null;
 
-                        using (var waiting = new WaitingDialog()) {
-                            waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Loading conditions…"));
-                            await RealConditionsHelper.UpdateConditions(round.Track, false, true,
-                                    _acObject.RealConditionsManualTime
-                                            ? default(Action<int>) : t => { time = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum); },
-                                    w => { description = w; }, waiting.CancellationToken);
+                            using (var waiting = new WaitingDialog()) {
+                                waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Loading conditions…"));
+                                await RealConditionsHelper.UpdateConditions(round.Track, false, true,
+                                        _acObject.RealConditionsManualTime
+                                                ? default(Action<int>) : t => { time = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum); },
+                                        w => { description = w; }, waiting.CancellationToken);
+                            }
+
+                            if (description != null) {
+                                temperature = description.Temperature.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
+                                weather = description.TryToGetWeather(time);
+                            }
+                        } else {
+                            time = CurrentRoundTime;
+                            weather = CurrentRoundWeather;
+                            temperature = CurrentRoundRoadTemperature;
                         }
+                    }
 
-                        if (description != null) {
-                            temperature = description.Temperature.Clamp(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
-                            weather = description.TryToGetWeather(time);
+                    var conditions = new Game.ConditionProperties {
+                        AmbientTemperature = temperature,
+                        CloudSpeed = 1d,
+                        RoadTemperature = Game.ConditionProperties.GetRoadTemperature(time, temperature, weather?.TemperatureCoefficient ?? 1d),
+                        SunAngle = Game.ConditionProperties.GetSunAngle(time),
+                        TimeMultipler = 1d,
+                        WeatherName = weather?.Id ?? round.WeatherId
+                    };
+
+                    var userCar = _acObject.UserCar;
+                    if (userCar == null) {
+                        throw new InformativeException("Can’t launch the race", "No car selected.");
+                    }
+
+                    var multipler = SettingsHolder.Drive.KunosCareerUserAiLevel ? _acObject.UserAiLevelMultipler : 1d;
+                    var trackId = round.TrackId.Split('/');
+                    await GameWrapper.StartAsync(new Game.StartProperties(new Game.BasicProperties {
+                        CarId = userCar.CarId,
+                        CarSkinId = userCar.SkinId,
+                        TrackId = trackId[0],
+                        TrackConfigurationId = trackId.ArrayElementAtOrDefault(1)
+                    }, o?.ToGameProperties(), conditions, round.TrackProperties.Properties, new Game.WeekendProperties {
+                        AiLevel = 100,
+                        RaceLaps = round.LapsCount,
+                        PracticeDuration = _acObject.Rules.Practice,
+                        QualificationDuration = _acObject.Rules.Qualifying,
+                        JumpStartPenalty = _acObject.Rules.JumpStartPenalty,
+                        Penalties = _acObject.Rules.Penalties,
+                        BotCars = _acObject.Drivers.Where(x => !x.IsPlayer).Select(x => new Game.AiCar {
+                            AiLevel = (x.AiLevel * multipler).Clamp(25, 100),
+                            AiAggression = (x.AiAggression * multipler).Clamp(0, 100),
+                            Ballast = x.Ballast,
+                            Restrictor = x.Restrictor,
+                            CarId = x.CarId,
+                            SkinId = x.SkinId,
+                            DriverName = x.Name,
+                            Nationality = x.Nationality
+                        })
+                    }) {
+                        AdditionalPropertieses = {
+                            new UserChampionshipsManager.ChampionshipProperties {
+                                ChampionshipId = _acObject.Id,
+                                RoundIndex = round.Index
+                            }
                         }
-                    } else {
-                        time = CurrentRoundTime;
-                        weather = CurrentRoundWeather;
-                        temperature = CurrentRoundRoadTemperature;
-                    }
+                    });
+                }  catch (Exception e) {
+                    NonfatalError.Notify("Can’t launch the race", e);
                 }
-
-                var conditions = new Game.ConditionProperties {
-                    AmbientTemperature = temperature,
-                    CloudSpeed = 1d,
-                    RoadTemperature = Game.ConditionProperties.GetRoadTemperature(time, temperature, weather?.TemperatureCoefficient ?? 1d),
-                    SunAngle = Game.ConditionProperties.GetSunAngle(time),
-                    TimeMultipler = 1d,
-                    WeatherName = weather?.Id ?? round.WeatherId
-                };
-
-                var multipler = SettingsHolder.Drive.KunosCareerUserAiLevel ? _acObject.UserAiLevelMultipler : 1d;
-                var trackId = round.TrackId.Split('/');
-                await GameWrapper.StartAsync(new Game.StartProperties(new Game.BasicProperties {
-                    CarId = _acObject.PlayerCarId,
-                    CarSkinId = _acObject.PlayerCarSkinId,
-                    TrackId = trackId[0],
-                    TrackConfigurationId = trackId.ArrayElementAtOrDefault(1)
-                }, o?.ToGameProperties(), conditions, round.TrackProperties.Properties, new Game.WeekendProperties {
-                    AiLevel = 100,
-                    RaceLaps = round.LapsCount,
-                    PracticeDuration = _acObject.Rules.Practice,
-                    QualificationDuration = _acObject.Rules.Qualifying,
-                    JumpStartPenalty = _acObject.Rules.JumpStartPenalty,
-                    Penalties = _acObject.Rules.Penalties,
-                    BotCars = _acObject.Drivers.Where(x => !x.IsPlayer).Select(x => new Game.AiCar {
-                        AiLevel = (x.AiLevel * multipler).Clamp(25, 100),
-                        AiAggression = (x.AiAggression * multipler).Clamp(0, 100),
-                        Ballast = x.Ballast,
-                        Restrictor = x.Restrictor,
-                        CarId = x.CarId,
-                        SkinId = x.SkinId,
-                        DriverName = x.Name,
-                        Nationality = x.Nationality
-                    })
-                }) {
-                    AdditionalPropertieses = {
-                    new UserChampionshipsManager.ChampionshipProperties {
-                        ChampionshipId = _acObject.Id,
-                        RoundIndex = round.Index
-                    }
-                }
-                });
             }));
 
             private AsyncCommand _resetCommand;
@@ -262,7 +270,10 @@ namespace AcManager.Pages.Drive {
                         var model = new RaceGridViewModel(true, null);
                         model.ImportFromPresetData(AcObject.SerializedRaceGridData);
                         model.TrackPitsNumber = AcObject.MaxCars;
-                        model.PlayerCar = AcObject.PlayerCar;
+
+                        var userCar = AcObject.PlayerCarEntries.FirstOrDefault();
+                        AcObject.UserCar = userCar;
+                        model.PlayerCar = userCar?.Car;
 
                         var generated = await model.GenerateGameEntries(cancellation);
                         if (generated == null) {
@@ -271,17 +282,10 @@ namespace AcManager.Pages.Drive {
                         }
 
                         var saveLater = !AcObject.Changed;
-                        AcObject.Drivers = generated.Select(x => new UserChampionshipDriver(x.DriverName, x.CarId, x.SkinId) {
-                            AiLevel = x.AiLevel,
-                            AiAggression = x.AiAggression,
-                            Ballast = x.Ballast,
-                            Restrictor = x.Restrictor,
-                            Nationality = x.Nationality
-                        }).Prepend(new UserChampionshipDriver(UserChampionshipDriver.PlayerName, AcObject.PlayerCarId,
-                                AcObject.PlayerCarSkinId)).ToArray();
+                        AcObject.UpdateDriversSilently(generated);
 
                         if (saveLater) {
-                            AcObject.SaveAsync();
+                            await AcObject.SaveAsync();
                         }
                     }
                 } catch (Exception e) {
@@ -444,17 +448,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void ListBox_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e) {
-            Model.GoCommand.Execute(AssistsViewModel.Instance);
-        }
-
-        private void AssistsMore_OnPreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            new AssistsDialog(Model.AssistsViewModel).ShowDialog();
-        }
-
-        private void NextButton_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e) {
-            /*var career = Model.AcObject.NextCareerObject;
-            if (career == null) return;
-            KunosCareer.NavigateToCareerPage(career);*/
+            Model.GoCommand.ExecuteAsync(AssistsViewModel.Instance).Ignore();
         }
 
         private void TableSection_OnPreviewMouseWheel(object sender, MouseWheelEventArgs e) {
@@ -468,8 +462,11 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnCarPreviewClick(object sender, MouseButtonEventArgs e) {
-            var carObject = Model.AcObject.PlayerCar;
-            var carSkin = Model.AcObject.PlayerCarSkin;
+            var userCar = Model.AcObject.UserCar;
+            if (userCar?.Car == null) return;
+
+            var carObject = userCar.Car;
+            var carSkin = userCar.Skin;
 
             var control = new CarBlock {
                 Car = carObject,
@@ -492,13 +489,16 @@ namespace AcManager.Pages.Drive {
             dialog.ShowDialog();
 
             if (dialog.IsResultOk && SettingsHolder.Drive.KunosCareerUserSkin) {
-                Model.AcObject.PlayerCarSkin = control.SelectedSkin;
+                userCar.Skin = control.SelectedSkin;
             }
         }
 
         private async void OnChangeSkinMenuItemClick(object sender, MouseButtonEventArgs e) {
-            var carObject = Model.AcObject.PlayerCar;
-            var carSkin = Model.AcObject.PlayerCarSkin;
+            var userCar = Model.AcObject.UserCar;
+            if (userCar?.Car == null) return;
+
+            var carObject = userCar.Car;
+            var carSkin = userCar.Skin;
 
             await carObject.SkinsManager.EnsureLoadedAsync();
 
@@ -511,7 +511,7 @@ namespace AcManager.Pages.Drive {
                     };
 
             if (SettingsHolder.Drive.KunosCareerUserSkin) {
-                Model.AcObject.PlayerCarSkin = viewer.SelectDialog() ?? carSkin;
+                userCar.Skin = viewer.SelectDialog() ?? carSkin;
             } else {
                 viewer.ShowDialog();
             }

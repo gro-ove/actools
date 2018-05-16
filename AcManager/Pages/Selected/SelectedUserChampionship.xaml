@@ -310,26 +310,33 @@
         </Grid.ColumnDefinitions>
 
         <mui:SpacingStackPanel Spacing="20" Margin="0 8 20 0">
-          <DockPanel Margin="4 0">
-            <mui:Cell Width="160" Height="120" Background="Gray" mui:Draggable.Data="{Binding SelectedObject.PlayerCar}" AllowDrop="True" Drop="OnCarBlockDrop"
-                MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True">
-              <mui:BetterImage Filename="{Binding SelectedObject.PlayerCarSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-              <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                  Text="{Binding SelectedObject.PlayerCar.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
-            </mui:Cell>
+          <ItemsControl ItemsSource="{Binding SelectedObject.PlayerCarEntries}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="4 0">
+                  <!--Drop="OnCarBlockDrop"-->
+                  <mui:Cell Width="160" Height="120" Background="Gray" mui:Draggable.Data="{Binding Car}" AllowDrop="True" MouseLeftButtonUp="OnCarBlockClick"
+                      ClipToBounds="True">
+                    <mui:BetterImage Filename="{Binding Skin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+                    <TextBlock Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                        Text="{Binding Car.DisplayName}" Foreground="{DynamicResource DarkStripeText}" TextTrimming="CharacterEllipsis" />
+                  </mui:Cell>
 
-            <ListBox ItemsSource="{Binding SelectedObject.PlayerCar.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                ScrollViewer.CanContentScroll="True" Margin="8 0 0 0" IsSynchronizedWithCurrentItem="False"
-                SelectedItem="{Binding SelectedObject.PlayerCarSkin}" VerticalAlignment="Top" MaxHeight="120" BorderThickness="0"
-                ItemTemplate="{StaticResource CarSkinItemTemplate}">
-              <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                  <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True"
-                      ScrollUnit="Pixel" />
-                </ItemsPanelTemplate>
-              </ListBox.ItemsPanel>
-            </ListBox>
-          </DockPanel>
+                  <ListBox ItemsSource="{Binding Car.EnabledSkinsListView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.CanContentScroll="True" Margin="8 0 0 0" IsSynchronizedWithCurrentItem="False" SelectedItem="{Binding Skin}"
+                      VerticalAlignment="Top" MaxHeight="120" BorderThickness="0" ItemTemplate="{StaticResource CarSkinItemTemplate}">
+                    <ListBox.ItemsPanel>
+                      <ItemsPanelTemplate>
+                        <mui:VirtualizingTilePanel ItemWidth="36" ItemHeight="36" Orientation="Horizontal" VirtualizationMode="Recycling" IsVirtualizing="True"
+                            ScrollUnit="Pixel" />
+                      </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                  </ListBox>
+                </DockPanel>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+
 
           <mui:SpacingUniformGrid Columns="1" VerticalSpacing="8">
             <StackPanel>
