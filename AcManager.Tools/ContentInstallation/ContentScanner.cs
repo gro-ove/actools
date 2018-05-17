@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -50,7 +51,7 @@ namespace AcManager.Tools.ContentInstallation {
             [CanBeNull]
             public string Name { get; }
 
-            [CanBeNull]
+            [Localizable(false), CanBeNull]
             public string NameLowerCase { get; }
 
             public long Size { get; protected set; }
@@ -113,7 +114,7 @@ namespace AcManager.Tools.ContentInstallation {
             public IEnumerable<DirectoryNode> Directories => _directories.Values;
 
             [CanBeNull]
-            public FileNode GetSubFile([NotNull] string name) {
+            public FileNode GetSubFile([Localizable(false), NotNull] string name) {
                 var index = name.IndexOfAny(new[] { '/', '\\' });
                 if (index != -1) {
                     return GetSubDirectory(name.Substring(0, index))?.GetSubFile(name.Substring(index + 1));
@@ -123,7 +124,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             [CanBeNull]
-            public DirectoryNode GetSubDirectory([NotNull] string name) {
+            public DirectoryNode GetSubDirectory([Localizable(false), NotNull] string name) {
                 var index = name.IndexOfAny(new[] { '/', '\\' });
                 if (index != -1) {
                     return GetSubDirectory(name.Substring(0, index))?.GetSubDirectory(name.Substring(index + 1));
@@ -132,7 +133,7 @@ namespace AcManager.Tools.ContentInstallation {
                 return _directories.GetValueOrDefault(name.ToLowerInvariant());
             }
 
-            public bool HasSubFile([NotNull] string name) {
+            public bool HasSubFile([Localizable(false), NotNull] string name) {
                 var index = name.IndexOfAny(new[] { '/', '\\' });
                 if (index != -1) {
                     return GetSubDirectory(name.Substring(0, index))?.HasSubFile(name.Substring(index + 1)) == true;
@@ -141,7 +142,7 @@ namespace AcManager.Tools.ContentInstallation {
                 return _files.ContainsKey(name.ToLowerInvariant());
             }
 
-            public bool HasSubDirectory([NotNull] string name) {
+            public bool HasSubDirectory([Localizable(false), NotNull] string name) {
                 var index = name.IndexOfAny(new[] { '/', '\\' });
                 if (index != -1) {
                     return GetSubDirectory(name.Substring(0, index))?.HasSubDirectory(name.Substring(index + 1)) == true;
@@ -150,7 +151,7 @@ namespace AcManager.Tools.ContentInstallation {
                 return _directories.ContainsKey(name.ToLowerInvariant());
             }
 
-            public bool HasAnySubDirectory([NotNull] params string[] name) {
+            public bool HasAnySubDirectory([Localizable(false), NotNull] params string[] name) {
                 return name.Any(HasSubDirectory);
             }
 
@@ -485,7 +486,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var carId = directory.Name ??
                             directory.GetSubDirectory("sfx")?.Files.Select(x => x.NameLowerCase)
-                                     .FirstOrDefault(x => x.EndsWith(".bank") && x.Count('.') == 1 && x != "common.bank")?.ApartFromLast(".bank");
+                                     .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
 
                     if (carId != null) {
                         return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
@@ -546,10 +547,10 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             if (directory.HasSubFile("settings.ini")) {
-                var kn5 = directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).ToList();
+                var kn5 = directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).ToList();
                 var id = directory.Name;
                 if (id != null) {
-                    if (kn5.Any(x => x.NameLowerCase.ApartFromLast(".kn5") == directory.NameLowerCase)) {
+                    if (kn5.Any(x => x.NameLowerCase.ApartFromLast(@".kn5") == directory.NameLowerCase)) {
                         var icon = await (directory.GetSubFile("preview.jpg")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                         cancellation.ThrowIfCancellationRequested();
 
@@ -583,7 +584,7 @@ namespace AcManager.Tools.ContentInstallation {
                 string carId;
                 var skinFor = await (directory.GetSubFile("cm_skin_for.json")?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
                 if (skinFor != null) {
-                    carId = JsonExtension.Parse(skinFor.ToUtf8String())["id"]?.ToString();
+                    carId = JsonExtension.Parse(skinFor.ToUtf8String())[@"id"]?.ToString();
                 } else {
                     carId = _installationParams.CarId;
 
@@ -601,7 +602,7 @@ namespace AcManager.Tools.ContentInstallation {
                 }
 
                 var skinId = directory.Name;
-                if (skinId != null){
+                if (skinId != null) {
                     string name;
                     if (uiCarSkin != null) {
                         var data = await uiCarSkin.Info.ReadAsync() ?? throw new MissingContentException();
@@ -617,26 +618,32 @@ namespace AcManager.Tools.ContentInstallation {
 
             // New textures
             if (directory.NameLowerCase == "damage" && directory.HasSubFile("flatspot_fl.png")) {
-                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "damage");
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"damage");
             }
 
             if (directory.Parent?.NameLowerCase == "crew_brand" && directory.HasSubFile("Brands_Crew.dds") && directory.HasSubFile("Brands_Crew.jpg")
                     && directory.HasSubFile("Brands_Crew_NM.dds")) {
-                return new CrewBrandEntry(directory.Key ?? "", directory.Name ?? "unknown");
+                return new CrewBrandEntry(directory.Key ?? "", directory.Name ?? @"unknown");
             }
 
             if (directory.Parent?.NameLowerCase == "crew_helmet" && directory.HasSubFile("Crew_HELMET_Color.dds")) {
-                return new CrewHelmetEntry(directory.Key ?? "", directory.Name ?? "unknown");
+                return new CrewHelmetEntry(directory.Key ?? "", directory.Name ?? @"unknown");
             }
 
             // TODO: More driver and crew textures
 
-            if (directory.NameLowerCase == "clouds" && directory.Files.Any(x => x.NameLowerCase.StartsWith("cloud") && x.NameLowerCase.EndsWith(".dds"))) {
-                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "clouds");
+            if (directory.NameLowerCase == "clouds" && directory.Files.Any(
+                    x => (x.NameLowerCase.StartsWith(@"cloud") || directory.Parent?.NameLowerCase == "texture") && x.NameLowerCase.EndsWith(@".dds"))) {
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"clouds");
+            }
+
+            if (directory.NameLowerCase == "clouds_shared" && directory.Files.Any(
+                    x => (x.NameLowerCase.StartsWith(@"cloud") || directory.Parent?.NameLowerCase == "texture") && x.NameLowerCase.EndsWith(@".dds"))) {
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"clouds_shared");
             }
 
             if (directory.NameLowerCase == "people" && (directory.HasSubFile("crowd_sit.dds") || directory.HasSubFile("people_sit.dds"))) {
-                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? "people");
+                return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"people");
             }
 
             // Mod
@@ -644,9 +651,9 @@ namespace AcManager.Tools.ContentInstallation {
                 var name = directory.Name;
                 if (name != null && directory.GetSubDirectory("content")?.GetSubDirectory("tracks")?.Directories.Any(
                         x => x.GetSubDirectory("skins")?.GetSubDirectory("default")?.GetSubFile("ui_track_skin.json") != null) != true) {
-                    var description = directory.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));
+                    var description = directory.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(@".jsgme"));
                     if (description == null && directory.HasSubDirectory("documentation")) {
-                        description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(".jsgme"));
+                        description = directory.GetSubDirectory("documentation")?.Files.FirstOrDefault(x => x.NameLowerCase.EndsWith(@".jsgme"));
                     }
 
                     if (description != null) {
@@ -677,6 +684,7 @@ namespace AcManager.Tools.ContentInstallation {
                             if (fileData == null) throw new MissingContentException();
 
                             var icon = new FontObjectBitmap(bitmapData, fileData).GetIcon();
+
                             byte[] ToBytes(BitmapSource cropped) {
                                 var encoder = new PngBitmapEncoder();
                                 using (var stream = new MemoryStream()) {
@@ -717,7 +725,7 @@ namespace AcManager.Tools.ContentInstallation {
 
             // A system config file?
             if (file.NameLowerCase.EndsWith(".ini") && file.Parent.NameLowerCase == "cfg" &&
-                file.Parent.Parent?.NameLowerCase == "system") {
+                    file.Parent.Parent?.NameLowerCase == "system") {
                 switch (file.NameLowerCase) {
                     case "audio_engine.ini":
                     case "damage_displayer.ini":
@@ -775,7 +783,7 @@ namespace AcManager.Tools.ContentInstallation {
             return null;
         }
 
-        private class MissingContentException : Exception {}
+        private class MissingContentException : Exception { }
 
         public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId,
                 [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
