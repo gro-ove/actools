@@ -2,6 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows {
     public enum TaskbarState {
@@ -87,16 +88,26 @@ namespace FirstFloor.ModernUI.Windows {
 
         // ReSharper disable once SuspiciousTypeConversion.Global
         private static readonly ITaskbarList3 Instance = new TaskbarInstance() as ITaskbarList3;
-        private static readonly bool Supported = Environment.OSVersion.Version >= new Version(6, 1);
+        private static bool _supported = Environment.OSVersion.Version >= new Version(6, 1);
 
         private static void SetState(IntPtr handle, TaskbarState state) {
-            if (!Supported) return;
-            Instance.SetProgressState(handle, state);
+            if (!_supported) return;
+            try {
+                Instance.SetProgressState(handle, state);
+            } catch (InvalidCastException e) {
+                Logging.Warning(e);
+                _supported = false;
+            }
         }
 
         private static void SetValue(IntPtr handle, ulong value, ulong max) {
-            if (!Supported) return;
-            Instance.SetProgressValue(handle, value, max);
+            if (!_supported) return;
+            try {
+                Instance.SetProgressValue(handle, value, max);
+            } catch (InvalidCastException e) {
+                Logging.Warning(e);
+                _supported = false;
+            }
         }
     }
 }
