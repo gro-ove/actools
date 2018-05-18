@@ -20,7 +20,7 @@ namespace AcManager.Tools.GameProperties {
         protected abstract string GetAbsolutePath([NotNull] string relative);
 
         protected bool Apply([NotNull] string source) {
-            if (AcRootDirectory.Instance.Value == null || !Directory.Exists(source)) return false;
+            if (AcRootDirectory.Instance.Value == null || !IsActive(source)) return false;
 
             var destination = GetAbsolutePath(_relativeDestination);
             var backup = GetAbsolutePath(_relativeBackup);
@@ -43,6 +43,10 @@ namespace AcManager.Tools.GameProperties {
             }
 
             return true;
+        }
+
+        protected virtual bool IsActive(string source) {
+            return Directory.Exists(source);
         }
 
         protected virtual void Apply(string source, string destination) {

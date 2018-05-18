@@ -5,8 +5,11 @@ using System.Linq;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
+using SharpCompress.Compressors;
+using SharpCompress.Compressors.Deflate;
 using StringBasedFilter.Utils;
 
 namespace AcManager.Tools.GameProperties.WeatherSpecific {
@@ -61,21 +64,40 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
         }
 
+        protected override bool IsActive(string source) {
+            return SourceList != null ? base.IsActive(source) : Directory.Exists(Path.Combine(source, RelativeSource));
+        }
+
         protected override void Apply(string source, string destination) {
-            if (SourceList == null) {
-                if (Directory.Exists(Path.Combine(source, RelativeSource))) {
-                    base.Apply(Path.Combine(source, RelativeSource), destination);
+            FileUtils.EnsureDirectoryExists(destination);
+
+            if (SourceList != null) {
+                foreach (var item in SourceList) {
+                    foreach (var file in GetFiles(item, source, RelativeSource)) {
+                        var fileName = Path.GetFileName(file);
+                        if (fileName != null) {
+                            FileUtils.HardLinkOrCopy(file, Path.Combine(destination, fileName), true);
+                        }
+                    }
                 }
-                return;
+            } else if (Directory.Exists(Path.Combine(source, RelativeSource))) {
+                base.Apply(Path.Combine(source, RelativeSource), destination);
             }
 
-            FileUtils.EnsureDirectoryExists(destination);
-            foreach (var item in SourceList) {
-                foreach (var file in GetFiles(item, source, RelativeSource)) {
-                    var fileName = Path.GetFileName(file);
-                    if (fileName != null) {
-                        FileUtils.HardLinkOrCopy(file, Path.Combine(destination, fileName), true);
+            if (Directory.GetFiles(destination).Length == 0) {
+                CreateEmptyTexture(Path.Combine(destination, "nothing.dds"));
+            }
+
+            void CreateEmptyTexture(string filename) {
+                var data = @"c3EJVqhhYGBgF+BiYAHSIOzAAAHMDKQBBSB2RGIzMPyHITCHQ8ABUxONAAA".FromCutBase64();
+                if (data == null) return;
+
+                using (var memory = new MemoryStream(data))
+                using (var output = new MemoryStream()) {
+                    using (var decomp = new DeflateStream(memory, CompressionMode.Decompress)) {
+                        decomp.CopyTo(output);
                     }
+                    File.WriteAllBytes(filename, output.ToArray());
                 }
             }
         }
