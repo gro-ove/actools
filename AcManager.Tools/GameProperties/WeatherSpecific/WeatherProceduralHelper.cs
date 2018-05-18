@@ -25,17 +25,21 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 foreach (var pair in source) {
                     var section = this[pair.Key];
                     foreach (var value in pair.Value) {
-                        section[value.Key] = ToLuaValue(value.Value);
+                        section[value.Key] = ToLuaValue(value.Key, value.Value);
                     }
                 }
             }
 
-            private static object ToLuaValue(string iniValue) {
+            private static object ToLuaValue(string key, string iniValue) {
                 if (string.IsNullOrWhiteSpace(iniValue)) return null;
 
                 var pieces = iniValue.Split(',');
                 if (pieces.Length == 1) {
                     return pieces[0].Trim();
+                }
+
+                if (key == @"LIST") {
+                    return pieces.ToList();
                 }
 
                 var numbers = new double[pieces.Length];
@@ -272,7 +276,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             try {
-                ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS" });
+                ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES" });
                 ProcessFile(weather, GetContext, @"colorCurves.ini", new[] { @"HEADER", @"HORIZON", @"SKY", @"SUN", @"AMBIENT" });
                 ProcessFile(weather, GetContext, @"filter.ini", new[] {
                     @"YEBIS", @"OPTIMIZATIONS", @"VARIOUS", @"AUTO_EXPOSURE", @"GODRAYS", @"HEAT_SHIMMER", @"TONEMAPPING", @"DOF", @"CHROMATIC_ABERRATION",
@@ -435,6 +439,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 case Table t:
                     return t.Values.Select(x => x.CastToString()).JoinToString(@",");
                 case IEnumerable<double> e:
+                    return e.JoinToString(@",");
+                case IEnumerable<string> e:
                     return e.JoinToString(@",");
                 case null:
                     return null;

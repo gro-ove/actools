@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -34,15 +35,19 @@ namespace AcManager.Tools.GameProperties {
             }
 
             try {
-                Logging.Debug($"{source} → {destination}");
-                FileUtils.HardLinkOrCopyRecursive(source, destination);
+                Apply(source, destination);
             } catch (Exception e) {
                 // this exception should be catched here so original clouds folder still
                 // will be restored even when copying a new one has been failed
-                NonfatalError.Notify("Can’t replace directory", e);
+                NonfatalError.NotifyBackground("Can’t replace directory", e);
             }
 
             return true;
+        }
+
+        protected virtual void Apply(string source, string destination) {
+            Logging.Debug($"{source} → {destination}");
+            FileUtils.HardLinkOrCopyRecursive(source, destination);
         }
 
         public bool Revert() {
@@ -53,15 +58,22 @@ namespace AcManager.Tools.GameProperties {
 
             try {
                 if (Directory.Exists(backup)) {
-                    if (Directory.Exists(destination)) {
-                        Directory.Delete(destination, true);
-                    }
+                    for (var i = 0;; i++) {
+                        try {
+                            if (Directory.Exists(destination)) {
+                                Directory.Delete(destination, true);
+                            }
 
-                    Directory.Move(backup, destination);
-                    return true;
+                            Directory.Move(backup, destination);
+                            return true;
+                        } catch (Exception) {
+                            if (i > 5) throw;
+                            Thread.Sleep(100);
+                        }
+                    }
                 }
             } catch (Exception e) {
-                NonfatalError.Notify("Can’t restore original directory after replacing it with a temporary one", e);
+                NonfatalError.NotifyBackground("Can’t restore original directory after replacing it with a temporary one", e);
             }
 
             return false;
