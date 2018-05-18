@@ -118,7 +118,7 @@ namespace AcManager {
         private static async Task<byte[]> LoadPackageTimeout(string langId, string version = "0") {
             if (!SettingsHolder.Locale.UpdateOnStart) return null;
             using (var cancellation = new CancellationTokenSource()) {
-                cancellation.CancelAfter(50);
+                cancellation.CancelAfter(1500);
                 var data = await CmApiProvider.GetDataAsync($"locales/update/{langId}/{version}",
                         cancellation: cancellation.Token);
 
