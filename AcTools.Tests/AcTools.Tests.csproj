@@ -64,6 +64,7 @@
     <Compile Include="CutBase64Test.cs" />
     <Compile Include="DataAnalyzerTest.cs" />
     <Compile Include="DataWrapperTest.cs" />
+    <Compile Include="DiapasonTest.cs" />
     <Compile Include="ExifCommentTest.cs" />
     <Compile Include="FileUtilsTest.cs" />
     <Compile Include="GoodShuffleTest.cs" />

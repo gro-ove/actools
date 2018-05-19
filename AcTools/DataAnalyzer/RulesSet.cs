@@ -128,7 +128,7 @@ namespace AcTools.DataAnalyzer {
                         fileName = path[path.Length - 3];
                     }
                 }
-                
+
                 var type = RuleTypeFromString(splitted.Length == 1 ? "number" : splitted[1]);
 
                 if (type != RuleType.Lut) {
@@ -153,7 +153,7 @@ namespace AcTools.DataAnalyzer {
                     if (sectionParsed.Success) {
                         var prefix = sectionParsed.Groups[1].Value;
                         var postfix = sectionParsed.Groups[3].Value;
-                        sectionNumbered = sectionParsed.Groups[2].Value.ToDiapason(0, 100).Select(x => prefix + x + postfix);
+                        sectionNumbered = Diapason.CreateInt32(sectionParsed.Groups[2].Value).SetLimits(0, 100).Select(x => prefix + x + postfix);
                     } else {
                         sectionNumbered = new[] { section };
                     }

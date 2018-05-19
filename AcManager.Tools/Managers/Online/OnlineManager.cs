@@ -159,9 +159,7 @@ namespace AcManager.Tools.Managers.Online {
             if (address == null) throw new ArgumentNullException(nameof(address));
 
             // assume address is something like [HOSTNAME]:[HTTP PORT]
-            string ip;
-            int port;
-            if (!KunosApiProvider.ParseAddress(address, out ip, out port)) {
+            if (!KunosApiProvider.ParseAddress(address, out var ip, out var port)) {
                 throw new Exception(ToolsStrings.Online_CannotParseAddress);
             }
 
@@ -202,9 +200,10 @@ namespace AcManager.Tools.Managers.Online {
                 progress?.Report(AsyncProgressEntry.FromStringIndetermitate(ToolsStrings.Common_Scanning));
 
                 var scanned = 0;
-                var total = SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Count();
+                var portsDiapason = PortsDiapason.Create(SettingsHolder.Online.PortsEnumeration);
+                var total = portsDiapason.Count();
 
-                await SettingsHolder.Online.PortsEnumeration.ToPortsDiapason().Select(async p => {
+                await portsDiapason.Select(async p => {
                     var pair = await KunosApiProvider.TryToPingServerAsync(ip, p, SettingsHolder.Online.ScanPingTimeout);
                     if (pair != null && pair.Item1 > 1024 && pair.Item1 < 65536) {
                         if (cancellation.IsCancellationRequested) return;

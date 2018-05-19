@@ -69,8 +69,8 @@ namespace AcManager.Tools.Data {
 
         public static bool Fits(this WeatherObject weatherObject, int? time, double? temperature) {
             return weatherObject.Enabled
-                    && (time == null || weatherObject.TimeDiapason?.TimeDiapasonContains(time.Value) != false)
-                    && (temperature == null || weatherObject.TemperatureDiapason?.DiapasonContains(temperature.Value) != false);
+                    && (time == null || weatherObject.GetTimeDiapason()?.Contains(time.Value) != false)
+                    && (temperature == null || weatherObject.GetTemperatureDiapason()?.Contains(temperature.Value) != false);
         }
 
         public static bool Fits(this WeatherObject weatherObject, WeatherType type, int? time, double? temperature) {

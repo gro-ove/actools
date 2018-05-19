@@ -26,7 +26,10 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.Objects {
     public class WeatherObject : AcIniObject, IAcObjectAuthorInformation, IDraggable {
         public WeatherObject(IFileAcManager manager, string id, bool enabled)
-                : base(manager, id, enabled) {}
+                : base(manager, id, enabled) {
+            _temperatureDiapasonLazier = Lazier.Create(() => TemperatureDiapason == null ? null : Diapason.CreateDouble(TemperatureDiapason));
+            _timeDiapasonLazier = Lazier.Create(() => TimeDiapason == null ? null : Diapason.CreateTime(TimeDiapason));
+        }
 
         private WeatherType _type;
 
@@ -42,6 +45,19 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private readonly Lazier<Diapason<double>> _temperatureDiapasonLazier;
+        private readonly Lazier<Diapason<int>> _timeDiapasonLazier;
+
+        [CanBeNull]
+        public Diapason<double> GetTemperatureDiapason() {
+            return _temperatureDiapasonLazier.Value;
+        }
+
+        [CanBeNull]
+        public Diapason<int> GetTimeDiapason() {
+            return _timeDiapasonLazier.Value;
+        }
+
         private string _timeDiapason;
 
         [CanBeNull]
@@ -55,6 +71,7 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTimeDiapason));
                     Changed = true;
+                    _timeDiapasonLazier.Reset();
                 }
             }
         }
@@ -75,6 +92,7 @@ namespace AcManager.Tools.Objects {
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(DisplayTemperatureDiapason));
                     Changed = true;
+                    _temperatureDiapasonLazier.Reset();
                 }
             }
         }
@@ -241,9 +259,9 @@ namespace AcManager.Tools.Objects {
 
             WeatherType? type;
             try {
-                 type = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherType>("WEATHER_TYPE");
+                type = ini["__LAUNCHER_CM"].GetEnumNullable<WeatherType>("WEATHER_TYPE");
             } catch (Exception) {
-                 type = null;
+                type = null;
             }
 
             TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
@@ -496,8 +514,8 @@ namespace AcManager.Tools.Objects {
                     }
 
                     FogColor = Color.FromRgb((255 * color[0] / maxValue).ClampToByte(),
-                        (255 * color[1] / maxValue).ClampToByte(),
-                        (255 * color[2] / maxValue).ClampToByte());
+                            (255 * color[1] / maxValue).ClampToByte(),
+                            (255 * color[2] / maxValue).ClampToByte());
                     FogColorMultipler = maxValue;
                 }
             }
@@ -541,7 +559,7 @@ namespace AcManager.Tools.Objects {
             clouds.Set("BASE_SPEED_MULT", CloudsSpeedMultipler * 0.01);
 
             var fog = ini["FOG"];
-            fog.Set("COLOR", new [] {
+            fog.Set("COLOR", new[] {
                 FogColor.R, FogColor.G, FogColor.B
             }.Select(x => (x * FogColorMultipler / 255d).Round(0.001)));
             fog.Set("BLEND", FogBlend);
@@ -738,9 +756,9 @@ namespace AcManager.Tools.Objects {
 
             protected override PackedDescription GetDescriptionOverride(WeatherObject t) {
                 return new PackedDescription(t.Id, t.Name,
-                    new Dictionary<string, string> {
-                        ["Made by"] = t.Author
-                    }, WeatherManager.Instance.Directories.GetMainDirectory(), true);
+                        new Dictionary<string, string> {
+                            ["Made by"] = t.Author
+                        }, WeatherManager.Instance.Directories.GetMainDirectory(), true);
             }
         }
 

@@ -19,9 +19,9 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Tools.Helpers.Api {
-    public static class StringsHelper {
-        public static IEnumerable<int> ToPortsDiapason(this string s) {
-            return s.ToDiapason(1025, 65535);
+    public static class PortsDiapason {
+        public static Diapason<int> Create(string s) {
+            return Diapason.CreateInt32(s).SetLimits(1025, 65535);
         }
     }
 
@@ -147,7 +147,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback) {
-            TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), null, default(CancellationToken));
+            TryToGetLanList(foundCallback, PortsDiapason.Create(SettingsHolder.Online.LanPortsEnumeration), null, default(CancellationToken));
         }
 
         public static async Task TryToGetLanListAsync(ItemAddCallback<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
@@ -168,7 +168,7 @@ namespace AcManager.Tools.Helpers.Api {
                 }
 
                 await Task.Run(() => {
-                    TryToGetLanList(foundCallback, SettingsHolder.Online.LanPortsEnumeration.ToPortsDiapason(), holder, cancellation);
+                    TryToGetLanList(foundCallback, PortsDiapason.Create(SettingsHolder.Online.LanPortsEnumeration), holder, cancellation);
                 }, cancellation);
             } finally {
                 if (holder != null && timer != null) {
