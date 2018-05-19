@@ -88,7 +88,7 @@ namespace AcManager.Tools.Managers {
             var naive = GetLayoutById(id);
             if (naive != null) return naive;
 
-            for (int i = 0, lastHyphen = id.Length; i < 10 && (lastHyphen = id.LastIndexOf('-', lastHyphen - 1)) > 0; i++) {
+            for (int i = 0, lastHyphen = id.Length; i < 10 && lastHyphen > 1 && (lastHyphen = id.LastIndexOf('-', lastHyphen - 1)) > 0; i++) {
                 var adjusted = GetLayoutById(id.Substring(0, lastHyphen) + '/' + id.Substring(lastHyphen + 1));
                 if (adjusted != null) return adjusted;
             }
