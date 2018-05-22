@@ -57,6 +57,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.DiscordRpc", "AcM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.WheelAngles", "AcTools.WheelAngles\AcTools.WheelAngles.csproj", "{FB504C5F-0420-41E2-8E17-ABC25A9C5491}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstFloor.ModernUI.Win8Extension", "FirstFloor.ModernUI.Win8Extension\FirstFloor.ModernUI.Win8Extension.csproj", "{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -271,6 +273,14 @@ Global
 		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x64.Build.0 = Release|x64
 		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x86.ActiveCfg = Release|x86
 		{FB504C5F-0420-41E2-8E17-ABC25A9C5491}.Release|x86.Build.0 = Release|x86
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Debug|x64.ActiveCfg = Debug|x64
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Debug|x64.Build.0 = Debug|x64
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Debug|x86.ActiveCfg = Debug|x86
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Debug|x86.Build.0 = Debug|x86
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x64.ActiveCfg = Release|x64
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x64.Build.0 = Release|x64
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x86.ActiveCfg = Release|x86
+		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

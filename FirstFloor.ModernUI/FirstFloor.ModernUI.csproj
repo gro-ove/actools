@@ -5,6 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{9A653A28-FE46-40E8-A14F-48B0E325165D}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>FirstFloor.ModernUI</RootNamespace>
@@ -12,6 +13,7 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <FileAlignment>512</FileAlignment>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -64,10 +66,10 @@
     <Reference Include="SmartThreadPool">
       <HintPath>..\Libraries\SmartThreadPool\SmartThreadPool.dll</HintPath>
     </Reference>
-    <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\Noesis.WebP\Noesis.Drawing.Imaging.WebP.dll</HintPath>
-    </Reference>-->
+  <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
+    <SpecificVersion>False</SpecificVersion>
+    <HintPath>..\Libraries\Noesis.WebP\Noesis.Drawing.Imaging.WebP.dll</HintPath>
+  </Reference>-->
   </ItemGroup>
   <ItemGroup>
     <Reference Include="JetBrains.Annotations, Version=10.4.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
@@ -91,14 +93,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <!-- Win8+ special: begin -->
-  <PropertyGroup>
-    <Windows8Reference>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</Windows8Reference>
-  </PropertyGroup>
+  <Import Project="..\Libraries\Windows8Reference.props" />
   <ItemGroup Condition="Exists('$(Windows8Reference)')">
-    <Reference Include="Windows, Version=255.255.255.255, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>$(Windows8Reference)</HintPath>
-    </Reference>
+    <ProjectReference Include="..\FirstFloor.ModernUI.Win8Extension\FirstFloor.ModernUI.Win8Extension.csproj">
+      <Project>{e7e7de99-925e-4bf2-9e34-838fd6ee7191}</Project>
+      <Name>FirstFloor.ModernUI.Win8Extension</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition="Exists('$(Windows8Reference)')">
     <DefineConstants>$(DefineConstants);WIN8SUPPORTED</DefineConstants>
@@ -456,7 +456,6 @@
     <Compile Include="Windows\TaskbarProgress.cs" />
     <Compile Include="Windows\TaskbarService.cs" />
     <Compile Include="Windows\Toast.cs" />
-    <Compile Include="Windows\ToastWin8Helper.cs" />
     <Compile Include="WrappedCollection.cs" />
     <Compile Include="WrappedFilteredCollection.cs" />
   </ItemGroup>

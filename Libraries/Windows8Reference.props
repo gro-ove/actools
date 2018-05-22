@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- Allows to use some API designed for UWP applications, for example, to display nicer
+      notifications. Whole thing is moved to a separate assembly, because otherwise IDE (and I)
+      get confused between Windows.Controls and Windows.UI namespaces all the time. -->
+    <Windows8Reference>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</Windows8Reference>
+  </PropertyGroup>
+</Project>

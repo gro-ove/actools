@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -35,19 +36,35 @@ namespace FirstFloor.ModernUI.Windows {
             ActionExtension.InvokeInMainThreadAsync(() => {
                 if (!_winToasterIsNotAvailable && !OptionFallbackMode) {
                     try {
-                        ToastWin8Helper.ShowToast(title, message, icon, click ?? _defaultAction);
+                        ShowWin8Toast(title, message, icon, click);
                         return;
                     } catch {
-                        Logging.Warning("Win8 Toaster is not available");
+                        Logging.Warning("Windows 8+ toasts aren’t available");
                         _winToasterIsNotAvailable = true;
                     }
                 }
 
-                ShowFallback(title, message, icon, click);
+                ShowFallback(title, message, click);
             });
         }
 
-        private static void ShowFallback(string title, string message, [NotNull] Uri icon, Action click) {
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        // ReSharper disable UnusedParameter.Local
+        private static void ShowWin8Toast(string title, string message, Uri icon, Action click) {
+            // ReSharper restore UnusedParameter.Local
+#if WIN8SUPPORTED
+            FirstFloor.ModernUI.Win8Extension.Toast.Show(new FirstFloor.ModernUI.Win8Extension.ToastParameters(title, message) {
+                IconUri = icon,
+                ClickCallback = click ?? _defaultAction,
+                AppUserModelId = AppShortcut.AppUserModelId,
+                BoundToCallingApplication = false
+            });
+#else
+            throw new NotSupportedException();
+#endif
+        }
+
+        private static void ShowFallback(string title, string message, Action click) {
             try {
                 var text = title + Environment.NewLine + message;
                 var notifyIcon = new NotifyIcon {
@@ -57,9 +74,7 @@ namespace FirstFloor.ModernUI.Windows {
                 };
 
                 if (click != null) {
-                    notifyIcon.BalloonTipClicked += (sender, args) => {
-                        click.InvokeInMainThreadAsync();
-                    };
+                    notifyIcon.BalloonTipClicked += (sender, args) => { click.InvokeInMainThreadAsync(); };
                 }
 
                 notifyIcon.ShowBalloonTip(5000, title, message, ToolTipIcon.Info);

@@ -27,6 +27,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{36F3CF0E-1754-4853-95F6-6C9FBD2C0D05}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AcManager</RootNamespace>
@@ -39,6 +40,7 @@
     <ActualPlatform>$(Platform)</ActualPlatform>
     <ActualPlatform Condition="'$(ActualPlatform)' == 'AnyCPU'">x86</ActualPlatform>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Assets\Icons\Icon.ico</ApplicationIcon>
@@ -198,10 +200,6 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="Windows">
-      <HintPath>C:\Program Files (x86)\Windows Kits\8.1\References\CommonConfiguration\Neutral\Windows.winmd</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -1870,6 +1868,18 @@
       <Name>StringBasedFilter</Name>
     </ProjectReference>
   </ItemGroup>
+  <!-- Win8+ special: begin -->
+  <Import Project="..\Libraries\Windows8Reference.props" />
+  <ItemGroup Condition="Exists('$(Windows8Reference)')">
+    <ProjectReference Include="..\FirstFloor.ModernUI.Win8Extension\FirstFloor.ModernUI.Win8Extension.csproj">
+      <Project>{e7e7de99-925e-4bf2-9e34-838fd6ee7191}</Project>
+      <Name>FirstFloor.ModernUI.Win8Extension</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition="Exists('$(Windows8Reference)')">
+    <DefineConstants>$(DefineConstants);WIN8SUPPORTED</DefineConstants>
+  </PropertyGroup>
+  <!-- Win8+ special: end -->
   <ItemGroup>
     <Folder Include="Assets\Libs\" />
   </ItemGroup>
