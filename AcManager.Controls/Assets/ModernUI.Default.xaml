@@ -37,6 +37,9 @@
   <SolidColorBrush x:Key="DarkStripeText" Color="#FFFFFF" />
   <SolidColorBrush x:Key="DarkStripeBackground" Color="#88222222" />
 
+  <!-- Used in list of online servers, for example -->
+  <SolidColorBrush x:Key="SlightBackgroundHint" Color="#11888888" />
+
   <!-- For quick drive page, for those overlaying buttons -->
   <SolidColorBrush x:Key="OverlayForeground" Color="#FFFFFF" />
   <SolidColorBrush x:Key="OverlayBackground" Color="#33000000" />

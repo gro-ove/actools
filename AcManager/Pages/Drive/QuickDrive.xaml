@@ -404,8 +404,8 @@
               </Border>
             </mui:Cell>
           </DockPanel>
-          <Slider Value="{Binding Time}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
-              Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}"
+          <Slider Value="{Binding TimeSliderMapper.MappedValue}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+              Minimum="0" Maximum="{Binding TimeSliderMapper.Size}"
               SmallChange="900" LargeChange="1800" IsEnabled="{Binding RandomTime, Converter={StaticResource InvertBooleanConverter}}" />
         </StackPanel>
 

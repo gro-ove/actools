@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
+using AcTools;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -61,15 +62,21 @@ namespace AcManager.Tools.Data {
                             AddType(f.Key, f.Value + baseDistance);
                         }
                     } else if (a.Value.ContainsKey(t)) {
-                        AddType(a.Key, a.Value.First(x => x.Key == t).Value + baseDistance);
+                        var ct = t;
+                        AddType(a.Key, a.Value.First(x => x.Key == ct).Value + baseDistance);
                     }
                 }
             }
         }
 
+        private static bool FitsTime(WeatherObject weatherObject, int time) {
+            return weatherObject.GetTimeDiapason()?.Contains(time)
+                    ?? time >= CommonAcConsts.TimeMinimum && time <= CommonAcConsts.TimeMaximum;
+        }
+
         public static bool Fits(this WeatherObject weatherObject, int? time, double? temperature) {
             return weatherObject.Enabled
-                    && (time == null || weatherObject.GetTimeDiapason()?.Contains(time.Value) != false)
+                    && (time == null || FitsTime(weatherObject, time.Value))
                     && (temperature == null || weatherObject.GetTemperatureDiapason()?.Contains(temperature.Value) != false);
         }
 
@@ -84,7 +91,11 @@ namespace AcManager.Tools.Data {
             try {
                 var candidates = WeatherManager.Instance.Loaded.Where(x => x.Fits(time, temperature)).ToList();
                 var closest = type.FindClosestWeather(from w in candidates select w.Type);
-                if (closest == null) return null;
+                if (closest == null) {
+                    return time < CommonAcConsts.TimeMinimum || time > CommonAcConsts.TimeMaximum
+                            ? candidates.RandomElementOrDefault()
+                            : null;
+                }
 
                 candidates = candidates.Where(x => x.Type == closest).ToList();
                 var footprint = candidates.Select(x => x.Id).JoinToString(';');

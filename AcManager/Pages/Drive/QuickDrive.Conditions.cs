@@ -1,4 +1,6 @@
 using System;
+using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 using AcManager.Controls;
@@ -13,9 +15,11 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -31,9 +35,7 @@ namespace AcManager.Pages.Drive {
             public bool RealConditions {
                 get => _realConditions;
                 set {
-                    if (Equals(value, _realConditions)) return;
-                    _realConditions = value;
-                    OnPropertyChanged();
+                    if (!Apply(value, ref _realConditions)) return;
                     OnPropertyChanged(nameof(ManualConditions));
 
                     if (value) {
@@ -51,9 +53,7 @@ namespace AcManager.Pages.Drive {
             public bool IdealConditions {
                 get => _idealConditions;
                 set {
-                    if (Equals(value, _idealConditions)) return;
-                    _idealConditions = value;
-                    OnPropertyChanged();
+                    if (!Apply(value, ref _idealConditions)) return;
                     OnPropertyChanged(nameof(ManualConditions));
 
                     if (value) {
@@ -72,52 +72,40 @@ namespace AcManager.Pages.Drive {
 
             public bool RealConditionsManualTime {
                 get => _realConditionsManualTime;
-                set {
-                    if (value == _realConditionsManualTime) return;
-                    _realConditionsManualTime = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _realConditionsManualTime, () => {
                     SaveLater();
                     UpdateConditions();
-                }
+                });
             }
 
             private bool _realConditionsManualWind;
 
             public bool RealConditionsManualWind {
                 get => _realConditionsManualWind;
-                set {
-                    if (value == _realConditionsManualWind) return;
-                    _realConditionsManualWind = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _realConditionsManualWind, () => {
                     SaveLater();
                     UpdateConditions();
-                }
+                });
             }
 
             private bool _realConditionsLocalWeather;
 
             public bool RealConditionsLocalWeather {
                 get => _realConditionsLocalWeather;
-                set {
-                    if (value == _realConditionsLocalWeather) return;
-                    _realConditionsLocalWeather = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _realConditionsLocalWeather, () => {
                     SaveLater();
                     UpdateConditions();
-                }
+                });
             }
 
             private bool _realConditionsTimezones;
 
             public bool RealConditionsTimezones {
                 get => _realConditionsTimezones;
-                set {
-                    if (value == _realConditionsTimezones) return;
-                    _realConditionsTimezones = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _realConditionsTimezones, () => {
                     SaveLater();
                     UpdateConditions();
-                }
+                });
             }
             #endregion
 
@@ -126,15 +114,11 @@ namespace AcManager.Pages.Drive {
 
             public bool ManualTime {
                 get => _manualTime;
-                private set {
-                    if (Equals(value, _manualTime)) return;
-                    _manualTime = value;
-                    OnPropertyChanged();
-
+                private set => Apply(value, ref _manualTime, () => {
                     if (value) {
                         IsTimeClamped = false;
                     }
-                }
+                });
             }
 
             private bool _manualWind;
@@ -173,8 +157,29 @@ namespace AcManager.Pages.Drive {
 
                     if (!RealConditions) {
                         SaveLater();
+
                         if (value is WeatherObject weather) {
-                            IsTimeOutOfWeatherRange = weather.TimeDiapason?.TimeDiapasonContains(Time) == false;
+                            var diapason = weather.GetTimeDiapason();
+                            var timeFits = diapason?.Contains(Time);
+                            if (timeFits == true) {
+                                IsTimeOutOfWeatherRange = false;
+                            } else if (IsTimeUnusual() || IsWeatherTimeUnusual(weather)) {
+                                Time = diapason?.FindClosest(Time) ?? 12 * 60 * 60;
+                            } else {
+                                IsTimeOutOfWeatherRange = timeFits == false;
+                            }
+                        } else if (value is WeatherTypeWrapped type && !WeatherManager.Instance.Enabled.Any(x => x.Fits(type.Type, Time, null))) {
+                            var diapason = Diapason.CreateTime(string.Empty);
+                            var basicAdded = false;
+                            foreach (var d in WeatherManager.Instance.Enabled.Where(x => x.Fits(type.Type, null, null)).Select(x => x.GetTimeDiapason())) {
+                                if (d != null) {
+                                    diapason.CombineWith(d);
+                                } else if (!basicAdded) {
+                                    diapason.CombineWith(GetBasicTimeDiapason());
+                                    basicAdded = true;
+                                }
+                            }
+                            Time = diapason.FindClosest(Time);
                         }
                     }
                 });
@@ -185,7 +190,9 @@ namespace AcManager.Pages.Drive {
 
             private void RefreshSelectedWeatherObject() {
                 var o = WeatherTypeWrapped.Unwrap(SelectedWeather, Time, Temperature);
-                if (o != SelectedWeatherObject) {
+                if (o == null && IsTimeUnusual()) {
+                    SelectedWeather = FindFittingWeather();
+                } else if (o != SelectedWeatherObject) {
                     SelectedWeatherObject = o;
                     OnPropertyChanged(nameof(SelectedWeatherObject));
                 }
@@ -288,9 +295,7 @@ namespace AcManager.Pages.Drive {
                 set {
                     value = value.Round(0.1).Clamp(CommonAcConsts.TemperatureMinimum,
                             SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.TemperatureMaximum * 2 : CommonAcConsts.TemperatureMaximum);
-                    if (Equals(value, _temperature)) return;
-                    _temperature = value;
-                    OnPropertyChanged();
+                    if (!Apply(value, ref _temperature)) return;
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
 
@@ -311,18 +316,13 @@ namespace AcManager.Pages.Drive {
 
             public bool RandomTemperature {
                 get => _randomTemperature;
-                set {
-                    if (Equals(value, _randomTemperature)) return;
-                    _randomTemperature = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
+                set => Apply(value, ref _randomTemperature, SaveLater);
             }
 
             private double GetRandomTemperature() {
                 for (var i = 0;; i++) {
                     var value = MathUtils.Random(CommonAcConsts.TemperatureMinimum, CommonAcConsts.TemperatureMaximum);
-                    if (SelectedWeatherObject?.TemperatureDiapason?.DiapasonContains(value) != false || i == 100) {
+                    if (SelectedWeatherObject?.GetTemperatureDiapason()?.Contains(value) != false || i == 100) {
                         return value;
                     }
                 }
@@ -345,13 +345,10 @@ namespace AcManager.Pages.Drive {
 
             public bool CustomRoadTemperature {
                 get => _customRoadTemperature;
-                set {
-                    if (Equals(value, _customRoadTemperature)) return;
-                    _customRoadTemperature = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _customRoadTemperature, () => {
                     OnPropertyChanged(nameof(RoadTemperature));
                     SaveLater();
-                }
+                });
             }
 
             private double? _customRoadTemperatureValue;
@@ -361,25 +358,155 @@ namespace AcManager.Pages.Drive {
                 set {
                     value = value.Round(0.1).Clamp(CommonAcConsts.RoadTemperatureMinimum,
                             SettingsHolder.Drive.QuickDriveExpandBounds ? CommonAcConsts.RoadTemperatureMaximum * 2 : CommonAcConsts.RoadTemperatureMaximum);
-                    if (Equals(value, _customRoadTemperatureValue)) return;
-                    _customRoadTemperatureValue = value;
-                    OnPropertyChanged();
+                    if (!Apply(value, ref _customRoadTemperatureValue)) return;
                     OnPropertyChanged(nameof(RoadTemperature));
                     SaveLater();
                 }
             }
 
+            public class DiapasonMapper : NotifyPropertyChanged {
+                private readonly Diapason<int> _diapason;
+                private readonly Tuple<int, int>[] _spaceAndInterval;
+
+                public int Size { get; }
+
+                public DiapasonMapper(Diapason<int> diapason) {
+                    var spaceAndInterval = new Tuple<int, int>[diapason.Pieces.Count];
+                    var start = 0;
+                    var total = 0;
+
+                    for (var i = 0; i < diapason.Pieces.Count; i++) {
+                        var piece = diapason.Pieces[i];
+                        var size = piece.ToValue - piece.FromValue;
+                        spaceAndInterval[i] = Tuple.Create(piece.FromValue - start, size);
+                        start = piece.ToValue;
+                        total += size;
+                    }
+
+                    _diapason = diapason;
+                    _spaceAndInterval = spaceAndInterval;
+
+                    Size = total;
+                }
+
+                public int GetClosest(int value) {
+                    return _diapason.TryToFindClosest(value, out var closest) ? closest : value;
+                }
+
+                public int MappedToActual(int mappedValue) {
+                    var actualValue = 0;
+                    for (var i = 0; i < _spaceAndInterval.Length; i++) {
+                        var t = _spaceAndInterval[i];
+                        int space = t.Item1, interval = t.Item2;
+
+                        actualValue += space;
+                        if (mappedValue <= interval) {
+                            actualValue += mappedValue;
+                            break;
+                        }
+
+                        actualValue += interval;
+                        mappedValue -= interval;
+                    }
+
+                    return actualValue;
+                }
+
+                public int ActualToMapped(int actualValue) {
+                    var mappedValue = 0;
+                    for (var i = 0; i < _spaceAndInterval.Length; i++) {
+                        var t = _spaceAndInterval[i];
+                        int space = t.Item1, interval = t.Item2;
+
+                        actualValue -= space;
+                        if (actualValue <= interval) {
+                            if (actualValue > 0) {
+                                mappedValue += actualValue;
+                            }
+                            break;
+                        }
+
+                        mappedValue += interval;
+                        actualValue -= interval;
+                    }
+
+                    return mappedValue;
+                }
+
+                private int _mappedValue;
+
+                public int MappedValue {
+                    get => _mappedValue;
+                    set => Apply(value.Clamp(0, Size), ref _mappedValue, () => ActualValue = MappedToActual(value));
+                }
+
+                private int _actualValue;
+
+                public int ActualValue {
+                    get => _actualValue;
+                    set => Apply(value, ref _actualValue, () => MappedValue = ActualToMapped(value));
+                }
+            }
+
+            private Diapason<int> GetBasicTimeDiapason() {
+                var result = Diapason.CreateTime(string.Empty);
+                result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
+                return result;
+            }
+
+            private void UpdateTimeDiapason() {
+                var allowed = GetBasicTimeDiapason();
+                foreach (var weatherObject in WeatherManager.Instance.Enabled) {
+                    var time = weatherObject.GetTimeDiapason();
+                    if (time != null) {
+                        allowed.CombineWith(time);
+                    }
+                }
+
+                TimeSliderMapper = new DiapasonMapper(allowed) {
+                    ActualValue = Time
+                };
+            }
+
+            private DiapasonMapper _timeSliderMapper;
+
+            [CanBeNull]
+            public DiapasonMapper TimeSliderMapper {
+                get => _timeSliderMapper;
+                set {
+                    var oldValue = _timeSliderMapper;
+                    Apply(value, ref _timeSliderMapper, () => {
+                        oldValue?.UnsubscribeWeak(OnTimeSliderMapperChanged);
+                        value?.SubscribeWeak(OnTimeSliderMapperChanged);
+                        Time = value?.GetClosest(Time) ?? Time;
+                    });
+                }
+            }
+
+            private readonly Busy _syncTime = new Busy();
+
+            private void OnTimeSliderMapperChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+                if (propertyChangedEventArgs.PropertyName == nameof(TimeSliderMapper.ActualValue)) {
+                    _syncTime.Do(() => Time = TimeSliderMapper?.ActualValue ?? Time);
+                }
+            }
+
             private int _time;
+            private WeatherObject _previousWeatherObject;
 
             public int Time {
                 get => _time;
                 set {
-                    if (value == _time) return;
-                    _time = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
-                    OnPropertyChanged();
+                    if (!Apply(TimeSliderMapper?.GetClosest(value) ?? value, ref _time)) return;
                     OnPropertyChanged(nameof(DisplayTime));
                     OnPropertyChanged(nameof(RoadTemperature));
                     OnPropertyChanged(nameof(RecommendedRoadTemperature));
+
+                    _syncTime.Do(() => {
+                        if (TimeSliderMapper != null) {
+                            TimeSliderMapper.ActualValue = Time;
+                        }
+                    });
 
                     if (!RealConditions || RealConditionsManualTime) {
                         SaveLater();
@@ -388,30 +515,69 @@ namespace AcManager.Pages.Drive {
                     if (RealConditions) {
                         TryToSetWeatherLater();
                     } else if (SelectedWeather is WeatherObject weather) {
-                        IsTimeOutOfWeatherRange = weather.TimeDiapason?.TimeDiapasonContains(value) == false;
+                        var fits = weather.GetTimeDiapason()?.Contains(_time);
+                        if (!IsTimeUnusual()) {
+                            if (fits == false && IsWeatherTimeUnusual(weather)) {
+                                SelectedWeather = _previousWeatherObject ?? FindFittingWeather();
+                            } else {
+                                IsTimeOutOfWeatherRange = fits == false;
+                            }
+                        } else if (fits != true) {
+                            if (!IsWeatherTimeUnusual(weather)) {
+                                _previousWeatherObject = weather;
+                            }
+
+                            SelectedWeather = FindFittingWeather();
+                        }
                     } else {
                         RefreshSelectedWeatherObjectLater();
                     }
                 }
             }
 
+            private bool IsWeatherTimeUnusual(WeatherObject weather) {
+                return weather.GetTimeDiapason()?.Pieces.Any(x => IsTimeUnusual(x.FromValue) || IsTimeUnusual(x.ToValue)) == true;
+            }
+
+            private bool IsTimeUnusual(int time) {
+                return time < CommonAcConsts.TimeMinimum || time > CommonAcConsts.TimeMaximum;
+            }
+
+            private bool IsTimeUnusual() {
+                return IsTimeUnusual(Time);
+            }
+
+            [CanBeNull]
+            private WeatherObject FindFittingWeather() {
+                var isUnusual = IsTimeUnusual();
+                var allowed = WeatherManager.Instance.Enabled.Where(x => x.GetTimeDiapason()?.Contains(_time) ?? !isUnusual).ToList();
+                return allowed.Where(x => x.GetTemperatureDiapason()?.Contains(Temperature) == true).RandomElementOrDefault()
+                        ?? allowed.RandomElementOrDefault();
+            }
+
             private bool _randomTime;
 
             public bool RandomTime {
                 get => _randomTime;
-                set {
-                    if (Equals(value, _randomTime)) return;
-                    _randomTime = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
+                set => Apply(value, ref _randomTime, SaveLater);
             }
 
             private int GetRandomTime() {
+                var weather = SelectedWeatherObject;
+                var mapper = TimeSliderMapper;
                 for (var i = 0;; i++) {
-                    var value = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
-                    if (SelectedWeatherObject?.TimeDiapason?.TimeDiapasonContains(value) != false || i == 100) {
-                        return value;
+                    if (mapper != null) {
+                        var actualValue = mapper.MappedToActual(MathUtils.Random(mapper.Size));
+                        if (weather == null
+                                || i == 100
+                                || (weather.GetTimeDiapason()?.Contains(actualValue) ?? !IsTimeUnusual(actualValue))) {
+                            return actualValue;
+                        }
+                    } else {
+                        var value = MathUtils.Random(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                        if (SelectedWeatherObject?.GetTimeDiapason()?.Contains(value) != false || i == 100) {
+                            return value;
+                        }
                     }
                 }
             }
@@ -440,17 +606,13 @@ namespace AcManager.Pages.Drive {
 
             public int WindDirection {
                 get => _windDirection;
-                set {
-                    value = ((value % 360 + 360) % 360).Round();
-                    if (Equals(value, _windDirection)) return;
-                    _windDirection = value;
-                    OnPropertyChanged();
+                set => Apply(((value % 360 + 360) % 360).Round(), ref _windDirection, () => {
                     OnPropertyChanged(nameof(DisplayWindDirection));
                     OnPropertyChanged(nameof(WindDirectionFlipped));
                     if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
-                }
+                });
             }
 
             public int WindDirectionFlipped {
@@ -462,40 +624,30 @@ namespace AcManager.Pages.Drive {
 
             public double WindSpeedMin {
                 get => _windSpeedMin;
-                set {
-                    value = value.Round(0.1);
-                    if (Equals(value, _windSpeedMin)) return;
-                    _windSpeedMin = value;
-
+                set => Apply(value.Round(0.1), ref _windSpeedMin, () => {
                     if (WindSpeedMax < value) {
                         WindSpeedMax = value;
                     }
 
-                    OnPropertyChanged();
                     if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
-                }
+                });
             }
 
             private double _windSpeedMax;
 
             public double WindSpeedMax {
                 get => _windSpeedMax;
-                set {
-                    value = value.Round(0.1);
-                    if (Equals(value, _windSpeedMax)) return;
-                    _windSpeedMax = value;
-
+                set => Apply(value.Round(0.1), ref _windSpeedMax, () => {
                     if (WindSpeedMin > value) {
                         WindSpeedMin = value;
                     }
 
-                    OnPropertyChanged();
                     if (!RealConditions || RealConditionsManualWind) {
                         SaveLater();
                     }
-                }
+                });
             }
 
             public string DisplayWindDirection => _windDirection.ToDisplayWindDirection(RandomWindDirection);
@@ -504,25 +656,17 @@ namespace AcManager.Pages.Drive {
 
             public bool RandomWindSpeed {
                 get => _randomWindSpeed;
-                set {
-                    if (Equals(value, _randomWindSpeed)) return;
-                    _randomWindSpeed = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
+                set => Apply(value, ref _randomWindSpeed, SaveLater);
             }
 
             private bool _randomWindDirection;
 
             public bool RandomWindDirection {
                 get => _randomWindDirection;
-                set {
-                    if (Equals(value, _randomWindDirection)) return;
-                    _randomWindDirection = value;
-                    OnPropertyChanged();
+                set => Apply(value, ref _randomWindDirection, () => {
                     OnPropertyChanged(nameof(DisplayWindDirection));
                     SaveLater();
-                }
+                });
             }
             #endregion
 
@@ -591,7 +735,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private void TryToSetTime(int value) {
-                var clamped = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                var clamped = TimeSliderMapper?.GetClosest(value) ?? value;
                 IsTimeClamped = clamped != value;
                 Time = clamped;
             }

@@ -79,9 +79,7 @@ namespace AcManager.Controls {
         private readonly Busy _updateBusy = new Busy();
 
         private void UpdateWeather() {
-            _updateBusy.DoDelay(() => _busy.Do(() => {
-                OnItemSelected(null, null);
-            }), 500);
+            _updateBusy.DoDelay(() => _busy.Do(() => { OnItemSelected(null, null); }), 500);
         }
 
         public event EventHandler WeatherChanged;
@@ -146,6 +144,10 @@ namespace AcManager.Controls {
             return o.Id.Contains(@"gbW");
         }
 
+        private static bool IsA4SWeather(WeatherObject o) {
+            return o.Id.Contains(@"a4s");
+        }
+
         private static bool IsModWeather(WeatherObject o) {
             return !IsKunosWeather(o) && !IsGbwWeather(o);
         }
@@ -175,22 +177,31 @@ namespace AcManager.Controls {
                 list = AllowRandomWeather ? new HierarchicalGroup { WeatherTypeWrapped.RandomWeather } : new HierarchicalGroup();
 
                 if (WeatherList.Any(IsKunosWeather)) {
-                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original, WeatherList.Where(IsKunosWeather)));
+                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Original,
+                            WeatherList.Where(IsKunosWeather)));
                 }
 
                 if (AllowWeatherByType && WeatherList.Any(x => x.Type != WeatherType.None)) {
-                    list.Add(new HierarchicalGroup("By type", WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
-                                                                         .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
+                    list.Add(new HierarchicalGroup("By type",
+                            WeatherList.Select(x => x.Type).ApartFrom(WeatherType.None).Distinct()
+                                       .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
                 }
 
                 if (WeatherList.Any(IsGbwWeather)) {
-                    list.Add(new HierarchicalGroup(@"GBW", WeatherList.Where(IsGbwWeather)) {
-                        HeaderConverter = new GbwConverter()
-                    });
+                    list.Add(new HierarchicalGroup(@"GBW",
+                            WeatherList.Where(IsGbwWeather)) {
+                                HeaderConverter = new GbwConverter()
+                            });
+                }
+
+                if (WeatherList.Any(IsA4SWeather)) {
+                    list.Add(new HierarchicalGroup(@"A4S",
+                            WeatherList.Where(IsA4SWeather)));
                 }
 
                 if (WeatherList.Any(IsModWeather)) {
-                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods, WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x))));
+                    list.Add(new HierarchicalGroup(ToolsStrings.Weather_Mods,
+                            WeatherList.Where(x => !IsKunosWeather(x) && !IsGbwWeather(x) && !IsA4SWeather(x))));
                 }
             }
 

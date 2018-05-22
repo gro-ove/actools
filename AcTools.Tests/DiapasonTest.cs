@@ -19,12 +19,19 @@ namespace AcTools.Tests {
 
     public class DiapasonTest {
         [Test]
-        public void Diapason() {
+        public void OptimizationTest() {
+            Assert.AreEqual(0, Diapason.CreateInt32("112-20").Pieces.Count);
+            Assert.AreEqual("12-28, 114-132", Diapason.CreateInt32("12-20, 12-14, 12-28, 114, 114-124, 114-132").Pieces.JoinToString(", "));
+            Assert.AreEqual("12-32", Diapason.CreateInt32("12-20, 12-14, 12-28, 14, 14-24, 14-32").Pieces.JoinToString(", "));
+        }
+
+        [Test]
+        public void BasicDiapason() {
             Assert.AreEqual(101, "0-100".ToDiapason(0, 1000).Count());
             Assert.AreEqual(5050, "0-100".ToDiapason(0, 1000).Sum());
 
-            Assert.AreEqual(202, "0-,-100".ToDiapason(0, 100).Count());
-            Assert.AreEqual(10100, "0- ; -100".ToDiapason(0, 100).Sum());
+            Assert.AreEqual(101, "0-,-100".ToDiapason(0, 100).Count());
+            Assert.AreEqual(5050, "0- ; -100".ToDiapason(0, 100).Sum());
 
             Assert.AreEqual(101, "-".ToDiapason(0, 100).Count());
             Assert.AreEqual(5050, "-".ToDiapason(0, 100).Sum());
@@ -59,6 +66,7 @@ namespace AcTools.Tests {
 
         [Test]
         public void TimeDiapason() {
+            Assert.AreEqual(Diapason.CreateTime("23:00-;-01:30").Pieces.JoinToString(", "), Diapason.CreateTime("23:00-01:30").Pieces.JoinToString(", "));
             Assert.IsTrue("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("11:43")));
             Assert.IsTrue("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("11:48")));
             Assert.IsFalse("10:30-11:48,12,13:00:16,18:47-".TimeDiapasonContains(FlexibleParser.ParseTime("11:49")));

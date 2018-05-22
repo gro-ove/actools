@@ -11,7 +11,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
@@ -334,7 +333,7 @@ namespace AcManager.Controls {
         }
 
         private static Style _labelStyle;
-        private static SolidColorBrush _areaBrush;
+        private static Brush _areaBrush;
         private static Typeface _typeface, _labelTypeface;
         private static Brush _blockText, _blockTextActive, _blockBackground, _blockBackgroundActive;
         private static BitmapSource _alertIcon, _passwordIcon, _bookedIcon, _friendsIcon;
@@ -345,7 +344,7 @@ namespace AcManager.Controls {
             if (_labelStyle != null) return;
 
             _labelStyle = FindStaticResource<Style>(@"Label");
-            _areaBrush = new SolidColorBrush(Color.FromArgb(0x11, 0x88, 0x88, 0x88)).Seal();
+            _areaBrush = FindStaticResource<Brush>(@"SlightBackgroundHint");
             _typeface = new Typeface(new FontFamily(@"Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _labelTypeface = new Typeface(
                     new FontFamily(new Uri(@"pack://application:,,,/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed", UriKind.Absolute),

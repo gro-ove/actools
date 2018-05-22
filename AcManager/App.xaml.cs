@@ -601,6 +601,7 @@ namespace AcManager {
             WeatherSpecificCloudsHelper.Revert();
             WeatherSpecificTyreSmokeHelper.Revert();
             WeatherSpecificVideoSettingsHelper.Revert();
+            WeatherSpecificLightingHelper.Revert();
             CarSpecificControlsPresetHelper.Revert();
             CarCustomDataHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();

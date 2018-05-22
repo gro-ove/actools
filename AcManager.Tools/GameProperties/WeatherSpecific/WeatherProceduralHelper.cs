@@ -276,7 +276,15 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             try {
-                ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES" });
+                ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES", @"__CUSTOM_LIGHTING" },
+                        (table, ini) => {
+                            var customClouds = table[@"CLOUDS_TEXTURES"];
+                            if (customClouds != null) {
+                                ini[@"__CLOUDS_TEXTURES"].Set("LIST", ToIniFileValue(customClouds));
+                            }
+
+                            MapOutputSection(table[@"CUSTOM_LIGHTING"], ini[@"__CUSTOM_LIGHTING"]);
+                        });
                 ProcessFile(weather, GetContext, @"colorCurves.ini", new[] { @"HEADER", @"HORIZON", @"SKY", @"SUN", @"AMBIENT" });
                 ProcessFile(weather, GetContext, @"filter.ini", new[] {
                     @"YEBIS", @"OPTIMIZATIONS", @"VARIOUS", @"AUTO_EXPOSURE", @"GODRAYS", @"HEAT_SHIMMER", @"TONEMAPPING", @"DOF", @"CHROMATIC_ABERRATION",
@@ -318,6 +326,9 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             public LuaIniFile UserFilterIni => _userFilterIni.Value;
 
             [UsedImplicitly]
+            public LuaIniFile TrackLightingIni => _trackLightingIni.Value;
+
+            [UsedImplicitly]
             public string TrackId;
 
             [UsedImplicitly]
@@ -338,7 +349,9 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             [UsedImplicitly]
             public string TrackSeason => ActiveTrackSkins.FirstOrDefault(x => x.Categories.Contains(@"season"))?.DisplayName.ToLowerInvariant();
 
-            private readonly Lazier<LuaIniFile> _weatherIni, _colorCurvesIni, _weatherFilterIni, _tyreSmokeIni, _tyreSmokeGrassIni, _userFilterIni;
+            private readonly Lazier<LuaIniFile> _weatherIni, _colorCurvesIni, _weatherFilterIni, _tyreSmokeIni, _tyreSmokeGrassIni, _userFilterIni,
+                    _trackLightingIni;
+
             private readonly Lazier<TrackObjectBase> _track;
             private readonly Lazier<List<TrackSkinObject>> _activeTrackSkins;
 
@@ -352,6 +365,10 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 _tyreSmokeIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_smoke.ini")));
                 _tyreSmokeGrassIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_smoke_grass.ini")));
                 _userFilterIni = Lazier.Create(() => new LuaIniFile(PpFiltersManager.Instance.GetByAcId(AcSettingsHolder.Video.PostProcessingFilter)?.Location));
+
+                // BUG: USE BACKUPED VALUES IF ANY INSTEAD!
+                _trackLightingIni = Lazier.Create(() => new LuaIniFile(Path.Combine(Track.DataDirectory, "lighting.ini")));
+
                 _track = Lazier.Create(() => TracksManager.Instance.GetLayoutById(TrackId));
                 _activeTrackSkins = Lazier.Create(() => Track.MainTrackObject.EnabledOnlySkins.Where(x => x.IsActive).ToList());
             }
@@ -359,7 +376,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
 
         private static bool _scriptRegistered;
 
-        private static void ProcessFile(WeatherObject weather, Func<WeatherProceduralContext> contextCallback, string fileName, string[] outputSections) {
+        private static void ProcessFile(WeatherObject weather, Func<WeatherProceduralContext> contextCallback, string fileName, string[] outputSections,
+                Action<Table, IniFile> customFn = null) {
             var scriptLocation = Path.Combine(weather.Location, Path.GetFileNameWithoutExtension(fileName) + @".lua");
             if (!File.Exists(scriptLocation)) return;
 
@@ -411,27 +429,31 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             foreach (var section in outputSections) {
-                var s = output[section];
-                switch (state.Globals[section]) {
-                    case IniFileSection e:
-                        foreach (var v in e) {
-                            s.Set(v.Key, v.Value);
-                        }
-                        break;
-                    case LuaIniSection e:
-                        foreach (var v in e.ToIniValues()) {
-                            s.Set(v.Key, v.Value);
-                        }
-                        break;
-                    case Table o:
-                        foreach (var key in o.Keys) {
-                            s[key.CastToString()] = ToIniFileValue(o[key]);
-                        }
-                        break;
-                }
+                MapOutputSection(state.Globals[section], output[section]);
             }
 
+            customFn?.Invoke(state.Globals, output);
             output.Save();
+        }
+
+        private static void MapOutputSection(object outputValue, IniFileSection resultSection) {
+            switch (outputValue) {
+                case IniFileSection e:
+                    foreach (var v in e) {
+                        resultSection.Set(v.Key, v.Value);
+                    }
+                    break;
+                case LuaIniSection e:
+                    foreach (var v in e.ToIniValues()) {
+                        resultSection.Set(v.Key, v.Value);
+                    }
+                    break;
+                case Table o:
+                    foreach (var key in o.Keys) {
+                        resultSection[key.CastToString()] = ToIniFileValue(o[key]);
+                    }
+                    break;
+            }
         }
 
         private static string ToIniFileValue(object v) {

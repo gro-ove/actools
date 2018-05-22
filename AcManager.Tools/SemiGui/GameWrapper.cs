@@ -167,6 +167,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             properties.SetAdditional(new WeatherProceduralHelper());
+            properties.SetAdditional(new WeatherSpecificLightingHelper());
 
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
                 properties.SetAdditional(new WeatherSpecificCloudsHelper());

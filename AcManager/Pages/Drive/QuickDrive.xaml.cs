@@ -323,6 +323,21 @@ namespace AcManager.Pages.Drive {
             public void Dispose() {
                 CarsManager.Instance.WrappersList.ItemPropertyChanged -= OnListItemPropertyChanged;
                 CarsManager.Instance.WrappersList.WrappedValueChanged -= OnListWrappedValueChanged;
+                WeatherManager.Instance.WrappersList.CollectionChanged -= OnWeatherListChanged;
+                WeatherManager.Instance.WrappersList.WrappedValueChanged -= OnWeatherListChanged;
+                WeatherManager.Instance.WrappersList.ItemPropertyChanged -= OnWeatherPropertyChanged;
+            }
+
+            private readonly Busy _updateTimeDiapason = new Busy();
+
+            private void OnWeatherListChanged(object sender, EventArgs e) {
+                _updateTimeDiapason.Yield(UpdateTimeDiapason);
+            }
+
+            private void OnWeatherPropertyChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(WeatherObject.TimeDiapason)) {
+                    _updateTimeDiapason.Yield(UpdateTimeDiapason);
+                }
             }
 
             private void UpdateTunableVersions(CarObject selected) {
@@ -493,7 +508,6 @@ namespace AcManager.Pages.Drive {
 
             public int TimeMultiplerMinimum => 0;
             public int TimeMultiplerMaximum => 360;
-            public int TimeMultiplerMaximumLimited => 60;
 
             private int _timeMultiplier;
 
@@ -511,6 +525,7 @@ namespace AcManager.Pages.Drive {
             private readonly ISaveHelper _saveable;
 
             internal void SaveLater() {
+                if (_saveable == null) return;
                 if (_uiMode && _saveable.SaveLater()) {
                     Changed?.Invoke(this, EventArgs.Empty);
                 }
@@ -548,6 +563,11 @@ namespace AcManager.Pages.Drive {
                     mainLayout?.ForceSkinEnabled(trackSkin);
                     track = mainLayout;
                 }
+
+                UpdateTimeDiapason();
+                WeatherManager.Instance.WrappersList.CollectionChanged += OnWeatherListChanged;
+                WeatherManager.Instance.WrappersList.WrappedValueChanged += OnWeatherListChanged;
+                WeatherManager.Instance.WrappersList.ItemPropertyChanged += OnWeatherPropertyChanged;
 
                 _saveable = new SaveHelper<SaveableData>(KeySaveable, () => new SaveableData {
                     RealConditions = RealConditions,
@@ -806,13 +826,13 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand _manageCarCommand;
 
-            public DelegateCommand ManageCarCommand => _manageCarCommand ?? (_manageCarCommand = new DelegateCommand(() => { CarsListPage.Show(SelectedCar); }))
-                ;
+            public DelegateCommand ManageCarCommand => _manageCarCommand ?? (_manageCarCommand =
+                    new DelegateCommand(() => CarsListPage.Show(SelectedCar)));
 
             private DelegateCommand _manageTrackCommand;
 
-            public DelegateCommand ManageTrackCommand
-                => _manageTrackCommand ?? (_manageTrackCommand = new DelegateCommand(() => { TracksListPage.Show(SelectedTrack); }));
+            public DelegateCommand ManageTrackCommand => _manageTrackCommand ?? (_manageTrackCommand =
+                    new DelegateCommand(() => TracksListPage.Show(SelectedTrack)));
 
             private QuickDriveModeViewModel _selectedModeViewModel;
 
