@@ -14,11 +14,15 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Starters {
     public abstract class StarterBase : IAcsPlatformSpecificStarter {
+        public static string GetAcsName(bool use32BitVersion) {
+            return use32BitVersion ? @"acs_x86.exe" : @"acs.exe";
+        }
+
         public bool Use32BitVersion { get; set; }
 
         protected Process LauncherProcess, GameProcess;
 
-        protected virtual string AcsName => Use32BitVersion ? "acs_x86.exe" : "acs.exe";
+        protected virtual string AcsName => GetAcsName(Use32BitVersion);
 
         protected string AcsFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, AcsName);
 

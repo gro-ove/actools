@@ -114,7 +114,7 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _weather, RefreshWeatherObject);
         }
 
-        [CanBeNull]
+        [JsonIgnore, CanBeNull]
         public WeatherObject WeatherObject { get; private set; }
 
         private void RefreshWeatherObject() {
@@ -127,7 +127,7 @@ namespace AcManager.Tools.Objects {
 
         [JsonProperty(@"weather")]
         public string WeatherId {
-            get { return WeatherTypeWrapped.Serialize(Weather); }
+            get => WeatherTypeWrapped.Serialize(Weather);
             private set {
                 // ignored
             }

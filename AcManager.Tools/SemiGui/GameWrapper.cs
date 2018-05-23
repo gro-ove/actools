@@ -238,6 +238,7 @@ namespace AcManager.Tools.SemiGui {
             using (ScreenshotsConverter.OnlyNewIfEnabled()) {
                 if (mode == GameMode.Race) {
                     properties.SetAdditional(new RaceCommandExecutor(properties));
+                    properties.SetAdditional(new DBoxIntegration());
                 } else if (mode == GameMode.Replay) {
                     properties.SetAdditional(new ReplayCommandExecutor(properties));
                 }
@@ -283,6 +284,7 @@ namespace AcManager.Tools.SemiGui {
 
                         if (mode == GameMode.Race) {
                             properties.SetAdditional(new RaceCommandExecutor(properties));
+                            properties.SetAdditional(new DBoxIntegration());
                             if (SettingsHolder.Drive.ContinueOnEscape) {
                                 properties.SetAdditional(new ContinueRaceHelper());
                             }

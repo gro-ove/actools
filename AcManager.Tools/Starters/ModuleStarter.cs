@@ -43,7 +43,7 @@ namespace AcManager.Tools.Starters {
         /// <exception cref="InformativeException">Thrown if data is unobtainable: AC is not running or connection is failed.</exception>
         /// <returns>Module answer</returns>
         [ItemCanBeNull]
-        public static async Task<string> GetDataAsync([Localizable(false),NotNull] string data, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetDataAsync([Localizable(false), NotNull] string data, CancellationToken cancellation = default(CancellationToken)) {
             if (!IsAssettoCorsaRunning) {
                 TryToRunAssettoCorsa();
                 throw new InformativeException("Running AssettoCorsa.exe is required", "You’re using Module Starter, it works only though original launcher.");

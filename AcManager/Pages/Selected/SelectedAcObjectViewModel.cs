@@ -203,11 +203,11 @@ namespace AcManager.Pages.Selected {
         private readonly List<Tuple<string, string, Func<string>, Action<string>>> _specs =
                 new List<Tuple<string, string, Func<string>, Action<string>>>(7);
 
-        protected void RegisterSpec([Localizable(false),NotNull] string key, [NotNull] string format, [NotNull] Func<string> getter, [NotNull] Action<string> setter) {
+        protected void RegisterSpec([Localizable(false), NotNull] string key, [NotNull] string format, [NotNull] Func<string> getter, [NotNull] Action<string> setter) {
             _specs.Add(Tuple.Create(key, format, getter, setter));
         }
 
-        protected void RegisterSpec([Localizable(false),NotNull] string key, [NotNull] string format, [NotNull] string propertyName) {
+        protected void RegisterSpec([Localizable(false), NotNull] string key, [NotNull] string format, [NotNull] string propertyName) {
             RegisterSpec(key, format, () => {
                 var type = SelectedObject.GetType();
                 var property = type.GetProperty(propertyName)?.GetGetMethod();

@@ -248,6 +248,7 @@
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
+    <Compile Include="GameProperties\DBoxIntegration.cs" />
     <Compile Include="GameProperties\ExtraHotkeysRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\InGameApp\CmInGameAppDelayedInputParams.cs" />

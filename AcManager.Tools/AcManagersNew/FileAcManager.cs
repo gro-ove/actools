@@ -10,8 +10,8 @@ using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.AcManagersNew {
@@ -254,9 +254,9 @@ namespace AcManager.Tools.AcManagersNew {
             if (objs.Contains(null)) throw new ArgumentException(ToolsStrings.AcObject_IdIsWrong, nameof(ids));
 
             try {
-                if (ModernDialog.ShowMessage(
+                if (MessageDialog.Show(
                         string.Format("Are you sure you want to move {0} to the Recycle Bin?", objs.Select(x => x.DisplayName).JoinToReadableString()),
-                        "Are You Sure?", MessageBoxButton.YesNo, new ModernDialog.ShowMessageCallbacks(
+                        "Are You Sure?", MessageBoxButton.YesNo, new MessageDialog.ShowMessageCallbacks(
                                 () => SettingsHolder.Content.DeleteConfirmation ? (MessageBoxResult?)null : MessageBoxResult.Yes,
                                 r => {
                                     if (r == MessageBoxResult.Yes) {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
@@ -74,7 +75,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull]
-        public static Process Start([NotNull] string filename, [CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo,
+        public static Process Start([Localizable(false), NotNull] string filename, [Localizable(false), CanBeNull] IEnumerable<string> args, ProcessStartInfo startInfo,
                 bool enableRaisingEvents = false) {
             if (filename == null) throw new ArgumentNullException(nameof(filename));
 

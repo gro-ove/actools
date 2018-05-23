@@ -3,8 +3,9 @@ using System.Windows;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 
-namespace FirstFloor.ModernUI.Windows.Controls {
+namespace FirstFloor.ModernUI.Dialogs {
     public class FatalErrorMessage : ModernDialog {
         internal FatalErrorMessage() {
             DefaultStyleKey = typeof(FatalErrorMessage);

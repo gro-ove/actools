@@ -109,7 +109,7 @@ namespace AcManager.Pages.Drive {
         }
 
         [CanBeNull]
-        protected Tuple<string, Action<TrackObjectBase>> TagRequired([Localizable(false),NotNull] string tag, [CanBeNull] TrackObjectBase track) {
+        protected Tuple<string, Action<TrackObjectBase>> TagRequired([Localizable(false), NotNull] string tag, [CanBeNull] TrackObjectBase track) {
             return track?.Tags.ContainsIgnoringCase(tag) != false ? null :
                         new Tuple<string, Action<TrackObjectBase>>(
                                 string.Format(ToolsStrings.TagIsMissing_Format, tag),

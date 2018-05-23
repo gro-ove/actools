@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
-        public DialogFilterPiece([NotNull] string displayName, [Localizable(false),NotNull] params string[] filter) {
+        public DialogFilterPiece([NotNull] string displayName, [Localizable(false), NotNull] params string[] filter) {
             Filter = string.Join(";", filter);
             ShortName = displayName;
             DisplayName = $"{ShortName} ({Filter})";
@@ -54,7 +54,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         [CanBeNull]
         public string InitialDirectory { get; set; }
 
-        [Localizable(false),CanBeNull]
+        [Localizable(false), CanBeNull]
         public string DirectorySaveKey { get; set; }
 
         [CanBeNull]

@@ -66,7 +66,7 @@
     <Reference Include="SmartThreadPool">
       <HintPath>..\Libraries\SmartThreadPool\SmartThreadPool.dll</HintPath>
     </Reference>
-  <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
+    <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
     <SpecificVersion>False</SpecificVersion>
     <HintPath>..\Libraries\Noesis.WebP\Noesis.Drawing.Imaging.WebP.dll</HintPath>
   </Reference>-->
@@ -123,6 +123,8 @@
     <Compile Include="Commands\UnavailableCommand.cs" />
     <Compile Include="Dialogs\AsyncProgressEntry.cs" />
     <Compile Include="Dialogs\ErrorMessage.cs" />
+    <Compile Include="Dialogs\FatalErrorMessage.cs" />
+    <Compile Include="Dialogs\MessageDialog.cs" />
     <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
       <DependentUpon>NonfatalErrorsDialog.xaml</DependentUpon>
     </Compile>
@@ -222,8 +224,8 @@
     <Compile Include="Windows\Controls\EmojiSpan.cs" />
     <Compile Include="Windows\Controls\EmojiSupport.cs" />
     <Compile Include="Windows\Controls\ExceptionDetails.cs" />
+    <Compile Include="Windows\Controls\FatalErrorEventArgs.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
-    <Compile Include="Windows\Controls\FatalErrorMessage.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
     <Compile Include="Windows\Controls\IEmojiProvider.cs" />
     <Compile Include="Windows\Controls\INumberInputConverter.cs" />

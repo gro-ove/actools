@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Dialogs;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -167,8 +167,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets the Go button (result is MessageBoxResult.OK).
         /// </summary>
         public Button GoButton => _goButton ??
-                (_goButton =
-                        CreateStyledCloseDialogButton(@"Go.Button", UiStrings.Go, true, false, MessageBoxResult.OK));
+                (_goButton = CreateStyledCloseDialogButton(@"Go.Button", UiStrings.Go, true, false, MessageBoxResult.OK));
 
         /// <summary>
         /// Gets the Cancel button.
@@ -192,8 +191,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets the Close button.
         /// </summary>
         public Button CloseButton => _closeButton ??
-                (_closeButton =
-                        CreateCloseDialogButton(UiStrings.Close, true, false, MessageBoxResult.None));
+                (_closeButton = CreateCloseDialogButton(UiStrings.Close, true, false, MessageBoxResult.None));
 
         /// <summary>
         /// Gets or sets the background content of this window instance.
@@ -224,109 +222,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public bool IsResultYes => MessageBoxResult == MessageBoxResult.Yes;
         public bool IsResultNo => MessageBoxResult == MessageBoxResult.No;
 
-        private static MessageBoxResult ShowMessageInner(string text, string title, MessageBoxButton button,
-                ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {
-            var value = doNotAskAgainLoadSave?.Item1?.Invoke();
-            if (value != null) return value.Value;
-
-            FrameworkElement content = new SelectableBbCodeBlock { Text = text, Margin = new Thickness(0, 0, 0, 8) };
-
-            CheckBox doNotAskAgainCheckbox;
-            if (doNotAskAgainLoadSave != null) {
-                doNotAskAgainCheckbox = new CheckBox {
-                    Content = new Label { Content = "Don’t ask again" }
-                };
-
-                content = new SpacingStackPanel {
-                    Spacing = 8,
-                    Children = {
-                        content,
-                        doNotAskAgainCheckbox
-                    }
-                };
-            } else {
-                doNotAskAgainCheckbox = null;
-            }
-
-            var dlg = new ModernDialog {
-                Title = title.ToTitle(),
-                Content = new ScrollViewer {
-                    Content = content,
-                    MaxWidth = 640,
-                    MaxHeight = 520,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled
-                },
-                MinHeight = 0,
-                MinWidth = 0,
-                MaxHeight = 640,
-                MaxWidth = 800
-            };
-
-            if (owner != null) {
-                dlg.Owner = owner;
-            }
-
-            dlg.Buttons = GetButtons(dlg, button);
-            dlg.ShowDialog();
-
-            if (doNotAskAgainCheckbox != null) {
-                doNotAskAgainLoadSave.Item2.Invoke(doNotAskAgainCheckbox.IsChecked == true ?
-                        dlg.MessageBoxResult : (MessageBoxResult?)null);
-            }
-
-            return dlg.MessageBoxResult;
-        }
-
-        public class ShowMessageCallbacks : Tuple<Func<MessageBoxResult?>, Action<MessageBoxResult?>> {
-            public ShowMessageCallbacks(Func<MessageBoxResult?> load, Action<MessageBoxResult?> save) : base(load, save) { }
-        }
-
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button,
-                ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {
-            return ShowMessageInner(text, title, button, doNotAskAgainLoadSave, owner);
+                MessageDialog.ShowMessageCallbacks doNotAskAgainLoadSave, Window owner = null) {
+            return MessageDialog.Show(text, title, button, doNotAskAgainLoadSave, owner);
         }
 
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, Window owner = null) {
-            return ShowMessageInner(text, title, button, null, owner);
+            return MessageDialog.Show(text, title, button, owner);
         }
 
         public static MessageBoxResult ShowMessage(string text, string title, MessageBoxButton button, [NotNull] string doNotAskAgainKey, Window owner = null) {
-            var key = "__doNotAskAgain:" + doNotAskAgainKey;
-            return ShowMessage(text, title, button,
-                    new ShowMessageCallbacks(() => ValuesStorage.Get<MessageBoxResult?>(key), k => {
-                        if (!k.HasValue) {
-                            ValuesStorage.Remove(key);
-                        } else {
-                            ValuesStorage.Set(key, k.Value);
-                        }
-                    }), owner);
+            return MessageDialog.Show(text, title, button, doNotAskAgainKey, owner);
         }
 
         public static MessageBoxResult ShowMessage(string text) {
             return ShowMessage(text, "", MessageBoxButton.OK);
-        }
-
-        private static IEnumerable<Control> GetButtons(ModernDialog owner, MessageBoxButton button) {
-            // ReSharper disable once SwitchStatementMissingSomeCases
-            switch (button) {
-                case MessageBoxButton.OK:
-                    yield return owner.OkButton;
-                    break;
-                case MessageBoxButton.OKCancel:
-                    yield return owner.OkButton;
-                    yield return owner.CancelButton;
-                    break;
-                case MessageBoxButton.YesNo:
-                    yield return owner.YesButton;
-                    yield return owner.NoButton;
-                    break;
-                case MessageBoxButton.YesNoCancel:
-                    yield return owner.YesButton;
-                    yield return owner.NoButton;
-                    yield return owner.CancelButton;
-                    break;
-            }
         }
 
         public static readonly DependencyProperty IconSourceProperty = DependencyProperty.Register(nameof(IconSource), typeof(string),

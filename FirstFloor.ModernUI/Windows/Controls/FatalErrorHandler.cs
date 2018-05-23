@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using FirstFloor.ModernUI.Dialogs;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public class FatalErrorEventArgs : EventArgs {
-        public Exception Exception { get; }
-
-        public FatalErrorEventArgs(Exception exception) {
-            Exception = exception;
-        }
-    }
-
     public static class FatalErrorHandler {
         public static event EventHandler<FatalErrorEventArgs> FatalError;
 

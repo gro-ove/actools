@@ -87,7 +87,7 @@ namespace AcTools.AcdFile {
             };
         }
 
-        public void SetEntry([Localizable(false),NotNull] string entryName, [NotNull] string entryData) {
+        public void SetEntry([Localizable(false), NotNull] string entryName, [NotNull] string entryData) {
             SetEntry(entryName, Encoding.UTF8.GetBytes(entryData));
         }
 
