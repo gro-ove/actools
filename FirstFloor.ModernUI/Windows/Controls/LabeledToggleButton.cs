@@ -23,7 +23,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private void OnLoaded(object sender, RoutedEventArgs e) {
             if (_loaded) return;
             _loaded = true;
-            CompositionTargetEx.Rendering += OnRendering;
         }
 
         public static readonly DependencyProperty HighlightCheckedProperty = DependencyProperty.Register(nameof(HighlightChecked), typeof(bool),
@@ -45,20 +44,32 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private DateTime _previous;
 
         private void OnRendering(object sender, RenderingEventArgs e) {
-            if (!_animateTo.HasValue) return;
+            if (!_animateTo2.HasValue) return;
 
             var delta = (DateTime.Now - _previous).TotalMilliseconds / AnimationSpeed;
             _previous = DateTime.Now;
-            SetPosition(_animateTo.Value < _position ? _position - delta : _position + delta);
+            SetPosition(_animateTo2.Value < _position ? _position - delta : _position + delta);
         }
 
         private void AnimateTo(double value) {
             _previous = DateTime.Now;
-            _animateTo = value;
+            SetAnimateTo(value);
         }
 
-        private double? _animateTo;
+        private double? _animateTo2;
         private double _position;
+
+        private void SetAnimateTo(double? value) {
+            if (Equals(_animateTo2, value)) return;
+
+            if (_animateTo2 == null) {
+                CompositionTargetEx.Rendering += OnRendering;
+            } else if (value == null) {
+                CompositionTargetEx.Rendering -= OnRendering;
+            }
+
+            _animateTo2 = value;
+        }
 
         private FrameworkElement _labelOn, _labelOff, _helper;
         private Thumb _thumb;
@@ -105,8 +116,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (pos < 0d) pos = 0d;
             if (pos > 1d) pos = 1d;
 
-            if (_animateTo.HasValue && Math.Abs(_animateTo.Value - pos) < 0.0001) {
-                _animateTo = null;
+            if (_animateTo2.HasValue && Math.Abs(_animateTo2.Value - pos) < 0.0001) {
+                SetAnimateTo(null);
             }
 
             _position = pos;
@@ -120,7 +131,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         private double _lastChange;
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e) {
-            _animateTo = null;
+            SetAnimateTo(null);
             _lastChange = e.HorizontalChange / _helper.ActualWidth;
             SetPosition(_position + _lastChange);
         }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.Managers;
@@ -16,8 +17,9 @@ namespace AcManager.Tools.Objects {
 
         [CanBeNull]
         public string ParentId {
-            get { return _parentId; }
+            get => _parentId;
             set {
+                if (string.Equals(value, Id, StringComparison.InvariantCulture)) return;
                 if (value == _parentId) return;
                 var oldParentId = _parentId;
                 _parentId = value;
@@ -28,7 +30,7 @@ namespace AcManager.Tools.Objects {
                     var parentExists = CarsManager.Instance.CheckIfIdExists(_parentId);
                     if (parentExists) {
                         RemoveError(AcErrorType.Car_ParentIsMissing);
-                    } else { 
+                    } else {
                         AddError(AcErrorType.Car_ParentIsMissing);
 
                         if (Loaded) {
@@ -43,7 +45,7 @@ namespace AcManager.Tools.Objects {
                 if (HasData) {
                     CheckUpgradeIcon();
                 }
-                
+
                 if (Loaded) {
                     OnPropertyChanged(nameof(ParentId));
                     OnPropertyChanged(nameof(Parent));

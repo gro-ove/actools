@@ -8,6 +8,7 @@
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
     <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcItemWrapperSpecific.xaml" />
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/GraphDataViewer.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
   <!--<RichTextBox x:Key="CarBlock.Description" Margin="0 8 0 0" Style="{StaticResource RichTextBox.Small}" />-->

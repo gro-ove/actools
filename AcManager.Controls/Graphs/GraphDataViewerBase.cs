@@ -15,8 +15,8 @@ namespace AcManager.Controls.Graphs {
     public abstract class GraphDataViewerBase : PlotView {
         private class CustomController : ControllerBase, IPlotController {
             public CustomController() {
-                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.PointsOnlyTrack);
-                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.Track);
+                this.BindMouseDown(OxyMouseButton.Left, OxyModifierKeys.Shift, PlotCommands.Track);
+                this.BindMouseDown(OxyMouseButton.Left, PlotCommands.PointsOnlyTrack);
             }
         }
 

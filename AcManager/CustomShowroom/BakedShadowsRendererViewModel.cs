@@ -357,7 +357,7 @@ namespace AcManager.CustomShowroom {
                             case ".jpg":
                             case ".jpeg":
                                 using (var stream = new MemoryStream(calculated.Item1))
-                                using (var output = File.OpenWrite(destination)) {
+                                using (var output = File.Create(destination)) {
                                     ImageUtils.Convert(stream, output, 97);
                                 }
                                 break;

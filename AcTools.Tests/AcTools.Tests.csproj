@@ -68,6 +68,7 @@
     <Compile Include="DiapasonTest.cs" />
     <Compile Include="ExifCommentTest.cs" />
     <Compile Include="FileUtilsTest.cs" />
+    <Compile Include="GameTest.cs" />
     <Compile Include="GoodShuffleTest.cs" />
     <Compile Include="IniParsingTest.cs" />
     <Compile Include="Kn5ExportTest.cs" />

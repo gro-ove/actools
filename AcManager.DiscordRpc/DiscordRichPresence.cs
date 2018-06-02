@@ -181,7 +181,7 @@ namespace AcManager.DiscordRpc {
         private static Busy _busy = new Busy();
 
         private void Update(bool force = false) {
-            if (IsDisposed) return;
+            if (IsDisposed && !force) return;
             _busy.DoDelay(() => {
                 if (!force && Instances.FirstOrDefault() != this) return;
                 DiscordConnector.Instance?.Update(Instances.FirstOrDefault());

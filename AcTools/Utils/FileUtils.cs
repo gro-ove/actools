@@ -75,17 +75,17 @@ namespace AcTools.Utils {
 
         public static bool RecycleVisible([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
-                                    FileOperationFlags.FOF_WANTNUKEWARNING);
+                    FileOperationFlags.FOF_WANTNUKEWARNING);
         }
 
         public static bool Recycle([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_ALLOWUNDO | FileOperationFlags.FOF_NOCONFIRMATION |
-                                    FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
+                    FileOperationFlags.FOF_NOERRORUI | FileOperationFlags.FOF_SILENT);
         }
 
         public static bool DeleteSilent([CanBeNull] params string[] path) {
             return DeleteFile(path, FileOperationFlags.FOF_NOCONFIRMATION | FileOperationFlags.FOF_NOERRORUI |
-                                    FileOperationFlags.FOF_SILENT);
+                    FileOperationFlags.FOF_SILENT);
         }
 
         public class RecycleOriginalHolder : IDisposable {
@@ -645,6 +645,32 @@ namespace AcTools.Utils {
             } catch {
                 return false;
             }
+        }
+
+        [Pure]
+        public static long GetDirectorySize([NotNull] string directory, bool recursive = true) {
+            return new DirectoryInfo(directory).GetDirectorySize();
+        }
+
+        [Pure]
+        public static long GetDirectorySize([NotNull] this DirectoryInfo directoryInfo, bool recursive = true) {
+            var startDirectorySize = default(long);
+
+            if (!directoryInfo.Exists) {
+                return startDirectorySize;
+            }
+
+            foreach (var fileInfo in directoryInfo.GetFiles()) {
+                System.Threading.Interlocked.Add(ref startDirectorySize, fileInfo.Length);
+            }
+
+            if (recursive) {
+                System.Threading.Tasks.Parallel.ForEach(directoryInfo.GetDirectories(), subDirectory => {
+                    System.Threading.Interlocked.Add(ref startDirectorySize, GetDirectorySize(subDirectory));
+                });
+            }
+
+            return startDirectorySize;
         }
     }
 }

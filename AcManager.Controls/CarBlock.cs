@@ -185,7 +185,13 @@ namespace AcManager.Controls {
             if (ShowDescription) {
                 var textBox = new RichTextBox {
                     Margin = new Thickness(0, 8, 0, 0),
-                    Style = (Style)FindResource(@"RichTextBox.Small.ReadOnly")
+                    Style = (Style)FindResource(@"RichTextBox.Small.ReadOnly"),
+                    IsReadOnly = true,
+                    IsInactiveSelectionHighlightEnabled = false,
+                    AutoWordSelection = true,
+                    Focusable = false,
+                    Cursor = Cursors.Arrow,
+                    IsDocumentEnabled = true
                 };
 
                 var carDescription = car.Description?.Trim();
@@ -203,7 +209,8 @@ namespace AcManager.Controls {
                                     Margin = new Thickness(8, 0, 0, 0),
                                     Padding = new Thickness(0, 0, 0, 0),
                                     Width = 240,
-                                    Height = 160
+                                    Height = 160,
+                                    Style = (Style)FindResource(typeof(CarGraphViewer)),
                                 }
                             })
                         }
@@ -215,6 +222,7 @@ namespace AcManager.Controls {
                         new Run(carDescription));
 
                 textBox.Document.Blocks.Add(item);
+
                 footer.Child = textBox;
             } else if (SettingsHolder.Content.CurversInDrive) {
                 footer.Child = new CarGraphViewer {

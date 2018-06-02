@@ -75,7 +75,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 }
             }
 
-            if (!customFilter && !weather.DisableShadows) {
+            var disableShadows = new IniFile(weather.IniFilename)["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
+            if (!customFilter && !disableShadows) {
                 return false;
             }
 
@@ -87,7 +88,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 section.Set("FILTER", FilterId);
             }
 
-            if (weather.DisableShadows) {
+            if (disableShadows) {
                 var section = ini["VIDEO"];
                 section.Set("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE", section.GetNonEmpty("__CM_ORIGINAL_SHADOW_MAP_SIZE") ?? section.GetNonEmpty("SHADOW_MAP_SIZE"));
                 section.Set("SHADOW_MAP_SIZE", -1);

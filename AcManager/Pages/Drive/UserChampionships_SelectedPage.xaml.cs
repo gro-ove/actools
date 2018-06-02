@@ -203,7 +203,7 @@ namespace AcManager.Pages.Drive {
                     var conditions = new Game.ConditionProperties {
                         AmbientTemperature = temperature,
                         CloudSpeed = 1d,
-                        RoadTemperature = Game.ConditionProperties.GetRoadTemperature(time, temperature, weather?.TemperatureCoefficient ?? 1d),
+                        RoadTemperature = null,
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
                         TimeMultipler = 1d,
                         WeatherName = weather?.Id ?? round.WeatherId

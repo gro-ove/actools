@@ -43,6 +43,9 @@ namespace AcManager.Tools.ContentRepairUi {
 
             if (!multipler.HasValue) return Task.FromResult(false);
 
+            torque.TransformSelf(x => x.Y * multipler.Value);
+            power.TransformSelf(x => x.Y * multipler.Value);
+
             if (car.SpecsTorqueCurve != null) {
                 var torqueUi = new Lut(car.SpecsTorqueCurve.Points);
                 torqueUi.TransformSelf(x => x.Y * multipler.Value);

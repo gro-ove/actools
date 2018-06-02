@@ -51,6 +51,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             Buttons = new Control[] { CloseButton };
         }
 
+        protected override void OnKeyUp(KeyEventArgs e) {
+            base.OnKeyUp(e);
+            if (!e.Handled && (e.Key == Key.Escape || e.Key == Key.W && Keyboard.Modifiers == ModifierKeys.Control)) {
+                CloseWithResult(MessageBoxResult.Cancel);
+            }
+        }
+
         public new Task<MessageBoxResult> ShowAndWaitAsync() {
             var task = new TaskCompletionSource<MessageBoxResult>();
             Closed += (s, a) => task.SetResult(MessageBoxResult);

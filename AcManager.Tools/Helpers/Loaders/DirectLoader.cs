@@ -291,7 +291,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                             cancellation.ThrowIfCancellationRequested();
 
                             if (CouldBeBeginningOfAFile(bytes)) {
-                                using (var file = File.OpenWrite(filename)) {
+                                using (var file = File.Create(filename)) {
                                     Logging.Warning("File beginning found, restart download");
                                     file.Write(bytes, 0, firstBytes);
                                     await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
@@ -319,7 +319,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                         remoteData = await client.OpenReadTaskAsync(Url);
                     }
 
-                    using (var file = File.OpenWrite(filename)) {
+                    using (var file = File.Create(filename)) {
                         Logging.Debug("Downloading the whole file…");
                         await CopyToAsync(remoteData, file, checkIfPaused, progress, cancellation);
                         cancellation.ThrowIfCancellationRequested();

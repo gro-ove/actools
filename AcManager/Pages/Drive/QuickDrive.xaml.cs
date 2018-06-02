@@ -916,8 +916,8 @@ namespace AcManager.Pages.Drive {
                     time = _forceTime ?? (RandomTime ? GetRandomTime() : Time);
                 }
 
-                var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue :
-                        Game.ConditionProperties.GetRoadTemperature(time, Temperature, weather?.TemperatureCoefficient ?? 0.0);
+                // Null for procedural weathers to be able to specify custom weather coefficient
+                var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue : (double?)null;
 
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {

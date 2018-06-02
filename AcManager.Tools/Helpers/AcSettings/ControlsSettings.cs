@@ -183,6 +183,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     DevicesScan.Update += OnDevicesUpdate;
                     IsScanningInProgress = !DevicesScan.HasData;
                     RescanDevices(DevicesScan.Get());
+                    UpdateHardwareLockAvailability();
 
                     CompositionTargetEx.Rendering -= OnTick;
                     CompositionTargetEx.Rendering += OnTick;
@@ -208,6 +209,23 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _isScanningInProgress);
         }
 
+        private void UpdateHardwareLockAvailability() {
+#if DEBUG
+            Logging.Debug("Devices: " + Devices.Select(x => x.Id).JoinToReadableString());
+#endif
+
+            object options = null;
+            IsHardwareLockSupported = Devices.Any(x => {
+#if DEBUG
+                Logging.Debug(x.Id);
+#endif
+                if (!WheelSteerLock.IsSupported(x.Id, out var o)) return false;
+                if (o != null) options = o;
+                return true;
+            });
+            HardwareLockOptions = options;
+        }
+
         private void OnDevicesUpdate(object sender, EventArgs eventArgs) {
             IsScanningInProgress = false;
             var watcher = (DirectInputScanner.Watcher)sender;
@@ -217,14 +235,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 SettingsHolder.Drive.ScanControllersAutomatically = true;
             }
 
-            object options = null;
-            IsHardwareLockSupported = Devices.Any(x => {
-                if (!WheelSteerLock.IsSupported(x.Id, out var o)) return false;
-                if (o != null) options = o;
-                return true;
-            });
-            HardwareLockOptions = options;
-
+            UpdateHardwareLockAvailability();
             Save();
         }
 

@@ -166,7 +166,7 @@ namespace AcManager.Tools.SemiGui {
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
             }
 
-            properties.SetAdditional(new WeatherProceduralHelper());
+            properties.SetAdditional(new WeatherProceduralHelper(properties.ConditionProperties != null && properties.ConditionProperties.RoadTemperature == null));
             properties.SetAdditional(new WeatherSpecificLightingHelper());
 
             if (SettingsHolder.Drive.WeatherSpecificClouds) {

@@ -10,6 +10,7 @@
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSelectedSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/GraphDataViewer.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <CollectionViewSource x:Key="ShowroomPresetsItems" Source="{Binding ShowroomPresets}" />
       <CollectionViewSource x:Key="QuickDrivePresetsItems" Source="{Binding QuickDrivePresets}" />

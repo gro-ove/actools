@@ -210,7 +210,7 @@ namespace AcManager.Tools.Helpers {
                     }
 
                     try {
-                        var proc = ProcessExtension.Start("regedit.exe", new[] { "/s", filename },
+                        var proc = ProcessExtension.Start("regedit.exe", new[] { filename },
                                 new ProcessStartInfo { Verb = "runas" });
                         await proc.WaitForExitAsync().ConfigureAwait(false);
                         Logging.Debug("Done: " + proc.ExitCode);

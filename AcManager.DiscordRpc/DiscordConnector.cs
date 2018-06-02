@@ -50,7 +50,16 @@ namespace AcManager.DiscordRpc {
         public IDisposable SetAppId(int appId) {
             var oldValue = _overrideProcessId;
             _overrideProcessId = appId;
-            return new ActionAsDisposable(() => _overrideProcessId = oldValue);
+            return new ActionAsDisposable(async () => {
+                if (_currentConnection != null && _currentPresence != null) {
+                    try {
+                        await _currentConnection.UpdateAsync(_currentPresence, appId);
+                    } catch (Exception e) {
+                        Utils.Warn(e.ToString());
+                    }
+                }
+                _overrideProcessId = oldValue;
+            });
         }
 
         private async void UpdateSafe(DiscordConnection connection, DiscordRichPresence presence) {

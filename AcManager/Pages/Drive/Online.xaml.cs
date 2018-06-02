@@ -57,9 +57,14 @@ namespace AcManager.Pages.Drive {
             _hideIconSourceIds = hideIcons.ToArray();
         }
 
-        public void OnUri(Uri uri) {
-            this.OnActualUnload(_discordPresence);
+        public Online() {
+            this.OnActualUnload(() => {
+                Logging.Debug("Disposing DiscordRichPresence for online");
+                _discordPresence.Dispose();
+            });
+        }
 
+        public void OnUri(Uri uri) {
             DataContext = new OnlineViewModel(uri.GetQueryParam("Filter"), ShowDetails);
             SetHideIcon();
 

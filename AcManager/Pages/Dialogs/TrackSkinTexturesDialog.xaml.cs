@@ -171,7 +171,7 @@ namespace AcManager.Pages.Dialogs {
                         _progress.Report(textureName);
                         var destination = Path.Combine(_destination, textureName);
                         if (!File.Exists(destination)) {
-                            using (var file = File.OpenWrite(destination)) {
+                            using (var file = File.Create(destination)) {
                                 reader.CopyTo(file, textureSize);
                                 return null;
                             }

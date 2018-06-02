@@ -33,6 +33,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        public int MaxSizeMaximum => Math.Max(1000, RecommendedSize ?? 1000);
+
         private static int? _recommendedSize;
 
         public int? RecommendedSize {
