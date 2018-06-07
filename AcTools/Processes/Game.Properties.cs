@@ -446,6 +446,7 @@ namespace AcTools.Processes {
                 temperatureSection.Set("AMBIENT", AmbientTemperature, "F0");
 
                 var lightingSection = file["LIGHTING"];
+                lightingSection.Remove("__CM_UNCLAMPED_SUN_ANGLE");
                 lightingSection.Set("SUN_ANGLE", SunAngle, "F2");
                 lightingSection.Set("TIME_MULT", TimeMultipler, "F1");
                 lightingSection.Set("CLOUD_SPEED", CloudSpeed, "F3");

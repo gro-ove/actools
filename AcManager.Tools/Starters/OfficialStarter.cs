@@ -78,6 +78,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
+            AppIdStarter.CleanUpForOthers();
             switch (CheckVersion()) {
                 case Mode.DefaultMode:
                     RunInner();
@@ -94,6 +95,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override Task RunAsync(CancellationToken cancellation) {
+            AppIdStarter.CleanUpForOthers();
             switch (CheckVersion()) {
                 case Mode.DefaultMode:
                     return Task.Run(() => RunInner(), cancellation);

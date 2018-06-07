@@ -21,6 +21,9 @@ namespace AcManager.Pages.About {
             DataContext = new ViewModel();
             InitializeComponent();
             FancyHints.DoYouKnowAboutAndroid.Trigger(TimeSpan.FromSeconds(1));
+
+            ThankYouHeader.Visibility = InternalUtils.IsAllRight ? Visibility.Visible : Visibility.Collapsed;
+            ThankYouText.Visibility = InternalUtils.IsAllRight ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void OnVersionClick(object sender, MouseButtonEventArgs e) {

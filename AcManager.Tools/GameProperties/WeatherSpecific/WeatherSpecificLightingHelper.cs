@@ -53,6 +53,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
         protected override bool SetOverride(WeatherObject weather, IniFile raceIni) {
             var section = new IniFile(weather.IniFilename)["__CUSTOM_LIGHTING"];
             if (section.ContainsKey(@"SUN_ANGLE")) {
+                raceIni[@"LIGHTING"].Set(@"__CM_UNCLAMPED_SUN_ANGLE", raceIni[@"LIGHTING"].GetInt(@"SUN_ANGLE", 0));
                 raceIni[@"LIGHTING"].Set(@"SUN_ANGLE", section.GetPossiblyEmpty(@"SUN_ANGLE"));
             }
 

@@ -115,6 +115,8 @@ namespace AcManager.Tools.Starters {
         }
 
         private void RunInner() {
+            AppIdStarter.CleanUpForOthers();
+
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             SetAcX86Param();
 

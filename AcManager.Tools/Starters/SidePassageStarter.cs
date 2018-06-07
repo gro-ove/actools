@@ -202,6 +202,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override void Run() {
+            AppIdStarter.CleanUpForOthers();
             SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false);
             InstallSidePassage();
 
@@ -216,6 +217,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public override async Task RunAsync(CancellationToken cancellation) {
+            AppIdStarter.CleanUpForOthers();
             await Task.Run(() => SteamRunningHelper.EnsureSteamIsRunning(RunSteamIfNeeded, false));
 
             new IniFile(AcPaths.GetRaceIniFilename()) {

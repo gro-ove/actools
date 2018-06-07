@@ -15,6 +15,10 @@ namespace AcManager.Tools.Starters {
     public class AppIdStarter : StarterBase {
         private static string AppIdFilename => Path.Combine(AcRootDirectory.Instance.RequireValue, "steam_appid.txt");
 
+        public static void CleanUpForOthers() {
+            FileUtils.TryToDelete(AppIdFilename);
+        }
+
         private static void CreateAppIdFile() {
             var appIdFilename = AppIdFilename;
             if (!File.Exists(appIdFilename)) {

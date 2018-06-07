@@ -60,7 +60,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            public static StarterType DefaultStarterType => OfficialStarterType;
+            public static StarterType DefaultStarterType => AppIdStarterType;
 
             public static readonly StarterType OfficialStarterType = new StarterType(
                     "Official",

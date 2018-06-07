@@ -96,7 +96,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             var s = Stopwatch.StartNew();
             foreach (var w in a) {
-                effect.FxOffset.Set(new Vector2(-w.X, -w.Y));
+                effect.FxOffset.Set(new Vector2(-w.X, -w.Y - 1f));
                 for (var i = _filteredNodes.Length - 1; i >= 0; i--) {
                     _filteredNodes[i].Draw(DeviceContextHolder, null, SpecialRenderMode.Simple);
                 }
