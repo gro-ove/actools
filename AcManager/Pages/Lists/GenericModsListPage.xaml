@@ -11,7 +11,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="ItemTemplate" DataType="genericMods:GenericMod">
-        <DockPanel Margin="4" Background="Transparent" PreviewMouseLeftButtonDown="OnItemClick">
+        <DockPanel x:Name="PART_Panel" Margin="4" Background="Transparent" PreviewMouseLeftButtonDown="OnItemClick">
           <DockPanel.ContextMenu>
             <ContextMenu>
               <MenuItem Header="Explore" Command="{Binding ExploreCommand}" />
@@ -24,11 +24,19 @@
             <TextBlock Text="{Binding DisplayDependsOn, StringFormat='Some files are overwritten by {0}'}" Style="{StaticResource Small}" Margin="20 2 0 0"
                 Foreground="{DynamicResource Error}" TextWrapping="Wrap" />
           </mui:ReferenceSwitch>
-          <mui:ReferenceSwitch DockPanel.Dock="Bottom" Value="{Binding Description.Value}">
-            <TextBlock Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="20 2 0 0" TextWrapping="Wrap" />
-          </mui:ReferenceSwitch>
+          <!--<mui:ReferenceSwitch DockPanel.Dock="Bottom" Value="{Binding Description.Value}">
+            <mui:BbCodeBlock x:Name="PART_Description" Text="{Binding Description.Value}" Style="{StaticResource Small}" Margin="20 2 0 0" TextWrapping="Wrap" />
+          </mui:ReferenceSwitch>-->
           <TextBlock Text="{Binding DisplayName}" />
         </DockPanel>
+        <DataTemplate.Triggers>
+          <!--<DataTrigger Value="True" Binding="{Binding Path=IsSelected, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+            <Setter Property="mui:HyperlinkHelper.IsHighlighted" Value="True" TargetName="PART_Description" />
+          </DataTrigger>-->
+          <DataTrigger Value="True" Binding="{Binding Path=IsMouseOver, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBoxItem}}}">
+            <Setter Property="ToolTip" Value="{Binding Description.Value}" TargetName="PART_Panel" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
       </DataTemplate>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -114,11 +122,11 @@
               <TextBlock Text="Disable all" />
             </DockPanel>
           </Button>
-          <c:UserPresetsControl UserPresetable="{Binding}" Style="{StaticResource UserPresetsControl.Compact}" Width="240" />
+          <!--<c:UserPresetsControl UserPresetable="{Binding}" Style="{StaticResource UserPresetsControl.Compact}" Width="240" />-->
 
           <c:MessageBlock Margin="0 0 0 0">
-            <mui:BbCodeBlock
-                Text="This page allows you to manage mods in JSGME way. All JSGME-related warnings are still actual. Also, it’s not integrated with other parts of CM, so, please, use it carefully. If needed, settings are [url=&quot;/Pages/Settings/SettingsGenericMods.xaml|_top&quot;]here[/url]."
+            <mui:BbCodeBlock Mode="Simple"
+                Text="This page allows you to manage mods in JSGME way. All JSGME-related warnings are still actual. Also, it’s not integrated with other parts of CM, so, please, use it carefully. If needed, there are some settings in [url=&quot;/Pages/Settings/SettingsGenericMods.xaml|_top&quot;]Settings/Generic Mods[/url]."
                 Style="{StaticResource Small}" />
           </c:MessageBlock>
         </mui:SpacingStackPanel>

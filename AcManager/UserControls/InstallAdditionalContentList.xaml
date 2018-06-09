@@ -42,7 +42,7 @@
             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                 Visibility="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch},
                     Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
-            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
+            <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
                 Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
@@ -80,6 +80,18 @@
             <CheckBox IsChecked="{Binding InstallAsGenericMod}" ToolTip="Install as a generic mod as well, allowing to disable/remove it later"
                 Margin="0 4 0 0">
               <Label Content="Install as a mod as well" />
+            </CheckBox>
+          </mui:BooleanSwitch>
+
+          <mui:BooleanSwitch DockPanel.Dock="Top">
+            <mui:BooleanSwitch.Value>
+              <MultiBinding Converter="{StaticResource AndConverter}">
+                <Binding Path="NeedsToBeEnabled" />
+                <Binding Path="IsNew" />
+              </MultiBinding>
+            </mui:BooleanSwitch.Value>
+            <CheckBox IsChecked="{Binding EnableAfterwards}" ToolTip="Enable generic mod immediately; you can always disable it later" Margin="0 4 0 0">
+              <Label Content="Enable mod immediately" />
             </CheckBox>
           </mui:BooleanSwitch>
 
@@ -145,7 +157,7 @@
             <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
                 Visibility="{Binding DataContext.IsDisplayFoundSameAsFirstName, RelativeSource={RelativeSource AncestorType=mui:BooleanSwitch},
                     Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
-            <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
+            <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Margin="0 4 0 0" Style="{StaticResource Small}"
                 Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
             <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
@@ -572,7 +584,7 @@
                                 <DockPanel>
                                   <CheckBox IsChecked="{Binding Active}" VerticalAlignment="Center" Margin="0 0 8 0" DockPanel.Dock="Left" />
                                   <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" />
-                                  <TextBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
+                                  <mui:BbCodeBlock Text="{Binding Description}" DockPanel.Dock="Top" Style="{StaticResource Small}" />
                                 </DockPanel>
                               </DataTemplate>
                             </ItemsControl.ItemTemplate>

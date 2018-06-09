@@ -35,17 +35,8 @@ namespace AcManager.Pages.Dialogs {
         }
 
         public static void ShowRevokedMessage() {
-            if (ShowMessage(AppStrings.AppKey_KeyRevoked_Message, AppStrings.AppKey_KeyRevoked_Title,
-                    MessageBoxButton.YesNoCancel, owner: Application.Current?.MainWindow) == MessageBoxResult.Yes) {
-                RequestNewKeyUsingEmail();
-            }
-        }
-
-        public static void RequestNewKeyUsingEmail() {
-            var key = ValuesStorage.GetEncrypted<string>(AppKeyRevokedKey);
-            if (key == null) return;
-
-            Process.Start($"mailto:illvdg13@gmail.com?subject={Uri.EscapeDataString(@"My Key Is Got Revoked")}&body={Uri.EscapeDataString(@"Key: " + key)}");
+            ShowMessage(AppStrings.AppKey_KeyRevoked_Message, AppStrings.AppKey_KeyRevoked_Title,
+                    MessageBoxButton.OK, Application.Current?.MainWindow);
         }
 
         private AppKeyDialogViewModel Model => (AppKeyDialogViewModel)DataContext;

@@ -647,7 +647,8 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             // Mod
-            if (directory.Parent?.NameLowerCase == "mods" && directory.HasAnySubDirectory("content", "apps", "system", "launcher")) {
+            if (directory.Parent?.NameLowerCase == "mods"
+                    && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile("dwrite.dll"))) {
                 var name = directory.Name;
                 if (name != null && directory.GetSubDirectory("content")?.GetSubDirectory("tracks")?.Directories.Any(
                         x => x.GetSubDirectory("skins")?.GetSubDirectory("default")?.GetSubFile("ui_track_skin.json") != null) != true) {
@@ -713,7 +714,7 @@ namespace AcManager.Tools.ContentInstallation {
                         file.Name.ApartFromLast(DriverModelObject.FileExtension, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (file.NameLowerCase.EndsWith(".xaml")) {
+            if (file.NameLowerCase.EndsWith(@".xaml")) {
                 var data = await file.Info.ReadAsync();
                 if (data == null) {
                     throw new MissingContentException();
@@ -724,7 +725,7 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             // A system config file?
-            if (file.NameLowerCase.EndsWith(".ini") && file.Parent.NameLowerCase == "cfg" &&
+            if (file.NameLowerCase.EndsWith(@".ini") && file.Parent.NameLowerCase == "cfg" &&
                     file.Parent.Parent?.NameLowerCase == "system") {
                 switch (file.NameLowerCase) {
                     case "audio_engine.ini":

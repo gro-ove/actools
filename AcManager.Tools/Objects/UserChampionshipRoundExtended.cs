@@ -111,7 +111,10 @@ namespace AcManager.Tools.Objects {
         [JsonIgnore, CanBeNull]
         public object Weather {
             get => _weather;
-            set => Apply(value, ref _weather, RefreshWeatherObject);
+            set => Apply(value, ref _weather, () => {
+                RefreshWeatherObject();
+                OnPropertyChanged(nameof(WeatherId));
+            });
         }
 
         [JsonIgnore, CanBeNull]

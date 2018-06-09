@@ -27,7 +27,7 @@ namespace AcTools.GenericMods {
             DisplayName = Path.GetFileName(modDirectory);
             ModDirectory = modDirectory;
             Description = new Lazier<string>(() => Task.Run(() => {
-                var d = Directory.GetFiles(ModDirectory, "*" + DescriptionExtension, SearchOption.AllDirectories);
+                var d = Directory.GetFiles(ModDirectory, "*" + DescriptionExtension, SearchOption.TopDirectoryOnly);
                 return d.Length > 0 ? File.ReadAllText(d[0]) : null;
             }));
         }
@@ -36,15 +36,14 @@ namespace AcTools.GenericMods {
 
         private DelegateCommand _exploreCommand;
 
-        public DelegateCommand ExploreCommand => _exploreCommand ?? (_exploreCommand = new DelegateCommand(() => {
-            ProcessExtension.Start(@"explorer", new [] { ModDirectory });
-        }));
+        public DelegateCommand ExploreCommand
+            => _exploreCommand ?? (_exploreCommand = new DelegateCommand(() => { ProcessExtension.Start(@"explorer", new[] { ModDirectory }); }));
 
         private DelegateCommand _deleteCommand;
 
         public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
             try {
-            _enabler.DeleteMod(this);
+                _enabler.DeleteMod(this);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t delete mod", e);
             }
@@ -77,7 +76,8 @@ namespace AcTools.GenericMods {
         private IEnumerable<GenericModFile> LoadFilesList() {
             foreach (var filename in FileUtils.GetFilesRecursive(ModDirectory)) {
                 var relative = FileUtils.GetRelativePath(filename.ApartFromLast("-remove"), ModDirectory);
-                if (relative.StartsWith("documentation\\") || relative.EndsWith(".jsgme")) continue;
+                if (relative.StartsWith("documentation\\", StringComparison.OrdinalIgnoreCase)
+                        || relative.EndsWith(DescriptionExtension, StringComparison.OrdinalIgnoreCase)) continue;
 
                 var destination = Path.Combine(_enabler.RootDirectory, relative);
                 var backup = GenericModsEnabler.GetBackupFilename(_enabler.ModsDirectory, DisplayName, relative);

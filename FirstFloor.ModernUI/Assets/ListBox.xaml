@@ -29,7 +29,7 @@
 
   <Style x:Key="HighlightedBackground" TargetType="Border">
     <Style.Resources>
-      <SolidColorBrush x:Key="Error">#ffffff</SolidColorBrush>
+      <SolidColorBrush x:Key="Error" Color="{DynamicResource AccentOverlayColor}" />
     </Style.Resources>
   </Style>
 

@@ -1647,7 +1647,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?.
+        ///   Looks up a localized string similar to Sorry, but your key was compromised and got revoked..
         /// </summary>
         public static string AppKey_KeyRevoked_Message {
             get {

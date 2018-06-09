@@ -88,7 +88,7 @@ namespace FirstFloor.ModernUI.Windows {
 
         // ReSharper disable once SuspiciousTypeConversion.Global
         private static readonly ITaskbarList3 Instance = new TaskbarInstance() as ITaskbarList3;
-        private static bool _supported = Environment.OSVersion.Version >= new Version(6, 1);
+        private static bool _supported = false; // Environment.OSVersion.Version >= new Version(6, 1);
 
         private static void SetState(IntPtr handle, TaskbarState state) {
             if (!_supported) return;

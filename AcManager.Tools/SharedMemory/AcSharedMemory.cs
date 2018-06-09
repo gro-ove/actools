@@ -237,7 +237,7 @@ namespace AcManager.Tools.SharedMemory {
                                     _minimumFps = fps;
                                 }
 
-                                Logging.Debug($"FPS: {fps:F1}");
+                                // Logging.Debug($"FPS: {fps:F1}");
                                 _graphicsFrames = 0;
                                 _graphicsTime.Restart();
                             }

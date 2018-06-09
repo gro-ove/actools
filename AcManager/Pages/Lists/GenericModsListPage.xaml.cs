@@ -37,14 +37,18 @@ namespace AcManager.Pages.Lists {
         private GenericModsEnabler _enabler;
 
         public async Task LoadAsync(CancellationToken cancellationToken) {
-            await Task.Run((Action)Load);
+            var mods = SettingsHolder.GenericMods.GetModsDirectory();
+            if (Directory.Exists(mods)) {
+                _enabler = await GenericModsEnabler.GetInstanceAsync(AcRootDirectory.Instance.RequireValue,
+                        mods, SettingsHolder.GenericMods.UseHardLinks);
+            }
         }
 
         public void Load() {
             var mods = SettingsHolder.GenericMods.GetModsDirectory();
             if (Directory.Exists(mods)) {
-                _enabler = new GenericModsEnabler(AcRootDirectory.Instance.RequireValue,
-                        mods, SettingsHolder.GenericMods.UseHardLinks);
+                _enabler = GenericModsEnabler.GetInstanceAsync(AcRootDirectory.Instance.RequireValue,
+                        mods, SettingsHolder.GenericMods.UseHardLinks).Result;
             }
         }
 
@@ -152,7 +156,7 @@ namespace AcManager.Pages.Lists {
                     if (conflicts.Length > 0 && ModernDialog.ShowMessage(
                             conflicts.Select(x => $@"• “{Path.GetFileName(x.RelativeName)}” has already been altered by the “{x.ModName}” mod;")
                                      .JoinToString("\n").ToSentence
-                                    () + $"\n\nEnabling {mod.DisplayName} may have adverse effects. Are you sure you want to enable this mod?",
+                                    () + $"\n\nEnabling {BbCodeBlock.Encode(mod.DisplayName)} may have adverse effects. Are you sure you want to enable this mod?",
                             "Conflict", MessageBoxButton.YesNo, "genericMods.conflict") != MessageBoxResult.Yes) {
                         return;
                     }

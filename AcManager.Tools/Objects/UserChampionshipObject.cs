@@ -541,7 +541,7 @@ namespace AcManager.Tools.Objects {
                     UpdateCoherentTime();
                     break;
                 case nameof(UserChampionshipRoundExtended.TrackProperties):
-                case nameof(UserChampionshipRoundExtended.Weather):
+                case nameof(UserChampionshipRoundExtended.WeatherId):
                     ChangedData = true;
                     ChangedExtended = true;
                     break;

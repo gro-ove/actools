@@ -80,7 +80,7 @@ namespace AcManager.Tools.ContentInstallation {
                 FileName = j.GetStringValueOnly("fileName"),
                 LocalFilename = j.GetStringValueOnly("localFilename"),
                 InputPassword = j.GetStringValueOnly("password"),
-                Progress = j.GetBoolValueOnly("finished", false) ? AsyncProgressEntry.Ready : default(AsyncProgressEntry),
+                Progress = j.GetBoolValueOnly("finished", false) ? AsyncProgressEntry.Ready : default,
                 Cancelled = j.GetBoolValueOnly("cancelled", false),
                 FailedMessage = j.GetStringValueOnly("failedMessage"),
                 FailedCommentary = j.GetStringValueOnly("failedCommentary"),

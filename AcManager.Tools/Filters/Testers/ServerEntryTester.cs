@@ -40,6 +40,10 @@ namespace AcManager.Tools.Filters.Testers {
                 case "trackid":
                     return nameof(ServerEntry.Track);
 
+                case "weather":
+                case "weatherid":
+                    return nameof(ServerEntry.WeatherObject);
+
                 case "a":
                 case "available":
                 case "c":
@@ -140,6 +144,10 @@ namespace AcManager.Tools.Filters.Testers {
                 case "t":
                 case "track":
                     return value.Test(obj.Track?.Id) || value.Test(obj.Track?.Name);
+
+                case "w":
+                case "weather":
+                    return value.Test(obj.WeatherId) || value.Test(obj.WeatherObject?.Name);
 
                 case "a":
                 case "available":
@@ -280,6 +288,9 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "track":
                     return obj.Track != null && filter.Test(TrackObjectBaseTester.Instance, obj.Track);
+
+                case "weather":
+                    return obj.WeatherObject != null && filter.Test(WeatherObjectTester.Instance, obj.WeatherObject);
 
                 case "a":
                 case "available":

@@ -31,7 +31,7 @@ namespace AcTools.GenericMods {
     }
 
     public class GenericModsEnabler : IDisposable {
-        public static bool OptionLoggingEnabled;
+        public static bool OptionLoggingEnabled = false;
         public static readonly string ConfigFileName = "JSGME.ini";
 
         private readonly FileSystemWatcher _watcher;
@@ -43,7 +43,39 @@ namespace AcTools.GenericMods {
 
         public ChangeableObservableCollection<GenericMod> Mods { get; }
 
-        public GenericModsEnabler(string rootDirectory, string modsDirectory, bool useHardLinks = true) {
+        private static GenericModsEnabler _instance;
+        private static int _instanceParameters;
+        private static readonly TaskCache InstanceTaskCache = new TaskCache();
+
+        private static int GetParameters(string rootDirectory, string modsDirectory, bool useHardLinks) {
+            return (((rootDirectory.GetHashCode() * 397) ^ modsDirectory.GetHashCode()) * 397) ^ useHardLinks.GetHashCode();
+        }
+
+        [ItemCanBeNull]
+        private static Task<GenericModsEnabler> GetInstanceAsyncInner(string rootDirectory, string modsDirectory, bool useHardLinks) {
+            if (Directory.Exists(modsDirectory)) {
+                return Task.Run(() => {
+                    _instanceParameters = GetParameters(rootDirectory, modsDirectory, useHardLinks);
+                    _instance = new GenericModsEnabler(rootDirectory,
+                            modsDirectory, useHardLinks);
+                    return _instance;
+                });
+            }
+            return null;
+        }
+
+        public static Task<GenericModsEnabler> GetInstanceAsync(string rootDirectory, string modsDirectory, bool useHardLinks = true) {
+            if (_instance != null) {
+                if (GetParameters(rootDirectory, modsDirectory, useHardLinks) == _instanceParameters) {
+                    return Task.FromResult(_instance);
+                }
+
+                DisposeHelper.Dispose(ref _instance);
+            }
+            return InstanceTaskCache.Get(() => GetInstanceAsyncInner(rootDirectory, modsDirectory, useHardLinks));
+        }
+
+        private GenericModsEnabler(string rootDirectory, string modsDirectory, bool useHardLinks = true) {
             FileUtils.EnsureDirectoryExists(rootDirectory);
             FileUtils.EnsureDirectoryExists(modsDirectory);
 
@@ -53,7 +85,7 @@ namespace AcTools.GenericMods {
 
             _useHardLinks = useHardLinks;
             Mods = new ChangeableObservableCollection<GenericMod>();
-            ScanMods();
+            ScanMods(false);
 
             FileUtils.EnsureDirectoryExists(modsDirectory);
             _watcher = new FileSystemWatcher {
@@ -72,7 +104,7 @@ namespace AcTools.GenericMods {
 
         private readonly Busy _busy = new Busy(true);
         private readonly Busy _operationBusy = new Busy(true);
-        private List<string> _changedFilesToRescan = new List<string>();
+        private readonly List<string> _changedFilesToRescan = new List<string>();
 
         private void OnWatcher(object sender, FileSystemEventArgs args) {
             if (_busy.Is) {
@@ -80,7 +112,10 @@ namespace AcTools.GenericMods {
             } else {
                 _changedFilesToRescan.Clear();
                 _changedFilesToRescan.Add(args.FullPath);
-                _busy.DoDelay(() => ScanMods(_changedFilesToRescan.ToArray()), 300);
+                _busy.DoDelay(() => {
+                    if (_changedFilesToRescan.Count == 0) return;
+                    ScanMods(false, _changedFilesToRescan.ToArray());
+                }, 300);
             }
         }
 
@@ -92,8 +127,16 @@ namespace AcTools.GenericMods {
                 _changedFilesToRescan.Clear();
                 _changedFilesToRescan.Add(args.OldFullPath);
                 _changedFilesToRescan.Add(args.FullPath);
-                _busy.DoDelay(() => ScanMods(_changedFilesToRescan.ToArray()), 300);
+                _busy.DoDelay(() => {
+                    if (_changedFilesToRescan.Count == 0) return;
+                    ScanMods(false, _changedFilesToRescan.ToArray());
+                }, 300);
             }
+        }
+
+        public void ReloadList() {
+            _changedFilesToRescan.Clear();
+            ScanMods(true);
         }
 
         public static string GetBackupFilename(string modsDirectory, string modName, string relative) {
@@ -113,18 +156,14 @@ namespace AcTools.GenericMods {
 
         private DateTime? _lastSaved;
 
-        private void ScanMods(params string[] filenames) {
-            _operationBusy.Do(() => {
-                var directories = Directory.GetDirectories(ModsDirectory)
-                                           .Where(x => Path.GetFileName(x)?.StartsWith("!") == false).ToList();
-                var replaceMods = !directories.SequenceEqual(Mods.Select(x => x.ModDirectory));
+        private void ScanMods(bool force, params string[] filenames) {
+            void Scan() {
+                var directories = Directory.GetDirectories(ModsDirectory).Where(x => Path.GetFileName(x)?.StartsWith("!") == false).ToList();
+                var replaceMods = force || !directories.SequenceEqual(Mods.Select(x => x.ModDirectory));
                 if (replaceMods) {
-                    Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory)
-                                                             .Where(x => Path.GetFileName(x)?.StartsWith("!") == false)
-                                                             .Select(x => new GenericMod(this, x)));
+                    Mods.ReplaceEverythingBy_Direct(Directory.GetDirectories(ModsDirectory).Where(x => Path.GetFileName(x)?.StartsWith("!") == false).Select(x => new GenericMod(this, x)));
                 } else {
-                    foreach (var changed in filenames.Where(x =>
-                            x?.EndsWith(GenericMod.DescriptionExtension, StringComparison.OrdinalIgnoreCase) == true)) {
+                    foreach (var changed in filenames.Where(x => x?.EndsWith(GenericMod.DescriptionExtension, StringComparison.OrdinalIgnoreCase) == true)) {
                         Mods.FirstOrDefault(x => FileUtils.IsAffectedBy(changed, x.ModDirectory))?.Description.Reset();
                     }
                 }
@@ -135,7 +174,9 @@ namespace AcTools.GenericMods {
                         LoadState();
                     }
                 }
-            });
+            }
+
+            _operationBusy.Do(Scan);
         }
 
         private IniFile GetState() {
@@ -198,7 +239,7 @@ namespace AcTools.GenericMods {
         }
 
         public Task EnableAsync([NotNull] GenericMod mod, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (mod.IsEnabled) {
                 throw new InformativeException("Can’t enable mod", "Mod is already enabled.");
             }
@@ -227,6 +268,12 @@ namespace AcTools.GenericMods {
                     var files = mod.Files;
                     for (var i = 0; i < files.Length; i++) {
                         var file = files[i];
+
+                        if (file.RelativeName.EndsWith(".jsgme", StringComparison.OrdinalIgnoreCase)) {
+                            Debug($"File, src={file.Source}, ignore as description");
+                            continue;
+                        }
+
                         Debug($"File, src={file.Source}, dst={file.Destination})");
 
                         if (cancellation.IsCancellationRequested) return;
@@ -286,7 +333,8 @@ namespace AcTools.GenericMods {
                 iniFile["MODS"].Remove(mod.DisplayName);
                 var dependancies = iniFile["DEPENDANCIES"];
                 foreach (var dependant in dependancies.Select(x => new {
-                    x.Key, Values = x.Value.Split(new[] { '"' }, StringSplitOptions.RemoveEmptyEntries)
+                    x.Key,
+                    Values = x.Value.Split(new[] { '"' }, StringSplitOptions.RemoveEmptyEntries)
                 }).Where(x => x.Values.ArrayContains(mod.DisplayName)).ToList()) {
                     dependancies.SetGenericModDependancies(dependant.Key, dependant.Values.ApartFrom(mod.DisplayName));
                 }
@@ -344,13 +392,13 @@ namespace AcTools.GenericMods {
         public void DeleteMod(GenericMod mod) {
             if (mod.IsEnabled) throw new InformativeException("Can’t delete mod", "Mod should be disabled first.");
             _busy.Delay(() => FileUtils.Recycle(mod.ModDirectory), 300, true);
-            ScanMods();
+            ScanMods(true);
         }
 
         public void RenameMod(GenericMod mod, string newLocation) {
             if (mod.IsEnabled) throw new InformativeException("Can’t rename mod", "Mod should be disabled first.");
             _busy.Delay(() => Directory.Move(mod.ModDirectory, newLocation), 300, true);
-            ScanMods();
+            ScanMods(true);
         }
 
         private static void Debug(string message, [CallerMemberName] string m = null, [CallerFilePath] string p = null, [CallerLineNumber] int l = -1) {

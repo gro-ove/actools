@@ -57,11 +57,21 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             set => Apply(value, ref _installAsGenericMod);
         }
 
+        private bool _enableAfterwards = true;
+
+        public bool EnableAfterwards {
+            get => _enableAfterwards;
+            set => Apply(value, ref _enableAfterwards);
+        }
+
+        public virtual bool NeedsToBeEnabled => false;
+
         public bool GenericModSupported => GenericModSupportedByDesign && _installationParams?.CupType.HasValue != true;
         protected abstract bool GenericModSupportedByDesign { get; }
 
         [CanBeNull]
         public abstract string GenericModTypeName { get; }
+
         public abstract string NewFormat { get; }
         public abstract string ExistingFormat { get; }
 
@@ -141,6 +151,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         private UpdateOption[] _updateOptions;
+
         public IReadOnlyList<UpdateOption> UpdateOptions {
             get {
                 InitializeOptions();
@@ -148,7 +159,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }
         }
 
-        protected virtual void OnSelectedOptionChanged(UpdateOption oldValue, UpdateOption newValue) {}
+        protected virtual void OnSelectedOptionChanged(UpdateOption oldValue, UpdateOption newValue) { }
 
         protected virtual IEnumerable<UpdateOption> GetUpdateOptions() {
             return new[] {
@@ -177,14 +188,35 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             }) : (Func<IDirectoryInfo, string>)null);
         }
 
+        protected virtual Task EnableAfterInstallation(CancellationToken token) {
+            return Task.Delay(0);
+        }
+
         [ItemCanBeNull]
         public async Task<InstallationDetails> GetInstallationDetails(CancellationToken cancellation) {
             var destination = await GetDestination(cancellation);
+
+            var selectedOptionAfterTask = SelectedOption?.AfterTask;
+
+            if (IsNew && NeedsToBeEnabled && EnableAfterwards) {
+                if (selectedOptionAfterTask == null) {
+                    selectedOptionAfterTask = EnableAfterInstallation;
+                } else {
+                    var optionTask = selectedOptionAfterTask;
+                    selectedOptionAfterTask = async token => {
+                        await optionTask(token);
+                        await EnableAfterInstallation(token);
+                    };
+                }
+            }
+
             return destination != null ?
                     new InstallationDetails(GetCopyCallback(destination),
-                            SelectedOption?.CleanUp?.Invoke(destination)?.ToArray(),
+                            SelectedOption?.RemoveExisting == true
+                                    ? new[] { destination }
+                                    : SelectedOption?.CleanUp?.Invoke(destination)?.ToArray(),
                             SelectedOption?.BeforeTask,
-                            SelectedOption?.AfterTask) {
+                            selectedOptionAfterTask) {
                                 OriginalEntry = this
                             } :
                     null;
@@ -194,6 +226,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected abstract Task<string> GetDestination(CancellationToken cancellation);
 
         private BetterImage.Image? _icon;
+
         public BetterImage.Image? Icon => IconData == null ? null :
                 _icon ?? (_icon = BetterImage.LoadBitmapSourceFromBytes(IconData, 32));
 
