@@ -224,6 +224,21 @@ namespace AcTools.DataFile {
             return Lut.FromValue(value);
         }
 
+        [Pure, NotNull]
+        public Lut GetLut([NotNull, LocalizationRequired(false)] string key, [NotNull] string fallbackName) {
+            var value = GetNonEmpty(key);
+            if (string.IsNullOrEmpty(value)) {
+                return _wrapper?.GetLutFile(fallbackName).Values ?? new Lut();
+            }
+
+            if (!Lut.IsInlineValue(value)) {
+                if (_wrapper != null) return _wrapper.GetLutFile(value).Values;
+                AcToolsLogging.Write("Non-inline LUT found, but DataWrapper is not set!");
+            }
+
+            return Lut.FromValue(value);
+        }
+
         /// <summary>
         /// Just in case, this method can parse entries from something like “OVERSTEER_FACTOR” to “OversteerFactor”.
         /// </summary>

@@ -230,6 +230,7 @@ namespace AcManager {
 
             LimitedSpace.Initialize();
             DataProvider.Initialize();
+            SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             TestKey();
 
             AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
@@ -354,7 +355,6 @@ namespace AcManager {
                 }
             }
 
-            SteamIdHelper.Initialize(AppArguments.Get(AppFlag.ForceSteamId));
             CupClient.Initialize();
             Superintendent.Initialize();
             ModsWebBrowser.Initialize();
@@ -582,13 +582,13 @@ namespace AcManager {
         }
 
         private async void TestKey() {
-            InternalUtils.Initialize(FilesStorage.Instance.GetFilename("License.txt"));
+            InternalUtils.Initialize(FilesStorage.Instance.GetFilename("License.txt"), SteamIdHelper.Instance.Value);
             if (InternalUtils.Revoked == null) return;
 
             await Task.Delay(3000);
 
             ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, InternalUtils.Revoked);
-            InternalUtils.SetKey(null);
+            InternalUtils.SetKey(null, null);
 
             Current.Dispatcher.Invoke(() => {
                 if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {

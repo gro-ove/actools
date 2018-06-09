@@ -171,7 +171,7 @@ namespace AcManager.Pages.Dialogs {
                 await Task.Delay(50);
                 if (testN != _testN) return;
 
-                var value = await InternalUtils.CheckKeyAsync(Value, CmApiProvider.UserAgent);
+                var value = await InternalUtils.CheckKeyAsync(Value, SteamIdHelper.Instance.Value, CmApiProvider.UserAgent);
                 if (testN != _testN) return;
 
                 CheckingInProgress = false;
@@ -192,7 +192,7 @@ namespace AcManager.Pages.Dialogs {
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 ValuesStorage.Remove(AppKeyRevokedKey);
-                InternalUtils.SetKey(Value);
+                InternalUtils.SetKey(Value, SteamIdHelper.Instance.Value);
 
                 ShowMessage(AppStrings.AppKey_PreRestart_Message, AppStrings.AppKey_PreRestart_Title, MessageBoxButton.OK);
                 WindowsHelper.RestartCurrentApplication();

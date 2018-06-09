@@ -63,11 +63,8 @@ namespace AcTools.Utils.Physics {
         [NotNull]
         public static Lut LoadCarTorque([NotNull] IDataWrapper data, bool considerLimiter = true, int detalization = 100) {
             /* read torque curve and engine params */
-            var torqueFile = data.GetLutFile("power.lut");
-            if (torqueFile.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load power.lut", "data/power.lut");
-
             var engine = data.GetIniFile("engine.ini");
-            if (engine.IsEmptyOrDamaged()) throw new FileNotFoundException("Cannot load engine.ini", "data/engine.ini");
+            if (engine.IsEmptyOrDamaged()) throw new FileNotFoundException("Can’t load engine.ini", "data/engine.ini");
 
             /* prepare turbos and read controllers */
             var turbos = ReadTurbos(engine);
@@ -76,8 +73,12 @@ namespace AcTools.Utils.Physics {
             }
 
             /* prepare torque curve and limits */
-            var torque = torqueFile.Values;
+            var torque = engine["HEADER"].GetLut("POWER_CURVE", "power.lut");
             torque.UpdateBoundingBox();
+
+            if (torque.Count < 2) {
+                throw new Exception("Can’t use torque curve, it should have at least two points");
+            }
 
             var limit = considerLimiter && engine.ContainsKey("ENGINE_DATA") ? engine["ENGINE_DATA"].GetDouble("LIMITER", torque.MaxX) : torque.MaxX;
             var startFrom = considerLimiter ? 0d : torque.MinX;
