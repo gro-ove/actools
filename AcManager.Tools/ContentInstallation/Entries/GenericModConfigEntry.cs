@@ -10,7 +10,6 @@ using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
@@ -37,73 +36,72 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                 ? $"Update for the mod “{{0}}” (mod plus {_dependsOn.Select(x => $"“{x}”").JoinToReadableString()} will be disabled and re-enabled)"
                 : _enabled ? "Update for the mod “{0}” (will be disabled and re-enabled)" : "Update for the mod “{0}”";
 
+        protected override string[] GetFilesToRemoval(string destination) {
+            return SelectedOption?.RemoveExisting == true
+                    ? new[] { destination }
+                    : SelectedOption?.CleanUp?.Invoke(destination)?.ToArray();
+        }
+
         private class GenericModUpdateOption : UpdateOption {
             private readonly string _modName;
 
-            private GenericModsEnabler _enabler;
-
-            private GenericModsEnabler Enabler => _enabler ?? (_enabler = GenericModsEnabler.GetInstanceAsync(
-                    AcRootDirectory.Instance.RequireValue,
-                    SettingsHolder.GenericMods.GetModsDirectory(),
-                    SettingsHolder.GenericMods.UseHardLinks).Result);
-
-            public GenericModUpdateOption(string modName) : base("Install") {
+            public GenericModUpdateOption(string modName) : base("Install", true) {
                 _modName = modName;
-                RemoveExisting = true;
-
                 BeforeTask = BeforeAsync;
                 AfterTask = AfterAsync;
             }
 
             private readonly List<string> _disabled = new List<string>();
 
+            private static async Task<GenericModsEnabler> GetEnabler() {
+                return await GenericModsEnabler.GetInstanceAsync(
+                        AcRootDirectory.Instance.RequireValue,
+                        SettingsHolder.GenericMods.GetModsDirectory(),
+                        SettingsHolder.GenericMods.UseHardLinks);
+            }
+
             private async Task ForceDisable([CanBeNull] GenericMod mod, CancellationToken token) {
                 if (mod == null || !mod.IsEnabled) return;
 
+                var enabler = await GetEnabler();
                 if (mod.DependsOn != null) {
                     foreach (var dependancy in mod.DependsOn) {
-                        await ForceDisable(Enabler.GetByName(dependancy), token).ConfigureAwait(false);
+                        await ForceDisable(enabler.GetByName(dependancy), token).ConfigureAwait(false);
                         if (token.IsCancellationRequested) return;
                     }
                 }
 
-                await Enabler.DisableAsync(mod, cancellation: token).ConfigureAwait(false);
+                await enabler.DisableAsync(mod, cancellation: token).ConfigureAwait(false);
                 if (!token.IsCancellationRequested) {
                     _disabled.Add(mod.DisplayName);
                 }
             }
 
             private async Task BeforeAsync(CancellationToken token) {
-                try {
-                    _disabled.Clear();
-                    await ForceDisable(Enabler.GetByName(_modName), token).ConfigureAwait(false);
-                    if (token.IsCancellationRequested) {
-                        await AfterAsync(CancellationToken.None).ConfigureAwait(false);
-                    }
-                } finally {
-                    DisposeHelper.Dispose(ref _enabler);
+                _disabled.Clear();
+                var enabler = await GetEnabler();
+                await ForceDisable(enabler.GetByName(_modName), token).ConfigureAwait(false);
+                if (token.IsCancellationRequested) {
+                    await AfterAsync(CancellationToken.None).ConfigureAwait(false);
                 }
             }
 
             private async Task AfterAsync(CancellationToken token) {
-                Enabler.ReloadList();
+                var enabler = await GetEnabler();
+                enabler.ReloadList();
 
-                try {
-                    // It’s required to process this list backwards: the mod disabled first should be
-                    // re-enabled last.
-                    for (var i = _disabled.Count - 1; i >= 0; i--) {
-                        var mod = Enabler.GetByName(_disabled[i]);
-                        if (mod?.IsEnabled == false) {
-                            /*await Enabler.EnableAsync(mod, cancellation: token);
+                // It’s required to process this list backwards: the mod disabled first should be
+                // re-enabled last.
+                for (var i = _disabled.Count - 1; i >= 0; i--) {
+                    var mod = enabler.GetByName(_disabled[i]);
+                    if (mod?.IsEnabled == false) {
+                        /*await Enabler.EnableAsync(mod, cancellation: token);
                             if (token.IsCancellationRequested) return;*/
 
-                            // Do not consider CancellationToken since re-enabling should be done
-                            // either way.
-                            await Enabler.EnableAsync(mod).ConfigureAwait(false);
-                        }
+                        // Do not consider CancellationToken since re-enabling should be done
+                        // either way.
+                        await enabler.EnableAsync(mod).ConfigureAwait(false);
                     }
-                } finally {
-                    DisposeHelper.Dispose(ref _enabler);
                 }
             }
         }

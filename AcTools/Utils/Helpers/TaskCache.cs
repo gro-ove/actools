@@ -50,6 +50,8 @@ namespace AcTools.Utils.Helpers {
                 }
 
                 var task = fn();
+                if (task == null) return Task.FromResult(default(T));
+
                 if (!task.IsCanceled && !task.IsCompleted && !task.IsFaulted) {
                     _running[checksum] = task;
                     task.ContinueWith(v => {

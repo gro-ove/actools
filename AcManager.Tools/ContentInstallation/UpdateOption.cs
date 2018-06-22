@@ -16,8 +16,9 @@ namespace AcManager.Tools.ContentInstallation {
             set => Apply(value, ref _displayName);
         }
 
-        public UpdateOption(string name) {
+        public UpdateOption(string name, bool removeExisting) {
             DisplayName = name;
+            RemoveExisting = removeExisting;
         }
 
         [CanBeNull]
@@ -32,7 +33,7 @@ namespace AcManager.Tools.ContentInstallation {
         [CanBeNull]
         public Func<CancellationToken, Task> AfterTask { get; set; }
 
-        public bool RemoveExisting { get; set; }
+        public bool RemoveExisting { get; }
 
         public bool Enabled {
             get => _enabled;

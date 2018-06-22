@@ -413,6 +413,7 @@ namespace AcManager.Tools.GameProperties {
                     ["__CM_ABS_DECREASE"] = new ReverseHotkeyJoyCommand("ABS"),
                     ["__CM_TRACTION_CONTROL_DECREASE"] = new ReverseHotkeyJoyCommand("TRACTION_CONTROL"),
                     ["__CM_NEXT_APPS_DESKTOP"] = new HotkeyJoyCommand(Keys.RControlKey, Keys.U) { MinInterval = OptionSmallInterval },
+                    ["__CM_RESET_CAMERA_VR"] = new HotkeyJoyCommand(Keys.RControlKey, Keys.Space) { MinInterval = OptionLargeInterval },
                     ["__CM_ONLINE_POLL_YES"] = new HotkeyJoyCommand(Keys.Y) { IsAvailableTest = IsOnlineRace },
                     ["__CM_ONLINE_POLL_NO"] = new HotkeyJoyCommand(Keys.N) { IsAvailableTest = IsOnlineRace },
                 };

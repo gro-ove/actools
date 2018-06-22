@@ -500,8 +500,12 @@ namespace AcTools.Render.Kn5SpecificForward {
             if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {
-                prop.ValueC = valueC;
+                for (var i = 0; i < prop.ValueC.Length && i < valueC.Length; i++) {
+                    prop.ValueC[i] = valueC[i];
+                }
                 RefreshMaterial(kn5, materialId);
+            } else {
+                AcToolsLogging.Write("Property not found: " + propertyName);
             }
         }
     }

@@ -24,7 +24,7 @@ using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 namespace AcManager.Pages.Selected {
     public abstract class SelectedAcObjectViewModel : NotifyPropertyChanged {
         public static string SpecsFormat(string format, object value) {
-            return format.Replace(@"…", value.ToInvariantString());
+            return format.Replace(@"…", value.ToInvariantString()).Replace(@"...", value.ToInvariantString());
         }
 
         private class InnerVersionInfoLabelConverter : IMultiValueConverter {
@@ -257,7 +257,7 @@ namespace AcManager.Pages.Selected {
         private bool IsFormatCorrect(string key) {
             var format = GetFormat(key);
             var value = GetSpecsValue(key);
-            return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$");
+            return value == null || Regex.IsMatch(value, @"^" + Regex.Escape(format).Replace(@"…|\.\.\.", @"-?\d+(?:\.\d+)?") + @"$");
         }
 
         protected virtual void FixFormat(string key) {

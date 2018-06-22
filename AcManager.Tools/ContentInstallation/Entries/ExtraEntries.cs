@@ -33,7 +33,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for Reshade setup {0}";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst) { RemoveExisting = true };
+            yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst, false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
@@ -91,9 +91,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption("Install") {
-                RemoveExisting = false
-            };
+            yield return new UpdateOption("Install", false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
@@ -133,9 +131,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for the set of textures “{0}”";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption("Install") {
-                RemoveExisting = false
-            };
+            yield return new UpdateOption("Install", false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
@@ -177,9 +173,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for the crew helmet textures “{0}”";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption("Install") {
-                RemoveExisting = false
-            };
+            yield return new UpdateOption("Install", false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
@@ -221,9 +215,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for the crew brand textures “{0}”";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption("Install") {
-                RemoveExisting = false
-            };
+            yield return new UpdateOption("Install", false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
@@ -262,9 +254,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => "Update for AC config {0}";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption("Install") {
-                RemoveExisting = false
-            };
+            yield return new UpdateOption("Install", false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {

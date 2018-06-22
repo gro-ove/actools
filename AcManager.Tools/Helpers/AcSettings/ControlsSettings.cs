@@ -82,6 +82,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display", defaultKey: Keys.Q),
                 new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names", defaultKey: Keys.L),
                 new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line", defaultKey: Keys.I),
+                new SystemButtonEntryCombined("__CM_RESET_CAMERA_VR", "Reset camera in VR", fixedValueCallback: x => new[] { Keys.Control, Keys.Space }),
             };
 
             SystemReplayButtonEntries = new[] {

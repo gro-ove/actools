@@ -163,8 +163,8 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
         protected virtual IEnumerable<UpdateOption> GetUpdateOptions() {
             return new[] {
-                new UpdateOption(ToolsStrings.Installator_UpdateEverything),
-                new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst) { RemoveExisting = true }
+                new UpdateOption(ToolsStrings.Installator_UpdateEverything, false),
+                new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst, true)
             };
         }
 
@@ -195,9 +195,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         [ItemCanBeNull]
         public async Task<InstallationDetails> GetInstallationDetails(CancellationToken cancellation) {
             var destination = await GetDestination(cancellation);
-
             var selectedOptionAfterTask = SelectedOption?.AfterTask;
-
             if (IsNew && NeedsToBeEnabled && EnableAfterwards) {
                 if (selectedOptionAfterTask == null) {
                     selectedOptionAfterTask = EnableAfterInstallation;
@@ -212,14 +210,17 @@ namespace AcManager.Tools.ContentInstallation.Entries {
 
             return destination != null ?
                     new InstallationDetails(GetCopyCallback(destination),
-                            SelectedOption?.RemoveExisting == true
-                                    ? new[] { destination }
-                                    : SelectedOption?.CleanUp?.Invoke(destination)?.ToArray(),
+                            GetFilesToRemoval(destination),
                             SelectedOption?.BeforeTask,
                             selectedOptionAfterTask) {
                                 OriginalEntry = this
                             } :
                     null;
+        }
+
+        [CanBeNull]
+        protected virtual string[] GetFilesToRemoval([NotNull] string destination) {
+            return SelectedOption?.CleanUp?.Invoke(destination)?.ToArray();
         }
 
         [ItemCanBeNull]

@@ -199,7 +199,7 @@
     <uc:ModernPopup Padding="16 12 16 16" TextBlock.Foreground="{DynamicResource WindowText}" StaysOpen="False">
       <mui:SpacingStackPanel Spacing="4" Width="200">
         <TextBlock Text="Allowed tyres:" Style="{StaticResource Label}" />
-        <ItemsControl ItemsSource="{Binding AiLimitationDetails.Tyres}" Style="{StaticResource VirtualizingItemsControl}">
+        <ItemsControl ItemsSource="{Binding AiLimitationDetails.Tyres}">
           <ItemsControl.ItemTemplate>
             <DataTemplate>
               <CheckBox IsChecked="{Binding IsAllowed}">
@@ -247,11 +247,66 @@
 
   <DataTemplate x:Key="Detailed.AiLimitationDataTemplate" DataType="{x:Type c:RaceGridEntry}">
     <DockPanel>
-      <mui:BooleanLazySwitch DockPanel.Dock="Right" Value="{Binding AiLimitationDetails.IsEnabled}" TrueResourceKey="AiLimitationButton">
+      <!--<mui:BooleanLazySwitch DockPanel.Dock="Right" Value="{Binding AiLimitationDetails.IsEnabled}" TrueResourceKey="AiLimitationButton">
         <mui:BooleanLazySwitch.Resources>
           <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/RaceGridEditorTable.xaml" />
         </mui:BooleanLazySwitch.Resources>
-      </mui:BooleanLazySwitch>
+      </mui:BooleanLazySwitch>-->
+      <mui:BooleanSwitch DockPanel.Dock="Right" Value="{Binding AiLimitationDetails.IsEnabled}">
+        <mui:BooleanSwitch.True>
+          <mui:ContextMenuButton Padding="4" Margin="0 -4" VerticalAlignment="Center" DockPanel.Dock="Right"
+              Style="{StaticResource ContextMenuButton.AsButton}" Command="{Binding AiLimitationDetails.ShowMenuCommand}" ForceNear="False" ExtraDelay="True"
+              d:DataContext="{d:DesignInstance {x:Type c:RaceGridEntry}}">
+            <uc:ModernPopup Padding="16 12 16 16" TextBlock.Foreground="{DynamicResource WindowText}" StaysOpen="False">
+              <mui:SpacingStackPanel Spacing="4" Width="200">
+                <TextBlock Text="Allowed tyres:" Style="{StaticResource Label}" />
+                <ItemsControl ItemsSource="{Binding AiLimitationDetails.Tyres}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <CheckBox IsChecked="{Binding IsAllowed}">
+                        <TextBlock Text="{Binding DisplayName}" />
+                      </CheckBox>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <mui:ValueLabel Content="{x:Static t:ToolsStrings.Assists_TyreWear}" Value="{Binding AiLimitationDetails.TyresWearMultiplier}" Postfix="×"
+                    Margin="-8 8 0 0" />
+                <Slider Minimum="0" Maximum="1" Margin="0 0 0 4" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False">
+                  <Slider.Value>
+                    <Binding Path="AiLimitationDetails.TyresWearMultiplier">
+                      <Binding.Converter>
+                        <mui:LogarithmicScale Minimum="0" Middle="2" Maximum="10" RoundTo="0.01" />
+                      </Binding.Converter>
+                    </Binding>
+                  </Slider.Value>
+                </Slider>
+
+                <mui:ValueLabel Content="Fuel tank size" Value="{Binding AiLimitationDetails.FuelMaxMultiplier}" Postfix="×" Margin="-8 4 0 0" />
+                <Slider Minimum="0" Maximum="1" Margin="0 0 0 4" TickFrequency="0.1" TickPlacement="None" IsSnapToTickEnabled="False">
+                  <Slider.Value>
+                    <Binding Path="AiLimitationDetails.FuelMaxMultiplier">
+                      <Binding.Converter>
+                        <mui:LogarithmicScale Minimum="0" Middle="1" Maximum="4" RoundTo="0.01" />
+                      </Binding.Converter>
+                    </Binding>
+                  </Slider.Value>
+                </Slider>
+
+                <DockPanel DataContext="{Binding AiLimitationDetails.FinalGearRatio}" Margin="0 8 0 0"
+                    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                  <TextBlock Text="{Binding RatioMaxSpeed, StringFormat='Maximum speed: {0:F1} km/h'}" Style="{StaticResource Small}" DockPanel.Dock="Bottom"
+                      Margin="0 4 0 0" Visibility="{Binding RatioMaxSpeed, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                  <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 2 0 4" Width="100"
+                      DockPanel.Dock="Left" Style="{StaticResource Label}" VerticalAlignment="Top" />
+                  <mui:BetterComboBox SelectedItem="{Binding ValuePair}" ItemsSource="{Binding Values}" IsEditable="False" DisplayMemberPath="Key"
+                      VerticalAlignment="Top" />
+                </DockPanel>
+              </mui:SpacingStackPanel>
+            </uc:ModernPopup>
+          </mui:ContextMenuButton>
+        </mui:BooleanSwitch.True>
+      </mui:BooleanSwitch>
       <CheckBox IsChecked="{Binding AiLimitationDetails.IsEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 0 0" Width="80"
           Style="{StaticResource CheckBox.White}">
         <Label Content="Enable" TextBlock.Foreground="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource AncestorType=DataGridCell}}" />

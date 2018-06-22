@@ -25,6 +25,9 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 return context ?? (context = new WeatherProceduralContext(file, weather.Location));
             }
 
+            var directory = Environment.CurrentDirectory;
+            Environment.CurrentDirectory = AcRootDirectory.Instance.RequireValue;
+
             try {
                 ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES", @"__CUSTOM_LIGHTING" },
                         (table, ini) => {
@@ -70,6 +73,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 NonfatalError.NotifyBackground("Can’t run weather script", $"Exception at {e.DecoratedMessage}.", e);
             } catch (Exception e) {
                 NonfatalError.NotifyBackground("Can’t run weather script", e);
+            } finally {
+                Environment.CurrentDirectory = directory;
             }
 
             return false;

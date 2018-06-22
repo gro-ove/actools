@@ -65,9 +65,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty CollapseIfMissingProperty = DependencyProperty.Register(nameof(CollapseIfMissing), typeof(bool),
-                typeof(BooleanLazySwitch), new PropertyMetadata(false, (o, e) => {
-                    ((BooleanLazySwitch)o)._collapseIfMissing = (bool)e.NewValue;
-                }));
+                typeof(BooleanLazySwitch), new PropertyMetadata(false, (o, e) => { ((BooleanLazySwitch)o)._collapseIfMissing = (bool)e.NewValue; }));
 
         private bool _collapseIfMissing;
 
@@ -98,7 +96,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(ValueProperty, value);
         }
 
-        public static readonly DependencyProperty DefinitionsProperty = DependencyProperty.Register(nameof(Definitions), typeof(ObservableCollection<LazySwitchDefinition>),
+        public static readonly DependencyProperty DefinitionsProperty = DependencyProperty.Register(nameof(Definitions),
+                typeof(ObservableCollection<LazySwitchDefinition>),
                 typeof(LazySwitch));
 
         public ObservableCollection<LazySwitchDefinition> Definitions {

@@ -77,7 +77,7 @@ namespace AcManager.Pages.Dialogs {
             var mask = GetTextBoxMask(textBox);
             if (mask == null) return;
 
-            if (!Regex.IsMatch(textBox.Text, @"^" + mask.Replace(@"…", @"-?\d+(?:\.\d+)?") + @"$")) {
+            if (!Regex.IsMatch(textBox.Text, @"^" + mask.Replace(@"…|\.\.\.", @"-?\d+(?:\.\d+)?") + @"$")) {
                 item = new MenuItem { Header = AppStrings.CarSpecs_FixFormat };
                 item.Click += (s, e1) => FixValue(textBox);
                 item.ToolTip = AppStrings.CarSpecs_FixFormat_Tooltip;
@@ -254,7 +254,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         private static string Format(string key, object value) {
-            return key.Replace(@"…", value.ToInvariantString());
+            return key.Replace(@"…", value.ToInvariantString()).Replace(@"...", value.ToInvariantString());
         }
 
         private void RecalculatePwRatio() {

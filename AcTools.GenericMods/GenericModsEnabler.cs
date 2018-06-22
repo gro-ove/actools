@@ -53,15 +53,13 @@ namespace AcTools.GenericMods {
 
         [ItemCanBeNull]
         private static Task<GenericModsEnabler> GetInstanceAsyncInner(string rootDirectory, string modsDirectory, bool useHardLinks) {
-            if (Directory.Exists(modsDirectory)) {
-                return Task.Run(() => {
-                    _instanceParameters = GetParameters(rootDirectory, modsDirectory, useHardLinks);
-                    _instance = new GenericModsEnabler(rootDirectory,
-                            modsDirectory, useHardLinks);
-                    return _instance;
-                });
-            }
-            return null;
+            FileUtils.EnsureDirectoryExists(modsDirectory);
+            return Task.Run(() => {
+                _instanceParameters = GetParameters(rootDirectory, modsDirectory, useHardLinks);
+                _instance = new GenericModsEnabler(rootDirectory,
+                        modsDirectory, useHardLinks);
+                return _instance;
+            });
         }
 
         public static Task<GenericModsEnabler> GetInstanceAsync(string rootDirectory, string modsDirectory, bool useHardLinks = true) {

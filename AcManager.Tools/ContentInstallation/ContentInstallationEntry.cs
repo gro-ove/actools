@@ -54,7 +54,7 @@ namespace AcManager.Tools.ContentInstallation {
             InstallationParams = installationParams ?? ContentInstallationParams.Default;
             Source = source;
             AddedDateTime = DateTime.Now;
-            DisplayName = InstallationParams.DisplayName ?? Source.Split(new[]{ '?', '&' }, 2)[0].Split('/', '\\').Last();
+            DisplayName = InstallationParams.DisplayName ?? Source.Split(new[] { '?', '&' }, 2)[0].Split('/', '\\').Last();
             InformationUrl = InstallationParams.InformationUrl;
             Version = InstallationParams.Version;
 
@@ -308,7 +308,7 @@ namespace AcManager.Tools.ContentInstallation {
         public override IEnumerable GetErrors(string propertyName) {
             switch (propertyName) {
                 case nameof(InputPassword):
-                    return PasswordIsInvalid ? new[]{ "Password is invalid" } : null;
+                    return PasswordIsInvalid ? new[] { "Password is invalid" } : null;
                 default:
                     return null;
             }
@@ -320,9 +320,10 @@ namespace AcManager.Tools.ContentInstallation {
 
         private DelegateCommand _applyPasswordCommand;
 
-        public DelegateCommand ApplyPasswordCommand => _applyPasswordCommand ?? (_applyPasswordCommand = new DelegateCommand(() => {
-            PasswordEnter?.Invoke(this, EventArgs.Empty);
-        }, () => IsPasswordRequired));
+        public DelegateCommand ApplyPasswordCommand
+            =>
+                    _applyPasswordCommand
+                            ?? (_applyPasswordCommand = new DelegateCommand(() => { PasswordEnter?.Invoke(this, EventArgs.Empty); }, () => IsPasswordRequired));
 
         private Task<string> WaitForPassword() {
             var tcs = new TaskCompletionSource<string>();
@@ -360,9 +361,8 @@ namespace AcManager.Tools.ContentInstallation {
 
         private DelegateCommand _confirmCommand;
 
-        public DelegateCommand ConfirmCommand => _confirmCommand ?? (_confirmCommand = new DelegateCommand(() => {
-            Confirm?.Invoke(this, EventArgs.Empty);
-        }, () => WaitingForConfirmation));
+        public DelegateCommand ConfirmCommand
+            => _confirmCommand ?? (_confirmCommand = new DelegateCommand(() => { Confirm?.Invoke(this, EventArgs.Empty); }, () => WaitingForConfirmation));
 
         private Task WaitForConfirmation() {
             var tcs = new TaskCompletionSource<bool>();
@@ -569,7 +569,7 @@ namespace AcManager.Tools.ContentInstallation {
                         _taskbar?.Set(TaskbarState.Indeterminate, 0d);
 
                         try {
-                            DisplayName = Source.Split('?')[0].Split(new[]{ '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
+                            DisplayName = Source.Split('?')[0].Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries).Last();
                         } catch (Exception e) {
                             Logging.Warning(e.Message);
                         }
@@ -732,15 +732,28 @@ namespace AcManager.Tools.ContentInstallation {
                                                           .Select(x => x.GetInstallationDetails(cancellation.Token)).WhenAll(15)).ToList();
                             if (toInstall.Count == 0 || CheckCancellation()) return false;
 
-                            string GetToInstallName(InstallationDetails details) {
-                                return details.OriginalEntry?.DisplayName;
-                            }
-
                             /*foreach (var extra in _installationParams.PreInstallation.NonNull()) {
                                 _taskbar?.Set(TaskbarState.Indeterminate, 0d);
                                 await extra(progress, cancellation.Token);
                                 if (CheckCancellation()) return false;
                             }*/
+
+                            /*var toRemoval = toInstall.SelectMany(x => x.ToRemoval).ToArray();
+                            if (toRemoval.Length > 0) {
+                                Logging.Warning("To removal: " + toRemoval.JoinToString('\n'));
+                                if (MessageDialog.Show(
+                                        $@"You’re about to remove to the Recycle Bin:
+{BbCodeBlock.Encode(toRemoval.Select(x => "• " + x).JoinToString(";\n"))}.
+Are you sure to continue?",
+                                        "Warning!", MessageDialogButton.YesNo) != MessageBoxResult.Yes) {
+                                    Cancel();
+                                    return false;
+                                }
+                            }*/
+
+                            string GetToInstallName(InstallationDetails details) {
+                                return details.OriginalEntry?.DisplayName;
+                            }
 
                             foreach (var extra in ExtraOptions.Select(x => x.PreInstallation).NonNull()) {
                                 await extra(progress, cancellation.Token);
@@ -748,6 +761,7 @@ namespace AcManager.Tools.ContentInstallation {
                             }
 
                             await Task.Run(() => FileUtils.Recycle(toInstall.SelectMany(x => x.ToRemoval).ToArray()));
+
                             if (CheckCancellation()) return false;
 
                             try {
@@ -998,7 +1012,7 @@ namespace AcManager.Tools.ContentInstallation {
                 return DirectoryContentInstallator.Create(filename, installationParams, cancellation);
             }
 
-            if (/*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
+            if ( /*!IsZipArchive(filename) &&*/ PluginsManager.Instance.IsPluginEnabled(KnownPlugins.SevenZip)) {
                 try {
                     Logging.Write("7-Zip plugin is available");
                     return SevenZipContentInstallator.Create(filename, installationParams, cancellation);
