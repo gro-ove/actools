@@ -10,6 +10,7 @@ using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Controls.Helpers;
+using AcManager.Controls.ViewModels;
 using AcManager.LargeFilesSharing;
 using AcManager.Pages.Drive;
 using AcManager.Tools;
@@ -24,6 +25,7 @@ using AcTools;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
@@ -41,7 +43,7 @@ namespace AcManager.Pages.Selected {
         /// Gets description for ReadMe.txt inside shared archive.
         /// </summary>
         /// <returns></returns>
-        private static string GetDescription([CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track) {
+        private static string GetDescription([CanBeNull] CarObject car, [CanBeNull] TrackObjectBase track) {
             return car == null
                     ? (track == null ? ToolsStrings.Common_AcReplay : $"{ToolsStrings.Common_AcReplay} ({track.Name})")
                     : (track == null
@@ -49,7 +51,7 @@ namespace AcManager.Pages.Selected {
                             : $"{ToolsStrings.Common_AcReplay} ({car.DisplayName}, {track.Name})");
         }
 
-        public static async Task ShareReplay(string name, string filename, [CanBeNull] CarObject car, [CanBeNull]  TrackObjectBase track, bool forceUpload) {
+        public static async Task ShareReplay(string name, string filename, [CanBeNull] CarObject car, [CanBeNull] TrackObjectBase track, bool forceUpload) {
             if (!forceUpload) {
                 var existing = GetShared(filename);
                 if (existing != null) {
@@ -118,8 +120,7 @@ namespace AcManager.Pages.Selected {
         public static void SetShared(string filename, string url) {
             var name = Path.GetFileName(filename)?.ApartFromLast(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase);
             var info = new FileInfo(filename);
-            if (name == null || !info.Exists) {
-            } else {
+            if (name == null || !info.Exists) { } else {
                 CacheStorage.Set($@"sharedReplay:{name.ToLowerInvariant()}:{info.Length}", url);
             }
         }
@@ -127,6 +128,18 @@ namespace AcManager.Pages.Selected {
         public class ViewModel : SelectedAcObjectViewModel<ReplayObject> {
             public ViewModel([NotNull] ReplayObject acObject) : base(acObject) {
                 UpdateAlreadyShared();
+
+                _timeKey = @".ReplayTime:" + acObject.Id;
+                Time = acObject.AllowToOverrideTime
+                        ? CacheStorage.Get(_timeKey, acObject.TimeFrom ?? FlexibleParser.ParseTime(@"09:00"))
+                        : acObject.TimeFrom ?? FlexibleParser.ParseTime(@"09:00");
+
+                if (acObject.AllowToOverrideTime) {
+                    TimeSliderMapper = new DiapasonMapper(WeatherManager.Instance.GetById(acObject.WeatherId)?.GetTimeDiapason()
+                            ?? Diapason.CreateTime(@"0:00-23:59")) {
+                                ActualValue = Time
+                            };
+                }
             }
 
             public void UpdateAlreadyShared() {
@@ -168,6 +181,56 @@ namespace AcManager.Pages.Selected {
                 set => Apply(value, ref _track);
             }
 
+            private DiapasonMapper _timeSliderMapper;
+
+            [CanBeNull]
+            public DiapasonMapper TimeSliderMapper {
+                get => _timeSliderMapper;
+                set {
+                    var oldValue = _timeSliderMapper;
+                    Apply(value, ref _timeSliderMapper, () => {
+                        oldValue?.UnsubscribeWeak(OnTimeSliderMapperChanged);
+                        value?.SubscribeWeak(OnTimeSliderMapperChanged);
+                        Time = value?.GetClosest(Time) ?? Time;
+                    });
+                }
+            }
+
+            private readonly Busy _syncTime = new Busy();
+
+            private void OnTimeSliderMapperChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
+                if (propertyChangedEventArgs.PropertyName == nameof(TimeSliderMapper.ActualValue)) {
+                    _syncTime.Do(() => Time = TimeSliderMapper?.ActualValue ?? Time);
+                }
+            }
+
+            private readonly string _timeKey;
+            private int _time;
+
+            public int Time {
+                get => _time;
+                set {
+                    if (!Apply(TimeSliderMapper?.GetClosest(value) ?? value, ref _time)) return;
+                    OnPropertyChanged(nameof(DisplayTime));
+
+                    _syncTime.Do(() => {
+                        if (TimeSliderMapper != null) {
+                            TimeSliderMapper.ActualValue = Time;
+                        }
+                    });
+
+                    CacheStorage.Set(_timeKey, value);
+                }
+            }
+
+            public string DisplayTime {
+                get => _time.ToDisplayTime();
+                set {
+                    if (!FlexibleParser.TryParseTime(value, out var time)) return;
+                    Time = time;
+                }
+            }
+
             private DelegateCommand _changeCategoryCommand;
 
             public DelegateCommand ChangeCategoryCommand => _changeCategoryCommand ?? (_changeCategoryCommand = new DelegateCommand(() => {
@@ -197,9 +260,8 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Forget();
-                    });
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
+                            p => { QuickDrive.RunAsync(Car, CarSkin?.Id, track: Track, presetFilename: p.VirtualFilename).Forget(); });
                 }
             }
             #endregion
@@ -215,16 +277,17 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
-                QuickDrive.Show(Car, CarSkin?.Id, track: Track);
-            }));
+            public DelegateCommand DriveOptionsCommand
+                => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => { QuickDrive.Show(Car, CarSkin?.Id, track: Track); }));
 
             private DelegateCommand _clearCategoryCommand;
 
-            public DelegateCommand ClearCategoryCommand => _clearCategoryCommand ?? (_clearCategoryCommand = new DelegateCommand(() => {
-                SelectedObject.EditableCategory = null;
-            }, () => SelectedObject.EditableCategory != null))
-                    .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
+            public DelegateCommand ClearCategoryCommand
+                =>
+                        _clearCategoryCommand
+                                ?? (_clearCategoryCommand =
+                                        new DelegateCommand(() => { SelectedObject.EditableCategory = null; }, () => SelectedObject.EditableCategory != null))
+                                        .ListenOnWeak(SelectedObject, nameof(SelectedObject.EditableCategory));
 
             private AsyncCommand _keepReplayCommand;
 
@@ -263,6 +326,37 @@ namespace AcManager.Pages.Selected {
                     case "weather":
                         NewFilterTab(string.IsNullOrWhiteSpace(SelectedObject.WeatherId) ? "weatherid-" : $"weatherid:{Filter.Encode(SelectedObject.WeatherId)}");
                         return;
+
+                    case "recordingquality":
+                        NewFilterTab(SelectedObject.RecordingQuality == null
+                                ? "recordingquality-" : $"recordingquality:{Filter.Encode(SelectedObject.RecordingQuality.Value.ToInvariantString())} Hz");
+                        return;
+
+                    case "version":
+                        NewFilterTab($"version:{Filter.Encode(SelectedObject.Version.ToInvariantString())}");
+                        return;
+
+                    case "cars":
+                        NewFilterTab(SelectedObject.CarsNumber == null ? "cars-" : $"cars:{Filter.Encode(SelectedObject.CarsNumber.Value.ToInvariantString())}");
+                        return;
+
+                    case "duration":
+                        var duration = SelectedObject.Duration;
+                        if (duration == null) {
+                            NewFilterTab("time-");
+                        } else {
+                            FilterRange("time", duration.Value, TimeSpan.FromMinutes(5));
+                        }
+                        return;
+
+                    case "time":
+                        var time = SelectedObject.CustomTime ?? SelectedObject.TimeFrom;
+                        if (time == null) {
+                            NewFilterTab("time-");
+                        } else {
+                            FilterRange("time", TimeSpan.FromSeconds(time.Value), TimeSpan.FromMinutes(30));
+                        }
+                        return;
                 }
 
                 base.FilterExec(type);
@@ -283,7 +377,8 @@ namespace AcManager.Pages.Selected {
                     CarId = SelectedObject.CarId,
                     TrackId = SelectedObject.TrackId,
                     TrackConfiguration = SelectedObject.TrackConfiguration,
-                    WeatherId = SelectedObject.WeatherId
+                    WeatherId = SelectedObject.WeatherId,
+                    SunAngle = Game.ConditionProperties.GetSunAngle(SelectedObject.CustomTime ?? Time)
                 }));
             }, () => !SelectedObject.HasError(AcErrorType.Replay_TrackIsMissing)));
         }
@@ -408,7 +503,6 @@ namespace AcManager.Pages.Selected {
             InputBindings.AddRange(new[] {
                 new InputBinding(_model.PlayCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
-
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Alt | ModifierKeys.Shift)),
             });

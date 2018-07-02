@@ -28,7 +28,7 @@ namespace AcTools.WheelAngles {
             OnPropertyChanged(propertyName);
             if (linked != null) {
                 for (var i = 0; i < linked.Length; i++) {
-                    OnPropertyChanged(linked[i]);
+                    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(linked[i]));
                 }
             }
             return true;

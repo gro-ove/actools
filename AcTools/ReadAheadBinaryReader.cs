@@ -3,6 +3,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using SystemHalf;
 using JetBrains.Annotations;
 
 namespace AcTools {
@@ -243,9 +244,21 @@ namespace AcTools {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static unsafe Half ToHalf(byte[] value, int startIndex) {
+            var val = ToInt16(value, startIndex);
+            return *(Half*)&val;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static unsafe float ToSingle(byte[] value, int startIndex) {
             var val = ToInt32(value, startIndex);
             return *(float*)&val;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static unsafe double ToDouble(byte[] value, int startIndex) {
+            var val = ToInt64(value, startIndex);
+            return *(double*)&val;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -275,8 +288,16 @@ namespace AcTools {
             return (uint)ReadInt32();
         }
 
+        public Half ReadHalf() {
+            return ToHalf(_buffer, GetPosAndMove(2));
+        }
+
         public float ReadSingle() {
             return ToSingle(_buffer, GetPosAndMove(4));
+        }
+
+        public double ReadDouble() {
+            return ToDouble(_buffer, GetPosAndMove(8));
         }
 
         public ushort ReadUInt16() {

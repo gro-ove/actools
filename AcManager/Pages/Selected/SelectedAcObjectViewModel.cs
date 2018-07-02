@@ -11,6 +11,7 @@ using AcManager.Controls;
 using JetBrains.Annotations;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -61,15 +62,18 @@ namespace AcManager.Pages.Selected {
             SelectedObject = acObject;
         }
 
-        public virtual void Load() {}
+        public virtual void Load() { }
 
-        public virtual void Unload() {}
+        public virtual void Unload() { }
 
         private ICommand _findInformationCommand;
 
-        public ICommand FindInformationCommand => _findInformationCommand ?? (_findInformationCommand = new DelegateCommand(() => {
-            new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog();
-        }, () => SelectedAcObject is AcJsonObjectNew));
+        public ICommand FindInformationCommand
+            =>
+                    _findInformationCommand
+                            ?? (_findInformationCommand =
+                                    new DelegateCommand(() => { new FindInformationDialog((AcJsonObjectNew)SelectedAcObject).ShowDialog(); },
+                                            () => SelectedAcObject is AcJsonObjectNew));
 
         private ICommand _changeIdCommand;
 
@@ -119,9 +123,8 @@ namespace AcManager.Pages.Selected {
 
         private CommandBase _filterTagCommand;
 
-        public ICommand FilterTagCommand => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => {
-            NewFilterTab($@"#{Filter.Encode(o)}");
-        }, o => o != null));
+        public ICommand FilterTagCommand
+            => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => { NewFilterTab($@"#{Filter.Encode(o)}"); }, o => o != null));
 
         [CanBeNull]
         protected CommandBase InnerFilterCommand;
@@ -135,6 +138,11 @@ namespace AcManager.Pages.Selected {
                     $@"{key}={value.Round(roundTo).ToInvariantString()}{postfix}" :
                     string.Format(@"{0}>{1}{3} & {0}<{2}{3}", key, (Math.Max(value - delta, 0d).Round(roundTo) - Math.Min(roundTo, 1d)).ToInvariantString(),
                             ((value + delta).Round(roundTo) + Math.Min(roundTo, 1d)).ToInvariantString(), postfix));
+        }
+
+        protected void FilterRange([Localizable(false)] string key, TimeSpan value, TimeSpan range, string postfix = "") {
+            NewFilterTab(string.Format(@"{0}>{1}{3} & {0}<{2}{3}", key, (value - range).ToProperString(),
+                    (value + range).ToProperString(), postfix));
         }
 
         protected void FilterDistance([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0) {
@@ -203,7 +211,8 @@ namespace AcManager.Pages.Selected {
         private readonly List<Tuple<string, string, Func<string>, Action<string>>> _specs =
                 new List<Tuple<string, string, Func<string>, Action<string>>>(7);
 
-        protected void RegisterSpec([Localizable(false), NotNull] string key, [NotNull] string format, [NotNull] Func<string> getter, [NotNull] Action<string> setter) {
+        protected void RegisterSpec([Localizable(false), NotNull] string key, [NotNull] string format, [NotNull] Func<string> getter,
+                [NotNull] Action<string> setter) {
             _specs.Add(Tuple.Create(key, format, getter, setter));
         }
 

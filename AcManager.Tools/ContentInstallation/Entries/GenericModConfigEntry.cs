@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -28,7 +29,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         private string[] _dependsOn;
 
         protected sealed override bool GenericModSupportedByDesign => false;
-        public override bool NeedsToBeEnabled => true;
+        public override bool NeedsToBeEnabled => InternalUtils.IsAllRight;
         public override string GenericModTypeName => null;
         public override string NewFormat => "New mod {0}";
 

@@ -59,6 +59,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 });
                 ProcessFile(weather, GetContext, @"tyre_smoke.ini", new[] { @"SETTINGS", @"TRIGGERS" });
                 ProcessFile(weather, GetContext, @"tyre_smoke_grass.ini", new[] { @"SETTINGS" });
+                ProcessFile(weather, GetContext, @"tyre_pieces_grass.ini", new[] { @"SETTINGS" });
 
                 if (_updateRoadTemperature) {
                     var section = new IniFile(weather.IniFilename)["LAUNCHER"];
@@ -102,6 +103,9 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             public LuaIniFile TyreSmokeGrassIni => _tyreSmokeGrassIni.Value;
 
             [UsedImplicitly]
+            public LuaIniFile TyrePiecesGrassIni => _tyrePiecesGrassIni.Value;
+
+            [UsedImplicitly]
             public LuaIniFile UserFilterIni => _userFilterIni.Value;
 
             [UsedImplicitly]
@@ -128,8 +132,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             [UsedImplicitly]
             public string TrackSeason => ActiveTrackSkins.FirstOrDefault(x => x.Categories.Contains(@"season"))?.DisplayName.ToLowerInvariant();
 
-            private readonly Lazier<LuaIniFile> _weatherIni, _colorCurvesIni, _weatherFilterIni, _tyreSmokeIni, _tyreSmokeGrassIni, _userFilterIni,
-                    _trackLightingIni;
+            private readonly Lazier<LuaIniFile> _weatherIni, _colorCurvesIni, _weatherFilterIni, _tyreSmokeIni, _tyreSmokeGrassIni, _tyrePiecesGrassIni,
+                    _userFilterIni, _trackLightingIni;
 
             private readonly Lazier<TrackObjectBase> _track;
             private readonly Lazier<List<TrackSkinObject>> _activeTrackSkins;
@@ -143,6 +147,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 _weatherFilterIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "filter.ini")));
                 _tyreSmokeIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_smoke.ini")));
                 _tyreSmokeGrassIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_smoke_grass.ini")));
+                _tyrePiecesGrassIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_pieces_grass.ini")));
                 _userFilterIni = Lazier.Create(() => new LuaIniFile(PpFiltersManager.Instance.GetByAcId(AcSettingsHolder.Video.PostProcessingFilter)?.Location));
 
                 // BUG: USE BACKUPED VALUES IF ANY INSTEAD!

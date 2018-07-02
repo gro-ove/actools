@@ -14,6 +14,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
+using AcTools;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -43,6 +44,14 @@ namespace AcManager.Tools.Objects {
                     Changed = true;
                 }
             }
+        }
+
+        private static bool IsTimeUnusual(int time) {
+            return time < CommonAcConsts.TimeMinimum || time > CommonAcConsts.TimeMaximum;
+        }
+
+        public bool IsWeatherTimeUnusual() {
+            return GetTimeDiapason()?.Pieces.Any(x => IsTimeUnusual(x.FromValue) || IsTimeUnusual(x.ToValue)) == true;
         }
 
         private readonly Lazier<Diapason<double>> _temperatureDiapasonLazier;

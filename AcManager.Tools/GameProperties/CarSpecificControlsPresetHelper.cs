@@ -74,8 +74,8 @@ namespace AcManager.Tools.GameProperties {
                             steer.Set("LOCK", appliedValue);
                             ini.Save();
 
-                            if (lockSetter.GetOptions() is LogitechOptions logitech) {
-                                SpecialLogitechFix(logitech);
+                            if (lockSetter.GetOptions() is IGameWaitingWheelOptions waiting) {
+                                SpecialLogitechFix(waiting);
                             }
 
                             return true;
@@ -111,7 +111,7 @@ namespace AcManager.Tools.GameProperties {
             return specificControlsLoaded;
         }
 
-        private void SpecialLogitechFix(LogitechOptions logitech) {
+        private void SpecialLogitechFix(IGameWaitingWheelOptions logitech) {
             if (SettingsHolder.Drive.WatchForSharedMemory) {
                 AcSharedMemory.Instance.Start += OnStart;
             } else {

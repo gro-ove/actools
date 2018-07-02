@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AcManager.Tools.Filters.TestEntries;
@@ -53,6 +54,22 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "weather":
                     return value.Test(obj.WeatherId) || value.Test(obj.Weather?.Name);
+
+                case "version":
+                    return value.Test(obj.Version);
+
+                case "time":
+                    return value.Test(TimeSpan.FromSeconds(obj.CustomTime ?? obj.TimeFrom ?? 0));
+
+                case "cars":
+                    return value.Test(obj.CarsNumber ?? 0);
+
+                case "duration":
+                    return value.Test(obj.Duration ?? TimeSpan.Zero);
+
+                case "quality":
+                case "recordingquality":
+                    return value.Test(obj.RecordingIntervalMs ?? 0);
             }
 
             return AcCommonObjectTester.Instance.Test(obj, key, value);
@@ -87,6 +104,11 @@ namespace AcManager.Tools.Filters.Testers {
                 new KeywordDescription("skin", "Skin", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
                 new KeywordDescription("track", "Track", KeywordType.String | KeywordType.Child, KeywordPriority.Important, "t"),
                 new KeywordDescription("weather", "Weather", KeywordType.String | KeywordType.Child, KeywordPriority.Important),
+                new KeywordDescription("version", "Replay version", KeywordType.Number, KeywordPriority.Normal),
+                // new KeywordDescription("time", "Time", KeywordType.TimeSpan, KeywordPriority.Important),
+                // new KeywordDescription("duration", "Duration", KeywordType.TimeSpan, KeywordPriority.Important),
+                new KeywordDescription("cars", "Number of cars", KeywordType.Number, KeywordPriority.Important),
+                new KeywordDescription("recordingquality", "Recording quality", "Hz", KeywordType.Number, KeywordPriority.Normal),
             }.Concat(AcCommonObjectTester.Instance.GetDescriptions());
         }
     }

@@ -92,7 +92,7 @@
                   <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Logitech hardware lock options:" />
 
                   <TextBlock Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 0 0 8"
-                      Text="Although for Logitech CM uses official SDK library and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
+                      Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
 
                   <CheckBox IsChecked="{Binding UseOwnHandle}" IsEnabled="{Binding SpecifyHandle}">
                     <Label Content="Use CM’s handle instead of the one of AC" />
@@ -134,6 +134,26 @@
                     <mui:ValueLabel Value="{Binding DefaultSpringGainPercentage}" Content="Logitech: center spring gain" Postfix="%" />
                     <Slider Minimum="0" Maximum="150" Value="{Binding DefaultSpringGainPercentage}" TickFrequency="10" TickPlacement="BottomRight" />
                   </DockPanel>
+                </StackPanel>
+              </DataTemplate>
+              <DataTemplate DataType="{x:Type w:LogitechG29Options}">
+                <StackPanel Style="{StaticResource SettingsPanel}">
+                  <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Logitech G29 hardware lock options:" />
+
+                  <TextBlock Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 0 0 8"
+                      Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
+
+                  <DockPanel>
+                    <Label Content="Handle mode:" Width="80" />
+                    <ComboBox ItemsSource="{Binding HandleOptions}" SelectedItem="{Binding Handle}">
+                      <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+                        </DataTemplate>
+                      </ComboBox.ItemTemplate>
+                    </ComboBox>
+                  </DockPanel>
+
                 </StackPanel>
               </DataTemplate>
             </ContentControl.Resources>

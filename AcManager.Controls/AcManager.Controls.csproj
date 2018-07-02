@@ -300,6 +300,7 @@
     <Compile Include="ViewModels\AssistsViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapperBase.cs" />
     <Compile Include="ViewModels\AssistsViewModelBase.cs" />
+    <Compile Include="ViewModels\DiapasonMapper.cs" />
     <Compile Include="ViewModels\RaceGridEntry.cs" />
     <Compile Include="ViewModels\RaceGridMode.cs" />
     <Compile Include="ViewModels\RaceGridPlayerEntry.cs" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -8,6 +9,9 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
+using AcTools.DataFile;
+using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -128,38 +132,12 @@ namespace AcManager.Tools.Objects {
             try {
                 using (var reader = new ReplayReader(Location)) {
                     var version = reader.ReadInt32();
+                    Version = version;
 
-                    if (version >= 14) {
-                        reader.Skip(8);
-
-                        WeatherId = reader.ReadString();
-                        /*if (!string.IsNullOrWhiteSpace(WeatherId)) {
-                            ErrorIf(WeatherManager.Instance.GetWrapperById(WeatherId) == null,
-                                    AcErrorType.Replay_WeatherIsMissing, WeatherId);
-                        }*/
-
-                        TrackId = reader.ReadString();
-                        TrackConfiguration = reader.ReadString();
+                    if (version == 16) {
+                        ParseV16(reader);
                     } else {
-                        TrackId = reader.ReadString();
-                    }
-
-                    ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null,
-                            AcErrorType.Replay_TrackIsMissing, TrackId);
-
-                    CarId = reader.TryToReadNextString();
-
-                    if (!string.IsNullOrWhiteSpace(CarId)) {
-                        ErrorIf(CarsManager.Instance.GetWrapperById(CarId) == null,
-                                AcErrorType.Replay_CarIsMissing, CarId);
-                    }
-
-                    try {
-                        DriverName = reader.ReadString();
-                        reader.ReadInt64();
-                        CarSkinId = reader.ReadString();
-                    } catch (Exception) {
-                        // ignored
+                        ParseGeneric(version, reader);
                     }
                 }
 
@@ -170,14 +148,124 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool ReadExtendedSection(ReplayReader reader, string name, int length) {
+            if (name == @"CONFIG_RACE") {
+                RaceIniConfig = Encoding.ASCII.GetString(reader.ReadBytes(length));
+                CustomTime = Game.ConditionProperties.GetSeconds(
+                        IniFile.Parse(RaceIniConfig)["LIGHTING"].GetDoubleNullable("__CM_UNCLAMPED_SUN_ANGLE")
+                                ?? IniFile.Parse(RaceIniConfig)["LIGHTING"].GetDouble("SUN_ANGLE", 80d)).RoundToInt();
+                return true;
+            }
+
+            return false;
+        }
+
+        private void ParseV16(ReplayReader reader) {
+            RecordingIntervalMs = reader.ReadDouble();
+
+            WeatherId = reader.ReadString();
+            TrackId = reader.ReadString();
+            TrackConfiguration = reader.ReadString();
+
+            CarsNumber = reader.ReadInt32();
+            reader.ReadInt32(); // current recording index
+            var frames = reader.ReadInt32();
+            NumberOfFrames = frames;
+
+            var trackObjectsNumber = reader.ReadInt32();
+            var minSunAngle = default(float?);
+            var maxSunAngle = default(float?);
+            for (var i = 0; i < frames; i++) {
+                float sunAngle = reader.ReadHalf();
+                reader.Skip(2 + trackObjectsNumber * 12);
+                if (!minSunAngle.HasValue) minSunAngle = sunAngle;
+                maxSunAngle = sunAngle;
+            }
+
+            if (minSunAngle.HasValue
+                    && Game.ConditionProperties.GetSeconds(minSunAngle.Value) > Game.ConditionProperties.GetSeconds(maxSunAngle.Value)) {
+                SunAngleFrom = maxSunAngle;
+                SunAngleTo = minSunAngle;
+            } else {
+                SunAngleFrom = minSunAngle;
+                SunAngleTo = maxSunAngle;
+            }
+
+            CarId = reader.ReadString();
+            DriverName = reader.ReadString();
+            NationCode = reader.ReadString();
+            DriverTeam = reader.ReadString();
+            CarSkinId = reader.ReadString();
+
+            const string postfix = "__AC_SHADERS_PATCH_v1__";
+            reader.Seek(-postfix.Length - 8, SeekOrigin.End);
+            if (Encoding.ASCII.GetString(reader.ReadBytes(postfix.Length)) == postfix) {
+                var start = reader.ReadUInt32();
+                var version = reader.ReadUInt32();
+                if (version == 1) {
+                    reader.Seek(start, SeekOrigin.Begin);
+
+                    while (true) {
+                        var nameLength = reader.ReadInt32();
+                        if (nameLength > 255) break;
+
+                        var name = Encoding.ASCII.GetString(reader.ReadBytes(nameLength));
+                        Logging.Debug("Extra section: " + name);
+
+                        var sectionLength = reader.ReadInt32();
+                        if (!ReadExtendedSection(reader, name, sectionLength)) {
+                            reader.Skip(sectionLength);
+                        }
+                    }
+                }
+            }
+
+            AllowToOverrideTime = CustomTime == null && WeatherManager.Instance.GetById(WeatherId)?.IsWeatherTimeUnusual() == true;
+        }
+
+        private void ParseGeneric(int version, ReplayReader reader) {
+            AllowToOverrideTime = false;
+
+            if (version >= 14) {
+                reader.Skip(8);
+
+                WeatherId = reader.ReadString();
+                /*if (!string.IsNullOrWhiteSpace(WeatherId)) {
+                            ErrorIf(WeatherManager.Instance.GetWrapperById(WeatherId) == null,
+                                    AcErrorType.Replay_WeatherIsMissing, WeatherId);
+                        }*/
+
+                TrackId = reader.ReadString();
+                TrackConfiguration = reader.ReadString();
+            } else {
+                TrackId = reader.ReadString();
+            }
+
+            ErrorIf(TracksManager.Instance.GetWrapperById(TrackId) == null,
+                    AcErrorType.Replay_TrackIsMissing, TrackId);
+
+            CarId = reader.TryToReadNextString();
+
+            if (!string.IsNullOrWhiteSpace(CarId)) {
+                ErrorIf(CarsManager.Instance.GetWrapperById(CarId) == null,
+                        AcErrorType.Replay_CarIsMissing, CarId);
+            }
+
+            try {
+                DriverName = reader.ReadString();
+                reader.ReadInt64();
+                CarSkinId = reader.ReadString();
+            } catch (Exception) {
+                // ignored
+            }
+        }
+
         public override string DisplayName => IsAutoSave && Name == PreviousReplayName
                 ? ToolsStrings.ReplayObject_PreviousSession
                 : base.DisplayName;
 
         public override int CompareTo(AcPlaceholderNew o) {
             var or = o as ReplayObject;
-
-
 
             var r = o as ReplayObject;
             if (r == null) return base.CompareTo(o);
@@ -203,23 +291,21 @@ namespace AcManager.Tools.Objects {
 
         public bool ParsedSuccessfully {
             get => _parsedSuccessfully;
-            set {
-                if (Equals(value, _parsedSuccessfully)) return;
-                _parsedSuccessfully = value;
-                OnPropertyChanged(nameof(ParsedSuccessfully));
-                OnPropertyChanged(nameof(HasData));
-            }
+            set => Apply(value, ref _parsedSuccessfully, () => OnPropertyChanged(nameof(HasData)));
         }
 
         private string _weatherId;
 
         public string WeatherId {
             get => _weatherId;
-            set {
-                if (Equals(value, _weatherId)) return;
-                _weatherId = value;
-                OnPropertyChanged(nameof(WeatherId));
-            }
+            set => Apply(value, ref _weatherId);
+        }
+
+        private string _raceIniConfig;
+
+        public string RaceIniConfig {
+            get => _raceIniConfig;
+            set => Apply(value, ref _raceIniConfig);
         }
 
         private string _carId;
@@ -247,22 +333,14 @@ namespace AcManager.Tools.Objects {
 
         public string TrackId {
             get => _trackId;
-            set {
-                if (Equals(value, _trackId)) return;
-                _trackId = value;
-                OnPropertyChanged(nameof(TrackId));
-            }
+            set => Apply(value, ref _trackId);
         }
 
         private string _trackConfiguration;
 
         public string TrackConfiguration {
             get => _trackConfiguration;
-            set {
-                if (Equals(value, _trackConfiguration)) return;
-                _trackConfiguration = value;
-                OnPropertyChanged(nameof(TrackConfiguration));
-            }
+            set => Apply(value, ref _trackConfiguration);
         }
 
         private long _size;
@@ -270,6 +348,132 @@ namespace AcManager.Tools.Objects {
         public long Size {
             get => _size;
             set => Apply(value, ref _size);
+        }
+
+        private int _version;
+
+        public int Version {
+            get => _version;
+            set => Apply(value, ref _version);
+        }
+        #endregion
+
+        #region Extra values for v16 replays
+        private string _nationCode;
+
+        public string NationCode {
+            get => _nationCode;
+            set => Apply(value, ref _nationCode);
+        }
+
+        private string _driverTeam;
+
+        public string DriverTeam {
+            get => _driverTeam;
+            set => Apply(value, ref _driverTeam);
+        }
+
+        private bool _allowToOverrideTime;
+
+        public bool AllowToOverrideTime {
+            get => _allowToOverrideTime;
+            set => Apply(value, ref _allowToOverrideTime);
+        }
+
+        private int? _customTime;
+
+        public int? CustomTime {
+            get => _customTime;
+            set => Apply(value, ref _customTime);
+        }
+
+        private int? _carsNumber;
+
+        public int? CarsNumber {
+            get => _carsNumber;
+            set => Apply(value, ref _carsNumber);
+        }
+
+        private float? _sunAngleFrom;
+
+        public float? SunAngleFrom {
+            get => _sunAngleFrom;
+            set => Apply(value, ref _sunAngleFrom, () => {
+                _timeRange = null;
+                OnPropertyChanged(nameof(TimeFrom));
+                OnPropertyChanged(nameof(TimeRange));
+            });
+        }
+
+        private float? _sunAngleTo;
+
+        public float? SunAngleTo {
+            get => _sunAngleTo;
+            set => Apply(value, ref _sunAngleTo, () => {
+                _timeRange = null;
+                OnPropertyChanged(nameof(TimeTo));
+                OnPropertyChanged(nameof(TimeRange));
+            });
+        }
+
+        public int? TimeFrom => _sunAngleFrom.HasValue ? Game.ConditionProperties.GetSeconds(_sunAngleFrom.Value).RoundToInt() : (int?)null;
+        public int? TimeTo => _sunAngleTo.HasValue ? Game.ConditionProperties.GetSeconds(_sunAngleTo.Value).RoundToInt() : (int?)null;
+
+        private string _timeRange;
+
+        public string TimeRange {
+            get {
+                if (CustomTime.HasValue) {
+                    return CustomTime.Value.ToDisplayTime();
+                }
+
+                if (_timeRange == null && TimeFrom.HasValue && TimeTo.HasValue) {
+                    var fromSeconds = TimeFrom.Value;
+                    var toSeconds = TimeTo.Value;
+                    var from = fromSeconds.ToDisplayTime();
+                    var to = toSeconds.ToDisplayTime();
+                    _timeRange = from == to ? from : $@"{from}–{to}";
+                }
+                return _timeRange;
+            }
+        }
+
+        private double? _recordingIntervalMs;
+
+        public double? RecordingIntervalMs {
+            get => _recordingIntervalMs;
+            set => Apply(value, ref _recordingIntervalMs, () => {
+                _duration = null;
+                OnPropertyChanged(nameof(DisplayDuration));
+                OnPropertyChanged(nameof(Duration));
+                OnPropertyChanged(nameof(RecordingQuality));
+            });
+        }
+
+        public double? RecordingQuality => (1000d / RecordingIntervalMs)?.Floor();
+
+        private int? _numberOfFrames;
+
+        public int? NumberOfFrames {
+            get => _numberOfFrames;
+            set => Apply(value, ref _numberOfFrames, () => {
+                _duration = null;
+                OnPropertyChanged(nameof(DisplayDuration));
+                OnPropertyChanged(nameof(Duration));
+            });
+        }
+
+        private TimeSpan? _duration;
+
+        public TimeSpan? Duration => _duration;
+
+        public string DisplayDuration {
+            get {
+                if (!_duration.HasValue && _recordingIntervalMs.HasValue && _numberOfFrames.HasValue) {
+                    _duration = TimeSpan.FromSeconds(_numberOfFrames.Value * _recordingIntervalMs.Value / 1e3);
+                }
+                return _duration?.ToReadableTime();
+            }
         }
         #endregion
 

@@ -275,9 +275,9 @@
           <mui:BetterTextBox Text="{Binding Drive.PostCommand}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">
+        <!--<CheckBox IsChecked="{Binding Drive.AutomaticallyConvertBmpToJpg}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ConvertScreenshots}" />
-        </CheckBox>
+        </CheckBox>-->
 
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Drive_ExtendedWeatherHeader}" />
 

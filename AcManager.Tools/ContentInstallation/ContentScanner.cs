@@ -736,6 +736,7 @@ namespace AcManager.Tools.ContentInstallation {
                     case "skidmarks.ini":
                     case "tyre_smoke.ini":
                     case "tyre_smoke_grass.ini":
+                    case "tyre_pieces_grass.ini":
                     case "vr.ini":
                         return new SystemConfigEntry(file.Key, file.Name);
                 }

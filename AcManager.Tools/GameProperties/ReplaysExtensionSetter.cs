@@ -30,7 +30,7 @@ namespace AcManager.Tools.GameProperties {
             try {
                 return Directory.GetFiles(AcPaths.GetReplaysDirectory(), "*", SearchOption.AllDirectories)
                                 .Where(file => !file.EndsWith(ReplayObject.ReplayExtension, StringComparison.OrdinalIgnoreCase) &&
-                                        !string.Equals(Path.GetFileName(file), @"cr", StringComparison.OrdinalIgnoreCase));
+                                        !string.Equals(Path.GetFileName(file), ReplayObject.PreviousReplayName, StringComparison.OrdinalIgnoreCase));
             } catch (Exception e) {
                 Logging.Error("Can’t get files without extension: " + e);
                 return new string[0];

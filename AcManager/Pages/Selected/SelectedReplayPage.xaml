@@ -3,8 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:selected="clr-namespace:AcManager.Pages.Selected"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:services="clr-namespace:AcManager.Controls.Services;assembly=AcManager.Controls"
     xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
-    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
+    mui:InputBindingBehavior.PropagateToWindow="True" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance selected:SelectedReplayPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -53,7 +52,7 @@
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 
-    <StackPanel>
+    <StackPanel Margin="0 0 0 8">
       <StackPanel Style="{StaticResource SettingsPanel}">
         <DockPanel>
           <Label Content="Category:" />
@@ -113,7 +112,92 @@
         </mui:Cell>
       </Grid>
 
-      <Grid Margin="0 0 8 8">
+      <c:PropertiesGrid LabelWidth="160">
+        <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.AcObject_DateLabel}" Text="{Binding SelectedObject.CreationDateTime}">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Filter_ByAge}" Command="{Binding FilterCommand}" CommandParameter="age" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </TextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.AcObject_DriverNameLabel}" Text="{Binding SelectedObject.DriverName}"
+            Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>
+
+        <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.AcObject_SizeLabel}"
+            Text="{Binding SelectedObject.Size, Converter={StaticResource FileSizeConverter}}">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Filter_BySize}" Command="{Binding FilterCommand}" CommandParameter="size" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </TextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.AcObject_WeatherLabel}" Text="{Binding Weather.DisplayName}" Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeather}" Command="{Binding FilterCommand}" CommandParameter="weather" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>
+
+        <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="Number of frames:" Text="{Binding SelectedObject.NumberOfFrames}" Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by number of frames" Command="{Binding FilterCommand}" CommandParameter="framesNumber" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>-->
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Recording quality"
+            Text="{Binding SelectedObject.RecordingQuality, StringFormat='{}{0} Hz', TargetNullValue={x:Null}}" Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by recording quality" Command="{Binding FilterCommand}" CommandParameter="recordingquality" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Duration:" Text="{Binding SelectedObject.DisplayDuration}" Placeholder="?">
+          <!--<TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by duration" Command="{Binding FilterCommand}" CommandParameter="duration" />
+            </ContextMenu>if
+          </TextBlock.ContextMenu>-->
+        </mui:PlaceholderTextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Version:" Text="{Binding SelectedObject.Version}" Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by version" Command="{Binding FilterCommand}" CommandParameter="version" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Number of cars:" Text="{Binding SelectedObject.CarsNumber}" Placeholder="?">
+          <TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by number of cars" Command="{Binding FilterCommand}" CommandParameter="cars" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>
+        </mui:PlaceholderTextBlock>
+
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Time:" Text="{Binding SelectedObject.TimeRange}" Placeholder="?">
+          <!--<TextBlock.ContextMenu>
+            <ContextMenu>
+              <MenuItem Header="Filter by time" Command="{Binding FilterCommand}" CommandParameter="time" />
+            </ContextMenu>
+          </TextBlock.ContextMenu>-->
+        </mui:PlaceholderTextBlock>
+      </c:PropertiesGrid>
+
+      <!--<Grid Margin="0 0 8 8">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="120" />
           <ColumnDefinition Width="*" />
@@ -128,42 +212,13 @@
         <TextBlock Text="{x:Static g:AppStrings.AcObject_DateLabel}" Grid.Column="0" Grid.Row="0" Style="{StaticResource Label.Padding}" />
         <TextBlock Text="{x:Static g:AppStrings.AcObject_SizeLabel}" Grid.Column="0" Grid.Row="1" Style="{StaticResource Label.Padding}" />
 
-        <TextBlock Text="{Binding SelectedObject.CreationDateTime}" Grid.Column="1" Grid.Row="0">
-          <TextBlock.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Filter_ByAge}" Command="{Binding FilterCommand}" CommandParameter="age" />
-            </ContextMenu>
-          </TextBlock.ContextMenu>
-        </TextBlock>
-        <TextBlock Text="{Binding SelectedObject.Size, Converter={StaticResource FileSizeConverter}}" Grid.Column="1" Grid.Row="1">
-          <TextBlock.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Filter_BySize}" Command="{Binding FilterCommand}" CommandParameter="size" />
-            </ContextMenu>
-          </TextBlock.ContextMenu>
-        </TextBlock>
 
         <TextBlock Text="{x:Static g:AppStrings.AcObject_DriverNameLabel}" Grid.Column="2" Grid.Row="0" Style="{StaticResource Label.Padding}" />
         <TextBlock Text="{x:Static g:AppStrings.AcObject_WeatherLabel}" Grid.Column="2" Grid.Row="1" Style="{StaticResource Label.Padding}" />
-
-        <mui:PlaceholderTextBlock Text="{Binding SelectedObject.DriverName}" Grid.Column="3" Grid.Row="0" Placeholder="?">
-          <TextBlock.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Filter_ByDriver}" Command="{Binding FilterCommand}" CommandParameter="driver" />
-            </ContextMenu>
-          </TextBlock.ContextMenu>
-        </mui:PlaceholderTextBlock>
-        <mui:PlaceholderTextBlock Text="{Binding Weather.DisplayName}" Grid.Column="3" Grid.Row="1" Placeholder="?">
-          <TextBlock.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.Filter_ByWeather}" Command="{Binding FilterCommand}" CommandParameter="weather" />
-            </ContextMenu>
-          </TextBlock.ContextMenu>
-        </mui:PlaceholderTextBlock>
-      </Grid>
+      </Grid>-->
 
       <mui:BooleanSwitch Value="{Binding SelectedObject.IsAutoSave}">
-        <mui:Cell Margin="0 20 0 8">
+        <mui:Cell Margin="0 20 0 0">
           <Rectangle Stroke="{DynamicResource Error}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
           <mui:BooleanSwitch Value="{Binding Autosave, Source={x:Static t:AcSettingsHolder.Replay}}" Margin="8">
             <mui:BooleanSwitch.False>
@@ -185,6 +240,18 @@
           </mui:BooleanSwitch>
         </mui:Cell>
       </mui:BooleanSwitch>
+
+      <c:MessageBlock Visibility="{Binding SelectedObject.AllowToOverrideTime, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 20 0 0">
+        <DockPanel>
+          <TextBlock Style="{StaticResource Label}" Text="Set playback time manually" Margin="0 0 0 4" DockPanel.Dock="Top" />
+          <TextBlock Margin="0 0 0 4" DockPanel.Dock="Top"
+              Text="Because of that night mode being in development and all that, if you want to run a replay of a night race saved without extended information, you need to remind CM and AC, what time it took place in." />
+          <mui:ValueLabel Value="{Binding DisplayTime}" mui:BetterTextBox.Mode="Time" Margin="0 0 20 0" Content="{x:Static g:AppStrings.Drive_Time}" />
+          <Slider Value="{Binding TimeSliderMapper.MappedValue}" Margin="0 0 0 4" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
+              Minimum="0" Maximum="{Binding TimeSliderMapper.Size}" SmallChange="900" LargeChange="1800" />
+        </DockPanel>
+      </c:MessageBlock>
+
     </StackPanel>
   </c:AcObjectBase>
 </selected:SelectedAcObjectPage>

@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace AcTools.WheelAngles.Implementations.Options {
-    public class LogitechOptions : WheelOptionsBase {
+    public class LogitechOptions : WheelOptionsBase, IGameWaitingWheelOptions {
         #region FFB settings
         private bool _detectSettingsAutomatically = true;
 

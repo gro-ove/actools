@@ -140,6 +140,7 @@
     <Compile Include="Utils\AcProcess.cs" />
     <Compile Include="Utils\DoubleRange.cs" />
     <Compile Include="Utils\AssemblyResolver.cs" />
+    <Compile Include="Utils\Half.cs" />
     <Compile Include="Utils\Helpers\ActionAsDisposable.cs" />
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\Diapason.cs" />

@@ -12,6 +12,14 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public static class LocalizationHelper {
+        public static string ToDisplayTime(this int seconds) {
+            return $@"{seconds / 60 / 60:D2}:{seconds / 60 % 60:D2}";
+        }
+
+        public static string ToDisplayTime(this double seconds) {
+            return $@"{(int)(seconds / 60 / 60):D2}:{(int)(seconds / 60 % 60):D2}";
+        }
+
         [ContractAnnotation("null => null; notnull => notnull")]
         public static string JoinToReadableString([CanBeNull] this IEnumerable<string> items) {
             if (items == null) return null;

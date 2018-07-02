@@ -30,6 +30,7 @@ namespace AcManager.Pages.AcSettings {
 
         public AcSettingsDamageDisplayer() {
             _directory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"content", @"texture", @"damage");
+            FileUtils.EnsureDirectoryExists(_directory);
 
             InitializeComponent();
             DataContext = new ViewModel();

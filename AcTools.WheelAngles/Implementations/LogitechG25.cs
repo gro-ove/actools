@@ -6,6 +6,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Interop;
+using System.Windows.Threading;
 using System.Xml.Linq;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -41,7 +43,7 @@ namespace AcTools.WheelAngles.Implementations {
 
         public virtual bool Apply(int steerLock, bool isReset, out int appliedValue) {
             if (isReset) {
-                Reset(steerLock);
+                Reset(() => SetWheelRange(steerLock));
 
                 // Don’t need to reset, Logitech does that for you as soon as AC is closed. Now, that’s neat.
                 // UPD: No it fucking doesn’t! For crying out loud, what’s wrong with Logitech…
@@ -78,19 +80,32 @@ namespace AcTools.WheelAngles.Implementations {
             }
         }
 
-        private static FormWithHandle _form;
+        protected static IntPtr CreateNewFormForHandle() {
+            AcToolsLogging.Write("Creating new form to get its handle…");
+            Application.Current.Dispatcher.Invoke(() => { _form2 = new FormWithHandle(); });
+            return _form2.Handle;
+        }
 
-        private void Reset(int value) {
+        protected static IntPtr GetMainWindowHandle() {
+            return (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
+                var mainWindow = Application.Current?.MainWindow;
+                return mainWindow == null ? IntPtr.Zero : new WindowInteropHelper(mainWindow).Handle;
+            });
+        }
+
+        private static FormWithHandle _form2;
+
+        protected static void Reset(Action callback) {
             if (_initialized) {
                 _initialized = false;
-                SetWheelRange(value);
+                callback?.Invoke();
                 LogiSteeringShutdown();
                 AcToolsLogging.Write("Previous initialization shutdown");
             }
 
-            if (_form != null) {
-                _form.DestroyHandle();
-                _form = null;
+            if (_form2 != null) {
+                _form2.DestroyHandle();
+                _form2 = null;
             }
         }
 
@@ -113,9 +128,7 @@ namespace AcTools.WheelAngles.Implementations {
                 AcToolsLogging.Write("Handle won’t be specified");
                 initializationHandle = null;
             } else if (_options.UseOwnHandle) {
-                AcToolsLogging.Write("Creating new form to get its handle…");
-                Application.Current.Dispatcher.Invoke(() => { _form = new FormWithHandle(); });
-                initializationHandle = _form.Handle;
+                initializationHandle = CreateNewFormForHandle();
             } else {
                 AcToolsLogging.Write("AC handle will be used");
                 initializationHandle = process.MainWindowHandle;

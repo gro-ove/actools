@@ -833,7 +833,7 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
-            private bool? _automaticallyConvertBmpToJpg;
+            /*private bool? _automaticallyConvertBmpToJpg;
 
             public bool AutomaticallyConvertBmpToJpg {
                 get => _automaticallyConvertBmpToJpg
@@ -844,7 +844,7 @@ namespace AcManager.Tools.Helpers {
                     ValuesStorage.Set("Settings.DriveSettings.AutomaticallyConvertBmpToJpg", value);
                     OnPropertyChanged();
                 }
-            }
+            }*/
 
             private string _localAddress;
 

@@ -4,11 +4,12 @@ using AcTools.Utils;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
-        internal SystemSettings() : base("assetto_corsa", systemConfig: true) {}
+        internal SystemSettings() : base("assetto_corsa", systemConfig: true) { }
 
         public SettingEntry[] ScreenshotFormats { get; } = {
             new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
-            new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp)
+            new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp),
+            new SettingEntry("PNG", "PNG (works only with Custom Shaders Patch)"),
         };
 
         #region Miscellaneous

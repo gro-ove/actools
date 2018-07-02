@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -32,7 +31,8 @@ namespace AcManager.Tools.GameProperties {
 
         [CanBeNull]
         public static ScreenshotsConverter OnlyNewIfEnabled() {
-            return SettingsHolder.Drive.AutomaticallyConvertBmpToJpg ? new ScreenshotsConverter() : null;
+            // return SettingsHolder.Drive.AutomaticallyConvertBmpToJpg ? new ScreenshotsConverter() : null;
+            return null;
         }
 
         private static void Convert(IEnumerable<string> bitmaps) {

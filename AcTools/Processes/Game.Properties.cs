@@ -720,6 +720,7 @@ namespace AcTools.Processes {
 
         public class ReplayProperties {
             public string Filename, Name, TrackId, TrackConfiguration, WeatherId;
+            public double? SunAngle;
 
             // For internal references
             [CanBeNull]
@@ -732,6 +733,13 @@ namespace AcTools.Processes {
                 // For custom clouds
                 if (WeatherId != null) {
                     file["WEATHER"].Set("NAME", WeatherId);
+                }
+
+                // For custom clouds
+                if (SunAngle.HasValue) {
+                    var lightingSection = file["LIGHTING"];
+                    lightingSection.Remove("__CM_UNCLAMPED_SUN_ANGLE");
+                    lightingSection.Set("SUN_ANGLE", SunAngle, "F2");
                 }
 
                 // For car textures?

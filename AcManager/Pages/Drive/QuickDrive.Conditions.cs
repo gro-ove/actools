@@ -19,7 +19,6 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
-using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -163,7 +162,7 @@ namespace AcManager.Pages.Drive {
                             var timeFits = diapason?.Contains(Time);
                             if (timeFits == true) {
                                 IsTimeOutOfWeatherRange = false;
-                            } else if (IsTimeUnusual() || IsWeatherTimeUnusual(weather)) {
+                            } else if (IsTimeUnusual() || weather.IsWeatherTimeUnusual()) {
                                 Time = diapason?.FindClosest(Time) ?? 12 * 60 * 60;
                             } else {
                                 IsTimeOutOfWeatherRange = timeFits == false;
@@ -364,90 +363,6 @@ namespace AcManager.Pages.Drive {
                 }
             }
 
-            public class DiapasonMapper : NotifyPropertyChanged {
-                private readonly Diapason<int> _diapason;
-                private readonly Tuple<int, int>[] _spaceAndInterval;
-
-                public int Size { get; }
-
-                public DiapasonMapper(Diapason<int> diapason) {
-                    var spaceAndInterval = new Tuple<int, int>[diapason.Pieces.Count];
-                    var start = 0;
-                    var total = 0;
-
-                    for (var i = 0; i < diapason.Pieces.Count; i++) {
-                        var piece = diapason.Pieces[i];
-                        var size = piece.ToValue - piece.FromValue;
-                        spaceAndInterval[i] = Tuple.Create(piece.FromValue - start, size);
-                        start = piece.ToValue;
-                        total += size;
-                    }
-
-                    _diapason = diapason;
-                    _spaceAndInterval = spaceAndInterval;
-
-                    Size = total;
-                }
-
-                public int GetClosest(int value) {
-                    return _diapason.TryToFindClosest(value, out var closest) ? closest : value;
-                }
-
-                public int MappedToActual(int mappedValue) {
-                    var actualValue = 0;
-                    for (var i = 0; i < _spaceAndInterval.Length; i++) {
-                        var t = _spaceAndInterval[i];
-                        int space = t.Item1, interval = t.Item2;
-
-                        actualValue += space;
-                        if (mappedValue <= interval) {
-                            actualValue += mappedValue;
-                            break;
-                        }
-
-                        actualValue += interval;
-                        mappedValue -= interval;
-                    }
-
-                    return actualValue;
-                }
-
-                public int ActualToMapped(int actualValue) {
-                    var mappedValue = 0;
-                    for (var i = 0; i < _spaceAndInterval.Length; i++) {
-                        var t = _spaceAndInterval[i];
-                        int space = t.Item1, interval = t.Item2;
-
-                        actualValue -= space;
-                        if (actualValue <= interval) {
-                            if (actualValue > 0) {
-                                mappedValue += actualValue;
-                            }
-                            break;
-                        }
-
-                        mappedValue += interval;
-                        actualValue -= interval;
-                    }
-
-                    return mappedValue;
-                }
-
-                private int _mappedValue;
-
-                public int MappedValue {
-                    get => _mappedValue;
-                    set => Apply(value.Clamp(0, Size), ref _mappedValue, () => ActualValue = MappedToActual(value));
-                }
-
-                private int _actualValue;
-
-                public int ActualValue {
-                    get => _actualValue;
-                    set => Apply(value, ref _actualValue, () => MappedValue = ActualToMapped(value));
-                }
-            }
-
             private Diapason<int> GetBasicTimeDiapason() {
                 var result = Diapason.CreateTime(string.Empty);
                 result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
@@ -517,13 +432,13 @@ namespace AcManager.Pages.Drive {
                     } else if (SelectedWeather is WeatherObject weather) {
                         var fits = weather.GetTimeDiapason()?.Contains(_time);
                         if (!IsTimeUnusual()) {
-                            if (fits == false && IsWeatherTimeUnusual(weather)) {
+                            if (fits == false && weather.IsWeatherTimeUnusual()) {
                                 SelectedWeather = _previousWeatherObject ?? FindFittingWeather();
                             } else {
                                 IsTimeOutOfWeatherRange = fits == false;
                             }
                         } else if (fits != true) {
-                            if (!IsWeatherTimeUnusual(weather)) {
+                            if (!weather.IsWeatherTimeUnusual()) {
                                 _previousWeatherObject = weather;
                             }
 
@@ -533,10 +448,6 @@ namespace AcManager.Pages.Drive {
                         RefreshSelectedWeatherObjectLater();
                     }
                 }
-            }
-
-            private bool IsWeatherTimeUnusual(WeatherObject weather) {
-                return weather.GetTimeDiapason()?.Pieces.Any(x => IsTimeUnusual(x.FromValue) || IsTimeUnusual(x.ToValue)) == true;
             }
 
             private bool IsTimeUnusual(int time) {
@@ -594,7 +505,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public string DisplayTime {
-                get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
+                get => _time.ToDisplayTime();
                 set {
                     if (!FlexibleParser.TryParseTime(value, out var time)) return;
                     Time = time;
