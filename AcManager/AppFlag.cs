@@ -5,6 +5,11 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
+        /// For internal use.
+        /// </summary>
+        WeatherExtMode,
+
+        /// <summary>
         /// Old layout for content/cars section.
         /// Example: --cars-old-layout.
         /// </summary>

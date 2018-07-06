@@ -18,48 +18,20 @@ using MoonSharp.Interpreter;
 
 namespace AcManager.Tools.GameProperties.WeatherSpecific {
     public partial class WeatherProceduralHelper : WeatherSpecificHelperBase {
+        public static bool Option24HourMode = false;
+
         protected override bool SetOverride(WeatherObject weather, IniFile file) {
-            WeatherProceduralContext context = null;
-
-            WeatherProceduralContext GetContext() {
-                return context ?? (context = new WeatherProceduralContext(file, weather.Location));
-            }
-
             var directory = Environment.CurrentDirectory;
             Environment.CurrentDirectory = AcRootDirectory.Instance.RequireValue;
 
             try {
-                ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES", @"__CUSTOM_LIGHTING" },
-                        (table, ini) => {
-                            var customClouds = table[@"CLOUDS_TEXTURES"];
-                            if (customClouds != null) {
-                                ini[@"__CLOUDS_TEXTURES"].Set("LIST", ToIniFileValue(customClouds));
-                            }
+                if (Option24HourMode) {
+                    for (var i = 0; i < 24 * 60 * 60; i += 30 * 60) {
+                        ProcessScripts(weather, file, i);
+                    }
+                }
 
-                            var extraParams = table[@"EXTRA_PARAMS"];
-                            if (extraParams != null) {
-                                var s = new IniFileSection(null);
-                                MapOutputSection(extraParams, s);
-                                if (s.ContainsKey(@"TEMPERATURE_COEFF")) {
-                                    ini[@"LAUNCHER"].Set("TEMPERATURE_COEFF", s.GetNonEmpty("TEMPERATURE_COEFF"));
-                                }
-                                if (s.ContainsKey(@"DISABLE_SHADOWS")) {
-                                    ini[@"__LAUNCHER_CM"].Set("DISABLE_SHADOWS", s.GetNonEmpty("DISABLE_SHADOWS"));
-                                }
-                            }
-
-                            MapOutputSection(table[@"LAUNCHER"], ini[@"LAUNCHER"], "TEMPERATURE_COEFF");
-                            MapOutputSection(table[@"__LAUNCHER_CM"], ini[@"__LAUNCHER_CM"], "DISABLE_SHADOWS");
-                            MapOutputSection(table[@"CUSTOM_LIGHTING"], ini[@"__CUSTOM_LIGHTING"]);
-                        });
-                ProcessFile(weather, GetContext, @"colorCurves.ini", new[] { @"HEADER", @"HORIZON", @"SKY", @"SUN", @"AMBIENT" });
-                ProcessFile(weather, GetContext, @"filter.ini", new[] {
-                    @"YEBIS", @"OPTIMIZATIONS", @"VARIOUS", @"AUTO_EXPOSURE", @"GODRAYS", @"HEAT_SHIMMER", @"TONEMAPPING", @"DOF", @"CHROMATIC_ABERRATION",
-                    @"FEEDBACK", @"VIGNETTING", @"DIAPHRAGM", @"AIRYDISC", @"GLARE", @"LENSDISTORTION", @"ANTIALIAS", @"COLOR"
-                });
-                ProcessFile(weather, GetContext, @"tyre_smoke.ini", new[] { @"SETTINGS", @"TRIGGERS" });
-                ProcessFile(weather, GetContext, @"tyre_smoke_grass.ini", new[] { @"SETTINGS" });
-                ProcessFile(weather, GetContext, @"tyre_pieces_grass.ini", new[] { @"SETTINGS" });
+                ProcessScripts(weather, file);
 
                 if (_updateRoadTemperature) {
                     var section = new IniFile(weather.IniFilename)["LAUNCHER"];
@@ -79,6 +51,51 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             return false;
+        }
+
+        private static void ProcessScripts(WeatherObject weather, IniFile file, int? customTime = null) {
+            if (customTime.HasValue) {
+                file = file.Clone();
+                file["LIGHTING"].Set("SUN_ANGLE", Game.ConditionProperties.GetSunAngle(customTime.Value));
+            }
+
+            WeatherProceduralContext context = null;
+            WeatherProceduralContext GetContext() {
+                return context ?? (context = new WeatherProceduralContext(file, weather.Location));
+            }
+
+            var destination = customTime.HasValue ? Path.Combine(weather.Location, @"__special", customTime.Value.ToString()) : null;
+            ProcessFile(weather, GetContext, @"weather.ini", new[] { @"CLOUDS", @"FOG", @"CAR_LIGHTS", @"__CLOUDS_TEXTURES", @"__CUSTOM_LIGHTING" },
+                    (table, ini) => {
+                        var customClouds = table[@"CLOUDS_TEXTURES"];
+                        if (customClouds != null) {
+                            ini[@"__CLOUDS_TEXTURES"].Set("LIST", ToIniFileValue(customClouds));
+                        }
+
+                        var extraParams = table[@"EXTRA_PARAMS"];
+                        if (extraParams != null) {
+                            var s = new IniFileSection(null);
+                            MapOutputSection(extraParams, s);
+                            if (s.ContainsKey(@"TEMPERATURE_COEFF")) {
+                                ini[@"LAUNCHER"].Set("TEMPERATURE_COEFF", s.GetNonEmpty("TEMPERATURE_COEFF"));
+                            }
+                            if (s.ContainsKey(@"DISABLE_SHADOWS")) {
+                                ini[@"__LAUNCHER_CM"].Set("DISABLE_SHADOWS", s.GetNonEmpty("DISABLE_SHADOWS"));
+                            }
+                        }
+
+                        MapOutputSection(table[@"LAUNCHER"], ini[@"LAUNCHER"], "TEMPERATURE_COEFF");
+                        MapOutputSection(table[@"__LAUNCHER_CM"], ini[@"__LAUNCHER_CM"], "DISABLE_SHADOWS");
+                        MapOutputSection(table[@"CUSTOM_LIGHTING"], ini[@"__CUSTOM_LIGHTING"]);
+                    }, destination);
+            ProcessFile(weather, GetContext, @"colorCurves.ini", new[] { @"HEADER", @"HORIZON", @"SKY", @"SUN", @"AMBIENT" }, null, destination);
+            ProcessFile(weather, GetContext, @"filter.ini", new[] {
+                @"YEBIS", @"OPTIMIZATIONS", @"VARIOUS", @"AUTO_EXPOSURE", @"GODRAYS", @"HEAT_SHIMMER", @"TONEMAPPING", @"DOF", @"CHROMATIC_ABERRATION",
+                @"FEEDBACK", @"VIGNETTING", @"DIAPHRAGM", @"AIRYDISC", @"GLARE", @"LENSDISTORTION", @"ANTIALIAS", @"COLOR"
+            }, null, destination);
+            ProcessFile(weather, GetContext, @"tyre_smoke.ini", new[] { @"SETTINGS", @"TRIGGERS" }, null, destination);
+            ProcessFile(weather, GetContext, @"tyre_smoke_grass.ini", new[] { @"SETTINGS" }, null, destination);
+            ProcessFile(weather, GetContext, @"tyre_pieces_grass.ini", new[] { @"SETTINGS" }, null, destination);
         }
 
         public class WeatherProceduralContext {
@@ -112,6 +129,9 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             public LuaIniFile TrackLightingIni => _trackLightingIni.Value;
 
             [UsedImplicitly]
+            public LuaIniFile VideoIni => _videoIni.Value;
+
+            [UsedImplicitly]
             public string TrackId;
 
             [UsedImplicitly]
@@ -133,7 +153,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             public string TrackSeason => ActiveTrackSkins.FirstOrDefault(x => x.Categories.Contains(@"season"))?.DisplayName.ToLowerInvariant();
 
             private readonly Lazier<LuaIniFile> _weatherIni, _colorCurvesIni, _weatherFilterIni, _tyreSmokeIni, _tyreSmokeGrassIni, _tyrePiecesGrassIni,
-                    _userFilterIni, _trackLightingIni;
+                    _userFilterIni, _trackLightingIni, _videoIni;
 
             private readonly Lazier<TrackObjectBase> _track;
             private readonly Lazier<List<TrackSkinObject>> _activeTrackSkins;
@@ -149,6 +169,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 _tyreSmokeGrassIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_smoke_grass.ini")));
                 _tyrePiecesGrassIni = Lazier.Create(() => new LuaIniFile(Path.Combine(weatherLocation, "tyre_pieces_grass.ini")));
                 _userFilterIni = Lazier.Create(() => new LuaIniFile(PpFiltersManager.Instance.GetByAcId(AcSettingsHolder.Video.PostProcessingFilter)?.Location));
+                _videoIni = Lazier.Create(() => new LuaIniFile(AcSettingsHolder.Video.Filename));
 
                 // BUG: USE BACKUPED VALUES IF ANY INSTEAD!
                 _trackLightingIni = Lazier.Create(() => new LuaIniFile(Path.Combine(Track.DataDirectory, "lighting.ini")));
@@ -166,7 +187,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
         }
 
         private static void ProcessFile(WeatherObject weather, Func<WeatherProceduralContext> contextCallback, string fileName, string[] outputSections,
-                Action<Table, IniFile> customFn = null) {
+                Action<Table, IniFile> customFn = null, string destination = null) {
             var scriptLocation = Path.Combine(weather.Location, Path.GetFileNameWithoutExtension(fileName) + @".lua");
             if (!File.Exists(scriptLocation)) return;
 
@@ -186,6 +207,12 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                 return;
             }
 
+            try {
+                state.DoString($@"math.randomseed({DateTime.Now.ToUnixTimestamp() % 10000})");
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+
             ((Table)state.Globals[@"strutils"])[@"tovec"] = (Func<object, object>)(i => {
                 if (i is string s) {
                     return s.Split(',').Select(x => x.As(0d)).ToList();
@@ -196,7 +223,8 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             state.Globals[@"input"] = contextCallback();
             state.DoFile(scriptLocation);
 
-            var output = new IniFile(Path.Combine(weather.Location, fileName));
+            var output = new IniFile(Path.Combine(destination ?? weather.Location, fileName));
+            FileUtils.EnsureFileDirectoryExists(output.Filename);
 
             switch (state.Globals[@"copyValuesFrom"]) {
                 case IniFile file:

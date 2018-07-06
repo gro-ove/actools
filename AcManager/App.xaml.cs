@@ -195,6 +195,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.WebRequestTimeout, ref KunosApiProvider.OptionWebRequestTimeout);
             AppArguments.Set(AppFlag.DirectRequestTimeout, ref KunosApiProvider.OptionDirectRequestTimeout);
             AppArguments.Set(AppFlag.CommandTimeout, ref GameCommandExecutorBase.OptionCommandTimeout);
+            AppArguments.Set(AppFlag.WeatherExtMode, ref WeatherProceduralHelper.Option24HourMode);
 
             AppArguments.Set(AppFlag.DisableAcRootChecking, ref AcPaths.OptionEaseAcRootCheck);
             AppArguments.Set(AppFlag.AcObjectsLoadingConcurrency, ref BaseAcManagerNew.OptionAcObjectsLoadingConcurrency);

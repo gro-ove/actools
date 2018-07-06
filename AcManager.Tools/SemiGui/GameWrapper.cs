@@ -157,10 +157,6 @@ namespace AcManager.Tools.SemiGui {
                 }
             }
 
-            if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
-                properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
-            }
-
             if (SettingsHolder.Common.FixResolutionAutomatically) {
                 Logging.Debug("Trying to fix resolution just in case…");
                 AcSettingsHolder.Video.EnsureResolutionIsCorrect();
@@ -209,6 +205,10 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
             properties.SetAdditional(new CarRaceTextures());
             properties.SetAdditional(new ExtraHotkeysRaceHelper());
+
+            if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
+                properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
+            }
         }
 
         private static void StartAsync_PrepareRace(Game.StartProperties properties) {

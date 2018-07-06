@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
+using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
@@ -32,7 +33,7 @@ namespace AcManager.Tools.SemiGui {
         }
 
         public override IDisposable Set() {
-            var selectedFilter = AcSettingsHolder.Video.PostProcessingFilter;
+            var selectedFilter = new IniFile(AcSettingsHolder.Video.Filename)["POST_PROCESS"].GetNonEmpty("FILTER");
             if (string.IsNullOrEmpty(selectedFilter) || string.Equals(selectedFilter, @"default", StringComparison.OrdinalIgnoreCase)) {
                 return null;
             }
