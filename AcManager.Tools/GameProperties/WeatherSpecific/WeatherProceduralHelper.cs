@@ -82,10 +82,13 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                             if (s.ContainsKey(@"DISABLE_SHADOWS")) {
                                 ini[@"__LAUNCHER_CM"].Set("DISABLE_SHADOWS", s.GetNonEmpty("DISABLE_SHADOWS"));
                             }
+                            if (s.ContainsKey(@"SKYBOX_REFLECTION_GAIN")) {
+                                ini[@"__LAUNCHER_CM"].Set("SKYBOX_REFLECTION_GAIN", s.GetNonEmpty("SKYBOX_REFLECTION_GAIN"));
+                            }
                         }
 
                         MapOutputSection(table[@"LAUNCHER"], ini[@"LAUNCHER"], "TEMPERATURE_COEFF");
-                        MapOutputSection(table[@"__LAUNCHER_CM"], ini[@"__LAUNCHER_CM"], "DISABLE_SHADOWS");
+                        MapOutputSection(table[@"__LAUNCHER_CM"], ini[@"__LAUNCHER_CM"], "DISABLE_SHADOWS", "SKYBOX_REFLECTION_GAIN");
                         MapOutputSection(table[@"CUSTOM_LIGHTING"], ini[@"__CUSTOM_LIGHTING"]);
                     }, destination);
             ProcessFile(weather, GetContext, @"colorCurves.ini", new[] { @"HEADER", @"HORIZON", @"SKY", @"SUN", @"AMBIENT" }, null, destination);
@@ -223,8 +226,22 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             state.Globals[@"input"] = contextCallback();
             state.DoFile(scriptLocation);
 
-            var output = new IniFile(Path.Combine(destination ?? weather.Location, fileName));
-            FileUtils.EnsureFileDirectoryExists(output.Filename);
+            var filename = Path.Combine(destination ?? weather.Location, fileName);
+            FileUtils.EnsureFileDirectoryExists(filename);
+
+            IniFile output;
+            if (File.Exists(filename + @"~cm_bak")) {
+                output = new IniFile(filename + @"~cm_bak");
+            } else {
+                output = new IniFile(filename);
+                if (File.Exists(filename)) {
+                    try {
+                        File.Move(filename, filename + @"~cm_bak");
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                    }
+                }
+            }
 
             switch (state.Globals[@"copyValuesFrom"]) {
                 case IniFile file:
@@ -250,7 +267,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             customFn?.Invoke(state.Globals, output);
-            output.Save();
+            output.Save(filename);
         }
 
         private static void MapOutputSection(object outputValue, IniFileSection resultSection, [Localizable(false)] params string[] keys) {

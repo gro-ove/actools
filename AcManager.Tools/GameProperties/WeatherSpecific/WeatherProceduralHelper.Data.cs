@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils.Helpers;
@@ -9,7 +10,7 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.GameProperties.WeatherSpecific {
     public partial class WeatherProceduralHelper {
         public class LuaIniFile : IEnumerable<KeyValuePair<string, LuaIniSection>> {
-            public LuaIniFile(string source) : this(new IniFile(source)) { }
+            public LuaIniFile(string source) : this(new IniFile(File.Exists(source + @"~cm_bak") ? source + @"~cm_bak" : source)) { }
 
             public LuaIniFile(IniFile source) {
                 foreach (var pair in source) {

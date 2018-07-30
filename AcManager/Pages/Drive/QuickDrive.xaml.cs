@@ -507,7 +507,7 @@ namespace AcManager.Pages.Drive {
             }));
 
             public int TimeMultiplerMinimum => 0;
-            public int TimeMultiplerMaximum => 360;
+            public int TimeMultiplerMaximum => 3600;
 
             private int _timeMultiplier;
 

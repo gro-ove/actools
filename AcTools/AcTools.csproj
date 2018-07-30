@@ -272,6 +272,9 @@
   <ItemGroup>
     <None Include="Resources\AcStarter.exe" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DiffPatch" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />
   <PropertyGroup>

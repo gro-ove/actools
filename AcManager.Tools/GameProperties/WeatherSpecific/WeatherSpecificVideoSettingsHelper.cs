@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -22,31 +23,44 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
                     File.Delete(destination);
                 }
 
-                var changed = false;
-
-                var ini = new IniFile(AcPaths.GetCfgVideoFilename());
-
                 {
-                    var section = ini["POST_PROCESS"];
-                    if (section.GetNonEmpty("FILTER") == FilterId) {
-                        section.Set("FILTER", section.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_FILTER") ?? @"default");
-                        section.Remove(@"__CM_PREWEATHER_ORIGINAL_FILTER");
+                    var changed = false;
+                    var ini = new IniFile(AcPaths.GetCfgVideoFilename());
+
+                    var postProcess = ini["POST_PROCESS"];
+                    if (postProcess.GetNonEmpty("FILTER") == FilterId) {
+                        postProcess.Set("FILTER", postProcess.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_FILTER") ?? @"default");
+                        postProcess.Remove(@"__CM_PREWEATHER_ORIGINAL_FILTER");
                         changed = true;
+                    }
+
+                    var video = ini["VIDEO"];
+                    if (video.ContainsKey(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE")) {
+                        video.Set("SHADOW_MAP_SIZE", video.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE"));
+                        video.Remove(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE");
+                        video.Remove(@"__CM_ORIGINAL_SHADOW_MAP_SIZE");
+                        changed = true;
+                    }
+
+                    if (changed) {
+                        ini.Save();
                     }
                 }
 
                 {
-                    var section = ini["VIDEO"];
-                    if (section.ContainsKey(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE")) {
-                        section.Set("SHADOW_MAP_SIZE", section.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE"));
-                        section.Remove(@"__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE");
-                        section.Remove(@"__CM_ORIGINAL_SHADOW_MAP_SIZE");
+                    var changed = false;
+                    var ini = new IniFile(AcSettingsHolder.Graphics.Filename);
+
+                    var section = ini["DX11"];
+                    if (section.ContainsKey(@"__CM_PREWEATHER_ORIGINAL_SKYBOX_REFLECTION_GAIN")) {
+                        section.Set("SKYBOX_REFLECTION_GAIN", section.GetNonEmpty("__CM_PREWEATHER_ORIGINAL_SKYBOX_REFLECTION_GAIN"));
+                        section.Remove(@"__CM_PREWEATHER_ORIGINAL_SKYBOX_REFLECTION_GAIN");
                         changed = true;
                     }
-                }
 
-                if (changed) {
-                    ini.Save();
+                    if (changed) {
+                        ini.Save();
+                    }
                 }
             } catch (Exception e) {
                 Logging.Warning(e);
@@ -60,7 +74,6 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             if (!File.Exists(videoCfg)) return false;
 
             var customFilter = false;
-
             if (SettingsHolder.Drive.WeatherSpecificPpFilter) {
                 var replacement = Path.Combine(weather.Location, "filter.ini");
                 if (File.Exists(replacement)) {
@@ -76,25 +89,39 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             }
 
             var disableShadows = new IniFile(weather.IniFilename)["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
-            if (!customFilter && !disableShadows) {
+            var skyboxReflectionGain = new IniFile(weather.IniFilename)["__LAUNCHER_CM"].GetDoubleNullable("SKYBOX_REFLECTION_GAIN");
+
+            if (!customFilter && !disableShadows && !skyboxReflectionGain.HasValue) {
                 return false;
             }
 
-            var ini = new IniFile(videoCfg);
-
-            if (customFilter) {
-                var section = ini["POST_PROCESS"];
-                section.Set("__CM_PREWEATHER_ORIGINAL_FILTER", section.GetNonEmpty("FILTER"));
-                section.Set("FILTER", FilterId);
+            if (skyboxReflectionGain.HasValue) {
+                var ini = new IniFile(AcSettingsHolder.Graphics.Filename);
+                var section = ini["DX11"];
+                section.Set("__CM_PREWEATHER_ORIGINAL_SKYBOX_REFLECTION_GAIN",
+                        section.GetNonEmpty("__CM_ORIGINAL_SKYBOX_REFLECTION_GAIN") ?? section.GetNonEmpty("SKYBOX_REFLECTION_GAIN"));
+                section.Set("SKYBOX_REFLECTION_GAIN", skyboxReflectionGain.Value);
+                ini.Save();
             }
 
-            if (disableShadows) {
-                var section = ini["VIDEO"];
-                section.Set("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE", section.GetNonEmpty("__CM_ORIGINAL_SHADOW_MAP_SIZE") ?? section.GetNonEmpty("SHADOW_MAP_SIZE"));
-                section.Set("SHADOW_MAP_SIZE", -1);
-            }
+            if (customFilter || disableShadows) {
+                var ini = new IniFile(videoCfg);
 
-            ini.Save();
+                if (customFilter) {
+                    var section = ini["POST_PROCESS"];
+                    section.Set("__CM_PREWEATHER_ORIGINAL_FILTER", section.GetNonEmpty("FILTER"));
+                    section.Set("FILTER", FilterId);
+                }
+
+                if (disableShadows) {
+                    var section = ini["VIDEO"];
+                    section.Set("__CM_PREWEATHER_ORIGINAL_SHADOW_MAP_SIZE",
+                            section.GetNonEmpty("__CM_ORIGINAL_SHADOW_MAP_SIZE") ?? section.GetNonEmpty("SHADOW_MAP_SIZE"));
+                    section.Set("SHADOW_MAP_SIZE", -1);
+                }
+
+                ini.Save();
+            }
 
             return true;
         }
