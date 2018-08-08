@@ -286,7 +286,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {6414BBD0-671D-45D3-99B4-17943FB2FEB0}
 		RESX_SortFileContentOnSave = False
+		SolutionGuid = {6414BBD0-671D-45D3-99B4-17943FB2FEB0}
 	EndGlobalSection
 EndGlobal
