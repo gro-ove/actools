@@ -183,9 +183,11 @@ namespace AcManager.Pages.Drive {
 
                             using (var waiting = new WaitingDialog()) {
                                 waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Loading conditions…"));
+
                                 await RealConditionsHelper.UpdateConditions(round.Track, false, true,
                                         _acObject.RealConditionsManualTime
-                                                ? default(Action<int>) : t => { time = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum); },
+                                                ? default(Action<DateTime>)
+                                                : OnTimeCallback,
                                         w => { description = w; }, waiting.CancellationToken);
                             }
 
@@ -246,7 +248,11 @@ namespace AcManager.Pages.Drive {
                             }
                         }
                     });
-                }  catch (Exception e) {
+
+                    void OnTimeCallback(DateTime t) {
+                        time = t.TimeOfDay.TotalSeconds.RoundToInt().Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                    }
+                } catch (Exception e) {
                     NonfatalError.Notify("Can’t launch the race", e);
                 }
             }));
@@ -332,10 +338,8 @@ namespace AcManager.Pages.Drive {
                     try {
                         await RealConditionsHelper.UpdateConditions(round.Track, false, true,
                                 _acObject.RealConditionsManualTime
-                                        ? default(Action<int>)
-                                        : t => {
-                                            _currentRoundTime = t.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
-                                        }, w => {
+                                        ? default(Action<DateTime>)
+                                        : OnTimeCallback, w => {
                                             _currentRoundTemperature = w.Temperature.Clamp(CommonAcConsts.TemperatureMinimum,
                                                     CommonAcConsts.TemperatureMaximum);
                                             weatherType = w.Type;
@@ -359,6 +363,10 @@ namespace AcManager.Pages.Drive {
                     } else {
                         OnPropertyChanged(nameof(CurrentRoundWeather));
                     }
+                }
+
+                void OnTimeCallback(DateTime t) {
+                    _currentRoundTime = t.TimeOfDay.TotalSeconds.RoundToInt().Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
                 }
             }
 
@@ -444,7 +452,6 @@ namespace AcManager.Pages.Drive {
                         break;
                 }
             }
-
         }
 
         private void ListBox_OnPreviewMouseDoubleClick(object sender, MouseButtonEventArgs e) {

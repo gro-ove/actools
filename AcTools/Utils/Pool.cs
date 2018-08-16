@@ -24,6 +24,12 @@ namespace AcTools.Utils {
             }
         }
 
+        public void Add(T value) {
+            lock (_stored) {
+                _stored.Add(value);
+            }
+        }
+
         public void AddAll(ICollection<T> collection) {
             lock (_stored) {
                 _stored.AddRange(collection);

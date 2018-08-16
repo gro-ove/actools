@@ -186,6 +186,12 @@ namespace AcManager.Pages.Drive {
             public double Temperature;
             public int Time, TimeMultipler;
 
+            [JsonProperty(@"udt")]
+            public bool UseSpecificDate;
+
+            [JsonProperty(@"dtv")]
+            public DateTime? SpecificDateValue;
+
             [JsonProperty(@"tpc")]
             public bool TrackPropertiesChanged;
 
@@ -598,7 +604,9 @@ namespace AcManager.Pages.Drive {
                     RandomTemperature = RandomTemperature,
                     RandomTime = RandomTime,
                     CustomRoadTemperature = CustomRoadTemperature,
-                    CustomRoadTemperatureValue = _customRoadTemperatureValue
+                    CustomRoadTemperatureValue = _customRoadTemperatureValue,
+                    UseSpecificDate = UseSpecificDate,
+                    SpecificDateValue = SpecificDateValue
                 }, o => {
                     TimeMultiplier = o.TimeMultipler;
 
@@ -616,6 +624,9 @@ namespace AcManager.Pages.Drive {
                     WindDirection = o.WindDirection.RoundToInt();
                     RandomWindSpeed = o.RandomWindSpeed;
                     RandomWindDirection = o.RandomWindDirection;
+
+                    UseSpecificDate = o.UseSpecificDate;
+                    SpecificDateValue = o.SpecificDateValue ?? DateTime.Now;
 
                     RandomTemperature = o.RandomTemperature;
                     RandomTime = o.RandomTime;
@@ -716,6 +727,9 @@ namespace AcManager.Pages.Drive {
                     WindDirection = 0;
                     RandomWindSpeed = false;
                     RandomWindDirection = false;
+
+                    UseSpecificDate = false;
+                    SpecificDateValue = DateTime.Now;
 
                     RandomTemperature = false;
                     RandomTime = false;

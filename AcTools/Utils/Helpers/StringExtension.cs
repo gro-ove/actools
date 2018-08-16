@@ -115,7 +115,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static string GetChecksum([NotNull] this string s) {
-            using (var sha1 = new SHA1Managed()) {
+            using (var sha1 = SHA1.Create()) {
                 return sha1.ComputeHash(Encoding.UTF8.GetBytes(s)).ToHexString();
             }
         }

@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 namespace AcTools.Render.Kn5SpecificSpecial {
     public abstract class UtilsRendererBase : BaseRenderer {
         [NotNull]
-        protected static IEnumerable<IKn5RenderableObject> Flatten(RenderableList root, Func<IRenderableObject, bool> filter = null) {
+        protected static IEnumerable<IKn5RenderableObject> Flatten(IEnumerable<IRenderableObject> root, Func<IRenderableObject, bool> filter = null) {
             return root
                     .SelectManyRecursive(x => x is Kn5RenderableList list && list.IsEnabled ? (filter?.Invoke(list) == false ? null : list) : null)
                     .OfType<IKn5RenderableObject>()
@@ -20,7 +20,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         [NotNull]
-        protected static IEnumerable<IKn5RenderableObject> Flatten(Kn5 kn5, RenderableList root, [CanBeNull] string textureName,
+        protected static IEnumerable<IKn5RenderableObject> Flatten(Kn5 kn5, IEnumerable<IRenderableObject> root, [CanBeNull] string textureName,
                 [CanBeNull] string objectPath) {
             var split = Lazier.Create(() => objectPath?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
 

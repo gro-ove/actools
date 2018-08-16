@@ -634,7 +634,7 @@ namespace AcManager.Tools.ContentInstallation {
 
                     if (InstallationParams.Checksum != null) {
                         using (var fs = new FileStream(localFilename, FileMode.Open, FileAccess.Read, FileShare.Read))
-                        using (var sha1 = new SHA1Managed()) {
+                        using (var sha1 = SHA1.Create()) {
                             if (!string.Equals(sha1.ComputeHash(fs).ToHexString(), InstallationParams.Checksum, StringComparison.OrdinalIgnoreCase)) {
                                 FailedMessage = "Checksum failed";
                                 return false;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -15,7 +16,9 @@ using AcManager.Internal;
 using AcManager.Tools.ContentInstallation;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Loaders;
+using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.SemiGui;
+using AcTools.Kn5File;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -262,7 +265,27 @@ namespace AcManager.Tools {
             }
 
             if (!isDirectory && filename.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase)) {
-                await CustomShowroomWrapper.StartAsync(filename);
+                if (Keyboard.Modifiers == ModifierKeys.Alt) {
+                    try {
+                        Kn5.FbxConverterLocation = PluginsManager.Instance.GetPluginFilename("FbxConverter", "FbxConverter.exe");
+                        var kn5 = Kn5.FromFile(filename);
+                        var destination = FileUtils.EnsureUnique(Path.Combine(Path.GetDirectoryName(filename) ?? @".", "unpacked"));
+                        var name = kn5.RootNode.Name.StartsWith(@"FBX: ") ? kn5.RootNode.Name.Substring(5) :
+                                @"model.fbx";
+                        Directory.CreateDirectory(destination);
+                        await kn5.ExportFbxWithIniAsync(Path.Combine(destination, name));
+                        var textures = Path.Combine(destination, "texture");
+                        Directory.CreateDirectory(textures);
+                        await kn5.ExportTexturesAsync(textures);
+                        Process.Start(destination);
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                        return ArgumentHandleResult.FailedShow;
+                    }
+                } else {
+                    await CustomShowroomWrapper.StartAsync(filename);
+                }
+
                 return ArgumentHandleResult.Successful;
             }
 

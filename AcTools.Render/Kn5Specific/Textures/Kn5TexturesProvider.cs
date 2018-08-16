@@ -15,8 +15,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         protected override IRenderableTexture CreateTexture(IDeviceContextHolder contextHolder, string key) {
             var result = new RenderableTexture(key) { Resource = null };
 
-            byte[] data;
-            if (Kn5.TexturesData.TryGetValue(key, out data)) {
+            if (Kn5.TexturesData.TryGetValue(key, out var data)) {
                 result.Exists = true;
                 if (AsyncLoading) {
                     result.LoadAsync(contextHolder, data).ContinueWith(t => {

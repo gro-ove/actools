@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcTools.WheelAngles", "AcTo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstFloor.ModernUI.Win8Extension", "FirstFloor.ModernUI.Win8Extension\FirstFloor.ModernUI.Win8Extension.csproj", "{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTracksBakery", "CustomTracksBakery\CustomTracksBakery.csproj", "{973540C0-82C1-471B-B405-09DAB8D45DF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -281,6 +283,14 @@ Global
 		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x64.Build.0 = Release|x64
 		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x86.ActiveCfg = Release|x86
 		{E7E7DE99-925E-4BF2-9E34-838FD6EE7191}.Release|x86.Build.0 = Release|x86
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Debug|x64.Build.0 = Debug|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Debug|x86.Build.0 = Debug|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x64.ActiveCfg = Release|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x64.Build.0 = Release|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x86.ActiveCfg = Release|Any CPU
+		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

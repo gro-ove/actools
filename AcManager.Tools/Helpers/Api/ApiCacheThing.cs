@@ -30,7 +30,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [NotNull]
         private static string GetTemporaryName(string argument) {
-            using (var sha1 = new SHA1Managed()) {
+            using (var sha1 = SHA1.Create()) {
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(argument));
                 return BitConverter.ToString(hash).Replace(@"-", "").ToLower();
             }

@@ -363,7 +363,12 @@
                   <Label Content="Load camera position with preset" />
                 </CheckBox>
 
-                <Button Command="{Binding ResetCameraCommand}" Margin="0 20 0 0" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
+                <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" Rows="1">
+                  <Button Content="Copy" Command="{Binding Settings.CopyCameraCommand}" Margin="0" />
+                  <Button Content="Paste" Command="{Binding Settings.PasteCameraCommand}" Margin="0" />
+                </mui:SpacingUniformGrid>
+
+                <Button Command="{Binding ResetCameraCommand}" Margin="0 4 0 0" Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadowsSize_Reset}" />
                 <Button Command="{Binding LoadPresetCameraCommand}" Margin="0 4 0 0" Content="Load from another preset" />
               </mui:SpacingStackPanel>
             </ScrollViewer>

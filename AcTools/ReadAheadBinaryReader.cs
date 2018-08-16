@@ -444,6 +444,24 @@ namespace AcTools {
             };
         }
 
+        public void ReadSingle4D(out float x, out float y, out float z, out float w) {
+            var pos = GetPosAndMove(16);
+            var buffer = _buffer;
+            x = ToSingle(buffer, pos);
+            y = ToSingle(buffer, pos + 4);
+            z = ToSingle(buffer, pos + 8);
+            w = ToSingle(buffer, pos + 12);
+        }
+
+        public void ReadByte4D(out byte x, out byte y, out byte z, out byte w) {
+            Require(4);
+            var buffer = _buffer;
+            x = buffer[_total - _left--];
+            y = buffer[_total - _left--];
+            z = buffer[_total - _left--];
+            w = buffer[_total - _left--];
+        }
+
         /// <summary>
         /// Read 64 bytes as 16 floats.
         /// </summary>

@@ -466,6 +466,20 @@ namespace AcManager.Pages.Drive {
                         ?? allowed.RandomElementOrDefault();
             }
 
+            private bool _useSpecificDate;
+
+            public bool UseSpecificDate {
+                get => _useSpecificDate;
+                set => Apply(value, ref _useSpecificDate);
+            }
+
+            private DateTime _specificDateValue;
+
+            public DateTime SpecificDateValue {
+                get => _specificDateValue;
+                set => Apply(value, ref _specificDateValue);
+            }
+
             private bool _randomTime;
 
             public bool RandomTime {
@@ -597,6 +611,7 @@ namespace AcManager.Pages.Drive {
 
                     Temperature = 26d;
                     Time = 12 * 60 * 60;
+                    SpecificDateValue = DateTime.Now;
                     SelectedWeather = WeatherManager.Instance.GetDefault();
                     UserPresetsControl.LoadBuiltInPreset(TrackState.PresetableKey, TrackStateViewModelBase.PresetableCategory, "Optimum");
                     WindSpeedMin = 0d;
@@ -620,7 +635,7 @@ namespace AcManager.Pages.Drive {
 
                         try {
                             await RealConditionsHelper.UpdateConditions(SelectedTrack, RealConditionsLocalWeather, RealConditionsTimezones,
-                                    RealConditionsManualTime ? default(Action<int>) : TryToSetTime, weather => {
+                                    RealConditionsManualTime ? default(Action<DateTime>) : TryToSetTime, weather => {
                                         RealWeather = weather;
                                         TryToSetTemperature(weather.Temperature);
                                         SelectedWeatherType = weather.Type;
@@ -645,10 +660,12 @@ namespace AcManager.Pages.Drive {
                 UpdateConditions();
             }
 
-            private void TryToSetTime(int value) {
-                var clamped = TimeSliderMapper?.GetClosest(value) ?? value;
-                IsTimeClamped = clamped != value;
+            private void TryToSetTime(DateTime value) {
+                var seconds = value.TimeOfDay.TotalSeconds.RoundToInt();
+                var clamped = TimeSliderMapper?.GetClosest(seconds) ?? seconds;
+                IsTimeClamped = clamped != seconds;
                 Time = clamped;
+                SpecificDateValue = value;
             }
 
             private void TryToSetTemperature(double value) {

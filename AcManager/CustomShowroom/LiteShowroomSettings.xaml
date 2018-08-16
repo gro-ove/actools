@@ -176,7 +176,11 @@
             TickPlacement="BottomRight" />
       </DockPanel>
 
-      <Button Content="Reset" Margin="0 20 0 0" Command="{Binding ResetCameraCommand}" />
+      <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0 20 0 0" Rows="1">
+        <Button Content="Copy" Command="{Binding CopyCameraCommand}" Margin="0" />
+        <Button Content="Paste" Command="{Binding PasteCameraCommand}" Margin="0" />
+      </mui:SpacingUniformGrid>
+      <Button Content="Reset" Margin="0 4 0 0" Command="{Binding ResetCameraCommand}" />
     </mui:SpacingStackPanel>
   </ScrollViewer>
 

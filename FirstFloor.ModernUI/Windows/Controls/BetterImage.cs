@@ -454,7 +454,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var fileNameBuilder = new StringBuilder();
-            using (var sha1 = new SHA1Managed()) {
+            using (var sha1 = SHA1.Create()) {
                 var canonicalUrl = uri.ToString();
                 var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(canonicalUrl));
                 fileNameBuilder.Append(BitConverter.ToString(hash).Replace(@"-", "").ToLower());

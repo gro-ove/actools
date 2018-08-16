@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using Microsoft.Win32;
 
 namespace AcTools.Utils {
@@ -26,6 +27,7 @@ namespace AcTools.Utils {
             }
         }
 
+        [CanBeNull]
         public static string TryToFind() {
             try {
                 var regKey = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam");

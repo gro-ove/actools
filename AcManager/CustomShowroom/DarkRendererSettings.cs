@@ -561,9 +561,60 @@ namespace AcManager.CustomShowroom {
             LoadCamera(CreateSaveableData());
         }
 
+        private class CameraClipboardData {
+            [CanBeNull, JsonProperty("pos")]
+            public double[] CameraPosition { get; set; } = { 3.29, 1.10, 4.93 };
+
+            [CanBeNull, JsonProperty("look")]
+            public double[] CameraLookAt { get; set; } = { -0.53, 0.49, 0.11 };
+
+            [JsonProperty("tilt")]
+            public float CameraTilt { get; set; }
+
+            [JsonProperty("fov")]
+            public float CameraFov { get; set; } = 32f;
+
+            [JsonProperty("orbit")]
+            public bool CameraOrbitMode { get; set; } = true;
+        }
+
+        protected void CopyCamera() {
+            ClipboardHelper.SetText(JsonConvert.SerializeObject(new CameraClipboardData {
+                CameraPosition = CameraPosition.ToArray(),
+                CameraLookAt = CameraLookAt.ToArray(),
+                CameraTilt = CameraTilt,
+                CameraFov = CameraFov,
+                CameraOrbitMode = CameraOrbitMode,
+            }, Formatting.None));
+        }
+
+        protected void PasteCamera() {
+            try {
+                var o = JsonConvert.DeserializeObject<CameraClipboardData>(Clipboard.GetText());
+                CameraBusy.Do(() => {
+                    CameraPosition.Set(o.CameraPosition);
+                    CameraLookAt.Set(o.CameraLookAt);
+                    CameraTilt = o.CameraTilt;
+                    CameraOrbitMode = o.CameraOrbitMode;
+                    CameraFov = o.CameraFov;
+                });
+                PushCamera();
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+        }
+
         private DelegateCommand _resetCameraCommand;
 
         public DelegateCommand ResetCameraCommand => _resetCameraCommand ?? (_resetCameraCommand = new DelegateCommand(ResetCamera));
+
+        private DelegateCommand _copyCameraCommand;
+
+        public DelegateCommand CopyCameraCommand => _copyCameraCommand ?? (_copyCameraCommand = new DelegateCommand(CopyCamera));
+
+        private DelegateCommand _pasteCameraCommand;
+
+        public DelegateCommand PasteCameraCommand => _pasteCameraCommand ?? (_pasteCameraCommand = new DelegateCommand(PasteCamera));
 
         protected virtual string KeyLockCamera => ".csLc";
         protected virtual string KeyLoadCamera => ".csLoadCamera";

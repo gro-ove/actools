@@ -380,7 +380,7 @@ namespace AcTools.Processes {
             }
         }
 
-        public static readonly string TrackDaySessionName = "Track Day";
+        public static readonly string TrackDaySessionName = "car";
 
         public class TrackdayProperties : RaceProperties {
             public bool UsePracticeSessionType = false;

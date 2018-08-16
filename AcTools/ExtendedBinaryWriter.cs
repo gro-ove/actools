@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using SystemHalf;
 
 namespace AcTools {
     public class ExtendedBinaryWriter : BinaryWriter {
@@ -10,6 +11,10 @@ namespace AcTools {
             for (var i = 0; i < values.Length; i++) {
                 Write(values[i]);
             }
+        }
+
+        public void WriteHalf(float value) {
+            Write(new Half(value).Value);
         }
 
         public override void Write(string value) {

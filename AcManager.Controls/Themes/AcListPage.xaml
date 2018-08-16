@@ -195,7 +195,12 @@
                 </ListBox.ItemsPanel>
               </ListBox>
 
-              <DockPanel Grid.Row="1">
+              <DockPanel Grid.Row="1" Background="Transparent">
+                <DockPanel.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Copy IDs" Command="{Binding CopyIdsCommand}" />
+                  </ContextMenu>
+                </DockPanel.ContextMenu>
                 <mui:ModernButton x:Name="AddNewButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Create a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}"
                     Visibility="{Binding AddNewCommand.IsAbleToExecute, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}" />
