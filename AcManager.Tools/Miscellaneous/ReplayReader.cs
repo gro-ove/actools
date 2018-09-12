@@ -125,7 +125,7 @@ namespace AcManager.Tools.Miscellaneous {
         [CanBeNull]
         public string TryToReadNextString(byte f0, byte f1) {
             var p = new byte[4];
-            for (var j = 0;; j++) {
+            for (var j = 0; j < 10000; j++) {
                 try {
                     if (j == 0) {
                         ReadBytesTo(p, 0, p.Length);
@@ -213,6 +213,8 @@ namespace AcManager.Tools.Miscellaneous {
                 _buffer[2] = _buffer[BufferSize + 2];
                 _buffer[3] = _buffer[BufferSize + 3];
             }
+
+            return null;
         }
 
         public new string ReadString() {

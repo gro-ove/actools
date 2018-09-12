@@ -99,9 +99,8 @@ secondPass_PS_IN vs_PerPixel_SecondPass(VS_IN vin) {
 	vout.PosW = vin.PosL;
 	vout.NormalW = vin.NormalL;
 	vout.Tex = vin.Tex;
-	vout.AoColor = gSecondPassMode == 1
-	    ? 1 - length(vin.TangentL) / 1e7
-	    : vin.TangentL / 1e7 + 1;
+	vout.AoColor = gSecondPassMode == 1 ? length(vin.TangentL) * 2 - 1
+	    : vin.TangentL / 1e5 + 1;
 	return vout;
 }
 
@@ -143,5 +142,26 @@ technique10 MultiLayer_SecondPass {
 		SetVertexShader(CompileShader(vs_4_0, vs_PerPixel_SecondPass()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_4_0, ps_MultiLayer_SecondPass()));
+	}
+}
+
+uint2 convertVector(float4 vec){
+    return uint2(
+        (f32tof16(vec.y) & 0xffff) | ((f32tof16(vec.x) & 0xffff) << 16),
+        (f32tof16(vec.w) & 0xffff) | ((f32tof16(vec.z) & 0xffff) << 16));
+}
+
+uint4 ps_PerPixel_GrassPass(secondPass_PS_IN pin) : SV_Target {
+    uint4 result;
+    result.xy = convertVector(float4(pin.AoColor, 1.0));
+    result.zw = convertVector(float4(pin.NormalW, 1.0));
+	return result;
+}
+
+technique10 PerPixel_GrassPass {
+	pass P0 {
+		SetVertexShader(CompileShader(vs_4_0, vs_PerPixel_SecondPass()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_4_0, ps_PerPixel_GrassPass()));
 	}
 }

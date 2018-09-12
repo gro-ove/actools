@@ -21,6 +21,8 @@ namespace CustomTracksBakery {
 
         internal Kn5MaterialToBake(Kn5Material kn5Material) {
             _kn5Material = kn5Material;
+            if (kn5Material == null) return;
+
             _propDiffuse = (_kn5Material.GetPropertyByName("ksAmbient")?.ValueA ?? 0.55f)
                     + (_kn5Material.GetPropertyByName("ksDiffuse")?.ValueA ?? 0.45f) * 0.5f;
             _propMagicMult = _kn5Material.GetPropertyByName("magicMult")?.ValueA ?? 1.0f;
@@ -56,6 +58,8 @@ namespace CustomTracksBakery {
         public static bool SecondPass;
         public static float SecondPassBrightnessGain;
 
+        public static bool GrassPass;
+
         public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             if (!_init) {
                 _init = true;
@@ -72,9 +76,11 @@ namespace CustomTracksBakery {
             }
 
             _effect.FxDiffuseMap.SetResource(_txDiffuseView);
-            _effect.FxAlphaRef.Set(_kn5Material.AlphaTested ? 0.5f : -0.5f);
+            _effect.FxAlphaRef.Set(_kn5Material?.AlphaTested == true ? 0.5f : -0.5f);
 
-            if (_multilayer) {
+            if (GrassPass) {
+                _effect.TechPerPixel_GrassPass.DrawAllPasses(contextHolder.DeviceContext, indices);
+            } else if (_multilayer) {
                 _effect.FxMagicMult.Set(_propMagicMult * _propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
                 _effect.FxMultRGBA.Set(_propMultilayerMult);
                 _effect.FxMaskMap.SetResource(_txMaskView);
@@ -90,7 +96,7 @@ namespace CustomTracksBakery {
         }
 
         private ShaderResourceView Tex(IDeviceContextHolder contextHolder, string key) {
-            return contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _kn5Material.GetMappingByName(key)?.Texture ?? ".")?.Resource;
+            return contextHolder.Get<ITexturesProvider>().GetTexture(contextHolder, _kn5Material?.GetMappingByName(key)?.Texture ?? ".")?.Resource;
         }
 
         public bool IsBlending => false;

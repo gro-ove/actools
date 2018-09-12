@@ -207,7 +207,7 @@ namespace AcTools {
         }
 
         [NotNull]
-        public Encoding Encoding { get; set; } = Encoding.ASCII;
+        public Encoding Encoding { get; set; } = Encoding.UTF8;
 
         public string ReadString() {
             var length = ReadInt32();
@@ -230,6 +230,16 @@ namespace AcTools {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static unsafe uint ToUInt32(byte[] value, int startIndex) {
+            fixed (byte* pbyte = &value[startIndex]) {
+                if (startIndex % 4 == 0) return *(uint*)pbyte;
+                return (uint)(BitConverter.IsLittleEndian
+                        ? *pbyte | (*(pbyte + 1) << 8) | (*(pbyte + 2) << 16) | (*(pbyte + 3) << 24)
+                        : (*pbyte << 24) | (*(pbyte + 1) << 16) | (*(pbyte + 2) << 8) | *(pbyte + 3));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static unsafe long ToInt64(byte[] value, int startIndex) {
             fixed (byte* numPtr = &value[startIndex]) {
                 if (startIndex % 8 == 0) return *(long*)numPtr;
@@ -244,9 +254,9 @@ namespace AcTools {
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected static unsafe Half ToHalf(byte[] value, int startIndex) {
-            var val = ToInt16(value, startIndex);
-            return *(Half*)&val;
+        protected static Half ToHalf(byte[] value, int startIndex) {
+            var val = ToUInt16(value, startIndex);
+            return Half.ToHalf(val);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -266,6 +276,14 @@ namespace AcTools {
             fixed (byte* pbyte = &value[startIndex]) {
                 if (startIndex % 2 == 0) return *(short*)pbyte;
                 return BitConverter.IsLittleEndian ? (short)(*pbyte | (*(pbyte + 1) << 8)) : (short)((*pbyte << 8) | *(pbyte + 1));
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static unsafe ushort ToUInt16(byte[] value, int startIndex) {
+            fixed (byte* pbyte = &value[startIndex]) {
+                if (startIndex % 2 == 0) return *(ushort*)pbyte;
+                return BitConverter.IsLittleEndian ? (ushort)(*pbyte | (*(pbyte + 1) << 8)) : (ushort)((*pbyte << 8) | *(pbyte + 1));
             }
         }
         #endregion
@@ -451,6 +469,24 @@ namespace AcTools {
             y = ToSingle(buffer, pos + 4);
             z = ToSingle(buffer, pos + 8);
             w = ToSingle(buffer, pos + 12);
+        }
+
+        public void ReadUInt16_4D(out ushort x, out ushort y, out ushort z, out ushort w) {
+            var pos = GetPosAndMove(8);
+            var buffer = _buffer;
+            x = ToUInt16(buffer, pos);
+            y = ToUInt16(buffer, pos + 2);
+            z = ToUInt16(buffer, pos + 4);
+            w = ToUInt16(buffer, pos + 6);
+        }
+
+        public void ReadUInt32_4D(out uint x, out uint y, out uint z, out uint w) {
+            var pos = GetPosAndMove(16);
+            var buffer = _buffer;
+            x = ToUInt32(buffer, pos);
+            y = ToUInt32(buffer, pos + 4);
+            z = ToUInt32(buffer, pos + 8);
+            w = ToUInt32(buffer, pos + 12);
         }
 
         public void ReadByte4D(out byte x, out byte y, out byte z, out byte w) {

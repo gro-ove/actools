@@ -29,7 +29,7 @@ namespace CustomTracksBakery.Shaders {
         public ShaderSignature InputSignaturePNTG;
         public InputLayout LayoutPNTG;
 
-		public EffectReadyTechnique TechPerPixel, TechMultiLayer, TechPerPixel_SecondPass, TechMultiLayer_SecondPass;
+		public EffectReadyTechnique TechPerPixel, TechMultiLayer, TechPerPixel_SecondPass, TechMultiLayer_SecondPass, TechPerPixel_GrassPass;
 
 		[NotNull]
 		public EffectOnlyMatrixVariable FxWorldViewProj;
@@ -48,6 +48,7 @@ namespace CustomTracksBakery.Shaders {
 			TechMultiLayer = new EffectReadyTechnique(E.GetTechniqueByName("MultiLayer"));
 			TechPerPixel_SecondPass = new EffectReadyTechnique(E.GetTechniqueByName("PerPixel_SecondPass"));
 			TechMultiLayer_SecondPass = new EffectReadyTechnique(E.GetTechniqueByName("MultiLayer_SecondPass"));
+			TechPerPixel_GrassPass = new EffectReadyTechnique(E.GetTechniqueByName("PerPixel_GrassPass"));
 
 			for (var i = 0; i < TechPerPixel.Description.PassCount && InputSignaturePNTG == null; i++) {
 				InputSignaturePNTG = TechPerPixel.GetPassByIndex(i).Description.Signature;

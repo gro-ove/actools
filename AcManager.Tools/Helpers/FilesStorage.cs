@@ -119,6 +119,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
+        [NotNull, ItemNotNull]
         public IEnumerable<ContentEntry> GetContentFilesFiltered(string searchPattern, params string[] name) {
             var nameJoined = Path.Combine(name);
             var contentDir = EnsureDirectory(DataDirName, nameJoined);

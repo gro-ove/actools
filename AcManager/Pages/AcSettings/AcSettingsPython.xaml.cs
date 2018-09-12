@@ -92,10 +92,12 @@ namespace AcManager.Pages.AcSettings {
 
         private void UpdateListBox() {
             _ignore = true;
-            EnabledAppsListBox.SelectedItems.Clear();
-            foreach (var item in Model.Apps.Where(x => Model.Python.IsActivated(x.Id)).ToList()) {
-                EnabledAppsListBox.SelectedItems.Add(item);
-            }
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                EnabledAppsListBox.SelectedItems.Clear();
+                foreach (var item in Model.Apps.Where(x => Model.Python.IsActivated(x.Id)).ToList()) {
+                    EnabledAppsListBox.SelectedItems.Add(item);
+                }
+            });
             _ignore = false;
         }
 

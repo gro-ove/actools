@@ -204,9 +204,11 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
             properties.SetAdditional(new CarRaceTextures());
+            properties.SetAdditional(new AcPatchTrackOutline());
             properties.SetAdditional(new ExtraHotkeysRaceHelper());
 
-            if (SettingsHolder.Drive.CopyFilterToSystemForOculus && AcSettingsHolder.Video.CameraMode.Id == "OCULUS") {
+            if (SettingsHolder.Drive.CopyFilterToSystemForOculus
+                    && (AcSettingsHolder.Video.CameraMode.Id == "OCULUS" || AcSettingsHolder.Video.CameraMode.Id == "OPENVR")) {
                 properties.SetAdditional(new CopyFilterToSystemForOculusHelper());
             }
         }

@@ -6,11 +6,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CommandLine;
 using CommandLine.Text;
 using StringBasedFilter;
+using StringBasedFilter.Parsing;
+using StringBasedFilter.TestEntries;
 
 namespace CustomTracksBakery {
     public class Options {
@@ -23,14 +27,31 @@ namespace CustomTracksBakery {
         [Option('s', "skip", DefaultValue = null, Required = false, HelpText = "Nodes to skip.")]
         public string IgnoreFilter { get; set; }
 
-        [Option('t', "trees", DefaultValue = "shader:ksTree", Required = false, HelpText = "Nodes to process as trees (no self-shadowing, normals are facing up).")]
+        [Option('g', "grass", DefaultValue = "shader:ksGrass", Required = false,
+                HelpText = "Nodes to process as grass (sync AO and, optionally, normals, with surface below).")]
+        public string GrassFilter { get; set; }
+
+        [Option('t', "trees", DefaultValue = "shader:ksTree", Required = false,
+                HelpText = "Nodes to process as trees (no self-shadowing, normals are facing up).")]
         public string TreeFilter { get; set; }
+
+        [Option('r', "regular-objects", DefaultValue = null, Required = false,
+                HelpText =
+                        "If for some reason you’re using ksTree or ksGrass shader for something other than grass or trees, and don’t want to bother excluding them from --trees and --grass, add them here."
+                )]
+        public string RegularObjectsFilter { get; set; }
 
         [Option("skip-occluders", DefaultValue = null, Required = false, HelpText = "Nodes to skip from occlusion calculation.")]
         public string SkipOccludersFilter { get; set; }
 
-        [Option("common-kn5s", DefaultValue = null, Required = false, HelpText = "KN5 files to load for occluders.")]
+        [Option("common-kn5s", DefaultValue = null, Required = false, HelpText = "KN5 files to load for occluders (obsolete).")]
         public string CommonKn5Filter { get; set; }
+
+        [Option("occluders-kn5s", DefaultValue = null, Required = false, HelpText = "KN5 files to load for occluders.")]
+        public string OccludersKn5Filter { get; set; }
+
+        [Option("include-kn5s", DefaultValue = null, Required = false, HelpText = "KN5 files to patch (only for .vao-patch mode, for multi-KN5 mode).")]
+        public string IncludeKn5Filter { get; set; }
 
         [Option('d', "destination", DefaultValue = null, Required = false, HelpText = "Optional destination.")]
         public string Destination { get; set; }
@@ -38,10 +59,10 @@ namespace CustomTracksBakery {
         [Option('o', "opacity", DefaultValue = 0.85f, Required = false, HelpText = "AO opacity.")]
         public float AoOpacity { get; set; }
 
-        [Option('m', "multiplier", DefaultValue = 1.0f, Required = false, HelpText = "AO brightness multiplier.")]
+        [Option('m', "multiplier", DefaultValue = 1.1f, Required = false, HelpText = "AO brightness multiplier.")]
         public float AoMultiplier { get; set; }
 
-        [Option("saturation-gain", DefaultValue = 3.0f, Required = false, HelpText = "Saturation brightness gain.")]
+        [Option("saturation-gain", DefaultValue = 1.0f, Required = false, HelpText = "Saturation brightness gain.")]
         public float SaturationGain { get; set; }
 
         [Option("saturation-input-mult", DefaultValue = 2.0f, Required = false, HelpText = "Saturation input multiplier.")]
@@ -86,11 +107,17 @@ namespace CustomTracksBakery {
         [Option("hdr", DefaultValue = false, HelpText = "Make HDR samples.")]
         public bool HdrSamples { get; set; }
 
+        [Option("sync-grass-normals", DefaultValue = false, HelpText = "Sync grass normals with surface below (not needed with properly made tracks).")]
+        public bool GrassNormalsSyncing { get; set; }
+
         [Option("extra-pass", DefaultValue = false, HelpText = "Make two passes to properly process bounced colors.")]
         public bool ExtraPass { get; set; }
 
         [Option("bake-into-kn5", DefaultValue = false, HelpText = "Bake shadows into KN5 instead of creating a small patch.")]
         public bool ModifyKn5Directly { get; set; }
+
+        [Option("special-grass-ambient", DefaultValue = true, HelpText = "Copy grass ambient from the surface underneath.")]
+        public bool SpecialGrassAmbient { get; set; }
 
         [ValueList(typeof(List<string>), MaximumElements = 1)]
         public IList<string> Items { get; set; }
@@ -108,7 +135,7 @@ namespace CustomTracksBakery {
             help.AddPreOptionsLine("\r\nThis is free software. You may redistribute copies of it under the terms of");
             help.AddPreOptionsLine("the MS-PL License <https://opensource.org/licenses/MS-PL>.");
             help.AddPreOptionsLine("");
-            help.AddPreOptionsLine("Usage: CustomTracksBakery <model.kn5> [output.kn5]");
+            help.AddPreOptionsLine("Usage: CustomTracksBakery <model.kn5/model.ini>");
             help.AddPreOptionsLine("");
             help.AddPreOptionsLine("You can also put arguments in a file “Baked Shadows Params.txt” next to KN5, or");
             help.AddPreOptionsLine("to “Arguments.txt” next to CustomTracksBakery.exe.");
@@ -185,6 +212,11 @@ namespace CustomTracksBakery {
 
         public static int Main(string[] args) {
             try {
+                Trace.Listeners.Add(new ConsoleTraceListener());
+
+                FileUtils.TryToDelete(Path.Combine(MainExecutingFile.Directory, "Log.txt"));
+                Trace.Listeners.Add(new DefaultTraceListener { LogFileName = Path.Combine(MainExecutingFile.Directory, "Log.txt") });
+
                 var argsLoaded = false;
                 if (args.Length > 0) {
                     try {
@@ -194,6 +226,13 @@ namespace CustomTracksBakery {
                                 args = File.ReadAllLines(extraFileArgs).Where(x => !string.IsNullOrWhiteSpace(x) && !x.TrimStart().StartsWith("#"))
                                            .Union(args).ToArray();
                                 argsLoaded = true;
+                            } else {
+                                extraFileArgs = Path.Combine(Path.GetDirectoryName(args[0]) ?? ".", "Baked_Shadows_Params.txt");
+                                if (File.Exists(extraFileArgs)) {
+                                    args = File.ReadAllLines(extraFileArgs).Where(x => !string.IsNullOrWhiteSpace(x) && !x.TrimStart().StartsWith("#"))
+                                               .Union(args).ToArray();
+                                    argsLoaded = true;
+                                }
                             }
                         }
                     } catch {
@@ -211,11 +250,65 @@ namespace CustomTracksBakery {
 
                 var options = new Options();
                 if (!Parser.Default.ParseArguments(args, options) || options.Items.Count == 0 || options.Help) {
-                    (options.Help ? Console.Out : Console.Error).WriteLine(options.GetUsage());
+                    Trace.WriteLine(options.GetUsage());
                     return options.Help ? 0 : 1;
                 }
 
-                new MainBakery(options.Items[0], options.Filter, options.IgnoreFilter) {
+                string mainKn5 = null;
+                string destination;
+                var includeKn5 = new List<string>();
+                var occludersKn5 = new List<string>();
+
+                if (options.Items[0].EndsWith(".ini")) {
+                    var ini = new IniFile(options.Items[0]);
+                    var trackDirectory = Path.GetDirectoryName(ini.Filename) ?? ".";
+                    var first = true;
+                    includeKn5.Clear();
+                    occludersKn5.Clear();
+                    foreach (var model in ini.GetSections("MODEL").Select(x => x.GetNonEmpty("FILE")).NonNull()
+                                             .Select(x => Path.Combine(trackDirectory, x)).Where(File.Exists)) {
+                        if (first) {
+                            first = false;
+                            mainKn5 = model;
+                        } else {
+                            includeKn5.Add(model);
+                        }
+                    }
+
+                    destination = Path.Combine(trackDirectory, Path.GetFileNameWithoutExtension(ini.Filename) + ".vao-patch");
+                } else {
+                    mainKn5 = options.Items[0];
+                    destination = options.Destination ?? options.Items[0];
+                    var trackDirectory = Path.GetDirectoryName(mainKn5) ?? ".";
+
+                    if (!options.ModifyKn5Directly) {
+                        if (!string.IsNullOrWhiteSpace(options.IncludeKn5Filter)) {
+                            var includeFilter = Filter.Create(StringTester.Instance, options.IncludeKn5Filter,
+                                    new FilterParams { StringMatchMode = StringMatchMode.CompleteMatch });
+                            foreach (var file in Directory.GetFiles(trackDirectory, "*.kn5").Where(x =>
+                                    includeFilter.Test(Path.GetFileName(x)) && !FileUtils.ArePathsEqual(x, mainKn5))) {
+                                includeKn5.Add(file);
+
+                                destination = Path.Combine(trackDirectory, Path.GetFileName(trackDirectory)) + ".kn5";
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(options.OccludersKn5Filter ?? options.CommonKn5Filter)) {
+                        var occludersFilter = Filter.Create(StringTester.Instance, options.OccludersKn5Filter ?? options.CommonKn5Filter,
+                                new FilterParams { StringMatchMode = StringMatchMode.CompleteMatch });
+                        foreach (var file in Directory.GetFiles(trackDirectory, "*.kn5").Where(x =>
+                                occludersFilter.Test(Path.GetFileName(x)) && !FileUtils.ArePathsEqual(x, mainKn5))) {
+                            occludersKn5.Add(file);
+                        }
+                    }
+                }
+
+                if (mainKn5 == null) {
+                    throw new Exception("Main KN5 not found");
+                }
+
+                using (var bakery = new MainBakery(mainKn5, options.Filter, options.IgnoreFilter) {
                     AoOpacity = options.AoOpacity,
                     AoMultiplier = options.AoMultiplier,
                     SaturationGain = options.SaturationGain,
@@ -233,14 +326,22 @@ namespace CustomTracksBakery {
                     SampleResolution = options.SampleResolution,
                     ExtraPassBrightnessGain = options.ExtraPassBrightnessGain,
                     HdrSamples = options.HdrSamples,
+                    GrassNormalsSyncing = options.GrassNormalsSyncing,
                     ExtraPass = options.ExtraPass,
                     CreatePatch = !options.ModifyKn5Directly,
                     TreeFilter = options.TreeFilter,
+                    GrassFilter = options.GrassFilter,
+                    RegularObjectsFilter = options.RegularObjectsFilter,
                     SkipOccludersFilter = options.SkipOccludersFilter,
-                }.LoadExtraOccluders(options.CommonKn5Filter).Work(options.Destination ?? options.Items[0]);
+                    SpecialGrassAmbient = options.SpecialGrassAmbient,
+                }) {
+                    bakery.LoadExtraKn5(includeKn5, occludersKn5).Work(destination);
+                }
+
+                Trace.Listeners.Clear();
                 return 0;
             } catch (Exception e) {
-                Console.Error.WriteLine(e.ToString());
+                Trace.WriteLine(e.ToString());
                 return 2;
             } finally {
                 if (ParentProcessUtilities.GetParentProcess().ProcessName == "explorer") {

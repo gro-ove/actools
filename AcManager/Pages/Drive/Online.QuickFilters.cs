@@ -67,14 +67,20 @@ namespace AcManager.Pages.Drive {
             private static OnlineQuickFilter[] _filters;
 
             private static OnlineQuickFilter[] ReadFilters() {
-                return FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.OnlineFilters).Select(x => x.Filename).SelectMany(x => {
-                    try {
-                        return JsonConvert.DeserializeObject<OnlineQuickFilter[]>(File.ReadAllText(x));
-                    } catch (Exception e) {
-                        Logging.Warning($"Cannot load file {Path.GetFileName(x)}: {e}");
-                        return new OnlineQuickFilter[0];
-                    }
-                }).ToArray();
+                try {
+                    return FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.OnlineFilters).Select(x => x.Filename).NonNull()
+                                       .SelectMany(x => {
+                                           try {
+                                               return JsonConvert.DeserializeObject<OnlineQuickFilter[]>(File.ReadAllText(x));
+                                           } catch (Exception e) {
+                                               Logging.Warning($"Cannot load file {Path.GetFileName(x)}: {e}");
+                                               return new OnlineQuickFilter[0];
+                                           }
+                                       }).ToArray();
+                } catch (Exception e) {
+                    Logging.Warning($"Cannot load filters: {e}");
+                    return new OnlineQuickFilter[0];
+                }
             }
 
             private static IEnumerable<OnlineQuickFilter> Load() {

@@ -18,8 +18,9 @@ namespace AcTools {
         }
 
         public override void Write(string value) {
-            Write(value.Length);
-            Write(Encoding.ASCII.GetBytes(value));
+            var bytes = Encoding.UTF8.GetBytes(value);
+            Write(bytes.Length);
+            Write(bytes);
         }
     }
 }

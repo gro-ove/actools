@@ -74,7 +74,7 @@ namespace AcManager.Pages.Miscellaneous {
             var index = 0;
             return from carId in PlayerStatsManager.Instance.GetCarsIds()
                    let distance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(carId)
-                   where distance > 0d
+                   where distance > 0d && CarsManager.Instance.GetWrapperById(carId) != null
                    orderby distance descending
                    select new MostUsedCar(index++, carId, distance / 1e3);
         }
@@ -92,7 +92,7 @@ namespace AcManager.Pages.Miscellaneous {
                        MainId = GetMainTrackId(trackId),
                        Distance = PlayerStatsManager.Instance.GetDistanceDrivenAtTrack(trackId) / 1e3
                    }
-                   where track.Distance > 0d
+                   where track.Distance > 0d && TracksManager.Instance.GetWrapperById(track.MainId) != null
                    group track by track.MainId
                    into layouts
                    orderby layouts.Sum(x => x.Distance) descending

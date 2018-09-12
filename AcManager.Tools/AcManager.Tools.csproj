@@ -242,6 +242,7 @@
     <Compile Include="Filters\Testers\TrackSkinObjectTester.cs" />
     <Compile Include="Filters\Testers\WeatherObjectTester.cs" />
     <Compile Include="Filters\UniversalAcObjectTester.cs" />
+    <Compile Include="GameProperties\AcPatchTrackOutline.cs" />
     <Compile Include="GameProperties\AcShadowsPatcher.cs" />
     <Compile Include="GameProperties\CarCustomDataHelper.cs" />
     <Compile Include="GameProperties\CarRaceTextures.cs" />

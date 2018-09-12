@@ -114,7 +114,7 @@ namespace AcManager.CustomShowroom {
         public double Brightness {
             get => _brightness;
             set {
-                value = value.Clamp(150.0, 800.0);
+                value = value.Clamp(100.0, 800.0);
                 if (Equals(value, _brightness)) return;
                 _brightness = value;
                 OnPropertyChanged();

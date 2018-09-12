@@ -24,6 +24,18 @@ namespace AcTools.Utils {
             }
         }
 
+        public IReadOnlyList<T> GetList() {
+            lock (_stored) {
+                return _stored;
+            }
+        }
+
+        public void Clear() {
+            lock (_stored) {
+                _stored.Clear();
+            }
+        }
+
         public void Add(T value) {
             lock (_stored) {
                 _stored.Add(value);
