@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using AcTools.DataFile;
 using AcTools.Kn5File;
+using AcTools.Render.Base.Utils;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CommandLine;
@@ -31,14 +32,21 @@ namespace CustomTracksBakery {
                 HelpText = "Nodes to process as grass (sync AO and, optionally, normals, with surface below).")]
         public string GrassFilter { get; set; }
 
+        [Option('n', "sync-normals", DefaultValue = null, Required = false,
+                HelpText = "Nodes to sync normals with surface below of.")]
+        public string SyncNormals { get; set; }
+
+        [Option('u', "surfaces", DefaultValue = "`^[0-9][A-Z]`", Required = false,
+                HelpText = "Surface meshes.")]
+        public string Surfaces { get; set; }
+
         [Option('t', "trees", DefaultValue = "shader:ksTree", Required = false,
                 HelpText = "Nodes to process as trees (no self-shadowing, normals are facing up).")]
         public string TreeFilter { get; set; }
 
         [Option('r', "regular-objects", DefaultValue = null, Required = false,
-                HelpText =
-                        "If for some reason you’re using ksTree or ksGrass shader for something other than grass or trees, and don’t want to bother excluding them from --trees and --grass, add them here."
-                )]
+                HelpText = "If for some reason you’re using ksTree or ksGrass shader for something other than grass or trees, "
+                        + "and don’t want to bother excluding them from --trees and --grass, add them here.")]
         public string RegularObjectsFilter { get; set; }
 
         [Option("skip-occluders", DefaultValue = null, Required = false, HelpText = "Nodes to skip from occlusion calculation.")]
@@ -58,6 +66,9 @@ namespace CustomTracksBakery {
 
         [Option('o', "opacity", DefaultValue = 0.85f, Required = false, HelpText = "AO opacity.")]
         public float AoOpacity { get; set; }
+
+        [Option("surfaces-opacity", DefaultValue = 0.6f, Required = false, HelpText = "Surfaces AO opacity.")]
+        public float SurfacesAoOpacity { get; set; }
 
         [Option('m', "multiplier", DefaultValue = 1.1f, Required = false, HelpText = "AO brightness multiplier.")]
         public float AoMultiplier { get; set; }
@@ -107,9 +118,6 @@ namespace CustomTracksBakery {
         [Option("hdr", DefaultValue = false, HelpText = "Make HDR samples.")]
         public bool HdrSamples { get; set; }
 
-        [Option("sync-grass-normals", DefaultValue = false, HelpText = "Sync grass normals with surface below (not needed with properly made tracks).")]
-        public bool GrassNormalsSyncing { get; set; }
-
         [Option("extra-pass", DefaultValue = false, HelpText = "Make two passes to properly process bounced colors.")]
         public bool ExtraPass { get; set; }
 
@@ -118,6 +126,12 @@ namespace CustomTracksBakery {
 
         [Option("special-grass-ambient", DefaultValue = true, HelpText = "Copy grass ambient from the surface underneath.")]
         public bool SpecialGrassAmbient { get; set; }
+
+        [Option("debug-pos", DefaultValue = null, HelpText = "Bake shadows only around certain point, to test settings.")]
+        public string DebugPos { get; set; }
+
+        [Option("debug-range", DefaultValue = 400f, HelpText = "Bake shadows only within certain radius, to test settings.")]
+        public float DebugRange { get; set; }
 
         [ValueList(typeof(List<string>), MaximumElements = 1)]
         public IList<string> Items { get; set; }
@@ -213,7 +227,6 @@ namespace CustomTracksBakery {
         public static int Main(string[] args) {
             try {
                 Trace.Listeners.Add(new ConsoleTraceListener());
-
                 FileUtils.TryToDelete(Path.Combine(MainExecutingFile.Directory, "Log.txt"));
                 Trace.Listeners.Add(new DefaultTraceListener { LogFileName = Path.Combine(MainExecutingFile.Directory, "Log.txt") });
 
@@ -308,7 +321,7 @@ namespace CustomTracksBakery {
                     throw new Exception("Main KN5 not found");
                 }
 
-                using (var bakery = new MainBakery(mainKn5, options.Filter, options.IgnoreFilter) {
+                using (var bakery = new MainBakery(mainKn5, options.Filter, options.IgnoreFilter, !options.ModifyKn5Directly) {
                     AoOpacity = options.AoOpacity,
                     AoMultiplier = options.AoMultiplier,
                     SaturationGain = options.SaturationGain,
@@ -326,15 +339,25 @@ namespace CustomTracksBakery {
                     SampleResolution = options.SampleResolution,
                     ExtraPassBrightnessGain = options.ExtraPassBrightnessGain,
                     HdrSamples = options.HdrSamples,
-                    GrassNormalsSyncing = options.GrassNormalsSyncing,
+                    SyncNormalsFilter = options.SyncNormals,
                     ExtraPass = options.ExtraPass,
-                    CreatePatch = !options.ModifyKn5Directly,
                     TreeFilter = options.TreeFilter,
                     GrassFilter = options.GrassFilter,
                     RegularObjectsFilter = options.RegularObjectsFilter,
                     SkipOccludersFilter = options.SkipOccludersFilter,
                     SpecialGrassAmbient = options.SpecialGrassAmbient,
+                    SurfacesFilter = options.Surfaces,
+                    SurfacesAoOpacity = options.SurfacesAoOpacity,
                 }) {
+                    if (!string.IsNullOrWhiteSpace(options.DebugPos)) {
+                        bakery.DebugMode = true;
+                        bakery.DebugPoint = options.DebugPos.Split(new[] { ", " }, StringSplitOptions.RemoveEmptyEntries)
+                                                   .Select(x => (float)FlexibleParser.ParseDouble(x))
+                                                   .ToArray().ToVector3();
+                        bakery.DebugRadius = options.DebugRange;
+                        Console.WriteLine("Debug mode: " + bakery.DebugPoint);
+                    }
+
                     bakery.LoadExtraKn5(includeKn5, occludersKn5).Work(destination);
                 }
 
