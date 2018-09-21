@@ -25,6 +25,7 @@ using AcTools.Render.Kn5Specific.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Render.Kn5SpecificSpecial;
 using AcTools.Render.Shaders;
+using AcTools.Render.Wrapper;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CustomTracksBakery.Shaders;
@@ -54,21 +55,32 @@ namespace CustomTracksBakery {
         NormalLength = 3
     }
 
-    public sealed class BakedObject : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
-        public readonly Kn5 ObjectKn5;
-        public readonly BakedMode Mode;
-        public readonly bool IsTree, IsGrass, IsToSyncNormals, IsSurface;
-
-        public Kn5Node OriginalNode { get; }
+    public class BakedObjectPiece : TrianglesRenderableObject<InputLayouts.VerticePNTG> {
         public new readonly BoundingBox BoundingBox;
         public readonly Vector3 BbCenter;
         public readonly Vector3 BbSize;
         public readonly float BbSizeLength;
 
-        public BakedObject(Kn5Node node, Kn5 kn5, [NotNull] BakedObjectFilters filters)
-                : base(node.Name, InputLayouts.VerticePNTG.Convert(node.Vertices), node.Indices.ToIndicesFixX()) {
-            var boundingBox = new BoundingBox();
-            for (var i = node.Vertices.Length - 1; i >= 0; i--) {
+        public float GetHorizontalDistance(Vector3 v) {
+            var p = BbCenter;
+            var s = BbSize;
+
+            var x = v.X - p.X;
+            if (x < 0) x = -x;
+            x -= s.X / 2f;
+
+            var y = v.Y - p.Y;
+            if (y < 0) y = -y;
+            y -= s.Y / 2f;
+
+            var r = x < y ? x : y;
+            return r > 0 ? r : 0;
+        }
+
+        public BakedObjectPiece(Kn5Node node) : base(node.Name, InputLayouts.VerticePNTG.Convert(node.Vertices), node.Indices.ToIndicesFixX()) {
+            var boundingBoxStart = node.Vertices.Length > 0 ? node.Vertices[0].Position.ToVector3() : Vector3.Zero;
+            var boundingBox = new BoundingBox(boundingBoxStart, boundingBoxStart);
+            for (var i = node.Vertices.Length - 1; i > 0; i--) {
                 node.Vertices[i].Position.ExtendBoundingBox(ref boundingBox);
             }
 
@@ -76,6 +88,119 @@ namespace CustomTracksBakery {
             BbCenter = boundingBox.GetCenter();
             BbSize = boundingBox.GetSize();
             BbSizeLength = boundingBox.GetSize().Length();
+        }
+    }
+
+    public sealed class BakedObject : IRenderableObject {
+        public readonly Kn5 ObjectKn5;
+        public readonly BakedMode Mode;
+        public readonly bool IsTree, IsGrass, IsToSyncNormals, IsSurface;
+
+        public Kn5Node OriginalNode { get; }
+        public readonly BoundingBox BoundingBox;
+        public readonly Vector3 BbCenter;
+        public readonly Vector3 BbSize;
+        public readonly float BbSizeLength;
+
+        private static readonly int[] SplitAxis = { 0, 2 };
+
+        private static void LoadRenderables(IList<BakedObjectPiece> destination, Kn5Node node, int step, float splitDistance) {
+            if (step >= SplitAxis.Length) {
+                destination.Add(new BakedObjectPiece(node));
+                return;
+            }
+
+            var splitIndex = SplitAxis[step];
+            var min = float.MaxValue;
+            var max = float.MinValue;
+            foreach (var vertex in node.Vertices) {
+                var pos = vertex.Position[splitIndex];
+                if (pos < min) min = pos;
+                if (pos > max) max = pos;
+            }
+
+            if (min > max) {
+                return;
+            }
+
+            var axisSize = max - min;
+            var fromBase = min;
+
+            if (axisSize < splitDistance * 1.2f) {
+                LoadRenderables(destination, node, step + 1, splitDistance);
+                return;
+            }
+
+            var pieces = (int)Math.Ceiling(axisSize / splitDistance);
+            var origInd = node.Indices;
+            var origVer = node.Vertices;
+            var vertices = new List<Kn5Node.Vertex>();
+            var indices = new List<ushort>();
+
+            for (var i = 0; i < pieces; i++) {
+                var from = fromBase + (float)i / pieces * axisSize;
+                var to = fromBase + (i + 1f) / pieces * axisSize + (i == pieces - 1 ? 1f : 0f);
+
+                for (var j = 0; j < origInd.Length - 2; j += 3) {
+                    var v0 = origVer[origInd[j]];
+                    var v1 = origVer[origInd[j + 1]];
+                    var v2 = origVer[origInd[j + 2]];
+                    var avg = (v0.Position[splitIndex] + v1.Position[splitIndex] + v2.Position[splitIndex]) / 3f;
+                    if (avg >= @from && avg < to) {
+                        indices.Add((ushort)vertices.Count);
+                        indices.Add((ushort)(vertices.Count + 1));
+                        indices.Add((ushort)(vertices.Count + 2));
+                        vertices.Add(v0);
+                        vertices.Add(v1);
+                        vertices.Add(v2);
+                    }
+                }
+
+                if (indices.Count > 0) {
+                    var mesh = Kn5Node.CreateBaseNode(node.Name);
+                    mesh.NodeClass = Kn5NodeClass.Mesh;
+                    mesh.Vertices = vertices.ToArray();
+                    mesh.Indices = indices.ToArray();
+                    mesh.MaterialId = node.MaterialId;
+                    mesh.LodIn = node.LodIn;
+                    mesh.LodOut = node.LodOut;
+                    mesh.Layer = node.Layer;
+                    mesh.IsVisible = node.IsVisible;
+                    mesh.IsRenderable = true;
+                    mesh.CastShadows = true;
+                    LoadRenderables(destination, mesh, step + 1, splitDistance);
+
+                    vertices.Clear();
+                    indices.Clear();
+                }
+            }
+        }
+
+        private BakedObjectPiece[] _renderables;
+
+        public BakedObject(Kn5Node node, Kn5 kn5, [NotNull] BakedObjectFilters filters, float splitDistance) {
+            if (splitDistance <= 1f) {
+                _renderables = new[] {
+                    new BakedObjectPiece(node)
+                };
+            } else {
+                var list = new List<BakedObjectPiece>();
+                LoadRenderables(list, node, 0, splitDistance);
+                _renderables = list.ToArray();
+            }
+
+            var boundingBoxStart = node.Vertices.Length > 0 ? node.Vertices[0].Position.ToVector3() : Vector3.Zero;
+            var boundingBox = new BoundingBox(boundingBoxStart, boundingBoxStart);
+            for (var i = node.Vertices.Length - 1; i > 0; i--) {
+                node.Vertices[i].Position.ExtendBoundingBox(ref boundingBox);
+            }
+
+            BoundingBox = boundingBox;
+            BbCenter = boundingBox.GetCenter();
+            BbSize = boundingBox.GetSize();
+            BbSizeLength = boundingBox.GetSize().Length();
+            // Trace.WriteLine("Mesh: " + node.Name + ", split into: " + _renderables.Length
+            // + ", BB: at " + boundingBox.GetCenter() + ", size=" + boundingBox.GetSize());
 
             OriginalNode = node;
             ObjectKn5 = kn5;
@@ -93,8 +218,6 @@ namespace CustomTracksBakery {
             IsGrass = isNotRegular && filters.Grass?.Test(this) == true;
             IsToSyncNormals = filters.SyncNormals?.Test(this) == true;
             IsSurface = filters.Surfaces?.Test(this) == true;
-
-            // GetShaderName() == "ksGrass";
         }
 
         public float GetHorizontalDistance(Vector3 v) {
@@ -103,10 +226,6 @@ namespace CustomTracksBakery {
             var x = Math.Abs(v.X - p.X) - s.X / 2f;
             var y = Math.Abs(v.Z - p.Z) - s.Z / 2f;
             return Math.Max(Math.Min(x, y), 0f);
-        }
-
-        public override void UpdateBoundingBox() {
-            base.BoundingBox = BoundingBox;
         }
 
         [CanBeNull]
@@ -124,12 +243,15 @@ namespace CustomTracksBakery {
             return GetMaterial()?.Name;
         }
 
-        private IRenderableMaterial _material;
+        private Kn5MaterialToBake _material;
 
-        protected override void Initialize(IDeviceContextHolder contextHolder) {
-            base.Initialize(contextHolder);
+        public void Initialize(IDeviceContextHolder contextHolder) {
+            foreach (var renderable in _renderables) {
+                renderable.Draw(contextHolder, null, SpecialRenderMode.InitializeOnly);
+            }
+
             if (_material == null) {
-                _material = contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
+                _material = (Kn5MaterialToBake)contextHolder.Get<SharedMaterials>().GetMaterial(OriginalNode.MaterialId);
                 _material.EnsureInitialized(contextHolder);
             }
         }
@@ -137,24 +259,51 @@ namespace CustomTracksBakery {
         private static BakedMode _setBakedMode;
 
         public void RenderNode(Vector3 pos, Vector3 look, DeviceContextHolder h, float distanceThreshold, EffectBakeryShaders effect) {
-            if (GetHorizontalDistance(pos) > distanceThreshold
-                    || BoundingBox.Maximum.Y < pos.Y && Vector3.Dot(look, Vector3.UnitY) > 0.8f) {
-                return;
-            }
-
-            SetBuffers(h);
             if ((Kn5MaterialToBake.SecondPass || Kn5MaterialToBake.GrassPass) && (Mode != _setBakedMode)) {
                 effect.FxSecondPassMode.Set((float)Mode);
                 _setBakedMode = Mode;
             }
 
-            _material.Draw(h, IndicesCount, SpecialRenderMode.Simple);
+            var set = false;
+            for (var i = _renderables.Length - 1; i >= 0; i--) {
+                var renderable = _renderables[i];
+                if (renderable.GetHorizontalDistance(pos) > distanceThreshold) {
+                    continue;
+                }
+
+                if (!set) {
+                    set = true;
+                    _material.Set(h);
+                }
+
+                renderable.SetBuffers(h);
+                _material.Draw(h, renderable.IndicesCount, SpecialRenderMode.Simple);
+            }
         }
 
-        public override void Dispose() {
+        public void Dispose() {
             DisposeHelper.Dispose(ref _material);
-            base.Dispose();
+            _renderables.DisposeEverything();
         }
+
+        [NotNull]
+        public string Name => OriginalNode.Name ?? string.Empty;
+
+        public int GetTrianglesCount() {
+            return OriginalNode.TotalTrianglesCount;
+        }
+
+        int IRenderableObject.GetObjectsCount() => 1;
+        Matrix IRenderableObject.ParentMatrix { get; set; }
+        bool IRenderableObject.IsEnabled { get; set; }
+        bool IRenderableObject.IsReflectable { get; set; }
+        BoundingBox? IRenderableObject.BoundingBox => BoundingBox;
+        public InputLayouts.VerticePNTG[] Vertices => _renderables[0].Vertices;
+
+        void IRenderableObject.Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter) { }
+        void IRenderableObject.UpdateBoundingBox() { }
+        IRenderableObject IRenderableObject.Clone() => throw new NotSupportedException();
+        float? IRenderableObject.CheckIntersection(Ray ray) => null;
     }
 
     public class BakedObjectFilters {
@@ -184,7 +333,7 @@ namespace CustomTracksBakery {
         public bool Test(BakedObject obj, string key, ITestEntry value) {
             switch (key) {
                 case null:
-                    return value.Test(obj.OriginalNode.Name);
+                    return value.Test(obj.Name);
                 case "shader":
                     return value.Test(obj.GetShaderName());
                 case "material":
@@ -216,24 +365,30 @@ namespace CustomTracksBakery {
         private class BakingKn5Converter : IKn5ToRenderableConverter {
             private readonly Kn5 _kn5;
             private readonly BakedObjectFilters _filters;
+            private readonly float _splitDistance;
 
-            public BakingKn5Converter(Kn5 kn5, BakedObjectFilters filters) {
+            public BakingKn5Converter(Kn5 kn5, BakedObjectFilters filters, float splitDistance) {
                 _kn5 = kn5;
                 _filters = filters;
+                _splitDistance = splitDistance;
             }
 
             public IRenderableObject Convert(Kn5Node node) {
                 switch (node.NodeClass) {
                     case Kn5NodeClass.Base:
+                        if (!node.Active) {
+                            return new Kn5RenderableList(Kn5Node.CreateBaseNode("NULL"), this);
+                        }
+
                         return new Kn5RenderableList(node, this);
 
                     case Kn5NodeClass.Mesh:
                     case Kn5NodeClass.SkinnedMesh:
-                        if (!node.Active || !node.IsRenderable) {
+                        if (!node.Active || !node.IsRenderable || !node.IsVisible || node.IsTransparent) {
                             return new Kn5RenderableList(Kn5Node.CreateBaseNode("NULL"), this);
                         }
 
-                        return new BakedObject(node, _kn5, _filters);
+                        return new BakedObject(node, _kn5, _filters, _splitDistance);
 
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -241,11 +396,9 @@ namespace CustomTracksBakery {
             }
         }
 
-        private Kn5RenderableFile LoadKn5Node(Kn5 kn5, FpsCamera camera) {
-            var converter = new BakingKn5Converter(kn5, _filters);
-            var result = new Kn5RenderableFile(kn5, Matrix.Identity, false, converter);
-            result.Draw(DeviceContextHolder, camera, SpecialRenderMode.InitializeOnly);
-            return result;
+        private Kn5RenderableFile LoadKn5Node(Kn5 kn5, FpsCamera camera, float splitDistance) {
+            return new Kn5RenderableFile(kn5, Matrix.Identity, false,
+                    new BakingKn5Converter(kn5, _filters, splitDistance));
         }
 
         private void InitializeNodes(FpsCamera camera) {
@@ -255,15 +408,15 @@ namespace CustomTracksBakery {
             _includeNodeFiles.DisposeEverything();
             GCHelper.CleanUp();
 
-            _mainNode = LoadKn5Node(_mainKn5, camera);
+            _mainNode = LoadKn5Node(_mainKn5, camera, OccludersSplitThreshold);
 
             foreach (var kn5 in _includeKn5) {
-                _includeNodeFiles.Add(LoadKn5Node(kn5, camera));
+                _includeNodeFiles.Add(LoadKn5Node(kn5, camera, OccludersSplitThreshold));
             }
 
             if (_occluderNodeFiles.Count == 0) {
                 foreach (var kn5 in _occludersKn5) {
-                    var node = LoadKn5Node(kn5, camera);
+                    var node = LoadKn5Node(kn5, camera, OccludersSplitThreshold);
                     _occluderNodeFiles.Add(node);
                     // _occluderSplitNodeFiles.Add(node);
                 }
@@ -273,9 +426,8 @@ namespace CustomTracksBakery {
             RefreshFlatten();
             Trace.WriteLine("Refreshed flatten nodes");
 
-            foreach (var n in _flattenNodes) {
-                n.UpdateBoundingBox();
-                n.Draw(DeviceContextHolder, camera, SpecialRenderMode.InitializeOnly);
+            foreach (var n in _occluderNodes) {
+                n.Initialize(DeviceContextHolder);
             }
 
             Trace.WriteLine("Initialized");
@@ -305,17 +457,15 @@ namespace CustomTracksBakery {
             _nodesToBake = new[] { _mainNode }.Concat(_includeNodeFiles).SelectMany(FlattenFile).Where(IsMeshToBake).ToArray();
             _occluderNodes = _flattenNodes.Where(IsOccludingMesh).ToArray();
             // _occluderNodes = _occluderSplitNodeFiles.SelectMany(file => FlattenFile(_filters, file).Where(IsOccludingMesh)).ToArray();
-            Trace.WriteLine("Occluding nodes: " + _occluderNodes.Length);
+            // Trace.WriteLine("Occluding nodes: " + _occluderNodes.Length + "; names: " + _occluderNodes.Select(x => x.Name).JoinToString(", "));
             // Console.ReadLine();
         }
 
         private static IEnumerable<BakedObject> FlattenFile(Kn5RenderableFile file) {
-            return file
-                    .SelectManyRecursive(x => x is Kn5RenderableList list && list.IsEnabled ? list : null)
-                    .OfType<BakedObject>()
-                    .Where(x => x.IsEnabled && Filter(x));
+            return file.SelectManyRecursive(x => x is Kn5RenderableList list && list.IsEnabled ? list : null).OfType<BakedObject>().Where(Filter);
+
             bool Filter(BakedObject o) {
-                return o.OriginalNode.IsRenderable && !Regex.IsMatch(o.OriginalNode.Name, @"^(?:AC_)", RegexOptions.IgnoreCase);
+                return o.OriginalNode.IsRenderable && !Regex.IsMatch(o.Name, @"^(?:AC_)", RegexOptions.IgnoreCase);
             }
         }
 
@@ -550,16 +700,16 @@ namespace CustomTracksBakery {
             InitializeNodes(camera);
 
             _progressStopwatch = Stopwatch.StartNew();
-            _progressTotal = _nodesToBake.Sum(x => x.Vertices.Length) * (ExtraPass ? 2 : 1);
+            _progressTotal = _nodesToBake.Sum(x => x.OriginalNode.Vertices.Length) * (ExtraPass ? 2 : 1);
             _progressBaked = 0;
 
-            if (SyncNormalsFilter != null) {
+            /*if (SyncNormalsFilter != null) {
                 _progressTotal += _nodesToBake.Count(x => !x.IsGrass && x.IsToSyncNormals);
             }
 
             if (SpecialGrassAmbient) {
                 _progressTotal += _nodesToBake.Count(x => x.IsGrass);
-            }
+            }*/
 
             Trace.WriteLine("Total meshes to bake: " + _nodesToBake.Length);
             Trace.WriteLine("Total vertices to bake: " + _progressTotal);
@@ -648,9 +798,9 @@ namespace CustomTracksBakery {
             Trace.WriteLine($"Taken {_baked} samples: {_stopwatchSamples.Elapsed.ToReadableTime()} "
                     + $"({_baked / _stopwatchSamples.Elapsed.TotalMinutes / 1000:F0}k samples per minute)");
             Trace.WriteLine(
-                    $"Smoothing: {_stopwatchSmoothing.Elapsed.TotalSeconds:F3} s (max. marged at once: {_mergedMaximum}, avg.: {(float)_mergedCount / _mergedVertices:F1})");
+                    $"Smoothing: {_stopwatchSmoothing.Elapsed.TotalSeconds:F3} s (max. merged at once: {_mergedMaximum}, avg.: {(float)_mergedCount / _mergedVertices:F1})");
 
-            if (SyncNormalsFilter != null) {
+            /*if (SyncNormalsFilter != null) {
                 Trace.WriteLine("Normals syncronization…");
                 SyncNormalsGpu();
             }
@@ -659,7 +809,7 @@ namespace CustomTracksBakery {
                 Trace.WriteLine("Grass syncronization…");
                 InitializeNodes(camera);
                 SyncGrassGpu();
-            }
+            }*/
 
             if (_createPatch) {
                 using (var data = new MemoryStream())
@@ -689,6 +839,10 @@ namespace CustomTracksBakery {
                             if (i == 9) throw;
                             Thread.Sleep(10);
                         }
+                    }
+
+                    if (resultStream == null) {
+                        throw new NullReferenceException("That shouldn’t be happening");
                     }
 
                     using (var stream = resultStream)
@@ -724,7 +878,7 @@ namespace CustomTracksBakery {
                 if (!WriteNode_Header(writer, node, PatchEntryType.Normal)) return;
                 for (var i = 0; i < node.OriginalNode.Vertices.Length; i++) {
                     var vertex = node.OriginalNode.Vertices[i];
-                    // Trace.WriteLine("Writing normal: " + node.Object.OriginalNode.Name + ", ID: " + i + ", normal: " + vertex.Normal.ToVector3());
+                    // Trace.WriteLine("Writing normal: " + node.Object.Name + ", ID: " + i + ", normal: " + vertex.Normal.ToVector3());
                     writer.WriteHalf(vertex.Normal[0]);
                     writer.WriteHalf(vertex.Normal[1]);
                     writer.WriteHalf(vertex.Normal[2]);
@@ -759,9 +913,9 @@ namespace CustomTracksBakery {
 
         private static bool WriteNode_Header(ExtendedBinaryWriter writer, BakedObject node, PatchEntryType mode) {
             var vertices = node.OriginalNode.Vertices;
-            if (vertices.Length == 0 || node.OriginalNode.Name == null) return false;
+            if (vertices.Length == 0 || node.Name.Length == 0) return false;
 
-            writer.Write(node.OriginalNode.Name);
+            writer.Write(node.Name);
 
             writer.Write((int)mode);
             writer.Write(vertices[0].Position[0]);
@@ -861,6 +1015,16 @@ namespace CustomTracksBakery {
             Trace.WriteLine($"Normals synced: {s.Elapsed.ToReadableTime()}");
         }
 
+        private static void AddToVector(float[] destination, ref Vector3 value) {
+            value.X += destination[0];
+            value.Y += destination[1];
+            value.Z += destination[2];
+        }
+
+        private static float Dot(float[] a, float[] b) {
+            return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
         private static void SetVector(float[] destination, Vector3 value) {
             destination[0] = value.X;
             destination[1] = value.Y;
@@ -903,6 +1067,7 @@ namespace CustomTracksBakery {
         public float MergeThreshold = 0.1f;
         public int QueueSize = 50;
         public int SampleResolution = 32;
+        public float OccludersSplitThreshold = 0f;
 
         public bool DebugMode;
         public Vector3 DebugPoint;
@@ -930,7 +1095,7 @@ namespace CustomTracksBakery {
 
         private void BakeNode(BakedObject prepared, FpsCamera camera, BakeMode mode) {
             if (mode == BakeMode.Normal && SpecialGrassAmbient && prepared.IsGrass) {
-                Trace.WriteLine("Skipping grass: " + prepared.OriginalNode.Name);
+                Trace.WriteLine("Skipping grass: " + prepared.Name);
                 return;
             }
 
@@ -949,7 +1114,7 @@ namespace CustomTracksBakery {
             }).ToArray();
 
             _stopwatchSmoothing.Start();
-            var size = prepared.Vertices.Length;
+            var size = prepared.OriginalNode.Vertices.Length;
             var groups = new List<VertexGroup>(size);
             var sorted = new List<int>(size);
             var threshold = MergeThreshold;
@@ -958,9 +1123,9 @@ namespace CustomTracksBakery {
                 sorted.Add(i);
             }
 
-            sorted.Sort((left, right) => {
-                var pa = prepared.Vertices[left].Position.X;
-                var pb = prepared.Vertices[right].Position.X;
+            /*sorted.Sort((left, right) => {
+                var pa = prepared.OriginalNode.Vertices[left].Position[0];
+                var pb = prepared.OriginalNode.Vertices[right].Position[0];
                 if (float.IsNaN(pa)) return float.IsNaN(pb) ? 0 : 1;
                 if (float.IsNaN(pb)) return -1;
                 if (Math.Abs(pa - pb) < 0.001f) return 0;
@@ -971,28 +1136,28 @@ namespace CustomTracksBakery {
                 var i = sorted[iIndex];
                 if (i == -1) continue;
 
-                var p = prepared.Vertices[i].Position;
-                var m = prepared.Vertices[i].Normal;
+                var p = prepared.OriginalNode.Vertices[i].Position;
+                var m = prepared.OriginalNode.Vertices[i].Normal;
                 var g = new VertexGroup();
 
                 g.Indices.Add(i);
-                g.Position += p;
-                g.Normal += m;
+                AddToVector(p, ref g.Position);
+                AddToVector(m, ref g.Normal);
 
                 for (int jIndex = iIndex + 1, x = Math.Min(iIndex + MergeVertices, size); jIndex < x; jIndex++) {
                     var j = sorted[jIndex];
                     if (j == -1) continue;
 
-                    var jp = prepared.Vertices[j].Position;
-                    var jm = prepared.Vertices[j].Normal;
-                    if (jp.X < p.X - threshold || jp.X > p.X + threshold
-                            || jp.Y < p.Y - threshold || jp.Y > p.Y + threshold
-                            || jp.Z < p.Z - threshold || jp.Z > p.Z + threshold
-                            || Vector3.Dot(m, jm) < 0.5f) continue;
+                    var jp = prepared.OriginalNode.Vertices[j].Position;
+                    var jm = prepared.OriginalNode.Vertices[j].Normal;
+                    if (jp[0] < p[0] - threshold || jp[0] > p[0] + threshold
+                            || jp[1] < p[1] - threshold || jp[1] > p[1] + threshold
+                            || jp[2] < p[2] - threshold || jp[2] > p[2] + threshold
+                            || Dot(jm, m) < 0.5f) continue;
 
                     g.Indices.Add(j);
-                    g.Position += jp;
-                    g.Normal += jm;
+                    AddToVector(jp, ref g.Position);
+                    AddToVector(jm, ref g.Normal);
                     sorted[jIndex] = -1;
                 }
 
@@ -1012,9 +1177,64 @@ namespace CustomTracksBakery {
                 if (g.Indices.Count > _mergedMaximum) _mergedMaximum = g.Indices.Count;
                 _mergedCount += g.Indices.Count;
                 _mergedVertices++;
+            }*/
+
+            var obj = prepared;
+            var length = size;
+
+            sorted.Sort((left, right) => {
+                var pa = obj.Vertices[left].Position.X;
+                var pb = obj.Vertices[right].Position.X;
+                if (float.IsNaN(pa)) return float.IsNaN(pb) ? 0 : 1;
+                if (float.IsNaN(pb)) return -1;
+                if (Math.Abs(pa - pb) < 0.001f) return 0;
+                return pa > pb ? 1 : -1;
+            });
+
+            for (var iIndex = 0; iIndex < length; iIndex++) {
+                var i = sorted[iIndex];
+                if (i == -1) continue;
+
+                var p = obj.Vertices[i].Position;
+                var m = obj.Vertices[i].Normal;
+                var g = new VertexGroup();
+
+                g.Indices.Add(i);
+                g.Position += p;
+                g.Normal += m;
+
+                for (int jIndex = iIndex + 1, x = Math.Min(iIndex + MergeVertices, length); jIndex < x; jIndex++) {
+                    var j = sorted[jIndex];
+                    if (j == -1) continue;
+
+                    var jp = obj.Vertices[j].Position;
+                    var jm = obj.Vertices[j].Normal;
+                    if (jp.X < p.X - threshold || jp.X > p.X + threshold
+                            || jp.Y < p.Y - threshold || jp.Y > p.Y + threshold
+                            || jp.Z < p.Z - threshold || jp.Z > p.Z + threshold
+                            || Vector3.Dot(m, jm) < 0.5f) continue;
+
+                    g.Indices.Add(j);
+                    g.Position += jp;
+                    g.Normal += jm;
+                    sorted[jIndex] = -1;
+                }
+
+                g.Position /= g.Indices.Count;
+                g.Normal /= g.Indices.Count;
+                groups.Add(g);
+
+                if (g.Indices.Count > _mergedMaximum) _mergedMaximum = g.Indices.Count;
+                _mergedCount += g.Indices.Count;
+                _mergedVertices++;
             }
+
             _stopwatchSmoothing.Stop();
-            if (groups.Count == 0) return;
+
+            if (groups.Count == 0) {
+                _progressBaked += prepared.OriginalNode.TotalVerticesCount;
+                return;
+            }
 
             var s = Stopwatch.StartNew();
             _stopwatchSamples.Start();
@@ -1072,7 +1292,7 @@ namespace CustomTracksBakery {
             var speed = _progressBaked / _progressStopwatch.Elapsed.TotalSeconds;
             var leftSeconds = TimeSpan.FromSeconds(1.2f * (_progressTotal - _progressBaked) / speed);
 
-            Trace.WriteLine($"{prepared.OriginalNode.Name}: taken {groups.Count} samples: {s.Elapsed.TotalMilliseconds:F1} ms "
+            Trace.WriteLine($"{prepared.Name}: taken {groups.Count} samples: {s.Elapsed.TotalMilliseconds:F1} ms "
                     + $"({groups.Count / s.Elapsed.TotalMinutes / 1000:F0}k samples per minute; "
                     + $"progress: {100d * _progressBaked / _progressTotal:F1}%; ETA: {leftSeconds.ToReadableTime()})");
         }
@@ -1193,7 +1413,7 @@ namespace CustomTracksBakery {
                     if (n.Length() > 0.001f) {
                         n.Normalize();
                         for (var i = ind.Count - 1; i >= 0; i--) {
-                            // Trace.WriteLine("Storing normal: " + obj.OriginalNode.Name + ", ID: " + groups[t.VertexId].Indices[i] + ", normal: " + n);
+                            // Trace.WriteLine("Storing normal: " + obj.Name + ", ID: " + groups[t.VertexId].Indices[i] + ", normal: " + n);
                             SetVector(obj.OriginalNode.Vertices[groups[t.VertexId].Indices[i]].Normal, n);
                         }
                     }
@@ -1216,7 +1436,7 @@ namespace CustomTracksBakery {
                             for (var i = ind.Count - 1; i >= 0; i--) {
                                 var avg = (a.X + a.Y + a.Z) / 3.0f;
                                 var g = ind[i];
-                                var v = Vector3.Normalize(obj.Vertices[g].Tangent) * (0.5f + avg * 0.5f);
+                                var v = Vector3.Normalize(obj.OriginalNode.Vertices[g].TangentU.ToVector3()) * (0.5f + avg * 0.5f);
                                 SetVector(obj.OriginalNode.Vertices[g].TangentU, v);
                             }
                             break;

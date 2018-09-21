@@ -60,7 +60,7 @@ namespace CustomTracksBakery {
 
         public static bool GrassPass;
 
-        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
+        public void Set(IDeviceContextHolder contextHolder) {
             if (!_init) {
                 _init = true;
 
@@ -78,19 +78,27 @@ namespace CustomTracksBakery {
             _effect.FxDiffuseMap.SetResource(_txDiffuseView);
             _effect.FxAlphaRef.Set(_kn5Material?.AlphaTested == true ? 0.5f : -0.5f);
 
+            if (!GrassPass) {
+                if (_multilayer) {
+                    _effect.FxMagicMult.Set(_propMagicMult * _propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
+                    _effect.FxMultRGBA.Set(_propMultilayerMult);
+                    _effect.FxMaskMap.SetResource(_txMaskView);
+                    _effect.FxDetailRMap.SetResource(_txDetailRView);
+                    _effect.FxDetailGMap.SetResource(_txDetailGView);
+                    _effect.FxDetailBMap.SetResource(_txDetailBView);
+                    _effect.FxDetailAMap.SetResource(_txDetailAView);
+                } else {
+                    _effect.FxKsDiffuse.Set(_propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
+                }
+            }
+        }
+
+        public void Draw(IDeviceContextHolder contextHolder, int indices, SpecialRenderMode mode) {
             if (GrassPass) {
                 _effect.TechPerPixel_GrassPass.DrawAllPasses(contextHolder.DeviceContext, indices);
             } else if (_multilayer) {
-                _effect.FxMagicMult.Set(_propMagicMult * _propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
-                _effect.FxMultRGBA.Set(_propMultilayerMult);
-                _effect.FxMaskMap.SetResource(_txMaskView);
-                _effect.FxDetailRMap.SetResource(_txDetailRView);
-                _effect.FxDetailGMap.SetResource(_txDetailGView);
-                _effect.FxDetailBMap.SetResource(_txDetailBView);
-                _effect.FxDetailAMap.SetResource(_txDetailAView);
                 (SecondPass ? _effect.TechMultiLayer_SecondPass : _effect.TechMultiLayer).DrawAllPasses(contextHolder.DeviceContext, indices);
             } else {
-                _effect.FxKsDiffuse.Set(_propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
                 (SecondPass ? _effect.TechPerPixel_SecondPass :_effect.TechPerPixel).DrawAllPasses(contextHolder.DeviceContext, indices);
             }
         }
