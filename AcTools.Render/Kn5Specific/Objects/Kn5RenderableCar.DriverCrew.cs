@@ -57,7 +57,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var driver = new Kn5RenderableDriver(Kn5.FromFile(_driverModelFilename), Matrix.Translation(driverDescription.Offset),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
-                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, _converter) {
                         LiveReload = LiveReload,
                         MagickOverride = MagickOverride
                     };
@@ -301,7 +301,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             _crewMain = new Kn5RenderableSkinnable(Kn5.FromFile(filename), Matrix.RotationY(MathF.PI) * Matrix.Translation(-1.6f, 0f, 2f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
-                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, _converter) {
                         LiveReload = LiveReload,
                         MagickOverride = MagickOverride
                     };
@@ -322,7 +322,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             _crewTyres = new Kn5RenderableSkinnable(Kn5.FromFile(filename), Matrix.RotationY(-MathF.PI * 0.6f) * Matrix.Translation(1.9f, 0f, 0.8f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
-                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, _converter) {
                         LiveReload = LiveReload,
                         MagickOverride = MagickOverride
                     };
@@ -336,7 +336,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             _crewStuff = new Kn5RenderableSkinnable(Kn5.FromBytes(data), Matrix.RotationY(-MathF.PI * 0.5f) * Matrix.Translation(0.09f, 0f, 0.08f),
                     _currentSkin == null ? null : Path.Combine(_skinsDirectory, _currentSkin),
-                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, AllowSkinnedObjects) {
+                    AsyncTexturesLoading, _asyncOverrideTexturesLoading, _converter) {
                         LiveReload = LiveReload,
                         MagickOverride = MagickOverride
                     };

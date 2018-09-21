@@ -97,8 +97,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public string RootDirectory { get; }
 
-        public Kn5RenderableShowroom(Kn5 kn5, Matrix matrix, TexturesProviderBase loader, bool allowSkinnedObjects = false)
-                : base(kn5, matrix, false, allowSkinnedObjects) {
+        public Kn5RenderableShowroom(Kn5 kn5, Matrix matrix, TexturesProviderBase loader)
+                : base(kn5, matrix, false, Kn5ToRenderableSimpleConverter.Instance) {
             RootDirectory = Path.GetDirectoryName(kn5.OriginalFilename);
             _loader = loader;
         }
@@ -115,11 +115,11 @@ namespace AcTools.Render.Kn5Specific.Objects {
             DisposeHelper.Dispose(ref _loader);
         }
 
-        public static Kn5RenderableShowroom Load(Device device, string filename, Matrix matrix, bool allowSkinnedObjects = false) {
+        public static Kn5RenderableShowroom Load(Device device, string filename, Matrix matrix) {
             var loader = new TextureLoader(device);
 
             try {
-                return new Kn5RenderableShowroom(Kn5.FromFile(filename, loader), matrix, loader, allowSkinnedObjects);
+                return new Kn5RenderableShowroom(Kn5.FromFile(filename, loader), matrix, loader);
             } catch {
                 loader.Dispose();
                 throw;

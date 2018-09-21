@@ -38,6 +38,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private readonly string _rootDirectory, _skinsDirectory;
         private readonly bool _scanForSkins;
 
+        [NotNull]
+        private readonly IKn5ToRenderableConverter _converter;
+
         private readonly CarData _carData;
         private Kn5OverrideableTexturesProvider _texturesProvider;
 
@@ -52,14 +55,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public Kn5RenderableCar(CarDescription car, Matrix matrix, [CanBeNull] IAcCarSoundFactory soundFactory, string selectSkin = DefaultSkin,
                 bool scanForSkins = true, float shadowsHeight = 0.0f, bool asyncTexturesLoading = true, bool asyncOverrideTexturesLoading = false,
-                bool allowSkinnedObjects = false)
-                : base(car.Kn5LoadedRequire, matrix, asyncTexturesLoading, allowSkinnedObjects) {
+                IKn5ToRenderableConverter converter = null)
+                : base(car.Kn5LoadedRequire, matrix, asyncTexturesLoading, converter) {
             CreateSoundEmittersAndSmoothers();
 
             _rootDirectory = car.CarDirectoryRequire;
 
             _skinsDirectory = AcPaths.GetCarSkinsDirectory(_rootDirectory);
             _scanForSkins = scanForSkins;
+            _converter = converter ?? Kn5ToRenderableSimpleConverter.Instance;
             _shadowsHeight = shadowsHeight;
             _asyncOverrideTexturesLoading = asyncOverrideTexturesLoading;
 
@@ -231,7 +235,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 if (!_lodsObjects.TryGetValue(value, out _currentLodObject)) {
                     var path = Path.GetFullPath(Path.Combine(_rootDirectory, lod.FileName));
                     var kn5 = value == 0 ? _lodA : Kn5.FromFile(path);
-                    _currentLodObject = new LodObject(kn5, AllowSkinnedObjects);
+                    _currentLodObject = new LodObject(kn5, _converter);
                     _lodsObjects[value] = _currentLodObject;
                     Insert(0, _currentLodObject.Renderable);
                     RootObject = _currentLodObject.Renderable;
@@ -269,9 +273,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 Renderable = rootObject;
             }
 
-            public LodObject(Kn5 kn5, bool allowSkinnedObjects) {
+            public LodObject(Kn5 kn5, [NotNull] IKn5ToRenderableConverter converter) {
                 NonDefaultKn5 = kn5;
-                Renderable = (Kn5RenderableList)Convert(kn5.RootNode, allowSkinnedObjects);
+                Renderable = (Kn5RenderableList)converter.Convert(kn5.RootNode);
             }
 
             private Dictionary<string, Matrix> _originalLocalMatrices;

@@ -18,8 +18,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Knh _knh;
 
         public Kn5RenderableDriver(Kn5 kn5, Matrix matrix, string overridesDirectory, bool asyncTexturesLoading = true,
-                bool asyncOverrideTexturesLoading = false, bool allowSkinnedObjects = false)
-                : base(kn5, matrix, overridesDirectory, asyncTexturesLoading, asyncOverrideTexturesLoading, allowSkinnedObjects) {
+                bool asyncOverrideTexturesLoading = false, IKn5ToRenderableConverter converter = null)
+                : base(kn5, matrix, overridesDirectory, asyncTexturesLoading, asyncOverrideTexturesLoading, converter) {
             /*foreach (var dummy in this.GetAllChildren().OfType<RenderableList>()) {
                 dummy.HighlightBoundingBoxes = true;
             }*/

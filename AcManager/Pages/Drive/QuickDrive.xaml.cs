@@ -460,8 +460,9 @@ namespace AcManager.Pages.Drive {
                 }
             }));
 
-            private static T GetRandomObject<T>(BaseAcManager<T> manager, string currentId) where T : AcObjectNew {
-                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault() ?? currentId;
+            private static T GetRandomObject<T>(BaseAcManager<T> manager, [CanBeNull] string currentId) where T : AcObjectNew {
+                var id = manager.WrappersList.Where(x => x.Value.Enabled).Select(x => x.Id).ApartFrom(currentId).RandomElementOrDefault()
+                        ?? currentId ?? string.Empty;
                 return manager.GetById(id) ?? manager.GetDefault();
             }
 
@@ -489,6 +490,7 @@ namespace AcManager.Pages.Drive {
 
             public TrackStateViewModel TrackState => TrackStateViewModel.Instance;
 
+            [CanBeNull]
             public TrackObjectBase SelectedTrack {
                 get => _selectedTrack;
                 set {
@@ -508,7 +510,7 @@ namespace AcManager.Pages.Drive {
             private DelegateCommand _randomTrackCommand;
 
             public DelegateCommand RandomTrackCommand => _randomTrackCommand ?? (_randomTrackCommand = new DelegateCommand(() => {
-                var track = GetRandomObject(TracksManager.Instance, SelectedTrack.Id);
+                var track = GetRandomObject(TracksManager.Instance, SelectedTrack?.Id);
                 SelectedTrack = track.MultiLayouts?.RandomElementOrDefault() ?? track;
             }));
 
@@ -932,14 +934,16 @@ namespace AcManager.Pages.Drive {
 
                 // Null for procedural weathers to be able to specify custom weather coefficient
                 var roadTemperature = CustomRoadTemperature ? CustomRoadTemperatureValue : (double?)null;
+                var track = SelectedTrack ?? TracksManager.Instance.GetDefault();
+                if (track == null) return;
 
                 try {
                     await selectedMode.Drive(new Game.BasicProperties {
                         CarId = selectedCar.Id,
                         CarSkinId = _carSkinId ?? selectedCar.SelectedSkin?.Id,
                         CarSetupId = _carSetupId,
-                        TrackId = SelectedTrack.Id,
-                        TrackConfigurationId = SelectedTrack.LayoutId
+                        TrackId = track.Id,
+                        TrackConfigurationId = track.LayoutId
                     }, AssistsViewModel.ToGameProperties(), new Game.ConditionProperties {
                         AmbientTemperature = temperature,
                         RoadTemperature = roadTemperature,
@@ -1154,6 +1158,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnTrackContextMenu(object sender, ContextMenuButtonEventArgs e) {
+            if (Model.SelectedTrack == null) return;
             var menu = new ContextMenu()
                     .AddItem("Change track", Model.ChangeTrackCommand)
                     .AddItem("Change track to random", Model.RandomTrackCommand, @"Ctrl+Alt+2")

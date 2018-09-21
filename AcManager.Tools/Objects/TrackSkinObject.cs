@@ -78,6 +78,7 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
+        [NotNull]
         public override string DisplayName => string.IsNullOrWhiteSpace(Name) ? Id : Name;
 
         protected override void InitializeLocations() {

@@ -30,6 +30,12 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         private readonly List<PreviousCar> _previousCars = new List<PreviousCar>(2);
 
+        private IKn5ToRenderableConverter GetKn5Converter() {
+            return AllowSkinnedObjects
+                    ? (IKn5ToRenderableConverter)Kn5ToRenderableSkinnedConverter.Instance
+                    : Kn5ToRenderableSimpleConverter.Instance;
+        }
+
         public class CarSlot : INotifyPropertyChanged, IDisposable {
             private static int _id;
             public readonly int Id;
@@ -61,7 +67,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                             _selectSkinLater ? _selectSkin : Kn5RenderableCar.DefaultSkin,
                             asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                             asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
-                            allowSkinnedObjects: _renderer.AllowSkinnedObjects);
+                            converter: _renderer.GetKn5Converter());
                     CarNode = carNode;
                     _renderer.CopyValues(carNode, null);
 
@@ -268,7 +274,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                             _selectSkinLater ? _selectSkin : skinId,
                             asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                             asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
-                            allowSkinnedObjects: _renderer.AllowSkinnedObjects);
+                            converter: _renderer.GetKn5Converter());
                     _selectSkinLater = false;
                     _renderer.CopyValues(loaded, CarNode);
 
@@ -345,7 +351,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                                 _selectSkinLater ? _selectSkin : skinId,
                                 asyncTexturesLoading: _renderer.AsyncTexturesLoading,
                                 asyncOverrideTexturesLoading: _renderer.AsyncOverridesLoading,
-                                allowSkinnedObjects: _renderer.AllowSkinnedObjects);
+                                converter: _renderer.GetKn5Converter());
                         _selectSkinLater = false;
                         if (cancellationToken.IsCancellationRequested) return;
 

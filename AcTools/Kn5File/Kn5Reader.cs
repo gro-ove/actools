@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 namespace AcTools.Kn5File {
-    internal sealed class Kn5Reader : ReadAheadBinaryReader {
+    public sealed class Kn5Reader : ReadAheadBinaryReader {
         public Kn5Reader(string filename, bool withoutHeader = false) : base(filename) {
             if (!withoutHeader && new string(ReadChars(6)) != "sc6969") {
                 throw new Exception("Not a valid KN5 file.");
@@ -94,7 +94,7 @@ namespace AcTools.Kn5File {
                     Texture = ReadString()
                 };
             }
-            
+
             return material;
         }
 
@@ -156,13 +156,13 @@ namespace AcTools.Kn5File {
                     for (var i = 0; i < node.Indices.Length; i++) {
                         node.Indices[i] = ReadUInt16();
                     }
-            
+
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
-                    
+
                     node.LodIn = ReadSingle();
                     node.LodOut = ReadSingle();
-                    
+
                     node.BoundingSphereCenter = ReadSingle3D();
                     node.BoundingSphereRadius = ReadSingle();
 
@@ -173,7 +173,7 @@ namespace AcTools.Kn5File {
                     node.CastShadows = ReadBoolean();
                     node.IsVisible = ReadBoolean();
                     node.IsTransparent = ReadBoolean();
-            
+
                     node.Bones = new Kn5Node.Bone[ReadUInt32()];
                     for (var i = 0; i < node.Bones.Length; i++) {
                         node.Bones[i] = new Kn5Node.Bone {
@@ -181,7 +181,7 @@ namespace AcTools.Kn5File {
                             Transform = ReadMatrix()
                         };
                     }
-            
+
                     node.Vertices = new Kn5Node.Vertex[ReadUInt32()];
                     node.VerticeWeights = new Kn5Node.VerticeWeight[node.Vertices.Length];
                     for (var i = 0; i < node.Vertices.Length; i++) {
@@ -200,7 +200,7 @@ namespace AcTools.Kn5File {
                             Indices = ReadSingle4D()
                         };
                     }
-            
+
                     node.Indices = new ushort[ReadUInt32()];
                     for (var i = 0; i < node.Indices.Length; i++) {
                         node.Indices[i] = ReadUInt16();
@@ -270,13 +270,13 @@ namespace AcTools.Kn5File {
                     node.Vertices = new Kn5Node.Vertex[0];
                     node.VerticeWeights = new Kn5Node.VerticeWeight[0];
                     node.Indices = new ushort[0];
-                    
+
                     var bones = ReadUInt32();
                     for (var i = 0; i < bones; i++) {
                         SkipString();
                         Skip(64);
                     }
-                    
+
                     Skip((int)(76 * ReadUInt32()));
                     Skip((int)(2 * ReadUInt32()));
 
@@ -290,7 +290,7 @@ namespace AcTools.Kn5File {
 
             return node;
         }
-        
+
         public int SkipNode() {
             var nodeClass = ReadNodeClass();
             SkipString();

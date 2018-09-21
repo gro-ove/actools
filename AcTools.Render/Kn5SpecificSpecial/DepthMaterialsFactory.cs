@@ -211,10 +211,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             base.Dispose();
         }
 
-        public static IRenderableObject Convert(Kn5Node node) {
+        AcDynamicMaterialParams IKn5RenderableObject.DynamicMaterialParams { get; } = null;
+    }
+
+    public class Kn5DepthOnlyConverter : IKn5ToRenderableConverter {
+        public static Kn5DepthOnlyConverter Instance { get; } = new Kn5DepthOnlyConverter();
+
+        public IRenderableObject Convert(Kn5Node node) {
             switch (node.NodeClass) {
                 case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node, Convert);
+                    return new Kn5RenderableList(node, this);
 
                 case Kn5NodeClass.Mesh:
                 case Kn5NodeClass.SkinnedMesh:
@@ -224,7 +230,5 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        AcDynamicMaterialParams IKn5RenderableObject.DynamicMaterialParams { get; } = null;
     }
 }

@@ -108,13 +108,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         public float TimeFactor {
-            get { return _mainHolder.TimeFactor; }
+            get => _mainHolder.TimeFactor;
             set {}
         }
     }
 
     public class Kn5RenderableFile : RenderableList, IKn5Model {
-        protected readonly bool AllowSkinnedObjects;
+        // protected readonly bool AllowSkinnedObjects;
         protected readonly bool AsyncTexturesLoading;
 
         public readonly Kn5 OriginalFile;
@@ -146,12 +146,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public List<IKn5RenderableObject> Meshes => _meshes ?? (_meshes = RootObject.GetAllChildren().OfType<IKn5RenderableObject>().ToList());
 
-        public Kn5RenderableFile(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, bool allowSkinnedObjects = false) : base(kn5.OriginalFilename, matrix) {
-            AllowSkinnedObjects = allowSkinnedObjects;
+        public Kn5RenderableFile(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, IKn5ToRenderableConverter converter = null) : base(kn5.OriginalFilename, matrix) {
+            // AllowSkinnedObjects = allowSkinnedObjects;
             OriginalFile = kn5;
             AsyncTexturesLoading = asyncTexturesLoading;
 
-            var obj = Convert(kn5.RootNode, AllowSkinnedObjects);
+            var obj = (converter ?? Kn5ToRenderableSimpleConverter.Instance).Convert(kn5.RootNode);
             RootObject = obj as RenderableList ?? new RenderableList { obj };
             Add(RootObject);
         }
@@ -258,25 +258,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
             base.Dispose();
             DisposeHelper.Dispose(ref SharedMaterials);
             DisposeHelper.Dispose(ref TexturesProvider);
-        }
-
-        protected static IRenderableObject Convert(Kn5Node node, bool allowSkinnedObjects) {
-            switch (node.NodeClass) {
-                case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node, n => Convert(n, allowSkinnedObjects));
-
-                case Kn5NodeClass.Mesh:
-                    return new Kn5RenderableObject(node);
-
-                case Kn5NodeClass.SkinnedMesh:
-                    if (allowSkinnedObjects) {
-                        return new Kn5SkinnedObject(node);
-                    }
-                    return new Kn5RenderableObject(node);
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
 
         public virtual IKn5RenderableObject GetNodeByName(string name) {

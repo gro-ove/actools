@@ -5,6 +5,7 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
+using AcTools.Utils.Helpers;
 using SlimDX;
 
 namespace AcTools.Render.Kn5Specific.Objects {
@@ -15,8 +16,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private bool _dirTargetSet;
         private RenderableList _dirTarget;
 
-        public Kn5RenderableList(Kn5Node node, Func<Kn5Node, IRenderableObject> convert)
-                : base(node.Name, node.Transform.ToMatrix(), node.Children.Count == 0 ? new IRenderableObject[0] : node.Children.Select(convert)) {
+        public Kn5RenderableList(Kn5Node node, IKn5ToRenderableConverter converter)
+                : base(node.Name, node.Transform.ToMatrix(),
+                        node.Children.Count == 0 ? new IRenderableObject[0] : node.Children.Select(converter.Convert).NonNull()) {
             OriginalNode = node;
             if (IsEnabled && (!OriginalNode.Active || OriginalNode.Name == "CINTURE_ON" || OriginalNode.Name.StartsWith("DAMAGE_GLASS"))) {
                 IsEnabled = false;

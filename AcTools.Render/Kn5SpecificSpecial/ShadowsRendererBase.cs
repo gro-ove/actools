@@ -50,7 +50,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void InitializeInner() {
             DeviceContextHolder.Set<IMaterialsFactory>(new DepthMaterialsFactory());
             DeviceContextHolder.Set<IAlphaTexturesProvider>(new AlphaTexturesProvider(Kn5));
-            CarNode = (RenderableList)Kn5RenderableDepthOnlyObject.Convert(Kn5.RootNode);
+            CarNode = (RenderableList)Kn5DepthOnlyConverter.Instance.Convert(Kn5.RootNode);
             Scene.Add(CarNode);
 
             ApplyCarState();

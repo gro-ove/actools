@@ -18,7 +18,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private string _overridesDirectory;
 
         public Kn5RenderableSkinnable(Kn5 kn5, Matrix matrix, string overridesDirectory, bool asyncTexturesLoading = true,
-                bool asyncOverrideTexturesLoading = false, bool allowSkinnedObjects = false) : base(kn5, matrix, asyncTexturesLoading, allowSkinnedObjects) {
+                bool asyncOverrideTexturesLoading = false, IKn5ToRenderableConverter converter = null) : base(kn5, matrix, asyncTexturesLoading, converter) {
             _overridesDirectory = overridesDirectory;
             _asyncOverrideTexturesLoading = asyncOverrideTexturesLoading;
         }

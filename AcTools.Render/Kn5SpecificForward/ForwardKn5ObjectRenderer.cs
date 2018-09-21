@@ -284,7 +284,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
         [ContractAnnotation("showroomKn5:null => null; showroomKn5:notnull => notnull")]
         private Kn5RenderableShowroom LoadShowroom(string showroomKn5) {
-            return showroomKn5 != null ? Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity, AllowSkinnedObjects) : null;
+            return showroomKn5 != null ? Kn5RenderableShowroom.Load(Device, showroomKn5, Matrix.Identity) : null;
         }
 
         public string CurrentShowroomKn5 { get; private set; }

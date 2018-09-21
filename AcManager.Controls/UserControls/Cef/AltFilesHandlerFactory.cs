@@ -13,6 +13,7 @@ namespace AcManager.Controls.UserControls.Cef {
         public const string SchemeName = "acfile";
 
         public IResourceHandler Create(IBrowser browser, IFrame frame, string schemeName, IRequest request) {
+            // Logging.Debug($"schemeName={schemeName}, url={request.Url}");
             if (schemeName == SchemeName) {
                 try {
                     var slice = SchemeName.Length + 4;

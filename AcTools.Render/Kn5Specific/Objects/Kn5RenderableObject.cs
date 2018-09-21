@@ -61,10 +61,6 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private IRenderableMaterial Material => _debugMaterial ?? _mirrorMaterial ?? _material;
 
-        public IRenderableMaterial GetBaseMaterial() {
-            return _material;
-        }
-
         [CanBeNull]
         private IRenderableMaterial _mirrorMaterial;
 

@@ -245,6 +245,7 @@
     <Compile Include="Kn5Specific\Objects\ExtraModels.cs" />
     <Compile Include="Kn5Specific\Objects\IExtraModelProvider.cs" />
     <Compile Include="Kn5Specific\Objects\IKn5RenderableObject.cs" />
+    <Compile Include="Kn5Specific\Objects\IKn5ToRenderableConverter.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.AmbientShadows.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.Cameras.cs" />
     <Compile Include="Kn5Specific\Objects\Kn5RenderableCar.DriverCrew.cs" />

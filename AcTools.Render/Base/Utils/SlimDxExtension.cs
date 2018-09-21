@@ -38,6 +38,15 @@ namespace AcTools.Render.Base.Utils {
             if (bb.Minimum.Z > v.Z) bb.Minimum.Z = v.Z;
         }
 
+        public static void ExtendBoundingBox(this float[] v, ref BoundingBox bb) {
+            if (bb.Maximum.X < v[0]) bb.Maximum.X = v[0];
+            if (bb.Maximum.Y < v[1]) bb.Maximum.Y = v[1];
+            if (bb.Maximum.Z < v[2]) bb.Maximum.Z = v[2];
+            if (bb.Minimum.X > v[0]) bb.Minimum.X = v[0];
+            if (bb.Minimum.Y > v[1]) bb.Minimum.Y = v[1];
+            if (bb.Minimum.Z > v[2]) bb.Minimum.Z = v[2];
+        }
+
         public static void ExtendBoundingBox(this BoundingBox b, ref BoundingBox bb) {
             if (bb.Maximum.X < b.Maximum.X) bb.Maximum.X = b.Maximum.X;
             if (bb.Maximum.Y < b.Maximum.Y) bb.Maximum.Y = b.Maximum.Y;
@@ -95,6 +104,10 @@ namespace AcTools.Render.Base.Utils {
 
         public static float[] ToArray(this Vector3 vec) {
             return new []{ vec.X, vec.Y, vec.Z };
+        }
+
+        public static float GetValue(this Vector3 vec, int index) {
+            return index == 0 ? vec.X : index == 1 ? vec.Y : vec.Z;
         }
 
         public static Color ToDrawingColor(this Vector3 color) {

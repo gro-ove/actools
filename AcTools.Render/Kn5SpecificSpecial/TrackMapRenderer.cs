@@ -403,10 +403,10 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 });
                 _aiLaneDirty = false;
             } else if (_kn5 != null) {
-                RootNode = ToRenderableList(Convert(_kn5.RootNode));
+                RootNode = ToRenderableList(Kn5DepthOnlyConverter.Instance.Convert(_kn5.RootNode));
             } else if (_description != null) {
                 RootNode = new RenderableList("_root", Matrix.Identity, _description.GetEntries().Select(x => {
-                    var node = ToRenderableList(Convert(x.Kn5.RootNode));
+                    var node = ToRenderableList(Kn5DepthOnlyConverter.Instance.Convert(x.Kn5.RootNode));
                     node.LocalMatrix = x.Matrix;
                     return node;
                 }));
@@ -416,24 +416,6 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             _buffer0 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _buffer1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
-        }
-
-        private static IRenderableObject Convert(Kn5Node node) {
-            switch (node.NodeClass) {
-                case Kn5NodeClass.Base:
-                    return new Kn5RenderableList(node, Convert) {
-                        IsEnabled = true
-                    };
-
-                case Kn5NodeClass.Mesh:
-                case Kn5NodeClass.SkinnedMesh:
-                    return new Kn5RenderableDepthOnlyObject(node, true) {
-                        IsEnabled = true
-                    };
-
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
         }
 
         protected override void ResizeInner() {
