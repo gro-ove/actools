@@ -438,6 +438,7 @@ namespace AcManager.Pages.Drive {
                                 IsTimeOutOfWeatherRange = fits == false;
                             }
                         } else if (fits != true) {
+                            Logging.Warning("Time doesn’t fit: " + _time + ", diapason: " + weather.TimeDiapason);
                             if (!weather.IsWeatherTimeUnusual()) {
                                 _previousWeatherObject = weather;
                             }

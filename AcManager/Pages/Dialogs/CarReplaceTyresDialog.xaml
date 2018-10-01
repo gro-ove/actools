@@ -267,8 +267,7 @@
         </Border>
       </DataTemplate>
 
-      <mui:BooleanSwitch x:Key="ReplaceMode" d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" Loaded="OnReplaceModeLoaded"
-          Value="{Binding TyresLoadingProgress.IsReady}">
+      <mui:BooleanSwitch x:Key="ReplaceMode" d:DataContext="{d:DesignInstance di:CarReplaceTyresDialog+ViewModel}" Loaded="OnReplaceModeLoaded">
         <mui:BooleanSwitch.True>
           <DockPanel>
             <DockPanel DockPanel.Dock="Top" Margin="8 -1 0 8">

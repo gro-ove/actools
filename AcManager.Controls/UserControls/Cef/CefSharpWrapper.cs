@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -239,8 +240,10 @@ namespace AcManager.Controls.UserControls.Cef {
 
         public bool CanConvertFilenames => true;
 
+        private static readonly Regex PathUrlFix = new Regex("^file(?=://)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         public string ConvertFilename(string filename) {
-            return filename == null ? null : new Uri(filename, UriKind.Absolute).AbsoluteUri.Replace(@"file", AltFilesHandlerFactory.SchemeName);
+            return filename == null ? null : PathUrlFix.Replace(new Uri(filename, UriKind.Absolute).AbsoluteUri, AltFilesHandlerFactory.SchemeName);
         }
 
         public ICommand BackCommand => _inner?.BackCommand ?? UnavailableCommand.Instance;

@@ -253,6 +253,7 @@ namespace AcTools.Processes {
             [CanBeNull]
             public BenchmarkProperties BenchmarkProperties;
 
+            [ItemCanBeNull]
             public List<object> AdditionalPropertieses = new List<object>();
 
             public DateTime StartTime { get; internal set; }
@@ -391,7 +392,7 @@ namespace AcTools.Processes {
 
             public string GetDescription() {
                 return $"(Basic={(BasicProperties != null ? "Race" : ReplayProperties != null ? "Replay" : BenchmarkProperties != null ? "Benchmark" : "Unknown")}, " +
-                        $"Mode={ModeProperties?.GetType().Name}, Additional=[{AdditionalPropertieses.Select(x => x.GetType().Name).JoinToString(", ")}])";
+                        $"Mode={ModeProperties?.GetType().Name}, Additional=[{AdditionalPropertieses.Select(x => x?.GetType().Name).JoinToString(", ")}])";
 
             }
         }

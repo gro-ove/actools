@@ -90,7 +90,7 @@ namespace AcManager.Tools {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
-                    var directory = WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName());
+                    var directory = Path.Combine(WeatherManager.Instance.Directories.GetLocation(WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true));
                     Directory.CreateDirectory(directory);
 
                     var written = 0;

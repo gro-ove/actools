@@ -9,10 +9,12 @@ namespace AcManager.Tools.Objects {
         /// Meters!
         /// </summary>
         public double TotalDrivenDistance => _totalDrivenDistance ?? (_totalDrivenDistance = PlayerStatsManager.Instance.GetDistanceDrivenByCar(Id)).Value;
+        public double TotalDrivenDistanceKm => TotalDrivenDistance / 1e3;
 
         public void RaiseTotalDrivenDistanceChanged() {
             _totalDrivenDistance = null;
             OnPropertyChanged(nameof(TotalDrivenDistance));
+            OnPropertyChanged(nameof(TotalDrivenDistanceKm));
         }
 
         private double? _maxSpeedAchieved;

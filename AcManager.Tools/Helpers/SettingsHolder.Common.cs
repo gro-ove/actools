@@ -25,6 +25,30 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _useImperialUnits;
+
+            public bool UseImperialUnits {
+                get => _useImperialUnits ?? (_useImperialUnits = ValuesStorage.Get("Settings.CommonSettings.UseImperialUnits", false)).Value;
+                set {
+                    if (Equals(value, _useImperialUnits)) return;
+                    _useImperialUnits = value;
+                    ValuesStorage.Set("Settings.CommonSettings.UseImperialUnits", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            public static string DistanceFormat => Common.UseImperialUnits ? "{0:F1} mi" : "{0:F1} km";
+            public static string DistancePostfix => Common.UseImperialUnits ? "mi" : "km";
+            public static string SpaceDistancePostfix => Common.UseImperialUnits ? " mi" : " km";
+            public static string SpeedFormat => Common.UseImperialUnits ? "{0:F1} mph" : "{0:F1} km/h";
+            public static string SpeedPostfix => Common.UseImperialUnits ? "mph" : "km/h";
+            public static string SpaceSpeedPostfix => Common.UseImperialUnits ? " mph" : " km/h";
+            public static double DistanceMultiplier => Common.UseImperialUnits ? 0.621371 : 1.0;
+            public static string ShortDistanceFormat => Common.UseImperialUnits ? "{0:F1} ft" : "{0:F1} m";
+            public static string ShortDistancePostfix => Common.UseImperialUnits ? "ft" : "m";
+            public static string SpaceShortDistancePostfix => Common.UseImperialUnits ? " ft" : " m";
+            public static double ShortDistanceMultiplier => Common.UseImperialUnits ? 3.28084 : 1.0;
+
             public static PeriodEntry PeriodDisabled = new PeriodEntry(TimeSpan.Zero);
             public static PeriodEntry PeriodStartup = new PeriodEntry(ToolsStrings.Settings_Period_Startup);
 

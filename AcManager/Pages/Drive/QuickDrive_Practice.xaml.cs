@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Profile;
@@ -49,7 +51,7 @@ namespace AcManager.Pages.Drive {
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
-                    string serializedQuickDrivePreset) {
+                    string serializedQuickDrivePreset, IList<object> additionalProperties) {
                 basicProperties.Ballast = PlayerBallast;
                 basicProperties.Restrictor = PlayerRestrictor;
                 await StartAsync(new Game.StartProperties {
@@ -61,10 +63,10 @@ namespace AcManager.Pages.Drive {
                         Penalties = Penalties,
                         StartType = SelectedStartType
                     },
-                    AdditionalPropertieses = {
+                    AdditionalPropertieses = additionalProperties.Concat(new object[] {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),
                         new CarCustomDataHelper()
-                    }
+                    }).ToList()
                 });
             }
         }

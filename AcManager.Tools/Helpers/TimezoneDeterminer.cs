@@ -9,12 +9,12 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers {
     public static class TimeZoneDeterminer {
-        private const string Key = ".TimeZoneDeterminer:";
+        private const string Key = ".TimeZoneDeterminer:v2:";
 
         [ItemCanBeNull]
         public static async Task<TimeZoneInfo> TryToDetermineAsync(GeoTagsEntry geoTags) {
             var key = Key + geoTags;
-            if (CacheStorage.Contains(key)) {
+            if (CacheStorage.Contains(key) && !string.IsNullOrWhiteSpace(CacheStorage.Get<string>(key))) {
                 return CacheStorage.Get<string>(key).As<TimeZoneInfo>();
             }
 

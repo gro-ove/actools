@@ -20,7 +20,7 @@ namespace AcTools.Utils {
         private T ExecuteInner<T>(Func<T> action) {
             if (_sizeInMegabytes < 20) return action();
 
-            AcToolsLogging.Write($"Going to allocate {_sizeInMegabytes} MB…");
+            // AcToolsLogging.Write($"Going to allocate {_sizeInMegabytes} MB…");
             using (new MemoryFailPoint(_sizeInMegabytes)) return action();
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -44,6 +45,8 @@ namespace AcManager.Tools.GameProperties {
                     var bmp = new RenderTargetBitmap(256, 256, 96, 96, PixelFormats.Pbgra32);
                     bmp.Render(result);
                     File.WriteAllBytes(outlineCropped, bmp.ToBytes(ImageFormat.Png));
+                } catch (Exception e) {
+                    Logging.Error(e);
                 } finally {
                     Logging.Write($"Time taken: {s.Elapsed.TotalMilliseconds:F2} ms");
                 }

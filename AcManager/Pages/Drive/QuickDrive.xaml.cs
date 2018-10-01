@@ -25,11 +25,13 @@ using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcManager.Tools.Profile;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
@@ -78,6 +80,7 @@ namespace AcManager.Pages.Drive {
         }
 
         private static WeakReference<QuickDrive> _current;
+        private static int _something = 20 * 60 * 60 * 1000;
 
         public void Initialize() {
             if (_selectNextCarSkinId != null && _selectNextCar != null) {
@@ -129,6 +132,15 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.RandomTimeCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomWeatherCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomTemperatureCommand, new KeyGesture(Key.D5, ModifierKeys.Control | ModifierKeys.Alt)),
+
+#if DEBUG
+                new InputBinding(new DelegateCommand(() => {
+                    var selectedCar = Model.SelectedCar;
+                    var track = Model.SelectedTrack;
+                    if (selectedCar == null || track == null) return;
+                    LapTimesManager.Instance.AddEntry(selectedCar.Id, track.IdWithLayout, DateTime.Now, TimeSpan.FromMilliseconds(_something -= 193)).Forget();
+                }), new KeyGesture(Key.L, ModifierKeys.Alt | ModifierKeys.Control)),
+#endif
             });
 
             _selectNextSerializedPreset = null;
@@ -954,7 +966,11 @@ namespace AcManager.Pages.Drive {
                         WindDirectionDeg = RandomWindDirection ? MathUtils.Random(0, 360) : WindDirection,
                         WindSpeedMin = RandomWindSpeed ? 2 : WindSpeedMin,
                         WindSpeedMax = RandomWindSpeed ? 40 : WindSpeedMax,
-                    }, TrackState.ToProperties(), ExportToPresetData());
+                    }, TrackState.ToProperties(), ExportToPresetData(), new object[] {
+                        new WeatherSpecificDate(UseSpecificDate, SpecificDateValue),
+                        new WeatherDetails(RealWeather),
+                        TrackState.WeatherDefined ? new CustomTrackState(Path.Combine(weather?.Location ?? ".", "track_state.ini")) : null
+                    });
                 } finally {
                     _goCommand?.RaiseCanExecuteChanged();
                 }

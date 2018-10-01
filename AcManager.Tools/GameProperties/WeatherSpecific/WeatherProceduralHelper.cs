@@ -99,6 +99,7 @@ namespace AcManager.Tools.GameProperties.WeatherSpecific {
             ProcessFile(weather, GetContext, @"tyre_smoke.ini", new[] { @"SETTINGS", @"TRIGGERS" }, null, destination);
             ProcessFile(weather, GetContext, @"tyre_smoke_grass.ini", new[] { @"SETTINGS" }, null, destination);
             ProcessFile(weather, GetContext, @"tyre_pieces_grass.ini", new[] { @"SETTINGS" }, null, destination);
+            ProcessFile(weather, GetContext, @"track_state.ini", new[] { @"TRACK_STATE" }, null, destination);
         }
 
         public class WeatherProceduralContext {

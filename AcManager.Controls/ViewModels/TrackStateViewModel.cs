@@ -50,6 +50,7 @@ namespace AcManager.Controls.ViewModels {
         private static double? LoadGrip(string data) {
             try {
                 var o = JObject.Parse(data);
+                if (o["w"].As(false)) return -1d;
                 return o["s"].As<double>();
             } catch (Exception e) {
                 Logging.Error(e.Message);
@@ -59,7 +60,7 @@ namespace AcManager.Controls.ViewModels {
 
         string IUserPresetableCustomDisplay.GetDisplayName(string name, string data) {
             var g = LoadGrip(data);
-            return g.HasValue ? $"{name} ({g.Value * 100:F0}%)" : $"{name} (?)";
+            return g.HasValue ? g == -1d ? name : $"{name} ({g.Value * 100:F0}%)" : $"{name} (?)";
         }
 
         int IUserPresetableCustomSorting.Compare(string aName, string aData, string bName, string bData) {

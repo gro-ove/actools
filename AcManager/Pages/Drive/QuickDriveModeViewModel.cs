@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
@@ -118,7 +119,7 @@ namespace AcManager.Pages.Drive {
 
         public abstract Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                 Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
-                string serializedQuickDrivePreset);
+                string serializedQuickDrivePreset, IList<object> additionalProperties);
 
         protected Task StartAsync(Game.StartProperties properties) {
             Logging.Here();

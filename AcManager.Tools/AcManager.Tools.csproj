@@ -95,6 +95,14 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.InteropServices.RuntimeInformation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <HintPath>..\packages\System.Runtime.InteropServices.RuntimeInformation.4.3.0\lib\net45\System.Runtime.InteropServices.RuntimeInformation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="TimeZoneConverter, Version=2.4.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\TimeZoneConverter.2.4.1\lib\net45\TimeZoneConverter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Unosquare.Labs.EmbedIO, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Libraries\Unosquare.Labs.EmbedIO\Unosquare.Labs.EmbedIO.dll</HintPath>
@@ -249,7 +257,9 @@
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\CarSpecificHelperBase.cs" />
     <Compile Include="GameProperties\ContinueRaceHelper.cs" />
+    <Compile Include="GameProperties\CustomTrackState.cs" />
     <Compile Include="GameProperties\DBoxIntegration.cs" />
+    <Compile Include="GameProperties\DrivenDistance.cs" />
     <Compile Include="GameProperties\ExtraHotkeysRaceHelper.cs" />
     <Compile Include="GameProperties\ImmediateCancelHelper.cs" />
     <Compile Include="GameProperties\InGameApp\CmInGameAppDelayedInputParams.cs" />
@@ -259,6 +269,9 @@
     <Compile Include="GameProperties\ModeSpecificPresetsHelper.cs" />
     <Compile Include="GameProperties\NationCodeProvider.cs" />
     <Compile Include="GameProperties\RhmService.cs" />
+    <Compile Include="GameProperties\TrackDetails.cs" />
+    <Compile Include="GameProperties\WeatherDetails.cs" />
+    <Compile Include="GameProperties\WeatherSpecificDate.cs" />
     <Compile Include="GameProperties\TemporaryFileReplacement.cs" />
     <Compile Include="GameProperties\ScreenshotsConverter.cs" />
     <Compile Include="GameProperties\RaceCommandExecutor.cs" />

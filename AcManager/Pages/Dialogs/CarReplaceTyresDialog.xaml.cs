@@ -38,6 +38,7 @@ using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
 using Newtonsoft.Json.Linq;
 using StringBasedFilter;
+using BooleanSwitch = FirstFloor.ModernUI.Windows.Controls.BooleanSwitch;
 
 namespace AcManager.Pages.Dialogs {
     public partial class CarReplaceTyresDialog {
@@ -174,16 +175,22 @@ namespace AcManager.Pages.Dialogs {
                 _tyresLoaded = true;
 
                 try {
+                    Logging.Debug("Loading list of tyres");
                     var tyres = await TyresEntry.GetList(SettingsHolder.Content.CarReplaceTyresDonorFilter,
                             new Progress<AsyncProgressEntry>(p => TyresLoadingProgress = p), default(CancellationToken));
-                    if (tyres == null) return;
+                    Logging.Debug("List loaded: " + tyres?.Count);
 
-                    foreach (var entry in tyres) {
-                        entry.SetAppropriateLevel(_originalTyresSet);
-                    }
-
-                    TyresLoadingProgress = AsyncProgressEntry.Ready;
-                    Tyres.ReplaceEverythingBy_Direct(tyres);
+                    ActionExtension.InvokeInMainThreadAsync(() => {
+                        if (tyres != null) {
+                            foreach (var entry in tyres) {
+                                entry.SetAppropriateLevel(_originalTyresSet);
+                            }
+                            Tyres.ReplaceEverythingBy_Direct(tyres);
+                        } else {
+                            Tyres.Clear();
+                        }
+                        TyresLoadingProgress = AsyncProgressEntry.Ready;
+                    });
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t get a list of tyres", e);
                 }
@@ -229,11 +236,8 @@ namespace AcManager.Pages.Dialogs {
 
             private DelegateCommand _saveCommand;
 
-            public DelegateCommand SaveCommand
-                =>
-                        _saveCommand
-                                ?? (_saveCommand =
-                                        new DelegateCommand(() => { Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear); }, () => Changed));
+            public DelegateCommand SaveCommand => _saveCommand ?? (_saveCommand =
+                    new DelegateCommand(() => { Sets.Save(SetsVersion, Car, OriginalTyresFront, OriginalTyresRear); }, () => Changed));
 
             private void OnSetsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
                 Changed = true;
@@ -792,8 +796,13 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        private void OnReplaceModeLoaded(object sender, RoutedEventArgs e) {
-            Model.LoadTyres().Forget();
+        private async void OnReplaceModeLoaded(object sender, RoutedEventArgs e) {
+            try {
+                await Model.LoadTyres();
+                ((BooleanSwitch)sender).Value = true;
+            } catch {
+                // ignored
+            }
         }
 
         private void OnGenerateModeLoaded(object sender, RoutedEventArgs e) {

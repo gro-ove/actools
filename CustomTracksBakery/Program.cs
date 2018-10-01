@@ -36,7 +36,7 @@ namespace CustomTracksBakery {
                 HelpText = "Nodes to sync normals with surface below of.")]
         public string SyncNormals { get; set; }
 
-        [Option('u', "surfaces", DefaultValue = "`^[0-9][A-Z]`", Required = false,
+        [Option('u', "surfaces", DefaultValue = "`^[0-9](?!WALL)[A-Z]`", Required = false,
                 HelpText = "Surface meshes.")]
         public string Surfaces { get; set; }
 
@@ -109,6 +109,9 @@ namespace CustomTracksBakery {
         [Option("merge-threshold", DefaultValue = 0.1f, Required = false, HelpText = "Range to merge vertices within.")]
         public float MergeThreshold { get; set; }
 
+        [Option("occluders-split-threshold", DefaultValue = 250f, Required = false, HelpText = "Size of pieces to split occluders into.")]
+        public float OccludersSplitThreshold { get; set; }
+
         [Option("queue-size", DefaultValue = 1000, Required = false, HelpText = "Size of rendering queue.")]
         public int QueueSize { get; set; }
 
@@ -120,6 +123,9 @@ namespace CustomTracksBakery {
 
         [Option("extra-pass", DefaultValue = false, HelpText = "Make two passes to properly process bounced colors.")]
         public bool ExtraPass { get; set; }
+
+        [Option("set-multiplier-for-skipped", DefaultValue = false, HelpText = "Set ambient multiplier for skipped surfaces.")]
+        public bool SetMiltiplierForSkipped { get; set; }
 
         [Option("bake-into-kn5", DefaultValue = false, HelpText = "Bake shadows into KN5 instead of creating a small patch.")]
         public bool ModifyKn5Directly { get; set; }
@@ -335,6 +341,7 @@ namespace CustomTracksBakery {
                     OccludersDistanceThreshold = options.OccludersDistanceThreshold,
                     MergeVertices = options.MergeVertices,
                     MergeThreshold = options.MergeThreshold,
+                    OccludersSplitThreshold = options.OccludersSplitThreshold,
                     QueueSize = options.QueueSize,
                     SampleResolution = options.SampleResolution,
                     ExtraPassBrightnessGain = options.ExtraPassBrightnessGain,
@@ -348,6 +355,7 @@ namespace CustomTracksBakery {
                     SpecialGrassAmbient = options.SpecialGrassAmbient,
                     SurfacesFilter = options.Surfaces,
                     SurfacesAoOpacity = options.SurfacesAoOpacity,
+                    SetMiltiplierForSkipped = options.SetMiltiplierForSkipped,
                 }) {
                     if (!string.IsNullOrWhiteSpace(options.DebugPos)) {
                         bakery.DebugMode = true;

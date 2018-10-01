@@ -28,6 +28,10 @@
         </mui:BetterComboBox>
       </DockPanel>
 
+      <CheckBox IsChecked="{Binding Common.UseImperialUnits}">
+        <Label Content="Use imperial units" />
+      </CheckBox>
+
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
         <TextBlock.Text>Language:</TextBlock.Text>
       </TextBlock>

@@ -84,7 +84,7 @@ namespace AcTools.Kn5File {
     }
 
     public partial class Kn5 {
-        public static bool OptionJoinToMultiMaterial = true;
+        public static bool OptionJoinToMultiMaterial = false;
 
         private bool _uniqueNamesSet;
 

@@ -450,6 +450,12 @@ namespace AcManager.Tools.Objects {
 
         private string FixSpec(string v) {
             if (v == null || !SettingsHolder.Content.CarsFixSpecs) return v;
+
+            if (v.EndsWith("km/h") || v.EndsWith("kph")) {
+                v = (FlexibleParser.ParseDouble(v) * SettingsHolder.CommonSettings.DistanceMultiplier).ToString(@"F0")
+                        + SettingsHolder.CommonSettings.SpaceSpeedPostfix;
+            }
+
             return FixMissingSpace.Replace(v, @"\1 \2");
         }
 
@@ -668,11 +674,11 @@ namespace AcManager.Tools.Objects {
 
             protected override PackedDescription GetDescriptionOverride(CarObject t) {
                 return new PackedDescription(t.Id, t.Name,
-                    new Dictionary<string, string> {
-                        [@"Version"] = t.Version,
-                        [@"Made by"] = t.Author,
-                        [@"Webpage"] = t.Url,
-                    }, CarsManager.Instance.Directories.GetMainDirectory(), true);
+                        new Dictionary<string, string> {
+                            [@"Version"] = t.Version,
+                            [@"Made by"] = t.Author,
+                            [@"Webpage"] = t.Url,
+                        }, CarsManager.Instance.Directories.GetMainDirectory(), true);
             }
         }
 

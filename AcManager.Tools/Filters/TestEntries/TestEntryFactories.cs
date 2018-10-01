@@ -1,4 +1,5 @@
 using System;
+using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using StringBasedFilter.TestEntries;
 
@@ -62,6 +63,9 @@ namespace AcManager.Tools.Filters.TestEntries {
                 case "km":
                 case "kilo":
                     return 1e3;
+                case "m":
+                case "meter":
+                    return 1d;
                 case "yd":
                 case "yard":
                     return 0.9144;
@@ -79,7 +83,7 @@ namespace AcManager.Tools.Filters.TestEntries {
                 case "mill":
                     return 0.001;
                 default:
-                    return 1d;
+                    return 1d / SettingsHolder.CommonSettings.ShortDistanceMultiplier;
             }
         }
 
@@ -88,6 +92,7 @@ namespace AcManager.Tools.Filters.TestEntries {
                 case "mi":
                 case "mile":
                     return 1.60934;
+                case "k":
                 case "km":
                 case "kilo":
                     return 1;
@@ -112,7 +117,7 @@ namespace AcManager.Tools.Filters.TestEntries {
                 case "mill":
                     return 1E-06;
                 default:
-                    return 1d;
+                    return 1d / SettingsHolder.CommonSettings.DistanceMultiplier;
             }
         }
 
@@ -123,6 +128,9 @@ namespace AcManager.Tools.Filters.TestEntries {
                     return 3.6;
                 case "knot":
                     return 1.852;
+                case "kph":
+                case "kmh":
+                    return 1d;
                 case "mph":
                 case "mh":
                     return 1.60934;
@@ -130,7 +138,7 @@ namespace AcManager.Tools.Filters.TestEntries {
                 case "fs":
                     return 1.09728;
                 default:
-                    return 1d;
+                    return 1d / SettingsHolder.CommonSettings.DistanceMultiplier;
             }
         }
 

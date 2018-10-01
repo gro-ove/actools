@@ -175,18 +175,23 @@ namespace AcManager.Pages.ContentTools {
 
             Task<List<FileToCompress>> ActualScan(DirectoryInfo info, bool carMode) {
                 return Task.Run(() => {
-                    var list = info.GetFiles("*.dds", SearchOption.AllDirectories)
-                                   .Concat(info.GetFiles("*.kn5", SearchOption.AllDirectories));
+                    try {
+                        var list = info.GetFiles("*.dds", SearchOption.AllDirectories)
+                                       .Concat(info.GetFiles("*.kn5", SearchOption.AllDirectories));
 
-                    if (carMode) {
-                        list = list.Concat(info.GetFiles("*.knh"));
-                        var animations = new DirectoryInfo(Path.Combine(info.FullName, "animations"));
-                        if (animations.Exists) {
-                            list = list.Concat(animations.GetFiles("*.ksanim"));
+                        if (carMode) {
+                            list = list.Concat(info.GetFiles("*.knh"));
+                            var animations = new DirectoryInfo(Path.Combine(info.FullName, "animations"));
+                            if (animations.Exists) {
+                                list = list.Concat(animations.GetFiles("*.ksanim"));
+                            }
                         }
-                    }
 
-                    return list.Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
+                        return list.Where(x => x.Length > OptionCompressThreshold).Select(x => new FileToCompress(x)).ToList();
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                        return new List<FileToCompress>();
+                    }
                 });
             }
         }

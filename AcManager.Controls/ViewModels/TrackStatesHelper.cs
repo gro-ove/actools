@@ -48,7 +48,7 @@ namespace AcManager.Controls.ViewModels {
                         await Task.Delay(300);
                         (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(RegisterBuiltInPresets);
                         break;
-                    } catch (IOException) {}
+                    } catch (IOException) { }
                 }
             } finally {
                 _inProgress = false;
@@ -76,6 +76,9 @@ namespace AcManager.Controls.ViewModels {
 
         private void RegisterBuiltInPresets() {
             PresetsManager.Instance.ClearBuiltInPresets(TrackStateViewModelBase.PresetableCategory);
+            PresetsManager.Instance.RegisterBuiltInPreset(TrackStateViewModelBase.CreateBuiltIn(null).ToBytes(),
+                    TrackStateViewModelBase.PresetableCategory, "Auto (set by weather)");
+
             foreach (var preset in GetBuiltInPresets()) {
                 PresetsManager.Instance.RegisterBuiltInPreset(preset.Item2.ToBytes(), TrackStateViewModelBase.PresetableCategory, preset.Item1);
             }

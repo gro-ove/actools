@@ -12,9 +12,11 @@
   </FrameworkElement.Resources>
 
   <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom" Margin="0 8 0 0">
-    <c:UserPresetsControl UserPresetable="{Binding}" Margin="0 0 4 0" />
+    <c:UserPresetsControl UserPresetable="{Binding}" Margin="0 0 4 0"
+        ShowSaveButton="{Binding WeatherDefined, Converter={StaticResource InvertBooleanConverter}}" />
     <Button Command="{Binding ShareCommand, ElementName=This}" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
-        Content="{x:Static g:AppStrings.Common_Share}" />
+        Content="{x:Static g:AppStrings.Common_Share}"
+        Visibility="{Binding WeatherDefined, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
   </StackPanel>
 
   <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0">
@@ -23,7 +25,8 @@
         Style="{StaticResource Borderless}" />
   </mui:SpacingStackPanel>
 
-  <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" VerticalSpacing="8">
+  <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" VerticalSpacing="8"
+      Visibility="{Binding WeatherDefined, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
     <StackPanel>
       <mui:ValueLabel Content="Initial grip" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}}" Postfix="%"
           ToolTip="Amount of grip at the session start" />
@@ -34,13 +37,12 @@
     <StackPanel>
       <mui:ValueLabel Content="Grip transfer" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}}" Postfix="%"
           ToolTip="How much of added grip will transfer to the next session" />
-      <Slider Minimum="0" Maximum="100" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" TickFrequency="10"
-          TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
+      <Slider Minimum="0" Maximum="100" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
+          TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Grip randomization" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}}"
-          Postfix="%" />
+      <mui:ValueLabel Content="Grip randomization" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}}" Postfix="%" />
       <Slider Minimum="0" Maximum="100" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
           TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>

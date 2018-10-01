@@ -56,6 +56,10 @@
               <Label Content="Disable shadows" />
             </CheckBox>
 
+            <CheckBox IsChecked="{Binding SelectedObject.DateDependant}">
+              <Label Content="Date-dependant (for procedural weathers)" />
+            </CheckBox>
+
             <DockPanel mui:ContextMenuAdvancement.PropagateToChildren="True" ToolTip="{x:Static g:AppStrings.WeatherEdit_TemperatureCoefficient_Tooltip}">
               <DockPanel.ContextMenu>
                 <ContextMenu>

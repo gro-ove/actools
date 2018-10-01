@@ -437,7 +437,7 @@
                 </mui:BooleanSwitch>
 
                 <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
-                    Text="{Binding SelectedObject.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
+                    Text="{Binding SelectedObject.TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
@@ -446,7 +446,7 @@
                 </mui:PlaceholderTextBlock>
 
                 <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
-                    Text="{Binding SelectedObject.MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
+                    Text="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}"
                     Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>

@@ -284,7 +284,7 @@ namespace AcManager.Pages.Drive {
 
             public override async Task Drive(Game.BasicProperties basicProperties, Game.AssistsProperties assistsProperties,
                     Game.ConditionProperties conditionProperties, Game.TrackProperties trackProperties,
-                    string serializedQuickDrivePreset) {
+                    string serializedQuickDrivePreset, IList<object> additionalProperties) {
                 var selectedCar = CarsManager.Instance.GetById(basicProperties.CarId ?? "");
                 var selectedTrack = TracksManager.Instance.GetLayoutById(basicProperties.TrackId ?? "", basicProperties.TrackConfigurationId);
 
@@ -326,10 +326,10 @@ namespace AcManager.Pages.Drive {
                     ConditionProperties = conditionProperties,
                     TrackProperties = trackProperties,
                     ModeProperties = GetModeProperties(botCars),
-                    AdditionalPropertieses = {
+                    AdditionalPropertieses = additionalProperties.Concat(new object[] {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),
                         new CarCustomDataHelper()
-                    }
+                    }).ToList()
                 });
             }
 

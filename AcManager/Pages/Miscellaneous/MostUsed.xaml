@@ -2,14 +2,15 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:mi="clr-namespace:AcManager.Pages.Miscellaneous" xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d" d:DataContext="{d:DesignInstance mi:MostUsed+ViewModel}" HorizontalSpacing="20" Rows="1"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" d:DataContext="{d:DesignInstance mi:MostUsed+ViewModel}" HorizontalSpacing="20" Rows="1"
     Margin="{StaticResource ContentMarginWithPadding}" mui:FancyScroll.Outside="True">
   <ItemsControl ItemsSource="{Binding CarEntries}" Style="{StaticResource VirtualizingItemsControl}">
     <ItemsControl.ItemTemplate>
       <DataTemplate DataType="{x:Type mi:MostUsed+MostUsedCar}">
         <DockPanel Height="40" c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}" mui:Draggable.Data="{Binding Car}" Background="Transparent">
-          <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
-              VerticalAlignment="Center" Margin="0 0 8 0" />
+          <TextBlock DockPanel.Dock="Right"
+              Text="{Binding TotalDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}"
+              Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
           <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
               Margin="0 2 4 0" Width="36" TextAlignment="Right" />
           <mui:ReferenceSwitch Value="{Binding Car}" Margin="12 4 8 4">
@@ -37,8 +38,9 @@
           <ToggleButton x:Name="PART_ExpandButton" DockPanel.Dock="Left" VerticalAlignment="Center" Style="{StaticResource ExpandCollapseToggleStyle}"
               Padding="0 0 0 0" IsChecked="{Binding IsExpanded}">
             <DockPanel Height="40" TextBlock.Foreground="{DynamicResource WindowText}">
-              <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
-                  VerticalAlignment="Center" Margin="0 0 8 0" />
+              <TextBlock DockPanel.Dock="Right"
+                  Text="{Binding TotalDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}"
+                  Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
               <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}" VerticalAlignment="Center"
                   Margin="0 2 4 0" Width="36" TextAlignment="Right" />
               <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">
@@ -68,8 +70,9 @@
                   <DataTemplate DataType="{x:Type mi:MostUsed+MostUsedTrackLayout}">
                     <DockPanel Height="40" c:ToolTips.Track="{Binding Track}" c:ContextMenus.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}"
                         Background="Transparent">
-                      <TextBlock DockPanel.Dock="Right" Text="{Binding TotalDistance, StringFormat='{}{0:F1} km'}" Style="{StaticResource Title}"
-                          VerticalAlignment="Center" Margin="0 0 8 0" />
+                      <TextBlock DockPanel.Dock="Right"
+                          Text="{Binding TotalDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}"
+                          Style="{StaticResource Title}" VerticalAlignment="Center" Margin="0 0 8 0" />
                       <TextBlock DockPanel.Dock="Left" Text="{Binding Position, StringFormat='{}#{0}'}" Style="{StaticResource Small}"
                           VerticalAlignment="Center" Margin="0 2 4 0" Width="36" TextAlignment="Right" />
                       <mui:ReferenceSwitch Value="{Binding Track}" Margin="12 4 8 4">

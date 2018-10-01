@@ -3,8 +3,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:di="clr-namespace:AcManager.Pages.Dialogs" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Width="800" Height="360" MinWidth="800"
-    MaxWidth="1200" MinHeight="360" SizeToContent="Manual" Title="{Binding Title}" d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}"
-    ResizeMode="CanResize" LocationAndSizeKey="GameDialog_LS" Closed="OnClosed" x:Name="This">
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MinHeight="360" SizeToContent="Manual"
+    Title="{Binding Title}" d:DataContext="{d:DesignInstance di:GameDialog+ViewModel}" ResizeMode="CanResize" LocationAndSizeKey="GameDialog_LS"
+    Closed="OnClosed" x:Name="This">
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>

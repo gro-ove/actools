@@ -357,13 +357,17 @@ namespace AcManager.Tools.Tyres {
 
                 var wrapper = wrappers[i];
                 var car = (CarObject)await wrapper.LoadedAsync();
-                progress?.Report(car.DisplayName, i, wrappers.Count);
-
                 if (!filterObj.Test(car) || car.AcdData == null) continue;
+
+                progress?.Report(car.DisplayName, i, wrappers.Count);
+                Logging.Debug("Loading tyres: " + car.Id);
                 var tyres = car.AcdData.GetIniFile("tyres.ini");
 
                 var version = tyres["HEADER"].GetInt("VERSION", -1);
-                if (version < 4) continue;
+                if (version < 4) {
+                    Logging.Debug("Skipping: too old");
+                    continue;
+                }
 
                 foreach (var tuple in GetTyres(car)) {
                     if (list.Contains(tuple.Item1, TyresEntryComparer)) {
@@ -386,6 +390,7 @@ namespace AcManager.Tools.Tyres {
                 }
             }
 
+            Logging.Debug("List of tyres is ready");
             return list;
         }
 

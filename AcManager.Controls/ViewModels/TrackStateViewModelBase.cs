@@ -14,6 +14,13 @@ namespace AcManager.Controls.ViewModels {
         public static readonly PresetsCategory PresetableCategory = new PresetsCategory("Track States");
 
         #region Properties
+        private bool _weatherDefined;
+
+        public bool WeatherDefined {
+            get => _weatherDefined;
+            set => Apply(value, ref _weatherDefined);
+        }
+
         private double _gripStart;
 
         public double GripStart {
@@ -104,6 +111,9 @@ namespace AcManager.Controls.ViewModels {
 
             [JsonProperty("d")]
             public string Description;
+
+            [JsonProperty("w")]
+            public bool WeatherDefined;
         }
 
         protected virtual void SaveLater() {
@@ -118,13 +128,15 @@ namespace AcManager.Controls.ViewModels {
                 GripTransfer = GripTransfer,
                 GripRandomness = GripRandomness,
                 LapGain = LapGain,
-                Description = Description
+                Description = Description,
+                WeatherDefined = WeatherDefined,
             }, o => {
                 GripStart = o.GripStart;
                 GripTransfer = o.GripTransfer;
                 GripRandomness = o.GripRandomness;
                 LapGain = o.LapGain;
                 Description = o.Description;
+                WeatherDefined = o.WeatherDefined;
             });
         }
 
@@ -172,7 +184,17 @@ namespace AcManager.Controls.ViewModels {
         /// save any changes if they will occur.
         /// </summary>
         /// <param name="section">INI-file section.</param>
-        public static TrackStateViewModelBase CreateBuiltIn([NotNull] IniFileSection section) {
+        public static TrackStateViewModelBase CreateBuiltIn([CanBeNull] IniFileSection section) {
+            if (section == null) {
+                return new TrackStateViewModelBase(null, false) {
+                    WeatherDefined = true,
+                    GripStart = 95d / 100d,
+                    GripRandomness = 2d / 100d,
+                    LapGain = 132,
+                    Description = "Track state specified by weather, or Green, in case weather doesn’t specify track state"
+                };
+            }
+
             return new TrackStateViewModelBase(null, false) {
                 GripStart = section.GetDouble("SESSION_START", 95d) / 100d,
                 GripTransfer = section.GetDouble("SESSION_TRANSFER", 90d) / 100d,

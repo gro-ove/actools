@@ -86,10 +86,28 @@ for (var i = 0; i < window.__AC.CarsArray.length; i++){
 }
 function getSkins(car){ return car._skins || (car._skins = JSON.parse(window.external.GetSkins(car.id))); }
 function getSkinMeta(car){ return car._skinmeta || (car._skinmeta = JSON.parse(window.external.GetSkinMeta(car.id))); }
-function find(a, f, p1, p2) { return p1 && a.filter(function (n){ return (p2 ? n[p1][p2] : n[p1]).indexOf(f) > -1; }); }
+function find(a, f, p1, p2) {
+    if (p1 === 'id') window.external.SetLastAccessed(f, a === __AC.CarsArray);
+    return p1 && a.filter(function (n){ return (p2 ? n[p1][p2] : n[p1]).indexOf(f) > -1; });
+}
 window.__AC.findCar = find.bind(null, __AC.CarsArray);
 window.__AC.findTrack = find.bind(null, __AC.TracksArray);
 }()</script>");
+            }
+        }
+
+        [UsedImplicitly]
+        public void SetLastAccessed(string id, bool car) {
+            Logging.Debug($"Last accessed: {id} (car: {car})");
+            if (car) {
+                _raceConfig["RACE"]["MODEL"] = id;
+                _raceConfig["CAR_0"]["MODEL"] = id;
+            } else {
+                var track = TracksManager.Instance.GetLayoutByKunosId(id);
+                if (track != null) {
+                    _raceConfig["RACE"]["TRACK"] = track.Id;
+                    _raceConfig["RACE"]["CONFIG_TRACK"] = track.LayoutId;
+                }
             }
         }
 

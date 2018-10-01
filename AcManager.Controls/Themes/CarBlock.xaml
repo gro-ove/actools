@@ -37,9 +37,9 @@
                     </DockPanel>
                   </mui:BooleanSwitch>
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
-                      Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
+                      Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
-                      Text="{Binding MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
+                      Text="{Binding MaxSpeedAchieved, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}"
                       Visibility="{Binding MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Steer lock:" Placeholder="…" Text="{Binding SteerLock, StringFormat='{}{0:F0}°'}"
                       Visibility="{Binding DisplaySteerLock, Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static t:SettingsHolder.Content}}" />
@@ -165,9 +165,9 @@
                           </DockPanel>
                         </mui:BooleanSwitch>
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
-                            Text="{Binding TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}" />
+                            Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Speed achieved:" Placeholder="…"
-                            Text="{Binding MaxSpeedAchieved, StringFormat='{}{0:F1} km/h'}"
+                            Text="{Binding MaxSpeedAchieved, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}"
                             Visibility="{Binding MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Steer lock:" Placeholder="…" Text="{Binding SteerLock, StringFormat='{}{0:F0}°'}"
                             Visibility="{Binding DisplaySteerLock, Converter={StaticResource BooleanToVisibilityConverter}, Source={x:Static t:SettingsHolder.Content}}" />

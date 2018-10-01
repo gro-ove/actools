@@ -143,11 +143,13 @@ namespace AcManager.Pages.Selected {
                         break;
 
                     case "driven":
-                        FilterDistance("driven", SelectedObject.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
+                        FilterDistance("driven", SelectedObject.TotalDrivenDistance * SettingsHolder.CommonSettings.DistanceMultiplier,
+                                roundTo: 0.1, range: 0.3);
                         break;
 
                     case "topspeedachieved":
-                        FilterDistance("topspeedachieved", SelectedObject.MaxSpeedAchieved, roundTo: 0.1, range: 0.3);
+                        FilterDistance("topspeedachieved", SelectedObject.MaxSpeedAchieved * SettingsHolder.CommonSettings.DistanceMultiplier,
+                                roundTo: 0.1, range: 0.3);
                         break;
                 }
 
@@ -171,9 +173,13 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _openInShowroomOptionsCommand;
 
-            public DelegateCommand OpenInShowroomOptionsCommand => _openInShowroomOptionsCommand ?? (_openInShowroomOptionsCommand = new DelegateCommand(() => {
-                new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog();
-            }, () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
+            public DelegateCommand OpenInShowroomOptionsCommand
+                =>
+                        _openInShowroomOptionsCommand
+                                ?? (_openInShowroomOptionsCommand =
+                                        new DelegateCommand(
+                                                () => { new CarOpenInShowroomDialog(SelectedObject, SelectedObject.SelectedSkin?.Id).ShowDialog(); },
+                                                () => SelectedObject.Enabled && SelectedObject.SelectedSkin != null));
 
             private AsyncCommand _openInCustomShowroomCommand;
 
@@ -191,9 +197,12 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
-                QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id);
-            }, () => SelectedObject.Enabled));
+            public DelegateCommand DriveOptionsCommand
+                =>
+                        _driveOptionsCommand
+                                ?? (_driveOptionsCommand =
+                                        new DelegateCommand(() => { QuickDrive.Show(SelectedObject, SelectedObject.SelectedSkin?.Id); },
+                                                () => SelectedObject.Enabled));
             #endregion
 
             #region Auto-Update Previews
@@ -241,25 +250,22 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeShowroomPresets() {
                 if (ShowroomPresets == null) {
-                    ShowroomPresets = _helper.Create(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue), p => {
-                        CarOpenInShowroomDialog.RunPreset(p.VirtualFilename, SelectedObject, SelectedObject.SelectedSkin?.Id);
-                    });
+                    ShowroomPresets = _helper.Create(new PresetsCategory(CarOpenInShowroomDialog.PresetableKeyValue),
+                            p => { CarOpenInShowroomDialog.RunPreset(p.VirtualFilename, SelectedObject, SelectedObject.SelectedSkin?.Id); });
                 }
             }
 
             public void InitializeCustomShowroomPresets() {
                 if (CustomShowroomPresets == null) {
-                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettingsValues.DefaultPresetableKeyValue), p => {
-                        CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.VirtualFilename);
-                    });
+                    CustomShowroomPresets = _helper.Create(new PresetsCategory(DarkRendererSettingsValues.DefaultPresetableKeyValue),
+                            p => { CustomShowroomWrapper.StartAsync(SelectedObject, SelectedObject.SelectedSkin, p.VirtualFilename); });
                 }
             }
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Forget();
-                    });
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
+                            p => { QuickDrive.RunAsync(SelectedObject, SelectedObject.SelectedSkin?.Id, presetFilename: p.VirtualFilename).Forget(); });
                 }
             }
 
@@ -275,15 +281,13 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _manageSkinsCommand;
 
-            public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
-                CarSkinsListPage.Open(SelectedObject);
-            }));
+            public DelegateCommand ManageSkinsCommand
+                => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => { CarSkinsListPage.Open(SelectedObject); }));
 
             private DelegateCommand _manageSetupsCommand;
 
-            public DelegateCommand ManageSetupsCommand => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => {
-                CarSetupsListPage.Open(SelectedObject);
-            }));
+            public DelegateCommand ManageSetupsCommand
+                => _manageSetupsCommand ?? (_manageSetupsCommand = new DelegateCommand(() => { CarSetupsListPage.Open(SelectedObject); }));
 
             private string DataDirectory => Path.Combine(SelectedObject.Location, "data");
 
@@ -346,9 +350,8 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _carAnalyzerCommand;
 
-            public DelegateCommand CarAnalyzerCommand => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => {
-                CarAnalyzer.Run(SelectedObject);
-            }));
+            public DelegateCommand CarAnalyzerCommand
+                => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => { CarAnalyzer.Run(SelectedObject); }));
 
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
@@ -632,27 +635,20 @@ namespace AcManager.Pages.Selected {
                 new InputBinding(_model.UpdatePreviewsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt)),
                 new InputBinding(_model.UpdatePreviewsOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.UpdatePreviewsManuallyCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Alt)),
-
                 new InputBinding(_model.RecalculatePwRatioCommand, new KeyGesture(Key.W, ModifierKeys.Alt)),
-
                 new InputBinding(_model.DriveCommand, new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(_model.DriveOptionsCommand, new KeyGesture(Key.G, ModifierKeys.Control | ModifierKeys.Shift)),
-
                 new InputBinding(_model.OpenInShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Control)),
                 new InputBinding(_model.OpenInShowroomOptionsCommand, new KeyGesture(Key.H, ModifierKeys.Control | ModifierKeys.Shift)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt)),
                 new InputBinding(_model.OpenInCustomShowroomCommand, new KeyGesture(Key.H, ModifierKeys.Alt | ModifierKeys.Control)),
-
                 new InputBinding(_model.ManageSkinsCommand, new KeyGesture(Key.K, ModifierKeys.Control)),
                 new InputBinding(_model.ManageSetupsCommand, new KeyGesture(Key.U, ModifierKeys.Control)),
-
                 new InputBinding(_object.PackDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt | ModifierKeys.Control)),
                 new InputBinding(_model.ReadDataCommand, new KeyGesture(Key.J, ModifierKeys.Alt)),
-
                 new InputBinding(_model.CarAnalyzerCommand, new KeyGesture(Key.A, ModifierKeys.Alt)),
                 new InputBinding(_model.ReplaceTyresCommand, new KeyGesture(Key.T, ModifierKeys.Alt)),
                 new InputBinding(_model.ReplaceSoundCommand, new KeyGesture(Key.S, ModifierKeys.Alt)),
-
                 new InputBinding(_model.FixFormatCommand, new KeyGesture(Key.F, ModifierKeys.Alt)),
             });
         }

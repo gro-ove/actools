@@ -234,8 +234,12 @@
 
         <DockPanel DataContext="{Binding AiLimitationDetails.FinalGearRatio}" Margin="0 8 0 0"
             Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-          <TextBlock Text="{Binding RatioMaxSpeed, StringFormat='Maximum speed: {0:F1} km/h'}" Style="{StaticResource Small}" DockPanel.Dock="Bottom"
-              Margin="0 4 0 0" Visibility="{Binding RatioMaxSpeed, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+          <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Bottom" Margin="0 4 0 0"
+              Visibility="{Binding RatioMaxSpeed, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <Run Text="Maximum speed: " />
+            <Run
+                Text="{Binding RatioMaxSpeed, Mode=OneWay, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}" />
+          </TextBlock>
           <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 2 0 4" Width="100"
               DockPanel.Dock="Left" Style="{StaticResource Label}" VerticalAlignment="Top" />
           <mui:BetterComboBox SelectedItem="{Binding ValuePair}" ItemsSource="{Binding Values}" IsEditable="False" DisplayMemberPath="Key"
@@ -295,8 +299,12 @@
 
                 <DockPanel DataContext="{Binding AiLimitationDetails.FinalGearRatio}" Margin="0 8 0 0"
                     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                  <TextBlock Text="{Binding RatioMaxSpeed, StringFormat='Maximum speed: {0:F1} km/h'}" Style="{StaticResource Small}" DockPanel.Dock="Bottom"
-                      Margin="0 4 0 0" Visibility="{Binding RatioMaxSpeed, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
+                  <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Bottom" Margin="0 4 0 0"
+                      Visibility="{Binding RatioMaxSpeed, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Run Text="Maximum speed: " />
+                    <Run
+                        Text="{Binding RatioMaxSpeed, Mode=OneWay, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}" />
+                  </TextBlock>
                   <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" Margin="0 2 0 4" Width="100"
                       DockPanel.Dock="Left" Style="{StaticResource Label}" VerticalAlignment="Top" />
                   <mui:BetterComboBox SelectedItem="{Binding ValuePair}" ItemsSource="{Binding Values}" IsEditable="False" DisplayMemberPath="Key"

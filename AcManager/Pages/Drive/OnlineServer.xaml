@@ -195,11 +195,14 @@
                   <mui:TimePassedBlock c:PropertiesGrid.Label="Last joined:" From="{Binding LastConnected}" />
                   <TextBlock c:PropertiesGrid.Label="Sessions:" Text="{Binding Stats.SessionsCount}"
                       Visibility="{Binding Stats.SessionsCount, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
-                  <TextBlock c:PropertiesGrid.Label="Total driven:" Text="{Binding Stats.DistanceKm, StringFormat='{}{0:F1} km'}"
+                  <TextBlock c:PropertiesGrid.Label="Total driven:"
+                      Text="{Binding Stats.DistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}"
                       Visibility="{Binding Stats.DistanceKm, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
-                  <TextBlock c:PropertiesGrid.Label="Max speed:" Text="{Binding Stats.MaxSpeed, StringFormat='{}{0:F1} km/h'}"
+                  <TextBlock c:PropertiesGrid.Label="Max speed:"
+                      Text="{Binding Stats.MaxSpeed, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}"
                       Visibility="{Binding Stats.MaxSpeed, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
-                  <TextBlock c:PropertiesGrid.Label="Avg speed:" Text="{Binding Stats.AverageSpeed, StringFormat='{}{0:F1} km/h'}"
+                  <TextBlock c:PropertiesGrid.Label="Avg speed:"
+                      Text="{Binding Stats.AverageSpeed, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.SpeedFormat}}"
                       Visibility="{Binding Stats.MaxSpeed, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                   <TextBlock c:PropertiesGrid.Label="Crashes:" Text="{Binding Stats.TotalCrashes}"
                       Visibility="{Binding Stats.TotalCrashes, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />

@@ -85,6 +85,13 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private bool _dateDependant;
+
+        public bool DateDependant {
+            get => _dateDependant;
+            set => Apply(value, ref _dateDependant);
+        }
+
         public string DisplayTimeDiapason => _timeDiapason == null ? null :
                 Regex.Replace(_timeDiapason.Replace('-', '…').Replace('—', '…'), @"(?<=,)\s*|\s+", " ");
 
@@ -276,6 +283,7 @@ namespace AcManager.Tools.Objects {
             TemperatureDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TEMPERATURE_DIAPASON");
             TimeDiapason = ini["__LAUNCHER_CM"].GetNonEmpty("TIME_DIAPASON");
             DisableShadows = ini["__LAUNCHER_CM"].GetBool("DISABLE_SHADOWS", false);
+            DateDependant = ini["__LAUNCHER_CM"].GetBool("DATE_DEPENDANT", false);
             Author = ini["__LAUNCHER_CM"].GetNonEmpty("AUTHOR");
 
             if (Author == null && IsKunosWeather(Id)) {
@@ -297,6 +305,7 @@ namespace AcManager.Tools.Objects {
             ini["__LAUNCHER_CM"].SetOrRemove("TEMPERATURE_DIAPASON", TemperatureDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("TIME_DIAPASON", TimeDiapason);
             ini["__LAUNCHER_CM"].SetOrRemove("DISABLE_SHADOWS", DisableShadows);
+            ini["__LAUNCHER_CM"].SetOrRemove("DATE_DEPENDANT", DateDependant);
             ini["__LAUNCHER_CM"].SetOrRemove("AUTHOR", Author);
 
             if (_loadedExtended) {
