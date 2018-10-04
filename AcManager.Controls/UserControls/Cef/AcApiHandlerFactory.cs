@@ -24,11 +24,12 @@ namespace AcManager.Controls.UserControls.Cef {
 
             public readonly Func<string, string> Callback;
 
-            public Registered(WeakReference<IWebBrowser> webBrowser, string[] allowedHosts, Func<string, string> callback) {
+            public Registered([CanBeNull] WeakReference<IWebBrowser> webBrowser, string[] allowedHosts, Func<string, string> callback) {
                 WebBrowser = webBrowser;
                 AllowedHosts = allowedHosts;
                 Callback = callback;
-                Identifier = Lazier.Create(() => WebBrowser.TryGetTarget(out var targetBrowser) ? targetBrowser.GetBrowser().Identifier : -1);
+                Identifier = Lazier.Create(() => WebBrowser != null && WebBrowser.TryGetTarget(out var targetBrowser)
+                        ? targetBrowser.GetBrowser()?.Identifier ?? -1 : -1);
             }
         }
 
@@ -117,8 +118,8 @@ namespace AcManager.Controls.UserControls.Cef {
 
             bool IResourceHandler.CanGetCookie(Cookie cookie) => true;
             bool IResourceHandler.CanSetCookie(Cookie cookie) => true;
-            void IResourceHandler.Cancel() {}
-            void IDisposable.Dispose() {}
+            void IResourceHandler.Cancel() { }
+            void IDisposable.Dispose() { }
         }
     }
 }

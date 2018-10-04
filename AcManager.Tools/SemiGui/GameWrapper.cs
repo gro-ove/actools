@@ -11,7 +11,6 @@ using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
-using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -176,7 +175,7 @@ namespace AcManager.Tools.SemiGui {
             }
 
             if (File.Exists(properties.GetAdditional<CustomTrackState>()?.Filename)) {
-                properties.TrackProperties = Game.TrackProperties.Load(new IniFile(properties.GetAdditional<CustomTrackState>()?.Filename)["TRACK_STATE"]);
+                properties.SetAdditional(new CustomTrackPropertiesHelper(properties.GetAdditional<CustomTrackState>()?.Filename ?? string.Empty));
             }
 
             if (SettingsHolder.Live.RsrEnabled && SettingsHolder.Live.RsrDisableAppAutomatically) {

@@ -984,8 +984,8 @@ namespace AcManager.Tools.Helpers {
                         DialogFilterPiece.AllFiles,
                     },
                     Title = "Select Real Head Motion application",
-                    InitialDirectory = Path.GetDirectoryName(RhmLocation) ?? "",
-                    DefaultFileName = Path.GetFileName(RhmLocation),
+                    InitialDirectory = FileUtils.GetDirectoryNameSafe(RhmLocation) ?? "",
+                    DefaultFileName = FileUtils.GetFileNameSafe(RhmLocation),
                 }) ?? RhmLocation;
             }));
 
@@ -1000,8 +1000,8 @@ namespace AcManager.Tools.Helpers {
                         DialogFilterPiece.AllFiles
                     },
                     Title = "Select Real Head Motion settings",
-                    InitialDirectory = Path.GetDirectoryName(RhmSettingsLocation) ?? "",
-                    DefaultFileName = Path.GetFileName(RhmSettingsLocation),
+                    InitialDirectory = FileUtils.GetDirectoryNameSafe(RhmSettingsLocation) ?? "",
+                    DefaultFileName = FileUtils.GetFileNameSafe(RhmSettingsLocation),
                 }) ?? RhmSettingsLocation;
             }));
 

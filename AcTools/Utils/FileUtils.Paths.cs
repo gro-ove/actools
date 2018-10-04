@@ -105,6 +105,24 @@ namespace AcTools.Utils {
             return Path.GetFullPath(Path.Combine(lazyRelativeTo(), filename));
         }
 
+        [CanBeNull, Pure]
+        public static string GetFileNameSafe([CanBeNull] string filename) {
+            try {
+                return Path.GetFileName(filename);
+            } catch (ArgumentException) {
+                return null;
+            }
+        }
+
+        [CanBeNull, Pure]
+        public static string GetDirectoryNameSafe([CanBeNull] string filename) {
+            try {
+                return Path.GetDirectoryName(filename);
+            } catch (ArgumentException) {
+                return null;
+            }
+        }
+
         /// <summary>
         /// Might use “..” in the result.
         /// </summary>
