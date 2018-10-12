@@ -94,8 +94,8 @@ namespace AcManager.Pages.Dialogs {
                 Track = track;
 
                 if (track.GeoTags != null) {
-                    Latitude = track.GeoTags.Latitude;
-                    Longitude = track.GeoTags.Longitude;
+                    Latitude = track.GeoTags.DisplayLatitude.Replace(@"lat", "");
+                    Longitude = track.GeoTags.DisplayLongitude.Replace(@"lon", "");
                 } else {
                     Latitude = null;
                     Longitude = null;
@@ -118,7 +118,7 @@ namespace AcManager.Pages.Dialogs {
 
         private static string GetMapAddress(TrackObjectBase track) {
             var tags = track.GeoTags;
-            return CmHelpersProvider.GetAddress("map") + @"?t#" +
+            return CmHelpersProvider.GetAddress("map") + @"?ms#" +
                     (tags?.IsEmptyOrInvalid == false ? $"{tags.LatitudeValue};{tags.LongitudeValue}" : GetQuery(track));
         }
     }

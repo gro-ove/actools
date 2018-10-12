@@ -343,7 +343,9 @@ namespace AcManager.Tools.Helpers.Api {
             var requestUri = $@"http://{ip}:{portC}/SUB|{HttpUtility.UrlPathEncode(arguments)}";
 
             try {
+                Logging.Debug("Request: " + requestUri);
                 var response = await LoadAsync(requestUri, OptionDirectRequestTimeout);
+                Logging.Debug("Response: " + response);
                 var split = response.Split(',');
                 switch (split[0]) {
                     case "OK":

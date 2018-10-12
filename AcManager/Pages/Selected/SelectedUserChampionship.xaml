@@ -70,8 +70,8 @@
                   </ComboBox.ItemContainerStyle>
                 </ComboBox>-->
 
-                <c:WeatherComboBox SelectedItem="{Binding Weather}" AllowRandomWeather="True" AllowWeatherByType="True"
-                    c:ToolTips.Weather="{Binding WeatherObject}" />
+                <c:WeatherComboBox AllowRandomWeather="True" AllowWeatherByType="True" SelectedItem="{Binding Weather}"
+                    c:ToolTips.Weather="{Binding WeatherObject, Mode=OneWay}" />
               </mui:SpacingStackPanel>
 
               <mui:SpacingStackPanel Spacing="4">

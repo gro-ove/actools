@@ -19,7 +19,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             try {
-                var result = await GoogleApiProvider.DetermineTimeZoneAsync(geoTags);
+                var result = await TimezoneDbApiProvider.DetermineTimeZoneAsync(geoTags);
                 CacheStorage.Set(key, result);
                 return result;
             } catch (WebException e) {

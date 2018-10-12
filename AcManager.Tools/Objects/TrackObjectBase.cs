@@ -293,7 +293,8 @@ namespace AcManager.Tools.Objects {
                 return SpecsLength;
             }
 
-            return D((value / 1000).Round(0.1) * SettingsHolder.CommonSettings.DistanceMultiplier + SettingsHolder.CommonSettings.SpaceDistancePostfix, SpecsLength);
+            return D((value * SettingsHolder.CommonSettings.DistanceMultiplier / 1000).Round(0.1) + SettingsHolder.CommonSettings.SpaceDistancePostfix,
+                    SpecsLength);
         }
 
         private static readonly Regex SpecsWidthFix = new Regex(@"^(.+?)\s*[-–—]\s*(.+)$",
@@ -302,7 +303,7 @@ namespace AcManager.Tools.Objects {
         private string GetSpecsWidthDisplayPart(string original) {
             var value = GetSpecsLengthValue(original, false);
             if (!value.HasValue) return original;
-            return value.Value.Round(0.1) * SettingsHolder.CommonSettings.ShortDistanceMultiplier + SettingsHolder.CommonSettings.SpaceShortDistancePostfix;
+            return (value.Value * SettingsHolder.CommonSettings.ShortDistanceMultiplier ).Round(0.1)+ SettingsHolder.CommonSettings.SpaceShortDistancePostfix;
         }
 
         [CanBeNull]
@@ -321,7 +322,7 @@ namespace AcManager.Tools.Objects {
             }
 
             if (double.TryParse(original, NumberStyles.Float | NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)) {
-                return value * SettingsHolder.CommonSettings.ShortDistanceMultiplier + SettingsHolder.CommonSettings.SpaceShortDistancePostfix;
+                return (value * SettingsHolder.CommonSettings.ShortDistanceMultiplier).Round(0.1) + SettingsHolder.CommonSettings.SpaceShortDistancePostfix;
             }
 
             return original;

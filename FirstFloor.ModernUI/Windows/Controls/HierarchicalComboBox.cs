@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;

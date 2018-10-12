@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Data {
-    public sealed class WeatherTypeWrapped : Displayable {
+    public sealed class WeatherTypeWrapped : Displayable, IEquatable<WeatherTypeWrapped> {
         public WeatherType Type { get; }
 
         public WeatherTypeWrapped(WeatherType type) {
@@ -16,29 +16,42 @@ namespace AcManager.Tools.Data {
             DisplayName = type.GetDescription();
         }
 
-        private bool Equals(WeatherTypeWrapped other) {
-            return Type == other.Type;
+        public bool Equals(WeatherTypeWrapped other) {
+            return Type == other?.Type;
         }
 
         public override bool Equals(object obj) {
-            return !ReferenceEquals(null, obj) && (ReferenceEquals(this, obj) || obj is WeatherTypeWrapped w && Equals(w));
+            return obj is WeatherTypeWrapped w && w.Type == Type;
         }
 
         public override int GetHashCode() {
             return (int)Type;
         }
 
+        public static bool operator ==(WeatherTypeWrapped lhs, WeatherTypeWrapped rhs)
+        {
+            return lhs?.Type == rhs?.Type;
+        }
+
+        public static bool operator !=(WeatherTypeWrapped lhs, WeatherTypeWrapped rhs)
+        {
+            return !(lhs == rhs);
+        }
+
         public override string ToString() {
-            return $@"W. TYPE: {Type}";
+            return $@"WeatherTypeWrapper({Type})";
         }
 
         public static readonly Displayable RandomWeather = new Displayable { DisplayName = ToolsStrings.Weather_Random };
 
         [CanBeNull]
         public static WeatherObject Unwrap(object obj, int? time, double? temperature) {
-            return obj is WeatherTypeWrapped weatherTypeWrapped
-                    ? WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault()
-                    : obj as WeatherObject;
+            if (obj is WeatherTypeWrapped weatherTypeWrapped) {
+                WeatherManager.Instance.EnsureLoaded();
+                return WeatherManager.Instance.Enabled.Where(x => x.Fits(weatherTypeWrapped.Type, time, temperature)).RandomElementOrDefault();
+            }
+
+            return obj as WeatherObject;
         }
 
         [CanBeNull]
@@ -51,7 +64,7 @@ namespace AcManager.Tools.Data {
             if (serialized == null) {
                 return RandomWeather;
             }
-            
+
             if (serialized.StartsWith(@"*")) {
                 try {
                     return new WeatherTypeWrapped((WeatherType)(FlexibleParser.TryParseInt(serialized.Substring(1)) ?? 0));

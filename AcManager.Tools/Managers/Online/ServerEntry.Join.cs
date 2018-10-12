@@ -232,7 +232,7 @@ namespace AcManager.Tools.Managers.Online {
                 return;
             }
 
-            if (!IsBookedForPlayer && BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
+            if (BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
                 if (_factory == null) {
                     Logging.Error("Booking: UI factory is missing");
                     return;

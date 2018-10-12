@@ -64,7 +64,10 @@ namespace AcManager.Pages.Dialogs {
             _cancellationSource = new CancellationTokenSource();
             CancellationToken = _cancellationSource.Token;
 
-            ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
+            if (!AppAppearanceManager.Instance.SoftwareRenderingMode) {
+                ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
+            }
+
             Buttons = new[] { CancelButton };
         }
 

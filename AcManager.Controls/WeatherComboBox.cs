@@ -163,6 +163,7 @@ namespace AcManager.Controls {
         }
 
         private async Task UpdateHierarchicalWeatherList() {
+            if (!_loaded) return;
             await WeatherManager.Instance.EnsureLoadedAsync();
 
             HierarchicalGroup list;

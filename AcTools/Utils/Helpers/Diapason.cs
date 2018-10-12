@@ -130,7 +130,7 @@ namespace AcTools.Utils.Helpers {
 
             protected override void GetDefaultLimits(out int minimum, out int maximum) {
                 minimum = 0;
-                maximum = 24 * 60 * 60 - 1;
+                maximum = 24 * 60 * 60 - 60;
             }
 
             protected override bool TryParse(string value, out int parsed) {

@@ -34,10 +34,10 @@ namespace AcManager.Tools.Helpers {
                 CacheStorage.Set(key, "");
                 return null;
             } catch (WebException e) {
-                Logging.Warning("TryToLocateAsync(): " + e.Message);
+                Logging.Warning(e.Message);
                 return null;
             } catch (Exception e) {
-                Logging.Warning("TryToLocateAsync(): " + e);
+                Logging.Warning(e);
                 CacheStorage.Set(key, "");
                 return null;
             }

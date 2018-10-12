@@ -185,11 +185,13 @@ namespace AcManager.Tools.Objects {
         }
 
         [JsonConstructor]
-        public UserChampionshipRoundExtended([CanBeNull] string track, [CanBeNull] string weather, int surface) {
+        public UserChampionshipRoundExtended([CanBeNull] string track, [CanBeNull] string weather, int surface, int time, double temperature) {
             if (track == null) {
                 Logging.Warning("Track=null!");
             }
 
+            Time = time;
+            Temperature = temperature;
             TrackId = track ?? TracksManager.Instance.GetDefault()?.IdWithLayout ?? @"imola";
             Track = TracksManager.Instance.GetLayoutById(TrackId);
             Weather = WeatherTypeWrapped.Deserialize(weather);

@@ -159,7 +159,11 @@
 
               <mui:BbCodeBlock c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_TrackGeoTagsLabel}"
                   Text="{Binding SelectedTrackConfiguration.GeoTags, TargetNullValue=''}" Placeholder="{x:Static t:ToolsStrings.Common_None}"
-                  MouseDown="OnGeoTagsClick" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                  MouseDown="OnGeoTagsClick" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis">
+                <mui:BbCodeBlock.ToolTip>
+                  <TextBlock Text="{Binding SelectedTrackConfiguration.GeoTags.OriginalString, StringFormat='{}Original values: {0}'}" />
+                </mui:BbCodeBlock.ToolTip>
+              </mui:BbCodeBlock>
 
               <Border c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_YearLabel}"
                   ToolTip="{x:Static c:ControlsStrings.AcObject_YearLabel_CarTooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -193,7 +197,7 @@
             </c:PropertiesGrid>
 
             <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
-              <!--length-->
+              <!-- Length -->
               <Border c:PropertiesGrid.Label="Length:" mui:ContextMenuAdvancement.PropagateToChildren="True">
                 <FrameworkElement.ToolTip>
                   <ToolTip Content="{x:Static g:AppStrings.TrackSpecs_Length_FormatTooltip}"
@@ -217,7 +221,7 @@
                     Placeholder="{x:Static g:AppStrings.TrackSpecs_Length_FormatTooltip}" />
               </Border>
 
-              <!--width-->
+              <!-- Width -->
               <Border c:PropertiesGrid.Label="Width:" mui:ContextMenuAdvancement.PropagateToChildren="True">
                 <FrameworkElement.ToolTip>
                   <ToolTip Content="{x:Static g:AppStrings.TrackSpecs_Width_FormatTooltip}"
@@ -239,7 +243,7 @@
                     Placeholder="{x:Static g:AppStrings.TrackSpecs_Width_FormatTooltip}" />
               </Border>
 
-              <!--pits-->
+              <!-- Pits -->
               <Border c:PropertiesGrid.Label="Pits:" mui:ContextMenuAdvancement.PropagateToChildren="True">
                 <FrameworkElement.ToolTip>
                   <ToolTip Content="{x:Static g:AppStrings.TrackSpecs_Pitboxes_FormatTooltip}"
@@ -262,7 +266,7 @@
               </Border>
             </c:PropertiesGrid>
 
-            <!-- description -->
+            <!-- Description -->
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
                 Placeholder="None" />
           </mui:SpacingStackPanel>

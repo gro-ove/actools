@@ -628,7 +628,7 @@
     <Compile Include="Helpers\WeatherProvider.cs" />
     <Compile Include="Helpers\TimezoneDeterminer.cs" />
     <Compile Include="Helpers\TracksLocator.cs" />
-    <Compile Include="Helpers\Api\GoogleApiProvider.cs" />
+    <Compile Include="Helpers\Api\TimezoneDbApiProvider.cs" />
     <Compile Include="Helpers\Api\YahooApiProvider.cs" />
     <Compile Include="Lists\AcEnabledOnlyCollection.cs" />
     <Compile Include="Lists\AcWrapperCollectionView.cs" />
