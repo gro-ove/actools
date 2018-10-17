@@ -209,6 +209,8 @@ namespace AcManager.Pages.Windows {
                 this.FindVisualChild<ModernMenu>()?.SkipLoading();
                 _navigateOnOpen = null;
             }
+
+            // SettingsShadersPatch.GetShowSettingsCommand().Execute(null);
         }
 
         private readonly Busy _openDownloadsListBusy = new Busy();
@@ -310,7 +312,7 @@ namespace AcManager.Pages.Windows {
         }
 
         private void UpdateMinoratingLink() {
-            MinoratingLink.IsShown = SettingsHolder.Online.IntegrateMinorating;
+            // MinoratingLink.IsShown = SettingsHolder.Online.IntegrateMinorating;
         }
 
         private void OnLiveSettingsPropertyChanged(object sender, PropertyChangedEventArgs e) {

@@ -1,4 +1,9 @@
+using System;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms.DataVisualization.Charting;
 using AcTools.Utils.Physics;
 using NUnit.Framework;
 
@@ -50,6 +55,74 @@ namespace AcTools.Tests {
 
             // interpolation itself
             Assert.IsTrue(lut.InterpolateCubic(1.9d) < 1d);
+        }
+
+        private void BuildChart(params Action<Series>[] series) {
+            using (var ch = new Chart()) {
+                ch.Size = new Size(1024, 1024);
+                ch.ChartAreas.Add(new ChartArea());
+
+                foreach (var se in series) {
+                    var s = new Series { ChartType = SeriesChartType.Line };
+                    se(s);
+                    ch.Series.Add(s);
+                }
+
+                var filename = Path.Combine(Path.GetTempPath(), "at_test.png");
+                ch.SaveImage(filename, ChartImageFormat.Png);
+                Process.Start(filename);
+            }
+        }
+
+        [Test]
+        public void CubicInterpolationExtra() {
+            var lut = new Lut {
+                new LutPoint(-0.009994, 1.059),
+                new LutPoint(-0.004998, 1.059),
+                new LutPoint(0, 1.060),
+                new LutPoint(0.005002, 1.063),
+                new LutPoint(0.010007, 1.065),
+                new LutPoint(0.015014, 1.068),
+                new LutPoint(0.020024, 1.073),
+                new LutPoint(0.025039, 1.078),
+                new LutPoint(0.030057, 1.083),
+                new LutPoint(0.03508, 1.089),
+                new LutPoint(0.040106, 1.095),
+            };
+
+            lut.UpdateBoundingBox();
+
+            var minX = lut.MinX;
+            var sizeX = lut.MaxX - lut.MinX;
+            var minY = lut.MinY;
+            var sizeY = lut.MaxY - lut.MinY;
+            lut = new Lut(lut.Select(x => new LutPoint((x.X - minX) / sizeX, (x.Y - minY) / sizeY)));
+            lut.UpdateBoundingBox();
+
+            BuildChart(s => {
+                var min = lut.MinX;
+                var size = lut.MaxX - lut.MinX;
+
+                for (var i = 0d; i <= 1d; i += 0.003) {
+                    var x = lut.MinX + size * i;
+                    s.Points.Add(new DataPoint(x, lut.InterpolateLinear(x)));
+                }
+
+                s.Color = Color.Black;
+            }, s => {
+                var min = lut.MinX;
+                var size = lut.MaxX - lut.MinX;
+
+                for (var i = 0d; i <= 1d; i += 0.003) {
+                    var x = lut.MinX + size * i;
+                    s.Points.Add(new DataPoint(x, lut.InterpolateCubic(x)));
+                }
+
+                s.Color = Color.Green;
+            });
+
+            // interpolation itself
+            Assert.IsTrue(lut.InterpolateCubic(0.003) > lut.InterpolateCubic(0.001));
         }
 
         [Test]

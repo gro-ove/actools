@@ -26,13 +26,13 @@ namespace AcManager.Tools.Objects {
         private DelegateCommand _changeFileCommand;
 
         public DelegateCommand ChangeFileCommand => _changeFileCommand ?? (_changeFileCommand = new DelegateCommand(() => {
-            var currentValue = FileUtils.NormalizePath(Path.Combine(AppDirectory, string.IsNullOrEmpty(Value) ? "." : Value));
+            var currentValue = FileUtils.NormalizePath(Path.Combine(FilesRelativeDirectory, string.IsNullOrEmpty(Value) ? "." : Value));
 
             try {
                 if (DirectoryMode) {
                     var dialog = new FolderBrowserDialog {
                         ShowNewFolderButton = true,
-                        SelectedPath = Directory.Exists(currentValue) ? currentValue : AppDirectory
+                        SelectedPath = Directory.Exists(currentValue) ? currentValue : FilesRelativeDirectory
                     };
 
                     if (dialog.ShowDialog() == DialogResult.OK) {
@@ -43,7 +43,7 @@ namespace AcManager.Tools.Objects {
 
                     var dialog = new OpenFileDialog {
                         Filter = Filter ?? DialogFilterPiece.AllFiles.WinFilter,
-                        InitialDirectory = Path.GetDirectoryName(currentValue) ?? AppDirectory,
+                        InitialDirectory = Path.GetDirectoryName(currentValue) ?? FilesRelativeDirectory,
                         FileName = Path.GetFileName(currentValue)
                     };
 
@@ -58,7 +58,7 @@ namespace AcManager.Tools.Objects {
             }
 
             string RelativeToApp(string value) {
-                var relative = FileUtils.GetRelativePath(value, AppDirectory);
+                var relative = FileUtils.GetRelativePath(value, FilesRelativeDirectory);
                 if (Path.IsPathRooted(relative) && !_allowAbsolute) {
                     throw new InformativeException("Can’t set the absolute path",
                             "Please, pick a file within app’s directory or at least located on the same drive.");

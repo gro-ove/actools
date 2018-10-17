@@ -20,10 +20,6 @@ using FontWeight = SlimDX.DirectWrite.FontWeight;
 using Resource = SlimDX.DXGI.Resource;
 using ShaderResourceView = SlimDX.Direct3D11.ShaderResourceView;
 
-#if DEBUG
-using Debug = System.Diagnostics.Debug;
-#endif
-
 namespace AcTools.Render.Base.Sprites {
     /// <summary>
     /// Defines how a text is aligned in a rectangle. Use OR-combinations of vertical and horizontal alignment.
@@ -130,7 +126,6 @@ namespace AcTools.Render.Base.Sprites {
 
         private readonly Dictionary<byte, CharTableDescription> _charTables = new Dictionary<byte, CharTableDescription>();
         private readonly RenderTargetProperties _rtp;
-        private readonly IFontCollectionProvider _fcp;
 
         public TextBlockRenderer(SpriteRenderer sprite, string fontName, FontWeight fontWeight,
                 FontStyle fontStyle, FontStretch fontStretch, float fontSize, int kerningAdjustment = 0)
@@ -155,8 +150,10 @@ namespace AcTools.Render.Base.Sprites {
                 };
 
                 if (collection != null) {
-                    _fcp = collection;
                     var c = collection.GetCollection(WriteFactory);
+                    if (c.FindFamilyName(fontName) == -1) {
+                        fontName = c[0].FamilyNames.get_String(0);
+                    }
                     Font = WriteFactory.CreateTextFormat(fontName, c, fontWeight, fontStyle, fontStretch, fontSize,
                             CultureInfo.CurrentCulture.Name);
                 } else {
@@ -280,13 +277,6 @@ namespace AcTools.Render.Base.Sprites {
             foreach (var layout in tl) {
                 layout.Dispose();
             }
-#if DEBUG
-            Debug.WriteLine("Created Char Table " + bytePrefix + " in " + sizeX + " x " + sizeY);
-#endif
-
-            // System.Threading.Monitor.Enter(D3DDevice11);
-            // SlimDX.Direct3D11.Texture2D.SaveTextureToFile(Sprite.Device.ImmediateContext, Texture11, SlimDX.Direct3D11.ImageFileFormat.Png, Font.FontFamilyName + "Table" + BytePrefix + ".png");
-            // System.Threading.Monitor.Exit(D3DDevice11);
 
             _charTables.Add(bytePrefix, tableDesc);
         }
@@ -409,27 +399,37 @@ namespace AcTools.Render.Base.Sprites {
         // TODO: support for multiline strings plus angle
         public StringMetrics DrawString(string text, RectangleF rect, float angle, TextAlignment align, float realFontSize, Color4 color,
                 CoordinateType coordinateType) {
-            if (align.HasFlag(TextAlignment.Top) && align.HasFlag(TextAlignment.Left)) {
+            var hl = align.HasFlag(TextAlignment.Left);
+            var vt = align.HasFlag(TextAlignment.Top);
+            if (hl && vt) {
                 return DrawString(text, new Vector2(rect.X, rect.Y), angle, realFontSize, color, coordinateType);
             }
 
-            var m = MeasureString(text, angle, realFontSize, coordinateType);
-            var y = align.HasFlag(TextAlignment.Top) ? rect.Top :
-                    align.HasFlag(TextAlignment.VerticalCenter) ? rect.Top + rect.Height / 2 - m.Size.Y / 2 :
-                            rect.Bottom - m.Size.Y;
+            var hc = align.HasFlag(TextAlignment.HorizontalCenter);
+            var vc = align.HasFlag(TextAlignment.VerticalCenter);
+
+            var m = MeasureString(angle == 0f ? text : "00", angle, realFontSize, coordinateType);
             var p = new Vector2(
-                    align.HasFlag(TextAlignment.Left) ? rect.X :
-                            align.HasFlag(TextAlignment.HorizontalCenter) ?
-                                    rect.X + rect.Width / 2 - m.Size.X / 2 : rect.X + rect.Width - m.Size.X,
-                    y);
+                    hl ? rect.X : hc ? rect.X + rect.Width / 2 - m.Size.X / 2 : rect.Right - m.Size.X,
+                    vt ? rect.Y : vc ? rect.Y + rect.Height / 2 - m.Size.Y / 2 : rect.Bottom - m.Size.Y);
 
             if (angle != 0f) {
                 var o = m.Size / 2f;
                 o.Y /= 2f;
                 p += o - SpriteRenderer.Rotate(o, (float)Math.Sin(angle), (float)Math.Cos(angle));
+                p -= SpriteRenderer.Rotate(
+                        GetOffset(MeasureString(text, 0f, realFontSize, coordinateType))
+                                - GetOffset(MeasureString("00", 0f, realFontSize, coordinateType)),
+                        (float)Math.Sin(angle), (float)Math.Cos(angle));
             }
 
             return DrawString(text, p, angle, realFontSize, color, coordinateType);
+
+            Vector2 GetOffset(StringMetrics stringMetrics) {
+                var xm = hl ? 0f : hc ? stringMetrics.Size.X / 2 : stringMetrics.Size.X;
+                var ym = vt ? 0f : vc ? stringMetrics.Size.Y / 2 : stringMetrics.Size.Y;
+                return new Vector2(xm, ym);
+            }
         }
 
         public StringMetrics DrawString(string text, RectangleF rect, float angle, TextAlignment align, Color4 color) {

@@ -140,7 +140,7 @@ namespace AcTools.DataFile {
                         break;
 
                     case '/':
-                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                        if (i + 1 < data.Length && data[i + 1] == '/' && (i == 0 || data[i - 1] != ':')) {
                             goto case ';';
                         }
                         goto default;
@@ -273,7 +273,7 @@ namespace AcTools.DataFile {
                         break;
 
                     case '/':
-                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                        if (i + 1 < data.Length && data[i + 1] == '/' && (i == 0 || data[i - 1] != ':')) {
                             i++;
                             goto case ';';
                         }
@@ -293,9 +293,11 @@ namespace AcTools.DataFile {
                         var commentLength = i - commentStartIndex;
                         if (currentSection != null && commentLength > 0) {
                             if (previousKey != null) {
-                                currentSection.SetCommentary(previousKey, data.Substring(commentStartIndex, commentLength));
+                                currentSection.SetCommentary(previousKey,
+                                        (currentSection.Commentaries?.GetValueOrDefault(previousKey) + "\n"
+                                                + data.Substring(commentStartIndex, commentLength)).Trim());
                             } else if (currentSection.Count == 0) {
-                                currentSection.SetCommentary(data.Substring(commentStartIndex, commentLength));
+                                currentSection.SetCommentary((currentSection.Commentary + "\n" + data.Substring(commentStartIndex, commentLength)).Trim());
                             }
                         }
                         break;
@@ -508,7 +510,7 @@ namespace AcTools.DataFile {
                         break;
 
                     case '/':
-                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                        if (i + 1 < data.Length && data[i + 1] == '/' && (i == 0 || data[i - 1] != ':')) {
                             goto case ';';
                         }
                         goto default;
@@ -567,7 +569,7 @@ namespace AcTools.DataFile {
                         current = data.Substring(started + 1, i - started - 1) == section;
                         break;
                     case '/':
-                        if (i + 1 < data.Length && data[i + 1] == '/') {
+                        if (i + 1 < data.Length && data[i + 1] == '/' && (i == 0 || data[i - 1] != ':')) {
                             goto case ';';
                         }
                         break;

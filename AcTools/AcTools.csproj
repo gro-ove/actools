@@ -241,6 +241,7 @@
     <Compile Include="Utils\Physics\TurboDescription.cs" />
     <Compile Include="Utils\Pool.cs" />
     <Compile Include="Utils\ShowSelectedInExplorer.cs" />
+    <Compile Include="Utils\SimpleDirectoryWatcher.cs" />
     <Compile Include="Utils\SteamRunningHelper.cs" />
     <Compile Include="Utils\TagFile.cs" />
     <Compile Include="Windows\Input\InputBuilder.cs" />

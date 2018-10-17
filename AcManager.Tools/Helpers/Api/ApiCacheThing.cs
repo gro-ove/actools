@@ -65,6 +65,7 @@ namespace AcManager.Tools.Helpers.Api {
                 lock (_cache) {
                     cache = _cache.GetValueOrDefault(cacheKey);
                 }
+
                 if (cache != null && cache.Item2 > DateTime.Now - actualAliveTime) {
                     return cache.Item1;
                 }
@@ -158,6 +159,13 @@ namespace AcManager.Tools.Helpers.Api {
                 CancellationToken cancellation = default(CancellationToken)) {
             if (_stringTasks.TryGetValue(url, out var s)) return s;
             return _stringTasks[url] = GetStringAsyncInner(url, cacheKey, aliveTime, cancellation);
+        }
+
+        public void ResetCache([NotNull] string cacheKey) {
+            lock (_cache) {
+                _cache.Remove(cacheKey);
+            }
+            FileUtils.TryToDelete(FilesStorage.Instance.GetTemporaryFilename(_directory, cacheKey));
         }
     }
 }

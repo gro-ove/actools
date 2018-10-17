@@ -3,15 +3,51 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using StringBasedFilter;
 using StringBasedFilter.Parsing;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Objects {
+    public class PythonAppReferencedValue<T> : NotifyPropertyChanged where T : struct {
+        [CanBeNull]
+        private readonly string _referenceKey;
+
+        public PythonAppReferencedValue(T value) {
+            Value = value;
+        }
+
+        public PythonAppReferencedValue([NotNull] string referenceKey) {
+            _referenceKey = referenceKey;
+        }
+
+        public T Value { get; private set; }
+
+        public bool Refresh([NotNull] IPythonAppConfigValueProvider provider) {
+            if (_referenceKey == null) return false;
+
+            var value = provider.Get(_referenceKey).As(default(T));
+            if (Equals(value, Value)) return false;
+
+            Value = value;
+            OnPropertyChanged(nameof(Value));
+            return true;
+        }
+
+        public static PythonAppReferencedValue<T> Parse(string value) {
+            if (value.Length > 1 && (value[0] == '\'' || value[0] == '"' || value[0] == '`'
+                    || value[0] == '“' || value[0] == '”' || value[0] == '_' || char.IsLetter(value[0]))) {
+                return new PythonAppReferencedValue<T>(value.Trim(' ', '\t', '\n', '\r', '"', '\'', '`', '“', '”'));
+            }
+            return new PythonAppReferencedValue<T>(value.As<T>());
+        }
+    }
+
     public class PythonAppConfigValue : Displayable, IWithId {
         public string OriginalKey { get; private set; }
 
@@ -32,6 +68,8 @@ namespace AcManager.Tools.Objects {
                 if (Equals(value, _value)) return;
                 _value = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(IsChanged));
+                OnPropertyChanged(nameof(IsNonDefault));
                 OnValueChanged();
             }
         }
@@ -45,12 +83,13 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _isEnabled);
         }
 
-        public string AppDirectory { get; private set; }
+        public string FilesRelativeDirectory { get; private set; }
 
         private static readonly Regex ValueCommentaryRegex = new Regex(@"^([^(;]*)(?:\(([^)]+)\))?(?:;(.*))?", RegexOptions.Compiled);
 
-        private static readonly Regex RangeRegex = new Regex(@"^from\s+(\d+(?:\.\d*)?)( ?\S+)?\s+to\s+(\d+(?:\.\d*)?)",
-                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        private static readonly Regex RangeRegex =
+                new Regex(@"^from\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)( ?\S+)?\s+to\s+(-?\d+(?:\.\d*)?|[_a-zA-Z]\w+)(,\s*per)?(?:,\s*round\s+to\s+(\d+(?:\.\d*)?))?(,\s*round)?",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex NumberRegex = new Regex(@"^(?:number|float)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -86,7 +125,7 @@ namespace AcManager.Tools.Objects {
                 _value = b;
             }
 
-            public void Set(ITestEntryFactory factory) {}
+            public void Set(ITestEntryFactory factory) { }
 
             public bool Test(bool value) {
                 return value == _value;
@@ -123,7 +162,11 @@ namespace AcManager.Tools.Objects {
             _originalValue = originalValue;
             _resetCommand?.RaiseCanExecuteChanged();
             IsResettable = _originalValue != null;
+            OnValueChanged();
         }
+
+        public bool IsChanged => _originalValue != Value;
+        public bool IsNonDefault => _originalValue != null && _originalValue != Value;
 
         public void Reset() {
             if (_originalValue == null) return;
@@ -141,12 +184,15 @@ namespace AcManager.Tools.Objects {
 
         public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(Reset, () => _originalValue != null));
 
-        public static PythonAppConfigValue Create(string appDirectory, KeyValuePair<string, string> pair, [CanBeNull] string commentary,
+        [CanBeNull]
+        public static PythonAppConfigValue Create([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, string> pair, [CanBeNull] string commentary,
                 [CanBeNull] string actualValue, bool isResetable) {
             string name = null, toolTip = null;
             Func<IPythonAppConfigValueProvider, bool> isEnabledTest = null;
             var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest);
-            result.AppDirectory = appDirectory;
+            if (result == null) return null;
+
+            result.FilesRelativeDirectory = configParams.FilesRelativeDirectory;
 
             if (string.IsNullOrEmpty(name)) {
                 name = PythonAppConfig.ConvertKeyToName(pair.Key);
@@ -208,7 +254,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        [NotNull]
+        [CanBeNull]
         private static PythonAppConfigValue CreateInner(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] ref string name,
                 [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest) {
             var value = pair.Value;
@@ -218,13 +264,16 @@ namespace AcManager.Tools.Objects {
                     name = PythonAppConfig.CapitalizeFirst(match.Groups[1].Value.TrimEnd());
                     toolTip = match.Groups[2].Success ? PythonAppConfig.CapitalizeFirst(match.Groups[2].Value.Replace(@"; ", ";\n")) : null;
 
-                    if (name.Length > 50 && toolTip == null) {
+                    if (toolTip == null) {
                         toolTip = name;
-                        name = null;
+                        if (name.Length > 50) {
+                            name = null;
+                        }
                     }
 
                     if (match.Groups[3].Success) {
                         var description = match.Groups[3].Value.Trim().WrapQuoted(out var unwrap);
+                        if (description == "hidden") return null;
 
                         var dependent = DependentRegex.Match(description);
                         if (dependent.Success) {
@@ -242,13 +291,28 @@ namespace AcManager.Tools.Objects {
 
                         var range = RangeRegex.Match(description);
                         if (range.Success) {
-                            return new PythonAppConfigRangeValue(FlexibleParser.TryParseDouble(range.Groups[1].Value) ?? 0d,
-                                    FlexibleParser.TryParseDouble(range.Groups[3].Value) ?? 100d, range.Groups[2].Success ? unwrap(range.Groups[2].Value) : null);
+                            var r = new PythonAppConfigRangeValue(
+                                    PythonAppReferencedValue<double>.Parse(unwrap(range.Groups[1].Value)),
+                                    PythonAppReferencedValue<double>.Parse(unwrap(range.Groups[3].Value)),
+                                    range.Groups[2].Success ? unwrap(range.Groups[2].Value) : null);
+                            if (r.Postfix == null && range.Groups[4].Success) {
+                                r.Postfix = "%";
+                                r.DisplayMultiplier = 100d;
+                            }
+                            if (range.Groups[5].Success) {
+                                r.RoundTo = FlexibleParser.TryParseDouble(range.Groups[5].Value) ?? 1d;
+                                r.Tick = r.Tick.Ceiling(r.RoundTo);
+                            } else if (range.Groups[6].Success) {
+                                r.RoundTo = 1d;
+                                r.Tick = Math.Ceiling(r.Tick);
+                            }
+                            return r;
                         }
 
                         var file = FileRegex.Match(description);
                         if (file.Success) {
-                            return new PythonAppConfigFileValue(file.Groups[2].Success, !file.Groups[1].Success, file.Groups[3].Success ? unwrap(file.Groups[3].Value) : null);
+                            return new PythonAppConfigFileValue(file.Groups[2].Success, !file.Groups[1].Success,
+                                    file.Groups[3].Success ? unwrap(file.Groups[3].Value) : null);
                         }
 
                         if (description.IndexOf(',') != -1) {
@@ -309,6 +373,12 @@ namespace AcManager.Tools.Objects {
             }
 
             return new PythonAppConfigValue();
+        }
+
+        public virtual void UpdateReferenced(IPythonAppConfigValueProvider provider) {
+            if (IsEnabledTest != null) {
+                IsEnabled = IsEnabledTest(provider);
+            }
         }
     }
 }

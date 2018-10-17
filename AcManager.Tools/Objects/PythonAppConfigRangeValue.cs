@@ -5,32 +5,78 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class PythonAppConfigRangeValue : PythonAppConfigValue {
-        public double Minimum { get; }
+        public PythonAppReferencedValue<double> Minimum { get; }
+        public PythonAppReferencedValue<double> Maximum { get; }
 
-        public double Maximum { get; }
+        public bool ManualTick { get; set; }
+        public double Tick { get; set; }
 
-        public double Tick { get; }
+        public bool ManualRound { get; set; }
+        public double RoundTo { get; set; }
 
-        public double RoundTo { get; }
+        public double DisplayMultiplier { get; set; } = 1d;
 
         [CanBeNull]
-        public string Postfix { get; }
+        public string Postfix { get; set; }
 
         public new double Value {
-            get => FlexibleParser.TryParseDouble(base.Value) ?? (Minimum + Maximum) / 2;
+            get => FlexibleParser.TryParseDouble(base.Value) ?? (Minimum.Value + Maximum.Value) / 2;
             set {
-                value = value.Clamp(Minimum, Maximum).Round(RoundTo);
+                value = value.Clamp(Minimum.Value, Maximum.Value).Round(RoundTo);
                 if (Equals(value, Value)) return;
                 base.Value = value.ToInvariantString();
             }
         }
 
-        public PythonAppConfigRangeValue(double minimum, double maximum, [CanBeNull] string postfix) {
+        protected override void OnValueChanged() {
+            base.OnValueChanged();
+            OnPropertyChanged(nameof(DisplayValue));
+
+            // Logging.Warning($"{Value}, Min={Minimum.Value}, Max={Maximum.Value}");
+
+            if (Postfix?.EndsWith(@"(s)") == true) {
+                DisplayPostix = Math.Abs(Value - 1) < 0.00001 ? Postfix.Replace(@"(s)", "") : Postfix.Replace(@"(s)", @"s");
+            } else {
+                DisplayPostix = Postfix;
+            }
+        }
+
+        public override void UpdateReferenced(IPythonAppConfigValueProvider provider) {
+            base.UpdateReferenced(provider);
+
+            if (!Minimum.Refresh(provider) && !Maximum.Refresh(provider)) return;
+
+            if (!ManualTick) {
+                Tick = (Maximum.Value - Minimum.Value) / 10d;
+                OnPropertyChanged(nameof(Tick));
+            }
+
+            if (!ManualRound) {
+                RoundTo = Math.Min(Math.Pow(10, Math.Round(Math.Log10(Maximum.Value - Minimum.Value) - 2)), 1d);
+                OnPropertyChanged(nameof(RoundTo));
+            }
+
+            Value = Value;
+        }
+
+        public double DisplayValue {
+            get => Value * DisplayMultiplier;
+            set => Value = value / DisplayMultiplier;
+        }
+
+        private string _displayPostix;
+
+        public string DisplayPostix {
+            get => _displayPostix;
+            set => Apply(value, ref _displayPostix);
+        }
+
+        public PythonAppConfigRangeValue(PythonAppReferencedValue<double> minimum, PythonAppReferencedValue<double> maximum, [CanBeNull] string postfix) {
             Minimum = minimum;
             Maximum = maximum;
             Postfix = postfix;
-            Tick = (maximum - minimum) / 10d;
-            RoundTo = Math.Min(Math.Pow(10, Math.Round(Math.Log10(Maximum - Minimum) - 2)), 1d);
+            Tick = (maximum.Value - minimum.Value) / 10d;
+            RoundTo = Math.Min(Math.Pow(10, Math.Round(Math.Log10(Maximum.Value - Minimum.Value) - 2)), 1d);
         }
     }
 }

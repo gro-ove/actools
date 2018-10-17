@@ -538,7 +538,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        private Dictionary<string, IFontCollectionProvider> _patternFontsCollections = new Dictionary<string, IFontCollectionProvider>();
+        private static Dictionary<string, IFontCollectionProvider> _patternFontsCollections = new Dictionary<string, IFontCollectionProvider>();
 
         private class FontCollectionProvider : IFontCollectionProvider {
             private readonly PaintShopFontSource _source;
@@ -550,8 +550,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             public FontCollection GetCollection(Factory factory) {
                 if (_collection != null) return _collection;
-                _collection = factory.CreateCustomFontCollection(_source.Filename);
-                return _collection;
+                return _collection = factory.CreateCustomFontCollection(_source.Filename);
             }
 
             public void Dispose() {
@@ -1010,7 +1009,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             _paintShopFlags?.DisposeEverything();
-            _patternFontsCollections?.DisposeEverything();
+            // _patternFontsCollections?.DisposeEverything();
 
             // _override?.DisposeEverything();
             /*_patternBase?.DisposeEverything();

@@ -22,9 +22,9 @@
           <ComboBox ItemsSource="{Binding Online.RefreshPeriods}" SelectedItem="{Binding Online.RefreshPeriod}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Online.IntegrateMinorating}">
+        <!--<CheckBox IsChecked="{Binding Online.IntegrateMinorating}">
           <Label Content="Integrate Minorating" />
-        </CheckBox>
+        </CheckBox>-->
 
         <DockPanel>
           <Label Content="Fix names:" ToolTip="Refresh might be required after changing" />

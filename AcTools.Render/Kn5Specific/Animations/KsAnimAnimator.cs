@@ -7,7 +7,6 @@ using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Objects;
-using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -78,7 +77,7 @@ namespace AcTools.Render.Kn5Specific.Animations {
             _skipFixed = skipFixed;
             _filename = filename;
             _original = File.Exists(_filename) ? KsAnim.FromFile(_filename) : KsAnim.CreateEmpty();
-            _watcher = DirectoryWatcher.WatchFile(filename, Reload);
+            _watcher = SimpleDirectoryWatcher.WatchFile(filename, Reload);
         }
 
         private void Reload() {

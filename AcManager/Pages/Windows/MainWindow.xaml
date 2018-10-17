@@ -404,7 +404,7 @@
         Source="/Pages/Drive/Online.xaml" FilterHint="{x:Static c:FilterHints.ServerEntries}">
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="Kunos" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />
-        <mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />
+        <!--<mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />-->
         <mui:Link DisplayName="LAN" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
@@ -481,6 +481,7 @@
       <mui:LinkGroupFilterable.FixedLinks>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ContentManager}" Source="/Pages/Settings/SettingsPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_AssettoCorsa}" Source="/Pages/AcSettings/AcSettingsPage.xaml" />
+        <!--<mui:Link DisplayName="Custom Shaders Patch" Source="/Pages/Settings/SettingsShadersPatch.xaml" IsEnabled="False" />-->
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/Settings/PythonAppsSettings.xaml" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>

@@ -50,7 +50,7 @@ namespace AcManager.Tools.Objects {
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
-                Name =  AcStringValues.NameFromId(Id);
+                Name = AcStringValues.NameFromId(Id);
                 Changed = true;
                 return true;
             }
@@ -141,16 +141,15 @@ namespace AcManager.Tools.Objects {
         [NotNull]
         public PythonAppConfigs GetAppConfigs() {
             if (_configs == null) {
-                _configs = new PythonAppConfigs(Location, () => {
-                    // We’re going to keep it in-memory for now
-
-                    /*if (_configs == null) return;
-
-                    foreach (var config in _configs) {
-                        config.PropertyChanged -= OnConfigPropertyChanged;
+                _configs = new PythonAppConfigs(new PythonAppConfigParams(Location) {
+                    DisposalAction = () => {
+                        // We’re going to keep it in-memory for now
+                        /*if (_configs == null) return;
+                        foreach (var config in _configs) {
+                            config.PropertyChanged -= OnConfigPropertyChanged;
+                        }
+                        _configs = null;*/
                     }
-
-                    _configs = null;*/
                 });
 
                 _configs.ValueChanged += OnConfigsValueChanged;
@@ -177,7 +176,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public override bool HandleChangedFile(string filename) {
-            if (_configs != null && (DateTime.Now - _lastSaved).TotalSeconds > 3d && _configs.HandleChanged(Location, filename)) {
+            if (_configs != null && (DateTime.Now - _lastSaved).TotalSeconds > 3d && _configs.HandleChanged(filename)) {
                 return true;
             }
 
@@ -228,7 +227,7 @@ namespace AcManager.Tools.Objects {
             return true;
         }
 
-        public class PythonAppPackerParams : AcCommonObjectPackerParams {}
+        public class PythonAppPackerParams : AcCommonObjectPackerParams { }
 
         private class PythonAppPacker : AcCommonObjectPacker<PythonAppObject, PythonAppPackerParams> {
             protected override string GetBasePath(PythonAppObject t) {
@@ -248,11 +247,11 @@ namespace AcManager.Tools.Objects {
 
             protected override PackedDescription GetDescriptionOverride(PythonAppObject t) {
                 return new PackedDescription(t.Id, t.Name,
-                    new Dictionary<string, string> {
-                        ["Version"] = t.Version,
-                        ["Made by"] = t.Author,
-                        ["Webpage"] = t.Url,
-                    }, PythonAppsManager.Instance.Directories.GetMainDirectory(), true);
+                        new Dictionary<string, string> {
+                            ["Version"] = t.Version,
+                            ["Made by"] = t.Author,
+                            ["Webpage"] = t.Url,
+                        }, PythonAppsManager.Instance.Directories.GetMainDirectory(), true);
             }
         }
 

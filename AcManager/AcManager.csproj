@@ -637,6 +637,12 @@
     <Compile Include="Pages\Settings\SettingsDev.xaml.cs">
       <DependentUpon>SettingsDev.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Settings\SettingsShadersPatch.xaml.cs">
+      <DependentUpon>SettingsShadersPatch.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Settings\SettingsShadersPatchPopup.xaml.cs">
+      <DependentUpon>SettingsShadersPatchPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Settings\SettingsWebBlocks.xaml.cs">
       <DependentUpon>SettingsWebBlocks.xaml</DependentUpon>
     </Compile>
@@ -1452,6 +1458,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Settings\SettingsShadersPatch.xaml" />
+    <Page Include="Pages\Settings\SettingsShadersPatchPopup.xaml" />
     <Page Include="Pages\Settings\SettingsWebBlocks.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

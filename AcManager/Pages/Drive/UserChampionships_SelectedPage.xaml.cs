@@ -198,14 +198,15 @@ namespace AcManager.Pages.Drive {
                         } else {
                             time = CurrentRoundTime;
                             weather = CurrentRoundWeather;
-                            temperature = CurrentRoundRoadTemperature;
+                            temperature = CurrentRoundTemperature;
                         }
                     }
 
                     var conditions = new Game.ConditionProperties {
                         AmbientTemperature = temperature,
+                        RoadTemperature = Game.ConditionProperties.GetRoadTemperature(time, temperature,
+                                weather?.TemperatureCoefficient ?? 0d),
                         CloudSpeed = 1d,
-                        RoadTemperature = null,
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
                         TimeMultipler = 1d,
                         WeatherName = weather?.Id ?? round.WeatherId

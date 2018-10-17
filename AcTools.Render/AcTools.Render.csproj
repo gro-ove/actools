@@ -266,7 +266,6 @@
     <Compile Include="Kn5Specific\Objects\SmoothEmissiveChange.cs" />
     <Compile Include="Kn5Specific\Objects\Up.cs" />
     <Compile Include="Kn5Specific\Textures\DirectoryTexturesProvider.cs" />
-    <Compile Include="Kn5Specific\Textures\DirectoryWatcher.cs" />
     <Compile Include="Kn5Specific\Textures\ITexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\Kn5TexturesProvider.cs" />
     <Compile Include="Kn5Specific\Textures\MultiKn5TexturesProvider.cs" />

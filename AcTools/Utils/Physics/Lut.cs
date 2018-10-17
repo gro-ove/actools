@@ -154,11 +154,13 @@ namespace AcTools.Utils.Physics {
         }
 
         private double GetTangent(int k) {
-            return GetTangent(GetClamped(k - 1), GetClamped(k + 1));
+            var kc = GetClamped(k);
+            return (GetTangent(GetClamped(k - 1), kc) + GetTangent(kc, GetClamped(k + 1))) / 2d;
         }
 
         private double GetTangent(LutPoint p, LutPoint n) {
-            return (n.Y - p.Y) / Math.Abs(n.X - p.X);
+            if (n.X == p.X) return 0d;
+            return (n.Y - p.Y) / (n.X - p.X);
         }
 
         [Pure]
@@ -173,11 +175,13 @@ namespace AcTools.Utils.Physics {
             var k = FindLeft(x);
             var p1 = GetClamped(k);
             var p2 = GetClamped(k + 1);
-            var t1 = (x - p1.X) / (p2.X - p1.X);
+            var di = (p2.X - p1.X);
+            var t1 = (x - p1.X) / di;
             var t2 = t1 * t1;
             var t3 = t1 * t2;
-            return (2 * t3 - 3 * t2 + 1) * p1.Y + (t3 - 2 * t2 + t1) * GetTangent(k) +
-                (-2 * t3 + 3 * t2) * p2.Y + (t3 - t2) * GetTangent(k + 1);
+
+            return (2 * t3 - 3 * t2 + 1) * p1.Y + (t3 - 2 * t2 + t1) * GetTangent(k) * di +
+                (-2 * t3 + 3 * t2) * p2.Y + (t3 - t2) * GetTangent(k + 1) * di;
         }
 
         [Pure, NotNull]

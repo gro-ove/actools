@@ -31,6 +31,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         [CanBeNull]
         public string NonAvailableReasonsString => _naReasons == null ? null : (_naReasonsString ?? (_naReasonsString = _naReasons.JoinToString('\n')));
+
         private string _naReasonsString;
 
         private IEnumerable<string> GetNonAvailableReasons() {
@@ -232,7 +233,10 @@ namespace AcManager.Tools.Managers.Online {
                 return;
             }
 
-            if (BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
+            // if (BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
+            // if (!IsBookedForPlayer && BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
+            if ((!IsBookedForPlayer || CurrentSessionType == Game.SessionType.Booking)
+                    && BookingMode && !ReferenceEquals(o, ActualJoin) && !ReferenceEquals(o, ForceJoin)) {
                 if (_factory == null) {
                     Logging.Error("Booking: UI factory is missing");
                     return;

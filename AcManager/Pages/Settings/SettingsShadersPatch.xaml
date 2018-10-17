@@ -1,8 +1,8 @@
-﻿<UserControl x:Class="AcManager.Pages.Settings.PythonAppsSettings" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsShadersPatch" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance set:PythonAppsSettings+ViewModel}">
+    d:DataContext="{d:DesignInstance set:SettingsShadersPatch+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -13,15 +13,42 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding Apps.Count}">
-    <DockPanel mui:Switch.When="0" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="No configurable apps found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/f/d/19-content-manager-python-app-configs">
+  <mui:Switch Value="{Binding Mode}">
+    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Margin="{StaticResource ContentMarginWithPadding}">
+      <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
         <DockPanel IsHitTestVisible="False">
           <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
               VerticalAlignment="Center" SnapsToDevicePixels="True" />
           <TextBlock Text="What is it?" />
+        </DockPanel>
+      </Button>
+    </DockPanel>
+
+    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Margin="{StaticResource ContentMarginWithPadding}">
+      <TextBlock Text="No Custom Shaders Patch configs were found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+        <DockPanel IsHitTestVisible="False">
+          <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
+              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+              VerticalAlignment="Center" SnapsToDevicePixels="True" />
+          <TextBlock Text="Get a build with configs" />
+        </DockPanel>
+      </Button>
+    </DockPanel>
+
+    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoFittingConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Margin="{StaticResource ContentMarginWithPadding}">
+      <TextBlock Text="Installed Custom Shaders Patch is obsolete" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+        <DockPanel IsHitTestVisible="False">
+          <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
+              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
+              VerticalAlignment="Center" SnapsToDevicePixels="True" />
+          <TextBlock Text="Get a new build" />
         </DockPanel>
       </Button>
     </DockPanel>
@@ -34,7 +61,7 @@
       </Grid.ColumnDefinitions>
 
       <!-- Link list -->
-      <ListBox ItemsSource="{Binding Apps}" SelectedItem="{Binding SelectedApp}" Style="{StaticResource VirtualizingListBox}">
+      <ListBox ItemsSource="{Binding Configs}" SelectedItem="{Binding SelectedConfig}" Style="{StaticResource VirtualizingListBox}">
         <ListBox.ItemContainerStyle>
           <Style TargetType="ListBoxItem" BasedOn="{StaticResource FlatListBoxItem}">
             <Setter Property="Template">
@@ -60,23 +87,20 @@
         </ListBox.ItemContainerStyle>
         <ListBox.ItemTemplate>
           <DataTemplate>
-            <DockPanel IsEnabled="{Binding Enabled}" Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
+            <DockPanel Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
               <DockPanel.ToolTip>
                 <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
                   <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
                 </ToolTip>
               </DockPanel.ToolTip>
-              <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
-                  Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
-              <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
-                  Margin="0 0 4 0" ClearOnChange="True" />
-              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+              <!--<Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
+                  Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />-->
+              <!--<mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
+                  Margin="0 0 4 0" ClearOnChange="True" />-->
+              <TextBlock Text="{Binding ShortDescription}" DockPanel.Dock="Bottom" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis"
+                  Margin="0 2 0 4" FontWeight="Normal" />
+              <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" Margin="0 2 0 0" FontWeight="Bold" />
             </DockPanel>
-            <DataTemplate.Triggers>
-              <DataTrigger Binding="{Binding IsFavourite}" Value="True">
-                <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
-              </DataTrigger>
-            </DataTemplate.Triggers>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>
@@ -87,10 +111,9 @@
       <!-- Content -->
       <DockPanel Grid.Column="2" Margin="20 0 20 20">
         <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
-          <mui:BbCodeBlock
-              Text="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
+          <mui:BbCodeBlock Text="Changed will be saved automatically." />
         </c:MessageBlock>
-        <mui:ModernTab x:Name="ConfigsTab" Layout="Tab" />
+        <ContentControl x:Name="ConfigTab" ContentTemplate="{StaticResource PythonAppConfig.NoHeader}" />
       </DockPanel>
     </Grid>
   </mui:Switch>

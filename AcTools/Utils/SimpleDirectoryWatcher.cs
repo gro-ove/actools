@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using AcTools.Utils;
 using JetBrains.Annotations;
 
-namespace AcTools.Render.Kn5Specific.Textures {
-    internal delegate void DirectoryChanged([CanBeNull] string filename);
+namespace AcTools.Utils {
+    public delegate void DirectoryChanged([CanBeNull] string filename);
 
-    internal static class DirectoryWatcher {
+    public static class SimpleDirectoryWatcher {
         private class Entry {
             public FileSystemWatcher Watcher;
             public int Count;

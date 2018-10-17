@@ -13,7 +13,10 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public sealed class PythonAppConfig : Displayable {
+    public sealed class PythonAppConfig : Displayable, IWithId {
+        [NotNull]
+        public PythonAppConfigParams ConfigParams { get; }
+
         internal string Filename { get; }
 
         private readonly string _defaultsFilename;
@@ -24,19 +27,29 @@ namespace AcManager.Tools.Objects {
         public bool IsResettable { get; }
         public bool IsSingleSection { get; }
 
-        private PythonAppConfig(string filename, string appDirectory, IniFile ini, string name, IniFile values = null) {
+        private bool _isNonDefault;
+
+        public bool IsNonDefault {
+            get => _isNonDefault;
+            set => Apply(value, ref _isNonDefault);
+        }
+
+        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, IniFile values = null) {
             IsResettable = values != null;
             _valuesIniFile = values ?? ini;
 
+            ConfigParams = configParams;
             Filename = filename;
+
             _defaultsFilename = ini.Filename;
             if (_defaultsFilename == Filename) {
                 _defaultsFilename = null;
             }
 
-            DisplayName = name;
-            Sections = new List<PythonAppConfigSection>(ini.Select(x => new PythonAppConfigSection(appDirectory, x, values?[x.Key])));
-            IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, appDirectory);
+            DisplayName = name.Trim();
+            Sections = new List<PythonAppConfigSection>(ini.Select(x => new PythonAppConfigSection(configParams, x, values?[x.Key]))
+                                                           .Where(x => x.DisplayName != @"hidden"));
+            IsSingleSection = Sections.Count == 1 && IsSectionNameUseless(Sections[0].DisplayName, configParams.PythonAppLocation);
 
             foreach (var value in Sections.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
@@ -72,16 +85,38 @@ namespace AcManager.Tools.Objects {
         private void OnValuePropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(PythonAppConfigValue.Value)) {
                 Changed = true;
+
+                if (IsResettable) {
+                    var isNonDefault = false;
+                    foreach (var section in Sections) {
+                        if (section.Key == @"ℹ") continue;
+                        foreach (var p in section) {
+                            if (p.IsNonDefault) {
+                                isNonDefault = true;
+                            }
+                        }
+                    }
+                    IsNonDefault = isNonDefault;
+                }
+
                 ValueChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
         public void Save() {
+            if (!Changed) return;
             Changed = false;
+
             foreach (var section in Sections) {
+                if (section.Key == @"ℹ") continue;
                 var iniSection = _valuesIniFile[section.Key];
                 foreach (var p in section) {
-                    iniSection.Set(p.OriginalKey, p.Value);
+                    // if (ConfigParams.SaveOnlyChanged && !p.IsChanged) continue;
+                    if (ConfigParams.SaveOnlyNonDefault && !p.IsNonDefault) {
+                        iniSection.Remove(p.OriginalKey);
+                    } else {
+                        iniSection.Set(p.OriginalKey, p.Value);
+                    }
                 }
             }
 
@@ -96,28 +131,37 @@ namespace AcManager.Tools.Objects {
         public List<PythonAppConfigSection> Sections { get; }
 
         [CanBeNull, ContractAnnotation(@"force:true => notnull")]
-        public static PythonAppConfig Create(string filename, string pythonAppLocation, bool force) {
-            var relative = FileUtils.GetRelativePath(filename, pythonAppLocation);
+        public static PythonAppConfig Create([NotNull] PythonAppConfigParams configParams, string filename, bool force, string userEditedFile = null) {
+            var relative = FileUtils.GetRelativePath(filename, configParams.PythonAppLocation);
             if (!force && !Regex.IsMatch(relative, @"^(?:(?:cfg|config|params|options|settings)[/\\])?[\w-]+\.ini$", RegexOptions.IgnoreCase)) {
                 return null;
             }
 
             const string extension = @".ini";
-            const string defaultsPostfix = @"_defaults" + extension;
+            string defaults;
 
-            if (relative.EndsWith(defaultsPostfix, StringComparison.OrdinalIgnoreCase)) {
-                var original = filename.ApartFromLast(defaultsPostfix) + extension;
-                if (File.Exists(original)) return null;
-                filename = original;
+            if (userEditedFile == null) {
+                const string defaultsPostfix = @"_defaults" + extension;
+
+                if (relative.EndsWith(defaultsPostfix, StringComparison.OrdinalIgnoreCase)) {
+                    var original = filename.ApartFromLast(defaultsPostfix) + extension;
+                    if (File.Exists(original)) return null;
+                    filename = original;
+                }
+                defaults = filename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
+            } else {
+                defaults = filename;
+                filename = userEditedFile;
             }
 
-            var defaults = filename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
             var defaultsMode = File.Exists(defaults);
             var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(filename, IniFileMode.Comments);
             if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) return null;
-            return new PythonAppConfig(filename, pythonAppLocation, ini,
-                    relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase).Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
-                            .Select(AcStringValues.NameFromId).JoinToString('/'),
+            return new PythonAppConfig(configParams, filename, ini,
+                    (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
+                            ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
+                                       .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
+                                       .Select(AcStringValues.NameFromId).JoinToString('/'),
                     defaultsMode ? new IniFile(filename) : null);
         }
 
@@ -136,5 +180,10 @@ namespace AcManager.Tools.Objects {
         internal static string ConvertKeyToName(string original) {
             return CapitalizeFirstOnly(Regex.Replace(original, @"[\s_-]+|(?<=[a-z])(?=[A-Z])", " ").Trim());
         }
+
+        public string Id => Filename;
+        public string Order => Sections.GetByIdOrDefault("ℹ")?.Order;
+        public string Description => Sections.GetByIdOrDefault("ℹ")?.Description;
+        public string ShortDescription => Sections.GetByIdOrDefault("ℹ")?.ShortDescription;
     }
 }

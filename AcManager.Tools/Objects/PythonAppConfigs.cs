@@ -3,12 +3,42 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using FirstFloor.ModernUI.Serialization;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
+    public class PythonAppConfigParams {
+        public PythonAppConfigParams([NotNull] string pythonAppLocation) {
+            PythonAppLocation = pythonAppLocation;
+            FilesRelativeDirectory = pythonAppLocation;
+        }
+
+        [NotNull]
+        public string PythonAppLocation { get; }
+
+        [NotNull]
+        public string FilesRelativeDirectory { get; set; }
+
+        [CanBeNull]
+        public Action DisposalAction { get; set; }
+
+        [CanBeNull]
+        public Func<string, IEnumerable<string>> ScanFunc { get; set; }
+
+        [CanBeNull]
+        public Func<PythonAppConfigParams, string, PythonAppConfig> ConfigFactory { get; set; }
+
+        public bool SaveOnlyNonDefault { get; set; }
+
+        [CanBeNull]
+        public Dictionary<string, string> Flags { get; set; }
+    }
+
     public class PythonAppConfigs : ObservableCollection<PythonAppConfig>, IDisposable {
         public event EventHandler ValueChanged;
 
-        private readonly Action _disposalAction;
+        [NotNull]
+        public PythonAppConfigParams ConfigParams { get; }
 
         private static IEnumerable<string> GetSubConfigFiles(string directory) {
             var inis = Directory.GetFiles(directory, "*.ini");
@@ -20,17 +50,22 @@ namespace AcManager.Tools.Objects {
             return (inis.Length > 10 ? new string[0] : inis).Concat(Directory.GetDirectories(directory).SelectMany(GetSubConfigFiles));
         }
 
-        public PythonAppConfigs(string location, Action disposalAction) : base(GetConfigFiles(location)
-                .Select(file => PythonAppConfig.Create(file, location, false)).Where(x => x?.Sections.Any(y => y.Count > 0) == true)) {
-            _disposalAction = disposalAction;
-            UpdateEnabled();
+        public PythonAppConfigs([NotNull] PythonAppConfigParams configParams)
+                : base((configParams.ScanFunc ?? GetConfigFiles)(configParams.PythonAppLocation)
+                        .Select(x => configParams.ConfigFactory != null
+                                ? configParams.ConfigFactory(configParams, x)
+                                : PythonAppConfig.Create(configParams, x, false))
+                        .Where(x => x?.Sections.Any(y => y.Count > 0) == true)
+                        .OrderBy(x => x.Order.As(0d)).ThenBy(x => x.DisplayName)) {
+            ConfigParams = configParams;
+            UpdateReferenced();
 
             foreach (var config in this) {
                 config.ValueChanged += OnValueChanged;
             }
         }
 
-        public bool HandleChanged(string location, string filename) {
+        public bool HandleChanged(string filename) {
             var result = false;
             var updated = false;
 
@@ -42,7 +77,7 @@ namespace AcManager.Tools.Objects {
                     }
 
                     config.ValueChanged -= OnValueChanged;
-                    this[i] = PythonAppConfig.Create(config.Filename, location, true);
+                    this[i] = PythonAppConfig.Create(config.ConfigParams, config.Filename, true);
                     this[i].ValueChanged += OnValueChanged;
 
                     updated = true;
@@ -50,14 +85,14 @@ namespace AcManager.Tools.Objects {
             }
 
             if (updated) {
-                UpdateEnabled();
+                UpdateReferenced();
             }
 
             return result;
         }
 
         private void OnValueChanged(object sender, EventArgs e) {
-            UpdateEnabled();
+            UpdateReferenced();
             ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
@@ -65,9 +100,11 @@ namespace AcManager.Tools.Objects {
             private readonly ObservableCollection<PythonAppConfig> _root;
             private List<PythonAppConfigSection> _config;
             private Collection<PythonAppConfigValue> _section;
+            private Dictionary<string, string> _flags;
 
-            public ValueProvider(ObservableCollection<PythonAppConfig> root) {
+            public ValueProvider(PythonAppConfigs root) {
                 _root = root;
+                _flags = root.ConfigParams.Flags;
             }
 
             private static int LastIndexOf(string key) {
@@ -102,9 +139,12 @@ namespace AcManager.Tools.Objects {
             }
 
             public string Get(string key) {
+                if (_flags != null && _flags.TryGetValue(key, out var result)) return result;
+
                 Parse(key, out var param, out var section, out var file);
 
-                var sections = file == null ? _config : _root.FirstOrDefault(x => string.Equals(x.DisplayName, file, StringComparison.OrdinalIgnoreCase))?.Sections;
+                var sections = file == null
+                        ? _config : _root.FirstOrDefault(x => string.Equals(x.DisplayName, file, StringComparison.OrdinalIgnoreCase))?.Sections;
                 if (sections == null) return null;
 
                 var values = section == null ? _section : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
@@ -120,7 +160,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public void UpdateEnabled() {
+        public void UpdateReferenced() {
             var provider = new ValueProvider(this);
             for (var i = 0; i < Count; i++) {
                 var config = this[i];
@@ -131,17 +171,14 @@ namespace AcManager.Tools.Objects {
                     provider.SetSection(section);
 
                     for (var k = section.Count - 1; k >= 0; k--) {
-                        var value = section[k];
-                        if (value.IsEnabledTest != null) {
-                            value.IsEnabled = value.IsEnabledTest(provider);
-                        }
+                        section[k].UpdateReferenced(provider);
                     }
                 }
             }
         }
 
         public void Dispose() {
-            _disposalAction?.Invoke();
+            ConfigParams.DisposalAction?.Invoke();
         }
     }
 }

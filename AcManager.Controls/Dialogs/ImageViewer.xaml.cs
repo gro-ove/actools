@@ -273,10 +273,17 @@ namespace AcManager.Controls.Dialogs {
                     e.Key == Key.Q || e.Key == Key.W && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
                 Close();
-            } else if (e.Key == Key.Enter) {
-                IsSelected = true;
+            } else if (e.Key == Key.S && Keyboard.Modifiers.HasFlag(ModifierKeys.Control)) {
                 e.Handled = true;
-                Close();
+                Model.SaveCommand.Execute(null);
+            } else if (e.Key == Key.Enter) {
+                e.Handled = true;
+                if (Model.SaveCommand.CanExecute(null)) {
+                    Model.SaveCommand.Execute(null);
+                } else {
+                    IsSelected = true;
+                    Close();
+                }
             }
         }
 

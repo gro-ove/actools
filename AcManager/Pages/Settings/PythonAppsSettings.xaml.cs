@@ -66,22 +66,27 @@ namespace AcManager.Pages.Settings {
         }
 
         private void UpdateConfigsTabs() {
-            var links = ConfigsTab.Links;
-            links.Clear();
+            try {
+                var links = ConfigsTab.Links;
+                links.Clear();
+                ConfigsTab.SelectedSource = null;
 
-            if (Model.SelectedAppConfigs?.Count > 1) {
-                foreach (var config in Model.SelectedAppConfigs) {
-                    links.Add(new Link {
-                        DisplayName = config.DisplayName,
-                        Key = config.DisplayName
-                    });
+                if (Model.SelectedAppConfigs?.Count > 1) {
+                    foreach (var config in Model.SelectedAppConfigs) {
+                        links.Add(new Link {
+                            DisplayName = config.DisplayName,
+                            Key = config.DisplayName
+                        });
+                    }
+                    ConfigsTab.LinksMargin = new Thickness(0, 0, 0, 4);
+                    ConfigsTab.SelectedSource = ConfigsTab.Links.FirstOrDefault()?.Source;
+                } else {
+                    ConfigsTab.LinksMargin = new Thickness(0, 0, 0, -16);
+                    ConfigsTab.SelectedSource = Model.SelectedAppConfigs == null ? null
+                            : new Uri(Model.SelectedAppConfigs.First().DisplayName, UriKind.Relative);
                 }
-                ConfigsTab.LinksMargin = new Thickness(0, 0, 0, 4);
-                ConfigsTab.SelectedSource = ConfigsTab.Links.FirstOrDefault()?.Source;
-            } else {
-                ConfigsTab.LinksMargin = new Thickness(0, 0, 0, -16);
-                ConfigsTab.SelectedSource = Model.SelectedAppConfigs == null ? null
-                        : new Uri(Model.SelectedAppConfigs.First().DisplayName, UriKind.Relative);
+            } catch (Exception e) {
+                Logging.Error(e);
             }
         }
 
@@ -104,8 +109,6 @@ namespace AcManager.Pages.Settings {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        private void OnLoaded(object sender, RoutedEventArgs e) {}
-
         public class ViewModel : NotifyPropertyChanged {
             public ConfigurableAppsCollection Apps { get; }
 
@@ -124,9 +127,11 @@ namespace AcManager.Pages.Settings {
                 set {
                     if (Equals(value, _selectedApp)) return;
                     _selectedApp = value;
+                    if (value?.Id != null) {
+                        _selectedAppId.Value = value.Id;
+                    }
                     OnPropertyChanged();
                     OnPropertyChanged(nameof(SelectedAppConfigs));
-                    _selectedAppId.Value = value?.Id;
                 }
             }
 

@@ -8,7 +8,6 @@ using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Base.Utils;
 using AcTools.Render.Kn5Specific.Animations;
-using AcTools.Render.Kn5Specific.Textures;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
@@ -115,7 +114,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             if (_driverHierarchyFilename == null) {
                 _driverHierarchyFilename = Path.Combine(_rootDirectory, "driver_base_pos.knh");
-                _driverHierarchyWatcher = DirectoryWatcher.WatchFile(_driverHierarchyFilename, () => {
+                _driverHierarchyWatcher = SimpleDirectoryWatcher.WatchFile(_driverHierarchyFilename, () => {
                     _driver?.AlignNodes(Knh.FromFile(_driverHierarchyFilename));
                 });
             }
@@ -128,7 +127,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             var driversDirectory = Path.Combine(contentDirectory, "driver");
             _driverModelFilename = Path.Combine(driversDirectory, driver.Name + ".kn5");
-            _driverModelWatcher = DirectoryWatcher.WatchFile(_driverModelFilename, ReloadDriverModel);
+            _driverModelWatcher = SimpleDirectoryWatcher.WatchFile(_driverModelFilename, ReloadDriverModel);
             LoadDriverModel();
 
             ObjectsChanged?.Invoke(this, EventArgs.Empty);

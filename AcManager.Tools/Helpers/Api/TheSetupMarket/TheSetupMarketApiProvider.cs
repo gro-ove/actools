@@ -67,6 +67,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
 
         private static List<RemoteSetupInformation> _parsed;
         private static DateTime _parsedLifeSpan;
+        private static DateTime? _errorSkip;
 
         private static string[] ListUrls = {
             "http://194.67.219.50:12012/setups",
@@ -83,7 +84,12 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         }
 
         public static async Task<List<RemoteSetupInformation>> GetAvailableSetupsInner(string carId, CancellationToken cancellation = default(CancellationToken)) {
-            if (_parsed != null && DateTime.Now < _parsedLifeSpan) {
+            var now = DateTime.Now;
+            if (_errorSkip.HasValue && now < _errorSkip.Value) {
+                return null;
+            }
+
+            if (_parsed != null && now < _parsedLifeSpan) {
                 // A little bit of extra caching to avoid going to a different thread to reparse already loaded data
                 // for each new car.
                 return _parsed.Where(x => x.CarId == carId).ToList();
@@ -102,7 +108,9 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
                         break;
                     } catch (Exception e) {
                         Logging.Warning($"Error while loading {url}: {e}");
+                        Cache.ResetCache("List.json");
                         if (url == ListUrls.Last()) {
+                            Logging.Warning("No more URLs to try");
                             throw;
                         }
                     }
@@ -119,6 +127,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
                     Logging.Warning(e);
                 }
 
+                _errorSkip = DateTime.Now + TimeSpan.FromHours(3);
                 return null;
             }
         }
