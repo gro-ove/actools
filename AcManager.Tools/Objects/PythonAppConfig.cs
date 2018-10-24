@@ -10,6 +10,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -53,6 +54,19 @@ namespace AcManager.Tools.Objects {
 
             foreach (var value in Sections.SelectMany(x => x)) {
                 value.PropertyChanged += OnValuePropertyChanged;
+            }
+
+            if (IsResettable) {
+                var isNonDefault = false;
+                foreach (var section in Sections) {
+                    if (section.Key == @"ℹ") continue;
+                    foreach (var p in section) {
+                        if (p.IsNonDefault) {
+                            isNonDefault = true;
+                        }
+                    }
+                }
+                IsNonDefault = isNonDefault;
             }
         }
 
@@ -100,6 +114,22 @@ namespace AcManager.Tools.Objects {
                 }
 
                 ValueChanged?.Invoke(this, EventArgs.Empty);
+
+                if (sender is PythonAppConfigValue value && value.OriginalKey == @"ENABLED") {
+                    OnPropertyChanged(nameof(IsActive));
+                }
+            }
+        }
+
+        public void UpdateReferenced() {
+            var provider = new PythonAppConfigProvider(this);
+            for (var j = Sections.Count - 1; j >= 0; j--) {
+                var section = Sections[j];
+                provider.SetSection(section);
+
+                for (var k = section.Count - 1; k >= 0; k--) {
+                    section[k].UpdateReferenced(provider);
+                }
             }
         }
 
@@ -185,5 +215,6 @@ namespace AcManager.Tools.Objects {
         public string Order => Sections.GetByIdOrDefault("ℹ")?.Order;
         public string Description => Sections.GetByIdOrDefault("ℹ")?.Description;
         public string ShortDescription => Sections.GetByIdOrDefault("ℹ")?.ShortDescription;
+        public bool IsActive => Sections.GetByIdOrDefault("BASIC")?.GetByIdOrDefault("ENABLED")?.Value.As<bool?>() != false;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using AcManager.Controls;
 using AcManager.Controls.ViewModels;
@@ -16,6 +17,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Windows.Controls;
 using SharpCompress.Readers;
 using WaitingDialog = FirstFloor.ModernUI.Dialogs.WaitingDialog;
 
@@ -80,6 +82,13 @@ namespace AcManager.Tools {
 
                 case SharedEntryType.CustomPreviewsPreset:
                     return ProcessSharedCustomPreviewsPreset(shared, data);
+
+                case SharedEntryType.Replay:
+                    throw new NotSupportedException();
+
+                case SharedEntryType.Results:
+                    ModernDialog.ShowMessage(Encoding.UTF8.GetString(data));
+                    return ArgumentHandleResult.Successful;
 
                 default:
                     throw new Exception(string.Format(AppStrings.Arguments_SharedUnsupported, shared.EntryType));

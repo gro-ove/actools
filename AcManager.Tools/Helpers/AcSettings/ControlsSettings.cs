@@ -91,6 +91,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("NEXT_LAP", "Next lap", defaultKey: Keys.N),
                 new SystemButtonEntryCombined("PREVIOUS_LAP", "Previous lap", defaultKey: Keys.P),
                 new SystemButtonEntryCombined("NEXT_CAR", "Next car", defaultKey: Keys.NumPad3),
+                new SystemButtonEntryCombined("PLAYER_CAR", "Your car", defaultKey: Keys.NumPad2),
                 new SystemButtonEntryCombined("PREVIOUS_CAR", "Previous car", defaultKey: Keys.NumPad1),
                 new SystemButtonEntryCombined("SLOWMO", "Slow motion", defaultKey: Keys.S),
                 new SystemButtonEntryCombined("FFWD", "Fast-forward", defaultKey: Keys.F),

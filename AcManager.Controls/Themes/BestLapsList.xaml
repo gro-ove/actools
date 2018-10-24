@@ -16,7 +16,7 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ac:BestLapsList">
-          <StackPanel>
+          <StackPanel Background="Transparent">
             <TextBlock Text="Best laps:" Style="{StaticResource Label}" Margin="0 0 0 4"
                 Visibility="{TemplateBinding ShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <mui:Switch x:Name="PART_Switch" Value="{Binding Entries.Count, RelativeSource={RelativeSource TemplatedParent}}"
@@ -68,7 +68,7 @@
         <Setter Property="Template">
           <Setter.Value>
             <ControlTemplate TargetType="ac:BestLapsList">
-              <DockPanel>
+              <DockPanel Background="Transparent">
                 <mui:Switch x:Name="PART_Switch" Value="{Binding Entries.Count, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Right"
                     Width="80" Margin="8 0 0 0">
                   <ProgressBar mui:Switch.When="-1" Height="2" IsIndeterminate="True" VerticalAlignment="Center" />

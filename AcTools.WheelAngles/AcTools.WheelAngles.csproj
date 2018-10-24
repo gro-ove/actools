@@ -88,9 +88,11 @@
     <Compile Include="Implementations\Options\WheelAnglesSettingEntry.cs" />
     <Compile Include="Implementations\SimuCube.cs" />
     <Compile Include="Implementations\ThrustmasterF1.cs" />
-    <Compile Include="Implementations\ThrustmasterFerrariF1Advanced.cs" />
+    <Compile Include="Implementations\ThrustmasterFerrariF1Advanced2.cs" />
+    <Compile Include="Implementations\ThrustmasterFerrariF1Advanced1.cs" />
     <Compile Include="Implementations\ThrustmasterT300.cs" />
     <Compile Include="Implementations\ThrustmasterT500.cs" />
+    <Compile Include="Implementations\ThrustmasterTMX.cs" />
     <Compile Include="Implementations\ThrustmasterTSPC.cs" />
     <Compile Include="Implementations\ThrustmasterTSXW.cs" />
     <Compile Include="Implementations\ThrustmasterTX.cs" />

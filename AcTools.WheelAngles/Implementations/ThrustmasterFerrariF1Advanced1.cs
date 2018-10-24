@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
-    internal class ThrustmasterFerrariF1Advanced : ThrustmasterT500 {
+    internal class ThrustmasterFerrariF1Advanced1 : ThrustmasterT500 {
         public override string ControllerName => "Thrustmaster Ferrari F1 Advanced";
 
         public override bool Test(string productGuid) {

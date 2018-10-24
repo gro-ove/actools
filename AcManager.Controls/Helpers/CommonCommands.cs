@@ -1,9 +1,12 @@
 using System;
 using System.Threading.Tasks;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcManager.Tools.Profile;
 using AcTools.LapTimes;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 
@@ -68,5 +71,25 @@ namespace AcManager.Controls.Helpers {
 
         public static AsyncCommand<LapTimeEntry> RemoveLapTimeEntryCommand
             => _removeLapTimeEntryCommand ?? (_removeLapTimeEntryCommand = new AsyncCommand<LapTimeEntry>(e => LapTimesManager.Instance.RemoveEntryAsync(e)));
+
+        private static AsyncCommand<LapTimeEntry> _shareLapTimeEntryCommand;
+
+        public static AsyncCommand<LapTimeEntry> ShareLapTimeEntryCommand
+            => _shareLapTimeEntryCommand ?? (_shareLapTimeEntryCommand = new AsyncCommand<LapTimeEntry>(e => {
+                var driverName = SettingsHolder.Drive.DifferentPlayerNameOnline
+                        ? SettingsHolder.Drive.PlayerNameOnline.Or(SettingsHolder.Drive.PlayerName)
+                        : SettingsHolder.Drive.PlayerName;
+                var steamId = SteamIdHelper.Instance.Value;
+                if (steamId != null && steamId.Length > 4) {
+                    driverName += $" (…{steamId.Substring(steamId.Length - 4)})";
+                }
+
+                return SharingUiHelper.ShareAsync(SharedEntryType.Results,
+                        "Lap time", null,
+                        $@"Lap time set by {driverName} at {e.EntryDate:dd/MM/yyyy hh:mm tt}:
+• Car: {CarsManager.Instance.GetById(e.CarId)?.DisplayName ?? e.CarId};
+• Track: {TracksManager.Instance.GetLayoutByKunosId(e.TrackId)?.DisplayName ?? e.TrackId};
+• Time: {e.LapTime.ToMillisecondsString()}");
+            }));
     }
 }

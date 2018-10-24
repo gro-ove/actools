@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -62,6 +63,9 @@ namespace AcManager.Tools.Miscellaneous {
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_UserChampionship))]
         UserChampionship,
+
+        [Description("Results")]
+        Results,
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_Weather))]
         Weather
@@ -156,6 +160,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 case SharedEntryType.Weather:
                 case SharedEntryType.UserChampionship:
+                case SharedEntryType.Results:
                     return "";
 
                 default:

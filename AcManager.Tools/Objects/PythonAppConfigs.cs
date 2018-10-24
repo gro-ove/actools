@@ -7,6 +7,62 @@ using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
+    public class PythonAppConfigProvider : IPythonAppConfigValueProvider {
+        private readonly PythonAppConfig _root;
+        private Collection<PythonAppConfigValue> _section;
+        private Dictionary<string, string> _flags;
+
+        public PythonAppConfigProvider([NotNull] PythonAppConfig root) {
+            _root = root;
+            _flags = root.ConfigParams.Flags;
+        }
+
+        private static int LastIndexOf(string key) {
+            int i0 = key.LastIndexOf('/'), i1 = key.LastIndexOf('\\');
+            return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
+        }
+
+        private static int LastIndexOf(string key, int from) {
+            int i0 = key.LastIndexOf('/', from), i1 = key.LastIndexOf('\\', from);
+            return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
+        }
+
+        private static void Parse(string key, out string param, out string section, out string file) {
+            var paramSep = LastIndexOf(key);
+            if (paramSep <= 0) {
+                param = paramSep == -1 ? key : key.Substring(1);
+                section = file = null;
+                return;
+            }
+
+            param = key.Substring(paramSep + 1);
+
+            var sectionSep = LastIndexOf(key, paramSep - 1);
+            if (sectionSep <= 0) {
+                section = sectionSep == -1 ? key.Substring(0, paramSep) : key.Substring(1, paramSep - 1);
+                file = null;
+                return;
+            }
+
+            section = key.Substring(sectionSep + 1, paramSep - sectionSep - 1);
+            file = key.Substring(0, sectionSep);
+        }
+
+        public string Get(string key) {
+            if (_flags != null && _flags.TryGetValue(key, out var result)) return result;
+
+            Parse(key, out var param, out var section, out _);
+
+            var sections = _root.Sections;
+            var values = section == null ? _section : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
+            return values?.FirstOrDefault(x => string.Equals(x.OriginalKey, param))?.Value;
+        }
+
+        public void SetSection(Collection<PythonAppConfigValue> section) {
+            _section = section;
+        }
+    }
+
     public class PythonAppConfigParams {
         public PythonAppConfigParams([NotNull] string pythonAppLocation) {
             PythonAppLocation = pythonAppLocation;
@@ -96,84 +152,9 @@ namespace AcManager.Tools.Objects {
             ValueChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        private class ValueProvider : IPythonAppConfigValueProvider {
-            private readonly ObservableCollection<PythonAppConfig> _root;
-            private List<PythonAppConfigSection> _config;
-            private Collection<PythonAppConfigValue> _section;
-            private Dictionary<string, string> _flags;
-
-            public ValueProvider(PythonAppConfigs root) {
-                _root = root;
-                _flags = root.ConfigParams.Flags;
-            }
-
-            private static int LastIndexOf(string key) {
-                int i0 = key.LastIndexOf('/'), i1 = key.LastIndexOf('\\');
-                return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
-            }
-
-            private static int LastIndexOf(string key, int from) {
-                int i0 = key.LastIndexOf('/', from), i1 = key.LastIndexOf('\\', from);
-                return i0 != -1 ? i1 != -1 ? i0 < i1 ? i1 : i0 : i0 : i1;
-            }
-
-            private static void Parse(string key, out string param, out string section, out string file) {
-                var paramSep = LastIndexOf(key);
-                if (paramSep <= 0) {
-                    param = paramSep == -1 ? key : key.Substring(1);
-                    section = file = null;
-                    return;
-                }
-
-                param = key.Substring(paramSep + 1);
-
-                var sectionSep = LastIndexOf(key, paramSep - 1);
-                if (sectionSep <= 0) {
-                    section = sectionSep == -1 ? key.Substring(0, paramSep) : key.Substring(1, paramSep - 1);
-                    file = null;
-                    return;
-                }
-
-                section = key.Substring(sectionSep + 1, paramSep - sectionSep - 1);
-                file = key.Substring(0, sectionSep);
-            }
-
-            public string Get(string key) {
-                if (_flags != null && _flags.TryGetValue(key, out var result)) return result;
-
-                Parse(key, out var param, out var section, out var file);
-
-                var sections = file == null
-                        ? _config : _root.FirstOrDefault(x => string.Equals(x.DisplayName, file, StringComparison.OrdinalIgnoreCase))?.Sections;
-                if (sections == null) return null;
-
-                var values = section == null ? _section : sections.FirstOrDefault(x => string.Equals(x.Key, section, StringComparison.OrdinalIgnoreCase));
-                return values?.FirstOrDefault(x => string.Equals(x.OriginalKey, param))?.Value;
-            }
-
-            public void SetConfig(List<PythonAppConfigSection> config) {
-                _config = config;
-            }
-
-            public void SetSection(Collection<PythonAppConfigValue> section) {
-                _section = section;
-            }
-        }
-
-        public void UpdateReferenced() {
-            var provider = new ValueProvider(this);
+        private void UpdateReferenced() {
             for (var i = 0; i < Count; i++) {
-                var config = this[i];
-                provider.SetConfig(config.Sections);
-
-                for (var j = config.Sections.Count - 1; j >= 0; j--) {
-                    var section = config.Sections[j];
-                    provider.SetSection(section);
-
-                    for (var k = section.Count - 1; k >= 0; k--) {
-                        section[k].UpdateReferenced(provider);
-                    }
-                }
+                this[i].UpdateReferenced();
             }
         }
 

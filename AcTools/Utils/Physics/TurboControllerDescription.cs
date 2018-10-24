@@ -1,5 +1,4 @@
 ﻿using AcTools.DataFile;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Physics {
@@ -31,10 +30,16 @@ namespace AcTools.Utils.Physics {
                     input = rpm;
                     break;
                 case ControllerInput.Gear:
+                    input = 1;
+                    break;
                 case ControllerInput.Gas:
+                    input = 1;
+                    break;
                 case ControllerInput.Brake:
+                    input = 0;
+                    break;
                 case ControllerInput.SpeedKmh:
-                    input = Lut?.MaxEntryOrDefault(x => x.Y).X ?? 0d;
+                    input = 60d;
                     break;
                 default:
                     input = 0d;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
 using AcManager.Internal;
 using AcTools.Utils.Helpers;
@@ -17,8 +16,11 @@ namespace AcManager.Tools.Helpers.Api {
         public static async Task<TimeZoneInfo> DetermineTimeZoneAsync(GeoTagsEntry geoTags) {
             var requestUri = string.Format(RequestTimeZoneUri, geoTags.LatitudeValue, geoTags.LongitudeValue,
                                            InternalUtils.GetTimeZoneDbApiCode());
+            #if DEBUG
+            Logging.Debug(requestUri);
+            #endif
 
-            using (var order = KillerOrder.Create(new WebClient(), 5000)) {
+            using (var order = KillerOrder.Create(new CookieAwareWebClient(), 15000)) {
                 var data = await order.Victim.DownloadStringTaskAsync(requestUri);
 
                 var doc = JObject.Parse(data);

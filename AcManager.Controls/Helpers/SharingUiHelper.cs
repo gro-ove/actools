@@ -53,7 +53,7 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 var contentName = defaultName;
-                if (!SettingsHolder.Sharing.ShareWithoutName) {
+                if (!SettingsHolder.Sharing.ShareWithoutName && type != SharedEntryType.Results) {
                     contentName = Prompt.Show(ControlsStrings.Share_EnterName, ControlsStrings.Share_EnterNameHeader, defaultName, ToolsStrings.Common_None,
                             maxLength: 60);
                     if (contentName == null) return; // cancelled
@@ -63,7 +63,7 @@ namespace AcManager.Controls.Helpers {
                 }
 
                 string id = null;
-                if (SettingsHolder.Sharing.CustomIds) {
+                if (SettingsHolder.Sharing.CustomIds && type != SharedEntryType.Results) {
                     id =
                             Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", ToolsStrings.Common_None,
                                     maxLength: 200)?.Trim();
@@ -76,7 +76,8 @@ namespace AcManager.Controls.Helpers {
                 var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
                 if (SettingsHolder.Sharing.VerifyBeforeSharing && ModernDialog.ShowMessage(
                         string.Format(ControlsStrings.Share_VerifyMessage, authorName ?? @"?", contentName ?? @"?",
-                                type.GetDescription()), ControlsStrings.Share_VerifyMessageHeader, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                                type.GetDescription()), ControlsStrings.Share_VerifyMessageHeader, MessageBoxButton.YesNo) != MessageBoxResult.Yes
+                        && type != SharedEntryType.Results) {
                     return;
                 }
 
@@ -111,9 +112,8 @@ namespace AcManager.Controls.Helpers {
 
             // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
             Toast.Show(type,
-                    SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative, () => {
-                        WindowsHelper.ViewInBrowser(link + "#noauto");
-                    });
+                    SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative,
+                    () => { WindowsHelper.ViewInBrowser(link + "#noauto"); });
         }
     }
 }

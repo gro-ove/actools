@@ -101,6 +101,11 @@
                   Margin="0 2 0 4" FontWeight="Normal" />
               <TextBlock Text="{Binding DisplayName}" TextTrimming="CharacterEllipsis" Margin="0 2 0 0" FontWeight="Bold" />
             </DockPanel>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding IsActive}" Value="False">
+                <Setter Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
           </DataTemplate>
         </ListBox.ItemTemplate>
       </ListBox>

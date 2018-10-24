@@ -16,11 +16,17 @@ namespace AcManager {
         private void AddTrayIconWpf() {
             ActionExtension.InvokeInMainThread(() => {
                 var patchSettings = InternalUtils.IsAllRight && SettingsShadersPatch.IsCustomShadersPatchInstalled()
-                        ? new MenuItem { Header = "Custom Shaders Patch settings", Command = SettingsShadersPatch.GetShowSettingsCommand() }
+                        ? new MenuItem {
+                            Header = "Custom Shaders Patch settings",
+                            Command = SettingsShadersPatch.GetShowSettingsCommand()
+                        }
                         : null;
 
                 var rhm = RhmService.Instance.Active
-                        ? new MenuItem { Header = "RHM settings", Command = RhmService.Instance.ShowSettingsCommand }
+                        ? new MenuItem {
+                            Header = "RHM settings",
+                            Command = RhmService.Instance.ShowSettingsCommand
+                        }
                         : null;
 
                 var restore = new MenuItem { Header = UiStrings.Restore };
@@ -33,7 +39,7 @@ namespace AcManager {
                     Icon = AppIconService.GetTrayIcon(),
                     ToolTipText = AppStrings.Hibernate_TrayText,
                     ContextMenu = new ContextMenu()
-                           //.AddItem(patchSettings)
+                            .AddItem(patchSettings)
                             .AddItem(rhm)
                             .AddSeparator()
                             .AddItem(restore)

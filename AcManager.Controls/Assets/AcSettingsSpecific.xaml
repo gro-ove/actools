@@ -2,7 +2,8 @@
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:c="clr-namespace:AcManager.Controls" xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:forms="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
-    xmlns:helpers="clr-namespace:AcManager.Controls.Helpers" xmlns:se="clr-namespace:AcManager.Controls.Services">
+    xmlns:helpers="clr-namespace:AcManager.Controls.Helpers" xmlns:se="clr-namespace:AcManager.Controls.Services"
+    xmlns:system="clr-namespace:System;assembly=mscorlib">
   <ResourceDictionary.MergedDictionaries>
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -552,6 +553,31 @@
   </DataTemplate>
 
   <ItemsPanelTemplate x:Key="PythonAppConfig.SectionItemsPanel">
+    <mui:UniformGridWithOrientation Orientation="Vertical" VerticalSpacing="4" HorizontalSpacing="20" Margin="0 0 20 0">
+      <mui:UniformGridWithOrientation.Style>
+        <Style TargetType="{x:Type mui:UniformGridWithOrientation}">
+          <Style.Resources>
+            <system:Boolean x:Key="True">True</system:Boolean>
+          </Style.Resources>
+          <Setter Property="Columns" Value="2" />
+          <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MoreConverter}, ConverterParameter=800}"
+                Value="{StaticResource True}">
+              <Setter Property="Columns" Value="3" />
+            </DataTrigger>
+            <DataTrigger
+                Binding="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MoreConverter}, ConverterParameter=1200}"
+                Value="{StaticResource True}">
+              <Setter Property="Columns" Value="4" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </mui:UniformGridWithOrientation.Style>
+    </mui:UniformGridWithOrientation>
+  </ItemsPanelTemplate>
+
+  <ItemsPanelTemplate x:Key="PythonAppConfig.SectionItemsPanel.Wide">
     <mui:UniformGridWithOrientation Orientation="Vertical" VerticalSpacing="4" HorizontalSpacing="20" Columns="2" />
   </ItemsPanelTemplate>
 
@@ -569,8 +595,9 @@
       <DockPanel>
         <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top" Margin="0 0 0 8"
             TextWrapping="Wrap" Style="{StaticResource Label}" ToolTip="{Binding ToolTip}" />
-        <ItemsControl ItemsSource="{Binding}" Margin="20 0 0 20" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
-            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}" />
+        <ItemsControl x:Name="Items" ItemsSource="{Binding}" Margin="20 0 0 20" ItemTemplate="{StaticResource PythonAppConfig.ItemTemplate}"
+            ItemsPanel="{StaticResource PythonAppConfig.SectionItemsPanel}"
+            Tag="{Binding ActualWidth, RelativeSource={RelativeSource Self}, Converter={StaticResource MoreConverter}, ConverterParameter=800}" />
       </DockPanel>
     </mui:Switch>
   </DataTemplate>

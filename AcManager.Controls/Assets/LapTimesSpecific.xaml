@@ -29,6 +29,12 @@
       </MenuItem.CommandParameter>
     </MenuItem>
     <Separator />
+    <MenuItem Header="Get link to result" Command="{x:Static h:CommonCommands.ShareLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
+      <MenuItem.Icon>
+        <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource ShareIconData}" HorizontalAlignment="Right"
+            VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+      </MenuItem.Icon>
+    </MenuItem>
     <MenuItem Header="Remove entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
       <MenuItem.Icon>
         <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CloseIconData}" HorizontalAlignment="Right"
@@ -55,6 +61,12 @@
       </MenuItem.CommandParameter>
     </MenuItem>
     <Separator />
+    <MenuItem Header="Get link to result" Command="{x:Static h:CommonCommands.ShareLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
+      <MenuItem.Icon>
+        <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource ShareIconData}" HorizontalAlignment="Right"
+            VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+      </MenuItem.Icon>
+    </MenuItem>
     <MenuItem Header="Remove entry" Command="{x:Static h:CommonCommands.RemoveLapTimeEntryCommand}" CommandParameter="{Binding Entry}">
       <MenuItem.Icon>
         <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CloseIconData}" HorizontalAlignment="Right"

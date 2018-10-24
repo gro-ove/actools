@@ -22,6 +22,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcTools.Processes;
@@ -34,6 +35,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Attached;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 using CarEntry = AcManager.Tools.Managers.Online.ServerEntry.CarEntry;
 
@@ -629,6 +631,34 @@ namespace AcManager.Pages.Drive {
             });
 
             e.Menu = menu;
+        }
+
+        private void OnShareStatsItemClick(object sender, RoutedEventArgs e) {
+            var server = Model.Entry;
+            var stats = server.Stats;
+            if (stats.Distance <= 100d || server.LastConnected == null) {
+                ModernDialog.ShowMessage("You need to drive at least 100 meters for that");
+                return;
+            }
+
+            ((MenuItem)sender).IsEnabled = false;
+
+            var driverName = SettingsHolder.Drive.DifferentPlayerNameOnline
+                    ? SettingsHolder.Drive.PlayerNameOnline.Or(SettingsHolder.Drive.PlayerName)
+                    : SettingsHolder.Drive.PlayerName;
+            var steamId = SteamIdHelper.Instance.Value;
+            if (steamId != null && steamId.Length > 4) {
+                driverName += $" (…{steamId.Substring(steamId.Length - 4)})";
+            }
+
+            SharingUiHelper.ShareAsync(SharedEntryType.Results,
+                    "Online stats", null,
+                    $@"Server stats for {driverName} at {DateTime.Now:dd/MM/yyyy hh:mm tt}:
+• Connected {PluralizingConverter.PluralizeExt(stats.SessionsCount, "{0} time")}, last time at {server.LastConnected:dd/MM/yyyy hh:mm tt};
+• Driven in total {stats.Distance / 1e3:F1} km ({stats.Time.ToReadableTime()});
+• Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes, "{0} time")};
+• Avg. speed: {stats.AverageSpeed:F1} km/h, top speed: {stats.MaxSpeed:F1} km/h;
+• Burnt {stats.FuelBurnt:F1} l of fuel, worn out {PluralizingConverter.PluralizeExt(stats.TotalTyreWearRounded.RoundToInt(), "{0} tyre")}.");
         }
     }
 }

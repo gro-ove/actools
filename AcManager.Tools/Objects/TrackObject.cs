@@ -177,14 +177,14 @@ namespace AcManager.Tools.Objects {
             return value;
         }
 
-        private static readonly Regex NonDefaultLayout = new Regex("downhill|drift|fall|freeroam|grid|mini|no ?chicane|osrw|oval|rev(?:\b|erse)?",
+        private static readonly Regex NonDefaultLayout = new Regex("downhill|drift|fall|freeroam|grid|mini|no ?chicane|osrw|oval|pursuit|rev(?:\b|erse)?",
                 RegexOptions.Compiled);
 
-        private static readonly Regex PreferredLayout = new Regex("circuit|international|full|gp|grand?|hill ?climb|standar[dt]?|uphill",
+        private static readonly Regex PreferredLayout = new Regex("circuit|international|full|gp|grand?|hill ?climb|normal|standar[dt]?|uphill",
                 RegexOptions.Compiled);
 
         private static int GetWeight(Match m) {
-            if (m.Value == "full" || m.Value == "drift") return 10;
+            if (m.Value == "full" || m.Value == "drift" || m.Value == "pursuit") return 10;
             if (m.Value == "international" || m.Value == "circuit") return 2;
             return m.Length;
         }
@@ -358,7 +358,7 @@ namespace AcManager.Tools.Objects {
                 if (obj.Skip(1).Any(x => x?.Substring(0, i) != result)) continue;
 
                 result = result.Trim();
-                if (result.Length > 2 && (result.EndsWith(@"-") || result.EndsWith(@"—") || result.EndsWith(@"/"))) {
+                if (result.Length > 2 && (result.EndsWith(@"-") || result.EndsWith(@"—") || result.EndsWith(@"/") || result.EndsWith(@"("))) {
                     result = result.Substring(0, result.Length - 1).Trim();
                 }
                 return result;
