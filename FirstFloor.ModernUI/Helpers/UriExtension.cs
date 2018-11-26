@@ -83,7 +83,7 @@ namespace FirstFloor.ModernUI.Helpers {
         [Pure]
         public static T GetQueryParamEnum<T>([NotNull] this Uri uri, string key) where T : struct, IConvertible {
             var value = uri.GetQueryParam(key);
-            if (value == null) return default(T);
+            if (value == null) return default;
             return (T)Enum.Parse(typeof(T), value);
         }
     }

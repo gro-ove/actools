@@ -109,22 +109,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         [TypeConverter(typeof(FontSizeConverter))]
         public double FontSize {
-            get => GetValue(FontSizeProperty) as double? ?? default(double);
+            get => GetValue(FontSizeProperty) as double? ?? default;
             set => SetValue(FontSizeProperty, value);
         }
 
         public FontStretch FontStretch {
-            get => GetValue(FontStretchProperty) as FontStretch? ?? default(FontStretch);
+            get => GetValue(FontStretchProperty) as FontStretch? ?? default;
             set => SetValue(FontStretchProperty, value);
         }
 
         public FontStyle FontStyle {
-            get => GetValue(FontStyleProperty) as FontStyle? ?? default(FontStyle);
+            get => GetValue(FontStyleProperty) as FontStyle? ?? default;
             set => SetValue(FontStyleProperty, value);
         }
 
         public FontWeight FontWeight {
-            get => GetValue(FontWeightProperty) as FontWeight? ?? default(FontWeight);
+            get => GetValue(FontWeightProperty) as FontWeight? ?? default;
             set => SetValue(FontWeightProperty, value);
         }
 
@@ -134,7 +134,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public double StrokeThickness {
-            get => GetValue(StrokeThicknessProperty) as double? ?? default(double);
+            get => GetValue(StrokeThicknessProperty) as double? ?? default;
             set => SetValue(StrokeThicknessProperty, value);
         }
 
@@ -144,7 +144,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public TextAlignment TextAlignment {
-            get => GetValue(TextAlignmentProperty) as TextAlignment? ?? default(TextAlignment);
+            get => GetValue(TextAlignmentProperty) as TextAlignment? ?? default;
             set => SetValue(TextAlignmentProperty, value);
         }
 
@@ -154,12 +154,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public TextTrimming TextTrimming {
-            get => GetValue(TextTrimmingProperty) as TextTrimming? ?? default(TextTrimming);
+            get => GetValue(TextTrimmingProperty) as TextTrimming? ?? default;
             set => SetValue(TextTrimmingProperty, value);
         }
 
         public TextWrapping TextWrapping {
-            get => GetValue(TextWrappingProperty) as TextWrapping? ?? default(TextWrapping);
+            get => GetValue(TextWrappingProperty) as TextWrapping? ?? default;
             set => SetValue(TextWrappingProperty, value);
         }
 

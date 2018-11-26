@@ -146,7 +146,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void SaveOriginalLimitations() {
-            if (_originalMinSize != default(Size)) {
+            if (_originalMinSize != default) {
                 Logging.Debug("Original limitations already saved");
                 return;
             }
@@ -214,7 +214,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             UpdateLimitations(screen, dpi.ScaleX, dpi.ScaleY);
 
             var windowSize = _windowSize;
-            if (windowSize != default(Size)) {
+            if (windowSize != default) {
                 Logging.Debug($"Update window size: {windowSize.Width}×{windowSize.Height}; scale: {dpi.ScaleX}, {dpi.ScaleY}");
                 Width = windowSize.Width * dpi.ScaleX;
                 Height = windowSize.Height * dpi.ScaleY;

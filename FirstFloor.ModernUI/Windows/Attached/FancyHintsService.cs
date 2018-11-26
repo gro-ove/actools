@@ -321,7 +321,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         #region Style-related
         public static HorizontalAlignment GetHorizontalAlignment(DependencyObject obj) {
-            return obj.GetValue(HorizontalAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            return obj.GetValue(HorizontalAlignmentProperty) as HorizontalAlignment? ?? default;
         }
 
         public static void SetHorizontalAlignment(DependencyObject obj, HorizontalAlignment value) {
@@ -332,7 +332,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalAlignment(DependencyObject obj) {
-            return obj.GetValue(VerticalAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            return obj.GetValue(VerticalAlignmentProperty) as VerticalAlignment? ?? default;
         }
 
         public static void SetVerticalAlignment(DependencyObject obj, VerticalAlignment value) {
@@ -344,7 +344,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
 
         public static HorizontalAlignment GetHorizontalContentAlignment(DependencyObject obj) {
-            return obj.GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            return obj.GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default;
         }
 
         public static void SetHorizontalContentAlignment(DependencyObject obj, HorizontalAlignment value) {
@@ -356,7 +356,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalContentAlignment(DependencyObject obj) {
-            return obj.GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            return obj.GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default;
         }
 
         public static void SetVerticalContentAlignment(DependencyObject obj, VerticalAlignment value) {

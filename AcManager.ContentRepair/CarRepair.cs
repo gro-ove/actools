@@ -60,7 +60,7 @@ namespace AcManager.ContentRepair {
 
     public abstract class CarSimpleRepairBase : CarRepairBase {
         protected virtual Task<bool> FixAsync([NotNull] CarObject car, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return Task.Run(() => {
                 var data = car.AcdData;

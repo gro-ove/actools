@@ -366,7 +366,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (!minimumSet) {
-                closest = default(T);
+                closest = default;
                 return false;
             }
 

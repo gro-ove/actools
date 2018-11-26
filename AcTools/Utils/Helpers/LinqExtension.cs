@@ -158,7 +158,7 @@ namespace AcTools.Utils.Helpers {
 
         [CanBeNull]
         public static T MaxOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
-            return MaxOr(source, default(T));
+            return MaxOr(source, default);
         }
 
         [CanBeNull]
@@ -183,7 +183,7 @@ namespace AcTools.Utils.Helpers {
 
         [CanBeNull]
         public static T MinOrDefault<T>([NotNull] this IEnumerable<T> source) where T : IComparable<T> {
-            return MinOr(source, default(T));
+            return MinOr(source, default);
         }
 
         public static T MaxEntry<T, TResult>([NotNull] this IEnumerable<T> source, [NotNull] Func<T, TResult> selector) where TResult : IComparable<TResult> {
@@ -367,7 +367,7 @@ namespace AcTools.Utils.Helpers {
         public static T RandomElementOrDefault<T>([NotNull] this IEnumerable<T> enumerable) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable.ToIReadOnlyListIfItIsNot();
-            return list.Count == 0 ? default(T) : list[MathUtils.Random(0, list.Count)];
+            return list.Count == 0 ? default : list[MathUtils.Random(0, list.Count)];
         }
 
         [Pure]
@@ -381,7 +381,7 @@ namespace AcTools.Utils.Helpers {
         public static T RandomElementOrDefault<T>([NotNull] this IEnumerable<T> enumerable, Random random) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
             var list = enumerable.ToIReadOnlyListIfItIsNot();
-            return list.Count == 0 ? default(T) : list[random.Next(0, list.Count)];
+            return list.Count == 0 ? default : list[random.Next(0, list.Count)];
         }
 
         [Pure, NotNull]
@@ -621,7 +621,7 @@ namespace AcTools.Utils.Helpers {
                 try {
                     return fn(x);
                 } catch {
-                    return default(TResult);
+                    return default;
                 }
             });
         }
@@ -634,7 +634,7 @@ namespace AcTools.Utils.Helpers {
                     return fn(x);
                 } catch (Exception e) {
                     onException?.Invoke(e);
-                    return default(TResult);
+                    return default;
                 }
             });
         }
@@ -892,7 +892,7 @@ namespace AcTools.Utils.Helpers {
             foreach (var i in source) {
                 if (Equals(i.Id, id)) return i;
             }
-            return default(T);
+            return default;
         }
 
         [Pure]

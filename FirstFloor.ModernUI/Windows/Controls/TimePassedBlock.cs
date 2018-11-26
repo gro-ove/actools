@@ -31,7 +31,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(TimePassedBlock), new PropertyMetadata(OnFromChanged));
 
         public DateTime From {
-            get => GetValue(FromProperty) as DateTime? ?? default(DateTime);
+            get => GetValue(FromProperty) as DateTime? ?? default;
             set => SetValue(FromProperty, value);
         }
 

@@ -123,7 +123,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             _proxy = proxy;
         }
 
-        public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> UnwrapLink(string argument, CancellationToken cancellation = default) {
             var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
             using (var order = KillerOrder.Create(new CookieAwareWebClient(), TimeSpan.FromMinutes(10))) {
                 var client = order.Victim;
@@ -143,7 +143,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         public static async Task<string> LoadAsyncTo(string argument,
                 FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination, [CanBeNull] FlexibleLoaderReportDestinationCallback reportDestination,
                 Action<FlexibleLoaderMetaInformation> reportMetaInformation = null, Func<bool> checkIfPaused = null,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Finding fitting loader…"));
             var loader = await CreateLoaderAsync(argument, cancellation) ?? throw new OperationCanceledException();
             try {

@@ -49,7 +49,7 @@ namespace AcManager.Tools.Helpers {
             var timeKey = key + LazierCached.Postfix;
             var cachedAt = CacheStorage.Get<DateTime>(timeKey);
 
-            if (cachedAt != default(DateTime) && DateTime.Now - cachedAt < maxAge) {
+            if (cachedAt != default && DateTime.Now - cachedAt < maxAge) {
                 return Task.FromResult(SimpleSerialization.IsSupported<T>()
                         ? CacheStorage.Get<T>(key)
                         : CacheStorage.Storage.GetObject<T>(key));
@@ -67,7 +67,7 @@ namespace AcManager.Tools.Helpers {
                     Logging.Warning($"Cancelled: {key}");
                 }
 
-                return default(T);
+                return default;
             });
 
             void Store(T value) {

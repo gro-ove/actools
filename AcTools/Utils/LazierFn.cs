@@ -24,7 +24,7 @@ namespace AcTools.Utils {
 
         public void Reset() {
             _set = false;
-            _value = default(TOutput);
+            _value = default;
         }
     }
 }

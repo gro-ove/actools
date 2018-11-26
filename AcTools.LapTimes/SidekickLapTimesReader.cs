@@ -182,11 +182,11 @@ namespace AcTools.LapTimes {
             var p = n - _lastModifiedReadAt;
             if (p.TotalMinutes > 5) {
                 var directory = new DirectoryInfo(Path.Combine(_sidekickDirectory, "personal_best"));
-                if (!directory.Exists) return default(DateTime);
+                if (!directory.Exists) return default;
 
                 _lastModifiedReadAt = n;
                 _lastModified = directory.GetFiles("*_pb.ini").Select(f => f.LastWriteTime)
-                                         .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default(DateTime);
+                                         .OrderByDescending(f => f).Cast<DateTime?>().FirstOrDefault() ?? default;
             }
 
             return _lastModified;

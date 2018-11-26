@@ -19,19 +19,19 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// Reference on safe handles: http://blogs.msdn.com/b/bclteam/archive/2006/06/23/644343.aspx.
     /// </summary>
     internal class LevelDbFreeHandle : SafeHandle {
-        public LevelDbFreeHandle() : base(default(IntPtr), true) {}
+        public LevelDbFreeHandle() : base(default, true) {}
 
         [ReliabilityContract(Consistency.WillNotCorruptState, Cer.MayFail)]
         protected override bool ReleaseHandle() {
-            if (handle != default(IntPtr)) LevelDbInterop.leveldb_free(handle);
-            handle = default(IntPtr);
+            if (handle != default) LevelDbInterop.leveldb_free(handle);
+            handle = default;
             return true;
         }
 
-        public override bool IsInvalid => handle != default(IntPtr);
+        public override bool IsInvalid => handle != default;
 
         public new void SetHandle(IntPtr p) {
-            if (handle != default(IntPtr)) ReleaseHandle();
+            if (handle != default) ReleaseHandle();
             base.SetHandle(p);
         }
     }

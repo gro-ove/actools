@@ -122,7 +122,7 @@ namespace AcManager.Controls {
         }
 
         public static AvalonEditMode GetMode(DependencyObject obj) {
-            return obj.GetValue(ModeProperty) as AvalonEditMode? ?? default(AvalonEditMode);
+            return obj.GetValue(ModeProperty) as AvalonEditMode? ?? default;
         }
 
         public static void SetMode(DependencyObject obj, AvalonEditMode value) {

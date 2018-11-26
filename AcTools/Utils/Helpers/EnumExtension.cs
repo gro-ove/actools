@@ -63,7 +63,7 @@ namespace AcTools.Utils.Helpers {
 
                 previous = val;
             }
-            return default(T);
+            return default;
         }
     }
 }

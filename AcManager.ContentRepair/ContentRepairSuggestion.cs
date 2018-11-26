@@ -36,7 +36,7 @@ namespace AcManager.ContentRepair {
             _fix = fix;
         }
 
-        public Task<bool> Fix(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public Task<bool> Fix(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             return _fix(progress, cancellation);
         }
 

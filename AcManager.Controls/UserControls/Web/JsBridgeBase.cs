@@ -41,7 +41,7 @@ namespace AcManager.Controls.UserControls.Web {
                     return action();
                 } catch (Exception e) {
                     Logging.Warning(e);
-                    return default(T);
+                    return default;
                 }
             });
         }

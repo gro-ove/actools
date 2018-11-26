@@ -146,7 +146,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             } else {
                 if (ReferenceEquals(e.MouseDevice.Captured, this)) ReleaseMouseCapture();
                 ClearValue(IsDraggingPropertyKey);
-                _originThumbPoint = default(Point);
+                _originThumbPoint = default;
             }
         }
     }

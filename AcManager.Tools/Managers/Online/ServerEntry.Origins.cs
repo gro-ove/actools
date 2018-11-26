@@ -208,7 +208,7 @@ namespace AcManager.Tools.Managers.Online {
 
             var r = _extendedDataLastModified?.Item1;
             if (r == null) throw new Exception("Server went mad");
-            if (r.UntilLocal != default(DateTime)) {
+            if (r.UntilLocal != default) {
                 r.TimeLeft = Math.Max((long)(r.UntilLocal - DateTime.Now).TotalSeconds, 0);
             }
 

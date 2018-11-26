@@ -7,7 +7,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingStackPanel), new FrameworkPropertyMetadata(Orientation.Vertical, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public Orientation Orientation {
-            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            get => GetValue(OrientationProperty) as Orientation? ?? default;
             set => SetValue(OrientationProperty, value);
         }
 

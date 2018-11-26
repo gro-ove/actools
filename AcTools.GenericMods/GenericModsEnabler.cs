@@ -313,7 +313,7 @@ namespace AcTools.GenericMods {
         }
 
         public Task DisableAsync([NotNull] GenericMod mod, IProgress<Tuple<string, double?>> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (!mod.IsEnabled) {
                 throw new InformativeException("Can’t disable mod", "Mod is already disabled.");
             }

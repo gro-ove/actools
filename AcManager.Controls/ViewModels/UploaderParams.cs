@@ -89,7 +89,7 @@ namespace AcManager.Controls.ViewModels {
         public async Task Prepare() {
             try {
                 IsBusy++;
-                await SelectedUploader.PrepareAsync(default(CancellationToken));
+                await SelectedUploader.PrepareAsync(default);
             } finally {
                 IsBusy--;
             }

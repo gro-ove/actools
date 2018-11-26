@@ -156,7 +156,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
         }
 
         protected override void FreeUnManagedObjects() {
-            if (Handle != default(IntPtr)) LevelDbInterop.leveldb_options_destroy(Handle);
+            if (Handle != default) LevelDbInterop.leveldb_options_destroy(Handle);
         }
 
         #region Managed wrappers, must be detached upon successful DB.Create

@@ -365,7 +365,7 @@ namespace AcManager.Tools.Managers.Online {
             /// <returns>True if FileBasedOnlineSource.Update event should be raised.</returns>
             public bool CheckIfChanged() {
                 var fileInfo = new FileInfo(Filename);
-                DateTime? value = fileInfo.Exists ? fileInfo.LastWriteTime : default(DateTime);
+                DateTime? value = fileInfo.Exists ? fileInfo.LastWriteTime : default;
 
                 if (value != _lastDateTime) {
                     _lastDateTime = value;
@@ -492,7 +492,7 @@ namespace AcManager.Tools.Managers.Online {
             var source = Instance.GetInternalSource(RecentKey);
 
             IReadOnlyList<ServerInformation> entries = null;
-            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItIsNot(), null, default(CancellationToken));
+            await source.LoadAsync(x => entries = x.ToIReadOnlyListIfItIsNot(), null, default);
 
             if (entries?.Count > OptionRecentSize) {
                 source.Remove(entries[0]);

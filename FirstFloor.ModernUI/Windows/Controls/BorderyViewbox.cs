@@ -13,7 +13,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(Stretch), typeof(BorderyViewbox), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public Stretch Stretch {
-            get => GetValue(StretchProperty) as Stretch? ?? default(Stretch);
+            get => GetValue(StretchProperty) as Stretch? ?? default;
             set => SetValue(StretchProperty, value);
         }
 
@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(StretchDirection), typeof(BorderyViewbox), new FrameworkPropertyMetadata(StretchDirection.Both, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public StretchDirection StretchDirection {
-            get => GetValue(StretchDirectionProperty) as StretchDirection? ?? default(StretchDirection);
+            get => GetValue(StretchDirectionProperty) as StretchDirection? ?? default;
             set => SetValue(StretchDirectionProperty, value);
         }
 
@@ -30,7 +30,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ScaleProperty = ScalePropertyKey.DependencyProperty;
 
-        public Size Scale => GetValue(ScaleProperty) as Size? ?? default(Size);
+        public Size Scale => GetValue(ScaleProperty) as Size? ?? default;
 
         private ContainerVisual InternalVisual {
             get {

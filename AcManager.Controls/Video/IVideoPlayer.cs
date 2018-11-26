@@ -82,7 +82,7 @@ namespace AcManager.Controls.Video {
                 new PropertyMetadata(Stretch.Uniform, OnStretchChanged));
 
         public Stretch Stretch {
-            get => GetValue(StretchProperty) as Stretch? ?? default(Stretch);
+            get => GetValue(StretchProperty) as Stretch? ?? default;
             set => SetValue(StretchProperty, value);
         }
 

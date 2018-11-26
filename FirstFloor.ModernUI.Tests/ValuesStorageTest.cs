@@ -37,8 +37,8 @@ namespace FirstFloor.ModernUI.Tests {
             Assert.IsTrue(sub.Keys.SequenceEqual(new[] { "a", "b" }));
 
             using (var e = sub.GetEnumerator()) {
-                Assert.AreEqual(e.MoveNext() ? e.Current : default(KeyValuePair<string, string>), new KeyValuePair<string, string>("a", "18"), "Wrong value");
-                Assert.AreEqual(e.MoveNext() ? e.Current : default(KeyValuePair<string, string>), new KeyValuePair<string, string>("b", "qwerty"), "Wrong value");
+                Assert.AreEqual(e.MoveNext() ? e.Current : default, new KeyValuePair<string, string>("a", "18"), "Wrong value");
+                Assert.AreEqual(e.MoveNext() ? e.Current : default, new KeyValuePair<string, string>("b", "qwerty"), "Wrong value");
                 Assert.IsFalse(e.MoveNext());
             }
 

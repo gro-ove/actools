@@ -68,7 +68,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
                         Marshal.GetFunctionPointerForDelegate(DestructorInstance),
                         Marshal.GetFunctionPointerForDelegate(CompareInstance),
                         Marshal.GetFunctionPointerForDelegate(NameAccessor));
-                if (chandle == default(IntPtr)) {
+                if (chandle == default) {
                     thisHandle.Free();
                 }
 
@@ -102,7 +102,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
             try {
                 Handle = inner.Init(name, cmp);
             } finally {
-                if (Handle == default(IntPtr)) inner.Dispose();
+                if (Handle == default) inner.Dispose();
             }
         }
 
@@ -115,7 +115,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
         }
 
         protected override void FreeUnManagedObjects() {
-            if (Handle != default(IntPtr)) {
+            if (Handle != default) {
                 // indirectly invoked CleanupInner
                 LevelDbInterop.leveldb_comparator_destroy(Handle);
             }

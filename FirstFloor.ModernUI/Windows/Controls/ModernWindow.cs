@@ -156,7 +156,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow));
 
         public Thickness FrameMargin {
-            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(FrameMarginProperty) as Thickness? ?? default;
             set => SetValue(FrameMarginProperty, value);
         }
 
@@ -245,7 +245,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
 
         public Visibility BackButtonVisibility {
-            get => GetValue(BackButtonVisibilityProperty) as Visibility? ?? default(Visibility);
+            get => GetValue(BackButtonVisibilityProperty) as Visibility? ?? default;
             set => SetValue(BackButtonVisibilityProperty, value);
         }
 

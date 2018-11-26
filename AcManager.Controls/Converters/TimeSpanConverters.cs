@@ -24,7 +24,7 @@ namespace AcManager.Controls.Converters {
                 case 2:
                     return TimeSpan.FromMinutes((p[0] < 0 ? -1 : 1) * (p[0].Abs() * 60 + p[1]));
                 default:
-                    return default(TimeSpan);
+                    return default;
             }
         }
 
@@ -56,7 +56,7 @@ namespace AcManager.Controls.Converters {
                 case 3:
                     return TimeSpan.FromSeconds((p[0] < 0 ? -1 : 1) * (p[0].Abs() * 3600 + p[1].Abs() * 60 + p[2].Abs()));
                 default:
-                    return default(TimeSpan);
+                    return default;
             }
         }
 

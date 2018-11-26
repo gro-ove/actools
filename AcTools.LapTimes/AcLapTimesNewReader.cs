@@ -98,7 +98,7 @@ namespace AcTools.LapTimes {
 
         public DateTime GetLastModified() {
             var fi = new FileInfo(_filename);
-            return fi.Exists ? fi.LastWriteTime : default(DateTime);
+            return fi.Exists ? fi.LastWriteTime : default;
         }
 
         public bool CanExport => true;

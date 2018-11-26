@@ -317,7 +317,7 @@ namespace AcTools.LapTimes.LevelDb {
                     _pos = _start - 1;
                 }
 
-                public byte Current => _pos < _end ? _array[_pos] : default(byte);
+                public byte Current => _pos < _end ? _array[_pos] : default;
 
                 object IEnumerator.Current => Current;
             }
@@ -394,7 +394,7 @@ namespace AcTools.LapTimes.LevelDb {
 
             public static bool Decode(StringPiece slice, out KeyPrefix prefix) {
                 if (slice.Empty) {
-                    prefix = default(KeyPrefix);
+                    prefix = default;
                     return false;
                 }
 
@@ -403,7 +403,7 @@ namespace AcTools.LapTimes.LevelDb {
                 var objectStoreIdBytes = ((firstByte >> 2) & 0x7) + 1;
                 var indexIdBytes = (firstByte & 0x3) + 1;
                 if (databaseIdBytes + objectStoreIdBytes + indexIdBytes > slice.Left) {
-                    prefix = default(KeyPrefix);
+                    prefix = default;
                     return false;
                 }
 
@@ -426,12 +426,12 @@ namespace AcTools.LapTimes.LevelDb {
             public static bool Decode(StringPiece slice, out ObjectStoreMetaDataKey result) {
                 KeyPrefix prefix;
                 if (!KeyPrefix.Decode(slice, out prefix)) {
-                    result = default(ObjectStoreMetaDataKey);
+                    result = default;
                     return false;
                 }
 
                 if (slice.Empty) {
-                    result = default(ObjectStoreMetaDataKey);
+                    result = default;
                     return false;
                 }
 
@@ -754,7 +754,7 @@ namespace AcTools.LapTimes.LevelDb {
             public static bool Decode(StringPiece slice, out ObjectStoreDataKey result) {
                 KeyPrefix prefix;
                 if (!KeyPrefix.Decode(slice, out prefix)) {
-                    result = default(ObjectStoreDataKey);
+                    result = default;
                     return false;
                 }
 
@@ -792,7 +792,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(IndexMetaDataKey);
+                    result = default;
                     return false;
                 }
 
@@ -826,7 +826,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(DatabaseNameKey);
+                    result = default;
                     return false;
                 }
 
@@ -856,7 +856,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(ObjectStoreFreeListKey);
+                    result = default;
                     return false;
                 }
 
@@ -886,7 +886,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(IndexFreeListKey);
+                    result = default;
                     return false;
                 }
 
@@ -917,7 +917,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(IndexNamesKey);
+                    result = default;
                     return false;
                 }
 
@@ -947,7 +947,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(DatabaseFreeListKey);
+                    result = default;
                     return false;
                 }
 
@@ -972,7 +972,7 @@ namespace AcTools.LapTimes.LevelDb {
                 KeyPrefix prefix;
                 byte typeByte;
                 if (!KeyPrefix.Decode(slice, out prefix) || !slice.DecodeByte(out typeByte)) {
-                    result = default(ObjectStoreNamesKey);
+                    result = default;
                     return false;
                 }
 

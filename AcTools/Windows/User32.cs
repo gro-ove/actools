@@ -168,8 +168,8 @@ namespace AcTools.Windows {
             public HardwareInput Hardware;
 
             public Input(KeyboardInput keyboardInput) {
-                Mouse = default(MouseInput);
-                Hardware = default(HardwareInput);
+                Mouse = default;
+                Hardware = default;
                 Type = InputType.Keyboard;
                 Keyboard = keyboardInput;
             }

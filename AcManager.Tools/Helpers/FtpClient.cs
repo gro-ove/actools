@@ -47,7 +47,7 @@ namespace AcManager.Tools.Helpers {
             return killer;
         }
 
-        public async Task DownloadAsync([NotNull] string remoteFile, [NotNull] string localFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task DownloadAsync([NotNull] string remoteFile, [NotNull] string localFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.DownloadFile, cancellation))
             using (var response = (FtpWebResponse)await killer.Victim.GetResponseAsync().ConfigureAwait(false))
             using (var stream = response.GetResponseStream()) {
@@ -59,7 +59,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task UploadAsync([NotNull] string remoteFile, [NotNull] string localFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task UploadAsync([NotNull] string remoteFile, [NotNull] string localFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.UploadFile, cancellation))
             using (var local = new FileStream(localFile, FileMode.Open))
             using (var stream = await killer.Victim.GetRequestStreamAsync()) {
@@ -69,32 +69,32 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task DeleteAsync([NotNull] string remoteFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task DeleteAsync([NotNull] string remoteFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.DeleteFile, cancellation)) {
                 await killer.Victim.GetResponseAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task RenameAsync([NotNull] string remoteFile, [NotNull] string newFileName, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task RenameAsync([NotNull] string remoteFile, [NotNull] string newFileName, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.Rename, cancellation)) {
                 killer.Victim.RenameTo = newFileName;
                 await killer.Victim.GetResponseAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task DeleteDirectoryAsync([NotNull] string newDirectory, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task DeleteDirectoryAsync([NotNull] string newDirectory, CancellationToken cancellation = default) {
             using (var killer = Request(newDirectory, WebRequestMethods.Ftp.RemoveDirectory, cancellation)) {
                 await killer.Victim.GetResponseAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task CreateDirectoryAsync([NotNull] string newDirectory, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task CreateDirectoryAsync([NotNull] string newDirectory, CancellationToken cancellation = default) {
             using (var killer = Request(newDirectory, WebRequestMethods.Ftp.MakeDirectory, cancellation)) {
                 await killer.Victim.GetResponseAsync().ConfigureAwait(false);
             }
         }
 
-        public async Task CleanDirectoryAsync([NotNull] string directory, CancellationToken cancellation = default(CancellationToken)){
+        public async Task CleanDirectoryAsync([NotNull] string directory, CancellationToken cancellation = default){
             var files = await DirectoryListDetailedAsync(directory, cancellation).ConfigureAwait(false);
             foreach (var file in files){
                 var filePath = $@"{directory}/{file.FileName}";
@@ -107,7 +107,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task<string> GetFileCreatedDateTimeAsync([NotNull] string remoteFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<string> GetFileCreatedDateTimeAsync([NotNull] string remoteFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.GetDateTimestamp, cancellation))
             using (var response = (FtpWebResponse)await killer.Victim.GetResponseAsync().ConfigureAwait(false))
             using (var stream = response.GetResponseStream()) {
@@ -117,7 +117,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task<string> GetFileSizeAsync([NotNull] string remoteFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<string> GetFileSizeAsync([NotNull] string remoteFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.GetFileSize, cancellation))
             using (var response = (FtpWebResponse)await killer.Victim.GetResponseAsync().ConfigureAwait(false))
             using (var stream = response.GetResponseStream()) {
@@ -127,7 +127,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task<string[]> DirectoryListSimpleAsync([NotNull] string remoteFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<string[]> DirectoryListSimpleAsync([NotNull] string remoteFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.ListDirectory, cancellation))
             using (var response = (FtpWebResponse)await killer.Victim.GetResponseAsync().ConfigureAwait(false))
             using (var stream = response.GetResponseStream()) {
@@ -173,7 +173,7 @@ namespace AcManager.Tools.Helpers {
 			}
 		}
 
-        public async Task<DetailedInformation[]> DirectoryListDetailedAsync([NotNull] string remoteFile, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<DetailedInformation[]> DirectoryListDetailedAsync([NotNull] string remoteFile, CancellationToken cancellation = default) {
             using (var killer = Request(remoteFile, WebRequestMethods.Ftp.ListDirectoryDetails, cancellation))
             using (var response = (FtpWebResponse)await killer.Victim.GetResponseAsync().ConfigureAwait(false))
             using (var stream = response.GetResponseStream()) {

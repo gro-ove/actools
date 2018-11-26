@@ -143,7 +143,7 @@ namespace AcManager.Tools.Managers.Online {
             LoadingProgress = value;
         }
 
-        public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
+        public Task EnsureLoadedAsync(CancellationToken cancellation = default) {
             //Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
             if (Status == OnlineManagerStatus.Ready || Status == OnlineManagerStatus.Error) {
                 return Task.Delay(0, cancellation);
@@ -153,7 +153,7 @@ namespace AcManager.Tools.Managers.Online {
             return LoadAsync(cancellation);
         }
 
-        public Task ReloadAsync(bool background, CancellationToken cancellation = default(CancellationToken)) {
+        public Task ReloadAsync(bool background, CancellationToken cancellation = default) {
             //Logging.Write($"({_source.Id}) customerId: {cancellation.GetHashCode()}");
             BackgroundLoading = background;
             return Status == OnlineManagerStatus.Loading ? ReloadLater(cancellation) : LoadAsync(cancellation);

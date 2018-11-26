@@ -21,7 +21,7 @@ namespace AcTools.Utils.Helpers {
         public static TValue GetValueOrDefault<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull, Localizable(false)]  TKey key) {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
             if (key == null) throw new ArgumentNullException(nameof(key));
-            return dictionary.TryGetValue(key, out var result) ? result : default(TValue);
+            return dictionary.TryGetValue(key, out var result) ? result : default;
         }
 
         public static void RemoveDeadReferences<TKey, TValue>([NotNull] this IDictionary<TKey, WeakReference<TValue>> dictionary) where TValue : class {

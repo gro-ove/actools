@@ -93,7 +93,7 @@ namespace AcTools.Processes {
 
         [ItemCanBeNull]
         public static async Task<Result> StartAsync(IAcsStarter starter, StartProperties properties, IProgress<ProgressState> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (_busy) return null;
             _busy = true;
 

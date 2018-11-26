@@ -89,7 +89,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectBase), new PropertyMetadata(false));
 
         public bool IsNameReadOnly {
-            get => GetValue(IsNameReadOnlyProperty) as bool? ?? default(bool);
+            get => GetValue(IsNameReadOnlyProperty) as bool? ?? default;
             set => SetValue(IsNameReadOnlyProperty, value);
         }
 
@@ -97,7 +97,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectBase));
 
         public bool ShowIcon {
-            get => GetValue(ShowIconProperty) as bool? ?? default(bool);
+            get => GetValue(ShowIconProperty) as bool? ?? default;
             set => SetValue(ShowIconProperty, value);
         }
 
@@ -145,7 +145,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectBase), new PropertyMetadata(true));
 
         public bool Scrollable {
-            get => GetValue(ScrollableProperty) as bool? ?? default(bool);
+            get => GetValue(ScrollableProperty) as bool? ?? default;
             set => SetValue(ScrollableProperty, value);
         }
 
@@ -153,7 +153,7 @@ namespace AcManager.Controls {
                 typeof(AcObjectBase));
 
         public Thickness HeaderPadding {
-            get => GetValue(HeaderPaddingProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(HeaderPaddingProperty) as Thickness? ?? default;
             set => SetValue(HeaderPaddingProperty, value);
         }
     }

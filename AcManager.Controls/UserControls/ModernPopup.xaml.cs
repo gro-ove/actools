@@ -24,7 +24,7 @@ namespace AcManager.Controls.UserControls {
                 typeof(ModernPopup), new PropertyMetadata(new Thickness(4d)));
 
         public Thickness Padding {
-            get => GetValue(PaddingProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(PaddingProperty) as Thickness? ?? default;
             set => SetValue(PaddingProperty, value);
         }
 

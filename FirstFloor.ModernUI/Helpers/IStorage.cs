@@ -7,13 +7,13 @@ namespace FirstFloor.ModernUI.Helpers {
         bool Contains([NotNull, LocalizationRequired(false)] string key);
 
         [CanBeNull, Pure]
-        T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T));
+        T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default);
 
         [NotNull, Pure]
         IEnumerable<string> GetStringList([NotNull, LocalizationRequired(false)] string key, IEnumerable<string> defaultValue = null);
 
         [CanBeNull, Pure]
-        T GetEncrypted<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T));
+        T GetEncrypted<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default);
 
         void Set([NotNull, LocalizationRequired(false)] string key, object value);
 

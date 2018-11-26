@@ -10,7 +10,7 @@ namespace FirstFloor.ModernUI.Helpers {
     public class KillerOrder<T> : KillerOrder {
         public new T Victim => (T)base.Victim;
 
-        public KillerOrder(T victim, TimeSpan timeout) : base(victim, timeout, default(CancellationToken)) { }
+        public KillerOrder(T victim, TimeSpan timeout) : base(victim, timeout, default) { }
         public KillerOrder(T victim, TimeSpan timeout, CancellationToken cancellation) : base(victim, timeout, cancellation) { }
     }
 
@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Helpers {
                 Register(this);
             }
 
-            if (cancellation != default(CancellationToken)) {
+            if (cancellation != default) {
                 cancellation.Register(Kill);
             }
         }

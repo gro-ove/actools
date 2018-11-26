@@ -25,7 +25,7 @@ namespace AcManager.Controls.Helpers {
 
                 var now = DateTime.Now;
                 if (Interval == TimeSpan.Zero || now - _previousChange > Interval) {
-                    _unappliedValue = default(T);
+                    _unappliedValue = default;
                     _hasUnappliedValue = false;
                     _value = value;
                     _changed(value);
@@ -43,7 +43,7 @@ namespace AcManager.Controls.Helpers {
             if (Equals(newValue, _value)) return;
             _timer?.Stop();
             _value = newValue;
-            _unappliedValue = default(T);
+            _unappliedValue = default;
             _hasUnappliedValue = false;
             _changed(_value);
             _previousChange = DateTime.Now;
@@ -58,7 +58,7 @@ namespace AcManager.Controls.Helpers {
                 _timer.Tick += (o, eventArgs) => {
                     _timer.Stop();
                     _value = _unappliedValue;
-                    _unappliedValue = default(T);
+                    _unappliedValue = default;
                     _hasUnappliedValue = false;
                     _changed(_value);
                     _previousChange = DateTime.Now;

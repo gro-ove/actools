@@ -84,7 +84,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid));
 
         public FontWeight LabelFontWeight {
-            get => GetValue(LabelFontWeightProperty) as FontWeight? ?? default(FontWeight);
+            get => GetValue(LabelFontWeightProperty) as FontWeight? ?? default;
             set => SetValue(LabelFontWeightProperty, value);
         }
 
@@ -92,7 +92,7 @@ namespace AcManager.Controls {
                 typeof(PropertiesGrid));
 
         public Thickness LabelPadding {
-            get => GetValue(LabelPaddingProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(LabelPaddingProperty) as Thickness? ?? default;
             set => SetValue(LabelPaddingProperty, value);
         }
 
@@ -332,7 +332,7 @@ namespace AcManager.Controls {
         protected override Size MeasureOverride(Size constraint) {
             UpdateComputedValues();
 
-            if (_columns == 0 || _rows == 0) return default(Size);
+            if (_columns == 0 || _rows == 0) return default;
             var childConstraint =
                     new Size(Math.Max(constraint.Width - _totalSpacingWidth, 0d) / _columns,
                             Math.Max((constraint.Height - _totalSpacingHeight) / _rows, 0d));
@@ -363,7 +363,7 @@ namespace AcManager.Controls {
         }
 
         protected override Size ArrangeOverride(Size arrangeSize) {
-            if (_columns == 0 || _rows == 0) return default(Size);
+            if (_columns == 0 || _rows == 0) return default;
             UpdateLabels();
 
             var totalSpacingX = _columns == 0 ? 0 : _horizontalSpacing * (_columns - 1);

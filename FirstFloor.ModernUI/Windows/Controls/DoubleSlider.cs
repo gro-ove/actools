@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double RangeLeft {
-            get => GetValue(RangeLeftProperty) as double? ?? default(double);
+            get => GetValue(RangeLeftProperty) as double? ?? default;
             set => SetValue(RangeLeftProperty, value);
         }
 
@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double RangeRight {
-            get => GetValue(RangeRightProperty) as double? ?? default(double);
+            get => GetValue(RangeRightProperty) as double? ?? default;
             set => SetValue(RangeRightProperty, value);
         }
 
@@ -37,7 +37,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb));
 
         public double RangeLeftLimit {
-            get => GetValue(RangeLeftLimitProperty) as double? ?? default(double);
+            get => GetValue(RangeLeftLimitProperty) as double? ?? default;
             set => SetValue(RangeLeftLimitProperty, value);
         }
 
@@ -45,7 +45,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb));
 
         public double RangeRightLimit {
-            get => GetValue(RangeRightLimitProperty) as double? ?? default(double);
+            get => GetValue(RangeRightLimitProperty) as double? ?? default;
             set => SetValue(RangeRightLimitProperty, value);
         }
 
@@ -53,7 +53,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb));
 
         public double RangeLeftWidth {
-            get => GetValue(RangeLeftWidthProperty) as double? ?? default(double);
+            get => GetValue(RangeLeftWidthProperty) as double? ?? default;
             set => SetValue(RangeLeftWidthProperty, value);
         }
 
@@ -61,7 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb));
 
         public double Change {
-            get => GetValue(ChangeProperty) as double? ?? default(double);
+            get => GetValue(ChangeProperty) as double? ?? default;
             set => SetValue(ChangeProperty, value);
         }
 
@@ -69,13 +69,13 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb));
 
         public double RangeRightWidth {
-            get => GetValue(RangeRightWidthProperty) as double? ?? default(double);
+            get => GetValue(RangeRightWidthProperty) as double? ?? default;
             set => SetValue(RangeRightWidthProperty, value);
         }
 
         // some attached stuff for styles
         public static bool GetIsLeftSubThumb(DependencyObject obj) {
-            return obj.GetValue(IsLeftSubThumbProperty) as bool? ?? default(bool);
+            return obj.GetValue(IsLeftSubThumbProperty) as bool? ?? default;
         }
 
         public static void SetIsLeftSubThumb(DependencyObject obj, bool value) {
@@ -86,7 +86,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleThumb), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
         public static bool GetHighlightRange(DependencyObject obj) {
-            return obj.GetValue(HighlightRangeProperty) as bool? ?? default(bool);
+            return obj.GetValue(HighlightRangeProperty) as bool? ?? default;
         }
 
         public static void SetHighlightRange(DependencyObject obj, bool value) {
@@ -117,7 +117,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleSlider), new PropertyMetadata(OnRangeLeftChanged));
 
         public double RangeLeft {
-            get => GetValue(RangeLeftProperty) as double? ?? default(double);
+            get => GetValue(RangeLeftProperty) as double? ?? default;
             set => SetValue(RangeLeftProperty, value);
         }
 
@@ -149,7 +149,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DoubleSlider), new PropertyMetadata(OnRangeRightChanged));
 
         public double RangeRight {
-            get => GetValue(RangeRightProperty) as double? ?? default(double);
+            get => GetValue(RangeRightProperty) as double? ?? default;
             set => SetValue(RangeRightProperty, value);
         }
 
@@ -180,28 +180,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty RangeLeftLimitProperty = RangeLeftLimitPropertyKey.DependencyProperty;
 
-        public double RangeLeftLimit => GetValue(RangeLeftLimitProperty) as double? ?? default(double);
+        public double RangeLeftLimit => GetValue(RangeLeftLimitProperty) as double? ?? default;
 
         public static readonly DependencyPropertyKey RangeRightLimitPropertyKey = DependencyProperty.RegisterReadOnly(nameof(RangeRightLimit), typeof(double),
                 typeof(DoubleSlider), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty RangeRightLimitProperty = RangeRightLimitPropertyKey.DependencyProperty;
 
-        public double RangeRightLimit => GetValue(RangeRightLimitProperty) as double? ?? default(double);
+        public double RangeRightLimit => GetValue(RangeRightLimitProperty) as double? ?? default;
 
         public static readonly DependencyPropertyKey RangeLeftWidthPropertyKey = DependencyProperty.RegisterReadOnly(nameof(RangeLeftWidth), typeof(double),
                 typeof(DoubleSlider), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty RangeLeftWidthProperty = RangeLeftWidthPropertyKey.DependencyProperty;
 
-        public double RangeLeftWidth => GetValue(RangeLeftWidthProperty) as double? ?? default(double);
+        public double RangeLeftWidth => GetValue(RangeLeftWidthProperty) as double? ?? default;
 
         public static readonly DependencyPropertyKey RangeRightWidthPropertyKey = DependencyProperty.RegisterReadOnly(nameof(RangeRightWidth), typeof(double),
                 typeof(DoubleSlider), new PropertyMetadata(0d));
 
         public static readonly DependencyProperty RangeRightWidthProperty = RangeRightWidthPropertyKey.DependencyProperty;
 
-        public double RangeRightWidth => GetValue(RangeRightWidthProperty) as double? ?? default(double);
+        public double RangeRightWidth => GetValue(RangeRightWidthProperty) as double? ?? default;
 
         public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register(nameof(ThumbSize), typeof(double),
                 typeof(DoubleSlider), new FrameworkPropertyMetadata(11d, (o, args) => {
@@ -212,7 +212,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }));
 
         public double ThumbSize {
-            get => GetValue(ThumbSizeProperty) as double? ?? default(double);
+            get => GetValue(ThumbSizeProperty) as double? ?? default;
             set => SetValue(ThumbSizeProperty, value);
         }
 
@@ -225,12 +225,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }));
 
         public double ThumbSubSize {
-            get => GetValue(ThumbSubSizeProperty) as double? ?? default(double);
+            get => GetValue(ThumbSubSizeProperty) as double? ?? default;
             set => SetValue(ThumbSubSizeProperty, value);
         }
 
         public static double GetThumbSizeDelta(DependencyObject obj) {
-            return obj.GetValue(ThumbSizeDeltaProperty) as double? ?? default(double);
+            return obj.GetValue(ThumbSizeDeltaProperty) as double? ?? default;
         }
 
         public static void SetThumbSizeDelta(DependencyObject obj, double value) {

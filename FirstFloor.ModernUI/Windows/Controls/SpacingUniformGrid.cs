@@ -8,7 +8,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int FirstColumn {
-            get => GetValue(FirstColumnProperty) as int? ?? default(int);
+            get => GetValue(FirstColumnProperty) as int? ?? default;
             set => SetValue(FirstColumnProperty, value);
         }
 
@@ -16,7 +16,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int Columns {
-            get => GetValue(ColumnsProperty) as int? ?? default(int);
+            get => GetValue(ColumnsProperty) as int? ?? default;
             set => SetValue(ColumnsProperty, value);
         }
 
@@ -24,7 +24,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public int Rows {
-            get => GetValue(RowsProperty) as int? ?? default(int);
+            get => GetValue(RowsProperty) as int? ?? default;
             set => SetValue(RowsProperty, value);
         }
 
@@ -32,7 +32,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double HorizontalSpacing {
-            get => GetValue(HorizontalSpacingProperty) as double? ?? default(double);
+            get => GetValue(HorizontalSpacingProperty) as double? ?? default;
             set => SetValue(HorizontalSpacingProperty, value);
         }
 
@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public double VerticalSpacing {
-            get => GetValue(VerticalSpacingProperty) as double? ?? default(double);
+            get => GetValue(VerticalSpacingProperty) as double? ?? default;
             set => SetValue(VerticalSpacingProperty, value);
         }
 
@@ -48,7 +48,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingUniformGrid), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
         public bool VerticalStackMode {
-            get => GetValue(VerticalStackModeProperty) as bool? ?? default(bool);
+            get => GetValue(VerticalStackModeProperty) as bool? ?? default;
             set => SetValue(VerticalStackModeProperty, value);
         }
 
@@ -56,7 +56,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(SpacingUniformGrid));
 
         public bool HorizontalStackMode {
-            get => GetValue(HorizontalStackModeProperty) as bool? ?? default(bool);
+            get => GetValue(HorizontalStackModeProperty) as bool? ?? default;
             set => SetValue(HorizontalStackModeProperty, value);
         }
 

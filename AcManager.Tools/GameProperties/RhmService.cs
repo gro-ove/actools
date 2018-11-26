@@ -170,7 +170,7 @@ namespace AcManager.Tools.GameProperties {
         private bool? CheckVisibility() {
             if (_process != null) {
                 var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith(@"Real Head Motion for Assetto Corsa "));
-                if (handle != default(IntPtr)) {
+                if (handle != default) {
                     return (User32.GetWindowLong(handle, User32.GwlStyle) & (int)User32.WindowShowStyle.Hide) == 0;
                 }
             }
@@ -181,7 +181,7 @@ namespace AcManager.Tools.GameProperties {
         private bool SetVisibility(bool visible) {
             if (_process != null) {
                 var handle = _process.GetWindowsHandles().FirstOrDefault(h => User32.GetText(h).StartsWith(@"Real Head Motion for Assetto Corsa "));
-                if (handle != default(IntPtr)) {
+                if (handle != default) {
                     User32.ShowWindow(handle, visible ? User32.WindowShowStyle.Show : User32.WindowShowStyle.Hide);
                     return true;
                 }

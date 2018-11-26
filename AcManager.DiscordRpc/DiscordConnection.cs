@@ -299,7 +299,7 @@ namespace AcManager.DiscordRpc {
         }
 
         [ItemCanBeNull]
-        private async Task<JToken> ReadAsync(CancellationToken cancellation = default(CancellationToken)) {
+        private async Task<JToken> ReadAsync(CancellationToken cancellation = default) {
             if (IsDisposed) throw new DiscordException("Disposed");
 
             // 400 bytes to fit all necessary stuff

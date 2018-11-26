@@ -29,7 +29,7 @@ namespace AcManager.LargeFilesSharing {
         public string Response { get; }
 
         [CanBeNull]
-        public static Exception Wrap(Exception e, CancellationToken cancellation = default(CancellationToken)) {
+        public static Exception Wrap(Exception e, CancellationToken cancellation = default) {
             cancellation.ThrowIfCancellationRequested();
 
             var w = e as WebException;
@@ -139,48 +139,48 @@ namespace AcManager.LargeFilesSharing {
             Logging.Debug(url);
             Logging.Debug(result);
 #endif
-            return result == null ? default(T) : JsonConvert.DeserializeObject<T>(result);
+            return result == null ? default : JsonConvert.DeserializeObject<T>(result);
         }
 
         [ItemCanBeNull]
         public Task<string> Get(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
+                CancellationToken cancellation = default, NameValueCollection extraHeaders = null) {
             return Send("GET", url, null, authToken, progress, cancellation, extraHeaders);
         }
 
         [ItemCanBeNull]
         public Task<T> Get<T>(string url, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
+                CancellationToken cancellation = default, NameValueCollection extraHeaders = null) {
             return Send<T>("GET", url, null, authToken, extraHeaders, progress, cancellation);
         }
 
         public Task<string> Post(string url, [CanBeNull] object data, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
+                CancellationToken cancellation = default, NameValueCollection extraHeaders = null) {
             return Send("POST", url, data, authToken, progress, cancellation, extraHeaders);
         }
 
         [ItemCanBeNull]
         public Task<T> Post<T>(string url, [CanBeNull] object data, [CanBeNull] string authToken,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default,
                 NameValueCollection extraHeaders = null) {
             return Send<T>("POST", url, data, authToken, extraHeaders, progress, cancellation);
         }
 
         public Task<string> Put(string url, [CanBeNull] object data, [CanBeNull] string authToken, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken), NameValueCollection extraHeaders = null) {
+                CancellationToken cancellation = default, NameValueCollection extraHeaders = null) {
             return Send("PUT", url, data, authToken, progress, cancellation, extraHeaders);
         }
 
         [ItemCanBeNull]
         public Task<T> Put<T>(string url, [CanBeNull] object data, [CanBeNull] string authToken,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default,
                 NameValueCollection extraHeaders = null) {
             return Send<T>("PUT", url, data, authToken, extraHeaders, progress, cancellation);
         }
 
         [ItemCanBeNull, Localizable(false)]
         public async Task<string> PostMultipart(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default,
                 NameValueCollection extraHeaders = null) {
             try {
                 const string boundary = "--fdfmkj4ixeyfzuxr6q3yp66ry53lerk98g33ow29e0khjjor";
@@ -245,10 +245,10 @@ namespace AcManager.LargeFilesSharing {
 
         [ItemCanBeNull, Localizable(false)]
         public Task<T> PostMultipart<T>(string url, object metadata, string authToken, [NotNull] byte[] data, string contentType,
-                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken),
+                IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default,
                 NameValueCollection extraHeaders = null) {
             return PostMultipart(url, metadata, authToken, data, contentType, progress, cancellation, extraHeaders)
-                    .ContinueWith(x => x.Result == null ? default(T) : JsonConvert.DeserializeObject<T>(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
+                    .ContinueWith(x => x.Result == null ? default : JsonConvert.DeserializeObject<T>(x.Result), TaskContinuationOptions.OnlyOnRanToCompletion);
         }
     }
 }

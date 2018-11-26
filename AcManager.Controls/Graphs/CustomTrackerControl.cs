@@ -14,7 +14,7 @@ namespace AcManager.Controls.Graphs {
                 typeof(CustomTrackerControl), new PropertyMetadata(OnPositionOverrideChanged));
 
         public ScreenPoint PositionOverride {
-            get => GetValue(PositionOverrideProperty) as ScreenPoint? ?? default(ScreenPoint);
+            get => GetValue(PositionOverrideProperty) as ScreenPoint? ?? default;
             set => SetValue(PositionOverrideProperty, value);
         }
 
@@ -26,7 +26,7 @@ namespace AcManager.Controls.Graphs {
                 typeof(CustomTrackerControl), new PropertyMetadata(OnLineExtentsOverrideChanged));
 
         public OxyRect LineExtentsOverride {
-            get => GetValue(LineExtentsOverrideProperty) as OxyRect? ?? default(OxyRect);
+            get => GetValue(LineExtentsOverrideProperty) as OxyRect? ?? default;
             set => SetValue(LineExtentsOverrideProperty, value);
         }
 

@@ -113,7 +113,7 @@ namespace AcManager.Controls.Video {
             }
         }
 
-        private void ResetAndPlay(TimeSpan position = default(TimeSpan)) {
+        private void ResetAndPlay(TimeSpan position = default) {
             _mediaPlayer.Position = position;
             _mediaPlayer.Play();
         }

@@ -23,7 +23,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(VirtualizingTilePanel), new PropertyMetadata(Orientation.Horizontal));
 
         public Orientation Orientation {
-            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            get => GetValue(OrientationProperty) as Orientation? ?? default;
             set => SetValue(OrientationProperty, value);
         }
 
@@ -47,12 +47,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public double ItemHeight {
-            get => GetValue(ItemHeightProperty) as double? ?? default(double);
+            get => GetValue(ItemHeightProperty) as double? ?? default;
             set => SetValue(ItemHeightProperty, value);
         }
 
         public double ItemWidth {
-            get => GetValue(ItemWidthProperty) as double? ?? default(double);
+            get => GetValue(ItemWidthProperty) as double? ?? default;
             set => SetValue(ItemWidthProperty, value);
         }
 
@@ -544,14 +544,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty HorizontalContentAlignmentProperty = DependencyProperty.Register(nameof(HorizontalContentAlignment), typeof(HorizontalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public HorizontalAlignment HorizontalContentAlignment {
-            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default;
             set => SetValue(HorizontalContentAlignmentProperty, value);
         }
 
         public static readonly DependencyProperty VerticalContentAlignmentProperty = DependencyProperty.Register(nameof(VerticalContentAlignment), typeof(VerticalAlignment), typeof(VirtualizingTilePanel), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public VerticalAlignment VerticalContentAlignment {
-            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default;
             set => SetValue(VerticalContentAlignmentProperty, value);
         }
 

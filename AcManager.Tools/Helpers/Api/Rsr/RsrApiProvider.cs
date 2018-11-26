@@ -19,7 +19,7 @@ namespace AcManager.Tools.Helpers.Api.Rsr {
         }
 
         [ItemCanBeNull]
-        public static async Task<RsrEventInformation> GetEventInformationAsync(int eventId, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<RsrEventInformation> GetEventInformationAsync(int eventId, CancellationToken cancellation = default) {
             try {
                 using (var client = new WebClient { Headers = {
                     [HttpRequestHeader.UserAgent] = "Assetto Corsa Launcher",

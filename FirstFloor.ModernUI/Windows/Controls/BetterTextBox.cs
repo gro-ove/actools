@@ -73,7 +73,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
 
         public static SpecialMode GetMode(DependencyObject obj) {
-            return obj.GetValue(ModeProperty) as SpecialMode? ?? default(SpecialMode);
+            return obj.GetValue(ModeProperty) as SpecialMode? ?? default;
         }
 
         public static void SetMode(DependencyObject obj, SpecialMode value) {

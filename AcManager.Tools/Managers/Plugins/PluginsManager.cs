@@ -149,7 +149,7 @@ namespace AcManager.Tools.Managers.Plugins {
         }
 
         public async Task InstallPlugin(PluginEntry plugin, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var destination = GetPluginDirectory(plugin.Id);
 
             try {

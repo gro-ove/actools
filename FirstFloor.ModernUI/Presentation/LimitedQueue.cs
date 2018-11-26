@@ -36,7 +36,7 @@ namespace FirstFloor.ModernUI.Presentation {
         }
 
         public T DequeueOrDefault() {
-            if (Count == 0) return default(T);
+            if (Count == 0) return default;
             var result = Peek();
             RemoveAt(Count - 1);
             return result;

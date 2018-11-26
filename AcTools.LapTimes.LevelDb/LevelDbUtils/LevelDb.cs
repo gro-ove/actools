@@ -331,7 +331,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
         }
 
         protected override void FreeUnManagedObjects() {
-            if (Handle != default(IntPtr)) LevelDbInterop.leveldb_close(Handle);
+            if (Handle != default) LevelDbInterop.leveldb_close(Handle);
 
             // it's critical that the database be closed first, as the logger and cache may depend on it.
             _cache?.Dispose();

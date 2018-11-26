@@ -44,7 +44,7 @@ namespace AcManager.Tools.Miscellaneous {
                 [CanBeNull] string successCodeRegex = @"Success code=(\S+)", string redirectUrlKey = "redirect_uri",
                 string responseError = "error", string responseCode = "code",
                 string description = null, string title = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             Logging.Debug("Name: " + name);
             Logging.Debug("Request URL: " + requestUrl);
             Logging.Debug("Manual mode supported: " + (successCodeRegex != null));
@@ -124,7 +124,7 @@ namespace AcManager.Tools.Miscellaneous {
             public static async Task<string> Show([Localizable(false)] string url, Regex titleMatch,
                     string description, string title, string watermark = null, string toolTip = null,
                     int maxLength = -1, Window window = null,
-                    CancellationToken cancellation = default(CancellationToken)) {
+                    CancellationToken cancellation = default) {
                 if (window == null) {
                     window = Application.Current?.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive) ?? Application.Current?.MainWindow;
                     if (window == null) {

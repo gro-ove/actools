@@ -15,7 +15,7 @@ namespace AcTools.Utils {
         }
 
         [NotNull]
-        public static Lazier<T> CreateAsync<T>([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
+        public static Lazier<T> CreateAsync<T>([CanBeNull] Func<Task<T>> fn, T loadingValue = default) {
             return new Lazier<T>(fn, loadingValue);
         }
 
@@ -34,7 +34,7 @@ namespace AcTools.Utils {
             _value = obj;
         }
 
-        public Lazier([CanBeNull] Func<Task<T>> fn, T loadingValue = default(T)) {
+        public Lazier([CanBeNull] Func<Task<T>> fn, T loadingValue = default) {
             _fnTask = fn;
             _loadingValue = loadingValue;
         }
@@ -81,7 +81,7 @@ namespace AcTools.Utils {
 
                     lock (_lock) {
                         // TODO: SHOULD ISSET GO FIRST?
-                        _value = _fn == null ? default(T) : _fn.Invoke();
+                        _value = _fn == null ? default : _fn.Invoke();
                         IsSet = true;
                     }
                 }
@@ -97,17 +97,17 @@ namespace AcTools.Utils {
         }
 
         private async Task<T> SetTask() {
-            if (_fnTask == null) return default(T);
+            if (_fnTask == null) return default;
 
             var setting = ++_isSettingId;
             try {
                 var ready = await _fnTask().ConfigureAwait(false);
-                if (_isSettingId != setting) return default(T);
+                if (_isSettingId != setting) return default;
 
                 _value = ready;
             } catch (Exception e) {
                 AcToolsLogging.Write(e);
-                if (_isSettingId != setting) return default(T);
+                if (_isSettingId != setting) return default;
                 _value = _loadingValue;
             }
 
@@ -149,7 +149,7 @@ namespace AcTools.Utils {
                 (_value as IDisposable)?.Dispose();
             }
 
-            _value = default(T);
+            _value = default;
             IsSet = false;
             OnPropertyChanged(nameof(Value));
 

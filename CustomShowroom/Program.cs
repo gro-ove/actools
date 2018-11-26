@@ -26,7 +26,7 @@ namespace CustomShowroom {
                 HideWheels = false
             }) {
                 var dir = Path.GetDirectoryName(kn5);
-                renderer.Shot(dir, null, default(CancellationToken));
+                renderer.Shot(dir, null, default);
                 // Process.Start(Path.Combine(dir, "tyre_0_shadow.png"));
             }
         }

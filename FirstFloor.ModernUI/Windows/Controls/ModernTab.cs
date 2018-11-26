@@ -71,7 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
         public HorizontalAlignment LinksHorizontalAlignment {
-            get => GetValue(LinksHorizontalAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            get => GetValue(LinksHorizontalAlignmentProperty) as HorizontalAlignment? ?? default;
             set => SetValue(LinksHorizontalAlignmentProperty, value);
         }
 
@@ -82,12 +82,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public Thickness LinksMargin {
-            get => GetValue(LinksMarginProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(LinksMarginProperty) as Thickness? ?? default;
             set => SetValue(LinksMarginProperty, value);
         }
 
         public Thickness FrameMargin {
-            get => GetValue(FrameMarginProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(FrameMarginProperty) as Thickness? ?? default;
             set => SetValue(FrameMarginProperty, value);
         }
 
@@ -95,7 +95,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernTab));
 
         public SavePolicy SavePolicy {
-            get => GetValue(SavePolicyProperty) as SavePolicy? ?? default(SavePolicy);
+            get => GetValue(SavePolicyProperty) as SavePolicy? ?? default;
             set => SetValue(SavePolicyProperty, value);
         }
 
@@ -211,7 +211,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public TabLayout Layout {
-            get => GetValue(LayoutProperty) as TabLayout? ?? default(TabLayout);
+            get => GetValue(LayoutProperty) as TabLayout? ?? default;
             set {
                 Title = null;
                 SetValue(LayoutProperty, value);
@@ -224,7 +224,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public GridLength ListWidth {
-            get => GetValue(ListWidthProperty) as GridLength? ?? default(GridLength);
+            get => GetValue(ListWidthProperty) as GridLength? ?? default;
             set => SetValue(ListWidthProperty, value);
         }
 

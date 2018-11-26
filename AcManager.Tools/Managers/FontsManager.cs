@@ -86,7 +86,7 @@ namespace AcManager.Tools.Managers {
             }
         }
 
-        public async Task<List<string>> UsingsRescan(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<List<string>> UsingsRescan(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             try {
                 await EnsureLoadedAsync();
                 if (cancellation.IsCancellationRequested) return null;

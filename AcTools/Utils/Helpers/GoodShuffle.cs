@@ -244,13 +244,13 @@ namespace AcTools.Utils.Helpers {
         }
 
         public T GetNext() {
-            if (_list.Count == 0) return default(T);
+            if (_list.Count == 0) return default;
 
             while (true) {
                 Prepare();
                 var item = _list[_buffer[_bufferPosition++]];
                 if (_ignoreItem && Equals(_ignoredItem, item)) {
-                    _ignoredItem = default(T);
+                    _ignoredItem = default;
                     _ignoreItem = false;
                     continue;
                 }

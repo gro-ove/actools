@@ -59,7 +59,7 @@ namespace AcManager.Tools.Helpers {
 
             private DateTime? _lastWrite;
 
-            public DateTime LastWriteTime => _lastWrite ?? (_lastWrite = Exists ? File.GetLastWriteTime(Filename) : default(DateTime)).Value;
+            public DateTime LastWriteTime => _lastWrite ?? (_lastWrite = Exists ? File.GetLastWriteTime(Filename) : default).Value;
 
             [Localizable(false)]
             public string Name { get; }
@@ -109,13 +109,13 @@ namespace AcManager.Tools.Helpers {
 
         public T LoadJsonContentFile<T>(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
-            if (!entry.Exists) return default(T);
+            if (!entry.Exists) return default;
 
             try {
                 return JsonConvert.DeserializeObject<T>(FileUtils.ReadAllText(entry.Filename));
             } catch (Exception exception) {
                 Logging.Warning("JSON READING OR PARSING FAILED: " + entry.Filename + "\n" + exception);
-                return default(T);
+                return default;
             }
         }
 

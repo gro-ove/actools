@@ -85,7 +85,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public async Task<string> InstallCustom(string id, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var destination = FilesStorage.Instance.GetDirectory("Locales", id);
 
             var data = await CmApiProvider.GetDataAsync(@"locales/get/base", progress, cancellation);

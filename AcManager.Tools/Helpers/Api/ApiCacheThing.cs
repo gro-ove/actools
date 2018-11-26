@@ -53,7 +53,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         private async Task<byte[]> GetBytesAsyncInner([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             try {
                 if (cacheKey == null) {
                     cacheKey = GetTemporaryName(url);
@@ -134,7 +134,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         private async Task<string> GetStringAsyncInner([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             try {
                 var bytes = await GetBytesAsync(url, cacheKey, aliveTime, cancellation);
                 if (bytes == null || cancellation.IsCancellationRequested) return null;
@@ -149,14 +149,14 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public Task<byte[]> GetBytesAsync([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (_tasks.TryGetValue(url, out var s)) return s;
             return _tasks[url] = GetBytesAsyncInner(url, cacheKey, aliveTime, cancellation);
         }
 
         [ItemCanBeNull]
         public Task<string> GetStringAsync([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (_stringTasks.TryGetValue(url, out var s)) return s;
             return _stringTasks[url] = GetStringAsyncInner(url, cacheKey, aliveTime, cancellation);
         }

@@ -40,7 +40,7 @@ namespace AcTools.Utils.Helpers {
             }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
-        public static async Task WhenAll(this IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task WhenAll(this IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default) {
             var list = new List<Task>(limit);
             foreach (var task in tasks) {
                 if (cancellation.IsCancellationRequested) return;
@@ -61,7 +61,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static async Task<IEnumerable<T>> WhenAll<T>(this IEnumerable<Task<T>> tasks, int limit,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var list = new List<Task<T>>(limit);
             var result = new List<T>();
 

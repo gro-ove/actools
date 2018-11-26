@@ -63,7 +63,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
         public override async Task ResetAsync(CancellationToken cancellation) {
             await base.ResetAsync(cancellation);
             _authToken = null;
-            _authExpiration = default(DateTime);
+            _authExpiration = default;
             Storage.Remove(KeyAuthToken);
             Storage.Remove(KeyAuthExpiration);
         }

@@ -204,7 +204,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [ItemCanBeNull]
-        public static async Task<SharedEntry> GetSharedAsync(string id, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<SharedEntry> GetSharedAsync(string id, CancellationToken cancellation = default) {
             InternalUtils.SharedEntryLoaded loaded;
             try {
                 loaded = await InternalUtils.GetSharedEntryAsync(id, CmApiProvider.UserAgent, cancellation);
@@ -266,7 +266,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> ShareAsync(SharedEntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> ShareAsync(SharedEntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default) {
             var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
             var result = await InternalUtils.ShareEntryAsync(type.ToString(), name, target, authorName, data, CmApiProvider.UserAgent, customId, cancellation);
             if (result == null || cancellation.IsCancellationRequested) {

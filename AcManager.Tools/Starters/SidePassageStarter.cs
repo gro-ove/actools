@@ -257,7 +257,7 @@ namespace AcManager.Tools.Starters {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> GetAchievementsAsync(CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetAchievementsAsync(CancellationToken cancellation = default) {
             await Task.Run(() => InstallSidePassage());
             if (cancellation.IsCancellationRequested) return null;
 

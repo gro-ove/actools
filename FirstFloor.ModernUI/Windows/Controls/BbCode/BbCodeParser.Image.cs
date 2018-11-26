@@ -54,7 +54,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
             }
 
             public BitmapCreateOptions CreateOptions {
-                get => GetValue(CreateOptionsProperty) as BitmapCreateOptions? ?? default(BitmapCreateOptions);
+                get => GetValue(CreateOptionsProperty) as BitmapCreateOptions? ?? default;
                 set => SetValue(CreateOptionsProperty, value);
             }
 

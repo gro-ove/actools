@@ -21,7 +21,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(HorizontalAlignment), typeof(FancyHintControl));
 
         public HorizontalAlignment HorizontalPositionAlignment {
-            get => GetValue(HorizontalPositionAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            get => GetValue(HorizontalPositionAlignmentProperty) as HorizontalAlignment? ?? default;
             set => SetValue(HorizontalPositionAlignmentProperty, value);
         }
 
@@ -29,7 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                 typeof(VerticalAlignment), typeof(FancyHintControl));
 
         public VerticalAlignment VerticalPositionAlignment {
-            get => GetValue(VerticalPositionAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            get => GetValue(VerticalPositionAlignmentProperty) as VerticalAlignment? ?? default;
             set => SetValue(VerticalPositionAlignmentProperty, value);
         }
 

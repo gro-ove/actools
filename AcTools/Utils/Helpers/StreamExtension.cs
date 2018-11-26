@@ -112,7 +112,7 @@ namespace AcTools.Utils.Helpers {
         }*/
 
         public static async Task CopyToAsync(this Stream input, long bytes, Stream output, int attempts = 1, int bufferSize = 81920,
-                IProgress<long> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+                IProgress<long> progress = null, CancellationToken cancellation = default) {
             var buffer = new byte[bufferSize];
             var totalPassed = 0L;
 
@@ -141,7 +141,7 @@ namespace AcTools.Utils.Helpers {
         }
 
         public static async Task CopyToAsync(this Stream input, Stream output, int attempts = 1, int bufferSize = 81920,
-                IProgress<long> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+                IProgress<long> progress = null, CancellationToken cancellation = default) {
             var buffer = new byte[bufferSize];
             var totalPassed = 0L;
 

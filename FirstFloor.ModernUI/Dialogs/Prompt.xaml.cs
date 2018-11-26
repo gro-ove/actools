@@ -256,7 +256,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         [ItemCanBeNull]
         public static async Task<string> ShowAsync(string description, string title, string defaultValue = "", string placeholder = null, string toolTip = null,
                 bool multiline = false, bool passwordMode = false, bool required = false, int maxLength = -1, IEnumerable<string> suggestions = null,
-                bool suggestionsFixed = false, string comment = null, CancellationToken cancellation = default(CancellationToken)) {
+                bool suggestionsFixed = false, string comment = null, CancellationToken cancellation = default) {
             if (passwordMode && suggestions != null) throw new ArgumentException(@"Can’t have suggestions with password mode");
             if (passwordMode && multiline) throw new ArgumentException(@"Can’t use multiline input area with password mode");
             if (suggestions != null && multiline) throw new ArgumentException(@"Can’t use multiline input area with suggestions");

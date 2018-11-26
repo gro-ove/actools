@@ -79,7 +79,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 new FrameworkPropertyMetadata(Color.FromArgb(0, 0, 0, 0), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
         public Color Color {
-            get => GetValue(ColorProperty) as Color? ?? default(Color);
+            get => GetValue(ColorProperty) as Color? ?? default;
             set => SetValue(ColorProperty, value);
         }
 

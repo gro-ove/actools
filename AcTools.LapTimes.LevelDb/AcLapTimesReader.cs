@@ -38,7 +38,7 @@ namespace AcTools.LapTimes.LevelDb {
         public DateTime GetLastModified() {
             var directory = new DirectoryInfo(_sourceDirectory);
             return directory.Exists ? directory.GetFiles().Select(f => f.LastWriteTime)
-                                               .OrderByDescending(f => f).First() : default(DateTime);
+                                               .OrderByDescending(f => f).First() : default;
         }
 
         public IEnumerable<LapTimeEntry> Import(string sourceName) {

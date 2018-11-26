@@ -17,7 +17,7 @@ namespace AcManager.ContentRepair.Repairs {
         private static readonly string[] SuspensionNodes = { "SUSP_LF", "SUSP_RF", "SUSP_LR", "SUSP_RR" };
 
         private Task<bool> FixAsync([NotNull] CarObject car, Action<Kn5> fix, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return Task.Run(() => {
                 var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
@@ -31,7 +31,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         public static async Task<bool> FixSuspensionNodesAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return await Task.Run(() => {
                 var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);

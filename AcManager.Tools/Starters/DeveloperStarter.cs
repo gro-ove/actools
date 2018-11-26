@@ -79,7 +79,7 @@ namespace AcManager.Tools.Starters {
         }
 
         public void WaitGame() {
-            WaitGameAsync(default(CancellationToken)).Wait();
+            WaitGameAsync(default).Wait();
         }
 
         public Task WaitGameAsync(CancellationToken cancellation) {

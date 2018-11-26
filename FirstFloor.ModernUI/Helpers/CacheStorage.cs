@@ -23,7 +23,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [ContractAnnotation("defaultValue:null => canbenull; defaultValue:notnull => notnull"), Pure]
-        public static T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) {
+        public static T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default) {
             return Storage.Get(key, defaultValue);
         }
 

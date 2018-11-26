@@ -792,7 +792,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         [ItemCanBeNull]
-        private async Task<IReadOnlyList<RaceGridEntry>> FindCandidates(CancellationToken cancellation = default(CancellationToken)) {
+        private async Task<IReadOnlyList<RaceGridEntry>> FindCandidates(CancellationToken cancellation = default) {
             var mode = Mode;
 
             // Don’t change anything in Fixed or Manual mode
@@ -1321,7 +1321,7 @@ namespace AcManager.Controls.ViewModels {
         }
 
         [ItemCanBeNull]
-        public async Task<IList<Game.AiCar>> GenerateGameEntries(CancellationToken cancellation = default(CancellationToken)) {
+        public async Task<IList<Game.AiCar>> GenerateGameEntries(CancellationToken cancellation = default) {
             if (IsBusy) {
                 await RebuildGridAsync();
                 if (cancellation.IsCancellationRequested) return null;

@@ -98,7 +98,7 @@ namespace AcManager.Controls {
                 }
             }
 
-            Cache[key] = default(OriginIconDescription);
+            Cache[key] = default;
             return null;
         }
 

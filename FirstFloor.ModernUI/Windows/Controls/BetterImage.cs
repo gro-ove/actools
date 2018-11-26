@@ -604,7 +604,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Safe (handles all exceptions inside).
         /// </summary>
         [ItemCanBeNull]
-        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default(CancellationToken)) {
+        private static async Task<byte[]> ReadBytesAsync([CanBeNull] string filename, CancellationToken cancellation = default) {
             if (filename == null) return null;
 
             try {

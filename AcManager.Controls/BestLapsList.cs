@@ -177,7 +177,7 @@ namespace AcManager.Controls {
                 typeof(BestLapsList), new FrameworkPropertyMetadata(new Thickness(20d, 0d, 0d, 0d)));
 
         public Thickness EntryPadding {
-            get => GetValue(EntryPaddingProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(EntryPaddingProperty) as Thickness? ?? default;
             set => SetValue(EntryPaddingProperty, value);
         }
     }

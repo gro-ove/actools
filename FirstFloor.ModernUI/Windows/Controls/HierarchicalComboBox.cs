@@ -431,7 +431,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HierarchicalComboBox));
 
         public Thickness InnerMargin {
-            get => GetValue(InnerMarginProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(InnerMarginProperty) as Thickness? ?? default;
             set => SetValue(InnerMarginProperty, value);
         }
 

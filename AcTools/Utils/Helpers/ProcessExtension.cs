@@ -116,7 +116,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        private static async Task WaitForExitAsyncDeeperFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        private static async Task WaitForExitAsyncDeeperFallback([NotNull] Process process, CancellationToken cancellationToken = default) {
             if (process == null) throw new ArgumentNullException(nameof(process));
 
             AcToolsLogging.Write("Is there an issue?");
@@ -134,7 +134,7 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        private static async Task WaitForExitAsyncFallback([NotNull] Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        private static async Task WaitForExitAsyncFallback([NotNull] Process process, CancellationToken cancellationToken = default) {
             if (process == null) throw new ArgumentNullException(nameof(process));
 
             var handle = Kernel32.OpenProcess(Kernel32.ProcessAccessFlags.QueryLimitedInformation | Kernel32.ProcessAccessFlags.Synchronize, false, process.Id);
@@ -158,13 +158,13 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        public static Task WaitForExitAsync([NotNull] this Process process, CancellationToken cancellationToken = default(CancellationToken)) {
+        public static Task WaitForExitAsync([NotNull] this Process process, CancellationToken cancellationToken = default) {
             if (process == null) throw new ArgumentNullException(nameof(process));
             try {
                 var tcs = new TaskCompletionSource<object>();
                 process.EnableRaisingEvents = true;
                 process.Exited += (sender, args) => tcs.TrySetResult(null);
-                if (cancellationToken != default(CancellationToken)) {
+                if (cancellationToken != default) {
                     cancellationToken.Register(() => { tcs.TrySetCanceled(); });
                 }
 

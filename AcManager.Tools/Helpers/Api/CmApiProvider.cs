@@ -47,7 +47,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> GetStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetStringAsync(string url, CancellationToken cancellation = default) {
             try {
                 var result = await InternalUtils.CmGetDataAsync(url, UserAgent, cancellation: cancellation);
                 if (cancellation.IsCancellationRequested) return null;
@@ -62,22 +62,22 @@ namespace AcManager.Tools.Helpers.Api {
         public static T Get<T>(string url) {
             try {
                 var json = GetString(url);
-                return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+                return json == null ? default : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
                 Logging.Warning(e);
-                return default(T);
+                return default;
             }
         }
 
         [ItemCanBeNull]
-        public static async Task<T> GetAsync<T>(string url, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<T> GetAsync<T>(string url, CancellationToken cancellation = default) {
             try {
                 var json = await GetStringAsync(url, cancellation);
-                if (cancellation.IsCancellationRequested) return default(T);
-                return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+                if (cancellation.IsCancellationRequested) return default;
+                return json == null ? default : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) {
                 Logging.Warning(e);
-                return default(T);
+                return default;
             }
         }
 
@@ -88,7 +88,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public static Task<byte[]> GetDataAsync(string url, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             return InternalUtils.CmGetDataAsync(url, UserAgent, progress, cancellation);
         }
 
@@ -100,7 +100,7 @@ namespace AcManager.Tools.Helpers.Api {
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
         public static async Task<Tuple<string, bool>> GetStaticDataAsync([NotNull] string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var file = new FileInfo(FilesStorage.Instance.GetFilename("Static", $"{id}.zip"));
 
             if (file.Exists && (JustLoadedStaticData.Contains(id) || DateTime.Now - file.LastWriteTime < maxAge)) {
@@ -141,7 +141,7 @@ namespace AcManager.Tools.Helpers.Api {
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
         public static async Task<Tuple<string, bool>> GetPaintShopDataAsync([NotNull] string carId, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var file = new FileInfo(FilesStorage.Instance.GetTemporaryFilename("Paint Shop", $"{carId}.zip"));
 
             if (JustLoadedPaintShopData.Contains(carId) && file.Exists) {
@@ -181,7 +181,7 @@ namespace AcManager.Tools.Helpers.Api {
         /// <returns>Cached filename and if data is just loaded or not.</returns>
         [ItemCanBeNull]
         public static async Task<string[]> GetPaintShopIdsAsync(IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (_paintShopIds != null) {
                 return _paintShopIds;
             }
@@ -212,20 +212,20 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public static async Task<byte[]> GetStaticDataBytesAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
             return t == null ? null : await FileUtils.ReadAllBytesAsync(t.Item1);
         }
 
         [ItemCanBeNull]
         public static async Task<byte[]> GetStaticDataBytesIfUpdatedAsync(string id, TimeSpan maxAge, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var t = await GetStaticDataAsync(id, maxAge, progress, cancellation);
             return t?.Item2 == true ? await FileUtils.ReadAllBytesAsync(t.Item1) : null;
         }
 
         [ItemCanBeNull]
-        public static async Task<string> GetContentStringAsync(string url, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetContentStringAsync(string url, CancellationToken cancellation = default) {
             try {
                 var result = await InternalUtils.CmGetContentDataAsync(url, UserAgent, null, cancellation);
                 if (cancellation.IsCancellationRequested) return null;
@@ -237,19 +237,19 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static async Task<T> GetContentAsync<T>(string url = "", CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<T> GetContentAsync<T>(string url = "", CancellationToken cancellation = default) {
             try {
                 var json = await GetContentStringAsync(url, cancellation);
-                if (cancellation.IsCancellationRequested) return default(T);
-                return json == null ? default(T) : JsonConvert.DeserializeObject<T>(json);
+                if (cancellation.IsCancellationRequested) return default;
+                return json == null ? default : JsonConvert.DeserializeObject<T>(json);
             } catch (Exception e) when (e.IsCancelled()) { } catch (Exception e) {
                 Logging.Warning(e);
             }
-            return default(T);
+            return default;
         }
 
         [ItemCanBeNull]
-        public static async Task<string> PostOnlineDataAsync(ServerInformationExtra data, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> PostOnlineDataAsync(ServerInformationExtra data, CancellationToken cancellation = default) {
             try {
                 var json = JsonConvert.SerializeObject(data);
                 var key = ".PostedOnlineData:" + json.GetChecksum();
@@ -286,7 +286,7 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [ItemCanBeNull]
-        public static Task<ServerInformationExtra> GetOnlineDataAsync(string id, CancellationToken cancellation = default(CancellationToken)) {
+        public static Task<ServerInformationExtra> GetOnlineDataAsync(string id, CancellationToken cancellation = default) {
             return LazierCached.CreateAsync(@".OnlineData:" + id,
                     () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
                             r => {

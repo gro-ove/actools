@@ -56,7 +56,7 @@ namespace FirstFloor.ModernUI.Commands {
                 return true;
             }
 
-            result = default(T);
+            result = default;
             return false;
         }
 
@@ -69,7 +69,7 @@ namespace FirstFloor.ModernUI.Commands {
             if (value == null) {
                 /* nulls are appropriate only for non-value or nullable types */
                 if (typeof(T).IsValueType && Nullable.GetUnderlyingType(typeof(T)) == null) {
-                    result = default(T);
+                    result = default;
                     return false;
                 }
 
@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Commands {
                 return true;
             }
 
-            result = default(T);
+            result = default;
             return false;
         }
 

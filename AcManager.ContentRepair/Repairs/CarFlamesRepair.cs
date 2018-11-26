@@ -22,7 +22,7 @@ namespace AcManager.ContentRepair.Repairs {
         private static byte[] _flamesTextures;
 
         private static async Task<byte[]> GetFlamesTexturesAsync(IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             if (_flamesTextures == null) {
                 progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading flames textures…"));
                 _flamesTextures = await CmApiProvider.GetStaticDataBytesAsync("flames", TimeSpan.FromDays(3), cancellation: cancellation);
@@ -35,7 +35,7 @@ namespace AcManager.ContentRepair.Repairs {
         public override bool AffectsData => true;
 
         public static async Task<bool> UpgradeToSecondVersionAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Updating data…"));
             if (!await Task.Run(() => {
                 var data = car.AcdData;
@@ -73,7 +73,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         public static async Task<bool> FixMissingTexturesAsync(CarObject car, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var flamesTextures = await GetFlamesTexturesAsync(progress, cancellation);
             if (cancellation.IsCancellationRequested) return false;
 

@@ -202,7 +202,7 @@ namespace AcTools.Utils {
 
         public static async Task ApplyPreviewsAsync([NotNull] string acRoot, [NotNull] string carName, [NotNull] string source, bool resize,
                 [CanBeNull] AcPreviewImageInformation information,
-                IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+                IProgress<Tuple<string, double?>> progress = null, CancellationToken cancellation = default) {
             var files = Directory.GetFiles(source, "*.bmp");
             for (var i = 0; i < files.Length; i++) {
                 var file = files[i];

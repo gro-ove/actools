@@ -25,7 +25,7 @@ namespace FirstFloor.ModernUI.Effects {
                 typeof(OverlayColorEffect), new UIPropertyMetadata(default(Color), PixelShaderConstantCallback(0)));
 
         public Color OverlayColor {
-            get => GetValue(OverlayColorProperty) as Color? ?? default(Color);
+            get => GetValue(OverlayColorProperty) as Color? ?? default;
             set => SetValue(OverlayColorProperty, value);
         }
     }

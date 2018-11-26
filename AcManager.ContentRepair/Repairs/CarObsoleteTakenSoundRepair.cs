@@ -39,7 +39,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         private async Task<bool> FixAsync([NotNull] CarObject car, CarObject donor, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing sound…"));
             await car.ReplaceSound(donor);
             return true;

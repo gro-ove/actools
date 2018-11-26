@@ -64,7 +64,7 @@ namespace AcManager.Controls.Dialogs {
         public new T SelectDialog() {
             Model.SelectionMode = true;
             ShowDialog();
-            return IsSelected ? _list.ElementAtOrDefault(Model.CurrentPosition) : default(T);
+            return IsSelected ? _list.ElementAtOrDefault(Model.CurrentPosition) : default;
         }
 
         public new ViewModel<T> Model => (ViewModel<T>)DataContext;

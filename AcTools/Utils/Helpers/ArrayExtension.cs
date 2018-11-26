@@ -28,7 +28,7 @@ namespace AcTools.Utils.Helpers {
 
         [CanBeNull]
         public static T ArrayElementAtOrDefault<T>([NotNull] this T[] array, int index) {
-            return index >= 0 && index < array.Length ? array[index] : default(T);
+            return index >= 0 && index < array.Length ? array[index] : default;
         }
 
         [NotNull]

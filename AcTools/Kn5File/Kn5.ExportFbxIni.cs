@@ -25,7 +25,7 @@ namespace AcTools.Kn5File {
             ExportIni(fbxFilename + ".ini", Path.GetFileName(fbxFilename));
         }
 
-        public async Task ExportFbxWithIniAsync(string fbxFilename, IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task ExportFbxWithIniAsync(string fbxFilename, IProgress<string> progress = null, CancellationToken cancellation = default) {
             var colladaFilename = fbxFilename + ".dae";
 
             progress?.Report("Exporting to Collada format…");

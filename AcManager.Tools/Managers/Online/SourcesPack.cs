@@ -104,7 +104,7 @@ namespace AcManager.Tools.Managers.Online {
             Error = error;
         }
 
-        public Task EnsureLoadedAsync(CancellationToken cancellation = default(CancellationToken)) {
+        public Task EnsureLoadedAsync(CancellationToken cancellation = default) {
             return LoadingComplete || Status == OnlineManagerStatus.Error ? Task.Delay(0, cancellation) :
                     _sources.Select(x => x.EnsureLoadedAsync(cancellation)).WhenAll(OptionConcurrency, cancellation);
         }
@@ -120,7 +120,7 @@ namespace AcManager.Tools.Managers.Online {
         /// <summary>
         /// Reloads data from associated sources.
         /// </summary>
-        public async Task ReloadAsync(bool nonReadyOnly = false, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task ReloadAsync(bool nonReadyOnly = false, CancellationToken cancellation = default) {
             if (Status == OnlineManagerStatus.Loading) return;
 
             var filter = nonReadyOnly ? (Func<OnlineSourceWrapper, bool>)(x => x.Status != OnlineManagerStatus.Ready) : x => true;

@@ -107,7 +107,7 @@ namespace AcManager.Controls.Dialogs {
             _updateOffset.Yield(() => {
                 try {
                     if (_loaded && _visual != null) {
-                        var offset = _visual.PointFromScreen(PointToScreen(default(Point)));
+                        var offset = _visual.PointFromScreen(PointToScreen(default));
                         Viewbox = new Rect(offset.X - _blurRadius, offset.Y - _blurRadius,
                                 ActualWidth + _blurRadius * 2, ActualHeight + _blurRadius * 2);
                     }

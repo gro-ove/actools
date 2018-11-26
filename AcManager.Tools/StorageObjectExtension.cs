@@ -17,7 +17,7 @@ namespace AcManager.Tools {
                 Logging.Error(e);
             }
 
-            return default(T);
+            return default;
         }
 
         public static T GetOrCreateObject<T>(this IStorage storage, string key) where T : new() {

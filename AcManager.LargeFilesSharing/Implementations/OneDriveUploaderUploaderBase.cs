@@ -66,7 +66,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
         public override async Task ResetAsync(CancellationToken cancellation) {
             await base.ResetAsync(cancellation);
             _authToken = null;
-            _authExpiration = default(DateTime);
+            _authExpiration = default;
             Storage.Remove(KeyAuthToken);
             Storage.Remove(KeyAuthExpiration);
         }
@@ -243,7 +243,7 @@ namespace AcManager.LargeFilesSharing.Implementations {
                     }
                 } catch (Exception) when (uploadUrl != null) {
                     try {
-                        Request.Send("DELETE", uploadUrl, new byte[0], null, null, default(CancellationToken), null).Ignore();
+                        Request.Send("DELETE", uploadUrl, new byte[0], null, null, default, null).Ignore();
                     } catch {
                         // ignored
                     }

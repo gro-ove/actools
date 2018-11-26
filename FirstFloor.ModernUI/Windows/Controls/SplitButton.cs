@@ -98,7 +98,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Gets or sets the IsContextMenuOpen property.
         /// </summary>
         public bool IsContextMenuOpen {
-            get => GetValue(IsContextMenuOpenProperty) as bool? ?? default(bool);
+            get => GetValue(IsContextMenuOpenProperty) as bool? ?? default;
             set => SetValue(IsContextMenuOpenProperty, value);
         }
 
@@ -106,7 +106,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// Placement of the Context menu
         /// </summary>
         public PlacementMode Placement {
-            get => GetValue(PlacementProperty) as PlacementMode? ?? default(PlacementMode);
+            get => GetValue(PlacementProperty) as PlacementMode? ?? default;
             set => SetValue(PlacementProperty, value);
         }
 
@@ -114,7 +114,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// PlacementRectangle of the Context menu
         /// </summary>
         public Rect PlacementRectangle {
-            get => GetValue(PlacementRectangleProperty) as Rect? ?? default(Rect);
+            get => GetValue(PlacementRectangleProperty) as Rect? ?? default;
             set => SetValue(PlacementRectangleProperty, value);
         }
 
@@ -122,7 +122,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// HorizontalOffset of the Context menu
         /// </summary>
         public double HorizontalOffset {
-            get => GetValue(HorizontalOffsetProperty) as double? ?? default(double);
+            get => GetValue(HorizontalOffsetProperty) as double? ?? default;
             set => SetValue(HorizontalOffsetProperty, value);
         }
 
@@ -130,7 +130,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// VerticalOffset of the Context menu
         /// </summary>
         public double VerticalOffset {
-            get => GetValue(VerticalOffsetProperty) as double? ?? default(double);
+            get => GetValue(VerticalOffsetProperty) as double? ?? default;
             set => SetValue(VerticalOffsetProperty, value);
         }
 
@@ -143,7 +143,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         ///     Dropdown            - the button acts like a combobox, clicking anywhere on the button opens the Context Menu
         /// </remarks>
         public SplitButtonMode Mode {
-            get => GetValue(ModeProperty) as SplitButtonMode? ?? default(SplitButtonMode);
+            get => GetValue(ModeProperty) as SplitButtonMode? ?? default;
             set => SetValue(ModeProperty, value);
         }
 

@@ -54,7 +54,7 @@ namespace AcManager.Tools.Filters.TestEntries {
 
         private static bool ToTimeSpan([CanBeNull] string value, [CanBeNull] string defaultPostfix, out TimeSpan timeSpan, out bool strict) {
             if (value == null) {
-                timeSpan = default(TimeSpan);
+                timeSpan = default;
                 strict = false;
                 return false;
             }
@@ -83,13 +83,13 @@ namespace AcManager.Tools.Filters.TestEntries {
                             FlexibleParser.TryParseDouble(p[2])) * 60 + FlexibleParser.TryParseDouble(p[3]);
                     break;
                 default:
-                    timeSpan = default(TimeSpan);
+                    timeSpan = default;
                     strict = false;
                     return false;
             }
 
             if (!result.HasValue) {
-                timeSpan = default(TimeSpan);
+                timeSpan = default;
                 strict = false;
                 return false;
             }

@@ -347,7 +347,7 @@ namespace AcManager.Tools.Helpers.Loaders {
         }
 
         private async Task CopyToAsync(Stream input, Stream output, Func<bool> pauseCallback, IProgress<long> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var buffer = new byte[BufferSize];
             var totalPassed = 0L;
 

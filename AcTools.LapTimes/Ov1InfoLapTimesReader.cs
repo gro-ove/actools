@@ -52,7 +52,7 @@ namespace AcTools.LapTimes {
 
         public DateTime GetLastModified() {
             var file = new FileInfo(Path.Combine(_ov1Directory, "userdata", "best_lap.ini"));
-            return file.Exists ? file.CreationTime : default(DateTime);
+            return file.Exists ? file.CreationTime : default;
         }
 
         public void Dispose() {}

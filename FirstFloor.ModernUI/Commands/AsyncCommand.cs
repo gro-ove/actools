@@ -20,14 +20,14 @@ namespace FirstFloor.ModernUI.Commands {
 
         private readonly TimeSpan _additionalDelay;
 
-        public AsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute, TimeSpan additionalDelay = default(TimeSpan), bool isAutomaticRequeryDisabled = false)
+        public AsyncCommand([NotNull] Func<Task> execute, Func<bool> canExecute, TimeSpan additionalDelay = default, bool isAutomaticRequeryDisabled = false)
                 : base(false, isAutomaticRequeryDisabled) {
             _execute = execute ?? throw new ArgumentNullException(nameof(execute));
             _canExecute = canExecute;
             _additionalDelay = additionalDelay;
         }
 
-        public AsyncCommand([NotNull] Func<Task> execute, TimeSpan additionalDelay = default(TimeSpan), bool isAutomaticRequeryDisabled = false)
+        public AsyncCommand([NotNull] Func<Task> execute, TimeSpan additionalDelay = default, bool isAutomaticRequeryDisabled = false)
                 : this(execute, null, additionalDelay, isAutomaticRequeryDisabled) {}
 
         protected override bool CanExecuteOverride() {
@@ -78,7 +78,7 @@ namespace FirstFloor.ModernUI.Commands {
         public bool IsInProcess => _inProcess;
 
         public Task ExecuteAsync(object parameter) {
-            if (parameter == null) return ExecuteAsync(default(T));
+            if (parameter == null) return ExecuteAsync(default);
             return ConvertXamlCompatible(parameter, out T value) ? ExecuteAsync(value) : Task.Delay(0);
         }
 

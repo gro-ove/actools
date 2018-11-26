@@ -33,18 +33,18 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Dependency Properties
         [TypeConverter(typeof(LengthConverter))]
         public double ItemHeight {
-            get => GetValue(ItemHeightProperty) as double? ?? default(double);
+            get => GetValue(ItemHeightProperty) as double? ?? default;
             set => SetValue(ItemHeightProperty, value);
         }
 
         [TypeConverter(typeof(LengthConverter))]
         public double ItemWidth {
-            get => GetValue(ItemWidthProperty) as double? ?? default(double);
+            get => GetValue(ItemWidthProperty) as double? ?? default;
             set => SetValue(ItemWidthProperty, value);
         }
 
         public Orientation Orientation {
-            get => GetValue(OrientationProperty) as Orientation? ?? default(Orientation);
+            get => GetValue(OrientationProperty) as Orientation? ?? default;
             set => SetValue(OrientationProperty, value);
         }
 
@@ -483,7 +483,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 element = (UIElement)VisualTreeHelper.GetParent(element);
                 if (element == null) {
                     // TODO: Might be wrong
-                    return default(Rect);
+                    return default;
                 }
 
                 itemIndex = gen.IndexFromContainer(element);

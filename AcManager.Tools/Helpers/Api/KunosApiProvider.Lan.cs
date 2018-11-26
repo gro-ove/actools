@@ -143,15 +143,15 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback, IEnumerable<int> ports) {
-            TryToGetLanList(foundCallback, ports, null, default(CancellationToken));
+            TryToGetLanList(foundCallback, ports, null, default);
         }
 
         public static void TryToGetLanList(ItemAddCallback<ServerInformation> foundCallback) {
-            TryToGetLanList(foundCallback, PortsDiapason.Create(SettingsHolder.Online.LanPortsEnumeration), null, default(CancellationToken));
+            TryToGetLanList(foundCallback, PortsDiapason.Create(SettingsHolder.Online.LanPortsEnumeration), null, default);
         }
 
         public static async Task TryToGetLanListAsync(ItemAddCallback<ServerInformation> foundCallback, IProgress<AsyncProgressEntry> progress = null,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             var holder = progress == null ? null : new Progress();
             DispatcherTimer timer = null;
 

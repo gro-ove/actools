@@ -258,7 +258,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(HorizontalAlignment), typeof(ModernDialog));
 
         public HorizontalAlignment ButtonsRowContentAlignment {
-            get => GetValue(ButtonsRowContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            get => GetValue(ButtonsRowContentAlignmentProperty) as HorizontalAlignment? ?? default;
             set => SetValue(ButtonsRowContentAlignmentProperty, value);
         }
 
@@ -274,7 +274,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernDialog));
 
         public Thickness ButtonsMargin {
-            get => GetValue(ButtonsMarginProperty) as Thickness? ?? default(Thickness);
+            get => GetValue(ButtonsMarginProperty) as Thickness? ?? default;
             set => SetValue(ButtonsMarginProperty, value);
         }
 
@@ -298,7 +298,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(ModernDialog), new PropertyMetadata(true));
 
         public bool ShowTitle {
-            get => GetValue(ShowTitleProperty) as bool? ?? default(bool);
+            get => GetValue(ShowTitleProperty) as bool? ?? default;
             set => SetValue(ShowTitleProperty, value);
         }
 

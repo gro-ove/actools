@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Serialization {
         /// <typeparam name="T">Type of the result.</typeparam>
         /// <returns>Converted value.</returns>
         [ContractAnnotation("targetNullValue:null, value:null => canbenull; targetNullValue:notnull => notnull")]
-        public static T As<T>([CanBeNull] this object value, T targetNullValue = default(T)) {
+        public static T As<T>([CanBeNull] this object value, T targetNullValue = default) {
             switch (value) {
                 case T variable:
                     return variable;
@@ -74,7 +74,7 @@ namespace FirstFloor.ModernUI.Serialization {
         /// <typeparam name="T">Type of the result.</typeparam>
         /// <returns>Converted value.</returns>
         [ContractAnnotation("targetNullValue:null => canbenull; targetNullValue:notnull => notnull")]
-        public static T AsShort<T>(this object value, T targetNullValue = default(T)) {
+        public static T AsShort<T>(this object value, T targetNullValue = default) {
             if (typeof(T) == typeof(string)) {
                 if (value == null) return targetNullValue;
 

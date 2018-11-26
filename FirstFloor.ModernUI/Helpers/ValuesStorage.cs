@@ -18,7 +18,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [ContractAnnotation("defaultValue:null => canbenull; defaultValue:notnull => notnull"), Pure]
-        public static T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default(T)) {
+        public static T Get<T>([NotNull, LocalizationRequired(false)] string key, T defaultValue = default) {
             return Storage.Get(key, defaultValue);
         }
 
@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Helpers {
             Storage.SetEncrypted(key, value);
         }
 
-        public static T GetEncrypted<T>([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] T defaultValue = default(T)) {
+        public static T GetEncrypted<T>([NotNull, LocalizationRequired(false)] string key, [LocalizationRequired(false)] T defaultValue = default) {
             return Storage.GetEncrypted(key, defaultValue);
         }
 

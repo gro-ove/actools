@@ -266,7 +266,7 @@ namespace AcManager.Tools.Objects {
         /// <summary>
         /// Update data in server’s folder according to actual data.
         /// </summary>
-        private async Task PrepareServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        private async Task PrepareServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             for (var i = 0; i < CarIds.Length; i++) {
                 var carId = CarIds[i];
                 progress?.Report(new AsyncProgressEntry(carId, i, CarIds.Length + 1));
@@ -303,7 +303,7 @@ namespace AcManager.Tools.Objects {
         /// </summary>
         /// <exception cref="InformativeException">For some predictable errors.</exception>
         /// <exception cref="Exception">Process starting might cause loads of problems.</exception>
-        public async Task RunServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task RunServer(IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             StopServer();
 
             if (!Enabled) {

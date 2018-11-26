@@ -374,7 +374,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [ContractAnnotation("defaultValue:null => canbenull; defaultValue:notnull => notnull")]
-        public T Get<T>(string key, T defaultValue = default(T)) {
+        public T Get<T>(string key, T defaultValue = default) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             lock (_storage) {
                 return _storage.TryGetValue(key, out var value) ? value.As<T>() : defaultValue;
@@ -436,7 +436,7 @@ namespace FirstFloor.ModernUI.Helpers {
             return result == null ? null : result.EndsWith(Something) ? result.Substring(0, result.Length - Something.Length) : null;
         }
 
-        public T GetEncrypted<T>([LocalizationRequired(false)] string key, T defaultValue = default(T)) {
+        public T GetEncrypted<T>([LocalizationRequired(false)] string key, T defaultValue = default) {
             if (key == null) throw new ArgumentNullException(nameof(key));
 
             if (_encryptionKey == null || !Contains(key)) return defaultValue;

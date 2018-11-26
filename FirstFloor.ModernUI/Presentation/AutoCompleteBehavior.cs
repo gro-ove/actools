@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         #region String Comparison
         public static StringComparison GetAutoCompleteStringComparison(DependencyObject obj) {
-            return obj.GetValue(AutoCompleteStringComparison) as StringComparison? ?? default(StringComparison);
+            return obj.GetValue(AutoCompleteStringComparison) as StringComparison? ?? default;
         }
 
         public static void SetAutoCompleteStringComparison(DependencyObject obj, StringComparison value) {

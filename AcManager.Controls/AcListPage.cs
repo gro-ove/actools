@@ -637,7 +637,7 @@ namespace AcManager.Controls {
                     if (_selectedBatchAction == null || _list == null) return;
 
                     if (_selectedBatchAction.InternalWaitingDialog) {
-                        await _selectedBatchAction.ApplyAsync(_list.SelectedItems, null, default(CancellationToken));
+                        await _selectedBatchAction.ApplyAsync(_list.SelectedItems, null, default);
                     } else {
                         using (var waiting = new WaitingDialog()) {
                             waiting.Report(AsyncProgressEntry.FromStringIndetermitate("Processing…"));

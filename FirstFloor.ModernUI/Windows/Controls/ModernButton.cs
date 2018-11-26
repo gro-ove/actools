@@ -23,12 +23,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public double EllipseDiameter {
-            get => GetValue(EllipseDiameterProperty) as double? ?? default(double);
+            get => GetValue(EllipseDiameterProperty) as double? ?? default;
             set => SetValue(EllipseDiameterProperty, value);
         }
 
         public double EllipseStrokeThickness {
-            get => GetValue(EllipseStrokeThicknessProperty) as double? ?? default(double);
+            get => GetValue(EllipseStrokeThicknessProperty) as double? ?? default;
             set => SetValue(EllipseStrokeThicknessProperty, value);
         }
 
@@ -38,12 +38,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public double IconHeight {
-            get => GetValue(IconHeightProperty) as double? ?? default(double);
+            get => GetValue(IconHeightProperty) as double? ?? default;
             set => SetValue(IconHeightProperty, value);
         }
 
         public double IconWidth {
-            get => GetValue(IconWidthProperty) as double? ?? default(double);
+            get => GetValue(IconWidthProperty) as double? ?? default;
             set => SetValue(IconWidthProperty, value);
         }
     }

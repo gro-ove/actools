@@ -28,7 +28,7 @@ namespace AcManager.Tools.Managers.Online {
 
         private CancellationTokenSource _currentPinging;
 
-        public async Task PingEverything([CanBeNull] IFilter<ServerEntry> priorityFilter, CancellationToken cancellationToken = default(CancellationToken)) {
+        public async Task PingEverything([CanBeNull] IFilter<ServerEntry> priorityFilter, CancellationToken cancellationToken = default) {
             StopPinging();
 
             var cancellation = new CancellationTokenSource();

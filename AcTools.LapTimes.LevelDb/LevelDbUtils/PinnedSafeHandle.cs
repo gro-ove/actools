@@ -16,7 +16,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     internal class PinnedSafeHandle<T> : SafeHandle where T : struct {
         private GCHandle _pinnedRawData;
 
-        public PinnedSafeHandle(T[] arr) : base(default(IntPtr), true) {
+        public PinnedSafeHandle(T[] arr) : base(default, true) {
             _pinnedRawData = GCHandle.Alloc(arr, GCHandleType.Pinned);
 
             // initialize handle last; ensure we only free initialized GCHandles.
@@ -25,12 +25,12 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
 
         public Ptr<T> Ptr => (Ptr<T>)handle;
 
-        public override bool IsInvalid => handle == default(IntPtr);
+        public override bool IsInvalid => handle == default;
 
         protected override bool ReleaseHandle() {
-            if (handle != default(IntPtr)) {
+            if (handle != default) {
                 _pinnedRawData.Free();
-                handle = default(IntPtr);
+                handle = default;
             }
             return true;
         }

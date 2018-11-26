@@ -207,7 +207,7 @@ namespace AcTools.Utils.Helpers {
         #region Boolean
         public static bool TryParseBool(string s, out bool value) {
             if (s == null) {
-                value = default(bool);
+                value = default;
                 return false;
             }
 
@@ -230,7 +230,7 @@ namespace AcTools.Utils.Helpers {
                 return true;
             }
 
-            value = default(bool);
+            value = default;
             return false;
         }
 

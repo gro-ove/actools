@@ -166,7 +166,7 @@ namespace AcTools.Utils.Helpers {
             WaitForExitSafe(-1);
         }
 
-        public async Task WaitForExitSafeAsync(CancellationToken cancellation = default(CancellationToken)) {
+        public async Task WaitForExitSafeAsync(CancellationToken cancellation = default) {
             while (!HasExitedSafe) {
                 await Task.Delay(300, cancellation);
                 if (cancellation.IsCancellationRequested) return;

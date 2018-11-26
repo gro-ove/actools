@@ -46,8 +46,8 @@ namespace AcManager.Tools.Profile {
                 return true;
             }
 
-            date = default(DateTime);
-            lapTime = default(TimeSpan);
+            date = default;
+            lapTime = default;
             return false;
         }
 

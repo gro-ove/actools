@@ -53,7 +53,7 @@ namespace AcManager.Controls {
                 typeof(TemperatureBlock), new PropertyMetadata(OnModeChanged));
 
         public TemperatureUnitMode Mode {
-            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default;
             set => SetValue(ModeProperty, value);
         }
 
@@ -89,7 +89,7 @@ namespace AcManager.Controls {
                 typeof(TemperatureValueLabel));
 
         public TemperatureUnitMode Mode {
-            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default;
             set => SetValue(ModeProperty, value);
         }
 
@@ -111,7 +111,7 @@ namespace AcManager.Controls {
                 typeof(DoubleTemperatureValueLabel));
 
         public TemperatureUnitMode Mode {
-            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default(TemperatureUnitMode);
+            get => GetValue(ModeProperty) as TemperatureUnitMode? ?? default;
             set => SetValue(ModeProperty, value);
         }
 

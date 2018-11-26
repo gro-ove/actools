@@ -12,7 +12,7 @@ namespace AcTools.Kn5File {
             }
         }
 
-        public async Task ExportTexturesAsync(string textureDir, IProgress<string> progress = null, CancellationToken cancellation = default(CancellationToken)) {
+        public async Task ExportTexturesAsync(string textureDir, IProgress<string> progress = null, CancellationToken cancellation = default) {
             foreach (var texture in Textures.Values) {
                 if (cancellation.IsCancellationRequested) return;
                 progress?.Report(texture.Name);

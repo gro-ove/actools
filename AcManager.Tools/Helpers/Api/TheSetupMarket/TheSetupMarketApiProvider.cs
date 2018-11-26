@@ -14,7 +14,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("The Setup Market", TimeSpan.FromHours(24)));
 
         [ItemCanBeNull]
-        public static async Task<string> GetSetup(string setupId, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<string> GetSetup(string setupId, CancellationToken cancellation = default) {
             try {
                 return await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
@@ -28,7 +28,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         }
 
         [ItemCanBeNull]
-        public static async Task<RemoteSetupInformation> GetSetupInformation(string setupId, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<RemoteSetupInformation> GetSetupInformation(string setupId, CancellationToken cancellation = default) {
             try {
                 var data = await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup/{setupId}", $"{setupId}.json",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
@@ -45,7 +45,7 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
 
         [ItemCanBeNull]
         public static async Task<Tuple<RemoteSetupInformation, string>> GetSetupFullInformation(string setupId,
-                CancellationToken cancellation = default(CancellationToken)) {
+                CancellationToken cancellation = default) {
             try {
                 var ini = await Cache.GetStringAsync($"http://thesetupmarket.com/api/get-setup-file-details/{setupId}", $"{setupId}.ini",
                         SettingsHolder.Integrated.TheSetupMarketCacheDataPeriod.TimeSpan).ConfigureAwait(false);
@@ -79,11 +79,11 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         private static readonly TaskCache TaskCache = new TaskCache();
 
         [ItemCanBeNull]
-        public static Task<List<RemoteSetupInformation>> GetAvailableSetups(string carId, CancellationToken cancellation = default(CancellationToken)) {
+        public static Task<List<RemoteSetupInformation>> GetAvailableSetups(string carId, CancellationToken cancellation = default) {
             return TaskCache.Get(() => GetAvailableSetupsInner(carId, cancellation), nameof(GetAvailableSetupsInner), carId);
         }
 
-        public static async Task<List<RemoteSetupInformation>> GetAvailableSetupsInner(string carId, CancellationToken cancellation = default(CancellationToken)) {
+        public static async Task<List<RemoteSetupInformation>> GetAvailableSetupsInner(string carId, CancellationToken cancellation = default) {
             var now = DateTime.Now;
             if (_errorSkip.HasValue && now < _errorSkip.Value) {
                 return null;

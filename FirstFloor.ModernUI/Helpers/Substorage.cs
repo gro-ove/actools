@@ -73,16 +73,16 @@ namespace FirstFloor.ModernUI.Helpers {
             return _baseStorage != null && _baseStorage.Contains(_prefix + key);
         }
 
-        public T Get<T>(string key, T defaultValue = default(T)) {
-            return _baseStorage == null ? default(T) : _baseStorage.Get(_prefix + key, defaultValue);
+        public T Get<T>(string key, T defaultValue = default) {
+            return _baseStorage == null ? default : _baseStorage.Get(_prefix + key, defaultValue);
         }
 
         public IEnumerable<string> GetStringList(string key, IEnumerable<string> defaultValue = null) {
             return _baseStorage?.GetStringList(_prefix + key, defaultValue) ?? new string[0];
         }
 
-        public T GetEncrypted<T>(string key, T defaultValue = default(T)) {
-            return _baseStorage == null ? default(T) : _baseStorage.GetEncrypted(_prefix + key, defaultValue);
+        public T GetEncrypted<T>(string key, T defaultValue = default) {
+            return _baseStorage == null ? default : _baseStorage.GetEncrypted(_prefix + key, defaultValue);
         }
 
         public void Set(string key, object value) {

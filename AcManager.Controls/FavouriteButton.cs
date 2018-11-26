@@ -54,7 +54,7 @@ namespace AcManager.Controls {
                 typeof(RatingBar), new FrameworkPropertyMetadata(0d, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
         public double Rating {
-            get => GetValue(RatingProperty) as double? ?? default(double);
+            get => GetValue(RatingProperty) as double? ?? default;
             set => SetValue(RatingProperty, value);
         }
 
@@ -62,7 +62,7 @@ namespace AcManager.Controls {
                 typeof(RatingBar));
 
         public bool IsReadOnly {
-            get => GetValue(IsReadOnlyProperty) as bool? ?? default(bool);
+            get => GetValue(IsReadOnlyProperty) as bool? ?? default;
             set => SetValue(IsReadOnlyProperty, value);
         }
 

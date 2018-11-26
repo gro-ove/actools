@@ -254,14 +254,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty OriginalColorProperty = DependencyProperty.Register(nameof(OriginalColor), typeof(Color), typeof(ColorPickerPanel));
 
         public Color OriginalColor {
-            get => GetValue(OriginalColorProperty) as Color? ?? default(Color);
+            get => GetValue(OriginalColorProperty) as Color? ?? default;
             set => SetValue(OriginalColorProperty, value);
         }
 
         public static readonly DependencyProperty ColorProperty = DependencyProperty.Register(nameof(Color), typeof(Color), typeof(ColorPickerPanel), new FrameworkPropertyMetadata(Color.FromRgb(255, 127, 0), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, OnColorChanged));
 
         public Color Color {
-            get => GetValue(ColorProperty) as Color? ?? default(Color);
+            get => GetValue(ColorProperty) as Color? ?? default;
             set => SetValue(ColorProperty, value);
         }
 
@@ -276,21 +276,21 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty RedProperty = DependencyProperty.Register(nameof(Red), typeof(int), typeof(ColorPickerPanel), new PropertyMetadata(0, OnRgbChanged, ChannelCoerceValueCallback));
 
         public int Red {
-            get => GetValue(RedProperty) as int? ?? default(int);
+            get => GetValue(RedProperty) as int? ?? default;
             set => SetValue(RedProperty, Math.Max(Math.Min(value, 255), 0));
         }
 
         public static readonly DependencyProperty GreenProperty = DependencyProperty.Register(nameof(Green), typeof(int), typeof(ColorPickerPanel), new PropertyMetadata(0, OnRgbChanged, ChannelCoerceValueCallback));
 
         public int Green {
-            get => GetValue(GreenProperty) as int? ?? default(int);
+            get => GetValue(GreenProperty) as int? ?? default;
             set => SetValue(GreenProperty, Math.Max(Math.Min(value, 255), 0));
         }
 
         public static readonly DependencyProperty BlueProperty = DependencyProperty.Register(nameof(Blue), typeof(int), typeof(ColorPickerPanel), new PropertyMetadata(0, OnRgbChanged, ChannelCoerceValueCallback));
 
         public int Blue {
-            get => GetValue(BlueProperty) as int? ?? default(int);
+            get => GetValue(BlueProperty) as int? ?? default;
             set => SetValue(BlueProperty, Math.Max(Math.Min(value, 255), 0));
         }
 
@@ -305,7 +305,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public int Hue {
-            get => GetValue(HueProperty) as int? ?? default(int);
+            get => GetValue(HueProperty) as int? ?? default;
             set => SetValue(HueProperty, value);
         }
 
@@ -316,7 +316,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public int Saturation {
-            get => GetValue(SaturationProperty) as int? ?? default(int);
+            get => GetValue(SaturationProperty) as int? ?? default;
             set => SetValue(SaturationProperty, value);
         }
 
@@ -327,7 +327,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public int Brightness {
-            get => GetValue(BrightnessProperty) as int? ?? default(int);
+            get => GetValue(BrightnessProperty) as int? ?? default;
             set => SetValue(BrightnessProperty, value);
         }
 
@@ -339,25 +339,25 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public static readonly DependencyProperty ThumbXProperty = ThumbXPropertyKey.DependencyProperty;
 
-        public int ThumbX => GetValue(ThumbXProperty) as int? ?? default(int);
+        public int ThumbX => GetValue(ThumbXProperty) as int? ?? default;
 
         public static readonly DependencyPropertyKey ThumbYPropertyKey = DependencyProperty.RegisterReadOnly(nameof(ThumbY), typeof(int), typeof(ColorPickerPanel), new PropertyMetadata(0));
 
         public static readonly DependencyProperty ThumbYProperty = ThumbYPropertyKey.DependencyProperty;
 
-        public int ThumbY => GetValue(ThumbYProperty) as int? ?? default(int);
+        public int ThumbY => GetValue(ThumbYProperty) as int? ?? default;
 
         public static readonly DependencyPropertyKey IsBrightPropertyKey = DependencyProperty.RegisterReadOnly(nameof(IsBright), typeof(bool), typeof(ColorPickerPanel), new PropertyMetadata(false));
 
         public static readonly DependencyProperty IsBrightProperty = IsBrightPropertyKey.DependencyProperty;
 
-        public bool IsBright => GetValue(IsBrightProperty) as bool? ?? default(bool);
+        public bool IsBright => GetValue(IsBrightProperty) as bool? ?? default;
 
         public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(nameof(Mode), typeof(ColorPickingMode),
                 typeof(ColorPickerPanel), new PropertyMetadata(OnModeChanged));
 
         public ColorPickingMode Mode {
-            get => GetValue(ModeProperty) as ColorPickingMode? ?? default(ColorPickingMode);
+            get => GetValue(ModeProperty) as ColorPickingMode? ?? default;
             set => SetValue(ModeProperty, value);
         }
 

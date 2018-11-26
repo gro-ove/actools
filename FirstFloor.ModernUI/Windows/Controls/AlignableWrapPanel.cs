@@ -235,7 +235,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(HorizontalAlignment.Left, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public HorizontalAlignment HorizontalContentAlignment {
-            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default(HorizontalAlignment);
+            get => GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default;
             set => SetValue(HorizontalContentAlignmentProperty, value);
         }
 
@@ -243,7 +243,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(AlignableWrapPanel), new FrameworkPropertyMetadata(VerticalAlignment.Top, FrameworkPropertyMetadataOptions.AffectsArrange));
 
         public VerticalAlignment VerticalContentAlignment {
-            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default(VerticalAlignment);
+            get => GetValue(VerticalContentAlignmentProperty) as VerticalAlignment? ?? default;
             set => SetValue(VerticalContentAlignmentProperty, value);
         }
     }
