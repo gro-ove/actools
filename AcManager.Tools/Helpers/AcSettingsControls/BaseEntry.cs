@@ -54,7 +54,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             }
         }
 
-        public virtual bool IsCompatibleWith(T obj) {
+        public virtual bool IsCompatibleWith([CanBeNull] T obj) {
             return obj != null;
         }
 

@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             remove => _baseLinkNavigator.PreviewNavigate -= value;
         }
 
-        void ILinkNavigator.Navigate(Uri uri, FrameworkElement source, string parameter = null) {
+        void ILinkNavigator.Navigate(Uri uri, FrameworkElement source, string parameter) {
             _baseLinkNavigator.Navigate(uri, source, parameter);
         }
     }

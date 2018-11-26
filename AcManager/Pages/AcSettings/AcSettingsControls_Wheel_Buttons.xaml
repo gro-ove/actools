@@ -62,8 +62,8 @@
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_EngineBrake}" />
           <ItemsControl ItemsSource="{Binding WheelCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Gestures}" />
-          <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />
+          <!--<TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Gestures}" />
+          <ItemsControl ItemsSource="{Binding WheelGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ButtonEntryTemplate}" />-->
 
         </StackPanel>
         <StackPanel>

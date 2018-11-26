@@ -649,7 +649,7 @@ namespace AcManager.Tools.Objects {
                     yield return Add("templates/*");
                 }
 
-                var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(t.Location, t.AcdData),
+                var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(t.Location, t.AcdData, false),
                         SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
                 yield return Add(textureNames.Select(x => $"skins/*/{x}"));
                 yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
@@ -669,7 +669,8 @@ namespace AcManager.Tools.Objects {
                 }
 
                 var data = DataWrapper.FromCarDirectory(t.Location);
-                yield return Add(data.GetIniFile("lods.ini").GetSections("LOD").Select(x => x.GetNonEmpty("FILE")));
+                var lods = data.GetIniFile("lods.ini");
+                yield return Add(lods.GetSections("LOD").Append(lods["LOD_HR"]).Select(x => x.GetNonEmpty("FILE")));
             }
 
             protected override PackedDescription GetDescriptionOverride(CarObject t) {

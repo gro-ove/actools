@@ -86,7 +86,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             // Check for license plate
-            var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData),
+            var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false),
                     SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
             if (textureNames.Contains("Plate_D.dds") || textureNames.Contains("plate.dds")){
                 return TryToGuessCarClassResult(car, GuessedCarClass.Street, "license plate");

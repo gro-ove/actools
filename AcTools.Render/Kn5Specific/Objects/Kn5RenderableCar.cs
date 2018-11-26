@@ -81,7 +81,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 ReloadSkins(null, selectSkin);
             }
 
-            var mainKn5 = _carData.IsEmpty ? car.MainKn5File : _carData.GetMainKn5(_rootDirectory);
+            var mainKn5 = _carData.IsEmpty ? car.MainKn5File : _carData.GetMainKn5(_rootDirectory, true);
             _lodA = FileUtils.ArePathsEqual(car.MainKn5File, mainKn5) ? car.Kn5LoadedRequire : Kn5.FromFile(mainKn5);
 
             _lods = _carData.GetLods().ToList();

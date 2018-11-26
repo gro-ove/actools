@@ -137,6 +137,11 @@ namespace AcManager.Tools.Objects {
             PickupModeLockedEntryList = section.GetBool("LOCKED_ENTRY_LIST", false);
             Capacity = section.GetInt("MAX_CLIENTS", 3);
 
+            if (!section.ContainsKey("SLEEP_TIME")) {
+                section.Set("SLEEP_TIME", 1);
+                ini.Save(IniFilename);
+            }
+
             UdpPort = section.GetInt("UDP_PORT", 9600);
             TcpPort = section.GetInt("TCP_PORT", 9600);
             HttpPort = section.GetInt("HTTP_PORT", 8081);
@@ -222,6 +227,7 @@ namespace AcManager.Tools.Objects {
             section.Set("PICKUP_MODE_ENABLED", PickupMode);
             section.Set("LOCKED_ENTRY_LIST", PickupModeLockedEntryList);
             section.Set("MAX_CLIENTS", Capacity);
+            section.Set("SLEEP_TIME", 1);
 
             section.Set("UDP_PORT", UdpPort);
             section.Set("TCP_PORT", TcpPort);

@@ -10,11 +10,13 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public PlaceholderInputDevice([CanBeNull] string id, string displayName, int index) {
             Id = id;
             Index = index;
+            IsController = DirectInputDeviceUtils.IsController(displayName);
             OriginalIniIds = new List<int> { index };
 
             if (id != null && DisplayInputParams.Get(id, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP)) {
                 DisplayName = gotDisplayName;
             } else {
+                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out _axesP, out _buttonsP, out _povsP);
                 DisplayName = displayName;
             }
         }
@@ -23,6 +25,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public string Id { get; }
 
         public bool IsVirtual => true;
+
+        public bool IsController { get; }
 
         public string DisplayName { get; }
 
@@ -38,7 +42,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 = new Dictionary<Tuple<int, DirectInputPovDirection>, DirectInputPov>();
 
         public bool Same(IDirectInputDevice other) {
-            return other != null && (Id == other.Id || DisplayName == other.DisplayName);
+            return other != null && (Id == other.Id || DisplayName == other.DisplayName || Id == @"0" && other.IsController);
         }
 
         public DirectInputAxle GetAxle(int id) {

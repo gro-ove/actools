@@ -50,6 +50,8 @@ namespace AcManager.Tools.SharedMemory {
             private set {
                 if (Equals(value, _statusValue)) return;
 
+                // Logging.Debug("SM status changed: " + value);
+
                 if (_statusValue == AcSharedMemoryStatus.Live) {
                     Finish?.Invoke(this, EventArgs.Empty);
                 }
@@ -306,7 +308,6 @@ namespace AcManager.Tools.SharedMemory {
             Status = AcSharedMemoryStatus.Connecting;
 
             try {
-                var sw = Stopwatch.StartNew();
                 DisposeHelper.Dispose(ref _physicsFile);
                 DisposeHelper.Dispose(ref _graphicsFile);
                 DisposeHelper.Dispose(ref _staticInfoFile);
@@ -316,7 +317,6 @@ namespace AcManager.Tools.SharedMemory {
                 _staticInfoFile = MemoryMappedFile.OpenExisting(@"Local\acpmf_static");
 
                 Status = AcSharedMemoryStatus.Connected;
-                Logging.Debug($"{sw.ElapsedMilliseconds:F2} ms");
                 return true;
             } catch (FileNotFoundException) {
                 Status = AcSharedMemoryStatus.Disconnected;

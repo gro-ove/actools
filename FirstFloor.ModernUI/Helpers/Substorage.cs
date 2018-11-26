@@ -103,5 +103,13 @@ namespace FirstFloor.ModernUI.Helpers {
 
         public IEnumerable<string> Keys => _baseStorage?.Keys.Where(x => x.StartsWith(_prefix)).Select(x => x.Substring(_prefix.Length))
                 ?? new string[0];
+
+        public void Clear() {
+            var storage = _baseStorage;
+            if (storage == null) return;
+            foreach (var key in storage.Keys.Where(x => x.StartsWith(_prefix)).ToList()) {
+                storage.Remove(key);
+            }
+        }
     }
 }

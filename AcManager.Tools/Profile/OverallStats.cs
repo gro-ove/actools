@@ -329,6 +329,11 @@ namespace AcManager.Tools.Profile {
                     Storage = new Storage();
                 }
 
+                if (double.IsNaN(session.Distance)) {
+                    Logging.Warning("Session distance is not a number! Ignoring it");
+                    return;
+                }
+
                 UpdateMaxDistancePerCar(session);
                 UpdateMaxDistancePerTrack(session);
 
@@ -376,6 +381,32 @@ namespace AcManager.Tools.Profile {
                 foreach (var p in typeof(OverallStats).GetProperties().Where(p => p.CanWrite)) {
                     p.SetValue(this, p.GetValue(updated, null), null);
                 }
+            }
+
+            public void Reset() {
+                Distance = 0;
+                MaxDistancePerCar = 0;
+                MaxDistancePerCarCarId = null;
+                MaxDistancePerTrack = 0;
+                MaxDistancePerTrackTrackId = null;
+                MaxSpeed = 0;
+                MaxSpeedCarId = null;
+                LongestAirborne = 0;
+                LongestAirborneCarId = null;
+                LongestWheelie = 0;
+                LongestWheelieCarId = null;
+                LongestTwoWheels = 0;
+                LongestTwoWheelsCarId = null;
+                FuelBurnt = 0;
+                Time = TimeSpan.Zero;
+                GoneOffroadTimes = 0;
+                TotalAirborne = 0;
+                TotalWheelie = 0;
+                TotalTwoWheels = 0;
+                TotalTyreWear = 0;
+                TotalCrashes = 0;
+                SessionsCount = 0;
+                Storage.Clear();
             }
         }
     }

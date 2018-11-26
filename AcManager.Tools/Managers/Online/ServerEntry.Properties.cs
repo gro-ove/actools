@@ -498,5 +498,31 @@ namespace AcManager.Tools.Managers.Online {
                 OnPropertyChanged();
             }
         }
+
+        private string KeyCountingStatsFrom => $@"{Id}countingStatsFrom";
+
+        private bool _countingStatsFromLoaded;
+        private DateTime? _countingStatsFrom;
+
+        public DateTime? CountingStatsFrom {
+            get {
+                if (!_countingStatsFromLoaded) {
+                    _countingStatsFromLoaded = true;
+                    _countingStatsFrom = StatsStorage.Get<DateTime?>(KeyCountingStatsFrom);
+                }
+
+                return _countingStatsFrom;
+            }
+            set {
+                if (Equals(value, CountingStatsFrom)) return;
+                _countingStatsFrom = value;
+                if (value.HasValue) {
+                    StatsStorage.Set(KeyCountingStatsFrom, value.Value);
+                } else {
+                    StatsStorage.Remove(KeyCountingStatsFrom);
+                }
+                OnPropertyChanged();
+            }
+        }
     }
 }

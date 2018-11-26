@@ -125,6 +125,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         protected override void InvokeChanged() {
+            if (IsLoading || IsSaving) return;
             AcSettingsHolder.Controls.CurrentPresetChanged = true;
         }
     }

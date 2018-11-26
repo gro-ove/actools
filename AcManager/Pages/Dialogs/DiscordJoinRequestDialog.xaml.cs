@@ -53,7 +53,7 @@ namespace AcManager.Pages.Dialogs {
                 _joy = section.GetInt("JOY", -1);
                 _button = section.GetInt("BUTTON", -1);
                 _pov = section.GetInt("__CM_POV", -1);
-                _povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+                _povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
 
                 var k = section.GetInt("KEY", -1);
                 _key = k == -1 ? key : (Keys)k;
@@ -65,11 +65,11 @@ namespace AcManager.Pages.Dialogs {
                     switch (_povDirection) {
                         case DirectInputPovDirection.Left:
                             return "JoystickPovLeftIconData";
-                        case DirectInputPovDirection.Top:
+                        case DirectInputPovDirection.Up:
                             return "JoystickPovUpIconData";
                         case DirectInputPovDirection.Right:
                             return "JoystickPovRightIconData";
-                        case DirectInputPovDirection.Bottom:
+                        case DirectInputPovDirection.Down:
                             return "JoystickPovDownIconData";
                     }
                 }

@@ -14,12 +14,13 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Controls.Helpers {
-    public class ControlsPresets: NotifyPropertyChanged, IPresetsPreviewProvider, IHierarchicalItemPreviewProvider {
+    public class ControlsPresets : NotifyPropertyChanged, IPresetsPreviewProvider, IHierarchicalItemPreviewProvider {
         private static ControlsPresets _instance;
 
         public static ControlsPresets Instance => _instance ?? (_instance = new ControlsPresets());
@@ -96,9 +97,7 @@ namespace AcManager.Controls.Helpers {
 
             try {
                 await Task.Delay(200);
-                ActionExtension.InvokeInMainThread(() => {
-                    RebuildPresetsList().Forget();
-                });
+                ActionExtension.InvokeInMainThread(() => { RebuildPresetsList().Forget(); });
             } catch (Exception e) {
                 Logging.Warning("OnPresetsUpdated() exception: " + e);
             } finally {
@@ -120,9 +119,15 @@ namespace AcManager.Controls.Helpers {
 
         public void SwitchToPreset(ISavedPresetEntry entry) {
             var backup = Controls.CurrentPresetName == null || Controls.CurrentPresetChanged;
-            if (backup && WarnIfChanged && ModernDialog.ShowMessage(
+            if (backup && WarnIfChanged && MessageDialog.Show(
                     string.Format(ControlsStrings.Controls_LoadPresetWarning, entry.DisplayName),
-                    ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo) != MessageBoxResult.Yes) {
+                    ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo, new MessageDialog.ShowMessageCallbacks(
+                            () => WarnIfChanged ? (MessageBoxResult?)null : MessageBoxResult.Yes,
+                            r => {
+                                if (r == MessageBoxResult.Yes) {
+                                    WarnIfChanged = false;
+                                }
+                            })) != MessageBoxResult.Yes) {
                 return;
             }
 
@@ -200,7 +205,8 @@ namespace AcManager.Controls.Helpers {
 
             // device
             var section = ini["CONTROLLERS"];
-            var devices = LinqExtension.RangeFrom().Select(x => section.GetNonEmpty("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
+            var devices =
+                    LinqExtension.RangeFrom().Select(x => section.GetNonEmpty("CON" + x.ToInvariantString())).TakeWhile(x => x != null).Distinct().ToList();
             if (devices.Count > 1) {
                 result.Append('\n');
                 result.AppendFormat(ControlsStrings.Controls_Preview_Devices, devices.JoinToString(@", "));

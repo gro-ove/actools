@@ -75,8 +75,6 @@
 			bottomRightPiece * br +
 			bottomLeftPiece * bl +
 			topLeftPiece * tl) * 0.5;
-
-        result.a = 1.0;
         return result;
 	}
 

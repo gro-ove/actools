@@ -56,7 +56,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
 
         private CarDescription GetCarDescription([NotNull] string carId, [CanBeNull] DataWrapper carData) {
             var carDirectory = AcPaths.GetCarDirectory(_acRoot, carId);
-            var carKn5 = carData == null ? AcPaths.GetMainCarFilename(carDirectory) : AcPaths.GetMainCarFilename(carDirectory, carData);
+            var carKn5 = carData == null ? AcPaths.GetMainCarFilename(carDirectory, true) : AcPaths.GetMainCarFilename(carDirectory, carData, true);
             return new CarDescription(carKn5, carDirectory);
         }
 

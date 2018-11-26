@@ -116,7 +116,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             }
 
             var dlg = new ModernDialog {
-                Title = title.ToTitle(),
+                Title = title,
                 Content = new ScrollViewer {
                     Content = content,
                     MaxWidth = 640,

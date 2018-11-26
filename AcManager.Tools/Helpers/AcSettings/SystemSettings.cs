@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
+using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
@@ -102,66 +103,52 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Experimental FFB
+        private static readonly Busy _ffbSettingsBusy = new Busy();
+
+        private static void OnSystemFfbSettingsChanged() {
+            _ffbSettingsBusy.Do(() => { AcSettingsHolder.Controls.OnSystemFfbSettingsChanged(); });
+        }
+
         private bool _softLock;
 
         public bool SoftLock {
             get => _softLock;
-            set {
-                if (Equals(value, _softLock)) return;
-                _softLock = value;
-                OnPropertyChanged();
-                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
-            }
+            set => Apply(value, ref _softLock, OnSystemFfbSettingsChanged);
         }
 
         private bool _ffbGyro;
 
         public bool FfbGyro {
             get => _ffbGyro;
-            set {
-                if (Equals(value, _ffbGyro)) return;
-                _ffbGyro = value;
-                OnPropertyChanged();
-                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
-            }
+            set => Apply(value, ref _ffbGyro, OnSystemFfbSettingsChanged);
         }
 
         private int _ffbDamperMinLevel;
 
         public int FfbDamperMinLevel {
             get => _ffbDamperMinLevel;
-            set {
-                value = value.Clamp(0, 100);
-                if (Equals(value, _ffbDamperMinLevel)) return;
-                _ffbDamperMinLevel = value;
-                OnPropertyChanged();
-                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
-            }
+            set => Apply(value.Clamp(0, 100), ref _ffbDamperMinLevel, OnSystemFfbSettingsChanged);
         }
 
         private int _ffbDamperGain;
 
         public int FfbDamperGain {
             get => _ffbDamperGain;
-            set {
-                value = value.Clamp(0, 100);
-                if (Equals(value, _ffbDamperGain)) return;
-                _ffbDamperGain = value;
-                OnPropertyChanged();
-                AcSettingsHolder.Controls.OnSystemFfbSettingsChanged();
-            }
+            set => Apply(value.Clamp(0, 100), ref _ffbDamperGain, OnSystemFfbSettingsChanged);
         }
         #endregion
 
         public void LoadFfbFromIni(IniFile ini) {
-            SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
-            VrCameraShake = ini["VR"].GetBool("ENABLE_CAMERA_SHAKE", false);
-            //FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
+            using (_ffbSettingsBusy.Set()) {
+                SoftLock = ini["SOFT_LOCK"].GetBool("ENABLED", false);
+                VrCameraShake = ini["VR"].GetBool("ENABLE_CAMERA_SHAKE", false);
+                //FfbSkipSteps = ini["FORCE_FEEDBACK"].GetInt("FF_SKIP_STEPS", 1);
 
-            var section = ini["FF_EXPERIMENTAL"];
-            FfbGyro = section.GetBool("ENABLE_GYRO", false);
-            FfbDamperMinLevel = section.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
-            FfbDamperGain = section.GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+                var section = ini["FF_EXPERIMENTAL"];
+                FfbGyro = section.GetBool("ENABLE_GYRO", false);
+                FfbDamperMinLevel = section.GetDouble("DAMPER_MIN_LEVEL", 0d).ToIntPercentage();
+                FfbDamperGain = section.GetDouble("DAMPER_GAIN", 1d).ToIntPercentage();
+            }
         }
 
         public void SaveFfbToIni(IniFile ini) {

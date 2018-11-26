@@ -111,7 +111,7 @@ namespace AcManager.Pages.Lists {
                     foreach (var skin in list) {
                         waiting.Report(++i, list.Count);
                         skin.Priority = 0;
-                        skin.SaveAsync();
+                        await skin.SaveAsync();
                         await Task.Delay(50, waiting.CancellationToken);
                         if (waiting.CancellationToken.IsCancellationRequested) return;
                     }

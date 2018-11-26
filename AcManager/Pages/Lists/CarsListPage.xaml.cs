@@ -545,7 +545,7 @@ namespace AcManager.Pages.Lists {
 
                     try {
                         await Task.Run(() => {
-                            var kn5 = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData));
+                            var kn5 = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false));
                             using (var renderer = new AmbientShadowRenderer(kn5, car.AcdData) {
                                 DiffusionLevel = (float)_params.Diffusion / 100f,
                                 SkyBrightnessLevel = (float)_params.Brightness / 100f,

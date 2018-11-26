@@ -20,16 +20,19 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public bool IsVirtual => false;
 
+        public bool IsController { get; }
+
         public int Index { get; }
 
         public IList<int> OriginalIniIds { get; }
 
         public bool Same(IDirectInputDevice other) {
-            return other != null && (Id == other.Id || DisplayName == other.DisplayName);
+            return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0");
         }
 
         public bool Same(DeviceInstance other) {
             return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName);
+            //|| Id == @"0" && DirectInputDeviceUtils.IsController(other.InstanceName)
         }
 
         public DirectInputAxle GetAxle(int id) {
@@ -82,6 +85,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             Id = GuidToString(device.Information.ProductGuid);
             Index = index;
+            IsController = DirectInputDeviceUtils.IsController(device.Information.InstanceName);
             OriginalIniIds = new List<int>();
 
             _joystick = device;
@@ -111,6 +115,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public static string FixDisplayName(string deviceName) {
+            var match = Regex.Match(deviceName, @"^Controller \((.+)\)$");
+            if (match.Success) return match.Groups[1].Value;
             var trimmed = Regex.Replace(Regex.Replace(deviceName, @"\b(?:USB|Racing Wheel)\b", ""), @"\s+", " ").Trim();
             return string.IsNullOrEmpty(trimmed) ? deviceName : trimmed;
         }
@@ -120,7 +126,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public void RefreshDescription() {
-            DisplayInputParams.Get(Device.ProductGuid.ToString(), out var displayName, out var axisP, out var buttonsP, out var povsP);
+            if (!DisplayInputParams.Get(Device.ProductGuid.ToString(), out var displayName, out var axisP, out var buttonsP, out var povsP)
+                    && IsController) {
+                DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out axisP, out buttonsP, out povsP);
+            }
+
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
             Proc(Axis, axisP);
             Proc(Buttons, buttonsP);

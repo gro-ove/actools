@@ -6,6 +6,12 @@ namespace AcManager {
     public enum AppFlag {
         /// <summary>
         /// For internal use.
+        /// Example: --hide-race-cancel-button.
+        /// </summary>
+        HideRaceCancelButton,
+
+        /// <summary>
+        /// For internal use.
         /// </summary>
         WeatherExtMode,
 

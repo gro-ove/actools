@@ -641,6 +641,11 @@ namespace AcManager.Pages.Drive {
                 return;
             }
 
+            if (double.IsNaN(stats.Distance)) {
+                ModernDialog.ShowMessage("Stats are damaged");
+                return;
+            }
+
             ((MenuItem)sender).IsEnabled = false;
 
             var driverName = SettingsHolder.Drive.DifferentPlayerNameOnline
@@ -654,7 +659,9 @@ namespace AcManager.Pages.Drive {
             SharingUiHelper.ShareAsync(SharedEntryType.Results,
                     "Online stats", null,
                     $@"Server stats for {driverName} at {DateTime.Now:dd/MM/yyyy hh:mm tt}:
+• Server: {server.ActualName?.Trim()} ({server.Id});
 • Connected {PluralizingConverter.PluralizeExt(stats.SessionsCount, "{0} time")}, last time at {server.LastConnected:dd/MM/yyyy hh:mm tt};
+• Counting from {(server.CountingStatsFrom == null ? @"unknown time" : $@"{server.CountingStatsFrom}:dd/MM/yyyy hh:mm tt")};
 • Driven in total {stats.Distance / 1e3:F1} km ({stats.Time.ToReadableTime()});
 • Had {PluralizingConverter.PluralizeExt(stats.TotalCrashes, "{0} crash")} crashes, gone offroad {PluralizingConverter.PluralizeExt(stats.GoneOffroadTimes, "{0} time")};
 • Avg. speed: {stats.AverageSpeed:F1} km/h, top speed: {stats.MaxSpeed:F1} km/h;

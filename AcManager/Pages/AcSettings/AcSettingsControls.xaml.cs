@@ -43,9 +43,7 @@ namespace AcManager.Pages.AcSettings {
             ResizingStuff();
 
             AcSettingsHolder.Controls.Used++;
-            this.OnActualUnload(() => {
-                AcSettingsHolder.Controls.Used--;
-            });
+            this.OnActualUnload(() => { AcSettingsHolder.Controls.Used--; });
         }
 
         private void ResizingStuff() {
@@ -72,7 +70,7 @@ namespace AcManager.Pages.AcSettings {
                 if (filename == null) return;
 
                 if (!FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)) {
-                    if (ModernDialog.ShowMessage(AppStrings.Controls_InvalidDirectory_Commentary,
+                    if (MessageDialog.Show(AppStrings.Controls_InvalidDirectory_Commentary,
                             ToolsStrings.Common_CannotDo_Title, MessageBoxButton.OKCancel) == MessageBoxResult.OK) {
                         SaveCommand?.Execute(Path.GetFileName(filename));
                     }
@@ -150,8 +148,7 @@ namespace AcManager.Pages.AcSettings {
                         return new Uri("/Pages/AcSettings/AcSettingsControls_Wheel.xaml", UriKind.Relative);
 
                     case "X360":
-                        // TODO
-                        return new Uri("/Pages/Miscellaneous/WorkInProgress.xaml?xbox360", UriKind.Relative);
+                        return new Uri("/Pages/AcSettings/AcSettingsControls_Controller.xaml", UriKind.Relative);
 
                     case "KEYBOARD":
                         return new Uri("/Pages/AcSettings/AcSettingsControls_Keyboard.xaml", UriKind.Relative);
@@ -166,9 +163,9 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e) {}
+        private void OnLoaded(object sender, RoutedEventArgs e) { }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {}
+        private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
             switch (e.Key) {

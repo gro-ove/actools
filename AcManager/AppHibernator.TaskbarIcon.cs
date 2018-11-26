@@ -1,5 +1,4 @@
 using System.Windows.Controls;
-using AcManager.Internal;
 using AcManager.Pages.Settings;
 using AcManager.Tools.GameProperties;
 using AcTools.Utils.Helpers;
@@ -7,6 +6,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Attached;
 using Hardcodet.Wpf.TaskbarNotification;
 
 namespace AcManager {
@@ -15,12 +15,13 @@ namespace AcManager {
 
         private void AddTrayIconWpf() {
             ActionExtension.InvokeInMainThread(() => {
-                var patchSettings = InternalUtils.IsAllRight && SettingsShadersPatch.IsCustomShadersPatchInstalled()
-                        ? new MenuItem {
-                            Header = "Custom Shaders Patch settings",
-                            Command = SettingsShadersPatch.GetShowSettingsCommand()
-                        }
-                        : null;
+                var patchSettings = SettingsShadersPatch.IsCustomShadersPatchInstalled() ? new MenuItem {
+                    Header = "Custom Shaders Patch settings",
+                    Command = SettingsShadersPatch.GetShowSettingsCommand()
+                } : null;
+                if (patchSettings != null) {
+                    LimitedService.SetLimited(patchSettings, true);
+                }
 
                 var rhm = RhmService.Instance.Active
                         ? new MenuItem {

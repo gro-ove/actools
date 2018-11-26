@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Media;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -18,8 +17,6 @@ namespace AcManager.Pages.Lists {
         }
 
         public string Description { get; set; }
-
-        public Geometry Icon { get; set; }
 
         protected virtual Uri LaunchSource => Source;
 

@@ -465,7 +465,7 @@ namespace AcManager.Tools.Profile {
                 /* compare calculated from coordinates speed with actual speed — if much more,
                  * assume that car was teleported */
                 var jumped = calcSpeed > physics.SpeedKmh * 3d + 10;
-                if (jumped) {
+                if (jumped || double.IsNaN(calcSpeed)) {
                     Logging.Debug($"Teleported: calculated speed={calcSpeed} km/h, actual={physics.SpeedKmh} km/h");
                     CurrentStatus = Status.Teleported;
                     return;

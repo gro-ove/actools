@@ -128,7 +128,7 @@ namespace AcManager.CustomShowroom {
         }
 
         public static Task StartAsync(CarObject car, CarSkinObject skin = null, string presetFilename = null) {
-            return StartAsync(AcPaths.GetMainCarFilename(car.Location, car.AcdData), skin?.Id, presetFilename);
+            return StartAsync(AcPaths.GetMainCarFilename(car.Location, car.AcdData, true), skin?.Id, presetFilename);
         }
 
         Task ICustomShowroomWrapper.StartAsync(CarObject car, CarSkinObject skin, string presetFilename) {

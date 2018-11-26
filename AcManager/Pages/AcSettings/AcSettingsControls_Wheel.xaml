@@ -8,6 +8,7 @@
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Axis}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Main.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_Buttons}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Buttons.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_System}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_System.xaml" />
+      <mui:Link DisplayName="Patch" Source="/Pages/AcSettings/AcSettingsControls_Wheel_Patch.xaml" />
       <mui:Link DisplayName="{x:Static g:AppStrings.Controls_ForceFeedback}" Source="/Pages/AcSettings/AcSettingsControls_Wheel_ForceFeedback.xaml" />
     </mui:ModernTab.Links>
   </mui:ModernTab>

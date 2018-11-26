@@ -21,7 +21,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
 
             var pov = section.GetInt("__CM_ALT_POV", -1);
-            var direction = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Top);
+            var direction = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
             Input = pov != -1 ? device?.GetPov(pov, direction) : device?.GetButton(section.GetInt("__CM_ALT_BUTTON", -1));
         }
 

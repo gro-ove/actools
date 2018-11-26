@@ -63,7 +63,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 typeof(DpiAwareWindow), new FrameworkPropertyMetadata("", FrameworkPropertyMetadataOptions.None, OnTitleChanged, CoerceTitle));
 
         private static object CoerceTitle(DependencyObject d, object basevalue) {
-            return basevalue?.ToString().ToTitle();
+            return basevalue?.ToString(); //.ToTitle();
         }
 
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {

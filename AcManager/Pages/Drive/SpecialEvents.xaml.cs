@@ -54,7 +54,7 @@ namespace AcManager.Pages.Drive {
             DataContext = new ViewModel(_filter, _discordPresence);
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(() => Model.Selected?.GoCommand.Execute(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new AsyncCommand(() => Model.Selected?.GoCommand.ExecuteAsync(null)), new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => Model.Selected?.ViewInExplorerCommand.Execute(null)), new KeyGesture(Key.F, ModifierKeys.Control))
             });
 

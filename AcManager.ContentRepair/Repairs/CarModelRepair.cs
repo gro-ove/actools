@@ -20,7 +20,7 @@ namespace AcManager.ContentRepair.Repairs {
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return Task.Run(() => {
-                var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData);
+                var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
                 if (kn5Filename == null || !File.Exists(kn5Filename)) return false;
 
                 var kn5 = Kn5.FromFile(kn5Filename);
@@ -34,7 +34,7 @@ namespace AcManager.ContentRepair.Repairs {
                 CancellationToken cancellation = default(CancellationToken)) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return await Task.Run(() => {
-                var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData);
+                var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
                 if (kn5Filename == null || !File.Exists(kn5Filename)) return false;
 
                 var kn5 = Kn5.FromFile(kn5Filename);
@@ -93,7 +93,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
-            var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData);
+            var kn5Filename = AcPaths.GetMainCarFilename(car.Location, car.AcdData, false);
             if (kn5Filename == null || !File.Exists(kn5Filename)) return new ContentRepairSuggestion[0];
 
             var kn5 = Kn5.FromFile(kn5Filename);

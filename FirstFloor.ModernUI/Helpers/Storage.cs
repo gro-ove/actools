@@ -16,6 +16,9 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Helpers {
     [Localizable(false)]
     public class Storage : NotifyPropertyChanged, IStorage, IDisposable {
+        [CanBeNull]
+        public static string TemporaryBackupsDirectory { get; set; }
+
         private readonly Dictionary<string, string> _storage;
         private readonly string _filename;
         private readonly string _encryptionKey;
@@ -265,25 +268,69 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
+        private static string EnsureUnique([NotNull] string filename, int startFrom = 1) {
+            if (!File.Exists(filename) && !Directory.Exists(filename)) {
+                return filename;
+            }
+
+            var ext = Path.GetExtension(filename);
+            var start = filename.Substring(0, filename.Length - ext.Length);
+
+            for (var i = startFrom; i < 99999; i++) {
+                var result = $"{start}-{i}{ext}";
+                if (File.Exists(result) || Directory.Exists(result)) continue;
+                return result;
+            }
+
+            throw new Exception("Can’t find unique filename");
+        }
+
         private void SaveData(string data) {
             try {
                 var bytes = Encoding.UTF8.GetBytes(data);
-                if (_disableCompression) {
-                    File.WriteAllBytes(_filename, bytes);
-                    return;
-                }
+                var newFilename = EnsureUnique(_filename);
 
-                using (var output = new FileStream(_filename, FileMode.Create, FileAccess.Write, FileShare.Read)) {
-                    if (_useDeflate) {
-                        output.WriteByte(DeflateFlag);
-                        using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
-                            gzip.Write(bytes, 0, bytes.Length);
+                if (_disableCompression) {
+                    File.WriteAllBytes(newFilename, bytes);
+                } else {
+                    using (var output = new FileStream(newFilename, FileMode.Create, FileAccess.Write, FileShare.Read)) {
+                        if (_useDeflate) {
+                            output.WriteByte(DeflateFlag);
+                            using (var gzip = new DeflateStream(output, CompressionLevel.Fastest)) {
+                                gzip.Write(bytes, 0, bytes.Length);
+                            }
+                        } else {
+                            output.WriteByte(LzfFlag);
+                            Lzf.Compress(bytes, bytes.Length, output);
                         }
-                    } else {
-                        output.WriteByte(LzfFlag);
-                        Lzf.Compress(bytes, bytes.Length, output);
                     }
                 }
+
+                if (newFilename == _filename) return;
+
+                if (TemporaryBackupsDirectory != null) {
+                    var backupFilename = Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
+                    try {
+                        if (File.Exists(backupFilename)) {
+                            File.Delete(backupFilename);
+                        }
+                        File.Move(_filename, backupFilename);
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
+                } else {
+                    File.Delete(_filename);
+                }
+
+                try {
+                    if (File.Exists(_filename)) {
+                        File.Delete(_filename);
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+
+                File.Move(newFilename, _filename);
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -351,7 +398,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [Pure]
-        public bool Contains([ LocalizationRequired(false)] string key) {
+        public bool Contains([LocalizationRequired(false)] string key) {
             if (key == null) throw new ArgumentNullException(nameof(key));
             lock (_storage) {
                 return _storage.ContainsKey(key);
@@ -433,9 +480,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             Dirty();
-            ActionExtension.InvokeInMainThread(() => {
-                OnPropertyChanged(nameof(Count));
-            });
+            ActionExtension.InvokeInMainThread(() => { OnPropertyChanged(nameof(Count)); });
         }
 
         public void CopyFrom(Storage source) {
@@ -447,9 +492,7 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             Dirty();
-            ActionExtension.InvokeInMainThread(() => {
-                OnPropertyChanged(nameof(Count));
-            });
+            ActionExtension.InvokeInMainThread(() => { OnPropertyChanged(nameof(Count)); });
         }
 
         public IEnumerable<string> Keys {
@@ -457,6 +500,12 @@ namespace FirstFloor.ModernUI.Helpers {
                 lock (_storage) {
                     return _storage.Keys;
                 }
+            }
+        }
+
+        public void Clear() {
+            lock (_storage) {
+                _storage.Clear();
             }
         }
 

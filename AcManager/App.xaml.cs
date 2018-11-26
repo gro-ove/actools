@@ -296,6 +296,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.WindowsVerbose, ref DpiAwareWindow.OptionVerboseMode);
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
+            AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -357,6 +358,7 @@ namespace AcManager {
                 }
             }
 
+            Storage.TemporaryBackupsDirectory = FilesStorage.Instance.GetTemporaryDirectory("Storages Backups");
             CupClient.Initialize();
             Superintendent.Initialize();
             ModsWebBrowser.Initialize();

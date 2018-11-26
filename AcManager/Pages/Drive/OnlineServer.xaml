@@ -194,6 +194,12 @@
                 <c:PropertiesGrid Margin="0 20 0 0" Columns="1" TextBlock.FontSize="{DynamicResource SmallFontSize}" LabelWidth="70" Background="Transparent">
                   <c:PropertiesGrid.ContextMenu>
                     <ContextMenu>
+                      <MenuItem Command="{Binding ResetStatsCommand}" Header="Reset stats">
+                        <MenuItem.Icon>
+                          <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource RemoveIconData}" HorizontalAlignment="Right"
+                              VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+                        </MenuItem.Icon>
+                      </MenuItem>
                       <MenuItem Click="OnShareStatsItemClick" Header="Get link to stats">
                         <MenuItem.Icon>
                           <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource ShareIconData}" HorizontalAlignment="Right"
@@ -203,6 +209,8 @@
                     </ContextMenu>
                   </c:PropertiesGrid.ContextMenu>
                   <mui:TimePassedBlock c:PropertiesGrid.Label="Last joined:" From="{Binding LastConnected}" />
+                  <mui:TimePassedBlock c:PropertiesGrid.Label="Counting stats from:" From="{Binding CountingStatsFrom}"
+                      Visibility="{Binding CountingStatsFrom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                   <TextBlock c:PropertiesGrid.Label="Sessions:" Text="{Binding Stats.SessionsCount}"
                       Visibility="{Binding Stats.SessionsCount, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}" />
                   <TextBlock c:PropertiesGrid.Label="Total driven:"

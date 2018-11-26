@@ -63,6 +63,26 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
+            #region Constructing custom patch entries
+            CustomCarButtonEntries = new[] {
+                new CustomButtonEntryCombined("__EXT_TURNSIGNAL_LEFT", "Left turn signal", "For cars with turn signals defined", Keys.Left, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_TURNSIGNAL_RIGHT", "Right turn signal", "For cars with turn signals defined", Keys.Right, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_HAZARDS", "Hazards", "For cars with hazards defined", Keys.Down, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_WIPERS_MORE", "Speed up wipers", null, Keys.NumPad2, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_WIPERS_LESS", "Slow down wipers", null, Keys.NumPad1, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_WIPERS_OFF", "Stop wipers", null, Keys.NumPad0, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_TELLTALE_RESET", "Reset telltale", null, Keys.R, Keys.Alt),
+                // new CustomButtonEntryCombined("__EXT_HIGHLOWBEAMS", "High/low beams", "Switch between high and low beams", Keys.NumPad5, Keys.Alt),
+            };
+
+            CustomLookButtonEntries = new[] {
+                new CustomButtonEntryCombined("__EXT_LOOK_LEFT", "Look left"),
+                new CustomButtonEntryCombined("__EXT_LOOK_RIGHT", "Look right"),
+                new CustomButtonEntryCombined("__EXT_LOOK_BACK", "Look back"),
+                // new CustomButtonEntryCombined("__EXT_LOOK_ZOOM", "Zoom"),
+            };
+            #endregion
+
             #region Constructing system entries
             SystemRaceButtonEntries = new[] {
                 new SystemButtonEntryCombined("__CM_PAUSE", "Pause race", fixedValueCallback: x => new[] { Keys.Escape }),
@@ -79,7 +99,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             SystemUiButtonEntries = new[] {
                 new SystemButtonEntryCombined("HIDE_APPS", "Apps", defaultKey: Keys.H),
                 new SystemButtonEntryCombined("__CM_NEXT_APPS_DESKTOP", "Next desktop", fixedValueCallback: x => new[] { Keys.Control, Keys.U }),
-                new SystemButtonEntryCombined("HIDE_DAMAGE", "Damage display", defaultKey: Keys.Q),
+                new SystemButtonEntryCombined("HIDE_DAMAGE", "Toggle damage display", defaultKey: Keys.Q),
+                new SystemButtonEntryCombined("SHOW_DAMAGE", "Show damage display", defaultKey: Keys.J),
                 new SystemButtonEntryCombined("DRIVER_NAMES", "Driver names", defaultKey: Keys.L),
                 new SystemButtonEntryCombined("IDEAL_LINE", "Ideal line", defaultKey: Keys.I),
                 new SystemButtonEntryCombined("__CM_RESET_CAMERA_VR", "Reset camera in VR", fixedValueCallback: x => new[] { Keys.Control, Keys.Space }),
@@ -115,6 +136,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new SystemButtonEntryCombined("MOUSE_STEERING", "Mouse steering", defaultKey: Keys.M),
                 new SystemButtonEntryCombined("ACTIVATE_AI", "Toggle AI", defaultKey: Keys.C),
                 new SystemButtonEntryCombined("AUTO_SHIFTER", "Auto shifter", defaultKey: Keys.G),
+                new SystemButtonEntryCombined("__CM_MGU_1", "MGU 1", false, defaultKey: Keys.D1),
+                new SystemButtonEntryCombined("__CM_MGU_2", "MGU 2", false, defaultKey: Keys.D2),
+                new SystemButtonEntryCombined("__CM_MGU_3", "MGU 3", false, defaultKey: Keys.D3),
                 systemAbs,
                 new SystemButtonEntryCombined("__CM_ABS_DECREASE", "ABS (decrease)", fixedValueCallback: key => key.HasValue ? new[] {
                     Keys.Control, Keys.Shift, key.Value
@@ -161,7 +185,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (Equals(value, _devicesScan)) return;
                 DisposeHelper.Dispose(ref _devicesScan);
                 _devicesScan = value;
-                OnPropertyChanged();
+                OnPropertyChanged(false);
             }
         }
 
@@ -208,7 +232,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsScanningInProgress {
             get => _isScanningInProgress;
-            set => Apply(value, ref _isScanningInProgress);
+            set {
+                if (Equals(value, _isScanningInProgress)) return;
+                _isScanningInProgress = value;
+                OnPropertyChanged(false);
+            }
         }
 
         private void UpdateHardwareLockAvailability() {
@@ -315,7 +343,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 var checkedPlaceholders = new List<PlaceholderInputDevice>();
                 var newDevices = new List<DirectInputDevice>();
                 if (devices != null && directInput != null) {
-                    newDevices = new List<DirectInputDevice>();
                     for (var i = 0; i < devices.Count; i++) {
                         var device = devices[i];
                         if (device == null) continue;
@@ -340,8 +367,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                             EnsureIndicesMatch(placeholder, replacement);
                             entry.Input = replacement.GetAxle(entry.Input.Id);
                         }
-                    } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
-                        entry.Input = GetPlaceholderDevice((DirectInputDevice)current).GetAxle(entry.Input.Id);
+                    } else if (current is DirectInputDevice device && !newDevices.Contains(current)) {
+                        entry.Input = GetPlaceholderDevice(device).GetAxle(entry.Input.Id);
                     }
                 }
 
@@ -353,8 +380,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                             EnsureIndicesMatch(placeholder, replacement);
                             GetActualInput(entry, replacement);
                         }
-                    } else if (current is DirectInputDevice && !newDevices.Contains(current)) {
-                        GetActualInput(entry, GetPlaceholderDevice((DirectInputDevice)current));
+                    } else if (current is DirectInputDevice device && !newDevices.Contains(current)) {
+                        GetActualInput(entry, GetPlaceholderDevice(device));
                     }
                 }
 
@@ -448,25 +475,27 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     return;
                 }
 
-                var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && (waiting.Layer & x.Layer) != 0).ToList();
-                if (existing.Any()) {
-                    var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
-                            await ConflictResolver.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
-                    switch (solution) {
-                        case AcControlsConflictSolution.Cancel:
-                            return;
+                if (waiting.Layer != EntryLayer.NoIntersection) {
+                    var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && waiting.Layer == x.Layer).ToList();
+                    if (existing.Any()) {
+                        var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
+                                await ConflictResolver.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
+                        switch (solution) {
+                            case AcControlsConflictSolution.Cancel:
+                                return;
 
-                        case AcControlsConflictSolution.Flip:
-                            foreach (var entry in existing) {
-                                entry.Input = waiting.Input;
-                            }
-                            break;
+                            case AcControlsConflictSolution.Flip:
+                                foreach (var entry in existing) {
+                                    entry.Input = waiting.Input;
+                                }
+                                break;
 
-                        case AcControlsConflictSolution.ClearPrevious:
-                            foreach (var entry in existing) {
-                                entry.Clear();
-                            }
-                            break;
+                            case AcControlsConflictSolution.ClearPrevious:
+                                foreach (var entry in existing) {
+                                    entry.Clear();
+                                }
+                                break;
+                        }
                     }
                 }
 
@@ -547,10 +576,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set {
                 if (Equals(value, _currentPresetFilename)) return;
                 _currentPresetFilename = value;
-                OnPropertyChanged();
+                OnPropertyChanged(false);
 
                 CurrentPresetName = value == null ? null : GetCurrentPresetName(value);
-                OnPropertyChanged(nameof(CurrentPresetName));
+                OnPropertyChanged(false, nameof(CurrentPresetName));
             }
         }
 
@@ -632,12 +661,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int DebouncingInterval {
             get => _debouncingInterval;
-            set {
-                value = value.Clamp(0, 500);
-                if (Equals(value, _debouncingInterval)) return;
-                _debouncingInterval = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 500), ref _debouncingInterval);
         }
 
         public WheelAxleEntry SteerAxleEntry { get; } = new WheelAxleEntry("STEER", ToolsStrings.Controls_Steering, false, true);
@@ -740,10 +764,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             new WheelButtonCombined("ACTION_CHANGE_CAMERA", ToolsStrings.Controls_ChangeCamera)
         };
 
-        public WheelButtonCombined[] WheelGesturesButtonEntries { get; } = {
+        /*public WheelButtonCombined[] WheelGesturesButtonEntries { get; } = {
             new WheelButtonCombined("ACTION_CELEBRATE", ToolsStrings.Controls_Celebrate),
             new WheelButtonCombined("ACTION_CLAIM", ToolsStrings.Controls_Complain)
-        };
+        };*/
 
         private WheelButtonCombined[] _wheelButtonEntries;
 
@@ -756,7 +780,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 .Union(WheelCarEngineBrakeButtonEntries)
                 .Union(WheelCarMgukButtonEntries)
                 .Union(WheelViewButtonEntries)
-                .Union(WheelGesturesButtonEntries)
+                // .Union(WheelGesturesButtonEntries)
                 .ToArray());
 
         [NotNull]
@@ -775,108 +799,63 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int WheelFfbGain {
             get => _wheelFfbGain;
-            set {
-                value = value.Clamp(0, 300);
-                if (Equals(value, _wheelFfbGain)) return;
-                _wheelFfbGain = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 300), ref _wheelFfbGain);
         }
 
         private int _wheelFfbFilter;
 
         public int WheelFfbFilter {
             get => _wheelFfbFilter;
-            set {
-                value = value.Clamp(0, 99);
-                if (Equals(value, _wheelFfbFilter)) return;
-                _wheelFfbFilter = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 99), ref _wheelFfbFilter);
         }
 
         private double _wheelFfbMinForce;
 
         public double WheelFfbMinForce {
             get => _wheelFfbMinForce;
-            set {
-                value = value.Clamp(0, 50);
-                if (Equals(value, _wheelFfbMinForce)) return;
-                _wheelFfbMinForce = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 50), ref _wheelFfbMinForce);
         }
 
         private double _wheelFfbWheelCenterBoostGain;
 
         public double WheelFfbWheelCenterBoostGain {
             get => _wheelFfbWheelCenterBoostGain;
-            set {
-                value = value.Clamp(0, 2000).Round(0.1);
-                if (Equals(value, _wheelFfbWheelCenterBoostGain)) return;
-                _wheelFfbWheelCenterBoostGain = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000).Round(0.1), ref _wheelFfbWheelCenterBoostGain);
         }
 
         private double _wheelFfbWheelCenterBoostRange;
 
         public double WheelFfbWheelCenterBoostRange {
             get => _wheelFfbWheelCenterBoostRange;
-            set {
-                value = value.Clamp(0, 2000).Round(0.1);
-                if (Equals(value, _wheelFfbWheelCenterBoostRange)) return;
-                _wheelFfbWheelCenterBoostRange = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000).Round(0.1), ref _wheelFfbWheelCenterBoostRange);
         }
 
         private int _wheelFfbKerbEffect;
 
         public int WheelFfbKerbEffect {
             get => _wheelFfbKerbEffect;
-            set {
-                value = value.Clamp(0, 2000);
-                if (Equals(value, _wheelFfbKerbEffect)) return;
-                _wheelFfbKerbEffect = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000), ref _wheelFfbKerbEffect);
         }
 
         private int _wheelFfbRoadEffect;
 
         public int WheelFfbRoadEffect {
             get => _wheelFfbRoadEffect;
-            set {
-                value = value.Clamp(0, 2000);
-                if (Equals(value, _wheelFfbRoadEffect)) return;
-                _wheelFfbRoadEffect = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000), ref _wheelFfbRoadEffect);
         }
 
         private int _wheelFfbSlipEffect;
 
         public int WheelFfbSlipEffect {
             get => _wheelFfbSlipEffect;
-            set {
-                value = value.Clamp(0, 2000);
-                if (Equals(value, _wheelFfbSlipEffect)) return;
-                _wheelFfbSlipEffect = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000), ref _wheelFfbSlipEffect);
         }
 
         private int _wheelFfbAbsEffect;
 
         public int WheelFfbAbsEffect {
             get => _wheelFfbAbsEffect;
-            set {
-                value = value.Clamp(0, 2000);
-                if (Equals(value, _wheelFfbAbsEffect)) return;
-                _wheelFfbAbsEffect = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 2000), ref _wheelFfbAbsEffect);
         }
 
         private bool _wheelFfbEnhancedUndersteer;
@@ -890,50 +869,156 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int WheelFfbSkipSteps {
             get => _wheelFfbSkipSteps;
-            set {
-                value = value.Clamp(0, 1000);
-                if (Equals(value, _wheelFfbSkipSteps)) return;
-                _wheelFfbSkipSteps = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 1000), ref _wheelFfbSkipSteps);
         }
         #endregion
+
+        #region Controller
+        public ControllerButtonCombined[] ControllerCarButtonEntries { get; } = {
+            new ControllerButtonCombined("GEARUP", ToolsStrings.Controls_NextGear),
+            new ControllerButtonCombined("GEARDN", ToolsStrings.Controls_PreviousGear),
+            new ControllerButtonCombined(HandbrakeId, ToolsStrings.Controls_Handbrake),
+            new ControllerButtonCombined("ACTION_HEADLIGHTS", ToolsStrings.Controls_Headlights),
+        };
+
+        public ControllerButtonCombined[] ControllerCarExtraButtonEntries { get; } = {
+            new ControllerButtonCombined("KERS", ToolsStrings.Controls_Kers),
+            new ControllerButtonCombined("DRS", ToolsStrings.Controls_Drs),
+            new ControllerButtonCombined("ACTION_HEADLIGHTS_FLASH", ToolsStrings.Controls_FlashHeadlights),
+            new ControllerButtonCombined("ACTION_HORN", ToolsStrings.Controls_Horn),
+        };
+
+        public ControllerButtonCombined[] ControllerCarBrakeButtonEntries { get; } = {
+            new ControllerButtonCombined("BALANCEUP", ToolsStrings.Controls_MoveToFront),
+            new ControllerButtonCombined("BALANCEDN", ToolsStrings.Controls_MoveToRear),
+        };
+
+        public ControllerButtonCombined[] ControllerCarTurboButtonEntries { get; } = {
+            new ControllerButtonCombined("TURBOUP", ToolsStrings.Controls_Increase),
+            new ControllerButtonCombined("TURBODN", ToolsStrings.Controls_Decrease),
+        };
+
+        public ControllerButtonCombined[] ControllerCarTractionControlButtonEntries { get; } = {
+            new ControllerButtonCombined("TCUP", ToolsStrings.Controls_Increase),
+            new ControllerButtonCombined("TCDN", ToolsStrings.Controls_Decrease),
+        };
+
+        public ControllerButtonCombined[] ControllerCarAbsButtonEntries { get; } = {
+            new ControllerButtonCombined("ABSUP", ToolsStrings.Controls_Increase),
+            new ControllerButtonCombined("ABSDN", ToolsStrings.Controls_Decrease),
+        };
+
+        public ControllerButtonCombined[] ControllerCarEngineBrakeButtonEntries { get; } = {
+            new ControllerButtonCombined("ENGINE_BRAKE_UP", ToolsStrings.Controls_Increase),
+            new ControllerButtonCombined("ENGINE_BRAKE_DN", ToolsStrings.Controls_Decrease),
+        };
+
+        public ControllerButtonCombined[] ControllerCarMgukButtonEntries { get; } = {
+            new ControllerButtonCombined("MGUK_DELIVERY_UP", ToolsStrings.Controls_Mguk_IncreaseDelivery),
+            new ControllerButtonCombined("MGUK_DELIVERY_DN", ToolsStrings.Controls_Mguk_DecreaseDelivery),
+            new ControllerButtonCombined("MGUK_RECOVERY_UP", ToolsStrings.Controls_Mguk_IncreaseRecovery),
+            new ControllerButtonCombined("MGUK_RECOVERY_DN", ToolsStrings.Controls_Mguk_DecreaseRecovery),
+            new ControllerButtonCombined("MGUH_MODE", ToolsStrings.Controls_Mguh_Mode)
+        };
+
+        public ControllerButtonCombined[] ControllerViewButtonEntries { get; } = {
+            new ControllerButtonCombined("GLANCELEFT", ToolsStrings.Controls_GlanceLeft),
+            new ControllerButtonCombined("GLANCERIGHT", ToolsStrings.Controls_GlanceRight),
+            new ControllerButtonCombined("GLANCEBACK", ToolsStrings.Controls_GlanceBack),
+            new ControllerButtonCombined("ACTION_CHANGE_CAMERA", ToolsStrings.Controls_ChangeCamera)
+        };
+
+        private ControllerButtonCombined[] _controllerButtonEntries;
+
+        public IEnumerable<ControllerButtonCombined> ControllerButtonEntries => _controllerButtonEntries ?? (_controllerButtonEntries
+                = ControllerCarButtonEntries
+                        .Union(ControllerCarExtraButtonEntries)
+                        .Union(ControllerCarBrakeButtonEntries)
+                        .Union(ControllerCarTurboButtonEntries)
+                        .Union(ControllerCarTractionControlButtonEntries)
+                        .Union(ControllerCarAbsButtonEntries)
+                        .Union(ControllerCarEngineBrakeButtonEntries)
+                        .Union(ControllerCarMgukButtonEntries)
+                        .Union(ControllerViewButtonEntries)
+                        // .Union(WheelGesturesButtonEntries)
+                        .ToArray());
+        #endregion
+
+        public static readonly SettingEntry[] ControllerSticks = {
+            new SettingEntry("LEFT", "Left thumb"),
+            new SettingEntry("RIGHT", "Right thumb"),
+        };
+
+        private SettingEntry _controllerSteeringStick = ControllerSticks[0];
+
+        [CanBeNull]
+        public SettingEntry ControllerSteeringStick {
+            get => _controllerSteeringStick;
+            set => Apply(value.EnsureFrom(ControllerSticks), ref _controllerSteeringStick);
+        }
+
+        private double _controllerSteeringGamma;
+
+        public double ControllerSteeringGamma {
+            get => _controllerSteeringGamma;
+            set => Apply(value.Clamp(1.0, 4.0), ref _controllerSteeringGamma);
+        }
+
+        private double _controllerSteeringFilter;
+
+        public double ControllerSteeringFilter {
+            get => _controllerSteeringFilter;
+            set => Apply(value.Clamp(0.0, 1.0), ref _controllerSteeringFilter);
+        }
+
+        private double _controllerSpeedSensitivity;
+
+        public double ControllerSpeedSensitivity {
+            get => _controllerSpeedSensitivity;
+            set => Apply(value.Clamp(0.0, 1.0), ref _controllerSpeedSensitivity);
+        }
+
+        private double _controllerSteeringDeadzone;
+
+        public double ControllerSteeringDeadzone {
+            get => _controllerSteeringDeadzone;
+            set => Apply(value.Clamp(0.0, 0.45), ref _controllerSteeringDeadzone);
+        }
+
+        private double _controllerSteeringSpeed;
+
+        public double ControllerSteeringSpeed {
+            get => _controllerSteeringSpeed;
+            set => Apply(value.Clamp(0.01, 1.0), ref _controllerSteeringSpeed);
+        }
+
+        private double _controllerRumbleIntensity;
+
+        public double ControllerRumbleIntensity {
+            get => _controllerRumbleIntensity;
+            set => Apply(value.Clamp(0.0, 1.0), ref _controllerRumbleIntensity);
+        }
 
         #region Keyboard
         private double _keyboardSteeringSpeed;
 
         public double KeyboardSteeringSpeed {
             get => _keyboardSteeringSpeed;
-            set {
-                value = value.Clamp(0.4, 3.0);
-                if (Equals(value, _keyboardSteeringSpeed)) return;
-                _keyboardSteeringSpeed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0.4, 3.0), ref _keyboardSteeringSpeed);
         }
 
         private double _keyboardOppositeLockSpeed;
 
         public double KeyboardOppositeLockSpeed {
             get => _keyboardOppositeLockSpeed;
-            set {
-                value = value.Clamp(1.0, 5.0);
-                if (Equals(value, _keyboardOppositeLockSpeed)) return;
-                _keyboardOppositeLockSpeed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(1.0, 5.0), ref _keyboardOppositeLockSpeed);
         }
 
         private double _keyboardReturnRate;
 
         public double KeyboardReturnRate {
             get => _keyboardReturnRate;
-            set {
-                value = value.Clamp(1.0, 5.0);
-                if (Equals(value, _keyboardReturnRate)) return;
-                _keyboardReturnRate = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(1.0, 5.0), ref _keyboardReturnRate);
         }
 
         private bool _keyboardMouseSteering;
@@ -954,15 +1039,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public double KeyboardMouseSteeringSpeed {
             get => _keyboardMouseSteeringSpeed;
-            set {
-                value = value.Clamp(0.1, 1.0);
-                if (Equals(value, _keyboardMouseSteeringSpeed)) return;
-                _keyboardMouseSteeringSpeed = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0.1, 1.0), ref _keyboardMouseSteeringSpeed);
         }
 
         public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }
+        #endregion
+
+        #region Shaders Patch keys
+        public CustomButtonEntryCombined[] CustomCarButtonEntries { get; }
+        public CustomButtonEntryCombined[] CustomLookButtonEntries { get; }
+
+        [NotNull]
+        public IEnumerable<CustomButtonEntryCombined> CustomButtonEntries => CustomCarButtonEntries
+                .Concat(CustomLookButtonEntries);
         #endregion
 
         #region System shortcuts (Ctrl+…)
@@ -1024,7 +1113,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsOverlayAvailable {
             get => _isOverlayAvailable;
-            private set => Apply(value, ref _isOverlayAvailable);
+            private set {
+                if (Equals(value, _isOverlayAvailable)) return;
+                _isOverlayAvailable = value;
+                OnPropertyChanged(false);
+            }
         }
 
         private void RefreshOverlayAvailable() {
@@ -1043,14 +1136,22 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public bool IsHardwareLockSupported {
             get => _isHardwareLockSupported;
-            set => Apply(value, ref _isHardwareLockSupported);
+            set {
+                if (Equals(value, _isHardwareLockSupported)) return;
+                _isHardwareLockSupported = value;
+                OnPropertyChanged(false);
+            }
         }
 
         private object _hardwareLockOptions;
 
         public object HardwareLockOptions {
             get => _hardwareLockOptions;
-            set => Apply(value, ref _hardwareLockOptions);
+            set {
+                if (Equals(value, _hardwareLockOptions)) return;
+                _hardwareLockOptions = value;
+                OnPropertyChanged(false);
+            }
         }
 
         public string DisplayHardwareLockSupported { get; } = WheelSteerLock.GetSupportedNames().OrderBy(x => x).JoinToReadableString();
@@ -1067,9 +1168,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     .Union(WheelButtonEntries.Select(x => x.WheelButton))
                     .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
                     .Union(WheelHShifterButtonEntries)
+                    .Union(ControllerButtonEntries.Select(x => x.KeyboardButton))
+                    .Union(ControllerButtonEntries.Select(x => x.ControllerButton))
                     .Union(KeyboardSpecificButtonEntries)
                     .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())
-                    .Union(SystemButtonEntries.Select(x => x.WheelButton));
+                    .Union(SystemButtonEntries.Select(x => x.WheelButton))
+                    .Union(CustomButtonEntries.Select(x => x.Button).NonNull())
+                    .Union(CustomButtonEntries.Select(x => x.ButtonModifier).NonNull())
+                    .Union(CustomButtonEntries.Select(x => x.WheelButton));
 
         private bool _skip;
 
@@ -1082,9 +1188,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     if (senderEntry?.Id == HandbrakeId) {
                         try {
                             _skip = true;
-                            foreach (
-                                    var entry in
-                                            Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId && x.Device?.Same(senderEntry.Device) != true)) {
+                            foreach (var entry in Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId
+                                    && x.Device?.Same(senderEntry.Device) != true)) {
                                 entry.Clear();
                             }
                         } finally {
@@ -1233,13 +1338,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 device.OriginalIniIds.Clear();
             }
 
-            var section = Ini["CONTROLLERS"];
             var orderChanged = false;
-            var devices = section.Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
+            var devices = Ini["CONTROLLERS"].Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
                 IniId = FlexibleParser.TryParseInt(x.Substring(3)),
-                Name = section.GetNonEmpty(x)
+                Name = Ini["CONTROLLERS"].GetNonEmpty(x)
             }).TakeWhile(x => x.Name != null && x.IniId.HasValue).Select(x => {
-                var id = section.GetNonEmpty($"PGUID{x.IniId}");
+                // Would never happen, but just in case, to get rid of warnings
+                var iniId = x.IniId;
+                if (!iniId.HasValue) return null;
+
+                var id = Ini["CONTROLLERS"].GetNonEmpty($"PGUID{x.IniId}");
+
+                // Filter out fake placeholder just in case
+                if (id == @"0") return null;
+
                 if (id != null) {
                     ProductGuids[x.Name] = id;
                 }
@@ -1254,12 +1366,17 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         orderChanged = true;
                     }
 
-                    device.OriginalIniIds.Add(x.IniId.Value);
+                    device.OriginalIniIds.Add(iniId.Value);
                     return device;
                 }
 
-                return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, x.IniId.Value);
-            }).ToList();
+                return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, iniId.Value);
+            }).NonNull().ToList();
+
+            if (devices.All(x => !x.IsController)) {
+                devices.Add((IDirectInputDevice)Devices.FirstOrDefault(x => x.IsController)
+                        ?? GetPlaceholderDevice(@"0", @"Controller (Placeholder)", 0));
+            }
 
             if (OptionDebugControlles) {
                 if (orderChanged) {
@@ -1275,13 +1392,22 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             LoadFfbFromIni(Ini);
 
-            section = Ini["KEYBOARD"];
+            var section = Ini["KEYBOARD"];
             KeyboardSteeringSpeed = section.GetDouble("STEERING_SPEED", 1.75);
             KeyboardOppositeLockSpeed = section.GetDouble("STEERING_OPPOSITE_DIRECTION_SPEED", 2.5);
             KeyboardReturnRate = section.GetDouble("STEER_RESET_SPEED", 1.8);
             KeyboardMouseSteering = section.GetBool("MOUSE_STEER", false);
             KeyboardMouseButtons = section.GetBool("MOUSE_ACCELERATOR_BRAKE", false);
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
+
+            section = Ini["X360"];
+            ControllerSteeringStick = ControllerSticks.GetByIdOrDefault(section.GetNonEmpty("STEER_THUMB", ControllerSticks[0].Id));
+            ControllerSteeringGamma = section.GetDouble("STEER_GAMMA", 2.0);
+            ControllerSteeringFilter = section.GetDouble("STEER_FILTER", 0.7);
+            ControllerSpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0.2);
+            ControllerSteeringDeadzone = section.GetDouble("STEER_DEADZONE", 0.0);
+            ControllerSteeringSpeed = section.GetDouble("STEER_SPEED", 0.2);
+            ControllerRumbleIntensity = section.GetDouble("RUMBLE_INTENSITY", 0.8);
 
             section = Ini["__EXTRA_CM"];
             WheelSteerScaleAutoAdjust = section.GetBool("AUTO_ADJUST_SCALE", false);
@@ -1308,10 +1434,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             foreach (var device in Devices) {
                 var filename = Path.Combine(PresetsDirectory, device.Device.InstanceGuid + ".ini");
-
                 var ini = new IniFile {
                     ["CONTROLLER"] = {
-                        ["NAME"] = device.DisplayName,
+                        ["NAME"] = device.Device.InstanceName,
                         ["PRODUCT"] = device.Device.ProductGuid.ToString()
                     }
                 };
@@ -1341,7 +1466,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             UpdatePlaceholders();
             Ini["CONTROLLERS"] = Devices
                     .Select(x => (IDirectInputDevice)x)
-                    .Union(_placeholderDevices)
+                    .Union(_placeholderDevices.Where(x => x.Id != "0"))
                     .Aggregate(new IniFileSection(null), (s, d, i) => {
                         s.Set("CON" + d.Index, d.DisplayName);
                         s.Set("PGUID" + d.Index, d.Id ?? ProductGuids.GetValueOrDefault(d.DisplayName));
@@ -1371,6 +1496,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("MOUSE_STEER", KeyboardMouseSteering);
             section.Set("MOUSE_ACCELERATOR_BRAKE", KeyboardMouseButtons);
             section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
+
+            section = Ini["X360"];
+            section.Set("STEER_THUMB", ControllerSteeringStick?.Id ?? ControllerSticks[0].Id);
+            section.Set("STEER_GAMMA", ControllerSteeringGamma);
+            section.Set("STEER_FILTER", ControllerSteeringFilter);
+            section.Set("SPEED_SENSITIVITY", ControllerSpeedSensitivity);
+            section.Set("STEER_DEADZONE", ControllerSteeringDeadzone);
+            section.Set("STEER_SPEED", ControllerSteeringSpeed);
+            section.Set("RUMBLE_INTENSITY", ControllerRumbleIntensity);
 
             section = Ini["__EXTRA_CM"];
             section.Set("FF_POST_PROCESS", AcSettingsHolder.FfPostProcess.Export().ToCutBase64());

@@ -2,7 +2,7 @@
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public enum DirectInputPovDirection {
-        Left = 0, Top = 1, Right = 2, Bottom = 3
+        Left = 0, Up = 1, Right = 2, Down = 3
     }
 
     public static class DirectInputPovDirectionExtension {
@@ -10,11 +10,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
             switch (direction) {
                 case DirectInputPovDirection.Left:
                     return value > 22500 && value <= 31500;
-                case DirectInputPovDirection.Top:
+                case DirectInputPovDirection.Up:
                     return value >= 0 && value <= 4500 || value > 31500;
                 case DirectInputPovDirection.Right:
                     return value > 4500 && value <= 13500;
-                case DirectInputPovDirection.Bottom:
+                case DirectInputPovDirection.Down:
                     return value > 13500 && value <= 22500;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction), direction, null);

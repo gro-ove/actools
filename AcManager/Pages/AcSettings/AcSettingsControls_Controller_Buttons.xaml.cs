@@ -3,10 +3,11 @@ using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Windows;
 
 namespace AcManager.Pages.AcSettings {
-    public partial class AcSettingsControls_System {
-        public AcSettingsControls_System() {
+    public partial class AcSettingsControls_Controller_Buttons {
+        public AcSettingsControls_Controller_Buttons() {
             InitializeComponent();
-            this.AddWidthCondition(800).Add(x => {
+
+            this.AddWidthCondition(900).Add(x => {
                 MainGrid.Columns = x ? 2 : 1;
             });
         }

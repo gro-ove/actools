@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Controller_Main" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance acset:AcSettingsControls+ViewModel}" Unloaded="OnUnloaded">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <ScrollViewer mui:SaveScroll.Key="AcSettingsControls_Controller">
+    <StackPanel>
+      <CheckBox IsChecked="{Binding Controls.CombineWithKeyboardInput}" Margin="0 0 0 20">
+        <Label Content="{x:Static g:AppStrings.Controls_CombineWithKeyboard}" />
+      </CheckBox>
+
+      <ItemsControl x:Name="MainGrid" ItemsSource="{Binding Controls.ControllerCarButtonEntries}" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}"
+          ItemsPanel="{StaticResource TwoColumnsPanel}" />
+
+      <StackPanel Style="{StaticResource SettingsPanel}">
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Steering and FFB" />
+
+        <DockPanel>
+          <Label Content="Steer thumb:" />
+          <mui:BetterComboBox ItemsSource="{Binding Source={x:Static t:ControlsSettings.ControllerSticks}}"
+              SelectedItem="{Binding Controls.ControllerSteeringStick}" IsEditable="False" DisplayMemberPath="DisplayName" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerSpeedSensitivity, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="Speed sensitivity" />
+          <Slider Minimum="0" Maximum="1" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerSpeedSensitivity, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerSteeringSpeed, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="{x:Static g:AppStrings.Controls_SteeringSpeed}" />
+          <Slider Minimum="0.01" Maximum="1" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerSteeringSpeed, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerSteeringGamma, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="Steering gamma" />
+          <Slider Minimum="1" Maximum="4" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerSteeringGamma, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerSteeringFilter, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="Steering filter" />
+          <Slider Minimum="0" Maximum="1" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerSteeringFilter, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerSteeringDeadzone, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="Steering deadzone" />
+          <Slider Minimum="0" Maximum="0.45" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerSteeringDeadzone, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding Controls.ControllerRumbleIntensity, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Number"
+              Postfix="%" Content="Rumble effects" />
+          <Slider Minimum="0" Maximum="1" Ticks="10" TickPlacement="BottomRight"
+              Value="{Binding Controls.ControllerRumbleIntensity, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
+        </DockPanel>
+      </StackPanel>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

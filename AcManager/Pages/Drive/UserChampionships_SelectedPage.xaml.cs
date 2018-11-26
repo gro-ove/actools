@@ -70,7 +70,7 @@ namespace AcManager.Pages.Drive {
             if (!(DataContext is ViewModel)) return;
             InitializeComponent();
             InputBindings.AddRange(new[] {
-                new InputBinding(new DelegateCommand(() => Model.GoCommand.Execute(AssistsViewModel.Instance)), new KeyGesture(Key.G, ModifierKeys.Control)),
+                new InputBinding(new AsyncCommand(() => Model.GoCommand.ExecuteAsync(AssistsViewModel.Instance)), new KeyGesture(Key.G, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => UserChampionships.NavigateToChampionshipPage(null)), new KeyGesture(Key.W, ModifierKeys.Control)),
             });
 

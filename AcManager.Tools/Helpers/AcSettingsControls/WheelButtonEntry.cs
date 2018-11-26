@@ -22,7 +22,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             var device = devices.FirstOrDefault(x => x.OriginalIniIds.Contains(deviceId));
 
             var pov = section.GetInt("__CM_POV", -1);
-            var direction = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+            var direction = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
             Input = pov != -1 ? device?.GetPov(pov, direction) : device?.GetButton(section.GetInt("BUTTON", -1));
         }
 
@@ -31,6 +31,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             section.Set("JOY", Input?.Device.Index);
 
             if (Input is DirectInputPov pov) {
+                section.Set(@"BUTTON", -1);
                 section.Set("__CM_POV", pov.Id);
                 section.SetIntEnum("__CM_POV_DIR", pov.Direction);
             } else {

@@ -291,6 +291,8 @@
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificVideoSettingsHelper.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
+    <Compile Include="Helpers\AcSettingsControls\ControllerButtonCombined.cs" />
+    <Compile Include="Helpers\AcSettingsControls\ControllerButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />
@@ -314,6 +316,7 @@
     <Compile Include="Helpers\AudioDevices.cs" />
     <Compile Include="Helpers\CamberExtravaganzaHelper.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
+    <Compile Include="Helpers\DirectInput\DirectInputDeviceUtils.cs" />
     <Compile Include="Helpers\FaviconProvider.cs" />
     <Compile Include="Helpers\LazierCached.cs" />
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />

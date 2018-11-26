@@ -293,7 +293,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_WeatherParticles}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" mui:NewMarkService.New="True" set:Search.Keywords="video;graphics;shadows"
+        <!--<CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" mui:NewMarkService.New="True" set:Search.Keywords="video;graphics;shadows"
             Margin="0 12 0 0" VerticalContentAlignment="Top" ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”.">
           <mui:SpacingStackPanel Spacing="2">
             <Label>
@@ -304,7 +304,7 @@
             <mui:BbCodeBlock Style="{StaticResource Small}"
                 Text="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
           </mui:SpacingStackPanel>
-        </CheckBox>
+        </CheckBox>-->
       </StackPanel>
 
     </mui:SpacingUniformGrid>

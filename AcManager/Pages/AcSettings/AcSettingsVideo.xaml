@@ -158,10 +158,11 @@
             <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}" mui:NewMarkService.New="True"
+          <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
               set:Search.Keywords="drive events;video;graphics;shadows"
               ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section.">
-            <Label Content="If shadows are disabled, patch AC to fully disable them (global)" />
+            <Label
+                Content="If shadows are disabled, patch AC to fully disable them (global; not recommended if you’re using Custom Shaders Patch, it can take care of it as well)" />
           </CheckBox>
 
           <DockPanel>

@@ -6,6 +6,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
     public interface IDirectInputDevice : IWithId {
         bool IsVirtual { get; }
 
+        bool IsController { get; }
+
         string DisplayName { get; }
 
         int Index { get; }

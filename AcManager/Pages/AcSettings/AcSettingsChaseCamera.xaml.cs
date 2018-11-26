@@ -39,7 +39,7 @@ namespace AcManager.Pages.AcSettings {
             this.OnActualUnload(() => {
                 AcSettingsHolder.CameraChase.First.UnsubscribeWeak(OnCameraPropertyChanged);
                 AcSettingsHolder.CameraChase.Second.UnsubscribeWeak(OnCameraPropertyChanged);
-                DisableRenderer();
+                DisableRenderer().Ignore();
             });
         }
 

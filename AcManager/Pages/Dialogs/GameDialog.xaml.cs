@@ -45,6 +45,7 @@ using MenuItem = System.Windows.Controls.MenuItem;
 namespace AcManager.Pages.Dialogs {
     public partial class GameDialog : IGameUi {
         public static bool OptionBenchmarkReplays = false;
+        public static bool OptionHideCancelButton = false;
 
         public static readonly int DefinitelyNonPrizePlace = 99999;
         private static GoodShuffle<string> _progressStyles;
@@ -68,7 +69,7 @@ namespace AcManager.Pages.Dialogs {
                 ProgressRing.Style = ExtraProgressRings.Styles.GetValueOrDefault(_progressStyles.Next);
             }
 
-            Buttons = new[] { CancelButton };
+            Buttons = new[] { OptionHideCancelButton ? null : CancelButton };
         }
 
         public GameDialog(Game.Result readyResult) {

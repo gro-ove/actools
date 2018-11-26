@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Linq;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 
@@ -64,7 +65,7 @@ namespace AcManager.Pages.Drive {
                         }
                     }
 
-                    Entry.JoinCommand.Execute(null);
+                    Entry.JoinCommand.ExecuteAsync(null).Ignore();
                     // Entry.JoinCommand.Execute(ServerEntry.ForceJoin);
                 } else if (AutoJoinAnyCar) {
                     if (a.PropertyName == nameof(Entry.AutoJoinAnyCarAvailable) && !Entry.AutoJoinAnyCarAvailable) {

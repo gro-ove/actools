@@ -246,6 +246,8 @@ namespace AcManager.Tools.Profile {
         }
 
         private void OnStart(object sender, EventArgs e) {
+            // Logging.Here();
+
             if (_current != null) {
                 Apply(_current);
             }
@@ -259,6 +261,8 @@ namespace AcManager.Tools.Profile {
         }
 
         private void OnFinish(object sender, EventArgs e) {
+            // Logging.Here();
+
             var current = _current;
             if (current != null) {
                 _current = null;
@@ -300,6 +304,8 @@ namespace AcManager.Tools.Profile {
         }
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {
+            // Logging.Here();
+
             _current?.Extend(e.Previous, e.Current, e.Time);
             if (_webServer != null) {
                 _webServer.PublishStatsData(_current);

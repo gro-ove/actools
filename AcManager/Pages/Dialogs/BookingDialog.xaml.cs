@@ -9,6 +9,7 @@ using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
@@ -41,7 +42,7 @@ namespace AcManager.Pages.Dialogs {
                     if (carEntry == null) return;
 
                     carEntry.AvailableSkinId = value?.Id;
-                    ServerEntry.JoinCommand.Execute(null);
+                    ServerEntry.JoinCommand.ExecuteAsync(null).Ignore();
                 }
             }
         }
@@ -112,7 +113,8 @@ namespace AcManager.Pages.Dialogs {
             }
 
             Buttons = new[] {
-                CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go, () => ServerEntry?.JoinCommand.Execute(ServerEntry.ActualJoin), () => Ready),
+                CreateExtraStyledDialogButton("Go.Button", AppStrings.Common_Go,
+                        () => ServerEntry?.JoinCommand.ExecuteAsync(ServerEntry.ActualJoin), () => Ready),
                 CancelButton
             };
         }
@@ -128,9 +130,8 @@ namespace AcManager.Pages.Dialogs {
                 CommandManager.InvalidateRequerySuggested();
 
                 if (value) {
-                    Toast.Show("booking is finished", AppStrings.Srs_ReadyNotification, () => {
-                        ServerEntry?.JoinCommand.Execute(ServerEntry.ActualJoin);
-                    });
+                    Toast.Show("Booking is finished", AppStrings.Srs_ReadyNotification,
+                            () => ServerEntry?.JoinCommand.ExecuteAsync(ServerEntry.ActualJoin));
                 }
             }
         }

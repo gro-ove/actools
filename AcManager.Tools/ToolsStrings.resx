@@ -593,7 +593,7 @@
     <comment>Controller name</comment>
   </data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
-    <value>Xbox 360 gamepad</value>
+    <value>Gamepad</value>
   </data>
   <data name="Controls_KeyboardAndMouse" xml:space="preserve">
     <value>Keyboard &amp; mouse</value>

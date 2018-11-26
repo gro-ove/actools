@@ -79,17 +79,17 @@ namespace AcTools.Utils {
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename([NotNull] string carDir) {
-            return GetMainCarFilename(carDir, (DataWrapper)null);
+        public static string GetMainCarFilename([NotNull] string carDir, bool considerHr) {
+            return GetMainCarFilename(carDir, (DataWrapper)null, considerHr);
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename([NotNull] string carDir, [CanBeNull] DataWrapper data) {
+        public static string GetMainCarFilename([NotNull] string carDir, [CanBeNull] DataWrapper data, bool considerHr) {
             var iniFile = (data ?? DataWrapper.FromCarDirectory(carDir)).GetIniFile("lods.ini");
             if (!iniFile.IsEmptyOrDamaged()) {
-                var fromData = iniFile["LOD_0"].GetNonEmpty("FILE");
-                if (fromData != null) {
-                    return Path.Combine(carDir, fromData);
+                var file = (considerHr ? iniFile["LOD_HR"].GetNonEmpty("FILE") : null) ?? iniFile["LOD_0"].GetNonEmpty("FILE");
+                if (file != null) {
+                    return Path.Combine(carDir, file);
                 }
             }
 
@@ -97,8 +97,8 @@ namespace AcTools.Utils {
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename([NotNull] string acRoot, [NotNull] string carName) {
-            return GetMainCarFilename(GetCarDirectory(acRoot, carName));
+        public static string GetMainCarFilename([NotNull] string acRoot, [NotNull] string carName, bool considerHr) {
+            return GetMainCarFilename(GetCarDirectory(acRoot, carName), considerHr);
         }
 
         [NotNull, Pure]

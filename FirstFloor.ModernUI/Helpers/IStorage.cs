@@ -25,5 +25,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [NotNull]
         IEnumerable<string> Keys { get; }
+
+        void Clear();
     }
 }

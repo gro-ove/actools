@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using JetBrains.Annotations;
 
@@ -14,7 +13,6 @@ namespace AcManager {
     /// </summary>
     [Localizable(false)]
     public static class AppArguments {
-        private static Regex _regex;
         private static Dictionary<AppFlag, string> _args;
 
         public static IReadOnlyList<string> Values { get; private set; }
@@ -30,7 +28,7 @@ namespace AcManager {
                     Value = x.Length == 2 ? x[1] : null
                 })
                 .Where(x => x.Key != null)
-                .ToDictionary(x => x.Key.Value, x => x.Value);
+                .ToDictionary(x => x.Key ?? (AppFlag)0, x => x.Value);
 
             Values = list.Where(x => !x.StartsWith("-"))
                          .Union(list.SkipWhile(x => x != "-").Skip(1).Where(x => x.StartsWith("-")))
@@ -48,7 +46,7 @@ namespace AcManager {
                                          Value = x.Length == 2 ? x[1] : null
                                      })
                                      .Where(x => x.Key != null)) {
-                _args[pair.Key.Value] = pair.Value;
+                _args[pair.Key ?? (AppFlag)0] = pair.Value;
             }
         }
 

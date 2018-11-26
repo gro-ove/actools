@@ -415,7 +415,7 @@ namespace AcManager.CustomShowroom {
             private void OnScreenshot(object sender, CancelEventArgs cancelEventArgs) {
                 if (Keyboard.Modifiers == ModifierKeys.None) {
                     cancelEventArgs.Cancel = true;
-                    ShotCommand.Execute(null);
+                    ShotCommand.ExecuteAsync(null).Ignore();
                 }
             }
 

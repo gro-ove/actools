@@ -1,14 +1,16 @@
+using System;
 using System.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Serialization;
+using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public class DirectInputButton : InputProviderBase<bool>, IDirectInputProvider {
         public string DefaultName { get; }
 
-        public DirectInputButton(IDirectInputDevice device, int id) : base(id) {
-            Device = device;
+        public DirectInputButton([NotNull] IDirectInputDevice device, int id) : base(id) {
+            Device = device ?? throw new ArgumentNullException(nameof(device));
             DefaultName = string.Format(ToolsStrings.Input_Button, (id + 1).ToInvariantString());
             SetDisplayParams(null, true);
         }
@@ -30,6 +32,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }
         }
 
+        [NotNull]
         public IDirectInputDevice Device { get; }
     }
 }

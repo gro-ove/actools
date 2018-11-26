@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsControls_Controller_Buttons" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Unloaded="OnUnloaded">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/AcSettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer DataContext="{Binding Source={x:Static acset:AcSettingsHolder.Controls}}" mui:SaveScroll.Key="AcSettingsControls_Controller_Buttons">
+    <StackPanel>
+      <CheckBox IsChecked="{Binding CombineWithKeyboardInput}" Margin="0 0 0 20">
+        <Label Content="{x:Static g:AppStrings.Controls_CombineWithKeyboard}" />
+      </CheckBox>
+
+      <mui:SpacingUniformGrid x:Name="MainGrid" VerticalStackMode="True">
+        <StackPanel>
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Miscellaneous" />
+          <ItemsControl ItemsSource="{Binding ControllerCarExtraButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_BrakeBalance}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Turbo}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarTurboButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_TractionControl}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarTractionControlButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Abs}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarAbsButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_EngineBrake}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarEngineBrakeButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <!--<TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Gestures}" />
+          <ItemsControl ItemsSource="{Binding ControllerGesturesButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />-->
+
+        </StackPanel>
+        <StackPanel>
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_MguK}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarMgukButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_Miscellaneous}" />
+          <ItemsControl ItemsSource="{Binding ControllerCarButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_View}" />
+          <ItemsControl ItemsSource="{Binding ControllerViewButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
+
+        </StackPanel>
+      </mui:SpacingUniformGrid>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

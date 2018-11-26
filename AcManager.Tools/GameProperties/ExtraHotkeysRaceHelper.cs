@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ using AcManager.Internal;
 using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.DirectInput;
+using AcManager.Tools.Managers;
 using AcManager.Tools.SharedMemory;
 using AcTools.DataFile;
 using AcTools.Processes;
@@ -455,7 +457,7 @@ namespace AcManager.Tools.GameProperties {
                     Joy = joy;
                     Button = button;
                     Pov = null;
-                    Direction = DirectInputPovDirection.Top;
+                    Direction = DirectInputPovDirection.Up;
                 }
 
                 public JoyKey(int joy, int pov, DirectInputPovDirection direction) {
@@ -527,7 +529,7 @@ namespace AcManager.Tools.GameProperties {
                     var joy = section.GetInt("__CM_ALT_JOY", -1);
                     var button = section.GetInt("__CM_ALT_BUTTON", -1);
                     var pov = section.GetInt("__CM_ALT__POV", -1);
-                    var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Top);
+                    var povDirection = section.GetIntEnum("__CM_ALT_POV_DIR", DirectInputPovDirection.Up);
                     var key = section.GetInt("KEY", -1);
 
                     if (joy == -1 || button == -1 && pov == -1 || key == -1) {
@@ -541,7 +543,13 @@ namespace AcManager.Tools.GameProperties {
                     };
                 }
 
+                var supportedByPatchFilename = Path.Combine(AcRootDirectory.Instance.RequireValue,
+                        @"extension", @"config", @"data_hotkeys_supported.txt");
+                var supportedByPatch = File.Exists(supportedByPatchFilename) ? File.ReadAllLines(supportedByPatchFilename) : new string[0];
+
                 foreach (var n in AcSettingsHolder.Controls.SystemButtonKeys) {
+                    if (supportedByPatch.Contains(n)) continue;
+
                     var section = ini[n];
                     var delay = ShortenDelays.ArrayContains(n) ? OptionSmallInterval : OptionLargeInterval;
 
@@ -551,7 +559,7 @@ namespace AcManager.Tools.GameProperties {
                     var joy = section.GetInt("JOY", -1);
                     var button = section.GetInt("BUTTON", -1);
                     var pov = section.GetInt("__CM_POV", -1);
-                    var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Top);
+                    var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
                     var key = section.GetInt("KEY", -1);
 
                     var delayedName = delaysAvailable ? AcSettingsHolder.Controls.SystemRaceButtonEntries.FirstOrDefault(

@@ -1,4 +1,5 @@
 ﻿using AcManager.Tools.Miscellaneous;
+using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Objects {
     public partial class TrackObject : ICupSupportedObject {
@@ -22,7 +23,7 @@ namespace AcManager.Tools.Objects {
             Author = author;
             Url = informationUrl;
             Version = version;
-            SaveAsync();
+            SaveAsync().Ignore();
         }
     }
 }

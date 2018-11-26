@@ -38,8 +38,8 @@ namespace AcTools.Render.Data {
 
         public bool IsEmpty => _data.IsEmpty;
 
-        public string GetMainKn5(string carDirectory) {
-            return AcPaths.GetMainCarFilename(carDirectory, _data);
+        public string GetMainKn5(string carDirectory, bool considerHr) {
+            return AcPaths.GetMainCarFilename(carDirectory, _data, considerHr);
         }
 
         #region Ambient shadows
@@ -120,7 +120,7 @@ namespace AcTools.Render.Data {
         }
 
         public class LightAnimation : AnimationBase {
-            public LightAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) {}
+            public LightAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) { }
         }
 
         public IEnumerable<LightObject> GetLights() {
@@ -210,8 +210,11 @@ namespace AcTools.Render.Data {
         }
 
         public IEnumerable<LodDescription> GetLods() {
-            return IsEmpty ? new LodDescription[0] :
-                    _data.GetIniFile("lods.ini").GetSections("LOD").Select(x => new LodDescription(x)).Where(x => x.FileName != null);
+            if (IsEmpty) return new LodDescription[0];
+            var lods = _data.GetIniFile("lods.ini");
+            return lods.GetSections("LOD").Select(x => new LodDescription(x))
+                       .Prepend(new LodDescription(lods["LOD_HR"]))
+                       .Where(x => x.FileName != null);
         }
         #endregion
 
@@ -592,7 +595,7 @@ namespace AcTools.Render.Data {
             protected override float TrailOverride => Points[1].Z - Points[1].Y * (Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y);
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[1], Points[0]);
 
-            protected override IEnumerable<DebugLine> DebugLinesOverride => new [] {
+            protected override IEnumerable<DebugLine> DebugLinesOverride => new[] {
                 new DebugLine(Color.Red, Points[0], Points[1]),
                 new DebugLine(Color.Yellow, Points[2], Points[5]),
                 new DebugLine(Color.Yellow, Points[3], Points[5]),
@@ -801,7 +804,7 @@ namespace AcTools.Render.Data {
 
         #region Extra animations
         public class ExtraAnimation : AnimationBase {
-            public ExtraAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) {}
+            public ExtraAnimation(string ksAnimName, float duration) : base(ksAnimName, duration) { }
         }
 
         public IEnumerable<ExtraAnimation> GetExtraAnimations() {

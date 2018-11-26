@@ -201,7 +201,7 @@
                 <Condition Binding="{Binding ForceMenuAtTopInFullscreenMode, Source={x:Static presentation:AppearanceManager.Instance}}" Value="True" />
                 <Condition Binding="{Binding Visibility, ElementName=Restore}" Value="Visible" />
               </MultiDataTrigger.Conditions>
-              <Setter TargetName="LayoutRoot" Property="Margin" Value="7" />
+              <Setter TargetName="LayoutRoot" Property="Margin" Value="7 11 7 7" />
             </MultiDataTrigger>
             <Trigger Property="IsTitleVisible" Value="False">
               <Setter TargetName="PART_TitleTextBlock" Property="Visibility" Value="Collapsed" />
@@ -245,6 +245,11 @@
       </Trigger>
       <DataTrigger Binding="{Binding FullscreenOverTaskbarMode, Source={x:Static presentation:AppearanceManager.Instance}}" Value="True">
         <Setter Property="WindowStyle" Value="None" />
+        <Setter Property="WindowChrome.WindowChrome">
+          <Setter.Value>
+            <WindowChrome CornerRadius="0" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
+          </Setter.Value>
+        </Setter>
       </DataTrigger>
     </Style.Triggers>
   </Style>
