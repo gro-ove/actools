@@ -16,6 +16,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -35,6 +36,8 @@ namespace AcManager.Tools.Objects {
             RaceSession = new ServerRaceSessionEntry("RACE", ToolsStrings.Session_Race, true, true);
             Sessions = new ChangeableObservableCollection<ServerSessionEntry>(SimpleSessions.Append(RaceSession));
             Sessions.ItemPropertyChanged += OnSessionEntryPropertyChanged;
+
+            InitSetupsItems();
         }
 
         protected override IniFileMode IniFileMode => IniFileMode.ValuesWithSemicolons;
@@ -152,6 +155,10 @@ namespace AcManager.Tools.Objects {
             TrackLayoutId = section.GetNonEmpty("CONFIG_TRACK");
             CarIds = section.GetStrings("CARS", ';');
 
+            var legalTyres = section.GetStrings("LEGAL_TYRES", ';');
+            LegalTyres = Tyres.Where(x => legalTyres.Any(y => string.Equals(y, x.ShortName, StringComparison.OrdinalIgnoreCase)));
+            if (!LegalTyres.Any()) LegalTyres = Tyres;
+
             Abs = section.GetIntEnum("ABS_ALLOWED", ServerPresetAssistState.Factory);
             TractionControl = section.GetIntEnum("TC_ALLOWED", ServerPresetAssistState.Factory);
             StabilityControl = section.GetBool("STABILITY_ALLOWED", false);
@@ -178,8 +185,9 @@ namespace AcManager.Tools.Objects {
             BlacklistMode = section.GetBool("BLACKLIST_MODE", true);
             MaxCollisionsPerKm = section.GetInt("MAX_CONTACTS_PER_KM", -1);
 
-            _welcomeMessagePath = null; // thus, forcing loaded message and changed flag to update
-            WelcomeMessagePath = ini["DATA"].GetNonEmpty("WELCOME_PATH");
+            PluginUdpPort = section.GetIntNullable("UDP_PLUGIN_LOCAL_PORT");
+            PluginUdpAddress = section.GetNonEmpty("UDP_PLUGIN_ADDRESS");
+            PluginAuthAddress = section.GetNonEmpty("AUTH_PLUGIN_ADDRESS");
 
             // At least one weather entry is needed in order to launch the server
             var weather = new ChangeableObservableCollection<ServerWeatherEntry>(ini.GetSections("WEATHER").Select(x => new ServerWeatherEntry(x)));
@@ -189,9 +197,13 @@ namespace AcManager.Tools.Objects {
 
             Weather = weather;
 
-            PluginUdpPort = section.GetIntNullable("UDP_PLUGIN_LOCAL_PORT");
-            PluginUdpAddress = section.GetNonEmpty("UDP_PLUGIN_ADDRESS");
-            PluginAuthAddress = section.GetNonEmpty("AUTH_PLUGIN_ADDRESS");
+            var data = ini["DATA"];
+            _welcomeMessagePath = null; // thus, forcing loaded message and changed flag to update
+            WelcomeMessagePath = data.GetNonEmpty("WELCOME_PATH");
+            ManagerDescription = data.GetNonEmpty("DESCRIPTION");
+            WebLink = data.GetNonEmpty("WEBLINK");
+            SetupItems.ReplaceEverythingBy_Direct(Enumerable.Range(0, 99).Select(x => data.GetNonEmpty("FIXED_SETUP_" + x)?.Split('|'))
+                                                            .Where(x => x?.Length == 2).Select(x => SetupItem.Create(x[1], x[0].As(false))).NonNull());
 
             var ftp = ini["FTP"];
             FtpHost = ftp.GetNonEmpty("HOST");
@@ -239,6 +251,12 @@ namespace AcManager.Tools.Objects {
             section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');
 
+            if (Tyres.All(x => LegalTyres.Contains(x))) {
+                section.Remove(@"LEGAL_TYRES");
+            } else {
+                section.Set("LEGAL_TYRES", LegalTyres.Select(x => x.ShortName), ';');
+            }
+
             section.SetIntEnum("ABS_ALLOWED", Abs);
             section.SetIntEnum("TC_ALLOWED", TractionControl);
             section.Set("STABILITY_ALLOWED", StabilityControl);
@@ -276,7 +294,17 @@ namespace AcManager.Tools.Objects {
                 SaveWelcomeMessageCommand.Execute();
             }
 
-            ini["DATA"].Set("WELCOME_PATH", WelcomeMessagePath ?? "");
+            var data =ini["DATA"];
+            data.Set("DESCRIPTION", ManagerDescription);
+            data.Set("WEBLINK", WebLink);
+            data.Set("WELCOME_PATH", WelcomeMessagePath ?? "");
+            foreach (var key in data.Keys.Where(x => x.StartsWith(@"FIXED_SETUP_")).ToList()) {
+                data.Remove(key);
+            }
+            for (var i = 0; i < SetupItems.Count; i++) {
+                var item = SetupItems[i];
+                data.Set(@"FIXED_SETUP_" + i, $@"{(item.IsDefault ? @"1" : @"0")}|{item.Filename}");
+            }
 
             var welcomeFilename = Path.Combine(ServerPresetsManager.ServerDirectory, "cfg", $"welcome_{Id}.txt");
             if (!string.IsNullOrWhiteSpace(WelcomeMessage)) {
@@ -354,8 +382,7 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _deleteAllEntriesCommand;
 
-        public DelegateCommand DeleteAllEntriesCommand => _deleteAllEntriesCommand ?? (_deleteAllEntriesCommand = new DelegateCommand(() => {
-            DriverEntries.Clear();
-        }));
+        public DelegateCommand DeleteAllEntriesCommand
+            => _deleteAllEntriesCommand ?? (_deleteAllEntriesCommand = new DelegateCommand(() => { DriverEntries.Clear(); }));
     }
 }

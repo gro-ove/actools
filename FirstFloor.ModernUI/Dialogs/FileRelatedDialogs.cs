@@ -13,6 +13,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece AllFiles = new DialogFilterPiece("All files", "*.*");
         public static readonly DialogFilterPiece DdsFiles = new DialogFilterPiece("DDS files", "*.dds");
         public static readonly DialogFilterPiece XmlFiles = new DialogFilterPiece("XML Files", "*.xml");
+        public static readonly DialogFilterPiece IniFiles = new DialogFilterPiece("INI Files", "*.ini");
         public static readonly DialogFilterPiece JpegFiles = new DialogFilterPiece("JPEG files", "*.jpg", "*.jpeg");
         public static readonly DialogFilterPiece PngFiles = new DialogFilterPiece("PNG files", "*.png");
         public static readonly DialogFilterPiece DdsAndTiffFiles = new DialogFilterPiece("DDS & TIFF files", "*.dds", "*.tif", "*.tiff");

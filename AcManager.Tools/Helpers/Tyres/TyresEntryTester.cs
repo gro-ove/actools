@@ -1,7 +1,7 @@
 ﻿using AcManager.Tools.Filters.Testers;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Tyres {
+namespace AcManager.Tools.Helpers.Tyres {
     public class TyresEntryTester : IParentTester<TyresEntry> {
         public static readonly TyresEntryTester Instance = new TyresEntryTester();
 

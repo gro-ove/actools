@@ -6,16 +6,83 @@
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <ScrollViewer x:Name="ScrollViewer">
+  <ScrollViewer>
     <StackPanel Style="{StaticResource SettingsCompactPanel}">
 
-      <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+      <mui:SpacingUniformGrid HorizontalSpacing="20" Columns="2" VerticalStackMode="True" Margin="0 0 0 8">
+        <StackPanel>
+          <TextBlock Text="Allowed tyres:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+          <TextBlock Margin="20 0 0 0" Text="No tyres found" FontStyle="Italic"
+              Visibility="{Binding SelectedObject.Tyres.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
+          <ListBox x:Name="AllowedTyres" DataContext="{Binding SelectedObject}" ItemsSource="{Binding Tyres}" mui:ListBoxHelper.ProperMultiSelectionMode="True"
+              ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" DataContextChanged="AllowedTyres_OnDataContextChanged" Margin="20 0 0 0">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type t:ServerPresetObject+TyresItem}">
+                <DockPanel Margin="0 0 4 2">
+                  <TextBlock Text="{Binding CarsList}" Style="{StaticResource Small}" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
+                  <TextBlock Text="{Binding ShortName, StringFormat='{}[{0}]'}" Style="{StaticResource Small}" FontWeight="Bold"
+                      FontFamily="{StaticResource MonospaceFont}" Margin="0 3 4 -3" />
+                  <TextBlock Text="{Binding DisplayName}" />
+                </DockPanel>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+        </StackPanel>
+        <StackPanel>
+          <TextBlock Text="Fixed setups:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+          <TextBlock Margin="20 0 0 0" Text="No fixed setups set" FontStyle="Italic"
+              Visibility="{Binding SelectedObject.SetupItems.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter='0,inverse'}" />
+          <ListBox x:Name="SetupItems" DataContext="{Binding SelectedObject}" ItemsSource="{Binding SetupItems}" SelectedItem="{Binding DefaultSetupItem}"
+              mui:Draggable.Enabled="True" mui:ListBoxHelper.ProperMultiSelectionMode="True" Margin="20 0 0 8"
+              ItemContainerStyle="{StaticResource CheckBoxListBoxItem}" mui:Draggable.DestinationConverter="{Binding SetupsDraggableConverterInstance}"
+              SelectionChanged="FixedSetups_OnSelectionChanged" DataContextChanged="FixedSetups_OnDataContextChanged">
+            <ListBox.ItemTemplate>
+              <DataTemplate DataType="{x:Type t:ServerPresetObject+SetupItem}">
+                <!--<TextBlock Text="{Binding DisplayName}" Margin="2 -4 0 4" />-->
+                <Border Background="Transparent" ToolTip="{Binding Filename}">
+                  <Border.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="View in folder" Command="{Binding ViewInDirectoryCommand}" />
+                      <MenuItem Header="Use as default" IsCheckable="True" IsChecked="{Binding IsDefault}" />
+                      <Separator />
+                      <MenuItem Header="Delete setup" Command="{Binding DeleteCommand}" />
+                    </ContextMenu>
+                  </Border.ContextMenu>
+                  <DockPanel Margin="0 0 4 2">
+                    <Button Margin="0 -2 0 0" Style="{StaticResource DeleteButton}" Command="{Binding DeleteCommand}"
+                        Visibility="{Binding DeleteCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <TextBlock Text="{Binding DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 2" />
+                    <Path Data="{StaticResource AlertIconData}" Width="10" Height="10" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                        Margin="0 0 4 0" VerticalAlignment="Center" ToolTip="This isn’t a car selected for this server"
+                        Visibility="{Binding IsValidCar, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+                    <TextBlock Text="{Binding CarDisplayName}" Style="{StaticResource Small}" />
+                  </DockPanel>
+                </Border>
+              </DataTemplate>
+            </ListBox.ItemTemplate>
+          </ListBox>
+          <Button Command="{Binding AddSetupCommand}" Margin="0 0 0 8">
+            <DockPanel IsHitTestVisible="False" Margin="0">
+              <Path Data="{StaticResource AddIconData}" Width="10" Height="10"
+                  Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                  Margin="0 0 4 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+              <TextBlock Text="Add setup" />
+            </DockPanel>
+          </Button>
+          <c:MessageBlock CloseKey="servercheckedsetupinfo">
+            <TextBlock Text="Checked setup is the one applied by default." />
+          </c:MessageBlock>
+        </StackPanel>
+      </mui:SpacingUniformGrid>
+
+      <TextBlock Text="Server plugin:" Style="{StaticResource SettingsPanel.Heading2}" />
       <DockPanel>
         <Label Content="Address:" />
         <mui:BetterTextBox Text="{Binding SelectedObject.PluginUdpAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
@@ -28,6 +95,12 @@
       <DockPanel>
         <Label Content="Auth:" />
         <mui:BetterTextBox Text="{Binding SelectedObject.PluginAuthAddress}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      </DockPanel>
+
+      <TextBlock Text="Web link:" Style="{StaticResource SettingsPanel.Heading2}" />
+      <DockPanel>
+        <Label Content="Value:" ToolTip="What is web link anyway?" />
+        <mui:BetterTextBox Text="{Binding SelectedObject.WebLink}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </DockPanel>
 
       <TextBlock Text="FTP data:" Style="{StaticResource SettingsPanel.Heading2}" />

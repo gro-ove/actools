@@ -19,6 +19,7 @@ using AcManager.Controls;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Tyres;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;

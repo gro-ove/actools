@@ -3136,7 +3136,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Rendering mode:</value>
   </data>
   <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
-    <value>Vertical syncronization</value>
+    <value>Vertical synchronization</value>
   </data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
     <value>Anisotropic filtering:</value>

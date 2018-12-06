@@ -1,12 +1,12 @@
 using System;
+using System.Linq;
 using AcTools.Render.Base.Materials;
 using AcTools.Render.Kn5Specific.Materials;
 
 namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
     public class MaterialsProviderDark : IMaterialsFactory {
         public IRenderableMaterial CreateMaterial(object key) {
-            var kn5 = key as Kn5MaterialDescription;
-            if (kn5 != null) {
+            if (key is Kn5MaterialDescription kn5) {
                 switch (kn5.SpecialKey as string) {
                     case BasicMaterials.DebugKey:
                         return new DebugMaterial(kn5);
@@ -17,8 +17,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 }
             }
 
-            var shadow = key as Kn5AmbientShadowMaterialDescription;
-            if (shadow != null) {
+            if (key is Kn5AmbientShadowMaterialDescription shadow) {
                 return new AmbientShadowMaterialSimple(shadow);
             }
 
@@ -88,6 +87,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 case "ksPerPixelMultiMap_damage_dirt":
                 case "ksPerPixelMultiMap_damage_dirt_sunspot":
                 case "ksPerPixelMultiMap_NMDetail":
+                case "ksPerPixelMultiMap_emissive":
                 case "ksPerPixelMultiMapSimpleRefl":
                     return new Kn5MaterialDarkMaps(description);
 
@@ -105,6 +105,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
                 default:
                     if (shader.IndexOf("skinned", StringComparison.OrdinalIgnoreCase) != -1) {
                         return new Kn5MaterialDarkSkinnedGl(description);
+                    }
+
+                    if (description.Material.TextureMappings.Any(x => x.Name == "txMaps")) {
+                        return new Kn5MaterialDarkMaps(description);
+                    }
+
+                    if (description.Material.TextureMappings.Any(x => x.Name == "txNormal")) {
+                        return new Kn5MaterialDarkNm(description);
                     }
 
                     return new Kn5MaterialDark(description);

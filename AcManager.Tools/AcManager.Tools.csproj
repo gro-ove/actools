@@ -439,6 +439,12 @@
     <Compile Include="Helpers\SettingEntry.cs" />
     <Compile Include="Helpers\SharpCompressExtension.cs" />
     <Compile Include="Helpers\TemperatureUnitMode.cs" />
+    <Compile Include="Helpers\Tyres\TyresAppropriateLevel.cs" />
+    <Compile Include="Helpers\Tyres\TyresEntry.cs" />
+    <Compile Include="Helpers\Tyres\TyresEntryTester.cs" />
+    <Compile Include="Helpers\Tyres\TyresExtension.cs" />
+    <Compile Include="Helpers\Tyres\TyresPlace.cs" />
+    <Compile Include="Helpers\Tyres\TyresSet.cs" />
     <Compile Include="Helpers\Vdf.cs" />
     <Compile Include="Helpers\VisualCppTool.cs" />
     <Compile Include="Helpers\WebBrowserHelper.cs" />
@@ -512,6 +518,8 @@
     <Compile Include="Objects\RemoteCarSetupObject.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
+    <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />
+    <Compile Include="Objects\ServerPresetObject.Setups.cs" />
     <Compile Include="Objects\TrackObject.Extra.cs" />
     <Compile Include="Objects\TrackObject.Skins.cs" />
     <Compile Include="Objects\CarObject.Stats.cs" />

@@ -125,13 +125,11 @@
         <ControlTemplate TargetType="ListBoxItem">
           <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
               BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-            <StackPanel Orientation="Horizontal">
-              <RadioButton
-                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type
-                                                 ListBoxItem}}, Path=IsSelected}" />
+            <DockPanel>
+              <RadioButton IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
               <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-            </StackPanel>
+            </DockPanel>
           </Border>
           <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
@@ -164,10 +162,8 @@
           <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"
               Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
             <DockPanel>
-              <CheckBox
-                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type
-                                                 ListBoxItem}}, Path=IsSelected}"
-                  IsHitTestVisible="False" DockPanel.Dock="Left" />
+              <CheckBox IsHitTestVisible="False"
+                  IsChecked="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}, Path=IsSelected}" />
               <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
             </DockPanel>

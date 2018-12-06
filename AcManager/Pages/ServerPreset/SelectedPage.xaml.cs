@@ -17,6 +17,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -108,9 +109,8 @@ namespace AcManager.Pages.ServerPreset {
 
             private ICommand _changeTrackCommand;
 
-            public ICommand ChangeTrackCommand => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => {
-                Track = SelectTrackDialog.Show(Track);
-            }));
+            public ICommand ChangeTrackCommand
+                => _changeTrackCommand ?? (_changeTrackCommand = new DelegateCommand(() => { Track = SelectTrackDialog.Show(Track); }));
 
             public ViewModel([NotNull] ServerPresetObject acObject, TrackObjectBase track, CarObject[] cars) : base(acObject) {
                 _shareModes = SelectedObject.DetailsMode == ServerPresetDetailsMode.ViaWrapper ? EnumExtension.GetValues<ShareMode>()
@@ -318,40 +318,35 @@ namespace AcManager.Pages.ServerPreset {
             }
 
             private void OnCarsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
-                _busy.Do(() => {
-                    SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray();
-                });
+                _busy.Do(() => { SelectedObject.CarIds = Cars.Select(x => x.Id).ToArray(); });
             }
 
             private DelegateCommand _changeWelcomeMessagePathCommand;
 
-            public DelegateCommand ChangeWelcomeMessagePathCommand => _changeWelcomeMessagePathCommand ?? (_changeWelcomeMessagePathCommand = new DelegateCommand(() => {
-                var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.TextFilter,
-                    Title = "Select new welcome message",
-                    InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath) ?? "",
-                    RestoreDirectory = true
-                };
+            public DelegateCommand ChangeWelcomeMessagePathCommand
+                => _changeWelcomeMessagePathCommand ?? (_changeWelcomeMessagePathCommand = new DelegateCommand(() => {
+                    var dialog = new OpenFileDialog {
+                        Filter = FileDialogFilters.TextFilter,
+                        Title = "Select new welcome message",
+                        InitialDirectory = Path.GetDirectoryName(SelectedObject.WelcomeMessagePath) ?? "",
+                        RestoreDirectory = true
+                    };
 
-                if (dialog.ShowDialog() == true) {
-                    SelectedObject.WelcomeMessagePath = dialog.FileName;
-                }
-            }));
+                    if (dialog.ShowDialog() == true) {
+                        SelectedObject.WelcomeMessagePath = dialog.FileName;
+                    }
+                }));
 
             private void OnAcObjectPropertyChanged(object sender, PropertyChangedEventArgs e) {
                 switch (e.PropertyName) {
                     case nameof(SelectedObject.TrackId):
                     case nameof(SelectedObject.TrackLayoutId):
-                        _busy.Do(() => {
-                            Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId);
-                        });
+                        _busy.Do(() => { Track = TracksManager.Instance.GetLayoutById(SelectedObject.TrackId, SelectedObject.TrackLayoutId); });
                         UpdateWrapperContentTracks();
                         break;
 
                     case nameof(SelectedObject.CarIds):
-                        _busy.Do(() => {
-                            Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x)));
-                        });
+                        _busy.Do(() => { Cars.ReplaceEverythingBy(SelectedObject.CarIds.Select(x => CarsManager.Instance.GetById(x))); });
                         break;
 
                     case nameof(SelectedObject.DriverEntries):
@@ -393,9 +388,8 @@ namespace AcManager.Pages.ServerPreset {
 
             private DelegateCommand _packOptionsCommand;
 
-            public DelegateCommand PackOptionsCommand => _packOptionsCommand ?? (_packOptionsCommand = new DelegateCommand(() => {
-                new PackServerDialog(SelectedObject).ShowDialog();
-            }));
+            public DelegateCommand PackOptionsCommand
+                => _packOptionsCommand ?? (_packOptionsCommand = new DelegateCommand(() => { new PackServerDialog(SelectedObject).ShowDialog(); }));
 
             private AsyncCommand _goCommand;
 
@@ -429,10 +423,45 @@ namespace AcManager.Pages.ServerPreset {
 
             public void InitializePackServerPresets() {
                 if (PackServerPresets == null) {
-                    PackServerPresets = _helper.Create(new PresetsCategory(PackServerDialog.ViewModel.PresetableKeyValue), p => {
-                        new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Forget();
-                    });
+                    PackServerPresets = _helper.Create(new PresetsCategory(PackServerDialog.ViewModel.PresetableKeyValue),
+                            p => { new PackServerDialog.ViewModel(p.ReadData(), SelectedObject).PackCommand.ExecuteAsync().Forget(); });
                 }
+            }
+
+            private DelegateCommand _addSetupCommand;
+
+            public DelegateCommand AddSetupCommand => _addSetupCommand ?? (_addSetupCommand = new DelegateCommand(AddSetup));
+
+            private void AddSetup() {
+                var car = SelectedObject.DriverEntries.GroupBy(x => x.CarId).MaxEntryOrDefault(x => x.Count())?.Key;
+                var directory = car == null ? null : AcPaths.GetCarSetupsDirectory(car);
+                var filename = FileRelatedDialogs.Open(new OpenDialogParams {
+                    DirectorySaveKey = @"addsetuptoserver:" + car,
+                    Filters = {
+                        DialogFilterPiece.IniFiles,
+                        DialogFilterPiece.AllFiles
+                    },
+                    Title = "Select car setup settings",
+                    InitialDirectory = directory == null || !Directory.Exists(directory) ? AcPaths.GetCarSetupsDirectory() : directory,
+                });
+                if (filename == null || !File.Exists(filename)) return;
+                var setup = ServerPresetObject.SetupItem.Create(filename, false);
+                if (setup == null) {
+                    var carId = Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(filename)));
+                    if (carId != null && CarsManager.Instance.GetById(carId) != null) {
+                        new IniFile(filename) {
+                            ["CAR"] = { ["MODEL"] = carId }
+                        }.Save();
+                        setup = ServerPresetObject.SetupItem.Create(filename, false);
+                    }
+
+                    if (setup == null) {
+                        MessageDialog.Show("This file doesn’t have car specified. Please, re-save it to fix that.");
+                        return;
+                    }
+                }
+
+                SelectedObject.SetupItems.Add(setup);
             }
         }
 
@@ -482,9 +511,7 @@ namespace AcManager.Pages.ServerPreset {
             SetModel();
             InitializeComponent();
 
-            this.OnActualUnload(() => {
-                _object?.UnsubscribeWeak(OnServerPropertyChanged);
-            });
+            this.OnActualUnload(() => { _object?.UnsubscribeWeak(OnServerPropertyChanged); });
         }
 
         public bool ImmediateChange(Uri uri) {
@@ -520,9 +547,17 @@ namespace AcManager.Pages.ServerPreset {
                 new InputBinding(_model.PackOptionsCommand, new KeyGesture(Key.P, ModifierKeys.Control | ModifierKeys.Shift))
             });
 
-            foreach (var binding in Enumerable.Range(0, 8).Select(i => new InputBinding(new DelegateCommand(() => {
-                Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink).ElementAtOrDefault(i)?.Source ?? Tab.SelectedSource;
-            }), new KeyGesture(Key.F1 + i, ModifierKeys.Alt | ModifierKeys.Control)))) {
+            foreach (
+                    var binding in
+                            Enumerable.Range(0, 8).Select(
+                                    i =>
+                                            new InputBinding(
+                                                    new DelegateCommand(
+                                                            () => {
+                                                                Tab.SelectedSource = Tab.Links.ApartFrom(RunningLogLink).ElementAtOrDefault(i)?.Source
+                                                                        ?? Tab.SelectedSource;
+                                                            }),
+                                                    new KeyGesture(Key.F1 + i, ModifierKeys.Alt | ModifierKeys.Control)))) {
                 InputBindings.Add(binding);
             }
         }

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -181,18 +182,10 @@ namespace AcManager.Tools.Objects {
                         Path.Combine(serverDirectory, mode == ServerPresetPackMode.Windows ? @"acServer.exe" : @"acServer")));
             }
 
-            // Welcome message
-            if (!string.IsNullOrEmpty(WelcomeMessage)) {
-                result.Add(PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage));
-            }
-
             // Main config file
             var serverCfg = IniObject?.Clone() ?? new IniFile(IniFileMode.ValuesWithSemicolons);
+            var dataSection = serverCfg["DATA"];
             SaveData(serverCfg);
-
-            if (!string.IsNullOrEmpty(WelcomeMessage)) {
-                serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
-            }
 
             if (ProvideDetails) {
                 if (DetailsMode == ServerPresetDetailsMode.ViaWrapper) {
@@ -200,6 +193,26 @@ namespace AcManager.Tools.Objects {
                 } else {
                     await EnsureDetailsNameIsActualAsync(serverCfg);
                 }
+            }
+
+            // Welcome message
+            if (!string.IsNullOrEmpty(WelcomeMessage)) {
+                result.Add(PackedEntry.FromContent("cfg/welcome.txt", WelcomeMessage));
+                serverCfg["SERVER"].Set("WELCOME_MESSAGE", "cfg/welcome.txt");
+                dataSection.Set("WELCOME_PATH", "cfg/welcome.txt");
+            }
+
+            // Setups
+            var setupIndex = 0;
+            foreach (var key in dataSection.Keys.Where(x => x.StartsWith(@"FIXED_SETUP_")).ToList()) {
+                dataSection.Remove(key);
+            }
+            foreach (var item in SetupItems) {
+                if (!File.Exists(item.Filename)) continue;
+                var name = $@"cfg/setup_{setupIndex}_{item.CarId}.ini";
+                result.Add(PackedEntry.FromFile(name, item.Filename));
+                dataSection[@"FIXED_SETUP_" + setupIndex] = $@"{(item.IsDefault ? @"1" : @"0")}|{name}";
+                setupIndex++;
             }
 
             result.Add(PackedEntry.FromContent("cfg/server_cfg.ini", serverCfg.Stringify()));

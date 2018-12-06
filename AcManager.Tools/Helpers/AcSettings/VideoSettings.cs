@@ -355,11 +355,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private bool _verticalSyncronization;
+        private bool _verticalSynchronization;
 
-        public bool VerticalSyncronization {
-            get => _verticalSyncronization;
-            set => Apply(value, ref _verticalSyncronization);
+        public bool VerticalSynchronization {
+            get => _verticalSynchronization;
+            set => Apply(value, ref _verticalSynchronization);
         }
 
         private bool _framerateLimitEnabled;
@@ -686,7 +686,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 Resolution = resolution;
             }
 
-            VerticalSyncronization = section.GetBool("VSYNC", false);
+            VerticalSynchronization = section.GetBool("VSYNC", false);
             AntiAliasingLevel = section.GetEntry("AASAMPLES", AntiAliasingLevels);
             AnisotropicLevel = section.GetEntry("ANISOTROPIC", AnisotropicLevels, "8");
             ShadowMapSize = section.ContainsKey(@"__CM_ORIGINAL_SHADOW_MAP_SIZE")
@@ -742,7 +742,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
 
             section.Set("FULLSCREEN", Fullscreen);
-            section.Set("VSYNC", VerticalSyncronization);
+            section.Set("VSYNC", VerticalSynchronization);
             section.Set("AASAMPLES", AntiAliasingLevel);
             section.Set("ANISOTROPIC", AnisotropicLevel);
             section.Set("SHADOW_MAP_SIZE", ShadowMapSize);

@@ -14,135 +14,142 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <StackPanel>
-    <Grid Margin="0 0 0 20">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition />
-      </Grid.ColumnDefinitions>
+  <ScrollViewer>
+    <StackPanel>
+      <Grid Margin="0 0 0 20">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-      <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray">
-        <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
-            VerticalContentAlignment="Stretch">
-          <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
-            <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
-            <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
-            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding Name}" Foreground="{DynamicResource DarkStripeText}" />
-          </Grid>
-        </Button>
-      </StackPanel>
+        <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray">
+          <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
+              VerticalContentAlignment="Stretch">
+            <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
+              <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
+              <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
+              <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                  Text="{Binding Name}" Foreground="{DynamicResource DarkStripeText}" />
+            </Grid>
+          </Button>
+        </StackPanel>
 
-      <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
-        <Button Padding="0" Width="160" Height="120" IsHitTestVisible="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
-          <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
-            <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
-            <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
-                Text="{Binding Cars[0].DisplayName}" Foreground="{DynamicResource DarkStripeText}" />
-          </Grid>
-        </Button>
-      </StackPanel>
+        <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray">
+          <Button Padding="0" Width="160" Height="120" IsHitTestVisible="False" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
+              <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
+              <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
+                  Text="{Binding Cars[0].DisplayName}" Foreground="{DynamicResource DarkStripeText}" />
+            </Grid>
+          </Button>
+        </StackPanel>
 
-      <ItemsControl Grid.Column="2" ItemsSource="{Binding Cars}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
-                IsVirtualizing="True" />
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <DockPanel Margin="0 0 0 4">
-              <mui:BetterImage Filename="{Binding BrandBadge}" Width="16" Height="16" DockPanel.Dock="Left" Margin="0 0 8 0" ClearOnChange="True" />
-              <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" />
-            </DockPanel>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </Grid>
+        <ItemsControl Grid.Column="2" ItemsSource="{Binding Cars}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <VirtualizingStackPanel IsItemsHost="True" CacheLength="1,1" CacheLengthUnit="Page" ScrollUnit="Pixel" VirtualizationMode="Recycling"
+                  IsVirtualizing="True" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <DockPanel Margin="0 0 0 4">
+                <mui:BetterImage Filename="{Binding BrandBadge}" Width="16" Height="16" DockPanel.Dock="Left" Margin="0 0 8 0" ClearOnChange="True" />
+                <TextBlock Text="{Binding DisplayName}" VerticalAlignment="Center" />
+              </DockPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </Grid>
 
-    <Grid>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
-        <ColumnDefinition Width="1*" MinWidth="240" />
-      </Grid.ColumnDefinitions>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="2*" />
+          <ColumnDefinition Width="1*" MinWidth="240" />
+        </Grid.ColumnDefinitions>
 
-      <StackPanel Style="{StaticResource SettingsCompactPanel}">
-        <DockPanel ToolTip="Number of allowed clients">
-          <mui:ValueLabel Value="{Binding SelectedObject.Capacity}" Content="Capacity" />
-          <Slider Minimum="2" Maximum="{Binding MaximumCapacity}" Value="{Binding SelectedObject.Capacity}" TickPlacement="BottomRight"
-              TickFrequency="{Binding MaximumCapacity, Converter={x:Static local:SelectedPage.ProgressCapacityConverter}}" />
-        </DockPanel>
-        <TextBlock Style="{StaticResource Small}" Margin="0 0 0 4"
-            Text="{Binding MaximumCapacity, Converter={StaticResource PluralizingConverter}, ConverterParameter={StaticResource MaximumCapacityMessage}}" />
-        <TextBlock Style="{StaticResource Small}" Margin="0 0 0 8">
-          <TextBlock.Text>
-            <MultiBinding Converter="{x:Static local:SelectedPage.ClientsToBandwidthConverter}"
-                StringFormat="{}Approximate upload bandwidth required: {0:F2} Mbit/s">
-              <Binding Path="SelectedObject.SendIntervalHz" />
-              <Binding Path="SelectedObject.Capacity" />
-            </MultiBinding>
-          </TextBlock.Text>
-        </TextBlock>
-        <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
-          <Label Content="Password:" />
-          <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-        </DockPanel>
-        <DockPanel>
-          <DockPanel.ToolTip>
-            <mui:BbCodeBlock>Use it while joining the server or enter it later with “/admin [i]password[/i]”; use “/help” to see the list of commands</mui:BbCodeBlock>
-          </DockPanel.ToolTip>
-          <Label Content="Admin password:" />
-          <mui:BetterTextBox Text="{Binding SelectedObject.AdminPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
-        </DockPanel>
-        <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
-            ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
-          <Label Content="Make server public (show on lobby)" />
-        </CheckBox>
-        <DockPanel Margin="0 20 0 8">
-          <Label Content="Welcome msg file:" />
-          <DockPanel Visibility="{Binding SelectedObject.WelcomeMessageMissing, Converter={StaticResource BooleanToVisibilityConverter}}"
-              DockPanel.Dock="Bottom" Margin="0 0 0 0">
-            <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
-                Margin="0 0 8 0" VerticalAlignment="Center" />
-            <TextBlock Text="File is missing." VerticalAlignment="Center" TextWrapping="Wrap" />
+        <StackPanel Style="{StaticResource SettingsCompactPanel}">
+          <DockPanel ToolTip="Number of allowed clients">
+            <mui:ValueLabel Value="{Binding SelectedObject.Capacity}" Content="Capacity" />
+            <Slider Minimum="2" Maximum="{Binding MaximumCapacity}" Value="{Binding SelectedObject.Capacity}" TickPlacement="BottomRight"
+                TickFrequency="{Binding MaximumCapacity, Converter={x:Static local:SelectedPage.ProgressCapacityConverter}}" />
           </DockPanel>
-          <Button Content="Change" Command="{Binding ChangeWelcomeMessagePathCommand}" />
-          <mui:PathTrimmingTextBlock Placeholder="{x:Static t:ToolsStrings.Common_None}" Text="{Binding SelectedObject.WelcomeMessagePath}" Margin="0 2 0 0" />
-        </DockPanel>
-        <DockPanel Margin="0 0 0 8">
-          <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
-              Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
-          <Label Content="Welcome message:" HorizontalAlignment="Left" />
-        </DockPanel>
-      </StackPanel>
+          <TextBlock Style="{StaticResource Small}" Margin="0 0 0 4"
+              Text="{Binding MaximumCapacity, Converter={StaticResource PluralizingConverter}, ConverterParameter={StaticResource MaximumCapacityMessage}}" />
+          <TextBlock Style="{StaticResource Small}" Margin="0 0 0 8">
+            <TextBlock.Text>
+              <MultiBinding Converter="{x:Static local:SelectedPage.ClientsToBandwidthConverter}"
+                  StringFormat="{}Approximate upload bandwidth required: {0:F2} Mbit/s">
+                <Binding Path="SelectedObject.SendIntervalHz" />
+                <Binding Path="SelectedObject.Capacity" />
+              </MultiBinding>
+            </TextBlock.Text>
+          </TextBlock>
+          <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
+            <Label Content="Password:" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+          </DockPanel>
+          <DockPanel>
+            <DockPanel.ToolTip>
+              <mui:BbCodeBlock>Use it while joining the server or enter it later with “/admin [i]password[/i]”; use “/help” to see the list of commands</mui:BbCodeBlock>
+            </DockPanel.ToolTip>
+            <Label Content="Admin password:" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.AdminPassword}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+          </DockPanel>
+          <CheckBox IsChecked="{Binding SelectedObject.ShowOnLobby}"
+              ToolTip="Disable if you want for users to join directly through IP (or using LAN connection)">
+            <Label Content="Make server public (show on lobby)" />
+          </CheckBox>
+          <DockPanel Margin="0 20 0 8">
+            <Label Content="Welcome msg file:" />
+            <DockPanel Visibility="{Binding SelectedObject.WelcomeMessageMissing, Converter={StaticResource BooleanToVisibilityConverter}}"
+                DockPanel.Dock="Bottom" Margin="0 0 0 0">
+              <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
+                  Margin="0 0 8 0" VerticalAlignment="Center" />
+              <TextBlock Text="File is missing." VerticalAlignment="Center" TextWrapping="Wrap" />
+            </DockPanel>
+            <Button Content="Change" Command="{Binding ChangeWelcomeMessagePathCommand}" />
+            <mui:PathTrimmingTextBlock Placeholder="{x:Static t:ToolsStrings.Common_None}" Text="{Binding SelectedObject.WelcomeMessagePath}" Margin="0 2 0 0" />
+          </DockPanel>
+          <DockPanel Margin="0 0 0 8">
+            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
+                Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
+            <Label Content="Welcome message:" HorizontalAlignment="Left" />
+          </DockPanel>
+        </StackPanel>
 
-      <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
-        <DockPanel ToolTip="Remember to open this port on your firewall">
-          <Label Content="UDP port:" />
-          <mui:BetterTextBox Text="{Binding SelectedObject.UdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-              Maximum="65535" />
-        </DockPanel>
-        <DockPanel ToolTip="Remember to open this port on your firewall">
-          <Label Content="TCP port:" />
-          <mui:BetterTextBox Text="{Binding SelectedObject.TcpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-              Maximum="65535" />
-        </DockPanel>
-        <DockPanel ToolTip="Remember to open this port on your firewall">
-          <Label Content="HTTP port:" />
-          <mui:BetterTextBox Text="{Binding SelectedObject.HttpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
-              Maximum="65535" />
-        </DockPanel>
-        <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">
-          <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz" Content="Packets" />
-          <Slider Minimum="10" Maximum="60" Value="{Binding SelectedObject.SendIntervalHz}" TickFrequency="10" TickPlacement="BottomRight" />
-        </DockPanel>
-        <DockPanel>
-          <mui:ValueLabel Value="{Binding SelectedObject.Threads}" Content="Threads" />
-          <Slider Minimum="2" Maximum="8" Value="{Binding SelectedObject.Threads}" TickFrequency="2" TickPlacement="BottomRight" />
-        </DockPanel>
-      </StackPanel>
-    </Grid>
-  </StackPanel>
+        <StackPanel Grid.Column="1" Style="{StaticResource SettingsCompactPanel}">
+          <DockPanel ToolTip="Remember to open this port on your firewall">
+            <Label Content="UDP port:" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.UdpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+                Maximum="65535" />
+          </DockPanel>
+          <DockPanel ToolTip="Remember to open this port on your firewall">
+            <Label Content="TCP port:" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.TcpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+                Maximum="65535" />
+          </DockPanel>
+          <DockPanel ToolTip="Remember to open this port on your firewall">
+            <Label Content="HTTP port:" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.HttpPort}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Mode="Integer" Minimum="1"
+                Maximum="65535" />
+          </DockPanel>
+          <DockPanel ToolTip="Higher value provides better multiplayer quality, but requires a more powerful connection">
+            <mui:ValueLabel Value="{Binding SelectedObject.SendIntervalHz}" Postfix=" Hz" Content="Packets" />
+            <Slider Minimum="10" Maximum="60" Value="{Binding SelectedObject.SendIntervalHz}" TickFrequency="10" TickPlacement="BottomRight" />
+          </DockPanel>
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding SelectedObject.Threads}" Content="Threads" />
+            <Slider Minimum="2" Maximum="8" Value="{Binding SelectedObject.Threads}" TickFrequency="2" TickPlacement="BottomRight" />
+          </DockPanel>
+          <DockPanel Margin="0 0 0 8">
+            <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ManagerDescription}" AcceptsReturn="False" TextWrapping="Wrap"
+                Placeholder="None" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+            <Label Content="Manager description:" HorizontalAlignment="Left" Width="200" />
+          </DockPanel>
+        </StackPanel>
+      </Grid>
+    </StackPanel>
+  </ScrollViewer>
 </UserControl>

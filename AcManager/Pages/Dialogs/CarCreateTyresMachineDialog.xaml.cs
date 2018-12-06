@@ -27,6 +27,7 @@ using AcManager.Tools;
 using AcManager.Tools.Data;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.Tyres;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;

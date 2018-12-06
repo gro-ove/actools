@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Permissions;
-using System.Threading;
 using System.Windows.Forms;
 using AcTools;
 using AcTools.AcdEncryption;

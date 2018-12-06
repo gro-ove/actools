@@ -242,8 +242,11 @@
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
-            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
-                FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" />
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2" TextTrimming="CharacterEllipsis"
+                HorizontalAlignment="Stretch" x:Name="PART_DisplayNameText" ToolTip="{Binding DisplayName}" DockPanel.Dock="Top" />
+            <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding ManagerDescription}" Mode="WithoutBbCodes" Margin="10 2 4 2"
+                FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" FontWeight="Normal"
+                ToolTip="{Binding ManagerDescription}" />
           </DockPanel>
           <DataTemplate.Triggers>
             <DataTrigger Binding="{Binding Enabled}" Value="False">

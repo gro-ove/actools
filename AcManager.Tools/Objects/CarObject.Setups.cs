@@ -33,8 +33,9 @@ namespace AcManager.Tools.Objects {
             CommandManager.InvalidateRequerySuggested();
         }
 
-        private bool _acdDataRead;
+        private bool _acdDataRead ;
         private DataWrapper _acdData;
+        private readonly object _acdDataSync = new object();
 
         /// <summary>
         /// Null only if data is damaged so much it’s unreadable.
@@ -42,15 +43,17 @@ namespace AcManager.Tools.Objects {
         [CanBeNull]
         public DataWrapper AcdData {
             get {
-                try {
-                    if (_acdDataRead) return _acdData;
-                    _acdDataRead = true;
-
-                    _acdData = DataWrapper.FromCarDirectory(Location);
-                    return _acdData;
-                } catch (Exception e) {
-                    NonfatalError.NotifyBackground("Can’t read data", e);
-                    return null;
+                if (_acdDataRead) return _acdData;
+                lock (_acdDataSync) {
+                    try {
+                        _acdData = DataWrapper.FromCarDirectory(Location);
+                        _acdDataRead = true;
+                        return _acdData;
+                    } catch (Exception e) {
+                        NonfatalError.NotifyBackground("Can’t read data", e);
+                        _acdDataRead = true;
+                        return null;
+                    }
                 }
             }
         }

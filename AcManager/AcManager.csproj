@@ -823,14 +823,9 @@
     </Compile>
     <Compile Include="Tools\AcErrors\SolutionsFactory.cs" />
     <Compile Include="Tools\TrackPreviewsCreator.cs" />
-    <Compile Include="Tools\Tyres\TyresAppropriateLevel.cs" />
-    <Compile Include="Tools\Tyres\TyresEntry.cs" />
-    <Compile Include="Tools\Tyres\TyresEntryTester.cs" />
     <Compile Include="Tools\Tyres\TyresExtension.cs" />
     <Compile Include="Tools\Tyres\TyresMachineExtras.cs" />
     <Compile Include="Tools\Tyres\TyresMachineInfo.cs" />
-    <Compile Include="Tools\Tyres\TyresPlace.cs" />
-    <Compile Include="Tools\Tyres\TyresSet.cs" />
     <Compile Include="Tools\UriProvider.cs" />
     <Compile Include="Tools\ArgumentsHandler.cs" />
     <Compile Include="Tools\WebDownloadListener.cs" />

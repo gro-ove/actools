@@ -18,7 +18,7 @@ using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using StringBasedFilter;
 
-namespace AcManager.Tools.Tyres {
+namespace AcManager.Tools.Helpers.Tyres {
     public sealed class TyresEntry : Displayable, IDraggable {
         public static bool OptionRoundNicely = true;
 

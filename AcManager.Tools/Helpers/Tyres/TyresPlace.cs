@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace AcManager.Tools.Tyres {
+namespace AcManager.Tools.Helpers.Tyres {
     public class TyresPlace : Border {
         static TyresPlace() {
             DefaultStyleKeyProperty.OverrideMetadata(typeof(TyresPlace), new FrameworkPropertyMetadata(typeof(TyresPlace)));

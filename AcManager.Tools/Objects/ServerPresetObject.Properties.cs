@@ -18,6 +18,36 @@ namespace AcManager.Tools.Objects {
         #region Data
 
         #region Common fields
+        private string _managerDescription;
+
+        public string ManagerDescription {
+            get => _managerDescription;
+            set {
+                if (string.IsNullOrWhiteSpace(value)) value = null;
+                if (Equals(value, _trackId)) return;
+                _managerDescription = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private string _webLink;
+
+        public string WebLink {
+            get => _webLink;
+            set {
+                if (string.IsNullOrWhiteSpace(value)) value = null;
+                if (Equals(value, _trackId)) return;
+                _webLink = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
         private string _trackId;
 
         public string TrackId {
@@ -34,7 +64,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private string[] _carIds;
+        private string[] _carIds = new string[0];
 
         [NotNull]
         public string[] CarIds {
@@ -48,6 +78,9 @@ namespace AcManager.Tools.Objects {
                     Changed = true;
                     // TODO: missing car ids error
                 }
+
+                UpdateTyresList();
+                RefreshSetupCarsValidity();
             }
         }
 

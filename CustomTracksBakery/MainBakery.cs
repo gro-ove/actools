@@ -811,12 +811,12 @@ namespace CustomTracksBakery {
                     $"Smoothing: {_stopwatchSmoothing.Elapsed.TotalSeconds:F3} s (max. merged at once: {_mergedMaximum}, avg.: {(float)_mergedCount / _mergedVertices:F1})");
 
             if (SyncNormalsFilter != null && _nodesToBake.Any(x => !x.IsGrass && x.IsToSyncNormals)) {
-                Trace.WriteLine("Normals syncronization…");
+                Trace.WriteLine("Normals synchronization…");
                 SyncNormalsGpu();
             }
 
             if (SpecialGrassAmbient && _nodesToBake.Any(x => x.IsGrass)) {
-                Trace.WriteLine("Grass syncronization…");
+                Trace.WriteLine("Grass synchronization…");
                 InitializeNodes();
                 SyncGrassGpu();
             }

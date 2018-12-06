@@ -117,7 +117,7 @@
             <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding Video.VerticalSyncronization}">
+          <CheckBox IsChecked="{Binding Video.VerticalSynchronization}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_VerticalSyncronization}" />
           </CheckBox>
 
@@ -160,9 +160,8 @@
 
           <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
               set:Search.Keywords="drive events;video;graphics;shadows"
-              ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section.">
-            <Label
-                Content="If shadows are disabled, patch AC to fully disable them (global; not recommended if you’re using Custom Shaders Patch, it can take care of it as well)" />
+              ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section. Not recommended if you’re using Custom Shaders Patch, it can take care of it as well">
+            <Label Content="If shadows are disabled, patch AC to fully disable them (global)" />
           </CheckBox>
 
           <DockPanel>

@@ -69,8 +69,13 @@ namespace AcManager.Tools.Helpers {
 
         [NotNull]
         public static IEnumerable<string> GetInputFiles(this DragEventArgs e) {
-            return e.Data.GetData(DataFormats.FileDrop) as string[] ??
-                    (e.Data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
+            return e.Data.GetInputFiles();
+        }
+
+        [NotNull]
+        public static IEnumerable<string> GetInputFiles(this IDataObject data) {
+            return data.GetData(DataFormats.FileDrop) as string[] ??
+                    (data.GetData(DataFormats.UnicodeText) as string)?.Split('\n')
                                                                         .Select(x => x.Trim())
                                                                         .Select(x => x.Length > 1 && x.StartsWith(@"""") && x.EndsWith(@"""")
                                                                                 ? x.Substring(1, x.Length - 2) : x) ?? new string[0];

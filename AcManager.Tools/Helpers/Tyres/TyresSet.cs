@@ -4,7 +4,7 @@ using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 
-namespace AcManager.Tools.Tyres {
+namespace AcManager.Tools.Helpers.Tyres {
     public sealed class TyresSet : Displayable, IDraggable {
         private int _index;
 

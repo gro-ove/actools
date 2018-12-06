@@ -1,7 +1,7 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="Comparator.cs" company="Microsoft">
 //   Copyright (c) 2022 Microsoft Corporation
-//   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance 
+//   Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance
 //   with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0. Unless
 //   required by applicable law or agreed to in writing, software distributed under the License is distributed on
 //   an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.See the License for
@@ -9,12 +9,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
     /// <summary>
     /// Options to control the behavior of a database (passed to Open)
-    /// 
+    ///
     /// the setter methods for InfoLogger, Env, and Cache only "safe to clean up guarantee". Do not
     /// use Option object if throws.
     /// </summary>
@@ -127,7 +125,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
 
         /// <summary>
         /// Number of keys between restart points for delta encoding of keys.
-        /// This parameter can be changed dynamically.  
+        /// This parameter can be changed dynamically.
         /// Most clients should leave this parameter alone.
         ///
         /// Default: 16
@@ -137,7 +135,7 @@ namespace AcTools.LapTimes.LevelDb.LevelDbUtils {
         }
 
         /// <summary>
-        /// Compress blocks using the specified compression algorithm.  
+        /// Compress blocks using the specified compression algorithm.
         /// This parameter can be changed dynamically.
         ///
         /// Default: kSnappyCompression, which gives lightweight but fast compression.

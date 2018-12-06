@@ -65,18 +65,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             public void Set(IntPtr window, bool enabled) {
-                if (!NativeMethods.DwmIsCompositionEnabled()) return;
+                try {
+                    if (!NativeMethods.DwmIsCompositionEnabled()) return;
 
-                if (enabled) {
-                    HwndSource.FromHwnd(window)?.AddHook(WndProc);
-                } else {
-                    HwndSource.FromHwnd(window)?.RemoveHook(WndProc);
+                    if (enabled) {
+                        HwndSource.FromHwnd(window)?.AddHook(WndProc);
+                    } else {
+                        HwndSource.FromHwnd(window)?.RemoveHook(WndProc);
+                    }
+
+                    var margins = new NativeMethods.Margins { Left = -1, Right = -1, Bottom = -1, Top = -1 };
+                    var blurBehind = new NativeMethods.DwmBlurBehind { Enable = enabled, Flags = NativeMethods.DwmFlags.BlurBackground };
+                    NativeMethods.DwmExtendFrameIntoClientArea(window, ref margins);
+                    NativeMethods.DwmEnableBlurBehindWindow(window, ref blurBehind);
+                } catch (COMException e) {
+                    Helpers.Logging.Error(e);
                 }
-
-                var margins = new NativeMethods.Margins { Left = -1, Right = -1, Bottom = -1, Top = -1 };
-                var blurBehind = new NativeMethods.DwmBlurBehind { Enable = enabled, Flags = NativeMethods.DwmFlags.BlurBackground };
-                NativeMethods.DwmExtendFrameIntoClientArea(window, ref margins);
-                NativeMethods.DwmEnableBlurBehindWindow(window, ref blurBehind);
             }
         }
 

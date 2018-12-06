@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace AcManager.Tools.Tyres {
+namespace AcManager.Tools.Helpers.Tyres {
     public enum TyresAppropriateLevel {
         [Description("Full match")]
         A = 0,
