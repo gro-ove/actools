@@ -1189,7 +1189,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                         try {
                             _skip = true;
                             foreach (var entry in Entries.OfType<IDirectInputEntry>().Where(x => x.Id == HandbrakeId
-                                    && x.Device?.Same(senderEntry.Device) != true)) {
+                                    && x.Device?.Same(senderEntry.Device) != true
+                                    && !(x is ControllerButtonEntry))) {
                                 entry.Clear();
                             }
                         } finally {

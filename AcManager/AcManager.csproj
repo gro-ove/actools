@@ -53,7 +53,7 @@
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>1C50C8B86DDF7F1AC6E4F6C16886EF163542FF71</ManifestCertificateThumbprint>
