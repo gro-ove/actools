@@ -201,6 +201,9 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="TimeZoneConverter, Version=2.4.1.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\TimeZoneConverter.2.4.1\lib\net45\TimeZoneConverter.dll</HintPath>
+    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -684,6 +687,12 @@
     </Compile>
     <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
       <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml.cs">
+      <DependentUpon>ShadersInstalledDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
+      <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
@@ -1538,6 +1547,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersMainPage.xaml" />
     <Page Include="Pages\Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

@@ -55,7 +55,7 @@ namespace AcManager.PaintShop {
             DecalsWithCandidates = decals?.NonNull().Select(x => new CarPaintPatternDecals(x.Item1, x.Item2)).ToList() ?? new List<CarPaintPatternDecals>(0);
             Decals = DecalsWithCandidates.Select(x => x.Decal).ToList();
 
-            Logging.Debug($"{name}: {Colors.Colors.Length} colors, {Numbers.Count} numbers, {Flags.Count} flags, {Labels.Count} labels, {Decals.Count} decals");
+            Logging.Debug($"{name}: {Colors.Colors.Length} colors, {Numbers.Count} numbers, {Flags.Count} flags, {Labels.Count} labels, {Decals.Count} decals, size: {Size}");
 
             colors.PropertyChanged += OnColorsChanged;
 

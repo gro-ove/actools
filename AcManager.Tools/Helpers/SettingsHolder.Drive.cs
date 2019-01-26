@@ -64,12 +64,12 @@ namespace AcManager.Tools.Helpers {
 
             public static readonly StarterType OfficialStarterType = new StarterType(
                     "Official",
-                    string.Format(ToolsStrings.Common_Recommended, ToolsStrings.Settings_Starter_Official),
+                    ToolsStrings.Settings_Starter_Official,
                     ToolsStrings.Settings_Starter_Official_Description);
 
             public static readonly StarterType AppIdStarterType = new StarterType(
                     "AppID",
-                    "AppID",
+                    string.Format(ToolsStrings.Common_Recommended, "AppID"),
                     "Adds “steam_appid.txt” with AC’s Steam ID to AC root folder thus allowing to run “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
 
             public static readonly StarterType SidePassageStarterType = new StarterType(
@@ -164,8 +164,8 @@ namespace AcManager.Tools.Helpers {
 
             public StarterType[] StarterTypes => _starterTypes
                     ?? (_starterTypes = new[] {
-                        OfficialStarterType,
                         AppIdStarterType,
+                        OfficialStarterType,
                         SidePassageStarterType,
                         SteamStarterType,
                         TrickyStarterType,

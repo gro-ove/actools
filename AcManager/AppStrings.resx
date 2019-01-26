@@ -2249,7 +2249,7 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Can’t check key</value>
   </data>
   <data name="AppKey_InvalidKey" xml:space="preserve">
-    <value>Key is invalid</value>
+    <value>Key is invalid or not complete</value>
   </data>
   <data name="BrandBadge_Title" xml:space="preserve">
     <value>Brand badge</value>

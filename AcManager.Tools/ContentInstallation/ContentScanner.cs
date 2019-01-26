@@ -49,10 +49,10 @@ namespace AcManager.Tools.ContentInstallation {
             public string Key { get; }
 
             [CanBeNull]
-            public string Name { get; }
+            public string Name { get; private set; }
 
             [Localizable(false), CanBeNull]
-            public string NameLowerCase { get; }
+            public string NameLowerCase { get; private set; }
 
             public long Size { get; protected set; }
 
@@ -69,6 +69,11 @@ namespace AcManager.Tools.ContentInstallation {
 
                 NameLowerCase = Name?.ToLowerInvariant();
                 Parent = parent;
+            }
+
+            public void ForceName([CanBeNull] string name) {
+                Name = name;
+                NameLowerCase = Name?.ToLowerInvariant();
             }
 
             public string Id => NameLowerCase;
@@ -646,6 +651,37 @@ namespace AcManager.Tools.ContentInstallation {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"people");
             }
 
+            if (directory.HasSubFile("dwrite.dll") && directory.HasSubDirectory("extension")) {
+                var dwrite = directory.GetSubFile("dwrite.dll");
+                var extension = directory.GetSubDirectory("extension");
+                var description = directory.GetSubFile("description.jsgme");
+                string version;
+                if (description != null) {
+                    var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
+                    version = Regex.Match(data.ToUtf8String(), @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null);
+                } else {
+                    var parent = directory;
+                    while (parent.Parent?.Name != null) parent = parent.Parent;
+                    version = parent.Name != null ? Regex.Match(parent.Name, @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null) : null;
+                }
+
+                return new ShadersPatchEntry(directory.Key ?? "", new[]{ dwrite.Key, extension.Key }, version);
+            }
+
+            if (directory.NameLowerCase == "__gbwsuite") {
+                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, "GBW scripts", "__gbwSuite");
+            }
+
+            if (directory.HasSubFile("weather.lua") && directory.Parent.NameLowerCase == "weather") {
+                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, $"Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
+                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather", directory.Name), 1e5);
+            }
+
+            if (directory.HasSubFile("controller.lua") && directory.Parent.NameLowerCase == "weather-controllers") {
+                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, $"Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
+                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather-controllers", directory.Name), 1e5);
+            }
+
             // Mod
             if (directory.Parent?.NameLowerCase == "mods"
                     && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile("dwrite.dll"))) {
@@ -787,7 +823,7 @@ namespace AcManager.Tools.ContentInstallation {
 
         private class MissingContentException : Exception { }
 
-        public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId,
+        public async Task<Scanned> GetEntriesAsync([NotNull] List<IFileInfo> list, string baseId, string baseName,
                 [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Scanning…"));
 
@@ -797,6 +833,8 @@ namespace AcManager.Tools.ContentInstallation {
 
             var s = Stopwatch.StartNew();
             var root = new DirectoryNode(_installationParams.FallbackId ?? baseId, null);
+            root.ForceName(baseName);
+
             foreach (var info in list) {
                 root.Add(info);
             }

@@ -205,6 +205,7 @@ namespace AcManager.Tools.GameProperties {
                         PatchedStorage.Remove(key);
                     } catch (PatchException e) {
                         NonfatalError.NotifyBackground("Can’t revert AC to its original state", e.Message.ToSentence());
+                        PatchedStorage.Remove(key);
                     } catch (Exception e) {
                         NonfatalError.NotifyBackground("Can’t revert AC to its original state", e);
                     }

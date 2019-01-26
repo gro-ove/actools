@@ -36,7 +36,14 @@ namespace CustomTracksBakery {
                 HelpText = "Nodes to sync normals with surface below of.")]
         public string SyncNormals { get; set; }
 
-        [Option('u', "surfaces", DefaultValue = "`^[0-9](?!WALL)[A-Z]`", Required = false,
+        [Option("sync-normals-partially", DefaultValue = null, Required = false,
+                HelpText = "Nodes to sync normals with surface below of, partially.")]
+        public string SyncNormalsPartially { get; set; }
+
+        [Option("sync-normals-partially-value", DefaultValue = 0.7f, Required = false, HelpText = "Nodes to sync normals with surface below of, partially, blending value.")]
+        public float SyncNormalsPartiallyValue { get; set; }
+
+        [Option('u', "surfaces", DefaultValue = null, Required = false,
                 HelpText = "Surface meshes.")]
         public string Surfaces { get; set; }
 
@@ -117,6 +124,9 @@ namespace CustomTracksBakery {
 
         [Option("sample-resolution", DefaultValue = 16, Required = false, HelpText = "Sample resolution.")]
         public int SampleResolution { get; set; }
+
+        [Option("ground", DefaultValue = true, HelpText = "Add shadows from the ground below.")]
+        public bool Ground { get; set; }
 
         [Option("hdr", DefaultValue = false, HelpText = "Make HDR samples.")]
         public bool HdrSamples { get; set; }
@@ -346,7 +356,10 @@ namespace CustomTracksBakery {
                     SampleResolution = options.SampleResolution,
                     ExtraPassBrightnessGain = options.ExtraPassBrightnessGain,
                     HdrSamples = options.HdrSamples,
+                    Ground = options.Ground,
                     SyncNormalsFilter = options.SyncNormals,
+                    SyncNormalsPartiallyFilter = options.SyncNormalsPartially,
+                    SyncNormalsPartiallyValue = options.SyncNormalsPartiallyValue,
                     ExtraPass = options.ExtraPass,
                     TreeFilter = options.TreeFilter,
                     GrassFilter = options.GrassFilter,

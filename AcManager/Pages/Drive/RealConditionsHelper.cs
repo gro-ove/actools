@@ -6,6 +6,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using TimeZoneConverter;
 
 namespace AcManager.Pages.Drive {
     public static class RealConditionsHelper {
@@ -44,7 +45,10 @@ namespace AcManager.Pages.Drive {
                 if (trackGeoTags == null || !considerTimezones) {
                     dateTimeCallback.Invoke(now);
                 } else {
-                    var timeZone = await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
+                    var data = DataProvider.Instance.TrackParams[track.MainTrackObject.Id];
+                    var timeZone = data.ContainsKey(@"TIMEZONE")
+                            ? TZConvert.GetTimeZoneInfo(data.GetNonEmpty("TIMEZONE"))
+                            : await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
                     if (cancellation.IsCancellationRequested) return;
 
                     var offsetInSeconds = (int)(timeZone == null ? 0 : timeZone.BaseUtcOffset.TotalSeconds - TimeZoneInfo.Local.BaseUtcOffset.TotalSeconds);

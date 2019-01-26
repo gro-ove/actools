@@ -208,7 +208,7 @@ namespace AcTools.DataFile {
         }
 
         [Pure]
-        public long GetLong([NotNull, LocalizationRequired(false)] string key, int defaultValue) {
+        public long GetLong([NotNull, LocalizationRequired(false)] string key, long defaultValue) {
             return FlexibleParser.TryParseLong(GetPossiblyEmpty(key)) ?? defaultValue;
         }
 

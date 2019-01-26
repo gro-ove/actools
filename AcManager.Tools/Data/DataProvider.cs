@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using AcManager.Tools.Helpers;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -101,7 +102,7 @@ namespace AcManager.Tools.Data {
                 }
             };
         }
-                #endregion
+        #endregion
 
         #region Kunos content
         /*[NotNull]
@@ -233,6 +234,14 @@ namespace AcManager.Tools.Data {
 
         [NotNull]
         public IReadOnlyDictionary<string, int> ShowroomYears => _showroomYears.RequireValue;
+        #endregion
+
+        #region Track params
+        private IniFile _trackParams;
+
+        [NotNull]
+        public IniFile TrackParams => _trackParams ?? (_trackParams =
+                IniFile.Parse(FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Track Params.ini") ?? string.Empty));
         #endregion
     }
 }

@@ -17,8 +17,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private static readonly Dictionary<string, FileSystemWatcher> Watchers = new Dictionary<string, FileSystemWatcher>();
 
         private static FileSystemWatcher GetWatcher(string directory) {
-            FileSystemWatcher result;
-            if (Watchers.TryGetValue(directory, out result)) return result;
+            if (Watchers.TryGetValue(directory, out var result)) return result;
 
             Directory.CreateDirectory(directory);
             result = new FileSystemWatcher {

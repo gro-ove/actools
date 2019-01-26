@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;
@@ -44,13 +45,17 @@ namespace AcManager.Tools.Helpers {
         }
 
         [ItemCanBeNull]
-        public static Task<GeoTagsEntry> TryToLocateAsync([CanBeNull] string country, [CanBeNull] string city) {
+        private static Task<GeoTagsEntry> TryToLocateAsync([CanBeNull] string country, [CanBeNull] string city) {
             return TryToLocateAsync(string.IsNullOrWhiteSpace(country) ? city :
                     string.IsNullOrWhiteSpace(city) ? country : $"{city.Trim()},{country.Trim()}");
         }
 
         [ItemCanBeNull]
         public static Task<GeoTagsEntry> TryToLocateAsync([NotNull] TrackObjectBase track) {
+            var data = DataProvider.Instance.TrackParams[track.MainTrackObject.Id];
+            if (data.ContainsKey(@"LATITUDE") && data.ContainsKey(@"LONGITUDE")) {
+                return Task.FromResult(new GeoTagsEntry(data.GetDouble("LATITUDE", 0d), data.GetDouble("LONGITUDE", 0d)));
+            }
             return track.Country != null ? TryToLocateAsync(track.Country, track.City) : Task.FromResult<GeoTagsEntry>(null);
         }
     }

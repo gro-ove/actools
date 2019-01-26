@@ -148,6 +148,16 @@ namespace AcManager.Controls {
             return o.Id.Contains(@"a4s");
         }
 
+        private static bool IsAbnWeather(WeatherObject o) {
+            return o.Id.StartsWith(@"abn_")
+                    || o.Id.Contains(@" (Set Time at ")
+                    || o.Id.Contains(@" (Time Range ");
+        }
+
+        private static bool IsSolWeather(WeatherObject o) {
+            return o.Id.StartsWith(@"sol_");
+        }
+
         private static bool IsModWeather(WeatherObject o) {
             return !IsKunosWeather(o) && !IsGbwWeather(o);
         }
@@ -188,6 +198,13 @@ namespace AcManager.Controls {
                                        .Select(x => new WeatherTypeWrapped(x)).OrderBy(x => x.DisplayName)));
                 }
 
+                if (WeatherList.Any(IsSolWeather)) {
+                    list.Add(new HierarchicalGroup(@"Sol",
+                            WeatherList.Where(IsSolWeather)) {
+                                HeaderConverter = new GbwConverter()
+                            });
+                }
+
                 if (WeatherList.Any(IsGbwWeather)) {
                     list.Add(new HierarchicalGroup(@"GBW",
                             WeatherList.Where(IsGbwWeather)) {
@@ -198,6 +215,11 @@ namespace AcManager.Controls {
                 if (WeatherList.Any(IsA4SWeather)) {
                     list.Add(new HierarchicalGroup(@"A4S",
                             WeatherList.Where(IsA4SWeather)));
+                }
+
+                if (WeatherList.Any(IsAbnWeather)) {
+                    list.Add(new HierarchicalGroup(@"AssettoByNight",
+                            WeatherList.Where(IsAbnWeather)));
                 }
 
                 if (WeatherList.Any(IsModWeather)) {

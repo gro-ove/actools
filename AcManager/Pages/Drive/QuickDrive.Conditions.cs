@@ -643,7 +643,7 @@ namespace AcManager.Pages.Drive {
                                         TryToSetWeather();
 
                                         if (!RealConditionsManualWind) {
-                                            WindDirection = weather.WindDirection.RoundToInt();
+                                            WindDirection = ((weather.WindDirection + 180) % 360).RoundToInt();
                                             WindSpeedMin = weather.WindSpeed * 3.6;
                                             WindSpeedMax = weather.WindSpeed * 3.6;
                                         }

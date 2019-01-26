@@ -5,12 +5,15 @@ using AcTools.Render.Base.Materials;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Kn5Specific.Textures;
 using CustomTracksBakery.Shaders;
+using JetBrains.Annotations;
 using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace CustomTracksBakery {
     public class Kn5MaterialToBake : IRenderableMaterial {
+        [CanBeNull]
         private readonly Kn5Material _kn5Material;
+
         private EffectBakeryShaders _effect;
         private bool _multilayer;
         private bool _init;
@@ -19,7 +22,7 @@ namespace CustomTracksBakery {
         private float _propMagicMult;
         private Vector4 _propMultilayerMult;
 
-        internal Kn5MaterialToBake(Kn5Material kn5Material) {
+        internal Kn5MaterialToBake([CanBeNull] Kn5Material kn5Material) {
             _kn5Material = kn5Material;
             if (kn5Material == null) return;
 
@@ -75,6 +78,10 @@ namespace CustomTracksBakery {
                 }
             }
 
+            if (_kn5Material == null) {
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = contextHolder.States.ReadOnlyDepthState;
+            }
+
             _effect.FxDiffuseMap.SetResource(_txDiffuseView);
             _effect.FxAlphaRef.Set(_kn5Material?.AlphaTested == true ? 0.5f : -0.5f);
 
@@ -90,6 +97,10 @@ namespace CustomTracksBakery {
                 } else {
                     _effect.FxKsDiffuse.Set(_propDiffuse * (SecondPass ? SecondPassBrightnessGain : 1.0f));
                 }
+            }
+
+            if (_kn5Material == null) {
+                contextHolder.DeviceContext.OutputMerger.DepthStencilState = null;
             }
         }
 

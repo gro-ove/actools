@@ -53,14 +53,15 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HidLibrary, Version=3.2.46.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\hidlibrary.3.2.46.0\lib\HidLibrary.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="JetBrains.Annotations, Version=11.1.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325">
       <HintPath>..\packages\JetBrains.Annotations.11.1.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\Libraries\Newtonsoft.Json\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="HidLibrary, Culture=neutral, PublicKeyToken=null">
-      <HintPath>..\Libraries\HidLibrary\HidLibrary.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -112,6 +113,9 @@
       <Project>{9a653a28-fe46-40e8-a14f-48b0e325165d}</Project>
       <Name>FirstFloor.ModernUI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

@@ -54,6 +54,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        protected override string GetBaseName() {
+            return Path.GetFileNameWithoutExtension(Filename);
+        }
+
         private class SimpleDirectoryInfo : IDirectoryInfo {
             private readonly IEntry _archiveEntry;
 

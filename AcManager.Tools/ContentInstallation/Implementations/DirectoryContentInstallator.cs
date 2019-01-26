@@ -27,6 +27,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        protected override string GetBaseName() {
+            return Path.GetFileName(Directory);
+        }
+
         private class InnerDirectoryInfo : IDirectoryInfo {
             private readonly string _directory, _filename;
 

@@ -209,7 +209,71 @@
       <TextBlock Text="{Binding Index, Converter={StaticResource SumConverter}, ConverterParameter=1, StringFormat='{}#{0}'}" Style="{StaticResource Small}"
           Margin="0 0 0 8" />
 
-      <c:WeatherComboBox SelectedWeather="{Binding Weather}" Margin="0 0 0 8" />
+      <DockPanel Margin="0 0 0 8">
+        <mui:LabeledToggleButton IsChecked="{Binding WeatherFxMode}" LabelChecked="Weather FX" LabelUnchecked="Basic weather" Margin="0 0 4 0"
+            DockPanel.Dock="Left" Height="23" />
+
+        <mui:BooleanSwitch Value="{Binding WeatherFxMode}">
+          <mui:BooleanSwitch.True>
+            <DockPanel Margin="0">
+              <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
+                <c:ModernPopup Padding="16 12 16 16">
+                  <mui:SpacingStackPanel Spacing="8" Width="360">
+
+                    <DockPanel>
+                      <CheckBox IsChecked="{Binding WeatherFxCustomStartTime}" />
+                      <mui:ValueLabel IsEnabled="{Binding WeatherFxCustomStartTime}"
+                          Value="{Binding WeatherFxStartTime, Converter={StaticResource AcTimeDisplayConverter}}" mui:BetterTextBox.Mode="Time"
+                          Content="{x:Static g:AppStrings.Drive_Time}" Width="80" />
+                      <Slider IsEnabled="{Binding WeatherFxCustomStartTime}" Value="{Binding WeatherFxStartTime}" TickFrequency="3600"
+                          TickPlacement="BottomRight" IsSnapToTickEnabled="False" Minimum="0"
+                          Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeAbsoluteMaximum}}" SmallChange="1800" LargeChange="3600" />
+                    </DockPanel>
+
+                    <DockPanel>
+                      <mui:ValueLabel IsEnabled="{Binding WeatherFxCustomStartTime}"
+                          Value="{Binding WeatherFxTimeMultiplier}" Postfix="×"
+                          Content="{x:Static g:AppStrings.Drive_Time}" Width="100" />
+                      <Slider IsEnabled="{Binding WeatherFxCustomStartTime}" Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="BottomRight"
+                          IsSnapToTickEnabled="False" SmallChange="0.1" LargeChange="0.1">
+                        <Slider.Value>
+                          <Binding Path="WeatherFxTimeMultiplier">
+                            <Binding.Converter>
+                              <mui:LogarithmicScale Minimum="0" Middle="2" Maximum="20" RoundTo="0.1" />
+                            </Binding.Converter>
+                          </Binding>
+                        </Slider.Value>
+                      </Slider>
+                    </DockPanel>
+
+                    <DockPanel>
+                      <CheckBox IsChecked="{Binding WeatherFxCustomStartDate}" Width="121">
+                        <Label Content="Specific date:" />
+                      </CheckBox>
+                      <DatePicker IsEnabled="{Binding WeatherFxCustomStartDate}" SelectedDate="{Binding WeatherFxStartDate}" />
+                    </DockPanel>
+
+                  </mui:SpacingStackPanel>
+                </c:ModernPopup>
+              </mui:ContextMenuButton>
+
+              <mui:BetterComboBox ItemsSource="{Binding Source={x:Static t:ServerWeatherEntry.WeatherTypes}}" SelectedItem="{Binding WeatherFxType}"
+                  IsEditable="False">
+                <mui:BetterComboBox.ItemTemplate>
+                  <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" Margin="0" Padding="0" />
+                  </DataTemplate>
+                </mui:BetterComboBox.ItemTemplate>
+              </mui:BetterComboBox>
+
+            </DockPanel>
+          </mui:BooleanSwitch.True>
+          <mui:BooleanSwitch.False>
+            <c:WeatherComboBox SelectedWeather="{Binding Weather}" />
+          </mui:BooleanSwitch.False>
+        </mui:BooleanSwitch>
+      </DockPanel>
+
 
       <DockPanel>
         <c:DoubleTemperatureValueLabel Padding="8 0 0 0" RelativeRangeBase="{Binding BaseAmbientTemperature, StringFormat='{}{0:F1}'}"

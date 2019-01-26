@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using AcManager.Internal;
 using AcManager.Tools.Helpers.Api;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -40,6 +41,7 @@ namespace AcManager.Tools.Helpers {
             if (IsValidSteamId(forced)) {
                 _value = forced;
                 _loaded = true;
+                InternalUtils.SetSteamId(_value);
             } else {
                 if (forced != null) {
                     Logging.Warning($"Invalid forced value: “{forced}”");
@@ -48,6 +50,7 @@ namespace AcManager.Tools.Helpers {
                         var loaded = ValuesStorage.Get<string>(Key);
                         _value = loaded == NoneValue ? null : loaded;
                         _loaded = true;
+                        InternalUtils.SetSteamId(_value);
                     }
                 }
             }
@@ -66,6 +69,7 @@ namespace AcManager.Tools.Helpers {
                 if (!_loaded && !_default) {
                     _value = GetDefaultValue();
                     _default = true;
+                    InternalUtils.SetSteamId(_value);
                 }
 
                 return _value;
@@ -81,6 +85,7 @@ namespace AcManager.Tools.Helpers {
 
                 _loaded = true;
                 ValuesStorage.Set(Key, _value ?? NoneValue);
+                InternalUtils.SetSteamId(_value);
             }
         }
 

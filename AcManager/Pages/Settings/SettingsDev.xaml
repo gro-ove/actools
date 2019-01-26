@@ -13,6 +13,11 @@
       </DockPanel>
 
       <DockPanel>
+        <Label Content="Update track values:" />
+        <Button Command="{Binding PrepareTrackParamsCommand}" Content="Update" />
+      </DockPanel>
+
+      <DockPanel>
         <Label Content="Sidekick databases:" />
         <Button Command="{Binding UpdateSidekickDatabaseCommand}" Content="Update both"
             ToolTip="Update tyres and brakes information for all cars installed and enabled" />

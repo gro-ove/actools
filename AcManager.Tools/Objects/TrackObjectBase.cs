@@ -363,6 +363,13 @@ namespace AcManager.Tools.Objects {
             City = json.GetStringValueOnly("city");
             GeoTags = json.GetGeoTagsValueOnly("geotags");
 
+            if (GeoTags?.IsEmptyOrInvalid != false) {
+                var data = DataProvider.Instance.TrackParams[MainTrackObject.Id];
+                if (data.ContainsKey(@"LATITUDE") && data.ContainsKey(@"LONGITUDE")) {
+                    GeoTags = new GeoTagsEntry(data.GetDouble("LATITUDE", 0d), data.GetDouble("LONGITUDE", 0d));
+                }
+            }
+
             if (Country == null) {
                 foreach (var country in Tags.Select(AcStringValues.CountryFromTag).Where(x => x != null)) {
                     Country = country;

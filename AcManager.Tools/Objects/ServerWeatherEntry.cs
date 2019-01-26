@@ -1,8 +1,11 @@
-﻿using AcManager.Tools.Managers;
+﻿using System;
+using AcManager.Tools.Data;
+using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -27,7 +30,18 @@ namespace AcManager.Tools.Objects {
         }
 
         public ServerWeatherEntry(IniFileSection section) {
-            WeatherId = section.GetNonEmpty("GRAPHICS");
+            WeatherId = section.GetNonEmpty("__CM_GRAPHICS") ?? section.GetNonEmpty("GRAPHICS");
+
+            WeatherFxMode = section.ContainsKey(@"__CM_WFX_TYPE");
+            WeatherFxType = section.GetEnum("__CM_WFX_TYPE", WeatherType.Clear);
+            WeatherFxCustomStartTime = section.GetBool("__CM_WFX_USE_CUSTOM_TIME", true);
+            WeatherFxStartTime = section.GetInt("__CM_WFX_TIME", 12 * 60 * 60);
+            WeatherFxTimeMultiplier = section.GetDouble("__CM_WFX_TIME_MULT", 1.0);
+            WeatherFxCustomStartDate = section.GetBool("__CM_WFX_USE_CUSTOM_DATE", false);
+
+            var timezoneOffset = 0L; // (long)TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds;
+            WeatherFxStartDate = (section.GetLong("__CM_WFX_DATE", DateTime.Now.ToUnixTimestamp()) + timezoneOffset).ToDateTime();
+
             BaseAmbientTemperature = section.GetDouble("BASE_TEMPERATURE_AMBIENT", 18d);
             BaseRoadTemperature = section.GetDouble("BASE_TEMPERATURE_ROAD", 6d) + BaseAmbientTemperature;
             AmbientTemperatureVariation = section.GetDouble("VARIATION_AMBIENT", 2d);
@@ -39,7 +53,31 @@ namespace AcManager.Tools.Objects {
         }
 
         public void SaveTo(IniFileSection section) {
-            section.Set("GRAPHICS", WeatherId);
+            if (WeatherFxMode) {
+                var timezoneOffset = 0L; // (long)TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now).TotalSeconds;
+                section.Set("GRAPHICS", $@"{WeatherId}_type={(int)WeatherFxType}" + new[] {
+                    WeatherFxCustomStartTime ? $@"_time={WeatherFxStartTime}" : "",
+                    WeatherFxCustomStartTime && Math.Abs(WeatherFxTimeMultiplier - 1.0) > 0.001 ? $@"_mult={WeatherFxTimeMultiplier.Round(0.01)}" : "",
+                    WeatherFxCustomStartDate ? $@"_start={WeatherFxStartDate.ToUniversalTime().Date.ToUnixTimestamp() - timezoneOffset}" : ""
+                }.JoinToString(""));
+                section.Set("__CM_GRAPHICS", WeatherId);
+                section.Set("__CM_WFX_TYPE", WeatherFxType);
+                section.Set("__CM_WFX_USE_CUSTOM_TIME", WeatherFxCustomStartTime);
+                section.Set("__CM_WFX_TIME", WeatherFxStartTime);
+                section.Set("__CM_WFX_TIME_MULT", WeatherFxTimeMultiplier);
+                section.Set("__CM_WFX_USE_CUSTOM_DATE", WeatherFxCustomStartDate);
+                section.Set("__CM_WFX_DATE", WeatherFxStartDate.ToUnixTimestamp() - timezoneOffset);
+            } else {
+                section.Set("GRAPHICS", WeatherId);
+                section.Remove(@"__CM_GRAPHICS");
+                section.Remove(@"__CM_WFX_TYPE");
+                section.Remove(@"__CM_WFX_USE_CUSTOM_TIME");
+                section.Remove(@"__CM_WFX_TIME");
+                section.Remove(@"__CM_WFX_TIME_MULT");
+                section.Remove(@"__CM_WFX_USE_CUSTOM_DATE");
+                section.Remove(@"__CM_WFX_DATE");
+            }
+
             section.Set("BASE_TEMPERATURE_AMBIENT", BaseAmbientTemperature);
             section.Set("BASE_TEMPERATURE_ROAD", BaseRoadTemperature - BaseAmbientTemperature);
             section.Set("VARIATION_AMBIENT", AmbientTemperatureVariation);
@@ -64,6 +102,57 @@ namespace AcManager.Tools.Objects {
                 OnPropertyChanged(nameof(Weather));
                 OnPropertyChanged(nameof(RecommendedRoadTemperature));
             }
+        }
+
+        public static WeatherType[] WeatherTypes { get; } = EnumExtension.GetValues<WeatherType>();
+
+        private bool _weatherFxMode;
+
+        public bool WeatherFxMode {
+            get => _weatherFxMode;
+            set => Apply(value, ref _weatherFxMode);
+        }
+
+        private WeatherType _weatherFxType = WeatherType.Clear;
+
+        public WeatherType WeatherFxType {
+            get => _weatherFxType;
+            set => Apply(value, ref _weatherFxType);
+        }
+
+        private bool _weatherFxCustomStartTime;
+
+        public bool WeatherFxCustomStartTime {
+            get => _weatherFxCustomStartTime;
+            set => Apply(value, ref _weatherFxCustomStartTime);
+        }
+
+        private int _weatherFxStartTime = 12 * 60 * 60;
+
+        public int WeatherFxStartTime {
+            get => _weatherFxStartTime;
+            set => Apply(value, ref _weatherFxStartTime);
+        }
+
+        private double _weatherFxTimeMultiplier = 1d;
+
+        public double WeatherFxTimeMultiplier {
+            get => _weatherFxTimeMultiplier;
+            set => Apply(value, ref _weatherFxTimeMultiplier);
+        }
+
+        private bool _weatherFxCustomStartDate;
+
+        public bool WeatherFxCustomStartDate {
+            get => _weatherFxCustomStartDate;
+            set => Apply(value, ref _weatherFxCustomStartDate);
+        }
+
+        private DateTime _weatherFxStartDate;
+
+        public DateTime WeatherFxStartDate {
+            get => _weatherFxStartDate;
+            set => Apply(value, ref _weatherFxStartDate);
         }
 
         private bool _weatherSet;

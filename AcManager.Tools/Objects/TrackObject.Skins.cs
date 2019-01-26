@@ -186,7 +186,8 @@ namespace AcManager.Tools.Objects {
                 }
 
                 foreach (var unnecessary in files.Where(x => toInstall.Keys.All(y => !FileUtils.ArePathsEqual(x.Filename, y)))) {
-                    if (unnecessary.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x), directory))) {
+                    // if (unnecessary.HardLinks.Any(x => !FileUtils.ArePathsEqual(Path.GetDirectoryName(x), directory))) {
+                    if (unnecessary.HardLinks.Length > 1) {
                         Try(() => File.Delete(unnecessary.Filename), ref totalFailures);
                     } else {
                         recycle.Add(unnecessary.Filename);

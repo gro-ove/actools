@@ -12,7 +12,7 @@
           Margin="0 8 4 8">
         <DockPanel>
           <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-              Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource InstallAllIconData}" />
+              Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource AddMultipleIconData}" />
           <TextBlock Text="Install all" />
         </DockPanel>
       </Button>

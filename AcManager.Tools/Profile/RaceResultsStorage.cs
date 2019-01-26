@@ -45,7 +45,7 @@ namespace AcManager.Tools.Profile {
                 var toRemoval = new DirectoryInfo(SessionsDirectory)
                         .GetFiles("*.json").OrderByDescending(x => x.LastWriteTime).Skip(SettingsHolder.Drive.RaceResultsLimit).ToList();
                 Logging.Debug($"Removing {toRemoval.Count} old race result(s): {toRemoval.Select(x => x.Name).JoinToString(", ")}");
-                FileUtils.Recycle(toRemoval.Select(x => x.FullName).ToArray());
+                toRemoval.Select(x => x.FullName).ForEach(x => FileUtils.TryToDelete(x));
             });
         }
 

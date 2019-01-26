@@ -118,7 +118,7 @@ namespace AcManager.Tools.Profile {
         public async Task SaveSessionsAsync() {
             using (var writer = File.CreateText(_sessionsFilename)) {
                 foreach (var entry in _sessions) {
-                    await writer.WriteLineAsync(entry.Serialized);
+                    await writer.WriteLineAsync(entry.Serialized.TrimEnd());
                 }
             }
         }
@@ -280,16 +280,18 @@ namespace AcManager.Tools.Profile {
             }
         }
 
-        public async Task RebuildOverall() {
+        public async Task RebuildAndFilterAsync(Func<SessionStats, bool> filter) {
             var newStorage = new Storage();
             var newOverall = new OverallStats(newStorage);
+            var newSessions = new List<SessionsStatsEntry>();
 
             var sessions = (await GetSessionsStorageAsync()).ToList();
             await Task.Run(() => {
                 for (var i = 0; i < sessions.Count; i++) {
                     var session = sessions[i].Parsed;
-                    if (session != null) {
+                    if (session != null && filter?.Invoke(session) != false) {
                         newOverall.Extend(session);
+                        newSessions.Add(sessions[i]);
                     }
                 }
             });
@@ -297,10 +299,28 @@ namespace AcManager.Tools.Profile {
             Overall.CopyFrom(newOverall);
             newStorage.SetObject(KeyOverall, Overall);
             GetMainStorage().CopyFrom(newStorage);
+            _sessions = newSessions;
+            await SaveSessionsAsync();
 
             if (SettingsHolder.Drive.StereoOdometerImportValues) {
                 StereoOdometerHelper.ImportAll();
             }
+        }
+
+        public Task RebuildOverallAsync() {
+            return RebuildAndFilterAsync(null);
+        }
+
+        public Task RemoveCarAsync(params string[] ids) {
+            return RebuildAndFilterAsync(s => !ids.Contains(s.CarId));
+        }
+
+        public Task RemoveTrackAsync(params string[] ids) {
+            return RebuildAndFilterAsync(s => ids.All(y => s.TrackId?.Split('/')[0] != y));
+        }
+
+        public Task RemoveTrackLayoutAsync(params string[] idsWithLayout) {
+            return RebuildAndFilterAsync(s => !idsWithLayout.Contains(s.TrackId));
         }
 
         private void OnUpdated(object sender, AcSharedEventArgs e) {

@@ -53,7 +53,7 @@ namespace AcManager.Tools.Filters.Testers {
             return new[] {
                 new KeywordDescription("year", "Year", KeywordType.Number, KeywordPriority.Important, "y"),
                 new KeywordDescription("errors", "With errors", KeywordType.Flag, KeywordPriority.Obscured, "haserrors"),
-                new KeywordDescription("changed", "Changed", KeywordType.Flag, KeywordPriority.Normal),
+                new KeywordDescription("changed", "Unsaved changes", KeywordType.Flag, KeywordPriority.Normal),
             }.Concat(AcObjectTester.Instance.GetDescriptions());
         }
     }

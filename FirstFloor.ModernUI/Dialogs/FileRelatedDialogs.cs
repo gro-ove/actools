@@ -25,6 +25,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT tables", "*.csv");
         public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip archives", "*.tar.gz");
         public static readonly DialogFilterPiece DynamicLibraries = new DialogFilterPiece("Dynamic libraries", "*.dll");
+
         public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
@@ -81,12 +82,13 @@ namespace FirstFloor.ModernUI.Dialogs {
         public bool RestoreDirectory { get; set; } = false;
 
         internal IEnumerable<DialogFilterPiece> GetFilters() {
-            return !IncludeAllFiles ? Filters : Filters.Concat(new[]{ DialogFilterPiece.AllFiles });
+            return !IncludeAllFiles ? Filters : Filters.Concat(new[] { DialogFilterPiece.AllFiles });
         }
     }
 
     public class OpenDialogParams : FileDialogParamsBase {
         public bool CheckFileExists { get; set; } = true;
+        public bool UseCachedIfAny { get; set; } = false;
     }
 
     public class SaveDialogParams : FileDialogParamsBase {
@@ -126,6 +128,16 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public static string Open([NotNull] OpenDialogParams p, string currentFilename = null) {
             var key = p.ActualSaveKey;
+            var cached = p.ActualSaveKey + @":cached";
+
+            try {
+                if (p.UseCachedIfAny && ValuesStorage.Contains(cached) && File.Exists(ValuesStorage.Get<string>(cached))) {
+                    return ValuesStorage.Get<string>(cached);
+                }
+            } catch (Exception e) {
+                Logging.Warning(e);
+            }
+
             try {
                 var filters = p.GetFilters().ToList();
                 var dialog = new OpenFileDialog {
@@ -166,6 +178,10 @@ namespace FirstFloor.ModernUI.Dialogs {
 
                 if (key != null) {
                     ValuesStorage.Set(key, Path.GetDirectoryName(dialog.FileName));
+                }
+
+                if (p.UseCachedIfAny) {
+                    ValuesStorage.Set(cached, dialog.FileName);
                 }
 
                 return dialog.FileName;

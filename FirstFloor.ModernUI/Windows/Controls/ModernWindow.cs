@@ -81,7 +81,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (LinkNavigator == null) return;
 
             var titleLink = e.Parameter as TitleLink;
-            if (titleLink?.GroupKey != null) {
+            if (titleLink?.GroupKey != null && !titleLink.GroupKey.Contains(@"/")) {
                 _menu?.SwitchToGroupByKey(titleLink.GroupKey);
                 return;
             }

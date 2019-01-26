@@ -189,7 +189,7 @@
               Margin="0 8 4 8">
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                  Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource InstallAllIconData}" />
+                  Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource AddMultipleIconData}" />
               <TextBlock Text="Install all" />
             </DockPanel>
           </Button>
@@ -225,7 +225,7 @@
           <ContextMenu>
             <MenuItem Header="Install all" Command="{Binding InstallAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
               <MenuItem.Icon>
-                <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource InstallAllIconData}" HorizontalAlignment="Right"
+                <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource AddMultipleIconData}" HorizontalAlignment="Right"
                     VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
               </MenuItem.Icon>
             </MenuItem>
@@ -251,7 +251,7 @@
       <c:ModernPopup x:Name="DownloadsPopup" PlacementTarget="{Binding ElementName=DownloadsButton}" Placement="Bottom"
           IsOpen="{Binding IsChecked, ElementName=DownloadsButton, Mode=TwoWay}" Padding="0" Opened="OnDownloadsPopupOpened"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-        <StackPanel Width="360">
+        <StackPanel Width="420">
 
           <StackPanel Visibility="{Binding AppUpdater.ReadyToUpdateVersion, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
             <MenuItem Command="{Binding AppUpdater.FinishUpdateCommand}">
@@ -441,25 +441,25 @@
         FilterHint="{x:Static c:FilterHints.Cars}" />
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Lists/TracksListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Tracks}" />
-    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml"
-        FilterHint="{x:Static c:FilterHints.Showrooms}" />
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
         <mui:Link DisplayName="Driver models" Source="/Pages/Lists/DriverModelsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml" />
         <mui:Link DisplayName="User championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
+    <!--<mui:LinkGroupFilterable GroupKey="content" DisplayName="Shaders Patch" Source="/Pages/ShadersPatch/ShadersMainPage.xaml" />-->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="Mods" Source="/Pages/Lists/GenericModsListPage.xaml" />
     <mui:LinkGroup GroupKey="content" DisplayName="Tools">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Mod Shop">
+    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Get New Mods">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="Manage Sources" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />
       </mui:LinkGroup.Links>
@@ -518,6 +518,31 @@
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
     <mui:TitleLink x:Name="OriginalLauncher" GroupKey="originalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
     <mui:TitleLink Content="switch to full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
+    <mui:TitleLink GroupKey="settings/video" Source="/Pages/AcSettings/AcSettingsVideo.xaml">
+      <mui:ReferenceSwitch Value="{Binding LastSessionPerformanceData, Source={x:Static t:AcSettingsHolder.Video}}">
+        <mui:ReferenceSwitch.Null>
+          <TextBlock Text="? FPS" ToolTip="Previous session’s performance" />
+        </mui:ReferenceSwitch.Null>
+        <mui:ReferenceSwitch.NonNull>
+          <DockPanel Margin="0" DataContext="{Binding Source={x:Static t:AcSettingsHolder.Video}}">
+            <DockPanel.ToolTip>
+              <DockPanel Margin="0 0 12 0">
+                <TextBlock Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="4 0 0 4" Style="{StaticResource Small}" />
+                <c:PropertiesGrid Columns="1" Margin="-2 0 0 0">
+                  <TextBlock c:PropertiesGrid.Label="Average:"
+                      Text="{Binding LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
+                  <TextBlock c:PropertiesGrid.Label="Minimum:"
+                      Text="{Binding LastSessionPerformanceData.MinimumFps, StringFormat='{}{0:F1} frames per second', TargetNullValue='?'}" />
+                  <TextBlock c:PropertiesGrid.Label="Taken:"
+                      Text="{Binding LastSessionPerformanceData.SamplesTaken, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} sample'}" />
+                </c:PropertiesGrid>
+              </DockPanel>
+            </DockPanel.ToolTip>
+            <TextBlock Text="{Binding LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} FPS'}" />
+          </DockPanel>
+        </mui:ReferenceSwitch.NonNull>
+      </mui:ReferenceSwitch>
+    </mui:TitleLink>
   </mui:ModernWindow.TitleLinks>
 
   <mui:Cell x:Name="OverlayContentCell" ClipToBounds="True">

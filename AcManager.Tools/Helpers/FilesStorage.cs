@@ -83,6 +83,7 @@ namespace AcManager.Tools.Helpers {
             return new ContentEntry(isOverrided ? contentUserFile : contentFile, isOverrided, false);
         }
 
+        [CanBeNull]
         public string LoadContentFile(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
             if (!entry.Exists) return null;
@@ -95,6 +96,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
+        [CanBeNull]
         public JObject LoadJsonContentFile(string dir, [Localizable(false)] string name = null) {
             var entry = GetContentFile(dir, name);
             if (!entry.Exists) return null;

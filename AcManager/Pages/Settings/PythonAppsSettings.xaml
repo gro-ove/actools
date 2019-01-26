@@ -70,11 +70,14 @@
                   Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
               <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}"
                   Margin="0 0 4 0" ClearOnChange="True" />
-              <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
+              <TextBlock x:Name="AppTitle" Text="{Binding DisplayName}" Style="{StaticResource Small}" TextTrimming="CharacterEllipsis" />
             </DockPanel>
             <DataTemplate.Triggers>
               <DataTrigger Binding="{Binding IsFavourite}" Value="True">
                 <Setter Property="Visibility" Value="Visible" TargetName="FavouriteIcon" />
+              </DataTrigger>
+              <DataTrigger Binding="{Binding IsActive}" Value="False">
+                <Setter Property="Foreground" Value="{DynamicResource WindowTextReadOnly}" TargetName="AppTitle" />
               </DataTrigger>
             </DataTemplate.Triggers>
           </DataTemplate>
@@ -90,6 +93,11 @@
           <mui:BbCodeBlock
               Text="Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]." />
         </c:MessageBlock>
+        <DockPanel DockPanel.Dock="Top" Margin="0 0 0 20"
+            Visibility="{Binding SelectedApp, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+          <CheckBox IsChecked="{Binding SelectedApp.IsActive}" />
+          <TextBlock Text="{Binding SelectedApp.DisplayName}" Style="{StaticResource Heading2}" />
+        </DockPanel>
         <mui:ModernTab x:Name="ConfigsTab" Layout="Tab" />
       </DockPanel>
     </Grid>

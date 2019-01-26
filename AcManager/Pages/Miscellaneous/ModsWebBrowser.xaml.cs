@@ -43,6 +43,7 @@ using FirstFloor.ModernUI.Windows.Navigation;
 using HtmlAgilityPack;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Pages.Miscellaneous {
     public partial class ModsWebBrowser : IParametrizedUriContent {
@@ -154,7 +155,7 @@ namespace AcManager.Pages.Miscellaneous {
         }
 
         [JsonObject(MemberSerialization.OptIn)]
-        public sealed class WebSource : NotifyPropertyChanged, IWithId, ILinkNavigator {
+        public sealed class WebSource : NotifyPropertyChanged, IWithId, ILinkNavigator, IComparable {
             [JsonConstructor]
             private WebSource(string id) {
                 Id = id;
@@ -492,7 +493,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 }
 
                 string Combine(params string[] values) {
-                    var d = values.Select(Storage.Encode).JoinToString('\n');
+                    var d = values.Select(x => Storage.Encode(x ?? "")).JoinToString('\n');
                     return Compress(Encoding.UTF8.GetBytes(d))?.ToCutBase64();
                 }
             }
@@ -537,8 +538,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                     }
 
                     if (string.IsNullOrWhiteSpace(autoDownloadRule)) {
-                        Logging.Warning("Rule is missing: " + url);
-                        continue;
+                        autoDownloadRule = null;
                     }
 
                     if (string.IsNullOrWhiteSpace(name)) {
@@ -591,6 +591,10 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                         break;
                 }
             }
+
+            public int CompareTo(object obj) {
+                return obj is WebSource ws ? Name?.CompareTo(ws.Name ?? "") ?? 0 : 0;
+            }
         }
 
         private static readonly Lazier<IReadOnlyCollection<string>> FoundDomains = Lazier.CreateAsync(async () => {
@@ -633,9 +637,54 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 
             private readonly Storage _storage;
 
+            private void AddDefaultSources(IList<WebSource> source, bool addNewOnly) {
+                void Add(string urlCheck, string urlValue) {
+                    if (string.IsNullOrWhiteSpace(urlCheck) || string.IsNullOrWhiteSpace(urlValue)) return;
+
+                    if (addNewOnly) {
+                        var key = ".urlAdded:" + urlCheck;
+                        if (_storage.Get(key, false)) return;
+                        _storage.Set(key, true);
+                    }
+
+                    if (!source.Any(x => x.Url.Contains(urlCheck))) {
+                        var newItem = WebSource.Deserialize(urlValue);
+                        if (newItem != null) {
+                            source.AddSorted(newItem);
+                        }
+                    }
+                }
+
+                try {
+                    var data = FilesStorage.Instance.LoadContentFile(ContentCategory.Miscellaneous, "Websites.json");
+                    if (data != null) {
+                        foreach (var p in JsonConvert.DeserializeObject<JObject>(data)) {
+                            var o = (JObject)p.Value;
+                            if (!o.GetBoolValueOnly("originalOnly", false) && !AddRecommendedPorts.Value) continue;
+                            if (!o.GetBoolValueOnly("paidOnly", false) && !AddRecommendedPaid.Value) continue;
+                            if (!o.GetBoolValueOnly("driftingOnly", false) && !AddRecommendedDrifting.Value) continue;
+                            Add(p.Key, o.GetStringValueOnly("data"));
+                        }
+                    } else {
+                        Logging.Warning("File Website.json is missing");
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+
+                if (source.Count == 0) {
+                    Add(@"assettocorsamods.net",
+                            @"fczBCsIwEIThe54i4D179yDUnPsMsiRrW0h3SnaL+vZWxKvH+Rj+2X07E7GZuKOgG6+ollScwvDVmD8cx8PD/Odv/mpiVNh2bvQUvaODGibchjymTadwKlAX9ZhWXjT/RsVDG7he9yOq8RLToir9DQ");
+                }
+
+                OnceAddedRecommended.Value = true;
+            }
+
             public ListViewModel() {
                 _storage = new Storage(FilesStorage.Instance.GetFilename("Websites.data"));
-                WebSources = new ChangeableObservableCollection<WebSource>(_storage.Keys.Select(x => _storage.GetObject<WebSource>(x)).NonNull());
+                WebSources = new ChangeableObservableCollection<WebSource>(_storage.Keys.Where(x => !x.StartsWith(@"."))
+                                                                                   .Select(x => _storage.GetObject<WebSource>(x)).NonNull());
+                AddDefaultSources(WebSources, true);
                 WebSources.ItemPropertyChanged += OnItemPropertyChanged;
                 WebSources.CollectionChanged += OnCollectionChanged;
                 SelectedSource = WebSources.GetByIdOrDefault(_selectedSourceId.Value) ?? WebSources.FirstOrDefault();
@@ -645,6 +694,16 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 
                 FlexibleLoader.Register(this);
             }
+
+            public StoredValue<bool> OnceAddedRecommended { get; } = Stored.Get("/ModsWebBrowser.OnceAddedRecommended", false);
+            public StoredValue<bool> AddRecommendedPorts { get; } = Stored.Get("/ModsWebBrowser.AddRecommendedPorts", true);
+            public StoredValue<bool> AddRecommendedPaid { get; } = Stored.Get("/ModsWebBrowser.AddRecommendedPaid", true);
+            public StoredValue<bool> AddRecommendedDrifting { get; } = Stored.Get("/ModsWebBrowser.AddRecommendedDrifting", true);
+
+            private DelegateCommand _addRecommendedSourcesCommand;
+
+            public DelegateCommand AddRecommendedSourcesCommand
+                => _addRecommendedSourcesCommand ?? (_addRecommendedSourcesCommand = new DelegateCommand(() => AddDefaultSources(WebSources, false)));
 
             private AsyncCommand _addNewSourceCommand;
 
@@ -851,9 +910,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             [UsedImplicitly]
             public void DownloadFrom(string url) {
                 if (string.IsNullOrWhiteSpace(url)) return;
-                Sync(() => {
-                    DownloadFromCallback?.Invoke(url);
-                });
+                Sync(() => { DownloadFromCallback?.Invoke(url); });
             }
 
             [CanBeNull]
@@ -1477,7 +1534,6 @@ window.$KEY = outline.stop.bind(outline);
             var ctsRef = new CancellationTokenSource[] { null };
             bool? resultRef = null;
 
-
             void ObjCallbackFn(bool v) {
                 resultRef = v;
                 ctsRef[0]?.Cancel();
@@ -1490,7 +1546,7 @@ window.$KEY = outline.stop.bind(outline);
 
                 try {
                     await Task.Delay(1000, cts.Token);
-                } catch (OperationCanceledException) {}
+                } catch (OperationCanceledException) { }
 
                 if (m.DownloadPageCheckId != checkId) return;
                 m.DownloadPageUrl = resultRef == true ? url : null;

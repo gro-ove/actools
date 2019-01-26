@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
@@ -86,15 +87,14 @@ namespace FirstFloor.ModernUI.Windows {
         [Guid("56FDF344-FD6D-11d0-958A-006097C9A090"), ClassInterface(ClassInterfaceType.None), ComImport]
         private class TaskbarInstance { }
 
-        // ReSharper disable once SuspiciousTypeConversion.Global
-        private static readonly ITaskbarList3 Instance = new TaskbarInstance() as ITaskbarList3;
+        private static ITaskbarList3 _instance;
         private static bool _supported = false; // Environment.OSVersion.Version >= new Version(6, 1);
 
         private static void SetState(IntPtr handle, TaskbarState state) {
             if (!_supported) return;
             try {
-                Instance.SetProgressState(handle, state);
-            } catch (InvalidCastException e) {
+                SetStateUnsafe(handle, state);
+            } catch (Exception e) {
                 Logging.Warning(e);
                 _supported = false;
             }
@@ -103,11 +103,25 @@ namespace FirstFloor.ModernUI.Windows {
         private static void SetValue(IntPtr handle, ulong value, ulong max) {
             if (!_supported) return;
             try {
-                Instance.SetProgressValue(handle, value, max);
-            } catch (InvalidCastException e) {
+                SetValueUnsafe(handle, value, max);
+            } catch (Exception e) {
                 Logging.Warning(e);
                 _supported = false;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void SetStateUnsafe(IntPtr handle, TaskbarState state) {
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            if (_instance == null) _instance = new TaskbarInstance() as ITaskbarList3;
+            _instance?.SetProgressState(handle, state);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static void SetValueUnsafe(IntPtr handle, ulong value, ulong max) {
+            // ReSharper disable once SuspiciousTypeConversion.Global
+            if (_instance == null) _instance = new TaskbarInstance() as ITaskbarList3;
+            _instance?.SetProgressValue(handle, value, max);
         }
     }
 }

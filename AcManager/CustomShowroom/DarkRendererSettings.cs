@@ -488,7 +488,7 @@ namespace AcManager.CustomShowroom {
                         Showroom = null;
                     }
 
-                    NonfatalError.Notify("Can’t fully load the preset: showroom “{showroomId}” is missing",
+                    NonfatalError.Notify($"Can’t fully load the preset: showroom “{showroomId}” is missing",
                             "Maybe you can find it online?", solutions: new[] {
                                 new NonfatalErrorSolution("Search for showroom", null, token => {
                                     WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(showroomId,

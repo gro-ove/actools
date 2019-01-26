@@ -90,7 +90,7 @@
 		float4 gSize;
 		float gNoiseMultipler;
 		float gFlakes;
-		float4 gColors[3];
+		float4 gColors[10];
 		bool gOverlayWithoutAo;
 		bool gUnderlayWithoutAo;
 		bool gUseMask;
@@ -213,9 +213,9 @@
 
 	float4 ps_ColorfulPattern(PS_IN pin) : SV_Target {
 		float4 pattern = GetInputMap(pin.Tex);
-		float3 resultColor = gColors[0].rgb * saturate(pattern.r * 100)
-		    + gColors[1].rgb * saturate(pattern.g * 100)
-		    + gColors[2].rgb * saturate(pattern.b * 100);
+		float3 resultColor = gColors[0].rgb * saturate(pattern.r)
+		    + gColors[1].rgb * saturate(pattern.g)
+		    + gColors[2].rgb * saturate(pattern.b);
 		return PatternCombine(pin.Tex, float4(resultColor, pattern.a));
 	}
 

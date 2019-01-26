@@ -20,6 +20,10 @@ namespace CustomTracksBakery {
                 return new Kn5MaterialToBake(description.Material);
             }
 
+            if (key is Kn5AmbientShadowMaterialDescription) {
+                return new Kn5MaterialToBake(null);
+            }
+
             throw new NotSupportedException("Type: " + key?.GetType());
         }
     }

@@ -15,7 +15,7 @@ namespace AcManager.Tools.Helpers {
 
             public string CupRegistries {
                 get => _cupRegistries ?? (_cupRegistries =
-                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "http://cm.custom.ru/cup/"));
+                        ValuesStorage.Get("Settings.ContentSettings.CupRegistries", "https://acstuff.ru/cup/"));
                 set {
                     value = value.Trim();
                     if (Equals(value, _cupRegistries)) return;

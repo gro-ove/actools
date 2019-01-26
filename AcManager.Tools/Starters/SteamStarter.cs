@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 using Steamworks;
@@ -203,6 +204,8 @@ namespace AcManager.Tools.Starters {
                     FileName = filename,
                     WorkingDirectory = _acRoot
                 });
+            } else {
+                MessageDialog.Show("Please, save original launcher as “AssettoCorsa_original.exe” in AC root folder");
             }
         }
     }

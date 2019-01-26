@@ -274,7 +274,7 @@ namespace AcManager.Tools.Objects {
             section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
 
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());
-            section.Set("TIME_OF_DAY_MULT", TimeMultiplier, "F3");
+            section.Set("TIME_OF_DAY_MULT", TimeMultiplier, "F5");
             ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));
             if (DynamicTrackEnabled) {
                 ini.Remove("__CM_DYNAMIC_TRACK_OFF");

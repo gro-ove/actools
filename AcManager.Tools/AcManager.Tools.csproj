@@ -189,8 +189,10 @@
     <Compile Include="ContentInstallation\ContentScanner.cs" />
     <Compile Include="ContentInstallation\Entries\AcContentEntries.cs" />
     <Compile Include="ContentInstallation\Entries\ContentEntries.cs" />
+    <Compile Include="ContentInstallation\Entries\CustomFolderEntry.cs" />
     <Compile Include="ContentInstallation\Entries\ExtraEntries.cs" />
     <Compile Include="ContentInstallation\Entries\GenericModConfigEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\ShadersPatchEntry.cs" />
     <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SharpCompressContentInstallator.cs" />

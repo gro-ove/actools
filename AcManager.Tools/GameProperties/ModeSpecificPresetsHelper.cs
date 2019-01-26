@@ -59,20 +59,29 @@ namespace AcManager.Tools.GameProperties {
         public IEnumerable<PresetPerMode> GetPassedModes(IniFile file) {
             var presetsPerMode = new PresetsPerModeReadOnly().GetEntries().ToListIfItIsNot();
             foreach (var mode in presetsPerMode.Where(x => x.Enabled)) {
-                var script = GetFn(mode);
-                if (string.IsNullOrWhiteSpace(script)) continue;
+                bool result;
 
-                var state = LuaHelper.GetExtended();
-                if (state == null) throw new Exception(ToolsStrings.Common_LuaFailed);
+                try {
+                    var script = GetFn(mode);
+                    if (string.IsNullOrWhiteSpace(script)) continue;
 
-                UserData.RegisterType<IniFile>();
-                UserData.RegisterType<IniFileSection>();
+                    var state = LuaHelper.GetExtended();
+                    if (state == null) throw new Exception(ToolsStrings.Common_LuaFailed);
 
-                state.Globals[@"race"] = UserData.Create(file);
+                    UserData.RegisterType<IniFile>();
+                    UserData.RegisterType<IniFileSection>();
 
-                script = $@"return {script}";
-                Logging.Debug(script);
-                if (state.DoString(script).AsBool()) {
+                    state.Globals[@"race"] = UserData.Create(file);
+
+                    script = $@"return {script}";
+                    Logging.Debug(script);
+                    result = state.DoString(script).AsBool();
+                } catch (Exception e) {
+                    Logging.Error(e.Message);
+                    result = false;
+                }
+
+                if (result) {
                     yield return mode;
                 }
             }

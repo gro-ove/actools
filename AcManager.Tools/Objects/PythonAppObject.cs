@@ -9,6 +9,7 @@ using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Lists;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Directories;
@@ -56,6 +57,15 @@ namespace AcManager.Tools.Objects {
             }
 
             return base.LoadJsonOrThrow();
+        }
+
+        public bool IsActive {
+            get => AcSettingsHolder.Python.IsActivated(Id);
+            set => AcSettingsHolder.Python.SetActivated(Id, value);
+        }
+
+        public void OnActiveChanged() {
+            OnPropertyChanged(nameof(IsActive));
         }
 
         protected override void LoadVersionInfo(JObject json) {

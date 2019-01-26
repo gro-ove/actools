@@ -256,6 +256,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        protected override string GetBaseName() {
+            return Path.GetFileNameWithoutExtension(_filename);
+        }
+
         private class SevenZipDirectoryInfo : IDirectoryInfo {
             private readonly SevenZipEntry _archiveEntry;
 

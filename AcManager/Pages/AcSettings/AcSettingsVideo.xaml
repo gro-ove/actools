@@ -62,7 +62,7 @@
                 <mui:ReferenceSwitch.NonNull>
                   <DockPanel Margin="0">
                     <DockPanel.ToolTip>
-                      <c:PropertiesGrid Columns="1">
+                      <c:PropertiesGrid Columns="1" Margin="0 0 12 0">
                         <TextBlock c:PropertiesGrid.Label="Average:"
                             Text="{Binding Video.LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
                         <TextBlock c:PropertiesGrid.Label="Minimum:"

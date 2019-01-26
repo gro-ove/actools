@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using JetBrains.Annotations;
 
@@ -9,6 +10,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         internal PythonSettings() : base("python") { }
 
         private Dictionary<string, bool> _apps;
+        private bool _fullyLoaded;
 
         public IReadOnlyDictionary<string, bool> Apps => _apps;
 
@@ -29,6 +31,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
             Save();
 
             AppActiveStateChanged?.Invoke(this, EventArgs.Empty);
+
+            if (_fullyLoaded) {
+                PythonAppsManager.Instance.GetById(appId)?.OnActiveChanged();
+            }
         }
 
         public event EventHandler AppActiveStateChanged;
@@ -39,6 +45,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     x => x.Value.GetBool("ACTIVE", false));
             OnPropertyChanged(nameof(Apps));
             AppActiveStateChanged?.Invoke(this, EventArgs.Empty);
+            if (_fullyLoaded) {
+                foreach (var app in PythonAppsManager.Instance.Loaded) {
+                    app?.OnActiveChanged();
+                }
+            }
+            _fullyLoaded = true;
         }
 
         protected override void SetToIni(IniFile ini) {

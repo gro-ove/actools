@@ -829,8 +829,8 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                                 var colors = p.Colors;
                                 if (colors?.Length > 0) {
-                                    var vColors = new Vector4[3];
-                                    for (var i = 0; i < colors.Length; i++) {
+                                    var vColors = new Vector4[10];
+                                    for (int i = 0, m = Math.Min(colors.Length, 10); i < m; i++) {
                                         vColors[i] = colors[i].ToVector4();
                                     }
 
@@ -886,15 +886,15 @@ namespace AcTools.Render.Kn5SpecificForward {
                                 if (mask != null) {
                                     mask.Set(e.FxMaskMap, e.FxMaskParams);
 
-                                    var vColors = new Vector4[3];
+                                    var vColors = new Vector4[10];
                                     var i = 0;
                                     if (colors != null) {
-                                        for (; i < colors.Length - 1; i++) {
+                                        for (var m = Math.Min(colors.Length - 1, 10); i < m; i++) {
                                             vColors[i] = colors[i + 1].ToVector4();
                                         }
                                     }
 
-                                    for (; i < 3; i++) {
+                                    for (; i < 10; i++) {
                                         vColors[i] = new Vector4(1f);
                                     }
 

@@ -26,11 +26,11 @@
 
     <mui:SpacingStackPanel Spacing="4" Margin="0 -12 0 0">
       <mui:ValueLabel Value="{Binding SelectedObject.TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
-      <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False">
+      <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False" SmallChange="0.1" LargeChange="0.1">
         <Slider.Value>
           <Binding Path="SelectedObject.TimeMultiplier">
             <Binding.Converter>
-              <mui:LogarithmicScale Minimum="0" Middle="20" Maximum="60" />
+              <mui:LogarithmicScale Minimum="0" Middle="20" Maximum="60" RoundTo="0.1" />
             </Binding.Converter>
           </Binding>
         </Slider.Value>

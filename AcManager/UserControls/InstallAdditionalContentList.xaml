@@ -58,11 +58,11 @@
             </mui:SpacingUniformGrid>
             <mui:SpacingUniformGrid x:Name="PART_VersionComparison" HorizontalSpacing="4" Rows="1" Columns="2" Margin="0 4 0 0" DockPanel.Dock="Top">
               <DockPanel>
-                <TextBlock Style="{StaticResource Small}" Text="Existing version: " />
+                <TextBlock Style="{StaticResource Small}" Text="Existing: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding ExistingVersion, Mode=OneWay}" Placeholder="?" />
               </DockPanel>
               <DockPanel>
-                <TextBlock Style="{StaticResource Small}" Text="New version: " />
+                <TextBlock Style="{StaticResource Small}" Text="New: " />
                 <mui:BetterTextBox Style="{StaticResource Borderless.Small}" IsReadOnly="True" Text="{Binding Version, Mode=OneWay}" Placeholder="?"
                     x:Name="PART_NewVersion" />
               </DockPanel>
@@ -528,7 +528,7 @@
                           <Path x:Name="PART_ErrorIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"
                               Fill="{DynamicResource Error}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
                           <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{Binding FailedMessage}" Style="{StaticResource Small}"
-                              DockPanel.Dock="Top" />
+                              DockPanel.Dock="Top" ToolTip="{Binding FailedMessage}" />
                         </DockPanel>
                         <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
                           <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"

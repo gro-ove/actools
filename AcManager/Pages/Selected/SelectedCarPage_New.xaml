@@ -441,6 +441,8 @@
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                      <Separator />
+                      <MenuItem Header="Clear stats from this car" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>
@@ -451,6 +453,8 @@
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="Filter by similar max speed achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
+                      <Separator />
+                      <MenuItem Header="Clear stats from this car" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>

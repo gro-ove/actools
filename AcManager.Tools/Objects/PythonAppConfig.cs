@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Managers;
 using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -15,6 +16,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public sealed class PythonAppConfig : Displayable, IWithId {
+        public PythonAppObject Parent { get; }
+
         [NotNull]
         public PythonAppConfigParams ConfigParams { get; }
 
@@ -35,12 +38,13 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _isNonDefault);
         }
 
-        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, IniFile values = null) {
+        private PythonAppConfig([NotNull] PythonAppConfigParams configParams, string filename, IniFile ini, string name, PythonAppObject parent, IniFile values = null) {
             IsResettable = values != null;
             _valuesIniFile = values ?? ini;
 
             ConfigParams = configParams;
             Filename = filename;
+            Parent = parent;
 
             _defaultsFilename = ini.Filename;
             if (_defaultsFilename == Filename) {
@@ -150,7 +154,7 @@ namespace AcManager.Tools.Objects {
                 }
             }
 
-            _valuesIniFile.Save(true);
+            _valuesIniFile.Save();
         }
 
         internal bool IsAffectedBy(string changed) {
@@ -192,6 +196,7 @@ namespace AcManager.Tools.Objects {
                             ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
                                        .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
                                        .Select(AcStringValues.NameFromId).JoinToString('/'),
+                    PythonAppsManager.Instance.FirstOrDefault(x => x.Location == configParams.PythonAppLocation),
                     defaultsMode ? new IniFile(filename) : null);
         }
 

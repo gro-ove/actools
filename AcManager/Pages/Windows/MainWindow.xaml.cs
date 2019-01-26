@@ -70,6 +70,7 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
                 new TitleLinkEnabledEntry("about", AppStrings.Main_About),
                 new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
+                new TitleLinkEnabledEntry("settings/video", "Video settings (FPS counter)", false),
             };
         }
 

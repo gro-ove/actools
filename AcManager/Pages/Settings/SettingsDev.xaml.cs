@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -15,6 +16,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using TimeZoneConverter;
 
 namespace AcManager.Pages.Settings {
     public partial class SettingsDev {
@@ -44,6 +46,57 @@ namespace AcManager.Pages.Settings {
                     NonfatalError.Notify("Can’t send data", e);
                 }
             }, TimeSpan.FromSeconds(3d)));
+
+            private AsyncCommand _prepareTrackParamsCommand;
+
+            public AsyncCommand PrepareTrackParamsCommand => _prepareTrackParamsCommand ?? (_prepareTrackParamsCommand = new AsyncCommand(async () => {
+                using (var w = new WaitingDialog("Generating config…")) {
+                    var cancellation = w.CancellationToken;
+
+                    w.Report("Loading tracks…");
+                    await TracksManager.Instance.EnsureLoadedAsync();
+
+                    var list = TracksManager.Instance.Enabled.ToList();
+                    var filename = Path.Combine(AcRootDirectory.Instance.RequireValue, @"extension\config\data_track_params.ini");
+                    if (!File.Exists(filename)) return;
+
+                    var result = new IniFile(filename);
+                    for (var i = 0; i < list.Count && !cancellation.IsCancellationRequested; i++) {
+                        var track = list[i];
+                        if (result[track.Id].GetNonEmpty("TIMEZONE") != null) continue;
+                        w.Report(new AsyncProgressEntry(track.DisplayName, i, list.Count));
+
+                        var trackGeoTags = track.GeoTags;
+                        if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
+                            trackGeoTags = await TracksLocator.TryToLocateAsync(track);
+                            if (cancellation.IsCancellationRequested) return;
+                        }
+
+                        if (trackGeoTags == null) {
+                            result[track.Id].Set("LATITUDE", 40.0f);
+                            result[track.Id].Set("LONGITUDE", 0.0f);
+                            result[track.Id].Set("TIMEZONE", "");
+                            continue;
+                        }
+
+                        result[track.Id].Set("LATITUDE", trackGeoTags.LatitudeValue ?? 40.0f);
+                        result[track.Id].Set("LONGITUDE", trackGeoTags.LongitudeValue ?? 0.0f);
+
+                        var timeZone = await TimeZoneDeterminer.TryToDetermineAsync(trackGeoTags);
+                        if (timeZone != null) {
+                            result[track.Id].Set("TIMEZONE", TZConvert.WindowsToIana(timeZone.Id));
+                        } else {
+                            result[track.Id].Set("TIMEZONE", "");
+                        }
+
+                        result.Save();
+                        await Task.Delay(TimeSpan.FromSeconds(10d), w.CancellationToken);
+                        if (w.CancellationToken.IsCancellationRequested) return;
+
+                        result = new IniFile(filename);
+                    }
+                }
+            }));
 
             private AsyncCommand _updateSidekickDatabaseCommand;
 

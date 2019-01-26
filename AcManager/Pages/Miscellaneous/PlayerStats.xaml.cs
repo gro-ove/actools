@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +31,8 @@ namespace AcManager.Pages.Miscellaneous {
                 if (cancellationToken.IsCancellationRequested) return;
             }
 
-            _stats = _filter == null ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : await PlayerStatsManager.Instance.GetFilteredAsync(_filter);
+            _stats = _filter == null
+                    ? Holder.CreateNonHolding(PlayerStatsManager.Instance.Overall) : await PlayerStatsManager.Instance.GetFilteredAsync(_filter);
             this.OnActualUnload(() => _stats.Dispose());
         }
 
@@ -61,14 +63,31 @@ namespace AcManager.Pages.Miscellaneous {
             public AsyncCommand RebuildOverallCommand => _rebuildOverallCommand ?? (_rebuildOverallCommand = new AsyncCommand(async () => {
                 using (var waiting = new WaitingDialog()) {
                     waiting.Report("Recalculating…");
-                    await PlayerStatsManager.Instance.RebuildOverall();
+                    await PlayerStatsManager.Instance.RebuildOverallAsync();
+                }
+            }));
+
+            private AsyncCommand _removeMissingCommand;
+
+            public AsyncCommand RemoveMissingCommand => _removeMissingCommand ?? (_removeMissingCommand = new AsyncCommand(async () => {
+                if (MessageDialog.Show("Are you sure you want to delete all sessions with missing content?", "Careful, please", MessageDialogButton.YesNo)
+                        != MessageBoxResult.Yes) return;
+                using (var waiting = new WaitingDialog()) {
+                    waiting.Report("Loading cars…");
+                    await CarsManager.Instance.EnsureLoadedAsync();
+                    waiting.Report("Loading tracks…");
+                    await TracksManager.Instance.EnsureLoadedAsync();
+                    waiting.Report("Clearing…");
+                    var cars = CarsManager.Instance.Select(x => x.Id).ToList();
+                    var tracks = TracksManager.Instance.SelectMany(x => x.MultiLayouts?.Select(y => y.IdWithLayout) ?? new[] { x.Id }).ToList();
+                    await PlayerStatsManager.Instance.RebuildAndFilterAsync(s => cars.Contains(s.CarId) && tracks.Contains(s.TrackId));
                 }
             }));
 
             private double _columns;
 
             public double Columns {
-                get { return _columns; }
+                get => _columns;
                 set => Apply(value, ref _columns);
             }
         }

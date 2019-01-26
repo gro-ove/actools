@@ -31,6 +31,7 @@
         /// Seconds from 00:00.
         /// </summary>
         public static readonly int TimeMaximum = 18 * 60 * 60;
+        public static readonly int TimeAbsoluteMaximum = 24 * 60 * 60 - 60;
 
         public static readonly double TemperatureMinimum = 0d;
         public static readonly double TemperatureMaximum = 36d;

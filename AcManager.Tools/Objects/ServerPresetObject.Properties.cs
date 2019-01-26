@@ -713,7 +713,7 @@ namespace AcManager.Tools.Objects {
         public double TimeMultiplier {
             get => _timeMultiplier;
             set {
-                value = value.Clamp(0, 60).Round();
+                value = value.Clamp(0, 3600);
                 if (Equals(value, _timeMultiplier)) return;
                 _timeMultiplier = value;
                 if (Loaded) {

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -77,9 +79,12 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(() => {
-                QuickDrive.Show(track: SelectedTrackConfiguration);
-            }, () => SelectedTrackConfiguration.Enabled));
+            public DelegateCommand DriveOptionsCommand
+                =>
+                        _driveOptionsCommand
+                                ?? (_driveOptionsCommand =
+                                        new DelegateCommand(() => { QuickDrive.Show(track: SelectedTrackConfiguration); },
+                                                () => SelectedTrackConfiguration.Enabled));
 
             public HierarchicalItemsView QuickDrivePresets {
                 get => _quickDrivePresets;
@@ -97,9 +102,8 @@ namespace AcManager.Pages.Selected {
 
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
-                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue), p => {
-                        QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget();
-                    });
+                    QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
+                            p => { QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget(); });
                 }
             }
 
@@ -120,18 +124,123 @@ namespace AcManager.Pages.Selected {
                     new AsyncCommand<bool>(v => TrackMapRendererWrapper.Run(SelectedTrackConfiguration, v),
                             v => !v || SelectedTrackConfiguration.AiLaneFastExists));
 
-            private AsyncCommand<string> _outlineSettingsCommand;
+            private AsyncCommand _bakeShadersCommand;
 
-            public AsyncCommand<string> OutlineSettingsCommand => _outlineSettingsCommand ?? (_outlineSettingsCommand = new AsyncCommand<string>(async layoutId => {
-                if (layoutId == null) {
-                    await TrackOutlineRendererWrapper.Run(SelectedTrackConfiguration);
-                } else {
-                    var layout = SelectedObject.GetLayoutByLayoutId(layoutId);
-                    if (layout == null) return;
+            public AsyncCommand BakeShadersCommand => _bakeShadersCommand ?? (_bakeShadersCommand = new AsyncCommand(async () => {
+                try {
+                    var fxc = FileRelatedDialogs.Open(new OpenDialogParams {
+                        DirectorySaveKey = "fxclocation",
+                        Filters = { new DialogFilterPiece("Shaders compiler", "fxc.exe"), DialogFilterPiece.Applications },
+                        InitialDirectory = "C:/Program Files (x86)/Microsoft DirectX SDK (June 2010)/Utilities/bin/x64",
+                        Title = "Select shaders compiler",
+                        UseCachedIfAny = true
+                    });
+                    if (fxc == null) return;
 
-                    await TrackOutlineRendererWrapper.UpdateAsync(layout);
+                    var cbuffersCommon = FileRelatedDialogs.Open(new OpenDialogParams {
+                        DirectorySaveKey = "cbuffersCommon",
+                        Filters = { new DialogFilterPiece("CBuffers common file", "cbuffers_common.fx") },
+                        Title = "Select cbuffers_common.fx from shaders repo"
+                    });
+                    if (cbuffersCommon == null) return;
+
+                    using (var waiting = WaitingDialog.Create("Baking shaders…")) {
+                        var cancellation = waiting.CancellationToken;
+                        Logging.Here();
+
+                        waiting.Report("Loading KN5s with list of materials…");
+                        var materials = await Task.Run(() => {
+                            return ((IEnumerable<TrackObjectBase>)SelectedObject.MultiLayouts ?? new[] { SelectedObject.MainTrackObject })
+                                    .SelectMany(x => File.Exists(x.ModelsFilename)
+                                            ? GetModelsNames(new IniFile(x.ModelsFilename)).Select(y => Path.Combine(x.Location, y))
+                                            : new[] { Path.Combine(x.Location, x.Id + ".kn5") })
+                                    .Distinct()
+                                    .Where(File.Exists)
+                                    .Select(x => cancellation.IsCancellationRequested ? null : Kn5.FromFile(x, SkippingTextureLoader.Instance))
+                                    .NonNull()
+                                    .SelectMany(x => x.Materials.Values)
+                                    .GroupBy(x => x.Name)
+                                    .Select(x => x.First())
+                                    .ToList();
+                        });
+                        if (cancellation.IsCancellationRequested) return;
+
+                        Logging.Debug("Materials: " + materials.Select(x => x.Name).JoinToString(", "));
+                        var destination = Path.Combine(SelectedObject.MainTrackObject.Location, "cache");
+                        FileUtils.EnsureDirectoryExists(destination);
+
+                        var recreated = Path.GetDirectoryName(Path.GetDirectoryName(Path.GetDirectoryName(cbuffersCommon)));
+
+                        var j = 0;
+                        for (var i = 0; i < materials.Count; i++) {
+                            var material = materials[i];
+                            Logging.Debug("material: " + material.Name);
+                            Logging.Debug("shader: " + material.ShaderName);
+
+                            foreach (var property in material.ShaderProperties) {
+                                if (property.Name == "ksEmissive") {
+                                    Logging.Debug("property: " + property.Name + "=" + property.ValueC.JoinToString(", "));
+                                } else {
+                                    Logging.Debug("property: " + property.Name + "=" + property.ValueA);
+                                }
+                            }
+
+                            var baked = $@"{recreated}\include_new\base\cbuffers_baked.fx";
+                            File.WriteAllLines(baked, material.ShaderProperties.Select(x => {
+                                if (x.Name == "ksEmissive") {
+                                    return $"#define {x.Name} float3({x.ValueC.JoinToString(", ")})";
+                                } else {
+                                    return $"#define {x.Name} {x.ValueA}";
+                                }
+                            }));
+
+                            foreach (var mode in new[] {
+                                "MAIN_FX", "MAIN_NOFX", "SIMPLIFIED_FX", "SIMPLIFIED_NOFX"
+                            }) {
+                                foreach (var type in new[] {
+                                    "ps", "vs"
+                                }) {
+                                    if (cancellation.IsCancellationRequested) return;
+                                    waiting.Report(
+                                            $"Compiling “{material.Name}” ({(type == "ps" ? "pixel shader" : "vertex shader")}, mode: {mode.ToLowerInvariant()})…",
+                                            j++, materials.Count * 4 * 2);
+
+                                    var shader = $@"{recreated}\{material.ShaderName}_{type}.fx";
+                                    var compiled = Path.Combine(destination, $"{mode.ToLowerInvariant()}_{material.Name}_{type}.fxo");
+                                    await ProcessExtension.Start(fxc, new[] {
+                                        "/T", $"{type}_5_0", "/Ni", "/nologo", "/O3", "/E", "main", shader, "/Fo" + compiled, $"/DMODE_{mode}=1",
+                                        "/DMODE_BAKED=1"
+                                    }, new ProcessStartInfo {
+                                        WindowStyle = ProcessWindowStyle.Hidden,
+                                    }).WaitForExitAsync();
+                                }
+                                File.Copy($@"{AcRootDirectory.Instance.RequireValue}\system\shaders\win\{material.ShaderName}_meta.ini",
+                                        Path.Combine(destination, $"{mode.ToLowerInvariant()}_{material.Name}_meta.ini"));
+                            }
+                        }
+                    }
+
+                    IEnumerable<string> GetModelsNames(IniFile file) {
+                        return file.GetSections("MODEL").Concat(file.GetSections("DYNAMIC_OBJECT")).Select(x => x.GetNonEmpty("FILE")).NonNull();
+                    }
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t load color grading texture", "Make sure it’s a volume DDS texture.", e);
                 }
             }));
+
+            private AsyncCommand<string> _outlineSettingsCommand;
+
+            public AsyncCommand<string> OutlineSettingsCommand
+                => _outlineSettingsCommand ?? (_outlineSettingsCommand = new AsyncCommand<string>(async layoutId => {
+                    if (layoutId == null) {
+                        await TrackOutlineRendererWrapper.Run(SelectedTrackConfiguration);
+                    } else {
+                        var layout = SelectedObject.GetLayoutByLayoutId(layoutId);
+                        if (layout == null) return;
+
+                        await TrackOutlineRendererWrapper.UpdateAsync(layout);
+                    }
+                }));
 
             private AsyncCommand<string> _updateOutlineCommand;
 
@@ -286,15 +395,18 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _manageSkinsCommand;
 
-            public DelegateCommand ManageSkinsCommand => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => {
-                TrackSkinsListPage.Open(SelectedObject);
-            }));
+            public DelegateCommand ManageSkinsCommand
+                => _manageSkinsCommand ?? (_manageSkinsCommand = new DelegateCommand(() => { TrackSkinsListPage.Open(SelectedObject); }));
 
             private DelegateCommand _viewSkinsResultCommand;
 
-            public DelegateCommand ViewSkinsResultCommand => _viewSkinsResultCommand ?? (_viewSkinsResultCommand = new DelegateCommand(() => {
-                WindowsHelper.ViewDirectory(SelectedObject.DefaultSkinDirectory);
-            }));
+            public DelegateCommand ViewSkinsResultCommand
+                =>
+                        _viewSkinsResultCommand
+                                ?? (_viewSkinsResultCommand = new DelegateCommand(() => { WindowsHelper.ViewDirectory(SelectedObject.DefaultSkinDirectory); }));
+
+            public AsyncCommand ClearStatsCommand => SelectedObject.ClearStatsCommand;
+            public AsyncCommand ClearStatsAllCommand => SelectedObject.ClearStatsAllCommand;
         }
 
         protected override void OnVersionInfoBlockClick(object sender, MouseButtonEventArgs e) {

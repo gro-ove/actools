@@ -353,6 +353,8 @@ namespace AcManager.Pages.Selected {
             public DelegateCommand CarAnalyzerCommand
                 => _carAnalyzerCommand ?? (_carAnalyzerCommand = new DelegateCommand(() => { CarAnalyzer.Run(SelectedObject); }));
 
+            public AsyncCommand ClearStatsCommand => SelectedObject.ClearStatsCommand;
+
             #region Specs editor
             private const string KeyRecalculatePwRatioAutomatically = "SelectedCarPage.RecalculatePwRatioAutomatically";
             private bool _recalculatePwRatioAutomatically = ValuesStorage.Get(KeyRecalculatePwRatioAutomatically, true);

@@ -41,6 +41,10 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             return AcStringValues.IsAppropriateId(id) ? id : null;
         }
 
+        protected override string GetBaseName() {
+            return Path.GetFileNameWithoutExtension(Filename);
+        }
+
         private class ArchiveDirectoryInfo : IDirectoryInfo {
             public ArchiveDirectoryInfo(ZipArchiveEntry archiveEntry) {
                 Key = archiveEntry.FullName.Replace('/', '\\').ApartFromLast("\\");

@@ -210,6 +210,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnSelectedLinkChanged(Link oldValue, Link newValue) {
+            if (_isSelecting) return;
+
             if (oldValue != null) {
                 oldValue.PropertyChanged -= OnLinkPropertyChanged;
             }
@@ -362,7 +364,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // find the current select group and link based on the selected source
                 var linkInfo = (from g in LinkGroups
                                 from l in g.Links
-                                where l.Source == SelectedSource
+                                where l.Source.SamePath(SelectedSource)
                                 select new {
                                     Group = g,
                                     Link = l
@@ -382,6 +384,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 }
             }
 
+            _isSelecting = true;
             ReadOnlyLinkGroupCollection groups = null;
             if (selectedGroup != null) {
                 // ensure group itself maintains the selected link
@@ -397,7 +400,6 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 _groupMap.TryGetValue(groupKey, out groups);
             }
 
-            _isSelecting = true;
             // update selection
             SetValue(VisibleLinkGroupsPropertyKey, groups);
             SetCurrentValue(SelectedLinkGroupProperty, selectedGroup);
