@@ -306,9 +306,9 @@
     <comment>Put “-” and Nth value will be used</comment>
   </data>
   <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>-</value>
+    <value>ждж</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
     <value>-</value>
     <comment>Put “-” and Nth value will be used</comment>
@@ -634,5 +634,11 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>DDS-файлы (*.dds)|*.dds|Все файлы (*.*)|*.*</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Добавьте сервер в список скрытых серверов (найдите “@hidden” чтобы открыть это)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Удалить сервер из списка скрытых серверов</value>
   </data>
 </root>

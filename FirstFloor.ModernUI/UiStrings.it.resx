@@ -127,11 +127,11 @@
     <value>Caricati {0} di {1}</value>
   </data>
   <data name="Progress_Uploading" xml:space="preserve">
-    <value>Uploaded {0}</value>
-  </data>
+    <value>Caricato {0}</value>
+  <alternative>Uploaded {0}</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Uploaded {0} di {1}</value>
-  </data>
+    <value>Caricato {0} di {1}</value>
+  <alternative>Uploaded {0} di {1}</alternative></data>
   <data name="Back" xml:space="preserve">
     <value>Indietro</value>
   </data>
@@ -163,11 +163,11 @@
     <value>Connessione fallita</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
-    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
-  </data>
+    <value>Impossibile raggiungere {0}, non si è trovato il target ModernFrame '{1}'</value>
+  <alternative>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</alternative></data>
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
-    <value>Unable to navigate to {0}, no source specified</value>
-  </data>
+    <value>Impossibile raggiungere {0}, nessuna sorgente specificata</value>
+  <alternative>Unable to navigate to {0}, no source specified</alternative></data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>
@@ -178,23 +178,23 @@
     <value>Ripristina</value>
   </data>
   <data name="UIThreadRequired" xml:space="preserve">
-    <value>Operation requires the UI thread</value>
-  </data>
+    <value>L'operazione richiede il thread UI</value>
+  <alternative>Operation requires the UI thread</alternative></data>
   <data name="UnexpectedToken" xml:space="preserve">
     <value>Unexpected token</value>
   </data>
   <data name="UnknownOS" xml:space="preserve">
-    <value>Unknown operating system</value>
-  </data>
+    <value>Sistema operativo sconosciuto</value>
+  <alternative>Unknown operating system</alternative></data>
   <data name="UnknownTokenType" xml:space="preserve">
-    <value>Unknown token type</value>
-  </data>
+    <value>Tipo di token sconosciuto</value>
+  <alternative>Unknown token type</alternative></data>
   <data name="Yes" xml:space="preserve">
     <value>Si</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Newer version {0} is ready to be installed</value>
-  </data>
+    <value>La nuova versione {0} è pronta per l'installazione</value>
+  <alternative>Newer version {0} is ready to be installed</alternative></data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>File immagini|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Tutti i file (*.*)|*.*</value>
   <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
@@ -259,8 +259,8 @@
     <value>Freccia su</value>
   </data>
   <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Pick any color from screen</value>
-  </data>
+    <value>Scegli un colore tra quelli disponibili a schermo</value>
+  <alternative>Pick any color from screen</alternative></data>
   <data name="SelectColor" xml:space="preserve">
     <value>Seleziona un colore</value>
   </data>
@@ -271,8 +271,8 @@
     <value>Suggerimenti</value>
   </data>
   <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
-  </data>
+    <value>[url=cmd://copy]Copia[/url] i dettagli dell'errore negli appunti. Prova a [url=cmd://refresh]aggiornare[/url] questa pagina o andare [url=cmd://browseback]indietro[/url].</value>
+  <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative></data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
   </data>
@@ -289,23 +289,23 @@
     <value>Pausa</value>
   </data>
   <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
+    <value>Blocco maiuscole</value>
+  <alternative>Caps Lock</alternative></data>
   <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
+    <value>Tastierino numerico</value>
+  <alternative>Num Lock</alternative></data>
   <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
+    <value>Blocco scorrimento</value>
+  <alternative>Scroll Lock</alternative></data>
   <data name="KeyPrintScreen" xml:space="preserve">
     <value>Stampa schermata</value>
   <alternative>Print Screen</alternative></data>
   <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
-  </data>
+    <value>Inserisci</value>
+  <alternative>Insert</alternative></data>
   <data name="KeyDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
+    <value>Cancella</value>
+  <alternative>Delete</alternative></data>
   <data name="KeyHelp" xml:space="preserve">
     <value>Aiuto</value>
   </data>
@@ -319,23 +319,23 @@
     <value>Menu contestuale</value>
   </data>
   <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser Back</value>
-  </data>
+    <value>Browser Ritorna indietro</value>
+  <alternative>Browser Back</alternative></data>
   <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Favorites</value>
-  </data>
+    <value>Browser Preferiti</value>
+  <alternative>Browser Favorites</alternative></data>
   <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser Forward</value>
-  </data>
+    <value>Browser Avanti</value>
+  <alternative>Browser Forward</alternative></data>
   <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Home</value>
-  </data>
+    <value>Browser Pagina principale</value>
+  <alternative>Browser Home</alternative></data>
   <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser Refresh</value>
-  </data>
+    <value>Browser Aggiorna</value>
+  <alternative>Browser Refresh</alternative></data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser Search</value>
-  </data>
+    <value>Browser Cerca</value>
+  <alternative>Browser Search</alternative></data>
   <data name="KeyBrowserStop" xml:space="preserve">
     <value>Browser Stop</value>
   </data>
@@ -352,8 +352,8 @@
     <value>Traccia successiva</value>
   </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Play</value>
-  </data>
+    <value>Riproduci</value>
+  <alternative>Play</alternative></data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Traccia precedente</value>
   </data>
@@ -367,14 +367,14 @@
     <value>Avvia Mail</value>
   </data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
-    <value>Launch Favorite Application 1</value>
-  </data>
+    <value>Applicazione da lanciare preferita 1</value>
+  <alternative>Launch Favorite Application 1</alternative></data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
-    <value>Launch Favorite Application 2</value>
-  </data>
+    <value>Applicazione da lanciare preferita 2</value>
+  <alternative>Launch Favorite Application 2</alternative></data>
   <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
+    <value>Ingrandisci</value>
+  <alternative>Zoom</alternative></data>
   <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
     <value>EB</value>
   </data>
@@ -611,5 +611,8 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>file DDS (*.dds)|*.dds|All files (*.*)|*.*</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Copia[/url] i dettagli dell'errore negli appunti. Prova a [url=cmd://restart]riavviare[/url] questa app o semplicemente [url=cmd://exit]chiudi[/url].</value>
   </data>
 </root>

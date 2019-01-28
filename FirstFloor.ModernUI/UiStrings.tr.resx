@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Back" xml:space="preserve">
+    <value>Geri</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>İptal</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Kapat</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Ekle</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Oops!</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Lütfen bekleyin...</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>Uygulamada bir sorun oluştu ve yeniden başlatılması gerek. Eğer bize iletmek isterseniz lütfen ”Bi hata bildir” butonunu kullanın.</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Tümü</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>İleri</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Git</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Şifreyi Gizle</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Ana Sayfa</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Sol)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Sağ)</value>
+  </data>
+  <data name="KeyBackspace" xml:space="preserve">
+    <value>Geri Tuşu</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Tarayıcı Geri</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Tarayıcı Favorileri</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Tarayıcı İleri</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Tarayıcı Ana Sayfa</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Tarayıcı Yenile</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Tarayıcı Ara</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Tarayıcı Dur</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>Caps Lock</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (Sol)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (Sağ)</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Aşağı Ok Tuşu</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyEnter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>ESC</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Sol Yön Tuşu</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Bir Sonraki Pist</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Başlat</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Önceki Pist</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Dur</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Numpad {0}</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Duraklat</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Sağ Yön Tuşu</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Medyayı Seç</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Sol)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Sağ)</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Boşluk</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Yukarı Yön Tuşu</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Ses Azaltma Tuşu</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Sesi Susturma Tuşu</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Ses Arttırma Tuşu</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (Sol)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (Sağ)</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>Zoom</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>KISITLI</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>YENİ</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Büyüt</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Küçült</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Hayır</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>TAMAM</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>On sekizinci</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Sekizinci</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>On birinci</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>On beşinci</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Beşinci</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>İlk</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Ön dürdüncü</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Dördüncü</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Eksi {0}</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>On dokuzuncu</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Dokuzuncu</value>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>Sıfırıncı</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>İkinci</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>On yedinci</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Yedinci</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>On altıncı</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Altıncı</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Onuncu</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Üçündü</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>On üçüncü</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Otuzuncu</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Yirmi birinci</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>On ikinci</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Yirminci</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Yirmi sekizinci</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Yirmi beşinci</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Yirmi birinci</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Yirmi dördüncü</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Yirmi dokuzuncu</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Yirmi ikinci</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Yirmi yedinci</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Yirmi altıncı</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Yirmi üçüncü</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Sıfırıncı</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Bir renk seç</value>
+  </data>
+  <data name="PickColorFromScreen" xml:space="preserve">
+    <value>Ekrandan bir renk seç</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Renk seç</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} gün</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} saat</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} dakika</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} ay</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} saniye</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} hafta</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Evet</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>ve</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Favori</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Favoriyi Geri Al</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Gizle</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Göster</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Davet Et</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Sunucuyu favorilere ekle (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Sunucuyu favorilerden kaldır (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Sunucuyu gizli sunucu listesinden kaldır</value>
+  </data>
+</root>

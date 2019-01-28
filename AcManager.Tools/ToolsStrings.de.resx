@@ -613,11 +613,11 @@
     <value>Schadensmodell für Motor, Getriebe, Aufhängung, etc.</value>
   <alternative>Beschädigbarer Motor, Getriebe, Aufhängung und Co.</alternative><alternative>Schadensempfindlicher Motor, Getriebe, Aufhängung, etc.</alternative></data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
-    <value>Windschatteneffekt</value>
-  </data>
+    <value>Windschatten-Effekt</value>
+  <alternative>Windschatteneffekt</alternative></data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
-    <value>Multiplikator für Windschatteneffekt</value>
-  </data>
+    <value>Multiplikator für Windschatten-Effekt</value>
+  <alternative>Multiplikator für Windschatteneffekt</alternative></data>
   <data name="Assists_StabilityControl" xml:space="preserve">
     <value>Stabilitätskontrolle</value>
   </data>
@@ -634,8 +634,8 @@
     <value>Traktion beim Beschleunigen optimiert</value>
   </data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>Reifenheizdecken</value>
-  </data>
+    <value>Reifen-Heizdecken</value>
+  <alternative>Reifenheizdecken</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
     <value>Vorheizen der Reifen in der Box</value>
   <alternative>Wärmt Reifen in der Box vor</alternative></data>
@@ -1186,8 +1186,8 @@
     <value>“[url="http://assetto-db.com/track/{0}"]{0}[/url]”</value>
   </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
-    <value>{0} Runde(n)</value>
-  <alternative>{0} Runde</alternative></data>
+    <value>{0} Runde</value>
+  <alternative>{0} Runde(n)</alternative></data>
   <data name="Period_Month" xml:space="preserve">
     <value>Monat</value>
   </data>
@@ -1276,8 +1276,8 @@
     <value>Syntax-Fehler in {0} in {1} Zeile</value>
   </data>
   <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
-    <value>{0} Box</value>
-  </data>
+    <value>{0} Pitstop</value>
+  <alternative>{0} Box</alternative></data>
   <data name="TryAgainDot" xml:space="preserve">
     <value>Erneut versuchen.</value>
   </data>
@@ -1716,9 +1716,18 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
     <value>Eigene Vorlage für Vorschauen</value>
   </data>
   <data name="Shared_CustomShowroomPreset" xml:space="preserve">
-    <value>Eigene Vorlage für Ausstellungsräume</value>
-  </data>
+    <value>Eigene Vorlage für Showrooms:</value>
+  <alternative>Eigene Vorlage für Ausstellungsräume</alternative></data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Eigene Vorlage für Real Head Motion</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Gas</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Bremse</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Lenkung</value>
   </data>
 </root>

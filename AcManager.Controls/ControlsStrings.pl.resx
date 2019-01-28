@@ -575,8 +575,8 @@
     <value>Rozmiar</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
-    <value>Highlight size</value>
-  </data>
+    <value>Wyróżnij rozmiar</value>
+  <alternative>Highlight size</alternative></data>
   <data name="Common_MetersPostfix" xml:space="preserve">
     <value>m</value>
   </data>

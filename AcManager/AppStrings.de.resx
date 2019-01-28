@@ -354,8 +354,8 @@ Autor: [b]{3}[/b]</value>
     <value>Strecken</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Ausstellungsräume</value>
-  <alternative>Ausstellungsraum</alternative></data>
+    <value>Showrooms</value>
+  <alternative>Ausstellungsraum</alternative><alternative>Ausstellungsräume</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Verschiedenes</value>
   </data>
@@ -399,8 +399,8 @@ Autor: [b]{3}[/b]</value>
     <value>Fahrzeuge:</value>
   <alternative>Autos:</alternative></data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Ausstellungsräume:</value>
-  </data>
+    <value>Showrooms::</value>
+  <alternative>Ausstellungsräume:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Schriftarten:</value>
   <alternative>Schriftarten</alternative></data>
@@ -486,8 +486,8 @@ Autor: [b]{3}[/b]</value>
     <value>Zeitmultiplikator</value>
   </data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>Reifenheizdecken</value>
-  <alternative>Reifenheizdecke</alternative></data>
+    <value>Reifen-Heizdecken</value>
+  <alternative>Reifenheizdecke</alternative><alternative>Reifenheizdecken</alternative></data>
   <data name="Drive_Penalties" xml:space="preserve">
     <value>Strafen</value>
   </data>
@@ -731,8 +731,8 @@ Autor: [b]{3}[/b]</value>
     <value>Getriebeverluste</value>
   </data>
   <data name="CarPreviews_Title" xml:space="preserve">
-    <value>Vorschau aktualisieren</value>
-  </data>
+    <value>Vorschauen aktualisieren</value>
+  <alternative>Vorschau aktualisieren</alternative></data>
   <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
     <value>Kameraposition:</value>
   </data>
@@ -770,8 +770,8 @@ Autor: [b]{3}[/b]</value>
     <value>Showroom “{0}” nicht installierbar</value>
   <alternative>Ausstellungsraum “{0}” nicht installierbar</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
-    <value>Vorschau kann nicht gespeichert werden</value>
-  </data>
+    <value>Vorschauen können nicht gespeichert werden</value>
+  <alternative>Vorschau kann nicht gespeichert werden</alternative></data>
   <data name="CarPreviews_Manual" xml:space="preserve">
     <value>Manuell</value>
   </data>
@@ -1364,8 +1364,8 @@ Autor: [b]{3}[/b]</value>
     <value>Wikipedia als Standard nutzen</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Vorschau von üblichen Ausstellungsräumen herunterladen</value>
-  <alternative>Vorschau von üblichen Ausstellungsräumen runterladen</alternative></data>
+    <value>Vorschauen von üblichen Showrooms herunterladen</value>
+  <alternative>Vorschau von üblichen Ausstellungsräumen runterladen</alternative><alternative>Vorschau von üblichen Ausstellungsräumen herunterladen</alternative></data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
     <value>Überstrahlung nutzen</value>
   </data>
@@ -1424,8 +1424,8 @@ Autor: [b]{3}[/b]</value>
     <value>Nicht geteste Updates erlauben</value>
   <alternative>Nicht geteste Aktualisierungen erlauben</alternative></data>
   <data name="Settings_General_ValuesNumber" xml:space="preserve">
-    <value>{0} Einträge</value>
-  <alternative>{0} Eintrag</alternative></data>
+    <value>{0} Eintrag</value>
+  <alternative>{0} Einträge</alternative></data>
   <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
     <value>Soll der Pfad geändert werden? Programm wird neugestartet.</value>
   </data>
@@ -2043,8 +2043,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
     <value>ID: {0}</value>
   </data>
   <data name="Common_Share" xml:space="preserve">
-    <value>Teilen</value>
-  <alternative>Teile</alternative></data>
+    <value>Link Teilen</value>
+  <alternative>Teile</alternative><alternative>Teilen</alternative></data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Aktuelle Einstellungen teilen (Strg+Bild Auf)</value>
   </data>
@@ -2172,32 +2172,32 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
     <value>Wetter:</value>
   </data>
   <data name="List_Apps" xml:space="preserve">
-    <value>{0} App(s)</value>
-  <alternative>{0} App</alternative></data>
+    <value>{0} App</value>
+  <alternative>{0} App(s)</alternative></data>
   <data name="List_Cars" xml:space="preserve">
     <value>{0} Fahrzeuge</value>
   <alternative>{0} Fahrzeug</alternative></data>
   <data name="List_Fonts" xml:space="preserve">
-    <value>{0} Schriftart(en)</value>
-  <alternative>{0} Schrift</alternative></data>
+    <value>{0} Schriftart</value>
+  <alternative>{0} Schrift</alternative><alternative>{0} Schriftart(en)</alternative></data>
   <data name="List_PpFilters" xml:space="preserve">
     <value>{0} Filter</value>
   </data>
   <data name="List_Replays" xml:space="preserve">
-    <value>{0} Wiederholung(en)</value>
-  <alternative>{0} Wiederholung</alternative></data>
+    <value>{0} Wiederholung</value>
+  <alternative>{0} Wiederholung(en)</alternative></data>
   <data name="List_Setups" xml:space="preserve">
     <value>{0} Setup</value>
   </data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} Ausstellungsräume</value>
-  <alternative>{0} Showroom</alternative></data>
+    <value>{0} Showroom</value>
+  <alternative>{0} Ausstellungsräume</alternative></data>
   <data name="List_Skins" xml:space="preserve">
-    <value>{0} Lackierung(en)</value>
-  <alternative>{0} Fahrzeuglackierung</alternative><alternative>{0} Fahrzeuglackierung(en)</alternative></data>
+    <value>{0} Lackierung</value>
+  <alternative>{0} Fahrzeuglackierung</alternative><alternative>{0} Fahrzeuglackierung(en)</alternative><alternative>{0} Lackierung(en)</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
-    <value>{0} Strecke(n)</value>
-  <alternative>{0} Strecke</alternative></data>
+    <value>{0} Strecke</value>
+  <alternative>{0} Strecke(n)</alternative></data>
   <data name="List_Weather" xml:space="preserve">
     <value>{0} Wetter</value>
   </data>
@@ -2232,8 +2232,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Lizenz[/url].</alternative
     <value>Schnell</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Letzte Rundenzeiten</value>
-  <alternative>Kürzliche Rundenzeiten</alternative></data>
+    <value>Letzte</value>
+  <alternative>Kürzliche Rundenzeiten</alternative><alternative>Letzte Rundenzeiten</alternative></data>
   <data name="Main_Setups" xml:space="preserve">
     <value>Setups</value>
   </data>
@@ -2858,8 +2858,8 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
     <value>Fahrzeug im Showroom betrachten (Strg+H)</value>
   <alternative>Fahrzeug im Ausstellungsraum betrachten (Strg+H)</alternative></data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>Filter im Austellungsraum testen (Strg+G)</value>
-  <alternative>Filter im Showroom testen (Strg+G)</alternative></data>
+    <value>Filter im Showroom testen (Strg+G)</value>
+  <alternative>Filter im Austellungsraum testen (Strg+G)</alternative></data>
   <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
     <value>Test Setup (Strg+G)</value>
   </data>
@@ -2897,8 +2897,8 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
     <value>Wettervorschau aktualisieren (Strg+P)</value>
   </data>
   <data name="Toolbar_UpdatePreviews" xml:space="preserve">
-    <value>Vorschau aktualisieren</value>
-  </data>
+    <value>Vorschauen aktualisieren</value>
+  <alternative>Vorschau aktualisieren</alternative></data>
   <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
     <value>Alle Vorschauen aktualisieren (Strg+P)</value>
   </data>
@@ -2981,8 +2981,8 @@ Wenn du noch andere Worte benötigst, bitte kontaktiere uns und wir werden sie h
     <value>[url="{0}"]{1}[/url] ist nicht installiert. Jetzt installieren?</value>
   </data>
   <data name="List_ServerPresets" xml:space="preserve">
-    <value>{0} Vorlage(en)</value>
-  <alternative>{0} Voreinstellung(en)</alternative></data>
+    <value>{0} Vorlage</value>
+  <alternative>{0} Voreinstellung(en)</alternative><alternative>{0} Vorlage(en)</alternative></data>
   <data name="Common_ShootingCancelled" xml:space="preserve">
     <value>Abgebrochen</value>
   </data>
@@ -3439,8 +3439,8 @@ Wenn du keine 200 MB verschwenden möchest: TIFF-Format, 96 bit per pixel, ZIP</
     <value>Wähle Aufsteigend, wenn du die schlaueste KI hinten starten lassen willst.</value>
   </data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Wähle Ausstellungsräume, Filter, etc.</value>
-  </data>
+    <value>Wähle Showrooms, Filter, etc.</value>
+  <alternative>Wähle Ausstellungsräume, Filter, etc.</alternative></data>
   <data name="Solution_SetupLivery_Details" xml:space="preserve">
     <value>Wähle eine neues Lackierungs-Symbol mit dem Symbol-Editor</value>
   </data>
@@ -3577,5 +3577,8 @@ Gültige Werte liegen zwischen -1 und 1.</alternative></data>
   </data>
   <data name="WeatherEdit_CutOff" xml:space="preserve">
     <value>Begrenzung</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>... Leistung an den Reifen</value>
   </data>
 </root>

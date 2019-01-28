@@ -344,8 +344,8 @@
     <value>Siguiente Pista</value>
   </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Play</value>
-  </data>
+    <value>Reproducir</value>
+  <alternative>Play</alternative></data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Pista Previa</value>
   </data>
@@ -609,5 +609,8 @@
   </data>
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}:</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>Archivos DDS (*.dds)|*.dds|Todos los archivos (*.*)|*.*</value>
   </data>
 </root>

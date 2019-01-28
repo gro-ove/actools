@@ -283,23 +283,23 @@ Autore: [b]{3}[/b]</value>
     <value>Nuovo nome sarà: "{0}"!</value>
   </data>
   <data name="Solution_SetBrandName" xml:space="preserve">
-    <value>Imposta marchio</value>
-  </data>
+    <value>Imposta marca</value>
+  <alternative>Imposta marchio</alternative></data>
   <data name="Solution_SetBrandName_Details" xml:space="preserve">
     <value>Basta impostare un nuovo nome</value>
   </data>
   <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
-    <value>Immettere un nuovo marchio:</value>
-  </data>
+    <value>Immettere una nuova marca:</value>
+  <alternative>Immettere un nuovo marchio:</alternative></data>
   <data name="Common_NewBrandName" xml:space="preserve">
-    <value>Nuova marchio</value>
-  </data>
+    <value>Nuova marca</value>
+  <alternative>Nuova marchio</alternative></data>
   <data name="Solution_SetBrandNameFromName" xml:space="preserve">
-    <value>Imposta nome del marchio basato sul nome dell'auto</value>
-  </data>
+    <value>Imposta nome della marca basato sul nome dell'auto</value>
+  <alternative>Imposta nome del marchio basato sul nome dell'auto</alternative></data>
   <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
-    <value>Nuova marchio sarà: "{0}"</value>
-  </data>
+    <value>Nuova marca sarà: "{0}"</value>
+  <alternative>Nuova marchio sarà: "{0}"</alternative></data>
   <data name="Solution_RemoveObject" xml:space="preserve">
     <value>Rimuovi oggetto</value>
   </data>
@@ -716,8 +716,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Seleziona badge {0}</value>
   </data>
   <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
-    <value>Imposta il badge del marchio da Content Storage</value>
-  </data>
+    <value>Imposta il badge della marca da Content Storage</value>
+  <alternative>Imposta il badge del marchio da Content Storage</alternative></data>
   <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
     <value>Scegli un nuovo badge del marchio dalla lista</value>
   </data>
@@ -743,8 +743,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Sposta in una cartella generica</value>
   </data>
   <data name="Solution_FindTrack_Details" xml:space="preserve">
-    <value>Prova a trovare track online</value>
-  </data>
+    <value>Prova a cercare Circuito online</value>
+  <alternative>Prova a trovare track online</alternative></data>
   <data name="Solution_Enable_Details" xml:space="preserve">
     <value>Sposta font da "fonts-off" a "fonts"</value>
   </data>
@@ -848,11 +848,11 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Motore di ricerca:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>Guarda Wikipedia per predefinito</value>
-  </data>
+    <value>Guarda Wikipedia come impostazione predefinita</value>
+  <alternative>Guarda Wikipedia per predefinito</alternative></data>
   <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
-    <value>Cambia automaticamente icona del marchio</value>
-  </data>
+    <value>Cambia automaticamente icona della marca</value>
+  <alternative>Cambia automaticamente icona del marchio</alternative></data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">
     <value>Auto:</value>
   </data>
@@ -869,11 +869,11 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Un valore minore può aumentare la risposta della UI, ma diminuiscono i tempi di caricamento</value>
   </data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
-    <value>Per esempio, disbilitandolo</value>
-  </data>
+    <value>Per esempio, disabilitandolo</value>
+  <alternative>Per esempio, disbilitandolo</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
-    <value>Aggiungi “site:wikipedia.org” come predefinito</value>
-  </data>
+    <value>Aggiungi “site:wikipedia.org” come default</value>
+  <alternative>Aggiungi “site:wikipedia.org” come predefinito</alternative></data>
   <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
     <value>Dubito tu abbia tempo di caricarli tutti</value>
   </data>
@@ -881,11 +881,11 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Un simbolo che verrà utilizzato per l'icona</value>
   </data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
-    <value>Usa come predefinito</value>
-  </data>
+    <value>Usa come default</value>
+  <alternative>Usa come predefinito</alternative></data>
   <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
-    <value>Lite Showroom è DirectX10 compatibile , molto più semplice e più facile per una scheda video. La soluzione perfetta per disegnare skins.</value>
-  </data>
+    <value>Lite Showroom è compatibile con le DirectX10, molto più semplice e più facile per una scheda video. La soluzione perfetta per disegnare skins.</value>
+  <alternative>Lite Showroom è DirectX10 compatibile , molto più semplice e più facile per una scheda video. La soluzione perfetta per disegnare skins.</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
     <value>Auto-regolazione perno camera</value>
   </data>
@@ -908,8 +908,8 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Usa FXAA</value>
   </data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>Showroom predefinito:</value>
-  </data>
+    <value>Showroom default:</value>
+  <alternative>Showroom predefinito:</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
     <value>Tenere premuto Ctrl quando si sceglie di selezionare l'altro</value>
   </data>
@@ -3432,8 +3432,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
     <value>Ordinamento auto AI:</value>
   </data>
   <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
-    <value>Set to Ascending if you want smartest bot to start in the end of starting grid</value>
-  </data>
+    <value>Seleziona "Ascendente" se vuoi che il bot più forte parta dal fondo della griglia di partenza</value>
+  <alternative>Set to Ascending if you want smartest bot to start in the end of starting grid</alternative></data>
   <data name="Main_Profile" xml:space="preserve">
     <value>Profilo</value>
   </data>
@@ -3520,5 +3520,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
   </data>
   <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
     <value>Apri cartella modelli</value>
+  </data>
+  <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
+    <value>Ripiega allo starter ufficiale se il launcher originale non è in esecuzione</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>...par</value>
   </data>
 </root>

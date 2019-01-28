@@ -51,7 +51,7 @@
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Translation:" Margin="0 12 0 0" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"
-            Text="Alessandro Branchi, Alexandr (alexandrvob), Chris33, Gerard Rex, Krom &amp; Joshker, Roberto Zagallo, Shijie Zhang (St3fan), Stanislav Minakov." />
+            Text="AJ, Alex, Alessandro Branchi, Alexandr (alexandrvob), Chris33, Christian Rask, Epistolarius, Gerard Rex, Fetzcat, Haluk, kevin, Krom &amp; Joshker, J D, jimke, Mumaransa, Roberto Zagallo, shadow118, Shijie Zhang (St3fan), Stanislav Minakov, Tesla Hunt, Tuomas, Vanildo Junior, Xeins." />
 
         <TextBlock Style="{StaticResource Label.Padding}" Text="Ideas, reports and testing:" />
         <mui:SelectableBbCodeBlock Margin="-4 4 0 12" FontSize="{DynamicResource SmallFontSize}"

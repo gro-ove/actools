@@ -1,0 +1,1687 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>Nav markas logo!</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>Nav markas nosaukuma!</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Nav mašīnas numura "{0}"</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Nav mašīnas vecāka</value>
+  </data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>Nav faila "colorCurves.ini"</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Nav "ui" mapes</value>
+  </data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Notikuma apstāklis “{0}” vēl netiek atbalstīts; mēģini vēlreiz vēlāk.</value>
+  </data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>Notikums “{0}” trūkst</value>
+  </data>
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
+    <value>Fails “{0}” ir bojāts</value>
+  </data>
+  <data name="AcError_FileIsMissing" xml:space="preserve">
+    <value>Nav faila "{0}"</value>
+  </data>
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+    <value>Nav fonta .bmp faila</value>
+  </data>
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+    <value>Fonts tiek lietots, bet ir atspējots</value>
+  </data>
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
+    <value>Lādējot nepārvaldīta kļūda: {0}</value>
+  </data>
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+    <value>Nav modeļa (KN5 faila)</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Nav vārda</value>
+  </data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>Vārds nevar saturēt simbolus kā "[" vai "]"</value>
+  </data>
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+    <value>Ir nepieciešama mašīna "{0}", bet tās nav</value>
+  </data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>Nav nepieciešamā satura</value>
+  </data>
+  <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
+    <value>Nav nepieciešamā skina "{1}" priekš {0}</value>
+  </data>
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+    <value>Nav nepieciešamās trases "{0}"</value>
+  </data>
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+    <value>Nav nepieciešamo laikapstākļu "{0}"</value>
+  </data>
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+    <value>Nav uzstādījuma trases ({0})</value>
+  </data>
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Nav skina krāsojuma ({0}/livery.png)</value>
+  </data>
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Nav skina priekšskatījuma attēla ({0}/preview.jpg)</value>
+  </data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Nav skinu</value>
+  </data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Skinu mape nav pieejama. To, iespējams, izmanto kāda cita programma.</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>Nav trases "{0}"</value>
+  </data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Nav uzlabojumu ikonas</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>To nevar atspējot</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>To nevar pārvietot</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>Nevar nomainīt ID</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>Nevar nomainīt ID: {0}</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Nevar klonēt šo objektu</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka diskā ir pietiekami daudz brīvas vietas.</value>
+  </data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Nevar izdzēst</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Nevar iegūt ID</value>
+  </data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>Nevar izdzēst esošo mapi</value>
+  </data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Nevar pārslēgt</value>
+  </data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka objekta mape nav atvērta citā aplikācijā</value>
+  </data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>Nevar pārslēgt: {0}</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Piedod, bet šāda veida objektu nevar atspējot.</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>Šis ID nav pareizs!</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Šis vairs nav derīgs</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Šī vieta ir aizņemta</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Pārlādēt šo failu?</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI fails ir izmainīts. Ja pārlādēsiet, visas lokālās izmaiņas tiks pazaudētas.</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON fails ir izmainīts. Ja pārlādēsiet, visas lokālās izmaiņas tiks pazaudētas.</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Nav mapes</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>Šāda ceļa, "{0}", nav</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>Šāda faila, "{0}", nav</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Faila ceļu nevarēja definēt</value>
+  </data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>Nepieciešama spēles saknes mape</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>Viens monitors</value>
+  </data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>Trīs monitori</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Nevar iegūt pareizu izšķirtspēju sarakstu</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Nevar saglabāt spēles iestatījumus</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Lūdzu pārliecinies, ka aplikācijai ir pieeja Assetto Corsa .cfg mapei.</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>Piecas virmsas uz kadru</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>Četras virsmas uz kadru</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>Viena virsma uz kadru</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>Sešas virsmas uz kadru</value>
+  </data>
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
+    <value>Statiska</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>Trīs virsmas uz kadru</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>Divas virsmas uz kadru</value>
+  </data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>Pielāgots</value>
+  </data>
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
+    <value>{0} (eksperimentāls)</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Izsl.</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>Augsta</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ieteicamā</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Zema</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Maksimālā</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Vidēja</value>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Minimālā</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normāla</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Apakšpikselis</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+    <value>Ļoti augsta</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Ļoti zema</value>
+  </data>
+  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
+    <value>{0}×{1}, {2} Hz</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>.bmp (bez kompresijas)</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>.jpg</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>Atļaut spēles aplikācijām vienai ar otru pārklāties</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Kamera:</value>
+  </data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>Rādīt bojājumu GUI</value>
+  </data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>Rādīt braucēju vārdus</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-spēki</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Skata leņķis</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Skata ātrums</value>
+  </data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Paslēpt braucēja rokas</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Paslēpt virtuālo stūri</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Liela-ātruma kratīšanās</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Sāniski</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Rādīt līderu sarakstu</value>
+  </data>
+  <data name="AcSettings_View_LockCamera" xml:space="preserve">
+    <value>Fiksēt iekšējo kameru pie horizonta</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Slēgts</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Fiksēt stūri</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Gareniski</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Stūrēšanas grādu limits</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Šis ierobežo, cik daudz virtuālā stūre var pagriezties. Tas neietekmē braukšanu</value>
+  </data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>Rādīt laika atstarpes starp pretiniekiem</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Vienības:</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Vertikāli</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Skats:</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Rādīt virtuālos spoguļus</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>mašīna</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>mašīnas skins</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>fonts</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>izstādes telpa</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>trase</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>Laikapstākļi:</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Pieeja liegta!</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Nevar atjaunināt aplikāciju; tev nav atļaujas. Mēģini palaist kā administrators vai atjaunini manuāli.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Nevar atjaunināt aplikāciju; tev nav atļaujas no administratora.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Nevar ielādēt jaunu versiju!</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Pārbaudi savu internetu un pārliecinies, ka aplikācijai ir tiesības rakstīt šajā mapē.</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Nevar ielādēt jaunu versiju!</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>Nevar izdzēst oriģinālo failu "{0}" lai uzinstalētu atjauninājumu. Mēģini to izdzēst manuāli un sāc no jauna.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
+    <value>Nevar apstrādāt atjauninājumu: {0}. Mēģini instalēt jauno versiju manuāli.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Nevar atjaunināt aplikāciju</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Atpakotā versija neatbalsta automātisko atjaunināšanu.</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Atjaunināšana neizdevās!</value>
+  </data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>Atpakošana neizdevās.</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Parole nav derīga!</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Vajadzīga parole</value>
+  </data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Piedod, bet {0} šifrēšana netiek atbalstīta</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS:</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Bremžu pretbloķēšanās sistēma</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Auto-blip</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automatically synchronize RPM on downshifts by tapping the gas pedal.</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automātiskais sajūgs</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automātiski nospiež sajūgu pārslēdzot ātrumus</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Atomātiska ātrumu pārslēgšana</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Nejaukt ar automātisko kārbu</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Degvielas patēriņš</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideālā trajektorija</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Parāda ātrāko trajektoriju pa trasi.</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mehāniskie bojājumi</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Mašīnas bojājumi ietekmēs piekari, aerodinamiku un pat dzinēju.</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Draftošana</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Reizinātājs draftošanas efektam</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Stabilitātes kontrole</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Automātiski bremzē atsevišķus riteņus, lai nodrošinātu stabilitāti pirms kontroles zaudēšanas, palīdz mācoties braut vai driftot</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Asistenti:</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Saķeres kontrole:</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Nogriež jaudu no riteņiem, likvidējot sānslīdi</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Riepu segas</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Uzsilda riepas pirms sacīkstes, lai pie starta būtu labāka saķere.</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Riepu nodilums</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Ar laiku jūsu riepas sāks nodilt, kas samazina saķeri un pasliktina vadību.</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Rūpn.</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Izsl.</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Iesl.</value>
+  </data>
+  <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Nevar lejuplādēt informāciju par jaunāko versiju</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Nav mašīnas vecāka</value>
+  </data>
+  <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
+    <value>Nederīga lokācija</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>Kreisā priekšējā</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>Kreisā aizmugurējā</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>Labā priekšējā </value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>Labā aizmugurējā</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Čempionāts</value>
+  </data>
+  <data name="Common_AcReplay" xml:space="preserve">
+    <value>AC ieraksts</value>
+  </data>
+  <data name="Common_CannotDo" xml:space="preserve">
+    <value>Nevar</value>
+  </data>
+  <data name="Common_CannotDo_Title" xml:space="preserve">
+    <value>Nevar</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>Nevar lejuplādēt failu</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka ir pieejams internets</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Nevar nolasīt datus</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Nevar atpakot {0}</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Nav mašīnas ID</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Galamērķis</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Atspējots</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Eksportē...</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Globāli:</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Augstums</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>Nav ID</value>
+  </data>
+  <data name="Common_IdIsTaken" xml:space="preserve">
+    <value>ID ir aizņemts</value>
+  </data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>Izvēlies citu ID.</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Nederīgs formāts</value>
+  </data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Garums</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>Nevar palaist LUA</value>
+  </data>
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
+    <value>Pārliecinies, ka internets strādā.</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Pārliecinies, ka ir pietiekami daudz vietas.</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>N/A</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Nav</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Numurs</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Jauda</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Radiuss</value>
+  </data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (Ieteicams)</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Skenē...</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Ātrums</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Nav Steam ID</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Iesūtīt</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Sintakses kļūda: {0}</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Laiks</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Griezes moments</value>
+  </data>
+  <data name="Common_UndefinedError" xml:space="preserve">
+    <value>Nezināma kļūda</value>
+  </data>
+  <data name="Common_UnhandledError_Commentary" xml:space="preserve">
+    <value>Notika kaut kāda kļūda</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Brīdinājums</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Nedēļas nogale</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Platums</value>
+  </data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>Jauna versija mašīnai {0}</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Jauna mašīna {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
+    <value>Jauna versija mašīnas skinam {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
+    <value>Jauns mašīnas skins {0}</value>
+  </data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>Jauna versija fontam {0}</value>
+  </data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>Jauns fonts {0}</value>
+  </data>
+  <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
+    <value>Paturēt skinu priekšskatījumus</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
+    <value>Paturēt UI informāciju</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>Paturēt UI informāciju un skinu priekšskatījumus</value>
+  </data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>Jauna showroom versija {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Jauns showroom {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>Jauna trases versija {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Jauna trase {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>Jauna laikapstākļu versija {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>Jauni laikapstākļi {0}</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>Nevar ielādēt satura paku</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka ir pieejams interneta savienojums un Content mapē nekas nenotiek.</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Bremzes</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Svinēt</value>
+  </data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>Mainīt kameru</value>
+  </data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>Sajūgs</value>
+  </data>
+  <data name="Controls_Complain" xml:space="preserve">
+    <value>Sūdzēties</value>
+  </data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>Samazināt</value>
+  </data>
+  <data name="Controls_Drs" xml:space="preserve">
+    <value>DRS aktivācija</value>
+  </data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>Mirkšķināt gaismas</value>
+  </data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>Piektais ātrums</value>
+  </data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>Pirmais ātrums</value>
+  </data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>Ceturtais ātrums</value>
+  </data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>Atpakaļgaita</value>
+  </data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>Otrais ātrums</value>
+  </data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>Septītais ātrums</value>
+  </data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>Sestais ātrums</value>
+  </data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>Trešais ātrums</value>
+  </data>
+  <data name="Controls_GlanceBack" xml:space="preserve">
+    <value>Paskatīties atpakaļ</value>
+  </data>
+  <data name="Controls_GlanceLeft" xml:space="preserve">
+    <value>Paskatīties pa kreisi</value>
+  </data>
+  <data name="Controls_GlanceRight" xml:space="preserve">
+    <value>Paskatīties pa labi</value>
+  </data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>Rokasbremze</value>
+  </data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>Gaismas</value>
+  </data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>Skaņas signāls</value>
+  </data>
+  <data name="Controls_Increase" xml:space="preserve">
+    <value>Palielināt</value>
+  </data>
+  <data name="Controls_Kers" xml:space="preserve">
+    <value>KERS aktivācija</value>
+  </data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>Klaviatūra un pele</value>
+  </data>
+  <data name="Controls_Mguh_Mode" xml:space="preserve">
+    <value>MGU-H režīms</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
+    <value>Samazināt padevi</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
+    <value>Samazināt atgūšanu</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
+    <value>Palielināt padevi</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
+    <value>Palielināt atgūšanu</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Pārvietot uz priekšu</value>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Pārvietot uz aizmuguri</value>
+  </data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>Nākamais pārnesums</value>
+  </data>
+  <data name="Controls_PreviousGear" xml:space="preserve">
+    <value>Iepriekšējais pārnesums</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Stūrēšana</value>
+  </data>
+  <data name="Controls_SteeringWheel" xml:space="preserve">
+    <value>Stūre</value>
+  </data>
+  <data name="Controls_SteerLeft" xml:space="preserve">
+    <value>Stūrēt pa kreisi</value>
+  </data>
+  <data name="Controls_SteerRight" xml:space="preserve">
+    <value>Stūrēt pa labi</value>
+  </data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>Gāzēt</value>
+  </data>
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
+    <value>XBOX 360 Controller</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Grezna</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Viegla</value>
+  </data>
+  <data name="DirectLoader_AcClubChanged" xml:space="preserve">
+    <value>AssettoCorsa.club ir mainījies.</value>
+  </data>
+  <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
+    <value>Assetto-DB.com ir mainījies.</value>
+  </data>
+  <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
+    <value>Google Drive ir mainījies.</value>
+  </data>
+  <data name="DirectLoader_RecursionDetected" xml:space="preserve">
+    <value>Ir pamanīta rekursija</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>Fails nav atrasts</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Filtrēt pēc...</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manuāli</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Tā pati mašīna</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Tā pati grupa</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Pievienot jaunu mašīnu sarakstam</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Kārtošanas veids:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Nejaušs</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Miksēts</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Veids, kā sakārtot kandidātus</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Starta izkārtojuma būvēšana...</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Izmantot skinu vārdus, ja pieejami</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Aizvākt izvēlētās mašīnas no saraksta</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Starta izkārtojuma tips:</value>
+  </data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>Izdzēst fontu</value>
+  </data>
+  <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Dažām mašīnām šis fonts ir vajadzīgs. Vai tiešām izdzēst?</value>
+  </data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>Atspējot fontu</value>
+  </data>
+  <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Dažām mašīnām šis fonts ir vajadzīgs. Vai tiešām atspējot?</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Nevar pārskenēt mašīnas</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Nevar izpildīt komandu</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
+    <value>Pārsniegts laika limits</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka komanda neaizņem vairāk par {0:F1} sekundēm; ja aplikācijai jādarbojas fonā, "[app.exe]" vietā izmanto "start [app.exe]"</value>
+  </data>
+  <data name="GameCommand_UnknownProblem" xml:space="preserve">
+    <value>Nezināma problēma (Process=null)</value>
+  </data>
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
+    <value>Imperiālās (mph)</value>
+  </data>
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
+    <value>Metriskās (Km/h)</value>
+  </data>
+  <data name="Input_Axle" xml:space="preserve">
+    <value>Ass {0}</value>
+  </data>
+  <data name="Input_Button" xml:space="preserve">
+    <value>Poga {0}</value>
+  </data>
+  <data name="Installator_KeepSkinPreview" xml:space="preserve">
+    <value>Paturēt skina priekšskatījumu</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
+    <value>Paturēt UI informāciju un skina priekšskatījumu</value>
+  </data>
+  <data name="Installator_RemoveExistingFirst" xml:space="preserve">
+    <value>Vispirms aizvākt esošo</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Atjaunināt visu</value>
+  </data>
+  <data name="JumpStart_CarLocked" xml:space="preserve">
+    <value>Mašīna slēgta</value>
+  </data>
+  <data name="JumpStart_DriveThrough" xml:space="preserve">
+    <value>Caurbraukšana</value>
+  </data>
+  <data name="JumpStart_TeleportToPit" xml:space="preserve">
+    <value>Teleportēties uz pitiem</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Caurbraukšana</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Piti</value>
+  </data>
+  <data name="KunosCareer_Championship" xml:space="preserve">
+    <value>Čempionāts</value>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>vieta</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>punkts</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Atsākt</value>
+  </data>
+  <data name="KunosCareer_SingleEvents" xml:space="preserve">
+    <value>Einzelveranstaltung</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Starts</value>
+  </data>
+  <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
+    <value>Nevar pievienoties attālinātajam serverim</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Iespējams nav mākoņu (content/texture/clouds)</value>
+  </data>
+  <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
+    <value>Noklusējuma PP filtrs (default.ini) in nepieciešams, bet tā nav</value>
+  </data>
+  <data name="LogHelper_DriverIsMissing" xml:space="preserve">
+    <value>Drošvien nav braucēja modeļa</value>
+  </data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>Parole nav derīga</value>
+  </data>
+  <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
+    <value>Nav PP filtra "{0}"</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Nav šeidera "{0}" (iespējams tika aizvākts ar kādu no AC atjauninājumiem), modeli vajag salabot</value>
+  </data>
+  <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
+    <value>Nav piekares objektu (SUSP_LF, SUSP_LR, ...)</value>
+  </data>
+  <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
+    <value>Izvēlētā trase neatbalsta time attack režīmu</value>
+  </data>
+  <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
+    <value>Nav riteņu objektu (WHEEL_LF, WHEEL_LR, ...)</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Nevar ielādēt attēlu izmantojot Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Lūdzu mēģinu uztaisīt attēlu nedaudz mazāku</value>
+  </data>
+  <data name="NotSupported" xml:space="preserve">
+    <value>Neatbalsta</value>
+  </data>
+  <data name="OfficialStarter_CannotRun" xml:space="preserve">
+    <value>Nevar palaist</value>
+  </data>
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+    <value>Nevar palaist sacīkstes</value>
+  </data>
+  <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
+    <value>Nevar atiestatīt oriģinālā palaidēja nepačotu versiju. Lūdzu [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]atiestati to manulāli[/url].</value>
+  </data>
+  <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
+    <value>Nevar izmantot oficiālo starteri: tava AC versija ir par vecu. Vai vēlies pārslēgties uz viltīgo starteri? To vienmēr var nomainīt pie Iestatījumi/Braukšana.</value>
+  </data>
+  <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
+    <value>Nav oriģinālā palaidēja; lūdzu nomaini starteri.</value>
+  </data>
+  <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
+    <value>Nevar atiestatīt oriģinālā palaidēja nepačotu versiju. Lūdzu atiestati to manulāli: tev jāaizvieto "AssettoCorsa.exe" ar "AssettoCorsa_backup_sp.exe".</value>
+  </data>
+  <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
+    <value>Lūdzu atiestati oriģinālo palaidēju un mēģini vēlreiz (vai nomaini starteri)</value>
+  </data>
+  <data name="OfficialStarter_UpdateAC" xml:space="preserve">
+    <value>Lūdzu atjaunini AC vai nomaini starteri vai kaut ko citu.</value>
+  </data>
+  <data name="Online_CannotAccessServer" xml:space="preserve">
+    <value>Nevar piekļūt serverim</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Nevar ielādēt datus</value>
+  </data>
+  <data name="Online_CannotParseAddress" xml:space="preserve">
+    <value>Nevar nolasīt adresi</value>
+  </data>
+  <data name="Online_GettingInformationDirectly" xml:space="preserve">
+    <value>Iegūst informāciju pa tiešo...</value>
+  </data>
+  <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
+    <value>Iegūst informāciju pa tiešo (otrais mēģinājums)...</value>
+  </data>
+  <data name="Online_ScanningNothingFound" xml:space="preserve">
+    <value>Neko neatrada</value>
+  </data>
+  <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka servera adrese ir pareiza un serveris ir pieejams.</value>
+  </data>
+  <data name="Online_ScanningProgress" xml:space="preserve">
+    <value>Skenē ({0}/{1}), {2} atrasti...</value>
+  </data>
+  <data name="Online_ScanningProgress_Found" xml:space="preserve">
+    <value>{0} serveris</value>
+  </data>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Serveris nav pieejams (pings neizdevās)</value>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Nevar atjaunot servera informāciju</value>
+  </data>
+  <data name="Online_Server_CarIsMissing" xml:space="preserve">
+    <value>Nav mašīna {0}.</value>
+  </data>
+  <data name="Online_Server_CarsAreMissing" xml:space="preserve">
+    <value>Nav mašīnau {0}.</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>Mašīnas nesakrīt</value>
+  </data>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Nav implementēts</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>Beidzies</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>procesā</value>
+  </data>
+  <data name="Online_Server_TrackIsMissing" xml:space="preserve">
+    <value>Nav trases {0}.</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Serveris nav pieejams.</value>
+  </data>
+  <data name="Online_Server_UnhandledError" xml:space="preserve">
+    <value>Iekšējā kļūda: {0}.</value>
+  </data>
+  <data name="Online_Session_LapsDuration" xml:space="preserve">
+    <value>{0} apļi</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>Mēģina pingot, lai uzzinātu HTTP portu...</value>
+  </data>
+  <data name="OrdinalizingSubject_Server" xml:space="preserve">
+    <value>Serveris</value>
+  </data>
+  <data name="Period_Month" xml:space="preserve">
+    <value>Mēnesis</value>
+  </data>
+  <data name="Period_OneDay" xml:space="preserve">
+    <value>Viena diena</value>
+  </data>
+  <data name="Period_ThreeDays" xml:space="preserve">
+    <value>Trīs dienas</value>
+  </data>
+  <data name="Period_TwoWeeks" xml:space="preserve">
+    <value>Divas nedēļas</value>
+  </data>
+  <data name="Period_Week" xml:space="preserve">
+    <value>Nedēļa</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Nevar instalēt spraudni</value>
+  </data>
+  <data name="PpFilterObject_CannotSave" xml:space="preserve">
+    <value>Nevar saglabāt PP filtru</value>
+  </data>
+  <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
+    <value>Pārliecinies, ka failu var pārrakstīt</value>
+  </data>
+  <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
+    <value>Lūdzu izvēlies sākotnējo mapi vai kādu apakšmapi.</value>
+  </data>
+  <data name="Presets_FileFilter" xml:space="preserve">
+    <value>Sagataves (*{0})|*{0}</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>Nevar atjaunot sacīkšu izkārtojumu</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Nav sacīkšu izkārtojuma režīma</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Nevar atrast sacīkšu izkārtojuma režīmu ar ID "{0}"</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>Skriptam būtu jāatgriež filtrēšanas funkcija</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Nejauši</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Nejauši</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Nejauši</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>Tu</value>
+  </data>
+  <data name="Replay_CannotRenameReplays" xml:space="preserve">
+    <value>Nevar pārdēvēt ierakstus</value>
+  </data>
+  <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka neviens no failiem šobrīd nav aizņemts.</value>
+  </data>
+  <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
+    <value>Nevar saglabāt ierakstu</value>
+  </data>
+  <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
+    <value>Nevar atsaglabāt ierakstu</value>
+  </data>
+  <data name="ReplayObject_PreviousSession" xml:space="preserve">
+    <value>Iepriekšējā sesija</value>
+  </data>
+  <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
+    <value>Neatbalstīts formāts</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Booking</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Dragreiss</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drifts</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Lidojošais aplis</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Trenēšanās</value>
+  </data>
+  <data name="Session_Qualification" xml:space="preserve">
+    <value>Kvalifikācija</value>
+  </data>
+  <data name="Session_Race" xml:space="preserve">
+    <value>Sacīkstes</value>
+  </data>
+  <data name="Session_TimeAttack" xml:space="preserve">
+    <value>Time attack</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Trases diena</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Spēlētājs</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>Tikai pie atvēršanas</value>
+  </data>
+  <data name="Settings_Period_Startup" xml:space="preserve">
+    <value>Tikai pie startēšanas</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>Katras {0}</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Naivais</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Mēģina palaist acs.exe pa tiešo; lielākoties neizdosies</value>
+  </data>
+  <data name="Settings_Starter_Official" xml:space="preserve">
+    <value>Oficiālais</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Oficiālais veids no Kunos; var būt lēns un neuzticams, bet nav nepieciešama patčošana</value>
+  </data>
+  <data name="Settings_Starter_Sse" xml:space="preserve">
+    <value>SSE</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Ātrākais veids, palaiž sacīksti pa taisno, neizmantojot Steam; tiešsaiste strādās, bet Steam achievementi nē</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
+    <value>Starter+</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Oriģinālā palaidēja modificēta versija, novecojusi kopš 1.7 versijas iznākšanas</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>VIltīgais</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Viltīgs veids, kā sākts sacīksti; viens no ātrākajiem, bet nestrādā bez Steam vai interneta</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>UI modulis</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Oriģinālajam palaidējam pievieno īpašu UI moduli, kas izpildia dažas prasības un palaiž sacīksti; izmanto šo, ja vajag lietot CM un oriģinālo palaidēju reizē</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>UI modulis "CM Helper" instalēts un aktivizēts. Neaizmirsti pirms braukšanas pārstartēt AssettoCorsa.exe!</value>
+  </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Asistu sagatave</value>
+  </data>
+  <data name="Shared_CarSetup" xml:space="preserve">
+    <value>Mašīnas uzstādījums</value>
+  </data>
+  <data name="Shared_ControlsPreset" xml:space="preserve">
+    <value>Vadības sagatave</value>
+  </data>
+  <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
+    <value>FFB </value>
+  </data>
+  <data name="Shared_PpFilter" xml:space="preserve">
+    <value>PP filtrs</value>
+  </data>
+  <data name="Shared_QuickDrivePreset" xml:space="preserve">
+    <value>Ātrās brauciena sagatave</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Sacīkšu izkārtojuma sagatave</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Ieraksts</value>
+  </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Video iestatījumu sagatave</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Laikapstākļi</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared" xml:space="preserve">
+    <value>Nevar iegūt kopīgotu ierkastu</value>
+  </data>
+  <data name="SharingHelper_NotSupported" xml:space="preserve">
+    <value>Nevar iegūt kopīgotu ierkastu, tā tips "{0}" netiek atbalstīts</value>
+  </data>
+  <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
+    <value>Pārliecines, ka tev ir jaunākā CM versija.</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
+    <value>Nevar pārslēgt skaņu</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Pārliecinies, ka nevienu no skaņas failiem šobrīd neizmanto kāda aplikācija.</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>Vienreizējie notikumi</value>
+  </data>
+  <data name="Solving_Cancelled" xml:space="preserve">
+    <value>Atcelts</value>
+  </data>
+  <data name="Solving_CreateNewFile" xml:space="preserve">
+    <value>Izveidot jaunu failu</value>
+  </data>
+  <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
+    <value>Tiks izveidots jauns fails ar nosaukumu ņemtu no ID</value>
+  </data>
+  <data name="Solving_RestoreFrom" xml:space="preserve">
+    <value>Atjaunot no ...{0}</value>
+  </data>
+  <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
+    <value>Oriģinālais fails tiks izdzēsts</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Fails tika nolasīts, bet dažas vērtības, iespējams, tika izlaistas.</value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Sintakses kļūda pakotajā {0} līnijā {1}</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Atvērt failu</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Sintakses kļūda {0} līnijā {1}</value>
+  </data>
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+    <value>{0} piti</value>
+  </data>
+  <data name="TrackGeoTags_FindIt" xml:space="preserve">
+    <value>Sameklēt</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
+    <value>Platums:</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
+    <value>Ieteicamais formāts: “…° Z” vai “…° D”</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
+    <value>Garums:</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
+    <value>Ieteicamais formāts: “…° R” vai “…° A”</value>
+  </data>
+  <data name="TryAgainDot" xml:space="preserve">
+    <value>Mēģini vēlreiz.</value>
+  </data>
+  <data name="Units_BHP" xml:space="preserve">
+    <value>ZS</value>
+  </data>
+  <data name="Units_Nm" xml:space="preserve">
+    <value>Nm</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>RPM</value>
+  </data>
+  <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
+    <value>Nav autenifikācijas žetona</value>
+  </data>
+  <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
+    <value>Nevar pabeigt autorizēšanās procesu</value>
+  </data>
+  <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
+    <value>Nevar dalīties ar Google Drive failu</value>
+  </data>
+  <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
+    <value>Nevar augšuplādēt failu uz Google Drive</value>
+  </data>
+  <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
+    <value>Ievadi Google Drive autentifikācijas kodu</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Uploader_RequestFailed" xml:space="preserve">
+    <value>GET pieprasījums neizdevās</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Sakne</value>
+  </data>
+  <data name="Weather_BrokenClouds" xml:space="preserve">
+    <value>Izkliedēti mākoņi</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Skaidrs</value>
+  </data>
+  <data name="Weather_Cold" xml:space="preserve">
+    <value>Auksts</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
+    <value>Apkārtējie (Augstu)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
+    <value>Apkārtējie (Zemu)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Horizonts (Augstu)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Horizonts (Zemu)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Debesis (Augstu)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Debesis (Zemu)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Saule (Augstu)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Saule (Zemu)</value>
+  </data>
+  <data name="Weather_Drizzle" xml:space="preserve">
+    <value>Smidzināšana</value>
+  </data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>Putekļi</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Daži mākoņi</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Migla</value>
+  </data>
+  <data name="Weather_Hail" xml:space="preserve">
+    <value>Krusa</value>
+  </data>
+  <data name="Weather_Haze" xml:space="preserve">
+    <value>Dūmaka</value>
+  </data>
+  <data name="Weather_HeavyDrizzle" xml:space="preserve">
+    <value>Intensīva smidzināšana</value>
+  </data>
+  <data name="Weather_HeavyRain" xml:space="preserve">
+    <value>Intensīvs lietus</value>
+  </data>
+  <data name="Weather_HeavySleet" xml:space="preserve">
+    <value>Intensīvs slapjšs sniegs</value>
+  </data>
+  <data name="Weather_HeavySnow" xml:space="preserve">
+    <value>Intensīvs sniegs</value>
+  </data>
+  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
+    <value>Stiprs negaiss</value>
+  </data>
+  <data name="Weather_Hot" xml:space="preserve">
+    <value>Karsts</value>
+  </data>
+  <data name="Weather_Hurricane" xml:space="preserve">
+    <value>Viesuļvētra</value>
+  </data>
+  <data name="Weather_LightDrizzle" xml:space="preserve">
+    <value>Viegla smidzināšana</value>
+  </data>
+  <data name="Weather_LightRain" xml:space="preserve">
+    <value>Viegls lietus</value>
+  </data>
+  <data name="Weather_LightSleet" xml:space="preserve">
+    <value>Viegls slapjšs sniegs</value>
+  </data>
+  <data name="Weather_LightSnow" xml:space="preserve">
+    <value>Viegls sniegs</value>
+  </data>
+  <data name="Weather_LightThunderstorm" xml:space="preserve">
+    <value>Viegls negaiss</value>
+  </data>
+  <data name="Weather_Mist" xml:space="preserve">
+    <value>Migla</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Apmācies</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Lietus</value>
+  </data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>Smiltis</value>
+  </data>
+  <data name="Weather_ScatteredClouds" xml:space="preserve">
+    <value>Mākoņains</value>
+  </data>
+  <data name="Weather_Sleet" xml:space="preserve">
+    <value>Slapjšs sniegs</value>
+  </data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>Dūmi</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Sniegs</value>
+  </data>
+  <data name="Weather_Squalls" xml:space="preserve">
+    <value>Brāzmains</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Pērkona negaiss</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Viesuļvētra</value>
+  </data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>Vējains</value>
+  </data>
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
+    <value>KN5 modelis</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Čempionāts</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Audio iestatījumu sagatave</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Viegli</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Vidēji</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Grūti</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Neispējami</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} uz {1}.</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Punkti</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Pozīcija</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Laiks</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Uzvaras</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Nevar palaist RHM</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>{0} dati nav sapakoti, lietotāji tos var mainīt un iegūt negodīgu priekšroku.
+
+Vai vēlies tos sapakot pirms servera palaišanas? Tikai neaizmirsti izdalīt sapakotās versijas klientiem.</value>
+  <alternative>{0} dati nav sapakoti, lietotāji tos var mainīt un iegūt negodīgu priekšroku.
+
+Vai vēlies tos sapakot pirms servera palaišanas? Tikai neaizmirsti izdalīt sapakotās versijas klientiem.</alternative></data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Dati nav šifrēti</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Lūdzu izvēlies mašīnu, ko atbalsta serveris</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Parole nav pareiza</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Rezervēšana ir aizvērta</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Tu esi šī servera melnajā sarakstā</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Serveris ir pilns</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Serveris saka: "{0}"</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Izvēlētajai mašīnai nav pareizas skaņas</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Izvēlies kādu citu mašīnu</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Nevar nomainīt mašīnas skaņu</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Pārliecines, ka ir pietiekami daudz vietas un oriģinālos failus varēja idzēst</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Tu esi rezervējis vietu šajā serverī</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Tu esi šajā serverī</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Tu)</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Admina parole:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Rādīt admina paroles ievadi</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Ja tu to atspējosi, to vienmēr varēs ieslēgt atpakaļ tiešsaistes iestatījumos</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Nav birka "{0}"</value>
+  </data>
+</root>

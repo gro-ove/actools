@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Back" xml:space="preserve">
+    <value>Atpakaļ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Atcelt</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Aizvērt</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Pievienot</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Augošs</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Dilstošs</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Vai!</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Lūdzu uzgaidi...</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Nokopē[/url] kļūdas detaļas. Mēģini [url=cmd://restart]restartēt[/url] šo aplikāciju vai arī vienkārši to [url=cmd://exit]aizver ciet[/url].</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>App erlitt ein Problem und benötigt einen Neustart. Bitte klicke auf "Problem melden" wenn eine Meldung gesendet werden soll.</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Visi</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Uz priekšu</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Aiziet</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Paslēpt paroli</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Mājas</value>
+  </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>Attēlu faili|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Visi faili (*.*)|*.*</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (kreisais)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (labais)</value>
+  </data>
+  <data name="KeyBackspace" xml:space="preserve">
+    <value>Backspace</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Pārlūks atpakaļ</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Pārlūks favorīti</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Pārlūks uz priekšu</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Pārlūks mājas</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Pārlūks atjaunināt</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Pārlūks meklēt</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Pārlūks apturēt</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>Caps Lock</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Kontekstizvēlne</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Ctrl</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Ctrl (kreisais)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Ctrl (labais)</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Bultiņa uz leju</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End</value>
+  </data>
+  <data name="KeyEnter" xml:space="preserve">
+    <value>Enter</value>
+  </data>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>Esc</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Palīdzība</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>Insert</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Palaist favorīt aplikāciju 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Palaist favorīt aplikāciju 2</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Palaist pastu</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Bultiņa pa kreisi</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Nākamā dziesma</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Atskaņot</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Iepriekšējā dziesma</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>NumPad {0}</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>Num Lock</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>Page Down</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>Page Up</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Screen</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Bultiņa pa labi</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>Scroll Lock</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Izvēlēties mediju</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (kreisais)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (labais)</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Space</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Bultiņa uz augšu</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Klusāk</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Apklusināt</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Skaļāk</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Win (kreisais)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Win (labais)</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>Pietuvināt</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
+    <value>B</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
+    <value>EB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>GB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
+    <value>KB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
+    <value>MB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
+    <value>PB</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
+    <value>TB</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>IEROBEŽOTS</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>JAUNS</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>Maksimizēt</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>Minimizēt</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>Navigācija neizdevās</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>Neizdevās navigēt uz {0}, nevarēja atrast ModernFrame mērķi '{1}'</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>Neizdevās navigēt uz {0}, nav norādīts avots</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nē</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Astoņpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Astotais</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Vienpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Piecpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Piektais</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Pirmais</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Četrpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Ceturtais</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Mīnus {0}</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Deviņpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Devītais</value>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>{0}ais</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Otrais</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Septiņpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Septītais</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Sešpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Sestais</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Desmitais</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Trešais</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Trīspadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Trīsdesmitais</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Trīsdesmit pirmais</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Divpadsmitais</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Divdesmitais</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Divdesmit astotais</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Divdesmit piektais</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Divdesmit pirmais</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Divdesmit ceturtais</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Divdesmit devītais</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Divdesmit otrais</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Divdesmit septītais</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Divdesmit sestais</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Divdesmit trešais</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Nulltais</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>Izvēlies krāsu</value>
+  </data>
+  <data name="PickColorFromScreen" xml:space="preserve">
+    <value>Izvēlies jebkuru krāsu no ekrāna</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>Ielādēts {0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Ielādēts {0} no {1}</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>Augšuplādēti {0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Augšuplādēts {0} no {1}</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Saderīgi kandidāti nav atrasti</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Saglabāt starta izkārtojumu kā sagatavi</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Dalīties ar starta izkārtojumu</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>Atjaunot</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Izvēlēties krāsu</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Rādīt paroli</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Avots</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Ieteikumi</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Nokopē[/url] kļūdas detaļas. Mēģini [url=cmd://refresh]atsvaidzināt[/url] šo lapu vai dodies [url=cmd://browseback]atpakaļ[/url].</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF faili|*.dds;*.tif;*.tiff|attēlu faili|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|visi faili(*.*)|*.*</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} dienas</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} stundas</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minūtes</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} mēnešus</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} sekundes</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} nedēļas</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>Darbībai nepieciešams UI pavediens</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Negaidīts žetons</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>Nezināma operētājsistēma</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>Nezināms žetona tips</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Jaunā versija {0} ir gatava instalēšanai</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Jā</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>un</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Pievienot favorītiem</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Noņemt no favorītiem</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Paslēpt</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Rādīt</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Pārvaldīt sarakstus...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Uzaicināt</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Atcelt rezervāciju</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Dalies ar šī servera linku, lai tavi draugi tev var ātri pievienoties (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Iekļaut paroli</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Pievienot serveri favorītu sarakstam (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Noņemt serveri no favorītu saraksta (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Pievienot serveri slēpto serveru sarakstam (meklē "@hidden" lai to atvētu)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Noņemt serveri no slēpto serveru saraksta</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}: </value>
+  </data>
+</root>

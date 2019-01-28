@@ -284,8 +284,8 @@
     <value>Impossibile effettuare l'aggiornamento: {0}. Prova ad installare una nuova versione manualmente.</value>
   </data>
   <data name="Shared_CarSetup" xml:space="preserve">
-    <value>Assetto</value>
-  </data>
+    <value>Assetto auto</value>
+  <alternative>Assetto</alternative></data>
   <data name="Shared_ControlsPreset" xml:space="preserve">
     <value>Controls preset</value>
   </data>
@@ -1530,8 +1530,8 @@
     <value>Modulo UI</value>
   </data>
   <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
-  </data>
+    <value>Giri al minuto</value>
+  <alternative>RPM</alternative></data>
   <data name="Common_Submit" xml:space="preserve">
     <value>Invia</value>
   </data>
@@ -1666,5 +1666,94 @@
   </data>
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Tag “{0}” e mancante </value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Ottimizzare l'aderenza in accelerazione</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Scaldare le gomme nei box</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Moltiplicatore per usura dei pneumatici</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Manca la modalità griglia di gara</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Impossibile trovare la modalità griglia di gara con ID "{0}"</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>modo ufficiale da Kunos; potrebbe essere lento e inaffidabile, ma non richiede patching</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Scorciatoia per iniziare la gara; una delle più veloci, ma non funziona se non apri Steam od in assenza di una connessione ad Internet</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Aggiunge un modulo speciale d'interfaccia grafica nel launcher originale che riceve alcuni istruzioni e avvia la gara; usalo se hai bisogno di utilizzare sia CM ed il launcher originale allo stesso tempo</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Versione modificata del launcher originale, obsoleta dalla versione 1.7</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>La più veloce, fa partire la gara direttamente senza usare Steam per niente; il multigiocatore funzionerà, ma non sbloccherai gli obiettivi</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Cerca semplicemente di eseguire direttamente acs.exe ; nella maggior parte dei casi fallirà</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Non posso caricare l'immagine usando Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Per favore cerca di creare un immmagine più piccola</value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Errore di sintassi nel pacchetto {0} alla linea {1}</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Errore di sintassi in {0} alla linea {1}</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Il file è ancora in fase di analisi, ma alcuni valori potrebbero essere saltati.</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Non è possibile ottenere una lista di risoluzioni adatte</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Modulo UI "CM Helper" installato ed attivato. Non dimenticare di riavviare AssettoCorsa.exe prima di correre!</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Modo disposizione:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Modo di organizzare i candidati</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>"I dati di {0} non sono compressi, quindi gli utenti possono cambiarli prima di unirsi e ottenere un vantaggio ingiusto.
+
+Vorresti comprimerlo prima di avviare il server? Ma non dimenticare di condividere la versione compressa con i client."</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Preset stato del tracciato</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Meteo {0} non trovato</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Preset Showroom personalizzato</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Preset anteprime personalizzato</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Preset Real Head MOtion</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Accelleratore</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Freno</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Sterzo</value>
   </data>
 </root>

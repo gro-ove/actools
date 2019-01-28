@@ -279,8 +279,8 @@
     <value>машина</value>
   </data>
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
-    <value>скин</value>
-  </data>
+    <value>скин машины</value>
+  <alternative>скин</alternative></data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>шрифт</value>
   </data>
@@ -1376,5 +1376,110 @@
   </data>
   <data name="Weather_Mods" xml:space="preserve">
     <value>Моды</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
+    <value>Увеличить Delivery</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
+    <value>Уменьшить Delivery</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
+    <value>Увеличить Recovery</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
+    <value>Уменьшить Recovery</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Немного облаков</value>
+  </data>
+  <data name="Weather_ScatteredClouds" xml:space="preserve">
+    <value>Рассеянные облака</value>
+  </data>
+  <data name="Weather_BrokenClouds" xml:space="preserve">
+    <value>Пасмурно</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Пасмурные облака</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Туман</value>
+  </data>
+  <data name="Weather_Mist" xml:space="preserve">
+    <value>Дымка</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Горизонт (Низкое)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Горизонт (Высокое)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Небо (Низкое)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Небо (Высокое)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Солнце (Низкое)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Солнце (Высокое)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
+    <value>Окружающий (Низкое)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
+    <value>Окружающий (Высокое)</value>
+  </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Предустановки видео настроек</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Предустановки аудио настроек</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Пожалуйста, выберите машину поддерживаемым сервером.</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Пароль не действительный</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Регистрация закрыта</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Выберите другую машину.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Невозможно заменить звук автомобиля</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Если вы отключите его, вы всегда можете включить его в настройках онлайна</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Тег “{0}” отсутствует</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Предустановка состояния трассы</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Погода {0} отсутствует.</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Пользовательская предустановка выставочного зала</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Пользовательская предустановка пред. просмотра</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Предустановка Real Head Motion</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Газ</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Тормоз</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Управление</value>
   </data>
 </root>

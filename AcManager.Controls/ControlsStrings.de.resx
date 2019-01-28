@@ -436,8 +436,8 @@
     <value>Installiere...</value>
   <alternative>Installieren...</alternative></data>
   <data name="Common_LapsPostfix" xml:space="preserve">
-    <value> Runde(n)</value>
-  <alternative>Runde</alternative></data>
+    <value> Runde</value>
+  <alternative>Runde</alternative><alternative> Runde(n)</alternative></data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Lade...</value>
   <alternative>Laden...</alternative></data>
@@ -448,8 +448,8 @@
     <value>ms</value>
   <alternative>Ms</alternative></data>
   <data name="Common_MinutePostfix" xml:space="preserve">
-    <value> Minute(n)</value>
-  <alternative>Minute</alternative></data>
+    <value> Minute</value>
+  <alternative>Minute</alternative><alternative> Minute(n)</alternative></data>
   <data name="Common_MinutesPostfix" xml:space="preserve">
     <value>Min</value>
   </data>
@@ -670,8 +670,8 @@
     <value>Texturmapping exportieren</value>
   </data>
   <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
-    <value>Größe ([Breite]×[Höhe]):</value>
-  </data>
+    <value>Größe (\[Breite]×\[Höhe]):</value>
+  <alternative>Größe ([Breite]×[Höhe]):</alternative></data>
   <data name="FindInformation_Description" xml:space="preserve">
     <value>Gewünschtes Jahr oder Beschreibung auswählen und OK drücken; Strg gedrückt halten um Beschreibung zu erweitern statt zu ersetzen</value>
   <alternative>Jahr der Beschreibung auswählen und OK drücken; Strg gedrückt halten um Beschreibung zu erweitern statt zu ersetzen</alternative></data>
@@ -751,8 +751,8 @@
     <value>Zum Linköffnen klicken</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
-    <value>Aufstellungsraum starten fehlgeschlagen</value>
-  </data>
+    <value>Showroom starten fehlgeschlagen</value>
+  <alternative>Aufstellungsraum starten fehlgeschlagen</alternative></data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
     <value>Showroom</value>
   <alternative>Ausstellungsraum</alternative></data>

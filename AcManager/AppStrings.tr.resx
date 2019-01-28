@@ -1,0 +1,1682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About_ContactInformation" xml:space="preserve">
+    <value>Eğer bu uygulama için bir sorunuz, fikriniz veya bir tavsiyeniz var ise bize bu linkten ulaşın (Hataları bize iletmek içinde kullanabilirsiniz) [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</value>
+  </data>
+  <data name="About_ContactUsHeader" xml:space="preserve">
+    <value>Bize ulaşın:</value>
+  </data>
+  <data name="About_Copyright" xml:space="preserve">
+    <value>Copyright © 2016 AcClub. Bütün hakları saklıdır.</value>
+  </data>
+  <data name="About_Description" xml:space="preserve">
+    <value>[url="http://www.assettocorsa.net/"]Assetto Corsa[/url] için alternatif bir uygulama ve içerik yönetici.</value>
+  </data>
+  <data name="About_DeveloperMode" xml:space="preserve">
+    <value>Geliştirici Modu aktif edilsin mi?</value>
+  </data>
+  <data name="About_DeveloperMode_Title" xml:space="preserve">
+    <value>Geliştirici Modu</value>
+  </data>
+  <data name="About_Footer" xml:space="preserve">
+    <value>Content Manager [url="/Pages/About/Credits.xaml|_top"]herkese açık programlar[/url] sayesinde yapılmıştır.
+Content Manager [url="/Pages/About/License.xaml|_top"]Lisansı[/url].</value>
+  <alternative>Content Manager [url="/Pages/About/Credits.xaml|_top"]herkese açık programlar[/url] sayesinde yapılmıştır.
+Content Manager [url="/Pages/About/License.xaml|_top"]Lisansı[/url].</alternative></data>
+  <data name="About_MarkAllAsRead" xml:space="preserve">
+    <value>Hepsini okundu say</value>
+  </data>
+  <data name="About_MoreInformation" xml:space="preserve">
+    <value>Daha fazla bilgi al</value>
+  </data>
+  <data name="About_NewTooltip" xml:space="preserve">
+    <value>Yeni!</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>Yakın zamandaki değişiklikler</value>
+  </data>
+  <data name="About_ReportAnIssue" xml:space="preserve">
+    <value>Bir hata bildir</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>Raporları gönderemedik</value>
+  </data>
+  <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
+    <value>Lütfen hatayı belirtin ve eğer geri dönmemizi istiyorsanız bir mail adresi bırakın. (Hatanın, çabuk çözülmesinde yardımcı olabilir)</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent" xml:space="preserve">
+    <value>Raporlar Gönderildi</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>Yardımın için teşekkürler.</value>
+  </data>
+  <data name="About_ReportAnIssue_Title" xml:space="preserve">
+    <value>Problem Nedir?</value>
+  </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>Çeviri için Haluk Aliev'e teşekkürler.</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>Versiyon: {0}</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>Problemi çözemedik</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>Çözümlerin hiç biri uygun değil.</value>
+  </data>
+  <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
+    <value>Benzer olan bütün hataları çöz</value>
+  </data>
+  <data name="AcObject_AppActivated" xml:space="preserve">
+    <value>Aktive edildi</value>
+  </data>
+  <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
+    <value>Dikkatli ol ID değiştirmek online'da problem yaratabilir!</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Şehir:</value>
+  </data>
+  <data name="AcObject_Cloning" xml:space="preserve">
+    <value>Klonlanıyor...</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Tarih:</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>Sürücü:</value>
+  </data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+    <value>Sürücü İsmi:</value>
+  </data>
+  <data name="AcObject_EnterNewId" xml:space="preserve">
+    <value>Yeni bir ID gir:</value>
+  </data>
+  <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
+    <value>Son tarama: {0}</value>
+  </data>
+  <data name="AcObject_FontLastScannedNever" xml:space="preserve">
+    <value>Son tarama: Hiç bir zaman</value>
+  </data>
+  <data name="AcObject_FontTestLabel" xml:space="preserve">
+    <value>Test:</value>
+  </data>
+  <data name="AcObject_FontUsedInLabel" xml:space="preserve">
+    <value>Kullanıldığı yer:</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Ülke Etiketi:</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID:</value>
+  </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Numara:</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>Önceliği:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Boyut:</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>Takım:</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Pistler:</value>
+  </data>
+  <data name="AcObject_UsingsRescan" xml:space="preserve">
+    <value>Yeniden tara</value>
+  </data>
+  <data name="AcObject_Version_TooltipExt" xml:space="preserve">
+    <value>Otomatik güncelleştirme için kullanılabilir</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Hava durumu:</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>Klasör kabul edilemez</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>Assetto Corsa'nın orjinal klasörü:</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>Online oynamak için Steam ID'in:</value>
+  </data>
+  <data name="AcRoot_Welcome" xml:space="preserve">
+    <value>Content Manager'a hoşgeldin ve kullandığın için teşekkürler! Başlamadan önce sadece bir kaç şey kaldı:</value>
+  </data>
+  <data name="AcSettings_Apps" xml:space="preserve">
+    <value>Uygulamalar</value>
+  </data>
+  <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
+    <value>Aktif edilmiş uygulamalar:</value>
+  </data>
+  <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
+    <value>Formlar:</value>
+  </data>
+  <data name="AcSettings_Audio" xml:space="preserve">
+    <value>Ses</value>
+  </data>
+  <data name="AcSettings_Audio_Engine" xml:space="preserve">
+    <value>Motor</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
+    <value>Gecikme:</value>
+  </data>
+  <data name="AcSettings_Audio_Opponents" xml:space="preserve">
+    <value>Rakipler</value>
+  </data>
+  <data name="AcSettings_Audio_Surface" xml:space="preserve">
+    <value>Yüzey</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>Tekerlekler</value>
+  </data>
+  <data name="AcSettings_Audio_Ui" xml:space="preserve">
+    <value>Arayüz</value>
+  </data>
+  <data name="AcSettings_Audio_Wind" xml:space="preserve">
+    <value>Rüzgar</value>
+  </data>
+  <data name="AcSettings_Controls" xml:space="preserve">
+    <value>Controller</value>
+  </data>
+  <data name="AcSettings_FieldOfView" xml:space="preserve">
+    <value>Görüş Açısı</value>
+  </data>
+  <data name="AcSettings_GhostCar" xml:space="preserve">
+    <value>Hayalet araba</value>
+  </data>
+  <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
+    <value>Opaklık</value>
+  </data>
+  <data name="AcSettings_GhostCar_RecordingLimit" xml:space="preserve">
+    <value>Kayıt sınırı</value>
+  </data>
+  <data name="AcSettings_Mirrors" xml:space="preserve">
+    <value>Aynalar</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+    <value>Maksimum boyut</value>
+  </data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Kalite:</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
+    <value>Yerden uzaklığı</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
+    <value>Miktar</value>
+  </data>
+  <data name="AcSettings_System" xml:space="preserve">
+    <value>Sistem</value>
+  </data>
+  <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
+    <value>Geliştirici uygulamaları</value>
+  </data>
+  <data name="AcSettings_Video" xml:space="preserve">
+    <value>Video</value>
+  </data>
+  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
+    <value>Performans Testi</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
+    <value>Tamekran</value>
+  </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>FXAA</value>
+  </data>
+  <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
+    <value>Yansıma Kalitesi</value>
+  </data>
+  <data name="AcSettings_Video_HighQuality" xml:space="preserve">
+    <value>Yüksek Kalite</value>
+  </data>
+  <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
+    <value>FPS'i limitle</value>
+  </data>
+  <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
+    <value>Ayna çözünürlüğü</value>
+  </data>
+  <data name="AcSettings_Video_MirrorsHeader" xml:space="preserve">
+    <value>Aynalar</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Oculus:</value>
+  </data>
+  <data name="AcSettings_Video_OverallQualityLabel" xml:space="preserve">
+    <value>Genel kalite:</value>
+  </data>
+  <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
+    <value>Kalite:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
+    <value>Yansımalar:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
+    <value>Yansımaların çözünürlüğü</value>
+  </data>
+  <data name="AcSettings_Video_RenderingDistance" xml:space="preserve">
+    <value>Render mesafesi</value>
+  </data>
+  <data name="AcSettings_Video_RenderingFrequencyLabel" xml:space="preserve">
+    <value>Render frekansı:</value>
+  </data>
+  <data name="AcSettings_Video_RenderingModeLabel" xml:space="preserve">
+    <value>Render modu:</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionLabel" xml:space="preserve">
+    <value>Çözünürlük</value>
+  </data>
+  <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
+    <value>Sistem:</value>
+  </data>
+  <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
+    <value>Dikey senkronizasyon</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>Dosyadan içerik yüklenemiyor</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>Yüklenemiyor {0}</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>Çıkarılamıyor</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>Arşiv hasarlı veya şiflesi yanlış olabilir.</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>Yanlış şifre, tekrar dene:</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>Şifre Gerekli</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>Hiç bir şey bulunamadı</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Yanlış şifre</value>
+  </data>
+  <data name="AdditionalContent_Title" xml:space="preserve">
+    <value>Ek İçerik Yükle</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager Güncellendi</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Yakın zamandaki değişiklikleri görmek için tıkla</value>
+  </data>
+  <data name="App_DataUpdated" xml:space="preserve">
+    <value>Bilgiler Güncellendi</value>
+  </data>
+  <data name="App_DataUpdated_Details" xml:space="preserve">
+    <value>Şuanki sürüm: {0}</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>Değişiklikleri görmek için yeniden başlatın</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Yeni Sürüm</value>
+  </data>
+  <data name="App_NewVersion_Details" xml:space="preserve">
+    <value>Güncelleme hazır: {0}</value>
+  </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>Uygulama yeniden başlayacak</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>Anahtar kontrol edilemedi</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>Yeni yeni ürün anahtarı satın al</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>Ürün anahtar hatalı</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>Kusura bakmayın girmeye çalıştığınız ürün anahtarı iptal edilmiştir. Bize ulaşıp yenisini almak ister misiniz ?</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
+    <value>Ürün Anahtarı İptal Edildi</value>
+  </data>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>Ürün Anahtarı İptal Edildi</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>Uygulama yeniden başlatılacak çok uzun sürmemesi gerek. Desteğiniz için teşekkür ederiz!
+
+[i]Lütfen ürün anahtarını başkaları ile paylaşmayın iptal edilebilir.[/i]</value>
+  <alternative>Uygulama yeniden başlatılacak çok uzun sürmemesi gerek. Desteğiniz için teşekkür ederiz!
+
+[i]Lütfen ürün anahtarını başkaları ile paylaşmayın iptal edilebilir.[/i]</alternative></data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>Teşekkürler!</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Ürün anahtarını girin (XXXX-XXXX-...)</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>Ürün Anahtarı </value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>Lütfen ürün anahtarınızı başka birisiyle paylaşmayın, anahtarınız iptal edilebilir!</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>Ekstra içerik yüklenemiyor</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>Bilgilerin doğru olduğuna emin olun.</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>Gerekli aracın ve pistin yüklü ve kullanılabilir olduğundan emin olun.</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Metadata bulunamadı.</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Uygula</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Uygula &amp; Kaydet</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Sadece FFB'yi Uygula</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Sadece Uygula</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Direk Git</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Kaydet &amp; Uygula</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Sadece Kaydet</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>İçin</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="BrandBadge_AddAs" xml:space="preserve">
+    <value>Yeni araç logosu ekle (firmanın ismi)</value>
+  </data>
+  <data name="BrandBadge_CannotChange" xml:space="preserve">
+    <value>Araç logosu değiştirilemez</value>
+  </data>
+  <data name="BrandBadge_Title" xml:space="preserve">
+    <value>Firma Logosu</value>
+  </data>
+  <data name="Car_DeleteSkin" xml:space="preserve">
+    <value>Skini Sil</value>
+  </data>
+  <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
+    <value>Skinler çöp kutusuna taşınacak</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Ana Aracı Seç</value>
+  </data>
+  <data name="CarPreviews_AllEffects" xml:space="preserve">
+    <value>Bütün efektleri aktif et</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>Yansıma ve parlama gibi bütün efektleri aktif et (tavsiye edilen)</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>Kamera pozisyonu</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>İptal edildi.</value>
+  </data>
+  <data name="CarPreviews_CannotSave" xml:space="preserve">
+    <value>Önizlemeler kaydedilemiyor</value>
+  </data>
+  <data name="CarPreviews_Fxaa" xml:space="preserve">
+    <value>FXAA'i aktif et</value>
+  </data>
+  <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Konus damgası kısa süreliğine kaybolacak</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>Manüel</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews" xml:space="preserve">
+    <value>Önizlemeyi boyutunu değiştir</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>3840×2160 çözünürlükte çekildi</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
+    <value>[url="{0}"]{1}[/url] yüklü değil. Yüklemek ister misin ?</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
+    <value>Showroom bulunamadı</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>Showroom bulunamadı. Ayarlar açılsın mı?</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>Bir şey ters gitti.</value>
+  </data>
+  <data name="CarPreviews_TakenTime" xml:space="preserve">
+    <value>Alındı {0}</value>
+  </data>
+  <data name="CarPreviews_Title" xml:space="preserve">
+    <value>Özizlemeyi Güncelle</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Hızlanma:</value>
+  </data>
+  <data name="CarSpecs_FixFormat" xml:space="preserve">
+    <value>Formatı Düzelt</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>Değer için düzgün bir format belirlemeye çalış</value>
+  </data>
+  <data name="CarSpecs_FixFormats" xml:space="preserve">
+    <value>Formatları Düzelt</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>...km/s</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Maksimum Hız:</value>
+  </data>
+  <data name="CarSpecs_Recalculate" xml:space="preserve">
+    <value>Yeniden hesapla</value>
+  </data>
+  <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
+    <value>Bilgilerden yeniden hesapla</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>Tork:</value>
+  </data>
+  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
+    <value>...kg</value>
+  </data>
+  <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
+    <value>Sürücüsüz ağırlık, tavsiye edilen format: “{0}”</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Ağırlık:</value>
+  </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>Raporlar yüklenemiyor</value>
+  </data>
+  <data name="Changelog_RecentChanges_Title" xml:space="preserve">
+    <value>Yakın Zamandaki Değişiklikler</value>
+  </data>
+  <data name="Common_AddToLibrary" xml:space="preserve">
+    <value>Kütüphaneye Eklensin Mi?</value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>Yarış başlayamaz</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>Renk:</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Geliştirici modu</value>
+  </data>
+  <data name="Common_DisablingFormat" xml:space="preserve">
+    <value>Devre dışı bırakılıyor {0}…</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Başla!</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>Yarışı Başlat (Ctrl+G)</value>
+  </data>
+  <data name="Common_GotId" xml:space="preserve">
+    <value>Anladım</value>
+  </data>
+  <data name="Common_HowTo_Title" xml:space="preserve">
+    <value>Nasıl Yapılır?</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>Yeni Şirket İsmi</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Yeni İsim</value>
+  </data>
+  <data name="Common_OneMoreThing" xml:space="preserve">
+    <value>Bir Şey Daha</value>
+  </data>
+  <data name="Common_RequiredValue" xml:space="preserve">
+    <value>Gereken miktar</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Yeniden Başlat</value>
+  </data>
+  <data name="Common_SelectFile" xml:space="preserve">
+    <value>Dosyayı seç</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Paylaş</value>
+  </data>
+  <data name="Common_Share_SettingsTooltip" xml:space="preserve">
+    <value>Kullanılan ayarları paylaş (Ctrl+Page Up)</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Hava durumunu paylaş (Ctrl+Page Up)</value>
+  </data>
+  <data name="Common_SignIn" xml:space="preserve">
+    <value>Giriş Yap</value>
+  </data>
+  <data name="Common_SignOut" xml:space="preserve">
+    <value>Çıkış Yap</value>
+  </data>
+  <data name="Common_Test" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>Güncelle</value>
+  </data>
+  <data name="Controls_AdditionalBindings" xml:space="preserve">
+    <value>Ekstra atamalar</value>
+  </data>
+  <data name="Controls_AlreadyUsed" xml:space="preserve">
+    <value>Zaten kullanılıyor</value>
+  </data>
+  <data name="Controls_ApplyToAll" xml:space="preserve">
+    <value>Hayır Hepsine Uygula</value>
+  </data>
+  <data name="Controls_BrakeBalance" xml:space="preserve">
+    <value>Fren dengesi:</value>
+  </data>
+  <data name="Controls_Buttons" xml:space="preserve">
+    <value>Butonlar</value>
+  </data>
+  <data name="Controls_CombineWithKeyboard" xml:space="preserve">
+    <value>Klavye ile birleştir</value>
+  </data>
+  <data name="Controls_DetectedControllersHeader" xml:space="preserve">
+    <value>Bulunan joystickler:</value>
+  </data>
+  <data name="Controls_EnableMouseSteering" xml:space="preserve">
+    <value>Mouse ile döndürmeyi aktive et</value>
+  </data>
+  <data name="Controls_EngineBrake" xml:space="preserve">
+    <value>Motor freni:</value>
+  </data>
+  <data name="Controls_ForceFeedback" xml:space="preserve">
+    <value>Force Feedback</value>
+  </data>
+  <data name="Controls_KeyboardSteeringHeader" xml:space="preserve">
+    <value>Klavye döndürmeyi aktive et</value>
+  </data>
+  <data name="Controls_Miscellaneous" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="Controls_MouseSteeringHeader" xml:space="preserve">
+    <value>Mouse ile döndürme</value>
+  </data>
+  <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
+    <value>klavye</value>
+  </data>
+  <data name="Controls_SharedFor_XboxController" xml:space="preserve">
+    <value>Xbox 360 kolu</value>
+  </data>
+  <data name="Controls_ShiftersHeader" xml:space="preserve">
+    <value>Vitesler:</value>
+  </data>
+  <data name="Controls_SteeringSpeed" xml:space="preserve">
+    <value>Direksiyon çevirme hızı</value>
+  </data>
+  <data name="Controls_TractionControl" xml:space="preserve">
+    <value>Kayma kontrolü</value>
+  </data>
+  <data name="Controls_Turbo" xml:space="preserve">
+    <value>Turbo:</value>
+  </data>
+  <data name="Controls_UseHShifter" xml:space="preserve">
+    <value>H vites kullan</value>
+  </data>
+  <data name="Controls_UseMouseButtons" xml:space="preserve">
+    <value>Gaz ve fren için mouse butonları kullan</value>
+  </data>
+  <data name="Controls_View" xml:space="preserve">
+    <value>Görüntüle:</value>
+  </data>
+  <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
+    <value>Kaydedilmemiş Ayarlar Hakkında Uyar</value>
+  </data>
+  <data name="CreateShowroom_CannotCreate" xml:space="preserve">
+    <value>Yeni showroom oluşturulamadı</value>
+  </data>
+  <data name="CreateShowroom_InShadow" xml:space="preserve">
+    <value>Gölgede</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>İsim:</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
+    <value>Tavsiye edilen format: DDS Image, 32f.32f.32f.32f, 5120×2560
+200 MB harcamak istemessen: TIFF Image, 96 bit per pixel, ZIP</value>
+  <alternative>Tavsiye edilen format: DDS Image, 32f.32f.32f.32f, 5120×2560
+200 MB harcamak istemessen: TIFF Image, 96 bit per pixel, ZIP</alternative></data>
+  <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
+    <value>Böyle bir şey:</value>
+  </data>
+  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
+    <value>Panorama:</value>
+  </data>
+  <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
+    <value>Panorama Dosyası Seç</value>
+  </data>
+  <data name="CreateShowroom_Title" xml:space="preserve">
+    <value>Yeni Showroom Oluştur</value>
+  </data>
+  <data name="CropImage_Skip" xml:space="preserve">
+    <value>Kırpma</value>
+  </data>
+  <data name="CropImage_Title" xml:space="preserve">
+    <value>Fotoğrafı Kırp</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>AI sırası:</value>
+  </data>
+  <data name="Drive_AiCarsLoading" xml:space="preserve">
+    <value>AI araçları yükleniyor...</value>
+  </data>
+  <data name="Drive_AiFiltering" xml:space="preserve">
+    <value>AI araçları ayırılıyor...</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
+    <value>Tam ters sırala</value>
+  </data>
+  <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
+    <value>En güçlü rakip başlangıçta en sonda olacak</value>
+  </data>
+  <data name="Drive_ArrangeRandomly" xml:space="preserve">
+    <value>Rastgele sırala</value>
+  </data>
+  <data name="Drive_CannotInitializeLua" xml:space="preserve">
+    <value>Lua başlatılamıyor</value>
+  </data>
+  <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
+    <value>Lütfen deaktive edilmemiş bir araba seçin.</value>
+  </data>
+  <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
+    <value>Lütfen bir pist seçin</value>
+  </data>
+  <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
+    <value>Lütfen en az bir rakip seçin</value>
+  </data>
+  <data name="Drive_CannotStart_Title" xml:space="preserve">
+    <value>Yarış Başlatılamıyor</value>
+  </data>
+  <data name="Drive_FixedOpponentsStrength" xml:space="preserve">
+    <value>Rakibin gücü düzeltildi</value>
+  </data>
+  <data name="Drive_GhostCar" xml:space="preserve">
+    <value>Hayalet araba</value>
+  </data>
+  <data name="Drive_GhostCarAdvantage" xml:space="preserve">
+    <value>Hayalet araba avantajı</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponentsLabel" xml:space="preserve">
+    <value>Tahmini rakip listesi:</value>
+  </data>
+  <data name="Drive_LoadingFailed" xml:space="preserve">
+    <value>Yüklenme başarısız</value>
+  </data>
+  <data name="Drive_LocalWeatherHeader" xml:space="preserve">
+    <value>Lokal Hava Durumu</value>
+  </data>
+  <data name="Drive_OpponentsStrength" xml:space="preserve">
+    <value>Rakiplerin zorlukları</value>
+  </data>
+  <data name="Drive_OpponentsStrengthMin" xml:space="preserve">
+    <value>Rakiplerin zorlukları (minimum)</value>
+  </data>
+  <data name="Drive_Ordinal_Last" xml:space="preserve">
+    <value>Sonuncu</value>
+  </data>
+  <data name="Drive_Ordinal_Parameter" xml:space="preserve">
+    <value>sürücü</value>
+  </data>
+  <data name="Drive_Ordinal_Random" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="Drive_Penalties" xml:space="preserve">
+    <value>Penaltı</value>
+  </data>
+  <data name="Drive_RaceDuration" xml:space="preserve">
+    <value>Yarış süresi</value>
+  </data>
+  <data name="Drive_RealConditions" xml:space="preserve">
+    <value>Gerçek kondisyonlar</value>
+  </data>
+  <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
+    <value>Manüel olarak zaman belirtle</value>
+  </data>
+  <data name="Drive_SkipSession" xml:space="preserve">
+    <value>Geç</value>
+  </data>
+  <data name="Drive_StartFrom" xml:space="preserve">
+    <value>Buradan başla:</value>
+  </data>
+  <data name="Drive_StartingPosition" xml:space="preserve">
+    <value>Başlangıç pozisyonu</value>
+  </data>
+  <data name="Drive_Temperature" xml:space="preserve">
+    <value>Sıcaklık</value>
+  </data>
+  <data name="Drive_Temperature_Warning" xml:space="preserve">
+    <value>Gerçek sıcaklığa en yakın sıcaklık kullanılmaktadır</value>
+  </data>
+  <data name="Drive_Time" xml:space="preserve">
+    <value>Zaman</value>
+  </data>
+  <data name="Drive_TrackStateLabel" xml:space="preserve">
+    <value>Pist:</value>
+  </data>
+  <data name="Drive_Weather_CannotLoad" xml:space="preserve">
+    <value>Gerçek hava durumunu yüklenemiyor</value>
+  </data>
+  <data name="Drive_Weather_Warning" xml:space="preserve">
+    <value>{}Gerçek Hava Durumu ({0}) desteklenmiyor</value>
+  </data>
+  <data name="Drive_WeatherLabel" xml:space="preserve">
+    <value>Hava Durumu:</value>
+  </data>
+  <data name="Filter_ByAcceleration" xml:space="preserve">
+    <value>Hızlanma Durumuna Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByAge" xml:space="preserve">
+    <value>Yaşa Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByAuthor" xml:space="preserve">
+    <value>Yapımcıya Filtrele</value>
+  </data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+    <value>Firmaya Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByCar" xml:space="preserve">
+    <value>Arabaya Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByCity" xml:space="preserve">
+    <value>Şehire Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByClass" xml:space="preserve">
+    <value>Sınıfa Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+    <value>Ülkeye Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByDecade" xml:space="preserve">
+    <value>Yüzyıla Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByDriver" xml:space="preserve">
+    <value>Sürücü İsmine Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByNumber" xml:space="preserve">
+    <value>Numaraya Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByPower" xml:space="preserve">
+    <value>Benzer Güce Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByPriority" xml:space="preserve">
+    <value>Önceliğe Göre Filtrele</value>
+  </data>
+  <data name="Filter_BySize" xml:space="preserve">
+    <value>Boyuta Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByTag" xml:space="preserve">
+    <value>Etikete Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByTeam" xml:space="preserve">
+    <value>Takımına Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByTopSpeed" xml:space="preserve">
+    <value>Benzer En Yüksek Hızına Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByTorque" xml:space="preserve">
+    <value>Benzer Tork Değerine Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+    <value>Piste Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+    <value>Hava Durumuna Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByWeight" xml:space="preserve">
+    <value>Benzer Ağırlığa Göre Filtrele</value>
+  </data>
+  <data name="Filter_ByYear" xml:space="preserve">
+    <value>Yıla Göre Filtrele</value>
+  </data>
+  <data name="Font_MissingFonts" xml:space="preserve">
+    <value>Yazı Tipleri Eksik</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>Content Manager gizlendi</value>
+  </data>
+  <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
+    <value>AI Seviyesi</value>
+  </data>
+  <data name="KunosCareer_FullyCompleted" xml:space="preserve">
+    <value>Tamamen bitirildi</value>
+  </data>
+  <data name="KunosCareer_LapsLabel" xml:space="preserve">
+    <value>Turlar:</value>
+  </data>
+  <data name="KunosCareer_Next" xml:space="preserve">
+    <value>Sonraki</value>
+  </data>
+  <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
+    <value>Rakipler:</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
+    <value>Gerekli seriler henüz tamamlanmadı</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
+    <value>Bu şampiyonluktaki bütün bilgiler silinecek. Emin Misin ?</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
+    <value>Şampiyonluk Sürecini Sıfırla</value>
+  </data>
+  <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
+    <value>Başlangıç pozisyonu:</value>
+  </data>
+  <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
+    <value>Sıcaklık:</value>
+  </data>
+  <data name="KunosCareer_TimeLabel" xml:space="preserve">
+    <value>Saat:</value>
+  </data>
+  <data name="KunosCareer_Title" xml:space="preserve">
+    <value>Kunos Kariyeri</value>
+  </data>
+  <data name="KunosCareer_TrackState" xml:space="preserve">
+    <value>Pist Durumu:</value>
+  </data>
+  <data name="KunosCareer_WeatherLabel" xml:space="preserve">
+    <value>Hava Durumu:</value>
+  </data>
+  <data name="List_Apps" xml:space="preserve">
+    <value>{0} uygulama</value>
+  </data>
+  <data name="List_Cars" xml:space="preserve">
+    <value>{0} araba</value>
+  </data>
+  <data name="List_Fonts" xml:space="preserve">
+    <value>{0} yazı tipi</value>
+  </data>
+  <data name="List_PpFilters" xml:space="preserve">
+    <value>{0} filtre</value>
+  </data>
+  <data name="List_Replays" xml:space="preserve">
+    <value>{0} yeniden oynatma</value>
+  </data>
+  <data name="List_Showrooms" xml:space="preserve">
+    <value>{0} showroom</value>
+  </data>
+  <data name="List_Skins" xml:space="preserve">
+    <value>{0} skin</value>
+  </data>
+  <data name="List_Tracks" xml:space="preserve">
+    <value>{0} pist</value>
+  </data>
+  <data name="List_Weather" xml:space="preserve">
+    <value>{0} hava durumu</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
+    <value>Skin Numarası Değişti</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>Renk:</value>
+  </data>
+  <data name="LiveryIcon_Number_Light" xml:space="preserve">
+    <value>Işık</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>Rakam:</value>
+  </data>
+  <data name="LiveryIcon_NumberValue" xml:space="preserve">
+    <value>Değer</value>
+  </data>
+  <data name="LiveryIcon_ResultLabel" xml:space="preserve">
+    <value>Sonuç:</value>
+  </data>
+  <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
+    <value>İkinci renk:</value>
+  </data>
+  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
+    <value>Karbon</value>
+  </data>
+  <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
+    <value>Yuvarlak</value>
+  </data>
+  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
+    <value>Çapraz</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
+    <value>Yuvarlaklı Çapraz Çizgi</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
+    <value>Yuvarlak Çapraz</value>
+  </data>
+  <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
+    <value>İkili Çizgiler</value>
+  </data>
+  <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
+    <value>Düz</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalStripes" xml:space="preserve">
+    <value>Yatay Çizgiler</value>
+  </data>
+  <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
+    <value>Yan Çizgiler</value>
+  </data>
+  <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
+    <value>Çizgiler</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>Şekli:</value>
+  </data>
+  <data name="LiveryIcon_Style_Bright" xml:space="preserve">
+    <value>Parlak</value>
+  </data>
+  <data name="LiveryIcon_StyleLabel" xml:space="preserve">
+    <value>Tarzı:</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>Yazı rengi:</value>
+  </data>
+  <data name="Main_About" xml:space="preserve">
+    <value>Hakkında</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Uygulamalar</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
+    <value>Geçerli bir format olduğuna emin ol.</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Kariyer</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Arabalar</value>
+  </data>
+  <data name="Main_Challenges" xml:space="preserve">
+    <value>Meydan Okumalar</value>
+  </data>
+  <data name="Main_Content" xml:space="preserve">
+    <value>İçerik</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Content Manager</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>Sür</value>
+  </data>
+  <data name="Main_Fonts" xml:space="preserve">
+    <value>Yazı Tipleri</value>
+  </data>
+  <data name="Main_ImportantTips" xml:space="preserve">
+    <value>Önemli İpucular</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>Dil</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Canlı</value>
+  </data>
+  <data name="Main_Media" xml:space="preserve">
+    <value>Medya</value>
+  </data>
+  <data name="Main_Miscellaneous" xml:space="preserve">
+    <value>Diğer</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Şimdi Resmi Destek İle</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Çabuk</value>
+  </data>
+  <data name="Main_ReleaseNotes" xml:space="preserve">
+    <value>Çıkış Notları</value>
+  </data>
+  <data name="Main_Replays" xml:space="preserve">
+    <value>Yeniden Oynatmalar</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Screenshotlar</value>
+  </data>
+  <data name="Main_Server" xml:space="preserve">
+    <value>Sunucu</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Çalışıyor</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>Ayarlar</value>
+  </data>
+  <data name="Main_Showrooms" xml:space="preserve">
+    <value>Showroomlar</value>
+  </data>
+  <data name="Main_Single" xml:space="preserve">
+    <value>Tek Kişilik</value>
+  </data>
+  <data name="Main_Skins" xml:space="preserve">
+    <value>Skinler</value>
+  </data>
+  <data name="Main_Stats" xml:space="preserve">
+    <value>İstatistikler</value>
+  </data>
+  <data name="Main_Title" xml:space="preserve">
+    <value>Content Manager (Lite Sürümü)</value>
+  </data>
+  <data name="Main_Tracks" xml:space="preserve">
+    <value>Pistler</value>
+  </data>
+  <data name="Main_UnsavedChangesHeader" xml:space="preserve">
+    <value>Kaydedilmemiş Değişiklikler</value>
+  </data>
+  <data name="Main_Weather" xml:space="preserve">
+    <value>Hava Durumu</value>
+  </data>
+  <data name="Online_AddByIp" xml:space="preserve">
+    <value>IP İle Ekle</value>
+  </data>
+  <data name="Online_AddingServer" xml:space="preserve">
+    <value>Sunucu ekleniyor...</value>
+  </data>
+  <data name="Online_AddNewServer" xml:space="preserve">
+    <value>Yeni Bir Sunucu Ekle</value>
+  </data>
+  <data name="Online_AddServer" xml:space="preserve">
+    <value>Sunucu Adresi (IP &amp; HTTP veya TCP Port):</value>
+  </data>
+  <data name="Online_AddServer_Title" xml:space="preserve">
+    <value>Yeni Sunucular Ekle</value>
+  </data>
+  <data name="Online_AllCarsAreTaken" xml:space="preserve">
+    <value>Bütün araçlar kullanılıyor</value>
+  </data>
+  <data name="Online_CannotAddServer" xml:space="preserve">
+    <value>Sunucu eklenemiyor</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Online olan sürücürler:</value>
+  </data>
+  <data name="Online_FilterEmpty" xml:space="preserve">
+    <value>Boş sunucuları göster</value>
+  </data>
+  <data name="Online_FilterEmpty_Short" xml:space="preserve">
+    <value>Boş sunucuları göster</value>
+  </data>
+  <data name="Online_FilterFull" xml:space="preserve">
+    <value>Full sunucuları göster</value>
+  </data>
+  <data name="Online_FilterFull_Short" xml:space="preserve">
+    <value>Full </value>
+  </data>
+  <data name="Online_FilterMissing" xml:space="preserve">
+    <value>İçeriğik eksin olan sunucular</value>
+  </data>
+  <data name="Online_FilterMissing_Short" xml:space="preserve">
+    <value>Bulunamadı</value>
+  </data>
+  <data name="Online_FilterPassword" xml:space="preserve">
+    <value>Şifreli olan sunucuları göster</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Şifre </value>
+  </data>
+  <data name="Online_LeftLabel" xml:space="preserve">
+    <value>Çıktı:</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>Şifre:</value>
+  </data>
+  <data name="Online_ServersFormat" xml:space="preserve">
+    <value>{0} sunucu</value>
+  </data>
+  <data name="Online_SkinIsMissing" xml:space="preserve">
+    <value>Skin bulunamadı</value>
+  </data>
+  <data name="Online_SortByCapacity" xml:space="preserve">
+    <value>Kapasiteye Göre Sırala</value>
+  </data>
+  <data name="Online_SortByCarsNumber" xml:space="preserve">
+    <value>Araba Numarasına Göre Sırala</value>
+  </data>
+  <data name="Online_SortByDrivers" xml:space="preserve">
+    <value>Sürücülere Göre Sırala</value>
+  </data>
+  <data name="Online_SortByLabel" xml:space="preserve">
+    <value>Göre Sırala:</value>
+  </data>
+  <data name="Online_SortByName" xml:space="preserve">
+    <value>İsme Göre Sırala</value>
+  </data>
+  <data name="Online_SortByPing" xml:space="preserve">
+    <value>Pinge Göre Sırala</value>
+  </data>
+  <data name="Online_Sorting_Capacity" xml:space="preserve">
+    <value>Kapasite </value>
+  </data>
+  <data name="Online_Sorting_CarsNumber" xml:space="preserve">
+    <value>Araç Numarası</value>
+  </data>
+  <data name="Online_Sorting_Drivers" xml:space="preserve">
+    <value>Sürücüler </value>
+  </data>
+  <data name="Online_Sorting_Name" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="Online_Sorting_Ping" xml:space="preserve">
+    <value>Ping</value>
+  </data>
+  <data name="Online_TimeLabel" xml:space="preserve">
+    <value>Süre:</value>
+  </data>
+  <data name="Page_Wip" xml:space="preserve">
+    <value>Bu bölüm henüz hazır değil</value>
+  </data>
+  <data name="Page_Wip_Commentary" xml:space="preserve">
+    <value>Bu uygulamanın gelişmesi ile ilgili daha fazla bilgi almak isterseniz [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] dan daha detaylı bir şekilde bakabilirsiniz.</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>Hazırlanıyor...</value>
+  </data>
+  <data name="RaceGrid_CandidatePriority" xml:space="preserve">
+    <value>Adayın önceliği</value>
+  </data>
+  <data name="RaceGrid_Candidates" xml:space="preserve">
+    <value>Adaylar</value>
+  </data>
+  <data name="RaceGrid_ClassFormat" xml:space="preserve">
+    <value>Sınıf: {0}</value>
+  </data>
+  <data name="RaceGrid_Opponents" xml:space="preserve">
+    <value>Rakipler:</value>
+  </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>Bu araç için pit stop yok</value>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>En iyi tur:</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>Yarış iptal edildi</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Hata:</value>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>Turlar:</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Tekrar dene</value>
+  </data>
+  <data name="Replay_DefaultUploadedName" xml:space="preserve">
+    <value>AC Tekrarı</value>
+  </data>
+  <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
+    <value>İlk önce aktif etmen gerek.</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>Çık</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>Hepsi</value>
+  </data>
+  <data name="Select_Brands" xml:space="preserve">
+    <value>Markalar</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>Kategoriler</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>Ülkeler</value>
+  </data>
+  <data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>AC ayarları:</value>
+  </data>
+  <data name="Settings_Appearance" xml:space="preserve">
+    <value>Görünüm</value>
+  </data>
+  <data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
+    <value>Dinamik arkaplan</value>
+  </data>
+  <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
+    <value>Değişiklikleri uygulamak için yeniden başlatın</value>
+  </data>
+  <data name="Settings_Appearance_SmallFont" xml:space="preserve">
+    <value>Küçük yazıtipi</value>
+  </data>
+  <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
+    <value>Tema:</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Arabalar:</value>
+  </data>
+  <data name="Settings_Content_FontsHeader" xml:space="preserve">
+    <value>Yazı Tipleri:</value>
+  </data>
+  <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
+    <value>Yeni olarak işaretle:</value>
+  </data>
+  <data name="Settings_Content_SearchEngine" xml:space="preserve">
+    <value>Arama motoru:</value>
+  </data>
+  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
+    <value>Showroomlar:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>FXAA kullan</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>MSAA Kullan</value>
+  </data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>Geliştirici</value>
+  </data>
+  <data name="Settings_Drive_32bit" xml:space="preserve">
+    <value>32 bit versiyon kullan</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>Uyruk:</value>
+  </data>
+  <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
+    <value>Online için farklı isim kullan</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>Online isim:</value>
+  </data>
+  <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
+    <value>Oyuncunun ismi:</value>
+  </data>
+  <data name="Settings_General" xml:space="preserve">
+    <value>Genel</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Assetto Corsa klasörü:</value>
+  </data>
+  <data name="Settings_General_AppHeader" xml:space="preserve">
+    <value>Uygulama:</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>Uygulama anahtarı:</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>Uygulama sürümü:</value>
+  </data>
+  <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
+    <value>Uygulama Güncelleştirmeleri:</value>
+  </data>
+  <data name="Settings_General_CheckForUpdates" xml:space="preserve">
+    <value>Güncelleştirmeleri Kontrol Et</value>
+  </data>
+  <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
+    <value>Güncelleştirmeleri kontrol et:</value>
+  </data>
+  <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
+    <value>Bilgi sürümü:</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
+    <value>Temizle</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>Önemli olmayan bütün değerleri kaldır</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut" xml:space="preserve">
+    <value>Başlat menüsü için kısayol (daha modern bildirimler için)</value>
+  </data>
+  <data name="Settings_Locale_Custom" xml:space="preserve">
+    <value>Özel</value>
+  </data>
+  <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
+    <value>Özel Çeviriler</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>Nasıl Çeviri Yapılır</value>
+  </data>
+  <data name="Settings_Locale_Installed" xml:space="preserve">
+    <value>Yüklü Olan</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Dil:</value>
+  </data>
+  <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
+    <value>Resmi olarak desteklenen</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Yeniden Başlat</value>
+  </data>
+  <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
+    <value>Bağlantı:</value>
+  </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>Şifreleri hatırla</value>
+  </data>
+  <data name="Settings_Online_ServerLabel" xml:space="preserve">
+    <value>Sunucu:</value>
+  </data>
+  <data name="Settings_Plugins" xml:space="preserve">
+    <value>Eklentiler</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+    <value>Klasör:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
+    <value>İsim</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
+    <value>Hedef</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
+    <value>Tür</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>Marka ismi koy</value>
+  </data>
+  <data name="Tags_CleanUp" xml:space="preserve">
+    <value>Etiketleri Temizle</value>
+  </data>
+  <data name="Tags_CleanUpAndSort" xml:space="preserve">
+    <value>Etiketleri Temizle &amp; Ayıkla</value>
+  </data>
+  <data name="Tags_Sort" xml:space="preserve">
+    <value>Etiketleri ayıkla</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>Skinler</value>
+  </data>
+  <data name="Toolbar_ChangeId" xml:space="preserve">
+    <value>ID'yi Değiştir</value>
+  </data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+    <value>Klonla</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>Değerleri Kopyala</value>
+  </data>
+  <data name="Toolbar_CreateNewFont" xml:space="preserve">
+    <value>Yeni Yazı Tipi Oluştur</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Sil</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Devre Dışı Bırak</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Devre Dışı Bırak (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_DisableEditMode" xml:space="preserve">
+    <value>Düzenleme Modunu Kapat</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>Sür</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Aktif Et</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Aktif Et (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>Bilgileri Bul</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Klasör</value>
+  </data>
+  <data name="Toolbar_Join" xml:space="preserve">
+    <value>Katıl</value>
+  </data>
+  <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
+    <value>Sunucuya gir (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>Oyna</value>
+  </data>
+  <data name="Toolbar_Refresh" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>Yenile</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+    <value>Yenile (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Yeniden Adlandır</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Kaydet</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Sesleri Kapat</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Sesleri kapat (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Sesleri Aç</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Sesleri aç (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_UnpackData" xml:space="preserve">
+    <value>Bilgileri çıkart</value>
+  </data>
+  <data name="Toolbar_UpdateMap" xml:space="preserve">
+    <value>Haritayı güncelle</value>
+  </data>
+  <data name="Toolbar_UpdatePreview" xml:space="preserve">
+    <value>Önizlemeyi güncelle</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews" xml:space="preserve">
+    <value>Özizlemeleri güncelle</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
+    <value>Manüel Mod</value>
+  </data>
+  <data name="Toolbar_UploadAndShare" xml:space="preserve">
+    <value>Yükle &amp; Paylaş</value>
+  </data>
+  <data name="UpgradeIcon_Current" xml:space="preserve">
+    <value>Şuanki</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Editör</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Kütüphane</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>Yeni</value>
+  </data>
+  <data name="UpgradeIcon_SelectNew" xml:space="preserve">
+    <value>Güncelleme için yeni ikon seç</value>
+  </data>
+  <data name="UpgradeIcon_Title" xml:space="preserve">
+    <value>İkonu güncelle</value>
+  </data>
+  <data name="VersionInfo_Title" xml:space="preserve">
+    <value>Sürüm bilgisi</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Hava durumu paylaşılamıyor</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Boş mu gözüküyor?</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Parlaklık</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Bulutlar</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Renk</value>
+  </data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+    <value>Mesafe</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Sis</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Işıkları aç</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>Bulut sayısı</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>Hava derecesi</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Oturum bilgisi</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Kaldırmadan önce onayla</value>
+  </data>
+</root>

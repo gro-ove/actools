@@ -624,14 +624,14 @@
     <value>Increase Delivery</value>
   </data>
   <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
-    <value>Decrease Delivery</value>
-  </data>
+    <value>Réduire la puissance</value>
+  <alternative>Decrease Delivery</alternative></data>
   <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
     <value>Increase Recovery</value>
   </data>
   <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
-    <value>Decrease Recovery</value>
-  </data>
+    <value>Réduire la récupération</value>
+  <alternative>Decrease Recovery</alternative></data>
   <data name="Controls_Mguh_Mode" xml:space="preserve">
     <value>Mode MGU-H</value>
   </data>
@@ -1167,8 +1167,8 @@
     <value>Assurez-vous d'avoir assez d'espace disque.</value>
   <alternative>Assurez vous d'avoir assez d'espace disque.</alternative></data>
   <data name="Units_BHP" xml:space="preserve">
-    <value>Ch</value>
-  <alternative>Bhp</alternative></data>
+    <value>ch</value>
+  <alternative>Bhp</alternative><alternative>Ch</alternative></data>
   <data name="Units_Nm" xml:space="preserve">
     <value>Nm</value>
   </data>
@@ -1212,8 +1212,8 @@
     <value>Erreur inconnue</value>
   </data>
   <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
-    <value>Choisissez une autre ID.</value>
-  <alternative>Choisissez un autre ID.</alternative></data>
+    <value>Choisissez un autre ID.</value>
+  <alternative>Choisissez une autre ID.</alternative></data>
   <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
     <value>Unités :</value>
   </data>
@@ -1221,15 +1221,16 @@
     <value>Afficher l'écart avec les adversaires</value>
   <alternative>Afficher écart avec les concurrents</alternative></data>
   <data name="AcSettings_View_Damage" xml:space="preserve">
-    <value>Afficher dégats (GUI)</value>
-  </data>
+    <value>Afficher les dégâts (GUI)</value>
+  <alternative>Afficher dégats (GUI)</alternative></data>
   <data name="AcSettings_View_Leaderboard" xml:space="preserve">
     <value>Afficher le classement</value>
   <alternative>Afficher classement</alternative></data>
   <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
-    <value>Afficher les rétroviseurs virtuels
+    <value>Afficher le rétroviseur virtuel
 </value>
-  </data>
+  <alternative>Afficher les rétroviseurs virtuels
+</alternative></data>
   <data name="AcSettings_View_CameraHeader" xml:space="preserve">
     <value>Caméra :</value>
   </data>
@@ -1249,8 +1250,8 @@
     <value>Chaque {0}</value>
   <alternative>Tout(es) les {0}</alternative></data>
   <data name="Assists_Title" xml:space="preserve">
-    <value>Assistances</value>
-  </data>
+    <value>Aides au pilotage</value>
+  <alternative>Assistances</alternative></data>
   <data name="Assists_TractionControlLabel" xml:space="preserve">
     <value>Contrôle de traction :</value>
   </data>
@@ -1329,8 +1330,8 @@
     <value>ABS :</value>
   </data>
   <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
-    <value>Ajoute un nouveau véhicule à la liste</value>
-  </data>
+    <value>Ajouter un nouveau véhicule à la liste</value>
+  <alternative>Ajoute un nouveau véhicule à la liste</alternative></data>
   <data name="Assists_StabilityControl" xml:space="preserve">
     <value>Contrôle de stabilité</value>
   </data>
@@ -1501,5 +1502,263 @@
   </data>
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Mot clé “{0}” introuvable</value>
+  </data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Assurez-vous qu'il n'y ai pas d'applications en cours d'exécution qui fonctionne avec le dossier des objets.</value>
+  </data>
+  <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
+    <value>Le mode Time Attack n'est pas pris en charge par le circuit sélectionnée</value>
+  </data>
+  <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
+    <value>Le PP filter par défaut (.../assettocorsa/system/cfg/ppfilters/[b]default.ini[/b]) est manquant mais obligatoire</value>
+  </data>
+  <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
+    <value>le PP filter “{0}” est manquant (.../assettocorsa/system/cfg/ppfilters)</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Le Shader “{0}” est manquant (peut être supprimé dans certaines mise à jour d'AC), le modèle doit être réparé/remplacé</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Les textures (.dds) des nuages (.../assettocorsa/content/texture/clouds) peuvent être manquantes</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Grille de départ prédéfinie</value>
+  </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Assistance prédéfinie</value>
+  </data>
+  <data name="Common_AcReplay" xml:space="preserve">
+    <value>AC replay</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Départ arrêté</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Sous-pixel</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Impossible d'obtenir l'ID depuis cet emplacement</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Très faible</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Vitesse de balayage</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Renvoi d'angle</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Secousses à haute vitesse</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-Forces :</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Verrouillé</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Verrouiller le volant</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Limite de rotation du volant</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Limite virtuel de rotation du volant</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
+    <value>Format recommandé: “…° N” or “…° S”</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
+    <value>Format recommandé: “…° W” or “…° E”</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>En ouverture uniquement</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Système de freinage antiblocage (ABS)</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Autoblip (Coup de gaz automatique au rétrogradage qui simule le talon/pointe)</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Synchroniser automatiquement le régime moteur (RPM) lors des rétrogradations</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Appuye automatiquement sur l'embrayage lors du changement de rapport</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Vitesses automatique</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Ne pas confondre avec la boîte de vitesses automatique</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Consommation de carburant</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ligne de conduite idéale</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Afficher la ligne de conduite idéale</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Moteur, boîte de vitesses, suspension et autres pièces endommageables</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Effet de glissement
+</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Multiplicateur du flux pour l'effet de glissement</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Non réaliste, mais peut être utile si vous commencez tout juste à apprendre à conduire ou à drift</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimiser l'adhérence pendant l'accélération</value>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>Point</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Reprendre</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Départ</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Filtré par...</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Construction de la grille...</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Supprimer les voitures sélectionnées de la liste</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Type de grille:</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Pénalité de départ</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Jour de la piste</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>Impossible de mettre à jour la grille de course</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>Le Script doit retourner à la fonction de filtrage</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Le model de la grille de départ de course est absent</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Model de la grille de départ de course introuvable avec l'ID “{0}”</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Voie officielle de Kunos (Peut être lent et peu fiable, mais ne nécessite pas de correctifs)</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Manière rusé (mais plus compliquée) de commencer la course (L'une des plus rapides, mais ne fonctionne pas sans exécuter Steam ou sans connexion Internet)</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>Module d'Interface Utilisateur</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Ajoute un module d'interface utilisateur spécial dans le lanceur d'origine qui écoute certaines commandes et exécute la course (Utilisez-le si vous devez utiliser CM et le lanceur d'origine en même temps)</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Version modifiée du lanceur d'origine (Obsolète depuis la version 1.7)</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Méthode la plus rapide, lance directement la course sans utiliser Steam du tout (Fonctionne en ligne, mais vous manquerez tous les accomplissements)</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Essaie d'exécuter "acs.exe" directement (Échoue dans la plupart des cas)</value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Erreur de syntaxe dans le paquet {0} à la ligne {1}</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Erreur de syntaxe dans {0} à la ligne {1}</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Le fichier est toujours analysé, mais certaines valeurs peuvent être ignorées.</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Module d'interface "CM Helper" installé et activé. N'oubliez pas de redémarrer AssettoCorsa.exe avant de courir!</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Façon d'organiser les candidats</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Utiliser les noms des livrées (skins) si disponibles</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Paramètres audio prédéfinis</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} à {1}.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Les données de {0} ne sont pas emballées, donc les utilisateurs peuvent les modifier avant de les rejoindre et obtenir un avantage injuste.
+
+Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de partager la version emballée aux clients.</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>S'il vous plaît, veuillez sélectionner une voiture prise en charge par le serveur</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Le serveur dit : “{0}”</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Assurez-vous qu'il y a suffisamment d'espace et que les fichiers originaux peuvent être supprimés.</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Si vous le désactivez, vous pouvez toujours l'activer dans les paramètres en ligne</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>État de piste prédéfini</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>La livrée (le skin) {0} est manquante.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Les livrées (les skins) {0} sont manquantes.</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>La météo {0} est manquante.</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Custom Showroom prédéfini</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Custom Previews prédéfini</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Aléatoire</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Originale</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Real Head Motion prédéfini</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Gaz</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Freins</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Direction</value>
   </data>
 </root>

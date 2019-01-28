@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>Marka logosu bulunamadı</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>Marka ismi bulunamadı</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>“{0}” Aracı bulunamadı</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Bu aracın ana aracı bulunamadı</value>
+  </data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>“colorCurves.ini” Dosyası bulunamadı</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>“ui” adresi bulunamadı</value>
+  </data>
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
+    <value>“{0}” dosyası hasarlı</value>
+  </data>
+  <data name="AcError_FileIsMissing" xml:space="preserve">
+    <value>“{0}” dosyası bulunamadı</value>
+  </data>
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+    <value>Yazı tipinin bit haritası bulunamadı</value>
+  </data>
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+    <value>Yazı tipi kullanılıyor fakat devre dışı</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>İsim bulunamadı</value>
+  </data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>“[” or “]” gibi semboller isimde kullanılmamalı</value>
+  </data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>Gerekli içerik bulunamadı</value>
+  </data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Skinler bulunamadı</value>
+  </data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Skin kaynağı bulunamadı</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>“{0}” Pisti bulunamadı</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Devre dışı edilemez</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Obje haraket ettirilemez</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>ID değiştirilemez</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>{0} ID'si değiştirilemez</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Objeyi klonlanamaz</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Yeterince hafıza olduğuna emin olun</value>
+  </data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Silinemiyor</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Kusura bakma bu objeyi devre dışı bırakamassın.</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>Yanlış ID</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Artık geçerli değil</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Bu yer dolu</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Dosyayı yenile?</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Konum bulunamadı</value>
+  </data>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>Tek Ekran</value>
+  </data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>Üç Ekran</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Çözünürlüklerin düzgün bir listesi alınamıyor</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Assetto Corsa ayarları kaydedilemiyor</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>Yüksek</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>İdeal</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Düşük</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Maksimum</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normal</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Ultra</value>
+  </data>
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+    <value>Çok Yüksek</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Çok Düşük</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Kamera:</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-Kuvveti</value>
+  </data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Sürücünün ellerini gizle</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Direksiyonu gizle</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Yüksek hız sallantısı</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Skor tablosunu göster</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Kilitli</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Direksiyonu kilitle</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Birimler:</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Dikey</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Görüntüle:</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Sanal aynaları göster</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>araba</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>araba skini</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>yazı tipi</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>showroom</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>pist</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>hava durumu</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>İzin verilmedi</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Yeterince yetki olmadığı için uygulama güncellenemedi. Lütfen manüel bir şekilde güncelleyin.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Yeterince yetki olmadığı için uygulama güncellenemedi.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Yeni sürüm yüklenemiyor</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>İnternetinizin bağlı olduğuna ve uygulamanın yazma yetkisi olduğuna emin olun.</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Yeni sürüm yüklenemiyor.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Uygulama güncellenemiyor</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Çıkartılmış sürüm otomatik güncellemeyi desteklemiyor</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Güncelleme başarısız</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Yanlış şifre</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Şifre gerekli</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Otomatik debriyaj</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Otomatik vites atmak</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Otomatik vites kutusu ile karıştırmayın</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Yakıt tüketimi</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>İdeal sürüş çizgisi </value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>İdeal sürüş çizgisini göster</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mekanik hasar</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Teker hasarı</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Fabrika</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Kapalı</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Yeni sürüm bilgisi indirilemiyor.</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Ana araç bulunamadı</value>
+  </data>
+  <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
+    <value>Hatalı lokasyon</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>Sol ön</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>Sol arka</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>Sağ ön</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>Sağ arka</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Şampiyonluk</value>
+  </data>
+  <data name="Common_AcReplay" xml:space="preserve">
+    <value>AC ile yeniden izle</value>
+  </data>
+  <data name="Common_CannotDo" xml:space="preserve">
+    <value>Yapılmıyor</value>
+  </data>
+  <data name="Common_CannotDo_Title" xml:space="preserve">
+    <value>Yapılmıyor</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>Dosya indirilmedi</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>İnternet bağlantısının olduğuna emin olun.</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Bilgiler okunamadı</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Çıkartılamıyor {0}</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Araç ID'si bulunamadı</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Hedef</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Devre Dışı</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Dışa aktarılıyor...</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Boy</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>ID bulunamadı</value>
+  </data>
+  <data name="Common_IdIsTaken" xml:space="preserve">
+    <value>ID kullanılmış</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Uzunluğu</value>
+  </data>
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
+    <value>İnternet bağlantısının çalıştığına emin olun.</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Yeterli hafızanın olduğundan emin olun.</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>Kullanılamıyor</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Numara</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Güç</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Taranıyor...</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Hız</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Steam ID bulunamadı</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Gönder</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Süre</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Tork</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Uyarı</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Haftasonu</value>
+  </data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>Araba için yeni bir sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Yeni Araba {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
+    <value>Araba skini için yeni sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
+    <value>Yeni araba skini {0}</value>
+  </data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>Yazı tipi için yeni sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>Yeni yazı tipi {0}</value>
+  </data>
+  <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
+    <value>Skin Önizlemelerini Tut</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
+    <value>Arayüz Bilgisini Tut</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>Arayüz Bilgisini &amp; Skin Önizlemesini Tut</value>
+  </data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>Showroom için yeni sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Yeni showroom {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>Pist için yeni sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Yeni pist {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>Hava durumu için yeni sürüm {0}</value>
+  </data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>Yeni hava durumu {0}</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>İçerik paketi yüklenemiyor</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
+    <value>İnternet bağlantısının olduğundan ve Content dosyasında bir şey olmadığından emin olun.</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Frenler</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Kutla</value>
+  </data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>Kamerayı değiştir</value>
+  </data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>Debriyaj</value>
+  </data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>Azalt</value>
+  </data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>Sellektör</value>
+  </data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>Beşinci vites</value>
+  </data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>Birinci vites</value>
+  </data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>Dördüncü vites</value>
+  </data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>Geri vites</value>
+  </data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>İkinci vites</value>
+  </data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>Yedinci vites</value>
+  </data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>Altıncı vites</value>
+  </data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>Üçüncü vites</value>
+  </data>
+  <data name="Controls_GlanceBack" xml:space="preserve">
+    <value>Arkaya bak</value>
+  </data>
+  <data name="Controls_GlanceLeft" xml:space="preserve">
+    <value>Sola bak</value>
+  </data>
+  <data name="Controls_GlanceRight" xml:space="preserve">
+    <value>Sağa bak</value>
+  </data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>El Freni</value>
+  </data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>Işıklar</value>
+  </data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>Korna</value>
+  </data>
+  <data name="Controls_Increase" xml:space="preserve">
+    <value>Arttır</value>
+  </data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>Klavye &amp; Mouse</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Öne geç</value>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Arkaya geç</value>
+  </data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>Sonraki vites</value>
+  </data>
+  <data name="Controls_PreviousGear" xml:space="preserve">
+    <value>Önceki vites</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Direksiyon Çevirme</value>
+  </data>
+  <data name="Controls_SteeringWheel" xml:space="preserve">
+    <value>Direksiyon</value>
+  </data>
+  <data name="Controls_SteerLeft" xml:space="preserve">
+    <value>Sola çevir</value>
+  </data>
+  <data name="Controls_SteerRight" xml:space="preserve">
+    <value>Sağa çevir</value>
+  </data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>Gaz</value>
+  </data>
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
+    <value>Xbox 360 Kolu</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Lüks</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Kısıtlı</value>
+  </data>
+  <data name="DirectLoader_AcClubChanged" xml:space="preserve">
+    <value>AssettoCorsa.club değiştirildi.</value>
+  </data>
+  <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
+    <value>Assetto-DB.com değiştirildi.</value>
+  </data>
+  <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
+    <value>Google Drive değiştirildi.</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>Dosya bulunamadı</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manüel</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Aynı araba</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Aynı grup</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Listeye yeni araba ekle</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Sıralama şekli:</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Karıştır</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Yarışmacıları sıralama yolu</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Seçili arabaları listeden kaldır</value>
+  </data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>Yazı Tipini Sil</value>
+  </data>
+  <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Bu yazı tipine ihtiyaç duyan bir kaç tane araba var, silmek istediğini emin misin ?</value>
+  </data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>Yazı Tipini Devre Dışı Bırak</value>
+  </data>
+  <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Bu yazı tipine ihtiyaç duyan bir kaç tane araba var, devre dışı bırakmak istediğini emin misin ?</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Arabalar yeniden taranamıyor</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Komut yürütülemiyor</value>
+  </data>
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
+    <value>İmperal (m/s)</value>
+  </data>
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
+    <value>Metrik (km/s)</value>
+  </data>
+  <data name="Input_Button" xml:space="preserve">
+    <value>Buton {0}</value>
+  </data>
+  <data name="Installator_KeepSkinPreview" xml:space="preserve">
+    <value>Skin Önizlemesini Tut</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
+    <value>Arayüz Bilgisini &amp; Skin Önizlemesini Tut</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Herşeyi Güncelle</value>
+  </data>
+  <data name="JumpStart_CarLocked" xml:space="preserve">
+    <value>Araba Kitli</value>
+  </data>
+  <data name="JumpStart_DriveThrough" xml:space="preserve">
+    <value>AracaServis</value>
+  </data>
+  <data name="JumpStart_TeleportToPit" xml:space="preserve">
+    <value>Pite Işınlan</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Araca Servis</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Pitler</value>
+  </data>
+  <data name="KunosCareer_Championship" xml:space="preserve">
+    <value>Şampiyonluk</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>puan</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Devam Et</value>
+  </data>
+  <data name="KunosCareer_SingleEvents" xml:space="preserve">
+    <value>Tek bir karşılaşma</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Başla</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Bulutlar (content/texture/clouds) kaybolmuş olabilir</value>
+  </data>
+  <data name="LogHelper_DriverIsMissing" xml:space="preserve">
+    <value>Sürücü modeli büyük ihtimalle yok </value>
+  </data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>Şifre hatalı</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Fotoğraf Magick.NET kullanarak yüklenemedi</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Fotoğrafı daha küçük yapmaya çalışın.</value>
+  </data>
+  <data name="NotSupported" xml:space="preserve">
+    <value>Desteklenmemekte</value>
+  </data>
+  <data name="OfficialStarter_CannotRun" xml:space="preserve">
+    <value>Çalıştırılamıyor</value>
+  </data>
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+    <value>Yarış çalıştırılamıyor</value>
+  </data>
+  <data name="Online_CannotAccessServer" xml:space="preserve">
+    <value>Sunucuya erişilemiyor</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Bilgiler yüklenemiyor</value>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Sunucu bilgileri yenilenemiyor.</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>Araçlar uyuşmuyor</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>bitti</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>devam eden</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Sunucu mevcut değil.</value>
+  </data>
+  <data name="Online_Session_LapsDuration" xml:space="preserve">
+    <value>{0} tur</value>
+  </data>
+  <data name="OrdinalizingSubject_Server" xml:space="preserve">
+    <value>sunucu</value>
+  </data>
+  <data name="Period_Month" xml:space="preserve">
+    <value>Ay</value>
+  </data>
+  <data name="Period_OneDay" xml:space="preserve">
+    <value>Bir gün</value>
+  </data>
+  <data name="Period_ThreeDays" xml:space="preserve">
+    <value>Üçgün</value>
+  </data>
+  <data name="Period_TwoWeeks" xml:space="preserve">
+    <value>İki hafta</value>
+  </data>
+  <data name="Period_Week" xml:space="preserve">
+    <value>Bir hafta</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Eklenti yüklenemiyor</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Rastgele</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>Sen</value>
+  </data>
+  <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
+    <value>Desteklenmeyen format</value>
+  </data>
+  <data name="SearchEngine_Baidu" xml:space="preserve">
+    <value>Baidu</value>
+  </data>
+  <data name="SearchEngine_Bing" xml:space="preserve">
+    <value>Bing</value>
+  </data>
+  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
+    <value>DuckDuckGo</value>
+  </data>
+  <data name="SearchEngine_Google" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="SearchEngine_Yandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Drag Yarışı</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Hızlı tur</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Egzersiz</value>
+  </data>
+  <data name="Session_Race" xml:space="preserve">
+    <value>Yarış</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Pist Günü</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Oyuncu</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Hava Durumu</value>
+  </data>
+  <data name="TryAgainDot" xml:space="preserve">
+    <value>Tekrar dene.</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>Devir (RPM)</value>
+  </data>
+  <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
+    <value>Google Drive'a dosyası paylaşılamıyor</value>
+  </data>
+  <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
+    <value>Dosya Google Drive'a yüklenemiyor</value>
+  </data>
+  <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
+    <value>Google Drive anahtarını girin:</value>
+  </data>
+  <data name="Uploader_GoogleDrive" xml:space="preserve">
+    <value>Google Drive</value>
+  </data>
+  <data name="Weather_BrokenClouds" xml:space="preserve">
+    <value>Bulutlar bozuk</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Açık</value>
+  </data>
+  <data name="Weather_Cold" xml:space="preserve">
+    <value>Soğuk</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Ufuk (Yüksek)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Ufuk (Alçak)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Hava (Yüksek)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Hava (Alçak)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Güneş (Yüksek)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Güneş (Alçak)</value>
+  </data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>Toz</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Bir iki bulut</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Sis</value>
+  </data>
+  <data name="Weather_HeavyRain" xml:space="preserve">
+    <value>Ağır yağmur</value>
+  </data>
+  <data name="Weather_HeavySnow" xml:space="preserve">
+    <value>Ağır kar</value>
+  </data>
+  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
+    <value>Ağır sağanak</value>
+  </data>
+  <data name="Weather_Hot" xml:space="preserve">
+    <value>Sıcak</value>
+  </data>
+  <data name="Weather_Hurricane" xml:space="preserve">
+    <value>Fırtına</value>
+  </data>
+  <data name="Weather_LightRain" xml:space="preserve">
+    <value>Hafif yağmur</value>
+  </data>
+  <data name="Weather_LightSnow" xml:space="preserve">
+    <value>Hafif kar</value>
+  </data>
+  <data name="Weather_LightThunderstorm" xml:space="preserve">
+    <value>Hafif sağanak</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Bulutlu</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Yağmur</value>
+  </data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>Kum</value>
+  </data>
+  <data name="Weather_Sleet" xml:space="preserve">
+    <value>Sulu Kar</value>
+  </data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>Duman</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Kar</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Sağanak</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Kasırga</value>
+  </data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>Rüzgarlı</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Şampiyonluk</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Kolay</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Orta</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Zor</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Uzaylı</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Puanlar</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Pozisyon</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Süre</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Başarılar</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Lütfen sunucunun desteklediği bir araç seçin</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Şifre geçerli değil</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Sunucunun kara listesindesin</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Sunucu dolu</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Seçtiğin arabanın düzgün bir sesi yok</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Başka bir araba seç.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Arabanın sesi değiştirilemiyor</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Bu sunucudasın</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Yönetici şifresi:</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>İstediğin zaman online ayarlardan geri açabilirsin</value>
+  </data>
+</root>

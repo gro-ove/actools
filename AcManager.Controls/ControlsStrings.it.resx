@@ -807,8 +807,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Sensibiltà  alla velocità</value>
   </data>
   <data name="Controls_ClearWheelBinding" xml:space="preserve">
-    <value>Pulisci collegamento alla Ruota</value>
-  </data>
+    <value>Pulisci collegamento al volante</value>
+  <alternative>Pulisci collegamento alla Ruota</alternative></data>
   <data name="Controls_SteeringWheelButton" xml:space="preserve">
     <value>Tasto del volante</value>
   </data>
@@ -840,8 +840,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Crea un nuovo file ui_skin.json (Alt+S)</value>
   </data>
   <data name="Common_Uploading" xml:space="preserve">
-    <value>Uploading…</value>
-  </data>
+    <value>In upload…</value>
+  <alternative>Uploading…</alternative></data>
   <data name="Common_CelsiusFormat" xml:space="preserve">
     <value>{0:F0} °C</value>
   </data>
@@ -855,8 +855,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Reimposta</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Rendi indipendenre</value>
-  </data>
+    <value>Rendi indipendente</value>
+  <alternative>Rendi indipendenre</alternative></data>
   <data name="FindInformation_SaveAsYear" xml:space="preserve">
     <value>Salva come Anno</value>
   </data>
@@ -952,5 +952,20 @@ Profondità: [b]{4}[/b]</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Bloccato</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Pulisci associazioni tasti</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Auto genitore (se impostato, questa auto sarà una sua versione modificata)</value>
+  </data>
+  <data name="Replay_CrMessage" xml:space="preserve">
+    <value>Il replay verrà sovrascritto dopo la prossima gara. Rinominalo per mantenerlo.</value>
+  </data>
+  <data name="Replay_CrMessage_Commentary" xml:space="preserve">
+    <value>Si può andare su Impostazioni e attivare “Salva i replay automaticamente” per evitare di perdere qualcosa di prezioso.</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Selezionare l'anno o la descrizione e premere OK; tieni premuto Ctrl per estendere la descrizione anziché sostituirla.</value>
   </data>
 </root>

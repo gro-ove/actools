@@ -186,14 +186,14 @@
     <value>Menu contextuel</value>
   </data>
   <data name="KeyControl" xml:space="preserve">
-    <value>Contrôle</value>
-  <alternative>Control</alternative></data>
+    <value>Ctrl </value>
+  <alternative>Control</alternative><alternative>Contrôle</alternative></data>
   <data name="KeyControlLeft" xml:space="preserve">
-    <value>Contrôle (gauche)</value>
-  <alternative>Controle (Gauche)</alternative></data>
+    <value>Ctrl (gauche)</value>
+  <alternative>Controle (Gauche)</alternative><alternative>Contrôle (gauche)</alternative></data>
   <data name="KeyControlRight" xml:space="preserve">
-    <value>Contrôle (droite)</value>
-  <alternative>Controle (Droite)</alternative></data>
+    <value>Ctrl (droite)</value>
+  <alternative>Controle (Droite)</alternative><alternative>Contrôle (droite)</alternative></data>
   <data name="KeyDelete" xml:space="preserve">
     <value>Suppression</value>
   <alternative>Delete</alternative><alternative>Suppr.</alternative></data>
@@ -391,8 +391,8 @@
     <value>Suggestions</value>
   </data>
   <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]précédente[/url].</value>
-  <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative></data>
+    <value>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]page précédente[/url].</value>
+  <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative><alternative>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]précédente[/url].</alternative></data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>Fichiers DDS &amp; TIFF|*.dds;*.tif;*.tiff|Fichiers image|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Tous les fichiers (*.*)|*.*</value>
   <alternative>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</alternative></data>
@@ -421,11 +421,11 @@
     <value>{0} of {1} chargé</value>
   </data>
   <data name="Progress_Uploading" xml:space="preserve">
-    <value>{0} téléversé</value>
-  <alternative>{0} uploadé</alternative></data>
+    <value>{0} envoyé</value>
+  <alternative>{0} uploadé</alternative><alternative>{0} téléversé</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} téléversé</value>
-  <alternative>{0} of {1} uploadé</alternative></data>
+    <value>{0} of {1} envoyé</value>
+  <alternative>{0} of {1} uploadé</alternative><alternative>{0} of {1} téléversé</alternative></data>
   <data name="Ordinalizing_First" xml:space="preserve">
     <value>Premier</value>
   </data>
@@ -520,8 +520,8 @@
     <value>Trente-et-unième</value>
   <alternative>Trent-et-unième</alternative></data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}e</value>
-  </data>
+    <value>{0}ème</value>
+  <alternative>{0}e</alternative></data>
   <data name="Time_Month" xml:space="preserve">
     <value>{0} mois</value>
   </data>
@@ -599,5 +599,23 @@
   </data>
   <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
     <value>Retire le serveur de la liste des serveurs masqués</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Copiez[/url] les détails de l'erreur dans le presse-papiers. Essayez de [url=cmd://restart]redémarrer[/url] cette application ou [url=cmd://exit]fermez-la[/url] simplement.</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>L'application vient de rencontrer un problème et doit redémarrer. S'il vous plaît, utilisez le bouton "Signaler un problème" si vous voulez envoyer un rapport après le redémarrage.</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Candidats correspondants non trouvés</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Partagez un lien vers ce serveur afin que vos amis puissent rapidement vous rejoindre (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Inclure le mot de passe</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>Fichiers DDS (*.dds)|*.dds|Tous les fichiers (*.*)|*.*</value>
   </data>
 </root>

@@ -423,8 +423,8 @@
     <value>Устройства: [b]{0}[/b]</value>
   </data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
-    <value>Тип: [b]{0}[/b]</value>
-  </data>
+    <value>Метод ввода: [b]{0}[/b]</value>
+  <alternative>Тип: [b]{0}[/b]</alternative></data>
   <data name="Controls_RangeFromAxis" xml:space="preserve">
     <value>От</value>
   </data>
@@ -696,8 +696,8 @@
     <value>Мин. уровень демпфера</value>
   </data>
   <data name="QuickSwitches_HideDriver" xml:space="preserve">
-    <value>Без водителя</value>
-  </data>
+    <value>Скрыть водителя</value>
+  <alternative>Без водителя</alternative></data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>Скрыть модель водителя</value>
   </data>
@@ -934,5 +934,11 @@ LOD в: [b]{9}[/b]
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Закрытый</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>ИИ</value>
   </data>
 </root>

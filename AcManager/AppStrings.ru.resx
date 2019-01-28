@@ -949,8 +949,8 @@
     <value>Проверять обновления:</value>
   </data>
   <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
-    <value>Авто обновление:</value>
-  </data>
+    <value>Авто-обновление:</value>
+  <alternative>Авто обновление:</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
     <value>Не забудьте перезапустить приложение после каких-либо изменений</value>
   </data>
@@ -2278,11 +2278,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Статистика</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Последние времена</value>
-  </data>
+    <value>Последнее время круга</value>
+  <alternative>Последние времена</alternative></data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
-    <value>Таблица с временами</value>
-  </data>
+    <value>Таблица с временем круга</value>
+  <alternative>Таблица с временами</alternative></data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
     <value>Убедитесь, что требуемая машина и колея установлены и доступны.</value>
   <alternative>Убедитесь, что требуемый автомобиль и колея установлены и доступны.</alternative></data>
@@ -2637,8 +2637,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Раскраска отсутствует</value>
   </data>
   <data name="Online_AllCarsAreTaken" xml:space="preserve">
-    <value>Все авто заняты</value>
-  </data>
+    <value>Все машины заняты</value>
+  <alternative>Все авто заняты</alternative></data>
   <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
     <value>Присоедениться к серверу (Ctrl+G)</value>
   </data>
@@ -3424,5 +3424,35 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
     <value>Ожидание окончания теста…</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
+    <value>Изменить иконку обновления</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Создать общий</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Запуск</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
+    <value>Масштабировать кривые для значений мощности / крутящего момента.</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
+    <value>Кривые будут масштабироваться, чтобы соответствовать значениям мощности и крутящего момента от ui_car.json</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Подтвердить перед удалением</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>Имейте в виду, что весь удаленный контент всегда можно восстановить из корзины</value>
+  </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>Фильтр по схожей длине</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>Фильтр по схожей ширине</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>Фильтр по схожему количеству пит-стопов</value>
   </data>
 </root>

@@ -559,8 +559,8 @@
     <value>El filtro de Postprocesado por defecto (default.ini) está perdido pero se requiere</value>
   </data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
-    <value>No se encuentra el Lanzador Original: por favor, cambia el Lanzador.</value>
-  <alternative>El lanzador original no se encuentra: por favor, cambia el arranque.</alternative><alternative>El lanzador original no se encuentra: por favor, cambia el arrancador.</alternative></data>
+    <value>No se encuentra el lanzador original: por favor, cambia el lanzador.</value>
+  <alternative>El lanzador original no se encuentra: por favor, cambia el arranque.</alternative><alternative>El lanzador original no se encuentra: por favor, cambia el arrancador.</alternative><alternative>No se encuentra el Lanzador Original: por favor, cambia el Lanzador.</alternative></data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
     <value>El modelo del piloto posiblemente se haya perdido.</value>
   </data>
@@ -652,8 +652,8 @@
     <value>Fin de semana</value>
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
-    <value>Formáto inválido</value>
-  </data>
+    <value>Formato inválido</value>
+  <alternative>Formáto inválido</alternative></data>
   <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
     <value>Formato no soportado</value>
   </data>
@@ -1109,8 +1109,8 @@
     <value>No se puede renombrar las repeticiones</value>
   </data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>No se puede restaurar la version no parcheada del arranque original. Por favor, restaurala manualmente: tienes que reemplazar "AssettoCorsa.exe" con “AssettoCorsa_backup_sp.exe”.</value>
-  <alternative>No se puede restaurar la version no parcheada del arranque original.</alternative></data>
+    <value>No se puede restaurar la version no parcheada del lanzador original. Por favor, restaurala manualmente: tienes que reemplazar "AssettoCorsa.exe" con “AssettoCorsa_backup_sp.exe”.</value>
+  <alternative>No se puede restaurar la version no parcheada del arranque original.</alternative><alternative>No se puede restaurar la version no parcheada del arranque original. Por favor, restaurala manualmente: tienes que reemplazar "AssettoCorsa.exe" con “AssettoCorsa_backup_sp.exe”.</alternative></data>
   <data name="PpFilterObject_CannotSave" xml:space="preserve">
     <value>No se puede salvar el filtro de Postprocesado</value>
   </data>
@@ -1127,8 +1127,8 @@
     <value>No se pueden cargar datos</value>
   </data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
-    <value>No se pueden guardar los ajustes AC</value>
-  </data>
+    <value>No se pueden guardar los ajustes de AC</value>
+  <alternative>No se pueden guardar los ajustes AC</alternative></data>
   <data name="Common_CannotReadData" xml:space="preserve">
     <value>No se pueden leer datos</value>
   </data>
@@ -1256,8 +1256,8 @@
     <value>Por favor, escoge un archivo en el directorio inicial o en algún subdirectorio</value>
   </data>
   <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
-    <value>Por favor, restaura el lanzador original e intentalo de nuevo (o cambia el lanzador).</value>
-  <alternative>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</alternative><alternative>Por favor, restaura el arrancador original  e inténtalo de nuevo ( o cambia el arrancador).</alternative></data>
+    <value>Por favor, restaura el lanzador original e inténtalo de nuevo (o cambia el lanzador).</value>
+  <alternative>Por favor, restaura el arranque original  e inténtalo de nuevo ( o cambia el arranque).</alternative><alternative>Por favor, restaura el arrancador original  e inténtalo de nuevo ( o cambia el arrancador).</alternative><alternative>Por favor, restaura el lanzador original e intentalo de nuevo (o cambia el lanzador).</alternative></data>
   <data name="Common_Power" xml:space="preserve">
     <value>Potencia</value>
   </data>
@@ -1277,8 +1277,8 @@
     <value>Problema desconocido (Process=Null)</value>
   </data>
   <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Punta tacón atumatico</value>
-  </data>
+    <value>Punta tacón automatico</value>
+  <alternative>Punta tacón atumatico</alternative></data>
   <data name="KunosCareer_Point" xml:space="preserve">
     <value>punto</value>
   </data>
@@ -1694,5 +1694,44 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
   </data>
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>La etiqueta “{0}” no esta</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Preset de estado de pista</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>No se encuentra la skin del vehículo {0}</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>No se encuentran las skins del vehículo {0}</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>No se encuentra el clima {0}</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Preset del Showroom Personalizado</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Preset de Preview personalizado</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Aleatorio</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Original</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Preset de Real Head Motion</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Acelerador</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Freno</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Dirección</value>
   </data>
 </root>
