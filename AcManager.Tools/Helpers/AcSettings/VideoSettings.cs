@@ -672,7 +672,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             CustomResolution.Width = section.GetInt("WIDTH", 0);
             CustomResolution.Height = section.GetInt("HEIGHT", 0);
-            CustomResolution.Framerate = section.GetInt("REFRESH", 0);
+            CustomResolution.Framerate = Ini["REFRESH"].GetInt("VALUE", 0);
 
             var resolution = Resolutions.GetByIdOrDefault(section.GetInt("INDEX", 0)) ??
                     Resolutions.FirstOrDefault(x => x.Same(CustomResolution)) ?? CustomResolution;
@@ -738,6 +738,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 section.Set("WIDTH", Resolution.Width);
                 section.Set("HEIGHT", Resolution.Height);
                 section.Set("REFRESH", Resolution.Framerate);
+                ini["REFRESH"].Set("VALUE", Resolution.Framerate);
                 section.Set("INDEX", Resolution.Index);
             }
 
