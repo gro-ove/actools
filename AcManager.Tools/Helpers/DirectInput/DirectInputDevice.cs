@@ -28,11 +28,13 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         public bool Same(IDirectInputDevice other) {
             return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0");
+            // return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0") && Index == other.Index;
         }
 
-        public bool Same(DeviceInstance other) {
+        public bool Same(DeviceInstance other, int index) {
             return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName);
-            //|| Id == @"0" && DirectInputDeviceUtils.IsController(other.InstanceName)
+            // return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName) && Index == index;
+            // || Id == @"0" && DirectInputDeviceUtils.IsController(other.InstanceName)
         }
 
         public DirectInputAxle GetAxle(int id) {
@@ -132,6 +134,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }
 
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
+            // DisplayName += $@" (#{Index + 1})";
+
             Proc(Axis, axisP);
             Proc(Buttons, buttonsP);
             Proc(Povs, povsP);

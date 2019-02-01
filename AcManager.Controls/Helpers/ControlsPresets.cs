@@ -35,7 +35,7 @@ namespace AcManager.Controls.Helpers {
                 if (Equals(value, WarnIfChanged)) return;
                 _warnIfChanged = value;
                 OnPropertyChanged();
-                ValuesStorage.Set(KeyWarnIfChanged, true);
+                ValuesStorage.Set(KeyWarnIfChanged, value);
             }
         }
 
