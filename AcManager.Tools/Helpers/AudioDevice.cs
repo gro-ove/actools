@@ -11,7 +11,9 @@ namespace AcManager.Tools.Helpers {
         }
 
         public string DeviceName { get; }
+
         public string IconPath { get; }
+
         public DeviceState State { get; }
 
         private bool _isDefault;

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -57,6 +58,8 @@ namespace AcManager.Pages.AcSettings {
                 DevicesHeading.Visibility = Visibility.Collapsed;
                 DevicesPanel.Visibility = Visibility.Collapsed;
             }
+
+            this.OnActualUnload(Model);
         }
 
         private void OnEndpointsChanged(object sender, EventArgs eventArgs) {
@@ -85,9 +88,16 @@ namespace AcManager.Pages.AcSettings {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        private class ViewModel : NotifyPropertyChanged {
+        private class ViewModel : NotifyPropertyChanged, IDisposable {
             internal ViewModel(IReadOnlyList<AudioDevice> audioDevicesList) {
                 AudioOutputDevices = audioDevicesList;
+                Audio.SubscribeWeak(OnAudioSettingsChanged);
+            }
+
+            private void OnAudioSettingsChanged(object sender, PropertyChangedEventArgs args) {
+                if (args.PropertyName == nameof(Audio.EndPointName)) {
+                    RefreshSelectedAudioDevice();
+                }
             }
 
             private IReadOnlyCollection<AudioDevice> _audioOutputDevices;
@@ -95,11 +105,13 @@ namespace AcManager.Pages.AcSettings {
             [CanBeNull]
             public IReadOnlyCollection<AudioDevice> AudioOutputDevices {
                 get => _audioOutputDevices;
-                set => Apply(value, ref _audioOutputDevices, () => {
-                    _selectedAudioDevice = AudioOutputDevices?.FirstOrDefault(x => x.DisplayName == Audio.EndPointName)
-                            ?? AudioOutputDevices?.FirstOrDefault(x => x.IsDefault) ?? AudioOutputDevices?.FirstOrDefault();
-                    OnPropertyChanged(nameof(SelectedAudioDevice));
-                });
+                set => Apply(value, ref _audioOutputDevices, RefreshSelectedAudioDevice);
+            }
+
+            private void RefreshSelectedAudioDevice() {
+                _selectedAudioDevice = AudioOutputDevices?.FirstOrDefault(x => x.DisplayName == Audio.EndPointName)
+                        ?? AudioOutputDevices?.FirstOrDefault(x => x.IsDefault) ?? AudioOutputDevices?.FirstOrDefault();
+                OnPropertyChanged(nameof(SelectedAudioDevice));
             }
 
             private AudioDevice _selectedAudioDevice;
@@ -107,7 +119,7 @@ namespace AcManager.Pages.AcSettings {
             [CanBeNull]
             public AudioDevice SelectedAudioDevice {
                 get => _selectedAudioDevice;
-                set => Apply(value, ref _selectedAudioDevice, () => { Audio.EndPointName = value?.DisplayName; });
+                set => Apply(value, ref _selectedAudioDevice, () => Audio.EndPointName = value?.DisplayName);
             }
 
             public AudioSettings Audio => AcSettingsHolder.Audio;
@@ -124,6 +136,10 @@ namespace AcManager.Pages.AcSettings {
                 await SharingUiHelper.ShareAsync(SharedEntryType.AudioSettingsPreset,
                         Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(Presets.PresetableKey)), null,
                         data);
+            }
+
+            public void Dispose() {
+                Audio.UnsubscribeWeak(OnAudioSettingsChanged);
             }
         }
     }
