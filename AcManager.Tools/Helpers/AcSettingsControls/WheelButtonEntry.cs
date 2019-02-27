@@ -23,7 +23,8 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
             var pov = section.GetInt("__CM_POV", -1);
             var direction = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
-            Input = pov != -1 ? device?.GetPov(pov, direction) : device?.GetButton(section.GetInt("BUTTON", -1));
+            var input = pov != -1 ? device?.GetPov(pov, direction) : device?.GetButton(section.GetInt("BUTTON", -1));
+            Input = input;
         }
 
         public override void Save(IniFile ini) {

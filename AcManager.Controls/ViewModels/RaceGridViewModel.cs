@@ -73,6 +73,7 @@ namespace AcManager.Controls.ViewModels {
             public string FilterValue;
             public string RandomSkinsFilter;
             public bool SequentialSkins;
+            public bool AvoidCarsWithoutNumbers;
 
             [CanBeNull]
             public string[] CarIds;
@@ -126,6 +127,10 @@ namespace AcManager.Controls.ViewModels {
 
                 if (SequentialSkins) {
                     w.Write("SequentialSkins", SequentialSkins);
+                }
+
+                if (AvoidCarsWithoutNumbers) {
+                    w.Write("AvoidCarsWithoutNumbers", AvoidCarsWithoutNumbers);
                 }
 
                 w.Write("CarIds", CarIds);
@@ -206,6 +211,7 @@ namespace AcManager.Controls.ViewModels {
                     FilterValue = FilterValue,
                     RandomSkinsFilter = RandomSkinsFilter,
                     SequentialSkins = SequentialSkins,
+                    AvoidCarsWithoutNumbers = AvoidCarsWithoutNumbers,
                     ShuffleCandidates = ShuffleCandidates,
                     VarietyLimitation = VarietyLimitation,
                     OpponentsNumber = OpponentsNumber,
@@ -279,6 +285,7 @@ namespace AcManager.Controls.ViewModels {
 
                 RandomSkinsFilter = data.RandomSkinsFilter;
                 SequentialSkins = data.SequentialSkins;
+                AvoidCarsWithoutNumbers = data.AvoidCarsWithoutNumbers;
 
                 AiLevel = data.AiLevel;
                 AiLevelMin = data.AiLevelMin;
@@ -406,6 +413,7 @@ namespace AcManager.Controls.ViewModels {
 
             RandomSkinsFilter = null;
             SequentialSkins = false;
+            AvoidCarsWithoutNumbers = false;
 
             AiLevel = 95;
             AiLevelMin = 85;
@@ -919,6 +927,13 @@ namespace AcManager.Controls.ViewModels {
         public bool SequentialSkins {
             get => _sequentialSkins;
             set => Apply(value, ref _sequentialSkins, SaveLater);
+        }
+
+        private bool _avoidCarsWithoutNumbers;
+
+        public bool AvoidCarsWithoutNumbers {
+            get => _avoidCarsWithoutNumbers;
+            set => Apply(value, ref _avoidCarsWithoutNumbers, SaveLater);
         }
         #endregion
 
@@ -1548,7 +1563,7 @@ namespace AcManager.Controls.ViewModels {
             return FixLinearSkinsIfNeeded(shuffled.Take(opponentsNumber));
 
             IEnumerable<RaceGridEntry> FixLinearSkinsIfNeeded(IEnumerable<RaceGridEntry> input) {
-                return !SequentialSkins ? input : FixLinearSkins(input);
+                return !SequentialSkins || !AvoidCarsWithoutNumbers ? input : FixLinearSkins(input);
             }
 
             IEnumerable<RaceGridEntry> FixLinearSkins(IEnumerable<RaceGridEntry> input) {

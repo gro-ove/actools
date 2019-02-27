@@ -89,6 +89,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
                                 return result;
                             }).ToArray() : _staticData;
+                            // if (updated) list = list.Concat(list).ToArray();
                         } catch (Exception e) {
                             // TODO: Try to re-initiate scanning later?
                             Logging.Error(e);

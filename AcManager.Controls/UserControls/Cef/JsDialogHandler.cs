@@ -7,7 +7,7 @@ namespace AcManager.Controls.UserControls.Cef {
             return false;
         }
 
-        public bool OnJSBeforeUnload(IWebBrowser browserControl, IBrowser browser, string message, bool isReload, IJsDialogCallback callback) {
+        public bool OnBeforeUnloadDialog(IWebBrowser chromiumWebBrowser, IBrowser browser, string messageText, bool isReload, IJsDialogCallback callback) {
             return false;
         }
 

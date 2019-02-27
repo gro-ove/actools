@@ -96,14 +96,20 @@ namespace AcManager.Tools.Objects {
 
         private string _detailsNamePiece;
 
+        [CanBeNull]
         public string DetailsNamePiece {
             get => _detailsNamePiece;
             set => Apply(value, ref _detailsNamePiece);
         }
 
         private async Task EnsureDetailsNameIsActualAsync(IniFile ini) {
+            if (DetailsMode != ServerPresetDetailsMode.ViaNameIdentifier) {
+                DetailsNamePiece = null;
+                return;
+            }
+
             // var serverSection = ini["SERVER"];
-            var geoParams = await IpGeoProvider.GetAsync();
+            // var geoParams = await IpGeoProvider.GetAsync();
 
             var data = new ServerInformationExtra {
                 FrequencyHz = SendIntervalHz,

@@ -355,7 +355,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                             @"shortcut icon",
                         }.IndexOf(x.Attributes[@"rel"]?.Value?.Trim().ToLowerInvariant()),
                         Url = x.Attributes[@"href"]?.Value,
-                        Size = Regex.Matches(x.Attributes[@"sizes"]?.Value ?? "0", @"\d+")
+                        Size = Regex.Matches(x.Attributes[@"sizes"]?.Value ?? @"0", @"\d+")
                                     .Cast<Match>().Select(y => y.Value.As<int>()).MaxOrDefault()
                     }).Where(x => x.Role != -1 && x.Url != null).OrderByDescending(x => x.Size).ThenBy(x => x.Role).FirstOrDefault()?.Url;
                     if (!string.IsNullOrWhiteSpace(favicon)) {
@@ -388,7 +388,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             private DelegateCommand _deleteCommand;
 
             public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-                if (ModernDialog.ShowMessage($"Delete bookmark to a website “{Name}”?", ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo)
+                if (ModernDialog.ShowMessage(string.Format(AppStrings.WebSource_DeleteBookmark, Name), ControlsStrings.Common_AreYouSure, MessageBoxButton.YesNo)
                         != MessageBoxResult.Yes) return;
                 WebBlock.Unload($@"ModsWebBrowser:{Id}");
                 IsDeleted = true;
@@ -399,11 +399,11 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             public DelegateCommand ShareLinkCommand => _shareLinkCommand ?? (_shareLinkCommand = new DelegateCommand(() => {
                 var link = ExportAsLink(true);
                 if (link == null) {
-                    NonfatalError.Notify("Can’t share settings", "Possibly, there is too much data.");
+                    NonfatalError.Notify(AppStrings.WebSource_FailedToShareTitle, AppStrings.WebSource_FailedToShareMessage);
                     return;
                 }
 
-                SharingUiHelper.ShowShared($"Description for {Name}", link);
+                SharingUiHelper.ShowShared(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name), link);
             }));
 
             private DelegateCommand _shareMarkdownCommand;
@@ -411,7 +411,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
             public DelegateCommand ShareMarkdownCommand => _shareMarkdownCommand ?? (_shareMarkdownCommand = new DelegateCommand(() => {
                 var link = ExportAsLink(true);
                 if (link == null) {
-                    NonfatalError.Notify("Can’t share settings", "Possibly, there is too much data.");
+                    NonfatalError.Notify(AppStrings.WebSource_FailedToShareTitle, AppStrings.WebSource_FailedToShareMessage);
                     return;
                 }
 
@@ -423,8 +423,8 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
 
 - [Import settings]({link}).";
                 ClipboardHelper.SetText(piece);
-                Toast.Show($"Description for {Name}",
-                        "Message with details is copied to the clipboard",
+                Toast.Show(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name),
+                        AppStrings.WebSource_SharedMessageCopiedTitle,
                         () => { WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
             }));
 
@@ -528,7 +528,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                             favicon = s[2];
                             break;
                         default:
-                            Logging.Warning("Wrong number of pieces: " + (s == null ? "NULL" : s.Length + "\n" + s.JoinToString("\n")));
+                            Logging.Warning("Wrong number of pieces: " + (s == null ? @"NULL" : s.Length + Environment.NewLine + s.JoinToString(Environment.NewLine)));
                             continue;
                     }
 
@@ -642,7 +642,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                     if (string.IsNullOrWhiteSpace(urlCheck) || string.IsNullOrWhiteSpace(urlValue)) return;
 
                     if (addNewOnly) {
-                        var key = ".urlAdded:" + urlCheck;
+                        var key = @".urlAdded:" + urlCheck;
                         if (_storage.Get(key, false)) return;
                         _storage.Set(key, true);
                     }
@@ -1203,8 +1203,37 @@ window.$KEY = outline.stop.bind(outline);
                 return await _resultTask.Task;
 
                 void AutoDownload() {
-                    _webBlock.PageLoaded += (sender, args) => RunRule(_source.AutoDownloadRule);
+                    _webBlock.PageLoaded += async (sender, args) => {
+                        var url = args.Tab.LoadedUrl;
+                        if (string.Equals(url.GetDomainNameFromUrl(), _url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
+                            Logging.Debug(args.Tab.ActiveUrl);
+                            RunRule(_source.AutoDownloadRule);
+                        } else if (await FlexibleLoader.IsSupportedAsync(url, default(CancellationToken))) {
+                            // Create a Loader and use it
+                            Logging.Write("There is a loader for URL: " + url);
+
+                            if (_testToken != null) {
+                                _testMessage = $" • Redirect to known website: {url}.";
+                                _testToken.Cancel();
+                                return;
+                            }
+
+                            LoadViaLoader(url);
+                        } else {
+                            // Not supported and unknown, skip
+                            Logging.Write("No loader for URL: " + url);
+                        }
+                    };
+
                     Task.Delay(5000).ContinueWith(t => {
+                        /*var url = _webBlock.CurrentTab?.ActiveUrl;
+                        if (!string.IsNullOrWhiteSpace(url)
+                                && !string.Equals(_webBlock.CurrentTab?.ActiveUrl.GetDomainNameFromUrl(),
+                                        _source.Url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
+                            ContentInstallationManager.Instance.InstallAsync(url, params)
+                            Cancel();
+                        } else */
+
                         if (!_onDownloadFired) {
                             ActionExtension.InvokeInMainThread(FailSafe);
                         }
@@ -1235,18 +1264,14 @@ window.$KEY = outline.stop.bind(outline);
                 try {
                     if (_testToken == null && !_ranRule) {
                         // Not in auto-download mode, usual behavior
-                        OpenNewTab();
+                        _webBlock.OpenNewTab(url);
                         return;
                     }
 
                     Logging.Write("Download from: " + url);
-                    if (url.GetDomainNameFromUrl() == _url.GetDomainNameFromUrl()) {
-                        OpenNewTab();
-                        return;
-                    }
-
-                    void OpenNewTab() {
+                    if (string.Equals(url.GetDomainNameFromUrl(), _url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
                         _webBlock.OpenNewTab(url);
+                        return;
                     }
 
                     if (await FlexibleLoader.IsSupportedAsync(url, default(CancellationToken))) {

@@ -39,7 +39,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
         private readonly Dictionary<int, DownloadData> _downloads = new Dictionary<int, DownloadData>();
 
-        void IDownloadHandler.OnBeforeDownload(IBrowser browser, DownloadItem downloadItem, IBeforeDownloadCallback callback) {
+        void IDownloadHandler.OnBeforeDownload(IWebBrowser chromiumWebBrowser, IBrowser browser, DownloadItem downloadItem, IBeforeDownloadCallback callback) {
             if (Listener == null) return;
             try {
                 if (!callback.IsDisposed) {
@@ -58,7 +58,7 @@ namespace AcManager.Controls.UserControls.Cef {
             }
         }
 
-        void IDownloadHandler.OnDownloadUpdated(IBrowser browser, DownloadItem downloadItem, IDownloadItemCallback callback) {
+        void IDownloadHandler.OnDownloadUpdated(IWebBrowser chromiumWebBrowser, IBrowser browser, DownloadItem downloadItem, IDownloadItemCallback callback) {
             if (_downloads.TryGetValue(downloadItem.Id, out var data)) {
                 try {
                     if (!downloadItem.IsValid) {

@@ -5,6 +5,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers.Plugins;
 using CefSharp;
+using CefSharp.Wpf;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Controls.UserControls.Cef {

@@ -49,7 +49,7 @@ namespace AcManager.Pages.Settings {
                 UpdateConfigsTabs();
             }
 
-            if (e.PropertyName == nameof(Model.SelectedConfig)) {
+            if (e.PropertyName == nameof(Model.SelectedPage)) {
                 //SetKeyboardInputs();
                 //UpdateConfigsTabs();
             }
@@ -95,7 +95,7 @@ namespace AcManager.Pages.Settings {
         public LocalKeyBindingsController KeyBindingsController { get; }
 
         private void SetKeyboardInputs() {
-            KeyBindingsController.Set(Model.SelectedConfig?.Sections.SelectMany().OfType<PythonAppConfigKeyValue>());
+            KeyBindingsController.Set(Model.SelectedPage?.Config?.Sections.SelectMany().OfType<PythonAppConfigKeyValue>());
         }
 
         private SettingsShadersPatch.ViewModel Model => (SettingsShadersPatch.ViewModel)DataContext;

@@ -59,6 +59,8 @@
   <!--comboboxes-->
   <c:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static t:AcSettingsHolder.AppsPresets}" IconData="{StaticResource ScreenIconData}"
       ToolTip="{x:Static c:ControlsStrings.QuickSwitches_UiPresets_Tooltip}" />
+  <c:QuickSwitchPresetsControl x:Key="WidgetAudioPresets" UserPresetable="{x:Static t:AcSettingsHolder.AudioPresets}" IconData="{StaticResource AudioIconData}"
+      ToolTip="Switch between audio presets" />
   <DockPanel x:Key="WidgetControlsPresets" FocusVisualStyle="{x:Null}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_ControlsPresets_Tooltip}"
       Background="Transparent" Width="{StaticResource BlockSize}" Height="{StaticResource BlockSize}" Margin="{StaticResource BlockMargin}" x:Shared="False">
     <mui:HierarchicalComboBox x:Name="PART_ComboBox" HorizontalAlignment="Center" DockPanel.Dock="Bottom" Margin="{StaticResource LabelMargin}"

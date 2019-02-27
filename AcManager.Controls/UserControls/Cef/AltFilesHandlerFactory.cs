@@ -70,7 +70,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     response.MimeType = _mimeType;
                     response.StatusCode = 200;
                     response.StatusText = @"OK";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = _data.Length;
                 }
             }

@@ -22,9 +22,7 @@ namespace AcManager.Tools.Data {
 
         private UserChampionshipsProgress(string filename) {
             _filename = filename;
-            _watcher = KunosLauncherDataWatcher.Subscribe(_filename, () => {
-                Reload().Forget();
-            }, () => {
+            _watcher = KunosLauncherDataWatcher.Subscribe(_filename, () => { Reload().Forget(); }, () => {
                 lock (_ignoreChangesSync) {
                     return (DateTime.Now - _ignoreChanges).TotalSeconds < 1d;
                 }
@@ -144,43 +142,47 @@ namespace AcManager.Tools.Data {
         }
 
         private void Save() {
-            var iniFile = new IniFile(_filename) {
-                ["CAREER"] = {
-                    ["CURRENTSERIES"] = Current,
-                    ["AI_LEVEL"] = AiLevel
+            try {
+                var iniFile = new IniFile(_filename) {
+                    ["CAREER"] = {
+                        ["CURRENTSERIES"] = Current,
+                        ["AI_LEVEL"] = AiLevel
+                    }
+                };
+
+                foreach (var pair in Entries) {
+                    var section = iniFile[pair.Key.ToUpperInvariant()];
+                    section.Clear();
+
+                    section["EVENT"] = pair.Value.SelectedEvent;
+
+                    if (pair.Value.Points.HasValue) {
+                        section["POINTS"] = pair.Value.Points;
+                    } else {
+                        section.Remove(@"POINTS");
+                    }
+
+                    foreach (var result in pair.Value.EventsResults.Where(x => x.Value != 0)) {
+                        section[$"EVENT{result.Key}"] = result.Value;
+                    }
+
+                    foreach (var result in pair.Value.AiPoints.Where(x => x.Value != 0)) {
+                        section[$"AI{result.Key + 1}"] = result.Value;
+                    }
                 }
-            };
 
-            foreach (var pair in Entries) {
-                var section = iniFile[pair.Key.ToUpperInvariant()];
-                section.Clear();
-
-                section["EVENT"] = pair.Value.SelectedEvent;
-
-                if (pair.Value.Points.HasValue) {
-                    section["POINTS"] = pair.Value.Points;
-                } else {
-                    section.Remove(@"POINTS");
+                if (File.Exists(_filename) && !File.Exists(_filename + ".backup")) {
+                    File.Copy(_filename, _filename + ".backup");
                 }
 
-                foreach (var result in pair.Value.EventsResults.Where(x => x.Value != 0)) {
-                    section[$"EVENT{result.Key}"] = result.Value;
+                lock (_ignoreChangesSync) {
+                    _ignoreChanges = DateTime.Now;
                 }
 
-                foreach (var result in pair.Value.AiPoints.Where(x => x.Value != 0)) {
-                    section[$"AI{result.Key + 1}"] = result.Value;
-                }
+                iniFile.Save();
+            } catch (Exception e) {
+                Logging.Error(_filename + ", error=" + e);
             }
-
-            if (File.Exists(_filename) && !File.Exists(_filename + ".backup")) {
-                File.Copy(_filename, _filename + ".backup");
-            }
-
-            lock (_ignoreChangesSync) {
-                _ignoreChanges = DateTime.Now;
-            }
-
-            iniFile.Save();
         }
 
         private bool _skipSaving, _savingInProgress;

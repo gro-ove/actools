@@ -279,6 +279,8 @@
       <DependentUpon>TrackOutlineRendererTools.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomShowroom\TrackOutlineRendererWrapper.cs" />
+    <Compile Include="CustomShowroom\UIElementExtensions.cs" />
+    <Compile Include="CustomShowroom\WindowExtensions.cs" />
     <Compile Include="DiscordHandler.cs" />
     <Compile Include="EntryPoint.AssembliesResolved.cs" />
     <Compile Include="EntryPoint.cs" />
@@ -687,6 +689,21 @@
     </Compile>
     <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
       <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml.cs">
+      <DependentUpon>ShadersDataBackgrounds.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml.cs">
+      <DependentUpon>ShadersDataCarsConfigs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml.cs">
+      <DependentUpon>ShadersDataCarsTextures.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml.cs">
+      <DependentUpon>ShadersDataTracksConfigs.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataTracksVao.xaml.cs">
+      <DependentUpon>ShadersDataTracksVao.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml.cs">
       <DependentUpon>ShadersInstalledDetails.xaml</DependentUpon>
@@ -1547,6 +1564,12 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataLists.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataTracksVao.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersInstalledDetails.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersMainPage.xaml" />
     <Page Include="Pages\Windows\MainWindow.xaml">

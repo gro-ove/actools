@@ -46,7 +46,7 @@
           <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do not show again” checkboxes" />
         </DockPanel>
 
-        <!--app key and shortcut-->
+        <!-- App key and shortcut -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_AppHeader}" />
 
         <DockPanel>
@@ -68,7 +68,7 @@
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_General}" Style="{StaticResource SettingsPanel}">
 
-        <!--versions-->
+        <!-- Versions -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.Settings_General_AutoUpdatesHeader}" />
 
         <DockPanel>
@@ -77,7 +77,7 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <!--app version-->
+        <!-- App version -->
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AppVersionLabel}" />
           <Button Command="{Binding AppUpdater.CheckAndUpdateIfNeededCommand}" IsEnabled="{Binding AppUpdater.IsSupported}"
@@ -93,7 +93,7 @@
           <Label Content="Recent changes notification" />
         </CheckBox>
 
-        <!--content version-->
+        <!-- Content version -->
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ContentVersionLabel}" />
           <Button Command="{Binding DataUpdater.CheckAndUpdateIfNeededCommand}" Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
@@ -102,7 +102,7 @@
         <TextBlock Text="{Binding DataUpdater.LatestError}" Margin="136 0 0 8" FontWeight="Bold" Foreground="{DynamicResource Error}"
             Visibility="{Binding DataUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-        <!--values storage-->
+        <!-- Values storage -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_ValuesHeader}" />
 
         <DockPanel>
@@ -120,7 +120,7 @@
                   StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
         </DockPanel>
 
-        <!--beta access-->
+        <!-- Beta access -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_TestingAccessHeader}" />
         <CheckBox IsChecked="{Binding Common.UpdateToNontestedVersions}" mui:LimitedService.Limited="True" HorizontalAlignment="Left" ClipToBounds="False"
             Padding="0 0 24 0">

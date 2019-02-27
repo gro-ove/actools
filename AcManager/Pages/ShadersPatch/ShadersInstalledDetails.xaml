@@ -1,43 +1,270 @@
 ﻿<UserControl x:Class="AcManager.Pages.ShadersPatch.ShadersInstalledDetails" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager"
-    xmlns:c="http://acstuff.ru/app/controls" xmlns:at="clr-namespace:AcTools;assembly=AcTools" mc:Ignorable="d">
+    xmlns:shadersPatch="clr-namespace:AcManager.Pages.ShadersPatch" xmlns:t="http://acstuff.ru/app/tools"
+    xmlns:settings="clr-namespace:AcManager.Pages.Settings" xmlns:c="http://acstuff.ru/app/controls" xmlns:sys="clr-namespace:System;assembly=mscorlib"
+    mc:Ignorable="d" d:DataContext="{d:DesignInstance shadersPatch:ShadersInstalledDetails+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <sys:Int32 x:Key="SomeNumber">5</sys:Int32>
+    </ResourceDictionary>
+  </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition />
       <RowDefinition Height="Auto" />
+      <RowDefinition />
     </Grid.RowDefinitions>
 
-    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
-      <StackPanel Margin="20 8">
-        <DockPanel>
-          <!--<Image Source="/Assets/Icons/Icon.ico" Width="48" Height="48" DockPanel.Dock="Left" Margin="0 4 12 -4" />-->
-          <StackPanel>
-            <TextBlock Style="{StaticResource Heading1}" Margin="-2 0 0 0" Text="Custom Shaders Patch" />
-            <mui:BbCodeBlock Style="{StaticResource Small}"
-                Text="Adds dynamic lighting, 24h cycle, valuable optimizations and other various gameplay modifications. Fully customizable." />
-          </StackPanel>
+    <DockPanel Grid.Row="0" mui:Switch.When="ℹ" Margin="0 0 0 20">
+      <!--<Border Height="40" DockPanel.Dock="Top" DataContext="{Binding Source={x:Static t:PatchUpdater.Instance}}"
+          Visibility="{Binding DisplayInstalledVersion, Converter={StaticResource NullToVisibilityConverter}}" />-->
+
+      <mui:Cell Height="160" Width="160" DockPanel.Dock="Left" Margin="0 0 20 0">
+        <mui:ModernProgressRing x:Name="BackgroundImageProgress" IsActive="True" HorizontalAlignment="Center" VerticalAlignment="Center" Width="80" Height="80" />
+        <mui:BetterImage x:Name="BackgroundImage" Opacity="1" Stretch="UniformToFill" DecodeWidth="640" MouseLeftButtonUp="OnImageMouseUp" />
+      </mui:Cell>
+
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Text="About" DockPanel.Dock="Top" TextWrapping="Wrap" Style="{StaticResource Heading2}" />
+      <mui:BbCodeBlock
+          Text="Custom Shaders Patch is specially prepared DLL file, which, when placed in AC root folder, adds new features such as dynamic lighting, 24h day, new physics features, various optimizations and a lot more. Most of it is split into extensions you can turn on and off, and configure them to fit your needs."
+          DockPanel.Dock="Top" Margin="0 20 0 0" TextWrapping="Wrap" />
+      <mui:BbCodeBlock Text="[url=&quot;https://trello.com/b/xq54vHsX/ac-patch&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
+          Margin="0 8 0 0" TextWrapping="Wrap" />
+    </DockPanel>
+
+    <mui:Cell Grid.Row="1" DataContext="{Binding Source={x:Static t:PatchUpdater.Instance}}">
+
+      <mui:ReferenceSwitch Value="{Binding LatestRecommendedVersion}" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0 40 0 0"
+          Visibility="{Binding NothingAtAll, Converter={StaticResource BooleanToVisibilityConverter}}">
+        <mui:ReferenceSwitch.Null>
+          <mui:BbCodeBlock Style="{StaticResource Small}" TextWrapping="Wrap"
+              Text="Can’t install automatically at the moment. Please, [url=&quot;https://trello.com/b/xq54vHsX/ac-patch&quot;]click here[/url] to download and install patch manually." />
+        </mui:ReferenceSwitch.Null>
+        <mui:ReferenceSwitch.NonNull>
+          <DockPanel>
+            <Button Margin="0 8 0 0" Command="{Binding LatestRecommendedVersion.InstallCommand}" Style="{StaticResource Go.Button}" DockPanel.Dock="Top">
+              <DockPanel IsHitTestVisible="False" Margin="8 4">
+                <Path Data="{StaticResource DownloadIconData}" Width="14" Height="14"
+                    Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left"
+                    Margin="0 0 8 0" VerticalAlignment="Center" SnapsToDevicePixels="True" />
+                <TextBlock Text="Install Custom Shaders Patch" Style="{StaticResource Heading2}" />
+              </DockPanel>
+            </Button>
+            <mui:BbCodeBlock Style="{StaticResource Small}" Margin="0 20 0 0" TextWrapping="Wrap" DockPanel.Dock="Top"
+                Text="{Binding LatestRecommendedVersion.Version, StringFormat='{}• Recommended version: {0};'}" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" TextWrapping="Wrap" DockPanel.Dock="Top"
+                Text="{Binding LatestRecommendedVersion.DisplayTotalSize, StringFormat='{}• Size to download: {0};'}" />
+            <mui:BbCodeBlock Style="{StaticResource Small}" TextWrapping="Wrap"
+                Text="• No original AC files would be overwritten;[br]• Patch could be disabled or removed without any problems any time later." />
+          </DockPanel>
+        </mui:ReferenceSwitch.NonNull>
+      </mui:ReferenceSwitch>
+
+      <DockPanel Visibility="{Binding NothingAtAll, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+        <DockPanel DataContext="{Binding Model.FoundIssuesMessage, Source={x:Static settings:SettingsShadersPatch.Instance}}" DockPanel.Dock="Top"
+            Visibility="{Binding Length, Converter={StaticResource MoreToVisibilityConverter}}">
+          <DockPanel HorizontalAlignment="Stretch" Dock="Top" Margin="0 0 0 4">
+            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" />
+            <TextBlock Margin="10 2 2 2" Style="{StaticResource Heading2}" Foreground="{DynamicResource Error}"
+                Text="{Binding Source={StaticResource SomeNumber}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.AcObject_ErrorsHeader}}" />
+          </DockPanel>
+          <mui:BbCodeBlock Text="{Binding}" Foreground="{DynamicResource Error}" Margin="20 0 0 20" />
         </DockPanel>
 
-        <StackPanel Orientation="Horizontal" Margin="0 20 0 0">
-          <Button Command="{Binding MoreInformationCommand}" Margin="0 0 4 0" Content="{x:Static g:AppStrings.About_MoreInformation}" />
-          <Button Command="{Binding RecentChangesCommand}" Margin="0 0 4 0" Content="{x:Static g:AppStrings.About_RecentChanges}" />
+        <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
+          <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Style="{StaticResource SettingsPanel}">
+
+              <!--<StackPanel Orientation="Horizontal" Margin="0 20 0 0">
+          <TextBlock Style="{StaticResource Label}" Width="100" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}" />
+          <mui:BetterTextBox Text="{Binding DisplayInstalledVersion, Source={x:Static t:PatchUpdater.Instance}}" Style="{StaticResource Borderless.Label}"
+              Margin="8 0 0 0" IsReadOnly="True" Placeholder="?" />
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" Margin="0 20 0 40">
-          <TextBlock Style="{StaticResource Label}" Text="{x:Static c:ControlsStrings.AcObject_VersionLabel}"
-              mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DoYouKnowAboutAndroid}}" mui:FancyHintsService.OffsetX="60" />
-          <TextBox Style="{StaticResource TextBoxAsTextBlock.Label.ReadOnly}" Margin="8 0 0 0">
-            <TextBox.Text>
-              <MultiBinding Mode="OneTime" StringFormat="{}{0} ({1})">
-                <Binding Source="{x:Static at:BuildInformation.AppVersion}" />
-                <Binding Source="{x:Static at:BuildInformation.Platform}" />
-              </MultiBinding>
-            </TextBox.Text>
-          </TextBox>
-        </StackPanel>
-      </StackPanel>
-    </ScrollViewer>
+        <StackPanel Orientation="Horizontal" Margin="0 8 0 40">
+          <TextBlock Style="{StaticResource Label}" Width="100" Text="Version number:" />
+          <mui:BetterTextBox Text="{Binding InstalledVersion, Source={x:Static t:PatchUpdater.Instance}}" Style="{StaticResource Borderless.Label}"
+              Margin="8 0 0 0" IsReadOnly="True" Placeholder="?" />
+        </StackPanel>-->
+
+              <TextBlock Text="Currently active:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+
+              <DockPanel>
+                <Label Content="Shaders Patch version:" Margin="0 2 0 -2" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding DisplayInstalledVersion, Mode=OneWay}" Placeholder="?" IsReadOnly="True" />
+              </DockPanel>
+              <DockPanel>
+                <Label Content="Shaders Patch version ID:" Margin="0 2 0 -2" />
+                <mui:AsyncButton DockPanel.Dock="Right" Command="{Binding CheckAndUpdateIfNeededCommand}"
+                    Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />
+                <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding InstalledVersion, Mode=OneWay}" Placeholder="?" IsReadOnly="True" />
+              </DockPanel>
+
+              <DockPanel Height="48" Margin="0 0 0 24">
+                <Button VerticalAlignment="Top" DockPanel.Dock="Right" Margin="20 4 0 0" Command="{Binding UnlockCommand}"
+                    Visibility="{Binding ForceVersion.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <Button.ToolTip>
+                    <mui:BbCodeBlock MaxWidth="480"
+                        Text="{Binding DisplayInstalledVersion, StringFormat='{}Installed version [b]{0}[/b] is selected manually, so Content Manager won’t auto-update patch if this is the version you prefer. Press this button to release that explicit preferance and enable automatic updates. Be careful: files inside extension folder might get overwritten, namely:[br]
+[br]
+ • All INI-files in [b]extension/config[/b] (but not subfolders) will be moved to the Recycle Bin;[br]
+ • Most files in folders [b]extension/lua[/b], [b]extension/shaders[/b] and [b]extension/tzdata[/b];[br]
+ • And, only some files in [b]extension/textures[/b] folder might change.'}" />
+                  </Button.ToolTip>
+                  <DockPanel Margin="0">
+                    <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 0 4 0" Data="{StaticResource UnlockIconData}"
+                        DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                    <TextBlock Text="Unlock" Margin="0" Padding="0" />
+                  </DockPanel>
+                </Button>
+                <StackPanel>
+                  <mui:SpacingStackPanel Spacing="8"
+                      Visibility="{Binding InstallationProgress.Progress, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <ProgressBar Maximum="1" Value="{Binding InstallationProgress.Progress, Mode=OneWay}"
+                        IsIndeterminate="{Binding InstallationProgress.IsIndeterminate}" Height="4" />
+                    <TextBlock Text="{Binding InstallationProgress.Message}" HorizontalAlignment="Left" Style="{StaticResource Small}" />
+                  </mui:SpacingStackPanel>
+                  <TextBlock Text="{Binding LatestMessage}" FontWeight="Bold" Foreground="{DynamicResource Go}" Margin="0 6 0 0"
+                      Visibility="{Binding LatestMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+                      TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding LatestError}" FontWeight="Bold" Foreground="{DynamicResource Error}" Margin="0 6 0 0"
+                      Visibility="{Binding LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" TextWrapping="Wrap" />
+                </StackPanel>
+              </DockPanel>
+
+              <TextBlock Text="Automatic updates:" Style="{StaticResource SettingsPanel.Heading2}" />
+              <DockPanel>
+                <Label Content="Update automatically:" />
+                <mui:BetterComboBox ItemsSource="{Binding AutoUpdateModes}" SelectedItem="{Binding AutoUpdateMode}" IsEditable="False"
+                    DisplayMemberPath="DisplayName" />
+              </DockPanel>
+              <DockPanel>
+                <Label Content="{x:Static g:AppStrings.Settings_General_CheckForUpdatesLabel}" />
+                <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Periods}" SelectedItem="{Binding AutoUpdatePeriod}"
+                    DisplayMemberPath="DisplayName" />
+              </DockPanel>
+              <!--<CheckBox IsChecked="{Binding ShowDetailedChangelog.Value}" ToolTip="Show notification with recent changes after update">
+                <Label Content="Recent changes notification" />
+              </CheckBox>-->
+
+              <TextBlock Text="Other options:" Style="{StaticResource SettingsPanel.Heading2}" Margin="0 40 0 8" />
+              <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
+                <Button Command="{Binding ReinstallCommand}" Content="Reinstall current version" />
+                <Button Command="{Binding DeleteCommand}" Foreground="{DynamicResource Error}">
+                  <DockPanel Margin="0">
+                    <Path Width="8" Height="8" VerticalAlignment="Center" Margin="0 0 0 -2" DockPanel.Dock="Left" Stretch="Uniform"
+                        Data="{StaticResource TrashBinIconData}" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                    <TextBlock Text="Delete patch" VerticalAlignment="Center" Margin="4 0 0 0" />
+                  </DockPanel>
+                </Button>
+              </mui:SpacingUniformGrid>
+
+            </StackPanel>
+          </ScrollViewer>
+
+          <DockPanel>
+            <TextBlock DockPanel.Dock="Top" Text="Available versions:" Style="{StaticResource SettingsPanel.Heading2.First}" />
+            <!--<mui:AsyncButton DockPanel.Dock="Bottom" Margin="80 8" Command="{Binding CheckAndUpdateIfNeededCommand}"
+            Content="{x:Static g:AppStrings.Settings_General_CheckForUpdates}" />-->
+            <ListBox ItemsSource="{Binding Versions}" SelectedItem="{Binding InstalledVersionInfo}" Style="{StaticResource VirtualizingListBox}"
+                IsEnabled="{Binding IsInstalling, Converter={StaticResource InvertBooleanConverter}}">
+              <ListBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource RadioBoxListItem}" TargetType="{x:Type ListBoxItem}">
+                  <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+                  <Setter Property="IsEnabled" Value="{Binding AvailableToDownload}" />
+                </Style>
+              </ListBox.ItemContainerStyle>
+              <ListBox.ItemTemplate>
+                <DataTemplate DataType="t:PatchVersionInfo">
+                  <DockPanel Margin="8 4 20 4" Background="Transparent" ToolTipService.ShowOnDisabled="True">
+                    <DockPanel.ToolTip>
+                      <mui:BbCodeBlock Text="{Binding Changelog}" MaxWidth="440" FontSize="{DynamicResource SmallFontSize}" />
+                    </DockPanel.ToolTip>
+                    <Button x:Name="PART_UrlButton" VerticalAlignment="Center" Padding="4 2 4 4" Command="mui:LinkCommands.NavigateLink"
+                        CommandParameter="{Binding Url}" DockPanel.Dock="Right">
+                      <Path Width="8" Height="8" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0 2 0 0" Data="{StaticResource LinkIconData}"
+                          DockPanel.Dock="Left" Stretch="Uniform" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+                    </Button>
+                    <ItemsControl x:Name="PART_Tags" ItemsSource="{Binding Tags}" DockPanel.Dock="Bottom" Margin="0 4 0 0"
+                        TextBlock.Foreground="{DynamicResource ButtonText}">
+                      <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                          <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4" />
+                        </ItemsPanelTemplate>
+                      </ItemsControl.ItemsPanel>
+                      <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                          <Border BorderThickness="1" BorderBrush="{DynamicResource ButtonBorder}" Background="{DynamicResource ButtonBackground}"
+                              Padding="4 2">
+                            <TextBlock x:Name="PART_Text" Text="{Binding}" Background="{DynamicResource ButtonBackground}" Style="{StaticResource Small}" />
+                          </Border>
+                          <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding}" Value="buggy">
+                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Error}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="untested">
+                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource RatingBrush}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding}" Value="recommended">
+                              <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Go}" />
+                            </DataTrigger>
+                          </DataTemplate.Triggers>
+                        </DataTemplate>
+                      </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock Text="{Binding Version}" DockPanel.Dock="Top" Margin="0 0 0 4" FontWeight="Bold" />
+                    <TextBlock x:Name="PART_NA" Text="Not available to install" FontWeight="Normal" Style="{StaticResource Small}" Visibility="Collapsed" />
+                    <TextBlock x:Name="PART_DisplaySize" Text="{Binding DisplayTotalSize}" FontWeight="Normal" Style="{StaticResource Small}">
+                      <TextBlock.ToolTip>
+                        <StackPanel>
+                          <TextBlock Text="{Binding DisplaySize, StringFormat='{}Patch size: {0}'}" Style="{StaticResource Small}" />
+                          <TextBlock Text="{Binding DisplayChunkSize, StringFormat='{}Chunk size: {0}'}" Style="{StaticResource Small}" />
+                          <TextBlock Text="{Binding ChunkVersion, StringFormat='{}Chunk version: {0}'}" Style="{StaticResource Small}" />
+                        </StackPanel>
+                      </TextBlock.ToolTip>
+                    </TextBlock>
+                    <TextBlock x:Name="PART_Downloaded" Text="{Binding DisplayTotalSize, StringFormat='{}{0} (already downloaded)'}" FontWeight="Normal"
+                        Style="{StaticResource Small}" Visibility="Collapsed">
+                      <TextBlock.ToolTip>
+                        <StackPanel>
+                          <TextBlock Text="{Binding DisplaySize, StringFormat='{}Patch size: {0}'}" Style="{StaticResource Small}" />
+                          <TextBlock Text="{Binding DisplayChunkSize, StringFormat='{}Chunk size: {0}'}" Style="{StaticResource Small}" />
+                          <TextBlock Text="{Binding ChunkVersion, StringFormat='{}Chunk version: {0}'}" Style="{StaticResource Small}" />
+                        </StackPanel>
+                      </TextBlock.ToolTip>
+                    </TextBlock>
+                  </DockPanel>
+                  <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding AvailableToDownload}" Value="False">
+                      <Setter TargetName="PART_UrlButton" Property="Visibility" Value="Collapsed" />
+                      <Setter TargetName="PART_Tags" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Url}" Value="{x:Null}">
+                      <Setter TargetName="PART_UrlButton" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Size}" Value="0">
+                      <Setter TargetName="PART_NA" Property="Visibility" Value="Visible" />
+                      <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsDownloaded}" Value="True">
+                      <Setter TargetName="PART_DisplaySize" Property="Visibility" Value="Collapsed" />
+                      <Setter TargetName="PART_NA" Property="Visibility" Value="Collapsed" />
+                      <Setter TargetName="PART_Downloaded" Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </DataTemplate.Triggers>
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </DockPanel>
+        </mui:SpacingUniformGrid>
+      </DockPanel>
+
+    </mui:Cell>
+
   </Grid>
 
 </UserControl>

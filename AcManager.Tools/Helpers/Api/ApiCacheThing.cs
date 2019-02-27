@@ -53,7 +53,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         private async Task<byte[]> GetBytesAsyncInner([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default) {
+                IProgress<long> progress = null, CancellationToken cancellation = default) {
             try {
                 if (cacheKey == null) {
                     cacheKey = GetTemporaryName(url);
@@ -93,17 +93,29 @@ namespace AcManager.Tools.Helpers.Api {
 
                     using (var timeout = new CancellationTokenSource(KunosApiProvider.OptionWebRequestTimeout))
                     using (var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellation, timeout.Token))
-                    using (var response = await HttpClientHolder.Get().SendAsync(request, combined.Token).ConfigureAwait(false)) {
-                        var data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                    using (var response = await HttpClientHolder.Get().SendAsync(request, HttpCompletionOption.ResponseHeadersRead, combined.Token).ConfigureAwait(false)) {
+                        byte[] data;
+                        if (progress == null) {
+                            data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+                        } else {
+                            using (var memory = new MemoryStream())
+                            using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false)) {
+                                await CopyToAsync(stream, memory, progress, cancellation).ConfigureAwait(false);
+                                cancellation.ThrowIfCancellationRequested();
+                                data = memory.ToArray();
+                            }
+                        }
 
                         lock (_cache) {
                             _cache[cacheKey] = Tuple.Create(data, DateTime.Now);
                         }
 
-                        try {
-                            File.WriteAllBytes(cacheFile.FullName, data);
-                        } catch (Exception e) {
-                            Logging.Warning(e);
+                        if (actualAliveTime > TimeSpan.Zero) {
+                            try {
+                                File.WriteAllBytes(cacheFile.FullName, data);
+                            } catch (Exception e) {
+                                Logging.Warning(e);
+                            }
                         }
 
                         return data;
@@ -132,14 +144,33 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        public int BufferSize { get; set; } = 65536;
+
+        private async Task CopyToAsync(Stream input, Stream output, IProgress<long> progress = null,
+                CancellationToken cancellation = default) {
+            var buffer = new byte[BufferSize];
+            var totalPassed = 0L;
+
+            int read;
+            while ((read = await input.ReadAsync(buffer, 0, buffer.Length, cancellation).ConfigureAwait(false)) > 0) {
+                cancellation.ThrowIfCancellationRequested();
+
+                await output.WriteAsync(buffer, 0, read, cancellation);
+                cancellation.ThrowIfCancellationRequested();
+
+                totalPassed += read;
+                progress?.Report(totalPassed);
+            }
+        }
+
         [ItemCanBeNull]
         private async Task<string> GetStringAsyncInner([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
                 CancellationToken cancellation = default) {
             try {
-                var bytes = await GetBytesAsync(url, cacheKey, aliveTime, cancellation);
+                var bytes = await GetBytesAsync(url, cacheKey, aliveTime, null, cancellation);
                 if (bytes == null || cancellation.IsCancellationRequested) return null;
                 return await Task.Run(() => bytes.ToUtf8String());
-            }finally {
+            } finally {
                 _stringTasks.Remove(url);
             }
         }
@@ -149,9 +180,9 @@ namespace AcManager.Tools.Helpers.Api {
 
         [ItemCanBeNull]
         public Task<byte[]> GetBytesAsync([NotNull] string url, string cacheKey = null, TimeSpan? aliveTime = null,
-                CancellationToken cancellation = default) {
+                IProgress<long> progress = null, CancellationToken cancellation = default) {
             if (_tasks.TryGetValue(url, out var s)) return s;
-            return _tasks[url] = GetBytesAsyncInner(url, cacheKey, aliveTime, cancellation);
+            return _tasks[url] = GetBytesAsyncInner(url, cacheKey, aliveTime, progress, cancellation);
         }
 
         [ItemCanBeNull]

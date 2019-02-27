@@ -261,6 +261,10 @@
           <Label Content="Blur Image Viewer’s background" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.HideImageViewerButtons}" set:Search.Keywords="images;viewers;image viewer">
+          <Label Content="Hide buttons in Image Viewer’s unless there is a mouse pointer on top" />
+        </CheckBox>
+
         <!-- System -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="System:" />
 

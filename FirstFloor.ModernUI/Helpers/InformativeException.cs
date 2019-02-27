@@ -18,5 +18,9 @@ namespace FirstFloor.ModernUI.Helpers {
         public string ToSingleString() {
             return SolutionCommentary == null ? $"{Message}." : $"{Message}. {SolutionCommentary}";
         }
+
+        public override string ToString() {
+            return base.ToString() + "\nCommentary: " + SolutionCommentary;
+        }
     }
 }

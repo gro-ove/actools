@@ -75,7 +75,7 @@
           <MenuItem Header="Update map from surfaces" ToolTip="Re-create map.png using surfaces instead" Command="{Binding UpdateMapCommand}"
               CommandParameter="False" />
         </mui:ButtonWithComboBox>
-        <Button Content="Bake shaders" Command="{Binding BakeShadersCommand}" />
+        <!--<Button Content="Bake shaders" Command="{Binding BakeShadersCommand}" />-->
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 

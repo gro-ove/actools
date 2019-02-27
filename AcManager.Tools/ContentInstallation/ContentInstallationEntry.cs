@@ -33,7 +33,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace AcManager.Tools.ContentInstallation {
-    public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback, IDisposable {
+    public partial class ContentInstallationEntry : NotifyPropertyErrorsChanged, IProgress<AsyncProgressEntry>, ICopyCallback {
         public DateTime AddedDateTime { get; private set; }
 
         [NotNull]
@@ -856,7 +856,7 @@ Are you sure to continue?",
             return _toInstall?.Select(x => x.CopyCallback.Directory(info)).FirstOrDefault(x => x != null);
         }
 
-        private async Task InstallAsync(IAdditionalContentInstallator installator, List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
+        private async Task InstallAsync(IAdditionalContentInstallator installator, [NotNull] List<InstallationDetails> toInstall, IProgress<AsyncProgressEntry> progress,
                 CancellationTokenSource cancellation) {
             _modsPreviousLogs = new Dictionary<string, string[]>();
             _modsToInstall = new Dictionary<string, Tuple<string, List<string>>>();
@@ -865,6 +865,7 @@ Are you sure to continue?",
                 _toInstall = toInstall;
                 await installator.InstallAsync(this, progress, cancellation.Token);
             } finally {
+                _toInstall.ForEach(x => x.CopyCallback.Dispose());
                 _toInstall = null;
                 await FinishSettingMods();
             }

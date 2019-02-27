@@ -30,6 +30,22 @@
       </c:BooleanSwitch.False>
     </c:BooleanSwitch>
     <c:BbCodeBlock x:Name="MessageBlock" Text="{Binding Message}" />
+    <c:BooleanSwitch x:Name="SecondaryProgressBarSwitch" Visibility="Collapsed">
+      <c:BooleanSwitch.True>
+        <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding SecondaryProgress, Mode=OneWay}" IsIndeterminate="{Binding SecondaryProgressIndetermitate}" />
+      </c:BooleanSwitch.True>
+      <c:BooleanSwitch.False>
+        <c:ReferenceSwitch Value="{Binding SecondaryProgress}">
+          <c:ReferenceSwitch.Null>
+            <c:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" />
+          </c:ReferenceSwitch.Null>
+          <c:ReferenceSwitch.NonNull>
+            <ProgressBar Height="4" Minimum="0" Maximum="1" Value="{Binding SecondaryProgress, Mode=OneWay}" IsIndeterminate="{Binding SecondaryProgressIndetermitate}" />
+          </c:ReferenceSwitch.NonNull>
+        </c:ReferenceSwitch>
+      </c:BooleanSwitch.False>
+    </c:BooleanSwitch>
+    <c:BbCodeBlock x:Name="SecondaryMessageBlock" Text="{Binding SecondaryMessage}" Visibility="Collapsed" />
     <c:BbCodeBlock Text="{Binding Details}" Style="{StaticResource Small}"
         Visibility="{Binding Details, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
     <c:BetterImage x:Name="Image" Visibility="Collapsed" Height="242" Width="430" ShowBroken="False" HorizontalAlignment="Left" />

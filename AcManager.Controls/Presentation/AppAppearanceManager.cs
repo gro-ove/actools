@@ -26,6 +26,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
         public const string KeyBlurImageViewerBackground = "appearance_blurImageViewerBackground";
+        public const string KeyHideImageViewerButtons = "appearance_hideImageViewerButtons";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyLargerTitleLinks = "appearance_biggerTitleLinks";
         public const string KeyBoldTitleLinks = "appearance_boldTitleLinks";
@@ -363,6 +364,18 @@ namespace AcManager.Controls.Presentation {
                 _blurImageViewerBackground = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyBlurImageViewerBackground, value);
+            }
+        }
+
+        private bool _hideImageViewerButtons;
+
+        public bool HideImageViewerButtons{
+            get => _hideImageViewerButtons;
+            set {
+                if (Equals(value, _hideImageViewerButtons)) return;
+                _hideImageViewerButtons= value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyHideImageViewerButtons, value);
             }
         }
 

@@ -44,6 +44,7 @@ namespace AcManager.CustomShowroom {
 
         [CanBeNull]
         private DpiAwareWindow _child;
+
         private readonly List<Window> _attached = new List<Window>();
 
         private bool _visible;
@@ -61,6 +62,8 @@ namespace AcManager.CustomShowroom {
         private readonly bool _limitHeight;
         private readonly bool _verbose;
         private readonly int _offset;
+
+        public static bool OptionInteropMode = true;
 
         public AttachedHelper([NotNull] FormWrapperBase parent, [NotNull] DpiAwareWindow child, int offset = -1, int padding = 10, bool limitHeight = true,
                 bool verbose = false) {
@@ -90,6 +93,9 @@ namespace AcManager.CustomShowroom {
                 child.MaxHeight = _parent.Height - _padding;
             }
 
+            if (OptionInteropMode) {
+                child.SetOwnerWindowAndFocus(_parent.Handle, true);
+            }
             ElementHost.EnableModelessKeyboardInterop(child);
 
             if (_verbose) {
@@ -139,8 +145,10 @@ namespace AcManager.CustomShowroom {
             Visible = true;
             RepositionChild();
 
-            child.Topmost = true;
-            child.Activate();
+            if (!OptionInteropMode) {
+                child.Topmost = true;
+                child.Activate();
+            }
         }
 
         private async void RepositionChild() {
@@ -316,14 +324,16 @@ namespace AcManager.CustomShowroom {
         }
 
         private void ChildActivated(object sender, EventArgs e) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Debug("Child activated: " + _child);
             }
 
-            UpdateVisibility(_parent.Focused);
+            _busyGotFocus.DoDelay(() => UpdateVisibility(_parent.Focused), 200);
         }
 
         private void ChildDeactivated(object sender, EventArgs e) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Debug("Child deactivated: " + _child);
             }
@@ -351,6 +361,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private async Task UpdateVisibility(Window child, Visibility visibility, bool setFocus) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Debug("Value: " + visibility + "; set focus: " + setFocus);
             }
@@ -385,6 +396,7 @@ namespace AcManager.CustomShowroom {
         }
 
         private void UpdateVisibility(bool keepFocus) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Debug($"Update visibility; keep focus: {keepFocus}, is busy: {_busyUpdating.Is}");
             }
@@ -398,7 +410,10 @@ namespace AcManager.CustomShowroom {
             }, 1);
         }
 
+        private Busy _busyGotFocus = new Busy();
+
         protected void OnGotFocus(object sender, EventArgs e) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Here();
             }
@@ -407,6 +422,7 @@ namespace AcManager.CustomShowroom {
         }
 
         protected void OnLostFocus(object sender, EventArgs e) {
+            if (OptionInteropMode) return;
             if (_verbose) {
                 Logging.Here();
             }
@@ -434,11 +450,23 @@ namespace AcManager.CustomShowroom {
             window.Deactivated += ChildDeactivated;
             window.Closed += OnWindowClosed;
             window.Tag = tag;
-            window.Show();
-            window.Activate();
-            window.Topmost = true;
+
+            if (OptionInteropMode) {
+                if (_child != null) {
+                    window.Owner = _child;
+                } else {
+                    window.SetOwnerWindowAndFocus(_parent.Handle, true);
+                }
+                window.Show();
+                window.Activate();
+            } else {
+                window.Show();
+                window.Activate();
+                window.Topmost = true;
+                UpdateVisibility(window, GetVisibility(), true).Forget();
+            }
+
             ElementHost.EnableModelessKeyboardInterop(window);
-            UpdateVisibility(window, GetVisibility(), true).Forget();
         }
 
         public Task AttachAndWaitAsync(string tag, DpiAwareWindow window) {
@@ -461,14 +489,31 @@ namespace AcManager.CustomShowroom {
             window.Deactivated += ChildDeactivated;
             window.Closed += OnWindowClosed;
             window.Tag = tag;
-            window.Show();
-            window.Activate();
-            window.Topmost = true;
+
+            if (OptionInteropMode) {
+                if (_child != null) {
+                    window.Owner = _child;
+                } else {
+                    window.SetOwnerWindowAndFocus(_parent.Handle, true);
+                }
+                window.Show();
+                window.Activate();
+            } else {
+                window.Show();
+                window.Activate();
+                window.Topmost = true;
+                UpdateVisibility(window, GetVisibility(), true).Forget();
+            }
+
             ElementHost.EnableModelessKeyboardInterop(window);
-            UpdateVisibility(window, GetVisibility(), true).Forget();
 
             var tcs = new TaskCompletionSource<bool>();
-            window.Closed += (sender, args) => tcs.SetResult(true);
+            window.Closed += (sender, args) => {
+                tcs.SetResult(true);
+                if (_child == null) {
+                    _parent.Activate();
+                }
+            };
             return tcs.Task;
         }
 

@@ -201,6 +201,7 @@ namespace AcManager.Pages.Drive {
                     }
 
                     RaceGridViewModel.ShuffleCandidates = true;
+                    RaceGridViewModel.AvoidCarsWithoutNumbers = false;
                     RaceGridViewModel.AiLevelArrangeRandom = o.AiLevelArrangeRandomly.HasValue ? (o.AiLevelArrangeRandomly.Value ? 1d : 0d) : 0.2;
                     RaceGridViewModel.AiLevelArrangeReverse = o.AiLevelArrangeReverse ?? true;
                     RaceGridViewModel.AiLevel = o.AiLevel ?? 92;

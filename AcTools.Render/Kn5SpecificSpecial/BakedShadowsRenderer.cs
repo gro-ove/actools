@@ -285,7 +285,11 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 DeviceContextHolder.GetHelper<DownsampleHelper>().Draw(DeviceContextHolder, _bufferF1, _bufferA);
             }
 
-            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferA.View, RenderTargetView);
+            if (FullyTransparent) {
+                DeviceContextHolder.GetHelper<CopyHelper>().DrawFullyTransparent(DeviceContextHolder, _bufferA.View, RenderTargetView);
+            } else {
+                DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferA.View, RenderTargetView);
+            }
         }
 
         private void SetBodyShadowCamera() {
@@ -301,6 +305,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public bool UseFxaa = true;
+        public bool FullyTransparent = false;
 
         [CanBeNull]
         public byte[] Shot(string textureName, [CanBeNull] string objectPath, [CanBeNull] IProgress<double> progress,

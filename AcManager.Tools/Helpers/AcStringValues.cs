@@ -110,13 +110,14 @@ namespace AcManager.Tools.Helpers {
         }
 
         private static readonly Regex SplitWordsRegex = new Regex(@"[\s_]+|(?<=[a-z])-?(?=[A-Z])|(?<=[a-z]{2})-?(?=[A-Z\d])", RegexOptions.Compiled);
+        private static readonly Regex RejoinRegex = new Regex(@"(?<=\bgt) (?=[234]\b)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         private static readonly Regex UpperRegex = new Regex(@"\b[a-z]", RegexOptions.Compiled);
 
         private static readonly Regex UpperAcronimRegex = new Regex(@"\b(?:
-                [234]d|a(?:i|cc?|mg)|b(?:r|mw)|c(?:cgt|pu|sl|ts|tr\d*)|d(?:mc|rs|s3|tm)|
-                g(?:gt|pu|rm|sr|t[\dbceirsx]?\d?)|f(?:x|fb)|
-                h(?:dr|ks|rt)|ita|jtc|ksdrift|lms?|
-                m(?:c12|gu|p\d*)|n(?:a|vidia)|rs[\drs]?|s(?:[lm]|r8)|qv|vdc|wrc)\b",
+                [234]d|a(?:i|c(?:c|fl)?|mg)|b(?:r|mw)|c(?:cgt|pu|sl|ts|tr\d*)|d(?:mc|rs|s3|tm)|
+                g(?:gt|pu|rm|sr|t[\dbceirsx]?\d?)|f(?:[ox]|fb)|
+                h(?:dr|ks|rt)|ita|jtc|ks(?:drift)?|lms?|
+                m(?:c12|gu|p\d*)|n(?:a|vidia)|rs[\drs]?|s(?:[lm]|r8)|qv|v[dr]c|wrc)\b",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
 
         [NotNull]
@@ -127,6 +128,7 @@ namespace AcManager.Tools.Helpers {
         [NotNull]
         public static string NameFromId([NotNull] string id, bool titleCase) {
             id = SplitWordsRegex.Replace(id, " ");
+            id = RejoinRegex.Replace(id, "");
             id = UpperAcronimRegex.Replace(id, x => x.Value.ToUpper());
             if (titleCase) {
                 id = UpperRegex.Replace(id, x => x.Value.ToUpper());

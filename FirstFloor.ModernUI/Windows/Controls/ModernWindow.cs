@@ -87,7 +87,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             var eParameter = (e.Parameter as Link)?.Source ?? e.Parameter;
-            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _)) {
+            if (NavigationHelper.TryParseUriWithParameters(eParameter, out var uri, out var parameter, out var _, out _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }
@@ -112,7 +112,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             // in case of command uri, check if ICommand.CanExecute is true
             // TODO: CanNavigate is invoked a lot, which means a lot of parsing. need improvements?
-            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
+            if (!NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _, out _)) {
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnNavigateLink(object sender, ExecutedRoutedEventArgs e) {
             if (LinkNavigator == null) return;
-            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _)) {
+            if (NavigationHelper.TryParseUriWithParameters(e.Parameter, out var uri, out var parameter, out var _, out _)) {
                 LinkNavigator.Navigate(uri, e.Source as FrameworkElement, parameter);
             }
         }

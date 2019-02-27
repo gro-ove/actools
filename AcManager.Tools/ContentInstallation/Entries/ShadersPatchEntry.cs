@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation.Installators;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools.Utils;
-using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class ShadersPatchEntry : ContentEntryBase {
-        public static string PatchFileName = "dwrite.dll";
+        public static bool IsBusy { get; private set; }
+        public static CancelEventHandler InstallationStart;
+        public static EventHandler InstallationEnd;
+
         public static string PatchDirectoryName = "extension";
 
         private readonly List<string> _toInstall;
@@ -41,6 +45,17 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             var path = EntryPath;
             var first = true;
             var cleanInstall = SelectedOption == CleanOption;
+
+            var args = new CancelEventArgs();
+            InstallationStart?.Invoke(null, args);
+            if (args.Cancel) {
+                throw new InformativeException("Can’t install two things at once");
+            }
+
+            var installedLogStream = new MemoryStream();
+            var installedLog = new StreamWriter(installedLogStream);
+            IsBusy = true;
+
             return new CopyCallback(info => {
                 var filename = info.Key;
 
@@ -57,21 +72,34 @@ namespace AcManager.Tools.ContentInstallation.Entries {
                     if (!Directory.Exists(directory)) {
                         Directory.CreateDirectory(directory);
                     } else if (cleanInstall) {
-                        var configs = Path.Combine(directory, "config");
-                        var toRemoval = new[] {
-                            Path.Combine(directory, "shaders"),
-                            Path.Combine(directory, "lua"),
-                            Path.Combine(directory, "tzdata")
-                        }.Concat(Directory.Exists(configs) ? Directory.GetFiles(configs, "*.ini") : new string[0]).ToArray();
-                        Logging.Write("Recycle:\n\t" + toRemoval.JoinToString("\n\t"));
-                        FileUtils.Recycle(toRemoval);
+                        PatchVersionInfo.RemovePatch(false).Wait();
                     }
 
-                    File.WriteAllText(Path.Combine(directory, "version.txt"), Version);
+                    FileUtils.TryToDelete(PatchHelper.GetInstalledLog());
+                    FileUtils.TryToDelete(Path.Combine(PatchHelper.GetRootDirectory(), "config", "data_manifest.ini"));
                     first = false;
+
+                    installedLog.WriteLine(@"# Generated automatically during last patch installation via Content Manager.");
+                    installedLog.WriteLine(@"# Do not edit, unless have to for some reason.");
+                    installedLog.WriteLine(@"# This particular log was generated during custom ZIP-file installation.");
+                    installedLog.WriteLine(@"version: 0");
+                    installedLog.WriteLine(@"build: 0");
                 }
 
+                installedLog.WriteLine($@"file: {relativePath}:0:0:0");
+
                 return result;
+            }, dispose: () => {
+                installedLog.Dispose();
+                File.WriteAllBytes(PatchHelper.GetInstalledLog(), installedLogStream.ToArray());
+                installedLogStream.Dispose();
+                InstallationEnd?.Invoke(null, EventArgs.Empty);
+                IsBusy = false;
+                PatchHelper.Reload();
+
+                if (PatchUpdater.Instance != null) {
+                    PatchUpdater.Instance.ForceVersion.Value = true;
+                }
             });
         }
 
@@ -79,17 +107,9 @@ namespace AcManager.Tools.ContentInstallation.Entries {
             return AcRootDirectory.Instance.RequireValue;
         }
 
-        private static IEnumerable<string> ExistingInstallation() {
-            yield return Path.Combine(InstallTo(), PatchFileName);
-            yield return Path.Combine(InstallTo(), PatchDirectoryName);
-        }
-
         protected override Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
-            if (ExistingInstallation().Any(FileUtils.Exists)) {
-                var version = Path.Combine(InstallTo(), PatchDirectoryName, "version.txt");
-                return Task.FromResult(Tuple.Create(Name, File.Exists(version) ? File.ReadAllText(version) : null));
-            }
-            return Task.FromResult<Tuple<string, string>>(null);
+            var version = PatchHelper.GetInstalledVersion();
+            return version != null ? Task.FromResult(Tuple.Create(Name, version)) : Task.FromResult<Tuple<string, string>>(null);
         }
 
         protected override Task<string> GetDestination(CancellationToken cancellation) {

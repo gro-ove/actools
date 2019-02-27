@@ -1,0 +1,27 @@
+<UserControl x:Class="AcManager.Pages.ShadersPatch.ShadersDataCarsTextures" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools"
+    mc:Ignorable="d">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="ShadersDataLists.xaml" />
+  </UserControl.Resources>
+  <ContentControl Style="{StaticResource Section}" DataContext="{Binding Source={x:Static t:PatchCarsTexturesDataUpdater.Instance}}">
+    <DataGrid ItemsSource="{Binding View}" Style="{StaticResource DataGrid.Lite}" IsReadOnly="True" RowStyle="{StaticResource CarsConfigsRowStyle}"
+        RowDetailsVisibilityMode="Visible">
+      <DataGrid.RowDetailsTemplate>
+        <DataTemplate DataType="{x:Type t:PatchCarTexturesDataEntry}">
+          <mui:SelectableBbCodeBlock Text="{Binding DisplayUsedBy, StringFormat='{}Used by: {0}'}" Style="{StaticResource RichTextBox.Small.ReadOnly}"
+              Margin="21 0 21 4" />
+        </DataTemplate>
+      </DataGrid.RowDetailsTemplate>
+      <DataGrid.Columns>
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+        <DataGridTextColumn Width="3*" Header="Name" Binding="{Binding DisplayName, Mode=OneTime}" SortMemberPath="DisplayName" />
+        <DataGridTemplateColumn Width="80" Header="Size" SortMemberPath="Size" CellTemplate="{StaticResource SizeColumnTemplate}" />
+        <DataGridTemplateColumn MinWidth="160" Width="2*" Header="Author" SortMemberPath="Author" CellTemplate="{StaticResource AuthorColumnTemplate}" />
+        <DataGridTemplateColumn Width="60" SortMemberPath="IsInstalled" CellTemplate="{StaticResource InstalledColumnTemplate}"
+            Header="{StaticResource HeaderInstallContent}" />
+      </DataGrid.Columns>
+    </DataGrid>
+  </ContentControl>
+</UserControl>

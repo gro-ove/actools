@@ -68,7 +68,7 @@ namespace AcManager.PaintShop {
         private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
             if (kn5 == null) yield break;
 
-            var carPaint = FindRegexTexture(kn5, @"^(?:car_?paint|[mM]etal_detail_?1?|carpaint_detail|.*exterior_body_detail)?\.dds$");
+            var carPaint = FindRegexTexture(kn5, @"^(?:car_?paint|[mM]etal_[dD]etail_?1?|carpaint_detail|.*exterior_body_detail)?\.dds$");
             var mapsMap = kn5.Materials.Values.Where(x => x.ShaderName == "ksPerPixelMultiMap_damage_dirt")
                              .Select(x => x.GetMappingByName(@"txMaps")?.Texture)
                              .NonNull()

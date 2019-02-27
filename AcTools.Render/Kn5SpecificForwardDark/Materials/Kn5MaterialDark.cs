@@ -1,4 +1,5 @@
-﻿using AcTools.Render.Base;
+﻿using System;
+using AcTools.Render.Base;
 using AcTools.Render.Base.Objects;
 using AcTools.Render.Kn5Specific.Materials;
 using AcTools.Render.Kn5Specific.Textures;
@@ -58,6 +59,14 @@ namespace AcTools.Render.Kn5SpecificForwardDark.Materials {
 
         public override bool Prepare(IDeviceContextHolder contextHolder, SpecialRenderMode mode) {
             if (!AllowedFlags.HasFlag(mode)) return false;
+
+            if (Effect?.FxMaterial == null) {
+                throw new NullReferenceException(Effect == null ? "Effect is null" : "Effect.FxMaterial is null");
+            }
+
+            if (Effect.FxDiffuseMap == null) {
+                throw new NullReferenceException("Effect.FxDiffuseMap is null");
+            }
 
             Effect.FxMaterial.Set(_material);
             Effect.FxDiffuseMap.SetResource(_txDiffuse);

@@ -6,6 +6,12 @@ namespace AcManager {
     public enum AppFlag {
         /// <summary>
         /// For internal use.
+        /// Example: --patch-support.
+        /// </summary>
+        PatchSupport,
+
+        /// <summary>
+        /// For internal use.
         /// Example: --hide-race-cancel-button.
         /// </summary>
         HideRaceCancelButton,

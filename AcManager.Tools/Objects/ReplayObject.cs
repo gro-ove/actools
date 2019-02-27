@@ -210,7 +210,7 @@ namespace AcManager.Tools.Objects {
                         if (nameLength > 255) break;
 
                         var name = Encoding.ASCII.GetString(reader.ReadBytes(nameLength));
-                        Logging.Debug("Extra section: " + name);
+                        // Logging.Debug("Extra section: " + name);
 
                         var sectionLength = reader.ReadInt32();
                         if (!ReadExtendedSection(reader, name, sectionLength)) {

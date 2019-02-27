@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Helpers {
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]
         public static string Urlify([CanBeNull] this string s) {
             if (s == null) return null;
-            return s.IsAnyUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
+            return s.StartsWith(@"/") || s.IsAnyUrl() ? s : s.IndexOf('@') != -1 ? @"mailto:" + s : @"http://" + s;
         }
 
         public static IEnumerable<string> GetUrls([CanBeNull] this string s) {

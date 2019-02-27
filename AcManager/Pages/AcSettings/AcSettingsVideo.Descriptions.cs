@@ -466,7 +466,7 @@ namespace AcManager.Pages.AcSettings {
                                     MaxImageHeight = 1080,
                                     HorizontalDetailsAlignment = alignment.Item1,
                                     VerticalDetailsAlignment = alignment.Item2,
-                                    Model = { IsLooped = true }
+                                    Model = { IsLooped = true, Saveable = false }
                                 };
 
                         if (selectCallback == null) {

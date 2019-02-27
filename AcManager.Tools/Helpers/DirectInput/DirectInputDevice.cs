@@ -13,6 +13,8 @@ using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
+        public static bool OptionStrictIndices = false;
+
         [NotNull]
         public DeviceInstance Device { get; }
 
@@ -27,13 +29,17 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public IList<int> OriginalIniIds { get; }
 
         public bool Same(IDirectInputDevice other) {
+            if (OptionStrictIndices) {
+                return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0") && Index == other.Index;
+            }
             return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0");
-            // return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0") && Index == other.Index;
         }
 
         public bool Same(DeviceInstance other, int index) {
+            if (OptionStrictIndices) {
+                return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName) && Index == index;
+            }
             return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName);
-            // return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName) && Index == index;
             // || Id == @"0" && DirectInputDeviceUtils.IsController(other.InstanceName)
         }
 
@@ -134,7 +140,9 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }
 
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
-            // DisplayName += $@" (#{Index + 1})";
+            if (OptionStrictIndices) {
+                DisplayName += $@" (#{Index + 1})";
+            }
 
             Proc(Axis, axisP);
             Proc(Buttons, buttonsP);
@@ -186,7 +194,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 var buttons = state.GetButtons();
                 for (var i = 0; i < Buttons.Length; i++) {
                     var b = Buttons[i];
-                    b.Value = b.Id < buttons.Length && buttons[b.Id];
+                    b.Value = b.Id < buttons.Length && buttons[b.Id] && (b.Id % 2 == Index % 2);
                 }
 
                 var povs = state.GetPointOfViewControllers();

@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -9,6 +8,7 @@ using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+
 // ReSharper disable VirtualMemberCallInConstructor
 
 namespace AcManager.Tools.Data {
@@ -92,7 +92,18 @@ namespace AcManager.Tools.Data {
 
         public string LatestError {
             get => _latestError;
-            set => Apply(value, ref _latestError);
+            set => Apply(value, ref _latestError, () => {
+                if (!string.IsNullOrWhiteSpace(value)) LatestMessage = null;
+            });
+        }
+
+        private string _latestMessage;
+
+        public string LatestMessage {
+            get => _latestMessage;
+            set => Apply(value, ref _latestMessage, () => {
+                if (!string.IsNullOrWhiteSpace(value)) LatestError = null;
+            });
         }
 
         private bool _isGetting;
@@ -125,14 +136,19 @@ namespace AcManager.Tools.Data {
 
         private bool _checkingInProcess;
 
+        protected virtual Task GetCheckDelay() {
+            return Task.Delay(500);
+        }
+
         public virtual async Task CheckAndUpdateIfNeeded() {
             if (_checkingInProcess) return;
             _checkingInProcess = true;
             _checkAndUpdateIfNeededCommand?.RaiseCanExecuteChanged();
 
             LatestError = null;
+            LatestMessage = null;
 
-            await Task.Delay(500);
+            await GetCheckDelay();
 
             try {
                 if (await CheckAndUpdateIfNeededInner()) {
@@ -149,14 +165,19 @@ namespace AcManager.Tools.Data {
             }
         }
 
+        protected virtual void ForcedUpdate() { }
+
         protected virtual bool CanBeUpdated() {
             return !_checkingInProcess && !IsGetting;
         }
 
-        private CommandBase _checkAndUpdateIfNeededCommand;
+        private AsyncCommand _checkAndUpdateIfNeededCommand;
 
-        public ICommand CheckAndUpdateIfNeededCommand => _checkAndUpdateIfNeededCommand ??
-                (_checkAndUpdateIfNeededCommand = new DelegateCommand(() => CheckAndUpdateIfNeeded().Forget(), CanBeUpdated));
+        public AsyncCommand CheckAndUpdateIfNeededCommand => _checkAndUpdateIfNeededCommand ??
+                (_checkAndUpdateIfNeededCommand = new AsyncCommand(() => {
+                    ForcedUpdate();
+                    return CheckAndUpdateIfNeeded();
+                }, CanBeUpdated));
 
         /// <summary>
         /// Check and install/prepare update.

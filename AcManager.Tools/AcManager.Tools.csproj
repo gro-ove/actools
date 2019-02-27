@@ -88,6 +88,10 @@
       <HintPath>..\Libraries\Steamworks.NET\Steamworks.NET.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="AcManager.Internal, Culture=neutral, processorArchitecture=MSIL">
@@ -219,6 +223,15 @@
     <Compile Include="Data\KunosLauncherDataWatcher.cs" />
     <Compile Include="Data\AuthenticationStorage.cs" />
     <Compile Include="Data\NameNationality.cs" />
+    <Compile Include="Data\PatchBackgroundsDataUpdater.cs" />
+    <Compile Include="Data\PatchBaseDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsTexturesDataUpdater.cs" />
+    <Compile Include="Data\PatchHelper.cs" />
+    <Compile Include="Data\PatchTracksDataUpdater.cs" />
+    <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />
+    <Compile Include="Data\PatchUpdater.cs" />
+    <Compile Include="Data\PatchVersionInfo.cs" />
     <Compile Include="Data\UserChampionshipProgressEntry.cs" />
     <Compile Include="Data\UserChampionshipsProgress.cs" />
     <Compile Include="Data\WeatherDescription.cs" />

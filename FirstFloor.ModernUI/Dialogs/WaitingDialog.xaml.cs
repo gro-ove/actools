@@ -28,6 +28,13 @@ namespace FirstFloor.ModernUI.Dialogs {
             private set => this.Apply(value, ref _message);
         }
 
+        private string _secondaryMessage;
+
+        public string SecondaryMessage {
+            get => _secondaryMessage;
+            private set => this.Apply(value, ref _secondaryMessage);
+        }
+
         private string _details;
 
         public string Details {
@@ -62,16 +69,24 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public bool ShowProgressBar {
             get => ProgressBarSwitch.Value;
-            set => ProgressBarSwitch.Value = value;
+            set {
+                ProgressBarSwitch.Value = value;
+                SecondaryProgressBarSwitch.Value = value;
+            }
         }
 
         private double? _progress;
 
         public double? Progress {
             get => _progress;
-            private set => this.Apply(value, ref _progress, () => {
-                OnPropertyChanged(nameof(ProgressIndetermitate));
-            });
+            private set => this.Apply(value, ref _progress, () => { OnPropertyChanged(nameof(ProgressIndetermitate)); });
+        }
+
+        private double? _secondaryProgress;
+
+        public double? SecondaryProgress {
+            get => _secondaryProgress;
+            private set => this.Apply(value, ref _secondaryProgress, () => { OnPropertyChanged(nameof(SecondaryProgressIndetermitate)); });
         }
 
         private bool _progressIndetermitate;
@@ -79,6 +94,13 @@ namespace FirstFloor.ModernUI.Dialogs {
         public bool ProgressIndetermitate {
             get => _progressIndetermitate || ShowProgressBar && Progress == null;
             private set => this.Apply(value, ref _progressIndetermitate);
+        }
+
+        private bool _secondaryProgressIndetermitate;
+
+        public bool SecondaryProgressIndetermitate {
+            get => _secondaryProgressIndetermitate || ShowProgressBar && SecondaryProgress == null;
+            private set => this.Apply(value, ref _secondaryProgressIndetermitate);
         }
 
         private bool _isCancelled;
@@ -110,6 +132,15 @@ namespace FirstFloor.ModernUI.Dialogs {
         public new string Title {
             get => base.Title;
             set => base.Title = value ?? UiStrings.Common_PleaseWait;
+        }
+
+        public void SetSecondary(bool value) {
+            lock (_lock) {
+                Dispatcher.Invoke(() => {
+                    SecondaryMessageBlock.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                    SecondaryProgressBarSwitch.Visibility = value ? Visibility.Visible : Visibility.Collapsed;
+                });
+            }
         }
 
         private string _cancellationText = UiStrings.Cancel;
@@ -307,6 +338,86 @@ namespace FirstFloor.ModernUI.Dialogs {
                         EnsureShown();
                         Message = value.Item1;
                         SetProgress(value.Item2 ?? 0d);
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
+        }
+
+        public void ReportSecondary(string value) {
+            lock (_lock) {
+                if (SecondaryMessage == value) return;
+                Dispatcher.InvokeAsync(() => {
+                    if (value != null) {
+                        EnsureShown();
+                        SecondaryMessage = value;
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
+        }
+
+        private void SetProgressSecondary(double value) {
+            SecondaryProgress = value;
+            SecondaryProgressIndetermitate = Equals(value, 0d);
+        }
+
+        public void ReportSecondary(double? value) {
+            lock (_lock) {
+                if (SecondaryProgress.HasValue && value.HasValue && Math.Abs(SecondaryProgress.Value - value.Value) < 0.0001) return;
+                Dispatcher.InvokeAsync(() => {
+                    if (value.HasValue) {
+                        EnsureShown();
+                        SetProgressSecondary(value.Value);
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
+        }
+
+        public void ReportSecondary() {
+            ReportSecondary(0d);
+        }
+
+        public void ReportSecondary(double value) {
+            lock (_lock) {
+                if (SecondaryProgress.HasValue && Math.Abs(SecondaryProgress.Value - value) < 0.0001) return;
+                Dispatcher.InvokeAsync(() => {
+                    EnsureShown();
+                    SetProgressSecondary(value);
+                });
+            }
+        }
+
+        public void ReportSecondary(int n, int total) {
+            var v = (double)n / total + 0.000001;
+            ReportSecondary(v < 0d ? 0d : v > 1d ? 1d : v);
+        }
+
+        public void ReportSecondary(AsyncProgressEntry value) {
+            lock (_lock) {
+                Dispatcher.InvokeAsync(() => {
+                    if (value.Message != null) {
+                        EnsureShown();
+                        SecondaryMessage = value.Message;
+                        SetProgressSecondary(value.Progress ?? 0d);
+                    } else {
+                        EnsureClosed();
+                    }
+                });
+            }
+        }
+
+        public void ReportSecondary(Tuple<string, double?> value) {
+            lock (_lock) {
+                Dispatcher.InvokeAsync(() => {
+                    if (value.Item1 != null) {
+                        EnsureShown();
+                        SecondaryMessage = value.Item1;
+                        SetProgressSecondary(value.Item2 ?? 0d);
                     } else {
                         EnsureClosed();
                     }

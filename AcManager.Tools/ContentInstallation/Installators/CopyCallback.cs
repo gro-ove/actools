@@ -6,7 +6,7 @@ namespace AcManager.Tools.ContentInstallation.Installators {
     /// <summary>
     /// Takes file information and, if copy needed, returns destination path.
     /// </summary>
-    public interface ICopyCallback {
+    public interface ICopyCallback : IDisposable {
         [CanBeNull]
         string File ([NotNull] IFileInfo info);
 
@@ -17,10 +17,12 @@ namespace AcManager.Tools.ContentInstallation.Installators {
     public class CopyCallback : ICopyCallback {
         private Func<IFileInfo, string> _file;
         private Func<IDirectoryInfo, string> _directory;
+        private readonly Action _dispose;
 
-        public CopyCallback(Func<IFileInfo, string> file, Func<IDirectoryInfo, string> directory = null) {
+        public CopyCallback(Func<IFileInfo, string> file, Func<IDirectoryInfo, string> directory = null, Action dispose = null) {
             _file = file;
             _directory = directory;
+            _dispose = dispose;
         }
 
         private static bool IsToIgnore(string filename) {
@@ -33,6 +35,10 @@ namespace AcManager.Tools.ContentInstallation.Installators {
 
         public string Directory(IDirectoryInfo info) {
             return _directory?.Invoke(info);
+        }
+
+        public void Dispose() {
+            _dispose?.Invoke();
         }
     }
 }

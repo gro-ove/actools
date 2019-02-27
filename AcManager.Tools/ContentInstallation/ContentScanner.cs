@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.ContentInstallation.Installators;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
@@ -651,40 +652,47 @@ namespace AcManager.Tools.ContentInstallation {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"people");
             }
 
-            if (directory.HasSubFile("dwrite.dll") && directory.HasSubDirectory("extension")) {
-                var dwrite = directory.GetSubFile("dwrite.dll");
+            if (directory.HasSubFile(PatchHelper.MainFileName) && directory.HasSubDirectory("extension")) {
+                var dwrite = directory.GetSubFile(PatchHelper.MainFileName);
                 var extension = directory.GetSubDirectory("extension");
-                var description = directory.GetSubFile("description.jsgme");
+                var manifest = directory.GetSubDirectory("extension")?.GetSubDirectory("config")?.GetSubFile("data_manifest.ini");
                 string version;
-                if (description != null) {
-                    var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
-                    version = Regex.Match(data.ToUtf8String(), @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null);
+                if (manifest != null) {
+                    var data = await manifest.Info.ReadAsync() ?? throw new MissingContentException();
+                    version = IniFile.Parse(data.ToUtf8String())["VERSION"].GetNonEmpty("SHADERS_PATCH");
                 } else {
-                    var parent = directory;
-                    while (parent.Parent?.Name != null) parent = parent.Parent;
-                    version = parent.Name != null ? Regex.Match(parent.Name, @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null) : null;
+                    var description = directory.GetSubFile("description.jsgme");
+                    if (description != null) {
+                        var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
+                        version = Regex.Match(data.ToUtf8String(), @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null);
+                    } else {
+                        var parent = directory;
+                        while (parent.Parent?.Name != null) parent = parent.Parent;
+                        version = parent.Name != null ? Regex.Match(parent.Name, @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null) : null;
+                    }
                 }
 
-                return new ShadersPatchEntry(directory.Key ?? "", new[]{ dwrite.Key, extension.Key }, version);
+                return new ShadersPatchEntry(directory.Key ?? "", new[] { dwrite.Key, extension.Key }, version);
             }
 
             if (directory.NameLowerCase == "__gbwsuite") {
-                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, "GBW scripts", "__gbwSuite");
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
             }
 
             if (directory.HasSubFile("weather.lua") && directory.Parent.NameLowerCase == "weather") {
-                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, $"Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, $"Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
                         Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather", directory.Name), 1e5);
             }
 
             if (directory.HasSubFile("controller.lua") && directory.Parent.NameLowerCase == "weather-controllers") {
-                return new CustomFolderEntry(directory.Key ?? "", new[]{ directory.Key }, $"Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key },
+                        $"Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
                         Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather-controllers", directory.Name), 1e5);
             }
 
             // Mod
             if (directory.Parent?.NameLowerCase == "mods"
-                    && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile("dwrite.dll"))) {
+                    && (directory.HasAnySubDirectory("content", "apps", "system", "launcher", "extension") || directory.HasSubFile(PatchHelper.MainFileName))) {
                 var name = directory.Name;
                 if (name != null && directory.GetSubDirectory("content")?.GetSubDirectory("tracks")?.Directories.Any(
                         x => x.GetSubDirectory("skins")?.GetSubDirectory("default")?.GetSubFile("ui_track_skin.json") != null) != true) {

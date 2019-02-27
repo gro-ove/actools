@@ -125,7 +125,7 @@ namespace AcManager.Pages.Settings {
                     }
 
                     LocaleUpdater.InstalledVersion = value?.Version;
-                    LocaleUpdater.CheckAndUpdateIfNeededCommand.Execute(null);
+                    LocaleUpdater.CheckAndUpdateIfNeededCommand.ExecuteAsync().Ignore();
                 }
             }
 

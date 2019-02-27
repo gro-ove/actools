@@ -1,9 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
-    public class Busy {
+    public class Busy : NotifyPropertyChanged {
         private readonly bool _invokeInUiThread;
         private readonly bool _logging;
 
@@ -14,10 +15,17 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private int _counter;
-        public bool Is => _counter > 0;
+
+        private bool _is;
+
+        public bool Is {
+            get => _is;
+            private set => Apply(value, ref _is);
+        }
 
         public IDisposable Set() {
             _counter++;
+            Is = true;
             if (_logging) {
                 Logging.Debug("Busy: " + _counter);
             }
@@ -26,7 +34,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         private void SetAction() {
-            _counter--;
+            Is = --_counter > 0;
             if (_logging) {
                 Logging.Debug("Ended: " + _counter);
             }

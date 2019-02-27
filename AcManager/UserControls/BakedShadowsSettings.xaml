@@ -64,6 +64,12 @@
       <CheckBox IsChecked="{Binding UseFxaa}">
         <Label Content="FXAA" />
       </CheckBox>
+      <CheckBox IsChecked="{Binding FullyTransparent}">
+        <Label Content="Fully transparent" />
+      </CheckBox>
+      <CheckBox IsChecked="{Binding UseDxt5}" ToolTip="If disabled, CM would save AO in Luminance+Alpha 8.8 format, which is two times heavier">
+        <Label Content="Use DXT5 compression for DDS" />
+      </CheckBox>
     </mui:SpacingStackPanel>
   </mui:SpacingUniformGrid>
 </DockPanel>

@@ -297,6 +297,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.ShowroomUiVerbose, ref LiteShowroomFormWrapperWithTools.OptionAttachedToolsVerboseMode);
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
+            AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -717,10 +718,21 @@ namespace AcManager {
 
             LocaleUpdater.Initialize(LocaleHelper.LoadedVersion);
             LocaleUpdater.Instance.Updated += OnLocaleUpdated;
+
+            if (PatchHelper.OptionPatchSupport) {
+                PatchUpdater.Initialize();
+                PatchUpdater.Instance.Updated += OnPatchUpdated;
+            }
         }
 
         private void OnDataUpdated(object sender, EventArgs e) {
             Toast.Show(AppStrings.App_DataUpdated, string.Format(AppStrings.App_DataUpdated_Details, DataUpdater.Instance.InstalledVersion));
+        }
+
+        private void OnPatchUpdated(object sender, EventArgs e) {
+            /*if (PatchUpdater.Instance.ShowDetailedChangelog.Value) {
+                Toast.Show("Shaders Patch updated", string.Format(AppStrings.App_DataUpdated_Details, PatchUpdater.Instance.DisplayInstalledVersion));
+            }*/
         }
 
         private void OnAppUpdated(object sender, EventArgs e) {

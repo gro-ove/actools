@@ -1,12 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Commands {
     // based on http://stackoverflow.com/a/1857619/4267982
     public static class DelegateCommandExtensions {
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of CommandBase object,
+        /// Makes DelegateCommand listen on PropertyChanged events of CommandBase object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOn<TObj>(this TObj delegateCommand, CommandBase observedCommand) where TObj : CommandBase {
@@ -14,7 +15,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of CommandBase object,
+        /// Makes DelegateCommand listen on PropertyChanged events of CommandBase object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOnWeak<TObj>(this TObj delegateCommand, CommandBase observedCommand) where TObj : CommandBase {
@@ -22,7 +23,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of some object,
+        /// Makes DelegateCommand listen on PropertyChanged events of some object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOn<T, TObj>(this TObj delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged
@@ -36,7 +37,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of some object,
+        /// Makes DelegateCommand listen on PropertyChanged events of some object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOnWeak<T, TObj>(this TObj delegateCommand, T observedObject, string propertyName) where T : INotifyPropertyChanged
@@ -51,7 +52,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of some object,
+        /// Makes DelegateCommand listen on PropertyChanged events of some object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOn<T, TObj>(this TObj delegateCommand, T observedObject, params string[] propertyNames) where T : INotifyPropertyChanged
@@ -65,7 +66,7 @@ namespace FirstFloor.ModernUI.Commands {
         }
 
         /// <summary>
-        /// Makes DelegateCommnand listen on PropertyChanged events of some object,
+        /// Makes DelegateCommand listen on PropertyChanged events of some object,
         /// so that DelegateCommand can update its IsEnabled property.
         /// </summary>
         public static TObj ListenOnWeak<T, TObj>(this TObj delegateCommand, T observedObject, params string[] propertyNames) where T : INotifyPropertyChanged
@@ -73,6 +74,20 @@ namespace FirstFloor.ModernUI.Commands {
             WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(observedObject, nameof(INotifyPropertyChanged.PropertyChanged),
                     (sender, e) => {
                         if (Array.IndexOf(propertyNames, e.PropertyName) != -1) {
+                            delegateCommand.RaiseCanExecuteChanged();
+                        }
+                    });
+            return delegateCommand;
+        }
+
+        /// <summary>
+        /// Makes DelegateCommand listen on PropertyChanged events of some object,
+        /// so that DelegateCommand can update its IsEnabled property.
+        /// </summary>
+        public static TObj ListenOn<T, TObj>(this TObj delegateCommand, StoredValue<T> observedObject) where TObj : CommandBase {
+            WeakEventManager<INotifyPropertyChanged, PropertyChangedEventArgs>.AddHandler(observedObject, nameof(INotifyPropertyChanged.PropertyChanged),
+                    (sender, e) => {
+                        if (e.PropertyName == nameof(observedObject.Value)) {
                             delegateCommand.RaiseCanExecuteChanged();
                         }
                     });

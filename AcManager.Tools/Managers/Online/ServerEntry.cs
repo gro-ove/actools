@@ -115,7 +115,7 @@ namespace AcManager.Tools.Managers.Online {
                 }
 
                 if (DetailsPort == null && detailsId != null) {
-                    Logging.Write($"Details for {displayName}: {detailsId}");
+                    // Logging.Write($"Details for {displayName}: {detailsId}");
                     DetailsId = detailsId;
                 } else {
                     DetailsId = null;

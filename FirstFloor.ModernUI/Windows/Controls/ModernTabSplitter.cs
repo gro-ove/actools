@@ -18,6 +18,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             SetWidth(LoadWidth());
         }
 
+        public static readonly RoutedEvent MovedEvent = EventManager.RegisterRoutedEvent(nameof(Moved), RoutingStrategy.Bubble,
+                typeof(EventHandler<MovedEventArgs>), typeof(ModernMenu));
+
+        public event EventHandler<MovedEventArgs> Moved {
+            add => AddHandler(MovedEvent, value);
+            remove => RemoveHandler(MovedEvent, value);
+        }
+
+        public class MovedEventArgs : RoutedEventArgs {
+            public double NewWidth { get; }
+
+            public MovedEventArgs(RoutedEvent routedEvent, double newWidth) : base(routedEvent) {
+                NewWidth = newWidth;
+            }
+        }
+
         protected override void OnVisualParentChanged(DependencyObject oldParent) {
             base.OnVisualParentChanged(oldParent);
 
@@ -45,6 +61,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var column = GetTargetColumn();
             if (column != null) {
                 column.Width = new GridLength(width, GridUnitType.Pixel);
+                RaiseEvent(new MovedEventArgs(MovedEvent, width));
             }
         }
 
@@ -69,7 +86,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        private double? GetWidth() {
+        public double? GetWidth() {
             return GetTargetColumn()?.ActualWidth;
         }
 

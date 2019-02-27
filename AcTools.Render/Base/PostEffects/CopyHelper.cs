@@ -20,6 +20,13 @@ namespace AcTools.Render.Base.PostEffects {
             _effect.TechCopy.DrawAllPasses(holder.DeviceContext, 6);
         }
 
+        public void DrawFullyTransparent(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
+            holder.DeviceContext.OutputMerger.SetTargets(target);
+            holder.PrepareQuad(_effect.LayoutPT);
+            _effect.FxInputMap.SetResource(view);
+            _effect.TechCopyFullyTransparent.DrawAllPasses(holder.DeviceContext, 6);
+        }
+
         public void DrawFromRed(DeviceContextHolder holder, ShaderResourceView view, RenderTargetView target) {
             holder.DeviceContext.OutputMerger.SetTargets(target);
             holder.PrepareQuad(_effect.LayoutPT);

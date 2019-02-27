@@ -18,7 +18,7 @@ namespace AcManager.Controls.UserControls.Cef {
         [CanBeNull]
         internal ICustomStyleProvider StyleProvider { get; set; }
 
-        public bool OnBeforeBrowse(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool isRedirect) {
+        public bool OnBeforeBrowse(IWebBrowser browserControl, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect) {
             // if (request.TransitionType.HasFlag(TransitionType.ForwardBack)) return true;
             return RequestsFiltering.ShouldBeBlocked(request.Url);
         }
@@ -75,6 +75,14 @@ namespace AcManager.Controls.UserControls.Cef {
             Logging.Warning(status);
         }
 
+        public bool CanGetCookies(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request) {
+            return true;
+        }
+
+        public bool CanSetCookie(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, Cookie cookie) {
+            return true;
+        }
+
         public bool OnQuotaRequest(IWebBrowser browserControl, IBrowser browser, string originUrl, long newSize, IRequestCallback callback) {
             if (!callback.IsDisposed) {
                 callback.Dispose();
@@ -112,13 +120,15 @@ namespace AcManager.Controls.UserControls.Cef {
                 var css = StyleProvider?.GetStyle(request.Url, browserControl is CefSharp.Wpf.ChromiumWebBrowser);
                 var inject = new WebInjectEventArgs(request.Url);
                 Inject?.Invoke(this, inject);
-                return new ReplaceResponseFilter(inject.Replacements.Append(ReplaceResponseFilter.CreateCustomCss(inject.ToInject.JoinToString(), $@"
+                return new ReplaceResponseFilter(inject.Replacements.Append(ReplaceResponseFilter.CreateCustomCssJs(inject.ToInject.JoinToString(), $@"
 ::-webkit-scrollbar {{ width: 8px!important; height: 8px!important; }}
 ::-webkit-scrollbar-track {{ box-shadow: none!important; border-radius: 0!important; background: {_windowColor}!important; opacity: 0!important; }}
 ::-webkit-scrollbar-corner {{ background: {_windowColor}!important; }}
 ::-webkit-scrollbar-thumb {{ border: none!important; box-shadow: none!important; border-radius: 0!important; {_scrollThumbColor} }}
 ::-webkit-scrollbar-thumb:hover {{ {_scrollThumbHoverColor} }}
-::-webkit-scrollbar-thumb:active {{ {_scrollThumbDraggingColor} }}", css)));
+::-webkit-scrollbar-thumb:active {{ {_scrollThumbDraggingColor} }}\n" + css, @"
+(function(){
+})()")));
             }
 
             return null;
@@ -128,8 +138,8 @@ namespace AcManager.Controls.UserControls.Cef {
                 UrlRequestStatus status, long receivedContentLength) { }
 
         private class ReplaceResponseFilter : StreamReplacement, IResponseFilter {
-            public static KeyValuePair<string, string> CreateCustomCss(string prefix, params string[] css) {
-                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style></head>");
+            public static KeyValuePair<string, string> CreateCustomCssJs(string prefix, string css, string js) {
+                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style><script>{js}</script></head>");
             }
 
             public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) {}

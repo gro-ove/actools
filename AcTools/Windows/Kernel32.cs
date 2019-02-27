@@ -87,11 +87,11 @@ namespace AcTools.Windows {
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern SafeFileHandle CreateFile(
                 string lpFileName,
-                [MarshalAs(UnmanagedType.U4)] FileAccess dwDesiredAccess,
-                [MarshalAs(UnmanagedType.U4)] FileShare dwShareMode,
+                [MarshalAs(UnmanagedType.U4)] System.IO.FileAccess dwDesiredAccess,
+                [MarshalAs(UnmanagedType.U4)] System.IO.FileShare dwShareMode,
                 IntPtr lpSecurityAttributes,
                 [MarshalAs(UnmanagedType.U4)] FileMode dwCreationDisposition,
-                [MarshalAs(UnmanagedType.U4)] FileAttributes dwFlagsAndAttributes,
+                [MarshalAs(UnmanagedType.U4)] System.IO.FileAttributes dwFlagsAndAttributes,
                 IntPtr hTemplateFile);
 
         [DllImport("kernel32.dll", SetLastError = true)]
@@ -155,6 +155,45 @@ namespace AcTools.Windows {
         [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeleteFile(string name);
+
+        [Flags]
+        public enum FileAccess : uint {
+            GenericRead = 0x80000000,
+            GenericWrite = 0x40000000,
+            GenericExecute = 0x20000000,
+            GenericAll = 0x10000000
+        }
+
+        [Flags]
+        public enum FileShare : uint {
+            None = 0x00000000,
+            Read = 0x00000001,
+            Write = 0x00000002,
+            Delete = 0x00000004
+        }
+
+        public enum CreationDisposition : uint {
+            New = 1,
+            CreateAlways = 2,
+            OpenExisting = 3,
+            OpenAlways = 4,
+            TruncateExisting = 5
+        }
+
+        [Flags]
+        public enum FileAttributes : uint {
+            Normal = 0x00000080
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        public static extern SafeFileHandle CreateFile(
+                string lpFileName,
+                FileAccess dwDesiredAccess,
+                FileShare dwShareMode,
+                IntPtr lpSecurityAttributes,
+                CreationDisposition dwCreationDisposition,
+                FileAttributes dwFlagsAndAttributes,
+                IntPtr hTemplateFile);
 
         [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
         public static extern unsafe void CopyMemory(byte* dst, byte* src, long size);

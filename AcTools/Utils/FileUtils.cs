@@ -574,6 +574,14 @@ namespace AcTools.Utils {
             return Kernel32.DeleteFile(fileName + ":Zone.Identifier");
         }
 
+        public static bool IsBlocked(string fileName) {
+            using (var handle = Kernel32.CreateFile(fileName + ":Zone.Identifier",
+                    Kernel32.FileAccess.GenericRead, Kernel32.FileShare.Read, IntPtr.Zero, Kernel32.CreationDisposition.OpenExisting,
+                    Kernel32.FileAttributes.Normal, IntPtr.Zero)) {
+                return !handle.IsInvalid;
+            }
+        }
+
         [NotNull]
         public static string GetMountPoint([NotNull] string filename) {
             const uint stringLength = 256;
@@ -604,9 +612,12 @@ namespace AcTools.Utils {
             return GetFileSiblingHardLinks(filename, GetMountPoint(filename));
         }
 
-        public static bool IsDirectoryEmpty([NotNull] string path) {
+        public static bool IsDirectoryEmpty([NotNull] string path, bool? resultForMissing = null) {
             if (string.IsNullOrEmpty(path)) throw new ArgumentNullException(path);
-            if (!Directory.Exists(path)) throw new DirectoryNotFoundException();
+            if (!Directory.Exists(path)) {
+                if (resultForMissing.HasValue) return resultForMissing.Value;
+                throw new DirectoryNotFoundException();
+            }
 
             var last = path[path.Length - 1];
             if (last == Path.DirectorySeparatorChar || last == Path.AltDirectorySeparatorChar) {
@@ -640,6 +651,20 @@ namespace AcTools.Utils {
             try {
                 if (File.Exists(filename)) {
                     File.Delete(filename);
+                }
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Returns true if file doesn’t exist anymore.
+        /// </summary>
+        public static bool TryToDeleteDirectory(string filename) {
+            try {
+                if (Directory.Exists(filename)) {
+                    Directory.Delete(filename);
                 }
                 return true;
             } catch {

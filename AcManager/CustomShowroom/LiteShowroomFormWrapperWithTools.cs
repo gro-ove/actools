@@ -9,6 +9,7 @@ using AcTools.Windows;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
+using JetBrains.Annotations;
 using SlimDX;
 using Size = System.Drawing.Size;
 using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
@@ -18,7 +19,9 @@ namespace AcManager.CustomShowroom {
     public class LiteShowroomFormWrapperWithTools : LiteShowroomFormWrapperWithUiShots, ICustomShowroomShots {
         public static bool OptionAttachedToolsVerboseMode = false;
 
+        [CanBeNull]
         private readonly AttachedHelper _helper;
+
         private readonly LiteShowroomTools _tools;
 
         public new ToolsKn5ObjectRenderer Kn5ObjectRenderer => (ToolsKn5ObjectRenderer)Renderer;
@@ -101,7 +104,7 @@ namespace AcManager.CustomShowroom {
                         SetDefaultLocation();
                     }
 
-                    if (_lastVisibleTools.HasValue) {
+                    if (_lastVisibleTools.HasValue && _helper != null) {
                         _helper.Visible = _lastVisibleTools.Value;
                     }
 
@@ -138,8 +141,10 @@ namespace AcManager.CustomShowroom {
                 var size = ValuesStorage.Get(KeyToolSize, new Point(400, 240));
                 var pos = ValuesStorage.Get(KeyToolPos, new Point(80, Screen.PrimaryScreen.WorkingArea.Height - 300));
 
-                _lastVisibleTools = _helper.Visible;
-                _helper.Visible = false;
+                if (_helper != null) {
+                    _lastVisibleTools = _helper.Visible;
+                    _helper.Visible = false;
+                }
 
                 FullscreenEnabled = false;
                 Form.WindowState = FormWindowState.Normal;
@@ -209,7 +214,7 @@ namespace AcManager.CustomShowroom {
                                 args.Handled = true;
                             }
                         }
-                    } else if (args.Control && !args.Shift) {
+                    } else if (args.Control && !args.Shift && _helper != null) {
                         _helper.Visible = !_helper.Visible;
                         args.Handled = true;
                     }
@@ -249,7 +254,7 @@ namespace AcManager.CustomShowroom {
             }
         }
 
-        protected override bool SleepMode => base.SleepMode && !_helper.IsActive;
+        protected override bool SleepMode => base.SleepMode && _helper?.IsActive != true;
 
         protected override void OnResize(object sender, EventArgs e) {
             base.OnResize(sender, e);

@@ -892,6 +892,12 @@ namespace AcManager.Pages.Windows {
                 return true;
             }
 
+            if (s.Contains("/Pages/Settings/SettingsShadersPatch.xaml")) {
+                CurrentGroupKey = "settings";
+                NavigateTo(uri);
+                return true;
+            }
+
             if (s.Contains("/Pages/Settings/") && !s.Contains("/Pages/Settings/SettingsPage.xaml")) {
                 CurrentGroupKey = "settings";
                 NavigateTo(UriExtension.Create("/Pages/Settings/SettingsPage.xaml?Uri={0}", uri));

@@ -1,0 +1,162 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+  <ResourceDictionary.MergedDictionaries>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <sys:Int32 x:Key="NumberOne">1</sys:Int32>
+
+  <DataTemplate x:Key="InstalledColumnTemplate" DataType="{x:Type t:PatchDataEntry}">
+    <TextBlock x:Name="PART_Text" Text="No" Foreground="{DynamicResource WindowTextReadOnly}" Style="{StaticResource Small}" Margin="0 4 0 -4" />
+    <DataTemplate.Triggers>
+      <DataTrigger Binding="{Binding IsInstalled, Mode=OneWay}" Value="True">
+        <Setter TargetName="PART_Text" Property="Text" Value="Older" />
+        <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Error}" />
+      </DataTrigger>
+      <DataTrigger Binding="{Binding IsNewestInstalled, Mode=OneWay}" Value="True">
+        <Setter TargetName="PART_Text" Property="Text" Value="Yes" />
+        <Setter TargetName="PART_Text" Property="Foreground" Value="{DynamicResource Go}" />
+      </DataTrigger>
+    </DataTemplate.Triggers>
+  </DataTemplate>
+
+  <DataTemplate x:Key="CarColumnTemplate" DataType="{x:Type t:PatchCarDataEntry}">
+    <DockPanel Margin="0 2 0 -2">
+      <c:CarIcon Width="12" Height="12" DockPanel.Dock="Left" Margin="0 1 4 -1" VerticalAlignment="Center" Car="{Binding Car}"
+          ClearOnChange="True" />
+      <mui:BbCodeBlock Text="{Binding Car.DisplayName}" Mode="WithoutBbCodes" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+    </DockPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="TrackColumnTemplate" DataType="{x:Type t:PatchTrackDataEntry}">
+    <DockPanel Margin="0 2 0 -2">
+      <mui:BetterImage Filename="{Binding Track.OutlineImage}" Width="12" Height="12" DockPanel.Dock="Left" Margin="0 1 4 -1" VerticalAlignment="Center"
+          ClearOnChange="True" CropTransparentAreas="True" Effect="{DynamicResource TrackOutlineAloneEffect}" />
+      <mui:BbCodeBlock Text="{Binding DisplayName}" Mode="WithoutBbCodes" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+    </DockPanel>
+  </DataTemplate>
+
+  <DataTemplate x:Key="SizeColumnTemplate" DataType="{x:Type t:PatchTrackDataEntry}">
+    <mui:PlaceholderTextBlock x:Name="PART_Text" Text="{Binding DisplaySize, Mode=OneTime}" ToolTip="{Binding Author, Mode=OneTime}" Placeholder="?"
+        TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" Margin="0 4 0 -4" />
+  </DataTemplate>
+
+  <DataGridTemplateColumn x:Key="SizeColumn" x:Shared="False" Width="80" Header="Size" SortMemberPath="Size" CellTemplate="{StaticResource SizeColumnTemplate}" />
+
+  <DataTemplate x:Key="AuthorColumnTemplate" DataType="{x:Type t:PatchTrackDataEntry}">
+    <mui:PlaceholderTextBlock x:Name="PART_Text" Text="{Binding Author, Mode=OneTime}" ToolTip="{Binding Author, Mode=OneTime}" Placeholder="?"
+        TextTrimming="CharacterEllipsis" Style="{StaticResource Small}" Margin="0 4 0 -4" />
+  </DataTemplate>
+
+  <Style x:Key="Section" TargetType="ContentControl">
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="ContentControl">
+          <DockPanel d:DataContext="{d:DesignInstance t:PatchBaseDataUpdater}">
+            <DockPanel DockPanel.Dock="Top">
+              <mui:ContextMenuButton DockPanel.Dock="Right" Margin="0 1 0 -1">
+                <ContextMenu>
+                  <MenuItem
+                      Header="{Binding UnavailableCount, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {entry} are not available'}"
+                      Command="{Binding ShowUnavailableEntriesCommand}"
+                      Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+                  <Separator Visibility="{Binding UnavailableCount, Converter={StaticResource MoreToVisibilityConverter}}" />
+                  <MenuItem IsChecked="{Binding InstallAutomatically.Value}" IsCheckable="True" Header="Install automatically (recommended)" />
+                  <MenuItem Command="{Binding InstallEverythingCommand}"
+                      Header="{Binding AvailableToInstall, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}Install {0} {entry}'}"
+                      Visibility="{Binding AvailableToInstall, Converter={StaticResource MoreToVisibilityConverter}}" />
+                  <MenuItem Command="{Binding ViewInExplorerCommand}" Header="View in Explorer" />
+                </ContextMenu>
+              </mui:ContextMenuButton>
+              <TextBlock Style="{StaticResource Heading2}" Text="{Binding Title}" DockPanel.Dock="Top" />
+            </DockPanel>
+            <mui:BbCodeBlock Style="{StaticResource Small}" DockPanel.Dock="Top" TextWrapping="Wrap" Margin="0 8 0 0" Text="{Binding Description}" />
+            <mui:Cell Margin="0 20 0 0">
+              <mui:ModernProgressRing Width="80" Height="80" IsActive="{Binding IsLoading}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+              <DockPanel Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+                <DockPanel HorizontalAlignment="Stretch" Dock="Top" Margin="0 0 0 4">
+                  <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" />
+                  <TextBlock Margin="10 2 2 2" Style="{StaticResource Heading2}" Foreground="{DynamicResource Error}"
+                      Text="{Binding Source={StaticResource NumberOne}, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.AcObject_ErrorsHeader}}" />
+                </DockPanel>
+                <TextBlock Text="{Binding ErrorMessage}" />
+              </DockPanel>
+              <ContentPresenter Content="{TemplateBinding Content}" Visibility="{Binding IsLoaded, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            </mui:Cell>
+          </DockPanel>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
+  <DataTemplate x:Key="NotesDetails" DataType="{x:Type t:PatchTrackDataEntry}">
+    <mui:SelectableBbCodeBlock Text="{Binding Notes, StringFormat='{}Notes: {0}'}" Style="{StaticResource RichTextBox.Small.ReadOnly}" Margin="21 0 21 4"
+        Visibility="{Binding Notes, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse, hidden'}" />
+  </DataTemplate>
+
+  <Style x:Key="BaseRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+    <Setter Property="IsEnabled" Value="True" />
+    <Setter Property="Padding" Value="4 4 4 0" />
+    <Setter Property="ContextMenu">
+      <Setter.Value>
+        <ContextMenu>
+          <MenuItem Header="{Binding LatestVersion, Mode=OneTime}" HeaderStringFormat="{}Latest version: {0}" StaysOpenOnClick="True" />
+          <MenuItem Header="{Binding InstalledVersion}" HeaderStringFormat="{}Installed version: {0}" StaysOpenOnClick="True"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          <Separator />
+          <MenuItem Header="Install now" Command="{Binding InstallCommand}"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+          <MenuItem Header="Reinstall" Command="{Binding InstallCommand}" CommandParameter="force"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </ContextMenu>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding IsAvailable, Mode=OneTime}" Value="False">
+        <Setter Property="IsEnabled" Value="False" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Style x:Key="CarsConfigsRowStyle" TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+    <Setter Property="IsEnabled" Value="True" />
+    <Setter Property="Padding" Value="4 4 4 0" />
+    <Setter Property="ContextMenu">
+      <Setter.Value>
+        <ContextMenu>
+          <MenuItem Header="Features" StaysOpenOnClick="True">
+            <MenuItem Header="Visually adjustable wings" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasAdjustableWings, Mode=OneTime}" />
+            <MenuItem Header="Deforming mesh" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasDeformingMesh, Mode=OneTime}" />
+            <MenuItem Header="Extra indicators" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasExtraIndicators, Mode=OneTime}" />
+            <MenuItem Header="Odometer" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasOdometer, Mode=OneTime}" />
+            <MenuItem Header="Turning signals" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasTurnSignals, Mode=OneTime}" />
+            <MenuItem Header="Tyres textures" IsCheckable="False" StaysOpenOnClick="True" IsChecked="{Binding HasTyresTextures, Mode=OneTime}" />
+            <MenuItem Header="{Binding DisplayTextures, Mode=OneTime}" HeaderStringFormat="{}Used textures: {0}" IsCheckable="False" StaysOpenOnClick="True"
+                Visibility="{Binding HasTyresTextures, Mode=OneTime, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          </MenuItem>
+          <MenuItem Header="{Binding LatestVersion, Mode=OneTime}" HeaderStringFormat="{}Latest version: {0}" StaysOpenOnClick="True" />
+          <MenuItem Header="{Binding InstalledVersion}" HeaderStringFormat="{}Installed version: {0}" StaysOpenOnClick="True"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+          <Separator />
+          <MenuItem Header="Install now" Command="{Binding InstallCommand}"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+          <MenuItem Header="Reinstall" Command="{Binding InstallCommand}" CommandParameter="force"
+              Visibility="{Binding IsInstalled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        </ContextMenu>
+      </Setter.Value>
+    </Setter>
+    <Style.Triggers>
+      <DataTrigger Binding="{Binding IsAvailable, Mode=OneTime}" Value="False">
+        <Setter Property="IsEnabled" Value="False" />
+      </DataTrigger>
+    </Style.Triggers>
+  </Style>
+
+  <Border x:Key="HeaderInstallContent" x:Shared="False" Background="Transparent" ToolTip="Is downloaded">
+    <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" VerticalAlignment="Center"
+        Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" HorizontalAlignment="Center" />
+  </Border>
+</ResourceDictionary>

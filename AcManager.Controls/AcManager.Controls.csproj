@@ -60,20 +60,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="CefSharp.Wpf, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms, Version=63.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-63.0.0-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.WinForms, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Culture=neutral, processorArchitecture=MSIL">

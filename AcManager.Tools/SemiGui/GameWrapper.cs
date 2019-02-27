@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.GameProperties.WeatherSpecific;
 using AcManager.Tools.Helpers;
@@ -317,6 +318,14 @@ namespace AcManager.Tools.SemiGui {
                             await PrepareReplay(properties, ui, cancellationToken);
                         }
 
+                        ui.OnProgress("Loading data for Custom Shaders Patch…");
+                        var trackId = string.IsNullOrWhiteSpace(properties.BasicProperties?.TrackConfigurationId)
+                                ? properties.BasicProperties?.TrackId
+                                : properties.BasicProperties?.TrackId + @"/" + properties.BasicProperties?.TrackConfigurationId;
+                        await PatchTracksDataUpdater.Instance.TriggerAutoLoadAsync(trackId);
+                        await PatchTracksVaoDataUpdater.Instance.TriggerAutoLoadAsync(trackId);
+                        await PatchBackgroundDataUpdater.Instance.TriggerAutoLoadAsync(trackId);
+                        await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId);
                         result = await Game.StartAsync(CreateStarter(properties), properties, new ProgressHandler(ui), cancellationToken);
                     }
 

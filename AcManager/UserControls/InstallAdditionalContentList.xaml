@@ -13,13 +13,17 @@
 
       <sys:String x:Key="ZeroWidthString">​</sys:String>
 
+      <!-- ReSharper disable once Xaml.UnexpectedTextToken -->
       <sys:TimeSpan x:Key="ResetTime">0:0:0.5</sys:TimeSpan>
+
+      <!-- ReSharper disable once Xaml.UnexpectedTextToken -->
+      <sys:TimeSpan x:Key="IconFadeDelay">0:0:0.11</sys:TimeSpan>
+
       <Duration x:Key="ExpandDuration">0:0:0.27</Duration>
       <Duration x:Key="SlideUpDuration">0:0:0.21</Duration><!-- 23 px -->
       <Duration x:Key="SlideRightDuration">0:0:0.21</Duration><!-- 24 px -->
       <Duration x:Key="SlideLeftDuration">0:0:0.15</Duration><!-- 16 px -->
       <Duration x:Key="IconFadeDuration">0:0:0.1</Duration>
-      <sys:TimeSpan x:Key="IconFadeDelay">0:0:0.11</sys:TimeSpan>
 
       <!--<sys:TimeSpan x:Key="ResetTime">0:0:5.0</sys:TimeSpan>
       <Duration x:Key="ExpandDuration">0:0:2.7</Duration>

@@ -514,7 +514,23 @@
     </mui:TitleLink>
     <mui:TitleLink DisplayName="Downloads" GroupKey="downloads" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
     <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
-    <mui:TitleLink Content="{x:Static g:AppStrings.Main_Settings}" GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml" />
+    <mui:TitleLink GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml">
+      <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Settings}, Converter={StaticResource ToUpperConverter}}" Background="Transparent"
+          Margin="0 -4" Padding="0 4">
+        <TextBlock.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static g:AppStrings.Main_ContentManager}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Settings/SettingsPage.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_AssettoCorsa}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml" />
+            <MenuItem Header="Custom Shaders Patch" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Settings/SettingsShadersPatch.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.AcSettings_Apps}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Settings/PythonAppsSettings.xaml" />
+          </ContextMenu>
+        </TextBlock.ContextMenu>
+      </TextBlock>
+    </mui:TitleLink>
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
     <mui:TitleLink x:Name="OriginalLauncher" GroupKey="originalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
     <mui:TitleLink Content="switch to full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />

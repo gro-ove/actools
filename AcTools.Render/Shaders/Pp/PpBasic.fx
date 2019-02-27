@@ -48,6 +48,18 @@
 		}
 	}
 
+	float4 ps_CopyFullyTransparent(PS_IN pin) : SV_Target {
+		return float4(gInputMap.Sample(samInputImage, pin.Tex).rgb, 0);
+	}
+
+	technique10 CopyFullyTransparent {
+		pass P0 {
+			SetVertexShader(CompileShader(vs_4_0, vs_main()));
+			SetGeometryShader(NULL);
+			SetPixelShader(CompileShader(ps_4_0, ps_CopyFullyTransparent()));
+		}
+	}
+
 	float4 ps_CopyFromRed(PS_IN pin) : SV_Target {
 		return (float4)gInputMap.Sample(samInputImage, pin.Tex).r;
 	}

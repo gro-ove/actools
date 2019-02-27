@@ -3568,4 +3568,19 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
     <value>Keep in mind that all removed content always can be restored from the Recycle Bin</value>
   </data>
+    <data name="WebSource_DeleteBookmark" xml:space="preserve">
+      <value>Delete bookmark to a website “{0}”?</value>
+    </data>
+    <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+      <value>Description for {0}</value>
+    </data>
+    <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+      <value>Can’t share settings</value>
+    </data>
+    <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+      <value>Possibly, there is too much data.</value>
+    </data>
+    <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+      <value>Message with details is copied to the clipboard</value>
+    </data>
 </root>

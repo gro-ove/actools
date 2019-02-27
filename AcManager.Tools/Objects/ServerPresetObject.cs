@@ -274,7 +274,7 @@ namespace AcManager.Tools.Objects {
             section.Set("FORCE_VIRTUAL_MIRROR", ForceVirtualMirror);
 
             section.Set("SUN_ANGLE", SunAngle.RoundToInt());
-            section.Set("TIME_OF_DAY_MULT", TimeMultiplier, "F5");
+            section.Set("TIME_OF_DAY_MULT", TimeMultiplier);
             ini.SetSections("WEATHER", Weather, (e, s) => e.SaveTo(s));
             if (DynamicTrackEnabled) {
                 ini.Remove("__CM_DYNAMIC_TRACK_OFF");
@@ -294,7 +294,7 @@ namespace AcManager.Tools.Objects {
                 SaveWelcomeMessageCommand.Execute();
             }
 
-            var data =ini["DATA"];
+            var data = ini["DATA"];
             data.Set("DESCRIPTION", ManagerDescription);
             data.Set("WEBLINK", WebLink);
             data.Set("WELCOME_PATH", WelcomeMessagePath ?? "");

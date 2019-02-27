@@ -160,6 +160,12 @@ namespace AcManager.Controls.Dialogs {
                 AllowsTransparency = true;
                 BlurBackground = true;
             }
+
+            if (AppAppearanceManager.Instance.HideImageViewerButtons) {
+                Style = (Style)FindResource(@"StyleSubtle");
+            } else {
+                Style = (Style)FindResource(@"StyleNotSubtle");
+            }
         }
 
         public HorizontalAlignment HorizontalDetailsAlignment {
@@ -658,6 +664,9 @@ namespace AcManager.Controls.Dialogs {
             [CanBeNull]
             public ImageViewerSaveCallback SaveCallback { get; set; }
 
+            [CanBeNull]
+            public string SaveDefaultFileName { get; set; }
+
             [NotNull]
             public List<DialogFilterPiece> SaveDialogFilterPieces { get; } = new List<DialogFilterPiece>();
 
@@ -682,6 +691,7 @@ namespace AcManager.Controls.Dialogs {
                         Filters = SaveDialogFilterPieces,
                         Title = SaveableTitle,
                         DetaultExtension = extension ?? @".png",
+                        DefaultFileName = SaveDefaultFileName,
                         InitialDirectory = SaveDirectory
                     });
 
@@ -691,7 +701,7 @@ namespace AcManager.Controls.Dialogs {
                 } catch (Exception ex) {
                     NonfatalError.Notify(ControlsStrings.ImageViewer_CannotSave, ex);
                 }
-            }, () => Current?.CanBeSaved == true && CanBeSavedCallback?.Invoke(_currentPosition) != false));
+            }, () => Current?.CanBeSaved == true && (CanBeSavedCallback?.Invoke(_currentPosition) ?? Saveable)));
         }
     }
 }

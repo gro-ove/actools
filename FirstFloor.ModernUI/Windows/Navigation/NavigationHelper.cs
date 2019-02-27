@@ -117,15 +117,16 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <param name="parameter">The parameter.</param>
         /// <param name="targetName">Name of the target.</param>
         /// <returns></returns>
-        public static bool TryParseUriWithParameters(object value, out Uri uri, out string parameter, out string targetName) {
+        public static bool TryParseUriWithParameters(object value, out Uri uri, out string parameter, out string targetName, out string toolTip) {
             uri = value as Uri;
             parameter = null;
             targetName = null;
+            toolTip = null;
 
             if (uri != null) return true;
 
             var valueString = value as string;
-            return TryParseUriWithParameters(valueString, out uri, out parameter, out targetName);
+            return TryParseUriWithParameters(valueString, out uri, out parameter, out targetName, out toolTip);
         }
 
         /// <summary>
@@ -135,11 +136,13 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <param name="uri">The URI.</param>
         /// <param name="parameter">The parameter.</param>
         /// <param name="targetName">Name of the target.</param>
+        /// <param name="toolTip">Hint for Uri.</param>
         /// <returns></returns>
-        public static bool TryParseUriWithParameters(string value, out Uri uri, out string parameter, out string targetName) {
+        public static bool TryParseUriWithParameters(string value, out Uri uri, out string parameter, out string targetName, out string toolTip) {
             uri = null;
             parameter = null;
             targetName = null;
+            toolTip = null;
 
             if (value == null) {
                 return false;
@@ -147,16 +150,22 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
 
             // parse uri value for optional parameter and/or target, eg 'cmd://foo|parameter|target'
             var uriString = value;
-            var parts = uriString.Split(new [] { '|' }, 3);
+            var parts = uriString.Split(new [] { '|' }, 4);
             switch (parts.Length) {
+                case 4:
+                    uriString = parts[0];
+                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
+                    targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
+                    toolTip = parts[3] == string.Empty ? null : Uri.UnescapeDataString(parts[3]);
+                    break;
                 case 3:
                     uriString = parts[0];
-                    parameter = Uri.UnescapeDataString(parts[1]);
-                    targetName = Uri.UnescapeDataString(parts[2]);
+                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
+                    targetName = parts[2] == string.Empty ? null : Uri.UnescapeDataString(parts[2]);
                     break;
                 case 2:
                     uriString = parts[0];
-                    parameter = Uri.UnescapeDataString(parts[1]);
+                    parameter = parts[1] == string.Empty ? null : Uri.UnescapeDataString(parts[1]);
                     break;
             }
 

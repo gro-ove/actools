@@ -21,7 +21,8 @@ namespace AcManager.Tools.Objects {
         [NotNull]
         public PythonAppConfigParams ConfigParams { get; }
 
-        internal string Filename { get; }
+        public string Filename { get; }
+        public string FileNameWithoutExtension { get; }
 
         private readonly string _defaultsFilename;
         private readonly IniFile _valuesIniFile;
@@ -44,6 +45,7 @@ namespace AcManager.Tools.Objects {
 
             ConfigParams = configParams;
             Filename = filename;
+            FileNameWithoutExtension = Path.GetFileNameWithoutExtension(filename)?.ToLowerInvariant();
             Parent = parent;
 
             _defaultsFilename = ini.Filename;
@@ -216,10 +218,18 @@ namespace AcManager.Tools.Objects {
             return CapitalizeFirstOnly(Regex.Replace(original, @"[\s_-]+|(?<=[a-z])(?=[A-Z])", " ").Trim());
         }
 
+        [NotNull]
         public string Id => Filename;
+
+        [CanBeNull]
         public string Order => Sections.GetByIdOrDefault("ℹ")?.Order;
+
+        [CanBeNull]
         public string Description => Sections.GetByIdOrDefault("ℹ")?.Description;
+
+        [CanBeNull]
         public string ShortDescription => Sections.GetByIdOrDefault("ℹ")?.ShortDescription;
+
         public bool IsActive => Sections.GetByIdOrDefault("BASIC")?.GetByIdOrDefault("ENABLED")?.Value.As<bool?>() != false;
     }
 }

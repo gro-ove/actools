@@ -65,6 +65,7 @@ namespace AcTools.Render.Utils {
                     throw new ArgumentOutOfRangeException(nameof(format), format, null);
             }
 
+            AcToolsLogging.Write("Preferred format: " + format + ", format: " + result.Format);
             return result;
         }
 

@@ -272,7 +272,7 @@ namespace AcManager.Pages.Dialogs {
                 data.PlayerEntries = (
                         from player in result.Players
                         let car = CarsManager.Instance.GetById(player.CarId ?? "")
-                        let carSkin = car.GetSkinById(player.CarSkinId ?? "")
+                        let carSkin = car?.GetSkinById(player.CarSkinId ?? "")
                         select new { Player = player, Car = car, CarSkin = carSkin }
                         ).Select((entry, i) => {
                             var bestLapTime = session.BestLaps?.Where(x => x.CarNumber == i).MinEntryOrDefault(x => x.Time)?.Time;

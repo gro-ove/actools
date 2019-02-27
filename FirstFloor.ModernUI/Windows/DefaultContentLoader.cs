@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using FirstFloor.ModernUI.Helpers;
 
 namespace FirstFloor.ModernUI.Windows {
     /// <summary>
@@ -24,7 +25,13 @@ namespace FirstFloor.ModernUI.Windows {
             // scheduler ensures LoadContent is executed on the current UI thread
             await Task.Delay(10, cancellationToken);
 
-            var loaded = Application.LoadComponent(uri);
+            object loaded;
+            try {
+                loaded = Application.LoadComponent(uri);
+            } catch {
+                Logging.Error(uri);
+                throw;
+            }
             (loaded as IParametrizedUriContent)?.OnUri(uri);
 
             var loadable = loaded as ILoadableContent;

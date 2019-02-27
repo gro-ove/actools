@@ -89,13 +89,13 @@ namespace AcManager.Controls.UserControls.Cef {
                 if (_response == null || _response.Length == 0) {
                     response.StatusCode = 204;
                     response.StatusText = @"No Content";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = 0L;
                 } else {
                     response.MimeType = @"text/html; charset=utf-8";
                     response.StatusCode = 200;
                     response.StatusText = @"OK";
-                    response.ResponseHeaders = new NameValueCollection();
+                    response.Headers = new NameValueCollection();
                     responseLength = _response.Length;
                 }
             }

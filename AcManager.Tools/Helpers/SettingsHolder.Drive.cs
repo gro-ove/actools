@@ -1087,7 +1087,7 @@ namespace AcManager.Tools.Helpers {
 
             public bool MonitorFramesPerSecond {
                 get => _monitorFramesPerSecond
-                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", false)).Value;
+                        ?? (_monitorFramesPerSecond = ValuesStorage.Get("Settings.DriveSettings.MonitorFramesPerSecond", true)).Value;
                 set {
                     if (Equals(value, _monitorFramesPerSecond)) return;
                     _monitorFramesPerSecond = value;

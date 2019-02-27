@@ -115,8 +115,8 @@ namespace AcManager.Tools.Objects {
                         .OrderBy(x => x.Order.As(0d)).ThenBy(x => x.DisplayName)) {
             ConfigParams = configParams;
             UpdateReferenced();
-
             foreach (var config in this) {
+
                 config.ValueChanged += OnValueChanged;
             }
         }

@@ -98,7 +98,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         }
 
         public override string ToString() {
-            return $@"{Message ?? @"<NULL>"} ({Progress*100:F1}%)";
+            return $@"{Message ?? @"<NULL>"} ({Progress * 100:F1}%)";
         }
 
         event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged {
@@ -163,6 +163,19 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static IProgress<AsyncProgressEntry> Subrange([CanBeNull] this IProgress<AsyncProgressEntry> baseProgress, double from, double range,
                 bool ignoreIndeterminate = true) {
             return new SubrangeProgress(baseProgress, from, range, ignoreIndeterminate: ignoreIndeterminate);
+        }
+
+        [NotNull]
+        public static IProgress<AsyncProgressEntry> StringConvert([CanBeNull] this IProgress<AsyncProgressEntry> baseProgress, Func<string, string> convertFunc) {
+            return new Progress<AsyncProgressEntry>(v => baseProgress?.Report(convertFunc(v.Message), v.Progress));
+        }
+
+        [NotNull]
+        public static Tuple<IProgress<AsyncProgressEntry>, IProgress<AsyncProgressEntry>> Split([CanBeNull] this IProgress<AsyncProgressEntry> baseProgress,
+                double splitPos, bool ignoreIndeterminate = true) {
+            return Tuple.Create<IProgress<AsyncProgressEntry>, IProgress<AsyncProgressEntry>>(
+                    new SubrangeProgress(baseProgress, 0d, splitPos, ignoreIndeterminate: ignoreIndeterminate),
+                    new SubrangeProgress(baseProgress, splitPos, 1d - splitPos, ignoreIndeterminate: ignoreIndeterminate));
         }
 
         [NotNull]

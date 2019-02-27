@@ -56,6 +56,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly ILinkNavigator DefaultLinkNavigator = new DefaultLinkNavigator();
 
         public static void AddLinkCommand(Uri key, ICommand value) {
+            DefaultLinkNavigator.Commands.Remove(key);
             DefaultLinkNavigator.Commands.Add(key, value);
         }
 

@@ -46,6 +46,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         internal ControlsSettings() : base("controls", false) {
+            SetCanSave(false);
             _keyboardInput = new Dictionary<int, KeyboardInputButton>();
 
             WheelAxleEntries = new[] {
@@ -342,7 +343,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private DelegateCommand _runControlPanelCommand;
 
         public DelegateCommand RunControlPanelCommand
-            => _runControlPanelCommand ?? (_runControlPanelCommand = new DelegateCommand(() => { Devices.FirstOrDefault()?.RunControlPanel(); }));
+            => _runControlPanelCommand ?? (_runControlPanelCommand = new DelegateCommand(() => Devices.FirstOrDefault()?.RunControlPanel()));
 
         private Stopwatch _rescanStopwatch;
 
@@ -377,11 +378,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
 
         private PlaceholderInputDevice GetPlaceholderDevice([CanBeNull] string id, string displayName, int iniId) {
-            var placeholder = _placeholderDevices.FirstOrDefault(y => y.DisplayName == displayName) ?? _placeholderDevices.GetByIdOrDefault(id);
+            var placeholder = _placeholderDevices.FirstOrDefault(y => y.DisplayName == displayName
+                    && (!DirectInputDevice.OptionStrictIndices || iniId == y.Index))
+                    ?? _placeholderDevices.Where(y => (!DirectInputDevice.OptionStrictIndices || iniId == y.Index)).GetByIdOrDefault(id);
             if (placeholder == null) {
                 placeholder = new PlaceholderInputDevice(id, displayName, iniId);
                 _placeholderDevices.Add(placeholder);
-            } else {
+            } else if (!placeholder.OriginalIniIds.Contains(iniId) && !DirectInputDevice.OptionStrictIndices) {
                 placeholder.OriginalIniIds.Add(iniId);
             }
 
@@ -407,6 +410,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private void RescanDevices([CanBeNull] IList<Joystick> devices) {
             _skip = true;
+
+            if (devices?.GroupBy(x => x.Properties.ProductId).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
+                DirectInputDevice.OptionStrictIndices = true;
+                _placeholderDevices.Clear();
+                Reload();
+            }
+
+            SetCanSave(true);
 
             try {
                 var directInput = DirectInputScanner.DirectInput;
@@ -1383,18 +1394,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     ProductGuids[x.Name] = id;
                 }
 
-                var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name) ?? Devices.GetByIdOrDefault(id);
-                if (device != null) {
-                    if (OptionDebugControlles) {
-                        Logging.Debug($"{device.DisplayName}: actual index={device.Index}, config index={x.IniId}");
-                    }
+                if (!DirectInputDevice.OptionStrictIndices) {
+                    var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name)
+                            ?? Devices.GetByIdOrDefault(id);
+                    if (device != null) {
+                        if (OptionDebugControlles) {
+                            Logging.Debug($"{device.DisplayName}: actual index={device.Index}, config index={x.IniId}");
+                        }
 
-                    if (device.Index != x.IniId) {
-                        orderChanged = true;
-                    }
+                        if (device.Index != x.IniId) {
+                            orderChanged = true;
+                        }
 
-                    device.OriginalIniIds.Add(iniId.Value);
-                    return device;
+                        device.OriginalIniIds.Add(iniId.Value);
+                        return device;
+                    }
                 }
 
                 return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, iniId.Value);
@@ -1402,7 +1416,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             if (devices.All(x => !x.IsController)) {
                 devices.Add((IDirectInputDevice)Devices.FirstOrDefault(x => x.IsController)
-                        ?? GetPlaceholderDevice(@"0", @"Controller (Placeholder)", 0));
+                        ?? GetPlaceholderDevice(@"0", @"Controller (Placeholder)", -1));
             }
 
             if (OptionDebugControlles) {

@@ -93,6 +93,11 @@
                 <Label Content="Pick skins sequentially" />
               </CheckBox>
 
+              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}"
+                  ToolTip="Might greatly reduce variety">
+                <Label Content="Avoid cars without skin numbers" />
+              </CheckBox>
+
               <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
               <CheckBox IsChecked="{Binding QuickDriveUseSkinNames, Source={x:Static t:SettingsHolder.Drive}}" Margin="0">
                 <Label Content="{x:Static t:ToolsStrings.Drive_GridNamesFromSkins}" />
