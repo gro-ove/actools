@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace StringBasedFilter.TestEntries {
-    internal class ConstTestEntry : ITestEntry {
+    public class ConstTestEntry : ITestEntry {
         private readonly bool _value;
 
         public ConstTestEntry(bool b) {

@@ -45,12 +45,41 @@
           <ComboBox ItemsSource="{Binding System.ScreenshotFormats}" SelectedItem="{Binding System.ScreenshotFormat}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <c:MessageBlock Margin="0 20 0 8">
+        <!--<c:MessageBlock Margin="0 20 0 8">
           <StackPanel>
             <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality_Title}" />
-            <TextBlock TextWrapping="Wrap" Text="{x:Static g:AppStrings.AcSettings_System_ScreenshotsQuality}" />
+            <mui:BbCodeBlock TextWrapping="Wrap"
+                Text="Custom Shaders Patch allows you to make screenshots in PNG format and more, like adding accumulation antialiasing." />
           </StackPanel>
-        </c:MessageBlock>
+        </c:MessageBlock>-->
+
+        <!-- Pit menu -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Pits menu:" />
+
+        <CheckBox IsChecked="{Binding PitMenu.StayInCar}">
+          <Label Content="Stay in car" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding PitMenu.UseMousePitstop}">
+          <Label Content="Use pitstop menu for mouse" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding PitMenu.AutoAppOnPitlane}"
+            IsEnabled="{Binding PitMenu.UseMousePitstop, Converter={StaticResource InvertBooleanConverter}}">
+          <Label Content="Show app in pits automatically" />
+        </CheckBox>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding PitMenu.PresetsCount}" Content="Number of presets"
+              IsEnabled="{Binding PitMenu.UseMousePitstop, Converter={StaticResource InvertBooleanConverter}}" />
+          <Slider Minimum="2" Maximum="8" Value="{Binding PitMenu.PresetsCount}" TickFrequency="1" TickPlacement="BottomRight" />
+        </DockPanel>
+
+        <DockPanel>
+          <mui:ValueLabel Value="{Binding PitMenu.VisibilityMaxTime}" Postfix=" s" Content="Maximum visibility time"
+              IsEnabled="{Binding PitMenu.UseMousePitstop, Converter={StaticResource InvertBooleanConverter}}" />
+          <Slider Minimum="2" Maximum="8" Value="{Binding PitMenu.VisibilityMaxTime}" TickFrequency="1" TickPlacement="BottomRight" />
+        </DockPanel>
 
         <!-- Proximity indicator -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_ProximityIndicator}" />

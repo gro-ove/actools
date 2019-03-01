@@ -316,6 +316,7 @@
     <Compile Include="Helpers\AcSettings\CameraChaseSettings.cs" />
     <Compile Include="Helpers\AcSettings\DamageDisplayerSettings.cs" />
     <Compile Include="Helpers\AcSettings\MessagesSettings.cs" />
+    <Compile Include="Helpers\AcSettings\PitMenuSettings.cs" />
     <Compile Include="Helpers\Api\ApiCacheThing.cs" />
     <Compile Include="Helpers\Api\HttpClientHolder.cs" />
     <Compile Include="Helpers\Api\Kunos\InvertConverter.cs" />

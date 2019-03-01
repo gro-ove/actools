@@ -194,7 +194,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 var buttons = state.GetButtons();
                 for (var i = 0; i < Buttons.Length; i++) {
                     var b = Buttons[i];
-                    b.Value = b.Id < buttons.Length && buttons[b.Id] && (b.Id % 2 == Index % 2);
+                    b.Value = b.Id < buttons.Length && buttons[b.Id];
                 }
 
                 var povs = state.GetPointOfViewControllers();

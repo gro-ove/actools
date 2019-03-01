@@ -41,9 +41,8 @@
                 </mui:SpacingStackPanel.IsEnabled>
                 <mui:ValueLabel Value="{Binding Time, Converter={StaticResource AcTimeDisplayConverter}}" mui:BetterTextBox.Mode="Time"
                     Content="{x:Static g:AppStrings.Drive_Time}" />
-                <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False"
-                    Minimum="{Binding Source={x:Static a:CommonAcConsts.TimeMinimum}}" Maximum="{Binding Source={x:Static a:CommonAcConsts.TimeMaximum}}"
-                    SmallChange="900" LargeChange="1800" />
+                <Slider Value="{Binding Time}" TickFrequency="3600" TickPlacement="BottomRight" IsSnapToTickEnabled="False" SmallChange="900"
+                    LargeChange="1800" c:TimeSliderService.IsTimeSlider="True" />
               </mui:SpacingStackPanel>
 
               <mui:SpacingStackPanel Spacing="4"
@@ -263,6 +262,19 @@
           <CheckBox IsChecked="{Binding SelectedObject.CoherentTime}" IsEnabled="{Binding ShowTimeControls}">
             <Label Content="Sheduled rounds" />
           </CheckBox>
+
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding SelectedObject.TimeMultiplier}" Postfix="×" Content="{x:Static g:AppStrings.Drive_TimeMultiplerLabel}" />
+            <Slider Minimum="0" Maximum="1" TickFrequency="0.2" TickPlacement="None" IsSnapToTickEnabled="False">
+              <Slider.Value>
+                <Binding Path="SelectedObject.TimeMultiplier">
+                  <Binding.Converter>
+                    <mui:LogarithmicScale Minimum="0" Middle="10" Maximum="60" />
+                  </Binding.Converter>
+                </Binding>
+              </Slider.Value>
+            </Slider>
+          </DockPanel>
         </StackPanel>
 
         <ListBox mui:Draggable.Enabled="True" SelectionMode="Extended" ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}"

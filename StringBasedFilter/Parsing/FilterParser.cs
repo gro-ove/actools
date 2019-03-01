@@ -74,6 +74,9 @@ namespace StringBasedFilter.Parsing {
     public delegate ITestEntry BooleanTestFactory(bool value);
 
     [CanBeNull]
+    public delegate ITestEntry CustomTestEntryFactory(string value);
+
+    [CanBeNull]
     public delegate ITestEntry ExtraTestEntryFactory([CanBeNull] string key);
 
     [NotNull]
@@ -121,6 +124,9 @@ namespace StringBasedFilter.Parsing {
         /// </summary>
         [NotNull]
         public ExtraTestEntryFactory ExtraTestEntryFactory { get; set; } = key => null;*/
+
+        [CanBeNull]
+        public CustomTestEntryFactory CustomTestEntryFactory { get; set; }
     }
 
     internal static class DefaultValueSplitFunc {

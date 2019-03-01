@@ -1,4 +1,6 @@
-﻿using AcManager.Tools.Helpers.AcSettings;
+﻿using System.Windows;
+using AcManager.Tools.Data;
+using AcManager.Tools.Helpers.AcSettings;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -8,6 +10,9 @@ namespace AcManager.Pages.AcSettings {
             InitializeComponent();
             DataContext = new ViewModel();
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
+            if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureCustomGForces)) {
+                GForcesSection.Visibility = Visibility.Collapsed;
+            }
         }
 
         public class ViewModel : NotifyPropertyChanged {

@@ -42,6 +42,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -132,7 +133,6 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.RandomTimeCommand, new KeyGesture(Key.D3, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomWeatherCommand, new KeyGesture(Key.D4, ModifierKeys.Control | ModifierKeys.Alt)),
                 new InputBinding(Model.RandomTemperatureCommand, new KeyGesture(Key.D5, ModifierKeys.Control | ModifierKeys.Alt)),
-
 #if DEBUG
                 new InputBinding(new DelegateCommand(() => {
                     var selectedCar = Model.SelectedCar;
@@ -561,6 +561,8 @@ namespace AcManager.Pages.Drive {
                 return SettingsHolder.Drive.LoadAssistsWithQuickDrivePreset ^ (Keyboard.Modifiers == ModifierKeys.Control);
             }
 
+            public bool CustomDateSupported { get; }
+
             internal ViewModel(string serializedPreset, bool uiMode, CarObject carObject = null, string carSkinId = null, string carSetupId = null,
                     TrackObjectBase track = null, TrackSkinObject trackSkin = null, string weatherId = null, int? time = null, bool savePreset = false,
                     Uri mode = null, string serializedRaceGrid = null, DiscordRichPresence presence = null, bool forceAssistsLoading = false) {
@@ -569,6 +571,8 @@ namespace AcManager.Pages.Drive {
                     CarsManager.Instance.WrappersList.WrappedValueChanged += OnListWrappedValueChanged;
                     CarsManager.Instance.EnsureLoadedAsync().Forget();
                 }
+
+                CustomDateSupported = PatchHelper.IsFeatureSupported(PatchHelper.FeatureSpecificDate);
 
                 _uiMode = uiMode;
                 _carSkinId = carSkinId;

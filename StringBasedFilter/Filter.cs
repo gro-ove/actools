@@ -130,7 +130,7 @@ namespace StringBasedFilter {
             return _testTree.ToString();
         }
 
-        public void ResetPropeties() {
+        public void ResetProperties() {
             _properties = null;
         }
 

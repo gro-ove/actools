@@ -365,7 +365,11 @@ namespace AcManager.Pages.Drive {
 
             private Diapason<int> GetBasicTimeDiapason() {
                 var result = Diapason.CreateTime(string.Empty);
-                result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)) {
+                    result.Pieces.Add(new Diapason<int>.Piece(0, CommonAcConsts.TimeAbsoluteMaximum));
+                } else {
+                    result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
+                }
                 return result;
             }
 
@@ -452,7 +456,7 @@ namespace AcManager.Pages.Drive {
             }
 
             private bool IsTimeUnusual(int time) {
-                return time < CommonAcConsts.TimeMinimum || time > CommonAcConsts.TimeMaximum;
+                return PatchHelper.ClampTime(time) != time;
             }
 
             private bool IsTimeUnusual() {

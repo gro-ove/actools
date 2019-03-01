@@ -112,11 +112,6 @@
             </StackPanel>
           </DockPanel>
 
-          <DockPanel Margin="0 20 0 8">
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
-            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
-          </DockPanel>
-
           <CheckBox IsChecked="{Binding Video.VerticalSynchronization}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_VerticalSyncronization}" />
           </CheckBox>
@@ -124,6 +119,16 @@
           <CheckBox IsChecked="{Binding Video.FramerateLimitEnabled}">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_LimitFramerate}" />
           </CheckBox>
+
+          <DockPanel Margin="0 20 0 8">
+            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
+            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
+          </DockPanel>
+
+          <c:MessageBlock CloseKey="oculusRiftWarningBlock" Margin="0 0 0 8">
+            <mui:BbCodeBlock
+                Text="[b]Important note:[/b] Oculus Rift might not work properly with Content Manager in AC root folder. It’s better to move it somewhere else to avoid potential issues." />
+          </c:MessageBlock>
 
           <DockPanel Visibility="{Binding Video.FramerateLimitEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:ValueLabel Value="{Binding Video.FramerateLimit}" mui:BetterTextBox.Minimum="1" Postfix="{x:Static c:ControlsStrings.Common_FpsPostfix}"
@@ -158,7 +163,7 @@
             <ComboBox ItemsSource="{Binding Video.ShadowMapSizes}" SelectedItem="{Binding Video.ShadowMapSize}" DisplayMemberPath="DisplayName" />
           </DockPanel>
 
-          <CheckBox IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
+          <CheckBox x:Name="PatchAcToDisableShadows" IsChecked="{Binding PatchAcToDisableShadows, Source={x:Static t:SettingsHolder.Drive}}"
               set:Search.Keywords="drive events;video;graphics;shadows"
               ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”. More information in “Settings/Content Manager/Drive” section. Not recommended if you’re using Custom Shaders Patch, it can take care of it as well">
             <Label Content="If shadows are disabled, patch AC to fully disable them (global)" />

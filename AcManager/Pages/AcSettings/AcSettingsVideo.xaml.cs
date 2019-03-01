@@ -8,6 +8,7 @@ using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Internal;
 using AcManager.Pages.Windows;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers;
@@ -110,6 +111,10 @@ namespace AcManager.Pages.AcSettings {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 new InputBinding(UserPresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
             });
+
+            if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureDynamicShadowResolution)) {
+                PatchAcToDisableShadows.Visibility = Visibility.Collapsed;
+            }
         }
     }
 }

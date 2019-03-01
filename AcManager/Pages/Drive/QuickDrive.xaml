@@ -371,10 +371,12 @@
                       </Binding>
                     </Slider.Value>
                   </Slider>
-                  <CheckBox IsChecked="{Binding UseSpecificDate}">
-                    <Label Content="Specific date" />
-                  </CheckBox>
-                  <DatePicker IsEnabled="{Binding UseSpecificDate}" SelectedDate="{Binding SpecificDateValue}" />
+                  <mui:SpacingStackPanel Spacing="8" Visibility="{Binding CustomDateSupported, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <CheckBox IsChecked="{Binding UseSpecificDate}">
+                      <Label Content="Specific date" />
+                    </CheckBox>
+                    <DatePicker IsEnabled="{Binding UseSpecificDate}" SelectedDate="{Binding SpecificDateValue}" />
+                  </mui:SpacingStackPanel>
                 </mui:SpacingStackPanel>
               </c:ModernPopup>
             </mui:ContextMenuButton>

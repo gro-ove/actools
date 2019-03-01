@@ -173,7 +173,7 @@ namespace AcManager.Pages.Drive {
                     var round = _acObject.CurrentRound;
                     if (!round.IsAvailable) return;
 
-                    var time = round.Time;
+                    var time = PatchHelper.ClampTime(round.Time);
                     var temperature = round.Temperature;
                     var weather = WeatherTypeWrapped.Unwrap(round.Weather, time, temperature);
 
@@ -208,7 +208,7 @@ namespace AcManager.Pages.Drive {
                                 weather?.TemperatureCoefficient ?? 0d),
                         CloudSpeed = 1d,
                         SunAngle = Game.ConditionProperties.GetSunAngle(time),
-                        TimeMultipler = 1d,
+                        TimeMultipler = _acObject.TimeMultiplier,
                         WeatherName = weather?.Id ?? round.WeatherId
                     };
 
@@ -251,7 +251,7 @@ namespace AcManager.Pages.Drive {
                     });
 
                     void OnTimeCallback(DateTime t) {
-                        time = t.TimeOfDay.TotalSeconds.RoundToInt().Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                        time = PatchHelper.ClampTime(t.TimeOfDay.TotalSeconds.RoundToInt());
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t launch the race", e);
@@ -316,7 +316,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 if (!_currentSet || !_acObject.RealConditions || _acObject.RealConditionsManualTime) {
-                    _currentRoundTime = round.Time;
+                    _currentRoundTime = PatchHelper.ClampTime(round.Time);
                 }
 
                 if (!_currentSet || !_acObject.RealConditions) {
@@ -367,7 +367,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 void OnTimeCallback(DateTime t) {
-                    _currentRoundTime = t.TimeOfDay.TotalSeconds.RoundToInt().Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                    _currentRoundTime = PatchHelper.ClampTime(t.TimeOfDay.TotalSeconds.RoundToInt());
                 }
             }
 

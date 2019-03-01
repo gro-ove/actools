@@ -1,17 +1,32 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AcTools.DataFile;
 using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
         internal SystemSettings() : base("assetto_corsa", systemConfig: true) { }
 
-        public SettingEntry[] ScreenshotFormats { get; } = {
-            new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
-            new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp),
-            new SettingEntry("PNG", "PNG (works only with Custom Shaders Patch)"),
-        };
+        public static IEnumerable<SettingEntry> DefaultScreenshotFormats() {
+            return new[] {
+                new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
+                new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp)
+            };
+        }
+
+        private List<SettingEntry> _screenshotFormats = DefaultScreenshotFormats().ToList();
+
+        public IReadOnlyList<SettingEntry> ScreenshotFormats {
+            get => _screenshotFormats;
+            set {
+                if (value.SequenceEqual(_screenshotFormats)) return;
+                _screenshotFormats = value.ToList();
+                OnPropertyChanged(false);
+                ScreenshotFormat = _screenshotFormats.GetByIdOrDefault(ScreenshotFormat?.Id) ?? _screenshotFormats.FirstOrDefault();
+            }
+        }
 
         #region Miscellaneous
         private int _simulationValue;
@@ -181,7 +196,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
             AllowFreeCamera = Ini["CAMERA"].GetBool("ALLOW_FREE_CAMERA", false);
             Logging = !Ini["LOG"].GetBool("SUPPRESS", false);
             HideDriver = Ini["DRIVER"].GetBool("HIDE", false);
-            ScreenshotFormat = Ini["SCREENSHOT"].GetEntry("FORMAT", ScreenshotFormats);
+            ScreenshotFormat = Ini["SCREENSHOT"].GetOrCreateEntry("FORMAT", _screenshotFormats, v => $"{v} (not supported)");
             MirrorsFieldOfView = Ini["MIRRORS"].GetInt("FOV", MirrorsFieldOfViewDefault);
             MirrorsFarPlane = Ini["MIRRORS"].GetInt("FAR_PLANE", MirrorsFarPlaneDefault);
         }

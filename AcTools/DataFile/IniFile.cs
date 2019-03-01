@@ -71,8 +71,7 @@ namespace AcTools.DataFile {
         [NotNull]
         public IniFileSection this[[NotNull, LocalizationRequired(false)] string key] {
             get {
-                IniFileSection result;
-                if (_content.TryGetValue(key, out result)) return result;
+                if (_content.TryGetValue(key, out var result)) return result;
 
                 result = new IniFileSection(Data);
                 _content[key] = result;

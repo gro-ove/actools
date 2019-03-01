@@ -272,6 +272,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static SystemSettings System => _system ?? (_system = new SystemSettings());
 
 
+        private static PitMenuSettings _pitMenu;
+        public static PitMenuSettings PitMenu => _pitMenu ?? (_pitMenu = new PitMenuSettings());
+
+
         private static FfPostProcessSettings _ffPostProcess;
         public static FfPostProcessSettings FfPostProcess => _ffPostProcess ?? (_ffPostProcess = new FfPostProcessSettings());
 

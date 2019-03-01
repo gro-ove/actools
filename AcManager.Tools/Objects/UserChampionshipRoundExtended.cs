@@ -68,7 +68,7 @@ namespace AcManager.Tools.Objects {
         public int Time {
             get => _time;
             set {
-                value = value.Clamp(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum);
+                value = value.Clamp(0, CommonAcConsts.TimeAbsoluteMaximum);
                 if (Equals(value, _time)) return;
                 _time = value;
                 OnPropertyChanged();

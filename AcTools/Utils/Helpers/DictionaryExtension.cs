@@ -17,6 +17,17 @@ namespace AcTools.Utils.Helpers {
             return dictionary.TryGetValue(key, out var result) ? result : defaultValue;
         }
 
+        public static TValue GetValueOrSet<TKey, TValue>([NotNull] this IDictionary<TKey, TValue> dictionary, [NotNull] TKey key,
+                [NotNull] Func<TValue> set) {
+            if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));
+            if (key == null) throw new ArgumentNullException(nameof(key));
+
+            if (!dictionary.TryGetValue(key, out var result)) {
+                dictionary[key] = result = set();
+            }
+            return result;
+        }
+
         [CanBeNull]
         public static TValue GetValueOrDefault<TKey, TValue>([NotNull] this IReadOnlyDictionary<TKey, TValue> dictionary, [NotNull, Localizable(false)]  TKey key) {
             if (dictionary == null) throw new ArgumentNullException(nameof(dictionary));

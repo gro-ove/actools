@@ -71,7 +71,7 @@ namespace AcManager.Tools.Data {
 
         private static bool FitsTime(WeatherObject weatherObject, int time) {
             return weatherObject.GetTimeDiapason()?.Contains(time)
-                    ?? time >= CommonAcConsts.TimeMinimum && time <= CommonAcConsts.TimeMaximum;
+                    ?? PatchHelper.ClampTime(time) == time;
         }
 
         public static bool Fits(this WeatherObject weatherObject, int? time, double? temperature) {

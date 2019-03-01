@@ -167,6 +167,7 @@ namespace AcManager {
         }
 
         private void OnStart(object sender, EventArgs e) {
+            if (!SettingsHolder.Drive.HideWhileRacing) return;
             Hibernated = true;
         }
 

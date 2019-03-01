@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers.DirectInput;
 using AcTools.DataFile;
 
@@ -12,7 +13,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         }
 
         public override bool IsCompatibleWith(DirectInputButton obj) {
-            return _supportsPov ? base.IsCompatibleWith(obj) : obj?.GetType() == typeof(DirectInputButton);
+            return _supportsPov || PatchHelper.IsFeatureSupported(PatchHelper.FeaturePovForButtons)
+                    ? base.IsCompatibleWith(obj)
+                    : obj?.GetType() == typeof(DirectInputButton);
         }
 
         public override void Load(IniFile ini, IReadOnlyList<IDirectInputDevice> devices) {

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -81,6 +82,8 @@ using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using Newtonsoft.Json;
 using StringBasedFilter;
+using ComboBox = System.Windows.Controls.ComboBox;
+using HorizontalAlignment = System.Windows.HorizontalAlignment;
 
 namespace AcManager {
     public partial class App : IDisposable {
@@ -134,12 +137,32 @@ namespace AcManager {
             // Some sort of safe mode
             if (forceSoftwareRenderingMode && !softwareRenderingModeWasEnabled) {
                 Toast.Show("Safe mode", "Failed to start the last time, now CM uses software rendering", () => {
-                    if (ModernDialog.ShowMessage(
+                    if (MessageDialog.Show(
                             "Would you like to switch back to hardware rendering? You can always do that in Settings/Appearance. App will be restarted.",
                             "Switch back", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                         ValuesStorage.Set(AppAppearanceManager.KeySoftwareRendering, false);
                         Storage.SaveBeforeExit(); // Just in case
                         WindowsHelper.RestartCurrentApplication();
+                    }
+                });
+            }
+
+            var move = AppArguments.Get(AppFlag.MoveApp);
+            if (move != null && File.Exists(move)) {
+                for (var i = 0; i < 10; i++) {
+                    if (FileUtils.TryToDelete(move) || !File.Exists(move)) break;
+                    Thread.Sleep(100);
+                }
+                Toast.Show("App moved", $"App moved from AC root folder, now Oculus Rift should work better", () => {
+                    var originalRemoved = File.Exists(move) ? "failed to remove original file" : "original file removed";
+                    if (MessageDialog.Show(
+                            $"New location is “{MainExecutingFile.Location}”, {originalRemoved}. Please don’t forget to recreate any shortcuts you might have created.",
+                            "Content Manager is moved",
+                            new MessageDialogButton {
+                                [MessageBoxResult.Yes] = "View new location",
+                                [MessageBoxResult.No] = UiStrings.Ok
+                            }) == MessageBoxResult.Yes) {
+                        WindowsHelper.ViewFile(MainExecutingFile.Location);
                     }
                 });
             }

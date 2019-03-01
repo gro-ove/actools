@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -137,6 +138,22 @@ namespace AcManager.Pages.Dialogs {
         public void Show(Game.StartProperties properties, GameMode mode) {
             _properties = properties;
             _mode = mode;
+
+            if (MessageDialog.Show(
+                    "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it somewhere else to avoid potential issues.",
+                    "Important note", new MessageDialogButton {
+                        [MessageBoxResult.Yes] = "Move it now",
+                        [MessageBoxResult.No] = "Ignore"
+                    }, "oculusRiftWarningMessage") == MessageBoxResult.Yes) {
+                try {
+                    var newLocation = FilesStorage.Instance.GetFilename(MainExecutingFile.Name);
+                    File.Copy(MainExecutingFile.Location, newLocation, true);
+                    ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
+                    Environment.Exit(0);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Failed to move CM executable", "I’m afraid you’ll have to do it manually.", e);
+                }
+            }
 
             ShowDialogAsync().Forget();
             Model.WaitingStatus = AppStrings.Race_Initializing;

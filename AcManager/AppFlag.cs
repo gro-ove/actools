@@ -5,19 +5,19 @@ namespace AcManager {
     /// </summary>
     public enum AppFlag {
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --patch-support.
         /// </summary>
         PatchSupport,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --hide-race-cancel-button.
         /// </summary>
         HideRaceCancelButton,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// </summary>
         WeatherExtMode,
 
@@ -95,7 +95,7 @@ namespace AcManager {
         IgnoreControls,
 
         /// <summary>
-        /// For internal use. Enabled by default.
+        /// For development purposes. Enabled by default.
         /// Example: --fbx-multi-material=no.
         /// </summary>
         FbxMultiMaterial,
@@ -292,13 +292,13 @@ namespace AcManager {
         ImagesMarkCached,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --log-packed.
         /// </summary>
         LogPacked,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --race-out-debug.
         /// </summary>
         RaceOutDebug,
@@ -361,7 +361,7 @@ namespace AcManager {
         OfflineMode,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --test-if-acd-available.
         /// </summary>
         TestIfAcdAvailable,
@@ -553,9 +553,14 @@ namespace AcManager {
         CustomThemes,
 
         /// <summary>
-        /// For internal use.
+        /// For development purposes.
         /// Example: --single-log-file.
         /// </summary>
-        SingleLogFile
+        SingleLogFile,
+
+        /// <summary>
+        /// Definitely only for internal use.
+        /// </summary>
+        MoveApp,
     }
 }

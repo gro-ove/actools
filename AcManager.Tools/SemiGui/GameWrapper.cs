@@ -164,7 +164,8 @@ namespace AcManager.Tools.SemiGui {
             }
 
             properties.SetAdditional(new TrackDetails());
-            properties.SetAdditional(new WeatherProceduralHelper(properties.ConditionProperties != null && properties.ConditionProperties.RoadTemperature == null));
+            properties.SetAdditional(
+                    new WeatherProceduralHelper(properties.ConditionProperties != null && properties.ConditionProperties.RoadTemperature == null));
             properties.SetAdditional(new WeatherSpecificLightingHelper());
 
             if (SettingsHolder.Drive.WeatherSpecificClouds) {
@@ -205,9 +206,11 @@ namespace AcManager.Tools.SemiGui {
                     StereoOdometerHelper.Export(carId);
                 }
 
-                var car = CarsManager.Instance.GetById(carId);
-                if (car != null) {
-                    properties.SetAdditional(new DrivenDistance(car.TotalDrivenDistance));
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureNeedsOdometerValue)) {
+                    var car = CarsManager.Instance.GetById(carId);
+                    if (car != null) {
+                        properties.SetAdditional(new DrivenDistance(car.TotalDrivenDistance));
+                    }
                 }
             }
 
@@ -215,7 +218,11 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
             properties.SetAdditional(new CarRaceTextures());
-            properties.SetAdditional(new AcPatchTrackOutline());
+
+            if (PatchHelper.GetInstalledVersion() != null) {
+                properties.SetAdditional(new AcPatchTrackOutline());
+            }
+
             properties.SetAdditional(new ExtraHotkeysRaceHelper());
 
             if (SettingsHolder.Drive.CopyFilterToSystemForOculus
@@ -239,7 +246,8 @@ namespace AcManager.Tools.SemiGui {
         private static IAcsStarter CreateStarter(Game.StartProperties properties) {
             var starter = AcsStarterFactory.Create();
 
-            if (SettingsHolder.Drive.PatchAcToDisableShadows && AcShadowsPatcher.IsSupposedToWork()) {
+            if (SettingsHolder.Drive.PatchAcToDisableShadows && !PatchHelper.IsFeatureSupported(PatchHelper.FeatureDynamicShadowResolution)
+                    && AcShadowsPatcher.IsSupposedToWork()) {
                 properties.SetAdditional(new AcShadowsPatcher(starter));
             }
 

@@ -45,6 +45,19 @@ namespace AcManager.Tools.Helpers {
             return entries.FirstOrDefault(x => x.Value == value) ?? entries.First();
         }
 
+        [NotNull]
+        public static SettingEntry GetOrCreateEntry(this IniFileSection section, [LocalizationRequired(false)] string key, IList<SettingEntry> entries,
+                Func<string, string> nameCallback) {
+            var value = section.GetNonEmpty(key);
+            var entry = entries.FirstOrDefault(x => x.Value == value);
+            if (entry != null) {
+                return entry;
+            }
+            if (string.IsNullOrWhiteSpace(value)) return entries.First();
+            entries.Add(new SettingEntry(value, nameCallback(value)));
+            return entries.Last();
+        }
+
         public static void Set(this IniFileSection section, [LocalizationRequired(false)] string key, SettingEntry entry) {
             section.Set(key, entry.Value);
         }
@@ -54,7 +67,8 @@ namespace AcManager.Tools.Helpers {
             return result.Length == 3 ? Color.FromRgb(result[0], result[1], result[2]) : defaultValue;
         }
 
-        public static Color GetColor(this IniFileSection section, [LocalizationRequired(false)] string key, Color defaultValue, double defaultMultipler, out double multipler) {
+        public static Color GetColor(this IniFileSection section, [LocalizationRequired(false)] string key, Color defaultValue, double defaultMultipler,
+                out double multipler) {
             var strings = section.GetStrings(key);
             var result = strings.Select(x => FlexibleParser.ParseInt(x, 0).ClampToByte()).ToArray();
             if (strings.Length != 4) {

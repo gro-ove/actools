@@ -44,7 +44,7 @@
           <Label Content="Display downshift protection notification" />
         </CheckBox>
 
-        <!--camera-->
+        <!-- Camera -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static t:ToolsStrings.AcSettings_View_CameraHeader}" />
 
         <DockPanel>
@@ -79,46 +79,48 @@
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Style="{StaticResource SettingsPanel}">
 
-        <!--g-forces-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static t:ToolsStrings.AcSettings_View_GForcesHeader}" />
+        <!-- G-forces -->
+        <StackPanel x:Name="GForcesSection" Margin="0 0 0 12">
+          <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static t:ToolsStrings.AcSettings_View_GForcesHeader}" />
 
-        <CheckBox IsChecked="{Binding CameraOnboard.GForcesBinded}">
-          <Label Content="{x:Static t:ToolsStrings.AcSettings_View_Locked}" />
-        </CheckBox>
+          <CheckBox IsChecked="{Binding CameraOnboard.GForcesBinded}">
+            <Label Content="{x:Static t:ToolsStrings.AcSettings_View_Locked}" />
+          </CheckBox>
 
-        <DockPanel Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
-          <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceX}" TickFrequency="30" TickPlacement="BottomRight" />
-        </DockPanel>
-
-        <Grid Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition />
-            <ColumnDefinition />
-          </Grid.ColumnDefinitions>
-
-          <DockPanel Grid.Column="0">
-            <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" DockPanel.Dock="Top"
-                Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
+          <DockPanel Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
             <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceX}" TickFrequency="30" TickPlacement="BottomRight" />
           </DockPanel>
 
-          <DockPanel Grid.Column="1">
-            <mui:ValueLabel Value="{Binding CameraOnboard.GForceY}" Postfix="%" DockPanel.Dock="Top"
-                Content="{x:Static t:ToolsStrings.AcSettings_View_Vertical}" />
-            <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceY}" TickFrequency="30" TickPlacement="BottomRight" />
-          </DockPanel>
+          <Grid Visibility="{Binding CameraOnboard.GForcesBinded, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition />
+              <ColumnDefinition />
+              <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-          <DockPanel Grid.Column="2">
-            <mui:ValueLabel Value="{Binding CameraOnboard.GForceZ}" Postfix="%" DockPanel.Dock="Top"
-                Content="{x:Static t:ToolsStrings.AcSettings_View_Longtudinal}" />
-            <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceZ}" TickFrequency="30" TickPlacement="BottomRight" />
-          </DockPanel>
-        </Grid>
+            <DockPanel Grid.Column="0">
+              <mui:ValueLabel Value="{Binding CameraOnboard.GForceX}" Postfix="%" DockPanel.Dock="Top"
+                  Content="{x:Static t:ToolsStrings.AcSettings_View_Lateral}" />
+              <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceX}" TickFrequency="30" TickPlacement="BottomRight" />
+            </DockPanel>
 
-        <!--view-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static t:ToolsStrings.AcSettings_View_ViewHeader}" />
+            <DockPanel Grid.Column="1">
+              <mui:ValueLabel Value="{Binding CameraOnboard.GForceY}" Postfix="%" DockPanel.Dock="Top"
+                  Content="{x:Static t:ToolsStrings.AcSettings_View_Vertical}" />
+              <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceY}" TickFrequency="30" TickPlacement="BottomRight" />
+            </DockPanel>
+
+            <DockPanel Grid.Column="2">
+              <mui:ValueLabel Value="{Binding CameraOnboard.GForceZ}" Postfix="%" DockPanel.Dock="Top"
+                  Content="{x:Static t:ToolsStrings.AcSettings_View_Longtudinal}" />
+              <Slider Minimum="0" Maximum="300" Value="{Binding CameraOnboard.GForceZ}" TickFrequency="30" TickPlacement="BottomRight" />
+            </DockPanel>
+          </Grid>
+        </StackPanel>
+
+        <!-- View -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static t:ToolsStrings.AcSettings_View_ViewHeader}" />
 
         <DockPanel>
           <Label Content="Fade color:" />
@@ -145,7 +147,7 @@
           <Slider Minimum="0" Maximum="450" Value="{Binding Gameplay.SteeringWheelLimit}" TickFrequency="45" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <!--messages-->
+        <!-- Messages -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Messages:" />
 
         <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="20">

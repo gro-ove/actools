@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using JetBrains.Annotations;
 using StringBasedFilter.TestEntries;
 using StringBasedFilter.Utils;
 
@@ -8,8 +9,12 @@ namespace StringBasedFilter.Parsing {
         internal string Key;
         private readonly ITestEntry _testEntry;
 
-        public static FilterTreeNode Create(string value, FilterParams filterParams, out string keyName) {
-            ITestEntry testEntry;
+        public static FilterTreeNode Create(string value, [NotNull] FilterParams filterParams, out string keyName) {
+            var testEntry = filterParams.CustomTestEntryFactory?.Invoke(value);
+            if (testEntry != null) {
+                keyName = null;
+                return new FilterTreeNodeValue("<custom>", testEntry);
+            }
 
             if (filterParams.ValueConversion != null) {
                 value = filterParams.ValueConversion(value);
