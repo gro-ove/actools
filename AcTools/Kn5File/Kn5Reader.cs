@@ -101,7 +101,7 @@ namespace AcTools.Kn5File {
         public void SkipMaterial() {
             SkipString(); // name
             SkipString(); // shader name
-            Skip(6); // blend (byte) + alphatested (byte) + depth mode
+            Skip(6); // blend (byte) + alpha tested (byte) + depth mode
 
             var properties = ReadInt32();
             for (var i = 0; i < properties; i++) {
@@ -142,7 +142,7 @@ namespace AcTools.Kn5File {
 
                     node.Vertices = new Kn5Node.Vertex[ReadUInt32()];
                     for (var i = 0; i < node.Vertices.Length; i++) {
-                        // 44 bytes per vertice
+                        // 44 bytes per vertex
                         node.Vertices[i] = new Kn5Node.Vertex {
                             Position = ReadSingle3D(),
                             Normal = ReadSingle3D(),
@@ -185,7 +185,7 @@ namespace AcTools.Kn5File {
                     node.Vertices = new Kn5Node.Vertex[ReadUInt32()];
                     node.VerticeWeights = new Kn5Node.VerticeWeight[node.Vertices.Length];
                     for (var i = 0; i < node.Vertices.Length; i++) {
-                        // 76 bytes per vertice
+                        // 76 bytes per vertex
                         node.Vertices[i] = new Kn5Node.Vertex {
                             Position = ReadSingle3D(),
                             Normal = ReadSingle3D(),
@@ -209,7 +209,7 @@ namespace AcTools.Kn5File {
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
 
-                    node.MisteryBytes = ReadBytes(8); // the only mistery left?
+                    node.MisteryBytes = ReadBytes(8); // the only mystery left?
                     node.IsRenderable = true;
                     break;
             }
@@ -283,7 +283,7 @@ namespace AcTools.Kn5File {
                     node.MaterialId = ReadUInt32();
                     node.Layer = ReadUInt32();
 
-                    node.MisteryBytes = ReadBytes(8); // the only mistery left?
+                    node.MisteryBytes = ReadBytes(8); // the only mystery left?
                     node.IsRenderable = true;
                     break;
             }

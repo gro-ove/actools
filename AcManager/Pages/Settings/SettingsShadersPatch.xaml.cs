@@ -87,9 +87,9 @@ namespace AcManager.Pages.Settings {
 
         private void OnPatchUpdaterPropertyChanged(object sender, PropertyChangedEventArgs e) {
             if (e.PropertyName == nameof(PatchUpdater.NothingAtAll)) {
-                UpdateContentTranslate(true);
+                ActionExtension.InvokeInMainThreadAsync(() => UpdateContentTranslate(true));
             }
-            Model.OnPatchUpdaterChanged(sender, e);
+            ActionExtension.InvokeInMainThreadAsync(() => Model.OnPatchUpdaterChanged(sender, e));
         }
 
         private EasingFunctionBase _selectionEasingFunction;
@@ -159,6 +159,10 @@ namespace AcManager.Pages.Settings {
             private FileSystemWatcher _watcher;
 
             public ViewModel(bool isLive) {
+                if (PatchHelper.GetInstalledVersion() == null) {
+                    _selectedPageId.Value = null;
+                }
+
                 PagesView = new BetterListCollectionView(Pages);
                 PagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
@@ -223,9 +227,10 @@ namespace AcManager.Pages.Settings {
 
             private string _foundIssuesMessage;
 
+            [CanBeNull]
             public string FoundIssuesMessage {
                 get => _foundIssuesMessage;
-                set => Apply(value, ref _foundIssuesMessage);
+                set => Apply(string.IsNullOrWhiteSpace(value) ? null : value.Trim(), ref _foundIssuesMessage);
             }
 
             private class FoundIssue {
@@ -291,8 +296,8 @@ namespace AcManager.Pages.Settings {
                     Directory.Exists(Path.Combine(root, "config")) ? null
                             : new FoundIssue("Base configs in “extension/config” are missing", @"reinstallCurrent", "reinstall patch",
                                     "Reinstall currently active patch version to fix the problem automatically"),
-                    Directory.Exists(Path.Combine(root, "shaders", "custom")) ? null
-                            : new FoundIssue("Custom shaders in “extension/shaders” are missing", @"reinstallCurrent", "reinstall patch",
+                    File.Exists(Path.Combine(root, "shaders.zip")) || Directory.Exists(Path.Combine(root, "shaders", "custom")) ? null
+                            : new FoundIssue("Custom shaders pack “extension/shaders.zip” are missing", @"reinstallCurrent", "reinstall patch",
                                     "Reinstall currently active patch version to fix the problem automatically"),
                     File.Exists(Path.Combine(root, "lua", "ac_common.lua")) ? null
                             : new FoundIssue("Lua utilities in “extension/lua” are missing", @"reinstallCurrent", "reinstall patch",
@@ -424,11 +429,9 @@ namespace AcManager.Pages.Settings {
                     Mode = Mode.NoConfigs;
                 }
 
-                if (PatchHelper.OptionPatchSupport) {
-                    Pages.ReplaceEverythingBy_Direct(BasePages.Concat(Configs.Select(x => new PatchPage(x))));
-                } else {
-                    Pages.ReplaceEverythingBy_Direct(Configs.Select(x => new PatchPage(x)));
-                }
+                Pages.ReplaceEverythingBy_Direct(PatchHelper.OptionPatchSupport
+                        ? BasePages.Concat(Configs.Select(x => new PatchPage(x)))
+                        : Configs.Select(x => new PatchPage(x)));
 
                 SelectedPage = Pages?.GetByIdOrDefault(_selectedPageId.Value) ?? Pages?.FirstOrDefault();
                 if (Configs != null) {

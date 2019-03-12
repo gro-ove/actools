@@ -62,7 +62,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// If image’s size is smaller than this, it will be decoded in the UI thread.
         /// Doesn’t do anything if OptionDecodeImageSync is true.
         /// </summary>
-        public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+        // public static int OptionDecodeImageSyncThreshold = 50 * 1000; // 50 KB
+        public static int OptionDecodeImageSyncThreshold = 50; // 50 KB
 
         /// <summary>
         /// Considering that 30 KB image takes ≈1.8 ms to be decoded and value of
@@ -80,7 +81,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         /// <summary>
         /// Before loading cached entity, check if according file exists and was not updated.
         /// </summary>
-        public static bool OptionEnsureCacheIsFresh = true;
+        // public static bool OptionEnsureCacheIsFresh = true;
+        public static bool OptionEnsureCacheIsFresh = false;
 
         /// <summary>
         /// Do not set it to zero if OptionReadFileSync is true and OptionDecodeImageSync is true!

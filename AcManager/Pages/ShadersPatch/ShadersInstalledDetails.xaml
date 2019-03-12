@@ -66,7 +66,7 @@
 
       <DockPanel Visibility="{Binding NothingAtAll, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
         <DockPanel DataContext="{Binding Model.FoundIssuesMessage, Source={x:Static settings:SettingsShadersPatch.Instance}}" DockPanel.Dock="Top"
-            Visibility="{Binding Length, Converter={StaticResource MoreToVisibilityConverter}}">
+            Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <DockPanel HorizontalAlignment="Stretch" Dock="Top" Margin="0 0 0 4">
             <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" />
             <TextBlock Margin="10 2 2 2" Style="{StaticResource Heading2}" Foreground="{DynamicResource Error}"

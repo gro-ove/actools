@@ -442,6 +442,11 @@ namespace AcManager.Tools.Data {
                             toRemove.Add(shadersDirectory);
                         }
 
+                        var shadersPack = Path.Combine(PatchHelper.GetRootDirectory(), "shaders.zip");
+                        if (File.Exists(shadersPack)) {
+                            toRemove.Add(shadersPack);
+                        }
+
                         FileUtils.Recycle(toRemove.ToArray());
                     }).ConfigureAwait(false);
                 } else {

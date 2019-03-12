@@ -11,6 +11,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
     public class Kn5RenderableCollider : Kn5RenderableFile {
         public Kn5RenderableCollider(Kn5 kn5, Matrix matrix, bool asyncTexturesLoading = true, IKn5ToRenderableConverter converter = null)
                 : base(kn5, matrix, asyncTexturesLoading, converter) {
+            foreach (var mesh in Dummies) {
+                mesh.LocalMatrix = Matrix.Identity;
+            }
+
             foreach (var mesh in Meshes) {
                 mesh.SetTransparent(true);
             }

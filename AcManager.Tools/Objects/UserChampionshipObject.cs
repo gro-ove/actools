@@ -878,6 +878,7 @@ namespace AcManager.Tools.Objects {
                 CoherentTime = json.GetBoolValueOnly("coherentTime") ?? false;
                 RealConditions = json.GetBoolValueOnly("realConditions") ?? false;
                 RealConditionsManualTime = json.GetBoolValueOnly("realConditionsManualTime") ?? false;
+                TimeMultiplier = json.GetIntValueOnly("timeMultiplier", 1);
 
                 Author = json.GetStringValueOnly("author")?.Trim();
                 Version = json.GetStringValueOnly("version")?.Trim();
@@ -922,6 +923,7 @@ namespace AcManager.Tools.Objects {
             json.SetNonDefault("coherentTime", CoherentTime);
             json.SetNonDefault("realConditions", RealConditions);
             json.SetNonDefault("realConditionsManualTime", RealConditionsManualTime);
+            json.SetNonDefault("timeMultiplier", TimeMultiplier, 1);
             json.SetNonDefault("author", Author);
             json.SetNonDefault("version", Version);
             json.SetNonDefault("url", Url);

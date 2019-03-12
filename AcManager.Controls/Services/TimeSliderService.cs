@@ -2,7 +2,6 @@ using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.Data;
 using AcTools;
-using AcTools.Utils;
 
 namespace AcManager.Controls.Services {
     public static class TimeSliderService {
