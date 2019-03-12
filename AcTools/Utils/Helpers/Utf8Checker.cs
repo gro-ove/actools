@@ -37,7 +37,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (ch >= 0xc2 && ch <= 0xdf) {
-                if (position >= length - 2) {
+                if (position > length - 2) {
                     bytes = 0;
                     return false;
                 }
@@ -50,7 +50,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (ch == 0xe0) {
-                if (position >= length - 3) {
+                if (position > length - 3) {
                     bytes = 0;
                     return false;
                 }
@@ -66,7 +66,7 @@ namespace AcTools.Utils.Helpers {
 
 
             if (ch >= 0xe1 && ch <= 0xef) {
-                if (position >= length - 3) {
+                if (position > length - 3) {
                     bytes = 0;
                     return false;
                 }
@@ -82,7 +82,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (ch == 0xf0) {
-                if (position >= length - 4) {
+                if (position > length - 4) {
                     bytes = 0;
                     return false;
                 }
@@ -99,7 +99,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (ch == 0xf4) {
-                if (position >= length - 4) {
+                if (position > length - 4) {
                     bytes = 0;
                     return false;
                 }
@@ -116,7 +116,7 @@ namespace AcTools.Utils.Helpers {
             }
 
             if (ch >= 0xf1 && ch <= 0xf3) {
-                if (position >= length - 4) {
+                if (position > length - 4) {
                     bytes = 0;
                     return false;
                 }
