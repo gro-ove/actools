@@ -855,7 +855,7 @@ namespace AcManager.PaintShop {
             return result;
         }
 
-        private static List<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
+        private static List<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] IKn5 kn5, [NotNull] List<string> previousIds,
                 [NotNull] ReferenceSolver refSolver) {
             var result = new List<PaintableItem>();
             foreach (var item in array) {
@@ -887,7 +887,7 @@ namespace AcManager.PaintShop {
             return result;
         }
 
-        private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds, string filename) {
+        private static IEnumerable<PaintableItem> GetJArrayPaintableItems(JArray array, [CanBeNull] IKn5 kn5, [NotNull] List<string> previousIds, string filename) {
             var refSolver = new ReferenceSolver();
             using (refSolver.SetDataProvider(filename)) {
                 var list = GetJArrayPaintableItems(array, kn5, previousIds, refSolver);
@@ -896,7 +896,7 @@ namespace AcManager.PaintShop {
             }
         }
 
-        private static IEnumerable<PaintableItem> GetDownloadedPaintableItems(string downloadedData, string carId, [CanBeNull] Kn5 kn5,
+        private static IEnumerable<PaintableItem> GetDownloadedPaintableItems(string downloadedData, string carId, [CanBeNull] IKn5 kn5,
                 [NotNull] List<string> previousIds) {
             var refSolver = new ReferenceSolver();
             using (var zip = ZipFile.OpenRead(downloadedData))
@@ -916,7 +916,7 @@ namespace AcManager.PaintShop {
         }
 
         [CanBeNull]
-        private static IEnumerable<PaintableItem> GetCarPaintableItems(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds) {
+        private static IEnumerable<PaintableItem> GetCarPaintableItems(string carId, [CanBeNull] IKn5 kn5, [NotNull] List<string> previousIds) {
             var carIdLower = carId.ToLowerInvariant();
             if (previousIds.Contains(carIdLower)) return new PaintableItem[0];
             previousIds.Add(carIdLower);
@@ -950,7 +950,7 @@ namespace AcManager.PaintShop {
         }
 
         [ItemCanBeNull]
-        private static async Task<IEnumerable<PaintableItem>> GetCarPaintableItemsAsync(string carId, [CanBeNull] Kn5 kn5, [NotNull] List<string> previousIds,
+        private static async Task<IEnumerable<PaintableItem>> GetCarPaintableItemsAsync(string carId, [CanBeNull] IKn5 kn5, [NotNull] List<string> previousIds,
                 [CanBeNull] Func<CancellationToken, Task<string>> remoteDataFallback, bool guessFallback, CancellationToken cancellation) {
             var result = await Task.Run(() => GetCarPaintableItems(carId, kn5, previousIds));
             if (result != null || cancellation.IsCancellationRequested) {
@@ -991,7 +991,7 @@ namespace AcManager.PaintShop {
         }
 
         [ItemCanBeNull]
-        public static async Task<List<PaintableItem>> GetPaintableItemsAsync(string carId, [CanBeNull] Kn5 kn5, CancellationToken cancellation) {
+        public static async Task<List<PaintableItem>> GetPaintableItemsAsync(string carId, [CanBeNull] IKn5 kn5, CancellationToken cancellation) {
             if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) return new List<PaintableItem>(0);
 
             try {

@@ -47,7 +47,7 @@ namespace AcManager.CustomShowroom {
 
             await PrepareAsync();
 
-            Kn5 kn5;
+            IKn5 kn5;
             using (var waiting = new WaitingDialog()) {
                 waiting.Report("Loading model…");
                 kn5 = await Task.Run(() => Kn5.FromFile(carKn5));

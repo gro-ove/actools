@@ -20,7 +20,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         [NotNull]
-        protected static IEnumerable<IKn5RenderableObject> Flatten(Kn5 kn5, IEnumerable<IRenderableObject> root, [CanBeNull] string textureName,
+        protected static IEnumerable<IKn5RenderableObject> Flatten(IKn5 kn5, IEnumerable<IRenderableObject> root, [CanBeNull] string textureName,
                 [CanBeNull] string objectPath) {
             var split = Lazier.Create(() => objectPath?.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries));
 

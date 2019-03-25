@@ -16,7 +16,7 @@ namespace AcManager.ContentRepair.Repairs {
     public class CarModelRepair : CarRepairBase {
         private static readonly string[] SuspensionNodes = { "SUSP_LF", "SUSP_RF", "SUSP_LR", "SUSP_RR" };
 
-        private Task<bool> FixAsync([NotNull] CarObject car, Action<Kn5> fix, IProgress<AsyncProgressEntry> progress = null,
+        private Task<bool> FixAsync([NotNull] CarObject car, Action<IKn5> fix, IProgress<AsyncProgressEntry> progress = null,
                 CancellationToken cancellation = default) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Fixing car…"));
             return Task.Run(() => {
@@ -44,7 +44,7 @@ namespace AcManager.ContentRepair.Repairs {
             });
         }
 
-        private static void FixSuspensionNodes(Kn5 kn5) {
+        private static void FixSuspensionNodes(IKn5 kn5) {
             foreach (var name in SuspensionNodes.Where(name => kn5.FirstByName(name) == null)) {
                 var node = Kn5Node.CreateBaseNode(name);
                 var wheel = kn5.FirstByName(name.Replace("SUSP", "WHEEL"))?.Transform;
@@ -56,7 +56,7 @@ namespace AcManager.ContentRepair.Repairs {
             }
         }
 
-        private ContentRepairSuggestion TestSuspensionNodes(CarObject car, Kn5 kn5) {
+        private ContentRepairSuggestion TestSuspensionNodes(CarObject car, IKn5 kn5) {
             if (SuspensionNodes.All(name => kn5.FirstByName(name) != null)) return null;
 
             return new ContentObsoleteSuggestion("Suspension nodes missing",
@@ -64,7 +64,7 @@ namespace AcManager.ContentRepair.Repairs {
                     (p, c) => FixAsync(car, FixSuspensionNodes, p, c));
         }
 
-        private static IEnumerable<Kn5Material.ShaderProperty> GetFresnelProperties(Kn5 kn5) {
+        private static IEnumerable<Kn5Material.ShaderProperty> GetFresnelProperties(IKn5 kn5) {
             return kn5.Materials.Values
                       .Where(value => value.ShaderName.Contains(@"MultiMap") &&
                               value.GetPropertyByName("sunSpecular")?.ValueA > 0.5f &&
@@ -73,13 +73,13 @@ namespace AcManager.ContentRepair.Repairs {
                       .Where(x => x != null && x.ValueA >= 0.2);
         }
 
-        private static void FixFrensel(Kn5 kn5) {
+        private static void FixFrensel(IKn5 kn5) {
             foreach (var property in GetFresnelProperties(kn5).Where(x => x.ValueA <= 0.4)) {
                 property.ValueA *= 2f;
             }
         }
 
-        private ContentRepairSuggestion TestFrensel(CarObject car, Kn5 kn5) {
+        private ContentRepairSuggestion TestFrensel(CarObject car, IKn5 kn5) {
             var any = false;
             foreach (var property in GetFresnelProperties(kn5)) {
                 any = true;

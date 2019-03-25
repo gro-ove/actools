@@ -131,7 +131,11 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="AcTools.AcdEncryption, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\Libraries\AcTools.AcdEncryption\AcTools.AcdEncryption.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="AcTools.AcdEncryption, Culture=neutral">
+      <HintPath>..\Libraries\AcTools\AcTools.Kn5Tools.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">

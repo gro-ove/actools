@@ -217,7 +217,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                     select carSlot.CarNode?.GetMaterial(obj)).FirstOrDefault();
         }
 
-        public Kn5 GetKn5(IKn5RenderableObject obj) {
+        public IKn5 GetKn5(IKn5RenderableObject obj) {
             if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
                 return ShowroomNode.OriginalFile;
             }

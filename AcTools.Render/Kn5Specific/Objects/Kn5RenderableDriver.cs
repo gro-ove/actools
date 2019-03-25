@@ -17,7 +17,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
     public class Kn5RenderableDriver : Kn5RenderableSkinnable, IMoveable {
         private Knh _knh;
 
-        public Kn5RenderableDriver(Kn5 kn5, Matrix matrix, string overridesDirectory, bool asyncTexturesLoading = true,
+        public Kn5RenderableDriver(IKn5 kn5, Matrix matrix, string overridesDirectory, bool asyncTexturesLoading = true,
                 bool asyncOverrideTexturesLoading = false, IKn5ToRenderableConverter converter = null)
                 : base(kn5, matrix, overridesDirectory, asyncTexturesLoading, asyncOverrideTexturesLoading, converter) {
             /*foreach (var dummy in this.GetAllChildren().OfType<RenderableList>()) {

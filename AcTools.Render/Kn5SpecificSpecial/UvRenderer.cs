@@ -21,7 +21,7 @@ using Matrix = SlimDX.Matrix;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class UvRenderer : UtilsRendererBase {
-        private readonly Kn5 _kn5;
+        private readonly IKn5 _kn5;
         private Kn5RenderableFile _carNode;
         private IKn5RenderableObject[] _filteredNodes;
 
@@ -29,7 +29,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public UvRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename)) {}
 
-        public UvRenderer(Kn5 kn5) {
+        public UvRenderer(IKn5 kn5) {
             _kn5 = kn5;
             Width = 2048;
             Height = 2048;

@@ -61,6 +61,7 @@ using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Kn5File;
+using AcTools.Kn5Tools;
 using AcTools.NeuralTyres;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -250,6 +251,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
+            Kn5.Factory = Kn5New.GetFactoryInstance();
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 

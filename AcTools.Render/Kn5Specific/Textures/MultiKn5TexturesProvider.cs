@@ -6,10 +6,10 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class MultiKn5TexturesProvider : TexturesProviderBase {
-        public readonly List<Kn5> Kn5;
+        public readonly List<IKn5> Kn5;
         protected readonly bool AsyncLoading;
 
-        public MultiKn5TexturesProvider([NotNull] IEnumerable<Kn5> kn5, bool asyncLoading) {
+        public MultiKn5TexturesProvider([NotNull] IEnumerable<IKn5> kn5, bool asyncLoading) {
             Kn5 = kn5.ToList();
             AsyncLoading = asyncLoading;
         }

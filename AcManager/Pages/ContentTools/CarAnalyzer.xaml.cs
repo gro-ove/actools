@@ -360,7 +360,7 @@ All found similarities:
             }
 
             [ItemNotNull]
-            private static async Task<IReadOnlyList<RatingEntry>> AnalyzeLods(CarObject car, DataWrapper data, Kn5 kn5, int trisCount) {
+            private static async Task<IReadOnlyList<RatingEntry>> AnalyzeLods(CarObject car, DataWrapper data, IKn5 kn5, int trisCount) {
                 var result = new List<RatingEntry>();
 
                 var carData = new CarData(data);
@@ -455,7 +455,7 @@ All found similarities:
                 return result;
             }
 
-            private static async Task<long> FindAverageLargeSkinSize(CarObject car, Kn5 kn5) {
+            private static async Task<long> FindAverageLargeSkinSize(CarObject car, IKn5 kn5) {
                 await car.SkinsManager.EnsureLoadedAsync();
                 var directories = car.EnabledOnlySkins.Select(x => x.Location).ToList();
                 var sizes = await Task.Run(() => directories.Select(x =>

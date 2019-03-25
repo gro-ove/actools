@@ -60,7 +60,7 @@ namespace AcTools.Kn5File {
             public float[] Transform;
         }
 
-        internal Kn5Node() { }
+        public Kn5Node() { }
 
         public int TotalVerticesCount {
             get {
@@ -108,7 +108,7 @@ namespace AcTools.Kn5File {
         SkinnedMesh = 3
     }
 
-    internal static class Kn5NodeExtension {
+    public static class Kn5NodeExtension {
         public static bool IsValidNodeClass(this int v) {
             return v >= 1 && v <= 3;
         }

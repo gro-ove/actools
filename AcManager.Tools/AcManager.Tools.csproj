@@ -55,7 +55,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcTools.CookerHood">
-      <HintPath>..\Libraries\AcTools.CookerHood\AcTools.CookerHood.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.CookerHood.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">

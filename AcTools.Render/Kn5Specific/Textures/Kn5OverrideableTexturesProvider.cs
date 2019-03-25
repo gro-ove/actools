@@ -12,7 +12,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5SkinnableTexturesProvider : Kn5OverrideableTexturesProvider {
-        public Kn5SkinnableTexturesProvider([NotNull] Kn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading, asyncOverride) {}
+        public Kn5SkinnableTexturesProvider([NotNull] IKn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading, asyncOverride) {}
 
         private IniFile _skinIni;
 
@@ -164,7 +164,7 @@ namespace AcTools.Render.Kn5Specific.Textures {
         [CanBeNull]
         protected string CurrentDirectory { get; private set; }
 
-        public Kn5OverrideableTexturesProvider([NotNull] Kn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading) {
+        public Kn5OverrideableTexturesProvider([NotNull] IKn5 kn5, bool asyncLoading, bool asyncOverride) : base(kn5, asyncLoading) {
             _asyncOverride = asyncOverride;
         }
 

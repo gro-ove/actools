@@ -24,7 +24,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override FeatureLevel FeatureLevel => FeatureLevel.Level_10_0;
 
         [NotNull]
-        protected readonly Kn5 Kn5;
+        protected readonly IKn5 Kn5;
 
         [NotNull]
         protected readonly RenderableList Scene;
@@ -34,7 +34,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         protected RenderableList CarNode { get; private set; }
 
-        protected ShadowsRendererBase([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) {
+        protected ShadowsRendererBase([NotNull] IKn5 kn5, [CanBeNull] DataWrapper carData) {
             Kn5 = kn5;
             Scene = new RenderableList();
             CarData = carData == null ? null : new CarData(carData);
@@ -242,9 +242,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         #endregion
 
         private class AlphaTexturesProvider : IAlphaTexturesProvider {
-            private readonly Kn5 _kn5;
+            private readonly IKn5 _kn5;
 
-            public AlphaTexturesProvider(Kn5 kn5) {
+            public AlphaTexturesProvider(IKn5 kn5) {
                 _kn5 = kn5;
             }
 

@@ -25,7 +25,7 @@ using SlimDX.DXGI;
 
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class BakedShadowsRenderer : ShadowsRendererBase {
-        public BakedShadowsRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
+        public BakedShadowsRenderer([NotNull] IKn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             ResolutionMultiplier = 2d;
         }
 
@@ -335,9 +335,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         protected override void OnTickOverride(float dt) { }
 
         private class NormalsNormalsTexturesProvider : INormalsNormalTexturesProvider {
-            private readonly Kn5 _kn5;
+            private readonly IKn5 _kn5;
 
-            public NormalsNormalsTexturesProvider(Kn5 kn5) {
+            public NormalsNormalsTexturesProvider(IKn5 kn5) {
                 _kn5 = kn5;
             }
 

@@ -299,7 +299,7 @@ namespace AcManager.Pages.Selected {
                 }
             }
 
-            private static int CountPits(Kn5 kn5) {
+            private static int CountPits(IKn5 kn5) {
                 return LinqExtension.RangeFrom().TakeWhile(x => kn5.RootNode.GetByName($"AC_PIT_{x}") != null).Count();
             }
 

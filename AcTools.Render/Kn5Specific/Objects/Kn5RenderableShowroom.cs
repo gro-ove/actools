@@ -97,7 +97,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public string RootDirectory { get; }
 
-        public Kn5RenderableShowroom(Kn5 kn5, Matrix matrix, TexturesProviderBase loader)
+        public Kn5RenderableShowroom(IKn5 kn5, Matrix matrix, TexturesProviderBase loader)
                 : base(kn5, matrix, false, Kn5ToRenderableSimpleConverter.Instance) {
             RootDirectory = Path.GetDirectoryName(kn5.OriginalFilename);
             _loader = loader;

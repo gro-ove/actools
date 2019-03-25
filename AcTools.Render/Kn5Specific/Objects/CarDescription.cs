@@ -20,10 +20,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public DataWrapper Data { get; }
 
         [CanBeNull]
-        internal Kn5 Kn5Loaded { get; private set; }
+        internal IKn5 Kn5Loaded { get; private set; }
 
         [NotNull]
-        public Kn5 Kn5LoadedRequire => Kn5Loaded ?? (Kn5Loaded = Kn5.FromFile(MainKn5File));
+        public IKn5 Kn5LoadedRequire => Kn5Loaded ?? (Kn5Loaded = Kn5.FromFile(MainKn5File));
 
         public Task LoadAsync() {
             return Task.Run(() => {
@@ -45,13 +45,13 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return new CarDescription(AcPaths.GetMainCarFilename(carDirectory, data, true), carDirectory, data);
         }
 
-        public static CarDescription FromKn5(Kn5 kn5) {
+        public static CarDescription FromKn5(IKn5 kn5) {
             return new CarDescription(kn5.OriginalFilename) {
                 Kn5Loaded = kn5
             };
         }
 
-        public static CarDescription FromKn5(Kn5 kn5, string carDirectory, DataWrapper data = null) {
+        public static CarDescription FromKn5(IKn5 kn5, string carDirectory, DataWrapper data = null) {
             return new CarDescription(kn5.OriginalFilename, carDirectory, data) {
                 Kn5Loaded = kn5
             };

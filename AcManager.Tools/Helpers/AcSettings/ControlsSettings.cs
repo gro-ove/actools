@@ -121,7 +121,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new CustomButtonEntryCombined("__EXT_WIPERS_LESS", "Slow down wipers", null, Keys.NumPad1, Keys.Alt),
                 new CustomButtonEntryCombined("__EXT_WIPERS_OFF", "Stop wipers", null, Keys.NumPad0, Keys.Alt),
                 new CustomButtonEntryCombined("__EXT_TELLTALE_RESET", "Reset telltale", null, Keys.R, Keys.Alt),
-                // new CustomButtonEntryCombined("__EXT_HIGHLOWBEAMS", "High/low beams", "Switch between high and low beams", Keys.NumPad5, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_LOW_BEAM", "High/low beams", "Switch between high and low beams", Keys.L, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_LIGHT_A", "Extra light A", "Toggle extra light A", Keys.NumPad7, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_LIGHT_B", "Extra light B", "Toggle extra light B", Keys.NumPad8, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_LIGHT_C", "Extra light C", "Toggle extra light C", Keys.NumPad9, Keys.Alt),
+                new CustomButtonEntryCombined("__EXT_LIGHT_D", "Extra light D", "Toggle extra light D", Keys.Oemplus, Keys.Alt),
+            };
+
+            CustomExtraButtonEntries = new[] {
+                new CustomButtonEntryCombined("__EXT_CHAT_SHORTCUTS_BASE", "Chat shortcuts", "Show popup with chat shortcuts", Keys.Oemtilde),
+                new CustomButtonEntryCombined("__EXT_FREECAM_SWITCH_PRESETS", "Freer camera switch", "Switch between Freer Camera settings", Keys.Scroll),
             };
 
             CustomLookButtonEntries = new[] {
@@ -408,10 +417,16 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
+        private static bool _strictIndicesNever;
+
         private void RescanDevices([CanBeNull] IList<Joystick> devices) {
             _skip = true;
 
-            if (devices?.GroupBy(x => x.Properties.ProductId).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
+            if (!_strictIndicesNever && devices?.Any(x => x.Information.ProductName.Contains(@"FANATEC")) == true) {
+                _strictIndicesNever = true;
+            }
+
+            if (!_strictIndicesNever && devices?.GroupBy(x => x.Properties.ProductId).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
                 DirectInputDevice.OptionStrictIndices = true;
                 _placeholderDevices.Clear();
                 Reload();
@@ -1084,10 +1099,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         #region Shaders Patch keys
         public CustomButtonEntryCombined[] CustomCarButtonEntries { get; }
+        public CustomButtonEntryCombined[] CustomExtraButtonEntries { get; }
         public CustomButtonEntryCombined[] CustomLookButtonEntries { get; }
 
         [NotNull]
         public IEnumerable<CustomButtonEntryCombined> CustomButtonEntries => CustomCarButtonEntries
+                .Concat(CustomExtraButtonEntries)
                 .Concat(CustomLookButtonEntries);
         #endregion
 

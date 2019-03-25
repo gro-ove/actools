@@ -31,7 +31,7 @@ namespace AcManager.CustomShowroom {
 
         private IDisposable _dispose;
 
-        public Kn5MaterialDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5,
+        public Kn5MaterialDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] IKn5 kn5,
                 uint materialId) {
             ValuesStorage.Remove("__userpresets_p_" + PresetableKey);
             ValuesStorage.Remove("__userpresets_c_" + PresetableKey);
@@ -292,7 +292,7 @@ namespace AcManager.CustomShowroom {
             [CanBeNull]
             private readonly CarSkinObject _activeSkin;
 
-            private readonly Kn5 _kn5;
+            private readonly IKn5 _kn5;
             private readonly uint _materialId;
 
             public ChangeableObservableCollection<MaterialValueSingle> ValuesSingle { get; } = new ChangeableObservableCollection<MaterialValueSingle>();
@@ -406,7 +406,7 @@ namespace AcManager.CustomShowroom {
                         _depthMode != _originalDepthMode || _alphaMode != _originalAlphaMode;
             }
 
-            public ViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [CanBeNull] CarSkinObject activeSkin,
+            public ViewModel([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5, [CanBeNull] CarSkinObject activeSkin,
                     uint materialId) {
                 _renderer = renderer;
                 _activeSkin = activeSkin;

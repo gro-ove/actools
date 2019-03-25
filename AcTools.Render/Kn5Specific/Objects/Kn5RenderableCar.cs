@@ -45,7 +45,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Kn5OverrideableTexturesProvider _texturesProvider;
 
         [NotNull]
-        private readonly Kn5 _lodA;
+        private readonly IKn5 _lodA;
         private readonly RenderableList _ambientShadows;
 
         [CanBeNull]
@@ -265,7 +265,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public readonly RenderableList Renderable;
             public Kn5SharedMaterials Materials;
             internal IDeviceContextHolder Holder;
-            internal readonly Kn5 NonDefaultKn5;
+            internal readonly IKn5 NonDefaultKn5;
             private bool _prepared;
 
             public LodObject(RenderableList rootObject) {
@@ -273,7 +273,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 Renderable = rootObject;
             }
 
-            public LodObject(Kn5 kn5, [NotNull] IKn5ToRenderableConverter converter) {
+            public LodObject(IKn5 kn5, [NotNull] IKn5ToRenderableConverter converter) {
                 NonDefaultKn5 = kn5;
                 Renderable = (Kn5RenderableList)converter.Convert(kn5.RootNode);
             }
@@ -1289,12 +1289,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     RootObject.GetAllChildren().Contains(obj);
         }
 
-        public Kn5 GetCurrentLodKn5() {
+        public IKn5 GetCurrentLodKn5() {
             return _currentLodObject.NonDefaultKn5 ?? OriginalFile;
         }
 
         [NotNull]
-        public Kn5 GetKn5(IKn5RenderableObject obj) {
+        public IKn5 GetKn5(IKn5RenderableObject obj) {
             if (_driver != null && _driver.GetAllChildren().Contains(obj)) {
                 return _driver.OriginalFile;
             }

@@ -15,18 +15,18 @@ using StringBasedFilter.Utils;
 namespace AcManager.PaintShop {
     public static partial class PaintShop {
         [CanBeNull, Localizable(false)]
-        private static string FindRegexTexture([NotNull] Kn5 kn5, [RegexPattern] string query) {
+        private static string FindRegexTexture([NotNull] IKn5 kn5, [RegexPattern] string query) {
             return kn5.Textures.Keys.FirstOrDefault(new Regex(query, RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace).IsMatch);
         }
 
         [CanBeNull, Localizable(false)]
-        private static PaintableItem FindRegex([NotNull] Kn5 kn5, Func<string, PaintableItem> prepare, [RegexPattern] string query) {
+        private static PaintableItem FindRegex([NotNull] IKn5 kn5, Func<string, PaintableItem> prepare, [RegexPattern] string query) {
             var texture = FindRegexTexture(kn5, query);
             return texture != null ? prepare(texture) : null;
         }
 
         [CanBeNull, Localizable(false)]
-        private static PaintableItem FindQuery([NotNull] Kn5 kn5, Func<string, PaintableItem> prepare, params string[] query) {
+        private static PaintableItem FindQuery([NotNull] IKn5 kn5, Func<string, PaintableItem> prepare, params string[] query) {
             var texture = query.Select(x => RegexFromQuery.IsQuery(x)
                     ? kn5.Textures.Keys.FirstOrDefault(RegexFromQuery.Create(x, StringMatchMode.CompleteMatch, false).IsMatch)
                     : kn5.Textures.Keys.Contains(x) ? x : null).FirstOrDefault(x => x != null);
@@ -65,7 +65,7 @@ namespace AcManager.PaintShop {
             return Fn;
         }
 
-        private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] Kn5 kn5) {
+        private static IEnumerable<PaintableItem> GuessPaintableItemsInner([CanBeNull] IKn5 kn5) {
             if (kn5 == null) yield break;
 
             var carPaint = FindRegexTexture(kn5, @"^(?:car_?paint|[mM]etal_[dD]etail_?1?|carpaint_detail|.*exterior_body_detail)?\.dds$");
@@ -158,7 +158,7 @@ namespace AcManager.PaintShop {
                     "ext_glass.dds");
         }
 
-        private static IEnumerable<PaintableItem> GuessPaintableItems([CanBeNull] Kn5 kn5) {
+        private static IEnumerable<PaintableItem> GuessPaintableItems([CanBeNull] IKn5 kn5) {
             foreach (var item in GuessPaintableItemsInner(kn5).NonNull()) {
                 item.Guessed = true;
                 yield return item;

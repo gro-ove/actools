@@ -58,7 +58,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AcTools.SoundbankPlayer">
-      <HintPath>..\Libraries\AcTools.SoundbankPlayer\AcTools.SoundbankPlayer.dll</HintPath>
+      <HintPath>..\Libraries\AcTools\AcTools.SoundbankPlayer.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SlimDX, Culture=neutral, processorArchitecture=$(ActualPlatform)">

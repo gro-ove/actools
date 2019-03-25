@@ -452,8 +452,8 @@ namespace AcManager.Tools {
         #endregion
 
         #region Guessing colors
-        private static readonly WeakList<Tuple<string, Kn5>> Kn5MaterialsCache = new WeakList<Tuple<string, Kn5>>(10);
-        private static readonly WeakList<Tuple<string, Kn5>> Kn5TexturesCache = new WeakList<Tuple<string, Kn5>>(10);
+        private static readonly WeakList<Tuple<string, IKn5>> Kn5MaterialsCache = new WeakList<Tuple<string, IKn5>>(10);
+        private static readonly WeakList<Tuple<string, IKn5>> Kn5TexturesCache = new WeakList<Tuple<string, IKn5>>(10);
 
         [ItemCanBeNull]
         private static async Task<Color[]> GuessColorsFromTexturesAsync(CarSkinObject skin) {
@@ -514,7 +514,7 @@ namespace AcManager.Tools {
 
             var s = Stopwatch.StartNew();
             try {
-                Kn5 texturesKn5 = null;
+                IKn5 texturesKn5 = null;
 
                 Color GetColor(string textureName) {
                     if (textureName == null) return Colors.White;

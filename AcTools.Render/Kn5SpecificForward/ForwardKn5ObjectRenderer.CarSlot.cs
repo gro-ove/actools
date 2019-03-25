@@ -158,7 +158,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
 
             [CanBeNull]
-            public Kn5 Kn5 => CarNode?.OriginalFile;
+            public IKn5 Kn5 => CarNode?.OriginalFile;
 
             public Vector3 CarCenter {
                 get {
@@ -478,7 +478,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             MainSlot.SelectSkin(skinId);
         }
 
-        public void RefreshMaterial(Kn5 kn5, uint materialId) {
+        public void RefreshMaterial(IKn5 kn5, uint materialId) {
             if (Disposed) return;
             if (ShowroomNode != null && ShowroomNode.OriginalFile == kn5) {
                 ShowroomNode.RefreshMaterial(DeviceContextHolder, materialId);
@@ -493,7 +493,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public void UpdateMaterialPropertyA(Kn5 kn5, uint materialId, string propertyName, float valueA) {
+        public void UpdateMaterialPropertyA(IKn5 kn5, uint materialId, string propertyName, float valueA) {
             if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {
@@ -502,7 +502,7 @@ namespace AcTools.Render.Kn5SpecificForward {
             }
         }
 
-        public void UpdateMaterialPropertyC(Kn5 kn5, uint materialId, string propertyName, float[] valueC) {
+        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, float[] valueC) {
             if (Disposed) return;
             var prop = kn5.GetMaterial(materialId)?.GetPropertyByName(propertyName);
             if (prop != null) {

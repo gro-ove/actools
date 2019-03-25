@@ -1,5 +1,5 @@
 ﻿namespace AcTools.Kn5File {
-    internal static class Kn5MaterialExtension {
+    public static class Kn5MaterialExtension {
         public static bool IsValidDepthMode(this int v) {
             return v >= 0 && v <= 2;
         }

@@ -22,9 +22,9 @@ using SlimDX.DXGI;
 namespace AcTools.Render.Kn5SpecificSpecial {
     public class AmbientShadowRenderer : ShadowsRendererBase {
         public AmbientShadowRenderer([NotNull] string mainKn5Filename, [CanBeNull] string carLocation)
-                : this(Kn5.FromFile(mainKn5Filename), DataWrapper.FromCarDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
+                : this(Kn5File.Kn5.FromFile(mainKn5Filename), DataWrapper.FromCarDirectory(carLocation ?? Path.GetDirectoryName(mainKn5Filename) ?? "")) {}
 
-        public AmbientShadowRenderer([NotNull] Kn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
+        public AmbientShadowRenderer([NotNull] IKn5 kn5, [CanBeNull] DataWrapper carData) : base(kn5, carData) {
             Iterations = 2000;
         }
 

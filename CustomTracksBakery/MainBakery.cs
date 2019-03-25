@@ -110,7 +110,7 @@ namespace CustomTracksBakery {
 
     public sealed class BakedObject : IRenderableObject {
         [CanBeNull]
-        public readonly Kn5 ObjectKn5;
+        public readonly IKn5 ObjectKn5;
 
         [CanBeNull]
         public Kn5Node OriginalNode { get; }
@@ -203,7 +203,7 @@ namespace CustomTracksBakery {
             return new BakedObject(BakedObjectPiece.Ground());
         }
 
-        public BakedObject(Kn5Node node, Kn5 kn5, [NotNull] BakedObjectFilters filters, float splitDistance) : this(GetRenderables(node, splitDistance)) {
+        public BakedObject(Kn5Node node, IKn5 kn5, [NotNull] BakedObjectFilters filters, float splitDistance) : this(GetRenderables(node, splitDistance)) {
             // Trace.WriteLine("Mesh: " + node.Name + ", split into: " + _renderables.Length
             // + ", BB: at " + boundingBox.GetCenter() + ", size=" + boundingBox.GetSize());
 
@@ -395,8 +395,8 @@ namespace CustomTracksBakery {
         private readonly string _filter;
         private readonly string _ignoreFilter;
 
-        private readonly Kn5 _mainKn5;
-        private readonly List<Kn5> _includeKn5 = new List<Kn5>();
+        private readonly IKn5 _mainKn5;
+        private readonly List<IKn5> _includeKn5 = new List<IKn5>();
         private readonly List<string> _occludersFilenames = new List<string>();
 
         private Kn5RenderableFile _mainNode;
@@ -409,11 +409,11 @@ namespace CustomTracksBakery {
         private BakedObject[] _occluderNodes;
 
         private class BakingKn5Converter : IKn5ToRenderableConverter {
-            private readonly Kn5 _kn5;
+            private readonly IKn5 _kn5;
             private readonly BakedObjectFilters _filters;
             private readonly float _splitDistance;
 
-            public BakingKn5Converter(Kn5 kn5, BakedObjectFilters filters, float splitDistance) {
+            public BakingKn5Converter(IKn5 kn5, BakedObjectFilters filters, float splitDistance) {
                 _kn5 = kn5;
                 _filters = filters;
                 _splitDistance = splitDistance;
@@ -442,7 +442,7 @@ namespace CustomTracksBakery {
             }
         }
 
-        private Kn5RenderableFile LoadKn5Node(Kn5 kn5, float splitDistance) {
+        private Kn5RenderableFile LoadKn5Node(IKn5 kn5, float splitDistance) {
             return new Kn5RenderableFile(kn5, Matrix.Identity, false,
                     new BakingKn5Converter(kn5, _filters, splitDistance));
         }
@@ -547,7 +547,7 @@ namespace CustomTracksBakery {
             private Kn5NodeLoader() { }
             public void OnNewKn5(string kn5Filename) { }
 
-            private static Kn5Node LoadNode(Kn5Reader reader) {
+            private static Kn5Node LoadNode(IKn5Reader reader) {
                 var node = reader.ReadNode();
                 var capacity = node.Children.Capacity;
 
@@ -567,7 +567,7 @@ namespace CustomTracksBakery {
             }
 
             public Kn5Node LoadNode(ReadAheadBinaryReader reader) {
-                return LoadNode((Kn5Reader)reader);
+                return LoadNode((IKn5Reader)reader);
             }
         }
 
@@ -580,7 +580,7 @@ namespace CustomTracksBakery {
             "txDetailA"
         };
 
-        private static Kn5 LoadKn5(string filename, bool patchMode) {
+        private static IKn5 LoadKn5(string filename, bool patchMode) {
             var result = Kn5.FromFile(filename, null, null, Kn5NodeLoader.Instance);
             if (patchMode) {
                 var toRemove = result.TexturesData.Keys.Where(x => result.Materials.Values.All(
@@ -603,7 +603,7 @@ namespace CustomTracksBakery {
             _ignoreFilter = ignoreFilter;
         }
 
-        private MainBakery(Kn5 kn5) {
+        private MainBakery(IKn5 kn5) {
             _mainKn5 = kn5;
         }
 
@@ -698,7 +698,7 @@ namespace CustomTracksBakery {
 
         private class WeirdMesh {
             public Kn5Node Node;
-            public Kn5 Kn5;
+            public IKn5 IKn5;
             public float MinValue, MaxValue;
         }
 
@@ -802,7 +802,7 @@ namespace CustomTracksBakery {
 
                         if (weird > 0) {
                             weirdMeshes.Add(new WeirdMesh {
-                                Kn5 = file,
+                                IKn5 = file,
                                 Node = node,
                                 MinValue = nodeMinLength,
                                 MaxValue = nodeMaxLength
@@ -817,8 +817,8 @@ namespace CustomTracksBakery {
                 Trace.WriteLine("That’s a weird track you got there! Please, report it to the developer of this tool. List of strange meshes:");
 
                 foreach (var mesh in weirdMeshes) {
-                    Trace.WriteLine($"KN5: {Path.GetFileName(mesh.Kn5.OriginalFilename)}, mesh: {mesh.Node.Name}, "
-                            + $"shader: {mesh.Kn5.GetMaterial(mesh.Node.MaterialId)?.ShaderName ?? "?"}, min.: {mesh.MinValue}, max.: {mesh.MaxValue}");
+                    Trace.WriteLine($"KN5: {Path.GetFileName(mesh.IKn5.OriginalFilename)}, mesh: {mesh.Node.Name}, "
+                            + $"shader: {mesh.IKn5.GetMaterial(mesh.Node.MaterialId)?.ShaderName ?? "?"}, min.: {mesh.MinValue}, max.: {mesh.MaxValue}");
                 }
 
                 Trace.WriteLine("For now, press any key to continue.");

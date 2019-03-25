@@ -119,6 +119,9 @@
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Look (for alternative head motion):" />
           <ItemsControl ItemsSource="{Binding CustomLookButtonEntries}" ItemTemplate="{StaticResource CustomButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Miscellaneous:" />
+          <ItemsControl ItemsSource="{Binding CustomExtraButtonEntries}" ItemTemplate="{StaticResource CustomButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
+
           <c:MessageBlock CloseKey="controls-patch" Margin="0 0 0 20">
             <mui:BbCodeBlock Text="Here, you can set extra input bindings for [url=&quot;https://trello.com/b/xq54vHsX/ac-patch&quot;]Custom Shaders Patch[/url]." />
           </c:MessageBlock>

@@ -4,10 +4,10 @@ using JetBrains.Annotations;
 
 namespace AcTools.Render.Kn5Specific.Textures {
     public class Kn5TexturesProvider : TexturesProviderBase {
-        protected readonly Kn5 Kn5;
+        protected readonly IKn5 Kn5;
         protected readonly bool AsyncLoading;
 
-        public Kn5TexturesProvider([NotNull] Kn5 kn5, bool asyncLoading) {
+        public Kn5TexturesProvider([NotNull] IKn5 kn5, bool asyncLoading) {
             Kn5 = kn5;
             AsyncLoading = asyncLoading;
         }

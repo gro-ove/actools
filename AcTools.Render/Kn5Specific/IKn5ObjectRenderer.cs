@@ -14,22 +14,33 @@ namespace AcTools.Render.Kn5Specific {
         FpsCamera FpsCamera { get; }
 
         bool AutoRotate { get; set; }
+        
         bool LockCamera { get; }
+
         bool AutoAdjustTarget { get; set; }
+
         bool UseFpsCamera { get; set; }
+
         bool VisibleUi { get; set; }
+
         bool CarLightsEnabled { get; set; }
+
         bool CarBrakeLightsEnabled { get; set; }
 
         void SelectPreviousSkin();
+
         void SelectNextSkin();
+
         void SelectSkin([CanBeNull] string skinId);
 
         void ResetCamera();
+
         void ChangeCameraFov(float newFovY);
 
-        void RefreshMaterial([NotNull] Kn5 kn5, uint materialId);
-        void UpdateMaterialPropertyA([NotNull] Kn5 kn5, uint materialId, [NotNull] string propertyName, float valueA);
-        void UpdateMaterialPropertyC([NotNull] Kn5 kn5, uint materialId, [NotNull] string propertyName, [NotNull] float[] valueC);
+        void RefreshMaterial([NotNull] IKn5 kn5, uint materialId);
+
+        void UpdateMaterialPropertyA([NotNull] IKn5 kn5, uint materialId, [NotNull] string propertyName, float valueA);
+
+        void UpdateMaterialPropertyC([NotNull] IKn5 kn5, uint materialId, [NotNull] string propertyName, [NotNull] float[] valueC);
     }
 }

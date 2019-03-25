@@ -38,7 +38,7 @@ namespace AcManager.CustomShowroom {
         [CanBeNull]
         private readonly BaseRenderer _renderer;
 
-        private readonly Kn5 _kn5;
+        private readonly IKn5 _kn5;
         private readonly ISaveHelper _saveable;
 
         [NotNull]
@@ -64,17 +64,17 @@ namespace AcManager.CustomShowroom {
         [CanBeNull]
         private readonly CarObject _car;
 
-        public static BakedShadowsRendererViewModel ForTexture([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string textureName,
+        public static BakedShadowsRendererViewModel ForTexture([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5, [NotNull] string textureName,
                 [CanBeNull] CarObject car) {
             return new BakedShadowsRendererViewModel(renderer, kn5, textureName, null, car);
         }
 
-        public static BakedShadowsRendererViewModel ForObject([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5, [NotNull] string objectPath,
+        public static BakedShadowsRendererViewModel ForObject([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5, [NotNull] string objectPath,
                 [CanBeNull] CarObject car) {
             return new BakedShadowsRendererViewModel(renderer, kn5, null, objectPath, car);
         }
 
-        private BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] Kn5 kn5,
+        private BakedShadowsRendererViewModel([CanBeNull] BaseRenderer renderer, [NotNull] IKn5 kn5,
                 [CanBeNull] string textureName, [CanBeNull] string objectPath, [CanBeNull] CarObject car) {
             _renderer = renderer;
             _kn5 = kn5;

@@ -5,9 +5,9 @@ using AcTools.Render.Kn5Specific.Materials;
 
 namespace CustomTracksBakery {
     public class BakeryMaterialsFactory : IMaterialsFactory {
-        private Kn5 _kn5;
+        private IKn5 _kn5;
 
-        public BakeryMaterialsFactory(Kn5 kn5) {
+        public BakeryMaterialsFactory(IKn5 kn5) {
             _kn5 = kn5;
         }
 

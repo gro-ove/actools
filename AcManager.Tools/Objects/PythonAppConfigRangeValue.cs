@@ -22,7 +22,8 @@ namespace AcManager.Tools.Objects {
         public new double Value {
             get => FlexibleParser.TryParseDouble(base.Value) ?? (Minimum.Value + Maximum.Value) / 2;
             set {
-                value = value.Clamp(Minimum.Value, Maximum.Value).Round(RoundTo);
+                // value = value.Clamp(Minimum.Value, Maximum.Value).Round(RoundTo);
+                value = value.Round(RoundTo);
                 if (Equals(value, Value)) return;
                 base.Value = value.ToInvariantString();
             }

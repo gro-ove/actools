@@ -227,7 +227,7 @@ namespace CustomTracksBakery {
     }
 
     internal class Program {
-        private static IEnumerable<Kn5Node> FilterNodes(Kn5 kn5, IFilter<string> filter, Kn5Node node) {
+        private static IEnumerable<Kn5Node> FilterNodes(IKn5 kn5, IFilter<string> filter, Kn5Node node) {
             if (node.NodeClass == Kn5NodeClass.Base) {
                 return node.Children.SelectMany(x => FilterNodes(kn5, filter, x));
             }

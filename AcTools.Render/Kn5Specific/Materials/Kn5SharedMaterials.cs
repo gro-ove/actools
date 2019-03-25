@@ -5,9 +5,9 @@ using AcTools.Render.Base.Materials;
 
 namespace AcTools.Render.Kn5Specific.Materials {
     public class Kn5SharedMaterials : SharedMaterials {
-        private readonly Kn5 _kn5;
+        private readonly IKn5 _kn5;
 
-        public Kn5SharedMaterials(IDeviceContextHolder holder, Kn5 kn5) : base(holder.Get<IMaterialsFactory>()) {
+        public Kn5SharedMaterials(IDeviceContextHolder holder, IKn5 kn5) : base(holder.Get<IMaterialsFactory>()) {
             _kn5 = kn5;
         }
 

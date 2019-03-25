@@ -39,7 +39,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Camera = new CameraOrtho();
         }
 
-        public TrackMapPreparationRenderer(Kn5 kn5) : base(kn5) {
+        public TrackMapPreparationRenderer(IKn5 kn5) : base(kn5) {
             Camera = new CameraOrtho();
         }
 
@@ -130,9 +130,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         public void ChangeCameraFov(float newFovY) {}
-        public void RefreshMaterial(Kn5 kn5, uint materialId) {}
-        public void UpdateMaterialPropertyA(Kn5 kn5, uint materialId, string propertyName, float valueA) {}
-        public void UpdateMaterialPropertyC(Kn5 kn5, uint materialId, string propertyName, float[] valueC) {}
+        public void RefreshMaterial(IKn5 kn5, uint materialId) {}
+        public void UpdateMaterialPropertyA(IKn5 kn5, uint materialId, string propertyName, float valueA) {}
+        public void UpdateMaterialPropertyC(IKn5 kn5, uint materialId, string propertyName, float[] valueC) {}
 
         protected sealed override void DrawSprites() {
             var sprite = Sprite;
@@ -218,7 +218,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
     }
 
     public class TrackComplexModelEntry {
-        public Kn5 Kn5;
+        public IKn5 Kn5;
         public Matrix Matrix;
     }
 
@@ -265,7 +265,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         public static int OptionMaxSize = 8192;
 
         [CanBeNull]
-        private readonly Kn5 _kn5;
+        private readonly IKn5 _kn5;
 
         [CanBeNull]
         private readonly AiSpline _aiSpline;
@@ -286,7 +286,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         public TrackMapRenderer(string mainKn5Filename) : this(Kn5.FromFile(mainKn5Filename)) { }
 
-        public TrackMapRenderer(Kn5 kn5) {
+        public TrackMapRenderer(IKn5 kn5) {
             _kn5 = kn5;
         }
 

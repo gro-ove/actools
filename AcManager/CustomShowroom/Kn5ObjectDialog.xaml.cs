@@ -24,7 +24,7 @@ namespace AcManager.CustomShowroom {
     public partial class Kn5ObjectDialog {
         private ViewModel Model => (ViewModel)DataContext;
 
-        public Kn5ObjectDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5,
+        public Kn5ObjectDialog([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] IKn5 kn5,
                 [NotNull] IKn5RenderableObject renderableObject) {
             DataContext = new ViewModel(renderer, car, activeSkin, kn5, renderableObject) { Close = () => Close() };
             InitializeComponent();
@@ -40,7 +40,7 @@ namespace AcManager.CustomShowroom {
 
             [CanBeNull]
             private readonly CarSkinObject _activeSkin;
-            private readonly Kn5 _kn5;
+            private readonly IKn5 _kn5;
 
             [NotNull]
             private readonly IKn5RenderableObject _renderableObject;
@@ -66,7 +66,7 @@ namespace AcManager.CustomShowroom {
                 set => Apply(value, ref _textureDimensions);
             }
 
-            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] Kn5 kn5,
+            public ViewModel([CanBeNull] BaseRenderer renderer, [CanBeNull] CarObject car, [CanBeNull] CarSkinObject activeSkin, [NotNull] IKn5 kn5,
                     [NotNull] IKn5RenderableObject renderableObject) {
                 _renderer = renderer;
                 _activeSkin = activeSkin;
