@@ -61,7 +61,7 @@ namespace AcManager.Tools.Data {
         }
 
         protected override string GetSourceUrl() {
-            return @"tree/master/vao-patches";
+            return "https://github.com/ac-custom-shaders-patch/acc-extension-extra-vao/tree/master";
         }
 
         protected override string GetTitle() {
