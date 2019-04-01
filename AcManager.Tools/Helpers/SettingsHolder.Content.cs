@@ -155,6 +155,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _carsYearPostfixAlt;
+
+            public bool CarsYearPostfixAlt {
+                get => _carsYearPostfixAlt ?? (_carsYearPostfixAlt =
+                        ValuesStorage.Get("Settings.ContentSettings.CarsYearPostfixAlt", false)).Value;
+                set {
+                    if (Equals(value, _carsYearPostfixAlt)) return;
+                    _carsYearPostfixAlt = value;
+                    ValuesStorage.Set("Settings.ContentSettings.CarsYearPostfixAlt", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carSkinsDisplayId;
 
             public bool CarSkinsDisplayId {

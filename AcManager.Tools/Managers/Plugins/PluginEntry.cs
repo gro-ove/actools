@@ -22,6 +22,8 @@ namespace AcManager.Tools.Managers.Plugins {
             Tuple.Create("Magick", ""),
             Tuple.Create("Awesomium", ""),
             Tuple.Create("CefSharp", ""),
+            Tuple.Create("CefSharp-63.0.0-x86", ""),
+            Tuple.Create("CefSharp-69.0.0-x86", ""),
             Tuple.Create("SSE", "1.4.2.1"),
             Tuple.Create(KnownPlugins.SevenZip, "17.0.1"),
         };

@@ -15,6 +15,7 @@ namespace AcTools.Kn5File {
         public static readonly SkippingTextureLoader Instance = new SkippingTextureLoader();
 
         private SkippingTextureLoader() { }
+
         public void OnNewKn5(string kn5Filename) { }
 
         public byte[] LoadTexture(string textureName, ReadAheadBinaryReader reader, int textureSize) {
@@ -130,7 +131,7 @@ namespace AcTools.Kn5File {
             return null;
         }
     }
-    
+
     public class DefaultKn5NodeLoader : IKn5NodeLoader {
         [NotNull]
         public static readonly DefaultKn5NodeLoader Instance = new DefaultKn5NodeLoader();

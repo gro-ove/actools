@@ -64,8 +64,15 @@ namespace FirstFloor.ModernUI.Presentation {
         private readonly StoredValue<bool> _popupScrollBars = Stored.Get("/Appearance.PopupScrollBars", true);
 
         public bool PopupScrollBars {
-            get => _popupScrollBars.Value;
+            get => _popupScrollBars.Value && !PixelScrollBars;
             set => Apply(value, _popupScrollBars);
+        }
+
+        private readonly StoredValue<bool> _pixelScrollBars = Stored.Get("/Appearance.PixelScrollBars", false);
+
+        public bool PixelScrollBars {
+            get => _pixelScrollBars.Value;
+            set => Apply(value, _pixelScrollBars, () => OnPropertyChanged(nameof(PopupScrollBars)));
         }
     }
 }

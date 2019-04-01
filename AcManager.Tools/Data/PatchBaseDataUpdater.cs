@@ -164,6 +164,7 @@ namespace AcManager.Tools.Data {
             } else {
                 var destination = GetDestinationFilename();
                 if (destination != null) {
+                    Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
                     File.WriteAllBytes(destination, data);
                 }
             }
@@ -250,7 +251,15 @@ namespace AcManager.Tools.Data {
 
         public ApiCacheThing ApiCache => _apiCache ?? (_apiCache = new ApiCacheThing(Path.Combine("Patch", GetCacheDirectoryName()), TimeSpan.FromHours(3d)));
 
-        public Storage Storage => _storage ?? (_storage = new Storage(Path.Combine(GetDestinationDirectory(), "storage.data"), disableCompression: true));
+        public Storage Storage {
+            get {
+                if (_storage == null) {
+                    Directory.CreateDirectory(GetDestinationDirectory());
+                    _storage = new Storage(Path.Combine(GetDestinationDirectory(), "storage.data"));
+                }
+                return _storage;
+            }
+        }
 
         [Localizable(false)]
         public abstract string GetBaseUrl();
@@ -262,7 +271,8 @@ namespace AcManager.Tools.Data {
         public abstract string GetDestinationDirectory();
 
         public string SourceRepo => @"https://github.com/ac-custom-shaders-patch/acc-extension-config/";
-        public string SourceBbCode => $"[url={BbCodeBlock.EncodeAttribute(SourceRepo + GetSourceUrl())}]Original source.[/url]";
+
+        public string SourceBbCode => $"[url={BbCodeBlock.EncodeAttribute(GetSourceUrl().IsWebUrl() ? GetSourceUrl() : SourceRepo + GetSourceUrl())}]Original source.[/url]";
 
         [NotNull, Localizable(false)]
         protected abstract string GetSourceUrl();

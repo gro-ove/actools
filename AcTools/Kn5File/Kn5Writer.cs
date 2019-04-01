@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace AcTools.Kn5File {
-    internal sealed class Kn5Writer : ExtendedBinaryWriter {
+    public sealed class Kn5Writer : ExtendedBinaryWriter {
         public Kn5Writer(string filename) : base(filename) {
             Write("sc6969".ToCharArray());
         }

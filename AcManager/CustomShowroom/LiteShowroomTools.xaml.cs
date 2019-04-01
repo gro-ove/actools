@@ -854,7 +854,7 @@ namespace AcManager.CustomShowroom {
                     renderer.CarNode.UpdateCurrentLodKn5Values();
                     await kn5.UpdateKn5(_renderer, _skin);
                 }
-            }));
+            }, () => Renderer?.CarNode?.GetCurrentLodKn5()?.IsEditable == true));
 
             #region Commands
             private DelegateCommand _nextSkinCommand;
@@ -885,7 +885,8 @@ namespace AcManager.CustomShowroom {
                         await Task.Delay(1);
 
                         if (FileUtils.Exists(destination)) {
-                            var response = ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"), ToolsStrings.Common_Destination,
+                            var response = ModernDialog.ShowMessage(string.Format(ControlsStrings.Common_FolderExists, @"unpacked"),
+                                    ToolsStrings.Common_Destination,
                                     MessageBoxButton.YesNoCancel);
                             if (response == MessageBoxResult.Cancel) return;
                             if (response == MessageBoxResult.No) {
@@ -911,7 +912,8 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(string.Format(ToolsStrings.Common_CannotUnpack, ToolsStrings.Common_KN5), e);
                 }
-            }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter") && Renderer?.MainSlot.Kn5 != null));
+            }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FbxConverter")
+                    && Renderer?.MainSlot.Kn5?.IsEditable == true));
             #endregion
 
             #region Materials & Textures
@@ -947,14 +949,16 @@ namespace AcManager.CustomShowroom {
                 var attached = AttachedHelper.GetInstance(_renderer);
                 if (attached == null) return;
 
+                var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                if (kn5 == null) return;
+
                 try {
-                    if (Renderer == null) return;
                     await attached.AttachAndWaitAsync("Kn5ObjectDialog",
-                            new Kn5ObjectDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject), obj));
+                            new Kn5ObjectDialog(Renderer, Car, Skin, kn5, obj));
                 } catch (Exception e) {
                     NonfatalError.Notify("Unexpected exception", e);
                 }
-            }, () => Renderer?.SelectedObject != null));
+            }, () => Renderer?.SelectedObject != null && Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
             private static string MaterialPropertyToString(Kn5Material.ShaderProperty property) {
                 if (property.ValueD.Any(x => !Equals(x, 0f))) return $"({property.ValueD.JoinToString(@", ")})";
@@ -997,7 +1001,7 @@ namespace AcManager.CustomShowroom {
                 ShowMessage(sb.ToString(), material.Name, d => new[] {
                     d.CreateCloseDialogButton("Change values", false, false, MessageBoxResult.OK, ChangeMaterialCommand)
                 });
-            }, () => Renderer?.SelectedMaterial != null));
+            }, () => Renderer?.SelectedMaterial != null && Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
             private DelegateCommand _changeMaterialCommand;
 
@@ -1006,17 +1010,20 @@ namespace AcManager.CustomShowroom {
                     var attached = AttachedHelper.GetInstance(_renderer);
                     if (attached == null) return;
 
-                    var material = Renderer?.SelectedMaterial;
+                    var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                    if (kn5 == null) return;
+
+                    var material = Renderer.SelectedMaterial;
                     if (material == null) return;
 
-                    using (var dialog = new Kn5MaterialDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject),
+                    using (var dialog = new Kn5MaterialDialog(Renderer, Car, Skin, kn5,
                             Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue)) {
                         await attached.AttachAndWaitAsync("Kn5MaterialDialog", dialog);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Unexpected exception", e);
                 }
-            }));
+            }, () => Renderer?.GetKn5(Renderer.SelectedObject)?.IsEditable == true));
 
             private DelegateCommand<ToolsKn5ObjectRenderer.TextureInformation> _viewTextureCommand;
 
@@ -1025,10 +1032,12 @@ namespace AcManager.CustomShowroom {
                     var attached = AttachedHelper.GetInstance(_renderer);
                     if (attached == null) return;
 
+                    var kn5 = Renderer?.GetKn5(Renderer.SelectedObject);
+                    if (kn5 == null) return;
+
                     try {
-                        if (Renderer == null) return;
                         await attached.AttachAndWaitAsync("Kn5TextureDialog",
-                                new Kn5TextureDialog(Renderer, Car, Skin, Renderer.GetKn5(Renderer.SelectedObject), o.TextureName,
+                                new Kn5TextureDialog(Renderer, Car, Skin, kn5, o.TextureName,
                                         Renderer.SelectedObject?.OriginalNode.MaterialId ?? uint.MaxValue, o.SlotName));
                     } catch (Exception e) {
                         NonfatalError.Notify("Unexpected exception", e);

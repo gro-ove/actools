@@ -61,7 +61,9 @@ using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.GenericMods;
 using AcTools.Kn5File;
+#if !DEBUG
 using AcTools.Kn5Tools;
+#endif
 using AcTools.NeuralTyres;
 using AcTools.Processes;
 using AcTools.Render.Kn5SpecificSpecial;
@@ -251,7 +253,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
+#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
+#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -552,7 +556,12 @@ namespace AcManager {
 
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
-            new AppUi(this).Run();
+            new AppUi(this).Run(() => {
+                if (PatchHelper.OptionPatchSupport) {
+                    PatchUpdater.Initialize();
+                    PatchUpdater.Instance.Updated += OnPatchUpdated;
+                }
+            });
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -743,11 +752,6 @@ namespace AcManager {
 
             LocaleUpdater.Initialize(LocaleHelper.LoadedVersion);
             LocaleUpdater.Instance.Updated += OnLocaleUpdated;
-
-            if (PatchHelper.OptionPatchSupport) {
-                PatchUpdater.Initialize();
-                PatchUpdater.Instance.Updated += OnPatchUpdated;
-            }
         }
 
         private void OnDataUpdated(object sender, EventArgs e) {

@@ -207,7 +207,10 @@ namespace AcTools.Render.Kn5SpecificForward {
             _outlineDepthBuffer.Resize(DeviceContextHolder, Width, Height, null);
         }
 
-        private Kn5Material GetMaterial(IKn5RenderableObject obj) {
+        [CanBeNull]
+        private Kn5Material GetMaterial([CanBeNull] IKn5RenderableObject obj) {
+            if (obj == null) return null;
+
             if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
                 return ShowroomNode.OriginalFile.GetMaterial(obj.OriginalNode.MaterialId);
             }
@@ -217,7 +220,8 @@ namespace AcTools.Render.Kn5SpecificForward {
                     select carSlot.CarNode?.GetMaterial(obj)).FirstOrDefault();
         }
 
-        public IKn5 GetKn5(IKn5RenderableObject obj) {
+        [CanBeNull]
+        public IKn5 GetKn5([CanBeNull] IKn5RenderableObject obj) {
             if (ShowroomNode != null && ShowroomNode.GetAllChildren().Contains(obj)) {
                 return ShowroomNode.OriginalFile;
             }

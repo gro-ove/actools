@@ -227,9 +227,10 @@ namespace AcManager.CustomShowroom {
                 }
             }));
 
-            private CommandBase _exportCommand;
+            private AsyncCommand _exportCommand;
 
-            public ICommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
+            public AsyncCommand ExportCommand => _exportCommand ?? (_exportCommand = new AsyncCommand(async () => {
+                if (!_kn5.IsEditable) return;
                 var filename = FileRelatedDialogs.Save(new SaveDialogParams {
                     InitialDirectory = _activeSkin?.Location ?? Path.GetDirectoryName(_kn5.OriginalFilename),
                     Filters = { DialogFilterPiece.DdsFiles, DialogFilterPiece.ImageFiles },
@@ -245,7 +246,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify(ControlsStrings.CustomShowroom_CannotExport, e);
                 }
-            }, () => Data != null));
+            }, () => Data != null && _kn5.IsEditable && SettingsHolder.Common.DeveloperMode));
 
             public async Task UpdateKn5AndClose(bool updateModel) {
                 await _kn5.UpdateKn5(updateModel ? _renderer : null, _activeSkin);
@@ -285,7 +286,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t replace texture", e);
                 }
-            }));
+            }, () => _kn5.IsEditable));
 
             private AsyncCommand _renameCommand;
 
@@ -318,7 +319,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t rename texture", e);
                 }
-            }));
+            }, () => _kn5.IsEditable));
 
             private AsyncCommand _forkCommand;
 
@@ -353,7 +354,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t fork texture", e);
                 }
-            }));
+            }, () => _kn5.IsEditable));
 
             private AsyncCommand _changeTextureCommand;
 
@@ -386,7 +387,7 @@ namespace AcManager.CustomShowroom {
                     NonfatalError.Notify("Can’t change texture", e);
                 }
 
-            }));
+            }, () => _kn5.IsEditable));
         }
 
         internal class LoadedImage {

@@ -58,7 +58,7 @@ namespace AcManager.CustomShowroom {
 
             InitializeComponent();
             Buttons = new[] {
-                CreateExtraDialogButton(AppStrings.Toolbar_Save, new AsyncCommand(async () => {
+                kn5.IsEditable ? CreateExtraDialogButton(AppStrings.Toolbar_Save, new AsyncCommand(async () => {
                     var d = _dispose;
                     try {
                         _dispose = null;
@@ -67,7 +67,7 @@ namespace AcManager.CustomShowroom {
                         _dispose = d;
                         NonfatalError.Notify("Can’t save material", e);
                     }
-                }, () => Model.IsChanged).ListenOn(Model, nameof(Model.IsChanged)), true),
+                }, () => Model.IsChanged).ListenOn(Model, nameof(Model.IsChanged)), true) : null,
                 CancelButton
             };
         }
@@ -423,7 +423,7 @@ namespace AcManager.CustomShowroom {
                 IsChangeAvailable = kn5.TexturesData.Count > 1;
                 UsedFor = usedFor.JoinToString(", ");
 
-                if (Material != null) {
+                if (Material != null && _kn5.IsEditable) {
                     _depthMode = _originalDepthMode = (MaterialDepthMode)Material.DepthMode;
                     _alphaMode = _originalAlphaMode = Material.AlphaTested ? MaterialAlphaMode.AlphaTest : Material.BlendMode == Kn5MaterialBlendMode.Opaque ?
                             MaterialAlphaMode.AlphaOff : MaterialAlphaMode.AlphaBlend;
@@ -500,7 +500,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t rename material", e);
                 }
-            }, () => Material != null));
+            }, () => Material != null && _kn5.IsEditable));
 
             private AsyncCommand _forkCommand;
 
@@ -530,7 +530,7 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t fork material", e);
                 }
-            }, () => Material != null));
+            }, () => Material != null && _kn5.IsEditable));
 
             private AsyncCommand _changeMaterialCommand;
 
@@ -564,9 +564,9 @@ namespace AcManager.CustomShowroom {
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t change material", e);
                 }
-            }, () => Material != null));
+            }, () => Material != null && _kn5.IsEditable));
 
-            public bool CanBeSaved => Material != null;
+            public bool CanBeSaved => Material != null && _kn5.IsEditable;
             public PresetsCategory PresetableCategory { get; } = new PresetsCategory(
                     Path.Combine(AcPaths.GetDocumentsDirectory(), "Editor", "Materials library"), ".material");
             string IUserPresetable.PresetableKey => PresetableKey;

@@ -86,6 +86,15 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppearanceManager.PixelScrollBars}" mui:NewMarkService.New="True">
+          <Label Content="Narrow scrollbars" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding AppearanceManager.PopupScrollBars}"
+            IsEnabled="{Binding AppearanceManager.PixelScrollBars, Converter={StaticResource InvertBooleanConverter}}">
+          <Label Content="Popup scrollbars" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="With this option disabled, you can drag them by close button">
           <Label Content="Show draggable areas next to search boxes" />
         </CheckBox>
@@ -220,11 +229,7 @@
           </CheckBox>
         </StackPanel>
 
-        <CheckBox IsChecked="{Binding AppearanceManager.PopupScrollBars}" mui:NewMarkService.New="True">
-          <Label Content="Popup scrollbars" />
-        </CheckBox>
-
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowMainWindowBackButton}" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowMainWindowBackButton}">
           <Label Content="Show back button in the main window" />
         </CheckBox>
 
@@ -252,7 +257,7 @@
         <!-- Image viewer -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Image viewer:" />
 
-        <CheckBox IsChecked="{Binding Value, Source={x:Static c:BlurredPiece.IsActive}}" set:Search.Keywords="images;viewers;image viewer" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding Value, Source={x:Static c:BlurredPiece.IsActive}}" set:Search.Keywords="images;viewers;image viewer">
           <Label Content="Blur buttons’ background (might decrease performance)" />
         </CheckBox>
 

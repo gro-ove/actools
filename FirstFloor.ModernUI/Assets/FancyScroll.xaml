@@ -106,6 +106,15 @@
                 </Setter.Value>
               </Setter>
             </DataTrigger>
+            <DataTrigger Binding="{Binding PixelScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="True">
+              <Setter TargetName="PART_Thumb" Property="MinWidth" Value="2" />
+              <Setter TargetName="PART_Thumb" Property="Width" Value="2" />
+              <Setter TargetName="PART_Thumb" Property="RenderTransform">
+                <Setter.Value>
+                  <ScaleTransform ScaleX="1" ScaleY="1" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
@@ -177,6 +186,15 @@
               <Setter TargetName="PART_Thumb" Property="RenderTransform">
                 <Setter.Value>
                   <ScaleTransform x:Name="PART_ThumbScale" ScaleX="1" ScaleY="{StaticResource FancyScrollBar.HalfScaleMultipler}" />
+                </Setter.Value>
+              </Setter>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding PixelScrollBars, Source={x:Static pr:AppearanceManager.Instance}}" Value="True">
+              <Setter TargetName="PART_Thumb" Property="MinHeight" Value="2" />
+              <Setter TargetName="PART_Thumb" Property="Height" Value="2" />
+              <Setter TargetName="PART_Thumb" Property="RenderTransform">
+                <Setter.Value>
+                  <ScaleTransform ScaleX="1" ScaleY="1" />
                 </Setter.Value>
               </Setter>
             </DataTrigger>

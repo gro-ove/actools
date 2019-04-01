@@ -76,6 +76,9 @@ namespace AcManager.Tools.Helpers.AcLog {
         WrongTextureFormat,
 
         [Description("Tyres might be wrong")]
-        TyresMightBeWrong
+        TyresMightBeWrong,
+
+        [Description("GPU failed; might be overclocked too much, or overheated")]
+        GpuFailed
     }
 }

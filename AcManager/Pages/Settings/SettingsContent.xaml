@@ -130,6 +130,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_AddYearPostfix}" />
         </CheckBox>
 
+        <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsYearPostfixAlt}" IsEnabled="{Binding Holder.CarsYearPostfix}">
+          <Label Content="Four digit for year postfix" />
+        </CheckBox>
+
         <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}" mui:NewMarkService.New="True">
           <CheckBox.ToolTip>
             <TextBlock MaxWidth="400"

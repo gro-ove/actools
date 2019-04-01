@@ -17,11 +17,12 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.PaintShop {
     public class LicensePlate : PaintableItem {
         public enum LicenseFormat {
-            Europe, Japan
+            Europe,
+            Japan
         }
 
         public LicensePlate(LicenseFormat format, [CanBeNull] string diffuseTexture = "Plate_D.dds", [CanBeNull] string normalsTexture = "Plate_NM.dds")
-                : this(format.ToString(), diffuseTexture, normalsTexture) {}
+                : this(format.ToString(), diffuseTexture, normalsTexture) { }
 
         public LicensePlate(string suggestedStyle, [CanBeNull] string diffuseTexture = "Plate_D.dds", [CanBeNull] string normalsTexture = "Plate_NM.dds")
                 : base(true) {
@@ -146,6 +147,15 @@ namespace AcManager.PaintShop {
             });
         }
 
+        private void ApplyTexture(string name, byte[] data) {
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                _renderer?.Override(new PaintShopOverrideWithTexture {
+                    Destination = new PaintShopDestination(name),
+                    Source = data == null ? null : new PaintShopSource(data) { DoNotCache = true }
+                });
+            });
+        }
+
         private void ApplyQuick() {
             var applyId = ++_applyId;
             var diffuseTexture = DiffuseTexture;
@@ -154,10 +164,7 @@ namespace AcManager.PaintShop {
             if (diffuseTexture != null) {
                 var diffuse = GetSelectedStyle()?.CreateDiffuseMap(true, LicensePlatesStyle.Format.Png);
                 if (_applyId != applyId) return;
-                ApplyTexture(r => r.Override(new PaintShopOverrideWithTexture {
-                    Destination = new PaintShopDestination(diffuseTexture),
-                    Source = diffuse == null ? null : new PaintShopSource(diffuse) { DoNotCache = true }
-                }));
+                ApplyTexture(diffuseTexture, diffuse);
             }
 
             if (normalsTexture != null && !_flatNormals) {
@@ -176,11 +183,7 @@ namespace AcManager.PaintShop {
 
             var diffuse = GetSelectedStyle()?.CreateDiffuseMap(false, LicensePlatesStyle.Format.Png);
             if (_applyId != applyId) return;
-
-            ApplyTexture(r => r.Override(new PaintShopOverrideWithTexture {
-                Destination = new PaintShopDestination(diffuseTexture),
-                Source = diffuse == null ? null : new PaintShopSource(diffuse) { DoNotCache = true }
-            }));
+            ApplyTexture(diffuseTexture, diffuse);
         }
 
         private void ApplySlowNormals() {
@@ -190,12 +193,7 @@ namespace AcManager.PaintShop {
 
             var normals = GetSelectedStyle()?.CreateNormalsMap(PreviewMode, LicensePlatesStyle.Format.Png);
             if (_applyId != applyId) return;
-
-            ApplyTexture(r => r.Override(new PaintShopOverrideWithTexture {
-                Destination = new PaintShopDestination(normalsTexture),
-                Source = normals == null ? null : new PaintShopSource(normals) { DoNotCache = true }
-            }));
-            _flatNormals = false;
+            ApplyTexture(normalsTexture, normals);
         }
 
         private void SyncValues() {
@@ -250,6 +248,7 @@ namespace AcManager.PaintShop {
                                 }
 
                                 if (!_keepGoing) return;
+
                                 Monitor.Wait(_threadObj);
                             }
                         }

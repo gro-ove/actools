@@ -68,6 +68,9 @@ namespace AcManager.Tools.Objects {
 
                 var yearValue = Year ?? 0;
                 if (yearValue > 1900 && SettingsHolder.Content.CarsYearPostfix) {
+                    if (SettingsHolder.Content.CarsYearPostfixAlt) {
+                        return $@"{name} ({yearValue})";
+                    }
                     var year = yearValue.ToString();
                     var index = name.Length - year.Length - 1;
                     if ((!name.EndsWith(year) || index > 0 && char.IsLetterOrDigit(name[index]))

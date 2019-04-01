@@ -18,7 +18,9 @@ namespace AcManager.Tools.ContentRepairUi {
             double uiWeight;
             if ((car.SpecsWeight?.IndexOf("*", StringComparison.Ordinal) ?? 0) != -1 ||
                     !FlexibleParser.TryParseDouble(car.SpecsWeight, out uiWeight)) return;
-            data.GetIniFile(@"car.ini")["BASIC"].Set("TOTALMASS", uiWeight + CommonAcConsts.DriverWeight);
+            var carIni = data.GetIniFile(@"car.ini");
+            carIni["BASIC"].Set("TOTALMASS", uiWeight + CommonAcConsts.DriverWeight);
+            carIni.Save();
         }
 
         protected override ContentRepairSuggestion GetObsoletableAspect(CarObject car, DataWrapper data) {

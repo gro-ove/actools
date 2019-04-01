@@ -42,12 +42,12 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void InitializeBuffers() {
             _shadowBuffer = TargetResourceDepthTexture.Create();
-            _bufferFSumm = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
+            _bufferFSum = TargetResourceTexture.Create(Format.R32G32B32A32_Float);
             _bufferF1 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _bufferF2 = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
             _bufferA = TargetResourceTexture.Create(Format.R8G8B8A8_UNorm);
 
-            _summBlendState = Device.CreateBlendState(new RenderTargetBlendDescription {
+            _sumBlendState = Device.CreateBlendState(new RenderTargetBlendDescription {
                 BlendEnable = true,
                 SourceBlend = BlendOption.One,
                 DestinationBlend = BlendOption.One,
@@ -104,18 +104,18 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             _shadowBuffer.Resize(DeviceContextHolder, shadowResolution, shadowResolution, null);
             _shadowViewport = new Viewport(0, 0, _shadowBuffer.Width, _shadowBuffer.Height, 0, 1.0f);
 
-            _bufferFSumm.Resize(DeviceContextHolder, Width, Height, null);
+            _bufferFSum.Resize(DeviceContextHolder, Width, Height, null);
             _bufferF1.Resize(DeviceContextHolder, Width, Height, null);
             _bufferF2.Resize(DeviceContextHolder, Width, Height, null);
             _bufferA.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
-            DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, new Color4(0f, 0f, 0f, 0f));
+            DeviceContext.ClearRenderTargetView(_bufferFSum.TargetView, new Color4(0f, 0f, 0f, 0f));
         }
 
         private Viewport _shadowViewport;
         private TargetResourceDepthTexture _shadowBuffer;
         private CameraOrtho _shadowCamera;
-        private TargetResourceTexture _bufferFSumm, _bufferF1, _bufferF2, _bufferA;
-        private BlendState _summBlendState, _bakedBlendState;
+        private TargetResourceTexture _bufferFSum, _bufferF1, _bufferF2, _bufferA;
+        private BlendState _sumBlendState, _bakedBlendState;
         private EffectSpecialShadow _effect;
 
         private Kn5RenderableDepthOnlyObject[] _flattenNodes;
@@ -134,7 +134,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 _offsets = GetOffsets(mesh).ToArray();
             }
 
-            private static bool IsVerticeWithin(Vector2 offset, Vector2 a) {
+            private static bool IsVertexWithin(Vector2 offset, Vector2 a) {
                 return a.X >= offset.X && a.X <= offset.X + 1f &&
                         -a.Y >= offset.Y && -a.Y <= offset.Y + 1f;
             }
@@ -143,7 +143,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 // TODO? Test if one of square vertices is within triangle?
                 // TODO? Test if some edges do intersect?
                 // Or is it only gonna be a waste of time since it’s unlikely UV is gonna be this tricky?
-                return IsVerticeWithin(offset, a) || IsVerticeWithin(offset, b) || IsVerticeWithin(offset, c);
+                return IsVertexWithin(offset, a) || IsVertexWithin(offset, b) || IsVertexWithin(offset, c);
             }
 
             private static bool IsOverlap(Vector2 offset, TrianglesRenderableObject<InputLayouts.VerticePT> obj) {
@@ -228,8 +228,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             // DeviceContext.Rasterizer.State = null;
 
             // copy to summary buffer
-            DeviceContext.OutputMerger.BlendState = _summBlendState;
-            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferFSumm.TargetView);
+            DeviceContext.OutputMerger.BlendState = _sumBlendState;
+            DeviceContextHolder.GetHelper<CopyHelper>().Draw(DeviceContextHolder, _bufferF1.View, _bufferFSum.TargetView);
         }
 
         protected override float DrawLight(Vector3 direction) {
@@ -238,9 +238,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             return 1f;
         }
 
-        private void Draw(float multipler, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
+        private void Draw(float multiplier, [CanBeNull] IProgress<double> progress, CancellationToken cancellation) {
             _effect.FxAmbient.Set(Ambient);
-            DeviceContext.ClearRenderTargetView(_bufferFSumm.TargetView, Color.Transparent);
+            DeviceContext.ClearRenderTargetView(_bufferFSum.TargetView, Color.Transparent);
             DeviceContext.ClearRenderTargetView(_bufferA.TargetView, Color.Transparent);
 
             // draw
@@ -256,9 +256,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
             DeviceContext.ClearRenderTargetView(_bufferF1.TargetView, Color.Transparent);
             DeviceContext.OutputMerger.SetTargets(_bufferF1.TargetView);
-            _effect.FxInputMap.SetResource(_bufferFSumm.View);
+            _effect.FxInputMap.SetResource(_bufferFSum.View);
             _effect.FxCount.Set(t / SkyBrightnessLevel);
-            _effect.FxMultipler.Set(multipler);
+            _effect.FxMultipler.Set(multiplier);
             _effect.FxGamma.Set(Gamma);
             _effect.FxScreenSize.Set(new Vector2(Width, Height));
             _effect.TechAoResult.DrawAllPasses(DeviceContext, 6);
@@ -372,9 +372,9 @@ namespace AcTools.Render.Kn5SpecificSpecial {
         }
 
         protected override void DisposeOverride() {
-            DisposeHelper.Dispose(ref _summBlendState);
+            DisposeHelper.Dispose(ref _sumBlendState);
             DisposeHelper.Dispose(ref _bakedBlendState);
-            DisposeHelper.Dispose(ref _bufferFSumm);
+            DisposeHelper.Dispose(ref _bufferFSum);
             DisposeHelper.Dispose(ref _bufferF1);
             DisposeHelper.Dispose(ref _bufferF2);
             DisposeHelper.Dispose(ref _bufferA);

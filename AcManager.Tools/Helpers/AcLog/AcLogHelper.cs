@@ -47,6 +47,10 @@ namespace AcManager.Tools.Helpers.AcLog {
                     return new WhatsGoingOn(WhatsGoingOnType.OnlineWrongPassword);
                 }
 
+                if (log.Contains(@"swapChain->Present failed")) {
+                    return new WhatsGoingOn(WhatsGoingOnType.GpuFailed);
+                }
+
                 if (log.Contains(@"ERROR: RaceManager :: Handshake FAILED")) {
                     return new WhatsGoingOn(WhatsGoingOnType.OnlineConnectionFailed);
                 }

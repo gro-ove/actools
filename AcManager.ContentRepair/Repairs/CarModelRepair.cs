@@ -97,6 +97,7 @@ namespace AcManager.ContentRepair.Repairs {
             if (kn5Filename == null || !File.Exists(kn5Filename)) return new ContentRepairSuggestion[0];
 
             var kn5 = Kn5.FromFile(kn5Filename);
+            if (!kn5.IsEditable) return new ContentRepairSuggestion[0];
 
             return new[] {
                 TestFrensel(car, kn5),

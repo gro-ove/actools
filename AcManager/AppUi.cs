@@ -128,7 +128,7 @@ namespace AcManager {
             return task.Task;
         }
 
-        public void Run() {
+        public void Run(Action mainWindowIsReadyCallback) {
             ((Action)(async () => {
                 EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(OnWindowLoaded));
                 ContentInstallationManager.Instance.TaskAdded += OnTaskAdded;
@@ -154,6 +154,7 @@ namespace AcManager {
                     if (_showMainWindow && !_mainWindowShown) {
                         Logging.Write("Main window…");
                         _mainWindowShown = true;
+                        mainWindowIsReadyCallback?.Invoke();
                         await (_mainWindowTask ?? new MainWindow().ShowAndWaitAsync());
                         Logging.Write("Main window closed");
                     }

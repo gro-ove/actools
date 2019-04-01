@@ -25,7 +25,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureDynamicShadowResolution = "DYNAMIC_SHADOWS_RESOLUTION";
         public static readonly string FeaturePovForButtons = "POV_FOR_BUTTONS";
 
-        public static bool OptionPatchSupport = false;
+        public static bool OptionPatchSupport = true;
 
         public static readonly string MainFileName = "dwrite.dll";
 

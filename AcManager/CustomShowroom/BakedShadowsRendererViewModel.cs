@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows;
 using AcManager.Controls;
 using AcManager.Controls.Dialogs;
 using AcManager.Tools.Helpers;
@@ -23,6 +24,7 @@ using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
+using Size = System.Windows.Size;
 
 namespace AcManager.CustomShowroom {
     public class BakedShadowsRendererViewModel : NotifyPropertyChanged, IUserPresetable {
@@ -388,6 +390,18 @@ namespace AcManager.CustomShowroom {
                                 DdsEncoder.SaveAsDds(destination, calculated.Item1,
                                         UseDxt5 ? PreferredDdsFormat.DXT5 : PreferredDdsFormat.LuminanceTransparency, null);
                                 break;
+                            case ".png":
+                                if (FullyTransparent) {
+                                    using (var stream = new MemoryStream(calculated.Item1))
+                                    using (var jpgStream = new MemoryStream()) {
+                                        ImageUtils.Convert(stream, jpgStream, 97);
+                                        using (var output = File.Create(destination)) {
+                                            jpgStream.Position = 0;
+                                            Image.FromStream(jpgStream).Save(output, ImageFormat.Png);
+                                        }
+                                    }
+                                    break;
+                                } else goto default;
                             case ".jpg":
                             case ".jpeg":
                                 using (var stream = new MemoryStream(calculated.Item1))

@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:cs="clr-namespace:AcManager.CustomShowroom" xmlns:system="clr-namespace:System;assembly=mscorlib"
-    mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="False" ShowTitle="False" ShowTopBlob="False"
-    Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded" Unloaded="OnUnloaded"
+    mc:Ignorable="d" Title="{x:Static c:ControlsStrings.CustomShowroom_Tools_Title}" ShowInTaskbar="False" Topmost="False" ShowTitle="False"
+    ShowTopBlob="False" Width="250" SizeToContent="Manual" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" Loaded="OnLoaded" Unloaded="OnUnloaded"
     ResizeMode="CanResizeWithGrip" MinWidth="250" MaxWidth="250" LocationAndSizeKey="__cmls" d:DataContext="{d:DesignInstance cs:LiteShowroomTools+ViewModel}"
     Padding="24">
   <mui:ModernDialog.Resources>
@@ -245,7 +245,8 @@
                 <TextBlock Text="Tools" Style="{StaticResource Heading2}" Margin="0 12 0 0" />
                 <Button Margin="0 4 0 0" Command="{Binding ToggleAmbientShadowModeCommand}"
                     Content="{x:Static c:ControlsStrings.CustomShowroom_AmbientShadows_Update}" />
-                <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}">
+                <Button Margin="0 4 0 0" Command="{Binding UnpackKn5Command}"
+                    Visibility="{Binding UnpackKn5Command.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
                   <TextBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_KN5}, StringFormat={x:Static c:ControlsStrings.Common_Unpack}}" />
                 </Button>
               </StackPanel>
@@ -255,13 +256,14 @@
               <StackPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewObjectCommand}" CommandParameter="{Binding}" Height="20" Margin="4 0 0 0"
-                      Padding="4 0" />
+                      Padding="4 0" Visibility="{Binding ViewObjectCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_NameLabel}" />
                   <mui:BetterTextBox Text="{Binding Renderer.SelectedName, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" Margin="0 0 4 0" />
                 </DockPanel>
                 <DockPanel Style="{StaticResource DockPanel}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" Command="{Binding ViewMaterialCommand}" CommandParameter="{Binding}" Height="20"
-                      Margin="4 0 0 0" Padding="4 0" />
+                      Margin="4 0 0 0" Padding="4 0"
+                      Visibility="{Binding ViewMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                   <Label Content="{x:Static c:ControlsStrings.CustomShowroom_Selected_MaterialLabel}" />
                   <mui:BetterTextBox Text="{Binding Renderer.SelectedMaterial.Name, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True"
                       Margin="0 0 4 0" />

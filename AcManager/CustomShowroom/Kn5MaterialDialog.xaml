@@ -57,11 +57,12 @@
     <mui:ReferenceSwitch.Null>
       <DockPanel>
         <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Right" />
-        <TextBlock Text="{x:Static c:ControlsStrings.CustomShowroom_TextureIsMissing}" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
+        <TextBlock Text="Material is missing!" Margin="10 2 2 2" Style="{StaticResource Heading2}" />
       </DockPanel>
     </mui:ReferenceSwitch.Null>
     <mui:ReferenceSwitch.NonNull>
-      <mui:SpacingStackPanel VerticalAlignment="Top" Spacing="4">
+      <mui:SpacingStackPanel VerticalAlignment="Top" Spacing="4"
+          Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
         <DockPanel>
           <Label DockPanel.Dock="Left" Width="100" Content="Name:" />
           <mui:BetterTextBox Text="{Binding Material.Name}" Style="{StaticResource Borderless}" IsReadOnly="True" />
@@ -165,7 +166,8 @@
           </ItemsControl>
         </mui:SpacingStackPanel>
 
-        <c:MessageBlock Margin="0 16 0 0">
+        <c:MessageBlock Margin="0 16 0 0"
+            Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:BbCodeBlock
               Text="Here, you can change only numerical values for shaders, but it should be enough to fix shaders for old cars (which are less reflective then they should). Firstly, I recommend to load some Kunos cars and same their values using presets control beneath. Then, just load saved preset for an old car you want to update and you’ll get perfect values.[br][br]By the way, those presets are compatible with [url=&quot;https://ascobash.wordpress.com/2015/07/22/kseditor/&quot;]patched KsEditor’s[/url] material library." />
         </c:MessageBlock>
@@ -176,7 +178,8 @@
   <mui:ModernDialog.ButtonsRowContent>
     <mui:SpacingStackPanel Orientation="Horizontal" Spacing="4">
       <c:UserPresetsControl UserPresetable="{Binding}" />
-      <mui:ButtonWithComboBox Content="Change material" Command="{Binding ChangeMaterialCommand}" ButtonToolTip="Change material for selected mesh">
+      <mui:ButtonWithComboBox Content="Change material" Command="{Binding ChangeMaterialCommand}" ButtonToolTip="Change material for selected mesh"
+          Visibility="{Binding ChangeMaterialCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}">
         <mui:ButtonWithComboBox.MenuItems>
           <MenuItem Command="{Binding RenameCommand}" Header="Rename material" />
           <MenuItem Command="{Binding ForkCommand}" Header="{Binding Material.Name}" HeaderStringFormat="Fork material for mesh “{0}”"
