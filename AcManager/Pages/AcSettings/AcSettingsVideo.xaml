@@ -319,7 +319,7 @@
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MipLodBias_Tooltip}">
             <mui:AsyncButton Style="{StaticResource DescriptionButton}" Command="{Binding DescriptionMipLodBiasCommand}" />
             <mui:ValueLabel Value="{Binding Graphics.MipLodBias}" Content="{x:Static g:AppStrings.AcSettings_Video_MipLodBias}" />
-            <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="1" TickPlacement="BottomRight" />
+            <Slider Minimum="-4" Maximum="0" Value="{Binding Graphics.MipLodBias}" IsSnapToTickEnabled="True" TickFrequency="0.25" TickPlacement="BottomRight" />
           </DockPanel>
 
           <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Video_MaximumFrameLatency_Tooltip}">

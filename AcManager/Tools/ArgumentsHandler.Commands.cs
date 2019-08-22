@@ -110,9 +110,8 @@ namespace AcManager.Tools {
                     }
 
                 case "install":
-                    return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams {
-                        AllowExecutables = true
-                    }) ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
+                    return await ContentInstallationManager.Instance.InstallAsync(param, new ContentInstallationParams(true))
+                            ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
             }
 
             return ArgumentHandleResult.Successful;
@@ -168,9 +167,8 @@ namespace AcManager.Tools {
                         }
 
                         return (await urls.Select(
-                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams {
-                                    CarId = custom.Params.Get(@"car"),
-                                    AllowExecutables = true
+                                x => ContentInstallationManager.Instance.InstallAsync(x, new ContentInstallationParams(true) {
+                                    CarId = custom.Params.Get(@"car")
                                 })).WhenAll()).Any() ? ArgumentHandleResult.Successful : ArgumentHandleResult.Failed;
 
                     case "importwebsite":

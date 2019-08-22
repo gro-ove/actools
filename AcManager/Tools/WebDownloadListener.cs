@@ -72,7 +72,8 @@ namespace AcManager.Tools {
             public async Task RunAsync(string suggestedName, long totalSize, IWebDownloader downloader) {
                 try {
                     FlexibleLoader.RegisterPriority(this);
-                    ContentInstallationManager.Instance.InstallAsync(_url, AddInstallMode.ForceNewTask).Forget();
+                    ContentInstallationManager.Instance.InstallAsync(_url, AddInstallMode.ForceNewTask,
+                            ContentInstallationParams.DefaultWithExecutables).Forget();
                     FlexibleLoader.Unregister(this);
 
                     var destinationCallback = _destinationCallback;
@@ -100,7 +101,7 @@ namespace AcManager.Tools {
                         if (SettingsHolder.WebBlocks.NotifyOnWebDownloads) {
                             Toast.Show("New download started", suggestedName ?? _url);
                         }
-                        
+
                         resultTask.TrySetResult(await downloader.DownloadAsync(destination.Filename, progress, _cancellation));
                     } catch (Exception e) {
                         Logging.Warning(e);

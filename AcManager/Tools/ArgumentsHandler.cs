@@ -132,9 +132,8 @@ namespace AcManager.Tools {
                             ).WhenAll()).Where(x => x.Item2 != null).ToList();
                     if (contentToInstall.Any()) {
                         list = list.ApartFrom(contentToInstall.Select(x => x.Item1)).ToList();
-                        if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2, new ContentInstallationParams {
-                            AllowExecutables = true
-                        })).WhenAll()).All(x => !x)) {
+                        if ((await contentToInstall.Select(x => ContentInstallationManager.Instance.InstallAsync(x.Item2,
+                                new ContentInstallationParams(true))).WhenAll()).All(x => !x)) {
                             // TODO
                             await Task.Delay(2000);
                         }

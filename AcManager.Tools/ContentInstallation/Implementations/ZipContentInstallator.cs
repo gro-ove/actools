@@ -13,7 +13,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Implementations {
     internal class ZipContentInstallator : ContentInstallatorBase {
-        public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams) {
+        public static async Task<IAdditionalContentInstallator> Create([NotNull] string filename, [NotNull] ContentInstallationParams installationParams) {
             var result = new ZipContentInstallator(filename, installationParams);
             await result.CreateExtractorAsync();
             return result;
@@ -24,7 +24,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
         public string Filename { get; }
 
-        private ZipContentInstallator(string filename, ContentInstallationParams installationParams) : base(installationParams) {
+        private ZipContentInstallator([NotNull] string filename, [NotNull] ContentInstallationParams installationParams) : base(installationParams) {
             Filename = filename;
         }
 

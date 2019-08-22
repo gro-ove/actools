@@ -10,9 +10,14 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation {
     public class ContentInstallationParams {
-        public static readonly ContentInstallationParams Default = new ContentInstallationParams();
+        public static readonly ContentInstallationParams DefaultWithExecutables = new ContentInstallationParams(true);
+        public static readonly ContentInstallationParams DefaultWithoutExecutables = new ContentInstallationParams(false);
 
-        public bool AllowExecutables { get; set; }
+        public ContentInstallationParams(bool allowExecutables) {
+            AllowExecutables = allowExecutables;
+        }
+
+        public bool AllowExecutables { get; }
 
         [CanBeNull]
         public string CarId { get; set; }

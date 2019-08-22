@@ -128,7 +128,8 @@
 	#define gFixMultiplier 0.5
 	#define gOffset 0.05
 	#define gGlowFix 0.1
-	#define gDistanceThreshold 0.005
+	// #define gDistanceThreshold 0.005
+	#define gDistanceThreshold 0.05
 	// gDistanceThreshold is divided by 4
 
 // new

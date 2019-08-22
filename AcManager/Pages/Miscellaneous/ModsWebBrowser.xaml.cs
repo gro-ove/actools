@@ -57,7 +57,7 @@ namespace AcManager.Pages.Miscellaneous {
         private static void OnNewTabGlobal(object o, NewWindowEventArgs args) {
             if (SettingsHolder.WebBlocks.CaptureViaFileStorageLoaders && FlexibleLoader.IsSupportedFileStorage(args.Url)) {
                 args.Cancel = true;
-                ContentInstallationManager.Instance.InstallAsync(args.Url);
+                ContentInstallationManager.Instance.InstallAsync(args.Url, ContentInstallationParams.DefaultWithExecutables);
                 return;
             }
 
@@ -65,7 +65,7 @@ namespace AcManager.Pages.Miscellaneous {
             if (isVirtual || loader?.CaptureRedirects != true) return;
 
             args.Cancel = true;
-            ContentInstallationManager.Instance.InstallAsync(args.Url);
+            ContentInstallationManager.Instance.InstallAsync(args.Url, ContentInstallationParams.DefaultWithExecutables);
         }
 
         public void OnUri(Uri uri) {
@@ -528,7 +528,8 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                             favicon = s[2];
                             break;
                         default:
-                            Logging.Warning("Wrong number of pieces: " + (s == null ? @"NULL" : s.Length + Environment.NewLine + s.JoinToString(Environment.NewLine)));
+                            Logging.Warning("Wrong number of pieces: "
+                                    + (s == null ? @"NULL" : s.Length + Environment.NewLine + s.JoinToString(Environment.NewLine)));
                             continue;
                     }
 
@@ -1476,7 +1477,8 @@ window.$KEY = outline.stop.bind(outline);
             private DelegateCommand _installCommand;
 
             public DelegateCommand InstallCommand => _installCommand ?? (_installCommand = new DelegateCommand(
-                    () => ContentInstallationManager.Instance.InstallAsync(DownloadPageUrl), () => DownloadPageUrl != null));
+                    () => ContentInstallationManager.Instance.InstallAsync(DownloadPageUrl, ContentInstallationParams.DefaultWithExecutables),
+                    () => DownloadPageUrl != null));
 
             private DelegateCommand _shareLinkCommand;
 

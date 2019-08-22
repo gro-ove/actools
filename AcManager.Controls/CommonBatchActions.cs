@@ -399,7 +399,7 @@ namespace AcManager.Controls {
             });
 
             string GetObjectName(AcObjectNew x) {
-                return useNames ? FileUtils.EnsureFileNameIsValid(x.DisplayName) : x.Id;
+                return useNames ? FileUtils.EnsureFileNameIsValid(x.DisplayName, true) : x.Id;
             }
         }
 

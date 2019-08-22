@@ -26,9 +26,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public int? DetailsPort {
             get => _detailsPort;
-            private set => Apply(value, ref _detailsPort, () => {
-                OnPropertyChanged(nameof(HasDetails));
-            });
+            private set => Apply(value, ref _detailsPort, () => { OnPropertyChanged(nameof(HasDetails)); });
         }
 
         private string _detailsId;
@@ -38,9 +36,7 @@ namespace AcManager.Tools.Managers.Online {
         /// </summary>
         public string DetailsId {
             get => _detailsId;
-            set => Apply(value, ref _detailsId, () => {
-                _previousPassword = null;
-            }, nameof(HasDetails));
+            set => Apply(value, ref _detailsId, () => { _previousPassword = null; }, nameof(HasDetails));
         }
 
         public bool HasDetails => DetailsId != null || DetailsPort != null;
@@ -295,7 +291,7 @@ namespace AcManager.Tools.Managers.Online {
                         if (!IsAvailableToInstall(carPair.Value)) continue;
                         var url = carPair.Value.GetStringValueOnly("url") ??
                                 $@"http://{Ip}:{DetailsPort}/content/car/{carPair.Key}{passwordPostfix.Value}";
-                        yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                        yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                             FallbackId = carPair.Key,
                             Checksum = carPair.Value.GetStringValueOnly("checksum")
                         });
@@ -306,7 +302,7 @@ namespace AcManager.Tools.Managers.Online {
 
                             var url = skinPair.Value.GetStringValueOnly("url") ??
                                     $@"http://{Ip}:{DetailsPort}/content/skin/{carPair.Key}/{skinPair.Key}{passwordPostfix.Value}";
-                            yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                            yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                                 CarId = carPair.Key,
                                 FallbackId = skinPair.Key,
                                 Checksum = skinPair.Value.GetStringValueOnly("checksum")
@@ -323,7 +319,7 @@ namespace AcManager.Tools.Managers.Online {
 
                     var url = weatherPair.Value.GetStringValueOnly("url") ??
                             $@"http://{Ip}:{DetailsPort}/content/weather/{weatherPair.Key}{passwordPostfix.Value}";
-                    yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                    yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                         FallbackId = weatherPair.Key,
                         Checksum = weatherPair.Value.GetStringValueOnly("checksum")
                     });
@@ -334,7 +330,7 @@ namespace AcManager.Tools.Managers.Online {
                     && (Track == null || track.GetStringValueOnly("version").IsVersionNewerThan(Track.Version)) && IsAvailableToInstall(track)) {
                 var url = track.GetStringValueOnly("url") ??
                         $@"http://{Ip}:{DetailsPort}/content/track{passwordPostfix.Value}";
-                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams {
+                yield return ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false) {
                     FallbackId = TrackBaseId,
                     Checksum = track.GetStringValueOnly("checksum")
                 });

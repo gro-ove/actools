@@ -587,7 +587,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                         hasSeatbeltOff = true;
                         break;
                     default:
-                        if (BlurredObjects.Any(x => x.MinSpeed >= 0f && x.Name == dummy.OriginalNode.Name)) {
+                        if (BlurredObjects.Any(x => x.MinSpeed > 0f && x.Name == dummy.OriginalNode.Name)) {
                             hasBlurredNodes = true;
                             blurredNodesActive &= dummy.IsEnabled;
                         }

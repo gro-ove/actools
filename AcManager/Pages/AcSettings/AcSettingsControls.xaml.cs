@@ -22,6 +22,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using Microsoft.Win32;
@@ -68,6 +69,9 @@ namespace AcManager.Pages.AcSettings {
                 }, filename != null && FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)
                         && o == null ? filename : null);
                 if (filename == null) return;
+
+                Logging.Debug(filename);
+                Logging.Debug(ControlsSettings.UserPresetsDirectory);
 
                 if (!FileUtils.IsAffectedBy(filename, ControlsSettings.UserPresetsDirectory)) {
                     if (MessageDialog.Show(AppStrings.Controls_InvalidDirectory_Commentary,

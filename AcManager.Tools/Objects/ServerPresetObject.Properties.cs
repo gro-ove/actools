@@ -759,6 +759,7 @@ namespace AcManager.Tools.Objects {
 
         private ChangeableObservableCollection<ServerWeatherEntry> _weather;
 
+        [CanBeNull]
         public ChangeableObservableCollection<ServerWeatherEntry> Weather {
             get => _weather;
             set {
@@ -806,7 +807,7 @@ namespace AcManager.Tools.Objects {
                 case nameof(ServerWeatherEntry.RecommendedRoadTemperature):
                     return;
                 case nameof(ServerWeatherEntry.Deleted):
-                    Weather.Remove((ServerWeatherEntry)sender);
+                    Weather?.Remove((ServerWeatherEntry)sender);
                     return;
             }
 

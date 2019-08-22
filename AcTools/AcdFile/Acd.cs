@@ -194,7 +194,7 @@ namespace AcTools.AcdFile {
                     FileUtils.EnsureDirectoryExists(destDirectory);
                 }
 
-                File.WriteAllBytes(FileUtils.EnsureFilenameIsValid(entryFilename), entry.Data);
+                File.WriteAllBytes(FileUtils.EnsureFilenameIsValid(entryFilename, true), entry.Data);
             }
         }
 

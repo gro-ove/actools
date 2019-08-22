@@ -249,7 +249,7 @@ namespace AcManager.Tools.Miscellaneous {
 
                 var idsToUpdate = new[] { id }.Append(information.AlternativeIds ?? new string[0]).ToArray();
                 return updateUrl != null &&
-                        await ContentInstallationManager.Instance.InstallAsync(updateUrl, new ContentInstallationParams {
+                        await ContentInstallationManager.Instance.InstallAsync(updateUrl, new ContentInstallationParams(true) {
                             // Actual installation params
                             PreferCleanInstallation = information.PreferCleanInstallation,
 

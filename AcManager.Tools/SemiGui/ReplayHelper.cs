@@ -147,7 +147,7 @@ namespace AcManager.Tools.SemiGui {
                 s = SettingsHolder.Drive.DefaultReplaysNameFormat;
             }
 
-            return FileUtils.EnsureFileNameIsValid(VariablesReplacement.Process(s, startProperties, result));
+            return FileUtils.EnsureFileNameIsValid(VariablesReplacement.Process(s, startProperties, result), false);
         }
     }
 }

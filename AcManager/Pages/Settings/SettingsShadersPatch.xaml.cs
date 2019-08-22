@@ -154,34 +154,54 @@ namespace AcManager.Pages.Settings {
 
         public class ViewModel : NotifyPropertyChanged, IDisposable {
             private readonly bool _isLive;
-            private StoredValue _selectedPageId = Stored.Get("/Patch.SettingsPage.Selected");
+            private readonly StoredValue _selectedPageId = Stored.Get("/Patch.SettingsPage.Selected");
 
             private FileSystemWatcher _watcher;
 
             public ViewModel(bool isLive) {
-                if (PatchHelper.GetInstalledVersion() == null) {
+                Logging.Here();
+
+                try {
+                    if (PatchHelper.GetInstalledVersion() == null) {
+                        _selectedPageId.Value = null;
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
                     _selectedPageId.Value = null;
                 }
 
+                Logging.Debug(AcRootDirectory.Instance.Value);
+                Logging.Debug(PatchHelper.GetRootDirectory());
+                Logging.Debug(FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config")));
+
+                Pages = new BetterObservableCollection<PatchPage>();
                 PagesView = new BetterListCollectionView(Pages);
                 PagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
+                Logging.Here();
+
                 _isLive = isLive;
                 _dir = FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config"));
+                Logging.Debug(_dir);
 
                 _watcher = new FileSystemWatcher(AcRootDirectory.Instance.RequireValue) {
                     NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
                     IncludeSubdirectories = true,
                     EnableRaisingEvents = true
                 };
+                Logging.Here();
 
                 _watcher.Created += OnWatcherChanged;
                 _watcher.Changed += OnWatcherChanged;
                 _watcher.Deleted += OnWatcherChanged;
                 _watcher.Renamed += OnWatcherRenamed;
+                Logging.Debug(_watcher);
 
                 CreateConfigs();
+                Logging.Here();
+
                 RescanPossibleIssues();
+                Logging.Here();
             }
 
             private readonly Busy _busyCreateConfigs = new Busy(true);
@@ -322,8 +342,10 @@ namespace AcManager.Pages.Settings {
             static ViewModel() {
                 if (!PatchHelper.OptionPatchSupport) return;
                 BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/reinstallCurrent"), PatchUpdater.Instance.ReinstallCommand);
-                BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/unblockPatch"),
-                        new DelegateCommand(() => { FileUtils.Unblock(PatchHelper.GetMainFilename()); }));
+                BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/unblockPatch"), new DelegateCommand(() => {
+                    FileUtils.Unblock(PatchHelper.GetMainFilename());
+                    Instance?.Model?.RescanPossibleIssues();
+                }));
                 BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/switchTo64Bits"), new DelegateCommand(() => {
                     SettingsHolder.Drive.Use32BitVersion = false;
                     Logging.Debug(Instance);
@@ -509,7 +531,7 @@ namespace AcManager.Pages.Settings {
                         new Uri("/Pages/ShadersPatch/ShadersDataBackgrounds.xaml", UriKind.Relative)),
             };
 
-            public BetterObservableCollection<PatchPage> Pages { get; } = new BetterObservableCollection<PatchPage>();
+            public BetterObservableCollection<PatchPage> Pages { get; }
 
             public BetterListCollectionView PagesView { get; }
 

@@ -20,7 +20,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Implementations {
     public class SevenZipContentInstallator : ContentInstallatorBase {
-        public static async Task<IAdditionalContentInstallator> Create(string filename, ContentInstallationParams installationParams, CancellationToken c) {
+        public static async Task<IAdditionalContentInstallator> Create([NotNull] string filename, [NotNull] ContentInstallationParams installationParams,
+                CancellationToken c) {
             var result = new SevenZipContentInstallator(filename, installationParams);
             await result.TestPasswordAsync(c);
             return result;
@@ -29,7 +30,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         private readonly string _filename;
         private readonly string _executable;
 
-        private SevenZipContentInstallator(string filename, ContentInstallationParams installationParams) : base(installationParams) {
+        private SevenZipContentInstallator([NotNull] string filename, [NotNull] ContentInstallationParams installationParams) : base(installationParams) {
             _filename = filename;
 
             var plugin = PluginsManager.Instance.GetById(KnownPlugins.SevenZip);
@@ -77,7 +78,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                     RedirectStandardError = true,
                     RedirectStandardOutput = true,
                     StandardOutputEncoding = Encoding.UTF8,
-                    StandardErrorEncoding =  Encoding.UTF8,
+                    StandardErrorEncoding = Encoding.UTF8,
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
                     UseShellExecute = false
@@ -105,8 +106,8 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
         }
 
         [ItemCanBeNull]
-        private async Task<SevenZipTextResult> Execute(IEnumerable<string> args, string directory, CancellationToken c){
-            using (var process = Run(args, directory)){
+        private async Task<SevenZipTextResult> Execute(IEnumerable<string> args, string directory, CancellationToken c) {
+            using (var process = Run(args, directory)) {
                 var o = new StringBuilder();
                 var e = new StringBuilder();
                 process.OutputDataReceived += (sender, eventArgs) => o.AppendLine(eventArgs.Data);
@@ -149,7 +150,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
         private static readonly Regex RegexParseLine = new Regex(@"^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d (\S{5})\s+(\d+)\s{1,12}\d*\s+(.+)$", RegexOptions.Compiled);
 
-        private static SevenZipEntry ParseListOfFiles_Line(string line){
+        private static SevenZipEntry ParseListOfFiles_Line(string line) {
             if (line.Length < 20) return null;
 
             var m = RegexParseLine.Match(line);
@@ -163,7 +164,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             };
         }
 
-        private static IEnumerable<SevenZipEntry> ParseListOfFilesOrDirectories(string[] o){
+        private static IEnumerable<SevenZipEntry> ParseListOfFilesOrDirectories(string[] o) {
             return o.Select(ParseListOfFiles_Line).NonNull();
         }
 
@@ -236,7 +237,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
                 if (testFile == null) return;
 
-                await GetFiles(new[]{ testFile.Key }, s => Task.Delay(0), c);
+                await GetFiles(new[] { testFile.Key }, s => Task.Delay(0), c);
                 _passwordCorrect = true;
             } catch (CryptographicException) {
                 IsPasswordRequired = true;
@@ -300,7 +301,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
 
         protected override async Task<IEnumerable<IFileOrDirectoryInfo>> GetFileEntriesAsync(CancellationToken cancellation) {
             return (await ListFilesOrDirectories(cancellation))?.Select(x => x.IsDirectory ?
-                (IFileOrDirectoryInfo)new SevenZipDirectoryInfo(x) : new SevenZipFileInfo(x, ReadData, CheckData));
+                    (IFileOrDirectoryInfo)new SevenZipDirectoryInfo(x) : new SevenZipFileInfo(x, ReadData, CheckData));
         }
 
         private List<string> _askedData;
@@ -400,7 +401,7 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             await GetFiles(filtered.Where(x => !x.Item2).Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
-                    // Logging.Debug(entry.Item1);
+                    Logging.Debug(entry.Item1 + "→" + entry.Item4);
 
                     if (entry.Item2) {
                         FileUtils.EnsureDirectoryExists(entry.Item4);
@@ -419,15 +420,21 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
                             }
                         }
 
+                        if (stream == null) {
+                            Logging.Warning("Failed to create a destination file");
+                        }
+
                         using (var write = stream ?? new MemoryStream()) {
                             await s.CopyToAsync(entry.Item3, write, 30);
                             if (cancellation.IsCancellationRequested) return;
                         }
 
-                        var written = new FileInfo(entry.Item4).Length;
-                        // Logging.Debug("Written bytes: " + written);
-                        if (written != entry.Item3) {
-                            throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
+                        if (stream != null) {
+                            var written = new FileInfo(entry.Item4).Length;
+                            // Logging.Debug("Written bytes: " + written);
+                            if (written != entry.Item3) {
+                                throw new Exception($"Sizes of {entry.Item1} don’t match: expected {entry.Item3}, but written {written}");
+                            }
                         }
                     }
                 }

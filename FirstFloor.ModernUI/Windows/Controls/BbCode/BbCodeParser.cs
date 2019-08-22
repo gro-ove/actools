@@ -155,7 +155,6 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 if (start) {
                     var token = La(1);
                     if (token.TokenType != BbCodeLexer.TokenAttribute) return;
-                    Logging.Debug(token.Value);
                     context.NavigateUri = token.Value.Urlify();
                     Consume();
                 } else {

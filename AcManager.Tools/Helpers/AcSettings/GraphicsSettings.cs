@@ -13,12 +13,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
             set => Apply(value, ref _allowUnsupportedDx10);
         }
 
-        private int _mipLodBias;
+        private float _mipLodBias;
 
-        public int MipLodBias {
+        public float MipLodBias {
             get => _mipLodBias;
             set {
-                value = value.Clamp(-4, 0);
+                value = value.Clamp(-4f, 0f);
                 if (Equals(value, _mipLodBias)) return;
                 _mipLodBias = value;
                 OnPropertyChanged();
@@ -52,7 +52,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
         protected override void LoadFromIni() {
             var section = Ini["DX11"];
             AllowUnsupportedDx10 = section.GetBool("ALLOW_UNSUPPORTED_DX10", false);
-            MipLodBias = section.GetInt("MIP_LOD_BIAS", 0);
+            MipLodBias = section.GetFloat("MIP_LOD_BIAS", 0f);
             SkyboxReflectionGain = section.GetDouble("SKYBOX_REFLECTION_GAIN", 1d).ToIntPercentage();
             MaximumFrameLatency = section.GetInt("MAXIMUM_FRAME_LATENCY", 0);
         }

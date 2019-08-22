@@ -14,8 +14,8 @@ namespace AcManager.Tools.ContentInstallation.Installators {
         [NotNull]
         public ContentInstallationParams InstallationParams { get; }
 
-        protected ContentInstallatorBase([CanBeNull] ContentInstallationParams installationParams) {
-            InstallationParams = installationParams ?? ContentInstallationParams.Default;
+        protected ContentInstallatorBase([NotNull] ContentInstallationParams installationParams) {
+            InstallationParams = installationParams;
         }
 
         public virtual Task TrySetPasswordAsync(string password, CancellationToken cancellation) {

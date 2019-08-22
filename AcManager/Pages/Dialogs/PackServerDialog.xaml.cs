@@ -276,7 +276,7 @@ different.";
                     }
 
                     var temporary = FileUtils.EnsureUnique(FilesStorage.Instance.GetTemporaryFilename(
-                            FileUtils.EnsureFileNameIsValid($@"Fix for {server.DisplayName}.zip")));
+                            FileUtils.EnsureFileNameIsValid($@"Fix for {server.DisplayName}.zip", true)));
 
                     waiting.Report("Saving archive…");
                     await FileUtils.WriteAllBytesAsync(temporary, memory.ToArray(), waiting.CancellationToken);

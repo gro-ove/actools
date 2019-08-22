@@ -241,7 +241,7 @@ namespace AcManager.Pages.Selected {
                 if (string.IsNullOrWhiteSpace(newCategory)) return;
 
                 ValuesStorage.Set(key, newCategory);
-                SelectedObject.EditableCategory = FileUtils.EnsureFileNameIsValid(newCategory);
+                SelectedObject.EditableCategory = FileUtils.EnsureFileNameIsValid(newCategory, false);
             }));
 
             #region Presets

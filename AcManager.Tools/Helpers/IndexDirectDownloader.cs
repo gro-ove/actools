@@ -74,8 +74,7 @@ namespace AcManager.Tools.Helpers {
                     if (!entry.ImmediateDownload && entry.OriginUrl != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0) {
                         WindowsHelper.ViewInBrowser(entry.OriginUrl);
                     } else {
-                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
-                            AllowExecutables = false,
+                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams(false) {
                             DisplayName = entry.UiName,
                             Version = entry.UiVersion,
                             InformationUrl = entry.OriginUrl
@@ -103,8 +102,7 @@ namespace AcManager.Tools.Helpers {
                     if (entry.OriginUrl != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0) {
                         WindowsHelper.ViewInBrowser(entry.OriginUrl);
                     } else {
-                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams {
-                            AllowExecutables = false,
+                        await ContentInstallationManager.Instance.InstallAsync(entry.DownloadUrl, new ContentInstallationParams(false) {
                             DisplayName = entry.UiName ?? entry.OriginName,
                             Version = entry.UiVersion,
                             InformationUrl = entry.OriginUrl

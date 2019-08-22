@@ -214,7 +214,7 @@ namespace AcManager.Tools.Objects {
         private class TrackSkinPacker : AcCommonObjectPacker<TrackSkinObject, TrackSkinPackerParams> {
             protected override string GetBasePath(TrackSkinObject t) {
                 return Params.JsgmeCompatible ?
-                        $"MODS/{FileUtils.EnsureFileNameIsValid(t.DisplayName + " " + t.Version).Trim()}/content/tracks/{t.TrackId}/skins/default" :
+                        $"MODS/{FileUtils.EnsureFileNameIsValid(t.DisplayName + " " + t.Version, false).Trim()}/content/tracks/{t.TrackId}/skins/default" :
                         $"content/tracks/{t.TrackId}/skins/cm_skins/{t.Id}";
             }
 

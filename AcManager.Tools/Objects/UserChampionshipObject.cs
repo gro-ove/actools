@@ -350,17 +350,31 @@ namespace AcManager.Tools.Objects {
 
         public PlayerCarEntry MainPlayerCarEntry {
             get => _mainPlayerCarEntry;
-            set => Apply(value, ref _mainPlayerCarEntry);
+            set => Apply(value, ref _mainPlayerCarEntry, () => {
+                if (Loaded) {
+                    ChangedData = true;
+                    ChangedExtended = true;
+                }
+            });
         }
 
         public ChangeableObservableCollection<PlayerCarEntry> PlayerCarEntries { get; } = new ChangeableObservableCollection<PlayerCarEntry>();
 
-        private void OnPlayerCarsPropertyChanged(object sender, PropertyChangedEventArgs args) { }
+        private void OnPlayerCarsPropertyChanged(object sender, PropertyChangedEventArgs args) {
+            if (Loaded) {
+                ChangedData = true;
+                ChangedExtended = true;
+            }
+        }
 
         private void OnPlayerCarsCollectionChanged(object sender, NotifyCollectionChangedEventArgs args) {
             MainPlayerCarEntry = PlayerCarEntries.FirstOrDefault();
             if (!PlayerCarEntries.Contains(UserCar)) {
                 UserCar = MainPlayerCarEntry;
+            }
+            if (Loaded) {
+                ChangedData = true;
+                ChangedExtended = true;
             }
         }
         #endregion

@@ -149,7 +149,7 @@ namespace AcManager.CustomShowroom {
             public AsyncCommand<string> UvCommand => _uvCommand ?? (_uvCommand = new AsyncCommand<string>(async o => {
                 var size = FlexibleParser.TryParseInt(o);
                 var filename = FilesStorage.Instance.GetTemporaryFilename(
-                        FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName)) + " UV.png");
+                        FileUtils.EnsureFileNameIsValid(Path.GetFileNameWithoutExtension(TextureName), true) + " UV.png");
 
                 int width, height;
                 switch (size) {

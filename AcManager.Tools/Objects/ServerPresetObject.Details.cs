@@ -103,7 +103,7 @@ namespace AcManager.Tools.Objects {
         }
 
         private async Task EnsureDetailsNameIsActualAsync(IniFile ini) {
-            if (DetailsMode != ServerPresetDetailsMode.ViaNameIdentifier) {
+            if (!ProvideDetails || DetailsMode != ServerPresetDetailsMode.ViaNameIdentifier) {
                 DetailsNamePiece = null;
                 return;
             }
@@ -144,7 +144,7 @@ namespace AcManager.Tools.Objects {
                 data.City = geoParams.City;
             }*/
 
-            var weather = Weather.FirstOrDefault();
+            var weather = Weather?.FirstOrDefault();
             if (weather != null) {
                 data.AmbientTemperature = weather.BaseAmbientTemperature;
                 data.RoadTemperature = weather.BaseRoadTemperature;

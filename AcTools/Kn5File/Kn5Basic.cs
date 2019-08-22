@@ -158,7 +158,7 @@ namespace AcTools.Kn5File {
 
         private static string GetFbxConverterLocation() {
             if (Kn5.FbxConverterLocation != null) return Kn5.FbxConverterLocation;
-            var location = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+            var location = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location ?? "");
             var fbxConverter = Path.Combine(location ?? "", "FbxConverter.exe");
             return fbxConverter;
         }
@@ -1274,8 +1274,8 @@ namespace AcTools.Kn5File {
 
                             node.MaterialId = ReadUInt32();
                             node.Layer = ReadUInt32();
-
-                            node.MisteryBytes = ReadBytes(8); // the only mystery left?
+                            node.LodIn = ReadSingle();
+                            node.LodOut = ReadSingle();
                             node.IsRenderable = true;
                             break;
                     }

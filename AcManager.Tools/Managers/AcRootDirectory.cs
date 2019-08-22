@@ -72,7 +72,12 @@ namespace AcManager.Tools.Managers {
 
             FileUtils.EnsureDirectoryExists(AcPaths.GetReplaysDirectory());
             ReplaysDirectories = ReplaysDirectories ?? new MultiDirectories(AcPaths.GetReplaysDirectory(), null);
-            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(Path.Combine(AcPaths.GetDocumentsDirectory(), "champs"));
+
+            var champsDirectory = Path.Combine(AcPaths.GetDocumentsDirectory(), "champs");
+            if (!Directory.Exists(champsDirectory) && File.Exists(champsDirectory)) {
+                champsDirectory = Path.Combine(AcPaths.GetDocumentsDirectory(), "champs_cm");
+            }
+            UserChampionshipsDirectories = UserChampionshipsDirectories ?? new AcDirectories(champsDirectory);
 
             CarsDirectories?.CreateIfMissing();
             TracksDirectories?.CreateIfMissing();

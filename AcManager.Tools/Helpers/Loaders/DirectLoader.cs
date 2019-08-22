@@ -231,7 +231,7 @@ namespace AcManager.Tools.Helpers.Loaders {
 
                 // Was the file partially loaded before?
                 var partiallyLoaded = ResumeSupported != false && resumePartiallyLoadedFilename != null
-                        ? new FileInfo(FileUtils.EnsureFilenameIsValid(resumePartiallyLoadedFilename)) : null;
+                        ? new FileInfo(FileUtils.EnsureFilenameIsValid(resumePartiallyLoadedFilename, true)) : null;
                 if (partiallyLoaded != null) {
                     Logging.Warning("Not finished: " + partiallyLoaded);
                 }

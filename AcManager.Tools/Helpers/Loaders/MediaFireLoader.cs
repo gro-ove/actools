@@ -18,7 +18,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                 var f = Regex.Match(str, @"<div class=""fileName"">([^<]+)");
                 FileName = f.Success ? f.Groups[1].Value : null;
 
-                var m = Regex.Match(str, @"(http:\/\/download[^""']+)");
+                var m = Regex.Match(str, @"(https?:\/\/download[^""']+)");
                 if (!m.Success) return false;
 
                 Url = m.Success ? m.Groups[1].Value : null;

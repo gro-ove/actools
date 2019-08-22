@@ -443,12 +443,16 @@ namespace AcTools.Utils {
             return (File.GetAttributes(filename) & FileAttributes.Directory) == FileAttributes.Directory;
         }
 
-        public static string EnsureFileNameIsValid(string fileName) {
-            return Path.GetInvalidFileNameChars().Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
+        public static string EnsureFileNameIsValid(string fileName, bool allowSquareBrackets) {
+            IEnumerable<char> input = Path.GetInvalidFileNameChars();
+            if (!allowSquareBrackets) input = input.Union("[]");
+            return input.Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
-        public static string EnsureFilenameIsValid(string fileName) {
-            return Path.GetInvalidFileNameChars().ApartFrom('/', '\\', ':').Union("[]").Aggregate(fileName, (current, c) => current.Replace(c, '-'));
+        public static string EnsureFilenameIsValid(string fileName, bool allowSquareBrackets) {
+            var input = Path.GetInvalidFileNameChars().ApartFrom('/', '\\', ':');
+            if (!allowSquareBrackets) input = input.Union("[]");
+            return input.Aggregate(fileName, (current, c) => current.Replace(c, '-'));
         }
 
         [NotNull, Localizable(false)]
