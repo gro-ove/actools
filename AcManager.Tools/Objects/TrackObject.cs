@@ -48,8 +48,9 @@ namespace AcManager.Tools.Objects {
                             information.AdditionalLayouts.Select(x => {
                                 var c = new TrackExtraLayoutObject(manager, this, enabled, x);
                                 c.PropertyChanged += Configuration_PropertyChanged;
+                                c.LayoutPriority = GetLayoutData(x)?.GetDoubleValueOnly("priority") ?? 0;
                                 return c;
-                            }).Prepend((TrackObjectBase)this));
+                            }).OrderByDescending(x => x.LayoutPriority).ThenBy(x => x.IdWithLayout).Prepend((TrackObjectBase)this));
 
                     SkinsManager = InitializeSkins();
                     return;
@@ -184,7 +185,7 @@ namespace AcManager.Tools.Objects {
                 RegexOptions.Compiled);
 
         private static int GetWeight(Match m) {
-            if (m.Value == "full" || m.Value == "drift" || m.Value == "pursuit") return 10;
+            if (m.Value == "full" || m.Value == "drift" || m.Value == "normal" || m.Value == "pursuit") return 10;
             if (m.Value == "international" || m.Value == "circuit") return 2;
             return m.Length;
         }
@@ -215,6 +216,7 @@ namespace AcManager.Tools.Objects {
                     priority += PreferredLayout.Matches(layoutId).Cast<Match>().Sum(GetWeight) * 10;
                     priority -= NonDefaultLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
                     priority += PreferredLayout.Matches(name).Cast<Match>().Sum(GetWeight) * 100;
+                    priority += data?.GetDoubleValueOnly("priority") * 1e8 ?? 0;
 
                     // b.Append($"\n{layoutId}: {name}, distance={distance}, priority={priority}");
                     if (preferredLayoutPriority < priority) {

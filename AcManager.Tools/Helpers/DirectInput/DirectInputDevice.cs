@@ -141,7 +141,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
             if (OptionStrictIndices) {
-                DisplayName += $@" (#{Index + 1})";
+                DisplayName += $@" ({Index + 1})";
             }
 
             Proc(Axis, axisP);

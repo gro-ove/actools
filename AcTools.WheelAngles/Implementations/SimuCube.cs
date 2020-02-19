@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
+using FirstFloor.ModernUI.Helpers;
 using HidLibrary;
 using JetBrains.Annotations;
 
@@ -14,7 +15,11 @@ namespace AcTools.WheelAngles.Implementations {
         }
 
         public virtual bool Test(string productGuid) {
-            return string.Equals(productGuid, "0D5A16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
+            Logging.Debug(productGuid);
+            return string.Equals(productGuid, "0D5A16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(productGuid, "0D5F16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(productGuid, "0D6016D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(productGuid, "0D6116D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
         }
 
         public int MaximumSteerLock => 65535;
@@ -33,7 +38,7 @@ namespace AcTools.WheelAngles.Implementations {
             UnsetTemporarySteeringAngle = 2
         }
 
-        [StructLayout(LayoutKind.Sequential, Pack = 1),]
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         struct CommandPacket {
             public ScReportId ReportId;
             public ScCommand Command;
@@ -59,7 +64,7 @@ namespace AcTools.WheelAngles.Implementations {
             Marshal.Copy(ptr, data, 0, CommandPacket.Size);
             Marshal.FreeHGlobal(ptr);
 
-            var result = HidDevices.Enumerate(0x16d0, 0x0d5a).Aggregate(false, (a, b) => {
+            var result = HidDevices.Enumerate(0x16d0, 0x0d5a, 0x0d5f, 0x0d60, 0x0d61).Aggregate(false, (a, b) => {
                 using (b) {
                     AcToolsLogging.Write($"Set to {steerLock}: " + b.DevicePath);
                     return a | b.Write(data);

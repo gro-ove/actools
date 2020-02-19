@@ -114,7 +114,8 @@ namespace AcManager.Tools.Data {
                 _filesToRemove.Add(file);
             }
 
-            public void Run([NotNull] byte[] data, [CanBeNull] StreamWriter log, IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
+            public void Run([NotNull] byte[] data, [CanBeNull] StreamWriter log, IProgress<AsyncProgressEntry> progress = null,
+                    CancellationToken cancellation = default) {
                 _installationLog = log;
 
                 progress.Report($"Recycling modified {_stageName} files", 0.01);
@@ -483,6 +484,9 @@ namespace AcManager.Tools.Data {
                 _installing = true;
                 Logging.Debug($"Beginning patch installation, trying to install v{Version} ({Build})");
 
+                /*if (BuildInformation.IsDebugConfiguration) {
+                    Logging.Warning("Skipping installation in debug configuration");
+                } else {*/
                 var vars = new InstallVars();
                 vars.LoadValues(ref progress);
 
@@ -538,6 +542,7 @@ namespace AcManager.Tools.Data {
 
                     PatchHelper.Reload();
                 });
+                /*}*/
             } finally {
                 _installing = false;
             }

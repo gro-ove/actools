@@ -88,6 +88,7 @@
       <HintPath>..\Libraries\Steamworks.NET\Steamworks.NET.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="xxHashSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\xxHashSharp.1.0.0\lib\net45\xxHashSharp.dll</HintPath>
       <Private>True</Private>
@@ -179,6 +180,49 @@
     <Compile Include="AcManagersNew\AcManagerNew.cs" />
     <Compile Include="AcObjectsNew\AcCommonObject.Errors.cs" />
     <Compile Include="AcObjectsNew\AcObjectNew.cs" />
+    <Compile Include="AcPlugins\AcServerPlugin.cs" />
+    <Compile Include="AcPlugins\AcServerPluginManager.cs" />
+    <Compile Include="AcPlugins\AcServerPluginManagerSettings.cs" />
+    <Compile Include="AcPlugins\ExternalPluginInfo.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverDetails.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverLeaderboardDetails.cs" />
+    <Compile Include="AcPlugins\Extras\AcDriverLocation.cs" />
+    <Compile Include="AcPlugins\Extras\AcLeaderboard.cs" />
+    <Compile Include="AcPlugins\Helpers\AcMessageParser.cs" />
+    <Compile Include="AcPlugins\Helpers\DuplexUdpClient.cs" />
+    <Compile Include="AcPlugins\Helpers\ISessionReportHandler.cs" />
+    <Compile Include="AcPlugins\Helpers\TimestampedBytes.cs" />
+    <Compile Include="AcPlugins\Helpers\Vector3F.cs" />
+    <Compile Include="AcPlugins\Info\DriverInfo.cs" />
+    <Compile Include="AcPlugins\Info\IncidentInfo.cs" />
+    <Compile Include="AcPlugins\Info\LapInfo.cs" />
+    <Compile Include="AcPlugins\Info\SessionInfo.cs" />
+    <Compile Include="AcPlugins\Kunos\ACSProtocol.cs" />
+    <Compile Include="AcPlugins\Messages\MsgCarInfo.cs" />
+    <Compile Include="AcPlugins\Messages\MsgCarUpdate.cs" />
+    <Compile Include="AcPlugins\Messages\MsgChat.cs" />
+    <Compile Include="AcPlugins\Messages\MsgClientEvent.cs" />
+    <Compile Include="AcPlugins\Messages\MsgClientLoaded.cs" />
+    <Compile Include="AcPlugins\Messages\MsgConnectionClosed.cs" />
+    <Compile Include="AcPlugins\Messages\MsgError.cs" />
+    <Compile Include="AcPlugins\Messages\MsgLapCompleted.cs" />
+    <Compile Include="AcPlugins\Messages\MsgLapCompletedLeaderboardEnty.cs" />
+    <Compile Include="AcPlugins\Messages\MsgNewConnection.cs" />
+    <Compile Include="AcPlugins\Messages\MsgNewSession.cs" />
+    <Compile Include="AcPlugins\Messages\MsgSessionEnded.cs" />
+    <Compile Include="AcPlugins\Messages\MsgSessionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\MsgVersionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestAdminCommand.cs" />
+    <Compile Include="AcPlugins\Messages\RequestBroadcastChat.cs" />
+    <Compile Include="AcPlugins\Messages\RequestCarInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestKickUser.cs" />
+    <Compile Include="AcPlugins\Messages\RequestNextSession.cs" />
+    <Compile Include="AcPlugins\Messages\RequestRealtimeInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestRestartSession.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSendChat.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSessionInfo.cs" />
+    <Compile Include="AcPlugins\Messages\RequestSetSession.cs" />
+    <Compile Include="AcPlugins\PluginMessage.cs" />
     <Compile Include="BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

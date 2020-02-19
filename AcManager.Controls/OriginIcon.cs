@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using AcManager.Tools.Helpers;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
@@ -124,7 +125,7 @@ namespace AcManager.Controls {
         private static IEnumerable<OriginIconDescription> LoadIcons() {
             return FilesStorage.Instance.GetContentFilesFiltered(@"*.json", ContentCategory.OriginIcons).Select(x => x.Filename).SelectMany(x => {
                 try {
-                    return JsonConvert.DeserializeObject<OriginIconDescription[]>(File.ReadAllText(x));
+                    return JsonConvert.DeserializeObject<OriginIconDescription[]>(File.ReadAllText(x)).NonNull();
                 } catch (Exception e) {
                     Logging.Warning($"Cannot load file {Path.GetFileName(x)}: {e}");
                     return new OriginIconDescription[0];

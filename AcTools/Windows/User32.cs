@@ -71,10 +71,10 @@ namespace AcTools.Windows {
         [DllImport("user32.dll")]
         public static extern short GetKeyState(Keys virtualKeyCode);
 
-        public static bool IsAsyncKeyPressed(Keys vKey) => (GetAsyncKeyState(vKey) & 0x8000) != 0;
+        public static bool IsAsyncKeyPressed(Keys vKey) => (GetKeyState(vKey) & 0x8000) != 0;
 
         [DllImport("user32.dll")]
-        public static extern short GetAsyncKeyState(Keys vKey);
+        private static extern short GetAsyncKeyState(Keys vKey);
 
         public enum InputType : uint {
             Mouse = 0,

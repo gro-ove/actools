@@ -76,19 +76,6 @@
       </Button>
     </DockPanel>
 
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoFittingConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="Installed Custom Shaders Patch is obsolete" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
-        <DockPanel IsHitTestVisible="False">
-          <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
-              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
-              VerticalAlignment="Center" SnapsToDevicePixels="True" />
-          <TextBlock Text="Get a new build" />
-        </DockPanel>
-      </Button>
-    </DockPanel>
-
     <mui:ModernTab x:Name="Tabs" mui:ModernFrame.KeepContentAlive="True" LinksMargin="4 0 20 0" FrameMargin="0 8 0 0" LinksHorizontalAlignment="Stretch"
         Margin="8 0 0 0" WindowChrome.IsHitTestVisibleInChrome="True" SelectedSourceChanged="OnSelectedSourceChanged" SaveKey="cspPopup.selectedTab">
       <mui:ModernTab.Template>

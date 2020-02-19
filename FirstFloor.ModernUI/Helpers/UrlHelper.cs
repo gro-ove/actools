@@ -288,6 +288,10 @@ console.log(result);
 
         internal static bool IsWebUrl(string s, int index, bool bbCodeMode, out int urlLength) {
             int start = index, length = s.Length;
+            if (start >= length) {
+                urlLength = 0;
+                return false;
+            }
 
             if (start > 0) {
                 var previous = s[start - 1];

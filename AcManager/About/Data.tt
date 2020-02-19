@@ -4,16 +4,11 @@
 <#@ Assembly Name="System.Xml.dll" #>
 <#@ Assembly Name="System.Xml.Linq.dll" #>
 <#@ Assembly Name="System.Windows.Forms.dll" #>
-<#@ import namespace="System" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.IO.Compression" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
-<#@ import namespace="System.Diagnostics" #>
 <#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Xml.Linq" #>
-<#@ import namespace="System.Windows.Forms" #>
-<#@ import namespace="System.Collections" #>
-<#@ import namespace="System.Collections.Generic" #>using AcManager.Tools.About;
+using AcManager.Tools.About;
 using System.Linq;
 
 namespace AcManager.About {<#

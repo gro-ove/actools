@@ -13,6 +13,7 @@ using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using Newtonsoft.Json.Linq;
+using SharpCompress.Common;
 using SharpCompress.Readers;
 
 namespace AcManager.Tools {

@@ -136,7 +136,7 @@
 
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20">
           <mui:SpacingStackPanel Spacing="20">
-            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+            <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
               <mui:BetterComboBox c:PropertiesGrid.Label="{x:Static c:ControlsStrings.AcObject_ContryLabel}"
                   Text="{Binding SelectedTrackConfiguration.Country, UpdateSourceTrigger=LostFocus}"
                   ItemsSource="{x:Static t:SuggestionLists.CountriesListView}" Style="{StaticResource BetterComboBox.Borderless}"
@@ -264,6 +264,13 @@
                 </FrameworkElement.ContextMenu>
                 <mui:BetterTextBox Text="{Binding SelectedTrackConfiguration.SpecsPitboxes}" Style="{StaticResource Borderless}" Mode="Integer"
                     Placeholder="{x:Static g:AppStrings.TrackSpecs_Pitboxes_FormatTooltip}" />
+              </Border>
+
+              <!-- Layout priority -->
+              <Border c:PropertiesGrid.Label="Layout priority:"
+                  Visibility="{Binding SelectedObject.MultiLayoutMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <mui:BetterTextBox Text="{Binding SelectedTrackConfiguration.LayoutPriority}" Style="{StaticResource Borderless}" Mode="Integer"
+                    Placeholder="Affects order in which layouts are arranged (positive for first, negative for last)" />
               </Border>
             </c:PropertiesGrid>
 

@@ -6,8 +6,8 @@ using JetBrains.Annotations;
 
 namespace AcTools.WheelAngles.Implementations {
     [UsedImplicitly]
-    internal class LogitechG290 : LogitechG25 {
-        public override string ControllerName => "Logitech G290";
+    internal class LogitechG920 : LogitechG25 {
+        public override string ControllerName => "Logitech G920";
 
         public override bool Test(string productGuid) {
             return string.Equals(productGuid, "C262046D-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase);
@@ -15,7 +15,7 @@ namespace AcTools.WheelAngles.Implementations {
 
         protected override string GetRegistryPath() {
             // TODO: Check
-            return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G290";
+            return @"Software\Logitech\Gaming Software\GlobalDeviceSettings\G920";
         }
 
         public override WheelOptionsBase GetOptions() {

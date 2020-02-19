@@ -42,7 +42,8 @@ namespace LicensePlatesGenerator {
 
         public string GetUsage() {
             var help = new HelpText {
-                Heading = new HeadingInfo("License Plates Generator", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Heading = new HeadingInfo("License Plates Generator",
+                        FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
                 Copyright = new CopyrightInfo("AcClub", 2017),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
@@ -90,20 +91,17 @@ namespace LicensePlatesGenerator {
             }
 
             try {
-                using (var style = new LicensePlatesStyle(options.Style)) {
+                using (var style = new LicensePlatesStyle(new DirectoryInfo(options.Style).FullName)) {
                     if (options.ListParams) {
                         Console.WriteLine("Style params:");
                         foreach (var p in style.InputParams) {
-                            var s = p as InputSelectValue;
-                            if (s != null) {
+                            if (p is InputSelectValue s) {
                                 Console.WriteLine($"- {s.Name}: {string.Join(", ", s.Values)}");
                             } else {
-                                var n = p as InputNumberValue;
-                                if (n != null) {
+                                if (p is InputNumberValue n) {
                                     Console.WriteLine($"- {n.Name}: from {n.From} to {n.To}");
                                 } else {
-                                    var t = p as InputTextValue;
-                                    if (t != null) {
+                                    if (p is InputTextValue t) {
                                         Console.WriteLine($"- {t.Name}: {(t.LengthMode == InputLength.Varying ? "up to " : "")}{t.Length} symbols");
                                     }
                                 }
@@ -123,13 +121,14 @@ namespace LicensePlatesGenerator {
                             continue;
                         }
 
-                        var p = style.InputParams.FirstOrDefault(
-                                x => string.Equals(Regex.Replace(x.Name, @"\W+", ""), Regex.Replace(s[0], @"\W+", ""), StringComparison.OrdinalIgnoreCase));
+                        var p = style.InputParams.FirstOrDefault(x => string.Equals(
+                                Regex.Replace(x.Name, @"\W+", ""),
+                                Regex.Replace(s[0], @"\W+", ""), StringComparison.OrdinalIgnoreCase));
                         if (p == null) {
                             if (s[0].Length == 1) {
-                                p = style.InputParams.FirstOrDefault(
-                                        x => x.Name.Length > 0 &&
-                                                string.Equals(Regex.Replace(x.Name, @"\W+", "").Substring(0, 1), s[0], StringComparison.OrdinalIgnoreCase));
+                                p = style.InputParams.FirstOrDefault(x => x.Name.Length > 0 && string.Equals(
+                                        Regex.Replace(x.Name, @"\W+", "").Substring(0, 1),
+                                        s[0], StringComparison.OrdinalIgnoreCase));
                             }
 
                             if (p == null) {

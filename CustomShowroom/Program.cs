@@ -67,7 +67,7 @@ namespace CustomShowroom {
         private static int MainInner(string[] args) {
             Acd.Factory = new AcdFactory();
 
-            var argsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) ?? "", "Arguments.txt");
+            var argsFile = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? "", "Arguments.txt");
             if (File.Exists(argsFile)) {
                 args = File.ReadAllLines(argsFile).Concat(args).ToArray();
             }
@@ -112,7 +112,7 @@ namespace CustomShowroom {
                 return 1;
             }
 
-            var filename = Assembly.GetEntryAssembly().Location;
+            var filename = Assembly.GetEntryAssembly()?.Location;
             if (options.Verbose || filename.IndexOf("log", StringComparison.OrdinalIgnoreCase) != -1
                     || filename.IndexOf("debug", StringComparison.OrdinalIgnoreCase) != -1) {
                 // TODO

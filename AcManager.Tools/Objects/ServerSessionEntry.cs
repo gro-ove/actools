@@ -57,14 +57,14 @@ namespace AcManager.Tools.Objects {
         private string _configName;
 
         public string ConfigName {
-            get { return _configName; }
+            get => _configName;
             set => Apply(value, ref _configName);
         }
 
         private bool _isEnabled;
 
         public bool IsEnabled {
-            get { return _isEnabled; }
+            get => _isEnabled;
             set {
                 if (!IsAvailable) value = false;
                 if (Equals(value, _isEnabled)) return;
@@ -76,7 +76,7 @@ namespace AcManager.Tools.Objects {
         private bool _isAvailable = true;
 
         public bool IsAvailable {
-            get { return _isAvailable; }
+            get => _isAvailable;
             set {
                 if (Equals(value, _isAvailable)) return;
                 _isAvailable = value;
@@ -91,7 +91,7 @@ namespace AcManager.Tools.Objects {
         private TimeSpan _time;
 
         public TimeSpan Time {
-            get { return _time; }
+            get => _time;
             set {
                 value = value.Clamp(TimeSpan.Zero, TimeSpan.MaxValue);
                 if (Equals(value, _time)) return;
@@ -103,7 +103,7 @@ namespace AcManager.Tools.Objects {
         private bool _isOpen;
 
         public bool IsOpen {
-            get { return _isOpen; }
+            get => _isOpen;
             set => Apply(value, ref _isOpen);
         }
 
@@ -210,28 +210,28 @@ namespace AcManager.Tools.Objects {
         private bool _limitByTime;
 
         public bool LimitByTime {
-            get { return _limitByTime; }
+            get => _limitByTime;
             set => Apply(value, ref _limitByTime);
         }
 
         private bool _extraLap;
 
         public bool ExtraLap {
-            get { return _extraLap; }
+            get => _extraLap;
             set => Apply(value, ref _extraLap);
         }
 
         private bool _mandatoryPit;
 
         public bool MandatoryPit {
-            get { return _mandatoryPit; }
+            get => _mandatoryPit;
             set => Apply(value, ref _mandatoryPit);
         }
 
         private int _mandatoryPitFrom;
 
         public int MandatoryPitFrom {
-            get { return _mandatoryPitFrom; }
+            get => _mandatoryPitFrom;
             set {
                 if (Equals(value, _mandatoryPitFrom)) return;
                 _mandatoryPitFrom = value;
@@ -246,7 +246,7 @@ namespace AcManager.Tools.Objects {
         private int _mandatoryPitTo;
 
         public int MandatoryPitTo {
-            get { return _mandatoryPitTo; }
+            get => _mandatoryPitTo;
             set {
                 if (Equals(value, _mandatoryPitTo)) return;
                 _mandatoryPitTo = value;
@@ -261,35 +261,35 @@ namespace AcManager.Tools.Objects {
         private int _reversedGridRacePositions;
 
         public int ReversedGridRacePositions {
-            get { return _reversedGridRacePositions; }
+            get => _reversedGridRacePositions;
             set => Apply(value, ref _reversedGridRacePositions);
         }
 
         private int _lapsCount;
 
         public int LapsCount {
-            get { return _lapsCount; }
+            get => _lapsCount;
             set => Apply(value, ref _lapsCount);
         }
 
         private TimeSpan _waitTime;
 
         public TimeSpan WaitTime {
-            get { return _waitTime; }
+            get => _waitTime;
             set => Apply(value, ref _waitTime);
         }
 
         private ServerPresetRaceJoinType _joinType;
 
         public ServerPresetRaceJoinType JoinType {
-            get { return _joinType; }
+            get => _joinType;
             set => Apply(value, ref _joinType);
         }
 
         private TimeSpan _resultScreenTime;
 
         public TimeSpan ResultScreenTime {
-            get { return _resultScreenTime; }
+            get => _resultScreenTime;
             set => Apply(value, ref _resultScreenTime);
         }
 

@@ -17,7 +17,7 @@ namespace AcTools.Processes {
     public partial class Game {
         public static INationCodeProvider NationCodeProvider { get; set; }
 
-        public enum SessionType {
+        public enum SessionType : byte {
             [Description("Booking")]
             Booking = 0,
 
@@ -681,7 +681,7 @@ namespace AcTools.Processes {
             public bool TyreBlankets;
             public double SlipSteamMultipler;
 
-            private IniFile ToIniFile() {
+            public IniFile ToIniFile() {
                 return new IniFile {
                     ["ASSISTS"] = {
                         ["IDEAL_LINE"] = IdealLine,

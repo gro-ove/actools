@@ -4,16 +4,9 @@
 <#@ Assembly Name="System.Xml.dll" #>
 <#@ Assembly Name="System.Xml.Linq.dll" #>
 <#@ Assembly Name="System.Windows.Forms.dll" #>
-<#@ import namespace="System" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.IO.Compression" #>
-<#@ import namespace="System.Text.RegularExpressions" #>
-<#@ import namespace="System.Diagnostics" #>
-<#@ import namespace="System.Linq" #>
-<#@ import namespace="System.Xml.Linq" #>
-<#@ import namespace="System.Windows.Forms" #>
-<#@ import namespace="System.Collections" #>
-<#@ import namespace="System.Collections.Generic" #>using System;
+using System;
 using System.IO.Compression;
 using AcManager.Tools.Managers.Presets;
 using AcTools.Utils.Helpers;
@@ -32,8 +25,9 @@ namespace AcManager.Assets {
     var location = Path.GetDirectoryName(this.Host.TemplateFile);
     if (string.IsNullOrEmpty(location)) location = Environment.CurrentDirectory;
 	location = Path.Combine(location, "Presets");
-	
-    foreach (var sub in Directory.GetDirectories(location)){
+
+    foreach (var sub in Directory.GetDirectories(location)) {
+        if (sub == null) continue;
         var className = Path.GetFileName(sub);
 		foreach (var file in Directory.GetFiles(sub)){
 			var presetName = Path.GetFileNameWithoutExtension(file);

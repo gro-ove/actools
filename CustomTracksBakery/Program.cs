@@ -157,7 +157,8 @@ namespace CustomTracksBakery {
 
         public string GetUsage() {
             var help = new HelpText {
-                Heading = new HeadingInfo("Custom Tracks Bakery", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
+                Heading = new HeadingInfo("Custom Tracks Bakery",
+                        FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly()?.Location ?? "").FileVersion),
                 Copyright = new CopyrightInfo("AcClub", 2018),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true

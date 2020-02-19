@@ -77,8 +77,8 @@ namespace AcManager {
             if (!string.IsNullOrWhiteSpace(data)) {
                 ApplicationDataDirectory = Path.GetFullPath(data);
             } else {
-                var exe = Assembly.GetEntryAssembly().Location;
-                ApplicationDataDirectory = Path.GetFileName(exe).IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
+                var exe = Assembly.GetEntryAssembly()?.Location;
+                ApplicationDataDirectory = Path.GetFileName(exe)?.IndexOf("local", StringComparison.OrdinalIgnoreCase) != -1
                         ? Path.Combine(Path.GetDirectoryName(exe) ?? Path.GetFullPath("."), "Data")
                         : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "AcTools Content Manager");
             }

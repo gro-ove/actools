@@ -245,7 +245,7 @@ namespace LicensePlates {
 
         public void CreateDiffuseMap(bool previewMode, string filename) {
             using (var image = CreateDiffuseMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt1");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
                 image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
                 image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
@@ -254,7 +254,7 @@ namespace LicensePlates {
 
         public void CreateNormalsMap(bool previewMode, string filename) {
             using (var image = CreateNormalsMap(previewMode)) {
-                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt1");
+                image.Settings.SetDefine(MagickFormat.Dds, "compression", "dxt5");
                 image.Settings.SetDefine(MagickFormat.Dds, "mipmaps", "false");
                 image.Settings.SetDefine(MagickFormat.Dds, "cluster-fit", "true");
                 image.Write(filename);
@@ -395,6 +395,15 @@ namespace LicensePlates {
 
             if (_disposed) return image;
             image.Composite(textLayer, 0, 0, CompositeOperator.Over);
+
+            var textAlpha = textLayer.Clone();
+           // textAlpha.HasAlpha = false;
+            // textAlpha.FloodFill(); = false;
+            // textAlpha.Negate();
+            // textAlpha.Level(255, 240);
+            image.Evaluate(Channels.Alpha, EvaluateOperator.Set, new Percentage(0d));
+            textAlpha.InverseLevel(255, 215, Channels.Alpha);
+            image.Composite(textAlpha, 0, 0, CompositeOperator.CopyAlpha);
             return image;
         }
 

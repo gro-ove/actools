@@ -469,8 +469,9 @@ namespace AcManager.Tools.Objects {
         }
 
         private async Task RunAcServer(string serverExecutable, ICollection<string> log, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+            Process process = null;
             try {
-                using (var process = new Process {
+                process = new Process {
                     StartInfo = {
                         FileName = serverExecutable,
                         Arguments = $"-c presets/{Id}/server_cfg.ini -e presets/{Id}/entry_list.ini",
@@ -480,29 +481,31 @@ namespace AcManager.Tools.Objects {
                         CreateNoWindow = true,
                         RedirectStandardError = true,
                         StandardOutputEncoding = Encoding.UTF8,
-                        StandardErrorEncoding =  Encoding.UTF8,
+                        StandardErrorEncoding = Encoding.UTF8,
                     }
-                }) {
-                    process.Start();
-                    SetRunning(process);
-                    ChildProcessTracker.AddProcess(process);
+                };
 
-                    progress?.Report(AsyncProgressEntry.Finished);
+                process.Start();
+                SetRunning(process);
+                ChildProcessTracker.AddProcess(process);
+                progress?.Report(AsyncProgressEntry.Finished);
 
-                    process.BeginOutputReadLine();
-                    process.BeginErrorReadLine();
-                    process.OutputDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add(args.Data));
-                    process.ErrorDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+                process.OutputDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add(args.Data));
+                process.ErrorDataReceived += (sender, args) => ActionExtension.InvokeInMainThread(() => log.Add($@"[color=#ff0000]{args.Data}[/color]"));
 
-                    await process.WaitForExitAsync(cancellation);
-                    if (!process.HasExitedSafe()) {
-                        process.Kill();
-                    }
-
-                    log.Add($@"[CM] Stopped: {process.ExitCode}");
+                await process.WaitForExitAsync(cancellation);
+                if (!process.HasExitedSafe()) {
+                    process.Kill();
                 }
+
+                log.Add($@"[color=#00ff00][CM] Stopped: {process.ExitCode}[/color]");
+            } catch (TaskCanceledException) {
+                StopServer();
             } finally {
                 SetRunning(null);
+                process?.Dispose();
             }
         }
 

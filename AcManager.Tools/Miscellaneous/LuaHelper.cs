@@ -32,6 +32,10 @@ namespace AcManager.Tools.Miscellaneous {
             return Enum.GetValues(typeof(T)).OfType<T>().ToDictionary(x => x.ToString(), x => (int)(object)x);
         }
 
+        public static object ToMoonSharp<T, TCast>() where T : struct {
+            return Enum.GetValues(typeof(T)).OfType<T>().ToDictionary(x => x.ToString(), x => (TCast)(object)x);
+        }
+
         [CanBeNull]
         public static Script GetExtended() {
             try {
@@ -60,7 +64,7 @@ namespace AcManager.Tools.Miscellaneous {
                     ["equals_i"] = (Func<string, string, bool>)CompareStringsIgnoringCase
                 };
 
-                state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType>();
+                state.Globals[@"SessionType"] = ToMoonSharp<Game.SessionType, byte>();
                 return state;
             } catch (Exception e) {
                 Logging.Warning("Can’t initialize: " + e);

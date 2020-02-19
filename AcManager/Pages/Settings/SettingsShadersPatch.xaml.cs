@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -148,7 +149,6 @@ namespace AcManager.Pages.Settings {
         public enum Mode {
             NoShadersPatch,
             NoConfigs,
-            NoFittingConfigs,
             EverythingIsFine
         }
 
@@ -198,11 +198,15 @@ namespace AcManager.Pages.Settings {
                 Logging.Debug(_watcher);
 
                 CreateConfigs();
-                Logging.Here();
-
                 RescanPossibleIssues();
-                Logging.Here();
             }
+
+            private AsyncCommand _installPatchCommand;
+
+            public AsyncCommand InstallPatchCommand => _installPatchCommand ?? (_installPatchCommand = new AsyncCommand(async () => {
+                await PatchUpdater.Instance.CheckAndUpdateIfNeeded();
+                await PatchUpdater.Instance.InstallAsync(PatchUpdater.Instance.LatestRecommendedVersion, default(CancellationToken));
+            }, () => Mode != Mode.EverythingIsFine));
 
             private readonly Busy _busyCreateConfigs = new Busy(true);
             private readonly Busy _busyUpdateVersion = new Busy(true);
@@ -443,14 +447,7 @@ namespace AcManager.Pages.Settings {
                     }
                 });
 
-                if (Configs?.Count > 0) {
-                    Mode = Mode.EverythingIsFine;
-                } else if (anyConfigFound) {
-                    Mode = Mode.NoFittingConfigs;
-                } else {
-                    Mode = Mode.NoConfigs;
-                }
-
+                Mode = Configs?.Count > 0 ? Mode.EverythingIsFine : Mode.NoConfigs;
                 Pages.ReplaceEverythingBy_Direct(PatchHelper.OptionPatchSupport
                         ? BasePages.Concat(Configs.Select(x => new PatchPage(x)))
                         : Configs.Select(x => new PatchPage(x)));
@@ -472,7 +469,9 @@ namespace AcManager.Pages.Settings {
 
             public Mode Mode {
                 get => _mode;
-                set => Apply(value, ref _mode);
+                set => Apply(value, ref _mode, () => {
+                    _installPatchCommand?.RaiseCanExecuteChanged();
+                });
             }
 
             public const string PageIdInformation = "information";

@@ -67,7 +67,7 @@ namespace FirstFloor.ModernUI.Win8Extension {
 
 namespace FirstFloor.ModernUI.Win8Extension {
     public static class Toast {
-        public static void Show(string title, string message, object icon, object click) {
+        public static void Show(ToastParameters parameters) {
             throw new System.NotSupportedException();
         }
     }

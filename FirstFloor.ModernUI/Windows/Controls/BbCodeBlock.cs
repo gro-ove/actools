@@ -146,78 +146,85 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         [CanBeNull]
         private static Inline ParseEmojiOrNull(string bbCode, bool allowBbCodes, bool highlightUrls, FrameworkElement element = null,
                 ILinkNavigator navigator = null) {
-            var converted = new StringBuilder();
-            var lastIndex = 0;
-            var complex = false;
-            var urlSkipNext = false;
+            try {
 
-            for (var i = 0; i < bbCode.Length; i++) {
-                var c = bbCode[i];
+                var converted = new StringBuilder();
+                var lastIndex = 0;
+                var complex = false;
+                var urlSkipNext = false;
 
-                if (c == '[') {
-                    if (!allowBbCodes) {
-                        if (lastIndex < i) {
-                            converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
-                        }
-                        lastIndex = i + 1;
-                        converted.Append(@"\[");
-                    }
-                    complex = true;
-                    urlSkipNext = false;
-                    continue;
-                }
+                for (var i = 0; i < bbCode.Length; i++) {
+                    var c = bbCode[i];
 
-                if (highlightUrls) {
-                    var isSymbol = char.IsLetterOrDigit(c);
-                    if (isSymbol) {
-                        if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, true, out var urlLength)) {
-                            var url = bbCode.Substring(i, urlLength);
+                    if (c == '[') {
+                        if (!allowBbCodes) {
                             if (lastIndex < i) {
                                 converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
                             }
-                            lastIndex = i + urlLength;
-                            converted.Append($"[url={EncodeAttribute(url.Urlify())}]{Encode(url)}[/url]");
-                            complex = true;
+                            lastIndex = i + 1;
+                            converted.Append(@"\[");
                         }
-
-                        urlSkipNext = true;
-                    } else {
+                        complex = true;
                         urlSkipNext = false;
+                        continue;
+                    }
+
+                    if (highlightUrls) {
+                        var isSymbol = char.IsLetterOrDigit(c);
+                        if (isSymbol) {
+                            if (!urlSkipNext && UrlHelper.IsWebUrl(bbCode, i, true, out var urlLength)) {
+                                var url = bbCode.Substring(i, urlLength);
+                                if (lastIndex < i) {
+                                    converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                                }
+                                lastIndex = i + urlLength;
+                                converted.Append($"[url={EncodeAttribute(url.Urlify())}]{Encode(url)}[/url]");
+                                complex = true;
+                            }
+
+                            urlSkipNext = true;
+                        } else {
+                            urlSkipNext = false;
+                        }
+                    }
+
+                    if (Emoji.IsEmoji(bbCode, i, out var emojiLength)) {
+                        if (lastIndex < i) {
+                            converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                        }
+                        var emoji = bbCode.Substring(i, emojiLength);
+                        converted.Append($"[img=\"emoji://{EmojiToNumber(emoji)}\"]{emoji}[/img]");
+                        lastIndex = i + emojiLength;
+                        complex = true;
+                    }
+
+                    // Even if it’s not an emoji, it still would be better to jump over high surrogates
+                    if (emojiLength > 1) {
+                        i += emojiLength - 1;
                     }
                 }
 
-                if (Emoji.IsEmoji(bbCode, i, out var emojiLength)) {
-                    if (lastIndex < i) {
-                        converted.Append(bbCode.Substring(lastIndex, i - lastIndex));
+                if (complex) {
+                    if (converted.Length > 0) {
+                        converted.Append(bbCode.Substring(lastIndex));
+                        bbCode = converted.ToString();
                     }
-                    var emoji = bbCode.Substring(i, emojiLength);
-                    converted.Append($"[img=\"emoji://{EmojiToNumber(emoji)}\"]{emoji}[/img]");
-                    lastIndex = i + emojiLength;
-                    complex = true;
+
+                    try {
+                        return new BbCodeParser(bbCode, element) {
+                            Commands = (navigator ?? DefaultLinkNavigator).Commands
+                        }.Parse();
+                    } catch (Exception e) {
+                        Logging.Error(e);
+                    }
                 }
 
-                // Even if it’s not an emoji, it still would be better to jump over high surrogates
-                if (emojiLength > 1) {
-                    i += emojiLength - 1;
-                }
+                return null;
+            } catch (Exception e) {
+                Logging.Warning(e);
+                Logging.Warning(bbCode);
+                return null;
             }
-
-            if (complex) {
-                if (converted.Length > 0) {
-                    converted.Append(bbCode.Substring(lastIndex));
-                    bbCode = converted.ToString();
-                }
-
-                try {
-                    return new BbCodeParser(bbCode, element) {
-                        Commands = (navigator ?? DefaultLinkNavigator).Commands
-                    }.Parse();
-                } catch (Exception e) {
-                    Logging.Error(e);
-                }
-            }
-
-            return null;
         }
 
         [NotNull]

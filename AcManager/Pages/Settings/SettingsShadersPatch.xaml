@@ -14,25 +14,11 @@
   </UserControl.Resources>
 
   <mui:Switch Value="{Binding Mode}">
-    <!--<DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
-        <DockPanel IsHitTestVisible="False">
-          <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
-              Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
-              VerticalAlignment="Center" SnapsToDevicePixels="True" />
-          <TextBlock Text="What is it?" />
-        </DockPanel>
-      </Button>
-    </DockPanel>
-
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Margin="{StaticResource ContentMarginWithPadding}" Width="480">
+      <TextBlock Text="Custom Shaders Patch is not installed" TextWrapping="Wrap" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch"
-            Style="{StaticResource Go.Button}">
+        <Button Margin="0 8 0 0" Command="{Binding InstallPatchCommand}" Style="{StaticResource Go.Button}">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
@@ -40,46 +26,45 @@
             <TextBlock Text="Install" />
           </DockPanel>
         </Button>
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch">
           <DockPanel IsHitTestVisible="False">
-            <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
+            <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
                 VerticalAlignment="Center" SnapsToDevicePixels="True" />
-            <TextBlock Text="More information" />
+            <TextBlock Text="What is it?" />
           </DockPanel>
         </Button>
       </mui:SpacingUniformGrid>
     </DockPanel>
 
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoFittingConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
-        Margin="{StaticResource ContentMarginWithPadding}">
-      <TextBlock Text="Installed Custom Shaders Patch is obsolete" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
+        Margin="{StaticResource ContentMarginWithPadding}" Width="480">
+      <TextBlock Text="Configs for Custom Shaders Patch are missing. Reinstall?" TextWrapping="Wrap" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch"
-            Style="{StaticResource Go.Button}">
+        <Button Margin="0 8 0 0" Command="{Binding InstallPatchCommand}" Style="{StaticResource Go.Button}">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
                 VerticalAlignment="Center" SnapsToDevicePixels="True" />
-            <TextBlock Text="Install newer version" />
+            <TextBlock Text="Yes, please" />
           </DockPanel>
         </Button>
-        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+        <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch">
           <DockPanel IsHitTestVisible="False">
-            <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
+            <Path Data="{StaticResource WebIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
                 VerticalAlignment="Center" SnapsToDevicePixels="True" />
-            <TextBlock Text="More information" />
+            <TextBlock Text="What is Custom Shaders Patch?" />
           </DockPanel>
         </Button>
       </mui:SpacingUniformGrid>
-    </DockPanel>-->
+    </DockPanel>
 
     <Grid Margin="{StaticResource ContentMargin}">
       <Grid.ColumnDefinitions>
         <ColumnDefinition MinWidth="50" MaxWidth="400" />
         <ColumnDefinition Width="9" />
-        <ColumnDefinition MinWidth="640"/>
+        <ColumnDefinition MinWidth="640" />
       </Grid.ColumnDefinitions>
 
       <!-- Link list -->

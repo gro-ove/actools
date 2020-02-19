@@ -160,6 +160,21 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        private double _layoutPriority;
+
+        public double LayoutPriority {
+            get => _layoutPriority;
+            set {
+                if (value == _layoutPriority) return;
+                _layoutPriority = value;
+
+                if (Loaded) {
+                    OnPropertyChanged(nameof(LayoutPriority));
+                    Changed = true;
+                }
+            }
+        }
+
         private string _specsLength;
         private string _specsLengthDisplay;
 
@@ -362,6 +377,7 @@ namespace AcManager.Tools.Objects {
 
             City = json.GetStringValueOnly("city");
             GeoTags = json.GetGeoTagsValueOnly("geotags");
+            LayoutPriority = json.GetDoubleValueOnly("priority") ?? 0d;
 
             if (GeoTags?.IsEmptyOrInvalid != false) {
                 var data = DataProvider.Instance.TrackParams[MainTrackObject.Id];
@@ -408,6 +424,12 @@ namespace AcManager.Tools.Objects {
                 json[@"geotags"] = GeoTags.ToJObject();
             } else {
                 json.Remove(@"geotags");
+            }
+
+            if (LayoutPriority != 0d) {
+                json[@"priority"] = LayoutPriority;
+            } else {
+                json.Remove(@"priority");
             }
 
             json[@"length"] = SpecsLength;

@@ -1,11 +1,11 @@
 ﻿using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace FirstFloor.ModernUI.Tests {
-    [TestClass]
+    [TestFixture]
     public class CommandsTest {
-        [TestMethod]
+        [Test]
         public void TestTypes() {
             string s = null;
 

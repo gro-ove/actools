@@ -31,7 +31,7 @@ namespace AcManager.Pages.Dialogs {
         public PackServerDialog(ServerPresetObject server) {
             DataContext = new ViewModel(null, server);
             InitializeComponent();
-            Buttons = new [] {
+            Buttons = new[] {
                 CreateExtraDialogButton("Pack", Model.PackCommand, true),
                 CancelButton
             };
@@ -162,8 +162,7 @@ namespace AcManager.Pages.Dialogs {
                         outputStream = File.Create(destination);
                     } else {
                         outputStream = new GZipStream(File.Create(destination), CompressionMode.Compress,
-                                CompressionLevel.BestCompression, false,
-                                Encoding.UTF8) { FileName = @"tar.tar" };
+                                CompressionLevel.BestCompression, Encoding.UTF8) { FileName = @"tar.tar" };
                     }
 
                     try {
@@ -226,9 +225,8 @@ namespace AcManager.Pages.Dialogs {
             #region Extra
             private DelegateCommand<string> _navigateCommand;
 
-            public DelegateCommand<string> NavigateCommand => _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(o => {
-                WindowsHelper.ViewInBrowser(o?.ToString());
-            }));
+            public DelegateCommand<string> NavigateCommand
+                => _navigateCommand ?? (_navigateCommand = new DelegateCommand<string>(o => { WindowsHelper.ViewInBrowser(o?.ToString()); }));
             #endregion
         }
 
@@ -250,7 +248,7 @@ different.";
 
         public static async Task EnsurePacked(ServerPresetObject server, WaitingDialog waiting) {
             var notPacked = server.CarIds.Select(CarsManager.Instance.GetById)
-                                  .Where(x => x?.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
+                    .Where(x => x?.AcdData?.IsPacked == false).Select(x => x.DisplayName).ToList();
 
             if (notPacked.Any() &&
                     ShowMessage(string.Format(ToolsStrings.ServerPreset_UnpackedDataWarning, notPacked.JoinToReadableString()),

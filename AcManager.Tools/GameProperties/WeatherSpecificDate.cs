@@ -1,7 +1,6 @@
 ﻿using System;
 using AcTools.DataFile;
 using AcTools.Processes;
-using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.GameProperties {
     public class WeatherSpecificDate : Game.RaceIniProperties {
@@ -15,7 +14,7 @@ namespace AcManager.Tools.GameProperties {
 
         public override void Set(IniFile file) {
             if (UseSpecificDate) {
-                file["LIGHTING"].Set("__CM_DATE", Date.ToUnixTimestamp());
+                file["LIGHTING"].Set("__CM_DATE", (Date - new DateTime(1970, 1, 1)).TotalSeconds);
             } else {
                 file["LIGHTING"].Remove("__CM_DATE");
             }

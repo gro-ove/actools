@@ -63,8 +63,10 @@ namespace AcManager.Pages.Settings {
                     var result = new IniFile(filename);
                     for (var i = 0; i < list.Count && !cancellation.IsCancellationRequested; i++) {
                         var track = list[i];
-                        if (result[track.Id].GetNonEmpty("TIMEZONE") != null) continue;
+                        result[track.Id].Set("NAME", track.DisplayNameWithoutCount);
                         w.Report(new AsyncProgressEntry(track.DisplayName, i, list.Count));
+
+                        if (result[track.Id].GetNonEmpty("TIMEZONE") != null) continue;
 
                         var trackGeoTags = track.GeoTags;
                         if (trackGeoTags == null || trackGeoTags.IsEmptyOrInvalid) {
@@ -95,6 +97,8 @@ namespace AcManager.Pages.Settings {
 
                         result = new IniFile(filename);
                     }
+
+                    result.Save();
                 }
             }));
 

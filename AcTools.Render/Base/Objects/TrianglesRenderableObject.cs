@@ -199,10 +199,10 @@ namespace AcTools.Render.Base.Objects {
         public override float? CheckIntersection(Ray ray) {
             UpdateBoundingBox();
 
-            float d;
+            /*float d;
             if (!BoundingBox.HasValue || !Ray.Intersects(ray, BoundingBox.Value, out d)) {
                 return null;
-            }
+            }*/
 
             var min = float.MaxValue;
             var found = false;

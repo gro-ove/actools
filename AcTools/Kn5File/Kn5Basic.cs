@@ -200,7 +200,7 @@ namespace AcTools.Kn5File {
                 Console.WriteLine(@"\nAutodesk FBX Converter:\n    Arguments: {0}\n    Exit code: {1}\n{2}",
                         arguments, process.ExitCode, outputStringBuilder.ToString().Trim().Replace("\n", "\n    "));
 
-                if (process.ExitCode == 0) {
+                if (process.ExitCode == 0 && colladaFilename != null) {
                     File.Delete(colladaFilename);
                 }
             } finally {

@@ -537,7 +537,7 @@ namespace AcManager.Tools.GameProperties {
                     }
 
                     var joyKey = button != -1 ? new JoyKey(joy, button) : new JoyKey(joy, pov, povDirection);
-                    joyToCommand[joyKey] = new HotkeyJoyCommand(Keys.RControlKey, (Keys)key) {
+                    joyToCommand[joyKey] = new HotkeyJoyCommand(/*Keys.RControlKey,*/ (Keys)key) {
                         MinInterval = delay,
                         DelayedName = null
                     };

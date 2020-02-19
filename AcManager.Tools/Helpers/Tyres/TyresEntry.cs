@@ -391,7 +391,7 @@ namespace AcManager.Tools.Helpers.Tyres {
             }
 
             Logging.Debug("List of tyres is ready");
-            return list;
+            return list.NonNull().ToList();
         }
 
         [ItemCanBeNull]

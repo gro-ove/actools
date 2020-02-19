@@ -35,7 +35,7 @@ using SlimDX.Direct3D11;
 <#
 /* INITIALIZE PATHS */
 	var dataFolder = Path.GetFullPath(Host.ResolvePath(@"."));
-	string rootNamespace = null;
+	string rootNamespace;
 	string resultNamespace = null;
 	string resxName = null;
 
@@ -138,6 +138,8 @@ namespace <#= resultNamespace #> {
 	};
 
 	Func<string, byte[]> CompileShader = f => {
+	    if (f == null) return null;
+
 		var n = Path.GetFileName(f);
 		var c = f + ".o";
 		var h = Path.Combine(tempFolder, n + ".o");
@@ -158,12 +160,15 @@ namespace <#= resultNamespace #> {
 		var p = Process.Start(new ProcessStartInfo {
 			FileName = fxc,
 			Arguments = "/nologo /T fx_5_0 /O3 /I../Includes /E Render /Fo\"" + Path.GetFileName(c) + "\" \"" + n + "\"",
-			WorkingDirectory = Path.GetDirectoryName(f),
+			WorkingDirectory = Path.GetDirectoryName(f) ?? "",
 			WindowStyle = ProcessWindowStyle.Hidden,
 			RedirectStandardError = true,
 			RedirectStandardOutput = true,
 			UseShellExecute = false
 		});
+		if (p == null) {
+		    return null;
+		}
 
 		p.Start();
 		var w = p.StandardError.ReadToEnd().Replace("warning X4717: Effects deprecated for D3DCompiler_47", "")
@@ -465,7 +470,7 @@ namespace <#= resultNamespace #> {
 	/* EXTRA MODES */
 		var extraModesEnum = "";
 		if (extraModes.Count > 0){
-			extraModesEnum = $@"public enum Mode {{ Main, {string.Join(", ", extraModes.Select(x => Path.GetFileNameWithoutExtension(x).Split('.').Last()))} }}
+			extraModesEnum = $@"public enum Mode {{ Main, {string.Join(", ", extraModes.Select(x => (Path.GetFileNameWithoutExtension(x) ?? "").Split('.').Last()))} }}
 
 		";
 		}
