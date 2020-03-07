@@ -629,7 +629,8 @@ namespace AcManager {
             ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, InternalUtils.Revoked);
             InternalUtils.SetKey(null, null);
 
-            Current.Dispatcher.Invoke(() => {
+
+            Current.Dispatcher?.Invoke(() => {
                 if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {
                     AppKeyDialog.ShowRevokedMessage();
                 }

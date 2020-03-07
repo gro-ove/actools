@@ -542,7 +542,7 @@ namespace AcManager.Tools.Objects {
         public int AllowTyresOut {
             get => _allowTyresOut;
             set {
-                value = value.Clamp(0, 4);
+                value = value.Clamp(-1, 4);
                 if (Equals(value, _allowTyresOut)) return;
                 _allowTyresOut = value;
                 if (Loaded) {

@@ -13,29 +13,27 @@ namespace AcManager.Pages.Drive {
 
             public bool GhostCar {
                 get => _ghostCar;
-                set {
-                    if (value == _ghostCar) return;
-                    _ghostCar = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
+                set => Apply(value, ref _ghostCar, SaveLater);
+            }
+
+            private bool _doNotRecordGhostCar;
+
+            public bool DoNotRecordGhostCar {
+                get => _doNotRecordGhostCar;
+                set => Apply(value, ref _doNotRecordGhostCar, SaveLater);
             }
 
             private double _ghostCarAdvantage;
 
             public double GhostCarAdvantage {
                 get => _ghostCarAdvantage;
-                set {
-                    if (Equals(value, _ghostCarAdvantage)) return;
-                    _ghostCarAdvantage = value;
-                    OnPropertyChanged();
-                    SaveLater();
-                }
+                set => Apply(value, ref _ghostCarAdvantage, SaveLater);
             }
 
             #region Saveable
             protected new class SaveableData : QuickDriveSingleModeViewModel.SaveableData {
                 public bool GhostCar = true;
+                public bool DoNotRecordGhostCar;
                 public double GhostCarAdvantage;
             }
 
@@ -46,6 +44,7 @@ namespace AcManager.Pages.Drive {
             protected SaveableData Save(SaveableData data) {
                 base.Save(data);
                 data.GhostCar = GhostCar;
+                data.DoNotRecordGhostCar = DoNotRecordGhostCar;
                 data.GhostCarAdvantage = GhostCarAdvantage;
                 return data;
             }
@@ -53,6 +52,7 @@ namespace AcManager.Pages.Drive {
             protected void Load(SaveableData data) {
                 base.Load(data);
                 GhostCar = data.GhostCar;
+                DoNotRecordGhostCar = data.DoNotRecordGhostCar;
                 GhostCarAdvantage = data.GhostCarAdvantage;
             }
 
@@ -75,7 +75,7 @@ namespace AcManager.Pages.Drive {
                         Penalties = Penalties,
                         GhostCar = GhostCar,
                         GhostCarAdvantage = GhostCarAdvantage,
-                        RecordGhostCar = SettingsHolder.Drive.AlwaysRecordGhost ? true : (bool?)null
+                        RecordGhostCar = DoNotRecordGhostCar ? false : SettingsHolder.Drive.AlwaysRecordGhost ? true : (bool?)null
                     },
                     AdditionalPropertieses = additionalProperties.Concat(new object[] {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),

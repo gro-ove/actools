@@ -211,22 +211,28 @@ namespace AcManager.Tools.Helpers.Api {
         /// <param name="port">Port or -1 if port is missing.</param>
         /// <returns>True if parsing is successful.</returns>
         public static bool ParseAddress(string address, out string ip, out int port) {
-            var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
-            if (!parsed.Success) {
-                parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
+            try {
+                var parsed = Regex.Match(address, @"^(?:.*//)?((?:\d+\.){3}\d+)(?::(\d+))?(?:/.*)?$");
                 if (!parsed.Success) {
-                    ip = null;
-                    port = 0;
-                    return false;
+                    parsed = Regex.Match(address, @"^(?:.*//)?([\w\.]+)(?::(\d+))(?:/.*)?$");
+                    if (!parsed.Success) {
+                        ip = null;
+                        port = 0;
+                        return false;
+                    }
+
+                    ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
+                } else {
+                    ip = parsed.Groups[1].Value;
                 }
 
-                ip = Dns.GetHostEntry(parsed.Groups[1].Value).AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-            } else {
-                ip = parsed.Groups[1].Value;
+                port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
+                return true;
+            } catch {
+                ip = null;
+                port = 0;
+                return false;
             }
-
-            port = parsed.Groups[2].Success ? int.Parse(parsed.Groups[2].Value, CultureInfo.InvariantCulture) : -1;
-            return true;
         }
 
         private static ServerInformationComplete PrepareLoadedDirectly(ServerInformationComplete result, string ip) {

@@ -1,0 +1,568 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{9A653A28-FE46-40E8-A14F-48B0E325165D}</ProjectGuid>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>FirstFloor.ModernUI</RootNamespace>
+    <AssemblyName>FirstFloor.ModernUI</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <FileAlignment>512</FileAlignment>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Output\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\Output\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <!--<Reference Include="Noesis.Drawing.Imaging.WebP, Culture=neutral, processorArchitecture=MSIL">
+    <SpecificVersion>False</SpecificVersion>
+    <HintPath>..\Libraries\Noesis.WebP\Noesis.Drawing.Imaging.WebP.dll</HintPath>
+  </Reference>-->
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <!-- Win8+ special: begin -->
+  <Import Project="..\Libraries\Windows8Reference.props" />
+  <ItemGroup Condition="Exists('$(Windows8Reference)')">
+    <ProjectReference Include="..\FirstFloor.ModernUI.Win8Extension\FirstFloor.ModernUI.Win8Extension.csproj">
+      <Project>{e7e7de99-925e-4bf2-9e34-838fd6ee7191}</Project>
+      <Name>FirstFloor.ModernUI.Win8Extension</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition="Exists('$(Windows8Reference)')">
+    <DefineConstants>$(DefineConstants);WIN8SUPPORTED</DefineConstants>
+  </PropertyGroup>
+  <!-- Win8+ special: end -->
+  <ItemGroup>
+    <Compile Include="ActionExtension.cs" />
+    <Compile Include="BetterListCollectionView.cs" />
+    <Compile Include="BetterObservableCollection.cs" />
+    <Compile Include="BinaryResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>BinaryResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ChangeableObservableCollection.cs" />
+    <Compile Include="CollectionExtension.cs" />
+    <Compile Include="Commands\CommandExt.cs" />
+    <Compile Include="Commands\CommandManagerHelper.cs" />
+    <Compile Include="Commands\DelegateCommandExtensions.cs" />
+    <Compile Include="Commands\CommandBase.cs" />
+    <Compile Include="Commands\IAsyncCommand.cs" />
+    <Compile Include="Commands\UnavailableCommand.cs" />
+    <Compile Include="Dialogs\AsyncProgressEntry.cs" />
+    <Compile Include="Dialogs\ErrorMessage.cs" />
+    <Compile Include="Dialogs\FatalErrorMessage.cs" />
+    <Compile Include="Dialogs\MessageDialog.cs" />
+    <Compile Include="Dialogs\NonfatalErrorsDialog.xaml.cs">
+      <DependentUpon>NonfatalErrorsDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\Prompt.xaml.cs">
+      <DependentUpon>Prompt.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dialogs\FileRelatedDialogs.cs" />
+    <Compile Include="Dialogs\ScreenColorPickerDialog.xaml.cs">
+      <DependentUpon>ScreenColorPickerDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Commands\DelegateCommand.cs" />
+    <Compile Include="Effects\AsTransparencyMask.cs" />
+    <Compile Include="Effects\InvertEffect.cs" />
+    <Compile Include="Effects\InvertKeepColorEffect.cs" />
+    <Compile Include="Effects\NorEffect4.cs" />
+    <Compile Include="Effects\NorEffect.cs" />
+    <Compile Include="Effects\OverlayColorEffect.cs" />
+    <Compile Include="Helpers\Busy.cs" />
+    <Compile Include="Helpers\ClipboardHelper.cs" />
+    <Compile Include="Helpers\GenericObjectFactoryExtension.cs" />
+    <Compile Include="Helpers\ElementPool.cs" />
+    <Compile Include="Helpers\IStorage.cs" />
+    <Compile Include="Helpers\ScreenInterrogatory.cs" />
+    <Compile Include="Helpers\Stored.cs" />
+    <Compile Include="Helpers\StoredValue.cs" />
+    <Compile Include="Helpers\Substorage.cs" />
+    <Compile Include="Helpers\UrlHelper.cs" />
+    <Compile Include="ListenersChangedEventHandler.cs" />
+    <Compile Include="ListenersChangedEventHandlerArgs.cs" />
+    <Compile Include="NotifyExtension.cs" />
+    <Compile Include="Presentation\AppearanceManager.Behavior.cs" />
+    <Compile Include="Presentation\NotifyPropertyErrorsChanged.cs" />
+    <Compile Include="Serialization\SimpleSerialization.cs" />
+    <Compile Include="Serialization\SimpleSerialization.Extra.cs" />
+    <Compile Include="TaskExtension.cs" />
+    <Compile Include="Dialogs\WaitingDialog.xaml.cs">
+      <DependentUpon>WaitingDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\NonfatalErrorSolution.cs" />
+    <Compile Include="Helpers\NonfatalErrorEntry.cs" />
+    <Compile Include="Helpers\PopupHelper.cs" />
+    <Compile Include="ActualUnloadedHelper.cs" />
+    <Compile Include="Win32\AccentPolicy.cs" />
+    <Compile Include="Win32\AccentState.cs" />
+    <Compile Include="Win32\WindowCompositionAttribute.cs" />
+    <Compile Include="Win32\WindowCompositionAttributeData.cs" />
+    <Compile Include="Win32\WindowExStyle.cs" />
+    <Compile Include="Win32\WindowFlagsSet.cs" />
+    <Compile Include="Win32\WindowMessage.cs" />
+    <Compile Include="Win32\WindowStyle.cs" />
+    <Compile Include="Win32\WindowSystemCommand.cs" />
+    <Compile Include="Windows\Actions\StoryboardHelper.cs" />
+    <Compile Include="Windows\AlwaysExecutable.cs" />
+    <Compile Include="Windows\AppIconService.cs" />
+    <Compile Include="Windows\AppShortcut.cs" />
+    <Compile Include="Windows\Attached\CommandBindingBehavior.cs" />
+    <Compile Include="Windows\Attached\DataGridFix.cs" />
+    <Compile Include="Windows\Attached\DoubleClickEvent.cs" />
+    <Compile Include="Windows\Attached\Draggable.cs" />
+    <Compile Include="Windows\Attached\ExpanderHelper.cs" />
+    <Compile Include="Windows\Attached\FancyHintAdorner.cs" />
+    <Compile Include="Windows\Attached\FancyHintsService.cs" />
+    <Compile Include="Windows\Attached\FancyScroll.cs" />
+    <Compile Include="Windows\Attached\HyperlinkHelper.cs" />
+    <Compile Include="Windows\Attached\IsPressedAdvancement.cs" />
+    <Compile Include="Windows\Attached\ListBoxHelper.cs" />
+    <Compile Include="Windows\Attached\Resources.cs" />
+    <Compile Include="Windows\Attached\SaveScroll.cs" />
+    <Compile Include="Windows\Attached\VisibilityAnimation.cs" />
+    <Compile Include="Windows\Bindings\BooleanBinding.cs" />
+    <Compile Include="Windows\Bindings\MapBinding.cs" />
+    <Compile Include="Windows\Bindings\MapValue.cs" />
+    <Compile Include="Windows\Bindings\MapValues.cs" />
+    <Compile Include="Windows\CompositionTargetEx.cs" />
+    <Compile Include="Windows\Controls\AdornedControl.cs" />
+    <Compile Include="Windows\Controls\AsyncButton.cs" />
+    <Compile Include="Windows\Controls\BaseSwitch.cs" />
+    <Compile Include="Windows\Controls\BbCode\BbCodeParser.Image.cs" />
+    <Compile Include="Windows\Controls\BetterComboBox.cs" />
+    <Compile Include="Windows\Controls\BetterImage.Size.cs" />
+    <Compile Include="Windows\Controls\BetterImage.ThreadPools.cs" />
+    <Compile Include="Windows\Controls\BetterScrollBar.cs" />
+    <Compile Include="Windows\Controls\BetterTextBox.cs" />
+    <Compile Include="Windows\Controls\BooleanSwitch.cs" />
+    <Compile Include="Windows\Controls\Cell.cs" />
+    <Compile Include="Windows\Controls\ContextMenuButton.cs" />
+    <Compile Include="Windows\Controls\BbCode\Emoji.cs" />
+    <Compile Include="Windows\Controls\DependencyObjectHelper.cs" />
+    <Compile Include="Windows\Controls\DoubleSlider.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.ActualLocation.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Blur.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.CoordinatesTransform.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Dpi.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.ExtraFlags.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Logging.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.Placement.cs" />
+    <Compile Include="Windows\Controls\EmojiSpan.cs" />
+    <Compile Include="Windows\Controls\EmojiSupport.cs" />
+    <Compile Include="Windows\Controls\ExceptionDetails.cs" />
+    <Compile Include="Windows\Controls\FatalErrorEventArgs.cs" />
+    <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
+    <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
+    <Compile Include="Windows\Controls\IEmojiProvider.cs" />
+    <Compile Include="Windows\Controls\INumberInputConverter.cs" />
+    <Compile Include="Windows\Controls\LabeledToggleButton.cs" />
+    <Compile Include="Windows\Controls\LazySwitch.cs" />
+    <Compile Include="Windows\Controls\ListSwitch.cs" />
+    <Compile Include="Windows\Controls\ModernSubMenuItemContainerStyleSelector.cs" />
+    <Compile Include="Windows\Controls\ModernTabSplitter.cs" />
+    <Compile Include="Windows\Controls\NumberInputConverter.cs" />
+    <Compile Include="Windows\Controls\PathTrimmingTextBlock.cs" />
+    <Compile Include="Windows\Controls\PlaceholderTextBlock.cs" />
+    <Compile Include="Windows\Controls\ReferenceSwitch.cs" />
+    <Compile Include="Windows\Attached\RelativeTranslateTransform.cs" />
+    <Compile Include="Windows\Controls\RememberingExpander.cs" />
+    <Compile Include="Windows\Controls\RoundSlider.cs" />
+    <Compile Include="Windows\Controls\FormattedSlider.cs" />
+    <Compile Include="Windows\Controls\SelectableBbCodeBlock.cs" />
+    <Compile Include="Windows\Controls\SpacingStackPanel.cs" />
+    <Compile Include="Windows\Controls\SpecialMode.cs" />
+    <Compile Include="Windows\Controls\StretchyWrapPanel.cs" />
+    <Compile Include="Windows\Controls\Switch.cs" />
+    <Compile Include="Windows\Controls\SpacingUniformGrid.cs" />
+    <Compile Include="Windows\Controls\BorderyViewbox.cs" />
+    <Compile Include="Windows\Controls\ThumbExt.cs" />
+    <Compile Include="Windows\Controls\TimePassedBlock.cs" />
+    <Compile Include="Windows\Controls\LimitedViewbox.cs" />
+    <Compile Include="Windows\Controls\VirtualizingColumnsPanel.cs" />
+    <Compile Include="Windows\Converters\AndConverter.cs" />
+    <Compile Include="Windows\Converters\BindableConverterConverter.cs" />
+    <Compile Include="Windows\Converters\BrushOpacityConverter.cs" />
+    <Compile Include="Windows\Converters\ColonConverter.cs" />
+    <Compile Include="Windows\Converters\DifferenceToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\DrawingToColorConverter.cs" />
+    <Compile Include="Windows\Converters\IconPathToImageConverter.cs" />
+    <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
+    <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
+    <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
+    <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
+    <Compile Include="Windows\Converters\SolidBrushToColorConverter.cs" />
+    <Compile Include="Windows\Converters\ToSentenceConverter.cs" />
+    <Compile Include="Windows\Converters\ToThicknessConverter.cs" />
+    <Compile Include="Windows\CubicBesierEase.cs" />
+    <Compile Include="Windows\DragPopup.cs" />
+    <Compile Include="Windows\DragPreview.cs" />
+    <Compile Include="Effects\ColorPickerBluePaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerBlueSliderEffect.cs" />
+    <Compile Include="Effects\ColorPickerBrightnessPaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerGreenSliderEffect.cs" />
+    <Compile Include="Effects\ColorPickerRedSliderEffect.cs" />
+    <Compile Include="Effects\ColorPickerBrightnessSliderEffect.cs" />
+    <Compile Include="Effects\ColorPickerGreenPaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerHuePaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerHueSliderEffect.cs" />
+    <Compile Include="Effects\ColorPickerRedPaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerSaturationPaletteEffect.cs" />
+    <Compile Include="Effects\ColorPickerSaturationSliderEffect.cs" />
+    <Compile Include="Effects\GrayscaleEffect.cs" />
+    <Compile Include="Helpers\AlphanumComparatorFast.cs" />
+    <Compile Include="Helpers\BitmapSourceExtension.cs" />
+    <Compile Include="Helpers\CacheStorage.cs" />
+    <Compile Include="Helpers\ColorExtension.cs" />
+    <Compile Include="Helpers\ContextMenuExtension.cs" />
+    <Compile Include="Helpers\FileDialogFilters.cs" />
+    <Compile Include="Helpers\HorizontalScrollBehavior.cs" />
+    <Compile Include="Helpers\InformativeException.cs" />
+    <Compile Include="Helpers\KillerOrder.cs" />
+    <Compile Include="Helpers\LimitedStorage.cs" />
+    <Compile Include="Helpers\LocalizationHelper.cs" />
+    <Compile Include="Helpers\Logging.cs" />
+    <Compile Include="Helpers\Lzf.cs" />
+    <Compile Include="Helpers\NonfatalError.cs" />
+    <Compile Include="Helpers\Storage.cs" />
+    <Compile Include="Helpers\StringCipher.cs" />
+    <Compile Include="Helpers\TreeViewExtension.cs" />
+    <Compile Include="Helpers\UriExtension.cs" />
+    <Compile Include="Helpers\UserCancelledException.cs" />
+    <Compile Include="Helpers\ValuesStorage.cs" />
+    <Compile Include="Helpers\WrappingStream.cs" />
+    <Compile Include="Localizable\Ordinalizing.cs" />
+    <Compile Include="Localizable\Pluralizing.cs" />
+    <Compile Include="Localizable\Titling.cs" />
+    <Compile Include="ModernUiHelper.cs" />
+    <Compile Include="Commands\AsyncCommand.cs" />
+    <Compile Include="Presentation\AutoCompleteBehavior.cs" />
+    <Compile Include="Presentation\BindingProxy.cs" />
+    <Compile Include="Commands\CombinedCommand.cs" />
+    <Compile Include="Presentation\CustomLink.cs" />
+    <Compile Include="Presentation\LimitedQueue.cs" />
+    <Compile Include="Presentation\LinkChangedEventArgs.cs" />
+    <Compile Include="Presentation\LinkGroupFilterable.cs" />
+    <Compile Include="Presentation\LinkInput.cs" />
+    <Compile Include="Presentation\LinkInputEmpty.cs" />
+    <Compile Include="Presentation\NewLinkEventArgs.cs" />
+    <Compile Include="Presentation\NewLinkEventHandler.cs" />
+    <Compile Include="Presentation\ReadOnlyLinkGroupCollection.cs" />
+    <Compile Include="Presentation\FontSize.cs" />
+    <Compile Include="Presentation\LinkGroupCollection.cs" />
+    <Compile Include="Presentation\Displayable.cs" />
+    <Compile Include="Presentation\Link.cs" />
+    <Compile Include="Presentation\LinkCollection.cs" />
+    <Compile Include="Presentation\LinkGroup.cs" />
+    <Compile Include="Presentation\NotifyPropertyChanged.cs" />
+    <Compile Include="Presentation\AppearanceManager.cs" />
+    <Compile Include="Presentation\SharedResourceDictionary.cs" />
+    <Compile Include="Presentation\TitleLink.cs" />
+    <Compile Include="ProcessDpiAwareness.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UiStrings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>UiStrings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="CustomResourceManager.cs" />
+    <Compile Include="Win32\MonitorDpiType.cs" />
+    <Compile Include="Win32\NativeMethods.cs" />
+    <Compile Include="Win32\WindowsVersionHelper.cs" />
+    <Compile Include="Win32\Win32Rect.cs" />
+    <Compile Include="Windows\Attached\ContextMenuAdvancement.cs" />
+    <Compile Include="Windows\Attached\NewMarkAdorner.cs" />
+    <Compile Include="Windows\Attached\NewMarkService.cs" />
+    <Compile Include="Windows\Controls\HierarchicalComboBox.cs" />
+    <Compile Include="Windows\Controls\InheritingContextMenu.cs" />
+    <Compile Include="Windows\CommandDictionary.cs" />
+    <Compile Include="Windows\Controls\AlignableWrapPanel.cs" />
+    <Compile Include="Windows\Controls\BbCodeImageEventArgs.cs" />
+    <Compile Include="Windows\Controls\BetterImage.cs" />
+    <Compile Include="Windows\Controls\ButtonWithComboBox.cs" />
+    <Compile Include="Windows\Controls\ColorPicker.cs" />
+    <Compile Include="Windows\Controls\ColorPickerPanel.cs" />
+    <Compile Include="Windows\Controls\DataGridComboBoxColumn.cs" />
+    <Compile Include="Windows\Controls\DataGridTextColumn.cs" />
+    <Compile Include="Windows\Controls\DataGridCheckBoxColumn.cs" />
+    <Compile Include="Windows\Controls\DpiAwareWindow.cs" />
+    <Compile Include="Windows\Controls\DpiInformation.cs" />
+    <Compile Include="Windows\Attached\LimitedService.cs" />
+    <Compile Include="Windows\Attached\LimitedMarkAdorner.cs" />
+    <Compile Include="Windows\Controls\ModernToggleButton.cs" />
+    <Compile Include="Windows\Controls\OutlinedTextBlock.cs" />
+    <Compile Include="Windows\Controls\ProperPasswordBox.cs" />
+    <Compile Include="Windows\Controls\TextBlockAutoShrink.cs" />
+    <Compile Include="Windows\Attached\FocusAdvancement.cs" />
+    <Compile Include="Windows\Attached\InputBindingBehavior.cs" />
+    <Compile Include="Windows\Controls\ModernProgressRing.cs" />
+    <Compile Include="Windows\Controls\SourceEventArgs.cs" />
+    <Compile Include="Windows\Controls\ModernButton.cs" />
+    <Compile Include="Windows\Controls\BbCodeBlock.cs" />
+    <Compile Include="Windows\Controls\BbCode\BbCodeLexer.cs" />
+    <Compile Include="Windows\Controls\BbCode\BbCodeParser.cs" />
+    <Compile Include="Windows\Controls\BbCode\CharBuffer.cs" />
+    <Compile Include="Windows\Controls\BbCode\Lexer.cs" />
+    <Compile Include="Windows\Controls\BbCode\ParseException.cs" />
+    <Compile Include="Windows\Controls\BbCode\Parser.cs" />
+    <Compile Include="Windows\Controls\BbCode\Token.cs" />
+    <Compile Include="Windows\Controls\BbCode\TokenBuffer.cs" />
+    <Compile Include="Windows\Controls\ModernDialog.cs" />
+    <Compile Include="Windows\Controls\ModernMenu.cs" />
+    <Compile Include="Windows\Controls\ModernTab.cs" />
+    <Compile Include="Windows\Controls\ModernWindow.cs" />
+    <Compile Include="Windows\Controls\RelativeAnimatingContentControl.cs" />
+    <Compile Include="Windows\Controls\SplitButton.cs" />
+    <Compile Include="Windows\Controls\TabLayout.cs" />
+    <Compile Include="Windows\Controls\TagsList.cs" />
+    <Compile Include="Windows\Controls\TextBoxEnterKeyUpdateBehavior.cs" />
+    <Compile Include="Windows\Controls\TransitioningContentControl.cs" />
+    <Compile Include="Windows\Controls\UniformGridWithOrientation.cs" />
+    <Compile Include="Windows\Controls\ValueLabel.cs" />
+    <Compile Include="Windows\Controls\VirtualizingTilePanel.cs" />
+    <Compile Include="Windows\Controls\VirtualizingWrapPanel.cs" />
+    <Compile Include="Windows\Attached\WatermarkAdorner.cs" />
+    <Compile Include="Windows\Attached\WatermarkService.cs" />
+    <Compile Include="Windows\Converters\BooleanToTextConverter.cs" />
+    <Compile Include="Windows\Converters\ChainConverter.cs" />
+    <Compile Include="Windows\Converters\ConverterHelper.cs" />
+    <Compile Include="Windows\Converters\EnumToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\EnumToDescriptionConverter.cs" />
+    <Compile Include="Windows\Converters\EnumToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\EqualToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\FileSizeConverter.cs" />
+    <Compile Include="Windows\Converters\InvertBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\LessToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\MoreToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\MultiBooleanToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\MultiLessToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\MultiMultiplyConverter.cs" />
+    <Compile Include="Windows\Converters\MultiplyConverter.cs" />
+    <Compile Include="Windows\Converters\MoreConverter.cs" />
+    <Compile Include="Windows\Converters\NullToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\OrdinalizingConverter.cs" />
+    <Compile Include="Windows\Converters\PercentageConverter.cs" />
+    <Compile Include="Windows\Converters\PluralizingConverter.cs" />
+    <Compile Include="Localizable\PluralizingDictionary.cs" />
+    <Compile Include="Windows\Converters\SubstractConverter.cs" />
+    <Compile Include="Windows\Converters\SumConverter.cs" />
+    <Compile Include="Windows\Converters\ExistToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\ToTitleConverter.cs" />
+    <Compile Include="Windows\Converters\UriToCachedImageConverter.cs" />
+    <Compile Include="Windows\Converters\BooleanToFontWeightConverter.cs" />
+    <Compile Include="Windows\Converters\BooleanToFontStyleConverter.cs" />
+    <Compile Include="Windows\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\NullOrEmptyStringToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="Windows\Converters\ToLowerConverter.cs" />
+    <Compile Include="Windows\Converters\ToUpperSpecialConverter.cs" />
+    <Compile Include="Windows\Converters\ToUpperConverter.cs" />
+    <Compile Include="Windows\DefaultContentLoader.cs" />
+    <Compile Include="Windows\DragAdorner.cs" />
+    <Compile Include="Windows\ILoadableContent.cs" />
+    <Compile Include="Windows\ImmediateContentLoader.cs" />
+    <Compile Include="Windows\IParametrizedUriContent.cs" />
+    <Compile Include="Windows\Media\BrokenIcon.cs" />
+    <Compile Include="Windows\Media\VisualExtension.cs" />
+    <Compile Include="Windows\Media\VisualExtension.Mouse.cs" />
+    <Compile Include="Windows\Navigation\DefaultLinkNavigator.cs" />
+    <Compile Include="Windows\Navigation\FragmentNavigationEventArgs.cs" />
+    <Compile Include="Windows\IContent.cs" />
+    <Compile Include="Windows\IContentLoader.cs" />
+    <Compile Include="Windows\Navigation\ILinkNavigator.cs" />
+    <Compile Include="Windows\Media\VisualTreeHelperEx.cs" />
+    <Compile Include="Windows\Controls\ModernFrame.cs" />
+    <Compile Include="Windows\Navigation\NavigatingCancelEventArgs.cs" />
+    <Compile Include="Windows\Navigation\NavigationBaseEventArgs.cs" />
+    <Compile Include="Windows\Navigation\LinkCommands.cs" />
+    <Compile Include="Windows\Navigation\NavigationEventArgs.cs" />
+    <Compile Include="Windows\Navigation\NavigationFailedEventArgs.cs" />
+    <Compile Include="Windows\Navigation\NavigationHelper.cs" />
+    <Compile Include="Windows\Navigation\NavigationType.cs" />
+    <Compile Include="Windows\ShellLink.cs" />
+    <Compile Include="Windows\SizeRelatedCondition.cs" />
+    <Compile Include="Windows\TaskbarProgress.cs" />
+    <Compile Include="Windows\TaskbarService.cs" />
+    <Compile Include="Windows\Toast.cs" />
+    <Compile Include="WrappedCollection.cs" />
+    <Compile Include="WrappedFilteredCollection.cs" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="BinaryResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>BinaryResources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UiStrings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>UiStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\BrokenImage.bin" />
+    <None Include="Effects\Shaders\ColorPickerBluePaletteEffect.fx" />
+    <None Include="Effects\Shaders\InvertEffect.fx" />
+    <None Include="Effects\Shaders\InvertKeepColorEffect.fx" />
+    <None Include="Effects\Shaders\NorEffect.fx" />
+    <None Include="Effects\Shaders\NorEffect4.fx" />
+    <None Include="Effects\Shaders\OverlayColorEffect.fx" />
+    <None Include="packages.config" />
+    <None Include="Effects\Shaders\ColorPickerBlueSliderEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerBrightnessPaletteEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerBrightnessSliderEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerGreenPaletteEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerGreenSliderEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerHueSliderEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerHuePaletteEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerRedPaletteEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerRedSliderEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerSaturationPaletteEffect.fx" />
+    <None Include="Effects\Shaders\ColorPickerSaturationSliderEffect.fx" />
+    <None Include="Effects\Shaders\GrayscaleEffect.fx" />
+    <None Include="Effects\Shaders\Include\HSV.fx" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Effects\Shaders\AsTransparencyMask.fx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <ReferencePath Include="C:\Development\actools\FirstFloor.ModernUI.Win8Extension\bin\x86\Release\FirstFloor.ModernUI.Win8Extension.dll" />
+    <ReferencePath Include="C:\Development\actools\packages\JetBrains.Annotations.10.4.0\lib\net\JetBrains.Annotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Development\actools\packages\Blend.Interctivity.WPF.v4.0.1.0.3\lib\net40\Microsoft.Expression.Interactions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Development\actools\Libraries\SmartThreadPool\SmartThreadPool.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.IO.Compression.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.IO.Compression.FileSystem.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Windows.Forms.dll" />
+    <ReferencePath Include="C:\Development\actools\packages\Blend.Interctivity.WPF.v4.0.1.0.3\lib\net40\System.Windows.Interactivity.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Collections.Concurrent.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Collections.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ComponentModel.Annotations.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ComponentModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ComponentModel.EventBasedAsync.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Contracts.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Debug.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Tools.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Diagnostics.Tracing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Dynamic.Runtime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Globalization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.IO.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.Expressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Linq.Queryable.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Net.NetworkInformation.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Net.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Net.Requests.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ObjectModel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Emit.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Emit.ILGeneration.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Emit.Lightweight.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Reflection.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Resources.ResourceManager.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.InteropServices.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.InteropServices.WindowsRuntime.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Numerics.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Serialization.Json.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Serialization.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Runtime.Serialization.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Security.Principal.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ServiceModel.Duplex.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ServiceModel.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ServiceModel.NetTcp.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ServiceModel.Primitives.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.ServiceModel.Security.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Text.Encoding.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Text.Encoding.Extensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Text.RegularExpressions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.Tasks.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.Tasks.Parallel.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Threading.Timer.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Xml.ReaderWriter.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Xml.XDocument.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\Facades\System.Xml.XmlSerializer.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Development\actools\FirstFloor.ModernUI\obj\x86\Release\Dialogs\NonfatalErrorsDialog.g.cs" />
+    <Compile Include="C:\Development\actools\FirstFloor.ModernUI\obj\x86\Release\Dialogs\Prompt.g.cs" />
+    <Compile Include="C:\Development\actools\FirstFloor.ModernUI\obj\x86\Release\Dialogs\ScreenColorPickerDialog.g.cs" />
+    <Compile Include="C:\Development\actools\FirstFloor.ModernUI\obj\x86\Release\Dialogs\WaitingDialog.g.cs" />
+    <Compile Include="C:\Development\actools\FirstFloor.ModernUI\obj\x86\Release\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+</Project>

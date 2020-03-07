@@ -31,9 +31,9 @@
     </StackPanel>
 
     <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
-      <mui:ValueLabel Postfix="{x:Static c:ControlsStrings.Common_SecondsPostfix}" Margin="0 0 0 4" Content="{x:Static g:AppStrings.Drive_GhostCarAdvantage}"
-          mui:BetterTextBox.Mode="Number" Value="{Binding GhostCarAdvantage, StringFormat='{}{0:F2}'}" />
-      <Slider Minimum="0" Maximum="5" Value="{Binding GhostCarAdvantage}" />
+      <CheckBox Margin="8 0 0 0" IsChecked="{Binding DoNotRecordGhostCar}">
+        <Label Content="Do not record ghost car" />
+      </CheckBox>
     </StackPanel>
 
     <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
@@ -44,6 +44,12 @@
     <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
       <mui:ValueLabel Postfix="%" Margin="0 0 0 4" Content="Restrictor" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerRestrictor}" />
       <Slider Minimum="0" Maximum="100" Value="{Binding PlayerRestrictor}" />
+    </StackPanel>
+
+    <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1">
+      <mui:ValueLabel Postfix="{x:Static c:ControlsStrings.Common_SecondsPostfix}" Margin="0 0 0 4" Content="{x:Static g:AppStrings.Drive_GhostCarAdvantage}"
+          mui:BetterTextBox.Mode="Number" Value="{Binding GhostCarAdvantage, StringFormat='{}{0:F2}'}" />
+      <Slider Minimum="0" Maximum="5" Value="{Binding GhostCarAdvantage}" />
     </StackPanel>
   </Grid>
 </UserControl>
