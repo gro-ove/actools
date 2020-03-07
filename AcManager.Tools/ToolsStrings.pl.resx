@@ -493,26 +493,26 @@
     <value>Przepraszamy, ale szyfrowanie {0} nie jest obsługiwane</value>
   </data>
   <data name="Installator_UpdateEverything" xml:space="preserve">
-    <value>Aktualizacja wszystkiego</value>
-  </data>
+    <value>Zaktualizuj wszystko</value>
+  <alternative>Aktualizacja wszystkiego</alternative></data>
   <data name="Installator_RemoveExistingFirst" xml:space="preserve">
     <value>Usuń istniejące</value>
   <alternative>Usunąć istniejące pierwsze</alternative></data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>Utrzymuj informacji UI</value>
-  <alternative>Przechowywanie informacji UI</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacje o interfejsie użytkownika</value>
+  <alternative>Przechowywanie informacji UI</alternative><alternative>Utrzymuj informacji UI</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Utrzymuj podgląd skórek</value>
-  <alternative>Przechowywanie podglądu malowań</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowań</alternative><alternative>Utrzymuj podgląd skórek</alternative></data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
-  <alternative>Przechowywanie informacji UI &amp; podglądu malowań</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacji o interfejsie i podgląd skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowań</alternative><alternative>Utrzymuj informację UI &amp; podglądu skórek</alternative></data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
-    <value>Utrzymuj podgląd skórek</value>
-  <alternative>Przechowywanie podglądu malowania</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj podgląd skórek</value>
+  <alternative>Przechowywanie podglądu malowania</alternative><alternative>Utrzymuj podgląd skórek</alternative></data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>Utrzymuj informację UI &amp; podglądu skórek</value>
-  <alternative>Przechowywanie informacji UI &amp; podglądu malowania</alternative></data>
+    <value>Zaktualizuj istniejące pliki, zachowaj informacji o interfejsie i podgląd skórek</value>
+  <alternative>Przechowywanie informacji UI &amp; podglądu malowania</alternative><alternative>Utrzymuj informację UI &amp; podglądu skórek</alternative></data>
   <data name="Input_Axle" xml:space="preserve">
     <value>Oś {0}</value>
   </data>

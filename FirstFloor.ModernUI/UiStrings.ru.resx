@@ -298,49 +298,49 @@
     <comment>Put “-” and Nth value will be used</comment>
   </data>
   <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
-    <value>-</value>
-    <comment>Put “-” and Nth value will be used</comment>
-  </data>
-  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
-    <value>-</value>
-    <comment>Put “-” and Nth value will be used</comment>
-  </data>
-  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>ждж</value>
+    <value>21</value>
     <comment>Put “-” and Nth value will be used</comment>
   <alternative>-</alternative></data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>22</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  <alternative>-</alternative></data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>23</value>
+    <comment>Put “-” and Nth value will be used</comment>
+  <alternative>-</alternative><alternative>ждж</alternative></data>
   <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>-</value>
+    <value>24</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
-    <value>-</value>
+    <value>25</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentySixth" xml:space="preserve">
-    <value>-</value>
+    <value>26</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
-    <value>-</value>
+    <value>27</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
-    <value>-</value>
+    <value>28</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
-    <value>-</value>
+    <value>29</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_Thirtieth" xml:space="preserve">
-    <value>-</value>
+    <value>30</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>-</value>
+    <value>31</value>
     <comment>Put “-” and Nth value will be used</comment>
-  </data>
+  <alternative>-</alternative></data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
     <value>{0}-й</value>
   </data>

@@ -1482,4 +1482,7 @@
   <data name="Controls_Steer" xml:space="preserve">
     <value>Управление</value>
   </data>
+  <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
+    <value>Неверное расположение</value>
+  </data>
 </root>

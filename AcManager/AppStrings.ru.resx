@@ -3455,4 +3455,60 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   <data name="Filter_ByPitboxes" xml:space="preserve">
     <value>Фильтр по схожему количеству пит-стопов</value>
   </data>
+  <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
+    <value>Для хорошего онлайн (Ctrl+J)</value>
+  </data>
+  <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
+    <value>Только для целей разработки (Alt+J)</value>
+  </data>
+  <data name="Common_ShootingCancelled" xml:space="preserve">
+    <value>Отмена съемки</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
+    <value>Без съемки</value>
+  </data>
+  <data name="WeatherEdit_Cover" xml:space="preserve">
+    <value>покрытие</value>
+  </data>
+  <data name="WeatherEdit_CutOff" xml:space="preserve">
+    <value>Отрезать</value>
+  </data>
+  <data name="WeatherEdit_Blend" xml:space="preserve">
+    <value>Смешение</value>
+  </data>
+  <data name="AcError_StackTrace" xml:space="preserve">
+    <value>Трассировка стека:
+[моно]{0}[/моно]</value>
+  </data>
+  <data name="UpgradeIcon_SelectNew" xml:space="preserve">
+    <value>Выберите Новый Значок Обновления
+</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange" xml:space="preserve">
+    <value>Не удается изменить значок обновления.</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>Убедитесь, что файл значка обновления доступен для записи.</value>
+  </data>
+  <data name="UpgradeIcon_AddAs" xml:space="preserve">
+    <value>Добавить как новый значок обновления:</value>
+  </data>
+  <data name="Controls_MguK" xml:space="preserve">
+    <value>MGU-K:</value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
+    <value>Отражение неба </value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
+    <value>Увеличение отражения неба</value>
+  </data>
+  <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
+    <value>Попытка найти любой автомобиль фитинг выбранного типа сетки не удалась.</value>
+  </data>
+  <data name="Drive_CannotFilter" xml:space="preserve">
+    <value>Не удается отфильтровать соответствующие автомобили для стартовой сетки</value>
+  </data>
+  <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
+    <value>Частицы будут возвращены назад позже</value>
+  </data>
 </root>

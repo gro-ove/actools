@@ -415,17 +415,17 @@
     <value>Oui</value>
   </data>
   <data name="Progress_Downloading" xml:space="preserve">
-    <value>{0} chargé</value>
-  </data>
+    <value>{0} Chargement</value>
+  <alternative>{0} chargé</alternative></data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} chargé</value>
-  </data>
+    <value>{0} sur {1} chargé</value>
+  <alternative>{0} of {1} chargé</alternative></data>
   <data name="Progress_Uploading" xml:space="preserve">
     <value>{0} envoyé</value>
   <alternative>{0} uploadé</alternative><alternative>{0} téléversé</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>{0} of {1} envoyé</value>
-  <alternative>{0} of {1} uploadé</alternative><alternative>{0} of {1} téléversé</alternative></data>
+    <value>{0} sur {1} envoyé</value>
+  <alternative>{0} of {1} uploadé</alternative><alternative>{0} of {1} téléversé</alternative><alternative>{0} of {1} envoyé</alternative></data>
   <data name="Ordinalizing_First" xml:space="preserve">
     <value>Premier</value>
   </data>
@@ -617,5 +617,14 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>Fichiers DDS (*.dds)|*.dds|Tous les fichiers (*.*)|*.*</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>Moins {0}</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} sur {1}</value>
   </data>
 </root>

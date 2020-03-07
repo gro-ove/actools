@@ -1607,11 +1607,11 @@ Auteur : [b]{3}[/b]</value>
     <value>{0} showroom</value>
   </data>
   <data name="List_Skins" xml:space="preserve">
-    <value>{0} skin</value>
-  </data>
+    <value>{0} livrée</value>
+  <alternative>{0} skin</alternative></data>
   <data name="Dialog_CarSkinsFormat" xml:space="preserve">
-    <value>{0} skins</value>
-  </data>
+    <value>{0} livrées</value>
+  <alternative>{0} skins</alternative></data>
   <data name="List_Cars" xml:space="preserve">
     <value>{0} véhicule</value>
   </data>
@@ -3498,5 +3498,20 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>... whp</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Masque des serveurs SRS</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Angle gamma</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>HDR-désactivé mult.</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>Essayer de rentrer le format approprié</value>
+  </data>
+  <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
+    <value>Valeurs de simulation</value>
   </data>
 </root>

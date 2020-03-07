@@ -3429,4 +3429,70 @@ Pieņemamās vērtības ir no -1 līdz 1.</value>
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
     <value>Atceries, ka visu izdzēsto saturu vienmēr var atjaunot no miskastes.</value>
   </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>Filtrēt pēc līdzīga garuma</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>Filtrēt pēc līdzīga platuma</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>Filtrēt pēc līdzīga pitstopu daudzuma</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Atvērt modeļa mapi (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>Izdzēst modeli (Ctrl+Delete)</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>Trūkst braucēju modeļi</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Ceļa temperatūra:</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} braucēja modelis</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Nejauši</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Nejauši</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>… whp</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>… m</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
+    <value>…</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>Kopējais garums, ieteiktais formāts: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>Vidējais trases platums, ieteiktais formāts: “{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>Pitstopu daudzums, kā arī uz trases atļauto mašīnu daudzums, ieteicamais formāts: “{0}”</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>Sāk atkārtojumu…</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>Sāk testēšanu…</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>Gaida atkārtojuma beigas…</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>Gaida testēšanas beigas…</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>Asis</value>
+  </data>
 </root>

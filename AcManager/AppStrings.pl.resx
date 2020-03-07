@@ -1663,8 +1663,8 @@
     <value>Tworzy zmienną temperaturę asfaltu względem pogody, temperatury otoczenia i czasu. Więcej informacji w “readme_weather.txt”</value>
   </data>
   <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
-    <value>Współczynnik temperatury</value>
-  </data>
+    <value>Współczynnik temp.</value>
+  <alternative>Współczynnik temperatury</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
     <value>Testowanie współczynnika temperatury:</value>
   </data>
@@ -1853,14 +1853,14 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Sortuj wg nazwy</value>
   </data>
   <data name="Online_SortByDrivers" xml:space="preserve">
-    <value>Sortuj wg kierowców</value>
-  </data>
+    <value>Sortuj wg kierowców włącznie z rezerwacją</value>
+  <alternative>Sortuj wg kierowców</alternative></data>
   <data name="Online_SortByCapacity" xml:space="preserve">
-    <value>Sortuj wg pojemności</value>
-  </data>
+    <value>Sortuj wg slotów</value>
+  <alternative>Sortuj wg pojemności</alternative></data>
   <data name="Online_SortByCarsNumber" xml:space="preserve">
-    <value>Sortuj wg liczby aut</value>
-  </data>
+    <value>Sortuj wg odmiennych aut</value>
+  <alternative>Sortuj wg liczby aut</alternative></data>
   <data name="Online_SortByPing" xml:space="preserve">
     <value>Sortuj wg pingu</value>
   </data>
@@ -1952,14 +1952,14 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nazwy</value>
   </data>
   <data name="Online_Sorting_Drivers" xml:space="preserve">
-    <value>Kierowców</value>
-  </data>
+    <value>Kierowców włącznie z rez.</value>
+  <alternative>Kierowców</alternative></data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
-    <value>Pojemności</value>
-  </data>
+    <value>Slotów</value>
+  <alternative>Pojemności</alternative></data>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
-    <value>Liczby aut</value>
-  </data>
+    <value>Odmiennych aut</value>
+  <alternative>Liczby aut</alternative></data>
   <data name="Online_Sorting_Ping" xml:space="preserve">
     <value>Pingu</value>
   </data>

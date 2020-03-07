@@ -1685,8 +1685,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Marcar como novo:</value>
   </data>
   <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
-    <value>Lendo a concorrência:</value>
-  </data>
+    <value>A carregar concorrência:</value>
+  <alternative>Lendo a concorrência:</alternative></data>
   <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
     <value>Pesquisa de informação:</value>
   </data>
@@ -2081,8 +2081,8 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
     <value>Inverter botões do rato</value>
   </data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
-    <value>Usar Resplandecimento</value>
-  </data>
+    <value>Usar resplandecimento</value>
+  <alternative>Usar Resplandecimento</alternative></data>
   <data name="Settings_Drive_Starter" xml:space="preserve">
     <value>Inicializador do jogo</value>
   </data>
@@ -2430,5 +2430,98 @@ Autor: [b]{3}[/b]</alternative></data>
   </data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
     <value>Multiplicador</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]?[/i][b]</value>
+  </data>
+  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
+    <value>ID</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>Um novo ficheiro vazio será criado; não te esqueças de definir valores apropriados e depois guardar o ficheiro</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>Remover o id do parente em falta de ui_car.json</value>
+  </data>
+  <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
+    <value>Definir o emblema da marca a partir do armazenamento de conteúdo</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>Seleccionar um novo emblema de marca da lista</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Fazer genérico</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>Configurar e gerar nova pré-visualização</value>
+  </data>
+  <data name="Solution_GenerateLivery" xml:space="preserve">
+    <value>Gerar nova libré</value>
+  </data>
+  <data name="Solution_RandomLivery" xml:space="preserve">
+    <value>Gerar libré aleatória</value>
+  </data>
+  <data name="Solution_SetupLivery" xml:space="preserve">
+    <value>Configurar nova libré</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>A repetição será removida para a Reciclagem</value>
+  </data>
+  <data name="Solution_SetupLivery_Details" xml:space="preserve">
+    <value>Seleccionar uma nova libré usando o Editor de Libré</value>
+  </data>
+  <data name="Solution_RandomLivery_Details" xml:space="preserve">
+    <value>Gerar uma nova libré utilizando configurações aleatórias</value>
+  </data>
+  <data name="Solution_GenerateLivery_Details" xml:space="preserve">
+    <value>Gerar uma nova libré utilizando as ultimas configurações do Editor de Libré</value>
+  </data>
+  <data name="Main_ContentManager" xml:space="preserve">
+    <value>Gestor de Conteúdo</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Assetto Corsa</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Main_Rsr" xml:space="preserve">
+    <value>RSR</value>
+  </data>
+  <data name="Main_Srs" xml:space="preserve">
+    <value>SRS</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Rápido</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>Online</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>LAN</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>Símbolo ícone da fonte:</value>
+  </data>
+  <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
+    <value>Um valor menor poderá aumentar a responsividade da UI, mas reduzir tempos de carregamento</value>
+  </data>
+  <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
+    <value>O Lite Showroom é compatível com o DirectX 10, muito mais simples e fácil para uma placa gráfica. A solução perfeita para desenhar skins.</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>Showroom Extravagante</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Informação da sessão</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
+    <value>Confirma antes de remover</value>
+  </data>
+  <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
+    <value>Lembra-te que todo o conteúdo removido pode sempre ser restaurado a partir da Reciclagem</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Temperatura da estrada: </value>
   </data>
 </root>

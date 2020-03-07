@@ -764,4 +764,37 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="Controls_MiscellaneousHeader" xml:space="preserve">
     <value>Diversos</value>
   </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> volta</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value> °F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Viatura</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Pista</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Melhor volta</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Skin</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nacionalidade</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Visível</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Bloqueado</value>
+  </data>
 </root>

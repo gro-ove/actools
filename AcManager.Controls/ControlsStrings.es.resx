@@ -842,8 +842,8 @@ Depth mode: [b]{4}[/b]</value>
     <value>La carpeta seran movidos al directorio superior</value>
   </data>
   <data name="FindInformation_Description" xml:space="preserve">
-    <value>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</value>
-  </data>
+    <value>Selecciona año o descripcion y pulsa OK; manten Ctrl para ampliar informacion en lugar de reemplazarla</value>
+  <alternative>Select year or description and press OK; hold Ctrl to extend description instead of replacing it.</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
     <value>Guardar y cerrar</value>
   </data>

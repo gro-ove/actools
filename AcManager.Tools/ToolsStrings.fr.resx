@@ -1504,11 +1504,11 @@
     <value>Mot clé “{0}” introuvable</value>
   </data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>Assurez-vous qu'il n'y ai pas d'applications en cours d'exécution qui fonctionne avec le dossier des objets.</value>
-  </data>
+    <value>Assurez-vous qu'il n'y ait pas d'applications en cours d'exécution qui fonctionne avec le dossier des objets.</value>
+  <alternative>Assurez-vous qu'il n'y ai pas d'applications en cours d'exécution qui fonctionne avec le dossier des objets.</alternative></data>
   <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
-    <value>Le mode Time Attack n'est pas pris en charge par le circuit sélectionnée</value>
-  </data>
+    <value>Le mode Time Attack n'est pas pris en charge par le circuit sélectionné</value>
+  <alternative>Le mode Time Attack n'est pas pris en charge par le circuit sélectionnée</alternative></data>
   <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
     <value>Le PP filter par défaut (.../assettocorsa/system/cfg/ppfilters/[b]default.ini[/b]) est manquant mais obligatoire</value>
   </data>
@@ -1528,8 +1528,8 @@
     <value>Assistance prédéfinie</value>
   </data>
   <data name="Common_AcReplay" xml:space="preserve">
-    <value>AC replay</value>
-  </data>
+    <value>AC ralenti</value>
+  <alternative>AC replay</alternative></data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Départ arrêté</value>
   </data>
@@ -1585,8 +1585,8 @@
     <value>Synchroniser automatiquement le régime moteur (RPM) lors des rétrogradations</value>
   </data>
   <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
-    <value>Appuye automatiquement sur l'embrayage lors du changement de rapport</value>
-  </data>
+    <value>Appuis automatiquement sur l'embrayage lors du changement de rapport</value>
+  <alternative>Appuye automatiquement sur l'embrayage lors du changement de rapport</alternative></data>
   <data name="Assists_AutoShifting" xml:space="preserve">
     <value>Vitesses automatique</value>
   </data>
@@ -1606,12 +1606,13 @@
     <value>Moteur, boîte de vitesses, suspension et autres pièces endommageables</value>
   </data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
-    <value>Effet de glissement
+    <value>Effet d'aspiration
 </value>
-  </data>
+  <alternative>Effet de glissement
+</alternative></data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
-    <value>Multiplicateur du flux pour l'effet de glissement</value>
-  </data>
+    <value>Multiplicateur du flux pour l'effet d'aspiration</value>
+  <alternative>Multiplicateur du flux pour l'effet de glissement</alternative></data>
   <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
     <value>Non réaliste, mais peut être utile si vous commencez tout juste à apprendre à conduire ou à drift</value>
   </data>

@@ -538,8 +538,8 @@
     <value>已载入{0}</value>
   </data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>{0}项载入已完成{1}</value>
-  </data>
+    <value>{1}项载入已完成{0}</value>
+  <alternative>{0}项载入已完成{1}</alternative></data>
   <data name="Progress_Uploading" xml:space="preserve">
     <value>已上传{0}</value>
   </data>
@@ -614,5 +614,11 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>DDS文件(*.dds) | *.dds | 所有文件(*.*) | *.*</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{1}项已完成{0}</value>
   </data>
 </root>

@@ -3521,4 +3521,10 @@ Content Manager [url=""/Pages/About/License.xaml|_top""]License[/url]."</value>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
     <value>Esperando o final do benchmark...</value>
   </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>… whp</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>Eixo</value>
+  </data>
 </root>

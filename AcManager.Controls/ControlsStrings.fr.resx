@@ -325,8 +325,8 @@
     <value>{0} erreur</value>
   </data>
   <data name="Share_Shared" xml:space="preserve">
-    <value>{0} partagé</value>
-  </data>
+    <value>{0} Partagé</value>
+  <alternative>{0} partagé</alternative></data>
   <data name="AcObject_ErrorsHeader" xml:space="preserve">
     <value>{Erreur} :</value>
   </data>
@@ -769,11 +769,11 @@
     <value>Sensibilité de la vitesse</value>
   </data>
   <data name="Replay_CrMessage" xml:space="preserve">
-    <value>Le replay sera écrasé après la prochaine course. Renommez-le pour le conserver.</value>
-  </data>
+    <value>Le ralenti sera écrasé après la prochaine course. Renommez-le pour le conserver.</value>
+  <alternative>Le replay sera écrasé après la prochaine course. Renommez-le pour le conserver.</alternative></data>
   <data name="Replay_CrMessage_Commentary" xml:space="preserve">
-    <value>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les replays" pour éviter de perdre quelque chose d'important.</value>
-  </data>
+    <value>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les ralentis" pour éviter de perdre quelque chose d'important.</value>
+  <alternative>Vous pouvez vous rendre dans les réglages et activer l'option "Sauvegarder automatiquement les replays" pour éviter de perdre quelque chose d'important.</alternative></data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
     <value>Valeur recommandée : {0}%</value>
   </data>

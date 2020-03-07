@@ -941,4 +941,31 @@ LOD в: [b]{9}[/b]
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>ИИ</value>
   </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>Обзор карты</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>Свет</value>
+  </data>
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+    <value>Каркас</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value> рассеивание</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Повтор</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>Размытие по краям</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Подогнать</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>Выделите размер</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Родительский автомобиль (если он установлен, этот автомобиль будет его настроенной версией)</value>
+  </data>
 </root>

@@ -1721,4 +1721,13 @@
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>真实头部运动插件RHM预设</value>
   </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>油门</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>刹车</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>转向</value>
+  </data>
 </root>

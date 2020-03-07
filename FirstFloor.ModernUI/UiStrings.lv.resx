@@ -603,4 +603,16 @@
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}: </value>
   </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Navigēt linku</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDS faili (*.dds)|*.dds|Visi faili (*.*)|*.*</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} no {1}</value>
+  </data>
 </root>

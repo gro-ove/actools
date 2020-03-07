@@ -517,14 +517,14 @@
     <value>{0} dia</value>
   </data>
   <data name="Time_Hour" xml:space="preserve">
-    <value>{0} horas</value>
-  </data>
+    <value>{0} hora</value>
+  <alternative>{0} horas</alternative></data>
   <data name="Time_Minute" xml:space="preserve">
-    <value>{0} minutos</value>
-  </data>
+    <value>{0} minuto</value>
+  <alternative>{0} minutos</alternative></data>
   <data name="Time_Second" xml:space="preserve">
-    <value>{0} segundos</value>
-  </data>
+    <value>{0} segundo</value>
+  <alternative>{0} segundos</alternative></data>
   <data name="Common_Oops" xml:space="preserve">
     <value>Oops!</value>
   </data>
@@ -608,5 +608,14 @@
   </data>
   <data name="ValueLabel_Format" xml:space="preserve">
     <value>{0}: </value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>Arquivos DDS (*.dds)|*.dds|Todos os arquivos (*.*)|*.*</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} de {1}</value>
   </data>
 </root>

@@ -886,8 +886,8 @@
     <value>Stūrēt pa labi</value>
   </data>
   <data name="Controls_Throttle" xml:space="preserve">
-    <value>Gāzēt</value>
-  </data>
+    <value>Akselerators</value>
+  <alternative>Gāzēt</alternative></data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
     <value>XBOX 360 Controller</value>
   </data>
@@ -1683,5 +1683,44 @@ Vai vēlies tos sapakot pirms servera palaišanas? Tikai neaizmirsti izdalīt sa
   </data>
   <data name="TagIsMissing_Format" xml:space="preserve">
     <value>Nav birka "{0}"</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Trases apstākļu sagatave</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Real Head Motion sagatave</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Trūkst mašīnas krāsojums {0}.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Trūkst mašīnau krāsojumi {0}.</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Trūks laikapstākļi {0}.</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Gāze</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Bremzes</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Stūrēšana</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Pielāgota izstādes telpas sagatave</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Pielāgota priekšskata sagatave</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Nejaušs</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Oriģināls</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
   </data>
 </root>

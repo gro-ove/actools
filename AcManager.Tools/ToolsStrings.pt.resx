@@ -840,4 +840,55 @@
   <data name="RaceGrid_Random" xml:space="preserve">
     <value>Aleatório</value>
   </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Campeonato</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Fácil</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Médio</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Difícil</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Alienígena</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} em {1}.</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Pontos</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Posição</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Tempo</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Vitórias</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Não é possível iniciar RHM</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>O servidor está cheio</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>O servidor diz: "{0}"</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Aleatório</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Acelerador</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Travão</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Direcção</value>
+  </data>
 </root>

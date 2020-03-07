@@ -420,4 +420,25 @@
   <data name="Common_Descending" xml:space="preserve">
     <value>Descendente</value>
   </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Esconder</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>Mostrar</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Gerir Listas...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Convidar</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>Ficheiros DDS (*.dds)|*.dds|Todos os ficheiros (*.*)|*.*</value>
+  </data>
+  <data name="Progress_Short" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
 </root>

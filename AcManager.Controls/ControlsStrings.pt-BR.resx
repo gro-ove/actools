@@ -349,8 +349,8 @@
     <value>Ler "{0}"? Os valores atuais serão subsistituídos (mas poderão ser mais tarde recuperados da Lixeira) </value>
   </data>
   <data name="Common_AreYouSure" xml:space="preserve">
-    <value>Tem a certeza?</value>
-  </data>
+    <value>Tem certeza?</value>
+  <alternative>Tem a certeza?</alternative></data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
     <value>Predefinições originais</value>
   </data>
@@ -612,8 +612,8 @@ Tipo de entrada: [b]{2}[/b]</value>
     <value>URL:</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
-    <value>Directório "{0}" já existe. Subsistituír arquivos?</value>
-  </data>
+    <value>Diretório "{0}" já existe. Substituír arquivos?</value>
+  <alternative>Directório "{0}" já existe. Subsistituír arquivos?</alternative></data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
     <value>Nome do objeto: [b]{0}[/b]
 Classe: [b]{1}[/b]

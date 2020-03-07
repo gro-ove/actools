@@ -2240,8 +2240,8 @@
     <value>推重比:</value>
   </data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>...马力</value>
-  </data>
+    <value>...曲轴马力</value>
+  <alternative>...马力</alternative></data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
     <value>...牛米</value>
   </data>
@@ -3531,5 +3531,8 @@
   </data>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
     <value>等待性能测试结束...</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>...轮上马力</value>
   </data>
 </root>

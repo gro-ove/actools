@@ -924,4 +924,43 @@ Ieraksta tips: [b]{2}[/b]</value>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value>aplis</value>
   </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value>°F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Vārds</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Mašīna</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Trase</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Labākais aplis</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Datums</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>Krāsojums</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Nacionalitāte</value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>AI</value>
+  </data>
+  <data name="TableHeader_X" xml:space="preserve">
+    <value>X</value>
+  </data>
+  <data name="TableHeader_Y" xml:space="preserve">
+    <value>Y</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Redzams</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Bloķēts</value>
+  </data>
 </root>
