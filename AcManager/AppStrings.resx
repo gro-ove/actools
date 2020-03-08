@@ -3589,4 +3589,82 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="CustomLocalesUpdated_Title" xml:space="preserve">
         <value>Locales updated</value>
     </data>
+    <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+      <value>Best lap on this track:</value>
+    </data>
+    <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+      <value>Driven in car:</value>
+    </data>
+    <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+      <value>Driven on track:</value>
+    </data>
+    <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+      <value>Car-specific controls</value>
+    </data>
+    <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+      <value>Load assists with Quick Drive presets (global)</value>
+    </data>
+    <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+      <value>Hold Ctrl while selecting preset to invert this behavior that one time</value>
+    </data>
+    <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+      <value>Use unpacked data if exists</value>
+    </data>
+    <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+      <value>Use unpacked data (global)</value>
+    </data>
+    <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+      <value>Reset car-specific flag</value>
+    </data>
+    <data name="QuickDrive_FixCar" xml:space="preserve">
+      <value>Fix car</value>
+    </data>
+    <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+      <value>{0} {important issue} found</value>
+    </data>
+    <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+      <value>No car selected</value>
+    </data>
+    <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+      <value>No track selected</value>
+    </data>
+    <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+      <value>Wind speed in meters per second</value>
+    </data>
+    <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+      <value>Wind speed in relative range</value>
+    </data>
+    <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+      <value>Wind direction in degrees</value>
+    </data>
+    <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+      <value>Random wind speed</value>
+    </data>
+    <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+      <value>Random wind direction</value>
+    </data>
+    <data name="QuickDrive_Wind" xml:space="preserve">
+      <value>Wind</value>
+    </data>
+    <data name="QuickDrive_SpecificDate" xml:space="preserve">
+      <value>Specific date</value>
+    </data>
+    <data name="QuickDrive_RandomTime" xml:space="preserve">
+      <value>Random time</value>
+    </data>
+    <data name="QuickDrive_SetWindManually" xml:space="preserve">
+      <value>Set wind manually</value>
+    </data>
+    <data name="QuickDrive_IdealConditions" xml:space="preserve">
+      <value>Ideal conditions</value>
+    </data>
+    <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+      <value>Random temperature</value>
+    </data>
+    <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+      <value>Custom road temperature</value>
+    </data>
+    <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+      <value>Road temperature</value>
+    </data>
 </root>

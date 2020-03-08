@@ -1745,4 +1745,19 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Weather_Mods" xml:space="preserve">
     <value>Mods</value>
   </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Best laps:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Best lap:</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value> ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value> m/s</value>
+  </data>
 </root>

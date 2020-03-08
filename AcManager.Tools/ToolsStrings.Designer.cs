@@ -19,7 +19,7 @@ namespace AcManager.Tools {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
@@ -1447,6 +1447,24 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Best lap:.
+        /// </summary>
+        public static string BestLapsControl_BestLap {
+            get {
+                return ResourceManager.GetString("BestLapsControl_BestLap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best laps:.
+        /// </summary>
+        public static string BestLapsControl_BestLaps {
+            get {
+                return ResourceManager.GetString("BestLapsControl_BestLaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t replace car’s sound.
         /// </summary>
         public static string Car_ReplaceSound_CannotReplace {
@@ -1636,11 +1654,29 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0:F1} km.
+        /// </summary>
+        public static string Common_DistanceLarge_Format {
+            get {
+                return ResourceManager.GetString("Common_DistanceLarge_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Exporting….
         /// </summary>
         public static string Common_Exporting {
             get {
                 return ResourceManager.GetString("Common_Exporting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  ft/s.
+        /// </summary>
+        public static string Common_FeetPerSecondPostfix {
+            get {
+                return ResourceManager.GetString("Common_FeetPerSecondPostfix", resourceCulture);
             }
         }
         
@@ -1740,6 +1776,15 @@ namespace AcManager.Tools {
         public static string Common_MakeSureThereIsEnoughSpace {
             get {
                 return ResourceManager.GetString("Common_MakeSureThereIsEnoughSpace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to  m/s.
+        /// </summary>
+        public static string Common_MetersPerSecondPostfix {
+            get {
+                return ResourceManager.GetString("Common_MetersPerSecondPostfix", resourceCulture);
             }
         }
         

@@ -17,7 +17,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="ac:BestLapsList">
           <StackPanel Background="Transparent">
-            <TextBlock Text="Best laps:" Style="{StaticResource Label}" Margin="0 0 0 4"
+            <TextBlock Text="{x:Static t:ToolsStrings.BestLapsControl_BestLaps}" Style="{StaticResource Label}" Margin="0 0 0 4"
                 Visibility="{TemplateBinding ShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
             <mui:Switch x:Name="PART_Switch" Value="{Binding Entries.Count, RelativeSource={RelativeSource TemplatedParent}}"
                 Margin="{TemplateBinding EntryPadding}">
@@ -80,7 +80,7 @@
                     <TextBlock Text="{Binding Entry.LapTime, Converter={StaticResource MillisecondsTimeSpanConverter}}" TextAlignment="Right" />
                   </mui:Cell>
                 </mui:Switch>
-                <TextBlock Text="Best lap:" Style="{StaticResource Label}"
+                <TextBlock Text="{x:Static t:ToolsStrings.BestLapsControl_BestLap}" Style="{StaticResource Label}"
                     Visibility="{TemplateBinding ShowTitle, Converter={StaticResource BooleanToVisibilityConverter}}" />
               </DockPanel>
               <ControlTemplate.Triggers>

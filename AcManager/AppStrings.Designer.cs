@@ -19,7 +19,7 @@ namespace AcManager {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
@@ -5655,6 +5655,240 @@ namespace AcManager {
         public static string Page_Wip_Commentary {
             get {
                 return ResourceManager.GetString("Page_Wip_Commentary", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best lap on this track:.
+        /// </summary>
+        public static string QuickDrive_BestLapOnThisTrack {
+            get {
+                return ResourceManager.GetString("QuickDrive_BestLapOnThisTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car-specific controls.
+        /// </summary>
+        public static string QuickDrive_CarSpecificControls {
+            get {
+                return ResourceManager.GetString("QuickDrive_CarSpecificControls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom road temperature.
+        /// </summary>
+        public static string QuickDrive_CustomRoadTemperature {
+            get {
+                return ResourceManager.GetString("QuickDrive_CustomRoadTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driven in car:.
+        /// </summary>
+        public static string QuickDrive_DrivenInCar {
+            get {
+                return ResourceManager.GetString("QuickDrive_DrivenInCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Driven on track:.
+        /// </summary>
+        public static string QuickDrive_DrivenOnTrack {
+            get {
+                return ResourceManager.GetString("QuickDrive_DrivenOnTrack", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix car.
+        /// </summary>
+        public static string QuickDrive_FixCar {
+            get {
+                return ResourceManager.GetString("QuickDrive_FixCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} {important issue} found.
+        /// </summary>
+        public static string QuickDrive_FixCar_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_FixCar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ideal conditions.
+        /// </summary>
+        public static string QuickDrive_IdealConditions {
+            get {
+                return ResourceManager.GetString("QuickDrive_IdealConditions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load assists with Quick Drive presets (global).
+        /// </summary>
+        public static string QuickDrive_LoadAssistsWithQuickDrivePresets {
+            get {
+                return ResourceManager.GetString("QuickDrive_LoadAssistsWithQuickDrivePresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hold Ctrl while selecting preset to invert this behavior that one time.
+        /// </summary>
+        public static string QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No car selected.
+        /// </summary>
+        public static string QuickDrive_NoCarSelected {
+            get {
+                return ResourceManager.GetString("QuickDrive_NoCarSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No track selected.
+        /// </summary>
+        public static string QuickDrive_NoTrackSelected {
+            get {
+                return ResourceManager.GetString("QuickDrive_NoTrackSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random temperature.
+        /// </summary>
+        public static string QuickDrive_RandomTemperature {
+            get {
+                return ResourceManager.GetString("QuickDrive_RandomTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random time.
+        /// </summary>
+        public static string QuickDrive_RandomTime {
+            get {
+                return ResourceManager.GetString("QuickDrive_RandomTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Road temperature.
+        /// </summary>
+        public static string QuickDrive_RoadTemperature {
+            get {
+                return ResourceManager.GetString("QuickDrive_RoadTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set wind manually.
+        /// </summary>
+        public static string QuickDrive_SetWindManually {
+            get {
+                return ResourceManager.GetString("QuickDrive_SetWindManually", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specific date.
+        /// </summary>
+        public static string QuickDrive_SpecificDate {
+            get {
+                return ResourceManager.GetString("QuickDrive_SpecificDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset car-specific flag.
+        /// </summary>
+        public static string QuickDrive_UseUnpackedData_ResetCarSpecificFlag {
+            get {
+                return ResourceManager.GetString("QuickDrive_UseUnpackedData_ResetCarSpecificFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use unpacked data (global).
+        /// </summary>
+        public static string QuickDrive_UseUnpackedDataGlobal {
+            get {
+                return ResourceManager.GetString("QuickDrive_UseUnpackedDataGlobal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use unpacked data if exists.
+        /// </summary>
+        public static string QuickDrive_UseUnpackedDataIfExists {
+            get {
+                return ResourceManager.GetString("QuickDrive_UseUnpackedDataIfExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wind.
+        /// </summary>
+        public static string QuickDrive_Wind {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wind direction in degrees.
+        /// </summary>
+        public static string QuickDrive_Wind_Degrees {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind_Degrees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wind speed in meters per second.
+        /// </summary>
+        public static string QuickDrive_Wind_MetersPerSecond {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind_MetersPerSecond", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random wind direction.
+        /// </summary>
+        public static string QuickDrive_Wind_RandomDirection {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind_RandomDirection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Random wind speed.
+        /// </summary>
+        public static string QuickDrive_Wind_RandomSpeed {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind_RandomSpeed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wind speed in relative range.
+        /// </summary>
+        public static string QuickDrive_Wind_RelativeRange {
+            get {
+                return ResourceManager.GetString("QuickDrive_Wind_RelativeRange", resourceCulture);
             }
         }
         
