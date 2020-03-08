@@ -430,6 +430,16 @@ namespace AcManager.Tools.Objects {
             }
         }
 
+        public double SpecsPwRatioValue {
+            get {
+                var pwRatio = SpecsPwRatio;
+                if (pwRatio == null || !PwUsualFormat.IsMatch(pwRatio) || !FlexibleParser.TryParseDouble(pwRatio, out var value)) {
+                    return 0.12;
+                }
+                return 1 / value;
+            }
+        }
+
         public string SpecsPwRatioDisplay {
             get {
                 var pwRatio = SpecsPwRatio;

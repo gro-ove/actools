@@ -419,16 +419,13 @@
     <comment>Keep it short if you can</comment>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Can’t refresh server information.
-</value>
+    <value>Can’t refresh server information.</value>
   </data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
-    <value>Not implemented.
-</value>
+    <value>Not implemented.</value>
   </data>
   <data name="Online_Server_CannotPing" xml:space="preserve">
-    <value>Server is unavailable (ping failed).
-</value>
+    <value>Server is unavailable (ping failed).</value>
   </data>
   <data name="Online_Server_Unavailable" xml:space="preserve">
     <value>Server is unavailable.</value>

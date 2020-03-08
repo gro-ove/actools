@@ -52,8 +52,8 @@ namespace AcManager.Tools.Miscellaneous {
                     var t = c.GetString(x.Location.Replace("B", "D"), s);
                     var k = s.ElementAtOrDefault(x.Node.Element(n + "v")?.Value.As<int>() ?? -1);
                     if (k == null || t == null || g == null) continue;
-                    Dictionary<string, string> gd;
-                    if (r.TryGetValue(g, out gd)) {
+                    t = t.TrimEnd('\n');
+                    if (r.TryGetValue(g, out var gd)) {
                         gd.Add(k, t);
                     } else {
                         gd = new Dictionary<string, string>(200) { { k, t } };

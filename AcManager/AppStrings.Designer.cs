@@ -19,12 +19,12 @@ namespace AcManager {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,7 +79,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copyright © 2016–2017 AcClub..
+        ///   Looks up a localized string similar to Copyright © 2016–2020 AcClub..
         /// </summary>
         public static string About_Copyright {
             get {
@@ -6732,7 +6732,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Override default PP filter in Oculus Rift mode.
+        ///   Looks up a localized string similar to Override default PP filter in VR.
         /// </summary>
         public static string Settings_Drive_OverridePpFilterOculusFix {
             get {

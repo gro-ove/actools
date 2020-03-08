@@ -65,13 +65,17 @@
                     LabelUnchecked="{x:Static mui:UiStrings.Common_Descending}" IsChecked="{Binding RaceGridViewModel.AiLevelArrangeReverse}" />
               </DockPanel>
 
+              <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelArrangePowerRatio}">
+                <Label Content="Arrange AI strength based on P/W ratio" />
+              </CheckBox>
+
               <DockPanel>
                 <Label Content="Randomization:" />
                 <Slider Minimum="0" Maximum="100" TickFrequency="20" TickPlacement="BottomRight"
                     Value="{Binding RaceGridViewModel.AiLevelArrangeRandom, Converter={StaticResource PercentageConverter}}" />
               </DockPanel>
 
-              <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName, Mode=TwoWay}">
+              <CheckBox IsChecked="{Binding RaceGridViewModel.AiLevelInDriverName}">
                 <Label Content="{x:Static g:AppStrings.Drive_AiLevelInDriverName}" />
               </CheckBox>
 
@@ -82,7 +86,7 @@
           </c:ModernPopup>
         </mui:ContextMenuButton>
         <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiLevelMin}" SecondValue="{Binding RaceGridViewModel.AiLevel}" Postfix='%' JoinIfEqual="True"
-            RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="F1" />
+            RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static g:AppStrings.Drive_OpponentsStrength}" RelativeRangeStringFormat="0.#" />
       </DockPanel>
 
       <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0" VerticalAlignment="Top">
@@ -118,7 +122,7 @@
           </c:ModernPopup>
         </mui:ContextMenuButton>
         <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
-            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="Opponents aggression" RelativeRangeStringFormat="F1" />
+            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="Opponents aggression" RelativeRangeStringFormat="0.#" />
       </DockPanel>
 
       <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource ElementMargin}">
@@ -160,7 +164,8 @@
           </TextBlock>
         </StackPanel.ToolTip>
         <mui:ValueLabel Content="{x:Static g:AppStrings.Drive_StartingPosition}" mui:BetterTextBox.Mode="Integer" mui:BetterTextBox.Minimum="0"
-            mui:BetterTextBox.Maximum="{Binding RaceGridViewModel.StartingPositionLimit}" mui:BetterTextBox.Converter="{Binding StartingPositionInputConverter}">
+            mui:BetterTextBox.Maximum="{Binding RaceGridViewModel.StartingPositionLimit}"
+            mui:BetterTextBox.Converter="{Binding StartingPositionInputConverter}">
           <mui:ValueLabel.Value>
             <MultiBinding Converter="{x:Static drive:QuickDrive_Race.StartingPositionConverter}">
               <Binding Path="RaceGridViewModel.StartingPositionLimited" Mode="TwoWay" />

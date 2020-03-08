@@ -27,16 +27,16 @@ namespace CustomPreviewUpdater {
 
         [Option('v', "fov", DefaultValue = 30.0, HelpText = "Field of view.")]
         public double Fov { get; set; }
-        
+
         [Option('a', "align", HelpText = "Align car’s model to X=0 and Z=0.")]
         public bool AlignCar { get; set; }
-        
+
         [Option("align-camera", HelpText = "Align car’s model in screen space.")]
         public bool AlignCamera { get; set; }
-        
+
         [Option("align-camera-offset", DefaultValue = "0.0, 0.0, 0.0", HelpText = "Camera offset after aligning car’s model in screenspace.")]
         public string AlignCameraOffset { get; set; }
-        
+
         /* OPTIONS */
         [Option("bloom", DefaultValue = 1d, HelpText = "Bloom radius multiplier.")]
         public double BloomRadiusMultiplier { get; set; }
@@ -185,7 +185,7 @@ namespace CustomPreviewUpdater {
         public string GetUsage() {
             var help = new HelpText {
                 Heading = new HeadingInfo("CustomPreviewUpdater", FileVersionInfo.GetVersionInfo(Assembly.GetEntryAssembly().Location ?? "").FileVersion),
-                Copyright = new CopyrightInfo("AcClub", 2017),
+                Copyright = new CopyrightInfo("AcClub", 2020),
                 AdditionalNewLineAfterOption = false,
                 AddDashesToOption = true
             };

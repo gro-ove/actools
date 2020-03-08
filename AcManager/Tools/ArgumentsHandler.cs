@@ -236,7 +236,7 @@ namespace AcManager.Tools {
         /// <param name="argument">Remote source.</param>
         /// <param name="destination">Destination.</param>
         /// <exception cref="Exception">Thrown if failed or cancelled.</exception>
-        private static async Task LoadRemoveFileToNew(string argument, string destination) {
+        private static async Task LoadRemoteFileToNew(string argument, string destination) {
             using (var waiting = new WaitingDialog(ControlsStrings.Common_Loading)) {
                 await FlexibleLoader.LoadAsyncTo(argument, (url, information) => new FlexibleLoaderDestination(destination, false), null, information => {
                     if (information.FileName != null) {

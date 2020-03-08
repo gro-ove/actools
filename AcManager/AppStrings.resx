@@ -3290,7 +3290,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016–2017 AcClub.</value>
+    <value>Copyright © 2016–2020 AcClub.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
     <value>Mark all as read</value>
@@ -3409,7 +3409,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Particles will be reverted back later</value>
   </data>
   <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
-    <value>Override default PP filter in Oculus Rift mode</value>
+    <value>Override default PP filter in VR</value>
   </data>
   <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
     <value>Temporary overwrite system/cfg/ppfilters/default.ini with selected PP filter if Oculus Rift mode is enabled</value>

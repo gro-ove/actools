@@ -620,7 +620,7 @@
                   <mui:BooleanSwitch Value="{Binding UseImperialUnits, Source={x:Static t:SettingsHolder.Common}}">
                     <mui:BooleanSwitch.True>
                       <mui:DoubleValueLabel Content="Wind" Postfix=" ft/s" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
-                          RelativeRangeStringFormat="F1"
+                          RelativeRangeStringFormat="0.#"
                           Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}',
                                                                 Converter={StaticResource MultiplyConverter}, ConverterParameter=0.911344}"
                           SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}',
@@ -628,7 +628,7 @@
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
                       <mui:DoubleValueLabel Content="Wind" Postfix=" m/s" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
-                          RelativeRangeStringFormat="F1"
+                          RelativeRangeStringFormat="0.#"
                           Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}',
                                                                 Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}"
                           SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}',
@@ -638,7 +638,7 @@
                 </mui:BooleanSwitch.True>
                 <mui:BooleanSwitch.False>
                   <mui:DoubleValueLabel Content="Wind" Postfix="{x:Static t:SettingsHolder+CommonSettings.SpaceSpeedPostfix}" JoinIfEqual="True"
-                      RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="F1"
+                      RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="0.#"
                       Value="{Binding WindSpeedMin, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat='{}{0:F1}'}"
                       SecondValue="{Binding WindSpeedMax, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat='{}{0:F1}'}" />
                 </mui:BooleanSwitch.False>

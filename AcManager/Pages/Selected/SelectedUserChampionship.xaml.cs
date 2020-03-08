@@ -208,6 +208,7 @@ namespace AcManager.Pages.Selected {
 
                         RaceGridViewModel.AiLevelArrangeRandom = 0;
                         RaceGridViewModel.AiLevelArrangeReverse = false;
+                        RaceGridViewModel.AiLevelArrangePowerRatio = false;
                         RaceGridViewModel.AiLevel = 100;
                         RaceGridViewModel.AiLevelMin = 100;
 

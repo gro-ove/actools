@@ -30,10 +30,14 @@ namespace AcManager.Pages.ServerPreset {
             [NotNull]
             public ChangeableObservableCollection<WrapperContentObject> WrapperContentWeather { get; } = new ChangeableObservableCollection<WrapperContentObject>();
 
+            // [NotNull]
+            // public ChangeableObservableCollection<WrapperContentObject> WrapperContentApps { get; } = new ChangeableObservableCollection<WrapperContentObject>();
+
             private void InitializeWrapperContent() {
                 WrapperContentCars.ItemPropertyChanged += OnWrapperContentPropertyChanged;
                 WrapperContentTracks.ItemPropertyChanged += OnWrapperContentPropertyChanged;
                 WrapperContentWeather.ItemPropertyChanged += OnWrapperContentPropertyChanged;
+               //  WrapperContentApps.ItemPropertyChanged += OnWrapperContentPropertyChanged;
             }
 
             private void OnWrapperContentPropertyChanged(object sender1, PropertyChangedEventArgs propertyChangedEventArgs) {
@@ -136,6 +140,7 @@ namespace AcManager.Pages.ServerPreset {
                 }
 
                 WrapperContentWeather.SaveTo(jObj, "weather");
+                // WrapperContentApps.SaveTo(jObj, "apps");
 
                 // Updating SelectedObject value:
                 _wrapperContentCarsBusy.Do(() => _wrapperContentTracksBusy.Do(() => _wrapperContentWeatherBusy.Do(() => {

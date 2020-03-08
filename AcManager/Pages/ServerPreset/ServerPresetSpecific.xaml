@@ -321,13 +321,13 @@
         <mui:BooleanSwitch Value="{mui:Stored windSpeedInMetersPerSecond}" Margin="0 0 0 -2" DockPanel.Dock="Top" HorizontalAlignment="Left">
           <mui:BooleanSwitch.True>
             <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" m/s" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
-                RelativeRangeStringFormat="F1"
+                RelativeRangeStringFormat="0.#"
                 Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}"
                 SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}', Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}" />
           </mui:BooleanSwitch.True>
           <mui:BooleanSwitch.False>
             <mui:DoubleValueLabel Padding="8 0 0 0" Content="Wind" Postfix=" km/h" JoinIfEqual="True"
-                RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="F1" Value="{Binding WindSpeedMin}"
+                RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="0.#" Value="{Binding WindSpeedMin}"
                 SecondValue="{Binding WindSpeedMax}" />
           </mui:BooleanSwitch.False>
         </mui:BooleanSwitch>
