@@ -22,7 +22,9 @@ namespace AcTools.Render.Base.Objects {
     [Flags]
     public enum MoveableRotationAxis : uint {
         None = 0,
-        X = 1, Y = 2, Z = 4,
+        X = 1,
+        Y = 2,
+        Z = 4,
         All = 7
     }
 
@@ -38,6 +40,7 @@ namespace AcTools.Render.Base.Objects {
         private readonly IMoveable _parent;
         private readonly MoveableRotationAxis _rotationAxis;
         private readonly bool _allowScaling;
+        private static bool _justCloned = true;
 
         public MoveableHelper(IMoveable parent, MoveableRotationAxis rotationAxis = MoveableRotationAxis.Y, bool allowScaling = false) {
             _parent = parent;
@@ -52,6 +55,10 @@ namespace AcTools.Render.Base.Objects {
                 _keepHighlight = true;
             }
 
+            if (_justCloned) {
+                tryToClone = false;
+            }
+
             cloned = null;
 
             if (_arrowHighlighted != default(Vector3)) {
@@ -61,9 +68,10 @@ namespace AcTools.Render.Base.Objects {
                 if (!Ray.Intersects(rayFrom, plane, out var distanceFrom) ||
                         !Ray.Intersects(rayTo, plane, out var distanceTo)) return false;
 
-                var pointDelta =  rayTo.Direction * distanceTo - rayFrom.Direction * distanceFrom;
+                var pointDelta = rayTo.Direction * distanceTo - rayFrom.Direction * distanceFrom;
                 if (tryToClone) {
                     cloned = _parent.Clone();
+                    _justCloned = true;
                 }
 
                 var totalDistance = pointDelta.Length();
@@ -85,6 +93,7 @@ namespace AcTools.Render.Base.Objects {
 
                 if (tryToClone) {
                     cloned = _parent.Clone();
+                    _justCloned = true;
                 }
 
                 _parent.Rotate(Quaternion.RotationAxis(rotationAxis, relativeDelta.X * 10f));
@@ -104,6 +113,7 @@ namespace AcTools.Render.Base.Objects {
 
         public void StopMovement() {
             _keepHighlight = false;
+            _justCloned = false;
         }
 
         public void Draw(IDeviceContextHolder holder, ICamera camera, SpecialRenderMode mode, Func<IRenderableObject, bool> filter = null) {
@@ -232,7 +242,7 @@ namespace AcTools.Render.Base.Objects {
 
         public BoundingBox? BoundingBox => default(BoundingBox);
 
-        public void UpdateBoundingBox() {}
+        public void UpdateBoundingBox() { }
 
         public IRenderableObject Clone() {
             return new MoveableHelper(_parent, _rotationAxis, _allowScaling);

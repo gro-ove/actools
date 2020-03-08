@@ -375,7 +375,7 @@
                     <CheckBox IsChecked="{Binding UseSpecificDate}">
                       <Label Content="Specific date" />
                     </CheckBox>
-                    <DatePicker IsEnabled="{Binding UseSpecificDate}" SelectedDate="{Binding SpecificDateValue}" />
+                    <DatePicker IsEnabled="{Binding UseSpecificDate}" SelectedDate="{Binding SpecificDateValue}" c:AcDateLimiter.After1970Only="True" />
                   </mui:SpacingStackPanel>
                 </mui:SpacingStackPanel>
               </c:ModernPopup>

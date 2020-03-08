@@ -90,12 +90,12 @@ namespace AcManager.Tools.Managers.Plugins {
         public void ReloadLocalList() {
             try {
                 List.ReplaceEverythingBy(Directory.GetDirectories(PluginsDirectory)
-                                                  .Select(x => Path.Combine(x, ManifestFileName))
-                                                  .Where(File.Exists)
-                                                  .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
-                                                  .Where(x => x.IsAllRight)
-                                                  .Distinct(new UniqueIds())
-                                                  .ToList());
+                        .Select(x => Path.Combine(x, ManifestFileName))
+                        .Where(File.Exists)
+                        .Select(x => JsonConvert.DeserializeObject<PluginEntry>(File.ReadAllText(x)))
+                        .Where(x => x.IsAllRight)
+                        .Distinct(new UniqueIds())
+                        .ToList());
             } catch (Exception e) {
                 List.Clear();
                 Logging.Warning("Cannot get list of installed plugins: " + e);
@@ -123,19 +123,21 @@ namespace AcManager.Tools.Managers.Plugins {
             var list = await DownloadAndParseList();
             if (list == null) return;
 
-            foreach (var plugin in list) {
-                if (plugin.IsObsolete || plugin.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                foreach (var plugin in list) {
+                    if (plugin.IsObsolete || plugin.IsHidden && !SettingsHolder.Common.DeveloperMode) continue;
 
-                var local = GetById(plugin.Id);
-                if (local != null) {
-                    List.Remove(local);
-                    plugin.InstalledVersion = local.InstalledVersion;
+                    var local = GetById(plugin.Id);
+                    if (local != null) {
+                        List.Remove(local);
+                        plugin.InstalledVersion = local.InstalledVersion;
+                    }
+
+                    List.Add(plugin);
                 }
 
-                List.Add(plugin);
-            }
-
-            ListUpdated?.Invoke(this, EventArgs.Empty);
+                ListUpdated?.Invoke(this, EventArgs.Empty);
+            });
         }
 
         private static async Task<IEnumerable<PluginEntry>> DownloadAndParseList() {

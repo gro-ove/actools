@@ -74,7 +74,8 @@ namespace AcTools.Utils.Helpers {
             } catch (Exception) {
                 try {
                     return JObject.Parse(data.Replace("﻿", ""));
-                } catch (Exception) {
+                } catch (Exception e) {
+                    AcToolsLogging.Write(e);
                     AcToolsLogging.Write(data);
                     throw;
                 }

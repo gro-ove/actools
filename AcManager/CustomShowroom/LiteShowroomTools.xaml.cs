@@ -832,11 +832,8 @@ namespace AcManager.CustomShowroom {
 
             private DelegateCommand _toggleAmbientShadowModeCommand;
 
-            public DelegateCommand ToggleAmbientShadowModeCommand
-                =>
-                        _toggleAmbientShadowModeCommand
-                                ?? (_toggleAmbientShadowModeCommand =
-                                        new DelegateCommand(() => { Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows; }));
+            public DelegateCommand ToggleAmbientShadowModeCommand => _toggleAmbientShadowModeCommand
+                    ?? (_toggleAmbientShadowModeCommand = new DelegateCommand(() => Mode = Mode == Mode.AmbientShadows ? Mode.Main : Mode.AmbientShadows));
 
             private DelegateCommand _mainModeCommand;
 
@@ -855,6 +852,26 @@ namespace AcManager.CustomShowroom {
                     await kn5.UpdateKn5(_renderer, _skin);
                 }
             }, () => Renderer?.CarNode?.GetCurrentLodKn5()?.IsEditable == true));
+
+            private DelegateCommand _resetDataMovedCommand;
+
+            public DelegateCommand ResetDataMovedCommand => _resetDataMovedCommand ?? (_resetDataMovedCommand = new DelegateCommand(() => {
+                if (ModernDialog.ShowMessage(
+                        "All moved points will be reset to values set in data, and all changes will be lost. Are you sure?",
+                        "Reset changes?", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                Renderer?.CarNode?.ResetMovedDataObjects();
+            }));
+
+            private DelegateCommand _updateDataMovedCommand;
+
+            public DelegateCommand UpdateDataMovedCommand => _updateDataMovedCommand ?? (_updateDataMovedCommand = new DelegateCommand(() => {
+                if (File.Exists(Path.Combine(Car.Location, "data.acd")) && ModernDialog.ShowMessage(
+                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedDataMessage.Replace("ambient_shadows.ini", "…"),
+                        ControlsStrings.CustomShowroom_AmbientShadowsSize_EncryptedData, MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                var data = Path.Combine(Car.Location, "data");
+                Directory.CreateDirectory(data);
+                Renderer?.CarNode?.SaveMovedDataObjects(data);
+            }));
 
             #region Commands
             private DelegateCommand _nextSkinCommand;

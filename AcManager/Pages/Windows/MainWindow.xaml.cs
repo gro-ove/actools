@@ -473,6 +473,8 @@ namespace AcManager.Pages.Windows {
                 background = FileUtils.GetFullPath(background, () => FilesStorage.Instance.GetDirectory("Themes", "Backgrounds"));
                 ApplyDynamicBackground(background, AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5));
             }
+
+            Logging.Debug("Main window is loaded and ready");
         }
 
         private DynamicBackground _dynamicBackground;

@@ -423,15 +423,12 @@ namespace AcManager.Pages.Settings {
                 }
 
                 FileUtils.EnsureDirectoryExists(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension"));
-                var anyConfigFound = false;
-
                 Configs = new PythonAppConfigs(new PythonAppConfigParams(_dir) {
                     FilesRelativeDirectory = AcRootDirectory.Instance.Value ?? _dir,
                     ScanFunc = d => Directory.GetFiles(d, "*.ini").Where(x => !Path.GetFileName(x).StartsWith(@"data_")),
                     ConfigFactory = (p, f) => {
                         var fileName = Path.GetFileName(f);
                         if (fileName == null) return null;
-                        anyConfigFound = true;
                         var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
 
                         var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);

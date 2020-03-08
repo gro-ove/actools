@@ -53,7 +53,7 @@ namespace AcManager.Tools.Objects {
         private string _description;
 
         public string Description {
-            get { return _description; }
+            get => _description;
             set {
                 if (Equals(value, _description)) return;
                 _description = value;
@@ -67,7 +67,7 @@ namespace AcManager.Tools.Objects {
         private string _displayType;
 
         public string DisplayType {
-            get { return _displayType; }
+            get => _displayType;
             set {
                 if (Equals(value, _displayType)) return;
                 _displayType = value;
@@ -81,7 +81,7 @@ namespace AcManager.Tools.Objects {
         private string _trackId;
 
         public string TrackId {
-            get { return _trackId; }
+            get => _trackId;
             set {
                 if (Equals(value, _trackId)) return;
                 _trackId = value;
@@ -95,7 +95,7 @@ namespace AcManager.Tools.Objects {
         private string _trackConfigurationId;
 
         public string TrackConfigurationId {
-            get { return _trackConfigurationId; }
+            get => _trackConfigurationId;
             set {
                 if (Equals(value, _trackConfigurationId)) return;
                 _trackConfigurationId = value;
@@ -109,7 +109,7 @@ namespace AcManager.Tools.Objects {
         private string _carId;
 
         public string CarId {
-            get { return _carId; }
+            get => _carId;
             set {
                 if (Equals(value, _carId)) return;
                 _carId = value;
@@ -123,7 +123,7 @@ namespace AcManager.Tools.Objects {
         private string _carSkinId;
 
         public string CarSkinId {
-            get { return _carSkinId; }
+            get => _carSkinId;
             set {
                 if (Equals(value, _carSkinId)) return;
                 _carSkinId = value;
@@ -137,7 +137,7 @@ namespace AcManager.Tools.Objects {
         private string _weatherId;
 
         public string WeatherId {
-            get { return _weatherId; }
+            get => _weatherId;
             set {
                 if (Equals(value, _weatherId)) return;
                 _weatherId = value;
@@ -154,7 +154,7 @@ namespace AcManager.Tools.Objects {
         /// Champinoship � null, otherwise has value.
         /// </summary>
         public PlaceConditionsType? ConditionType {
-            get { return _conditionType; }
+            get => _conditionType;
             set {
                 if (Equals(value, _conditionType)) return;
                 _conditionType = value;
@@ -174,7 +174,7 @@ namespace AcManager.Tools.Objects {
         private int? _firstPlaceTarget;
 
         public int? FirstPlaceTarget {
-            get { return _firstPlaceTarget; }
+            get => _firstPlaceTarget;
             set {
                 if (Equals(value, _firstPlaceTarget)) return;
                 _firstPlaceTarget = value;
@@ -192,7 +192,7 @@ namespace AcManager.Tools.Objects {
         private int? _secondPlaceTarget;
 
         public int? SecondPlaceTarget {
-            get { return _secondPlaceTarget; }
+            get => _secondPlaceTarget;
             set {
                 if (Equals(value, _secondPlaceTarget)) return;
                 _secondPlaceTarget = value;
@@ -210,7 +210,7 @@ namespace AcManager.Tools.Objects {
         private int? _thirdPlaceTarget;
 
         public int? ThirdPlaceTarget {
-            get { return _thirdPlaceTarget; }
+            get => _thirdPlaceTarget;
             set {
                 if (Equals(value, _thirdPlaceTarget)) return;
                 _thirdPlaceTarget = value;
@@ -228,7 +228,7 @@ namespace AcManager.Tools.Objects {
         private int _time;
 
         public int Time {
-            get { return _time; }
+            get => _time;
             set {
                 if (Equals(value, _time)) return;
                 _time = value;
@@ -241,10 +241,9 @@ namespace AcManager.Tools.Objects {
         }
 
         public string DisplayTime {
-            get { return $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}"; }
+            get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
             set {
-                int time;
-                if (!FlexibleParser.TryParseTime(value, out time)) return;
+                if (!FlexibleParser.TryParseTime(value, out var time)) return;
                 Time = time;
             }
         }
@@ -252,7 +251,7 @@ namespace AcManager.Tools.Objects {
         private int? _startingPosition;
 
         public int? StartingPosition {
-            get { return _startingPosition; }
+            get => _startingPosition;
             set {
                 if (Equals(value, _startingPosition)) return;
                 _startingPosition = value;
@@ -266,7 +265,7 @@ namespace AcManager.Tools.Objects {
         private int _opponentsCount;
 
         public int OpponentsCount {
-            get { return _opponentsCount; }
+            get => _opponentsCount;
             set {
                 if (Equals(value, _opponentsCount)) return;
                 _opponentsCount = value;
@@ -280,7 +279,7 @@ namespace AcManager.Tools.Objects {
         private int? _laps;
 
         public int? Laps {
-            get { return _laps; }
+            get => _laps;
             set {
                 if (Equals(value, _laps)) return;
                 _laps = value;
@@ -294,7 +293,7 @@ namespace AcManager.Tools.Objects {
         private int _aiLevel;
 
         public int AiLevel {
-            get { return _aiLevel; }
+            get => _aiLevel;
             set {
                 if (Equals(value, _aiLevel)) return;
                 _aiLevel = value;
@@ -309,7 +308,7 @@ namespace AcManager.Tools.Objects {
         private TrackObjectBase _trackObject;
 
         public TrackObjectBase TrackObject {
-            get { return _trackObject; }
+            get => _trackObject;
             set {
                 if (Equals(value, _trackObject)) return;
                 _trackObject = value;
@@ -323,7 +322,7 @@ namespace AcManager.Tools.Objects {
         private CarObject _carObject;
 
         public CarObject CarObject {
-            get { return _carObject; }
+            get => _carObject;
             set {
                 if (Equals(value, _carObject)) return;
                 _carObject = value;
@@ -337,7 +336,7 @@ namespace AcManager.Tools.Objects {
         private CarSkinObject _carSkin;
 
         public CarSkinObject CarSkin {
-            get { return _carSkin; }
+            get => _carSkin;
             set {
                 if (Equals(value, _carSkin)) return;
                 _carSkin = value;
@@ -351,7 +350,7 @@ namespace AcManager.Tools.Objects {
         private WeatherObject _weatherObject;
 
         public WeatherObject WeatherObject {
-            get { return _weatherObject; }
+            get => _weatherObject;
             set {
                 if (Equals(value, _weatherObject)) return;
                 _weatherObject = value;
@@ -365,7 +364,7 @@ namespace AcManager.Tools.Objects {
         private double _temperature;
 
         public double Temperature {
-            get { return _temperature; }
+            get => _temperature;
             set {
                 if (Equals(value, _temperature)) return;
                 _temperature = value;
@@ -379,7 +378,7 @@ namespace AcManager.Tools.Objects {
         private double _roadTemperature;
 
         public double RoadTemperature {
-            get { return _roadTemperature; }
+            get => _roadTemperature;
             set {
                 if (Equals(value, _roadTemperature)) return;
                 _roadTemperature = value;
@@ -393,7 +392,7 @@ namespace AcManager.Tools.Objects {
         private Game.TrackPropertiesPreset _trackPreset;
 
         public Game.TrackPropertiesPreset TrackPreset {
-            get { return _trackPreset; }
+            get => _trackPreset;
             set {
                 if (Equals(value, _trackPreset)) return;
                 _trackPreset = value;
@@ -445,10 +444,10 @@ namespace AcManager.Tools.Objects {
                 AddError(AcErrorType.Data_KunosCareerConditions, ini["CONDITION_0"].GetNonEmpty("TYPE") ?? @"?");
             } else {
                 RemoveError(AcErrorType.Data_KunosCareerConditions);
-                ConditionType = conditions[0].Type.Value;
-                FirstPlaceTarget = conditions[2].Value.Value;
-                SecondPlaceTarget = conditions[1].Value.Value;
-                ThirdPlaceTarget = conditions[0].Value.Value;
+                ConditionType = conditions[0].Type;
+                FirstPlaceTarget = conditions[2].Value;
+                SecondPlaceTarget = conditions[1].Value;
+                ThirdPlaceTarget = conditions[0].Value;
             }
         }
 
@@ -500,7 +499,7 @@ namespace AcManager.Tools.Objects {
         /// Starts from 1.
         /// </summary>
         public int TakenPlace {
-            get { return _takenPlace; }
+            get => _takenPlace;
             set {
                 if (Equals(value, _takenPlace)) return;
                 _takenPlace = value;

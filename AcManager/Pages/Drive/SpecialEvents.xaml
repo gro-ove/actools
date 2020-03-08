@@ -18,28 +18,32 @@
           DefaultBrush="Transparent" />
 
       <DataTemplate x:Key="ItemTemplate" DataType="{x:Type t:SpecialEventObject}">
-        <Grid Background="Black" ClipToBounds="True" MinHeight="100">
-          <mui:BetterImage x:Name="PreviewImage" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True" ForceFill="True" />
-          <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}"
-              Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}">
-            <TextBlock.RenderTransform>
-              <TranslateTransform />
-            </TextBlock.RenderTransform>
-          </TextBlock>
-          <StackPanel VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel"
-              TextBlock.FontSize="{DynamicResource SmallFontSize}" TextBlock.Foreground="White">
-            <StackPanel.RenderTransform>
-              <TranslateTransform />
-            </StackPanel.RenderTransform>
-            <TextBlock Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}" />
-            <TextBlock Margin="4 0 24 4" Text="{Binding DisplayType}" />
-          </StackPanel>
-          <Ellipse x:Name="PlaceEllipse" Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
-              Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
-        </Grid>
+        <Border x:Name="PlaceBorder" Margin="-2" BorderThickness="2" BorderBrush="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}">
+          <mui:Cell Background="Black" ClipToBounds="True">
+            <mui:BetterImage x:Name="PreviewImage" Filename="{Binding PreviewImage}" Stretch="UniformToFill" StretchDirection="DownOnly" ClearOnChange="True"
+                ForceFill="True" />
+            <TextBlock x:Name="TopPanel" Padding="4" VerticalAlignment="Top" Background="{StaticResource DarkenPanel}" Text="{Binding DisplayName}"
+                Foreground="White" TextAlignment="Right" FontSize="{DynamicResource SmallFontSize}">
+              <TextBlock.RenderTransform>
+                <TranslateTransform />
+              </TextBlock.RenderTransform>
+            </TextBlock>
+            <StackPanel VerticalAlignment="Bottom" Background="{StaticResource DarkenPanel}" x:Name="BottomPanel"
+                TextBlock.FontSize="{DynamicResource SmallFontSize}" TextBlock.Foreground="White">
+              <StackPanel.RenderTransform>
+                <TranslateTransform />
+              </StackPanel.RenderTransform>
+              <TextBlock Margin="4 4 24 0" Text="{Binding CarObject.DisplayName}" />
+              <TextBlock Margin="4 0 24 4" Text="{Binding DisplayType}" />
+            </StackPanel>
+            <Ellipse x:Name="PlaceEllipse" Width="8" Height="8" Margin="8 12" VerticalAlignment="Bottom" HorizontalAlignment="Right"
+                Fill="{Binding TakenPlace, Converter={StaticResource PlaceToColorConverter}}" />
+          </mui:Cell>
+        </Border>
         <DataTemplate.Triggers>
           <DataTrigger Binding="{Binding ConditionType}" Value="{x:Null}">
             <Setter TargetName="PlaceEllipse" Property="Fill" Value="{Binding TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}" />
+            <Setter TargetName="PlaceBorder" Property="BorderBrush" Value="{Binding TakenPlace, Converter={StaticResource RacePlaceToColorConverter}}" />
           </DataTrigger>
           <DataTrigger Binding="{Binding TakenPlace}" Value="1">
             <Setter TargetName="PreviewImage" Property="Effect">
@@ -97,23 +101,24 @@
           Visibility="{Binding ActualHeight, ElementName=ContentGrid, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=540}">
         <mui:Switch Value="{Binding SelectedStarterType.Id, Source={x:Static t:SettingsHolder.Drive}}" DockPanel.Dock="Right" Margin="4 0 0 0">
           <Button mui:Switch.When="Steam" Command="{Binding SyncronizeProgressUsingSteamStarterCommand}" ToolTip="Always works (at least should)"
-              Content="Sync via Steam" />
+              Content="Sync progress via Steam" />
           <Button mui:Switch.When="AppID" Command="{Binding SyncronizeProgressUsingAppIdStarterCommand}" ToolTip="Always works (at least should)"
-              Content="Sync via AppID starter" />
+              Content="Sync progress via AppID starter" />
           <mui:SpacingStackPanel Spacing="4" Orientation="Horizontal">
             <Button Command="{Binding SyncronizeProgressUsingModuleCommand}"
                 ToolTip="Works with private Steam profiles, but UI module should be installed and AC launcher should be running"
-                Content="Sync via Module Starter" />
+                Content="Sync progress via Module Starter" />
             <Button Command="{Binding SyncronizeProgressUsingSidePassageCommand}"
-                ToolTip="Works with private Steam profiles, but AC Service should be used as a starter" Content="Sync via AC Service" />
+                ToolTip="Works with private Steam profiles, but AC Service should be used as a starter" Content="Sync progress via AC Service" />
             <Button Command="{Binding SyncronizeProgressCommand}" ToolTip="Works only with non-private Steam profiles at the moment"
-                Content="Sync via Steam Web API" />
+                Content="Sync progress via Steam Web API" />
           </mui:SpacingStackPanel>
         </mui:Switch>
-        <Grid>
-          <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-          <mui:BbCodeBlock TextWrapping="Wrap" Margin="8">Still WIP, you can check its progress [url="https://trello.com/c/6aAhOuzm/13-kunos-challenges"]here[/url].</mui:BbCodeBlock>
-        </Grid>
+
+        <mui:SpacingStackPanel>
+          <TextBlock Text="{Binding ProgressAny}" Style="{StaticResource Heading2}" VerticalAlignment="Center" />
+          <TextBlock Text="{Binding ProgressTop}" Style="{StaticResource Small}" VerticalAlignment="Center" />
+        </mui:SpacingStackPanel>
       </DockPanel>
 
       <ListBox x:Name="ListBox" Grid.Row="1" Grid.ColumnSpan="3" Grid.Column="0" ItemsSource="{Binding List}" ScrollViewer.CanContentScroll="True"
@@ -209,10 +214,13 @@
             Visibility="{Binding StartingPosition, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
           <Label Content="{x:Static g:AppStrings.KunosCareer_StartingPositionLabel}" />
           <TextBlock Style="{StaticResource Value}">
-            <Run Text="{Binding StartingPosition, Mode=OneWay,
+            <Run
+                Text="{Binding StartingPosition, Mode=OneWay,
                 Converter={StaticResource OrdinalizingConverter}, ConverterParameter={x:Static g:AppStrings.Drive_Ordinal_Parameter}}" />
-            <Run Text="(" /><Run Text="{Binding OpponentsCount, Mode=OneWay,
-                Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run Text=")" />
+            <Run Text="(" /><Run
+                                Text="{Binding OpponentsCount, Mode=OneWay, Converter={StaticResource PluralizingConverter},
+                ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsFormat}}" /><Run
+                                                                                                                                                                                                                            Text=")" />
           </TextBlock>
         </DockPanel>
         <DockPanel Grid.Column="0" Grid.Row="4">

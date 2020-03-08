@@ -176,6 +176,12 @@
           <TextBlock Text="{Binding Trail, StringFormat='{}Trail: {0}'}" Margin="8 0 0 0" />
         </mui:SpacingStackPanel>
       </StackPanel>
+      <Button Margin="0 4 0 0" Command="{Binding UpdateDataMovedCommand}" Content="Save moved points"
+          ToolTip="Save moved suspension, flames, wings or fuel tank"
+          Visibility="{Binding Renderer.CarNode.DataObjectMoved, Converter={StaticResource BooleanToVisibilityConverter}}" />
+      <Button Margin="0 4 0 0" Command="{Binding ResetDataMovedCommand}" Content="Reset moved points"
+          ToolTip="Reset any changes in suspension, flames, wings or fuel tank"
+          Visibility="{Binding Renderer.CarNode.DataObjectMoved, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
       <TextBlock Text="Wheels" Style="{StaticResource Heading2}" Margin="0 8 0 0" />
       <CheckBox IsChecked="{Binding Renderer.CarNode.AlignWheelsByData}">

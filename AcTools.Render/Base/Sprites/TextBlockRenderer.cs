@@ -399,6 +399,8 @@ namespace AcTools.Render.Base.Sprites {
         // TODO: support for multiline strings plus angle
         public StringMetrics DrawString(string text, RectangleF rect, float angle, TextAlignment align, float realFontSize, Color4 color,
                 CoordinateType coordinateType) {
+            if (string.IsNullOrWhiteSpace(text)) return new StringMetrics();
+
             var hl = align.HasFlag(TextAlignment.Left);
             var vt = align.HasFlag(TextAlignment.Top);
             if (hl && vt) {

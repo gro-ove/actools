@@ -391,6 +391,8 @@
         <mui:Link DisplayName="Drift" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drift&amp;Special=1" />
         <mui:Link DisplayName="Drag" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drag&amp;Special=1" />
         <mui:Link DisplayName="Time Attack" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:time attack&amp;Special=1" />
+        <mui:Link DisplayName="Not passed yet" Source="/Pages/Drive/SpecialEvents.xaml?Filter=passed-&amp;Special=1" />
+        <mui:Link DisplayName="Something to improve" Source="/Pages/Drive/SpecialEvents.xaml?Filter=improvable+&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">

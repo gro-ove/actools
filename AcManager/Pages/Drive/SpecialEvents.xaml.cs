@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -87,7 +88,7 @@ namespace AcManager.Pages.Drive {
                     OnPropertyChanged();
                     ValuesStorage.Set(KeySelectedId, value?.Id);
                     _discordPresence?.Car(value?.CarObject).Track(value?.TrackObject)
-                                     .Details("Challenges", value?.DisplayName);
+                            .Details("Challenges", value?.DisplayName);
                 }
             }
 
@@ -108,6 +109,25 @@ namespace AcManager.Pages.Drive {
                 if (_selectNext != null) {
                     Selected = _selectNext;
                     _selectNext = null;
+                }
+            }
+
+            public string ProgressAny {
+                get {
+                    var finished = List.OfType<AcItemWrapper>().Count(x => {
+                        if (x.Value is SpecialEventObject e) {
+                            return e.TakenPlace < (e.ConditionType == null ? 5 : 4);
+                        }
+                        return false;
+                    });
+                    return $"Progress: {finished} out of {List.Count} ({100f * finished / List.Count:F1}%)";
+                }
+            }
+
+            public string ProgressTop {
+                get {
+                    var finished = List.OfType<AcItemWrapper>().Count(x => (x.Value as SpecialEventObject)?.TakenPlace == 1);
+                    return $"Top prize: {finished} out of {List.Count} ({100f * finished / List.Count:F1}%)";
                 }
             }
 

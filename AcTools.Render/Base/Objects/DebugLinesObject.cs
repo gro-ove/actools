@@ -120,7 +120,7 @@ namespace AcTools.Render.Base.Objects {
             direction.Normalize();
 
             vertices.Add(new InputLayouts.VerticePC(new Vector3(0f), color));
-            vertices.Add(new InputLayouts.VerticePC(direction, color));
+            vertices.Add(new InputLayouts.VerticePC(direction * size, color));
             indices.AddRange(new ushort[] { 0, 1 });
 
             Vector3 left, up;
@@ -132,14 +132,14 @@ namespace AcTools.Render.Base.Objects {
                 up = Vector3.Normalize(Vector3.Cross(direction, left));
             }
 
-            vertices.Add(new InputLayouts.VerticePC(direction + (left + up - direction) * 0.1f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left + up - direction) * 0.1f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (-left - up - direction) * 0.1f, color));
-            vertices.Add(new InputLayouts.VerticePC(direction + (left - up - direction) * 0.1f, color));
+            vertices.Add(new InputLayouts.VerticePC((direction + (left + up - direction) * 0.1f) * size, color));
+            vertices.Add(new InputLayouts.VerticePC((direction + (-left + up - direction) * 0.1f) * size, color));
+            vertices.Add(new InputLayouts.VerticePC((direction + (-left - up - direction) * 0.1f) * size, color));
+            vertices.Add(new InputLayouts.VerticePC((direction + (left - up - direction) * 0.1f) * size, color));
             indices.AddRange(new ushort[] { 1, 2, 1, 3, 1, 4, 1, 5 });
             indices.AddRange(new ushort[] { 2, 3, 3, 4, 4, 5, 5, 2 });
 
-            return new DebugLinesObject(Matrix.Scaling(new Vector3(size)) * matrix, vertices.ToArray(), indices.ToArray());
+            return new DebugLinesObject(matrix, vertices.ToArray(), indices.ToArray());
         }
 
         [NotNull]

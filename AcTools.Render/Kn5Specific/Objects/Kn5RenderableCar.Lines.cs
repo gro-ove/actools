@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using AcTools.DataFile;
 using AcTools.Render.Base;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Objects;
@@ -22,18 +23,25 @@ using TextAlignment = AcTools.Render.Base.Sprites.TextAlignment;
 
 namespace AcTools.Render.Kn5Specific.Objects {
     public partial class Kn5RenderableCar {
-        private class CarDebugLinesObject : IWithId<int> {
-            public readonly int Id;
+        private class CarDebugLinesObject : IWithId<int>, IMoveable {
+            private readonly int _id;
             public readonly string Name;
+            public string OriginalName;
             public readonly IRenderableObject Renderable;
-            public readonly Matrix Transform;
+            public Matrix Transform;
             public readonly Color4 Color;
 
-            public CarDebugLinesObject(string name, IRenderableObject renderable, Color4? color = null) : this(-1, name, renderable, color) {}
+            public MoveableRotationAxis AllowRotation { get; set; }
+
+            public bool AllowScaling { get; set; }
+
+            public CarDebugLinesObject(string name, IRenderableObject renderable, Color4? color = null)
+                    : this(-1, name, renderable, color) { }
 
             public CarDebugLinesObject(int id, string name, IRenderableObject renderable, Color4? color = null) {
-                Id = id;
+                _id = id;
                 Name = name;
+                OriginalName = name;
                 Renderable = renderable;
                 Color = color ?? (renderable as DebugLinesObject)?.Color ??
                         (renderable as RenderableList)?.OfType<DebugLinesObject>().FirstOrDefault()?.Color ??
@@ -45,15 +53,39 @@ namespace AcTools.Render.Kn5Specific.Objects {
             public object Source { get; set; }
 
             public void SetMatrix(Matrix matrix) {
-                var o = Renderable as DebugLinesObject;
-                if (o != null) {
+                if (Renderable is DebugLinesObject o) {
                     o.Transform = matrix;
-                } else if (Renderable is RenderableList) {
-                    ((RenderableList)Renderable).LocalMatrix = matrix;
+                } else if (Renderable is RenderableList list) {
+                    list.LocalMatrix = matrix;
                 }
             }
 
-            int IWithId<int>.Id => Id;
+            int IWithId<int>.Id => _id;
+
+            [CanBeNull]
+            public Func<CarDebugLinesObject, CarDebugLinesObject> CloneFunc { get; set; }
+
+            private MoveableHelper _movable;
+            public MoveableHelper Movable => _movable ?? (_movable = new MoveableHelper(this, AllowRotation, AllowScaling));
+
+            void IMoveable.Move(Vector3 delta) {
+                Transform *= Matrix.Translation(delta);
+                SetMatrix(Transform);
+            }
+
+            void IMoveable.Rotate(Quaternion delta) {
+                Transform = Matrix.RotationQuaternion(delta) * Transform;
+                SetMatrix(Transform);
+            }
+
+            public void Scale(Vector3 scale) {
+                Transform *= Matrix.Scaling(scale);
+                SetMatrix(Transform);
+            }
+
+            public IMoveable Clone() {
+                return CloneFunc?.Invoke(this);
+            }
         }
 
         private class CarDebugLinesWrapper : IDisposable {
@@ -61,14 +93,19 @@ namespace AcTools.Render.Kn5Specific.Objects {
             private readonly Func<Kn5RenderableCar, CarData, IEnumerable<CarDebugLinesObject>> _lazy;
 
             [CanBeNull]
+            private readonly Func<Kn5RenderableCar, CarData, CarDebugLinesObject, CarDebugLinesWrapper, CarDebugLinesObject> _cloneFunc;
+
+            [CanBeNull]
             private CarDebugLinesObject[] _lines;
 
             public CarDebugLinesWrapper([NotNull] Func<Kn5RenderableCar, CarData, CarDebugLinesObject> lazy) {
-                _lazy = (c, d) => new [] { lazy(c, d) };
+                _lazy = (c, d) => new[] { lazy(c, d) };
             }
 
-            public CarDebugLinesWrapper([NotNull] Func<Kn5RenderableCar, CarData, IEnumerable<CarDebugLinesObject>> lazy) {
+            public CarDebugLinesWrapper([NotNull] Func<Kn5RenderableCar, CarData, IEnumerable<CarDebugLinesObject>> lazy,
+                    Func<Kn5RenderableCar, CarData, CarDebugLinesObject, CarDebugLinesWrapper, CarDebugLinesObject> cloneFunc = null) {
                 _lazy = lazy;
+                _cloneFunc = cloneFunc;
             }
 
             private void Initialize([NotNull] Kn5RenderableCar parent) {
@@ -94,7 +131,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 for (var i = lines.Length - 1; i >= 0; i--) {
                     var line = lines[i];
-                    line.Renderable.ParentMatrix = parent.RootObject.Matrix;
+                    line.Renderable.ParentMatrix = parent.Matrix;
                     line.Renderable.Draw(holder, camera, SpecialRenderMode.Simple);
                 }
             }
@@ -107,9 +144,54 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 for (var i = lines.Length - 1; i >= 0; i--) {
                     var line = lines[i];
-                    if (string.IsNullOrWhiteSpace(line.Name)) return;
+                    parent.DrawText(line.Name, line.Transform * parent.Matrix, camera, screenSize, line.Color);
+                }
+            }
 
-                    parent.DrawText(line.Name, line.Renderable.ParentMatrix * line.Transform, camera, screenSize, line.Color);
+            [CanBeNull]
+            private Kn5RenderableCar _cloneParent;
+
+            [CanBeNull]
+            private CarDebugLinesObject ItemCloneFunc(CarDebugLinesObject clonee) {
+                if (_cloneParent == null) return null;
+                return _cloneFunc?.Invoke(_cloneParent, _cloneParent._carData, clonee, this);
+            }
+
+            public void DrawMovementArrows([NotNull] Kn5RenderableCar parent, DeviceContextHolder holder, CameraBase camera) {
+                var lines = _lines;
+                if (lines == null) return;
+
+                _cloneParent = parent;
+                for (var i = lines.Length - 1; i >= 0; i--) {
+                    var line = lines[i];
+                    line.CloneFunc = ItemCloneFunc;
+                    line.Movable.ParentMatrix = line.Transform * parent.Matrix;
+                    line.Movable.Draw(holder, camera, SpecialRenderMode.Simple);
+                }
+            }
+
+            public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone, out IMoveable cloned) {
+                var lines = _lines;
+                if (lines != null) {
+                    for (var i = lines.Length - 1; i >= 0; i--) {
+                        var m = lines[i];
+                        if (m.Movable.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out cloned)) {
+                            if (cloned is CarDebugLinesObject o) {
+                                _lines = _lines?.Append(o).ToArray();
+                            }
+                            return true;
+                        }
+                    }
+                }
+                cloned = null;
+                return false;
+            }
+
+            public void StopMovement() {
+                var lines = _lines;
+                if (lines == null) return;
+                for (var i = lines.Length - 1; i >= 0; i--) {
+                    lines[i].Movable.StopMovement();
                 }
             }
 
@@ -120,6 +202,25 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             public void Dispose() {
                 Reset();
+            }
+
+            public int Count([NotNull] Kn5RenderableCar parent) {
+                Initialize(parent);
+                return _lines?.Length ?? 0;
+            }
+
+            public class TransformEntry {
+                public string Name;
+                public string OriginalName;
+                public Matrix Transform;
+            }
+
+            public IEnumerable<TransformEntry> GetTransforms() {
+                return _lines?.Select(x => new TransformEntry {
+                    Name = x.Name,
+                    OriginalName = x.OriginalName,
+                    Transform = x.Transform
+                }) ?? new TransformEntry[0];
             }
         }
 
@@ -156,10 +257,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private static void AddDebugSuspensionPoints(CarData.SuspensionsPack pack, CarData.SuspensionBase suspension, InputLayouts.VerticePC[] result,
                 ref int index) {
-            for (var i = 0; i < suspension.DebugLines.Length; i++) {
-                var line = suspension.DebugLines[i];
-                result[index++] = new InputLayouts.VerticePC(pack.TranslateRelativeToCarModel(suspension, line.Start), line.Color.ToVector4());
-                result[index++] = new InputLayouts.VerticePC(pack.TranslateRelativeToCarModel(suspension, line.End), line.Color.ToVector4());
+            foreach (var line in suspension.DebugLines) {
+                result[index++] = new InputLayouts.VerticePC(pack.TranslateRelativeToCarModel(suspension, line.Start), line.ColorStart.ToVector4());
+                result[index++] = new InputLayouts.VerticePC(pack.TranslateRelativeToCarModel(suspension, line.End), line.ColorEnd.ToVector4());
             }
         }
 
@@ -200,6 +300,167 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 holder.DeviceContext.OutputMerger.DepthStencilState = holder.States.DisabledDepthState;
                 _debugNode.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+        }
+
+        [CanBeNull]
+        private List<SuspensionMovablePoint> _suspensionMovables;
+
+        public abstract class SuspensionMovablePoint : IMoveable, IDisposable {
+            [NotNull]
+            public MoveableHelper Movable;
+
+            [NotNull]
+            private readonly CarData.SuspensionBase _target;
+
+            public bool Front;
+
+            protected SuspensionMovablePoint([NotNull] CarData.SuspensionBase target, bool front) {
+                Movable = new MoveableHelper(this, MoveableRotationAxis.None);
+                _target = target;
+                Front = front;
+            }
+
+            protected abstract Vector3 GetPosition();
+            protected abstract void ApplyMovement(Vector3 delta);
+
+            public void Draw(DeviceContextHolder holder, ICamera camera, CarData.SuspensionsPack pack, Matrix parent) {
+                Movable.ParentMatrix = Matrix.Translation(GetPosition()) * pack.TranslateRelativeToCarModel(_target) * parent;
+                Movable.Draw(holder, camera, SpecialRenderMode.Simple);
+            }
+
+            public void Save(IniFile suspensions) {
+                _target.SavePoints(suspensions, Front);
+            }
+
+            void IMoveable.Move(Vector3 delta) {
+                _target.ResetLinesCache();
+                ApplyMovement(delta);
+            }
+
+            void IMoveable.Rotate(Quaternion delta) { }
+
+            void IMoveable.Scale(Vector3 scale) { }
+
+            IMoveable IMoveable.Clone() {
+                return null;
+            }
+
+            public void Dispose() {
+                Movable.Dispose();
+            }
+        }
+
+        public class AxleSuspensionMovablePoint : SuspensionMovablePoint {
+            private readonly CarData.AxleLink _link;
+            private readonly bool _carSide;
+
+            public AxleSuspensionMovablePoint([NotNull] CarData.SuspensionBase target, CarData.AxleLink link, bool carSide, bool front)
+                    : base(target, front) {
+                _link = link;
+                _carSide = carSide;
+            }
+
+            protected override Vector3 GetPosition() {
+                return _carSide ? _link.Car : _link.Axle;
+            }
+
+            protected override void ApplyMovement(Vector3 delta) {
+                if (_carSide) {
+                    _link.Car += delta;
+                } else {
+                    _link.Axle += delta;
+                }
+            }
+        }
+
+        public class EightPointsSuspensionMovablePoint : SuspensionMovablePoint {
+            [NotNull]
+            private CarData.EightPointsSuspensionBase _target;
+
+            [CanBeNull]
+            private CarData.EightPointsSuspensionBase _targetAlt;
+
+            private int _pointIndex;
+
+            public EightPointsSuspensionMovablePoint([NotNull] CarData.EightPointsSuspensionBase target, int index, bool front,
+                    [CanBeNull] CarData.EightPointsSuspensionBase targetAlt) : base(target, front) {
+                _target = target;
+                _pointIndex = index;
+                _targetAlt = targetAlt;
+            }
+
+            protected override Vector3 GetPosition() {
+                return _target.Points[_pointIndex];
+            }
+
+            protected override void ApplyMovement(Vector3 delta) {
+                _target.Points[_pointIndex] += delta;
+                if (_targetAlt != null) {
+                    _targetAlt.ResetLinesCache();
+                    delta.X *= _targetAlt.XOffset * _target.XOffset;
+                    _targetAlt.Points[_pointIndex] += delta;
+                }
+            }
+        }
+
+        public void DrawSuspensionMovementArrows(DeviceContextHolder holder, ICamera camera) {
+            var suspension = _suspensionMovables;
+            if (suspension == null) {
+                suspension = new List<SuspensionMovablePoint>();
+                InitMovableGroup(SuspensionsPack.Front, true);
+                InitMovableGroup(SuspensionsPack.Rear, false);
+                _suspensionMovables = suspension;
+            }
+
+            void InitMovable(bool front, CarData.SuspensionBase suspensionBase, CarData.SuspensionBase otherSide = null) {
+                if (suspensionBase is CarData.EightPointsSuspensionBase eightPoint) {
+                    var other = otherSide as CarData.EightPointsSuspensionBase;
+                    for (var i = 0; i < 8; i++) {
+                        suspension.Add(new EightPointsSuspensionMovablePoint(eightPoint, i, front, other));
+                    }
+                } else if (suspensionBase is CarData.AxleSuspension axle) {
+                    foreach (var t in axle.Links) {
+                        suspension.Add(new AxleSuspensionMovablePoint(axle, t, true, front));
+                        suspension.Add(new AxleSuspensionMovablePoint(axle, t, false, front));
+                    }
+                }
+            }
+
+            void InitMovableGroup(CarData.SuspensionsGroupBase group, bool front) {
+                if (group is CarData.IndependentSuspensionsGroup gi) {
+                    InitMovable(front, gi.Left, gi.Right);
+                }
+                if (group is CarData.DependentSuspensionGroup gd) {
+                    InitMovable(front, gd.Both);
+                }
+            }
+
+            foreach (var m in suspension) {
+                m.Draw(holder, camera, SuspensionsPack, RootObject.Matrix);
+            }
+        }
+
+        public bool MoveSuspension(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera) {
+            var suspension = _suspensionMovables;
+            if (suspension != null) {
+                foreach (var m in suspension) {
+                    if (m.Movable.MoveObject(relativeFrom, relativeDelta, camera, false, out _)) {
+                        _suspensionLines?.Dispose();
+                        _suspensionLines = null;
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        public void StopSuspensionMovement() {
+            var suspension = _suspensionMovables;
+            if (suspension != null) {
+                foreach (var m in suspension) {
+                    m.Movable.StopMovement();
+                }
             }
         }
 
@@ -275,7 +536,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var proportions = new Vector3(2f, 0.5f, 1f);
             return new CarDebugLinesObject("Fuel tank",
                     DebugLinesObject.GetLinesBox(Matrix.Translation(data.GetFuelTankPosition()) * Matrix.Invert(data.GetGraphicMatrix()),
-                            proportions * side, new Color4(1f, 0.5f, 1f, 0f)));
+                            proportions * side, new Color4(1f, 0.5f, 1f, 0f))) {
+                                AllowScaling = false
+                            };
         });
         #endregion
 
@@ -294,8 +557,22 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private readonly CarDebugLinesWrapper _flamesLines = new CarDebugLinesWrapper((car, data) => {
-            return data.GetFlames().Select(x => new CarDebugLinesObject(x.Name,
-                        DebugLinesObject.GetLinesArrow(Matrix.Translation(x.Position), x.Direction, new Color4(1f, 1f, 0f, 0f)))).ToArray();
+            return data.GetFlames().Select(x => {
+                var renderable = DebugLinesObject.GetLinesArrow(
+                        Matrix.LookAtLH(Vector3.Zero, x.Direction, Math.Abs(x.Direction.Y) > 0.9 ? -Vector3.UnitZ : -Vector3.UnitY)
+                                * Matrix.Translation(x.Position), Vector3.UnitZ,
+                        new Color4(1f, 1f, 0f, 0f));
+                return new CarDebugLinesObject(x.Name, renderable) {
+                    AllowRotation = MoveableRotationAxis.All
+                };
+            }).ToArray();
+        }, (car, data, original, parent) => {
+            var renderable = DebugLinesObject.GetLinesArrow(original.Transform, Vector3.UnitZ,
+                    new Color4(1f, 1f, 0f, 0f));
+            return new CarDebugLinesObject("FLAME_" + parent.Count(car), renderable) {
+                OriginalName = original.OriginalName,
+                AllowRotation = MoveableRotationAxis.All
+            };
         });
         #endregion
 
@@ -319,7 +596,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     DebugLinesObject.GetLinesPlane(
                             Matrix.RotationX(x.Angle.ToRadians()) * Matrix.Translation(x.Position) * graphicMatrix,
                             Vector3.UnitY, new Color4(1f, 0f, 1f, 1f), x.Span, x.Chord)) {
-                                Source = x
+                                Source = x,
+                                OriginalName = x.SectionName
                             }).ToArray();
         });
 
@@ -359,6 +637,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private void DrawText(string text, Matrix objectTransform, ICamera camera, Vector2 screenSize, Color4 color) {
+            if (string.IsNullOrWhiteSpace(text)) return;
             var onScreenPosition = Vector3.TransformCoordinate(Vector3.Zero, objectTransform * camera.ViewProj) * 0.5f +
                     new Vector3(0.5f);
             onScreenPosition.Y = 1f - onScreenPosition.Y;
@@ -396,6 +675,5 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private TextBlockRenderer _debugText;
         #endregion
-
     }
 }

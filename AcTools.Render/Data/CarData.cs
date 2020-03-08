@@ -17,6 +17,10 @@ namespace AcTools.Render.Data {
         public static Vector3 GetSlimVector3(this IniFileSection section, string key, Vector3 defaultValue = default(Vector3)) {
             return section.GetVector3F(key).ToVector3();
         }
+
+        public static void SetSlimVector3(this IniFileSection section, string key, Vector3 value) {
+            section.Set(key, value.ToArray());
+        }
     }
 
     public class CarData {
@@ -37,6 +41,8 @@ namespace AcTools.Render.Data {
         }
 
         public bool IsEmpty => _data.IsEmpty;
+
+        public bool IsPacked => _data.IsPacked;
 
         public string GetMainKn5(string carDirectory, bool considerHr) {
             return AcPaths.GetMainCarFilename(carDirectory, _data, considerHr);
@@ -154,11 +160,11 @@ namespace AcTools.Render.Data {
         public IEnumerable<LightAnimation> GetLightsAnimations() {
             return IsEmpty ? new LightAnimation[0] :
                     _data.GetIniFile("lights.ini")
-                         .GetSections("LIGHT_ANIMATION")
-                         .Select(x => new LightAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
-                         .Where(x => x.KsAnimName != null)
-                         .Append(new LightAnimation("lights.ksanim", 1f))
-                         .Distinct<LightAnimation>(AnimationBase.KsAnimNameComparer);
+                            .GetSections("LIGHT_ANIMATION")
+                            .Select(x => new LightAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
+                            .Where(x => x.KsAnimName != null)
+                            .Append(new LightAnimation("lights.ksanim", 1f))
+                            .Distinct<LightAnimation>(AnimationBase.KsAnimNameComparer);
         }
         #endregion
 
@@ -184,15 +190,15 @@ namespace AcTools.Render.Data {
             [NotNull]
             public static IEnumerable<Tuple<string, bool>> GetNamesToToggle([NotNull] BlurredObject[] list, [NotNull] float[] speed) {
                 return from o in list
-                       let s = o.WheelIndex < speed.Length ? speed[o.WheelIndex] : 0f
-                       select Tuple.Create(o.Name, o.MinSpeed <= s && s <= o.MaxSpeed);
+                    let s = o.WheelIndex < speed.Length ? speed[o.WheelIndex] : 0f
+                    select Tuple.Create(o.Name, o.MinSpeed <= s && s <= o.MaxSpeed);
             }
         }
 
         public IEnumerable<BlurredObject> GetBlurredObjects() {
             return IsEmpty ? new BlurredObject[0] :
                     _data.GetIniFile("blurred_objects.ini").GetSections("OBJECT")
-                         .Select(x => new BlurredObject(x)).Where(x => x.WheelIndex >= 0 && x.Name != null);
+                            .Select(x => new BlurredObject(x)).Where(x => x.WheelIndex >= 0 && x.Name != null);
         }
         #endregion
 
@@ -213,8 +219,8 @@ namespace AcTools.Render.Data {
             if (IsEmpty) return new LodDescription[0];
             var lods = _data.GetIniFile("lods.ini");
             return lods.GetSections("LOD").Select(x => new LodDescription(x))
-                       .Prepend(new LodDescription(lods["LOD_HR"]))
-                       .Where(x => x.FileName != null);
+                    .Prepend(new LodDescription(lods["LOD_HR"]))
+                    .Where(x => x.FileName != null);
         }
         #endregion
 
@@ -416,15 +422,17 @@ namespace AcTools.Render.Data {
         }
 
         public class DebugLine {
-            public DebugLine(Color color, Vector3 start, Vector3 end) {
+            public DebugLine(Color colorStart, Color colorEnd, Vector3 start, Vector3 end) {
                 Start = start;
                 End = end;
-                Color = color;
+                ColorStart = colorStart;
+                ColorEnd = colorEnd;
             }
 
             public Vector3 Start { get; }
             public Vector3 End { get; }
-            public Color Color { get; }
+            public Color ColorStart { get; }
+            public Color ColorEnd { get; }
         }
 
         public abstract class SuspensionBase {
@@ -468,10 +476,16 @@ namespace AcTools.Render.Data {
             private Tuple<Vector3, Vector3> _wheelSteerAxle;
             #endregion
 
+            public void ResetLinesCache() {
+                _debugLines = null;
+            }
+
             public DebugLine[] DebugLines => _debugLines ?? (_debugLines = DebugLinesOverride.ToArrayIfItIsNot());
             private DebugLine[] _debugLines;
 
             protected abstract IEnumerable<DebugLine> DebugLinesOverride { get; }
+
+            public abstract void SavePoints(IniFile ini, bool front);
         }
 
         public class AxleLink {
@@ -480,16 +494,21 @@ namespace AcTools.Render.Data {
                 Axle = axle;
             }
 
-            public Vector3 Car { get; }
-            public Vector3 Axle { get; }
+            public Vector3 Car;
+            public Vector3 Axle;
         }
 
         public class AxleSuspension : SuspensionBase {
             public float AxleWidth { get; }
+
             public AxleLink[] Links { get; }
+
             public override string DisplayType => "Axle";
+
             protected override float CasterOverride => 0f;
+
             protected override float KpiOverride => 0f;
+
             protected override float TrailOverride => 0f;
 
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => Tuple.Create(
@@ -513,19 +532,38 @@ namespace AcTools.Render.Data {
                         axleSection.GetSlimVector3($"J{i}_AXLE"))).ToArray();
             }
 
-            protected override IEnumerable<DebugLine> DebugLinesOverride => Links.Select(x => new DebugLine(Color.Aqua, x.Car, x.Axle)).Append(
-                    new DebugLine(Color.White, new Vector3(-AxleWidth / 2f, 0f, 0f), new Vector3(AxleWidth / 2f, 0f, 0f)));
+            protected override IEnumerable<DebugLine> DebugLinesOverride => Links
+                    .Select(x => new DebugLine(Color.DarkBlue, Color.Aqua, x.Car, x.Axle))
+                    .Append(new DebugLine(Color.White, Color.White,
+                            new Vector3(-AxleWidth / 2f, 0f, 0f), new Vector3(AxleWidth / 2f, 0f, 0f)));
+
+            public override void SavePoints(IniFile ini, bool front) {
+                var section = ini["AXLE"];
+                for (var i = 0; i < Links.Length; i++) {
+                    section.SetSlimVector3($"J{i}_CAR", Links[i].Car);
+                    section.SetSlimVector3($"J{i}_AXLE", Links[i].Axle);
+                }
+            }
         }
 
         public abstract class EightPointsSuspensionBase : SuspensionBase {
+            public readonly float XOffset;
+
             public Vector3[] Points { get; } = new Vector3[8];
+
             protected override float KpiOverride => ((Points[4].X - Points[5].X) / (Points[4].Y - Points[5].Y)).Atan().ToDegrees();
 
-            protected EightPointsSuspensionBase(bool front, float wheelRadius) : base(front, wheelRadius) { }
+            protected EightPointsSuspensionBase(bool front, float xOffset, float wheelRadius) : base(front, wheelRadius) {
+                XOffset = xOffset;
+            }
+
+            protected Vector3 ToSave(Vector3 v) {
+                return new Vector3(v.X * -XOffset, v.Y, v.Z);
+            }
         }
 
         public class DwbSuspension : EightPointsSuspensionBase {
-            public DwbSuspension(IniFileSection basic, IniFileSection section, bool front, float xOffset, float wheelRadius) : base(front, wheelRadius) {
+            public DwbSuspension(IniFileSection basic, IniFileSection section, bool front, float xOffset, float wheelRadius) : base(front, xOffset, wheelRadius) {
                 var baseY = section.GetFloat("BASEY", 1f);
                 var track = section.GetFloat("TRACK", 1f);
                 var wheelbase = basic.GetFloat("WHEELBASE", 2f);
@@ -550,23 +588,36 @@ namespace AcTools.Render.Data {
                 }
             }
 
+            public override void SavePoints(IniFile ini, bool front) {
+                var section = ini[front ? "FRONT" : "REAR"];
+                section.SetSlimVector3("WBCAR_TOP_FRONT", ToSave(Points[0]));
+                section.SetSlimVector3("WBCAR_TOP_REAR", ToSave(Points[1]));
+                section.SetSlimVector3("WBCAR_BOTTOM_FRONT", ToSave(Points[2]));
+                section.SetSlimVector3("WBCAR_BOTTOM_REAR", ToSave(Points[3]));
+                section.SetSlimVector3("WBTYRE_TOP", ToSave(Points[4]));
+                section.SetSlimVector3("WBTYRE_BOTTOM", ToSave(Points[5]));
+                section.SetSlimVector3("WBCAR_STEER", ToSave(Points[6]));
+                section.SetSlimVector3("WBTYRE_STEER", ToSave(Points[7]));
+            }
+
             public override string DisplayType => "Double Wishbone (DWB)";
             protected override float CasterOverride => ((Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y)).Atan().ToDegrees();
             protected override float TrailOverride => Points[4].Z - Points[4].Y * (Points[4].Z - Points[5].Z) / (Points[4].Y - Points[5].Y);
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[5], Points[4]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new[] {
-                new DebugLine(Color.Red, Points[0], Points[4]),
-                new DebugLine(Color.Red, Points[1], Points[4]),
-                new DebugLine(Color.Yellow, Points[2], Points[5]),
-                new DebugLine(Color.Yellow, Points[3], Points[5]),
-                new DebugLine(Color.Cyan, Points[6], Points[7]),
-                new DebugLine(Color.Gray, Points[5], Points[4]),
+                new DebugLine(Color.DarkRed, Color.Red, Points[0], Points[4]),
+                new DebugLine(Color.DarkRed, Color.Red, Points[1], Points[4]),
+                new DebugLine(Color.DarkGoldenrod, Color.Yellow, Points[2], Points[5]),
+                new DebugLine(Color.DarkGoldenrod, Color.Yellow, Points[3], Points[5]),
+                new DebugLine(Color.DarkBlue, Color.Cyan, Points[6], Points[7]),
+                new DebugLine(Color.Gray, Color.Gray, Points[5], Points[4]),
             };
         }
 
         public class StrutSuspension : EightPointsSuspensionBase {
-            public StrutSuspension(IniFileSection basic, IniFileSection section, bool front, float xOffset, float wheelRadius) : base(front, wheelRadius) {
+            public StrutSuspension(IniFileSection basic, IniFileSection section, bool front, float xOffset, float wheelRadius)
+                    : base(front, xOffset, wheelRadius) {
                 var baseY = section.GetFloat("BASEY", 1f);
                 var track = section.GetFloat("TRACK", 1f);
                 var wheelbase = basic.GetFloat("WHEELBASE", 2f);
@@ -590,17 +641,28 @@ namespace AcTools.Render.Data {
                 }
             }
 
+            public override void SavePoints(IniFile ini, bool front) {
+                var section = ini[front ? "FRONT" : "REAR"];
+                section.SetSlimVector3("STRUT_CAR", ToSave(Points[0]));
+                section.SetSlimVector3("STRUT_TYRE", ToSave(Points[1]));
+                section.SetSlimVector3("WBCAR_BOTTOM_FRONT", ToSave(Points[2]));
+                section.SetSlimVector3("WBCAR_BOTTOM_REAR", ToSave(Points[3]));
+                section.SetSlimVector3("WBTYRE_BOTTOM", ToSave(Points[5]));
+                section.SetSlimVector3("WBCAR_STEER", ToSave(Points[6]));
+                section.SetSlimVector3("WBTYRE_STEER", ToSave(Points[7]));
+            }
+
             public override string DisplayType => "Strut";
             protected override float CasterOverride => ((Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y)).Atan().ToDegrees();
             protected override float TrailOverride => Points[1].Z - Points[1].Y * (Points[1].Z - Points[0].Z) / (Points[1].Y - Points[0].Y);
             protected override Tuple<Vector3, Vector3> WheelSteerAxisOverride => new Tuple<Vector3, Vector3>(Points[1], Points[0]);
 
             protected override IEnumerable<DebugLine> DebugLinesOverride => new[] {
-                new DebugLine(Color.Red, Points[0], Points[1]),
-                new DebugLine(Color.Yellow, Points[2], Points[5]),
-                new DebugLine(Color.Yellow, Points[3], Points[5]),
-                new DebugLine(Color.Cyan, Points[6], Points[7]),
-                new DebugLine(Color.Gray, Points[5], Points[4]),
+                new DebugLine(Color.DarkRed, Color.Red, Points[0], Points[1]),
+                new DebugLine(Color.DarkGoldenrod, Color.Yellow, Points[2], Points[5]),
+                new DebugLine(Color.DarkGoldenrod, Color.Yellow, Points[3], Points[5]),
+                new DebugLine(Color.DarkBlue, Color.Cyan, Points[6], Points[7]),
+                new DebugLine(Color.Gray, Color.Gray, Points[5], Points[4]),
             };
         }
         #endregion
@@ -687,9 +749,9 @@ namespace AcTools.Render.Data {
         public IEnumerable<CameraDescription> GetExtraCameras() {
             return IsEmpty ? new CameraDescription[0] :
                     _data.GetIniFile("cameras.ini")
-                         .GetSections("CAMERA")
-                         .Select(x => new CameraDescription(x.GetFloat("FOV", 56f), x.GetSlimVector3("POSITION"), x.GetSlimVector3("FORWARD"),
-                                 x.GetSlimVector3("UP")));
+                            .GetSections("CAMERA")
+                            .Select(x => new CameraDescription(x.GetFloat("FOV", 56f), x.GetSlimVector3("POSITION"), x.GetSlimVector3("FORWARD"),
+                                    x.GetSlimVector3("UP")));
         }
         #endregion
 
@@ -754,13 +816,15 @@ namespace AcTools.Render.Data {
 
         #region Wings
         public class WingDescription {
+            public string SectionName { get; }
             public string Name { get; }
             public float Chord { get; }
             public float Span { get; }
             public float Angle { get; }
             public Vector3 Position { get; }
 
-            public WingDescription(IniFileSection section) {
+            public WingDescription(string sectionName, IniFileSection section) {
+                SectionName = sectionName;
                 Name = section.GetNonEmpty("NAME");
                 Chord = section.GetFloat("CHORD", 1f);
                 Span = section.GetFloat("SPAN", 1f);
@@ -770,10 +834,13 @@ namespace AcTools.Render.Data {
         }
 
         public IEnumerable<WingDescription> GetWings() {
-            return IsEmpty ? new WingDescription[0] :
-                    _data.GetIniFile("aero.ini")
-                         .GetSections("WING")
-                         .Select(x => new WingDescription(x));
+            if (IsEmpty) {
+                return new WingDescription[0];
+            } else {
+                var iniFile = _data.GetIniFile("aero.ini");
+                return iniFile.GetExistingSectionNames("WING")
+                        .Select(x => new WingDescription(x, iniFile[x]));
+            }
         }
         #endregion
 
@@ -795,10 +862,10 @@ namespace AcTools.Render.Data {
         public IEnumerable<WingAnimation> GetWingsAnimations() {
             return IsEmpty ? new WingAnimation[0] :
                     _data.GetIniFile("wing_animations.ini")
-                         .GetSections("ANIMATION")
-                         .Select(x => new WingAnimation(x))
-                         .Where(x => x.KsAnimName != null)
-                         .Distinct<WingAnimation>(AnimationBase.KsAnimNameComparer);
+                            .GetSections("ANIMATION")
+                            .Select(x => new WingAnimation(x))
+                            .Where(x => x.KsAnimName != null)
+                            .Distinct<WingAnimation>(AnimationBase.KsAnimNameComparer);
         }
         #endregion
 
@@ -810,10 +877,10 @@ namespace AcTools.Render.Data {
         public IEnumerable<ExtraAnimation> GetExtraAnimations() {
             return IsEmpty ? new ExtraAnimation[0] :
                     _data.GetIniFile("extra_animations.ini")
-                         .GetSections("ANIMATION")
-                         .Select(x => new ExtraAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
-                         .Where(x => x.KsAnimName != null)
-                         .Distinct<ExtraAnimation>(AnimationBase.KsAnimNameComparer);
+                            .GetSections("ANIMATION")
+                            .Select(x => new ExtraAnimation(x.GetNonEmpty("FILE"), x.GetFloat("TIME", 1f)))
+                            .Where(x => x.KsAnimName != null)
+                            .Distinct<ExtraAnimation>(AnimationBase.KsAnimNameComparer);
         }
 
         public class RotatingObject {
@@ -831,9 +898,9 @@ namespace AcTools.Render.Data {
         public IEnumerable<RotatingObject> GetRotatingObjects() {
             return IsEmpty ? new RotatingObject[0] :
                     _data.GetIniFile("extra_animations.ini")
-                         .GetSections("ROTATING_OBJECT")
-                         .Select(x => new RotatingObject(x.GetNonEmpty("NAME"), x.GetFloat("RPM", 100f), x.GetSlimVector3("AXIS", Vector3.UnitY)))
-                         .Where(x => x.NodeName != null);
+                            .GetSections("ROTATING_OBJECT")
+                            .Select(x => new RotatingObject(x.GetNonEmpty("NAME"), x.GetFloat("RPM", 100f), x.GetSlimVector3("AXIS", Vector3.UnitY)))
+                            .Where(x => x.NodeName != null);
         }
         #endregion
 

@@ -162,6 +162,7 @@
     <Compile Include="Graphs\CustomTrackerControl.cs" />
     <Compile Include="Graphs\GraphDataViewerBase.cs" />
     <Compile Include="Graphs\OxyExtenstion.cs" />
+    <Compile Include="Helpers\AcDateLimiter.cs" />
     <Compile Include="Helpers\CupUi.cs" />
     <Compile Include="Helpers\FancyHints.cs" />
     <Compile Include="Helpers\FilterHints.cs" />

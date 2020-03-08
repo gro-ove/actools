@@ -57,7 +57,7 @@ namespace AcTools.Render.Kn5SpecificForward {
         }
 
         protected virtual bool MoveObjectOverride(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone) {
-            return CarSlots.Any(x => x.MoveObject(relativeFrom, relativeDelta, camera, false));
+            return CarSlots.Any(x => x.MoveObject(relativeFrom, relativeDelta, camera, tryToClone));
         }
 
         protected virtual void StopMovementOverride() {

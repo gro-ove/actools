@@ -365,11 +365,9 @@ namespace AcManager.Pages.Drive {
 
             private Diapason<int> GetBasicTimeDiapason() {
                 var result = Diapason.CreateTime(string.Empty);
-                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)) {
-                    result.Pieces.Add(new Diapason<int>.Piece(0, CommonAcConsts.TimeAbsoluteMaximum));
-                } else {
-                    result.Pieces.Add(new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
-                }
+                result.Pieces.Add(PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)
+                        ? new Diapason<int>.Piece(0, CommonAcConsts.TimeAbsoluteMaximum)
+                        : new Diapason<int>.Piece(CommonAcConsts.TimeMinimum, CommonAcConsts.TimeMaximum));
                 return result;
             }
 
@@ -475,14 +473,14 @@ namespace AcManager.Pages.Drive {
 
             public bool UseSpecificDate {
                 get => _useSpecificDate;
-                set => Apply(value, ref _useSpecificDate);
+                set => Apply(value, ref _useSpecificDate, SaveLater);
             }
 
             private DateTime _specificDateValue;
 
             public DateTime SpecificDateValue {
                 get => _specificDateValue;
-                set => Apply(value, ref _specificDateValue);
+                set => Apply(Math.Max(value.ToUnixTimestamp(), 0L).ToDateTime(), ref _specificDateValue, SaveLater);
             }
 
             private bool _randomTime;

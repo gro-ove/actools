@@ -1115,6 +1115,10 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 _accumulationBaseTexture.Resize(DeviceContextHolder, ActualWidth, ActualHeight, null);
             }
 
+            if (ShowMovementArrows) {
+                _realTimeAccumulationSize = 0;
+            }
+
             var accumulationDofBokeh = AccumulationDofBokeh;
             _realTimeAccumulationFirstStep = _realTimeAccumulationSize == 0;
             _realTimeAccumulationSize++;

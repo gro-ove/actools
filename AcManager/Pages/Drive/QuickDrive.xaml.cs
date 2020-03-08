@@ -234,7 +234,7 @@ namespace AcManager.Pages.Drive {
             // Obsolete
             [JsonProperty(@"TrackPropertiesPreset")]
 #pragma warning disable 649
-                    public string ObsTrackPropertiesPreset;
+            public string ObsTrackPropertiesPreset;
 #pragma warning restore 649
 
             [JsonProperty(@"rcTimezones")]
@@ -784,7 +784,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 if (serializedRaceGrid != null) {
-                    (SelectedModeViewModel as IRaceGridModeViewModel).SetRaceGridData(serializedRaceGrid);
+                    (SelectedModeViewModel as IRaceGridModeViewModel)?.SetRaceGridData(serializedRaceGrid);
                 }
 
                 UpdateConditions();

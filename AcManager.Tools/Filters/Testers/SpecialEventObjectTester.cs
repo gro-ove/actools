@@ -34,6 +34,7 @@ namespace AcManager.Tools.Filters.Testers {
                     return nameof(SpecialEventObject.WeatherId);
 
                 case "passed":
+                case "improvable":
                 case "won":
                 case "place":
                     return nameof(SpecialEventObject.TakenPlace);
@@ -100,7 +101,10 @@ namespace AcManager.Tools.Filters.Testers {
                     return value.Test(obj.WeatherObject?.Id) || value.Test(obj.WeatherObject?.Name);
 
                 case "passed":
-                    return value.Test(obj.TakenPlace != 5);
+                    return value.Test(obj.TakenPlace < (obj.ConditionType == null ? 5 : 4));
+
+                case "improvable":
+                    return value.Test(obj.TakenPlace > 1 && obj.TakenPlace < (obj.ConditionType == null ? 5 : 4));
 
                 case "won":
                     return value.Test(obj.TakenPlace == 1);
