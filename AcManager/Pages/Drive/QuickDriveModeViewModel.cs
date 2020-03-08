@@ -31,7 +31,7 @@ namespace AcManager.Pages.Drive {
         private bool _penalties;
 
         public bool Penalties {
-            get { return _penalties; }
+            get => _penalties;
             set {
                 if (value == _penalties) return;
                 _penalties = value;
@@ -43,7 +43,7 @@ namespace AcManager.Pages.Drive {
         private int _playerBallast;
 
         public int PlayerBallast {
-            get { return _playerBallast; }
+            get => _playerBallast;
             set {
                 if (Equals(value, _playerBallast)) return;
                 _playerBallast = value;
@@ -55,7 +55,7 @@ namespace AcManager.Pages.Drive {
         private int _playerRestrictor;
 
         public int PlayerRestrictor {
-            get { return _playerRestrictor; }
+            get => _playerRestrictor;
             set {
                 if (Equals(value, _playerRestrictor)) return;
                 _playerRestrictor = value;

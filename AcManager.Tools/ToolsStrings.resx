@@ -1760,4 +1760,28 @@ Would you like to pack it before starting the server? But don’t forget to shar
   <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
     <value> m/s</value>
   </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value> kg</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+      <value>Ballast</value>
+    </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+      <value>Restrictor</value>
+    </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Arrange AI strength based on P/W ratio</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Randomization:</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Show relative range</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Show AI aggression in driver’s name</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Opponents aggression</value>
+  </data>
 </root>

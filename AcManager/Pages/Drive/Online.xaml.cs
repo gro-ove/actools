@@ -245,7 +245,7 @@ namespace AcManager.Pages.Drive {
                 }
 
                 if (list.Count == 0) {
-                    ModernDialog.ShowMessage("Nothing found.", AppStrings.Online_AddServer_Title, MessageBoxButton.OK);
+                    ModernDialog.ShowMessage(AppStrings.Online_Scanning_NothingFoundMessage, AppStrings.Online_AddServer_Title, MessageBoxButton.OK);
                 } else {
                     new OnlineAddManuallyDialog(listKey, list).ShowDialog();
                 }
@@ -397,7 +397,7 @@ namespace AcManager.Pages.Drive {
                 MainList = new BetterListCollectionView(Manager.List);
 
                 SortingModes = sources?.Length == 1 && sources[0] == FileBasedOnlineSources.RecentKey
-                        ? DefaultSortingModes.Prepend(new SettingEntry(null, "Default")).ToArray() : DefaultSortingModes;
+                        ? DefaultSortingModes.Prepend(new SettingEntry(null, AppStrings.Online_SortingMode_Default)).ToArray() : DefaultSortingModes;
 
                 SortingMode = SortingModes.GetByIdOrDefault(LimitedStorage.Get(LimitedSpace.OnlineSorting, Key))
                         ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];

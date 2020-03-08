@@ -1573,6 +1573,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ballast.
+        /// </summary>
+        public static string Common_Ballast {
+            get {
+                return ResourceManager.GetString("Common_Ballast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t do.
         /// </summary>
         public static string Common_CannotDo {
@@ -1735,6 +1744,15 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to  kg.
+        /// </summary>
+        public static string Common_KilogramsPostfix {
+            get {
+                return ResourceManager.GetString("Common_KilogramsPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to KN5.
         /// </summary>
         public static string Common_KN5 {
@@ -1839,6 +1857,15 @@ namespace AcManager.Tools {
         public static string Common_Recommended {
             get {
                 return ResourceManager.GetString("Common_Recommended", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restrictor.
+        /// </summary>
+        public static string Common_Restrictor {
+            get {
+                return ResourceManager.GetString("Common_Restrictor", resourceCulture);
             }
         }
         
@@ -3612,6 +3639,51 @@ namespace AcManager.Tools {
         public static string Presets_FileFilter {
             get {
                 return ResourceManager.GetString("Presets_FileFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Arrange AI strength based on P/W ratio.
+        /// </summary>
+        public static string Race_ArrangeAIStrengthBasedOnPWRatio {
+            get {
+                return ResourceManager.GetString("Race_ArrangeAIStrengthBasedOnPWRatio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opponents aggression.
+        /// </summary>
+        public static string Race_OpponentsAggression {
+            get {
+                return ResourceManager.GetString("Race_OpponentsAggression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Randomization:.
+        /// </summary>
+        public static string Race_RandomizationTitle {
+            get {
+                return ResourceManager.GetString("Race_RandomizationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show AI aggression in driver’s name.
+        /// </summary>
+        public static string Race_ShowAIAggression {
+            get {
+                return ResourceManager.GetString("Race_ShowAIAggression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show relative range.
+        /// </summary>
+        public static string Race_ShowRelativeRange {
+            get {
+                return ResourceManager.GetString("Race_ShowRelativeRange", resourceCulture);
             }
         }
         

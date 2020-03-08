@@ -22,7 +22,7 @@
 
     <UniformGrid MaxHeight="128" VerticalAlignment="Top" Height="{Binding ActualHeight, ElementName=Wrapper}">
       <StackPanel Margin="{StaticResource ElementMargin}">
-        <mui:ValueLabel Value="{Binding MatchesCount}" Content="Total"
+        <mui:ValueLabel Value="{Binding MatchesCount}" Content="{x:Static g:AppStrings.QuickDrive_Drag_Total}"
             Postfix="{Binding MatchesCount, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_RoundPostfix}}" />
         <Slider Minimum="1" Maximum="20" Value="{Binding MatchesCount}" />
       </StackPanel>

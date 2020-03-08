@@ -60,7 +60,7 @@
 
       <DataTemplate x:Key="Detailed.BallastDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
         <DockPanel>
-          <TextBlock DockPanel.Dock="Right" Text=" kg" />
+          <TextBlock DockPanel.Dock="Right" Text="{x:Static t:ToolsStrings.Common_KilogramsPostfix}" />
           <mui:BetterTextBox x:Name="TextBox" Text="{Binding Ballast, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" Placeholder="None" Minimum="0" Maximum="100"
               Mode="IntegerOrLabel" ModeLabel="None" Style="{StaticResource Borderless.White}" TextAlignment="Right" />
         </DockPanel>
@@ -250,9 +250,9 @@
             CellTemplate="{StaticResource Detailed.NameDataTemplate}" />
         <DataGridTemplateColumn x:Name="TeamColumn" Width="100*" Header="Team" SortMemberPath="Nationality"
             CellTemplate="{StaticResource Detailed.NationalityDataTemplate}" />
-        <DataGridTemplateColumn x:Name="BallastColumn" Width="100" Header="Ballast" SortMemberPath="Ballast"
+        <DataGridTemplateColumn x:Name="BallastColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Ballast}" SortMemberPath="Ballast"
             CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
-        <DataGridTemplateColumn x:Name="RestrictorColumn" Width="100" Header="Restrictor" SortMemberPath="Restrictor"
+        <DataGridTemplateColumn x:Name="RestrictorColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Restrictor}" SortMemberPath="Restrictor"
             CellTemplate="{StaticResource Detailed.RestrictorDataTemplate}" />
       </DataGrid.Columns>
     </DataGrid>

@@ -4856,11 +4856,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to About Content Manager.
+        /// </summary>
+        public static string Main_AboutContentManager {
+            get {
+                return ResourceManager.GetString("Main_AboutContentManager", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to AC settings.
+        /// </summary>
+        public static string Main_ACSettings {
+            get {
+                return ResourceManager.GetString("Main_ACSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apps.
         /// </summary>
         public static string Main_Apps {
             get {
                 return ResourceManager.GetString("Main_Apps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apps settings.
+        /// </summary>
+        public static string Main_AppsSettings {
+            get {
+                return ResourceManager.GetString("Main_AppsSettings", resourceCulture);
             }
         }
         
@@ -4919,6 +4946,87 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Championships.
+        /// </summary>
+        public static string Main_Challenges_Championships {
+            get {
+                return ResourceManager.GetString("Main_Challenges_Championships", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag.
+        /// </summary>
+        public static string Main_Challenges_Drags {
+            get {
+                return ResourceManager.GetString("Main_Challenges_Drags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drift.
+        /// </summary>
+        public static string Main_Challenges_Drifts {
+            get {
+                return ResourceManager.GetString("Main_Challenges_Drifts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hotlaps.
+        /// </summary>
+        public static string Main_Challenges_Hotlaps {
+            get {
+                return ResourceManager.GetString("Main_Challenges_Hotlaps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not passed yet.
+        /// </summary>
+        public static string Main_Challenges_NotPassedYet {
+            get {
+                return ResourceManager.GetString("Main_Challenges_NotPassedYet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Races.
+        /// </summary>
+        public static string Main_Challenges_Races {
+            get {
+                return ResourceManager.GetString("Main_Challenges_Races", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Something to improve.
+        /// </summary>
+        public static string Main_Challenges_SomethingToImprove {
+            get {
+                return ResourceManager.GetString("Main_Challenges_SomethingToImprove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time Attack.
+        /// </summary>
+        public static string Main_Challenges_TimeAttacks {
+            get {
+                return ResourceManager.GetString("Main_Challenges_TimeAttacks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM settings.
+        /// </summary>
+        public static string Main_CMSettings {
+            get {
+                return ResourceManager.GetString("Main_CMSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content.
         /// </summary>
         public static string Main_Content {
@@ -4937,6 +5045,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CSP settings.
+        /// </summary>
+        public static string Main_CSPSettings {
+            get {
+                return ResourceManager.GetString("Main_CSPSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string Main_Downloads {
+            get {
+                return ResourceManager.GetString("Main_Downloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads &amp;amp; Installations.
+        /// </summary>
+        public static string Main_DownloadsAndInstallations {
+            get {
+                return ResourceManager.GetString("Main_DownloadsAndInstallations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drive.
         /// </summary>
         public static string Main_Drive {
@@ -4946,11 +5081,129 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Driver models.
+        /// </summary>
+        public static string Main_DriverModels {
+            get {
+                return ResourceManager.GetString("Main_DriverModels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything about filtering.
+        /// </summary>
+        public static string Main_EverythingAboutFiltering {
+            get {
+                return ResourceManager.GetString("Main_EverythingAboutFiltering", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fonts.
         /// </summary>
         public static string Main_Fonts {
             get {
                 return ResourceManager.GetString("Main_Fonts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Average:.
+        /// </summary>
+        public static string Main_FPS_Average {
+            get {
+                return ResourceManager.GetString("Main_FPS_Average", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum:.
+        /// </summary>
+        public static string Main_FPS_Minimum {
+            get {
+                return ResourceManager.GetString("Main_FPS_Minimum", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Taken:.
+        /// </summary>
+        public static string Main_FPS_Taken {
+            get {
+                return ResourceManager.GetString("Main_FPS_Taken", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 
+        ///{0} sample.
+        /// </summary>
+        public static string Main_FPS_TakenFormat {
+            get {
+                return ResourceManager.GetString("Main_FPS_TakenFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous session’s performance:.
+        /// </summary>
+        public static string Main_FPS_Title {
+            get {
+                return ResourceManager.GetString("Main_FPS_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous session’s performance.
+        /// </summary>
+        public static string Main_FPS_Tooltip {
+            get {
+                return ResourceManager.GetString("Main_FPS_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ? FPS.
+        /// </summary>
+        public static string Main_FPS_Unknown {
+            get {
+                return ResourceManager.GetString("Main_FPS_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:F1} frames per second.
+        /// </summary>
+        public static string Main_FPS_ValueFormat {
+            get {
+                return ResourceManager.GetString("Main_FPS_ValueFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0:F1} FPS.
+        /// </summary>
+        public static string Main_FPS_ValueShortFormat {
+            get {
+                return ResourceManager.GetString("Main_FPS_ValueShortFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get New Mods.
+        /// </summary>
+        public static string Main_GetNewMods {
+            get {
+                return ResourceManager.GetString("Main_GetNewMods", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Sources.
+        /// </summary>
+        public static string Main_GetNewMods_ManageSources {
+            get {
+                return ResourceManager.GetString("Main_GetNewMods_ManageSources", resourceCulture);
             }
         }
         
@@ -4978,6 +5231,33 @@ namespace AcManager {
         public static string Main_Language {
             get {
                 return ResourceManager.GetString("Main_Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lap times.
+        /// </summary>
+        public static string Main_LapTimes {
+            get {
+                return ResourceManager.GetString("Main_LapTimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sources.
+        /// </summary>
+        public static string Main_LapTimes_Sources {
+            get {
+                return ResourceManager.GetString("Main_LapTimes_Sources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Table.
+        /// </summary>
+        public static string Main_LapTimes_Table {
+            get {
+                return ResourceManager.GetString("Main_LapTimes_Table", resourceCulture);
             }
         }
         
@@ -5014,6 +5294,15 @@ namespace AcManager {
         public static string Main_Miscellaneous {
             get {
                 return ResourceManager.GetString("Main_Miscellaneous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods.
+        /// </summary>
+        public static string Main_Mods {
+            get {
+                return ResourceManager.GetString("Main_Mods", resourceCulture);
             }
         }
         
@@ -5059,6 +5348,33 @@ namespace AcManager {
         public static string Main_Online {
             get {
                 return ResourceManager.GetString("Main_Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kunos.
+        /// </summary>
+        public static string Main_Online_KunosLobbySection {
+            get {
+                return ResourceManager.GetString("Main_Online_KunosLobbySection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LAN.
+        /// </summary>
+        public static string Main_Online_LAN {
+            get {
+                return ResourceManager.GetString("Main_Online_LAN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to original launcher.
+        /// </summary>
+        public static string Main_OriginalLauncherLink {
+            get {
+                return ResourceManager.GetString("Main_OriginalLauncherLink", resourceCulture);
             }
         }
         
@@ -5113,6 +5429,15 @@ namespace AcManager {
         public static string Main_Replays {
             get {
                 return ResourceManager.GetString("Main_Replays", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results.
+        /// </summary>
+        public static string Main_Results {
+            get {
+                return ResourceManager.GetString("Main_Results", resourceCulture);
             }
         }
         
@@ -5225,11 +5550,56 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kunos cars only.
+        /// </summary>
+        public static string Main_Stats_KunosCars {
+            get {
+                return ResourceManager.GetString("Main_Stats_KunosCars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kunos cars &amp;amp; tracks only.
+        /// </summary>
+        public static string Main_Stats_KunosCarsAndTracks {
+            get {
+                return ResourceManager.GetString("Main_Stats_KunosCarsAndTracks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods only.
+        /// </summary>
+        public static string Main_Stats_ModsOnly {
+            get {
+                return ResourceManager.GetString("Main_Stats_ModsOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Most used.
+        /// </summary>
+        public static string Main_Stats_MostUsed {
+            get {
+                return ResourceManager.GetString("Main_Stats_MostUsed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Content Manager (Lite mode).
         /// </summary>
         public static string Main_Title {
             get {
                 return ResourceManager.GetString("Main_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tools.
+        /// </summary>
+        public static string Main_Tools {
+            get {
+                return ResourceManager.GetString("Main_Tools", resourceCulture);
             }
         }
         
@@ -5272,11 +5642,110 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User championships.
+        /// </summary>
+        public static string Main_UserChampionships {
+            get {
+                return ResourceManager.GetString("Main_UserChampionships", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Weather.
         /// </summary>
         public static string Main_Weather {
             get {
                 return ResourceManager.GetString("Main_Weather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads:.
+        /// </summary>
+        public static string MainWindow_Downloads {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install all.
+        /// </summary>
+        public static string MainWindow_Downloads_InstallAll {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads_InstallAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove all.
+        /// </summary>
+        public static string MainWindow_Downloads_RemoveAll {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads_RemoveAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove completed.
+        /// </summary>
+        public static string MainWindow_Downloads_RemoveCompleted {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads_RemoveCompleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drop a car or something else here to open it in the Content Management section.
+        /// </summary>
+        public static string MainWindow_Downloads_Tooltip {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} installing.
+        /// </summary>
+        public static string MainWindow_Downloads_TooltipFormat {
+            get {
+                return ResourceManager.GetString("MainWindow_Downloads_TooltipFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Caught {0} {error}.
+        /// </summary>
+        public static string MainWindow_Errors_Format {
+            get {
+                return ResourceManager.GetString("MainWindow_Errors_Format", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable auto-updates.
+        /// </summary>
+        public static string MainWindow_UpdateMenu_DisableAutoUpdates {
+            get {
+                return ResourceManager.GetString("MainWindow_UpdateMenu_DisableAutoUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skip this update.
+        /// </summary>
+        public static string MainWindow_UpdateMenu_SkipUpdate {
+            get {
+                return ResourceManager.GetString("MainWindow_UpdateMenu_SkipUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View changelog.
+        /// </summary>
+        public static string MainWindow_UpdateMenu_ViewChangelog {
+            get {
+                return ResourceManager.GetString("MainWindow_UpdateMenu_ViewChangelog", resourceCulture);
             }
         }
         
@@ -5497,6 +5966,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string Online_Refresh {
+            get {
+                return ResourceManager.GetString("Online_Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Nothing found..
+        /// </summary>
+        public static string Online_Scanning_NothingFoundMessage {
+            get {
+                return ResourceManager.GetString("Online_Scanning_NothingFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} server.
         /// </summary>
         public static string Online_ServersFormat {
@@ -5520,6 +6007,24 @@ namespace AcManager {
         public static string Online_SessionsLabel {
             get {
                 return ResourceManager.GetString("Online_SessionsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set filters as default for new tabs.
+        /// </summary>
+        public static string Online_SetFiltersAsDefault {
+            get {
+                return ResourceManager.GetString("Online_SetFiltersAsDefault", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set sorting as default for new tabs.
+        /// </summary>
+        public static string Online_SetSortingAsDefault {
+            get {
+                return ResourceManager.GetString("Online_SetSortingAsDefault", resourceCulture);
             }
         }
         
@@ -5605,11 +6110,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connected drivers.
+        /// </summary>
+        public static string Online_Sorting_ConnectedDrivers {
+            get {
+                return ResourceManager.GetString("Online_Sorting_ConnectedDrivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Drivers.
         /// </summary>
         public static string Online_Sorting_Drivers {
             get {
                 return ResourceManager.GetString("Online_Sorting_Drivers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Favourites.
+        /// </summary>
+        public static string Online_Sorting_Favourites {
+            get {
+                return ResourceManager.GetString("Online_Sorting_Favourites", resourceCulture);
             }
         }
         
@@ -5623,11 +6146,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name (original).
+        /// </summary>
+        public static string Online_Sorting_NameOriginal {
+            get {
+                return ResourceManager.GetString("Online_Sorting_NameOriginal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ping.
         /// </summary>
         public static string Online_Sorting_Ping {
             get {
                 return ResourceManager.GetString("Online_Sorting_Ping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default.
+        /// </summary>
+        public static string Online_SortingMode_Default {
+            get {
+                return ResourceManager.GetString("Online_SortingMode_Default", resourceCulture);
             }
         }
         
@@ -5677,11 +6218,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Change car.
+        /// </summary>
+        public static string QuickDrive_ChangeCar_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_ChangeCar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change track.
+        /// </summary>
+        public static string QuickDrive_ChangeTrack_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_ChangeTrack_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Custom road temperature.
         /// </summary>
         public static string QuickDrive_CustomRoadTemperature {
             get {
                 return ResourceManager.GetString("QuickDrive_CustomRoadTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total.
+        /// </summary>
+        public static string QuickDrive_Drag_Total {
+            get {
+                return ResourceManager.GetString("QuickDrive_Drag_Total", resourceCulture);
             }
         }
         
@@ -5749,6 +6317,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage car.
+        /// </summary>
+        public static string QuickDrive_ManageCar_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_ManageCar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage setups.
+        /// </summary>
+        public static string QuickDrive_ManageSetups_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_ManageSetups_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage track.
+        /// </summary>
+        public static string QuickDrive_ManageTrack_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_ManageTrack_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No car selected.
         /// </summary>
         public static string QuickDrive_NoCarSelected {
@@ -5763,6 +6358,15 @@ namespace AcManager {
         public static string QuickDrive_NoTrackSelected {
             get {
                 return ResourceManager.GetString("QuickDrive_NoTrackSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open in showroom.
+        /// </summary>
+        public static string QuickDrive_OpenInShowroom_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_OpenInShowroom_Tooltip", resourceCulture);
             }
         }
         
@@ -5808,6 +6412,15 @@ namespace AcManager {
         public static string QuickDrive_SpecificDate {
             get {
                 return ResourceManager.GetString("QuickDrive_SpecificDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time is out of weather’s range.
+        /// </summary>
+        public static string QuickDrive_TimeIsOutOfWeatherRange_Tooltip {
+            get {
+                return ResourceManager.GetString("QuickDrive_TimeIsOutOfWeatherRange_Tooltip", resourceCulture);
             }
         }
         
@@ -8684,6 +9297,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Difficulty.
+        /// </summary>
+        public static string SpecialEvents_Difficulty {
+            get {
+                return ResourceManager.GetString("SpecialEvents_Difficulty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Make sure all required mods are installed..
         /// </summary>
         public static string Srs_CarIsMissing_Commentary {
@@ -9976,6 +10598,24 @@ namespace AcManager {
         public static string UpgradeIcon_Title {
             get {
                 return ResourceManager.GetString("UpgradeIcon_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No preview.
+        /// </summary>
+        public static string UserChampionships_NoPreview {
+            get {
+                return ResourceManager.GetString("UserChampionships_NoPreview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Real conditions….
+        /// </summary>
+        public static string UserChampionships_RealConditions {
+            get {
+                return ResourceManager.GetString("UserChampionships_RealConditions", resourceCulture);
             }
         }
         

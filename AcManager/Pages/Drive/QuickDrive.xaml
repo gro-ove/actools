@@ -116,17 +116,17 @@
             <mui:Cell Effect="{DynamicResource OverlayEffect}">
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource GarageIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change car" Click="OnCarBlockClick" />
+                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="{x:Static g:AppStrings.QuickDrive_ChangeCar_Tooltip}" Click="OnCarBlockClick" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Open in showroom" Click="OnShowroomButtonClick"
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_OpenInShowroom_Tooltip}" Click="OnShowroomButtonClick"
                   PreviewMouseRightButtonDown="OnShowroomContextMenu" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage setups" Command="{Binding ManageCarSetupsCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageSetups_Tooltip}" Command="{Binding ManageCarSetupsCommand}" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage car" Command="{Binding ManageCarCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageCar_Tooltip}" Command="{Binding ManageCarCommand}" />
             </mui:Cell>
             <Border.Triggers>
               <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -302,10 +302,10 @@
             <mui:Cell Effect="{DynamicResource OverlayEffect}">
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource ListSelectIconData}" IconWidth="32" IconHeight="32" Margin="0 0 50 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="Change track" Click="OnTrackBlockClick" />
+                  VerticalAlignment="Center" EllipseDiameter="64" ToolTip="{x:Static g:AppStrings.QuickDrive_ChangeTrack_Tooltip}" Click="OnTrackBlockClick" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="Manage track" Command="{Binding ManageTrackCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageTrack_Tooltip}" Command="{Binding ManageTrackCommand}" />
             </mui:Cell>
             <Border.Triggers>
               <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -399,7 +399,7 @@
 
               <Border Width="16" Height="16" Margin="0 0 0 -4" HorizontalAlignment="Right" Background="Transparent"
                   Visibility="{Binding IsTimeOutOfWeatherRange, Converter={StaticResource BooleanToVisibilityConverter}}"
-                  ToolTip="Time is out of weather’s range">
+                  ToolTip="{x:Static g:AppStrings.QuickDrive_TimeIsOutOfWeatherRange_Tooltip}">
                 <Path Data="{StaticResource AlertIconData}" Fill="{DynamicResource Error}" Stretch="Uniform" Width="16" Height="16" />
               </Border>
 

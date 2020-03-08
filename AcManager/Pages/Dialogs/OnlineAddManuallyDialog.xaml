@@ -16,7 +16,7 @@
     </mui:ModernDialog.Resources>
 
     <mui:Switch Value="{Binding Informations.Count}">
-        <TextBlock mui:Switch.When="0" Text="Nothing found." />
+        <TextBlock mui:Switch.When="0" Text="{x:Static acManager:AppStrings.Online_Scanning_NothingFoundMessage}" />
         <DockPanel>
             <TextBlock Text="{Binding Informations.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {server} found.'}"
                     DockPanel.Dock="Bottom" Margin="0 4 0 0" />

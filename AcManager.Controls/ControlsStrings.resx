@@ -990,4 +990,7 @@ Depth mode: [b]{4}[/b]</value>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Locked</value>
   </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Scroll to selected (Ctrl+Shift+V)</value>
+  </data>
 </root>

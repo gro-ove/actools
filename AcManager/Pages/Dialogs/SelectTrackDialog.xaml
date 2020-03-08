@@ -99,7 +99,7 @@
         <ContentPresenter DockPanel.Dock="Right" Content="{Binding CancelButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
         <ContentPresenter DockPanel.Dock="Right" Content="{Binding OkButton, RelativeSource={RelativeSource AncestorType=mui:ModernDialog}}" />
         <mui:ModernButton Click="OnScrollToSelectedButtonClick" HorizontalAlignment="Left" IconData="{StaticResource CollapsedIconData}"
-            ToolTip="Scroll to selected (Ctrl+Shift+V)" Style="{StaticResource NonTransparent}" />
+            ToolTip="{x:Static c:ControlsStrings.Common_ScrollToSelected}" Style="{StaticResource NonTransparent}" />
       </DockPanel>
 
       <AdornerDecorator>

@@ -22,8 +22,8 @@
         <MenuItem Header="{x:Static g:AppStrings.Online_SortByPing}" Command="{Binding ChangeSortingCommand}" CommandParameter="ping"
             IsChecked="{Binding SortingMode.Id, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='ping', Mode=OneWay}" />
         <Separator />
-        <MenuItem Header="Set sorting as default for new tabs" Command="{Binding SetAsDefaultSortingCommand}" />
-        <MenuItem Header="Set filters as default for new tabs" Command="{Binding SetAsDefaultFiltersCommand}" />
+        <MenuItem Header="{x:Static g:AppStrings.Online_SetSortingAsDefault}" Command="{Binding SetAsDefaultSortingCommand}" />
+        <MenuItem Header="{x:Static g:AppStrings.Online_SetFiltersAsDefault}" Command="{Binding SetAsDefaultFiltersCommand}" />
         <Separator />
         <MenuItem Header="{x:Static g:AppStrings.Toolbar_Reload}" InputGestureText="Ctrl+R" Command="{Binding RefreshCommand}" />
         <MenuItem Header="{x:Static g:AppStrings.Online_AddByIp}" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}"
@@ -128,7 +128,7 @@
                 </ItemsControl>
                 <Separator />
                 <mui:ModernButton Style="{StaticResource BigButton}" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}"
-                    Content="Refresh" />
+                    Content="{x:Static g:AppStrings.Online_Refresh}" />
               </StackPanel>
               <Button Margin="0 8 0 0" Command="{Binding AddNewServerCommand}"
                   Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -201,7 +201,7 @@
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource AddIconData}" Command="{Binding AddNewServerCommand}"
                               Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
                           <mui:ModernButton Click="OnScrollToSelectedButtonClick" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
-                              ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                              ToolTip="{x:Static c:ControlsStrings.Common_ScrollToSelected}" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                           <mui:ModernButton EllipseStrokeThickness="0" IconData="{StaticResource RefreshIconData}" Command="{Binding RefreshCommand}" />
                         </StackPanel>
                       </mui:BooleanSwitch.False>
@@ -232,8 +232,8 @@
                     Visibility="{Binding CompactUi, Source={x:Static t:SettingsHolder.Online}, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
                   <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Top" Margin="-28 0 0 0" Panel.ZIndex="1">
                     <ContextMenu>
-                      <MenuItem Header="Set sorting as default for new tabs" Command="{Binding SetAsDefaultSortingCommand}" />
-                      <MenuItem Header="Set filters as default for new tabs" Command="{Binding SetAsDefaultFiltersCommand}" />
+                      <MenuItem Header="{x:Static g:AppStrings.Online_SetSortingAsDefault}" Command="{Binding SetAsDefaultSortingCommand}" />
+                      <MenuItem Header="{x:Static g:AppStrings.Online_SetFiltersAsDefault}" Command="{Binding SetAsDefaultFiltersCommand}" />
                     </ContextMenu>
                   </mui:ContextMenuButton>
 

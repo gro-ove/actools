@@ -3667,4 +3667,219 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="QuickDrive_RoadTemperature" xml:space="preserve">
       <value>Road temperature</value>
     </data>
+    <data name="MainWindow_Downloads" xml:space="preserve">
+      <value>Downloads:</value>
+    </data>
+    <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+      <value>Remove completed</value>
+    </data>
+    <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+      <value>Install all</value>
+    </data>
+    <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+      <value>Drop a car or something else here to open it in the Content Management section</value>
+    </data>
+    <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+      <value>{0} installing</value>
+    </data>
+    <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+      <value>Remove all</value>
+    </data>
+    <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+      <value>View changelog</value>
+    </data>
+    <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+      <value>Skip this update</value>
+    </data>
+    <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+      <value>Disable auto-updates</value>
+    </data>
+    <data name="MainWindow_Errors_Format" xml:space="preserve">
+      <value>Caught {0} {error}</value>
+    </data>
+    <data name="Main_LapTimes" xml:space="preserve">
+      <value>Lap times</value>
+    </data>
+    <data name="Main_Results" xml:space="preserve">
+      <value>Results</value>
+    </data>
+    <data name="Main_Downloads" xml:space="preserve">
+      <value>Downloads</value>
+    </data>
+    <data name="Main_CMSettings" xml:space="preserve">
+      <value>CM settings</value>
+    </data>
+    <data name="Main_ACSettings" xml:space="preserve">
+      <value>AC settings</value>
+    </data>
+    <data name="Main_AppsSettings" xml:space="preserve">
+      <value>Apps settings</value>
+    </data>
+    <data name="Main_CSPSettings" xml:space="preserve">
+      <value>CSP settings</value>
+    </data>
+    <data name="Main_AboutContentManager" xml:space="preserve">
+      <value>About Content Manager</value>
+    </data>
+    <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+      <value>Hotlaps</value>
+    </data>
+    <data name="Main_Challenges_Races" xml:space="preserve">
+      <value>Races</value>
+    </data>
+    <data name="Main_Challenges_Drifts" xml:space="preserve">
+      <value>Drift</value>
+    </data>
+    <data name="Main_Challenges_Drags" xml:space="preserve">
+      <value>Drag</value>
+    </data>
+    <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+      <value>Time Attack</value>
+    </data>
+    <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+      <value>Not passed yet</value>
+    </data>
+    <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+      <value>Something to improve</value>
+    </data>
+    <data name="Main_Challenges_Championships" xml:space="preserve">
+      <value>Championships</value>
+    </data>
+    <data name="Main_Online_KunosLobbySection" xml:space="preserve">
+      <value>Kunos</value>
+    </data>
+    <data name="Main_Online_LAN" xml:space="preserve">
+      <value>LAN</value>
+    </data>
+    <data name="Main_LapTimes_Table" xml:space="preserve">
+      <value>Table</value>
+    </data>
+    <data name="Main_LapTimes_Sources" xml:space="preserve">
+      <value>Sources</value>
+    </data>
+    <data name="Main_Stats_KunosCars" xml:space="preserve">
+      <value>Kunos cars only</value>
+    </data>
+    <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+      <value>Kunos cars &amp;amp; tracks only</value>
+    </data>
+    <data name="Main_Stats_ModsOnly" xml:space="preserve">
+      <value>Mods only</value>
+    </data>
+    <data name="Main_Stats_MostUsed" xml:space="preserve">
+      <value>Most used</value>
+    </data>
+    <data name="Main_DriverModels" xml:space="preserve">
+      <value>Driver models</value>
+    </data>
+    <data name="Main_UserChampionships" xml:space="preserve">
+      <value>User championships</value>
+    </data>
+    <data name="Main_GetNewMods" xml:space="preserve">
+      <value>Get New Mods</value>
+    </data>
+    <data name="Main_Mods" xml:space="preserve">
+      <value>Mods</value>
+    </data>
+    <data name="Main_Tools" xml:space="preserve">
+      <value>Tools</value>
+    </data>
+    <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+      <value>Downloads &amp;amp; Installations</value>
+    </data>
+    <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+      <value>Everything about filtering</value>
+    </data>
+    <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+      <value>Manage Sources</value>
+    </data>
+    <data name="Main_OriginalLauncherLink" xml:space="preserve">
+      <value>original launcher</value>
+    </data>
+    <data name="Main_FPS_Tooltip" xml:space="preserve">
+      <value>Previous session’s performance</value>
+    </data>
+    <data name="Main_FPS_Title" xml:space="preserve">
+      <value>Previous session’s performance:</value>
+    </data>
+    <data name="Main_FPS_Average" xml:space="preserve">
+      <value>Average:</value>
+    </data>
+    <data name="Main_FPS_Minimum" xml:space="preserve">
+      <value>Minimum:</value>
+    </data>
+    <data name="Main_FPS_Taken" xml:space="preserve">
+      <value>Taken:</value>
+    </data>
+    <data name="Main_FPS_TakenFormat" xml:space="preserve">
+      <value>
+{0} sample</value>
+    </data>
+    <data name="Main_FPS_ValueFormat" xml:space="preserve">
+      <value>{0:F1} frames per second</value>
+    </data>
+    <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
+      <value>{0:F1} FPS</value>
+    </data>
+    <data name="Main_FPS_Unknown" xml:space="preserve">
+      <value>? FPS</value>
+    </data>
+    <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+      <value>Change car</value>
+    </data>
+    <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+      <value>Open in showroom</value>
+    </data>
+    <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+      <value>Manage setups</value>
+    </data>
+    <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+      <value>Manage car</value>
+    </data>
+    <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+      <value>Change track</value>
+    </data>
+    <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+      <value>Manage track</value>
+    </data>
+    <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+      <value>Time is out of weather’s range</value>
+    </data>
+    <data name="QuickDrive_Drag_Total" xml:space="preserve">
+      <value>Total</value>
+    </data>
+    <data name="SpecialEvents_Difficulty" xml:space="preserve">
+      <value>Difficulty</value>
+    </data>
+    <data name="UserChampionships_NoPreview" xml:space="preserve">
+      <value>No preview</value>
+    </data>
+    <data name="UserChampionships_RealConditions" xml:space="preserve">
+      <value>Real conditions…</value>
+    </data>
+    <data name="Online_SetSortingAsDefault" xml:space="preserve">
+      <value>Set sorting as default for new tabs</value>
+    </data>
+    <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+      <value>Set filters as default for new tabs</value>
+    </data>
+    <data name="Online_Refresh" xml:space="preserve">
+      <value>Refresh</value>
+    </data>
+    <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+      <value>Nothing found.</value>
+    </data>
+    <data name="Online_SortingMode_Default" xml:space="preserve">
+      <value>Default</value>
+    </data>
+    <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+      <value>Name (original)</value>
+      <comment>Sorts by original names, allowing people to “cheat” sorting by adding a lot of AAAAs and all that</comment>
+    </data>
+    <data name="Online_Sorting_Favourites" xml:space="preserve">
+      <value>Favourites</value>
+    </data>
+    <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+      <value>Connected drivers</value>
+    </data>
 </root>

@@ -207,7 +207,7 @@
                 <mui:ModernButton x:Name="SaveAllButton" DockPanel.Dock="Right" IconData="{StaticResource SaveIconData}" ToolTip="Save all (Ctrl+Shift+S)"
                     IconWidth="10" IconHeight="10" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <mui:ModernButton x:Name="ScrollToSelectedButton" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
-                    ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                    ToolTip="{x:Static ac:ControlsStrings.Common_ScrollToSelected}" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding Status}" Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>
 

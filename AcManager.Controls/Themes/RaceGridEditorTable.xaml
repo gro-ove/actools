@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="clr-namespace:AcManager.Controls.ViewModels"
     xmlns:uc="clr-namespace:AcManager.Controls.UserControls" xmlns:co="clr-namespace:AcManager.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/BetterTextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/CheckBox.xaml" />
@@ -347,9 +348,9 @@
                 <DataGridTemplateColumn Width="100" Header="Strength" SortMemberPath="InputAiLevel" CellTemplate="{StaticResource Detailed.AiDataTemplate}" />
                 <DataGridTemplateColumn Width="100" Header="Aggression" SortMemberPath="InputAiAggression"
                     CellTemplate="{StaticResource Detailed.AggressionDataTemplate}" />
-                <DataGridTemplateColumn x:Name="PART_BallastColumn" Width="100" Header="Ballast" SortMemberPath="Ballast"
+                <DataGridTemplateColumn x:Name="PART_BallastColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Ballast}" SortMemberPath="Ballast"
                     CellTemplate="{StaticResource Detailed.BallastDataTemplate}" />
-                <DataGridTemplateColumn x:Name="PART_RestrictorColumn" Width="100" Header="Restrictor" SortMemberPath="Restrictor"
+                <DataGridTemplateColumn x:Name="PART_RestrictorColumn" Width="100" Header="{x:Static t:ToolsStrings.Common_Restrictor}" SortMemberPath="Restrictor"
                     CellTemplate="{StaticResource Detailed.RestrictorDataTemplate}" />
                 <DataGridTemplateColumn x:Name="PART_AiLimitationColumn" Width="120" Header="AI limitations" CanUserSort="False"
                     CellTemplate="{StaticResource Detailed.AiLimitationDataTemplate}" Visibility="Collapsed" />

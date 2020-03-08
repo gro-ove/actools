@@ -257,7 +257,7 @@
                 <mui:ModernButton Command="{Binding AddNewSourceCommand}" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"
                     ToolTip="Add a new one (Ctrl+Shift+N)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <mui:ModernButton Click="OnScrollToSelectedButtonClick" DockPanel.Dock="Right" IconData="{StaticResource CollapsedIconData}"
-                    ToolTip="Scroll to selected (Ctrl+Shift+V)" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
+                    ToolTip="{x:Static c:ControlsStrings.Common_ScrollToSelected}" Margin="4 0 0 0" Style="{StaticResource NonTransparent}" />
                 <TextBlock Text="{Binding WebSources.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} site'}"
                     Margin="{StaticResource StatusMargin}" Foreground="{DynamicResource WindowTextReadOnly}" />
               </DockPanel>

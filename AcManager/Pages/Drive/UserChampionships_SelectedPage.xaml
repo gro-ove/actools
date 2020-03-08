@@ -305,7 +305,7 @@
               </mui:ModernProgressRing.RenderTransform>
             </mui:ModernProgressRing>
           </Canvas>
-          <TextBlock Text="Real conditions…" VerticalAlignment="Center" />
+          <TextBlock Text="{x:Static g:AppStrings.UserChampionships_RealConditions}" VerticalAlignment="Center" />
         </DockPanel>
 
         <!-- Race params -->

@@ -136,10 +136,10 @@ namespace AcManager.Pages.Drive {
 
         private static SettingEntry[] DefaultSortingModes { get; } = {
             new SettingEntry("name", AppStrings.Online_Sorting_Name),
-            new SettingEntry("nameOriginal", "Name (original)"),
-            new SettingEntry("favourites", "Favourites"),
+            new SettingEntry("nameOriginal", AppStrings.Online_Sorting_NameOriginal),
+            new SettingEntry("favourites", AppStrings.Online_Sorting_Favourites),
             new SettingEntry("drivers", AppStrings.Online_Sorting_Drivers),
-            new SettingEntry("connected", "Connected drivers"),
+            new SettingEntry("connected", AppStrings.Online_Sorting_ConnectedDrivers),
             new SettingEntry("capacity", AppStrings.Online_Sorting_Capacity),
             new SettingEntry("cars", AppStrings.Online_Sorting_CarsNumber),
             new SettingEntry("ping", AppStrings.Online_Sorting_Ping)

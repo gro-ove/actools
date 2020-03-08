@@ -1,7 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Drive.QuickDrive_TimeAttack" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive" xmlns:g="clr-namespace:AcManager"
-         xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
+         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+         xmlns:t="http://acstuff.ru/app/tools"
+         mc:Ignorable="d" FocusVisualStyle="{x:Null}"
         d:DataContext="{d:DesignInstance drive:QuickDrive_TimeAttack+ViewModel}">
     <UserControl.Resources>
         <Thickness x:Key="ElementMargin">0 0 8 16</Thickness>
@@ -24,12 +26,12 @@
         </StackPanel>
 
         <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="1">
-            <mui:ValueLabel Postfix=" kg" Margin="0 0 0 4" Content="Ballast" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerBallast}" />
+            <mui:ValueLabel Postfix="{x:Static t:ToolsStrings.Common_KilogramsPostfix}" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Ballast}" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerBallast}" />
             <Slider Minimum="0" Maximum="200" Value="{Binding PlayerBallast}" />
         </StackPanel>
 
         <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="1">
-            <mui:ValueLabel Postfix="%" Margin="0 0 0 4" Content="Restrictor" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerRestrictor}" />
+            <mui:ValueLabel Postfix="%" Margin="0 0 0 4" Content="{x:Static t:ToolsStrings.Common_Restrictor}" mui:BetterTextBox.Mode="Integer" Value="{Binding PlayerRestrictor}" />
             <Slider Minimum="0" Maximum="100" Value="{Binding PlayerRestrictor}" />
         </StackPanel>
     </Grid>

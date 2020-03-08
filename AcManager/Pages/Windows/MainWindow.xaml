@@ -182,7 +182,7 @@
 
       <DockPanel x:Key="DownloadsMenuSection" x:Shared="False">
         <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-        <TextBlock DockPanel.Dock="Top" Text="Downloads:" Margin="8 8 8 8" Style="{StaticResource Label}" />
+        <TextBlock DockPanel.Dock="Top" Text="{x:Static g:AppStrings.MainWindow_Downloads}" Margin="8 8 8 8" Style="{StaticResource Label}" />
         <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" DockPanel.Dock="Bottom" DataContext="{x:Static t:ContentInstallationManager.Instance}"
             Margin="8 0 4 0">
           <Button Command="{Binding InstallAllCommand}" Visibility="{Binding HasMoreThanOneWaiting, Converter={StaticResource BooleanToVisibilityConverter}}"
@@ -190,7 +190,7 @@
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                   Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource AddMultipleIconData}" />
-              <TextBlock Text="Install all" />
+              <TextBlock Text="{x:Static g:AppStrings.MainWindow_Downloads_InstallAll}" />
             </DockPanel>
           </Button>
           <Button Command="{Binding RemoveCompletedCommand}"
@@ -198,7 +198,7 @@
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                   Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource CleanUpIconData}" />
-              <TextBlock Text="Remove completed" />
+              <TextBlock Text="{x:Static g:AppStrings.MainWindow_Downloads_RemoveCompleted}" />
             </DockPanel>
           </Button>
         </mui:SpacingUniformGrid>
@@ -216,27 +216,31 @@
           Tag="{Binding HasUnfinishedItems, Source={x:Static t:ContentInstallationManager.Instance}}" Drop="OnContentTitleLinkDrop" AllowDrop="True">
         <FrameworkElement.ToolTip>
           <mui:Switch Value="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}}" MaxWidth="480">
-            <TextBlock mui:Switch.When="0" Text="Drop a car or something else here to open it in the Content Management section" TextWrapping="Wrap" />
-            <TextBlock Text="{Binding UnfinishedItemsCount, Source={x:Static t:ContentInstallationManager.Instance}, StringFormat='{}{0} installing'}"
-                TextWrapping="Wrap" />
+            <TextBlock mui:Switch.When="0" Text="{x:Static g:AppStrings.MainWindow_Downloads_Tooltip}" TextWrapping="Wrap" />
+            <TextBlock TextWrapping="Wrap">
+              <TextBlock.Text>
+                <Binding Path="UnfinishedItemsCount" Source="{x:Static t:ContentInstallationManager.Instance}"
+                         StringFormat="{x:Static g:AppStrings.MainWindow_Downloads_TooltipFormat}" />
+              </TextBlock.Text>
+            </TextBlock>
           </mui:Switch>
         </FrameworkElement.ToolTip>
         <FrameworkElement.ContextMenu>
           <ContextMenu>
-            <MenuItem Header="Install all" Command="{Binding InstallAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_Downloads_InstallAll}" Command="{Binding InstallAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
               <MenuItem.Icon>
                 <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource AddMultipleIconData}" HorizontalAlignment="Right"
                     VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
               </MenuItem.Icon>
             </MenuItem>
             <Separator />
-            <MenuItem Header="Remove completed" Command="{Binding RemoveCompletedCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_Downloads_RemoveCompleted}" Command="{Binding RemoveCompletedCommand, Source={x:Static t:ContentInstallationManager.Instance}}">
               <MenuItem.Icon>
                 <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource CleanUpIconData}" HorizontalAlignment="Right"
                     VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
               </MenuItem.Icon>
             </MenuItem>
-            <MenuItem Header="Remove all" Command="{Binding RemoveAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}"
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_Downloads_RemoveAll}" Command="{Binding RemoveAllCommand, Source={x:Static t:ContentInstallationManager.Instance}}"
                 Foreground="{DynamicResource Error}">
               <MenuItem.Icon>
                 <Path Width="10" Height="10" Margin="0 2 0 0" Stretch="Uniform" Data="{StaticResource TrashBinIconData}" HorizontalAlignment="Right"
@@ -267,15 +271,18 @@
                 <mui:BbCodeBlock Text="{Binding AppUpdater.ReadyToUpdateVersion, StringFormat={x:Static mui:UiStrings.UpdateAvailable}}" />
               </MenuItem.Header>
             </MenuItem>
-            <MenuItem Header="View changelog" Command="{Binding ViewChangelogCommand}" />
-            <MenuItem Header="Skip this update" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
-            <MenuItem Header="Disable auto-updates" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_UpdateMenu_ViewChangelog}" Command="{Binding ViewChangelogCommand}" />
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_UpdateMenu_SkipUpdate}" Command="{Binding AppUpdater.IgnoreUpdateCommand}" />
+            <MenuItem Header="{x:Static g:AppStrings.MainWindow_UpdateMenu_DisableAutoUpdates}" Command="{Binding AppUpdater.DisableAutoUpdatesCommand}" />
             <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
           </StackPanel>
 
           <StackPanel Visibility="{Binding HasUnseen, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <MenuItem Command="{Binding ViewErrorsCommand, Source={x:Static mui:NonfatalError.Instance}}"
-                Header="{Binding Errors.Count, Source={x:Static mui:NonfatalError.Instance}, Converter={StaticResource PluralizingConverter}, ConverterParameter='Caught {0} {error}'}">
+            <MenuItem Command="{Binding ViewErrorsCommand, Source={x:Static mui:NonfatalError.Instance}}">
+              <MenuItem.Header>
+                <Binding Path="Errors.Count" Source="{x:Static mui:NonfatalError.Instance}"
+                         Converter="{StaticResource PluralizingConverter}" ConverterParameter="{x:Static g:AppStrings.MainWindow_Errors_Format}" />
+              </MenuItem.Header>
               <MenuItem.Resources>
                 <!-- ReSharper disable once Xaml.RedundantResource -->
                 <SolidColorBrush x:Key="ItemText" Color="{DynamicResource ErrorColor}" />
@@ -295,13 +302,13 @@
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem Header="Lap times" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/LapTimes_Recent.xaml" InputGestureText="F2">
+          <MenuItem Header="{x:Static g:AppStrings.Main_LapTimes}" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/LapTimes_Recent.xaml" InputGestureText="F2">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource TimerIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem Header="Results" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/PlayerStats.xaml" InputGestureText="F3">
+          <MenuItem Header="{x:Static g:AppStrings.Main_Results}" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/PlayerStats.xaml" InputGestureText="F3">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource ListCheckIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
@@ -330,7 +337,7 @@
             </MenuItem.Icon>
           </MenuItem>
           <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-          <MenuItem Header="Downloads" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/DownloadsList.xaml" InputGestureText="Ctrl+J"
+          <MenuItem Header="{x:Static g:AppStrings.Main_Downloads}" Click="OnNavigateItemClick" CommandParameter="/Pages/Miscellaneous/DownloadsList.xaml" InputGestureText="Ctrl+J"
               Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" HorizontalAlignment="Center"
@@ -339,25 +346,31 @@
           </MenuItem>
           <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}"
               Visibility="{Binding DownloadsInSeparatePage, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}" />
-          <MenuItem Header="CM settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml" InputGestureText="Alt+F1">
+          <MenuItem Header="{x:Static g:AppStrings.Main_CMSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsPage.xaml" InputGestureText="Alt+F1">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource GearIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem Header="AC settings" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml" InputGestureText="Alt+F2">
+          <MenuItem Header="{x:Static g:AppStrings.Main_ACSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/AcSettings/AcSettingsPage.xaml" InputGestureText="Alt+F2">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource AcIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem Header="Apps settings" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml" InputGestureText="Alt+F3">
+          <MenuItem Header="{x:Static g:AppStrings.Main_CSPSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/SettingsShadersPatch.xaml" InputGestureText="Alt+F2">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource BookmarkIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Header="{x:Static g:AppStrings.Main_AppsSettings}" Click="OnNavigateItemClick" CommandParameter="/Pages/Settings/PythonAppsSettings.xaml" InputGestureText="Alt+F4">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CarSetupIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
             </MenuItem.Icon>
           </MenuItem>
-          <MenuItem Header="About Content Manager" Click="OnNavigateAboutItemClick">
+          <MenuItem Header="{x:Static g:AppStrings.Main_AboutContentManager}" Click="OnNavigateAboutItemClick">
             <MenuItem.Icon>
               <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CmIconData}" HorizontalAlignment="Center"
                   VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
@@ -380,19 +393,19 @@
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_QuickDrive}" Source="/Pages/Drive/QuickDrive.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Career}" Source="/Pages/Drive/KunosCareer.xaml" />
-        <mui:Link DisplayName="Championships" Source="/Pages/Drive/UserChampionships.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Championships}" Source="/Pages/Drive/UserChampionships.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroupFilterable GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Challenges}" Source="/Pages/Drive/SpecialEvents.xaml"
         FilterHint="{x:Static c:FilterHints.SpecialEvents}">
       <mui:LinkGroupFilterable.FixedLinks>
-        <mui:Link DisplayName="Hotlaps" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:hotlap&amp;Special=1" />
-        <mui:Link DisplayName="Races" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:*race&amp;Special=1" />
-        <mui:Link DisplayName="Drift" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drift&amp;Special=1" />
-        <mui:Link DisplayName="Drag" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drag&amp;Special=1" />
-        <mui:Link DisplayName="Time Attack" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:time attack&amp;Special=1" />
-        <mui:Link DisplayName="Not passed yet" Source="/Pages/Drive/SpecialEvents.xaml?Filter=passed-&amp;Special=1" />
-        <mui:Link DisplayName="Something to improve" Source="/Pages/Drive/SpecialEvents.xaml?Filter=improvable+&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Hotlaps}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:hotlap&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Races}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:*race&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Drifts}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drift&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_Drags}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:drag&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_TimeAttacks}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=type:time attack&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_NotPassedYet}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=passed-&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Challenges_SomethingToImprove}" Source="/Pages/Drive/SpecialEvents.xaml?Filter=improvable+&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
     <mui:LinkGroup x:Name="LiveGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Live}">
@@ -405,32 +418,32 @@
     <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"
         Source="/Pages/Drive/Online.xaml" FilterHint="{x:Static c:FilterHints.ServerEntries}">
       <mui:LinkGroupFilterable.FixedLinks>
-        <mui:Link DisplayName="Kunos" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_KunosLobbySection}" Source="/Pages/Drive/Online.xaml?Filter=@kunos&amp;Special=1" />
         <!--<mui:Link x:Name="MinoratingLink" DisplayName="Minorating" Source="/Pages/Drive/Online.xaml?Filter=@minorating&amp;Special=1" />-->
-        <mui:Link DisplayName="LAN" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
 
     <!-- Lap times -->
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml"
         FilterHint="{x:Static c:FilterHints.LapTimes}" />
-    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Table" Source="/Pages/Miscellaneous/LapTimes_Table.xaml"
+    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimes_Table}" Source="/Pages/Miscellaneous/LapTimes_Table.xaml"
         FilterHint="{x:Static c:FilterHints.LapTimes}" />
-    <mui:LinkGroupFilterable x:Name="LapTimesGrid" GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
-        Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" FilterHint="{x:Static c:FilterHints.LapTimes}" />
-    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="Sources" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml"
+    <!--<mui:LinkGroupFilterable x:Name="LapTimesGrid" GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimesGrid}"
+        Source="/Pages/Miscellaneous/WorkInProgress.xaml?lapTimesGrid" FilterHint="{x:Static c:FilterHints.LapTimes}" />-->
+    <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_LapTimes_Sources}" Source="/Pages/Miscellaneous/LapTimes_Sources.xaml"
         FilterHint="{x:Static c:FilterHints.LapTimes}" />
 
     <!-- Stats -->
-    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Results" Source="/Pages/Miscellaneous/RaceResults.xaml" />
+    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Results}" Source="/Pages/Miscellaneous/RaceResults.xaml" />
     <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats}" Source="/Pages/Miscellaneous/PlayerStats.xaml">
       <mui:LinkGroupFilterable.FixedLinks>
-        <mui:Link DisplayName="Kunos cars only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
-        <mui:Link DisplayName="Kunos cars &amp; tracks only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
-        <mui:Link DisplayName="Mods only" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Stats_KunosCars}" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Stats_KunosCarsAndTracks}" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k+)%26track(k+)&amp;Special=1" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Stats_ModsOnly}" Source="/Pages/Miscellaneous/PlayerStats.xaml?Filter=car(k-)%26track(k-)&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
-    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="Most used" Source="/Pages/Miscellaneous/MostUsed.xaml" />
+    <mui:LinkGroupFilterable GroupKey="stats" DisplayName="{x:Static g:AppStrings.Main_Stats_MostUsed}" Source="/Pages/Miscellaneous/MostUsed.xaml" />
 
     <!-- Media -->
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Screenshots}" Source="/Pages/Lists/ScreenshotsListPage.xaml"
@@ -446,31 +459,31 @@
     <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Lists/PythonAppsListPage.xaml" />
-        <mui:Link DisplayName="Driver models" Source="/Pages/Lists/DriverModelsListPage.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_DriverModels}" Source="/Pages/Lists/DriverModelsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Lists/FontsListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Lists/PpFiltersListPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Lists/ShowroomsListPage.xaml" />
-        <mui:Link DisplayName="User championships" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_UserChampionships}" Source="/Pages/Lists/UserChampionshipsListPage.xaml" IsEnabled="False" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Lists/WeatherListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <!--<mui:LinkGroupFilterable GroupKey="content" DisplayName="Shaders Patch" Source="/Pages/ShadersPatch/ShadersMainPage.xaml" />-->
-    <mui:LinkGroupFilterable GroupKey="content" DisplayName="Mods" Source="/Pages/Lists/GenericModsListPage.xaml" />
-    <mui:LinkGroup GroupKey="content" DisplayName="Tools">
+    <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Mods}" Source="/Pages/Lists/GenericModsListPage.xaml" />
+    <mui:LinkGroup GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Tools}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
-    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="Get New Mods">
+    <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_GetNewMods}">
       <mui:LinkGroup.Links>
-        <mui:Link DisplayName="Manage Sources" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_GetNewMods_ManageSources}" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
     <!-- Downloads -->
-    <mui:LinkGroup GroupKey="downloads" DisplayName="Downloads">
+    <mui:LinkGroup GroupKey="downloads" DisplayName="{x:Static g:AppStrings.Main_Downloads}">
       <mui:LinkGroup.Links>
-        <mui:Link DisplayName="Downloads &amp; Installations" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_DownloadsAndInstallations}" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
@@ -494,7 +507,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_About}" Source="/Pages/About/AboutPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ReleaseNotes}" Source="/Pages/About/ReleaseNotesPage.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_ImportantTips}" Source="/Pages/About/ImportantTipsPage.xaml" />
-        <mui:Link DisplayName="Everything about filtering" Source="/Pages/About/FiltersPage.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_EverythingAboutFiltering}" Source="/Pages/About/FiltersPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
 
@@ -507,14 +520,14 @@
           AllowDrop="True" mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.DragForContentSection}}"
           mui:FancyHintsService.HorizontalContentAlignment="Center" />
     </mui:TitleLink>
-    <mui:TitleLink Content="Lap times" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
-    <mui:TitleLink Content="Results" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
+    <mui:TitleLink Content="{x:Static g:AppStrings.Main_LapTimes}" GroupKey="lapTimes" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml" />
+    <mui:TitleLink Content="{x:Static g:AppStrings.Main_Results}" GroupKey="stats" Source="/Pages/Miscellaneous/PlayerStats.xaml" />
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_Media}" GroupKey="media" Source="/Pages/Lists/ReplaysListPage.xaml" />
     <mui:TitleLink GroupKey="content" Source="/Pages/Lists/CarsListPage.xaml">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Content}, Converter={StaticResource ToUpperConverter}}" Drop="OnContentTitleLinkDrop"
           AllowDrop="True" />
     </mui:TitleLink>
-    <mui:TitleLink DisplayName="Downloads" GroupKey="downloads" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
+    <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Downloads}" GroupKey="downloads" Source="/Pages/Miscellaneous/DownloadsList.xaml" />
     <mui:TitleLink DisplayName="{x:Static g:AppStrings.Main_Server}" GroupKey="server" IsEnabled="False" Source="/Pages/Lists/ServerPresetsListPage.xaml" />
     <mui:TitleLink GroupKey="settings" Source="/Pages/Settings/SettingsPage.xaml">
       <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Settings}, Converter={StaticResource ToUpperConverter}}" Background="Transparent"
@@ -534,29 +547,43 @@
       </TextBlock>
     </mui:TitleLink>
     <mui:TitleLink Content="{x:Static g:AppStrings.Main_About}" GroupKey="about" Source="/Pages/About/AboutPage.xaml" />
-    <mui:TitleLink x:Name="OriginalLauncher" GroupKey="originalLauncher" Content="original launcher" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
+    <mui:TitleLink x:Name="OriginalLauncher" GroupKey="originalLauncher" Content="{x:Static g:AppStrings.Main_OriginalLauncherLink}" Source="{x:Static windows:MainWindow.OriginalLauncherUrl}" />
     <mui:TitleLink Content="switch to full version" Source="{x:Static windows:MainWindow.EnterKeyUrl}" IsAccented="True" />
     <mui:TitleLink GroupKey="settings/video" Source="/Pages/AcSettings/AcSettingsVideo.xaml">
       <mui:ReferenceSwitch Value="{Binding LastSessionPerformanceData, Source={x:Static t:AcSettingsHolder.Video}}">
         <mui:ReferenceSwitch.Null>
-          <TextBlock Text="? FPS" ToolTip="Previous session’s performance" />
+          <TextBlock Text="{x:Static g:AppStrings.Main_FPS_Unknown}" ToolTip="{x:Static g:AppStrings.Main_FPS_Tooltip}" />
         </mui:ReferenceSwitch.Null>
         <mui:ReferenceSwitch.NonNull>
           <DockPanel Margin="0" DataContext="{Binding Source={x:Static t:AcSettingsHolder.Video}}">
             <DockPanel.ToolTip>
               <DockPanel Margin="0 0 12 0">
-                <TextBlock Text="Previous session’s performance:" DockPanel.Dock="Top" Margin="4 0 0 4" Style="{StaticResource Small}" />
+                <TextBlock Text="{x:Static g:AppStrings.Main_FPS_Title}" DockPanel.Dock="Top" Margin="4 0 0 4" Style="{StaticResource Small}" />
                 <c:PropertiesGrid Columns="1" Margin="-2 0 0 0">
-                  <TextBlock c:PropertiesGrid.Label="Average:"
-                      Text="{Binding LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} frames per second'}" />
-                  <TextBlock c:PropertiesGrid.Label="Minimum:"
-                      Text="{Binding LastSessionPerformanceData.MinimumFps, StringFormat='{}{0:F1} frames per second', TargetNullValue='?'}" />
-                  <TextBlock c:PropertiesGrid.Label="Taken:"
-                      Text="{Binding LastSessionPerformanceData.SamplesTaken, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} sample'}" />
+                  <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Main_FPS_Average}">
+                    <TextBlock.Text>
+                      <Binding Path="LastSessionPerformanceData.AverageFps" StringFormat="{x:Static g:AppStrings.Main_FPS_ValueFormat}" />
+                    </TextBlock.Text>
+                  </TextBlock>
+                  <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Main_FPS_Minimum}">
+                    <TextBlock.Text>
+                      <Binding Path="LastSessionPerformanceData.MinimumFps" StringFormat="{x:Static g:AppStrings.Main_FPS_ValueFormat}" TargetNullValue="?" />
+                    </TextBlock.Text>
+                  </TextBlock>
+                  <TextBlock c:PropertiesGrid.Label="{x:Static g:AppStrings.Main_FPS_Taken}">
+                    <TextBlock.Text>
+                      <Binding Path="LastSessionPerformanceData.SamplesTaken" Converter="{StaticResource PluralizingConverter}"
+                               ConverterParameter="{x:Static g:AppStrings.Main_FPS_TakenFormat}" />
+                    </TextBlock.Text>
+                  </TextBlock>
                 </c:PropertiesGrid>
               </DockPanel>
             </DockPanel.ToolTip>
-            <TextBlock Text="{Binding LastSessionPerformanceData.AverageFps, StringFormat='{}{0:F1} FPS'}" />
+            <TextBlock>
+              <TextBlock.Text>
+                <Binding Path="LastSessionPerformanceData.AverageFps" StringFormat="{x:Static g:AppStrings.Main_FPS_ValueShortFormat}" />
+              </TextBlock.Text>
+            </TextBlock>
           </DockPanel>
         </mui:ReferenceSwitch.NonNull>
       </mui:ReferenceSwitch>
