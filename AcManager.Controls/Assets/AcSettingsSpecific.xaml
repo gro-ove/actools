@@ -122,9 +122,9 @@
           <mui:BooleanSwitch.False>
             <StackPanel>
               <DockPanel Margin="0 0 0 4">
-                <mui:ValueLabel Value="{Binding DegressOfRotation}" mui:BetterTextBox.Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
-                    Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegressLabel}" />
-                <Slider Minimum="40" Maximum="1180" Value="{Binding DegressOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
+                <mui:ValueLabel Value="{Binding DegreesOfRotation}" mui:BetterTextBox.Mode="Positive" Postfix="°" VerticalAlignment="Center" Padding="0"
+                    Width="120" DockPanel.Dock="Left" Content="{x:Static c:ControlsStrings.Controls_DegreesLabel}" />
+                <Slider Minimum="40" Maximum="1180" Value="{Binding DegreesOfRotation}" TickFrequency="20" TickPlacement="None" IsSnapToTickEnabled="True" />
               </DockPanel>
               <DockPanel Visibility="{Binding GammaMode, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="0 0 0 4">
                 <mui:ValueLabel Value="{Binding Gamma, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number" VerticalAlignment="Center" Padding="0"

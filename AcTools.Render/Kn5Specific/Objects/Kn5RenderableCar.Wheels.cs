@@ -208,10 +208,10 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public class SteeringWheelParams {
             public Matrix ParentMatrix;
             public Matrix OriginalLocalMatrix;
-            public float RotationDegress;
+            public float RotationDegrees;
         }
 
-        private float GetSteeringWheelRotationDegress(float offset) {
+        private float GetSteeringWheelRotationDegrees(float offset) {
             if (!_steerLock.HasValue) {
                 _steerLock = _carData.GetSteerLock();
             }
@@ -225,7 +225,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             return node == null ? null : new SteeringWheelParams {
                 OriginalLocalMatrix = node.OriginalNode.Transform.ToMatrix(),
                 ParentMatrix = node.ParentMatrix,
-                RotationDegress = GetSteeringWheelRotationDegress(offset)
+                RotationDegrees = GetSteeringWheelRotationDegrees(offset)
             };
         }
 
@@ -234,9 +234,9 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void SteerSteeringWheel(float offset) {
             UpdateModelMatrixInverted();
 
-            var degress = GetSteeringWheelRotationDegress(offset);
+            var degrees = GetSteeringWheelRotationDegrees(offset);
             foreach (var node in new[] { "HR", "LR" }.Select(x => GetDummyByName($@"STEER_{x}")).NonNull()) {
-                node.LocalMatrix = Matrix.RotationZ(degress.ToRadians()) * _currentLodObject.GetOriginalLocalMatrix(node);
+                node.LocalMatrix = Matrix.RotationZ(degrees.ToRadians()) * _currentLodObject.GetOriginalLocalMatrix(node);
             }
         }
 

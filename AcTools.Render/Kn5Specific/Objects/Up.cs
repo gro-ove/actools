@@ -206,7 +206,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     Matrix.RotationYawPitchRoll(_side * 17f.ToRadians(), (-12f - 40f * shoulderFix).ToRadians(), (_side > 0 ? -95f : 95f).ToRadians()) *
                     Matrix.Translation(0.02f * _side, 0.11f + 0.08f * shoulderFix, 0.05f + 0.05f * shoulderFix);
 
-                
+
                 var armPoint = _arm.Matrix.GetTranslationVector();
                 var armDelta = targetPoint - armPoint;
 
@@ -306,7 +306,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             public void Update(float swOffset, float swRadius, Kn5RenderableCar.SteeringWheelParams swParams) {
-                var steerMatrix = Matrix.Translation(0, 0, swOffset) * Matrix.RotationZ(swParams.RotationDegress.ToRadians()) * swParams.OriginalLocalMatrix
+                var steerMatrix = Matrix.Translation(0, 0, swOffset) * Matrix.RotationZ(swParams.RotationDegrees.ToRadians()) * swParams.OriginalLocalMatrix
                         * swParams.ParentMatrix;
 
                 SetOnSteeringWheel(steerMatrix, swRadius);
@@ -317,7 +317,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                     return;
                 }
 
-                var angle = ((swParams.RotationDegress + 180f) % 360 + 360) % 360 - 180f;
+                var angle = ((swParams.RotationDegrees + 180f) % 360 + 360) % 360 - 180f;
 
                 // vertical offset of point on the wheel after rotation
 
@@ -359,7 +359,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void UPinit() {
             if (!_up) {
                 _up = true;
-                
+
                 _l = new Kn5RenderableList(Kn5Node.CreateBaseNode("L"), null) {
                     LocalMatrix = Matrix.Translation(_swRadius, 0, _swOffset),
                     HighlightDummy = true
@@ -391,7 +391,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public void Update(float offset, Kn5RenderableCar.SteeringWheelParams steeringWheelParams) {
             UPinit();
-            
+
             _la.Update(_swOffset, _swRadius, steeringWheelParams);
             _ra.Update(_swOffset, _swRadius, steeringWheelParams);
 

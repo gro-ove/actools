@@ -76,14 +76,14 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
         }
 
         #region Properties
-        private int _degressOfRotation = 900;
+        private int _degreesOfRotation = 900;
 
-        public int DegressOfRotation {
-            get => _degressOfRotation;
+        public int DegreesOfRotation {
+            get => _degreesOfRotation;
             set {
                 value = value.Clamp(40, 9000);
-                if (Equals(value, _degressOfRotation)) return;
-                _degressOfRotation = value;
+                if (Equals(value, _degreesOfRotation)) return;
+                _degreesOfRotation = value;
                 OnPropertyChanged();
             }
         }
@@ -217,7 +217,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                     Gamma = section.GetDouble("STEER_GAMMA", 1d);
                 }
 
-                DegressOfRotation = section.GetIntNullable("__CM_ORIGINAL_LOCK") ?? section.GetInt("LOCK", 900);
+                DegreesOfRotation = section.GetIntNullable("__CM_ORIGINAL_LOCK") ?? section.GetInt("LOCK", 900);
                 Scale = section.GetIntNullable("__CM_ORIGINAL_SCALE") ?? section.GetDouble("SCALE", 1d).ToIntPercentage();
                 Filter = section.GetDouble("STEER_FILTER", 0d).ToIntPercentage();
                 SpeedSensitivity = section.GetDouble("SPEED_SENSITIVITY", 0d).ToIntPercentage();
@@ -246,7 +246,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                     section.Set("STEER_GAMMA", Gamma);
                 }
 
-                section.Set("LOCK", DegressOfRotation);
+                section.Set("LOCK", DegreesOfRotation);
                 section.Remove("__CM_ORIGINAL_LOCK");
                 section.Set("SCALE", Scale.ToDoublePercentage());
                 section.Remove("__CM_ORIGINAL_SCALE");

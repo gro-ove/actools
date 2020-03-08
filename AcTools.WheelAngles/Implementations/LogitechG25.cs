@@ -82,7 +82,7 @@ namespace AcTools.WheelAngles.Implementations {
 
         protected static IntPtr CreateNewFormForHandle() {
             AcToolsLogging.Write("Creating new form to get its handle…");
-            Application.Current.Dispatcher.Invoke(() => { _form2 = new FormWithHandle(); });
+            Application.Current.Dispatcher?.Invoke(() => { _form2 = new FormWithHandle(); });
             return _form2.Handle;
         }
 
@@ -219,7 +219,7 @@ namespace AcTools.WheelAngles.Implementations {
 
             public override string ToString() {
                 return
-                        $"(Degress={OperatingRange}; FFB={ForceFeedbackEnable}; Overall={OverallGainPercentage}; Spring={SpringGainPercentage}; Damper={DamperGainPercentage}; DefaultSpringEnabled={PersistentSpringEnable}; DefaultSpring={DefaultSpringGainPercentage}; CombinedPedals={CombinedPedalsEnable}; GameSettingsEnable={GameSettingsEnable}; AllowGameSettings={AllowGameSettings})";
+                        $"(Degrees={OperatingRange}; FFB={ForceFeedbackEnable}; Overall={OverallGainPercentage}; Spring={SpringGainPercentage}; Damper={DamperGainPercentage}; DefaultSpringEnabled={PersistentSpringEnable}; DefaultSpring={DefaultSpringGainPercentage}; CombinedPedals={CombinedPedalsEnable}; GameSettingsEnable={GameSettingsEnable}; AllowGameSettings={AllowGameSettings})";
             }
 
             private static LogiControllerPropertiesData CreateNew() {

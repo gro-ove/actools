@@ -31,8 +31,8 @@ namespace AcManager.Controls.Helpers {
                 #endif
                 forced: true);
 
-        public static readonly FancyHint DegressWind = new FancyHint(
-                "degress-wind",
+        public static readonly FancyHint DegreesWind = new FancyHint(
+                "degrees-wind",
                 "If needed, you can set a specific wind direction",
                 "To do so, switch the mode in context menu.",
                 startupsDelay: 4, probability: 0.8);

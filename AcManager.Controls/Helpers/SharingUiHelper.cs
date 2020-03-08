@@ -64,9 +64,8 @@ namespace AcManager.Controls.Helpers {
 
                 string id = null;
                 if (SettingsHolder.Sharing.CustomIds && type != SharedEntryType.Results) {
-                    id =
-                            Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "", ToolsStrings.Common_None,
-                                    maxLength: 200)?.Trim();
+                    id = Prompt.Show(ControlsStrings.Share_EnterCustomId, ControlsStrings.Share_EnterCustomIdHeader, "",
+                            ToolsStrings.Common_None, maxLength: 200)?.Trim();
                     if (id == null) return; // cancelled
                     if (string.IsNullOrWhiteSpace(id)) {
                         id = null;

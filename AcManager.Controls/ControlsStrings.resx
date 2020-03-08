@@ -663,8 +663,8 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Controls_InvertAxis" xml:space="preserve">
     <value>Invert</value>
   </data>
-  <data name="Controls_DegressLabel" xml:space="preserve">
-    <value>Degress</value>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Degrees</value>
     <comment>For steering wheel</comment>
   </data>
   <data name="Controls_RangeFromAxis" xml:space="preserve">
