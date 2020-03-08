@@ -70,10 +70,9 @@ namespace AcManager.Tools.Helpers.Api.TheSetupMarket {
         private static DateTime? _errorSkip;
 
         private static string[] ListUrls = {
-            "http://194.67.219.50:12012/setups",
-            "http://46.173.219.83:12012/setups",
+            "http://193.176.79.190:12012/setups",
             // "http://thesetupmarketcache-x4fab.rhcloud.com/setups",
-            "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa"
+            // "http://thesetupmarket.com/api/get-setups/Assetto%20Corsa"
         };
 
         private static readonly TaskCache TaskCache = new TaskCache();

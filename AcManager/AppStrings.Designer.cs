@@ -3479,6 +3479,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Custom locales updated. Would you like to restart app now?.
+        /// </summary>
+        public static string CustomLocalesUpdated_Message {
+            get {
+                return ResourceManager.GetString("CustomLocalesUpdated_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Locales updated.
+        /// </summary>
+        public static string CustomLocalesUpdated_Title {
+            get {
+                return ResourceManager.GetString("CustomLocalesUpdated_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} setups.
         /// </summary>
         public static string Dialog_CarSetupsFormat {

@@ -90,7 +90,7 @@ namespace AcManager.Tools.Helpers {
             private bool? _theSetupMarketTab;
 
             public bool TheSetupMarketTab {
-                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketTab", false)).Value;
+                get => _theSetupMarketTab ?? (_theSetupMarketTab = ValuesStorage.Get("Settings.IntegratedSettings.TheSetupMarketTab", true)).Value;
                 set {
                     if (Equals(value, _theSetupMarketTab)) return;
                     _theSetupMarketTab = value;

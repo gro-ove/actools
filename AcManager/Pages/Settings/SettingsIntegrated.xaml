@@ -51,9 +51,9 @@
               DisplayMemberPath="DisplayName" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        <!--<CheckBox IsChecked="{Binding Integrated.TheSetupMarketCacheServer}" IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Use caching proxy for setups list to avoid overloading The Setup Market server" />
-        </CheckBox>
+        </CheckBox>-->
 
         <TextBlock Text="RSR:" Style="{StaticResource SettingsPanel.Heading2}" />
 

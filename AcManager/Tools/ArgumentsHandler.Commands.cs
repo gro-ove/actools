@@ -208,7 +208,7 @@ namespace AcManager.Tools {
 
         private static async Task<ArgumentHandleResult> ProcessGoogleSpreadsheetsLocale(string id, [CanBeNull] string locale, bool around) {
             if (string.IsNullOrWhiteSpace(id)) {
-                throw new InformativeException("ID is missing");
+                throw new InformativeException(ToolsStrings.Common_IdIsMissing);
             }
 
             var url = around
@@ -227,7 +227,7 @@ namespace AcManager.Tools {
             }
 
             ActionExtension.InvokeInMainThreadAsync(() => {
-                if (ModernDialog.ShowMessage("Custom locales updated. Would you like to restart app now?", "Locales updated", MessageBoxButton.YesNo) ==
+                if (ModernDialog.ShowMessage(AppStrings.CustomLocalesUpdated_Message, AppStrings.CustomLocalesUpdated_Title, MessageBoxButton.YesNo) ==
                         MessageBoxResult.Yes) {
                     WindowsHelper.RestartCurrentApplication();
                 }

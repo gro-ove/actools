@@ -3583,4 +3583,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
       <value>Message with details is copied to the clipboard</value>
     </data>
+    <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+        <value>Custom locales updated. Would you like to restart app now?</value>
+    </data>
+    <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+        <value>Locales updated</value>
+    </data>
 </root>
