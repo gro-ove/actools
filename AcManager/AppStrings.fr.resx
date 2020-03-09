@@ -1417,9 +1417,9 @@ Auteur : [b]{3}[/b]</value>
     <value>Rétroviseurs</value>
   </data>
   <data name="AcSettings_FieldOfView" xml:space="preserve">
-    <value>Profondeur de champ
-</value>
+    <value>Profondeur de champ</value>
   <alternative>Profondeur de champs
+</alternative><alternative>Profondeur de champ
 </alternative></data>
   <data name="AcSettings_DefaultValue" xml:space="preserve">
     <value>Valeur par défaut :</value>
@@ -1509,9 +1509,9 @@ Auteur : [b]{3}[/b]</value>
     <value>Préparer</value>
   </data>
   <data name="Settings_Locale_Prepare_Tooltip" xml:space="preserve">
-    <value>Prépare une traduction décompressée
-</value>
+    <value>Prépare une traduction décompressée</value>
   <alternative>Préparez une traduction décompressée
+</alternative><alternative>Prépare une traduction décompressée
 </alternative></data>
   <data name="Settings_Locale_Submit_Tooltip" xml:space="preserve">
     <value>Envoie une traduction décompressée pour l'inclure à CM</value>
@@ -3062,9 +3062,9 @@ Si vous avez besoin d'autres valeurs, veuillez nous contacter et nous les ajoute
     <value>Retourner au lanceur officiel si l'original n'est pas lancé</value>
   </data>
   <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
-    <value>Commande d'événement avant la course :
-</value>
-  </data>
+    <value>Commande d'événement avant la course :</value>
+  <alternative>Commande d'événement avant la course :
+</alternative></data>
   <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
     <value>Choisissez un logo dans la banque de données</value>
   </data>

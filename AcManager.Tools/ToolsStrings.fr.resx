@@ -379,17 +379,17 @@
     <comment>Remplacer les guillemets si necessaire</comment>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Impossible de rafraichir les informations du serveur.
-</value>
-  </data>
+    <value>Impossible de rafraichir les informations du serveur.</value>
+  <alternative>Impossible de rafraichir les informations du serveur.
+</alternative></data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
-    <value>Non implémenté.
-</value>
-  </data>
+    <value>Non implémenté.</value>
+  <alternative>Non implémenté.
+</alternative></data>
   <data name="Online_Server_CannotPing" xml:space="preserve">
-    <value>Le serveur est indisponible (échec du ping).
-</value>
+    <value>Le serveur est indisponible (échec du ping).</value>
   <alternative>Le serveur est indisponible (echec du ping).
+</alternative><alternative>Le serveur est indisponible (échec du ping).
 </alternative></data>
   <data name="Online_Server_Unavailable" xml:space="preserve">
     <value>Le serveur est indisponible.</value>
@@ -1227,9 +1227,9 @@
     <value>Afficher le classement</value>
   <alternative>Afficher classement</alternative></data>
   <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
-    <value>Afficher le rétroviseur virtuel
-</value>
+    <value>Afficher le rétroviseur virtuel</value>
   <alternative>Afficher les rétroviseurs virtuels
+</alternative><alternative>Afficher le rétroviseur virtuel
 </alternative></data>
   <data name="AcSettings_View_CameraHeader" xml:space="preserve">
     <value>Caméra :</value>
@@ -1265,9 +1265,9 @@
     <value>Usure des pneus</value>
   </data>
   <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
-    <value>Facteur d'usure des pneumatiques
-</value>
+    <value>Facteur d'usure des pneumatiques</value>
   <alternative>Facteur d'usure des pneus
+</alternative><alternative>Facteur d'usure des pneumatiques
 </alternative></data>
   <data name="AssistState_Off" xml:space="preserve">
     <value>Désactivé</value>
@@ -1606,9 +1606,9 @@
     <value>Moteur, boîte de vitesses, suspension et autres pièces endommageables</value>
   </data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
-    <value>Effet d'aspiration
-</value>
+    <value>Effet d'aspiration</value>
   <alternative>Effet de glissement
+</alternative><alternative>Effet d'aspiration
 </alternative></data>
   <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
     <value>Multiplicateur du flux pour l'effet d'aspiration</value>

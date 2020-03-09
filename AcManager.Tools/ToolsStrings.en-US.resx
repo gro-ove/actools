@@ -1126,13 +1126,13 @@
     <value>{0} server</value>
   </data>
   <data name="Online_Server_CannotPing" xml:space="preserve">
-    <value>Server is unavailable (ping failed).
-</value>
-  </data>
+    <value>Server is unavailable (ping failed).</value>
+  <alternative>Server is unavailable (ping failed).
+</alternative></data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Can’t refresh server information.
-</value>
-  </data>
+    <value>Can’t refresh server information.</value>
+  <alternative>Can’t refresh server information.
+</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Car {0} is missing.</value>
   </data>
@@ -1143,9 +1143,9 @@
     <value>Cars don’t match.</value>
   </data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
-    <value>Not implemented.
-</value>
-  </data>
+    <value>Not implemented.</value>
+  <alternative>Not implemented.
+</alternative></data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
     <value>ended</value>
   </data>

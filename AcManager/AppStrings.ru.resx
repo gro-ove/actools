@@ -3481,9 +3481,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
 [моно]{0}[/моно]</value>
   </data>
   <data name="UpgradeIcon_SelectNew" xml:space="preserve">
-    <value>Выберите Новый Значок Обновления
-</value>
-  </data>
+    <value>Выберите Новый Значок Обновления</value>
+  <alternative>Выберите Новый Значок Обновления
+</alternative></data>
   <data name="UpgradeIcon_CannotChange" xml:space="preserve">
     <value>Не удается изменить значок обновления.</value>
   </data>

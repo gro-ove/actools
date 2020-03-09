@@ -325,9 +325,9 @@
     <value>Navegador Refrescar</value>
   </data>
   <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Navegador Búsqueda
-</value>
-  </data>
+    <value>Navegador Búsqueda</value>
+  <alternative>Navegador Búsqueda
+</alternative></data>
   <data name="KeyBrowserStop" xml:space="preserve">
     <value>Navegador Stop</value>
   </data>

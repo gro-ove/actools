@@ -192,9 +192,7 @@ namespace AcManager.Pages.Windows {
             UpdateDiscordRichPresence();
 
 #if DEBUG
-            LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
-#else
-        // MenuLinkGroups.Remove(BrowserLinkGroup);
+            // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
         }
 

@@ -388,17 +388,17 @@
     <comment>Replace quotes if needed</comment>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>Impossibile refresh server information.
-</value>
-  </data>
+    <value>Impossibile refresh server information.</value>
+  <alternative>Impossibile refresh server information.
+</alternative></data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
-    <value>Non implementato.
-</value>
-  </data>
+    <value>Non implementato.</value>
+  <alternative>Non implementato.
+</alternative></data>
   <data name="Online_Server_CannotPing" xml:space="preserve">
-    <value>Server non disponibile (ping fallito).
-</value>
-  </data>
+    <value>Server non disponibile (ping fallito).</value>
+  <alternative>Server non disponibile (ping fallito).
+</alternative></data>
   <data name="Online_Server_Unavailable" xml:space="preserve">
     <value>Server non disponibile.</value>
   </data>

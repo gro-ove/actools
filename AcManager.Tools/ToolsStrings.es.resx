@@ -691,9 +691,9 @@
     <value>Ha fallado la petición GET</value>
   </data>
   <data name="Common_UnhandledError_Commentary" xml:space="preserve">
-    <value>Ha sucedido algún error que inésperado (no te estreses)
-</value>
-  </data>
+    <value>Ha sucedido algún error que inésperado (no te estreses)</value>
+  <alternative>Ha sucedido algún error que inésperado (no te estreses)
+</alternative></data>
   <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
     <value>Hay algunos coches que necesitan este tipo de letra. ¿Seguro que quieres eliminarla?</value>
   </data>

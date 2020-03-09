@@ -1751,9 +1751,9 @@ Autor: [b]{3}[/b]</value>
     <value>Aktiviere deaktivierte Lackierung</value>
   </data>
   <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
-    <value>Übergangsanimation
-</value>
-  </data>
+    <value>Übergangsanimation</value>
+  <alternative>Übergangsanimation
+</alternative></data>
   <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
     <value>Erlaube die Lackierung zu ändern</value>
   <alternative>Erlaube die Fahrzeuglackierung zu ändern</alternative></data>
@@ -1788,9 +1788,9 @@ Autor: [b]{3}[/b]</value>
     <value>Nach ähnlicher Leistung filtern</value>
   </data>
   <data name="Filter_ByTorque" xml:space="preserve">
-    <value>Nach ähnlichem Drehmoment filtern
-</value>
-  </data>
+    <value>Nach ähnlichem Drehmoment filtern</value>
+  <alternative>Nach ähnlichem Drehmoment filtern
+</alternative></data>
   <data name="Filter_ByWeight" xml:space="preserve">
     <value>Nach ähnlichem Gewicht filtern</value>
   </data>
@@ -1801,9 +1801,9 @@ Autor: [b]{3}[/b]</value>
     <value>Nach ähnlicher Höchstgeschwindigkeit filtern</value>
   </data>
   <data name="Filter_ByAcceleration" xml:space="preserve">
-    <value>Nach ähnlicher Beschleunigung filtern
-</value>
-  </data>
+    <value>Nach ähnlicher Beschleunigung filtern</value>
+  <alternative>Nach ähnlicher Beschleunigung filtern
+</alternative></data>
   <data name="Filter_ByAge" xml:space="preserve">
     <value>Nach Alter filtern</value>
   </data>
@@ -1832,9 +1832,9 @@ Autor: [b]{3}[/b]</value>
     <value>Löschen</value>
   </data>
   <data name="Toolbar_FindInformation" xml:space="preserve">
-    <value>Informationen suchen
-</value>
+    <value>Informationen suchen</value>
   <alternative>Informationen finden
+</alternative><alternative>Informationen suchen
 </alternative></data>
   <data name="Toolbar_PackData" xml:space="preserve">
     <value>Daten packen</value>
