@@ -117,8 +117,71 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>Tekijä, versio, ja URL</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Tekijä:</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Det var ikke muligt at opdatere previewet</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>Du skal mindst lave et screenshot af banen.</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Mærke:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Klasse:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Grundmodel:</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Den originale version af dette køretøj var modificeret af (hvor det kan tilføjes).</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>By:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Land:</value>
+  </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>Fejl:</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Brændstof:</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Brændstof:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specifikationer:</value>
+  </data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Geo Tags:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Dæk:</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>Link:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>År:</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Dette er hvornår produktionen af bilen begyndte.</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Automatic shifter:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Driving line:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Tire wear:</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
     <value>Open In Custom Showroom</value>
@@ -181,6 +244,18 @@ Material: [b]{10}[/b]</value>
   </data>
   <data name="CustomShowroom_ViewMapping" xml:space="preserve">
     <value>View Mapping</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>View in 1024×1025</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>View in 2048×2049</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>View in 4096×4097</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>View in 512×513</value>
   </data>
   <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
     <value>Export Texture Mapping</value>

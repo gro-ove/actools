@@ -1,0 +1,896 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>作者・バージョン・URL(設定されている場合、Ctrlキーを押しながらクリックしてリンクを開きます)</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>作者:</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>プレビューを更新できません</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>少なくとも1つのスクリーンショットを作成することになっていた。</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>ブランド:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>クラス:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>親:</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>親の車(設定されている場合、この車はそれのチューニングされたバージョンになります)</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>街:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>国:</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>燃料</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>燃料:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>仕様:</value>
+  </data>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>ジオタグ:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>タイヤ:</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>バージョン:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>年:</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>生産開始年</value>
+  </data>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>ダウン</value>
+  </data>
+  <data name="Animation_Fade" xml:space="preserve">
+    <value>フェード</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>モダン</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>アップ</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>オートブリップ:</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>オートクラッチ:</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>オートシフト:</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>燃料:</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>アシスト:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>アシストライン:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>安定性制御</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>タイヤの摩耗:</value>
+  </data>
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
+    <value>ゲーマー</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>ゲーマー以上プロ未満</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>プロ</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>カスタムショールームで開く</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>ショールームを開く</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>子は新しい親に移動されます!</value>
+  </data>
+  <data name="CarParent_MakeIndependent" xml:space="preserve">
+    <value>独立化</value>
+  </data>
+  <data name="Common_AreYouSure" xml:space="preserve">
+    <value>よろしいですか?</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Common_CelsiusPostfix" xml:space="preserve">
+    <value>℃</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>スキン変更</value>
+  </data>
+  <data name="Common_Clear" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>圧縮中...</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>開発者ツール</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>ダウンロード中…</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>露出:</value>
+  </data>
+  <data name="Common_FilterLabel" xml:space="preserve">
+    <value>フィルター:</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="Common_FolderExists" xml:space="preserve">
+    <value>フォルダ"{0}"はすでに存在しています。ファイルを上書きしますか?</value>
+  </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>ジェネリック</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>グッドニュース!</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>インストール中...</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value>ラップ</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>読み込んでいます…</value>
+  </data>
+  <data name="Common_MetersPostfix" xml:space="preserve">
+    <value>メートル</value>
+  </data>
+  <data name="Common_MillisecondsPostfix" xml:space="preserve">
+    <value>ms</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value>分</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>オフラインモード</value>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>対戦相手:{0}台</value>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value>対戦相手</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>オプション</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value>ポイント</value>
+  </data>
+  <data name="Common_Preparing" xml:space="preserve">
+    <value>準備中…</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>プリセット</value>
+  </data>
+  <data name="Common_PsiPostfix" xml:space="preserve">
+    <value>PSI</value>
+  </data>
+  <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
+    <value>推奨値:{0}％</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>推奨値にリセット</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value>ラップ</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value>秒</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>再試行</value>
+  </data>
+  <data name="Common_Unpack" xml:space="preserve">
+    <value>アンパック{0}</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>保存されていません</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>アップロード中…</value>
+  </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>待っています…</value>
+  </data>
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
+    <value>内蔵プリセット</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>キーボード割り当てをクリア</value>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>ホイール割り当てををクリア</value>
+  </data>
+  <data name="Controls_ClickToAssign" xml:space="preserve">
+    <value>クリックして割り当て</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>ダンパーゲイン</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Logitech G920の場合は0に設定し、それ以外の場合は1にします。</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>エフェクト:</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>強化されたアンダーステア​​エフェクト</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>実験:</value>
+  </data>
+  <data name="Controls_FilterAxis" xml:space="preserve">
+    <value>フィルター</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>ゲイン</value>
+  </data>
+  <data name="Controls_GammaAxis" xml:space="preserve">
+    <value>ガンマ</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>ジャイロ効果</value>
+  </data>
+  <data name="Controls_InvertAxis" xml:space="preserve">
+    <value>反転</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>抑制効果</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>キーボードのボタン</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>”{0}”をロードしますか?現在の値は置き換えられます(ただし、後でごみ箱から復元できます)。</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>最小荷重</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>最小ダンパーレベル</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>その他;</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>デバイス: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>デバイス: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>入力方法: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>から</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>に</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>道路効果</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>FFBステップをスキップ</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>より低いFF入力バッファを持つホイールに対応するために、物理エンジンはスキップするステップを実行します。CPUで問題が発生している場合は、2〜4に増やしてください。</value>
+  </data>
+  <data name="Controls_SlipEffect" xml:space="preserve">
+    <value>スリップ効果</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>ソフトロック</value>
+  </data>
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
+    <value>スピード感度</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>ステアリングホイールボタン</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>実験的なオプションのロックを解除します(注意してください!)</value>
+  </data>
+  <data name="Controls_UserPresets" xml:space="preserve">
+    <value>ユーザープリセット</value>
+  </data>
+  <data name="Controls_WaitingForInput" xml:space="preserve">
+    <value>入力待ち</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>輝度</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
+    <value>アンビエントシャドウを更新できません</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>拡散</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>エッジにフェード</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>ホイールを非表示</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>イテレーション</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>テクスチャをリロード中...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>推奨値にリセット</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>アンビエントシャドウを更新</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>影を更新中...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>アンビエントシャドウ</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>データは暗号化されています</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>シャドウのサイズは“data/ambient_shadows.ini”に保存されますが、データは暗号化されるため影響はありません。続行しますか?</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>フィット</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>ハイライトのサイズ</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>セーブ</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>テクスチャをエクスポートできません</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>カスタムショールームを起動できません</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+    <value>ワイヤーフレーム</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>コントロール</value>
+  </data>
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
+    <value>スキン編集モード</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>PSDやXCFなどが存在する場合は代わりに使用(Magick.NETアドオンが必要です)</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>エクスポート..</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>モデル読込中…</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>マテリアル名: [b] {0}[/b]シェーダ: [b] {1}[/b]ブレンドモード: [b] {2}[/b]アルファテスト: [b] {3}[/b]深さモード: [b] {4}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>オブジェクト名: [b] {0}[/b]クラス: [b] {1}[/b]アクティブ: [b] {2}[/b]レンダリング可能: [b] {3}[/b]表示: [b] {4}[/b]透明: [b] {5}[/b]シャドウの投影: [b] {6}[/b]画層: [b] {7}[/b]
+ LOD In:[b] {8}[/b]
+ LOD In:[b] {9}[/b]材料: [b] {10}[/b]</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>材料:</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>テクスチャ:</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>シェーダのプロパティ:</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>スキン</value>
+  </data>
+  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
+    <value>フレームレート(FPS)</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>オブジェクト:</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>頂点数:</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>統計</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>解像度:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>フォーマット:</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>テクスチャが欠落しています!</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>サイズ:</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>タイプ:</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>マッピング表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>1024×1024で表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>2048×2048で表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>4096×4096で表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>512×512で表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+    <value>カスタム解像度で表示</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>テクスチャマッピングをエクスポート</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>寸法を把握することはできません</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>有効なフォーマット を使用してください。</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>寸法([高さ]×[幅]）</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>年または説明を選択してOKをクリックしてください。Ctrlを押したままにすると、説明が置換されずに拡張されます。</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>保存して閉じる</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>国として保存</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>説明として保存</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>年として保存</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>画像を保存できません</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>画像</value>
+  </data>
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
+    <value>画像を保存します</value>
+  </data>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>完了:</value>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0}エラー</value>
+  </data>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>必要シリーズ: {0}</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>必須のシリーズはまだ終わっていません</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>車が不足しています:</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>オンラインなドライバー:</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>{0}を使用して参加</value>
+  </data>
+  <data name="Online_PasswordRequired" xml:space="preserve">
+    <value>パスワードが必要</value>
+  </data>
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
+    <value>トラックが不足しています:</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>ダウンロードしてインストールします({0})</value>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>無効です。必要なアプリのバージョンは{0}です。</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>アップデート(新バージョン:{0})</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>プリセット保存</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>現在の設定をプリセットとして保存(Ctrl + S)</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>保存されていないプリセット</value>
+  </data>
+  <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
+    <value>コントロールプリセットの切り替え</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>ダメージ(UI)</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>ダメージを表示</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>デベロッパーのアプリ</value>
+  </data>
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+    <value>開発者のアプリを有効</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>露出</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>明るさのレベル</value>
+  </data>
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+    <value>視野(FoV)</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>フリーカメラ</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>フリーカメラ有効(トラック上でF7を押す)</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>フルスクリーン</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>フルスクリーンモード(たとえば、Shadowplayはこれなしでは機能しません)</value>
+  </data>
+  <data name="QuickSwitches_Header" xml:space="preserve">
+    <value>クイックスイッチ</value>
+  </data>
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
+    <value>腕を非表示</value>
+  </data>
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+    <value>ドライバーの腕を非表示</value>
+  </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>ドライバを隠す</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>ドライバモデルを隠す</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>ホイールを非表示</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>ステアリングを非表示</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>リーダーボード</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>リーダーボードを表示</value>
+  </data>
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
+    <value>固定カメラ</value>
+  </data>
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+    <value>オンボードカメラを水平に固定</value>
+  </data>
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
+    <value>ホイールロック</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>ハンドルロック</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>ミラー</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>仮想ミラーを表示</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>ドライバー名を表示</value>
+  </data>
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
+    <value>最も近い</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>オンライン名</value>
+  </data>
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+    <value>オンラインで別の名前を使用</value>
+  </data>
+  <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
+    <value>PPフィルターの切り替え</value>
+  </data>
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+    <value>UIプリセットの切り替え</value>
+  </data>
+  <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
+    <value>画質設定プリセットの切り替え</value>
+  </data>
+  <data name="Replay_CrMessage" xml:space="preserve">
+    <value>リプレイは次のレースの後で上書きされます。名前を変更して保存します。</value>
+  </data>
+  <data name="Replay_CrMessage_Commentary" xml:space="preserve">
+    <value>設定から「再生を自動的に保存する」オプションを有効にすれば、大切なものを失うのを防ぐことができます。</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>"{0}を共有できません</value>
+  </data>
+  <data name="Share_EnterCustomId" xml:space="preserve">
+    <value>カスタムIDを入力:</value>
+  </data>
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
+    <value>カスタムID</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>名前を入力またはフィールドを空のままにしてください:</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>シェア</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>共有…</value>
+  </data>
+  <data name="Share_Shared" xml:space="preserve">
+    <value>{0}共有</value>
+  </data>
+  <data name="Share_SharedMessage" xml:space="preserve">
+    <value>クリップボードにコピーされたリンク</value>
+  </data>
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
+    <value>リンクを開きます</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>作者名: [b]{0}[/b]登録名: [b]{1}[/b]登録タイプ: [b]{2}[/b]</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>大丈夫ですか?</value>
+  </data>
+  <data name="Showroom_CannotStart" xml:space="preserve">
+    <value>ショールームを起動できません</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>ショールーム</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>SweetFXを無効にします</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>どうやらSweetFXは結果に影響しませんが、読み込み時間を短縮できる可能性があります</value>
+  </data>
+  <data name="Showroom_HideWatermark" xml:space="preserve">
+    <value>透かしを隠す</value>
+  </data>
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Kunos透かしは一時的に非表示になります</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>ショールーム:</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>黒</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>ダーク</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>ライト</value>
+  </data>
+  <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
+    <value>"新しいui_skin.jsonファイルを作成(Alt+S)</value>
+  </data>
+  <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
+    <value>ui_skin.jsonをごみ箱に削除(Alt + Delete)</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>ビデオを再生できません</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>[設定]に移動し、VLCのアドオンを有効にしてください。</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>ビデオを再生できません</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>VLCのアドオンが正しくインストールされていることを確認してください。</value>
+  </data>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>ウェブページは述べています</value>
+  </data>
+</root>

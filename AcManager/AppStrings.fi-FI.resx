@@ -117,132 +117,425 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Main_About" xml:space="preserve">
-    <value>Rólunk</value>
-  </data>
-  <data name="Main_Content" xml:space="preserve">
-    <value>Tartalom</value>
-  </data>
-  <data name="Main_Settings" xml:space="preserve">
-    <value>Beállítások</value>
-  </data>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>If you have any question, idea or suggestion about this app, or if you want to report some specific problem, please contact us using [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]something else[/url].</value>
+    <value>Jos sinulla on jotain kysyttävää, uusi idea sovellusta varten tai jos haluat kertoa ongelmasta, ota yhteyttä: [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] tai [url="https://trello.com/c/w5xT6ssZ/49-contacts"]jotain muuta[/url].</value>
+  </data>
+  <data name="About_ContactUsHeader" xml:space="preserve">
+    <value>Ota yhteyttä:</value>
   </data>
   <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016 AcClub. All rights reserved.</value>
+    <value>Copyright © 2016 AcClub. Kaikki oikeudet pidätetään.</value>
+  </data>
+  <data name="About_Description" xml:space="preserve">
+    <value>Erityisesti suunniteltu launcheri ja sisällönjärjestelysovellus Assetto Corsaan[url="http://www.assettocorsa.net/"][/url]</value>
+  </data>
+  <data name="About_DeveloperMode" xml:space="preserve">
+    <value>Ota kehittäjätila käyttöön?</value>
   </data>
   <data name="About_DeveloperMode_Title" xml:space="preserve">
-    <value>Developer Mode</value>
+    <value>Kehittäjätila</value>
   </data>
   <data name="About_Footer" xml:space="preserve">
-    <value>Content Manager is made possible by some [url="/Pages/About/Credits.xaml|_top"]open source software[/url].
+    <value>Assetto Corsa Content Managerin mahdollistaa[url="/Pages/About/Credits.xaml|_top"]open source software[/url]!
 Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>Mark All As Read</value>
+    <value>Merkitse kaikki luetuksi</value>
+  </data>
+  <data name="About_MoreInformation" xml:space="preserve">
+    <value>Lisätietoa</value>
+  </data>
+  <data name="About_NewTooltip" xml:space="preserve">
+    <value>Uutta!</value>
+  </data>
+  <data name="About_RecentChanges" xml:space="preserve">
+    <value>Viimeaikaisia muutoksia</value>
+  </data>
+  <data name="About_ReportAnIssue" xml:space="preserve">
+    <value>Kerro ongelmasta</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>Ei voi lähettää lokeja</value>
+  </data>
+  <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
+    <value>Kuvaile ongelmaa. Jätä myös yhteystiedot jos haluat vastauksen (se voi myös auttaa löytämään ratkaisun).</value>
   </data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
-    <value>Logs Sent</value>
+    <value>Loki lähetetty</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>Kiitos avusta!</value>
   </data>
   <data name="About_ReportAnIssue_Title" xml:space="preserve">
-    <value>What’s The Issue?</value>
+    <value>Mikä on ongelma?</value>
+  </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>Kiitokset käännöksestä:</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>Versio: {0}</value>
+  </data>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>Saatava {solution}:</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>Ongelmaa ei voida korjata</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>Mikään ratkaisu ei ole saatavilla.</value>
   </data>
   <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
-    <value>Solve All Similar Errors</value>
+    <value>Korjaa kaikki samanlaiset virheet</value>
+  </data>
+  <data name="AcObject_AppActivated" xml:space="preserve">
+    <value>Aktiivinen</value>
+  </data>
+  <data name="AcObject_Author_TooltipExt" xml:space="preserve">
+    <value>Jos teet omia modejasi, käytä tätä kenttää mieluummin kuin kuvausta tai nimeä.</value>
+  </data>
+  <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
+    <value>En ændring af ID'et vil muligvis skabe online-problemer!</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>By:</value>
+  </data>
+  <data name="AcObject_Cloning" xml:space="preserve">
+    <value>Kloner...</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Dato:</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>Kører:</value>
   </data>
   <data name="AcObject_DriverNameLabel" xml:space="preserve">
-    <value>Driver Name:</value>
+    <value>Kørernavn:</value>
+  </data>
+  <data name="AcObject_EnterNewId" xml:space="preserve">
+    <value>Skriv nyt ID:</value>
+  </data>
+  <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
+    <value>Sidst skannet: {0}</value>
   </data>
   <data name="AcObject_FontLastScannedNever" xml:space="preserve">
-    <value>Last scanned: Never</value>
+    <value>Sidst skannet: N/A</value>
+  </data>
+  <data name="AcObject_FontUsedInLabel" xml:space="preserve">
+    <value>Brugt i:</value>
   </data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
     <value>Geo Tags:</value>
   </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Nummer:</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>Prioritet:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Styrke:</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>Hold:</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Sted:</value>
+  </data>
   <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
-    <value>Layout Name:</value>
+    <value>Layout:</value>
+  </data>
+  <data name="AcObject_Url_TooltipExt" xml:space="preserve">
+    <value>Brug venligst dette felt hvis du er en modder med en hjemmeside som indeholder mere information om dette objekt.</value>
+  </data>
+  <data name="AcObject_UsingsRescan" xml:space="preserve">
+    <value>Scan</value>
+  </data>
+  <data name="AcObject_Version_TooltipExt" xml:space="preserve">
+    <value>Dette vil kunne bruges til auto-opdatering</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Vejr:</value>
+  </data>
+  <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
+    <value>Brug som:</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>Mappen er ikke gyldig.</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>Grundmappen til Assetto Corsa:</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>Steam ID:</value>
   </data>
   <data name="AcRoot_Welcome" xml:space="preserve">
-    <value>Welcome to Content Manager and thanks for using it! You have only couple of things left to do before launch:</value>
+    <value>Velkommen til Assetto Corsa Content Manager! Før vi begynder er der nogle ting, som du skal:</value>
+  </data>
+  <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
+    <value>Aktive apps:</value>
+  </data>
+  <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
+    <value>Formularer:</value>
+  </data>
+  <data name="AcSettings_Audio" xml:space="preserve">
+    <value>Lyd</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
+    <value>Forsinkelse:</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
-    <value>Switch to Low or Normal if you're experiencing problems with sound</value>
+    <value>Hvis du oplever problemer med lydkvalitet, prøv da at skrue ned for denne indstilling.</value>
+  </data>
+  <data name="AcSettings_Audio_LevelsHeader" xml:space="preserve">
+    <value>Niveauer</value>
+  </data>
+  <data name="AcSettings_Audio_Opponents" xml:space="preserve">
+    <value>Modstandere</value>
+  </data>
+  <data name="AcSettings_Audio_Surface" xml:space="preserve">
+    <value>Overflade</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>Dæk</value>
+  </data>
+  <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
+    <value>Dæk offset</value>
+  </data>
+  <data name="AcSettings_Audio_Wind" xml:space="preserve">
+    <value>Vind</value>
+  </data>
+  <data name="AcSettings_Controls" xml:space="preserve">
+    <value>Styring</value>
+  </data>
+  <data name="AcSettings_DefaultValue" xml:space="preserve">
+    <value>Standardværdi:</value>
+  </data>
+  <data name="AcSettings_Exposure_Value" xml:space="preserve">
+    <value>Værdi</value>
+  </data>
+  <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
+    <value>Dette er omfanget af verdenen, som kan ses af kameraet.</value>
   </data>
   <data name="AcSettings_GhostCar" xml:space="preserve">
     <value>Ghost car</value>
   </data>
+  <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
+    <value>Fuld gennemsigtighed ved</value>
+  </data>
+  <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
+    <value>Gennemsigtighed</value>
+  </data>
+  <data name="AcSettings_GhostCar_RecordingLimit" xml:space="preserve">
+    <value>Optagebegrænsning</value>
+  </data>
+  <data name="AcSettings_GhostCar_StartShowingAt" xml:space="preserve">
+    <value>Minimum fade distance</value>
+  </data>
   <data name="AcSettings_Mirrors" xml:space="preserve">
-    <value>Mirrors</value>
+    <value>Spejle</value>
+  </data>
+  <data name="AcSettings_Mirrors_RenderingDistance" xml:space="preserve">
+    <value>Renderingsdistance</value>
+  </data>
+  <data name="AcSettings_Miscellaneous" xml:space="preserve">
+    <value>Blandet</value>
   </data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
     <value>Proximity indicator</value>
   </data>
+  <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
+    <value>Show closest opponents</value>
+  </data>
   <data name="AcSettings_Skidmarks" xml:space="preserve">
     <value>Skidmarks</value>
   </data>
+  <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Allows you to freely move around the map. To activate, press F7.</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
+    <value>Screemshots format:</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
+    <value>Install the Magick.NET plugin and switch the .bmp. Don't forget to enable automatic conversions in the Settings/Drive page.</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
+    <value>Do you wish to use the best screenshot quality?</value>
+  </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>Allow unsupported DirectX 10 (use on your own risk; doesn't work?)</value>
+    <value>Allow unsupported DirectX 10 (Highly experimental feature; use at your own risk)</value>
   </data>
   <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
     <value>Anti-aliasing:</value>
   </data>
-  <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
-    <value>Crepuscular rays</value>
+  <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
+    <value>Test your game's settings here (Ctrl+G)</value>
   </data>
-  <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
-    <value>Reflections resolution:</value>
+  <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
+    <value>Creupscular rays</value>
+  </data>
+  <data name="AcSettings_Video_DepthOfFieldLabel" xml:space="preserve">
+    <value>Depth of Field</value>
+  </data>
+  <data name="AcSettings_Video_FixResolutionAutomatically" xml:space="preserve">
+    <value>Automatically find correct resolution</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>Framerate (FPS)</value>
+  </data>
+  <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
+    <value>Limit framerate (FPS)</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
+    <value>Maximum frame latency</value>
+  </data>
+  <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
+    <value>Maximum frame latency; defined by video card settings</value>
+  </data>
+  <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
+    <value>Set an integer value to sharpen the image.</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Oculus Rift:</value>
+  </data>
+  <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
+    <value>Post-processing:</value>
+  </data>
+  <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
+    <value>Shadow resolution:</value>
+  </data>
+  <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
+    <value>The higher the value, the more reflective the skybox becomes.</value>
   </data>
   <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
-    <value>Vertical syncronization</value>
+    <value>V-sync</value>
   </data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
     <value>World detail:</value>
   </data>
+  <data name="AcSettings_ViewAndUi" xml:space="preserve">
+    <value>View and UI</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>Unable to install content from the file</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>Unable to install the {0}</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>Unable to unpack</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>The archive is most likely corrupted, read-only, or matched with an invalid password.</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>That password was invalid</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
+    <value>This archive is encrypted; insert the password:</value>
+  </data>
   <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
-    <value>Password Required</value>
+    <value>The password is required!</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>Installing the {0}…</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>The archive is empty</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Invalid password</value>
   </data>
   <data name="AdditionalContent_Title" xml:space="preserve">
-    <value>Install Additional Content</value>
+    <value>Install additional content</value>
   </data>
   <data name="App_AppUpdated" xml:space="preserve">
-    <value>Content Manager Updated</value>
+    <value>The Content Manager has been updated!</value>
+  </data>
+  <data name="App_AppUpdated_Details" xml:space="preserve">
+    <value>Click to see the recent changes</value>
   </data>
   <data name="App_DataUpdated" xml:space="preserve">
-    <value>Data Updated</value>
+    <value>Your data has been updated</value>
   </data>
   <data name="App_LocaleUpdated" xml:space="preserve">
-    <value>Locale Updated</value>
+    <value>The locale has been updated updated!</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>Please restart the app to see changes</value>
   </data>
   <data name="App_NewVersion" xml:space="preserve">
     <value>New Version</value>
   </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>The app will be restarted.</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>Unable to check the key</value>
+  </data>
   <data name="AppKey_GetNewKey" xml:space="preserve">
-    <value>Get a New Key</value>
+    <value>Get a new key!</value>
   </data>
   <data name="AppKey_InvalidKey" xml:space="preserve">
-    <value>Key is invalid</value>
+    <value>That key is invalid.</value>
   </data>
   <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
-    <value>Sorry, but your key was compromised and got revoked. Would you like to contact us to get another one?</value>
+    <value>Sorry, but your key was compromised and had to be deleted. Would you like to contact us for another one?</value>
   </data>
   <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
-    <value>Key Revoked</value>
+    <value>The key has been deleted!</value>
   </data>
-  <data name="AppKey_PreRestart_Title" xml:space="preserve">
-    <value>Thank You!</value>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>The key was deleted.</value>
   </data>
-  <data name="AppKey_Title" xml:space="preserve">
-    <value>App Key</value>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>The app will now restart. Thanks for the support!
+
+[i]DO NOT share your key! It may get compromised![/i]</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Enter the app key to unlock more features (XXXX-XXXX-...):</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>Do not share this key with anyone; it might get deleted!</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>Unable to install the addons.</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>Unable to install the setup.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
+    <value>The RSR had changed.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>The RSR had returned the file in an unsupported format.</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>Unable to parse request.</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest" xml:space="preserve">
+    <value>Unable to process request.</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>Please make sure the data is valid.</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>Make sure the required cars and tracks are installed and enabled.</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>The metadata is missing!</value>
   </data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
-    <value>Save as Generic</value>
+    <value>Save as default</value>
   </data>
   <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
     <value>Apply &amp; Save</value>
   </data>
   <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
-    <value>Apply FFB Only</value>
+    <value>Apply (FFB Only)</value>
   </data>
   <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
     <value>Apply Only</value>
@@ -255,6 +548,12 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
     <value>Save Only</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>Would you like to apply this preset, or save it for later?</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>Unsupported file type: “{0}”</value>
   </data>
   <data name="BrandBadge_SelectNew" xml:space="preserve">
     <value>Select New Brand’s Badge</value>
@@ -277,6 +576,9 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="CarPreviews_LookAtLabel" xml:space="preserve">
     <value>Look At:</value>
   </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>Shot in 3840×2161</value>
+  </data>
   <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
     <value>Showroom Is Missing</value>
   </data>
@@ -284,7 +586,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>Update Previews</value>
   </data>
   <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
-    <value>…s 0-100</value>
+    <value>…s 0-101</value>
   </data>
   <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
     <value>Copy new values to Torque and BHP?</value>
@@ -676,6 +978,9 @@ But if you don't want to waste 200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
   </data>
   <data name="Settings_General_WindowsShortcut" xml:space="preserve">
     <value>Start Menu shortcut (for modern notifications)</value>
+  </data>
+  <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
+    <value>Create Start Menu shortcut; required for showing proper notifications in Windows 8, 8.1 and 11</value>
   </data>
   <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
     <value>Custom Translations</value>

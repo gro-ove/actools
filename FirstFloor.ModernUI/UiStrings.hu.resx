@@ -117,4 +117,70 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Hide Password</value>
+  </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Number Pad {0}</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Loaded {0} of {1}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Uploaded {0} of {1}</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Save Race Grid As Preset</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Share Race Grid</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Show Password</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Stack Trace</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} day</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} hour</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minute</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} month</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} second</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} week</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Newer version {0} is ready to be installed</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>Manage Lists…</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Cancel Booking</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Include Password</value>
+  </data>
 </root>
