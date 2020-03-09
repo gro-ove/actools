@@ -79,6 +79,12 @@ namespace AcManager.Tools.Helpers.AcLog {
         TyresMightBeWrong,
 
         [Description("GPU failed; might be overclocked too much, or overheated")]
-        GpuFailed
+        GpuFailed,
+
+        [Description("Error might have something to do with:\n[size=10][mono]\n{0}[/mono][/size]")]
+        UnknownCrash,
+
+        [Description("Content Manager couldn’t find out what’s wrong")]
+        UnknownEmptyCrash
     }
 }

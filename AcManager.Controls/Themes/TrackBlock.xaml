@@ -26,6 +26,7 @@
                   Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                 <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" VerticalSpacing="4">
                   <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding MainTrackObject.Rating}" HorizontalAlignment="Left" />
+                  <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding MainTrackObject}" />
                   <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                       Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                 </c:PropertiesGrid>
@@ -123,6 +124,7 @@
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                       <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" VerticalSpacing="4">
                         <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding MainTrackObject.Rating}" HorizontalAlignment="Left" />
+                        <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding MainTrackObject}" />
                         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                             Text="{Binding TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}" />
                       </c:PropertiesGrid>

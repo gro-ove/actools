@@ -374,6 +374,7 @@
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />
     <Compile Include="Helpers\AudioDevices.cs" />
+    <Compile Include="Helpers\BeepingNoise.cs" />
     <Compile Include="Helpers\CamberExtravaganzaHelper.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDeviceUtils.cs" />

@@ -384,13 +384,15 @@ namespace AcTools.Processes {
 
         public class TrackdayProperties : RaceProperties {
             public bool UsePracticeSessionType = false;
+            public double SpeedLimit = 0.0;
 
             protected override void SetSessions(IniFile file) {
                 file["SESSION_0"] = new IniFileSection(null) {
                     ["NAME"] = TrackDaySessionName,
                     ["DURATION_MINUTES"] = 720,
                     ["SPAWN_SET"] = StartType.Pit.Id,
-                    ["TYPE"] = UsePracticeSessionType ? SessionType.Practice : SessionType.Qualification
+                    ["TYPE"] = UsePracticeSessionType ? SessionType.Practice : SessionType.Qualification,
+                    ["__SPEED_LIMIT"] = SpeedLimit
                 };
             }
         }

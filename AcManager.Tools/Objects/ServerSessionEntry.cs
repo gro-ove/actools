@@ -195,15 +195,15 @@ namespace AcManager.Tools.Objects {
             }
 
             if (MandatoryPit) {
-                session.Set("RACE_PIT_WINDOW_START", MandatoryPitFrom);
-                session.Set("RACE_PIT_WINDOW_END", MandatoryPitTo);
-                session.Remove("__CM_RACE_PIT_WINDOW_START_OFF");
-                session.Remove("__CM_RACE_PIT_WINDOW_END_OFF");
+                main.Set("RACE_PIT_WINDOW_START", MandatoryPitFrom);
+                main.Set("RACE_PIT_WINDOW_END", MandatoryPitTo);
+                main.Remove("__CM_RACE_PIT_WINDOW_START_OFF");
+                main.Remove("__CM_RACE_PIT_WINDOW_END_OFF");
             } else {
-                session.Set("__CM_RACE_PIT_WINDOW_START_OFF", MandatoryPitFrom);
-                session.Set("__CM_RACE_PIT_WINDOW_END_OFF", MandatoryPitTo);
-                session.Remove("RACE_PIT_WINDOW_START");
-                session.Remove("RACE_PIT_WINDOW_END");
+                main.Set("__CM_RACE_PIT_WINDOW_START_OFF", MandatoryPitFrom);
+                main.Set("__CM_RACE_PIT_WINDOW_END_OFF", MandatoryPitTo);
+                main.Remove("RACE_PIT_WINDOW_START");
+                main.Remove("RACE_PIT_WINDOW_END");
             }
         }
 

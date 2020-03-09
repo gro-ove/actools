@@ -86,7 +86,7 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_LargeSearchBoxes}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppearanceManager.PixelScrollBars}" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding AppearanceManager.PixelScrollBars}">
           <Label Content="Narrow scrollbars" />
         </CheckBox>
 
@@ -107,13 +107,11 @@
 
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Title links and menu:" />
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsInSeparatePage, Converter={StaticResource InvertBooleanConverter}}"
-            mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsInSeparatePage, Converter={StaticResource InvertBooleanConverter}}">
           <Label Content="Show downloads &amp; installations list in that menu in the upper right corner" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsPageAutoOpen}" IsEnabled="{Binding AppAppearanceManager.DownloadsInSeparatePage}"
-            mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DownloadsPageAutoOpen}" IsEnabled="{Binding AppAppearanceManager.DownloadsInSeparatePage}">
           <Label Content="Automatically navigate to downloads page when new download is started" />
         </CheckBox>
 

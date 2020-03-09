@@ -39,9 +39,9 @@ namespace AcManager.Controls {
         private static readonly Dictionary<string, Image> Cache = new Dictionary<string, Image>();
 
         private async void OnCarChanged(CarObject newValue) {
-            var brand = newValue.Brand;
+            var brand = newValue?.Brand;
             if (brand == null) {
-                OnFilenameChanged(newValue.BrandBadge);
+                OnFilenameChanged(newValue?.BrandBadge);
                 return;
             }
 

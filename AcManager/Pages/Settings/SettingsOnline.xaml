@@ -77,7 +77,7 @@
           <Label Content="Show extended information if content is missing" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Online.SearchForMissingContent}" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding Online.SearchForMissingContent}">
           <CheckBox.ToolTip>Please, keep in mind that some content found might not be exactly legal (for example, models might be ported)</CheckBox.ToolTip>
           <Label Content="Search for links to missing content automatically" />
         </CheckBox>

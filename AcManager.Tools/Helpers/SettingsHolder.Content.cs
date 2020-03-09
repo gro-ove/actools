@@ -143,6 +143,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showNotesIconInLists;
+
+            public bool ShowNotesIconInLists {
+                get => _showNotesIconInLists ?? (_showNotesIconInLists = ValuesStorage.Get("Settings.ContentSettings.ShowNotesIconInLists", true)).Value;
+                set {
+                    if (Equals(value, _showNotesIconInLists)) return;
+                    _showNotesIconInLists = value;
+                    ValuesStorage.Set("Settings.ContentSettings.ShowNotesIconInLists", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {

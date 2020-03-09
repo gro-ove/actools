@@ -76,6 +76,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -89,6 +91,9 @@
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating}" Value="{x:Null}">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -122,6 +127,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -142,6 +149,9 @@
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -180,6 +190,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -201,6 +213,9 @@
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -239,6 +254,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -262,6 +279,9 @@
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -301,6 +321,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
             <mui:BbCodeBlock TextWrapping="NoWrap" Text="{Binding DisplayName}" Mode="WithoutBbCodes" Margin="10 2 4 2"
@@ -322,6 +344,9 @@
 
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -364,6 +389,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -385,6 +412,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -433,6 +463,8 @@
                 IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
             <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                 Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+            <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
             <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                 Style="{StaticResource CompactRatingBar.ReadOnly}" />
 
@@ -445,6 +477,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating}" Value="{x:Null}">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -477,6 +512,8 @@
                   IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
               <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                  x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
               <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                   Style="{StaticResource CompactRatingBar.ReadOnly}" />
             </DockPanel>
@@ -490,6 +527,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -531,6 +571,8 @@
                   IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
               <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                  x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
               <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                   Style="{StaticResource CompactRatingBar.ReadOnly}" />
             </DockPanel>
@@ -544,6 +586,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />
@@ -583,6 +628,8 @@
                   IsHitTestVisible="False" x:Name="PART_NewIcon" DockPanel.Dock="Right" Visibility="Collapsed" />
               <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="PART_FavouriteIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
+              <Path Data="{StaticResource NotesIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource WindowText}" Stretch="Uniform"
+                  x:Name="PART_NotesIcon" VerticalAlignment="Center" Margin="0 0 4 0" />
               <c:RatingBar DockPanel.Dock="Right" Rating="{Binding Rating}" x:Name="PART_RatingIcon" VerticalAlignment="Center" Margin="0 0 4 0"
                   Style="{StaticResource CompactRatingBar.ReadOnly}" />
             </DockPanel>
@@ -596,6 +643,9 @@
             </DataTrigger>
             <DataTrigger Binding="{Binding IsFavourite}" Value="True">
               <Setter Property="Visibility" Value="Visible" TargetName="PART_FavouriteIcon" />
+            </DataTrigger>
+            <DataTrigger Binding="{Binding ShowNotesIcon}" Value="False">
+              <Setter Property="Visibility" Value="Collapsed" TargetName="PART_NotesIcon" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Rating, TargetNullValue=0}" Value="0">
               <Setter Property="Visibility" Value="Collapsed" TargetName="PART_RatingIcon" />

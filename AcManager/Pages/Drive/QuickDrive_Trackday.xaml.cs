@@ -3,6 +3,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
 using AcTools.Processes;
+using AcTools.Utils;
 
 namespace AcManager.Pages.Drive {
     public partial class QuickDrive_Trackday : IQuickDriveModeControl {
@@ -36,6 +37,11 @@ namespace AcManager.Pages.Drive {
 
             public ViewModel(bool initialize = true) : base(initialize) {}
 
+            #region Saveable
+            protected new class SaveableData : QuickDrive_Race.ViewModel.SaveableData {
+                public double SpeedLimit;
+            }
+
             protected override void InitializeSaveable() {
                 Saveable = new SaveHelper<SaveableData>("__QuickDrive_Trackday", () => {
                     var r = new SaveableData();
@@ -45,8 +51,27 @@ namespace AcManager.Pages.Drive {
                 Saveable.RegisterUpgrade<OldSaveableData>(OldSaveableData.Test, Load);
             }
 
+            protected SaveableData Save(SaveableData data) {
+                base.Save(data);
+                data.SpeedLimit = SpeedLimit;
+                return data;
+            }
+
+            protected void Load(SaveableData data) {
+                base.Load(data);
+                SpeedLimit = data.SpeedLimit;
+            }
+            #endregion
+
             public override void CheckIfTrackFits(TrackObjectBase track) {
                 TrackDoesNotFit = TagRequired("circuit", track);
+            }
+
+            private double _speedLimit;
+
+            public double SpeedLimit {
+                get => _speedLimit;
+                set => Apply(value.Round().Clamp(0, 400), ref _speedLimit, SaveLater);
             }
 
             protected override Game.BaseModeProperties GetModeProperties(IEnumerable<Game.AiCar> botCars) {
@@ -57,7 +82,8 @@ namespace AcManager.Pages.Drive {
                     StartingPosition = 1,
                     RaceLaps = LapsNumber,
                     BotCars = botCars,
-                    UsePracticeSessionType = SettingsHolder.Drive.QuickDriveTrackDayViaPractice
+                    UsePracticeSessionType = SettingsHolder.Drive.QuickDriveTrackDayViaPractice,
+                    SpeedLimit = SpeedLimit
                 };
             }
         }

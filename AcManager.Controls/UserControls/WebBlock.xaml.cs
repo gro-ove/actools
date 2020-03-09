@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
@@ -25,6 +26,7 @@ namespace AcManager.Controls.UserControls {
 
         public WebBlock() {
             InitializeComponent();
+            SetCurrentValue(AddressBarButtonsProperty, new ObservableCollection<UIElement>());
         }
 
         [NotNull]
@@ -401,6 +403,30 @@ namespace AcManager.Controls.UserControls {
             Tabs.ForEach(x => x.SetUserAgent(newValue));
         }
 
+        public static readonly DependencyProperty AddressBarButtonsProperty = DependencyProperty.Register(nameof(AddressBarButtons),
+                typeof(ObservableCollection<UIElement>), typeof(WebBlock));
+
+        public ObservableCollection<UIElement> AddressBarButtons {
+            get => (ObservableCollection<UIElement>)GetValue(AddressBarButtonsProperty);
+            set => SetValue(AddressBarButtonsProperty, value);
+        }
+
+        public static readonly DependencyProperty LeftSideContentProperty = DependencyProperty.Register(nameof(LeftSideContent),
+                typeof(object), typeof(WebBlock));
+
+        public object LeftSideContent {
+            get => GetValue(LeftSideContentProperty);
+            set => SetValue(LeftSideContentProperty, value);
+        }
+
+        public static readonly DependencyProperty RightSideContentProperty = DependencyProperty.Register(nameof(RightSideContent),
+                typeof(object), typeof(WebBlock));
+
+        public object RightSideContent {
+            get => GetValue(RightSideContentProperty);
+            set => SetValue(RightSideContentProperty, value);
+        }
+
         public static readonly DependencyProperty StyleProviderProperty = DependencyProperty.Register(nameof(StyleProvider), typeof(ICustomStyleProvider),
                 typeof(WebBlock), new PropertyMetadata(OnStyleProviderChanged));
 
@@ -463,7 +489,8 @@ namespace AcManager.Controls.UserControls {
             }
         }
 
-        public static readonly DependencyProperty AddressBarExtraTemplateProperty = DependencyProperty.Register(nameof(AddressBarExtraTemplate), typeof(DataTemplate),
+        public static readonly DependencyProperty AddressBarExtraTemplateProperty = DependencyProperty.Register(nameof(AddressBarExtraTemplate),
+                typeof(DataTemplate),
                 typeof(WebBlock), new PropertyMetadata(OnAddressBarExtraTemplateChanged));
 
         public DataTemplate AddressBarExtraTemplate {
@@ -530,6 +557,16 @@ namespace AcManager.Controls.UserControls {
 
         private void BrowseHome_Executed(object sender, ExecutedRoutedEventArgs e) {
             CurrentTab?.Navigate(StartPage);
+            e.Handled = true;
+        }
+
+        private void Refresh_CanExecute(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = true;
+            e.Handled = true;
+        }
+
+        private void Refresh_Executed(object sender, ExecutedRoutedEventArgs e) {
+            CurrentTab?.RefreshCommand?.Execute(Keyboard.Modifiers.HasFlag(ModifierKeys.Control));
             e.Handled = true;
         }
 

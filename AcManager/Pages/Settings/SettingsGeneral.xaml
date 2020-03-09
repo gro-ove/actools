@@ -37,7 +37,7 @@
           <Label Content="{x:Static g:AppStrings.Common_DevMode}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}">
           <Label Content="Show occasional hints" />
         </CheckBox>
 

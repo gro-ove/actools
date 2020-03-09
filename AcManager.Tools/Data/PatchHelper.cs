@@ -24,6 +24,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureNeedsOdometerValue = "NEEDS_ODOMETER_VALUE";
         public static readonly string FeatureDynamicShadowResolution = "DYNAMIC_SHADOWS_RESOLUTION";
         public static readonly string FeaturePovForButtons = "POV_FOR_BUTTONS";
+        public static readonly string FeatureTrackDaySpeedLimit = "TRACK_DAY_SPEED_LIMIT";
 
         public static bool OptionPatchSupport = true;
 
@@ -88,7 +89,7 @@ namespace AcManager.Tools.Data {
         }
 
         private static ITestEntry FeatureTestEntryFactory(string item) {
-            var v = item.As<bool?>();
+            var v = item.As<bool?>(null);
             if (v.HasValue) {
                 return new ConstTestEntry(v.Value);
             }

@@ -23,6 +23,10 @@ namespace AcManager.Tools.Filters.Testers {
                 case "rating":
                     return nameof(AcObjectNew.Rating);
 
+                case "note":
+                case "notes":
+                    return nameof(AcObjectNew.Notes);
+
                 case "fav":
                 case "favorite":
                 case "favourite":
@@ -78,6 +82,10 @@ namespace AcManager.Tools.Filters.Testers {
                 case "rated":
                 case "rating":
                     return value.Test(obj.Rating ?? 0d);
+
+                case "note":
+                case "notes":
+                    return value.Test(obj.Notes);
 
                 case "fav":
                 case "favorite":

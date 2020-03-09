@@ -86,7 +86,7 @@ namespace AcManager.Tools.Helpers.AcLog {
                         var inits = Regex.Matches(log, @"\bInit PyPlugin:([^\n\r]+)").OfType<Match>().LastOrDefault();
                         if (inits?.Success == true) {
                             var appId = inits.Groups[1].Value.Trim();
-                            return new WhatsGoingOn(WhatsGoingOnType.AppMightBeBroken, appId){
+                            return new WhatsGoingOn(WhatsGoingOnType.AppMightBeBroken, appId) {
                                 Fix = AcSettingsHolder.Python.IsActivated(appId) ? token => {
                                     AcSettingsHolder.Python.SetActivated(appId, false);
                                     return Task.Delay(0);
@@ -135,11 +135,34 @@ namespace AcManager.Tools.Helpers.AcLog {
                 if (extension != null) {
                     return extension;
                 }
+
+                if (crash != null) {
+                    var cleanedUp = CleanUpCrash(crash);
+                    if (string.IsNullOrWhiteSpace(cleanedUp)) {
+                        return new WhatsGoingOn(WhatsGoingOnType.UnknownEmptyCrash);
+                    }
+                    return new WhatsGoingOn(WhatsGoingOnType.UnknownCrash, CleanUpCrash(crash));
+                }
             } catch (Exception e) {
                 Logging.Write("Can’t determine what’s going on: " + e);
             }
 
             return null;
+        }
+
+        private static string CleanUpCrash(string crash) {
+            return crash.Split('\n')
+                    .Select(x => Regex.Replace(
+                            Regex.Replace(x, @"^.+\bdev_pc_master_race\\(?:\S+\\)?", "AC\\"),
+                            @"^.+\bacc-rendering-adv\\(?:\S+\\)?", "CSP\\").Trim())
+                    .Where(x => !string.IsNullOrWhiteSpace(x)
+                            && x.Contains("): ")
+                            && !x.StartsWith("CRASH in")
+                            && !x.StartsWith("OS-Version")
+                            && !x.Contains("microsoft visual studio 12.0")
+                            && !x.Contains("function-name not available")
+                            && !x.StartsWith("ERROR: "))
+                    .JoinToString("\n").Trim();
         }
     }
 }

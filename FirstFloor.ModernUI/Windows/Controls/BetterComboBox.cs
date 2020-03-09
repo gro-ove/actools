@@ -63,9 +63,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void OnMouseWheel(object sender, MouseWheelEventArgs e) {
             if (IsDropDownOpen) return;
-
             e.Handled = true;
-            (Parent as UIElement)?.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) {
+            (Parent as UIElement ?? VisualParent as UIElement)?.RaiseEvent(new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta) {
                 RoutedEvent = MouseWheelEvent,
                 Source = sender
             });

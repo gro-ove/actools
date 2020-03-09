@@ -26,6 +26,11 @@ namespace AcManager.Tools.Filters.Testers {
                 case "pits":
                 case "pitboxes":
                     return nameof(TrackObjectBase.SpecsPitboxes);
+
+                case "dd":
+                case "driven":
+                case "drivendistance":
+                    return nameof(TrackObjectBase.TotalDrivenDistance);
             }
 
             return null;
@@ -62,6 +67,12 @@ namespace AcManager.Tools.Filters.Testers {
                 case "pits":
                 case "pitboxes":
                     return value.Test(obj.SpecsPitboxesValue);
+
+                case "dd":
+                case "driven":
+                case "drivendistance":
+                    value.Set(TestEntryFactories.DistanceKilometers);
+                    return value.Test(obj.TotalDrivenDistance / 1e3);
             }
 
             return AcJsonObjectTester.Instance.Test(obj, key, value);

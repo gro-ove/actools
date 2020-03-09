@@ -70,6 +70,38 @@
     </Setter>
   </Style>
 
+  <Style TargetType="{x:Type ac:NotesBlock}">
+    <Setter Property="Focusable" Value="True" />
+    <Setter Property="IsTabStop" Value="True" />
+    <Setter Property="Background" Value="Transparent" />
+    <Setter Property="BorderBrush" Value="{DynamicResource ButtonBorder}" />
+    <Setter Property="BorderThickness" Value="0" />
+    <Setter Property="Padding" Value="0" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="{x:Type ac:NotesBlock}">
+          <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}"
+              BorderThickness="{TemplateBinding BorderThickness}">
+            <DockPanel>
+              <Button x:Name="PART_EditButton" Padding="4" DockPanel.Dock="Right" Margin="4 -4 0 -4" Visibility="Hidden" VerticalAlignment="Center">
+                <Path Width="8" Height="8" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" Stretch="Fill"
+                    VerticalAlignment="Center" HorizontalAlignment="Center"
+                    Data="{StaticResource NotesIconData}" />
+              </Button>
+              <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding AcObject.Notes, RelativeSource={RelativeSource TemplatedParent}}"
+                  TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Placeholder="None" VerticalAlignment="Center" />
+            </DockPanel>
+          </Border>
+          <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter TargetName="PART_EditButton" Property="Visibility" Value="Visible" />
+            </Trigger>
+          </ControlTemplate.Triggers>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+
   <Style TargetType="{x:Type ac:RatingBar}">
     <Setter Property="Focusable" Value="True" />
     <Setter Property="IsTabStop" Value="True" />
@@ -87,8 +119,8 @@
         <ControlTemplate TargetType="{x:Type ac:RatingBar}">
           <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
             <mui:Cell>
-              <Path Data="{TemplateBinding Data}" StrokeThickness="1" Stretch="Uniform"
-                  Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Foreground}" />
+              <Path Data="{TemplateBinding Data}" StrokeThickness="1" Stretch="Uniform" Stroke="{TemplateBinding BorderBrush}"
+                  Fill="{TemplateBinding Foreground}" />
               <Path Data="{TemplateBinding Data}" Stretch="Uniform" StrokeThickness="1" Stroke="{Binding Fill, RelativeSource={RelativeSource Self}}">
                 <Path.Fill>
                   <VisualBrush Stretch="Fill">

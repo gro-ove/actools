@@ -281,6 +281,16 @@
 
           <StackPanel>
             <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0">
+              <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding SelectedObject}">
+                <FrameworkElement.ContextMenu>
+                  <ContextMenu>
+                    <MenuItem Header="Filter by having notes" Command="{Binding Path=FilterCommand}" CommandParameter="notes" />
+                    <Separator />
+                    <MenuItem Header="Clear notes" Command="{Binding Path=ClearNotesCommand}" />
+                  </ContextMenu>
+                </FrameworkElement.ContextMenu>
+              </c:NotesBlock>
+
               <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Total driven:" Placeholder="…"
                   Text="{Binding SelectedTrackConfiguration.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat='{}{0:F1} km'}">
                 <FrameworkElement.ContextMenu>

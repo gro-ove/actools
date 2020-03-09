@@ -136,21 +136,24 @@ namespace AcManager.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to #content &gt; div &gt; div + div, .header .logo, .header .mainmenu, .newmenucenter, .menu.bottom_links, #footer .lower, .newmenu + .__wrapper, div[id^=Box_jbeeb_], .myannouncement, #shoutbox .head {
-        ///  display: none!important
+        ///   Looks up a localized string similar to /* background */
+        ///body { padding: 0; }
+        ///@media not transparent-bg {
+        ///    body { background-image: none !important; }
+        ///    body, .pmspace_container { background: #000 !important; }
         ///}
-        ///#shoutbox {
-        ///	margin-bottom: 0!important;
-        ///  background: #333!important;
-        ///}
-        ///#shoutbox .panel { border-top: none !important; }
-        ///#shoutbox input.text {
-        ///	background: #111;
-        ///  color: inherit;
-        ///  font-family: inherit;
-        ///  box-shadow: none !important;
-        ///}
-        ///#shoutbox .body { display: block !imp [rest of string was truncated]&quot;;.
+        ///
+        ////* proper fonts */
+        ///* { font-family: Segoe UI, sans-serif !important; }
+        ///.fa { font-family: FontAwesome !important; }
+        ///
+        ////* html tweaks */
+        ///html { height: 100%; width: 100%; text-align: center; position: relative; }
+        ///
+        ////* welcome page */
+        ///a[href=&quot;race4.php&quot;] { text-decoration: none; }
+        ///
+        ////* hide some unnecessary bits to fit  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string SrsStyle {
             get {

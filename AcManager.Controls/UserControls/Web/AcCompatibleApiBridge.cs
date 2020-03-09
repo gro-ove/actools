@@ -96,17 +96,25 @@ window.__AC.findTrack = find.bind(null, __AC.TracksArray);
             }
         }
 
+        public class AcItemAccessedEventArgs : EventArgs {
+            public string Id { get; set; }
+        }
+
+        public EventHandler<AcItemAccessedEventArgs> TrackAccessed;
+        public EventHandler<AcItemAccessedEventArgs> CarAccessed;
+
         [UsedImplicitly]
         public void SetLastAccessed(string id, bool car) {
-            Logging.Debug($"Last accessed: {id} (car: {car})");
             if (car) {
                 _raceConfig["RACE"]["MODEL"] = id;
                 _raceConfig["CAR_0"]["MODEL"] = id;
+                ActionExtension.InvokeInMainThreadAsync(() => CarAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = id }));
             } else {
                 var track = TracksManager.Instance.GetLayoutByKunosId(id);
                 if (track != null) {
                     _raceConfig["RACE"]["TRACK"] = track.Id;
                     _raceConfig["RACE"]["CONFIG_TRACK"] = track.LayoutId;
+                    ActionExtension.InvokeInMainThreadAsync(() => TrackAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = track.IdWithLayout }));
                 }
             }
         }

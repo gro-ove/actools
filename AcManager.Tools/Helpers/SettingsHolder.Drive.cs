@@ -1005,6 +1005,20 @@ namespace AcManager.Tools.Helpers {
                 }) ?? RhmSettingsLocation;
             }));
 
+            public BeepingNoiseType[] BeepingNoises => EnumExtension.GetValues<BeepingNoiseType>();
+
+            private BeepingNoiseType? _crashBeepingNoise;
+
+            public BeepingNoiseType CrashBeepingNoise {
+                get => _crashBeepingNoise ?? (_crashBeepingNoise = ValuesStorage.Get("Settings.DriveSettings.CrashBeepingNoise", BeepingNoiseType.System)).Value;
+                set {
+                    if (Equals(value, _crashBeepingNoise)) return;
+                    _crashBeepingNoise = value;
+                    ValuesStorage.Set("Settings.DriveSettings.CrashBeepingNoise", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _checkAndFixControlsOrder;
 
             public bool CheckAndFixControlsOrder {

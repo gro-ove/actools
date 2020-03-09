@@ -62,7 +62,7 @@
         <!-- Missing content -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Origin icons:" />
 
-        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}" mui:NewMarkService.New="True">
+        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}">
           <Label Content="Show origin icons in lists (such as Kunos or RSS icon)" />
         </CheckBox>
 
@@ -134,13 +134,16 @@
           <Label Content="Four digit for year postfix" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}" mui:NewMarkService.New="True">
+        <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}">
           <CheckBox.ToolTip>
-            <TextBlock MaxWidth="400"
-                Text="Don’t forget: names of cars will remain protected under trademark laws even when this option is enabled! Please, don’t manufacture cars with the same names. You’ve been warned."
-                TextWrapping="Wrap" />
+            <TextBlock MaxWidth="400" TextWrapping="Wrap"
+                Text="Please remember: cars names will remain protected under trademark laws even with this option is enabled! Please, avoid manufacturing cars with the same names." />
           </CheckBox.ToolTip>
           <Label Content="Hide symbols like ™ from car names" />
+        </CheckBox>
+
+        <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.ShowNotesIconInLists}" mui:NewMarkService.New="True">
+          <Label Content="Mark objects (such as cars or tracks) with notes with a special icon" />
         </CheckBox>
 
         <CheckBox set:Search.Keywords="cars" IsChecked="{Binding Holder.CarsFixSpecs}">

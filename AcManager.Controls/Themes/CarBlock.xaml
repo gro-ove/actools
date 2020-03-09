@@ -29,6 +29,7 @@
                   Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                 <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100" VerticalSpacing="4">
                   <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding Rating}" HorizontalAlignment="Left" />
+                  <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding}" />
                   <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
                       c:PropertiesGrid.Label="Setups on TSM:">
                     <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
@@ -157,6 +158,7 @@
                         Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=DockPanel}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=640}">
                       <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100" VerticalSpacing="4">
                         <c:RatingBar c:PropertiesGrid.Label="Rating:" Rating="{Binding Rating}" HorizontalAlignment="Left" />
+                        <c:NotesBlock AcObject="{Binding}" c:PropertiesGrid.Label="Notes:" />
                         <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
                             c:PropertiesGrid.Label="Setups on TSM:">
                           <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">

@@ -358,7 +358,7 @@ namespace AcManager.Tools.Objects {
 
         public TimeSpan GuessApproximateLapDuration(CarObject car = null) {
             var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.3).Clamp(20d, 200d);
-            return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(30), TimeSpan.FromHours(2));
+            return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(90), TimeSpan.FromHours(2));
         }
 
         protected override AutocompleteValuesList GetTagsList() {

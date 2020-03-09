@@ -100,7 +100,7 @@
                 Margin="4" />
             <TextBlock Text="Game crashed" Style="{StaticResource Heading1}" />
           </DockPanel>
-          <TextBlock Text="{Binding ErrorMessage}" />
+          <mui:SelectableBbCodeBlock Text="{Binding ErrorMessage, Mode=OneWay}" MaxWidth="480" />
         </StackPanel>
       </mui:ReferenceSwitch.NonNull>
     </mui:ReferenceSwitch>
@@ -111,8 +111,8 @@
         <Path Data="{StaticResource AlertIconData}" Width="24" Height="24" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" Margin="4" />
         <TextBlock Text="{x:Static g:AppStrings.RaceResult_ErrorHeader}" Style="{StaticResource Heading1}" />
       </DockPanel>
-      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorMessage}" Margin="0 0 0 12" />
-      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorDescription}" FontStyle="Italic" />
+      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorMessage, Mode=OneWay}" Margin="0 0 0 12" />
+      <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True" Text="{Binding ErrorDescription, Mode=OneWay}" FontStyle="Italic" />
     </StackPanel>
 
     <!-- Benchmark -->

@@ -2,14 +2,48 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:t="http://acstuff.ru/app/tools" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:l="clr-namespace:AcManager.Pages.Drive" mc:Ignorable="d"
-    Value="{Binding Value, Source={x:Static t:SteamIdHelper.Instance}}">
+    Value="{Binding Value, Source={x:Static t:SteamIdHelper.Instance}}" d:DataContext="{d:DesignInstance l:Srs2+ViewModel}">
   <mui:ReferenceSwitch.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Plugins.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <DataTemplate x:Key="DetectedCombination" DataType="{x:Type l:Srs2+RaceCombination}">
+        <DockPanel Margin="20 8 20 8">
+          <DockPanel Dock="Top" Background="Transparent" mui:Draggable.Data="{Binding Track}" c:ToolTips.Track="{Binding Track}"
+              c:ContextMenus.Track="{Binding Track}" Margin="0 0 0 8">
+            <mui:BetterImage Filename="{Binding Track.OutlineImage}" CropTransparentAreas="True" Width="14" Height="14" Margin="0 0 4 0" />
+            <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding Track.LayoutName}" Style="{StaticResource Heading2}" />
+          </DockPanel>
+          <Button Style="{StaticResource Go.Button}" Content="Offline race" FontSize="11" Padding="4 0" VerticalAlignment="Stretch" DockPanel.Dock="Right"
+              Margin="4 0 0 0" Command="{Binding LocalRaceCommand}" Height="23" />
+          <Button Content="Quick Drive" FontSize="11" Padding="4 0" VerticalAlignment="Stretch" DockPanel.Dock="Right"
+              Margin="4 0 0 0" Command="{Binding QuickDriveCommand}" Height="23" />
+          <mui:Switch Value="{Binding Cars.Count}">
+            <DockPanel mui:Switch.When="1" DataContext="{Binding Cars[0]}" Background="Transparent" mui:Draggable.Data="{Binding}" c:ToolTips.Car="{Binding}"
+                c:ContextMenus.Car="{Binding}" Margin="7 0 0 0">
+              <c:CarIcon Car="{Binding}" Width="12" Height="12" Margin="0 0 4 0" />
+              <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding DisplayName}" FontWeight="Normal" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" />
+            </DockPanel>
+            <mui:BetterComboBox ItemsSource="{Binding Cars}" SelectedItem="{Binding SelectedCar}" IsEditable="False">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <DockPanel Background="Transparent" mui:Draggable.Data="{Binding}" c:ToolTips.Car="{Binding}" c:ContextMenus.Car="{Binding}">
+                    <c:CarIcon Car="{Binding}" Width="12" Height="12" Margin="0 0 4 0" />
+                    <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding DisplayName}" FontWeight="Normal" TextTrimming="CharacterEllipsis"
+                        TextWrapping="NoWrap" />
+                  </DockPanel>
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
+          </mui:Switch>
+        </DockPanel>
+      </DataTemplate>
+
     </ResourceDictionary>
   </mui:ReferenceSwitch.Resources>
+
   <mui:ReferenceSwitch.Null>
     <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">
       <TextBlock Style="{StaticResource Heading1}" Text="{x:Static c:ControlsStrings.Common_Error}" DockPanel.Dock="Top" Margin="0 0 0 8" />
@@ -17,12 +51,24 @@
       <mui:BbCodeBlock Text="{Binding Source={x:Static t:ToolsStrings.Common_SteamIdIsMissing}, StringFormat='{}{0}.'}" />
     </DockPanel>
   </mui:ReferenceSwitch.Null>
+
   <mui:ReferenceSwitch.NonNull>
     <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static l:Srs2.Requirement}}">
       <mui:BooleanSwitch.True>
         <c:WebBlock UserAgent="Assetto Corsa Launcher" StartPage="http://www.simracingsystem.com" PreferTransparentBackground="True"
-            NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2"
-            AlwaysKeepAlive="True" />
+            NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2" AlwaysKeepAlive="True">
+          <c:WebBlock.LeftSideContent>
+            <ItemsControl Width="320" ItemsSource="{Binding RaceCombinations}" Style="{StaticResource VirtualizingItemsControl}"
+                ItemTemplate="{StaticResource DetectedCombination}" />
+            <!--<Border Width="320">
+              <DockPanel Visibility="{Binding RaceCombinations.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}">
+                <TextBlock Text="Detected combinations:" DockPanel.Dock="Top" Style="{StaticResource Heading2}" Margin="20 20" />
+                <ItemsControl ItemsSource="{Binding RaceCombinations}" Style="{StaticResource VirtualizingItemsControl}"
+                    ItemTemplate="{StaticResource DetectedCombination}" />
+              </DockPanel>
+            </Border>-->
+          </c:WebBlock.LeftSideContent>
+        </c:WebBlock>
       </mui:BooleanSwitch.True>
       <mui:BooleanSwitch.False>
         <DockPanel Margin="40 0 40 100" HorizontalAlignment="Center" VerticalAlignment="Center">

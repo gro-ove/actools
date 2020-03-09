@@ -305,6 +305,8 @@
                   </FrameworkElement.ToolTip>
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
+                      <MenuItem Command="{Binding RecalculatePowerCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}" />
+                      <Separator />
                       <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="power" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
                       <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
                       <Separator />
@@ -323,6 +325,8 @@
                   </FrameworkElement.ToolTip>
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
+                      <MenuItem Command="{Binding RecalculateTorqueCommand}" Header="{x:Static g:AppStrings.CarSpecs_Recalculate}" />
+                      <Separator />
                       <MenuItem Command="{Binding FixFormatCommand}" CommandParameter="torque" Header="{x:Static g:AppStrings.CarSpecs_FixFormat}" />
                       <MenuItem Command="{Binding FixFormatCommand}" Header="{x:Static g:AppStrings.CarSpecs_FixFormats}" InputGestureText="Alt+F" />
                       <Separator />
@@ -428,6 +432,16 @@
             <StackPanel
                 Visibility="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Grid}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=800}">
               <c:PropertiesGrid Columns="1" LabelPadding="0 1 0 0" LabelWidth="100">
+                <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding SelectedObject}">
+                  <FrameworkElement.ContextMenu>
+                    <ContextMenu>
+                      <MenuItem Header="Filter by having notes" Command="{Binding Path=FilterCommand}" CommandParameter="notes" />
+                      <Separator />
+                      <MenuItem Header="Clear notes" Command="{Binding Path=ClearNotesCommand}" />
+                    </ContextMenu>
+                  </FrameworkElement.ContextMenu>
+                </c:NotesBlock>
+
                 <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
                     c:PropertiesGrid.Label="Setups on TSM:">
                   <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">

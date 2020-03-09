@@ -63,7 +63,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
         public abstract void Load();
 
-        public virtual void PastLoad() {}
+        public virtual void PastLoad() { }
 
         private string _name;
 
@@ -158,7 +158,7 @@ namespace AcManager.Tools.AcObjectsNew {
         private bool? _isFavourite;
 
         public bool IsFavourite {
-            get => _isFavourite ?? (_isFavourite = RatingsStorage.Get<bool>(_isFavouriteKey)).Value;
+            get => _isFavourite ?? (_isFavourite = RatingsStorage.Get<bool>(_isFavouriteKey)) ?? false;
             set {
                 if (Equals(value, _isFavourite)) return;
                 _isFavourite = value;
@@ -175,9 +175,8 @@ namespace AcManager.Tools.AcObjectsNew {
 
         private DelegateCommand _toggleFavoriteCommand;
 
-        public DelegateCommand ToggleFavouriteCommand => _toggleFavoriteCommand ?? (_toggleFavoriteCommand = new DelegateCommand(() => {
-            IsFavourite = !IsFavourite;
-        }));
+        public DelegateCommand ToggleFavouriteCommand
+            => _toggleFavoriteCommand ?? (_toggleFavoriteCommand = new DelegateCommand(() => { IsFavourite = !IsFavourite; }));
 
         private readonly string _ratingKey;
         private bool _ratingLoaded;
@@ -205,6 +204,30 @@ namespace AcManager.Tools.AcObjectsNew {
                 OnPropertyChanged();
             }
         }
+
+        private static Storage _notesStorage;
+
+        private static Storage NotesStorage() {
+            if (_notesStorage == null) {
+                _notesStorage = new Storage(FilesStorage.Instance.GetFilename("Progress/Notes.data"));
+            }
+            return _notesStorage;
+        }
+
+        private string _notes;
+
+        public string Notes {
+            get => _notes ?? (_notes = NotesStorage().Get($@"{GetType().Name}/{Id}", ""));
+            set => Apply(value ?? "", ref _notes, () => {
+
+                NotesStorage().Set($@"{GetType().Name}/{Id}", value);
+                OnPropertyChanged(nameof(HasNotes));
+                OnPropertyChanged(nameof(ShowNotesIcon));
+            });
+        }
+
+        public bool HasNotes => Notes != "";
+        public bool ShowNotesIcon => HasNotes && SettingsHolder.Content.ShowNotesIconInLists;
         #endregion
 
         /*#region Custom attributes to save time (for UI and what have you)

@@ -63,7 +63,7 @@ namespace AcManager.Tools.Objects {
                 if (name == null) return Id;
 
                 if (SettingsHolder.Content.CarsDisplayNameCleanUp) {
-                    name = name.Replace("™", "");
+                    name = name.Replace(@"™", "");
                 }
 
                 var yearValue = Year ?? 0;

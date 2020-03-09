@@ -250,7 +250,10 @@ namespace AcManager.Pages.Drive {
                             CloudSpeed = 1d,
                             SunAngle = 0,
                             TimeMultipler = 1d,
-                            WeatherName = WeatherManager.Instance.GetDefault()?.Id
+                            WeatherName = WeatherManager.Instance.GetDefault()?.Id,
+                            WindDirectionDeg = 0d,
+                            WindSpeedMin = 0d,
+                            WindSpeedMax = 0d
                         },
                         TrackProperties = Game.GetDefaultTrackPropertiesPreset().Properties,
                         ModeProperties = new Game.HotlapProperties {

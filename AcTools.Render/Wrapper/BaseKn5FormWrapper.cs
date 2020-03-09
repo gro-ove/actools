@@ -19,7 +19,7 @@ namespace AcTools.Render.Wrapper {
             var c = renderer.CameraOrbit;
             if (c != null) {
                 c.Target -= (float)dy * Vector3.Cross(c.Look, c.Right) + (float)dx * c.Right;
-                renderer.AutoRotate = false;
+                // renderer.AutoRotate = false;
                 renderer.AutoAdjustTarget = false;
                 ((BaseRenderer)renderer).IsDirty = true;
             } else {
@@ -40,7 +40,7 @@ namespace AcTools.Render.Wrapper {
 
             renderer.Camera.Pitch(((float)(renderer.UseFpsCamera ? -dy : dy)).ToRadians());
             renderer.Camera.Yaw(((float)(renderer.UseFpsCamera ? -dx : dx)).ToRadians());
-            renderer.AutoRotate = false;
+            // renderer.AutoRotate = false;
             ((BaseRenderer)renderer).IsDirty = true;
         }
 
@@ -51,7 +51,7 @@ namespace AcTools.Render.Wrapper {
             dy *= size;
 
             renderer.Camera.Zoom((float)dy);
-            renderer.AutoRotate = false;
+            // renderer.AutoRotate = false;
             ((BaseRenderer)renderer).IsDirty = true;
         }
 

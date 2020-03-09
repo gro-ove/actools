@@ -354,25 +354,25 @@ namespace AcManager.Pages.Dialogs {
                 }
 
                 var bestProgress = (from player in data.PlayerEntries
-                                    where player.LapTimeProgress > 0.03
-                                    orderby player.LapTimeProgress descending
-                                    select player).FirstOrDefault();
+                    where player.LapTimeProgress > 0.03
+                    orderby player.LapTimeProgress descending
+                    select player).FirstOrDefault();
                 var bestConsistent = (from player in data.PlayerEntries
-                                      where player.LapTimeSpread < 0.02
-                                      orderby player.LapTimeSpread descending
-                                      select player).FirstOrDefault();
+                    where player.LapTimeSpread < 0.02
+                    orderby player.LapTimeSpread descending
+                    select player).FirstOrDefault();
 
                 data.RemarkableNotes = new[] {
                     sessionBestLap == null ? null :
                             new SessionFinishedData.RemarkableNote("[b]Best lap[/b] made by ", data.PlayerEntries.GetByIdOrDefault(sessionBestLap.CarNumber),
                                     null),
                     new SessionFinishedData.RemarkableNote("[b]The Best Off-roader Award[/b] goes to ", (from player in data.PlayerEntries
-                                                                                                         let cuts =
-                                                                                                                 (double)player.Laps.Sum(x => x.Cuts)
-                                                                                                                         / player.Laps.Length
-                                                                                                         where cuts > 1.5
-                                                                                                         orderby cuts descending
-                                                                                                         select player).FirstOrDefault(), null),
+                        let cuts =
+                                (double)player.Laps.Sum(x => x.Cuts)
+                                        / player.Laps.Length
+                        where cuts > 1.5
+                        orderby cuts descending
+                        select player).FirstOrDefault(), null),
                     new SessionFinishedData.RemarkableNote("[b]Remarkable progress[/b] shown by ", bestProgress, null),
                     new SessionFinishedData.RemarkableNote("[b]The most consistent[/b] is ", bestConsistent, null),
                 }.Where(x => x?.Player != null).ToList();
@@ -444,7 +444,7 @@ namespace AcManager.Pages.Dialogs {
                         items[0] = lap.LapNumber;
 
                         var tyresName = car?.AcdData?.GetIniFile("tyres.ini").GetSections("FRONT", -1)
-                                            .FirstOrDefault(x => x.GetNonEmpty("SHORT_NAME") == lap.TyresShortName)?.GetNonEmpty("NAME");
+                                .FirstOrDefault(x => x.GetNonEmpty("SHORT_NAME") == lap.TyresShortName)?.GetNonEmpty("NAME");
                         items[1] = tyresName == null ? lap.TyresShortName : $"{tyresName} ({lap.TyresShortName})";
 
                         items[items.Length - 3] = lap.Total.ToMillisecondsString();
@@ -676,6 +676,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
+                BeepingNoise.Play(SettingsHolder.Drive.CrashBeepingNoise).Ignore();
 
                 var whatsGoingOn = _properties?.PullAdditional<WhatsGoingOn>();
                 var solution = whatsGoingOn?.Solution;
@@ -821,16 +822,16 @@ namespace AcManager.Pages.Dialogs {
         private void OnPlayersTableLoaded(object sender, RoutedEventArgs e) {
             var columns = ((DataGrid)sender).Columns.TakeLast(3).ToList();
             this.AddWidthCondition(1000).Add(columns[1]).Add(columns[2])
-                .Add(x => {
-                    columns[0].Width = x ? 100 : 140;
-                    columns[0].HeaderStyle = (Style)FindResource(x ?
-                            "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
-                    ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
-                            "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
-                    if (x) {
-                        FancyHints.GameDialogTableSize.MaskAsUnnecessary();
-                    }
-                });
+                    .Add(x => {
+                        columns[0].Width = x ? 100 : 140;
+                        columns[0].HeaderStyle = (Style)FindResource(x ?
+                                "DataGridColumnHeader.RightAlignment" : "DataGridColumnHeader.RightAlignment.FarRight");
+                        ((DataGridTemplateColumn)columns[0]).CellTemplate = (DataTemplate)FindResource(x ?
+                                "TotalTimeDeltaTemplate" : "TotalTimeDeltaTemplate.FarRight");
+                        if (x) {
+                            FancyHints.GameDialogTableSize.MaskAsUnnecessary();
+                        }
+                    });
 
             if (ActualWidth < 1000d) {
                 FancyHints.GameDialogTableSize.Trigger();

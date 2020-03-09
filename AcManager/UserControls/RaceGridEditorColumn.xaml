@@ -93,8 +93,7 @@
                 <Label Content="Pick skins sequentially" />
               </CheckBox>
 
-              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}"
-                  ToolTip="Might greatly reduce variety">
+              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}" ToolTip="Might greatly reduce variety">
                 <Label Content="Avoid cars without skin numbers" />
               </CheckBox>
 
@@ -134,7 +133,8 @@
                 <c:CarBlock Car="{Binding SelectedCar}" ShowSkinsAndPreview="False" Width="400" MaxHeight="320" />
               </mui:BetterImage.ToolTip>
             </mui:BetterImage>
-            <TextBlock Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+            <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedCar.DisplayName}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="NoWrap"
+                TextTrimming="CharacterEllipsis" />
             <TextBlock Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4"
                 Text="{Binding SelectedCar.CarClass, StringFormat={x:Static g:AppStrings.RaceGrid_ClassFormat}}" />
             <TextBlock Text="{Binding SelectedCar.SpecsInfoDisplay}" Style="{StaticResource Small}" DockPanel.Dock="Top" Margin="0 0 0 4" TextWrapping="Wrap" />
@@ -213,7 +213,7 @@
                   <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
                       VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                       Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
-                  <TextBlock x:Name="NameTextBlock" Text="{Binding DisplayName}" />
+                  <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="NameTextBlock" Text="{Binding DisplayName}" />
                 </DockPanel>
                 <DataTemplate.Triggers>
                   <DataTrigger Binding="{Binding IsDeleted}" Value="True">
@@ -265,7 +265,7 @@
                       <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
                           VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                           Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
-                      <TextBlock x:Name="EntryName" Text="{Binding DisplayName}" />
+                      <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="EntryName" Text="{Binding DisplayName}" />
                     </DockPanel>
                     <DataTemplate.Triggers>
                       <DataTrigger Binding="{Binding ExceedsLimit}" Value="True">

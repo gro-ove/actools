@@ -221,9 +221,10 @@ namespace AcTools.Utils.Helpers {
 
         private bool _ignoreItem;
         private T _ignoredItem;
-        public void IgnoreOnce(T item) {
+        public BaseShuffle<T> IgnoreOnce(T item) {
             _ignoreItem = true;
             _ignoredItem = item;
+            return this;
         }
 
         protected abstract void Shuffle([NotNull] int[] buffer, [NotNull] Random random);

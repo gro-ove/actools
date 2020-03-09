@@ -14,6 +14,7 @@ using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Miscellaneous;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
@@ -80,10 +81,9 @@ namespace AcManager.Pages.Settings {
             public LocaleEntry([Localizable(false)] string id, string version, double coverity = 1d, long size = 0L) {
                 Id = id;
                 Version = version;
-                Coverity = coverity;
+                Coverity = coverity.Saturate();
                 Size = size;
-                IsSupported = LocaleHelper.IsSupported(id);
-
+                IsSupported = id == "en";
                 CanBeUpdated = id != null && !Equals(coverity, 1d);
 
                 var name = id == null ? AppStrings.Settings_Locale_Custom : new CultureInfo(id).NativeName.ToTitle();

@@ -20,8 +20,10 @@ using JetBrains.Annotations;
 namespace FirstFloor.ModernUI.Dialogs {
     public partial class Prompt : IValueConverter {
         private readonly bool _multiline;
+        private FrameworkElement _element;
 
-        private Prompt(string title, string description, string defaultValue, string placeholder, string toolTip, bool multiline, bool passwordMode, bool required,
+        private Prompt(string title, string description, string defaultValue, string placeholder, string toolTip, bool multiline, bool passwordMode,
+                bool required,
                 int maxLength, IEnumerable<string> suggestions, bool suggestionsFixed, string comment) {
             DataContext = new ViewModel(description, defaultValue, placeholder, toolTip, required);
             InitializeComponent();
@@ -53,9 +55,6 @@ namespace FirstFloor.ModernUI.Dialogs {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
                 });
 
-                passwordBox.Focus();
-                passwordBox.SelectAll();
-
                 element = passwordBox;
             } else if (suggestions != null) {
                 var comboBox = new BetterComboBox {
@@ -78,13 +77,6 @@ namespace FirstFloor.ModernUI.Dialogs {
                     UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                     ValidatesOnDataErrors = true
                 });
-
-                if (comboBox.Template?.FindName(@"PART_EditableTextBox", comboBox) is TextBox textBox) {
-                    textBox.SelectAll();
-                    textBox.Focus();
-                } else {
-                    comboBox.Focus();
-                }
 
                 if (placeholder != null) {
                     comboBox.Placeholder = placeholder;
@@ -115,22 +107,38 @@ namespace FirstFloor.ModernUI.Dialogs {
                     textBox.Placeholder = placeholder;
                 }
 
-                textBox.Focus();
-                textBox.SelectAll();
                 element = textBox;
             }
 
             Panel.Children.Add(element);
-
             if (toolTip != null) element.SetValue(ToolTipProperty, toolTip);
 
             PreviewKeyDown += OnKeyDown;
             element.PreviewKeyDown += OnKeyDown;
+            _element = element;
 
             Closing += (sender, args) => {
                 if (MessageBoxResult != MessageBoxResult.OK) return;
                 Result = Model.Text;
             };
+        }
+
+        protected override void OnLoadedOverride() {
+            base.OnLoadedOverride();
+            if (_element is ProperPasswordBox passwordBox) {
+                passwordBox.Focus();
+                passwordBox.SelectAll();
+            } else if (_element is BetterComboBox comboBox) {
+                if (comboBox.Template?.FindName(@"PART_EditableTextBox", comboBox) is TextBox textBox) {
+                    textBox.SelectAll();
+                    textBox.Focus();
+                } else {
+                    comboBox.Focus();
+                }
+            } else if (_element is TextBox textBox) {
+                textBox.Focus();
+                textBox.SelectAll();
+            }
         }
 
         private void OnKeyDown(object sender, KeyEventArgs args) {
@@ -191,7 +199,7 @@ namespace FirstFloor.ModernUI.Dialogs {
 
         public async Task ShowAsync(CancellationToken cancellation) {
             var app = Application.Current;
-            if (app == null) return;
+            if (app?.Dispatcher == null) return;
             await app.Dispatcher.InvokeAsync(ShowDialog, DispatcherPriority.Normal, cancellation).Task;
             if (cancellation.IsCancellationRequested) Close();
         }

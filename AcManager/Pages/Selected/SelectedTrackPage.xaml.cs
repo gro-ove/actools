@@ -298,6 +298,10 @@ namespace AcManager.Pages.Selected {
                     case "driven":
                         FilterDistance("driven", SelectedTrackConfiguration.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
                         break;
+
+                    case "notes":
+                        NewFilterTab(SelectedObject.HasNotes ? @"notes+" : @"notes-");
+                        break;
                 }
             }
 

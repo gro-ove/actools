@@ -12,7 +12,7 @@
 
   <ToolTip x:Key="CarPreviewTooltip" d:DataContext="{d:DesignInstance t:CarObject}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <c:CarBlock Car="{Binding}" ShowSkinsAndPreview="False" SelectSkin="False" Width="480" MaxHeight="320" ShowDescription="False" />
     </StackPanel>
   </ToolTip>
@@ -32,14 +32,14 @@
 
   <ToolTip x:Key="TrackPreviewTooltip" d:DataContext="{d:DesignInstance t:TrackObjectBase}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding Name}" Margin="0 0 0 4" />
       <c:TrackBlock ShowPreview="False" Track="{Binding}" Width="480" MaxHeight="320" />
     </StackPanel>
   </ToolTip>
 
   <ToolTip x:Key="WeatherPreviewTooltip" d:DataContext="{d:DesignInstance t:WeatherObject}" x:Shared="False">
     <StackPanel TextBlock.Foreground="{DynamicResource WindowText}" Margin="4">
-      <TextBlock Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
+      <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="480" />
       <c:PropertiesGrid Columns="2" Width="480" LabelWidth="80" Margin="0 6 0 0">
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="None" />

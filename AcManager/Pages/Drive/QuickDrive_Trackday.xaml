@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:drive="clr-namespace:AcManager.Pages.Drive"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:t="http://acstuff.ru/app/tools" xmlns:uc="clr-namespace:AcManager.UserControls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance drive:QuickDrive_Weekend+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    d:DataContext="{d:DesignInstance drive:QuickDrive_Trackday+ViewModel}" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -108,14 +108,15 @@
           </c:ModernPopup>
         </mui:ContextMenuButton>
         <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
-            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}" RelativeRangeStringFormat="0.#" />
+            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}"
+            RelativeRangeStringFormat="0.#" />
       </DockPanel>
 
       <!--<StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0">
-                <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">
-                    <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
-                </CheckBox>
-            </StackPanel>-->
+        <CheckBox Margin="8 0 0 0" IsChecked="{Binding RaceGridViewModel.AiLevelFixed}">
+          <Label Content="{x:Static g:AppStrings.Drive_FixedOpponentsStrength}" />
+        </CheckBox>
+      </StackPanel>-->
 
       <StackPanel Grid.Row="2" Grid.Column="0" Margin="{StaticResource ElementMargin}">
         <CheckBox Margin="8 8 0 0" IsChecked="{Binding Penalties}">
@@ -134,8 +135,17 @@
           <ToolTip Content="{Binding RaceGridViewModel.TrackPitsNumber}" ContentStringFormat="{x:Static g:AppStrings.Drive_OpponentsMaximumLimitation_Tooltip}" />
         </StackPanel.ToolTip>
         <mui:ValueLabel Value="{Binding RaceGridViewModel.OpponentsNumberLimited}"
-            Postfix="{Binding RaceGridViewModel.OpponentsNumberLimited, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
+            Postfix="{Binding RaceGridViewModel.OpponentsNumberLimited,
+            Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_OpponentsPostfix}}" />
         <Slider Minimum="1" Maximum="{Binding RaceGridViewModel.OpponentsNumberLimit}" Value="{Binding RaceGridViewModel.OpponentsNumberLimited}" />
+      </StackPanel>
+
+      <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="1"
+          c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureTrackDaySpeedLimit}">
+        <mui:ValueLabel Content="Speed limit for opponents" mui:BetterTextBox.Mode="IntegerOrZeroLabel"
+            Value="{Binding SpeedLimit, Converter={x:Static t:AcSettingsHolder.ZeroToOffConverter}, ConverterParameter='disabled'}" Postfix=" km/h"
+            ShowPostfix="{Binding SpeedLimit, Converter={StaticResource EnumToBooleanConverter}, ConverterParameter='≠0'}" />
+        <Slider Minimum="0" Maximum="200" Value="{Binding SpeedLimit}" />
       </StackPanel>
     </Grid>
 

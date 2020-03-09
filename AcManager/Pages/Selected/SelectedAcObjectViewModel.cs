@@ -121,15 +121,21 @@ namespace AcManager.Pages.Selected {
             (Application.Current?.Windows.OfType<ModernWindow>().FirstOrDefault(x => x.IsActive)?.CurrentLinkGroup as LinkGroupFilterable)?.AddAndSelect(filter);
         }
 
-        private CommandBase _filterTagCommand;
+        private DelegateCommand<string> _filterTagCommand;
 
-        public ICommand FilterTagCommand
+        public DelegateCommand<string> FilterTagCommand
             => _filterTagCommand ?? (_filterTagCommand = new DelegateCommand<string>(o => { NewFilterTab($@"#{Filter.Encode(o)}"); }, o => o != null));
 
         [CanBeNull]
-        protected CommandBase InnerFilterCommand;
+        protected DelegateCommand<string> InnerFilterCommand;
 
-        public ICommand FilterCommand => InnerFilterCommand ?? (InnerFilterCommand = new DelegateCommand<string>(FilterExec));
+        public DelegateCommand<string> FilterCommand => InnerFilterCommand ?? (InnerFilterCommand = new DelegateCommand<string>(FilterExec));
+
+        private DelegateCommand _clearNotes;
+
+        public DelegateCommand ClearNotesCommand => _clearNotes ?? (_clearNotes = new DelegateCommand(() => {
+            SelectedObject.Notes = null;
+        }));
 
         protected void FilterRange([Localizable(false)] string key, double value, double range = 0.05, bool relative = true, double roundTo = 1.0,
                 string postfix = "") {
@@ -202,6 +208,10 @@ namespace AcManager.Pages.Selected {
                         var start = (int)Math.Floor((SelectedObject.Year ?? 0) / 10d) * 10;
                         NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                     }
+                    break;
+
+                case "notes":
+                    NewFilterTab(SelectedObject.HasNotes ? @"notes+" : @"notes-");
                     break;
             }
         }

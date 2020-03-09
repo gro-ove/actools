@@ -827,7 +827,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 var d = (dt * 10f).Saturate();
                 _resetState += (-0f - _resetState) * d;
                 if (_resetState <= threshold) {
-                    AutoRotate = false;
+                    // AutoRotate = false;
                 }
 
                 var cam = CameraOrbit;
@@ -854,7 +854,7 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                 _lastOffset = float.MaxValue;
                 if (AutoRotate && CameraOrbit != null) {
                     CameraOrbit.Alpha -= dt * AutoRotateSpeed * 0.29f;
-                    CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
+                    // CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
                     _elapsedCamera += dt * AutoRotateSpeed;
 
                     IsDirty = true;

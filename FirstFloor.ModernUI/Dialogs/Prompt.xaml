@@ -1,9 +1,17 @@
-﻿<controls:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.Prompt" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<c:ModernDialog x:Class="FirstFloor.ModernUI.Dialogs.Prompt" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:controls="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
-    xmlns:dialogs="clr-namespace:FirstFloor.ModernUI.Dialogs" mc:Ignorable="d" d:DataContext="{d:DesignInstance dialogs:Prompt+ViewModel}"
-    SizeToContent="Height" Width="720" MinHeight="160">
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls"
+    xmlns:dialogs="clr-namespace:FirstFloor.ModernUI.Dialogs" xmlns:presentation="clr-namespace:FirstFloor.ModernUI.Presentation" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance dialogs:Prompt+ViewModel}" SizeToContent="Height" Width="720" MinHeight="160">
+  <c:ModernDialog.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <presentation:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </c:ModernDialog.Resources>
   <StackPanel x:Name="Panel" VerticalAlignment="Center">
-    <controls:BbCodeBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" TextWrapping="Wrap" />
+    <c:BbCodeBlock Text="{Binding Description, Mode=OneTime}" Margin="0 0 0 8" TextWrapping="Wrap"
+        Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
   </StackPanel>
-</controls:ModernDialog>
+</c:ModernDialog>

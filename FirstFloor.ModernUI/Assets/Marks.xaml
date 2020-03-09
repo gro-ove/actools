@@ -20,7 +20,8 @@
     <Setter Property="HorizontalAlignment" Value="Right" />
     <Setter Property="VerticalAlignment" Value="Bottom" />
     <Setter Property="FontSize" Value="10" />
-    <Setter Property="Margin" Value="0 4 2 0" />
+    <Setter Property="Margin" Value="0 0 3 3" />
+    <Setter Property="SnapsToDevicePixels" Value="True" />
     <Setter Property="Background" Value="{DynamicResource Accent}" />
     <Setter Property="Foreground" Value="{DynamicResource AccentOverlay}" />
     <Setter Property="Padding" Value="2" />
