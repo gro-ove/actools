@@ -1,0 +1,867 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>ブランドバッジが違います</value>
+  <alternative>The brand's badge is missing!</alternative></data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>ブランド名が違います</value>
+  <alternative>The brand's name is missing!</alternative></data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Car “{0}” is missing</value>
+  <alternative>Car number "{0}" is missing</alternative></data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>ベースマシンが違います</value>
+  <alternative>The car's parent is missing</alternative></data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>File “colorCurves.ini” is missing</value>
+  <alternative>The file "colorCurves.ini" is missing</alternative></data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Directory “ui” is missing</value>
+  <alternative>The directory "ui" is missing</alternative></data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Event condition “{0}” isn’t supported yet</value>
+  <alternative>The event condition “{0}” is not supported yet; try again later.</alternative></data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>Events of “{0}” are missing</value>
+  <alternative>The events of “{0}” are missing</alternative></data>
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
+    <value>File “{0}” is damaged</value>
+  <alternative>The file “{0}” is damaged</alternative></data>
+  <data name="AcError_FileIsMissing" xml:space="preserve">
+    <value>File “{0}” is missing</value>
+  <alternative>The file "{0}" is missing</alternative></data>
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+    <value>Font’s bitmap is missing</value>
+  <alternative>The font's .bmp file is missing</alternative></data>
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+    <value>Font is used but disabled</value>
+  <alternative>The font is being used, but it's disabled</alternative></data>
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+    <value>Model (KN5 file) is missing</value>
+  <alternative>The model (KN5 file) is missing</alternative></data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Name is missing</value>
+  <alternative>The name is missing</alternative></data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>Name shouldn’t contain symbols like “[” or “]”</value>
+  <alternative>The name should not contain special characters</alternative></data>
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+    <value>Required car “{0}” is missing</value>
+  <alternative>The car "{0}" is required for this, but it is missing</alternative></data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>Required content is missing</value>
+  <alternative>The required content is missing</alternative></data>
+  <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
+    <value>Required skin “{1}” for {0} is missing</value>
+  <alternative>The required skin "{1}" for {0} is missing</alternative></data>
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+    <value>Required track “{0}” is missing</value>
+  <alternative>The required track "{0}" is missing</alternative></data>
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+    <value>Required weather “{0}” is missing</value>
+  <alternative>The required weather "{0}" is missing</alternative></data>
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+    <value>Setup’s track ({0}) is missing</value>
+  <alternative>The track for that setup is missing</alternative></data>
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Skin’s livery ({0}/livery.png) is missing</value>
+  <alternative>The skin's livery ({0}/livery.png) is missing</alternative></data>
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Skin’s preview ({0}/preview.jpg) is missing</value>
+  <alternative>The skin's preview thumbnail ({0}/preview.jpg) is missing</alternative></data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Skins are missing</value>
+  <alternative>The skins are missing</alternative></data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Skins directory is unavailable</value>
+  <alternative>The skin's directory is unavailable. It is probably being used by another program.</alternative></data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>Track “{0}” is missing</value>
+  <alternative>The track "{0}" is missing</alternative></data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Upgrade icon is missing</value>
+  <alternative>The upgrade icon is missing</alternative></data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Cannot be disabled</value>
+  <alternative>It cannot be disabled</alternative></data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Object can’t be moved</value>
+  <alternative>It cannot be moved</alternative></data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>IDを変更できません</value>
+  <alternative>Unable to change ID</alternative></data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>IDを変更できません: {0}</value>
+  <alternative>Unable to change ID: {0}</alternative></data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Can’t clone object</value>
+  <alternative>Unable to clone this object</alternative></data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Make sure there is enough disk space.</value>
+  <alternative>Please make sure there is enough space on your hard drive.</alternative></data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Can’t delete</value>
+  <alternative>Unable to remove</alternative></data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Cannot get ID from path</value>
+  <alternative>Unable to get the ID from this path</alternative></data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>Can’t remove existing directory</value>
+  <alternative>Unable to remove the existing directory</alternative></data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Can’t toggle</value>
+  <alternative>Unable to toggle</alternative></data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Make sure there is no runned app working with object’s folder.</value>
+  <alternative>Please make sure the object's folder is not open in another application</alternative></data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>Can’t toggle: {0}</value>
+  <alternative>Unable to toggle :{0}</alternative></data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Sorry, you can’t disable this type of object.</value>
+  <alternative>Sorry, but you are unable to disable this type of object.</alternative></data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>IDが違います！</value>
+  <alternative>The ID is incorrect!</alternative></data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Not valid anymore</value>
+  <alternative>This is not valid anymore</alternative></data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Place is taken</value>
+  <alternative>The place is taken</alternative></data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Reload file?</value>
+  <alternative>Reload this file?</alternative></data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI-file has been changed. Reload? All local changes will be lost.</value>
+  <alternative>The INI file has been changed. If you reload, all local changes will be lost.</alternative></data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON-file has been changed. Reload? All local changes will be lost.</value>
+  <alternative>The JSON file has been changed. If you reload, all local changes will be lost.</alternative></data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>ディレクトリが違います</value>
+  <alternative>Directory is missing</alternative></data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>ディレクトリ “{0}” が違います</value>
+  <alternative>This path, "{0}", is missing</alternative></data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>ファイル“{0}” が違います</value>
+  <alternative>This file, "{0}", is missing</alternative></data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Directory is not defined</value>
+  <alternative>The file path has not been defined</alternative></data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>AcRootDirectory is required</value>
+  <alternative>The game's root directory is required</alternative></data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>１画面</value>
+  <alternative>Single-screen</alternative></data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>3画面</value>
+  <alternative>Triple-screen</alternative></data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Can’t get a proper list of resolutions</value>
+  <alternative>Unable to get a proper list of resolutions</alternative></data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>ACセッティングを保存できません</value>
+  <alternative>Unable to save the game settings</alternative></data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Make sure app has access to cfg folder.</value>
+  <alternative>Please make sure the app has access to Assetto Corsa's .cfg folder. Perhaps run this as an Administrator?</alternative></data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>カスタム</value>
+  <alternative>Custom</alternative></data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>オフ</value>
+  <alternative>Off</alternative></data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>高</value>
+  <alternative>High</alternative></data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ideal</value>
+  <alternative>Recommended</alternative></data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>低</value>
+  <alternative>Low</alternative></data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>最高</value>
+  <alternative>Maximum</alternative></data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>中</value>
+  <alternative>Medium</alternative></data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>最低</value>
+  <alternative>Minimum</alternative></data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>普通</value>
+  <alternative>Normal</alternative></data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>ウルトラ</value>
+  <alternative>Ultra</alternative></data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>ビットマップ (without compression)</value>
+  <alternative>.bmp (no compression)</alternative></data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPEG</value>
+  <alternative>.jpg</alternative></data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>Allow in-game apps overlapping</value>
+  <alternative>Allow in-game apps to overlap each other</alternative></data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>カメラ:</value>
+  <alternative>Camera:</alternative></data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>ダメージ表示 (GUI)</value>
+  <alternative>Show damage GUI</alternative></data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>ドライバー名を表示する</value>
+  <alternative>Show driver's names</alternative></data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-Forces:</value>
+  <alternative>G-Forces</alternative></data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>ドライバーの腕を表示しない</value>
+  <alternative>Hide the driver's arms</alternative></data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>ハンドルを表示しない</value>
+  <alternative>Hide the virtual steering wheel</alternative></data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Highspeed shaking</value>
+  <alternative>High-speed shaking</alternative></data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>リーダーボードを表示する</value>
+  <alternative>Rangliste anzeige</alternative></data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>固定</value>
+  <alternative>Locked</alternative></data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>ハンドルを固定する</value>
+  <alternative>Lock steering wheel</alternative></data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>ダンドル切れ角</value>
+  <alternative>Wheel degree limit</alternative></data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Virtual steering wheel rotation limit</value>
+  <alternative>This limits the amount of degrees in which the virtual steering wheel can turn; does not effect handling</alternative></data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>ライバルマシンとのタイム差を表示する</value>
+  <alternative>Show time gaps of opponents</alternative></data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>ユニット:</value>
+  <alternative>Units:</alternative></data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>表示:</value>
+  <alternative>View:</alternative></data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>バーチャルミラーを表示する</value>
+  <alternative>Show virtual mirror</alternative></data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>マシン</value>
+  <alternative>car</alternative></data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>マシンスキン</value>
+  <alternative>car skin</alternative></data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>フォント</value>
+  <alternative>font</alternative></data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>ショールーム</value>
+  <alternative>showroom</alternative></data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>コース:</value>
+  <alternative>track</alternative></data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>天候:</value>
+  <alternative>Weather:</alternative></data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Access is denied</value>
+  <alternative>Access denied!</alternative></data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Can’t update app due to lack of permissions. Please, update it manually.</value>
+  <alternative>Unable to update the app; you don't have permission. Try running as an Administrator or update it manually.</alternative></data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Can’t update app due to lack of permissions.</value>
+  <alternative>Unable to update the app; you don't have permission from an Administrator.</alternative></data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Can’t load the new version</value>
+  <alternative>Unable to load the new version!</alternative></data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Make sure Internet connection is available and app has write permissions to its folder.</value>
+  <alternative>Check your Internet and make sure the app has permission to write in its folder.</alternative></data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Can’t load the new version.</value>
+  <alternative>Unable to load the new version!</alternative></data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>Can’t remove original file “{0}” to install update. Try to remove it manually and then run “{1}”.</value>
+  <alternative>Unable to remove the original file "{0}" to install the update. Try to remove it manually and try again.</alternative></data>
+  <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
+    <value>Can’t process update: {0}. Try to install a new version manually, sorry.</value>
+  <alternative>Unable to process the update: {0}. Try to install a new version manually.</alternative></data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Can’t update app</value>
+  <alternative>Unable to update the app.</alternative></data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Unpacked version doesn’t support auto-updating.</value>
+  <alternative>The unpacked version does not support automatic updating.</alternative></data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Update failed</value>
+  <alternative>Update failed!</alternative></data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>Extractor wasn’t initialized</value>
+  <alternative>Extracting failed.</alternative></data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>パスワードが無効です</value>
+  <alternative>Password invalid!</alternative></data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>パスワードが必要です</value>
+  <alternative>The password is required.</alternative></data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Sorry, but {0} encryption isn’t supported</value>
+  <alternative>Sorry, but {0} encryption is not supported!</alternative></data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Autoblip</value>
+  <alternative>Auto-blip</alternative></data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automatically syncronize RPM on downshifts</value>
+  <alternative>Automatically synchronize RPM on downshifts by tapping the gas pedal.</alternative></data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automatically press clutch on shifting</value>
+  <alternative>Automatically clutch when shifting.</alternative></data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Automatic shifting</value>
+  <alternative>Automatically shifts to the next gear</alternative></data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Don’t confuse it with automatic gearbox</value>
+  <alternative>Not to be confused with automatic gearboxes</alternative></data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideal line</value>
+  <alternative>Driving line</alternative></data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Show ideal driving line</value>
+  <alternative>This shows the fastest path to take around the track.</alternative></data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Damageable engine, gearbox, suspension and stuff</value>
+  <alternative>Your car's damage will affect the suspension, aerodynamics, and even the engine.</alternative></data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Slipstream effect</value>
+  <alternative>Slipstream</alternative></data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Unrealistic, but could be helpful if you’re just starting to learn how to drive or drift</value>
+  <alternative>Automatically brakes individual tires to provide stability when about to lose control; helpful when learning to drive.</alternative></data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Assists</value>
+  <alternative>Assists:</alternative></data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimise grip during acceleration</value>
+  <alternative>Cuts power to the tires when accelerating, effectively preventing oversteer.</alternative></data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Tyre blankets</value>
+  <alternative>Tire blankets</alternative></data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Heat tires in pits</value>
+  <alternative>Preheats the tires before the event, so you have more grip at the start.</alternative></data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Tyre wear</value>
+  <alternative>Tire wear</alternative></data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Multiplier for tyre wear</value>
+  <alternative>Overtime, your tires will begin to wear, which reduces grip and handling.</alternative></data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>左フロント</value>
+  <alternative>Left front</alternative></data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>左リア</value>
+  <alternative>Left rear</alternative></data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>右フロント</value>
+  <alternative>Right front</alternative></data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>右リア</value>
+  <alternative>Right rear</alternative></data>
+  <data name="Championship" xml:space="preserve">
+    <value>チャンピオンシップ</value>
+  <alternative>Championship</alternative></data>
+  <data name="Common_AcReplay" xml:space="preserve">
+    <value>ACリプレイ</value>
+  <alternative>AC replay</alternative></data>
+  <data name="Common_CannotDo" xml:space="preserve">
+    <value>できません</value>
+  <alternative>Can’t do</alternative></data>
+  <data name="Common_CannotDo_Title" xml:space="preserve">
+    <value>できません</value>
+  <alternative>Can’t Do</alternative></data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>ファイルをダウンロードできません</value>
+  <alternative>Can’t download file</alternative></data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>インターネット接続がされているか確認してください</value>
+  <alternative>Make sure Internet connection is available.</alternative></data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>データを読み込めません</value>
+  <alternative>Can’t read data</alternative></data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>無効</value>
+  <alternative>Disabled</alternative></data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>グローバル:</value>
+  <alternative>Global:</alternative></data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>高さ</value>
+  <alternative>Height</alternative></data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>作成者IDを選択</value>
+  <alternative>Select another ID.</alternative></data>
+  <data name="Common_KN5" xml:space="preserve">
+    <value>KN5</value>
+  <alternative>KN6</alternative></data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>ナンバー</value>
+  <alternative>Number</alternative></data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>パワー</value>
+  <alternative>Power</alternative></data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (推奨)</value>
+  <alternative>{0} (Recommended)</alternative></data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>スキャン中…</value>
+  <alternative>Scanning…</alternative></data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>スピード</value>
+  <alternative>Speed</alternative></data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Steam ID が違います</value>
+  <alternative>Steam ID is missing</alternative></data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>タイム</value>
+  <alternative>Time</alternative></data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>トルク</value>
+  <alternative>Torque</alternative></data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>警告</value>
+  <alternative>Warning</alternative></data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>週末</value>
+  <alternative>Weekend</alternative></data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>マシンのニューバージョン {0}</value>
+  <alternative>New version for car {0}</alternative></data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>新規マシン {0}</value>
+  <alternative>New car {0}</alternative></data>
+  <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
+    <value>マシンスキンのニューバージョン {0}</value>
+  <alternative>New version for car skin {0}</alternative></data>
+  <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
+    <value>新規マシンスキン {0}</value>
+  <alternative>New car skin {0}</alternative></data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>フォントのニューバージョン {0}</value>
+  <alternative>New version for font {0}</alternative></data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>新規フォント {0}</value>
+  <alternative>New font {0}</alternative></data>
+  <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
+    <value>スキンのプレビューをキープする</value>
+  <alternative>Keep Skins Previews</alternative></data>
+  <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
+    <value>UI情報をキープする</value>
+  <alternative>Keep UI Information</alternative></data>
+  <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>スキンプレビューとUI情報をキープする</value>
+  <alternative>Keep UI Information &amp; Skins Previews</alternative></data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>ショールームのニューバージョン{0}</value>
+  <alternative>New version for showroom {0}</alternative></data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>新規ショールーム {0}</value>
+  <alternative>New showroom {0}</alternative></data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>コースのニューバージョン {0}</value>
+  <alternative>New version for track {0}</alternative></data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>新規コース {0}</value>
+  <alternative>New track {0}</alternative></data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>天候のニューバージョン {0}</value>
+  <alternative>New version for weather {0}</alternative></data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>新規天候 {0}</value>
+  <alternative>New weather {0}</alternative></data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>コンテンツパックをロードできません</value>
+  <alternative>Can’t load content pack</alternative></data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>ブレーキ</value>
+  <alternative>Brakes</alternative></data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>カメラ変更</value>
+  <alternative>Change camera</alternative></data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>クラッチ</value>
+  <alternative>Clutch</alternative></data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>角度</value>
+  <alternative>Decrease</alternative></data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>フラッシュヘッドライト</value>
+  <alternative>Flash Headlights</alternative></data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>５速</value>
+  <alternative>Fifth gear</alternative></data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>1速</value>
+  <alternative>First gear</alternative></data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>4速</value>
+  <alternative>Fourth gear</alternative></data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>バックギア</value>
+  <alternative>Rear gear</alternative></data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>2速</value>
+  <alternative>Second gear</alternative></data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>7速</value>
+  <alternative>Seventh gear</alternative></data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>6速</value>
+  <alternative>Sixth gear</alternative></data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>3速</value>
+  <alternative>Third gear</alternative></data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>ハンドブレーキ</value>
+  <alternative>Handbrake</alternative></data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>ヘッドライト</value>
+  <alternative>Headlights</alternative></data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>ホーン</value>
+  <alternative>Horn</alternative></data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>キーボード＆マウス</value>
+  <alternative>Keyboard &amp; mouse</alternative></data>
+  <data name="Controls_Mguh_Mode" xml:space="preserve">
+    <value>MGU-H モード</value>
+  <alternative>MGU-H Mode</alternative></data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>次のギア</value>
+  <alternative>Next gear</alternative></data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>steering</value>
+  <alternative>Steering</alternative></data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>アクセル</value>
+  <alternative>Throttle</alternative></data>
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
+    <value>Xbox 360ゲームパッド</value>
+  <alternative>Xbox 360 gamepad</alternative></data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>ライト</value>
+  <alternative>Lite</alternative></data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>ファイルが見つかりませんでした</value>
+  <alternative>File not found</alternative></data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>マニュアル</value>
+  <alternative>Manual</alternative></data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>同じマシン</value>
+  <alternative>Same car</alternative></data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>同じグループ</value>
+  <alternative>Same group</alternative></data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>リストから新しいマシンを追加する</value>
+  <alternative>Add a new car to the list</alternative></data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>ランダム</value>
+  <alternative>Random</alternative></data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>シャッフル</value>
+  <alternative>Shuffle</alternative></data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>無効なフォント</value>
+  <alternative>Delete Font</alternative></data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>無効なフォント</value>
+  <alternative>Disable Font</alternative></data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Pitsピット</value>
+  <alternative>Pits</alternative></data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>スタート</value>
+  <alternative>Start</alternative></data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>パスワードは無効です</value>
+  <alternative>Password is invalid</alternative></data>
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+    <value>{0} ピット</value>
+  <alternative>{0} pit</alternative></data>
+  <data name="TrackGeoTags_FindIt" xml:space="preserve">
+    <value>見つける</value>
+  <alternative>Find It</alternative></data>
+  <data name="TryAgainDot" xml:space="preserve">
+    <value>もう一度してください</value>
+  <alternative>Try again.</alternative></data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>晴れ (Low)</value>
+  <alternative>Sun (Low)</alternative></data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>埃</value>
+  <alternative>Dust</alternative></data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>霧</value>
+  <alternative>Fog</alternative></data>
+  <data name="Weather_Mist" xml:space="preserve">
+    <value>ミスト</value>
+  <alternative>Mist</alternative></data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>雨</value>
+  <alternative>Rain</alternative></data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>黄砂</value>
+  <alternative>Sand</alternative></data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>煙</value>
+  <alternative>Smoke</alternative></data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>雪</value>
+  <alternative>Snow</alternative></data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>嵐</value>
+  <alternative>Thunderstorm</alternative></data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>台風</value>
+  <alternative>Tornado</alternative></data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>強風</value>
+  <alternative>Windy</alternative></data>
+  <data name="Windows_Kn5Commentary" xml:space="preserve">
+    <value>KN5モデル</value>
+  <alternative>KN5 model</alternative></data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>チャンピオンシップ</value>
+  <alternative>Championship</alternative></data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Audioセッティングプリセット</value>
+  <alternative>Audio settings preset</alternative></data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>イージー</value>
+  <alternative>Easy</alternative></data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>ミディアム</value>
+  <alternative>Medium</alternative></data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>ハード</value>
+  <alternative>Hard</alternative></data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>ポイント</value>
+  <alternative>Points</alternative></data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>ポジション</value>
+  <alternative>Position</alternative></data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>タイム</value>
+  <alternative>Time</alternative></data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>勝ち</value>
+  <alternative>Wins</alternative></data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Track state preset</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Real Head Motion preset</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Car’s skin {0} is missing.</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Cars’ skins {0} are missing.</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>天候 {0} は違います.</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>燃料</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>ブレーキ</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>steering</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>カスタムショールームプリセット</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>カスタムプレビュープリセット</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>ランダム</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>オリジナル</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mods</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Best laps:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Best lap:</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} km</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value> ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value> m/s</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value> kg</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Ballast</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Restrictor</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Arrange AI strength based on P/W ratio</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Randomization:</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Show relative range</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Show AI aggression in driver’s name</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Opponents aggression</value>
+  </data>
+</root>
