@@ -33,10 +33,10 @@
         <RowDefinition />
       </Grid.RowDefinitions>
 
-      <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0">
+      <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="0" Grid.Column="0" Background="Transparent" ToolTip="{Binding RaceDurationEstimate}">
         <mui:ValueLabel Value="{Binding LapsNumber}" Content="{x:Static g:AppStrings.Drive_RaceDuration}"
             Postfix="{Binding LapsNumber, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
-        <Slider Minimum="0" Maximum="1">
+        <mui:FormattedSlider Minimum="0" Maximum="1" AutoToolTipPlacement="BottomRight" AutoToolTipFormat="{Binding RaceDurationEstimate}" >
           <Slider.Value>
             <Binding Path="LapsNumber">
               <Binding.Converter>
@@ -44,7 +44,7 @@
               </Binding.Converter>
             </Binding>
           </Slider.Value>
-        </Slider>
+        </mui:FormattedSlider>
       </StackPanel>
 
       <DockPanel Margin="{StaticResource ElementMargin}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">
@@ -122,7 +122,8 @@
           </c:ModernPopup>
         </mui:ContextMenuButton>
         <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
-            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}" RelativeRangeStringFormat="0.#" />
+            JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}"
+            RelativeRangeStringFormat="0.#" />
       </DockPanel>
 
       <StackPanel Grid.Row="3" Grid.Column="0" Margin="{StaticResource ElementMargin}">

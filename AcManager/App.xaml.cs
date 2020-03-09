@@ -555,12 +555,28 @@ namespace AcManager {
             // Auto-show that thing
             InstallAdditionalContentDialog.Initialize();
 
+            // Make sure Steam is running
+            if (SettingsHolder.Common.LaunchSteamAtStart) {
+                LaunchSteam().Ignore();
+            }
+
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run(() => {
                 if (PatchHelper.OptionPatchSupport) {
                     PatchUpdater.Initialize();
                     PatchUpdater.Instance.Updated += OnPatchUpdated;
+                }
+            });
+        }
+
+        private static async Task LaunchSteam() {
+            await Task.Delay(500);
+            await Task.Run(() => {
+                try {
+                    SteamRunningHelper.EnsureSteamIsRunning(true, false);
+                } catch (Exception e) {
+                    Logging.Error(e);
                 }
             });
         }

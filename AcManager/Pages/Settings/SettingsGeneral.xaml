@@ -32,6 +32,10 @@
           </mui:BetterTextBox>
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Common.LaunchSteamAtStart}" mui:NewMarkService.New="True">
+          <Label Content="Launch Steam automatically when Content Manager starts" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Common.DeveloperMode}"
             Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneTime}">
           <Label Content="{x:Static g:AppStrings.Common_DevMode}" />

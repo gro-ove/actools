@@ -77,16 +77,19 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public int SteeringWheelLimit {
             get => _steeringWheelLimit;
-            set {
-                value = value.Clamp(0, 450);
-                if (Equals(value, _steeringWheelLimit)) return;
-                _steeringWheelLimit = value;
-                OnPropertyChanged();
-            }
+            set => Apply(value.Clamp(0, 450), ref _steeringWheelLimit);
+        }
+
+        private bool _enablePythonApps;
+
+        public bool EnablePythonApps {
+            get => _enablePythonApps;
+            set => Apply(value, ref _enablePythonApps);
         }
 
         protected override void LoadFromIni() {
             Units = Ini["OPTIONS"].GetEntry("USE_MPH", UnitsTypes);
+            EnablePythonApps = Ini["PYTHON"].GetBool("ENABLE_PYTHON", false);
             DisplayTimeGap = Ini["TIME_DIFFERENCE"].GetBool("IS_ACTIVE", true);
             DisplayDamage = Ini["DAMAGE_DISPLAYER"].GetBool("IS_ACTIVE", true);
             DisplayLeaderboard = Ini["OVERLAY_LEADERBOARD"].GetBool("ACTIVE", true);
@@ -99,6 +102,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         protected override void SetToIni() {
             Ini["OPTIONS"].Set("USE_MPH", Units);
+            Ini["PYTHON"].Set("ENABLE_PYTHON", EnablePythonApps);
             Ini["TIME_DIFFERENCE"].Set("IS_ACTIVE", DisplayTimeGap);
             Ini["DAMAGE_DISPLAYER"].Set("IS_ACTIVE", DisplayDamage);
             Ini["OVERLAY_LEADERBOARD"].Set("ACTIVE", DisplayLeaderboard);

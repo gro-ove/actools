@@ -357,7 +357,7 @@ namespace AcManager.Tools.Objects {
         #endregion
 
         public TimeSpan GuessApproximateLapDuration(CarObject car = null) {
-            var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.3).Clamp(20d, 200d);
+            var averageSpeed = ((FlexibleParser.TryParseDouble(car?.SpecsTopSpeed) ?? 200d) * 0.5).Clamp(20d, 200d);
             return TimeSpan.FromHours(SpecsLengthValue / 1e3 / averageSpeed).Clamp(TimeSpan.FromSeconds(90), TimeSpan.FromHours(2));
         }
 

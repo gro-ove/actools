@@ -149,6 +149,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _launchSteamAtStart;
+
+            public bool LaunchSteamAtStart {
+                get => _launchSteamAtStart ?? (_launchSteamAtStart = ValuesStorage.Get("Settings.CommonSettings.LaunchSteamAtStart", true)).Value;
+                set {
+                    if (Equals(value, _launchSteamAtStart)) return;
+                    _launchSteamAtStart = value;
+                    ValuesStorage.Set("Settings.CommonSettings.LaunchSteamAtStart", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _developerMode;
 
             public bool DeveloperMode {
