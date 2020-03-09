@@ -241,7 +241,7 @@ namespace AcManager.Tools.Objects {
         }
 
         public string DisplayTime {
-            get => $@"{_time / 60 / 60:D2}:{_time / 60 % 60:D2}";
+            get => _time.ToDisplayTime();
             set {
                 if (!FlexibleParser.TryParseTime(value, out var time)) return;
                 Time = time;

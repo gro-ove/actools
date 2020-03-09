@@ -164,22 +164,38 @@ namespace AcTools.Utils.Helpers {
             if (splitted.Length == 1) {
                 if (TryParseInt(splitted[0], out var hours)) {
                     totalSeconds = hours * 60 * 60;
+                    AmPmFix(ref totalSeconds);
                     return true;
                 }
             } else if (splitted.Length == 2) {
                 if (TryParseInt(splitted[0], out var hours) && TryParseInt(splitted[1], out var minutes)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60;
+                    AmPmFix(ref totalSeconds);
                     return true;
                 }
             } else if (splitted.Length == 3) {
                 if (TryParseInt(splitted[0], out var hours) && TryParseInt(splitted[1], out var minutes) && TryParseInt(splitted[2], out var seconds)) {
                     totalSeconds = hours * 60 * 60 + minutes * 60 + seconds;
+                    AmPmFix(ref totalSeconds);
                     return true;
                 }
             }
 
             totalSeconds = 0;
             return false;
+
+            void AmPmFix(ref int d) {
+                var lower = value.ToLowerInvariant();
+                if (lower.Contains("am")) {
+                    if (d >= 12 * 60 * 60) {
+                        d -= 12 * 60 * 60;
+                    }
+                } else if (lower.Contains("pm")) {
+                    if (d < 12 * 60 * 60) {
+                        d += 12 * 60 * 60;
+                    }
+                }
+            }
         }
 
         public static int? TryParseTime(string s) {

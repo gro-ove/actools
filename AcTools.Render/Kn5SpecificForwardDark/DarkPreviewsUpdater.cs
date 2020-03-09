@@ -214,6 +214,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 car.LeftDoorOpen = options.LeftDoorOpen;
                 car.RightDoorOpen = options.RightDoorOpen;
                 car.IsDriverVisible = options.ShowDriver;
+                car.SeatbeltOnActive = options.ShowSeatbelt;
+                car.BlurredNodesActive = options.ShowBlurredRims;
 
                 if (options.ExtraActiveAnimations != null) {
                     foreach (var animation in options.ExtraActiveAnimations) {
@@ -225,9 +227,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     }
                 }
                 car.OnTick(float.MaxValue);
-                car.BlurredNodesActive = false;
                 car.CockpitLrActive = false;
-                car.SeatbeltOnActive = false;
 
                 if (options.SuspensionDebugMode) {
                     car.SuspensionDebug = true;

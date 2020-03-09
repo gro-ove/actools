@@ -14,7 +14,8 @@
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
-        <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4" PreviewMouseLeftButtonDown="OnCarClick">
+        <mui:SpacingStackPanel Orientation="Horizontal" Background="Transparent" Spacing="4" PreviewMouseLeftButtonDown="OnCarClick"
+            mui:Draggable.Data="{Binding CarObject}" c:ToolTips.Car="{Binding CarObject}" c:ContextMenus.Car="{Binding CarObject}">
           <mui:BetterImage Filename="{Binding CarObject.BrandBadge}" Width="16" Height="16" ClearOnChange="True" />
           <TextBlock Text="{Binding CarObject.DisplayName}" VerticalAlignment="Center" />
         </mui:SpacingStackPanel>

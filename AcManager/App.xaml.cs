@@ -342,6 +342,7 @@ namespace AcManager {
             ContentUtils.Register("ControlsStrings", ControlsStrings.ResourceManager);
             ContentUtils.Register("ToolsStrings", ToolsStrings.ResourceManager);
             ContentUtils.Register("UiStrings", UiStrings.ResourceManager);
+            LocalizationHelper.Use12HrFormat = SettingsHolder.Common.Use12HrTimeFormat;
 
             AcObjectsUriManager.Register(new UriProvider());
 

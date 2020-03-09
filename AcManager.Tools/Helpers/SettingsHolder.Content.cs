@@ -155,6 +155,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showCarPreviewInToolTips;
+
+            public bool ShowCarPreviewInToolTips {
+                get => _showCarPreviewInToolTips ?? (_showCarPreviewInToolTips = ValuesStorage.Get("Settings.ContentSettings.ShowCarPreviewInToolTips", true)).Value;
+                set {
+                    if (Equals(value, _showCarPreviewInToolTips)) return;
+                    _showCarPreviewInToolTips = value;
+                    ValuesStorage.Set("Settings.ContentSettings.ShowCarPreviewInToolTips", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _carsYearPostfix;
 
             public bool CarsYearPostfix {

@@ -218,7 +218,7 @@ namespace AcManager.Tools.Managers.Online {
             RoadTemperature = extended.RoadTemperature;
             WindDirection = extended.WindDirection;
             WindSpeed = extended.WindSpeed;
-            Grip = extended.Grip;
+            Grip = extended.Grip ?? 100d;
             GripTransfer = extended.GripTransfer;
             TrackBaseId = extended.TrackBase?.Trim();
             FrequencyHz = extended.FrequencyHz ?? 0;

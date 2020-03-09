@@ -33,6 +33,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
         public bool LeftDoorOpen = false;
         public bool RightDoorOpen = false;
         public bool ShowDriver = false;
+        public bool ShowSeatbelt = false;
+        public bool ShowBlurredRims = false;
 
         public double[] CameraPosition = { 3.194, 0.342, 13.049 };
         public double[] CameraLookAt = { 2.945, 0.384, 12.082 };
@@ -181,6 +183,8 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                 hashCode = (hashCode * 397) ^ AlignCameraHorizontallyOffset.GetHashCode();
                 hashCode = (hashCode * 397) ^ AlignCameraVerticallyOffset.GetHashCode();
                 if (!AnyGround) hashCode = (hashCode * 397) ^ 91001923;
+                if (ShowSeatbelt) hashCode = (hashCode * 397) ^ 6327277;
+                if (ShowBlurredRims) hashCode = (hashCode * 397) ^ 362618;
 
                 hashCode = (hashCode * 397) ^ FlatMirror.GetHashCode();
                 hashCode = (hashCode * 397) ^ FlatMirrorBlurred.GetHashCode();

@@ -146,7 +146,11 @@
           <Label Content="Mark objects (such as cars or tracks) with notes with a special icon" />
         </CheckBox>
 
-        <CheckBox set:Search.Keywords="cars" IsChecked="{Binding Holder.CarsFixSpecs}">
+        <CheckBox set:Search.Keywords="display;ui;cars" IsChecked="{Binding Holder.ShowCarPreviewInToolTips}" mui:NewMarkService.New="True">
+          <Label Content="Show car previews in tooltips" />
+        </CheckBox>
+
+        <CheckBox set:Search.Keywords="ui;display;cars" IsChecked="{Binding Holder.CarsFixSpecs}">
           <Label Content="Fix missing spaces in specs in Drive section" />
         </CheckBox>
 

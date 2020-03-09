@@ -226,8 +226,18 @@
         </ItemsControl.ItemTemplate>
       </ItemsControl>
 
-      <CheckBox IsChecked="{Binding ShowDriver}">
-        <Label Content="Show driver" />
+      <mui:SpacingUniformGrid HorizontalSpacing="4" Margin="0" Rows="1">
+        <CheckBox IsChecked="{Binding ShowDriver}">
+          <Label Content="Show driver" />
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding ShowSeatbelt}">
+          <Label Content="Active seatbelt" />
+        </CheckBox>
+      </mui:SpacingUniformGrid>
+
+      <CheckBox IsChecked="{Binding ShowBlurredRims}">
+        <Label Content="Blurred rims" />
       </CheckBox>
 
       <Button Margin="0 20 0 0" Command="{Binding ChangeCarCommand}">

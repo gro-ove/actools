@@ -32,6 +32,10 @@
         <Label Content="Use imperial units" />
       </CheckBox>
 
+      <CheckBox IsChecked="{Binding Common.Use12HrTimeFormat}">
+        <Label Content="Use 12-hour clock" />
+      </CheckBox>
+
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
         <TextBlock.Text>Language:</TextBlock.Text>
       </TextBlock>

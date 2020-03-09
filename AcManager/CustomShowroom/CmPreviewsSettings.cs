@@ -109,6 +109,8 @@ namespace AcManager.CustomShowroom {
                 LeftDoorOpen = LeftDoorOpen,
                 RightDoorOpen = RightDoorOpen,
                 ShowDriver = ShowDriver,
+                ShowSeatbelt = ShowSeatbelt,
+                ShowBlurredRims = ShowBlurredRims,
                 TryToGuessCarLights = Renderer.TryToGuessCarLights,
                 LoadCarLights = Renderer.LoadCarLights,
                 LoadShowroomLights = Renderer.LoadShowroomLights,
@@ -167,6 +169,8 @@ namespace AcManager.CustomShowroom {
             LeftDoorOpen = o.LeftDoorOpen;
             RightDoorOpen = o.RightDoorOpen;
             ShowDriver = o.ShowDriver;
+            ShowSeatbelt = o.ShowSeatbelt;
+            ShowBlurredRims = o.ShowBlurredRims;
 
             if (o.ExtraActiveAnimations == null) return;
             foreach (var name in o.ExtraActiveAnimations) {
@@ -302,7 +306,7 @@ namespace AcManager.CustomShowroom {
 
             public bool SoftwareDownsize, AlignCar = true,
                     AlignCameraHorizontally, AlignCameraVertically, AlignCameraHorizontallyOffsetRelative, AlignCameraVerticallyOffsetRelative,
-                    HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver,
+                    HeadlightsEnabled, BrakeLightsEnabled, LeftDoorOpen, RightDoorOpen, ShowDriver, ShowSeatbelt, ShowBlurredRims,
                     TryToGuessCarLights = true, LoadCarLights, LoadShowroomLights;
 
             public string FileName { get; set; } = "preview.jpg";
@@ -401,6 +405,8 @@ namespace AcManager.CustomShowroom {
                     LeftDoorOpen = LeftDoorOpen,
                     RightDoorOpen = RightDoorOpen,
                     ShowDriver = ShowDriver,
+                    ShowSeatbelt = ShowSeatbelt,
+                    ShowBlurredRims = ShowBlurredRims,
                     CameraPosition = CameraPosition,
                     CameraLookAt = CameraLookAt,
                     CameraTilt = CameraTilt,
@@ -832,6 +838,30 @@ namespace AcManager.CustomShowroom {
             }
         }
 
+        private bool _showSeatbelt;
+
+        public bool ShowSeatbelt {
+            get => _showSeatbelt;
+            set {
+                if (Equals(value, _showSeatbelt)) return;
+                _showSeatbelt = value;
+                OnPropertyChanged();
+                SetCarProperty(car => car.SeatbeltOnActive = value);
+            }
+        }
+
+        private bool _showBlurredRims;
+
+        public bool ShowBlurredRims {
+            get => _showBlurredRims;
+            set {
+                if (Equals(value, _showBlurredRims)) return;
+                _showBlurredRims = value;
+                OnPropertyChanged();
+                SetCarProperty(car => car.BlurredNodesActive = value);
+            }
+        }
+
         private void ResetCar() {
             LoadCar((SaveableData)CreateSaveableData());
         }
@@ -886,6 +916,8 @@ namespace AcManager.CustomShowroom {
                 data.HeadlightsEnabled = car.HeadlightsEnabled;
                 data.BrakeLightsEnabled = car.BrakeLightsEnabled;
                 data.ShowDriver = car.IsDriverVisible;
+                data.ShowSeatbelt = car.SeatbeltOnActive;
+                data.ShowBlurredRims = car.BlurredNodesActive;
                 data.ExtraActiveAnimations = car.Wings.OfType<Kn5RenderableCar.AnimationEntryBase>().Concat(car.Extras)
                                                 .Where(x => x.IsActive).Select(x => x.DisplayName).ToArray();
             }
