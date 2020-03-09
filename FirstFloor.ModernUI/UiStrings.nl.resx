@@ -138,41 +138,14 @@
   <data name="No" xml:space="preserve">
     <value>Nee</value>
   </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="Yes" xml:space="preserve">
     <value>Ja</value>
   </data>
-  <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
-  <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
-  <data name="KeyEscape" xml:space="preserve">
-    <value>Escape</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
-  <alternative>Thuis Knop</alternative></data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Pijltje naar links</value>
   <alternative>Linker Pijl</alternative></data>
-  <data name="KeyNumberPad" xml:space="preserve">
-    <value>Numpad {0}</value>
-  </data>
-  <data name="KeyPageDown" xml:space="preserve">
-    <value>Page Down</value>
-  <alternative>Pagina Omlaag</alternative></data>
-  <data name="KeyPageUp" xml:space="preserve">
-    <value>Page Up</value>
-  <alternative>Pagina Omhoog</alternative></data>
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Rechter Pijl</value>
-  </data>
-  <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
   </data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (Links)</value>
@@ -182,9 +155,6 @@
   </data>
   <data name="KeySpace" xml:space="preserve">
     <value>Spatiebalk</value>
-  </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Pijltje Omhoog</value>
@@ -204,9 +174,6 @@
   <data name="Suggestions" xml:space="preserve">
     <value>Suggesties</value>
   </data>
-  <data name="KeyDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
   <data name="KeyHelp" xml:space="preserve">
     <value>Hulp</value>
   </data>
@@ -216,14 +183,8 @@
   <data name="KeyWindowsRight" xml:space="preserve">
     <value>Windows knop (Rechts)</value>
   </data>
-  <data name="KeyContextMenu" xml:space="preserve">
-    <value>Context Menu</value>
-  </data>
   <data name="KeyMediaPlayPause" xml:space="preserve">
     <value>Speel af</value>
-  </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
   </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Selecteer media</value>
@@ -233,27 +194,6 @@
   </data>
   <data name="KeyZoom" xml:space="preserve">
     <value>Zoemen</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
   </data>
   <data name="FiltersLinkAll" xml:space="preserve">
     <value>Alle</value>
@@ -456,47 +396,14 @@
   <data name="ImagesFilter" xml:space="preserve">
     <value>Afbeeldingstypes|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Alle extensies (*.*)|*.*</value>
   </data>
-  <data name="KeyBackspace" xml:space="preserve">
-    <value>Backspace</value>
-  </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
-  <data name="KeyControlLeft" xml:space="preserve">
-    <value>Control (Left)</value>
-  </data>
-  <data name="KeyControlRight" xml:space="preserve">
-    <value>Control (Right)</value>
-  </data>
   <data name="KeyDownArrow" xml:space="preserve">
     <value>Pijltje omlaag</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
   </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Links)</value>
   </data>
   <data name="KeyAltRight" xml:space="preserve">
     <value>Alt (Rechts)</value>
-  </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
   </data>
   <data name="KeyBrowserBack" xml:space="preserve">
     <value>Browser Terug</value>
@@ -515,9 +422,6 @@
   </data>
   <data name="KeyBrowserSearch" xml:space="preserve">
     <value>Browser Zoek</value>
-  </data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser Stop</value>
   </data>
   <data name="KeyVolumeDown" xml:space="preserve">
     <value>Volume omlaag</value>
@@ -558,9 +462,6 @@
   <data name="Toolbar_OnlineManageLists" xml:space="preserve">
     <value>Beheer Lijsten...</value>
   </data>
-  <data name="Toolbar_Invite" xml:space="preserve">
-    <value>Invite</value>
-  </data>
   <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
     <value>Annuleer boeking</value>
   </data>
@@ -581,9 +482,6 @@
   </data>
   <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
     <value>Verwijder server van lijst met verborgen servers</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0}: </value>
   </data>
   <data name="Ordinalizing_Nth" xml:space="preserve">
     <value>{0}.</value>

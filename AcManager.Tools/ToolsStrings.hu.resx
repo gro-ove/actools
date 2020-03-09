@@ -117,129 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Common_Submit" xml:space="preserve">
-    <value>Verzenden</value>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Server is unavailable (ping failed).</value>
   </data>
-  <data name="SyntaxError_Solution" xml:space="preserve">
-    <value>Bestand openen</value>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Can’t refresh server information.</value>
   </data>
-  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
-    <value>UI module “CM Helper” is geïnstalleerd en geactiveerd. Vergeet AssettoCorsa.exe niet te herstarten voor het racen!</value>
-  </data>
-  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
-    <value>Willekeurig</value>
-  </data>
-  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
-    <value>Willekeurig</value>
-  </data>
-  <data name="Drive_GridArrangeWay" xml:space="preserve">
-    <value>Volgorde:</value>
-  </data>
-  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
-    <value>Schudden</value>
-  </data>
-  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
-    <value>Willekeurig</value>
-  </data>
-  <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>Globaal:</value>
-  </data>
-  <data name="RaceGrid_You" xml:space="preserve">
-    <value>Jij</value>
-  </data>
-  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Gebruik naam van skins zo mogelijk</value>
-  </data>
-  <data name="Shared_UserChampionship" xml:space="preserve">
-    <value>Kampioenschap</value>
-  </data>
-  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
-    <value>Vooraf ingestelde audio-instelling</value>
-  </data>
-  <data name="DifficultyLevel_Easy" xml:space="preserve">
-    <value>Makkelijk</value>
-  </data>
-  <data name="DifficultyLevel_Medium" xml:space="preserve">
-    <value>Normaal</value>
-  </data>
-  <data name="DifficultyLevel_Hard" xml:space="preserve">
-    <value>Moeilijk</value>
-  </data>
-  <data name="SpecialEvent_Description" xml:space="preserve">
-    <value>{0} op {1}.</value>
-  </data>
-  <data name="PlaceConditionType_Points" xml:space="preserve">
-    <value>Punten</value>
-  </data>
-  <data name="PlaceConditionType_Position" xml:space="preserve">
-    <value>Positie</value>
-  </data>
-  <data name="PlaceConditionType_Time" xml:space="preserve">
-    <value>Tijd</value>
-  </data>
-  <data name="PlaceConditionType_Wins" xml:space="preserve">
-    <value>Gewonnen</value>
-  </data>
-  <data name="RhmService_CannotStart" xml:space="preserve">
-    <value>Kan RHM niet starten</value>
-  </data>
-  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
-    <value>Data van {0} is niet ingepakt, dus gebruikers kunnen het veranderen voordat ze joinen en zo een oneerlijke voorsprong krijgen.
-
-Wil je de data inpakken voordat je de server start? Maar vergeet niet de ingepakte versie te versturen naar spelers</value>
-  </data>
-  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
-    <value>Data is niet versleuteld</value>
-  </data>
-  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
-    <value>Selecteer alsjeblieft een auto die ondersteund wordt door de server</value>
-  </data>
-  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
-    <value>Het wachtwoord is niet geldig</value>
-  </data>
-  <data name="Online_BookingResult_Closed" xml:space="preserve">
-    <value>Boeking is gesloten</value>
-  </data>
-  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
-    <value>Je bent geblacklist op deze server</value>
-  </data>
-  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
-    <value>Server is vol</value>
-  </data>
-  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
-    <value>Server zegt: “{0}”</value>
-  </data>
-  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
-    <value>Geselecteerde auto heeft geen geshikt geluid</value>
-  </data>
-  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
-    <value>Selecteer een andere auto.</value>
-  </data>
-  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
-    <value>Kan het geluid van de auto niet vervangen</value>
-  </data>
-  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
-    <value>Zorg dat er genoeg ruimte is en dat de originele bestanden verwijderd kunnen worden.</value>
-  </data>
-  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
-    <value>Je hebt geboekt voor deze server</value>
-  </data>
-  <data name="Online_YouAreOnThisServer" xml:space="preserve">
-    <value>Je bent op deze server</value>
-  </data>
-  <data name="Online_YouFormat" xml:space="preserve">
-    <value>{0} (Jij)</value>
-  </data>
-  <data name="Online_AdminPassword" xml:space="preserve">
-    <value>Admin wachtwoord:</value>
-  </data>
-  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
-    <value>Laat Admin Wachtwoord input zien</value>
-  </data>
-  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
-    <value>Als je het uit zet, kun je het altijd weer aan zetten in de online instellingen</value>
-  </data>
-  <data name="TagIsMissing_Format" xml:space="preserve">
-    <value>Label “{0}” mist</value>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Not implemented.</value>
   </data>
 </root>

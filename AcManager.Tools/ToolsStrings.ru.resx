@@ -1059,26 +1059,8 @@
   <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
     <value>файл не найден</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
   <data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>Игрок</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
   </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Неизвестная проблема (Process=null)</value>
@@ -1238,9 +1220,6 @@
   </data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
     <value>Трасса “{0}” отсутствует</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="ContentInstallation_CarNew" xml:space="preserve">
     <value>Новая машина {0}</value>

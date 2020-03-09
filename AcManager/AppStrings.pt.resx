@@ -625,9 +625,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
     <value>Reabrir (Ctrl+R)</value>
   </data>
-  <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Showroom</value>
-  <alternative>Salão de exposição</alternative><alternative>Expositor</alternative></data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
     <value>Seleccionar showroom, filtro e etc.</value>
   <alternative>Seleccionar salão de exposição, filtro e etc.</alternative><alternative>Seleccionar expositor, filtro e etc.</alternative></data>
@@ -639,9 +636,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   </data>
   <data name="Toolbar_Analyze" xml:space="preserve">
     <value>Analizar</value>
-  </data>
-  <data name="Toolbar_CarSkins" xml:space="preserve">
-    <value>Skins</value>
   </data>
   <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
     <value>Gerir skins (Ctrl+K)</value>
@@ -1309,9 +1303,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
     <value>Usar FXAA para as pré-visualizações</value>
   </data>
-  <data name="CarPreviews_Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
   <data name="RaceResult_ErrorHeader" xml:space="preserve">
     <value>Erro:</value>
   </data>
@@ -1354,9 +1345,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Nome:</value>
   </data>
-  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
-    <value>Panorama:</value>
-  </data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
     <value>Algo como isto:</value>
   </data>
@@ -1365,9 +1353,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   </data>
   <data name="UpgradeIcon_Title" xml:space="preserve">
     <value>Actualizar Ícone</value>
-  </data>
-  <data name="UpgradeIcon_Editor" xml:space="preserve">
-    <value>Editor</value>
   </data>
   <data name="UpgradeIcon_Library" xml:space="preserve">
     <value>Biblioteca</value>
@@ -1645,9 +1630,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="Main_Tracks" xml:space="preserve">
     <value>Pistas</value>
   </data>
-  <data name="Main_Showrooms" xml:space="preserve">
-    <value>Showrooms</value>
-  <alternative>Salões de exposição</alternative><alternative>Expositores</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Diversos</value>
   <alternative>Misc.</alternative></data>
@@ -1696,9 +1678,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
     <value>Procurar na Wikipedia por omissão</value>
   </data>
-  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Showrooms:</value>
-  <alternative>Salões de exposição</alternative><alternative>Expositores:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Fontes:</value>
   </data>
@@ -1827,9 +1806,6 @@ Para jogar, descomprimir “{1}” em “…\Documents\Assetto Corsa\replay”.<
   </data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>Plano</value>
-  </data>
-  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
-    <value>Diagonal</value>
   </data>
   <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
     <value>Riscas</value>
@@ -2416,26 +2392,14 @@ Autor: [b]{3}[/b]</alternative></data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
     <value>Geo Tags:</value>
   </data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
-  </data>
   <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
     <value>Cria uma variação da temperatura do asfalto em relação ao clima, temperatura ambiente e horário. Mais informações em “readme_weather.txt”</value>
   </data>
   <data name="WeatherEdit_AngleGamma" xml:space="preserve">
     <value>Ângulo gama</value>
   </data>
-  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
-    <value>HDR-off mult.</value>
-  </data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
     <value>Multiplicador</value>
-  </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
   </data>
   <data name="Solution_GenerateNew_Details" xml:space="preserve">
     <value>Um novo ficheiro vazio será criado; não te esqueças de definir valores apropriados e depois guardar o ficheiro</value>
@@ -2479,26 +2443,8 @@ Autor: [b]{3}[/b]</alternative></data>
   <data name="Main_ContentManager" xml:space="preserve">
     <value>Gestor de Conteúdo</value>
   </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
-  <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Rápido</value>
-  </data>
-  <data name="Main_Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
   </data>
   <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
     <value>Símbolo ícone da fonte:</value>

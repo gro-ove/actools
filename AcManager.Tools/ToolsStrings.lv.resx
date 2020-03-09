@@ -273,9 +273,6 @@
   <data name="AcRootDirectory_Required" xml:space="preserve">
     <value>Nepieciešama spēles saknes mape</value>
   </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Viens monitors</value>
   </data>
@@ -345,17 +342,11 @@
   <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
     <value>Apakšpikselis</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Ļoti augsta</value>
   </data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Ļoti zema</value>
-  </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
   </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>.bmp (bez kompresijas)</value>
@@ -494,9 +485,6 @@
   </data>
   <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
     <value>Piedod, bet {0} šifrēšana netiek atbalstīta</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
   </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Bremžu pretbloķēšanās sistēma</value>
@@ -651,9 +639,6 @@
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Nederīgs formāts</value>
   </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
-  </data>
   <data name="Common_Length" xml:space="preserve">
     <value>Garums</value>
   </data>
@@ -665,9 +650,6 @@
   </data>
   <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
     <value>Pārliecinies, ka ir pietiekami daudz vietas.</value>
-  </data>
-  <data name="Common_NA" xml:space="preserve">
-    <value>N/A</value>
   </data>
   <data name="Common_None" xml:space="preserve">
     <value>Nav</value>
@@ -1239,24 +1221,6 @@
   <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
     <value>Neatbalstīts formāts</value>
   </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="Session_Booking" xml:space="preserve">
-    <value>Booking</value>
-  </data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Dragreiss</value>
   </data>
@@ -1305,14 +1269,8 @@
   <data name="Settings_Starter_Official_Description" xml:space="preserve">
     <value>Oficiālais veids no Kunos; var būt lēns un neuzticams, bet nav nepieciešama patčošana</value>
   </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
   <data name="Settings_Starter_Sse_Description" xml:space="preserve">
     <value>Ātrākais veids, palaiž sacīksti pa taisno, neizmantojot Steam; tiešsaiste strādās, bet Steam achievementi nē</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
   </data>
   <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
     <value>Oriģinālā palaidēja modificēta versija, novecojusi kopš 1.7 versijas iznākšanas</value>
@@ -1431,12 +1389,6 @@
   <data name="Units_BHP" xml:space="preserve">
     <value>ZS</value>
   </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
-  </data>
   <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
     <value>Nav autenifikācijas žetona</value>
   </data>
@@ -1451,9 +1403,6 @@
   </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Ievadi Google Drive autentifikācijas kodu</value>
-  </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
   </data>
   <data name="Uploader_RequestFailed" xml:space="preserve">
     <value>GET pieprasījums neizdevās</value>
@@ -1719,8 +1668,5 @@ Vai vēlies tos sapakot pirms servera palaišanas? Tikai neaizmirsti izdalīt sa
   </data>
   <data name="Weather_Original" xml:space="preserve">
     <value>Oriģināls</value>
-  </data>
-  <data name="Weather_Mods" xml:space="preserve">
-    <value>Mods</value>
   </data>
 </root>

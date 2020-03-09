@@ -117,15 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0} (experimental)</value>
-  </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Recomendado)</value>
   </data>
@@ -134,9 +125,6 @@
   </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
     <value>{0} vuelta</value>
-  </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
   </data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
     <value>¿Recargar archivo?</value>
@@ -149,9 +137,6 @@
   </data>
   <data name="Online_ScanningProgress_Found" xml:space="preserve">
     <value>0} servidor</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
   </data>
   <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
     <value>Acceso denegado</value>
@@ -279,17 +264,8 @@
   <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
     <value>Automáticamente presiona el embrague al cambiar</value>
   </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
   <data name="AcSettings_Quality_Low" xml:space="preserve">
     <value>Bajo</value>
-  </data>
-  <data name="Units_BHP" xml:space="preserve">
-    <value>BHP</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
   </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (sin comprensión)</value>
@@ -522,12 +498,6 @@
   <data name="Session_Drag" xml:space="preserve">
     <value>Drag</value>
   </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
     <value>Efecto rebufo</value>
   </data>
@@ -718,12 +688,6 @@
   <data name="Common_CarIdIsMissing" xml:space="preserve">
     <value>ID de coche perdida</value>
   </data>
-  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
-    <value>Ideal</value>
-  </data>
-  <data name="Gameplay_Units_Imperial" xml:space="preserve">
-    <value>Imperial (mph)</value>
-  </data>
   <data name="Common_CannotUnpack" xml:space="preserve">
     <value>Imposible de desempaquetar {0}</value>
   </data>
@@ -748,14 +712,8 @@
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Introduce el código de autenticación de Google Drive</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>Jugador</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="AppUpdater_UpdateFailed" xml:space="preserve">
     <value>La actualización ha fallado</value>
@@ -780,9 +738,6 @@
   </data>
   <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
     <value>Las nubes (content/texture/clouds) puede que fallen</value>
-  </data>
-  <data name="AcSettings_View_Lateral" xml:space="preserve">
-    <value>Lateral</value>
   </data>
   <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
     <value>Latitud:</value>
@@ -832,9 +787,6 @@
   <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
     <value>Longitud:</value>
   </data>
-  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
-    <value>Longitudinal</value>
-  </data>
   <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
     <value>Los coches no coinciden</value>
   </data>
@@ -873,9 +825,6 @@
   </data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
     <value>MAntener vistas previas de los Skins</value>
-  </data>
-  <data name="Drive_Grid_Manual" xml:space="preserve">
-    <value>Manual</value>
   </data>
   <data name="Controls_Gear_Rear" xml:space="preserve">
     <value>Marcha atrás</value>
@@ -955,9 +904,6 @@
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Muy bajo</value>
   </data>
-  <data name="Common_NA" xml:space="preserve">
-    <value>N/A</value>
-  </data>
   <data name="Common_None" xml:space="preserve">
     <value>Nada</value>
   </data>
@@ -987,9 +933,6 @@
   </data>
   <data name="Weather_LightSnow" xml:space="preserve">
     <value>Nieve ligera</value>
-  </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
   </data>
   <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
     <value>No confundirlo con caja de cambios automática</value>
@@ -1141,9 +1084,6 @@
   <data name="AcError_BrandNameIsMissing" xml:space="preserve">
     <value>Nombre de la marca perdido</value>
   </data>
-  <data name="AcSettings_Quality_Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
   <data name="Weather_ScatteredClouds" xml:space="preserve">
     <value>Nubes dispersas</value>
   </data>
@@ -1206,9 +1146,6 @@
   <alternative>Ocultar manos del piloto</alternative></data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
     <value>Ocultar volante</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Oficial</value>
@@ -1381,15 +1318,6 @@
   <data name="Settings_Period_Startup" xml:space="preserve">
     <value>Solamente al comenzar</value>
   </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
-  </data>
   <data name="Controls_KeyboardAndMouse" xml:space="preserve">
     <value>Teclado y Ratón</value>
   </data>
@@ -1407,9 +1335,6 @@
   </data>
   <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
     <value>Tiempo de espera excedido</value>
-  </data>
-  <data name="Session_TimeAttack" xml:space="preserve">
-    <value>Time Attack</value>
   </data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>Tipo de letra</value>
@@ -1432,12 +1357,6 @@
   <data name="Weather_LightThunderstorm" xml:space="preserve">
     <value>Tormenta ligera</value>
   </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
-  <data name="Common_Torque" xml:space="preserve">
-    <value>Torque</value>
-  </data>
   <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
     <value>Trasera derecha</value>
   </data>
@@ -1455,9 +1374,6 @@
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Triple pantalla</value>
-  </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
   </data>
   <data name="Period_OneDay" xml:space="preserve">
     <value>Un día</value>
@@ -1477,9 +1393,6 @@
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
     <value>Mostrar la diferencia de tiempo entre los oponentes</value>
   <alternative>Ver intévalo de tiempo de los oponentes</alternative></data>
-  <data name="AcSettings_View_Vertical" xml:space="preserve">
-    <value>Vertical</value>
-  </data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
     <value>Vista previa de skin ({0}/preview.jpg) se ha perdido</value>
   </data>
@@ -1491,9 +1404,6 @@
   </data>
   <data name="Session_Hotlap" xml:space="preserve">
     <value>Vuelta Rápida</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
   </data>
   <data name="Session_TrackDay" xml:space="preserve">
     <value>Dia de Tandas</value>
@@ -1540,9 +1450,6 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
   </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Intenta iniciar acs.exe directamente; en la mayoria de casos fallara</value>
-  </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
   </data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
     <value>No se puede cargar la imagen usando Magick.NET</value>
@@ -1592,9 +1499,6 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
     <value>Usar nombres de skin si esta disponible</value>
   </data>
-  <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>Global:</value>
-  </data>
   <data name="RaceGrid_You" xml:space="preserve">
     <value>Tu</value>
   </data>
@@ -1612,9 +1516,6 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
   </data>
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Dificil</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
   </data>
   <data name="SpecialEvent_Description" xml:space="preserve">
     <value>{0} en {1}.</value>
@@ -1715,12 +1616,6 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
   </data>
   <data name="Weather_Random" xml:space="preserve">
     <value>Aleatorio</value>
-  </data>
-  <data name="Weather_Original" xml:space="preserve">
-    <value>Original</value>
-  </data>
-  <data name="Weather_Mods" xml:space="preserve">
-    <value>Mods</value>
   </data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Preset de Real Head Motion</value>

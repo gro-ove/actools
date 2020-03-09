@@ -126,9 +126,6 @@
   <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
     <value>Não é possivel estabelecer ligação com o servidor remoto</value>
   </data>
-  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0} (experimental)</value>
-  </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Recomendado)</value>
   </data>
@@ -243,9 +240,6 @@
   <data name="Weather_Windy" xml:space="preserve">
     <value>Ventoso</value>
   </data>
-  <data name="AcSettings_View_Vertical" xml:space="preserve">
-    <value>Vertical</value>
-  </data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Muito Alto</value>
   </data>
@@ -299,12 +293,6 @@
   </data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
     <value>Forças-G:</value>
-  </data>
-  <data name="AcSettings_View_Lateral" xml:space="preserve">
-    <value>Lateral</value>
-  </data>
-  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
-    <value>Longitudinal</value>
   </data>
   <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
     <value>Unidades:</value>
@@ -516,9 +504,6 @@
   <data name="Gameplay_Units_Metrical" xml:space="preserve">
     <value>Métrico (km/h)</value>
   </data>
-  <data name="Gameplay_Units_Imperial" xml:space="preserve">
-    <value>Imperial (mph)</value>
-  </data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
     <value>Impossível gravar os setting do AC</value>
   </data>
@@ -537,9 +522,6 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Alto</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Personalizado</value>
   </data>
@@ -548,9 +530,6 @@
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Triplo ecrã</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_Quality_Maximum" xml:space="preserve">
     <value>Máximo</value>
@@ -629,9 +608,6 @@
   </data>
   <data name="Weather_Squalls" xml:space="preserve">
     <value>Borrasca</value>
-  </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
   </data>
   <data name="Weather_Hot" xml:space="preserve">
     <value>Quente</value>
@@ -777,9 +753,6 @@
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>fonte</value>
   </data>
-  <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>showroom</value>
-  <alternative>expositor</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>pista</value>
   </data>

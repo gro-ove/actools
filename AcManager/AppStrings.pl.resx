@@ -178,12 +178,6 @@
  {1}: [b]{2}[/b]
  Autor: [b]{3}[/b]</value>
   </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Dla</value>
   </data>
@@ -424,9 +418,6 @@
   <data name="Main_Drive" xml:space="preserve">
     <value>Jazda</value>
   </data>
-  <data name="Main_Media" xml:space="preserve">
-    <value>Media</value>
-  </data>
   <data name="Main_Content" xml:space="preserve">
     <value>Zawartość</value>
   </data>
@@ -438,12 +429,6 @@
   </data>
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>Ważne wskazówki</value>
-  </data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
-  </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
   </data>
   <data name="Main_Apps" xml:space="preserve">
     <value>Aplikacje</value>
@@ -457,12 +442,6 @@
   <data name="Main_Weather" xml:space="preserve">
     <value>Pogoda</value>
   </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Szybki wyścig</value>
   </data>
@@ -472,20 +451,11 @@
   <data name="Main_Challenges" xml:space="preserve">
     <value>Wyzwania</value>
   </data>
-  <data name="Main_Single" xml:space="preserve">
-    <value>Single</value>
-  </data>
   <data name="Main_Live" xml:space="preserve">
     <value>RSR &amp; SRS</value>
   </data>
   <data name="Main_Language" xml:space="preserve">
     <value>Język</value>
-  </data>
-  <data name="Main_Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
   </data>
   <data name="Main_Screenshots" xml:space="preserve">
     <value>Zrzuty ekranu</value>
@@ -543,9 +513,6 @@
   <alternative>Nawiasem mówiąc, wypróbuj skróty F6/Ctrl+T/Ctrl+W/Ctrl+Tab/etc.</alternative></data>
   <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
     <value>Nie zapominaj, że istnieje skrót klawiaturowy do każdego przycisku</value>
-  </data>
-  <data name="Common_Restart" xml:space="preserve">
-    <value>Restart</value>
   </data>
   <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
     <value>Uruchom ponownie aplikację, aby zastosować zmiany</value>
@@ -612,12 +579,6 @@
   <alternative>Automatyczna regulacja kamery - pivot</alternative></data>
   <data name="Settings_CustomShowroom_InvertMouseButtons" xml:space="preserve">
     <value>Odwróć przyciski myszy</value>
-  </data>
-  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
-    <value>Lite Showroom:</value>
-  </data>
-  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
-    <value>Fancy Showroom:</value>
   </data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
     <value>Użyj bloom</value>
@@ -705,12 +666,6 @@
  
  Katalog roboczy zostanie ustawiony w folderze Assetto Corsa w dokumentach.</value>
   </data>
-  <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
-    <value>Pre-race event command:</value>
-  </data>
-  <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
-    <value>Post-race event command:</value>
-  </data>
   <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
     <value>To polecenie zostanie wykonane po zakończeniu acs.exe, ale przed odczytaniem wszystkich wynikowych plików JSON.
  
@@ -742,9 +697,6 @@
   </data>
   <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
     <value>Pozwala ustawić maksymalnie 999 okrążeń,używać na własne ryzyko.</value>
-  </data>
-  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
-    <value>Assetto Corsa folder:</value>
   </data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>Tryb dewelopera</value>
@@ -788,9 +740,6 @@
   <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
     <value>Czas zapisu:</value>
   <alternative>Zapisz czas:</alternative></data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
-  </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
     <value>Dostęp do testów:</value>
   <alternative>Testowanie dostępu:</alternative></data>
@@ -896,9 +845,6 @@
   <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
     <value>Czas skanowania</value>
   <alternative>Scan timeout</alternative></data>
-  <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>LAN:</value>
-  </data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
     <value>Skanuj używając połączeń:</value>
   <alternative>Skanowanie przy użyciu połączeń:</alternative></data>
@@ -916,9 +862,6 @@
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
     <value>Wygląd</value>
-  </data>
-  <data name="Settings_Dev" xml:space="preserve">
-    <value>Dev</value>
   </data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>Aktywuj szybkie przełączniki</value>
@@ -1029,12 +972,6 @@
   <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
     <value>Powtórka-powiązane wydarzenia:</value>
   </data>
-  <data name="AcSettings_Replays_EventPreLabel" xml:space="preserve">
-    <value>Pre-replay event command:</value>
-  </data>
-  <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
-    <value>Post-replay event command:</value>
-  </data>
   <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
     <value>Skopiuj link do schowka automatycznie</value>
   </data>
@@ -1068,9 +1005,6 @@
   <data name="Common_SignIn" xml:space="preserve">
     <value>Zaloguj się</value>
   </data>
-  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
-    <value>Folder:</value>
-  </data>
   <data name="Common_Update" xml:space="preserve">
     <value>Aktualizuj</value>
   </data>
@@ -1079,9 +1013,6 @@
   </data>
   <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
     <value>Wybrany folder: {0}</value>
-  </data>
-  <data name="Common_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
   </data>
   <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
     <value>Historia:</value>
@@ -1095,12 +1026,6 @@
   <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
     <value>Docelowo</value>
   <alternative>Cel</alternative></data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
-  </data>
-  <data name="Toolbar_Folder" xml:space="preserve">
-    <value>Folder</value>
-  </data>
   <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
     <value>Otwórz folder samochodu (Ctrl+F)</value>
   </data>
@@ -1122,15 +1047,9 @@
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
     <value>Niestandardowy salon</value>
   </data>
-  <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Lite Custom Showroom</value>
-  </data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
     <value>Szybsze i dokładniejsze, pomocne dla modujących lub malujących skórki</value>
   <alternative>Szybsze i dokładniejsze, pomocne dla modujących lub tworzących malowania</alternative></data>
-  <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
-    <value>Fancy Custom Showroom</value>
-  </data>
   <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
     <value>Wolniejsze i mniej dokładne, ale z właściwym oświetleniem i odbiciami</value>
   </data>
@@ -1512,9 +1431,6 @@
   <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
     <value>Przeskanuj ponownie używane i wyłączyć wszystkie nieużywane czcionki (Ctrl+Shift+D)</value>
   </data>
-  <data name="AcObject_FontTestLabel" xml:space="preserve">
-    <value>Test:</value>
-  </data>
   <data name="AcObject_FontUsedInLabel" xml:space="preserve">
     <value>Używana w:</value>
   <alternative>Użyj w:</alternative></data>
@@ -1641,9 +1557,6 @@
   <data name="Common_Share_WeatherTooltip" xml:space="preserve">
     <value>Udostępnij pogodę (Ctrl+PageUp)</value>
   </data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
-  </data>
   <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
     <value>Użyj jako:</value>
   </data>
@@ -1700,9 +1613,6 @@
   </data>
   <data name="WeatherEdit_AngleGamma" xml:space="preserve">
     <value>Kąt gamma</value>
-  </data>
-  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
-    <value>HDR-off mult.</value>
   </data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
     <value>Mnożnik</value>
@@ -1765,9 +1675,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="Page_Wip_Commentary" xml:space="preserve">
     <value>Jeśli chcesz dowiedzieć się więcej na temat rozwoju, [url="https://trello.com/b/MwqpL8Bw/content-manager"]tu jest tablica Trello[/url] z dużą ilością informacji.</value>
   </data>
-  <data name="List_Setups" xml:space="preserve">
-    <value>{0} setup</value>
-  </data>
   <data name="List_Skins" xml:space="preserve">
     <value>{0} skórka</value>
   <alternative>{0} malowanie</alternative></data>
@@ -1785,9 +1692,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   </data>
   <data name="List_Replays" xml:space="preserve">
     <value>{0} powtórka</value>
-  </data>
-  <data name="List_ServerPresets" xml:space="preserve">
-    <value>{0} preset</value>
   </data>
   <data name="List_Showrooms" xml:space="preserve">
     <value>{0} salon</value>
@@ -2103,12 +2007,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
     <value>Tylko w przypadku, jeśli nie można dołączyć za pomocą tej sekcji (lub czas łączenia minął), użyj sekcji Online.</value>
-  </data>
-  <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP:</value>
-  </data>
-  <data name="Srs_PortLabel" xml:space="preserve">
-    <value>Port:</value>
   </data>
   <data name="Srs_StartAtLabel" xml:space="preserve">
     <value>Zacznij od:</value>
@@ -2535,9 +2433,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="AdditionalContent_WhatToUpdateLabel" xml:space="preserve">
     <value>Czy aktualizować:</value>
   </data>
-  <data name="AdditionalContent_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
   <data name="AdditionalContent_PathFormat" xml:space="preserve">
     <value>Ścieżka: {0}</value>
   </data>
@@ -2634,9 +2529,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
     <value>Okrąg z linią przekątną</value>
   <alternative>Diagonal line with Circle</alternative></data>
-  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
-    <value>Carbon</value>
-  </data>
   <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
     <value>Podział poziomy</value>
   </data>
@@ -2649,23 +2541,11 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
     <value>Potrójny podział pionowy</value>
   </data>
-  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
-    <value>Solid</value>
-  </data>
-  <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
-    <value>Gradient</value>
-  </data>
   <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
     <value>Połysk</value>
   </data>
   <data name="LiveryIcon_Style_Bright" xml:space="preserve">
     <value>Jasność</value>
-  </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
-  </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
   </data>
   <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
     <value>Zmień numer skórki na "{0}"</value>
@@ -2699,9 +2579,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   </data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Nazwa:</value>
-  </data>
-  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
-    <value>Panorama:</value>
   </data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
     <value>Coś takiego:</value>
@@ -2779,9 +2656,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   </data>
   <data name="AcSettings_Audio_Opponents" xml:space="preserve">
     <value>Przeciwnicy</value>
-  </data>
-  <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>UI</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
     <value>Przełączyć się na Low lub Normal, jeśli masz problemy z dźwiękiem</value>
@@ -2894,14 +2768,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="Controls_BrakeBalance" xml:space="preserve">
     <value>Balans hamulców:</value>
   </data>
-  <data name="Controls_Turbo" xml:space="preserve">
-    <value>Turbo:</value>
-  </data>
   <data name="Controls_TractionControl" xml:space="preserve">
     <value>Kontrola trakcji:</value>
-  </data>
-  <data name="Controls_Abs" xml:space="preserve">
-    <value>ABS:</value>
   </data>
   <data name="Controls_EngineBrake" xml:space="preserve">
     <value>Hamulec silnikowy:</value>
@@ -2933,23 +2801,14 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="AcSettings_Apps" xml:space="preserve">
     <value>Aplikacje</value>
   </data>
-  <data name="AcSettings_Video" xml:space="preserve">
-    <value>Video</value>
-  </data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>Widok &amp; UI</value>
-  </data>
-  <data name="AcSettings_Audio" xml:space="preserve">
-    <value>Audio</value>
   </data>
   <data name="AcSettings_Controls" xml:space="preserve">
     <value>Sterowanie</value>
   </data>
   <data name="AcSettings_Miscellaneous" xml:space="preserve">
     <value>Różne</value>
-  </data>
-  <data name="AcSettings_System" xml:space="preserve">
-    <value>System</value>
   </data>
   <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
     <value>Aktywne aplikacje:</value>
@@ -3083,9 +2942,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
     <value>Pokaż dym w lusterkach</value>
   </data>
-  <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
-    <value>Post-Processing:</value>
-  </data>
   <data name="AcSettings_Video_EnablePostProcessing" xml:space="preserve">
     <value>Włącz efekty post-processing</value>
   </data>
@@ -3110,9 +2966,6 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
     <value>Promienie słoneczne</value>
   </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
-  </data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
     <value>Odbicia:</value>
   </data>
@@ -3134,23 +2987,14 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
   <data name="AcSettings_Video_HighQuality" xml:space="preserve">
     <value>Wysoka jakość</value>
   </data>
-  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
-    <value>Oculus:</value>
-  </data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>Pikseli na wyświetlacz</value>
   <alternative>Pikseli na wyświetlaczu:</alternative></data>
-  <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
-    <value>System:</value>
-  </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
     <value>Pozwól na nieobsługiwany DirectX 10 (stosowanie na własną odpowiedzialność; nie działa?)</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
     <value>Odbicie nieba</value>
-  </data>
-  <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
-    <value>Mip LOD bias</value>
   </data>
   <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
     <value>Maks. opóź. ramki</value>
@@ -3522,15 +3366,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
   </data>
   <data name="Drive_Temperature_Random" xml:space="preserve">
     <value>Losowy</value>
-  </data>
-  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
-    <value>… m</value>
-  </data>
-  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
-    <value>… m</value>
-  </data>
-  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
-    <value>…</value>
   </data>
   <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
     <value>Całkowita długość, zalecany format: “{0}”</value>

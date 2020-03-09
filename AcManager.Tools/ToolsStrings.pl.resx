@@ -690,29 +690,17 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Wysokie</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmapa (bez kompresji)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Dostosuj</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Pojedynczy ekran</value>
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Potrójny ekran</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (eksperymentalne)</value>
@@ -744,32 +732,14 @@
   <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
     <value>Sześć powierzchni na klatkę</value>
   <alternative>Six faces per frame</alternative></data>
-  <data name="Windows_Kn5Commentary" xml:space="preserve">
-    <value>KN5 model</value>
-  </data>
   <data name="Common_AcReplay" xml:space="preserve">
     <value>Powtórka AC</value>
   </data>
   <data name="Common_Disabled" xml:space="preserve">
     <value>Wyłączone</value>
   </data>
-  <data name="Settings_DefaultPlayerName" xml:space="preserve">
-    <value>Player</value>
-  </data>
   <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Oficjalny</value>
-  </data>
-  <data name="Settings_Starter_Tricky" xml:space="preserve">
-    <value>Tricky</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_Naive" xml:space="preserve">
-    <value>Naive</value>
   </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Zalecane)</value>
@@ -789,27 +759,6 @@
   <data name="Period_Month" xml:space="preserve">
     <value>Co miesiąc</value>
   </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Fancy</value>
-  </data>
-  <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>Lite</value>
-  </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Nieznany problem (Proces=Zero)</value>
   <alternative>Nieznany problem (Process=Null)</alternative></data>
@@ -824,9 +773,6 @@
   </data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Wyścigi równoległe</value>
-  </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
   </data>
   <data name="Session_Booking" xml:space="preserve">
     <value>Rezerwacja</value>
@@ -939,9 +885,6 @@
   <data name="Weather_Squalls" xml:space="preserve">
     <value>Silne porywy wiatru</value>
   </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
   <data name="Weather_Hurricane" xml:space="preserve">
     <value>Huragan</value>
   </data>
@@ -996,9 +939,6 @@
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>Nowy plik zostanie utworzony zawierając w nazwie ID</value>
   </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Wprowadź kod uwierzytelniający Dysk Google:</value>
   </data>
@@ -1010,9 +950,6 @@
   </data>
   <data name="Uploader_RequestFailed" xml:space="preserve">
     <value>GET żądanie nie powiodło się</value>
-  </data>
-  <data name="Uploader_RootDirectory" xml:space="preserve">
-    <value>Root</value>
   </data>
   <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
     <value>Nie można przesłać pliku do Dysku Google</value>
@@ -1143,9 +1080,6 @@
   <data name="Units_BHP" xml:space="preserve">
     <value>KM</value>
   </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
   <data name="Common_Power" xml:space="preserve">
     <value>Moc</value>
   </data>
@@ -1160,9 +1094,6 @@
   </data>
   <data name="Common_Length" xml:space="preserve">
     <value>Długość</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Eksportuję...</value>
@@ -1184,9 +1115,6 @@
   </data>
   <data name="AcSettings_Quality_Normal" xml:space="preserve">
     <value>Normalna</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
   </data>
   <data name="AcSettings_Quality_Ideal" xml:space="preserve">
     <value>Ideał</value>
@@ -1223,9 +1151,6 @@
   </data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
     <value>Bardzo niskie</value>
-  </data>
-  <data name="Common_Weekend" xml:space="preserve">
-    <value>Weekend</value>
   </data>
   <data name="Common_UndefinedError" xml:space="preserve">
     <value>Niezdefiniowany błąd</value>
@@ -1371,9 +1296,6 @@
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Niepoprawny format</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>System anty-blokowania kół</value>
   </data>
@@ -1454,9 +1376,6 @@
   </data>
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Inicjacja</value>
-  </data>
-  <data name="Drive_Grid_Manual" xml:space="preserve">
-    <value>Manual</value>
   </data>
   <data name="Drive_Grid_FilteredBy" xml:space="preserve">
     <value>Filtruj przez...</value>
@@ -1539,9 +1458,6 @@
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Właśnie próbuje uruchomić acs.exe bezpośrednio; w większości przypadków nie uda się</value>
   </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
-  </data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
     <value>Nie można załadować obrazu za pomocą Magick.NET</value>
   </data>
@@ -1610,9 +1526,6 @@
   </data>
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Trudny</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
   </data>
   <data name="SpecialEvent_Description" xml:space="preserve">
     <value>{0} na {1}.</value>

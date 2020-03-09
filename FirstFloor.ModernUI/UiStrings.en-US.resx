@@ -117,125 +117,14 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Back" xml:space="preserve">
-    <value>Back</value>
-  </data>
-  <data name="Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Close</value>
-  </data>
-  <data name="Common_Add" xml:space="preserve">
-    <value>Add</value>
-  </data>
-  <data name="Common_Ascending" xml:space="preserve">
-    <value>Ascending</value>
-  </data>
-  <data name="Common_Descending" xml:space="preserve">
-    <value>Descending</value>
-  </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Oops!</value>
-  </data>
-  <data name="Common_PleaseWait" xml:space="preserve">
-    <value>Please wait…</value>
-  </data>
-  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://restart]restart[/url] this app or just [url=cmd://exit]close[/url] it.</value>
-  </data>
   <data name="FatalError_Message" xml:space="preserve">
     <value>App just ran into a problem and needs to restart. Please, use “Report an issue” button afterwards if you want to send a report.</value>
-  </data>
-  <data name="FiltersLinkAll" xml:space="preserve">
-    <value>All</value>
-  </data>
-  <data name="Forward" xml:space="preserve">
-    <value>Forward</value>
-  </data>
-  <data name="Go" xml:space="preserve">
-    <value>Go</value>
   </data>
   <data name="HidePassword" xml:space="preserve">
     <value>Hide Password</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
-  <data name="KeyAltLeft" xml:space="preserve">
-    <value>Alt (Left)</value>
-  </data>
-  <data name="KeyAltRight" xml:space="preserve">
-    <value>Alt (Right)</value>
-  </data>
-  <data name="KeyBackspace" xml:space="preserve">
-    <value>Backspace</value>
-  </data>
-  <data name="KeyBrowserBack" xml:space="preserve">
-    <value>Browser Back</value>
-  </data>
-  <data name="KeyBrowserFavorites" xml:space="preserve">
-    <value>Browser Favorites</value>
-  </data>
-  <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser Forward</value>
-  </data>
-  <data name="KeyBrowserHome" xml:space="preserve">
-    <value>Browser Home</value>
-  </data>
-  <data name="KeyBrowserRefresh" xml:space="preserve">
-    <value>Browser Refresh</value>
-  </data>
-  <data name="KeyBrowserSearch" xml:space="preserve">
-    <value>Browser Search</value>
-  </data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser Stop</value>
-  </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
-  <data name="KeyContextMenu" xml:space="preserve">
-    <value>Context Menu</value>
-  </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
-  <data name="KeyControlLeft" xml:space="preserve">
-    <value>Control (Left)</value>
-  </data>
-  <data name="KeyControlRight" xml:space="preserve">
-    <value>Control (Right)</value>
-  </data>
-  <data name="KeyDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="KeyDownArrow" xml:space="preserve">
-    <value>Down Arrow</value>
-  </data>
-  <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
-  <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
-  <data name="KeyEscape" xml:space="preserve">
-    <value>Escape</value>
-  </data>
-  <data name="KeyHelp" xml:space="preserve">
-    <value>Help</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
   </data>
   <data name="KeyLaunchApplication1" xml:space="preserve">
     <value>Launch Favorite Application 2</value>
@@ -243,260 +132,17 @@
   <data name="KeyLaunchApplication2" xml:space="preserve">
     <value>Launch Favorite Application 3</value>
   </data>
-  <data name="KeyLaunchMail" xml:space="preserve">
-    <value>Launch Mail</value>
-  </data>
-  <data name="KeyLeftArrow" xml:space="preserve">
-    <value>Left Arrow</value>
-  </data>
-  <data name="KeyMediaNextTrack" xml:space="preserve">
-    <value>Next Track</value>
-  </data>
-  <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Play</value>
-  </data>
-  <data name="KeyMediaPreviousTrack" xml:space="preserve">
-    <value>Previous Track</value>
-  </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
   <data name="KeyNumberPad" xml:space="preserve">
     <value>Number Pad {0}</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
-  <data name="KeyPageDown" xml:space="preserve">
-    <value>Page Down</value>
-  </data>
-  <data name="KeyPageUp" xml:space="preserve">
-    <value>Page Up</value>
-  </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
-  <data name="KeyRightArrow" xml:space="preserve">
-    <value>Right Arrow</value>
-  </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
-  <data name="KeySelectMedia" xml:space="preserve">
-    <value>Select Media</value>
-  </data>
-  <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
-  <data name="KeyShiftLeft" xml:space="preserve">
-    <value>Shift (Left)</value>
-  </data>
-  <data name="KeyShiftRight" xml:space="preserve">
-    <value>Shift (Right)</value>
-  </data>
-  <data name="KeySpace" xml:space="preserve">
-    <value>Space</value>
-  </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
-  </data>
-  <data name="KeyUpArrow" xml:space="preserve">
-    <value>Up Arrow</value>
-  </data>
-  <data name="KeyVolumeDown" xml:space="preserve">
-    <value>Volume Down</value>
-  </data>
-  <data name="KeyVolumeMute" xml:space="preserve">
-    <value>Volume Mute</value>
-  </data>
-  <data name="KeyVolumeUp" xml:space="preserve">
-    <value>Volume Up</value>
-  </data>
-  <data name="KeyWindowsLeft" xml:space="preserve">
-    <value>Windows (Left)</value>
-  </data>
-  <data name="KeyWindowsRight" xml:space="preserve">
-    <value>Windows (Right)</value>
-  </data>
-  <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
-  <data name="MarkLimited" xml:space="preserve">
-    <value>LIMITED</value>
-  </data>
-  <data name="MarkNew" xml:space="preserve">
-    <value>NEW</value>
-  </data>
-  <data name="Maximize" xml:space="preserve">
-    <value>Maximize</value>
-  </data>
-  <data name="Minimize" xml:space="preserve">
-    <value>Minimize</value>
-  </data>
-  <data name="NavigateLink" xml:space="preserve">
-    <value>Navigate link</value>
-  </data>
-  <data name="NavigationFailed" xml:space="preserve">
-    <value>Navigation failed</value>
   </data>
   <data name="NavigationFailedFrameNotFound" xml:space="preserve">
     <value>Unable to navigate to {0}, could not find a ModernFrame target '{1}'</value>
   </data>
-  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
-    <value>Unable to navigate to {0}, no source specified</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
-  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
-    <value>Eighteenth</value>
-  </data>
-  <data name="Ordinalizing_Eighth" xml:space="preserve">
-    <value>Eighth</value>
-  </data>
-  <data name="Ordinalizing_Eleventh" xml:space="preserve">
-    <value>Eleventh</value>
-  </data>
-  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
-    <value>Fifteenth</value>
-  </data>
-  <data name="Ordinalizing_Fifth" xml:space="preserve">
-    <value>Fifth</value>
-  </data>
-  <data name="Ordinalizing_First" xml:space="preserve">
-    <value>First</value>
-  </data>
-  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
-    <value>Fourteenth</value>
-  </data>
-  <data name="Ordinalizing_Fourth" xml:space="preserve">
-    <value>Fourth</value>
-  </data>
-  <data name="Ordinalizing_Minus" xml:space="preserve">
-    <value>Minus {0}</value>
-  </data>
-  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
-    <value>Nineteenth</value>
-  </data>
-  <data name="Ordinalizing_Ninth" xml:space="preserve">
-    <value>Ninth</value>
-  </data>
-  <data name="Ordinalizing_Nth" xml:space="preserve">
-    <value>{0}th</value>
-  </data>
-  <data name="Ordinalizing_Second" xml:space="preserve">
-    <value>Second</value>
-  </data>
-  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
-    <value>Seventeenth</value>
-  </data>
-  <data name="Ordinalizing_Seventh" xml:space="preserve">
-    <value>Seventh</value>
-  </data>
-  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
-    <value>Sixteenth</value>
-  </data>
-  <data name="Ordinalizing_Sixth" xml:space="preserve">
-    <value>Sixth</value>
-  </data>
-  <data name="Ordinalizing_Tenth" xml:space="preserve">
-    <value>Tenth</value>
-  </data>
-  <data name="Ordinalizing_Third" xml:space="preserve">
-    <value>Third</value>
-  </data>
-  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
-    <value>Thirteenth</value>
-  </data>
-  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
-    <value>Thirtieth</value>
-  </data>
-  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
-    <value>Thirty-first</value>
-  </data>
-  <data name="Ordinalizing_Twelfth" xml:space="preserve">
-    <value>Twelfth</value>
-  </data>
-  <data name="Ordinalizing_Twentieth" xml:space="preserve">
-    <value>Twentieth</value>
-  </data>
-  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
-    <value>Twenty-eighth</value>
-  </data>
-  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
-    <value>Twenty-fifth</value>
-  </data>
-  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
-    <value>Twenty-first</value>
-  </data>
-  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
-    <value>Twenty-fourth</value>
-  </data>
-  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
-    <value>Twenty-ninth</value>
-  </data>
-  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
-    <value>Twenty-second</value>
-  </data>
-  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
-    <value>Twenty-seventh</value>
-  </data>
-  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
-    <value>Twenty-sixth</value>
-  </data>
-  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
-    <value>Twenty-third</value>
-  </data>
-  <data name="Ordinalizing_Zeroth" xml:space="preserve">
-    <value>Zeroth</value>
-  </data>
-  <data name="PickColor" xml:space="preserve">
-    <value>Pick a color</value>
-  </data>
-  <data name="PickColorFromScreen" xml:space="preserve">
-    <value>Pick any color from screen</value>
-  </data>
-  <data name="Progress_Downloading" xml:space="preserve">
-    <value>Loaded {0}</value>
-  </data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
     <value>Loaded {0} of {1}</value>
   </data>
-  <data name="Progress_Uploading" xml:space="preserve">
-    <value>Uploaded {0}</value>
-  </data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>Uploaded {0} of {1}</value>
-  </data>
-  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
-    <value>Matching candidates not found</value>
   </data>
   <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
     <value>Save Race Grid As Preset</value>
@@ -504,26 +150,11 @@
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
     <value>Share Race Grid</value>
   </data>
-  <data name="Restore" xml:space="preserve">
-    <value>Restore</value>
-  </data>
-  <data name="SelectColor" xml:space="preserve">
-    <value>Select a color</value>
-  </data>
   <data name="ShowPassword" xml:space="preserve">
     <value>Show Password</value>
   </data>
-  <data name="Source" xml:space="preserve">
-    <value>Source</value>
-  </data>
   <data name="StackTrace" xml:space="preserve">
     <value>Stack Trace</value>
-  </data>
-  <data name="Suggestions" xml:space="preserve">
-    <value>Suggestions</value>
-  </data>
-  <data name="SuggestionsMessage" xml:space="preserve">
-    <value>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</value>
   </data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
@@ -546,67 +177,16 @@
   <data name="Time_Week" xml:space="preserve">
     <value>{0} week</value>
   </data>
-  <data name="UIThreadRequired" xml:space="preserve">
-    <value>Operation requires the UI thread</value>
-  </data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Unexpected token</value>
-  </data>
-  <data name="UnknownOS" xml:space="preserve">
-    <value>Unknown operating system</value>
-  </data>
-  <data name="UnknownTokenType" xml:space="preserve">
-    <value>Unknown token type</value>
-  </data>
   <data name="UpdateAvailable" xml:space="preserve">
     <value>Newer version {0} is ready to be installed</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
-  </data>
-  <data name="Common_And" xml:space="preserve">
-    <value>and</value>
-  </data>
-  <data name="Toolbar_Favourite" xml:space="preserve">
-    <value>Favourite</value>
-  </data>
-  <data name="Toolbar_Unfavourite" xml:space="preserve">
-    <value>Unfavourite</value>
-  </data>
-  <data name="Toolbar_Hide" xml:space="preserve">
-    <value>Hide</value>
-  </data>
-  <data name="Toolbar_Unhide" xml:space="preserve">
-    <value>Unhide</value>
   </data>
   <data name="Toolbar_OnlineManageLists" xml:space="preserve">
     <value>Manage Lists…</value>
   </data>
-  <data name="Toolbar_Invite" xml:space="preserve">
-    <value>Invite</value>
-  </data>
   <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
     <value>Cancel Booking</value>
   </data>
-  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
-    <value>Share a link to this server so your friends could quickly join you (Ctrl+Page Up)</value>
-  </data>
   <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
     <value>Include Password</value>
-  </data>
-  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
-    <value>Add server to favourites list (Ctrl+D)</value>
-  </data>
-  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
-    <value>Remove server from favourites list (Ctrl+D)</value>
-  </data>
-  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
-    <value>Add server to hidden servers list (search for “@hidden” to open it)</value>
-  </data>
-  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
-    <value>Remove server from hidden servers list</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0}: </value>
   </data>
 </root>

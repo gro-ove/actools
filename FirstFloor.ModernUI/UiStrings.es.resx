@@ -156,12 +156,6 @@
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>No se ha podido navegar a {0}, no hay fuente especificada</value>
   </data>
-  <data name="No" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>Restaurar</value>
   </data>
@@ -189,9 +183,6 @@
   <data name="KeyBackspace" xml:space="preserve">
     <value>Retroceso</value>
   </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="KeyControlLeft" xml:space="preserve">
     <value>Control (izquierda)</value>
   </data>
@@ -203,12 +194,6 @@
   </data>
   <data name="KeyEnd" xml:space="preserve">
     <value>Fin</value>
-  </data>
-  <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
-  <data name="KeyEscape" xml:space="preserve">
-    <value>Escape</value>
   </data>
   <data name="KeyHome" xml:space="preserve">
     <value>Inicio</value>
@@ -266,9 +251,6 @@
   </data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>Archivos DDS y TIFF |*.dds;*.tif;*.tiff|Archivos de imagen|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Todos los archivos (*.*)|*.*</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
   </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (izquierdo)</value>
@@ -349,9 +331,6 @@
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Pista Previa</value>
   </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Seleccionar medio</value>
   </data>
@@ -363,30 +342,6 @@
   </data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
     <value>Lanzar aplicación favorita 2</value>
-  </data>
-  <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
   </data>
   <data name="FiltersLinkAll" xml:space="preserve">
     <value>Todos</value>

@@ -156,9 +156,6 @@
   <data name="No" xml:space="preserve">
     <value>Nie</value>
   </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>Przywróć</value>
   </data>
@@ -183,12 +180,6 @@
   <data name="ImagesFilter" xml:space="preserve">
     <value>Pliki obrazu|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Wszystkie pliki (*.*)|*.*</value>
   </data>
-  <data name="KeyBackspace" xml:space="preserve">
-    <value>Backspace</value>
-  </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="KeyControlLeft" xml:space="preserve">
     <value>Control (Lewy)</value>
   </data>
@@ -198,47 +189,20 @@
   <data name="KeyDownArrow" xml:space="preserve">
     <value>Strzałka w dół</value>
   </data>
-  <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
-  <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
-  <data name="KeyEscape" xml:space="preserve">
-    <value>Escape</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
-  </data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Strzałka w lewo</value>
   </data>
   <data name="KeyNumberPad" xml:space="preserve">
     <value>Numer Pada {0}</value>
   <alternative>Number Pad {0}</alternative></data>
-  <data name="KeyPageDown" xml:space="preserve">
-    <value>Page Down</value>
-  </data>
-  <data name="KeyPageUp" xml:space="preserve">
-    <value>Page Up</value>
-  </data>
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Strzałka w prawo</value>
   <alternative>Srzałka w prawo</alternative></data>
-  <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (Lewy)</value>
   </data>
   <data name="KeyShiftRight" xml:space="preserve">
     <value>Shift (Prawy)</value>
-  </data>
-  <data name="KeySpace" xml:space="preserve">
-    <value>Space</value>
-  </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Strzałka w górę</value>
@@ -267,38 +231,11 @@
   <data name="TexturesFilter" xml:space="preserve">
     <value>Pliki DDS &amp; TIFF|*.dds;*.tif;*.tiff|Pkiki obrazu|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Wszystkie pliki (*.*)|*.*</value>
   </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Lewy)</value>
   </data>
   <data name="KeyAltRight" xml:space="preserve">
     <value>Alt (Prawy)</value>
-  </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
-  </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
-  </data>
-  <data name="KeyDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="KeyHelp" xml:space="preserve">
-    <value>Help</value>
   </data>
   <data name="KeyWindowsLeft" xml:space="preserve">
     <value>Windows (Lewy)</value>
@@ -315,9 +252,6 @@
   <data name="KeyBrowserFavorites" xml:space="preserve">
     <value>Ulubione</value>
   <alternative>Browser Favorites</alternative></data>
-  <data name="KeyBrowserForward" xml:space="preserve">
-    <value>Browser Forward</value>
-  </data>
   <data name="KeyBrowserHome" xml:space="preserve">
     <value>Główna</value>
   <alternative>Browser Home</alternative></data>
@@ -342,14 +276,8 @@
   <data name="KeyMediaNextTrack" xml:space="preserve">
     <value>Następny tor</value>
   </data>
-  <data name="KeyMediaPlayPause" xml:space="preserve">
-    <value>Play</value>
-  </data>
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Poprzedni tor</value>
-  </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
   </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Wybierz media</value>
@@ -362,30 +290,6 @@
   </data>
   <data name="KeyLaunchApplication2" xml:space="preserve">
     <value>Uruchom ulubioną aplikację 2</value>
-  </data>
-  <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
   </data>
   <data name="FiltersLinkAll" xml:space="preserve">
     <value>Wszystko</value>
@@ -525,9 +429,6 @@
   <data name="Time_Second" xml:space="preserve">
     <value>{0} sekunda</value>
   </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Oops!</value>
-  </data>
   <data name="FatalError_Message" xml:space="preserve">
     <value>Aplikacja napotkała problem i musi zostać ponownie uruchomiona. Proszę kliknąć przycisk "Zgłoś problem", jeżeli chcesz wysłać raport o błędzie.</value>
   </data>
@@ -605,9 +506,6 @@
   </data>
   <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
     <value>Usuń serwer z listy ukrytych</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0}: </value>
   </data>
   <data name="Colon_Format" xml:space="preserve">
     <value>{0}: {1}</value>

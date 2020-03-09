@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Common_Clear" xml:space="preserve">
     <value>Clair</value>
   </data>
@@ -210,9 +207,6 @@
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Pneus :</value>
   </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value> psi</value>
-  </data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
     <value>Essence :</value>
   <alternative>Fuel :</alternative></data>
@@ -233,9 +227,6 @@
   </data>
   <data name="Common_LapsPostfix" xml:space="preserve">
     <value> tour</value>
-  </data>
-  <data name="Common_MinutePostfix" xml:space="preserve">
-    <value> minute</value>
   </data>
   <data name="Common_Downloading" xml:space="preserve">
     <value>Téléchargement...</value>
@@ -258,17 +249,11 @@
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
     <value>Impossible de mettre à jour l'aperçu</value>
   <alternative>Ne peut mettre à jour la prévisualisation</alternative></data>
-  <data name="Common_PointsPostfix" xml:space="preserve">
-    <value> point</value>
-  </data>
   <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
     <value>Année de départ de la production</value>
   </data>
   <data name="Controls_MinimumForce" xml:space="preserve">
     <value>Force minimum</value>
-  </data>
-  <data name="Controls_Gain" xml:space="preserve">
-    <value>Gain</value>
   </data>
   <data name="Controls_EffectsHeader" xml:space="preserve">
     <value>Effets :</value>
@@ -287,9 +272,6 @@
   </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposition :</value>
-  </data>
-  <data name="Common_FpsPostfix" xml:space="preserve">
-    <value> FPS</value>
   </data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
     <value>Télécharger et installer ({0})</value>
@@ -315,9 +297,6 @@
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value> °C</value>
   <alternative> °C</alternative></data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} adversaire</value>
   </data>
@@ -456,20 +435,11 @@
   <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
     <value>Format :</value>
   </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
   <data name="Showroom_FovLabel" xml:space="preserve">
     <value>FOV :</value>
   </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Animation_Up" xml:space="preserve">
     <value>Haut</value>
-  </data>
-  <data name="ImageViewer_DefaultName" xml:space="preserve">
-    <value>Image</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Impossible de démarrer le showroom</value>
@@ -543,9 +513,6 @@
   <data name="QuickSwitches_Names" xml:space="preserve">
     <value>Noms</value>
   </data>
-  <data name="Common_Options" xml:space="preserve">
-    <value>Options</value>
-  </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
     <value>Ouvrir dans le showroom</value>
   </data>
@@ -582,20 +549,11 @@
   <data name="Common_Preparing" xml:space="preserve">
     <value>Préparation...</value>
   </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
-  </data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Réessayer</value>
   </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>Rendre indépendant</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
-  <data name="Common_Reset" xml:space="preserve">
-    <value>Reset</value>
   </data>
   <data name="ImageViewer_Save_Title" xml:space="preserve">
     <value>Sauvegarder l'image comme</value>
@@ -606,14 +564,8 @@
   <data name="Presets_Save_Tooltip" xml:space="preserve">
     <value>Sauvegarde les paramètres actuels comme préréglage</value>
   </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
     <value>Showroom :</value>
-  </data>
-  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Skin</value>
   </data>
   <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
     <value>Taille :</value>
@@ -749,9 +701,6 @@
   <alternative>Utilise PSD, XCF, etc. à la place si disponible (l'extension Magick.NET est requise)</alternative></data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
     <value>Illumination globale</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
-    <value>Diffusion</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
     <value>Luminosité</value>
@@ -948,9 +897,6 @@ Depth mode (Mode de profondeur) : [b]{4}[/b]</value>
   <data name="TableHeader_BestLap" xml:space="preserve">
     <value>Meilleur tour</value>
   </data>
-  <data name="TableHeader_Date" xml:space="preserve">
-    <value>Date</value>
-  </data>
   <data name="TableHeader_CarSkin" xml:space="preserve">
     <value>Livrée (Skin)</value>
   </data>
@@ -959,15 +905,6 @@ Depth mode (Mode de profondeur) : [b]{4}[/b]</value>
   </data>
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>IA</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
-  <data name="TableHeader_Visible" xml:space="preserve">
-    <value>Visible</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Verrouiller</value>

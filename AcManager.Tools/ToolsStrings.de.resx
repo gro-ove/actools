@@ -117,12 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
   <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
     <value>Konnte Rennen nicht starten</value>
   <alternative>Spiel kann nicht starten</alternative><alternative>Rennen starten fehlgeschlagen</alternative></data>
@@ -351,9 +345,6 @@
   <data name="Units_BHP" xml:space="preserve">
     <value>PS</value>
   </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
   <data name="Common_Power" xml:space="preserve">
     <value>Leistung</value>
   </data>
@@ -368,9 +359,6 @@
   </data>
   <data name="Common_Length" xml:space="preserve">
     <value>Länge</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Exportiere…</value>
@@ -390,15 +378,6 @@
   <data name="CarParentIsMissing" xml:space="preserve">
     <value>Basismodell fehlt</value>
   </data>
-  <data name="AcSettings_Quality_Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
-  </data>
-  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
-    <value>Ideal</value>
-  </data>
   <data name="Common_CannotReadData" xml:space="preserve">
     <value>Daten nicht lesbar</value>
   </data>
@@ -416,9 +395,6 @@
   <alternative>Auto-ID fehlt</alternative></data>
   <data name="Common_Height" xml:space="preserve">
     <value>Höhe</value>
-  </data>
-  <data name="Common_Radius" xml:space="preserve">
-    <value>Radius</value>
   </data>
   <data name="Common_Number" xml:space="preserve">
     <value>Nummer</value>
@@ -513,14 +489,8 @@
   <data name="AcSettings_View_Locked" xml:space="preserve">
     <value>Gesperrt</value>
   </data>
-  <data name="AcSettings_View_Lateral" xml:space="preserve">
-    <value>Lateral</value>
-  </data>
   <data name="AcSettings_View_Vertical" xml:space="preserve">
     <value>Vertikal</value>
-  </data>
-  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
-    <value>Longitudinal</value>
   </data>
   <data name="AcSettings_View_ViewHeader" xml:space="preserve">
     <value>Ansicht:</value>
@@ -572,9 +542,6 @@
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Ungültiges Format</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
   </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Antiblockiersystem</value>
@@ -654,9 +621,6 @@
   <data name="KunosCareer_Resume" xml:space="preserve">
     <value>Weitermachen</value>
   </data>
-  <data name="KunosCareer_Start" xml:space="preserve">
-    <value>Start</value>
-  </data>
   <data name="Drive_Grid_Manual" xml:space="preserve">
     <value>Manuell</value>
   </data>
@@ -696,9 +660,6 @@
   <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
     <value>Durchfahrtsstrafe</value>
   <alternative>Durchfahrt</alternative></data>
-  <data name="Session_TrackDay" xml:space="preserve">
-    <value>Track Day</value>
-  </data>
   <data name="RaceGrid_CannotUpdate" xml:space="preserve">
     <value>Startaufstellung nicht aktualisierbar</value>
   </data>
@@ -795,9 +756,6 @@
   <data name="AcRootDirectory_Required" xml:space="preserve">
     <value>AcRootDirectory wird benötigt</value>
   </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Ein Bildschirm</value>
   </data>
@@ -846,14 +804,8 @@
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Sehr hoch</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (ohne Komprimierung)</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
   </data>
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
     <value>Fahrzeug Lackierung</value>
@@ -906,9 +858,6 @@
   <data name="Common_Disabled" xml:space="preserve">
     <value>Deaktiviert</value>
   </data>
-  <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>Global:</value>
-  <alternative>Allgemein</alternative></data>
   <data name="Common_IdIsTaken" xml:space="preserve">
     <value>ID ist vergeben</value>
   </data>
@@ -1095,9 +1044,6 @@
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Unbekanntes Problem (Prozess=null)</value>
   </data>
-  <data name="Gameplay_Units_Imperial" xml:space="preserve">
-    <value>Imperial (mph)</value>
-  </data>
   <data name="Gameplay_Units_Metrical" xml:space="preserve">
     <value>Metrisch (Km/h)</value>
   </data>
@@ -1224,23 +1170,8 @@
   <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
     <value>Nichtunterstütztes Format</value>
   </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="Session_Booking" xml:space="preserve">
-    <value>Booking</value>
-  </data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Drag</value>
-  </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
-  </data>
-  <data name="Session_Hotlap" xml:space="preserve">
-    <value>Hotlap</value>
   </data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Training</value>
@@ -1359,9 +1290,6 @@
   <data name="Weather_Rain" xml:space="preserve">
     <value>Regen</value>
   </data>
-  <data name="Weather_Sand" xml:space="preserve">
-    <value>Sand</value>
-  </data>
   <data name="Weather_Sleet" xml:space="preserve">
     <value>Schneeregen</value>
   </data>
@@ -1377,9 +1305,6 @@
   <data name="Weather_Thunderstorm" xml:space="preserve">
     <value>Gewitter</value>
   </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
   <data name="Weather_Windy" xml:space="preserve">
     <value>Windig</value>
   </data>
@@ -1394,9 +1319,6 @@
   </data>
   <data name="Online_AdminPassword" xml:space="preserve">
     <value>Adminpasswort:</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
   </data>
   <data name="Shared_AudioSettingsPreset" xml:space="preserve">
     <value>Audioeinstellungsvorlage</value>
@@ -1462,9 +1384,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   </data>
   <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
     <value>Du stehst auf der Blacklist dieses Servers</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
   </data>
   <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
     <value>Ein anderes Fahrzeug wählen.</value>
@@ -1571,9 +1490,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
     <value>Ping um HTTP-Port zu finden...</value>
   </data>
-  <data name="PlaceConditionType_Position" xml:space="preserve">
-    <value>Position</value>
-  </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Probiert acs.exe direkt auszuführen; funktioniert in den meisten Fällen nicht</value>
   </data>
@@ -1622,9 +1538,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>Spieler</value>
   </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
   <data name="Uploader_RootDirectory" xml:space="preserve">
     <value>Stammverzeichnis</value>
   </data>
@@ -1633,9 +1546,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   </data>
   <data name="RhmService_CannotStart" xml:space="preserve">
     <value>Starten von RHM fehlgeschlagen</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
   </data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
     <value>Strecke für Setups nicht vorhanden</value>
@@ -1648,9 +1558,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   </data>
   <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
     <value>Timeout überschritten</value>
-  </data>
-  <data name="Settings_Starter_Tricky" xml:space="preserve">
-    <value>Tricky</value>
   </data>
   <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
     <value>UI Modul "CM Helper" ist installiert und aktiviert. AssettoCorsa.exe neustarten nicht vergessen!</value>
@@ -1676,9 +1583,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <data name="Weather_OvercastClouds" xml:space="preserve">
     <value>Wolkenverhangen</value>
   </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
   <data name="PlaceConditionType_Time" xml:space="preserve">
     <value>Zeit</value>
   </data>
@@ -1694,12 +1598,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
     <value>Lackierungen {0} fehlen.</value>
   <alternative>Fahrzeuglackierungen {0} fehlen.</alternative></data>
-  <data name="Weather_Mods" xml:space="preserve">
-    <value>Mods</value>
-  </data>
-  <data name="Weather_Original" xml:space="preserve">
-    <value>Original</value>
-  </data>
   <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
     <value>Wetter {0} fehlt.</value>
   </data>
@@ -1720,9 +1618,6 @@ Möchtest du das Verzeichnis vor dem Starten des Servers packen? Nicht vergessen
   <alternative>Eigene Vorlage für Ausstellungsräume</alternative></data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Eigene Vorlage für Real Head Motion</value>
-  </data>
-  <data name="Controls_Gas" xml:space="preserve">
-    <value>Gas</value>
   </data>
   <data name="Controls_Brake" xml:space="preserve">
     <value>Bremse</value>

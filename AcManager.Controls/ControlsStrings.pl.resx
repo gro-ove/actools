@@ -261,9 +261,6 @@
   <data name="QuickSwitches_Exposure" xml:space="preserve">
     <value>Ekspozycja</value>
   </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
     <value>Zablokuj kierownicę</value>
   </data>
@@ -323,9 +320,6 @@
   </data>
   <data name="Theme_Light" xml:space="preserve">
     <value>Jasny</value>
-  </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
   </data>
   <data name="Animation_Modern" xml:space="preserve">
     <value>Nowoczesny</value>
@@ -415,9 +409,6 @@
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Wydaje się, że SweetFx nie ma wpływu na wynik, ale może zmniejszyć czas ładowania</value>
   <alternative>Wydaje się, że SweetFx nie mają wpływu na wynik, lecz może zmniejszyć czas ładowania</alternative></data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Nie można uruchomić salonu</value>
   </data>
@@ -441,9 +432,6 @@
   <alternative>Błędna tekstura!</alternative></data>
   <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
     <value>Typ:</value>
-  </data>
-  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
-    <value>Format:</value>
   </data>
   <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
     <value>Wymiary:</value>
@@ -514,9 +502,6 @@
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Statystyki</value>
   </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Obiekty:</value>
   </data>
@@ -562,9 +547,6 @@
   <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
     <value>Ukryj krawędzie</value>
   </data>
-  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
   <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
     <value>Dopasuj</value>
   <alternative>Dopasowanie</alternative></data>
@@ -603,9 +585,6 @@
   </data>
   <data name="AcObject_VersionLabel" xml:space="preserve">
     <value>Wersja:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Folder “{0}” już istnieje. Zastąpić pliki?</value>
@@ -681,9 +660,6 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="Controls_RangeToAxis" xml:space="preserve">
     <value>Do</value>
   </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Controls_FilterAxis" xml:space="preserve">
     <value>Filtr</value>
   </data>
@@ -737,9 +713,6 @@ Tryb głębi: [b]{4}[/b]</value>
   </data>
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Pośredni</value>
-  </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
   </data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Ładuję…</value>
@@ -795,9 +768,6 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value>°C</value>
   </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} przeciwnik</value>
   </data>
@@ -810,9 +780,6 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="Common_ChangeSkin" xml:space="preserve">
     <value>Zmień skórkę</value>
   <alternative>Zmień malowanie</alternative></data>
-  <data name="Common_Reset" xml:space="preserve">
-    <value>Reset</value>
-  </data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Spróbuj ponownie</value>
   </data>
@@ -954,9 +921,6 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value> okrążenie</value>
   </data>
-  <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value> °F</value>
-  </data>
   <data name="TableHeader_Name" xml:space="preserve">
     <value>Nazwa</value>
   </data>
@@ -981,12 +945,6 @@ Tryb głębi: [b]{4}[/b]</value>
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>SI</value>
   </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  <alternative>X</alternative></data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>Widoczne</value>
   </data>

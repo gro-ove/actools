@@ -366,26 +366,8 @@
   <data name="KeyZoom" xml:space="preserve">
     <value>放大</value>
   </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
   <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
     <value>BG</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
   </data>
   <data name="FiltersLinkAll" xml:space="preserve">
     <value>所有</value>
@@ -614,9 +596,6 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>DDS文件(*.dds) | *.dds | 所有文件(*.*) | *.*</value>
-  </data>
-  <data name="Progress_Short" xml:space="preserve">
-    <value>{0}</value>
   </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{1}项已完成{0}</value>

@@ -295,9 +295,6 @@
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
     <value>Préréglage course rapide</value>
   <alternative>Quick Drive preset</alternative></data>
-  <data name="Shared_Replay" xml:space="preserve">
-    <value>Replay</value>
-  </data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>Méteo</value>
   </data>
@@ -452,9 +449,6 @@
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>police</value>
   <alternative>font</alternative></data>
-  <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>showroom</value>
-  </data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>circuit</value>
   </data>
@@ -665,13 +659,6 @@
   <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
     <value>Vérifier que l'application a accès au dossier cfg.</value>
   <alternative>Vérifier que l'application a accés au dossier cfg.</alternative></data>
-  <data name="AcSettings_Off" xml:space="preserve">
-    <value>Off</value>
-    <comment>For example, for video settings, displayed instead of 0</comment>
-  </data>
-  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
-    <value>Minimum</value>
-  </data>
   <data name="AcSettings_Quality_Low" xml:space="preserve">
     <value>Basse</value>
   <alternative>Bas</alternative></data>
@@ -681,22 +668,12 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Élevé</value>
   <alternative>Haut</alternative></data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (sans compression)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Personnalisé</value>
   <alternative>Personalisé</alternative></data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-    <comment>Parametres: largeur, hauteur, width, taux de rafraichissement</comment>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Simple écran</value>
   </data>
@@ -709,9 +686,6 @@
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Très haut</value>
   <alternative>Trés Haut</alternative></data>
-  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
-    <value>Maximum</value>
-  </data>
   <data name="AcSettings_Cubemap_Static" xml:space="preserve">
     <value>Statique</value>
   </data>
@@ -748,15 +722,6 @@
   <data name="Settings_Starter_Tricky" xml:space="preserve">
     <value>Délicat</value>
   <alternative>Tricky</alternative></data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_Naive" xml:space="preserve">
-    <value>Naive</value>
-  </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (recommandé)</value>
   <alternative>{0} (Recommendé)</alternative><alternative>{0} (Recommandé)</alternative></data>
@@ -774,21 +739,6 @@
   </data>
   <data name="Period_Month" xml:space="preserve">
     <value>Mois</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
   </data>
   <data name="CustomShowroom_Fancy" xml:space="preserve">
     <value>Original</value>
@@ -808,23 +758,14 @@
   <data name="GameCommand_CannotExecute" xml:space="preserve">
     <value>Impossible d'exécuter la commande</value>
   <alternative>Impossible d'executer la commande</alternative></data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
-  </data>
   <data name="Session_Booking" xml:space="preserve">
     <value>Réservation</value>
   <alternative>Booking</alternative></data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Essai</value>
   </data>
-  <data name="Session_Qualification" xml:space="preserve">
-    <value>Qualification</value>
-  </data>
   <data name="Session_Race" xml:space="preserve">
     <value>Course</value>
-  </data>
-  <data name="Session_Hotlap" xml:space="preserve">
-    <value>Hotlap</value>
   </data>
   <data name="Session_TimeAttack" xml:space="preserve">
     <value>Contre la montre</value>
@@ -977,9 +918,6 @@
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>Un nouveau fichier sera crée avec un nom basé sur l'ID</value>
   </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Entrer le code d'authentification Google Drive:</value>
   </data>
@@ -1124,9 +1062,6 @@
   <data name="Settings_Period_Startup" xml:space="preserve">
     <value>Au démarrage uniquement</value>
   </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
   <data name="Championship" xml:space="preserve">
     <value>Championnat</value>
   <alternative>Carriere Championnat</alternative></data>
@@ -1169,18 +1104,9 @@
   <data name="Units_BHP" xml:space="preserve">
     <value>ch</value>
   <alternative>Bhp</alternative><alternative>Ch</alternative></data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
-  </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Exportation...</value>
   <alternative>Export...</alternative></data>
-  <data name="Common_Destination" xml:space="preserve">
-    <value>Destination</value>
-  </data>
   <data name="Common_CannotUnpack" xml:space="preserve">
     <value>Impossible de décompresser {0}</value>
   <alternative>Ne peut décompresser {0}</alternative></data>
@@ -1204,9 +1130,6 @@
   </data>
   <data name="Common_Speed" xml:space="preserve">
     <value>Vitesse</value>
-  </data>
-  <data name="Common_Weekend" xml:space="preserve">
-    <value>Weekend</value>
   </data>
   <data name="Common_UndefinedError" xml:space="preserve">
     <value>Erreur inconnue</value>
@@ -1374,9 +1297,6 @@
   <data name="Online_AdminPassword" xml:space="preserve">
     <value>Mot de passe administrateur :</value>
   </data>
-  <data name="AcSettings_Quality_Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
   <data name="ContentInstallation_TrackNew" xml:space="preserve">
     <value>Nouveau circuit {0}</value>
   </data>
@@ -1419,9 +1339,6 @@
   <data name="AcSettings_View_ViewHeader" xml:space="preserve">
     <value>Vue :</value>
   </data>
-  <data name="Common_NA" xml:space="preserve">
-    <value>N/A</value>
-  </data>
   <data name="AcSettings_View_DriversNames" xml:space="preserve">
     <value>Afficher le nom des pilotes</value>
   </data>
@@ -1433,12 +1350,6 @@
   </data>
   <data name="AcSettings_View_Lateral" xml:space="preserve">
     <value>Latéral</value>
-  </data>
-  <data name="AcSettings_View_Vertical" xml:space="preserve">
-    <value>Vertical</value>
-  </data>
-  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
-    <value>Longitudinal</value>
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Format invalide</value>
@@ -1457,15 +1368,6 @@
   </data>
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Difficile</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
-  </data>
-  <data name="PlaceConditionType_Points" xml:space="preserve">
-    <value>Points</value>
-  </data>
-  <data name="PlaceConditionType_Position" xml:space="preserve">
-    <value>Position</value>
   </data>
   <data name="PlaceConditionType_Time" xml:space="preserve">
     <value>Temps</value>
@@ -1746,9 +1648,6 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
   </data>
   <data name="Weather_Original" xml:space="preserve">
     <value>Originale</value>
-  </data>
-  <data name="Weather_Mods" xml:space="preserve">
-    <value>Mods</value>
   </data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Real Head Motion prédéfini</value>

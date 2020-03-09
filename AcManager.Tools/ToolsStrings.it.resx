@@ -231,10 +231,6 @@
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
     <value>Verificare che non ci siano app che usano i file sonori dello showroom’s sound files.</value>
   </data>
-  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
-    <value>{0} pit</value>
-    <comment>Last word should be pluralized automatically, see LocatiozationHelper</comment>
-  </data>
   <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
     <value>impossibile collegarsi al server remoto</value>
   </data>
@@ -286,21 +282,12 @@
   <data name="Shared_CarSetup" xml:space="preserve">
     <value>Assetto auto</value>
   <alternative>Assetto</alternative></data>
-  <data name="Shared_ControlsPreset" xml:space="preserve">
-    <value>Controls preset</value>
-  </data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
     <value>Force Feedback preset</value>
   </data>
   <data name="Shared_PpFilter" xml:space="preserve">
     <value>Filtri PP</value>
   <alternative>PP filter</alternative></data>
-  <data name="Shared_QuickDrivePreset" xml:space="preserve">
-    <value>Quick Drive preset</value>
-  </data>
-  <data name="Shared_Replay" xml:space="preserve">
-    <value>Replay</value>
-  </data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>Meteo</value>
   </data>
@@ -355,10 +342,6 @@
   <data name="Online_ScanningProgress" xml:space="preserve">
     <value>Scanning ({0}/{1}), {2} trovati…</value>
   </data>
-  <data name="Online_ScanningProgress_Found" xml:space="preserve">
-    <value>{0} server</value>
-    <comment>Numero di servizi trovati, saranno pluralizati automaticamente</comment>
-  </data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
     <value>{0} giro</value>
     <comment>Numero di giri della sessione di gara, saranno pluralizati automaticamente</comment>
@@ -412,9 +395,6 @@
   <data name="Plugins_CannotInstall" xml:space="preserve">
     <value>Impossibile installare plugin</value>
   </data>
-  <data name="Presets_FileFilter" xml:space="preserve">
-    <value>Presets (*{0})|*{0}</value>
-  </data>
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
     <value>Si prega di scegliere un file nella directory iniziale o qualche sottodirectory.</value>
   </data>
@@ -460,12 +440,6 @@
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
     <value>skin dell'auto</value>
   <alternative>car skin</alternative></data>
-  <data name="AdditionalContent_Font" xml:space="preserve">
-    <value>font</value>
-  </data>
-  <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>showroom</value>
-  </data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>pista</value>
   </data>
@@ -692,21 +666,11 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Alto</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (senza compressione)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Personalizza</value>
-  </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-    <comment>Parametri: larghezza, altezza, frequenza di aggiornamento</comment>
   </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Schermo Singolo</value>
@@ -759,18 +723,6 @@
   <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Ufficiale</value>
   <alternative>Official</alternative></data>
-  <data name="Settings_Starter_Tricky" xml:space="preserve">
-    <value>Tricky</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_Naive" xml:space="preserve">
-    <value>Naive</value>
-  </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Consigliato)</value>
   </data>
@@ -789,27 +741,6 @@
   <data name="Period_Month" xml:space="preserve">
     <value>Mese</value>
   </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Fancy</value>
-  </data>
-  <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>Lite</value>
-  </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Problema sconosciuto (Process=null)</value>
   </data>
@@ -822,12 +753,6 @@
   <data name="GameCommand_CannotExecute" xml:space="preserve">
     <value>Impossibile eseguire il comando</value>
   </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
-  </data>
-  <data name="Session_Booking" xml:space="preserve">
-    <value>Booking</value>
-  </data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Pratica</value>
   </data>
@@ -836,12 +761,6 @@
   </data>
   <data name="Session_Race" xml:space="preserve">
     <value>Gara</value>
-  </data>
-  <data name="Session_Hotlap" xml:space="preserve">
-    <value>Hotlap</value>
-  </data>
-  <data name="Session_TimeAttack" xml:space="preserve">
-    <value>Time Attack</value>
   </data>
   <data name="Common_UnhandledError_Commentary" xml:space="preserve">
     <value>Qualche errore non gestito occorso.</value>
@@ -912,9 +831,6 @@
   <data name="Weather_BrokenClouds" xml:space="preserve">
     <value>Nuvole Spezzate</value>
   </data>
-  <data name="Weather_OvercastClouds" xml:space="preserve">
-    <value>Overcast clouds</value>
-  </data>
   <data name="Weather_Fog" xml:space="preserve">
     <value>Nebbia</value>
   </data>
@@ -935,9 +851,6 @@
   </data>
   <data name="Weather_Squalls" xml:space="preserve">
     <value>Burrasca</value>
-  </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
   </data>
   <data name="Weather_Hurricane" xml:space="preserve">
     <value>Uragano</value>
@@ -994,9 +907,6 @@
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>Il nuovo file sarà creato avendo un nome basato su ID</value>
   </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Digitare il codice di autenticazione di Google Drive:</value>
   </data>
@@ -1008,9 +918,6 @@
   </data>
   <data name="Uploader_RequestFailed" xml:space="preserve">
     <value>GET request fallito</value>
-  </data>
-  <data name="Uploader_RootDirectory" xml:space="preserve">
-    <value>Root</value>
   </data>
   <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
     <value>Impossibile fare l'upload del file su Google Drive</value>
@@ -1138,10 +1045,6 @@
   <data name="Settings_Period_Startup" xml:space="preserve">
     <value>Solo all'avvio</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-    <alternative>ABS:  </alternative>
-  </data>
   <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
     <value>Aggiungi nuova macchina alla lista</value>
   </data>
@@ -1150,9 +1053,6 @@
   </data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Formato non valido</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="Championship" xml:space="preserve">
     <value>Campionato</value>
@@ -1373,20 +1273,11 @@
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
     <value>Preimpostazioni aiuti di guida</value>
   </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
   <data name="Shared_VideoSettingsPreset" xml:space="preserve">
     <value>Settaggi Video Preimpostati</value>
   </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
-  </data>
   <data name="Common_CannotUnpack" xml:space="preserve">
     <value>Non posso scompattare</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
   </data>
   <data name="AcObject_CannotGetId" xml:space="preserve">
     <value>Non riessco a recuperare ID dal percorso</value>
@@ -1469,9 +1360,6 @@
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Sistema antibloccaggio dei freni</value>
   </data>
-  <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Autoblip</value>
-  </data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
     <value>Sincronizza automaticamente RPM sulla scalata di marcia</value>
   </data>
@@ -1504,18 +1392,6 @@
   </data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>Rimuovi le auto selezionate dalla lista</value>
-  </data>
-  <data name="AssistState_Off" xml:space="preserve">
-    <value>Off</value>
-  </data>
-  <data name="AssistState_On" xml:space="preserve">
-    <value>On</value>
-  </data>
-  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
-    <value>Drive-Through</value>
-  </data>
-  <data name="Session_TrackDay" xml:space="preserve">
-    <value>Track Day</value>
   </data>
   <data name="RaceGrid_CannotUpdate" xml:space="preserve">
     <value>Non posso aggiornare la griglia</value>

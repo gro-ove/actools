@@ -204,9 +204,6 @@
   <data name="AcRootDirectory_Missing" xml:space="preserve">
     <value>Konum bulunamadı</value>
   </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Tek Ekran</value>
   </data>
@@ -236,15 +233,6 @@
   </data>
   <data name="AcSettings_Quality_Medium" xml:space="preserve">
     <value>Orta</value>
-  </data>
-  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
-    <value>Minimum</value>
-  </data>
-  <data name="AcSettings_Quality_Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
   </data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Çok Yüksek</value>
@@ -296,9 +284,6 @@
   </data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>yazı tipi</value>
-  </data>
-  <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>showroom</value>
   </data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>pist</value>
@@ -825,26 +810,8 @@
   <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
     <value>Desteklenmeyen format</value>
   </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Drag Yarışı</value>
-  </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
   </data>
   <data name="Session_Hotlap" xml:space="preserve">
     <value>Hızlı tur</value>
@@ -878,9 +845,6 @@
   </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Google Drive anahtarını girin:</value>
-  </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
   </data>
   <data name="Weather_BrokenClouds" xml:space="preserve">
     <value>Bulutlar bozuk</value>

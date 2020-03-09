@@ -144,9 +144,6 @@
   <data name="No" xml:space="preserve">
     <value>Nein</value>
   </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>Wiederherstellen</value>
   </data>
@@ -219,9 +216,6 @@
   <data name="KeySpace" xml:space="preserve">
     <value>Leertaste</value>
   </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
-  </data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Pfeil Hoch</value>
   </data>
@@ -237,17 +231,11 @@
   <data name="Suggestions" xml:space="preserve">
     <value>Vorschläge</value>
   </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Links)</value>
   </data>
   <data name="KeyAltRight" xml:space="preserve">
     <value>Alt (Rechts)</value>
-  </data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
   </data>
   <data name="KeyCapsLock" xml:space="preserve">
     <value>Feststelltaste</value>
@@ -312,9 +300,6 @@
   <data name="KeyMediaPlayPause" xml:space="preserve">
     <value>Wiedergabe</value>
   </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Medien wählen</value>
   </data>
@@ -335,9 +320,6 @@
   </data>
   <data name="ShowPassword" xml:space="preserve">
     <value>Passwort anzeigen</value>
-  </data>
-  <data name="Ordinalizing_Minus" xml:space="preserve">
-    <value>Minus {0}</value>
   </data>
   <data name="Ordinalizing_Zeroth" xml:space="preserve">
     <value>Nullter</value>
@@ -501,21 +483,6 @@
   <data name="ImagesFilter" xml:space="preserve">
     <value>Bild Dateien|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</value>
   </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Dateien|*.dds;*.tif;*.tiff|Bild Dateien|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Alle Dateien(*.*)|*.*</value>
   </data>
@@ -524,9 +491,6 @@
   </data>
   <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
     <value>[url=cmd://copy]Kopiere[/url] die Details des Fehlers in die Zwischenablage. Versuche [url=cmd://restart]das Programm neu zu starten[/url] oder einfach [url=cmd://exit]zu schließen[/url].</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0}: </value>
   </data>
   <data name="Toolbar_Unfavourite" xml:space="preserve">
     <value>Aus Favoriten entfernen</value>
@@ -551,9 +515,6 @@
   </data>
   <data name="Toolbar_OnlineManageLists" xml:space="preserve">
     <value>Listen verwalten...</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
   </data>
   <data name="KeyMediaNextTrack" xml:space="preserve">
     <value>Nächste Strecke</value>
@@ -590,9 +551,6 @@
   </data>
   <data name="KeyLaunchMail" xml:space="preserve">
     <value>Starte Mail</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
   </data>
   <data name="Common_And" xml:space="preserve">
     <value>und</value>

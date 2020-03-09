@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP:</value>
-  </data>
   <data name="Main_UnhandledException" xml:space="preserve">
     <value>Excepción no controlada:
 
@@ -185,12 +182,6 @@ Autor: [b]{3}[/b]</value>
   <alternative>Name: [b]{0}[/b]
 {1}: [b]{2}[/b]
 Author: [b]{3}[/b]</alternative></data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Para</value>
   </data>
@@ -431,12 +422,6 @@ Author: [b]{3}[/b]</alternative></data>
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>Consejos importantes</value>
   </data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
-  </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
   <data name="Main_Apps" xml:space="preserve">
     <value>Aplicaciones</value>
   <alternative>Apps</alternative></data>
@@ -449,12 +434,6 @@ Author: [b]{3}[/b]</alternative></data>
   <data name="Main_Weather" xml:space="preserve">
     <value>Clima</value>
   <alternative>Meteorologia</alternative></data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Carrera rápida</value>
   <alternative>Carrera rapida</alternative></data>
@@ -472,12 +451,6 @@ Author: [b]{3}[/b]</alternative></data>
   </data>
   <data name="Main_Language" xml:space="preserve">
     <value>Idioma</value>
-  </data>
-  <data name="Main_Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
   </data>
   <data name="Main_Screenshots" xml:space="preserve">
     <value>Capturas de pantalla</value>
@@ -502,9 +475,6 @@ Author: [b]{3}[/b]</alternative></data>
   <alternative>Controles Predeterminados</alternative></data>
   <data name="Main_ServerRunning" xml:space="preserve">
     <value>Ejecutando</value>
-  </data>
-  <data name="Common_ColorLabel" xml:space="preserve">
-    <value>Color:</value>
   </data>
   <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
     <value>Tema:</value>
@@ -565,9 +535,6 @@ Author: [b]{3}[/b]</alternative></data>
   </data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">
     <value>Coches:</value>
-  </data>
-  <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Showrooms:</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
     <value>Descargar previsualizacion de showrooms comunes</value>
@@ -741,12 +708,6 @@ El directorio de funcionamiento se establecera en la carpeta de Assetto Corsa en
   <data name="Common_DevMode" xml:space="preserve">
     <value>Modo Desarrollador</value>
   </data>
-  <data name="Settings_General_AppHeader" xml:space="preserve">
-    <value>App:</value>
-  </data>
-  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
-    <value>App key:</value>
-  </data>
   <data name="Settings_General_WindowsShortcut" xml:space="preserve">
     <value>Acceso directo del menu Inicio (para mejores notificaciones)</value>
   <alternative>Acceso directo del menu Inicio (para notificaciones mas actuales)</alternative></data>
@@ -780,17 +741,11 @@ El directorio de funcionamiento se establecera en la carpeta de Assetto Corsa en
   <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
     <value>Tiempo de guardado:</value>
   </data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
-  </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
     <value>Comprobando Acceso:</value>
   </data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
     <value>Actualizar a versiones no testeadas</value>
-  </data>
-  <data name="Settings_General_ValuesNumber" xml:space="preserve">
-    <value>{0} entry</value>
   </data>
   <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
     <value>Quieres cambiar la ruta? La aplicacion sera reiniciada.</value>
@@ -855,9 +810,6 @@ El directorio de funcionamiento se establecera en la carpeta de Assetto Corsa en
   <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
     <value>Cargar informacion directamente del servidor en lugar del usar los servidores de AC; podria ser mas rapido y mas actualizado, pero alguna informacion (tales como sesion activa) no se mostrara</value>
   </data>
-  <data name="Settings_Online_PingingHeader" xml:space="preserve">
-    <value>Pinging:</value>
-  </data>
   <data name="Settings_Online_PingWithThreads" xml:space="preserve">
     <value>Usar temas en lugar de un API asinconico</value>
   </data>
@@ -888,18 +840,12 @@ El directorio de funcionamiento se establecera en la carpeta de Assetto Corsa en
   <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
     <value>Escaneado fuera de tiempo (timeout)</value>
   </data>
-  <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>LAN:</value>
-  </data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
     <value>Escanear usando conexiones:</value>
   </data>
   <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
     <value>Administrador de configuracion de servidor:</value>
   <alternative>Server presets manager:</alternative></data>
-  <data name="Settings_General" xml:space="preserve">
-    <value>General</value>
-  </data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
     <value>Cambios Rapidos</value>
   </data>
@@ -908,9 +854,6 @@ El directorio de funcionamiento se establecera en la carpeta de Assetto Corsa en
   </data>
   <data name="Settings_Appearance" xml:space="preserve">
     <value>Apariencia</value>
-  </data>
-  <data name="Settings_Dev" xml:space="preserve">
-    <value>Dev</value>
   </data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>Activar Cambios Rapidos</value>
@@ -1072,9 +1015,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
     <value>Carpeta seleccionada: {0}</value>
   </data>
-  <data name="Common_IdFormat" xml:space="preserve">
-    <value>ID: {0}</value>
-  </data>
   <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
     <value>Historial:</value>
   </data>
@@ -1087,9 +1027,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
     <value>Destino</value>
   </data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
-  </data>
   <data name="Toolbar_Folder" xml:space="preserve">
     <value>Carpeta</value>
   </data>
@@ -1101,9 +1038,6 @@ If you need some other values, please, contact us and we’ll add them.
   </data>
   <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
     <value>Recargar (Ctrl+R)</value>
-  </data>
-  <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Showroom</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
     <value>Ver coche en Showroom (CtrlH)</value>
@@ -1384,9 +1318,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Compartir configuracion actual (Ctrl+Avpag)</value>
   </data>
-  <data name="Common_Test" xml:space="preserve">
-    <value>Test</value>
-  </data>
   <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
     <value>Eliminar configuracion a la papelera de reciclaje (Ctrl+Delete)</value>
   </data>
@@ -1501,9 +1432,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Toolbar_RescanUsings" xml:space="preserve">
     <value>Rescanear Usados</value>
   </data>
-  <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
-    <value>Collect list of cars per font (Ctrl+U)</value>
-  </data>
   <data name="Toolbar_CreateNewFont" xml:space="preserve">
     <value>Crear nueva fuente</value>
   </data>
@@ -1602,9 +1530,6 @@ If you need some other values, please, contact us and we’ll add them.
   </data>
   <data name="Toolbar_DisableEditMode" xml:space="preserve">
     <value>Desactivar modo edicion</value>
-  </data>
-  <data name="AcObject_IdLabel" xml:space="preserve">
-    <value>ID:</value>
   </data>
   <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
     <value>Usar como:</value>
@@ -1708,9 +1633,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Online_SortByLabel" xml:space="preserve">
     <value>Ordenar por:</value>
   </data>
-  <data name="Online_FilterBooking_Short" xml:space="preserve">
-    <value>Booking</value>
-  </data>
   <data name="Online_FilterEmpty_Short" xml:space="preserve">
     <value>Vacio</value>
   </data>
@@ -1776,9 +1698,6 @@ If you need some other values, please, contact us and we’ll add them.
   </data>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
     <value>Numero de coches</value>
-  </data>
-  <data name="Online_Sorting_Ping" xml:space="preserve">
-    <value>Ping</value>
   </data>
   <data name="Online_AddServer" xml:space="preserve">
     <value>Direccion del servidor  (IP &amp; HTTP or TCP Port):</value>
@@ -2038,9 +1957,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="CarSpecs_Title" xml:space="preserve">
     <value>{0} Especificaciones</value>
   </data>
-  <data name="CarSpecs_PowerLabel" xml:space="preserve">
-    <value>BHP:</value>
-  </data>
   <data name="CarSpecs_TorqueLabel" xml:space="preserve">
     <value>Par:</value>
   </data>
@@ -2212,9 +2128,6 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="CarPreviews_CannotSave" xml:space="preserve">
     <value>No se pueden guardar las previsualizaciones</value>
   </data>
-  <data name="CarPreviews_Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
   <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
     <value>Ajusta la posicion de la camara manualmente y luego pulsa F8 para empezar a disparar</value>
   </data>
@@ -2267,9 +2180,6 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="RaceResult_CancelledHeader" xml:space="preserve">
     <value>Carrera cancelada</value>
-  </data>
-  <data name="RaceResult_ErrorHeader" xml:space="preserve">
-    <value>Error:</value>
   </data>
   <data name="RaceResult_MaxLevel" xml:space="preserve">
     <value>Nivel Maximo:</value>
@@ -2379,9 +2289,6 @@ Accepted values are from -1 to 1.</value>
   <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
     <value>Forma:</value>
   </data>
-  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
-    <value>Color:</value>
-  </data>
   <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
     <value>Color secundario:</value>
   </data>
@@ -2408,9 +2315,6 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>Plano</value>
-  </data>
-  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
-    <value>Diagonal</value>
   </data>
   <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
     <value>Lineas</value>
@@ -2460,14 +2364,8 @@ Accepted values are from -1 to 1.</value>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Nombre:</value>
   </data>
-  <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
-    <value>Panorama:</value>
-  </data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
     <value>Algo como esto:</value>
-  </data>
-  <data name="UpgradeIcon_Editor" xml:space="preserve">
-    <value>Editor</value>
   </data>
   <data name="UpgradeIcon_Library" xml:space="preserve">
     <value>Libreria</value>
@@ -2498,9 +2396,6 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="AcSettings_Audio_Opponents" xml:space="preserve">
     <value>Oponentes</value>
-  </data>
-  <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>UI</value>
   </data>
   <data name="Controls_InputMethodLabel" xml:space="preserve">
     <value>Metodo de entrada:</value>
@@ -2604,20 +2499,11 @@ Accepted values are from -1 to 1.</value>
   <data name="Controls_BrakeBalance" xml:space="preserve">
     <value>Balance de frenada:</value>
   </data>
-  <data name="Controls_Turbo" xml:space="preserve">
-    <value>Turbo:</value>
-  </data>
   <data name="Controls_TractionControl" xml:space="preserve">
     <value>Control de traccion:</value>
   </data>
-  <data name="Controls_Abs" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
   <data name="Controls_EngineBrake" xml:space="preserve">
     <value>Freno motor:</value>
-  </data>
-  <data name="Controls_MguK" xml:space="preserve">
-    <value>MGU-K:</value>
   </data>
   <data name="Controls_Miscellaneous" xml:space="preserve">
     <value>Varios:</value>
@@ -2640,17 +2526,8 @@ Accepted values are from -1 to 1.</value>
   <data name="AcSettings_ReplaysHeader" xml:space="preserve">
     <value>Repeticiones:</value>
   </data>
-  <data name="AcSettings_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
-  <data name="AcSettings_Video" xml:space="preserve">
-    <value>Video</value>
-  </data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>Video y UI</value>
-  </data>
-  <data name="AcSettings_Audio" xml:space="preserve">
-    <value>Audio</value>
   </data>
   <data name="AcSettings_Controls" xml:space="preserve">
     <value>Controles</value>
@@ -2817,9 +2694,6 @@ Accepted values are from -1 to 1.</value>
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
     <value>Rayos crepusculares</value>
   </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
-  <alternative>FXaa</alternative></data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
     <value>Reflejos:</value>
   </data>
@@ -2840,9 +2714,6 @@ Accepted values are from -1 to 1.</value>
   </data>
   <data name="AcSettings_Video_HighQuality" xml:space="preserve">
     <value>Alta calidad</value>
-  </data>
-  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
-    <value>Oculus:</value>
   </data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>Pixeles por pantalla</value>
@@ -2961,9 +2832,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
     <value>Todos los progresos del campeonato se perderan. Estas seguro?</value>
-  </data>
-  <data name="AcSettings_Video_Benchmark" xml:space="preserve">
-    <value>Benchmark</value>
   </data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
     <value>Iniciar Benchmark (Ctrl+G)</value>
@@ -3112,9 +2980,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   <data name="WeatherEdit_CutOff" xml:space="preserve">
     <value>Corte</value>
   </data>
-  <data name="WeatherEdit_Color" xml:space="preserve">
-    <value>Color</value>
-  </data>
   <data name="WeatherEdit_FogHeader" xml:space="preserve">
     <value>Niebla:</value>
   </data>
@@ -3239,9 +3104,6 @@ Para ver, desempaqueta “{1}” a “…\Documents\Assetto Corsa\replay”.</al
   <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
     <value>Linea diagonal con Circulo</value>
   </data>
-  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
-    <value>Carbon</value>
-  </data>
   <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
     <value>Division Horizontal</value>
   </data>
@@ -3259,12 +3121,6 @@ Para ver, desempaqueta “{1}” a “…\Documents\Assetto Corsa\replay”.</al
   </data>
   <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
     <value>Gradiente</value>
-  </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
-  </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
   </data>
   <data name="LiveryIcon_CannotChange" xml:space="preserve">
     <value>No se puede cambiar el numero de la apariencia</value>
@@ -3340,9 +3196,6 @@ Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternat
   <data name="About_Copyright" xml:space="preserve">
     <value>Copyright © 2016 AcClub. Todos los derechos reservados.</value>
   </data>
-  <data name="About_VersionFormat" xml:space="preserve">
-    <value>Version: {0}</value>
-  </data>
   <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
     <value>Ha fallado el intento de busqueda de algun coche que se ajuste al tipo de parrilla seleccionado.</value>
   </data>
@@ -3360,9 +3213,6 @@ Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternat
   </data>
   <data name="RaceGrid_DetailedSettings" xml:space="preserve">
     <value>Configuracion detallada</value>
-  </data>
-  <data name="RaceGrid_ClassFormat" xml:space="preserve">
-    <value>Class: {0}</value>
   </data>
   <data name="RaceGrid_CandidatePriority" xml:space="preserve">
     <value>Prioridad del candidato</value>

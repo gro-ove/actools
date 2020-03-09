@@ -168,21 +168,12 @@
   <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
     <value>Impossibile raggiungere {0}, nessuna sorgente specificata</value>
   <alternative>Unable to navigate to {0}, no source specified</alternative></data>
-  <data name="No" xml:space="preserve">
-    <value>No</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
-  </data>
   <data name="Restore" xml:space="preserve">
     <value>Ripristina</value>
   </data>
   <data name="UIThreadRequired" xml:space="preserve">
     <value>L'operazione richiede il thread UI</value>
   <alternative>Operation requires the UI thread</alternative></data>
-  <data name="UnexpectedToken" xml:space="preserve">
-    <value>Unexpected token</value>
-  </data>
   <data name="UnknownOS" xml:space="preserve">
     <value>Sistema operativo sconosciuto</value>
   <alternative>Unknown operating system</alternative></data>
@@ -201,9 +192,6 @@
   <data name="KeyBackspace" xml:space="preserve">
     <value>Cancella</value>
   </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="KeyControlLeft" xml:space="preserve">
     <value>Control (SX)</value>
   </data>
@@ -213,17 +201,11 @@
   <data name="KeyDownArrow" xml:space="preserve">
     <value>Freccia giù</value>
   </data>
-  <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
   <data name="KeyEnter" xml:space="preserve">
     <value>Invio</value>
   </data>
   <data name="KeyEscape" xml:space="preserve">
     <value>Esc</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Freccia SX</value>
@@ -240,9 +222,6 @@
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Freccia DX</value>
   </data>
-  <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
-  </data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (SX)</value>
   </data>
@@ -251,9 +230,6 @@
   </data>
   <data name="KeySpace" xml:space="preserve">
     <value>Spazio</value>
-  </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Freccia su</value>
@@ -275,9 +251,6 @@
   <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative></data>
   <data name="TexturesFilter" xml:space="preserve">
     <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
   </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (SX)</value>
@@ -336,9 +309,6 @@
   <data name="KeyBrowserSearch" xml:space="preserve">
     <value>Browser Cerca</value>
   <alternative>Browser Search</alternative></data>
-  <data name="KeyBrowserStop" xml:space="preserve">
-    <value>Browser Stop</value>
-  </data>
   <data name="KeyVolumeDown" xml:space="preserve">
     <value>Volume giù</value>
   </data>
@@ -357,9 +327,6 @@
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Traccia precedente</value>
   </data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Seleziona Media</value>
   </data>
@@ -375,27 +342,6 @@
   <data name="KeyZoom" xml:space="preserve">
     <value>Ingrandisci</value>
   <alternative>Zoom</alternative></data>
-  <data name="LocalizationHelper_ReadableSize_EB" xml:space="preserve">
-    <value>EB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_PB" xml:space="preserve">
-    <value>PB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_TB" xml:space="preserve">
-    <value>TB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_MB" xml:space="preserve">
-    <value>MB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
-    <value>KB</value>
-  </data>
-  <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
-    <value>B</value>
-  </data>
   <data name="FiltersLinkAll" xml:space="preserve">
     <value>Tutto</value>
   </data>
@@ -534,9 +480,6 @@
   <data name="Time_Second" xml:space="preserve">
     <value>{0} secondo</value>
   </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Oops!</value>
-  </data>
   <data name="FatalError_Message" xml:space="preserve">
     <value>L'applicazione s'è imbattuta in un problema e ha bisogno di riavviarsi. Utilizza il pulsante "Segnala un problema" in seguito se desideri inviare un report.</value>
   </data>
@@ -590,9 +533,6 @@
   </data>
   <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
     <value>Rimuovi server dai preferiti (Ctrl+D)</value>
-  </data>
-  <data name="ValueLabel_Format" xml:space="preserve">
-    <value>{0}: </value>
   </data>
   <data name="Colon_Format" xml:space="preserve">
     <value>{0}: {1}</value>

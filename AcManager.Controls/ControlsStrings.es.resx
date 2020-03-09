@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Assists_IdealLineLabel" xml:space="preserve">
     <value>Trazada ideal:</value>
   <alternative>Trazada Ideal:</alternative></data>
@@ -191,9 +188,6 @@
   </data>
   <data name="KunosCareer_CompletedLabel" xml:space="preserve">
     <value>Completado:</value>
-  </data>
-  <data name="KunosCareer_Error" xml:space="preserve">
-    <value>{0} error</value>
   </data>
   <data name="Video_CannotPlay" xml:space="preserve">
     <value>No se puede reproducir el video</value>
@@ -415,9 +409,6 @@ Entry type: [b]{2}[/b]</alternative></data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Aparentemente SweetFX no afecta al resultado, pero puede ralentizar el tiempo de carga</value>
   </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>No se puede iniciar el showroom</value>
   </data>
@@ -502,9 +493,6 @@ Entry type: [b]{2}[/b]</alternative></data>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Nombre:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Texturas:</value>
   </data>
@@ -514,20 +502,11 @@ Entry type: [b]{2}[/b]</alternative></data>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Estadisticas</value>
   </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Objetos:</value>
   </data>
-  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="CustomShowroom_Control_Lights" xml:space="preserve">
     <value>Luces</value>
-  </data>
-  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
-    <value>Wireframe</value>
   </data>
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
     <value>Aspecto</value>
@@ -601,12 +580,6 @@ Entry type: [b]{2}[/b]</alternative></data>
   <data name="Common_Unpack" xml:space="preserve">
     <value>Desempaquetar {0}</value>
   </data>
-  <data name="AcObject_VersionLabel" xml:space="preserve">
-    <value>Version:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Carpeta “{0}” ya existe. Quieres sobreescribir los archivos?</value>
   </data>
@@ -641,14 +614,6 @@ LOD In: [b]{8}[/b]
 LOD In: [b]{9}[/b]
 
 Material: [b]{10}[/b]</alternative></data>
-  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
-    <value>Material name: [b]{0}[/b]
-Shader: [b]{1}[/b]
-
-Blend mode: [b]{2}[/b]
-Alpha test: [b]{3}[/b]
-Depth mode: [b]{4}[/b]</value>
-  </data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
     <value>Propiedades del sombreado:</value>
   </data>
@@ -675,9 +640,6 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Controls_RangeToAxis" xml:space="preserve">
     <value>Hasta</value>
-  </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
   </data>
   <data name="Controls_FilterAxis" xml:space="preserve">
     <value>Filtro</value>
@@ -724,17 +686,11 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_Cancelled" xml:space="preserve">
     <value>Cancelado</value>
   </data>
-  <data name="Common_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
   <data name="AssistsPreset_Gamer" xml:space="preserve">
     <value>Jugador</value>
   </data>
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Intermedio</value>
-  </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
   </data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Cargando...</value>
@@ -790,9 +746,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value> °C</value>
   </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} oponentes</value>
   </data>
@@ -813,9 +766,6 @@ Depth mode: [b]{4}[/b]</value>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Modo sin conexion</value>
-  </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
   </data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
     <value>sec</value>
@@ -898,9 +848,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
     <value>Saltar pasos del FFB</value>
   <alternative>Saktar pasos del FFB</alternative></data>
-  <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>Experimental:</value>
-  <alternative>EXperimental:</alternative></data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Desbloquear opciones experimentales (precaucion!)</value>
   </data>
@@ -916,9 +863,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
     <value>Establece 0 para el Logitech G920, mantén 1 para todos los demás</value>
   <alternative>Establece 0 par el Logitech G920, manten 1 para todos los demas</alternative></data>
-  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
-  </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposicion:</value>
   </data>
@@ -949,9 +893,6 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value>Vuelta</value>
   </data>
-  <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value> °F</value>
-  </data>
   <data name="TableHeader_Name" xml:space="preserve">
     <value>Nombre</value>
   </data>
@@ -967,23 +908,11 @@ Depth mode: [b]{4}[/b]</value>
   <data name="TableHeader_Date" xml:space="preserve">
     <value>Fecha</value>
   </data>
-  <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Skin</value>
-  </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nacionalidad</value>
   </data>
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>IA</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
-  <data name="TableHeader_Visible" xml:space="preserve">
-    <value>Visible</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Bloqueado</value>

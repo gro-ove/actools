@@ -479,9 +479,6 @@
   <data name="Common_TryAgain" xml:space="preserve">
     <value>Ещё раз</value>
   </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Офлайн</value>
   </data>
@@ -850,9 +847,6 @@
   <data name="Share_Shared" xml:space="preserve">
     <value>{0} Передано</value>
   </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
     <value>Используйте PSD, XCF и т. д., Если существует (требуется аддон Magick.NET)</value>
   </data>
@@ -887,17 +881,8 @@ LOD в: [b]{9}[/b]
 Альфа-тест: [b]{3}[/b]
 Режим глубины: [b]{4}[/b]</value>
   </data>
-  <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>Сделать независимым</value>
-  </data>
-  <data name="Common_FpsPostfix" xml:space="preserve">
-    <value> FPS</value>
   </data>
   <data name="Plugins_Update" xml:space="preserve">
     <value>Обновить (Новая версия: {0})</value>
@@ -922,12 +907,6 @@ LOD в: [b]{9}[/b]
   </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Национальность</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
   </data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>Видимый</value>

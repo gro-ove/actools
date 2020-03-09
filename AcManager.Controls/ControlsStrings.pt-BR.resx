@@ -129,9 +129,6 @@
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
     <value>Embreagem automática:</value>
   </data>
-  <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Autoblip:</value>
-  </data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
     <value>Controle de estabilidade:</value>
   </data>
@@ -267,9 +264,6 @@
   <data name="QuickSwitches_Exposure" xml:space="preserve">
     <value>Exposição</value>
   </data>
-  <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>FOV</value>
-  </data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
     <value>Volante fixo</value>
   </data>
@@ -329,9 +323,6 @@
   </data>
   <data name="Theme_Light" xml:space="preserve">
     <value>Claro</value>
-  </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
   </data>
   <data name="Animation_Modern" xml:space="preserve">
     <value>Moderno</value>
@@ -401,9 +392,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="Share_SharedMessageAlternative" xml:space="preserve">
     <value>Clicar para abrir link</value>
   </data>
-  <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Showroom:</value>
-  </data>
   <data name="Common_FilterLabel" xml:space="preserve">
     <value>Filtro:</value>
   </data>
@@ -418,9 +406,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Aparentemente SweetFX não afeta o resultado, mas pode diminuir o tempo de carregamento</value>
-  </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Não é possível iniciar o showroom</value>
@@ -506,9 +491,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
     <value>Nome:</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Texturas:</value>
   </data>
@@ -517,9 +499,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Estatísticas</value>
-  </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
   </data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Objetos:</value>
@@ -532,9 +511,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
     <value>Esqueleto</value>
-  </data>
-  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Skin</value>
   </data>
   <data name="CustomShowroom_EditingMode" xml:space="preserve">
     <value>Modo de edição de skins</value>
@@ -607,9 +583,6 @@ Tipo de entrada: [b]{2}[/b]</value>
   </data>
   <data name="AcObject_VersionLabel" xml:space="preserve">
     <value>Versão:</value>
-  </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Diretório "{0}" já existe. Substituír arquivos?</value>
@@ -766,9 +739,6 @@ Depth mode: [b]{4}[/b]</alternative></data>
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Pneus:</value>
   </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value> psi</value>
-  </data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
     <value>Combustível:</value>
   </data>
@@ -796,12 +766,6 @@ Depth mode: [b]{4}[/b]</alternative></data>
   <data name="Common_Compressing" xml:space="preserve">
     <value>Comprimindo...</value>
   </data>
-  <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} oponente</value>
   </data>
@@ -822,9 +786,6 @@ Depth mode: [b]{4}[/b]</alternative></data>
   </data>
   <data name="Common_OfflineMode" xml:space="preserve">
     <value>Modo Offline</value>
-  </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
   </data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
     <value>seg</value>
@@ -908,9 +869,6 @@ de substitui-la.</value>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
     <value>Pular níveis de FFB</value>
   </data>
-  <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>Experimental:</value>
-  </data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
     <value>Desbloquear opções experimentais (tenha cuidado!)</value>
   </data>
@@ -925,9 +883,6 @@ de substitui-la.</value>
   </data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
     <value>Definir para 0 para o Logitech G920, manter 1 para todo o resto</value>
-  </data>
-  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
   </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposição</value>
@@ -971,20 +926,11 @@ de substitui-la.</value>
   <data name="TableHeader_Date" xml:space="preserve">
     <value>Data</value>
   </data>
-  <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Skin</value>
-  </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nacionalidade</value>
   </data>
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>IA</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
   </data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>Visível</value>

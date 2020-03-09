@@ -444,9 +444,6 @@
   <data name="Theme_Light" xml:space="preserve">
     <value>Světlý</value>
   </data>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value> kol</value>
   </data>

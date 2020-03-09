@@ -129,9 +129,6 @@
   <data name="Common_Add" xml:space="preserve">
     <value>Ekle</value>
   </data>
-  <data name="Common_Oops" xml:space="preserve">
-    <value>Oops!</value>
-  </data>
   <data name="Common_PleaseWait" xml:space="preserve">
     <value>Lütfen bekleyin...</value>
   </data>
@@ -152,9 +149,6 @@
   </data>
   <data name="Home" xml:space="preserve">
     <value>Ana Sayfa</value>
-  </data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
   </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Sol)</value>
@@ -186,41 +180,17 @@
   <data name="KeyBrowserStop" xml:space="preserve">
     <value>Tarayıcı Dur</value>
   </data>
-  <data name="KeyCapsLock" xml:space="preserve">
-    <value>Caps Lock</value>
-  </data>
-  <data name="KeyControl" xml:space="preserve">
-    <value>Control</value>
-  </data>
   <data name="KeyControlLeft" xml:space="preserve">
     <value>Control (Sol)</value>
   </data>
   <data name="KeyControlRight" xml:space="preserve">
     <value>Control (Sağ)</value>
   </data>
-  <data name="KeyDelete" xml:space="preserve">
-    <value>Delete</value>
-  </data>
   <data name="KeyDownArrow" xml:space="preserve">
     <value>Aşağı Ok Tuşu</value>
   </data>
-  <data name="KeyEnd" xml:space="preserve">
-    <value>End</value>
-  </data>
-  <data name="KeyEnter" xml:space="preserve">
-    <value>Enter</value>
-  </data>
   <data name="KeyEscape" xml:space="preserve">
     <value>ESC</value>
-  </data>
-  <data name="KeyHelp" xml:space="preserve">
-    <value>Help</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="KeyInsert" xml:space="preserve">
-    <value>Insert</value>
   </data>
   <data name="KeyLeftArrow" xml:space="preserve">
     <value>Sol Yön Tuşu</value>
@@ -237,35 +207,14 @@
   <data name="KeyMediaStop" xml:space="preserve">
     <value>Dur</value>
   </data>
-  <data name="KeyNumberPad" xml:space="preserve">
-    <value>Numpad {0}</value>
-  </data>
-  <data name="KeyNumLock" xml:space="preserve">
-    <value>Num Lock</value>
-  </data>
-  <data name="KeyPageDown" xml:space="preserve">
-    <value>Page Down</value>
-  </data>
-  <data name="KeyPageUp" xml:space="preserve">
-    <value>Page Up</value>
-  </data>
   <data name="KeyPause" xml:space="preserve">
     <value>Duraklat</value>
-  </data>
-  <data name="KeyPrintScreen" xml:space="preserve">
-    <value>Print Screen</value>
   </data>
   <data name="KeyRightArrow" xml:space="preserve">
     <value>Sağ Yön Tuşu</value>
   </data>
-  <data name="KeyScrollLock" xml:space="preserve">
-    <value>Scroll Lock</value>
-  </data>
   <data name="KeySelectMedia" xml:space="preserve">
     <value>Medyayı Seç</value>
-  </data>
-  <data name="KeyShift" xml:space="preserve">
-    <value>Shift</value>
   </data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (Sol)</value>
@@ -275,9 +224,6 @@
   </data>
   <data name="KeySpace" xml:space="preserve">
     <value>Boşluk</value>
-  </data>
-  <data name="KeyTab" xml:space="preserve">
-    <value>Tab</value>
   </data>
   <data name="KeyUpArrow" xml:space="preserve">
     <value>Yukarı Yön Tuşu</value>
@@ -296,9 +242,6 @@
   </data>
   <data name="KeyWindowsRight" xml:space="preserve">
     <value>Windows (Sağ)</value>
-  </data>
-  <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
   </data>
   <data name="MarkLimited" xml:space="preserve">
     <value>KISITLI</value>

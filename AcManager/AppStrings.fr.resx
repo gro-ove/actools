@@ -209,26 +209,11 @@ Auteur : [b]{3}[/b]</value>
   <data name="Main_About" xml:space="preserve">
     <value>À propos</value>
   <alternative> À Propos</alternative><alternative>À Propos</alternative></data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
-  </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
-  <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
   <data name="Main_Fonts" xml:space="preserve">
     <value>Polices</value>
   </data>
   <data name="Main_PpFilters" xml:space="preserve">
     <value>Filtres PP</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
   </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Course rapide</value>
@@ -248,9 +233,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Main_Screenshots" xml:space="preserve">
     <value>Capture d'écran</value>
   </data>
-  <data name="Main_Replays" xml:space="preserve">
-    <value>Replays</value>
-  <alternative>Ralentis</alternative></data>
   <data name="Main_Cars" xml:space="preserve">
     <value>Véhicules</value>
   <alternative>Voitures</alternative></data>
@@ -611,12 +593,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
     <value>Assurez-vous que les données sont valides.</value>
   </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Pour</value>
   </data>
@@ -755,9 +731,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Main_Lan" xml:space="preserve">
     <value>Réseau</value>
   </data>
-  <data name="Main_Showrooms" xml:space="preserve">
-    <value>Showrooms</value>
-  </data>
   <data name="Main_ServerPresets" xml:space="preserve">
     <value>Préréglages</value>
   <alternative>Pré-réglages</alternative></data>
@@ -887,9 +860,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
     <value>Nettoyage</value>
   <alternative>Néttoyage</alternative></data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
-  </data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
     <value>Accès au test :</value>
   <alternative>Test de l'accès :</alternative></data>
@@ -956,9 +926,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Settings_Appearance" xml:space="preserve">
     <value>Apparence</value>
   </data>
-  <data name="Settings_Dev" xml:space="preserve">
-    <value>Dev</value>
-  </data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>Activer les boutons d'action rapide</value>
   <alternative>Activer les bascules rapides</alternative></data>
@@ -1006,9 +973,6 @@ Auteur : [b]{3}[/b]</value>
   </data>
   <data name="Common_SignIn" xml:space="preserve">
     <value>Se connecter</value>
-  </data>
-  <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
-    <value>Type</value>
   </data>
   <data name="Toolbar_Analyze" xml:space="preserve">
     <value>Analyser</value>
@@ -1142,9 +1106,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
     <value>Nombre de pilotes</value>
   </data>
-  <data name="Online_Sorting_Ping" xml:space="preserve">
-    <value>Ping</value>
-  </data>
   <data name="Drive_Time" xml:space="preserve">
     <value>Temps</value>
   </data>
@@ -1256,15 +1217,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="CarSpecs_PowerLabel" xml:space="preserve">
     <value>BHP :</value>
   <alternative>Cv :</alternative><alternative>Ch :</alternative></data>
-  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>… bhp</value>
-  <alternative>... Cv</alternative><alternative>... ch</alternative></data>
-  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
-    <value>… Nm</value>
-  <alternative>... Nm</alternative><alternative>... N-m</alternative></data>
-  <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
-    <value>… kg</value>
-  <alternative>... Kg</alternative><alternative>... kg</alternative></data>
   <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
     <value>
 … km/h</value>
@@ -1275,9 +1227,6 @@ Auteur : [b]{3}[/b]</value>
 … s 0–100</value>
   <alternative>
 ... s 0-100</alternative></data>
-  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
-    <value>… kg/hp</value>
-  <alternative>... Kg/Cv</alternative><alternative>... kg/ch</alternative></data>
   <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
     <value>Recalculer automatiquement le rapport Poids/Puissance</value>
   <alternative>Recalculer automatiquement le ratio P/P</alternative><alternative>Recalculer automatiquement le rapport P/P</alternative></data>
@@ -1362,18 +1311,12 @@ Auteur : [b]{3}[/b]</value>
   <data name="AcSettings_ReplaysHeader" xml:space="preserve">
     <value>Replays :</value>
   <alternative>Ralentis :</alternative></data>
-  <data name="AcSettings_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
   <data name="AcSettings_Video" xml:space="preserve">
     <value>Vidéo</value>
   <alternative>Video</alternative></data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>Vue &amp; interface</value>
   <alternative>Vue &amp; Interface</alternative></data>
-  <data name="AcSettings_Audio" xml:space="preserve">
-    <value>Audio</value>
-  </data>
   <data name="AcSettings_Controls" xml:space="preserve">
     <value>Contrôles</value>
   </data>
@@ -1487,9 +1430,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
     <value>Flou de mouvement</value>
   </data>
-  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
-    <value>FXAA</value>
-  </data>
   <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
     <value>Mettre à jour la traduction avant le démarrage</value>
   </data>
@@ -1579,9 +1519,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Controls_SharedFfbOnly" xml:space="preserve">
     <value>{0} (FFB seulement)</value>
   </data>
-  <data name="List_Apps" xml:space="preserve">
-    <value>{0} app</value>
-  </data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} circuit</value>
   </data>
@@ -1597,14 +1534,8 @@ Auteur : [b]{3}[/b]</value>
   <data name="List_ServerPresets" xml:space="preserve">
     <value>{0} préréglage</value>
   </data>
-  <data name="List_Replays" xml:space="preserve">
-    <value>{0} replay</value>
-  </data>
   <data name="List_Setups" xml:space="preserve">
     <value>{0} réglage</value>
-  </data>
-  <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} showroom</value>
   </data>
   <data name="List_Skins" xml:space="preserve">
     <value>{0} livrée</value>
@@ -1996,9 +1927,6 @@ Auteur : [b]{3}[/b]</value>
   <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
     <value>Disposer en ordre inverse</value>
   </data>
-  <data name="WeatherEdit_Distance" xml:space="preserve">
-    <value>Distance</value>
-  </data>
   <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
     <value>Division horizontale</value>
   </data>
@@ -2089,9 +2017,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   </data>
   <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
     <value>Gérer les skins (Ctrl+K)</value>
-  </data>
-  <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
-    <value>Gloss</value>
   </data>
   <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
     <value>Gros fichiers :</value>
@@ -2292,9 +2217,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   </data>
   <data name="CarSpecs_UpdateCurves" xml:space="preserve">
     <value>Mise à jour des courbes</value>
-  </data>
-  <data name="LiveryIcon_Style_Miura" xml:space="preserve">
-    <value>Miura</value>
   </data>
   <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
     <value>Mot de passe invalide, réessayer :</value>
@@ -2545,9 +2467,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
     <value>Sans prise de vue</value>
   </data>
-  <data name="AcSettings_Video_Saturation" xml:space="preserve">
-    <value>Saturation</value>
-  </data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
     <value>Sauvegarder comme générique</value>
   </data>
@@ -2596,9 +2515,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   <data name="Weather_SeemsEmpty" xml:space="preserve">
     <value>Semble vide ?</value>
   </data>
-  <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Showroom</value>
-  </data>
   <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
     <value>Showroom original</value>
   </data>
@@ -2620,12 +2536,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   <data name="Car_SkinFormat" xml:space="preserve">
     <value>Skin : {0}</value>
   </data>
-  <data name="Toolbar_CarSkins" xml:space="preserve">
-    <value>Skins</value>
-  </data>
-  <data name="Main_Skins" xml:space="preserve">
-    <value>Skins</value>
-  </data>
   <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
     <value>Soyez prudent, changer l'ID peut causer des problèmes avec le mode en ligne !</value>
   </data>
@@ -2637,9 +2547,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   </data>
   <data name="LiveryIcon_StyleLabel" xml:space="preserve">
     <value>Style :</value>
-  </data>
-  <data name="AcSettings_Audio_Surface" xml:space="preserve">
-    <value>Surface</value>
   </data>
   <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
     <value>Veuillez sélectionner au moins un adversaire.</value>
@@ -2661,9 +2568,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   </data>
   <data name="Toolbar_UploadAndShare" xml:space="preserve">
     <value>Téléverser et partager</value>
-  </data>
-  <data name="LiveryIcon_Style_Tesla" xml:space="preserve">
-    <value>Tesla</value>
   </data>
   <data name="AcObject_FontTestLabel" xml:space="preserve">
     <value>Test :</value>
@@ -2697,9 +2601,6 @@ Mais si vous ne souhaitez pas gaspiller 200 MO : image TIFF, 96 bit par pixel, Z
   </data>
   <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
     <value>Triple division verticale</value>
-  </data>
-  <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>UI</value>
   </data>
   <data name="Solution_GenerateNew_Details" xml:space="preserve">
     <value>Un nouveau fichier vide sera créé ; n'oubliez pas de définir les valeurs appropriées et de les sauvegarder ensuite</value>
@@ -3501,9 +3402,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
     <value>Masque des serveurs SRS</value>
-  </data>
-  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
-    <value>Angle gamma</value>
   </data>
   <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
     <value>HDR-désactivé mult.</value>

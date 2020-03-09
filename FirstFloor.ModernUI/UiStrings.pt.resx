@@ -435,9 +435,6 @@
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>Ficheiros DDS (*.dds)|*.dds|Todos os ficheiros (*.*)|*.*</value>
   </data>
-  <data name="Progress_Short" xml:space="preserve">
-    <value>{0}</value>
-  </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{0} de {1}</value>
   </data>

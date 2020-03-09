@@ -312,9 +312,6 @@
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
     <value>Predefinição de assistências</value>
   </data>
-  <data name="Shared_Replay" xml:space="preserve">
-    <value>Replay</value>
-  </data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>Tempo</value>
   </data>
@@ -383,9 +380,6 @@
   </data>
   <data name="Online_Server_TrackIsMissing" xml:space="preserve">
     <value>Pista {0} está faltando</value>
-  </data>
-  <data name="Common_NA" xml:space="preserve">
-    <value>N/A</value>
   </data>
   <data name="Online_Server_SessionEnded" xml:space="preserve">
     <value>finalizado</value>
@@ -461,9 +455,6 @@
   </data>
   <data name="AdditionalContent_Font" xml:space="preserve">
     <value>fonte</value>
-  </data>
-  <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>showroom</value>
   </data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>pista</value>
@@ -657,9 +648,6 @@
   <data name="Gameplay_Units_Metrical" xml:space="preserve">
     <value>Métrico (km/h)</value>
   </data>
-  <data name="Gameplay_Units_Imperial" xml:space="preserve">
-    <value>Imperial (mph)</value>
-  </data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
     <value>Impossível salvar as configurações do AC</value>
   </data>
@@ -681,32 +669,17 @@
   <data name="AcSettings_Quality_High" xml:space="preserve">
     <value>Alto</value>
   </data>
-  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
-    <value>Ultra</value>
-  </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (sem compressão)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>Personalizado</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>Tela Única</value>
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>Tela Tripla</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
-  </data>
-  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0} (experimental)</value>
   </data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Muito Alto</value>
@@ -750,18 +723,6 @@
   <data name="Settings_Starter_Official" xml:space="preserve">
     <value>Oficial</value>
   </data>
-  <data name="Settings_Starter_Tricky" xml:space="preserve">
-    <value>Tricky</value>
-  </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
-  <data name="Settings_Starter_Sse" xml:space="preserve">
-    <value>SSE</value>
-  </data>
-  <data name="Settings_Starter_Naive" xml:space="preserve">
-    <value>Naive</value>
-  </data>
   <data name="Common_Recommended" xml:space="preserve">
     <value>{0} (Recomendado)</value>
   </data>
@@ -780,27 +741,6 @@
   <data name="Period_Month" xml:space="preserve">
     <value>Mês</value>
   </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>Bing</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>Google</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
-  </data>
-  <data name="SearchEngine_Baidu" xml:space="preserve">
-    <value>Baidu</value>
-  </data>
-  <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>Fancy</value>
-  </data>
-  <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>Lite</value>
-  </data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>Problema desconhecido (Process=null)</value>
   </data>
@@ -812,12 +752,6 @@
   </data>
   <data name="GameCommand_CannotExecute" xml:space="preserve">
     <value>Não é possível executar comando</value>
-  </data>
-  <data name="Session_Drag" xml:space="preserve">
-    <value>Drag Race</value>
-  </data>
-  <data name="Session_Drift" xml:space="preserve">
-    <value>Drift</value>
   </data>
   <data name="Session_Booking" xml:space="preserve">
     <value>Reserva</value>
@@ -930,9 +864,6 @@
   <data name="Weather_Squalls" xml:space="preserve">
     <value>Borrasca</value>
   </data>
-  <data name="Weather_Tornado" xml:space="preserve">
-    <value>Tornado</value>
-  </data>
   <data name="Weather_Hurricane" xml:space="preserve">
     <value>Furacão</value>
   </data>
@@ -986,9 +917,6 @@
   </data>
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>Um novo arquivo será criado, contendo o nome baseado na ID</value>
-  </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
   </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Insira o código de autenticação do Google Drive</value>
@@ -1131,12 +1059,6 @@
   <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
     <value>Certifique-se que há espaço suficiente no disco</value>
   </data>
-  <data name="Units_BHP" xml:space="preserve">
-    <value>BHP</value>
-  </data>
-  <data name="Units_Nm" xml:space="preserve">
-    <value>Nm</value>
-  </data>
   <data name="Common_Power" xml:space="preserve">
     <value>Potência</value>
   </data>
@@ -1151,9 +1073,6 @@
   </data>
   <data name="Common_Length" xml:space="preserve">
     <value>Comprimento</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>Exportando...</value>
@@ -1172,15 +1091,6 @@
   </data>
   <data name="CarParentIsMissing" xml:space="preserve">
     <value>O carro parente está faltando</value>
-  </data>
-  <data name="AcSettings_Quality_Normal" xml:space="preserve">
-    <value>Normal</value>
-  </data>
-  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>Subpixel</value>
-  </data>
-  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
-    <value>Ideal</value>
   </data>
   <data name="Common_CannotReadData" xml:space="preserve">
     <value>Não é possível ler a informação</value>
@@ -1302,15 +1212,6 @@
   <data name="AcSettings_View_Locked" xml:space="preserve">
     <value>Bloqueado</value>
   </data>
-  <data name="AcSettings_View_Lateral" xml:space="preserve">
-    <value>Lateral</value>
-  </data>
-  <data name="AcSettings_View_Vertical" xml:space="preserve">
-    <value>Vertical</value>
-  </data>
-  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
-    <value>Longitudinal</value>
-  </data>
   <data name="AcSettings_View_ViewHeader" xml:space="preserve">
     <value>Visualizar:</value>
   </data>
@@ -1328,12 +1229,6 @@
   </data>
   <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
     <value>Limite de rotação do volante virtual</value>
-  </data>
-  <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
-    <value>Latitude:</value>
-  </data>
-  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
-    <value>Longitude:</value>
   </data>
   <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
     <value>Formato recomendado: “…° N” ou “…° S”</value>
@@ -1362,14 +1257,8 @@
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>Formato inválido</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Sistema anti-travamento de freios</value>
-  </data>
-  <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Autoblip</value>
   </data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
     <value>Sincronizar RPM automaticamente em downshifts</value>
@@ -1446,9 +1335,6 @@
   <data name="KunosCareer_Start" xml:space="preserve">
     <value>Iniciar</value>
   </data>
-  <data name="Drive_Grid_Manual" xml:space="preserve">
-    <value>Manual</value>
-  </data>
   <data name="Drive_Grid_FilteredBy" xml:space="preserve">
     <value>Filtrado por...</value>
   </data>
@@ -1481,12 +1367,6 @@
   </data>
   <data name="JumpStartPenalty_Pits" xml:space="preserve">
     <value>Boxes</value>
-  </data>
-  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
-    <value>Drive-Through</value>
-  </data>
-  <data name="Session_TrackDay" xml:space="preserve">
-    <value>Track Day</value>
   </data>
   <data name="RaceGrid_CannotUpdate" xml:space="preserve">
     <value>Não é possível atualizar o grid da corrida</value>
@@ -1529,9 +1409,6 @@
   </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Tenta rodar acs.exe diretamente; na maioria dos casos fai falhar</value>
-  </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
   </data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
     <value>Não é possível carregar imagem usando Magick.NET</value>
@@ -1581,9 +1458,6 @@
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
     <value>Usar o nome das skins se disponível</value>
   </data>
-  <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>Global:</value>
-  </data>
   <data name="RaceGrid_You" xml:space="preserve">
     <value>Você</value>
   </data>
@@ -1601,9 +1475,6 @@
   </data>
   <data name="DifficultyLevel_Hard" xml:space="preserve">
     <value>Difícil</value>
-  </data>
-  <data name="DifficultyLevel_Alien" xml:space="preserve">
-    <value>Alien</value>
   </data>
   <data name="SpecialEvent_Description" xml:space="preserve">
     <value>{0} a {1}.</value>
@@ -1702,12 +1573,6 @@ Gostaria de embala-los antes de iniciar o servidor? Mas não esqueça de compart
   </data>
   <data name="Weather_Random" xml:space="preserve">
     <value>Aleatório</value>
-  </data>
-  <data name="Weather_Original" xml:space="preserve">
-    <value>Original</value>
-  </data>
-  <data name="Weather_Mods" xml:space="preserve">
-    <value>Mods</value>
   </data>
   <data name="Shared_RhmPreset" xml:space="preserve">
     <value>Predefinição Movimentos Reais de Cabeça</value>

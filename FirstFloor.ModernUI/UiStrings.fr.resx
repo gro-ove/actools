@@ -133,22 +133,13 @@
   <data name="Forward" xml:space="preserve">
     <value>En avant</value>
   </data>
-  <data name="Go" xml:space="preserve">
-    <value>Go</value>
-  <alternative>Lancer</alternative></data>
   <data name="HidePassword" xml:space="preserve">
     <value>Masquer le mot de passe</value>
     <comment>Pour la fenêtre mot de passe</comment>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
   <data name="ImagesFilter" xml:space="preserve">
     <value>Fichiers image|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Tous les fichiers (*.*)|*.*</value>
   <alternative>Image Files|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative><alternative>Fichiers images|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|All files (*.*)|*.*</alternative></data>
-  <data name="KeyAlt" xml:space="preserve">
-    <value>Alt</value>
-  </data>
   <data name="KeyAltLeft" xml:space="preserve">
     <value>Alt (Gauche)</value>
   </data>
@@ -209,12 +200,6 @@
   <data name="KeyEscape" xml:space="preserve">
     <value>Échappement</value>
   <alternative>Escape</alternative></data>
-  <data name="KeyHelp" xml:space="preserve">
-    <value>Help</value>
-  </data>
-  <data name="KeyHome" xml:space="preserve">
-    <value>Home</value>
-  </data>
   <data name="KeyInsert" xml:space="preserve">
     <value>Insertion</value>
   <alternative>Insert</alternative></data>
@@ -240,9 +225,6 @@
   <data name="KeyMediaPreviousTrack" xml:space="preserve">
     <value>Circuit précédent</value>
   <alternative>Piste précédente</alternative></data>
-  <data name="KeyMediaStop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
   <data name="KeyNumberPad" xml:space="preserve">
     <value>Pavé numérique {0}</value>
   </data>
@@ -255,9 +237,6 @@
   <data name="KeyPageUp" xml:space="preserve">
     <value>Page précédente</value>
   <alternative>Page Up</alternative></data>
-  <data name="KeyPause" xml:space="preserve">
-    <value>Pause</value>
-  </data>
   <data name="KeyPrintScreen" xml:space="preserve">
     <value>Imprimer l'écran</value>
   <alternative>Print Screen</alternative></data>
@@ -303,9 +282,6 @@
   <data name="KeyWindowsRight" xml:space="preserve">
     <value>Windows (droite)</value>
   <alternative>Windows (Droite)</alternative></data>
-  <data name="KeyZoom" xml:space="preserve">
-    <value>Zoom</value>
-  </data>
   <data name="LocalizationHelper_ReadableSize_B" xml:space="preserve">
     <value>O</value>
     <comment>Byte</comment>
@@ -315,10 +291,6 @@
     <value>Eo</value>
     <comment>Exabyte</comment>
   <alternative>EB</alternative></data>
-  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
-    <value>GB</value>
-    <comment>Gygabyte</comment>
-  <alternative>Go</alternative></data>
   <data name="LocalizationHelper_ReadableSize_KB" xml:space="preserve">
     <value>Ko</value>
     <comment>Kilobyte</comment>
@@ -347,9 +319,6 @@
   <data name="Minimize" xml:space="preserve">
     <value>Réduire</value>
   </data>
-  <data name="NavigateLink" xml:space="preserve">
-    <value>Navigate link</value>
-  </data>
   <data name="NavigationFailed" xml:space="preserve">
     <value>Navigation échouée</value>
   <alternative>Navigation failed</alternative></data>
@@ -361,9 +330,6 @@
   <alternative>Unable to navigate to {0}, no source specified</alternative></data>
   <data name="No" xml:space="preserve">
     <value>Non</value>
-  </data>
-  <data name="Ok" xml:space="preserve">
-    <value>OK</value>
   </data>
   <data name="PickColor" xml:space="preserve">
     <value>Choisir une couleur</value>
@@ -381,15 +347,9 @@
     <value>Afficher le mot de passe</value>
     <comment>Pour la fenêtre mot de passe</comment>
   <alternative>Montrer le mot de passe</alternative></data>
-  <data name="Source" xml:space="preserve">
-    <value>Source</value>
-  </data>
   <data name="StackTrace" xml:space="preserve">
     <value>Pile d'erreur</value>
   <alternative>Stack Trace</alternative></data>
-  <data name="Suggestions" xml:space="preserve">
-    <value>Suggestions</value>
-  </data>
   <data name="SuggestionsMessage" xml:space="preserve">
     <value>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]page précédente[/url].</value>
   <alternative>[url=cmd://copy]Copy[/url] the error details to the clipboard. Try to [url=cmd://refresh]refresh[/url] this page or go [url=cmd://browseback]back[/url].</alternative><alternative>[url=cmd://copy]Copier[/url] le détail des erreurs vers le presse-papier. Essayez de [url=cmd://refresh]rafraîchir[/url] cette page ou de revenir à la [url=cmd://browseback]précédente[/url].</alternative></data>
@@ -428,9 +388,6 @@
   <alternative>{0} of {1} uploadé</alternative><alternative>{0} of {1} téléversé</alternative><alternative>{0} of {1} envoyé</alternative></data>
   <data name="Ordinalizing_First" xml:space="preserve">
     <value>Premier</value>
-  </data>
-  <data name="Ordinalizing_Second" xml:space="preserve">
-    <value>Second</value>
   </data>
   <data name="Ordinalizing_Third" xml:space="preserve">
     <value>Troisième</value>
@@ -620,9 +577,6 @@
   </data>
   <data name="Ordinalizing_Minus" xml:space="preserve">
     <value>Moins {0}</value>
-  </data>
-  <data name="Progress_Short" xml:space="preserve">
-    <value>{0}</value>
   </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{0} sur {1}</value>

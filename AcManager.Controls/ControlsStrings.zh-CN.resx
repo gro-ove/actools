@@ -204,9 +204,6 @@
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>地理标签:</value>
   </data>
-  <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>{Error}:</value>
-  </data>
   <data name="Presets_Save" xml:space="preserve">
     <value>保存预设</value>
   </data>
@@ -602,9 +599,6 @@
   <data name="AcObject_VersionLabel" xml:space="preserve">
     <value>版本:</value>
   </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>文件夹"{0}"已经存在,覆盖?</value>
   </data>
@@ -773,9 +767,6 @@
   </data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value>°C</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
   </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
     <value>{0} 对手</value>
@@ -956,15 +947,6 @@
   </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>国籍</value>
-  </data>
-  <data name="TableHeader_Ai" xml:space="preserve">
-    <value>AI</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
   </data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>可见</value>

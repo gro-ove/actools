@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Assists_IdealLineLabel" xml:space="preserve">
     <value>Ideallinie:</value>
   <alternative>Ideallinie</alternative></data>
@@ -288,9 +285,6 @@
   <data name="Theme_Light" xml:space="preserve">
     <value>Hell</value>
   </data>
-  <data name="Animation_Modern" xml:space="preserve">
-    <value>Modern</value>
-  </data>
   <data name="Animation_Fade" xml:space="preserve">
     <value>Verblassen</value>
   </data>
@@ -357,12 +351,6 @@
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Reifen:</value>
   </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
-  <data name="AcObject_VersionLabel" xml:space="preserve">
-    <value>Version:</value>
-  </data>
   <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
     <value>Produktionsjahr</value>
   </data>
@@ -372,9 +360,6 @@
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Fortgeschritten</value>
   </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
-  <alternative>Profi</alternative></data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
     <value>In eigenem Showroom öffnen</value>
   <alternative>In eigenem Austellungsraum öffnen</alternative><alternative>In eigenem Ausstellungsraum öffnen</alternative></data>
@@ -383,12 +368,6 @@
   </data>
   <data name="Common_Cancelled" xml:space="preserve">
     <value>Abgebrochen</value>
-  </data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
-  <data name="Common_CelsiusPostfix" xml:space="preserve">
-    <value> °C</value>
   </data>
   <data name="Common_Change" xml:space="preserve">
     <value>Ändern</value>
@@ -414,18 +393,12 @@
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Belichtung:</value>
   </data>
-  <data name="Common_FilterLabel" xml:space="preserve">
-    <value>Filter:</value>
-  </data>
   <data name="Common_Finished" xml:space="preserve">
     <value>Fertig</value>
   </data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Ordner "{0}" existiert bereits. Überschreibe Dateien?</value>
   <alternative>Ordner "{0}" existiert bereits. Überschreiben?</alternative></data>
-  <data name="Common_FpsPostfix" xml:space="preserve">
-    <value> FPS</value>
-  </data>
   <data name="Common_Generic" xml:space="preserve">
     <value>Allgemein</value>
   </data>
@@ -522,15 +495,9 @@
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
     <value>Experimentell:</value>
   </data>
-  <data name="Controls_FilterAxis" xml:space="preserve">
-    <value>Filter</value>
-  </data>
   <data name="Controls_Gain" xml:space="preserve">
     <value>Verstärkung</value>
   <alternative>Zunnahme</alternative></data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Controls_GyroscopicEffect" xml:space="preserve">
     <value>Gyroskopischer Effekt</value>
   </data>
@@ -627,17 +594,11 @@
   <data name="CustomShowroom_SkinHeader" xml:space="preserve">
     <value>Lackierung</value>
   <alternative>Fahrzeuglackierung</alternative></data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
-  <alternative>FPS</alternative></data>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Statistiken</value>
   <alternative>Starter+</alternative></data>
   <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
     <value>Größe:</value>
-  </data>
-  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
-    <value>Format:</value>
   </data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Textur fehlt!</value>
@@ -647,9 +608,6 @@
   </data>
   <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
     <value>Typ:</value>
-  </data>
-  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
-    <value>Tools</value>
   </data>
   <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
     <value>In 1024x1024 anzeigen</value>
@@ -753,27 +711,18 @@
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Showroom starten fehlgeschlagen</value>
   <alternative>Aufstellungsraum starten fehlgeschlagen</alternative></data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  <alternative>Ausstellungsraum</alternative></data>
   <data name="Showroom_DisableSweetFx" xml:space="preserve">
     <value>SweetFX deaktivieren</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>SweetFx beeinflusst offenbar nicht die Restultate, kann aber die Ladezeit verringern</value>
   </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  <alternative>FOV</alternative></data>
   <data name="Showroom_HideWatermark" xml:space="preserve">
     <value>Wasserzeichen ausblenden</value>
   </data>
   <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos Wasserzeichen vorübergehend ausblenden</value>
   </data>
-  <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Showroom:</value>
-  <alternative>Ausstellungsraum:</alternative></data>
   <data name="Theme_Black" xml:space="preserve">
     <value>Schwarz</value>
   </data>
@@ -822,9 +771,6 @@
   <data name="ImageViewer_CannotSave" xml:space="preserve">
     <value>Das Bild kann nicht gespeichert werden</value>
   </data>
-  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
-    <value>Diffusion</value>
-  </data>
   <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
     <value>Drahtgittermodell</value>
   </data>
@@ -855,9 +801,6 @@
   <data name="CustomShowroom_ViewMapping" xml:space="preserve">
     <value>Mapping ansehen</value>
   </data>
-  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>Material:</value>
-  </data>
   <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
     <value>Materialname: [b]{0}[/b]
 Shader: [b]{1}[/b]
@@ -873,9 +816,6 @@ Depth mode: [b]{4}[/b]</value>
     <value>Name des Urbebers: [b]{0}[/b]
 Name: [b]{1}[/b]
 Typ: [b]{2}[/b]</value>
-  </data>
-  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
-    <value>Name:</value>
   </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
     <value>Nutze stattdessen PSD, XCF, etc. soweit vorhanden (Magick.NET Add-on vorausgesetzt)</value>
@@ -933,9 +873,6 @@ Material: [b]{10}[/b]</value>
   <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
     <value>Zum Rand verblassen</value>
   </data>
-  <data name="TableHeader_Ai" xml:space="preserve">
-    <value>AI</value>
-  </data>
   <data name="TableHeader_BestLap" xml:space="preserve">
     <value>Beste Runde</value>
   </data>
@@ -951,9 +888,6 @@ Material: [b]{10}[/b]</value>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Gesperrt</value>
   </data>
-  <data name="TableHeader_Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nationalität</value>
   </data>
@@ -962,14 +896,5 @@ Material: [b]{10}[/b]</value>
   </data>
   <data name="TableHeader_Track" xml:space="preserve">
     <value>Strecke</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
-  </data>
-  <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value> °F</value>
   </data>
 </root>

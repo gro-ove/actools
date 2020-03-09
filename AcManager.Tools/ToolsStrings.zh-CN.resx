@@ -693,26 +693,17 @@
   <data name="AcSettings_Quality_Ultra" xml:space="preserve">
     <value>非常高</value>
   </data>
-  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
-    <value>JPEG</value>
-  </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
     <value>Bitmap (不压缩)</value>
   </data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>自定义</value>
   </data>
-  <data name="AcSettings_ResolutionFormat" xml:space="preserve">
-    <value>{0}×{1}, {2} Hz</value>
-  </data>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
     <value>单屏</value>
   </data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
     <value>三屏</value>
-  </data>
-  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
-    <value>Oculus Rift</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
     <value>{0} (实验性)</value>
@@ -762,9 +753,6 @@
   <data name="Settings_Starter_Tricky" xml:space="preserve">
     <value>特殊启动器</value>
   </data>
-  <data name="Settings_Starter_StarterPlus" xml:space="preserve">
-    <value>Starter+</value>
-  </data>
   <data name="Settings_Starter_Sse" xml:space="preserve">
     <value>SSE启动器</value>
   </data>
@@ -789,17 +777,11 @@
   <data name="Period_Month" xml:space="preserve">
     <value>月</value>
   </data>
-  <data name="SearchEngine_DuckDuckGo" xml:space="preserve">
-    <value>DuckDuckGo</value>
-  </data>
   <data name="SearchEngine_Bing" xml:space="preserve">
     <value>必应</value>
   </data>
   <data name="SearchEngine_Google" xml:space="preserve">
     <value>谷歌</value>
-  </data>
-  <data name="SearchEngine_Yandex" xml:space="preserve">
-    <value>Yandex</value>
   </data>
   <data name="SearchEngine_Baidu" xml:space="preserve">
     <value>百度</value>
@@ -996,9 +978,6 @@
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
     <value>将会依据ID创建新文件</value>
   </data>
-  <data name="Uploader_GoogleDrive" xml:space="preserve">
-    <value>Google Drive</value>
-  </data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>输入Google Drive授权码:</value>
   </data>
@@ -1160,9 +1139,6 @@
   </data>
   <data name="Common_Length" xml:space="preserve">
     <value>长度</value>
-  </data>
-  <data name="Common_KN5" xml:space="preserve">
-    <value>KN5</value>
   </data>
   <data name="Common_Exporting" xml:space="preserve">
     <value>导出中…</value>
@@ -1371,9 +1347,6 @@
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>无效格式</value>
   </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS:</value>
-  </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>车辆制动防抱死系统</value>
   </data>
@@ -1538,9 +1511,6 @@
   </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>尝试直接运行acs.exe;多数情况下会失败</value>
-  </data>
-  <data name="Units_RPM" xml:space="preserve">
-    <value>RPM</value>
   </data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
     <value>无法使用Magick.NET载入图像</value>

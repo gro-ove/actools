@@ -774,9 +774,6 @@
   <data name="Settings_Plugins" xml:space="preserve">
     <value>Плагины</value>
   </data>
-  <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP:</value>
-  </data>
   <data name="TableHeader_Car" xml:space="preserve">
     <value>Машина</value>
   </data>
@@ -2306,9 +2303,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
 {1}: [b]{2}[/b]
 Автор: [b]{3}[/b]</value>
   </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
   <data name="Arguments_SharedMessage_Id" xml:space="preserve">
     <value>Идентификатор</value>
   </data>
@@ -3284,15 +3278,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   <data name="Main_ContentManager" xml:space="preserve">
     <value>Контент Менеджер</value>
   </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
   <data name="Settings_General_AppHeader" xml:space="preserve">
     <value>Приложение:</value>
   </data>
@@ -3401,9 +3386,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
     <value>… м</value>
   </data>
-  <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
-    <value>…</value>
-  </data>
   <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
     <value>Общая длина, рекомендуемый формат: “{0}”</value>
   </data>
@@ -3492,9 +3474,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   </data>
   <data name="UpgradeIcon_AddAs" xml:space="preserve">
     <value>Добавить как новый значок обновления:</value>
-  </data>
-  <data name="Controls_MguK" xml:space="preserve">
-    <value>MGU-K:</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
     <value>Отражение неба </value>

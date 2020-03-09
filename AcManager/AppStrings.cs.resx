@@ -823,9 +823,6 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
   <data name="Main_Skins" xml:space="preserve">
     <value>Skiny</value>
   </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
-  </data>
   <data name="Main_Stats" xml:space="preserve">
     <value>Statistiky</value>
   </data>
@@ -879,9 +876,6 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
   </data>
   <data name="Online_Sorting_Name" xml:space="preserve">
     <value>Jména</value>
-  </data>
-  <data name="Online_Sorting_Ping" xml:space="preserve">
-    <value>Ping</value>
   </data>
   <data name="Online_TimeLabel" xml:space="preserve">
     <value>Čas:</value>
@@ -1322,9 +1316,6 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
   <data name="Settings_Online_RememberPasswords" xml:space="preserve">
     <value>Zapamatovat hesla</value>
   </data>
-  <data name="Settings_Online_ServerLabel" xml:space="preserve">
-    <value>Server:</value>
-  </data>
   <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
     <value>Správce přednastavení serveru:</value>
   </data>
@@ -1405,9 +1396,6 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
   </data>
   <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
     <value>Typ</value>
-  </data>
-  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
-    <value>URL</value>
   </data>
   <data name="Settings_Sharing_NameLabel" xml:space="preserve">
     <value>Sdílené jméno:</value>

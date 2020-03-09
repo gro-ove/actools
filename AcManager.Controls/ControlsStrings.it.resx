@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>Nordschleife</value>
-  </data>
   <data name="Common_Clear" xml:space="preserve">
     <value>Limpido</value>
   </data>
@@ -225,9 +222,6 @@
   <data name="AssistsPreset_Intermediate" xml:space="preserve">
     <value>Intermedio</value>
   </data>
-  <data name="AssistsPreset_Pro" xml:space="preserve">
-    <value>Pro</value>
-  </data>
   <data name="Common_Loading" xml:space="preserve">
     <value>Caricamento...</value>
   </data>
@@ -264,14 +258,8 @@
   <data name="AcObject_VersionLabel" xml:space="preserve">
     <value>Versione:</value>
   </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>URL:</value>
-  </data>
   <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
     <value>Salva</value>
-  </data>
-  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>Reset</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
     <value>Nascondi volante</value>
@@ -284,9 +272,6 @@
   </data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
     <value>Oggetti:</value>
-  </data>
-  <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>FPS:</value>
   </data>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>Stato</value>
@@ -317,12 +302,6 @@
   </data>
   <data name="CustomShowroom_Export" xml:space="preserve">
     <value>Esporta</value>
-  </data>
-  <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Showroom</value>
-  </data>
-  <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Showroom:</value>
   </data>
   <data name="AcObject_YearLabel" xml:space="preserve">
     <value>Anno:</value>
@@ -510,9 +489,6 @@
   <data name="Theme_Black" xml:space="preserve">
     <value>Nero</value>
   </data>
-  <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Autoblip:</value>
-  </data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>La pagina web dice</value>
   </data>
@@ -536,9 +512,6 @@
   </data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
     <value>Tag Geografico:</value>
-  </data>
-  <data name="AcObject_ErrorsHeader" xml:space="preserve">
-    <value>{Error}:</value>
   </data>
   <data name="Presets_Save" xml:space="preserve">
     <value>Salva preset</value>
@@ -630,9 +603,6 @@
   <data name="Controls_Preview_Devices" xml:space="preserve">
     <value>Device: [b]{0}[/b]</value>
   </data>
-  <data name="Controls_Preview_Device" xml:space="preserve">
-    <value>Device: [b]{0}[/b]</value>
-  </data>
   <data name="Share_EnterName" xml:space="preserve">
     <value>Inserisci nome o lascia il campo vuoto:</value>
   </data>
@@ -685,9 +655,6 @@ Inserisci tipo: [b]{2}[/b]</alternative></data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
     <value>Apparentemente SweetFX non influisce sul risultato, ma potrebbe ridurre i tempi di caricamento</value>
   </data>
-  <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>FOV:</value>
-  </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
     <value>Impossibile avviare lo Showroom</value>
   </data>
@@ -732,12 +699,6 @@ Inserisci tipo: [b]{2}[/b]</alternative></data>
   </data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
     <value>Texture:</value>
-  </data>
-  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
-    <value>Wireframe</value>
-  </data>
-  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
-    <value>Skin</value>
   </data>
   <data name="CustomShowroom_EditingMode" xml:space="preserve">
     <value>Modalità modifica della skin</value>
@@ -800,9 +761,6 @@ Profondità: [b]{4}[/b]</value>
   <data name="Controls_WaitingForInput" xml:space="preserve">
     <value>In attesa di input</value>
   </data>
-  <data name="Controls_GammaAxis" xml:space="preserve">
-    <value>Gamma</value>
-  </data>
   <data name="Controls_SpeedSensitivity" xml:space="preserve">
     <value>Sensibiltà  alla velocità</value>
   </data>
@@ -842,9 +800,6 @@ Profondità: [b]{4}[/b]</value>
   <data name="Common_Uploading" xml:space="preserve">
     <value>In upload…</value>
   <alternative>Uploading…</alternative></data>
-  <data name="Common_CelsiusFormat" xml:space="preserve">
-    <value>{0:F0} °C</value>
-  </data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
     <value>Valore consigliato: {0}%</value>
   </data>
@@ -914,9 +869,6 @@ Profondità: [b]{4}[/b]</value>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value>Giro</value>
   </data>
-  <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value> °F</value>
-  </data>
   <data name="TableHeader_Name" xml:space="preserve">
     <value>Nome</value>
   </data>
@@ -932,20 +884,11 @@ Profondità: [b]{4}[/b]</value>
   <data name="TableHeader_Date" xml:space="preserve">
     <value>Data</value>
   </data>
-  <data name="TableHeader_CarSkin" xml:space="preserve">
-    <value>Skin</value>
-  </data>
   <data name="TableHeader_Nationality" xml:space="preserve">
     <value>Nazionalità</value>
   </data>
   <data name="TableHeader_Ai" xml:space="preserve">
     <value>IA</value>
-  </data>
-  <data name="TableHeader_X" xml:space="preserve">
-    <value>X</value>
-  </data>
-  <data name="TableHeader_Y" xml:space="preserve">
-    <value>Y</value>
   </data>
   <data name="TableHeader_Visible" xml:space="preserve">
     <value>Visibile</value>

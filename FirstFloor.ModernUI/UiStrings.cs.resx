@@ -156,9 +156,6 @@
   <data name="Ordinalizing_Fourth" xml:space="preserve">
     <value>Čtvrtý</value>
   </data>
-  <data name="Ordinalizing_Minus" xml:space="preserve">
-    <value>Minus {0}</value>
-  </data>
   <data name="Ordinalizing_Nineteenth" xml:space="preserve">
     <value>Devatenáctý</value>
   </data>

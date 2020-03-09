@@ -176,12 +176,6 @@
   <data name="Arguments_SharedMessage" xml:space="preserve">
     <value>Naam: [b]{0}[/b] {1}: [b]{2}[/b] Auteur: [b]{3}[/b]</value>
   </data>
-  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
-    <value>[/b][i]?[/i][b]</value>
-  </data>
-  <data name="Arguments_SharedMessage_Id" xml:space="preserve">
-    <value>ID</value>
-  </data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>Voor</value>
   </data>
@@ -416,14 +410,8 @@
   <data name="Main_Settings" xml:space="preserve">
     <value>Instellingen</value>
   </data>
-  <data name="Main_Server" xml:space="preserve">
-    <value>Server</value>
-  </data>
   <data name="Main_Drive" xml:space="preserve">
     <value>Rijden</value>
-  </data>
-  <data name="Main_Media" xml:space="preserve">
-    <value>Media</value>
   </data>
   <data name="Main_Content" xml:space="preserve">
     <value>Inhoud</value>
@@ -437,15 +425,6 @@
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>Belangrijke tips</value>
   </data>
-  <data name="Main_ContentManager" xml:space="preserve">
-    <value>Content Manager</value>
-  </data>
-  <data name="Main_AssettoCorsa" xml:space="preserve">
-    <value>Assetto Corsa</value>
-  </data>
-  <data name="Main_Apps" xml:space="preserve">
-    <value>Apps</value>
-  </data>
   <data name="Main_Fonts" xml:space="preserve">
     <value>Lettertype</value>
   </data>
@@ -454,12 +433,6 @@
   </data>
   <data name="Main_Weather" xml:space="preserve">
     <value>Weer</value>
-  </data>
-  <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR</value>
-  </data>
-  <data name="Main_Srs" xml:space="preserve">
-    <value>SRS</value>
   </data>
   <data name="Main_QuickDrive" xml:space="preserve">
     <value>Snel</value>
@@ -470,26 +443,8 @@
   <data name="Main_Challenges" xml:space="preserve">
     <value>Uitdagingen</value>
   </data>
-  <data name="Main_Single" xml:space="preserve">
-    <value>Single</value>
-  </data>
-  <data name="Main_Live" xml:space="preserve">
-    <value>Live</value>
-  </data>
   <data name="Main_Language" xml:space="preserve">
     <value>Taal</value>
-  </data>
-  <data name="Main_Online" xml:space="preserve">
-    <value>Online</value>
-  </data>
-  <data name="Main_Lan" xml:space="preserve">
-    <value>LAN</value>
-  </data>
-  <data name="Main_Screenshots" xml:space="preserve">
-    <value>Screenshots</value>
-  </data>
-  <data name="Main_Replays" xml:space="preserve">
-    <value>Replays</value>
   </data>
   <data name="Main_Cars" xml:space="preserve">
     <value>Auto's</value>
@@ -502,9 +457,6 @@
   </data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Diversen</value>
-  </data>
-  <data name="Main_ServerPresets" xml:space="preserve">
-    <value>Presets</value>
   </data>
   <data name="Main_ServerRunning" xml:space="preserve">
     <value>Lopend</value>
@@ -523,9 +475,6 @@
   </data>
   <data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
     <value>Afbeelding schaal kwaliteit:</value>
-  </data>
-  <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
-    <value>Popup toolbars</value>
   </data>
   <data name="Settings_Appearance_LargeSearchBoxes" xml:space="preserve">
     <value>Grote zoekvakken</value>
@@ -647,9 +596,6 @@
   <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
     <value>Je kunt het op elk moment schakelen door op F te drukken</value>
   </data>
-  <data name="Settings_Drive_Starter" xml:space="preserve">
-    <value>Game starter</value>
-  </data>
   <data name="Settings_Drive_32bit" xml:space="preserve">
     <value>Gebruik 32-bit versie</value>
   </data>
@@ -725,17 +671,11 @@
   <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
     <value>Taal:</value>
   </data>
-  <data name="Settings_Locale_LocaleId" xml:space="preserve">
-    <value>Locale ID</value>
-  </data>
   <data name="Settings_Locale_RestartApp" xml:space="preserve">
     <value>Herstarten</value>
   </data>
   <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
     <value>Houd Ctrl vast wanneer je CM sluit om het sneller te laten herstarten</value>
-  </data>
-  <data name="Settings_Locale_Custom" xml:space="preserve">
-    <value>Custom</value>
   </data>
   <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
     <value>Officieel ondersteund</value>
@@ -791,17 +731,8 @@
   <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
     <value>Staat toe om 999 rondes enzo in te stellen, gebruik op eigen risico.</value>
   </data>
-  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
-    <value>Assetto Corsa folder:</value>
-  </data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>Developer modus</value>
-  </data>
-  <data name="Settings_General_AppHeader" xml:space="preserve">
-    <value>App:</value>
-  </data>
-  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
-    <value>App key:</value>
   </data>
   <data name="Settings_General_WindowsShortcut" xml:space="preserve">
     <value>Start Menu snelkoppeling (voor moderne notificaties)</value>
@@ -835,9 +766,6 @@
   </data>
   <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
     <value>Tijd van opslaan:</value>
-  </data>
-  <data name="Common_MillisecondsFormat" xml:space="preserve">
-    <value>{0:F2} ms</value>
   </data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
     <value>Update naar ongeteste versies</value>
