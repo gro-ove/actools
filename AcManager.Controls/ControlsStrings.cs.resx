@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>Sjížděcí</value>
+  </data>
+  <data name="Animation_Fade" xml:space="preserve">
+    <value>Slábnoucí</value>
+  </data>
+  <data name="Animation_Modern" xml:space="preserve">
+    <value>Moderní</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Vyjížděcí</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Automatický virtuální meziplyn</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Automatická virtuální spojka:</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Automatické virtuální řazení</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Palivo:</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Asistenti:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Ideální závodní stopa:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Kontrola stability:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Opotřebování pneumatik:</value>
+  </data>
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
+    <value>Hráč</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>Pokročilý</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Profesionál</value>
+  </data>
+  <data name="Car_OpenInShowroom" xml:space="preserve">
+    <value>Otevřít v autosalonu</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Expozice:</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value>minut</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value> min</value>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>Soupeřů: {0}</value>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value> soupeřů</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Možnosti</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>Přednastavení</value>
+  </data>
+  <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
+    <value>Doporučená hodnota: {0}%</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Resetovat</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>Resetovat na doporučenou hodnotu</value>
+  </data>
+  <data name="Common_SecondsPostfix" xml:space="preserve">
+    <value> sekund</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Neuložený</value>
+  </data>
+  <data name="Controls_BuiltInPresets" xml:space="preserve">
+    <value>Vestavěná přednastavení</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Smazat nastavení klávesníce</value>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>Smazat nastavení volantu</value>
+  </data>
+  <data name="Controls_ClickToAssign" xml:space="preserve">
+    <value>Klikněte pro přiřazení</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>Intenzita tlumičů</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Nastavit 0 pro Logitech 920, ponechat 1 v ostatních případech</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Efekty:</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>Zesíléní efektu nedotáčivosti</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Experimentální:</value>
+  </data>
+  <data name="Controls_FilterAxis" xml:space="preserve">
+    <value>Filtr</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Intenzita</value>
+  </data>
+  <data name="Controls_GammaAxis" xml:space="preserve">
+    <value>Gama</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>Gyroskopický efekt</value>
+  </data>
+  <data name="Controls_InvertAxis" xml:space="preserve">
+    <value>Převrátit</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Obrubníky</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>Klávesa</value>
+  </data>
+  <data name="Controls_LoadPresetWarning" xml:space="preserve">
+    <value>Načíst “{0}”? Nynější hodnoty budou přepsány (ale mohou být obnoveny z Koše).</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Minimální síla</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>Minimální úroveň tlumičů</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Různé:</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>Zařízení: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>Zařízení: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>Způsob ovládání: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>Rozsah od</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>Rozsah do</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Povrch</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>Přeskočit kroky zpětné odezvy</value>
+  </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Určuje, kolik kroků fyzikálního enginu se přeskočí, aby fungovaly volanty s nižší vstupní vyrovnávací pamětí zpětné odezvy. Máte-li problémy s procesorem, může pomoci zvýšení na hodnotu 2 až 4.</value>
+  </data>
+  <data name="Controls_SlipEffect" xml:space="preserve">
+    <value>Smyk</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>Měkký zámek</value>
+  </data>
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
+    <value>Citlivost na rychlost</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Tlačítko volantu</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>Odemknout experimentální možnosti (opatrně!)</value>
+  </data>
+  <data name="Controls_UserPresets" xml:space="preserve">
+    <value>Uživatelská přednastavení</value>
+  </data>
+  <data name="Controls_WaitingForInput" xml:space="preserve">
+    <value>Čekám na vstup</value>
+  </data>
+  <data name="FindInformation_SaveAndClose" xml:space="preserve">
+    <value>Uložit a zavřít</value>
+  </data>
+  <data name="Online_TrackIsMissingLabel" xml:space="preserve">
+    <value>Trať chybí:</value>
+  </data>
+  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
+    <value>Stáhnout a nainstalovat ({0})</value>
+  </data>
+  <data name="Presets_Save" xml:space="preserve">
+    <value>Uložit přednastavení</value>
+  </data>
+  <data name="Presets_Save_Tooltip" xml:space="preserve">
+    <value>Uložit nynější nastavení jako přednastavení (Ctrl+S)</value>
+  </data>
+  <data name="Presets_Unsaved" xml:space="preserve">
+    <value>Neuložené přednastavení</value>
+  </data>
+  <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
+    <value>Přepínač přednastavení ovladačů</value>
+  </data>
+  <data name="QuickSwitches_DamageUi" xml:space="preserve">
+    <value>HUD poškození</value>
+  </data>
+  <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
+    <value>Zobrazit ukazatel při poškození</value>
+  </data>
+  <data name="QuickSwitches_DevApps" xml:space="preserve">
+    <value>Pro vývojáře</value>
+  </data>
+  <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
+    <value>Umožnit běh vývojářských appek</value>
+  </data>
+  <data name="QuickSwitches_Exposure" xml:space="preserve">
+    <value>Expozice</value>
+  </data>
+  <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
+    <value>Změna expozice</value>
+  </data>
+  <data name="QuickSwitches_Fov" xml:space="preserve">
+    <value>Zorné pole</value>
+  </data>
+  <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
+    <value>Změna zorného pole ve svislé ose</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera" xml:space="preserve">
+    <value>Volná kamera</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Povolit/zakázat volný pohyb kamery (ve hře stiskněte klávesu F7) </value>
+  </data>
+  <data name="QuickSwitches_Fullscreen" xml:space="preserve">
+    <value>Bez rámu okna</value>
+  </data>
+  <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
+    <value>Aktivovat běh videohry přes celou obrazovku (například Shadowplay v okně nefunguje)</value>
+  </data>
+  <data name="QuickSwitches_Header" xml:space="preserve">
+    <value>Rychlé přepínače</value>
+  </data>
+  <data name="QuickSwitches_HideArms" xml:space="preserve">
+    <value>Paže</value>
+  </data>
+  <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
+    <value>Skrýt virtuální paže vašeho řidiče</value>
+  </data>
+  <data name="QuickSwitches_HideDriver" xml:space="preserve">
+    <value>Řidič</value>
+  </data>
+  <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
+    <value>Skrýt vašeho řidiče</value>
+  </data>
+  <data name="QuickSwitches_HideWheel" xml:space="preserve">
+    <value>Volant</value>
+  </data>
+  <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
+    <value>Skrýt volant vašeho auta</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard" xml:space="preserve">
+    <value>Výsledky</value>
+  </data>
+  <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
+    <value>Zobrazovat seznam výsledků závodů</value>
+  </data>
+  <data name="QuickSwitches_LockCamera" xml:space="preserve">
+    <value>Zámek kamery</value>
+  </data>
+  <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
+    <value>Mířit palubní kamerou na horizont</value>
+  </data>
+  <data name="QuickSwitches_LockWheel" xml:space="preserve">
+    <value>Pohyb volantu</value>
+  </data>
+  <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
+    <value>Nepohybovat virtuálním volantem</value>
+  </data>
+  <data name="QuickSwitches_Mirror" xml:space="preserve">
+    <value>Zrcátko</value>
+  </data>
+  <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
+    <value>Zobrazit virtuální zpětné zrcátko</value>
+  </data>
+  <data name="QuickSwitches_Names" xml:space="preserve">
+    <value>Jména</value>
+  </data>
+  <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
+    <value>Zobrazovat jména soupeřů</value>
+  </data>
+  <data name="QuickSwitches_Nearest" xml:space="preserve">
+    <value>Radar</value>
+  </data>
+  <data name="QuickSwitches_OnlineName" xml:space="preserve">
+    <value>Online jméno </value>
+  </data>
+  <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
+    <value>Použít alternativní jméno online</value>
+  </data>
+  <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
+    <value>Přepínat mezi PP filtry</value>
+  </data>
+  <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
+    <value>Přepínat mezi přednastaveními uživatelského rozhraní</value>
+  </data>
+  <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
+    <value>Přepínat mezi přednastaveními grafického nastavení</value>
+  </data>
+  <data name="Showroom_FovLabel" xml:space="preserve">
+    <value>Zorné pole:</value>
+  </data>
+  <data name="Theme_Black" xml:space="preserve">
+    <value>Černý</value>
+  </data>
+  <data name="Theme_Dark" xml:space="preserve">
+    <value>Tmavý</value>
+  </data>
+  <data name="Theme_Light" xml:space="preserve">
+    <value>Světlý</value>
+  </data>
+  <data name="Theme_Nordschleife" xml:space="preserve">
+    <value>Nordschleife</value>
+  </data>
+  <data name="Common_RoundPostfix" xml:space="preserve">
+    <value> kol</value>
+  </data>
+</root>

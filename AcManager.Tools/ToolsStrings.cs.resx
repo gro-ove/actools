@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcSettings_CameraMode_OculusRift" xml:space="preserve">
+    <value>Oculus Rift</value>
+  </data>
+  <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
+    <value>Jedna obrazovka</value>
+  </data>
+  <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
+    <value>Tři obrazovky</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Nelze získat seznam rozlišení</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Nelze uložit nastavení hry</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že aplikace má přístup ke složce CFG</value>
+  </data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>Vlastní</value>
+  </data>
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
+    <value>{0} (experimentální)</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Vypnuto</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>Vysoká kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ideální kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Nízká kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Maximum" xml:space="preserve">
+    <value>Maximální kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Střední kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Minimum" xml:space="preserve">
+    <value>Minimální kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normální kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
+    <value>Na úrovni pixelu</value>
+  </data>
+  <data name="AcSettings_Quality_Ultra" xml:space="preserve">
+    <value>Nejvyšší kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
+    <value>Velmi vysoká kvalita</value>
+  </data>
+  <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
+    <value>Velmi nízká kvalita</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>bitmapa (bez komprese)</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Jpeg" xml:space="preserve">
+    <value>JPG</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>Umožnit překrývání appek</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Kamera:</value>
+  </data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>Zobrazit ukazatel při poškození</value>
+  </data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>Zobrazit nad soupeři jejich jména</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>Intenzita vizuální simulace přetížení:</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Úhel rozhlédnutí</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Rychlost rozhlédnutí</value>
+  </data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Skrýt vaše virtuální paže</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Skrýt váš virtuální volant</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Třes při rychlé jízdě</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Příčný směr</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Zobrazit výsledky závodu</value>
+  </data>
+  <data name="AcSettings_View_LockCamera" xml:space="preserve">
+    <value>Palubní kamerou vždy mířit na horizont</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Jen v příčném směru</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Nepohybovat vaším virtuálním volantem</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Podélný směr</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Omezit jeho pohyb</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Omezení úhlu otáčení vašeho virtuálního volantu</value>
+  </data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>Zobrazit rozestupy vůči soupeřům</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Jednotky:</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Svislý směr</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Pohled:</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Zobrazit virtuální zpětné zrcátko</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Protiblokovací systém brzd</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Automatický virtuální meziplyn</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automaticky synchronizovat otáčky při podřazování pro předejití smyku</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automatická virtuální spojka</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automatické sešlápnutí virtuální spojky při přeřazení</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Automatické virtuální řazení</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Nepleťte si s automatickou převodovkou</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Spotřeba paliva</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideální závodní stopa</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Zobrazovat po celé délce trati ukazatele ideální závodní stopy</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mechanické poškození</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>Čím vyšší hodnota, tím snáze se poškodí motor, převodovka, zavěšení a další</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Vzdušný pytel</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Čím vyšší hodnota, tím menší odpor vzduchu budou muset zdolávat auta následující ta vpředu jedoucí</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Kontrola stability</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Čím vyšší hodnota, tím se zmenší pravděpodobnost smyku</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Asistenti:</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Kontrola trakce:</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Zlepší odpich při prudkém zrychlení</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Předehřát pneumatiky</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Předehřát pneumatiky v boxech pomocí návleků</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Opotřebování pneumatik</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Čím vyšší hodnota, tím snáze se opotřebují pneumatiky</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Tovární</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Vypnout</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Zapnout</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Šampionát</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Vypnuto</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Žádné</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Poloměr</value>
+  </data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (Doporučené)</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Skenuji...</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Odeslat</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Víkend</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Pedál brzdy</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Oslava</value>
+  </data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>Další kamera</value>
+  </data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>Pedál spojky</value>
+  </data>
+  <data name="Controls_Complain" xml:space="preserve">
+    <value>Stěžovat si</value>
+  </data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>Snížit</value>
+  </data>
+  <data name="Controls_Drs" xml:space="preserve">
+    <value>Aktivovat DRS</value>
+  </data>
+  <data name="Controls_FlashHeadlights" xml:space="preserve">
+    <value>Zablikat světly</value>
+  </data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>Pátý rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>První rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>Čtvrtý rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>Zpátečka</value>
+  </data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>Druhý rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>Sedmý rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>Šestý rychlostní stupeň</value>
+  </data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>Třetí rychlostní stupeň</value>
+  </data>
+  <data name="Controls_GlanceBack" xml:space="preserve">
+    <value>Za hlavu</value>
+  </data>
+  <data name="Controls_GlanceLeft" xml:space="preserve">
+    <value>Doleva</value>
+  </data>
+  <data name="Controls_GlanceRight" xml:space="preserve">
+    <value>Doprava</value>
+  </data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>Ruční brzda</value>
+  </data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>Zapnout světla</value>
+  </data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>Zatroubit</value>
+  </data>
+  <data name="Controls_Increase" xml:space="preserve">
+    <value>Zvýšit</value>
+  </data>
+  <data name="Controls_Kers" xml:space="preserve">
+    <value>Aktivovat KERS</value>
+  </data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>Jen klávesnice s myší</value>
+  </data>
+  <data name="Controls_Mguh_Mode" xml:space="preserve">
+    <value>Režim MGU-H</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
+    <value>Snížit dodávku MGU-K</value>
+  </data>
+  <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
+    <value>Snížit obnovu MGU-K</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
+    <value>Zvýšit dodávku MGU-K</value>
+  </data>
+  <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
+    <value>Zvýšit obnovu MGU-K</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Přesunout dopředu</value>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Přesunout dozadu</value>
+  </data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>Nadřadit</value>
+  </data>
+  <data name="Controls_PreviousGear" xml:space="preserve">
+    <value>Podřadit</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Řízení</value>
+  </data>
+  <data name="Controls_SteeringWheel" xml:space="preserve">
+    <value>Volant (s případnou klávesnicí)</value>
+  </data>
+  <data name="Controls_SteerLeft" xml:space="preserve">
+    <value>Zatočit vlevo</value>
+  </data>
+  <data name="Controls_SteerRight" xml:space="preserve">
+    <value>Zatočit vpravo</value>
+  </data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>Pedál plynu</value>
+  </data>
+  <data name="Controls_Xbox360Gamepad" xml:space="preserve">
+    <value>Gamepad pro Xbox 360 (s případnou klávesnicí)</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Filtrováno podle...</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Ručně</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Stejné auto</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Stejná kategorie</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>Přidat auto do seznamu</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Náhodný</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Promíchat</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Způsob seřazení možných soupeřů</value>
+  </data>
+  <data name="Drive_GridBuilding" xml:space="preserve">
+    <value>Sestavování roštu...</value>
+  </data>
+  <data name="Drive_GridNamesFromSkins" xml:space="preserve">
+    <value>Použít jména skinů, pokud jsou dostupná</value>
+  </data>
+  <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
+    <value>Odebrat vybraná auta ze seznamu</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Složení startovního roštu:</value>
+  </data>
+  <data name="Gameplay_Units_Imperial" xml:space="preserve">
+    <value>Imperiální (míle za hodinu)</value>
+  </data>
+  <data name="Gameplay_Units_Metrical" xml:space="preserve">
+    <value>Metrické (kilometry za hodinu)</value>
+  </data>
+  <data name="JumpStart_DriveThrough" xml:space="preserve">
+    <value>Průjezd boxy</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Průjezd boxy</value>
+  </data>
+  <data name="JumpStartPenalty_Pits" xml:space="preserve">
+    <value>Zastávka v boxech</value>
+  </data>
+  <data name="KunosCareer_Championship" xml:space="preserve">
+    <value>Šampionát</value>
+  </data>
+  <data name="KunosCareer_Place" xml:space="preserve">
+    <value>umístění</value>
+  </data>
+  <data name="KunosCareer_Point" xml:space="preserve">
+    <value>bod</value>
+  </data>
+  <data name="KunosCareer_Resume" xml:space="preserve">
+    <value>Shrnutí</value>
+  </data>
+  <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
+    <value>Zkouším provést ping pro nalezení HTTP portu...</value>
+  </data>
+  <data name="Period_Month" xml:space="preserve">
+    <value>Měsíc</value>
+  </data>
+  <data name="Period_OneDay" xml:space="preserve">
+    <value>Jeden den</value>
+  </data>
+  <data name="Period_ThreeDays" xml:space="preserve">
+    <value>Tři dny</value>
+  </data>
+  <data name="Period_TwoWeeks" xml:space="preserve">
+    <value>Dva týdny</value>
+  </data>
+  <data name="Period_Week" xml:space="preserve">
+    <value>Týden</value>
+  </data>
+  <data name="Plugins_CannotInstall" xml:space="preserve">
+    <value>Nemohu nainstalovat zásuvný modul</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>Nelze aktualizovat startovní pole</value>
+  </data>
+  <data name="RaceGrid_OpponentNationality_Random" xml:space="preserve">
+    <value>Náhodná</value>
+  </data>
+  <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
+    <value>Náhodná</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Sprint</value>
+  </data>
+  <data name="Session_Drift" xml:space="preserve">
+    <value>Drift</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Rychlé kolo</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Trénink</value>
+  </data>
+  <data name="Session_Qualification" xml:space="preserve">
+    <value>Kvalifikace</value>
+  </data>
+  <data name="Session_Race" xml:space="preserve">
+    <value>Závod</value>
+  </data>
+  <data name="Session_TimeAttack" xml:space="preserve">
+    <value>Boj s časem</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Traťový den</value>
+  </data>
+  <data name="Settings_Period_Startup" xml:space="preserve">
+    <value>Pouze při spuštění</value>
+  </data>
+  <data name="Settings_PeriodFormat" xml:space="preserve">
+    <value>Každých {0}</value>
+  </data>
+  <data name="Shared_QuickDrivePreset" xml:space="preserve">
+    <value>Přednastavení Rychlovky</value>
+  </data>
+  <data name="Shared_UserChampionship" xml:space="preserve">
+    <value>Šampionát</value>
+  </data>
+</root>
