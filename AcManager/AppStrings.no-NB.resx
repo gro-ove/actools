@@ -1,0 +1,724 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="About_ContactUsHeader" xml:space="preserve">
+    <value>Kontakt oss:</value>
+  </data>
+  <data name="About_MarkAllAsRead" xml:space="preserve">
+    <value>Marker alle som lest</value>
+  </data>
+  <data name="About_MoreInformation" xml:space="preserve">
+    <value>Mer informasjon</value>
+  </data>
+  <data name="About_NewTooltip" xml:space="preserve">
+    <value>Ny!</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>Kan ikke sende logger</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>Tusen takk for å hjelpe!</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>Versjon: {0}</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>By:</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Dato:</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>Sjåfør:</value>
+  </data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+    <value>Sjåførnavn:</value>
+  </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Nummer:</value>
+  </data>
+  <data name="AcObject_SizeLabel" xml:space="preserve">
+    <value>Størrelse:</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Vær:</value>
+  </data>
+  <data name="AcSettings_Apps" xml:space="preserve">
+    <value>Apper</value>
+  </data>
+  <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
+    <value>Aktiverte apper:</value>
+  </data>
+  <data name="AcSettings_Audio" xml:space="preserve">
+    <value>Lyd</value>
+  </data>
+  <data name="AcSettings_Audio_Engine" xml:space="preserve">
+    <value>Motor</value>
+  </data>
+  <data name="AcSettings_Audio_Tyres" xml:space="preserve">
+    <value>Dekk</value>
+  </data>
+  <data name="AcSettings_Audio_Wind" xml:space="preserve">
+    <value>Vind</value>
+  </data>
+  <data name="AcSettings_Controls" xml:space="preserve">
+    <value>Kontroller</value>
+  </data>
+  <data name="AcSettings_FieldOfView" xml:space="preserve">
+    <value>Synsfelt</value>
+  </data>
+  <data name="AcSettings_Mirrors" xml:space="preserve">
+    <value>Speil</value>
+  </data>
+  <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
+    <value>Maksimal størrelse</value>
+  </data>
+  <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
+    <value>Kvalitet:</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
+    <value>Høyde fra gulvet</value>
+  </data>
+  <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
+    <value>Mengde</value>
+  </data>
+  <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
+    <value>Utviklerprogrammer</value>
+  </data>
+  <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
+    <value>Anisotropisk filtrering</value>
+  </data>
+  <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
+    <value>Anti-Aliasing</value>
+  </data>
+  <data name="AcSettings_Video_Framerate" xml:space="preserve">
+    <value>Bildefrekvens</value>
+  </data>
+  <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
+    <value>Full skjerm</value>
+  </data>
+  <data name="AcSettings_Video_HighQuality" xml:space="preserve">
+    <value>Høy kvalitet:</value>
+  </data>
+  <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
+    <value>Speiloppløsning:</value>
+  </data>
+  <data name="AcSettings_Video_MirrorsHeader" xml:space="preserve">
+    <value>Speil:</value>
+  </data>
+  <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
+    <value>Kvalitet:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
+    <value>Refleksjoner:</value>
+  </data>
+  <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
+    <value>Refleksjonsoppløsning:</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionLabel" xml:space="preserve">
+    <value>Oppløsning:</value>
+  </data>
+  <data name="AcSettings_Video_Saturation" xml:space="preserve">
+    <value>Metning</value>
+  </data>
+  <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
+    <value>Vertikal synkronisering</value>
+  </data>
+  <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
+    <value>Verdens detalj:</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>Passordet er ugyldig; prøv igjen:</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>Passord Kreves</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>Innstallerer {0}…</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>Ingenting funnet</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Passordet er ugyldig</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager Oppdatert</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Ny versjon</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>Nøkkel er ugyldig</value>
+  </data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>Tusen takk!</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Skriv inn nøkkel (XXXX-XXXX-…):</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>App Nøkkel</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Navn: [b]{0}[/b]
+{1}: [b]{2}[/b]
+Forfatter: [b]{3}[/b]</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Velg forelder</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>Kameraposisjon:</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>Avbrutt.</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>Nå oppdatering: {0} ({1}/{2})</value>
+  </data>
+  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
+    <value>…s 0-100</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Akselerasjon:</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
+    <value>…km/t</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Maks Fart:</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>…bhk</value>
+  </data>
+  <data name="CarSpecs_PowerLabel" xml:space="preserve">
+    <value>BHK:</value>
+  </data>
+  <data name="CarSpecs_Title" xml:space="preserve">
+    <value>{0} Spesifikasjoner</value>
+  </data>
+  <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
+    <value>…Nm</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Vekt:</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>Farge:</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>Fil “{0}” mangler.</value>
+  </data>
+  <data name="Common_Go" xml:space="preserve">
+    <value>Gå!</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Ny Navn</value>
+  </data>
+  <data name="Common_OneMoreThing" xml:space="preserve">
+    <value>En ting til</value>
+  </data>
+  <data name="Common_Restart" xml:space="preserve">
+    <value>Omstart</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Del</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Del været</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>Oppdater</value>
+  </data>
+  <data name="Controls_Buttons" xml:space="preserve">
+    <value>Knapper</value>
+  </data>
+  <data name="Controls_EngineBrake" xml:space="preserve">
+    <value>Motorbrems:</value>
+  </data>
+  <data name="Controls_Miscellaneous" xml:space="preserve">
+    <value>Diverse:</value>
+  </data>
+  <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
+    <value>tastatur</value>
+  </data>
+  <data name="Controls_SharedFor_XboxController" xml:space="preserve">
+    <value>Xbox 360 kontroller</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>Navn:</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
+    <value>Noe sånt som dette:</value>
+  </data>
+  <data name="Drive_ActualTemperature" xml:space="preserve">
+    <value>Faktisk temperatur</value>
+  </data>
+  <data name="Drive_LocalWeatherHeader" xml:space="preserve">
+    <value>Lokalt Vær</value>
+  </data>
+  <data name="Drive_Ordinal_Last" xml:space="preserve">
+    <value>Siste</value>
+  </data>
+  <data name="Drive_SkipSession" xml:space="preserve">
+    <value>Hopp Over</value>
+  </data>
+  <data name="Drive_Temperature" xml:space="preserve">
+    <value>Temperatur</value>
+  </data>
+  <data name="Drive_Time" xml:space="preserve">
+    <value>Tid</value>
+  </data>
+  <data name="Drive_TyreBlankets" xml:space="preserve">
+    <value>Dekk tepper</value>
+  </data>
+  <data name="Drive_WeatherLabel" xml:space="preserve">
+    <value>Vær:</value>
+  </data>
+  <data name="KunosCareer_Next" xml:space="preserve">
+    <value>Neste</value>
+  </data>
+  <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
+    <value>Temperatur</value>
+  </data>
+  <data name="KunosCareer_TimeLabel" xml:space="preserve">
+    <value>Tid:</value>
+  </data>
+  <data name="KunosCareer_Title" xml:space="preserve">
+    <value>Kunos Karriere</value>
+  </data>
+  <data name="KunosCareer_WeatherLabel" xml:space="preserve">
+    <value>Vær:</value>
+  </data>
+  <data name="List_Cars" xml:space="preserve">
+    <value>{0} bil</value>
+  </data>
+  <data name="List_Weather" xml:space="preserve">
+    <value>{0} vær</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>Farge:</value>
+  </data>
+  <data name="LiveryIcon_Number_Light" xml:space="preserve">
+    <value>Lys</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>Nummer:</value>
+  </data>
+  <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
+    <value>Sirkel</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
+    <value>Diagonal med Sirkel</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>Form:</value>
+  </data>
+  <data name="LiveryIcon_Style_Bright" xml:space="preserve">
+    <value>Lys</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>Tekstfarge</value>
+  </data>
+  <data name="Main_Apps" xml:space="preserve">
+    <value>Apper</value>
+  </data>
+  <data name="Main_Career" xml:space="preserve">
+    <value>Karriere</value>
+  </data>
+  <data name="Main_Cars" xml:space="preserve">
+    <value>Biler</value>
+  </data>
+  <data name="Main_Drive" xml:space="preserve">
+    <value>Kjøre</value>
+  </data>
+  <data name="Main_Language" xml:space="preserve">
+    <value>Språk</value>
+  </data>
+  <data name="Main_Online" xml:space="preserve">
+    <value>På nett</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="Main_QuickDrive" xml:space="preserve">
+    <value>Rask</value>
+  </data>
+  <data name="Main_Screenshots" xml:space="preserve">
+    <value>Skjermbilder</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Løping</value>
+  </data>
+  <data name="Main_Settings" xml:space="preserve">
+    <value>Innstillinger</value>
+  </data>
+  <data name="Main_Weather" xml:space="preserve">
+    <value>Vær</value>
+  </data>
+  <data name="Online_AllCarsAreTaken" xml:space="preserve">
+    <value>Alle bilene er borte</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Bestilling</value>
+  </data>
+  <data name="Online_FilterMissing_Short" xml:space="preserve">
+    <value>Borte</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Passord</value>
+  </data>
+  <data name="Online_PasswordLabel" xml:space="preserve">
+    <value>Passord:</value>
+  </data>
+  <data name="Online_Sorting_CarsNumber" xml:space="preserve">
+    <value>Antall biler</value>
+  </data>
+  <data name="Online_Sorting_Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="Online_TimeLabel" xml:space="preserve">
+    <value>Tid:</value>
+  </data>
+  <data name="RaceGrid_ClassFormat" xml:space="preserve">
+    <value>Klasse: {0}</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Feil:</value>
+  </data>
+  <data name="RaceResult_MaxLevel" xml:space="preserve">
+    <value>Maks Nivå:</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Prøv igjen</value>
+  </data>
+  <data name="Replay_SharedReadMe" xml:space="preserve">
+    <value>{0}
+
+Å spille, pakke ut “{1}” til “…\Documents\Assetto Corsa\replay”.</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>Slutte</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>Alle</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>Kategorier</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>Lander</value>
+  </data>
+  <data name="Settings_AcSettingsHeader" xml:space="preserve">
+    <value>AC innstillinger:</value>
+  </data>
+  <data name="Settings_Content_CarsHeader" xml:space="preserve">
+    <value>Biler:</value>
+  </data>
+  <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
+    <value>Kunos karriere:</value>
+  </data>
+  <data name="Settings_Drive_NameLabel" xml:space="preserve">
+    <value>Navn:</value>
+  </data>
+  <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
+    <value>Nasjonalitet:</value>
+  </data>
+  <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
+    <value>Navn på nett:</value>
+  </data>
+  <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
+    <value>Rask Kjøring</value>
+  </data>
+  <data name="Settings_General_AcFolderLabel" xml:space="preserve">
+    <value>Assetto Corsa mappe</value>
+  </data>
+  <data name="Settings_General_AppKeyLabel" xml:space="preserve">
+    <value>App nøkkel:</value>
+  </data>
+  <data name="Settings_General_AppVersionLabel" xml:space="preserve">
+    <value>App versjon:</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR navn:</value>
+  </data>
+  <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
+    <value>Hvordan Å Oversette</value>
+  </data>
+  <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
+    <value>Språk:</value>
+  </data>
+  <data name="Settings_Locale_RestartApp" xml:space="preserve">
+    <value>Omstart</value>
+  </data>
+  <data name="Settings_Online_RememberPasswords" xml:space="preserve">
+    <value>Husk passord</value>
+  </data>
+  <data name="Settings_Sharing" xml:space="preserve">
+    <value>Deling</value>
+  </data>
+  <data name="Settings_Sharing_Anonymously" xml:space="preserve">
+    <value>Dele anonymt</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
+    <value>Mappe:</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
+    <value>Store filer:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
+    <value>Logg:</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="Solution_Enable" xml:space="preserve">
+    <value>Aktiver</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Aktiver {0}</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Skriv inn et nytt navn:</value>
+  </data>
+  <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
+    <value>SRS-serveren er klar</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Slett</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Deaktiver</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Deaktiver (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>Kjøre</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Aktiver</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Aktiver (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Mappe</value>
+  </data>
+  <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
+    <value>Åpen appens mappe (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
+    <value>Åpen bilens mappe (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
+    <value>Åpent værets mappe (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>Spill</value>
+  </data>
+  <data name="Toolbar_Refresh" xml:space="preserve">
+    <value>Oppdater</value>
+  </data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>Oppdater</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+    <value>Oppdater (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Endre navn</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Lagre</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Slå av lyden</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Deaktiver lyden (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Slå på lyden</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Aktiver lyden (Ctrl+I)</value>
+  </data>
+  <data name="UpgradeIcon_Commentary" xml:space="preserve">
+    <value>Ctrl+I: Kursiv, Ctrl+B: Fet</value>
+  </data>
+  <data name="UpgradeIcon_Editor" xml:space="preserve">
+    <value>Redaktør</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Bibliotek</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>Ny</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Kan ikke dele været</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Filene er for store. Grensen er {0}.</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>Ytterligere:</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Lysstryke</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Skyer:</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Farge</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Tåke:</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Slå på frontlysene</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>Hvor mange skyer</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>Lufttemperatur</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Åpen modellens mappe (Ctrl+F)</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>Vei temperatur:</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>…hhk</value>
+  </data>
+  <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
+    <value>…m</value>
+  </data>
+  <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
+    <value>…m</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>Akser</value>
+  </data>
+</root>

@@ -1,0 +1,597 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Back" xml:space="preserve">
+    <value>上一頁</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>下一頁</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>關閉</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>出發</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>主頁</value>
+  </data>
+  <data name="Maximize" xml:space="preserve">
+    <value>最大化</value>
+  </data>
+  <data name="Minimize" xml:space="preserve">
+    <value>最小化</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>定位連結</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>定位失敗</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>無法定位到{0},找不到ModernFrame目標'{1}'</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>無法定位到{0},沒有指定資源</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>否</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="Restore" xml:space="preserve">
+    <value>恢復</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>此操作需要UI線程</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>意外的令牌</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>未知操作系統</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>未知令牌類型</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>是</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>新版本 {0} 已經可以安裝</value>
+  </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>圖象文件|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="KeyBackspace" xml:space="preserve">
+    <value>退格鍵</value>
+  </data>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Ctrl鍵</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>左側Ctrl鍵</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>右側Ctrl鍵</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>下箭頭鍵</value>
+  </data>
+  <data name="KeyEnd" xml:space="preserve">
+    <value>End鍵</value>
+  </data>
+  <data name="KeyEnter" xml:space="preserve">
+    <value>回車鍵</value>
+  </data>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>ESC鍵</value>
+  </data>
+  <data name="KeyHome" xml:space="preserve">
+    <value>Home鍵</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>左箭頭鍵</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>小鍵盤數字鍵{0}</value>
+  </data>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>下翻頁鍵</value>
+  </data>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>上翻頁鍵</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>右箭頭鍵</value>
+  </data>
+  <data name="KeyShift" xml:space="preserve">
+    <value>Shift鍵</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>左側Shift鍵</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>右側Shift鍵</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>空格鍵</value>
+  </data>
+  <data name="KeyTab" xml:space="preserve">
+    <value>Tab鍵</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>上箭頭鍵</value>
+  </data>
+  <data name="PickColorFromScreen" xml:space="preserve">
+    <value>從屏幕上任意位置選取顏色</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>選擇顏色</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>資源</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>堆棧記錄</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>建議</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]複製[/url]錯誤信息到剪貼板.你可以嘗試[url=cmd://refresh]刷新[/url]此頁面或者[url=cmd://browseback]返回[/url]之前頁面.</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]複製[/url]錯誤信息到剪貼板.你可以嘗試[url=cmd://restart]重啟[/url]程序或者[url=cmd://exit]關閉[/url]程序.</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF文件|*.dds;*.tif;*.tiff|圖象文件|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|所有文件 (*.*)|*.*</value>
+  </data>
+  <data name="KeyAlt" xml:space="preserve">
+    <value>Alt鍵</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>左側Alt鍵</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>右側Alt鍵</value>
+  </data>
+  <data name="KeyPause" xml:space="preserve">
+    <value>暫停</value>
+  </data>
+  <data name="KeyCapsLock" xml:space="preserve">
+    <value>大寫鎖定鍵</value>
+  </data>
+  <data name="KeyNumLock" xml:space="preserve">
+    <value>小鍵盤數字鎖定鍵</value>
+  </data>
+  <data name="KeyScrollLock" xml:space="preserve">
+    <value>滾動鎖定鍵</value>
+  </data>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>截圖鍵</value>
+  </data>
+  <data name="KeyInsert" xml:space="preserve">
+    <value>插入</value>
+  </data>
+  <data name="KeyDelete" xml:space="preserve">
+    <value>刪除</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>幫助</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>左側Windows鍵</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>右側Windows鍵</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>菜單</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>後退</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>前進</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>主頁</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>搜索</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>減小音量</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>靜音</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>增大音量</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>下一個音樂</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>播放</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>上一個音樂</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>選擇媒體文件</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>啟動郵件</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>啟動收藏的應用1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>啟動收藏的應用2</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>放大</value>
+  </data>
+  <data name="LocalizationHelper_ReadableSize_GB" xml:space="preserve">
+    <value>BG</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>所有</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>隱藏密碼</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>受限</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>新建</value>
+  </data>
+  <data name="PickColor" xml:space="preserve">
+    <value>選擇顏色</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>顯示密碼</value>
+  </data>
+  <data name="Ordinalizing_Minus" xml:space="preserve">
+    <value>減去{0}</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>第0</value>
+  </data>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>第1</value>
+  </data>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>第2</value>
+  </data>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>第3</value>
+  </data>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>第4</value>
+  </data>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>第5</value>
+  </data>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>第6</value>
+  </data>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>第7</value>
+  </data>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>第8</value>
+  </data>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>第9</value>
+  </data>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>第10</value>
+  </data>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>第11</value>
+  </data>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>第12</value>
+  </data>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>第13</value>
+  </data>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>第14</value>
+  </data>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>第15</value>
+  </data>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>第16</value>
+  </data>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>第17</value>
+  </data>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>第18</value>
+  </data>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>第19</value>
+  </data>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>第20</value>
+  </data>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>第21</value>
+  </data>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>第22</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>第23</value>
+  </data>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>第24</value>
+  </data>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>第25</value>
+  </data>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>第26</value>
+  </data>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>第27</value>
+  </data>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>第28</value>
+  </data>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>第29</value>
+  </data>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>第30</value>
+  </data>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>第31</value>
+  </data>
+  <data name="Ordinalizing_Nth" xml:space="preserve">
+    <value>第{0}</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0}月</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0}周</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0}日</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0}小時</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0}分</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0}秒</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>糟糕!</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>程序發生錯誤,需要重新啟動.如果希望提交錯誤報告,請在軟件重啟之後使用"報告錯誤"按鈕</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>請稍後...</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>已載入{0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>{0}項載入已完成{1}</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>已上傳{0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>{1}項上傳已完成{0}</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>添加</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>未找到匹配條件的參賽備選車輛</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>將參賽名單保存為預設</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>分享參賽名單</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>降序</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>和</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>收藏夾</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>移出收藏夾</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>隱藏</value>
+  </data>
+  <data name="Toolbar_Unhide" xml:space="preserve">
+    <value>取消隱藏</value>
+  </data>
+  <data name="Toolbar_OnlineManageLists" xml:space="preserve">
+    <value>管理列表...</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>邀請</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>取消報名</value>
+  </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>分享這個服務器的連結讓你的朋友可以快速加入遊戲(Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>包括密碼</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>將服務器加入到收藏夾中(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>從服務器從收藏夾中移除(Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>隱藏服務器(搜索"@hidden"可以看到被隱藏的服務器列表)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>將服務器從隱藏列表中移除</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}:</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDS文件(*.dds) | *.dds | 所有文件(*.*) | *.*</value>
+  </data>
+</root>

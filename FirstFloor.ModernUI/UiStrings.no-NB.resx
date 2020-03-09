@@ -117,177 +117,217 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AcObject_Author_Tooltip" xml:space="preserve">
-    <value>Author, version, and URL</value>
+  <data name="Back" xml:space="preserve">
+    <value>Tilbake</value>
   </data>
-  <data name="AcObject_AuthorLabel" xml:space="preserve">
-    <value>Creator:</value>
+  <data name="Cancel" xml:space="preserve">
+    <value>Avbryt</value>
   </data>
-  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
-    <value>Unable to update the preview</value>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Vennligst vent…</value>
   </data>
-  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
-    <value>You need to make at least one screenshot of the track.</value>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Alle</value>
   </data>
-  <data name="AcObject_CarParentLabel" xml:space="preserve">
-    <value>Base Model:</value>
+  <data name="Go" xml:space="preserve">
+    <value>Gå!</value>
   </data>
-  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
-    <value>The original version of the vehicle this was modified from (where applicable).</value>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Skjul Passord</value>
   </data>
-  <data name="AcObject_Fuel" xml:space="preserve">
-    <value>Fuel:</value>
+  <data name="Home" xml:space="preserve">
+    <value>Hjem</value>
   </data>
-  <data name="AcObject_SpecsLabel" xml:space="preserve">
-    <value>Specifications:</value>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (Venstre)</value>
   </data>
-  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
-    <value>Geo Tags:</value>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (Høyre)</value>
   </data>
-  <data name="AcObject_TyresLabel" xml:space="preserve">
-    <value>Tires:</value>
+  <data name="KeyControl" xml:space="preserve">
+    <value>Ctrl</value>
   </data>
-  <data name="AcObject_UrlLabel" xml:space="preserve">
-    <value>Link:</value>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Ctrl (Venstre)</value>
   </data>
-  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
-    <value>This is when the car began production.</value>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Ctrl (Høyre)</value>
   </data>
-  <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>Automatic shifter:</value>
+  <data name="KeyEscape" xml:space="preserve">
+    <value>Esc</value>
   </data>
-  <data name="Assists_IdealLineLabel" xml:space="preserve">
-    <value>Driving line:</value>
+  <data name="KeyPageDown" xml:space="preserve">
+    <value>Pg Dn</value>
   </data>
-  <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>Tire wear:</value>
+  <data name="KeyPageUp" xml:space="preserve">
+    <value>Pg Up</value>
   </data>
-  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Open In Custom Showroom</value>
+  <data name="KeyPrintScreen" xml:space="preserve">
+    <value>Print Scr</value>
   </data>
-  <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Open In Showroom</value>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (Ventre)</value>
   </data>
-  <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Make Independent</value>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (Høyre)</value>
   </data>
-  <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Change Skin</value>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Mellomrom</value>
   </data>
-  <data name="Common_DevTools" xml:space="preserve">
-    <value>Developer Tools</value>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (Venstre)</value>
   </data>
-  <data name="Common_OfflineMode" xml:space="preserve">
-    <value>Offline Mode</value>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (Høyre)</value>
   </data>
-  <data name="Common_TryAgain" xml:space="preserve">
-    <value>Try Again</value>
+  <data name="MarkNew" xml:space="preserve">
+    <value>NY</value>
   </data>
-  <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Built-in Presets</value>
+  <data name="No" xml:space="preserve">
+    <value>Nei</value>
   </data>
-  <data name="Controls_LoadPresetWarning" xml:space="preserve">
-    <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
+  <data name="Ordinalizing_Eighteenth" xml:space="preserve">
+    <value>Attende</value>
   </data>
-  <data name="Controls_UserPresets" xml:space="preserve">
-    <value>User Presets</value>
+  <data name="Ordinalizing_Eighth" xml:space="preserve">
+    <value>Åttende</value>
   </data>
-  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
-    <value>Reset To Recommended Values</value>
+  <data name="Ordinalizing_Eleventh" xml:space="preserve">
+    <value>Ellevte</value>
   </data>
-  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
-    <value>Update Ambient Shadows</value>
+  <data name="Ordinalizing_Fifteenth" xml:space="preserve">
+    <value>Femtende</value>
   </data>
-  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
-    <value>Ambient Shadow</value>
+  <data name="Ordinalizing_Fifth" xml:space="preserve">
+    <value>Femte</value>
   </data>
-  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
-    <value>Data Is Encrypted</value>
+  <data name="Ordinalizing_First" xml:space="preserve">
+    <value>Først</value>
   </data>
-  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
-    <value>Object name: [b]{0}[/b]
-Class: [b]{1}[/b]
-
-Active: [b]{2}[/b]
-Renderable: [b]{3}[/b]
-Visible: [b]{4}[/b]
-
-Transparent: [b]{5}[/b]
-Casting Shadows: [b]{6}[/b]
-
-Layer: [b]{7}[/b]
-LOD In: [b]{8}[/b]
-LOD In: [b]{9}[/b]
-
-Material: [b]{10}[/b]</value>
+  <data name="Ordinalizing_Fourteenth" xml:space="preserve">
+    <value>Fjortende</value>
   </data>
-  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
-    <value>View Mapping</value>
+  <data name="Ordinalizing_Fourth" xml:space="preserve">
+    <value>Fjerde</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
-    <value>View in 1024×1025</value>
+  <data name="Ordinalizing_Nineteenth" xml:space="preserve">
+    <value>Nittende</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
-    <value>View in 2048×2049</value>
+  <data name="Ordinalizing_Ninth" xml:space="preserve">
+    <value>Niende</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
-    <value>View in 4096×4097</value>
+  <data name="Ordinalizing_Second" xml:space="preserve">
+    <value>Andre</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
-    <value>View in 512×513</value>
+  <data name="Ordinalizing_Seventeenth" xml:space="preserve">
+    <value>Syttende</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
-    <value>Export Texture Mapping</value>
+  <data name="Ordinalizing_Seventh" xml:space="preserve">
+    <value>Syvende</value>
   </data>
-  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
-    <value>Dimensions ([Width]×[Height]):</value>
+  <data name="Ordinalizing_Sixteenth" xml:space="preserve">
+    <value>Sekstende</value>
   </data>
-  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
-    <value>Save as Country</value>
+  <data name="Ordinalizing_Sixth" xml:space="preserve">
+    <value>Sjette</value>
   </data>
-  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
-    <value>Save as Description</value>
+  <data name="Ordinalizing_Tenth" xml:space="preserve">
+    <value>Tiende</value>
   </data>
-  <data name="FindInformation_SaveAsYear" xml:space="preserve">
-    <value>Save as Year</value>
+  <data name="Ordinalizing_Third" xml:space="preserve">
+    <value>Tredje</value>
   </data>
-  <data name="ImageViewer_Save_Title" xml:space="preserve">
-    <value>Save Image As</value>
+  <data name="Ordinalizing_Thirteenth" xml:space="preserve">
+    <value>Trettende</value>
   </data>
-  <data name="Online_JoinUsing" xml:space="preserve">
-    <value>Join Using {0}</value>
+  <data name="Ordinalizing_Thirtieth" xml:space="preserve">
+    <value>Tretti</value>
   </data>
-  <data name="Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>Download And Install ({0})</value>
+  <data name="Ordinalizing_ThirtyFirst" xml:space="preserve">
+    <value>Trettiførste</value>
   </data>
-  <data name="Plugins_Update" xml:space="preserve">
-    <value>Update (New Version: {0})</value>
+  <data name="Ordinalizing_Twelfth" xml:space="preserve">
+    <value>Tolvte</value>
   </data>
-  <data name="Presets_Save" xml:space="preserve">
-    <value>Save Preset</value>
+  <data name="Ordinalizing_Twentieth" xml:space="preserve">
+    <value>Tyvende</value>
   </data>
-  <data name="Presets_Unsaved" xml:space="preserve">
-    <value>Unsaved Preset</value>
+  <data name="Ordinalizing_TwentyEighth" xml:space="preserve">
+    <value>Tjueåtte</value>
   </data>
-  <data name="QuickSwitches_Header" xml:space="preserve">
-    <value>Quick Switches</value>
+  <data name="Ordinalizing_TwentyFifth" xml:space="preserve">
+    <value>Tjuefemte</value>
   </data>
-  <data name="Share_EnterNameHeader" xml:space="preserve">
-    <value>Share As</value>
+  <data name="Ordinalizing_TwentyFirst" xml:space="preserve">
+    <value>Tjueførste</value>
   </data>
-  <data name="Share_SharedMessage" xml:space="preserve">
-    <value>Link copied to clipboard</value>
+  <data name="Ordinalizing_TwentyFourth" xml:space="preserve">
+    <value>Tjuefjerde</value>
   </data>
-  <data name="Share_SharedMessageAlternative" xml:space="preserve">
-    <value>Click to open link</value>
+  <data name="Ordinalizing_TwentyNinth" xml:space="preserve">
+    <value>Tjueniende</value>
   </data>
-  <data name="Share_VerifyMessageHeader" xml:space="preserve">
-    <value>Is Everything OK?</value>
+  <data name="Ordinalizing_TwentySecond" xml:space="preserve">
+    <value>Tjueandre</value>
   </data>
-  <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
-    <value>Remove ui_skin.json to Recycle Bin (Alt+Delete)</value>
+  <data name="Ordinalizing_TwentySeventh" xml:space="preserve">
+    <value>Tjuesyvende</value>
   </data>
-  <data name="Common_RoundPostfix" xml:space="preserve">
-    <value> lap</value>
+  <data name="Ordinalizing_TwentySixth" xml:space="preserve">
+    <value>Tjuesette</value>
+  </data>
+  <data name="Ordinalizing_TwentyThird" xml:space="preserve">
+    <value>Tjuetredje</value>
+  </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Nulte</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Velg en farge</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Vis Passord</value>
+  </data>
+  <data name="TexturesFilter" xml:space="preserve">
+    <value>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Bilde filer|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Alle filer (*.*)|*.*</value>
+  </data>
+  <data name="Time_Day" xml:space="preserve">
+    <value>{0} dag</value>
+  </data>
+  <data name="Time_Hour" xml:space="preserve">
+    <value>{0} time</value>
+  </data>
+  <data name="Time_Minute" xml:space="preserve">
+    <value>{0} minutt</value>
+  </data>
+  <data name="Time_Month" xml:space="preserve">
+    <value>{0} måned</value>
+  </data>
+  <data name="Time_Second" xml:space="preserve">
+    <value>{0} sekund</value>
+  </data>
+  <data name="Time_Week" xml:space="preserve">
+    <value>{0} uke</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ja</value>
+  </data>
+  <data name="Common_And" xml:space="preserve">
+    <value>og</value>
+  </data>
+  <data name="Toolbar_Favourite" xml:space="preserve">
+    <value>Like</value>
+  </data>
+  <data name="Toolbar_Unfavourite" xml:space="preserve">
+    <value>Mislike</value>
+  </data>
+  <data name="Toolbar_Hide" xml:space="preserve">
+    <value>Skjul</value>
+  </data>
+  <data name="Toolbar_Invite" xml:space="preserve">
+    <value>Inviter</value>
+  </data>
+  <data name="ValueLabel_Format" xml:space="preserve">
+    <value>{0}:</value>
   </data>
 </root>
