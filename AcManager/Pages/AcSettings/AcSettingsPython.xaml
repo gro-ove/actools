@@ -138,6 +138,7 @@
                   <TextBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
                 </ToolTip>
               </DockPanel.ToolTip>
+              <c:OriginIcon Author="{Binding Author}" MaxWidth="12" MaxHeight="12" DockPanel.Dock="Right" x:Name="PART_OriginIcon" />
               <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
               <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" ToolTip="{Binding AppIcon.Value}"

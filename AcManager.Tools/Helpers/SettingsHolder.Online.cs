@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using AcManager.Tools.Helpers.Api;
+using AcManager.Tools.Managers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -316,6 +318,20 @@ namespace AcManager.Tools.Helpers {
                     OnPropertyChanged();
                 }
             }*/
+
+            private string _serverPresetsDirectory;
+
+            public string ServerPresetsDirectory {
+                get => _serverPresetsDirectory ?? (_serverPresetsDirectory = ValuesStorage.Get("Settings.OnlineSettings.ServerPresetsDirectory",
+                        Path.Combine(AcRootDirectory.Instance.RequireValue, @"server", @"presets")));
+                set {
+                    value = value.Trim();
+                    if (Equals(value, _serverPresetsDirectory)) return;
+                    _serverPresetsDirectory = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.ServerPresetsDirectory", value);
+                    OnPropertyChanged();
+                }
+            }
 
             private bool? _serverPresetsAutoSave;
 

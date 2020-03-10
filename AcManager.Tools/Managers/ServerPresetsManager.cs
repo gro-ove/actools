@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Directories;
 using AcManager.Tools.Objects;
 using AcTools.DataFile;
@@ -34,7 +35,16 @@ namespace AcManager.Tools.Managers {
 
         static ServerPresetsManager() {
             ServerDirectory = Path.Combine(AcRootDirectory.Instance.RequireValue, @"server");
-            PresetsDirectory = Path.Combine(ServerDirectory, @"presets");
+            Directory.CreateDirectory(ServerDirectory);
+            PresetsDirectory = SettingsHolder.Online.ServerPresetsDirectory;
+            try {
+                if (string.IsNullOrWhiteSpace(PresetsDirectory) || !Path.IsPathRooted(PresetsDirectory)) {
+                    throw new Exception();
+                }
+            } catch (Exception e) {
+                Logging.Error($"Invalid value for PresetsDirectory: {PresetsDirectory}");
+                PresetsDirectory = Path.Combine(ServerDirectory, @"presets");
+            }
             DriversFilename = Path.Combine(ServerDirectory, @"manager", @"driverlist.ini");
             Directory.CreateDirectory(PresetsDirectory);
         }
@@ -113,9 +123,7 @@ namespace AcManager.Tools.Managers {
             try {
                 await Task.Delay(300);
                 if (_updating) {
-                    ActionExtension.InvokeInMainThread(() => {
-                        SavedDrivers.ReplaceIfDifferBy(ServerSavedDriver.Load(DriversFilename));
-                    });
+                    ActionExtension.InvokeInMainThread(() => { SavedDrivers.ReplaceIfDifferBy(ServerSavedDriver.Load(DriversFilename)); });
                     await Task.Delay(200);
                 }
             } finally {

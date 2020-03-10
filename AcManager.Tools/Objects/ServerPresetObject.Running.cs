@@ -474,7 +474,7 @@ namespace AcManager.Tools.Objects {
                 process = new Process {
                     StartInfo = {
                         FileName = serverExecutable,
-                        Arguments = $"-c presets/{Id}/server_cfg.ini -e presets/{Id}/entry_list.ini",
+                        Arguments = $"-c \"{IniFilename}\" -e \"{EntryListIniFilename}\"",
                         UseShellExecute = false,
                         WorkingDirectory = Path.GetDirectoryName(serverExecutable) ?? "",
                         RedirectStandardOutput = true,

@@ -148,8 +148,14 @@
           </ListBox>
         </DockPanel>
 
-        <!-- Connection -->
+        <!-- Server manager -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
+        <DockPanel>
+          <Label Content="Presets folder" />
+          <Button Command="{Binding ChangeServerPresetsDirectoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+          <Button Command="{Binding OpenServerPresetsDirectoryCommand}" Content="Open" />
+          <mui:PathTrimmingTextBlock Text="{Binding Online.ServerPresetsDirectory, Mode=OneTime}" />
+        </DockPanel>
         <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True">
           <Label Content="Update server’s data automatically before starting server" />
         </CheckBox>

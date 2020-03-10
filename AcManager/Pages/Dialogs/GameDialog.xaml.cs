@@ -161,7 +161,7 @@ namespace AcManager.Pages.Dialogs {
                     if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory)
                             && new IniFile(AcPaths.GetCfgVideoFilename())["CAMERA"].GetNonEmpty("MODE") == "OCULUS"
                             && MessageDialog.Show(
-                                    "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it somewhere else to avoid potential issues.",
+                                    "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it to avoid potential issues.",
                                     "Important note", new MessageDialogButton {
                                         [MessageBoxResult.Yes] = "Move it now",
                                         [MessageBoxResult.No] = "Ignore"
@@ -169,6 +169,7 @@ namespace AcManager.Pages.Dialogs {
                         try {
                             var newLocation = FilesStorage.Instance.GetFilename(MainExecutingFile.Name);
                             File.Copy(MainExecutingFile.Location, newLocation, true);
+                            WindowsHelper.ViewFile(newLocation);
                             ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
                             Environment.Exit(0);
                         } catch (Exception e) {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using AcManager.Pages.Dialogs;
 using AcManager.Tools.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -35,17 +36,36 @@ namespace AcManager.Pages.Settings {
 
             private DelegateCommand _manageListsCommand;
 
-            public DelegateCommand ManageListsCommand => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => {
-                new OnlineListsManager().ShowDialog();
-            }));
+            public DelegateCommand ManageListsCommand
+                => _manageListsCommand ?? (_manageListsCommand = new DelegateCommand(() => { new OnlineListsManager().ShowDialog(); }));
 
             private DelegateCommand _manageDriverTagsCommand;
 
-            public DelegateCommand ManageDriversTagsCommand => _manageDriverTagsCommand ?? (_manageDriverTagsCommand = new DelegateCommand(() => {
-                new OnlineDriverTags().ShowDialog();
-            }));
+            public DelegateCommand ManageDriversTagsCommand
+                => _manageDriverTagsCommand ?? (_manageDriverTagsCommand = new DelegateCommand(() => { new OnlineDriverTags().ShowDialog(); }));
 
             public List<NetworkInterface> NetworkInterfaces { get; }
+
+            private DelegateCommand _changeServerPresetsDirectoryCommand;
+
+            public DelegateCommand ChangeServerPresetsDirectoryCommand
+                => _changeServerPresetsDirectoryCommand ?? (_changeServerPresetsDirectoryCommand = new DelegateCommand(() => {
+                    var dialog = new FolderBrowserDialog {
+                        ShowNewFolderButton = true,
+                        Description = "Pick a new folder to store server presets in",
+                        SelectedPath = Online.ServerPresetsDirectory
+                    };
+
+                    if (dialog.ShowDialog() == DialogResult.OK) {
+                        Online.ServerPresetsDirectory = dialog.SelectedPath;
+                        WindowsHelper.RestartCurrentApplication();
+                    }
+                }));
+
+            private DelegateCommand _openServerPresetsDirectoryCommand;
+
+            public DelegateCommand OpenServerPresetsDirectoryCommand => _openServerPresetsDirectoryCommand
+                    ?? (_openServerPresetsDirectoryCommand = new DelegateCommand(() => WindowsHelper.ViewDirectory(Online.ServerPresetsDirectory)));
 
             public ViewModel() {
                 NetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces().Where(
