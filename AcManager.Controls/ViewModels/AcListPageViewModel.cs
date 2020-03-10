@@ -3,6 +3,7 @@ using System.Windows.Input;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.Lists;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
@@ -16,6 +17,8 @@ namespace AcManager.Controls.ViewModels {
         string GetNumberString(int count);
         string Status { get; }
         ICommand CopyIdsCommand { get; }
+        void SetCurrentItem(string id);
+        AcWrapperCollectionView GetAcWrapperCollectionView();
     }
 
     public abstract class AcListPageViewModel<T> : AcObjectListCollectionViewWrapper<T>, IAcListPageViewModel where T : AcObjectNew {
@@ -39,6 +42,15 @@ namespace AcManager.Controls.ViewModels {
         public string Status => GetNumberString(MainList.Count);
 
         public ICommand CopyIdsCommand { get; }
+
+        public void SetCurrentItem(string id) {
+            var found = MainList.OfType<AcItemWrapper>().GetByIdOrDefault(id) ?? MainList.OfType<AcItemWrapper>().FirstOrDefault();
+            MainList.MoveCurrentTo(found);
+        }
+
+        public AcWrapperCollectionView GetAcWrapperCollectionView() {
+            return MainList;
+        }
 
         public static void OnLinkChanged(LinkChangedEventArgs e) {
             LimitedStorage.Move(LimitedSpace.SelectedEntry, GetKey(KeyBase, e.OldValue), GetKey(KeyBase, e.NewValue));

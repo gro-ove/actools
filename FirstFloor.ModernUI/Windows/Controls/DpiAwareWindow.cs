@@ -161,7 +161,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public Task<bool?> ShowDialogAsync() {
             var completion = new TaskCompletionSource<bool?>();
-            Dispatcher.BeginInvoke(new Action(() => completion.SetResult(ShowDialog())));
+            Dispatcher?.BeginInvoke(new Action(() => completion.SetResult(ShowDialog())));
             return completion.Task;
         }
 
