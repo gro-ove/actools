@@ -18,6 +18,7 @@ using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.ContentRepairUi;
+using AcManager.Tools.ContentRepairUi.Critical;
 using AcManager.Tools.Filters.Testers;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
@@ -49,6 +50,7 @@ namespace AcManager.Pages.ContentTools {
             CarRepair.AddType<CarTorqueRepair>();
             CarRepair.AddType<CarWronglyTakenSoundRepair>();
             CarRepair.AddType<CarObsoleteSoundRepair>();
+            CarRepair.AddType<CarMissingSoundRepair>();
         }
 
         public class BrokenDetails : NotifyPropertyChanged {

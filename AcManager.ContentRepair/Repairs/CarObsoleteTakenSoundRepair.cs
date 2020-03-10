@@ -56,7 +56,6 @@ namespace AcManager.ContentRepair.Repairs {
             var soundChecksum = GetSoundbankChecksum(car.Id);
             if (soundChecksum == null || soundChecksum == soundDonorChecksum) return new ContentRepairSuggestion[0];
 
-
             return new[] {
                 new ContentObsoleteSuggestion("Sound might be obsolete",
                         $"Judging by GUIDs, it looks like sound for this car is taken from {soundDonorObject.DisplayName}, but soundbank is different. Most likely, it was taken before some update and might not work properly now.",

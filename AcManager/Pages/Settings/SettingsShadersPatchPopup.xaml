@@ -53,7 +53,7 @@
     <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
         Margin="{StaticResource ContentMarginWithPadding}">
       <TextBlock Text="Custom Shaders Patch is not installed" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
         <DockPanel IsHitTestVisible="False">
           <Path Data="{StaticResource QuestionMarkIconData}" Width="10" Height="10"
               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
@@ -66,7 +66,7 @@
     <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
         Margin="{StaticResource ContentMarginWithPadding}">
       <TextBlock Text="No Custom Shaders Patch configs were found" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
-      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://trello.com/b/xq54vHsX/ac-patch">
+      <Button Margin="0 8 0 0" Command="mui:LinkCommands.NavigateLink" CommandParameter="https://acstuff.ru/patch/">
         <DockPanel IsHitTestVisible="False">
           <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
               Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"

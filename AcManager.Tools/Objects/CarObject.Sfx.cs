@@ -86,7 +86,7 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        public static void ReplaceSound(CarObject donor, string target) {
+        public static void ReplaceSound(CarObject donor, [NotNull] string target) {
             var guids = donor.GuidsFilename;
             var soundbank = donor.SoundbankFilename;
 

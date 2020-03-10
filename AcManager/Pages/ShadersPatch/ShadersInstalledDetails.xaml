@@ -32,7 +32,7 @@
       <mui:BbCodeBlock
           Text="Custom Shaders Patch is specially prepared DLL file, which, when placed in AC root folder, adds new features such as dynamic lighting, 24h day, new physics features, various optimizations and a lot more. Most of it is split into extensions you can turn on and off, and configure them to fit your needs."
           DockPanel.Dock="Top" Margin="0 20 0 0" TextWrapping="Wrap" />
-      <mui:BbCodeBlock Text="[url=&quot;https://trello.com/b/xq54vHsX/ac-patch&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
+      <mui:BbCodeBlock Text="[url=&quot;https://acstuff.ru/patch/&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
           Margin="0 8 0 0" TextWrapping="Wrap" />
     </DockPanel>
 
@@ -42,7 +42,7 @@
           Visibility="{Binding NothingAtAll, Converter={StaticResource BooleanToVisibilityConverter}}">
         <mui:ReferenceSwitch.Null>
           <mui:BbCodeBlock Style="{StaticResource Small}" TextWrapping="Wrap"
-              Text="Can’t install automatically at the moment. Please, [url=&quot;https://trello.com/b/xq54vHsX/ac-patch&quot;]click here[/url] to download and install patch manually." />
+              Text="Can’t install automatically at the moment. Please, [url=&quot;https://acstuff.ru/patch/&quot;]click here[/url] to download and install patch manually." />
         </mui:ReferenceSwitch.Null>
         <mui:ReferenceSwitch.NonNull>
           <DockPanel>

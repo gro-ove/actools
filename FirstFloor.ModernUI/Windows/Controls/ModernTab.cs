@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Markup;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Navigation;
@@ -68,7 +71,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
     public class ModernTab : Control {
         public static readonly DependencyProperty LinksHorizontalAlignmentProperty = DependencyProperty.Register("LinksHorizontalAlignment",
-            typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
+                typeof(HorizontalAlignment), typeof(ModernTab), new PropertyMetadata());
 
         public HorizontalAlignment LinksHorizontalAlignment {
             get => GetValue(LinksHorizontalAlignmentProperty) as HorizontalAlignment? ?? default;
@@ -76,10 +79,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty LinksMarginProperty = DependencyProperty.Register("LinksMargin", typeof(Thickness),
-            typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
+                typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public static readonly DependencyProperty FrameMarginProperty = DependencyProperty.Register("FrameMargin", typeof(Thickness),
-            typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
+                typeof(ModernTab), new PropertyMetadata(new Thickness(0.0, 0.0, 0.0, 0.0)));
 
         public Thickness LinksMargin {
             get => GetValue(LinksMarginProperty) as Thickness? ?? default;
@@ -100,28 +103,82 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public static readonly DependencyProperty ContentLoaderProperty = DependencyProperty.Register("ContentLoader", typeof(IContentLoader),
-            typeof(ModernTab), new PropertyMetadata(new DefaultContentLoader()));
+                typeof(ModernTab), new PropertyMetadata(new DefaultContentLoader()));
 
         public static readonly DependencyProperty LayoutProperty = DependencyProperty.Register("Layout", typeof(TabLayout),
-            typeof(ModernTab), new PropertyMetadata(TabLayout.Tab));
+                typeof(ModernTab), new PropertyMetadata(TabLayout.Tab));
 
         public static readonly DependencyProperty ListWidthProperty = DependencyProperty.Register("ListWidth", typeof(GridLength),
-            typeof(ModernTab), new PropertyMetadata(new GridLength(170)));
+                typeof(ModernTab), new PropertyMetadata(new GridLength(170)));
 
         public static readonly DependencyProperty LinksProperty = DependencyProperty.Register("Links", typeof(LinkCollection),
-            typeof(ModernTab), new PropertyMetadata(OnLinksChanged));
+                typeof(ModernTab), new PropertyMetadata(OnLinksChanged));
 
         public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register("SelectedSource", typeof(Uri),
-            typeof(ModernTab), new PropertyMetadata(OnSelectedSourceChanged));
+                typeof(ModernTab), new PropertyMetadata(OnSelectedSourceChanged));
 
         public event EventHandler<SourceEventArgs> SelectedSourceChanged;
         public event EventHandler<NavigationEventArgs> FrameNavigated;
 
         private ListBox _linkList;
 
+        private void SavePinned() {
+            if (SaveKey != null) {
+                ValuesStorage.Storage.SetStringList(SaveKey + "/pinned",
+                        PinnedLinks.Select(x => Storage.EncodeList(x.DisplayName, x.Source.OriginalString)));
+            }
+        }
+
+        private void LoadPinned() {
+            if (SaveKey != null) {
+                PinnedLinks.Clear();
+                foreach (var item in ValuesStorage.Storage.GetStringList(SaveKey + "/pinned").Select(Storage.DecodeList)) {
+                    var values = item.ToList();
+                    if (values.Count == 2) {
+                        PinnedLinks.Add(new Link {
+                            DisplayName = values[0],
+                            Source = new Uri(values[1], UriKind.Relative),
+                            IsPinned = true
+                        });
+                    }
+                }
+                foreach (var link in PinnedLinks) {
+                    link.PropertyChanged += OnPinnedLinkChanged;
+                }
+            }
+        }
+
         public ModernTab() {
             DefaultStyleKey = typeof(ModernTab);
             SetCurrentValue(LinksProperty, new LinkCollection());
+            SetCurrentValue(PinnedLinksProperty, new LinkCollection());
+            SetCurrentValue(PinCurrentCommandProperty, new DelegateCommand(async () => {
+                if (Title == null || SelectedSource == null || _linkList == null) return;
+                var link = new Link {
+                    DisplayName = Title,
+                    Source = SelectedSource,
+                    IsPinned = true
+                };
+                Title = null;
+                await Task.Yield();
+                PinnedLinks.Add(link);
+                _linkList.SelectedItem = link;
+                link.PropertyChanged += OnPinnedLinkChanged;
+                SavePinned();
+            }));
+        }
+
+        private void OnPinnedLinkChanged(object sender, PropertyChangedEventArgs args) {
+            var link = (Link)sender;
+            if (!link.IsPinned) {
+                var reselect = SelectedSource == link.Source;
+                PinnedLinks.Remove(link);
+                if (reselect) {
+                    Title = link.DisplayName;
+                    _linkList.SelectedItem = null;
+                }
+                SavePinned();
+            }
         }
 
         public ModernFrame Frame { get; private set; }
@@ -145,7 +202,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (SavePolicy == SavePolicy.SkipLoading && Frame.Source != null) {
-                _linkList.SelectedItem = Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
+                _linkList.SelectedItem = Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
+                        ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
+                                ?? (skipLoading ? null : Links.FirstOrDefault());
                 return;
             }
 
@@ -153,8 +212,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 Frame.Source = ValuesStorage.Get<Uri>(SaveKey) ?? Links.FirstOrDefault()?.Source;
             } else {
                 var saved = skipLoading || SaveKey == null ? null : ValuesStorage.Get<string>(SaveKey);
-                _linkList.SelectedItem = (saved == null ? null : Links.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved))
-                        ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource) ?? (skipLoading ? null : Links.FirstOrDefault());
+                _linkList.SelectedItem = (saved == null ? null
+                        : Links.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved)
+                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source.OriginalString == saved))
+                        ?? Links.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
+                                ?? PinnedLinks.FirstOrDefault(l => l.IsShown && l.Source == SelectedSource)
+                                        ?? (skipLoading ? null : Links.FirstOrDefault());
             }
         }
 
@@ -195,11 +258,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         private void Frame_Navigated(object sender, NavigationEventArgs navigationEventArgs) {
             if (Layout == TabLayout.TabWithTitle) {
-                Title = (Frame.Content as ITitleable)?.Title;
+                Title = PinnedLinks.Any(x => x.Source == SelectedSource) ? null : (Frame.Content as ITitleable)?.Title;
             }
 
             FrameNavigated?.Invoke(this, navigationEventArgs);
-
             if (SaveKey != null && (_linkList.SelectedItem != null || SavePolicy == SavePolicy.Flexible)) {
                 ValuesStorage.Set(SaveKey, Frame.Source.OriginalString);
             }
@@ -223,6 +285,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(LinksProperty, value);
         }
 
+        public static readonly DependencyProperty PinnedLinksProperty = DependencyProperty.Register(nameof(PinnedLinks), typeof(LinkCollection),
+                typeof(ModernTab));
+
+        public LinkCollection PinnedLinks {
+            get => (LinkCollection)GetValue(PinnedLinksProperty);
+            set => SetValue(PinnedLinksProperty, value);
+        }
+
         public GridLength ListWidth {
             get => GetValue(ListWidthProperty) as GridLength? ?? default;
             set => SetValue(ListWidthProperty, value);
@@ -233,12 +303,20 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(SelectedSourceProperty, value);
         }
 
-        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof (string),
-                                                                                             typeof (ModernTab));
+        public static readonly DependencyProperty TitleProperty = DependencyProperty.Register(nameof(Title), typeof(string),
+                typeof(ModernTab));
 
         public string Title {
-            get => (string) GetValue(TitleProperty);
+            get => (string)GetValue(TitleProperty);
             set => SetValue(TitleProperty, value);
+        }
+
+        public static readonly DependencyProperty PinCurrentCommandProperty = DependencyProperty.Register(nameof(PinCurrentCommand), typeof(ICommand),
+                typeof(ModernTab));
+
+        public ICommand PinCurrentCommand {
+            get => (ICommand)GetValue(PinCurrentCommandProperty);
+            set => SetValue(PinCurrentCommandProperty, value);
         }
 
         // saving and loading uri
@@ -252,10 +330,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private static void OnSaveKeyChanged(DependencyObject o, DependencyPropertyChangedEventArgs e) {
+            ((ModernTab)o).LoadPinned();
             ((ModernTab)o).UpdateSelection(false);
         }
 
-        public static readonly DependencyProperty LinksListBoxTemplateProperty = DependencyProperty.Register(nameof(LinksListBoxTemplate), typeof(ControlTemplate),
+        public static readonly DependencyProperty LinksListBoxTemplateProperty = DependencyProperty.Register(nameof(LinksListBoxTemplate),
+                typeof(ControlTemplate),
                 typeof(ModernTab));
 
         public ControlTemplate LinksListBoxTemplate {
@@ -267,10 +347,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     public class ModernTabDataTemplateSelector : DataTemplateSelector {
         public DataTemplate LinkDataTemplate { get; set; }
 
+        public DataTemplate PinnedLinkDataTemplate { get; set; }
+
         public DataTemplate TitleDataTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container) {
-            return item is Link ? LinkDataTemplate : TitleDataTemplate;
+            return item is Link l ? l.IsPinned ? PinnedLinkDataTemplate : LinkDataTemplate : TitleDataTemplate;
         }
     }
 }

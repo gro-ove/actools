@@ -64,11 +64,11 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        private TimeSpan? _previosSaveTime;
+        private TimeSpan? _previousSaveTime;
 
-        public TimeSpan? PreviosSaveTime {
-            get => _previosSaveTime;
-            set => Apply(value, ref _previosSaveTime);
+        public TimeSpan? PreviousSaveTime {
+            get => _previousSaveTime;
+            set => Apply(value, ref _previousSaveTime);
         }
 
         private const byte DeflateFlag = 0;
@@ -350,7 +350,7 @@ namespace FirstFloor.ModernUI.Helpers {
             var sw = Stopwatch.StartNew();
             var data = GetData();
             await Task.Run(() => SaveData(data));
-            PreviosSaveTime = sw.Elapsed;
+            PreviousSaveTime = sw.Elapsed;
         }
 
         public static event EventHandler Exit;

@@ -5190,7 +5190,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get New Mods.
+        ///   Looks up a localized string similar to Get new mods.
         /// </summary>
         public static string Main_GetNewMods {
             get {

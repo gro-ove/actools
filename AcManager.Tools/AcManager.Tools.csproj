@@ -353,6 +353,7 @@
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\CustomButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />

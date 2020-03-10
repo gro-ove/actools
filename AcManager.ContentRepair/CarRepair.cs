@@ -23,12 +23,14 @@ namespace AcManager.ContentRepair {
         }
 
         [NotNull]
-        public static IEnumerable<ContentRepairSuggestion> GetRepairSuggestions([NotNull] CarObject car, bool checkResources, bool criticalOnly = false) {
+        public static IEnumerable<ContentRepairSuggestion> GetRepairSuggestions([NotNull] CarObject car, bool checkResources, bool criticalOnly = false,
+                bool cheapRun = false) {
             var list = Assembly.GetExecutingAssembly().GetTypes().Concat(Types)
                                .Where(x => !x.IsAbstract && x.IsSubclassOf(typeof(CarRepairBase)))
                                .IfWhere(criticalOnly, x => x.IsCritical())
                                .Select(x => (CarRepairBase)Activator.CreateInstance(x))
-                               .IfWhere(!checkResources, x => x.AffectsData).OrderByDescending(x => x.Priority)
+                               .IfWhere(!checkResources, x => x.AffectsData)
+                               .OrderByDescending(x => (x.GetType().IsCritical() ? 10000 : 0) + x.Priority)
                                .ToList();
 
             for (var i = list.Count - 1; i >= 0; i--) {
@@ -38,10 +40,13 @@ namespace AcManager.ContentRepair {
                 }
             }
 
-            return list.SelectMany(x => x.GetSuggestions(car).IfSelect(x.GetType().IsCritical(), y => {
-                y.IsCritical = true;
-                return y;
-            })).NonNull().OrderBy(x => x.DisplayName);
+            return list.SelectMany(x => {
+                x.CheapRun = cheapRun;
+                return x.GetSuggestions(car).IfSelect(x.GetType().IsCritical(), y => {
+                    y.IsCritical = true;
+                    return y;
+                });
+            }).NonNull().OrderBy(x => x.DisplayName);
         }
     }
 
@@ -52,6 +57,8 @@ namespace AcManager.ContentRepair {
         public abstract bool AffectsData { get; }
 
         public virtual double Priority => 0;
+
+        public bool CheapRun { get; set; }
 
         public virtual bool IsAvailable(IEnumerable<CarRepairBase> repairs) {
             return true;

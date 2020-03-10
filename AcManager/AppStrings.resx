@@ -3776,7 +3776,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>User championships</value>
     </data>
     <data name="Main_GetNewMods" xml:space="preserve">
-      <value>Get New Mods</value>
+      <value>Get new mods</value>
     </data>
     <data name="Main_Mods" xml:space="preserve">
       <value>Mods</value>

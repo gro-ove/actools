@@ -120,9 +120,14 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_ValuesSavingTimeLabel}" />
           <mui:PlaceholderTextBlock Placeholder="?"
-              Text="{Binding PreviosSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
+              Text="{Binding PreviousSaveTime.Value.TotalMilliseconds, Source={x:Static mui:ValuesStorage.Storage},
                   StringFormat={x:Static g:AppStrings.Common_MillisecondsFormat}, Mode=OneWay}" />
         </DockPanel>
+
+        <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
+        <Button Command="{Binding ShowContentManagerDataCommand}" Content="Open app’s data folder" />
+        <Button Command="{Binding ShowContentManagerLogsCommand}" Content="Open logs folder" />
+        </mui:SpacingUniformGrid>
 
         <!-- Beta access -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_General_TestingAccessHeader}" />

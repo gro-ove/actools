@@ -762,6 +762,7 @@
     <Compile Include="Tools\ContentRepairUi\CarTorqueRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWeightRepair.cs" />
     <Compile Include="Tools\ContentRepairUi\CarWronglyTakenSoundRepair.cs" />
+    <Compile Include="Tools\ContentRepairUi\Critical\CarMissingSoundRepair.cs" />
     <Compile Include="Tools\ContextMenusProvider.cs" />
     <Compile Include="Tools\DefaultAssistsFactory.cs" />
     <Compile Include="Tools\CarSoundReplacer.cs" />

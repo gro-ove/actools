@@ -438,7 +438,7 @@ namespace AcManager.Pages.Drive {
                     _presence?.Car(value);
 
                     if (value != null && value.Author != AcCommonObject.AuthorKunos) {
-                        SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, false, true).ToList();
+                        SelectedCarRepairSuggestions = CarRepair.GetRepairSuggestions(value, true, true, true).ToList();
                         if (value.AcdData != null) {
                             WeakEventManager<DataWrapper, DataChangedEventArgs>.AddHandler(value.AcdData, nameof(DataWrapper.DataChanged),
                                     OnCarDataChanged);
@@ -452,7 +452,7 @@ namespace AcManager.Pages.Drive {
             private void OnCarDataChanged(object sender, DataChangedEventArgs dataChangedEventArgs) {
                 var car = SelectedCar;
                 SelectedCarRepairSuggestions = car != null && car.Author != AcCommonObject.AuthorKunos ?
-                        CarRepair.GetRepairSuggestions(car, false, true).ToList() : null;
+                        CarRepair.GetRepairSuggestions(car, true, true, true).ToList() : null;
             }
 
             private List<ContentRepairSuggestion> _selectedCarRepairSuggestions;

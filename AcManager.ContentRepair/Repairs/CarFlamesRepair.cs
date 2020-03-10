@@ -111,8 +111,7 @@ namespace AcManager.ContentRepair.Repairs {
         }
 
         public override IEnumerable<ContentRepairSuggestion> GetSuggestions(CarObject car) {
-            bool hasFlames;
-            var obsoleteFlames = TestFlamesVersion(car, out hasFlames);
+            var obsoleteFlames = TestFlamesVersion(car, out var hasFlames);
             var missingFlames = hasFlames ? TestFlamesTexturesExistance(car, obsoleteFlames != null) : null;
             return new[] {
                 obsoleteFlames, missingFlames

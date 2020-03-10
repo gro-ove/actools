@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using AcManager.Pages.Dialogs;
@@ -82,9 +83,8 @@ namespace AcManager.Pages.Settings {
 
             private DelegateCommand _openAcRootCommand;
 
-            public DelegateCommand OpenAcRootCommand => _openAcRootCommand ?? (_openAcRootCommand = new DelegateCommand(() => {
-                WindowsHelper.OpenFile(AcRootDirectory.Instance.RequireValue);
-            }));
+            public DelegateCommand OpenAcRootCommand
+                => _openAcRootCommand ?? (_openAcRootCommand = new DelegateCommand(() => { WindowsHelper.OpenFile(AcRootDirectory.Instance.RequireValue); }));
 
             private DelegateCommand _changeAcRootCommand;
 
@@ -99,7 +99,7 @@ namespace AcManager.Pages.Settings {
 
             public DelegateCommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new DelegateCommand(() => {
                 if (ModernDialog.ShowMessage("Do you want to change Steam ID? RSR and SRS progress are linked to it. Also, app will be restarted.",
-                                "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
+                        "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 if (new AcRootDirectorySelector(false, true).ShowDialog() == true) {
                     WindowsHelper.RestartCurrentApplication();
                 }
@@ -107,9 +107,8 @@ namespace AcManager.Pages.Settings {
 
             private DelegateCommand _changeAppKeyCommand;
 
-            public DelegateCommand ChangeAppKeyCommand => _changeAppKeyCommand ?? (_changeAppKeyCommand = new DelegateCommand(() => {
-                new AppKeyDialog().ShowDialog();
-            }));
+            public DelegateCommand ChangeAppKeyCommand
+                => _changeAppKeyCommand ?? (_changeAppKeyCommand = new DelegateCommand(() => { new AppKeyDialog().ShowDialog(); }));
 
             public SettingsHolder.CommonSettings Common => SettingsHolder.Common;
 
@@ -121,8 +120,7 @@ namespace AcManager.Pages.Settings {
 
             [Localizable(false)]
             public DelegateCommand CleanUpStorageCommand => _cleanUpStorageCommand ?? (_cleanUpStorageCommand = new DelegateCommand(() => {
-                ValuesStorage.Storage.CleanUp(x =>
-                        x.StartsWith(".") ||
+                ValuesStorage.Storage.CleanUp(x => x.StartsWith(".") ||
                         x.StartsWith("KunosCareerObject.SelectedEvent__") ||
                         x.StartsWith("__aclistpageviewmodel_selected_") ||
                         x.StartsWith("__carobject_selectedskin_") ||
@@ -139,12 +137,21 @@ namespace AcManager.Pages.Settings {
                         x.StartsWith("__tmp_FontObject.UsingsCarsIds_"));
             }));
 
+            private DelegateCommand _showContentManagerDataCommand;
+
+            public DelegateCommand ShowContentManagerDataCommand => _showContentManagerDataCommand ?? (_showContentManagerDataCommand
+                            = new DelegateCommand(() => WindowsHelper.ViewDirectory(FilesStorage.Instance.RootDirectory)));
+
+            private DelegateCommand _showContentManagerLogsCommand;
+
+            public DelegateCommand ShowContentManagerLogsCommand => _showContentManagerLogsCommand ?? (_showContentManagerLogsCommand =
+                    new DelegateCommand(() => WindowsHelper.ViewDirectory(Path.Combine(FilesStorage.Instance.RootDirectory, "Logs"))));
+
             private DelegateCommand _resetDoNotAskAgainsCommand;
 
             [Localizable(false)]
-            public DelegateCommand ResetDoNotAskAgainsCommand => _resetDoNotAskAgainsCommand ?? (_resetDoNotAskAgainsCommand = new DelegateCommand(() => {
-                ValuesStorage.Storage.CleanUp(x => x.StartsWith("_stored:__doNotAskAgain_"));
-            }));
+            public DelegateCommand ResetDoNotAskAgainsCommand => _resetDoNotAskAgainsCommand ?? (_resetDoNotAskAgainsCommand =
+                    new DelegateCommand(() => ValuesStorage.Storage.CleanUp(x => x.StartsWith("_stored:__doNotAskAgain_"))));
         }
 
         private bool _loaded;
