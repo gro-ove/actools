@@ -218,6 +218,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static CameraManagerSettings CameraManager => _cameraManager ?? (_cameraManager = new CameraManagerSettings());
 
 
+        private static CameraOrbitSettings _cameraOrbit;
+        public static CameraOrbitSettings CameraOrbit => _cameraOrbit ?? (_cameraOrbit = new CameraOrbitSettings());
+
+
+        private static FanatecSettings _fanatec;
+        public static FanatecSettings Fanatec => _fanatec ?? (_fanatec = new FanatecSettings());
+
+
         private static ControlsSettings _controls;
         public static ControlsSettings Controls {
             get {

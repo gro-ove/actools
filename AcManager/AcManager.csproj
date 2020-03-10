@@ -360,6 +360,9 @@
     <Compile Include="Pages\AcSettings\AcSettingsChaseCamera.xaml.cs">
       <DependentUpon>AcSettingsChaseCamera.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsFanatec.xaml.cs">
+      <DependentUpon>AcSettingsFanatec.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\AcSettings\AcSettingsPython.xaml.cs">
       <DependentUpon>AcSettingsPython.xaml</DependentUpon>
     </Compile>
@@ -1002,6 +1005,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\AcSettings\AcSettingsChaseCamera.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Pages\AcSettings\AcSettingsFanatec.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

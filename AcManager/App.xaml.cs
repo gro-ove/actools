@@ -661,6 +661,7 @@ namespace AcManager {
             WeatherSpecificVideoSettingsHelper.Revert();
             WeatherSpecificLightingHelper.Revert();
             CarSpecificControlsPresetHelper.Revert();
+            CarSpecificFanatecSettingsHelper.Revert();
             CarCustomDataHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
             AcShadowsPatcher.Revert();

@@ -1,0 +1,60 @@
+﻿<UserControl x:Class="AcManager.Pages.AcSettings.AcSettingsFanatec" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+    xmlns:acset="clr-namespace:AcManager.Pages.AcSettings" xmlns:g="clr-namespace:AcManager" xmlns:set="clr-namespace:AcManager.Pages.Settings"
+    xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance acset:AcSettingsFanatec+ViewModel}">
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/Converters.xaml" />
+        <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer mui:SaveScroll.Key="AcSettingsFanatec">
+    <DockPanel>
+      <c:MessageBlock DockPanel.Dock="Top" Margin="0 0 0 20" CloseKey="fanatecInfo">
+        <mui:BbCodeBlock Text="Here are some options for some Fanatec steering wheels. Thanks to Brandon Powell for helping with them!" />
+      </c:MessageBlock>
+
+      <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True">
+        <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Style="{StaticResource SettingsPanel}">
+          <CheckBox IsChecked="{Binding Fanatec.Enabled}">
+            <Label Content="Enable LEDs" />
+          </CheckBox>
+
+          <CheckBox IsChecked="{Binding Fanatec.ShowNextGear}">
+            <Label Content="Show next gear" />
+          </CheckBox>
+
+          <DockPanel>
+            <mui:ValueLabel Value="{Binding Fanatec.DisplayGearMaxTime}" mui:BetterTextBox.Mode="IntegerOrLabel" mui:BetterTextBox.ModeLabel="Always"
+                mui:BetterTextBox.ModeLabelValue="10"
+                Postfix="{Binding Fanatec.DisplayGearMaxTime, Converter={StaticResource PostfixLabelConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_SecondsPostfix}}"
+                ToolTip="Increase to make it show current gear all the time" Content="Show current gear" />
+            <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight">
+              <Slider.Value>
+                <Binding Path="Fanatec.GearMaxTime">
+                  <Binding.Converter>
+                    <mui:LogarithmicScale Minimum="0" Middle="1" Maximum="10" />
+                  </Binding.Converter>
+                </Binding>
+              </Slider.Value>
+            </Slider>
+          </DockPanel>
+
+        </StackPanel>
+        <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Style="{StaticResource SettingsPanel}">
+          <CheckBox IsChecked="{Binding Fanatec.AllowToOverridePerCar}">
+            <Label Content="Allow to override settings per car" />
+          </CheckBox>
+
+          <CheckBox IsChecked="{Binding Fanatec.GuessPerCar}">
+            <Label Content="Guess settings per car based on class and year" />
+          </CheckBox>
+        </StackPanel>
+      </mui:SpacingUniformGrid>
+    </DockPanel>
+  </ScrollViewer>
+</UserControl>

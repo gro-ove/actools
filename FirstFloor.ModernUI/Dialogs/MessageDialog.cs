@@ -162,7 +162,7 @@ namespace FirstFloor.ModernUI.Dialogs {
             var key = $@"__doNotAskAgain:{doNotAskAgainKey}";
             return Show(text, title, button,
                     new ShowMessageCallbacks(() => ValuesStorage.Get<MessageBoxResult?>(key), k => {
-                        if (!k.HasValue) {
+                        if (!k.HasValue || k == MessageBoxResult.Cancel || k == MessageBoxResult.No) {
                             ValuesStorage.Remove(key);
                         } else {
                             ValuesStorage.Set(key, k.Value);

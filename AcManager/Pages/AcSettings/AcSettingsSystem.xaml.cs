@@ -26,6 +26,7 @@ namespace AcManager.Pages.AcSettings {
             public SessionInfoSettings SessionInfo => AcSettingsHolder.SessionInfo;
             public SkidmarksSettings Skidmarks => AcSettingsHolder.Skidmarks;
             public SystemSettings System => AcSettingsHolder.System;
+            public CameraOrbitSettings CameraOrbit => AcSettingsHolder.CameraOrbit;
             public PitMenuSettings PitMenu => AcSettingsHolder.PitMenu;
             public SystemOptionsSettings SystemOptions => AcSettingsHolder.SystemOptions;
             public GhostSettings Ghost => AcSettingsHolder.Ghost;

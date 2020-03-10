@@ -41,6 +41,22 @@
           </DataTemplate>
         </mui:HierarchicalComboBox.SelectedContent>
       </mui:HierarchicalComboBox>
+
+
+      <DockPanel x:Key="CarSpecificFanatecPanel" x:Shared="False" DataContext="{Binding SelectedCar}">
+        <CheckBox IsChecked="{Binding FanatecCustomSettings}" Margin="0 0 0 8" DockPanel.Dock="Top">
+          <Label Content="Car-specific Fanatec settings" />
+        </CheckBox>
+        <StackPanel IsEnabled="{Binding FanatecCustomSettings}">
+          <CheckBox IsChecked="{Binding FanatecDisable}" Margin="0 0 0 8">
+            <Label Content="Disable LEDs and display" />
+          </CheckBox>
+          <CheckBox IsChecked="{Binding FanatecOnlyShowGear}" Margin="0 0 0 0"
+              IsEnabled="{Binding FanatecDisable, Converter={StaticResource InvertBooleanConverter}}">
+            <Label Content="Show current gear only" />
+          </CheckBox>
+        </StackPanel>
+      </DockPanel>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -104,8 +120,9 @@
 
         <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedCar}" AllowDrop="True" Drop="OnCarBlockDrop"
             MouseLeftButtonUp="OnCarBlockClick" ClipToBounds="True" c:ToolTips.Car="{Binding SelectedCar}">
-          <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoCarSelected}" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
-              VerticalAlignment="Center" Margin="0 0 0 20" Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
+          <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoCarSelected}"
+              Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
+              Visibility="{Binding SelectedCar, Converter={StaticResource NullToVisibilityConverter}}" />
           <mui:BetterImage Filename="{Binding SelectedCar.SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
           <mui:BbCodeBlock Mode="WithoutBbCodes" TextWrapping="NoWrap" Padding="4 4 12 4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
               Text="{Binding SelectedCar.DisplayName}" Background="{DynamicResource DarkStripeBackground}" Foreground="{DynamicResource DarkStripeText}"
@@ -119,14 +136,16 @@
                   VerticalAlignment="Center" EllipseDiameter="64" ToolTip="{x:Static g:AppStrings.QuickDrive_ChangeCar_Tooltip}" Click="OnCarBlockClick" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource CarShowroomIconData}" IconWidth="22" IconHeight="22" Margin="80 0 20 72" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_OpenInShowroom_Tooltip}" Click="OnShowroomButtonClick"
-                  PreviewMouseRightButtonDown="OnShowroomContextMenu" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_OpenInShowroom_Tooltip}"
+                  Click="OnShowroomButtonClick" PreviewMouseRightButtonDown="OnShowroomContextMenu" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource CarSetupIconData}" IconHeight="20" IconWidth="20" Margin="88 0 0 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageSetups_Tooltip}" Command="{Binding ManageCarSetupsCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageSetups_Tooltip}"
+                  Command="{Binding ManageCarSetupsCommand}" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="80 72 20 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageCar_Tooltip}" Command="{Binding ManageCarCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageCar_Tooltip}"
+                  Command="{Binding ManageCarCommand}" />
             </mui:Cell>
             <Border.Triggers>
               <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -287,8 +306,9 @@
 
         <mui:Cell Height="120" Background="{DynamicResource CardBackground}" mui:Draggable.Data="{Binding SelectedTrack}" AllowDrop="True"
             Drop="OnTrackBlockDrop" MouseLeftButtonUp="OnTrackBlockClick">
-          <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoTrackSelected}" Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center"
-              VerticalAlignment="Center" Margin="0 0 0 20" Visibility="{Binding SelectedTrack, Converter={StaticResource NullToVisibilityConverter}}" />
+          <TextBlock Style="{StaticResource Title}" Text="{x:Static g:AppStrings.QuickDrive_NoTrackSelected}"
+              Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20"
+              Visibility="{Binding SelectedTrack, Converter={StaticResource NullToVisibilityConverter}}" />
           <mui:BetterImage Filename="{Binding SelectedTrack.PreviewImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackPreviewWidth}}"
               Stretch="UniformToFill" />
           <mui:BetterImage Filename="{Binding SelectedTrack.OutlineImage}" DecodeWidth="{Binding Source={x:Static a:CommonAcConsts.TrackOutlineWidth}}"
@@ -305,7 +325,8 @@
                   VerticalAlignment="Center" EllipseDiameter="64" ToolTip="{x:Static g:AppStrings.QuickDrive_ChangeTrack_Tooltip}" Click="OnTrackBlockClick" />
               <mui:ModernButton Foreground="{DynamicResource OverlayForeground}" BorderBrush="{DynamicResource OverlayForeground}" EllipseStrokeThickness="2"
                   IconData="{StaticResource ToolsIconData}" IconHeight="14" IconWidth="14" Margin="88 0 0 0" HorizontalAlignment="Center"
-                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageTrack_Tooltip}" Command="{Binding ManageTrackCommand}" />
+                  VerticalAlignment="Center" EllipseDiameter="32" ToolTip="{x:Static g:AppStrings.QuickDrive_ManageTrack_Tooltip}"
+                  Command="{Binding ManageTrackCommand}" />
             </mui:Cell>
             <Border.Triggers>
               <EventTrigger RoutedEvent="Grid.MouseEnter">
@@ -570,7 +591,8 @@
           <DockPanel.ContextMenu>
             <ContextMenu>
               <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_MetersPerSecond}" IsCheckable="True" IsChecked="{mui:Stored windSpeedInMetersPerSecond}" />
-              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_RelativeRange}" IsCheckable="True" IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
+              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_RelativeRange}" IsCheckable="True"
+                  IsChecked="{mui:Stored 'windSpeedRelativeRange=True'}" />
               <MenuItem Header="{x:Static g:AppStrings.QuickDrive_Wind_Degrees}" IsCheckable="True" IsChecked="{mui:Stored windDirectionInDegrees}" />
               <MenuItem IsCheckable="True" IsChecked="{Binding RandomWindSpeed}" Header="{x:Static g:AppStrings.QuickDrive_Wind_RandomSpeed}"
                   DataContext="{Binding Data, Source={StaticResource Model}}" d:DataContext="{d:DesignInstance dr:QuickDrive+ViewModel}" />
@@ -619,16 +641,16 @@
                 <mui:BooleanSwitch.True>
                   <mui:BooleanSwitch Value="{Binding UseImperialUnits, Source={x:Static t:SettingsHolder.Common}}">
                     <mui:BooleanSwitch.True>
-                      <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}" Postfix="{x:Static t:ToolsStrings.Common_FeetPerSecondPostfix}" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
-                          RelativeRangeStringFormat="0.#"
+                      <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}" Postfix="{x:Static t:ToolsStrings.Common_FeetPerSecondPostfix}"
+                          JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="0.#"
                           Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}',
                                                                 Converter={StaticResource MultiplyConverter}, ConverterParameter=0.911344}"
                           SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}',
                                                                 Converter={StaticResource MultiplyConverter}, ConverterParameter=0.911344}" />
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
-                      <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}" Postfix="{x:Static t:ToolsStrings.Common_MetersPerSecondPostfix}" JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}"
-                          RelativeRangeStringFormat="0.#"
+                      <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}" Postfix="{x:Static t:ToolsStrings.Common_MetersPerSecondPostfix}"
+                          JoinIfEqual="True" RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="0.#"
                           Value="{Binding WindSpeedMin, StringFormat='{}{0:F1}',
                                                                 Converter={StaticResource MultiplyConverter}, ConverterParameter=0.277778}"
                           SecondValue="{Binding WindSpeedMax, StringFormat='{}{0:F1}',
@@ -637,7 +659,8 @@
                   </mui:BooleanSwitch>
                 </mui:BooleanSwitch.True>
                 <mui:BooleanSwitch.False>
-                  <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}" Postfix="{x:Static t:SettingsHolder+CommonSettings.SpaceSpeedPostfix}" JoinIfEqual="True"
+                  <mui:DoubleValueLabel Content="{x:Static g:AppStrings.QuickDrive_Wind}"
+                      Postfix="{x:Static t:SettingsHolder+CommonSettings.SpaceSpeedPostfix}" JoinIfEqual="True"
                       RelativeRange="{mui:Stored 'windSpeedRelativeRange=True'}" RelativeRangeStringFormat="0.#"
                       Value="{Binding WindSpeedMin, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat='{}{0:F1}'}"
                       SecondValue="{Binding WindSpeedMax, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat='{}{0:F1}'}" />
@@ -674,8 +697,7 @@
 
         <DockPanel Margin="0 20 0 0">
           <mui:PlaceholderTextBlock DockPanel.Dock="Right" Width="80" Placeholder="…"
-                                    Text="{Binding Path=SelectedCar.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat={x:Static t:ToolsStrings.Common_DistanceLarge_Format}}">
-          </mui:PlaceholderTextBlock>
+              Text="{Binding Path=SelectedCar.TotalDrivenDistance, Converter={StaticResource MultiplyConverter}, ConverterParameter=1e-3, StringFormat={x:Static t:ToolsStrings.Common_DistanceLarge_Format}}" />
           <TextBlock Text="{x:Static g:AppStrings.QuickDrive_DrivenInCar}" Style="{StaticResource Label}" />
         </DockPanel>
 
@@ -711,14 +733,18 @@
           <Label Content="{x:Static g:AppStrings.QuickDrive_CarSpecificControls}" />
         </CheckBox>
 
-        <mui:BooleanLazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" TrueResourceKey="CarSpecificControlsComboBox" />
+        <mui:BooleanLazySwitch Value="{Binding SelectedCar.SpecificControlsPreset}" TrueResourceKey="CarSpecificControlsComboBox" CollapseIfMissing="True" />
+        <mui:BooleanLazySwitch Value="{Binding AllowToOverridePerCar, Source={x:Static t:AcSettingsHolder.Fanatec}}" TrueResourceKey="CarSpecificFanatecPanel"
+            CollapseIfMissing="True" />
 
         <DockPanel
             Visibility="{Binding QuickDriveAllowCustomData, Source={x:Static t:SettingsHolder.Drive}, Converter={StaticResource BooleanToVisibilityConverter}}">
           <mui:ContextMenuButton DockPanel.Dock="Right" VerticalAlignment="Center">
             <ContextMenu>
-              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_UseUnpackedDataGlobal}" IsCheckable="True" IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
-              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_UseUnpackedData_ResetCarSpecificFlag}" Command="{Binding SelectedCar.ResetUseSpecificDataFlagCommand}" />
+              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_UseUnpackedDataGlobal}" IsCheckable="True"
+                  IsChecked="{Binding SelectedCar.UseCustomDataGlobal}" />
+              <MenuItem Header="{x:Static g:AppStrings.QuickDrive_UseUnpackedData_ResetCarSpecificFlag}"
+                  Command="{Binding SelectedCar.ResetUseSpecificDataFlagCommand}" />
             </ContextMenu>
           </mui:ContextMenuButton>
           <CheckBox IsChecked="{Binding SelectedCar.UseCustomData}" Margin="0 0 0 0">
@@ -754,11 +780,11 @@
           Content="{x:Static g:AppStrings.Common_Share}" />
       <mui:BooleanSwitch Value="{Binding SelectedCarRepairSuggestions.Count, Converter={StaticResource MoreConverter}, FallbackValue=False}">
         <Button Command="{Binding RepairCarCommand}" Margin="0 0 4 0" Style="{StaticResource Error.Button}">
-            <Button.ToolTip>
-                <Binding Path="SelectedCarRepairSuggestions.Count" Converter="{StaticResource PluralizingConverter}"
-                         ConverterParameter="{x:Static g:AppStrings.QuickDrive_FixCar_Tooltip}" />
-            </Button.ToolTip>
-            <TextBlock Text="{x:Static g:AppStrings.QuickDrive_FixCar}" />
+          <Button.ToolTip>
+            <Binding Path="SelectedCarRepairSuggestions.Count" Converter="{StaticResource PluralizingConverter}"
+                ConverterParameter="{x:Static g:AppStrings.QuickDrive_FixCar_Tooltip}" />
+          </Button.ToolTip>
+          <TextBlock Text="{x:Static g:AppStrings.QuickDrive_FixCar}" />
         </Button>
       </mui:BooleanSwitch>
       <Button Command="{Binding GoCommand}" Style="{StaticResource Go.Button}">

@@ -90,30 +90,37 @@
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="240" />
-      <ColumnDefinition />
-    </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition />
       <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
-    <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0" Grid.ColumnSpan="2">
-      <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}">
-        <Label Content="Keep developer apps flag with apps presets" />
+    <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0">
+      <CheckBox IsChecked="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}" mui:NewMarkService.New="True">
+        <Label Content="Enable Python apps" />
       </CheckBox>
 
-      <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}">
+      <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}"
+          IsEnabled="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}">
         <Label Content="{x:Static g:AppStrings.AcSettings_System_DeveloperApps}" />
+      </CheckBox>
+
+      <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}"
+          IsEnabled="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}">
+        <Label Content="Keep developer apps flag with apps presets" />
       </CheckBox>
     </StackPanel>
 
-    <DockPanel Grid.Column="0" Grid.Row="1">
+    <DockPanel Grid.Column="0" Grid.Row="1" IsEnabled="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}">
       <Label DockPanel.Dock="Top" Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_ActivatedLabel}" />
-      <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" Style="{StaticResource VirtualizingListBox}"
-          SelectionChanged="OnEnabledAppsListSelectionChanged" Margin="0 0 20 0">
+      <ListBox x:Name="EnabledAppsListBox" ItemsSource="{Binding Apps}" SelectionMode="Multiple" SelectionChanged="OnEnabledAppsListSelectionChanged"
+          Margin="0 0 20 0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:SpacingUniformGrid x:Name="EnabledAppsListPanel" Columns="4" HorizontalSpacing="20" VerticalSpacing="4" VerticalAlignment="Top" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
         <ListBox.ItemContainerStyle>
           <Style TargetType="ListBoxItem" BasedOn="{StaticResource CheckBoxListBoxItem}">
             <Style.Triggers>
@@ -134,7 +141,7 @@
               <Path Data="{StaticResource BookmarkIconData}" Width="12" Height="12" DockPanel.Dock="Right" Fill="{DynamicResource FavouriteBrush}"
                   Stretch="Uniform" Visibility="Collapsed" x:Name="FavouriteIcon" VerticalAlignment="Center" Margin="2 0 4 0" />
               <mui:BetterImage Width="14" Height="14" CollapseIfNull="True" CollapseIfMissing="True" ToolTip="{Binding AppIcon.Value}"
-                  Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}" Margin="0 0 4 0"  ClearOnChange="True" />
+                  Filename="{Binding AppIcon.Value, FallbackValue={x:Null}}" Margin="0 0 4 0" ClearOnChange="True" />
               <TextBlock Text="{Binding DisplayName}" />
             </DockPanel>
             <DataTemplate.Triggers>
@@ -147,252 +154,7 @@
       </ListBox>
     </DockPanel>
 
-    <DockPanel Grid.Column="1" Grid.Row="1">
-      <mui:SpacingStackPanel DockPanel.Dock="Bottom" Margin="0 20 20 0">
-        <Label Margin="0 0 0 8" Content="Scale apps:" DockPanel.Dock="Top" />
-        <DockPanel>
-          <Button Content="Set scale" Command="{Binding SetScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <Button Content="Multiply scale" Command="{Binding MultiplyScaleCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
-          <mui:ValueLabel Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Mode="Integer" Postfix="%"
-              Content="Value" DockPanel.Dock="Top" Margin="0 0 0 4" />
-          <Slider Minimum="0" Maximum="200" Value="{Binding ScaleValue, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"
-              TickFrequency="20" TickPlacement="BottomRight" />
-        </DockPanel>
-        <c:MessageBlock CloseKey="only-ac-apps" Margin="0 8 0 0">
-          <TextBlock>
-            <TextBlock.Text>Sadly, scaling works only for Kunos apps. At least for now.</TextBlock.Text>
-          </TextBlock>
-        </c:MessageBlock>
-      </mui:SpacingStackPanel>
-
-      <DockPanel Margin="0 0 20 8" DockPanel.Dock="Top">
-        <mui:ValueLabel Value="{Binding Forms.SelectedDesktop}" mui:BetterTextBox.Mode="Integer" Content="Selected desktop in-game" DockPanel.Dock="Left"
-            Margin="0 0 20 0" Padding="0" Width="200" />
-        <Slider Minimum="1" Maximum="4" Value="{Binding Forms.SelectedDesktop}" TickFrequency="1" TickPlacement="BottomRight" />
-      </DockPanel>
-
-      <Label Margin="0 0 0 8" Content="{x:Static g:AppStrings.AcSettings_Apps_FormsLabel}" ContentStringFormat="{}{0} (per desktop)" DockPanel.Dock="Top" />
-      <DataGrid x:Name="FormsDataGrid" ItemsSource="{Binding Forms.Entries, IsAsync=True}" Style="{StaticResource DataGrid.Lite}"
-          ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible"
-          VirtualizingStackPanel.CacheLength="1,1" mui:FancyScroll.InvertLocation="True" Padding="8 0 0 0" Margin="-8 0 0 0">
-        <DataGrid.Columns>
-          <DataGridTemplateColumn Width="3*" Header="{x:Static c:ControlsStrings.TableHeader_Name}" SortMemberPath="DisplayName">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <DockPanel>
-                  <mui:BetterImage Width="14" Height="14" Margin="0 0 4 0" CollapseIfMissing="True" ClearOnChange="True">
-                    <mui:BetterImage.Filename>
-                      <MultiBinding StringFormat="{}{1}\content\gui\icons\{0}_OFF.png">
-                        <Binding Path="Id" />
-                        <Binding Path="Value" Source="{x:Static t:AcRootDirectory.Instance}" />
-                      </MultiBinding>
-                    </mui:BetterImage.Filename>
-                  </mui:BetterImage>
-                  <TextBlock Text="{Binding DisplayName}" />
-                </DockPanel>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="PositionColumn" Width="504" Header="Position" SortMemberPath="First.Position"
-              CellStyle="{StaticResource DataGridCell.RightAlignment}">
-            <DataGridTemplateColumn.HeaderStyle>
-              <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DesktopsGridColumn.LeftAlignment}">
-                <Setter Property="HorizontalContentAlignment" Value="Right" />
-                <Setter Property="Template">
-                  <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                      <mui:Cell>
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                          <DockPanel x:Name="containerGrid">
-                            <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="20" DockPanel.Dock="Bottom" Margin="0 2 -4 0">
-                              <TextBlock Text="1" Style="{StaticResource Small}" ToolTip="First desktop" />
-                              <TextBlock Text="2" Style="{StaticResource Small}" ToolTip="Second desktop" />
-                              <TextBlock Text="3" Style="{StaticResource Small}" ToolTip="Third desktop" />
-                              <TextBlock Text="4" Style="{StaticResource Small}" ToolTip="Fourth desktop" />
-                            </mui:SpacingUniformGrid>
-                            <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
-                                Margin="4 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
-                                Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                          </DockPanel>
-                        </Border>
-                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
-                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
-                      </mui:Cell>
-                      <ControlTemplate.Triggers>
-                        <Trigger Property="SortDirection" Value="Ascending">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
-                          <Setter TargetName="SortArrow" Property="RenderTransform">
-                            <Setter.Value>
-                              <RotateTransform Angle="180" />
-                            </Setter.Value>
-                          </Setter>
-                        </Trigger>
-                        <Trigger Property="SortDirection" Value="Descending">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="CanUserSort" Value="False">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                        <Trigger Property="HorizontalContentAlignment" Value="Right">
-                          <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
-                        </Trigger>
-                      </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                  </Setter.Value>
-                </Setter>
-              </Style>
-            </DataGridTemplateColumn.HeaderStyle>
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <mui:BooleanSwitch Value="{Binding AnyVisible}" HorizontalAlignment="Right">
-                  <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
-                    <ItemsControl.ItemsPanel>
-                      <ItemsPanelTemplate>
-                        <mui:SpacingStackPanel Orientation="Horizontal" Spacing="20" />
-                      </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                      <DataTemplate>
-                        <StackPanel Orientation="Horizontal"
-                            Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
-                          <TextBlock Text="X:" />
-                          <mui:BetterTextBox Text="{Binding PosX}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
-                              TextAlignment="Right" Width="40" />
-                          <TextBlock Text=", Y:" />
-                          <mui:BetterTextBox Text="{Binding PosY}" Mode="Integer" Placeholder="?" Style="{StaticResource Borderless.White}"
-                              TextAlignment="Right" Width="40" />
-                        </StackPanel>
-                      </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                  </ItemsControl>
-                </mui:BooleanSwitch>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="ScaleColumn" Width="158" Header="Scale" SortMemberPath="First.Scale"
-              CellStyle="{StaticResource DataGridCell.RightAlignment}">
-            <DataGridTemplateColumn.HeaderStyle>
-              <Style TargetType="{x:Type DataGridColumnHeader}" BasedOn="{StaticResource DesktopsGridColumn.LeftAlignment}">
-                <Setter Property="HorizontalContentAlignment" Value="Right" />
-                <Setter Property="Template">
-                  <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
-                      <mui:Cell>
-                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                          <DockPanel x:Name="containerGrid">
-                            <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="2" DockPanel.Dock="Bottom" Margin="0 2 5 0">
-                              <TextBlock Text="1" Style="{StaticResource Small}" ToolTip="First desktop" />
-                              <TextBlock Text="2" Style="{StaticResource Small}" ToolTip="Second desktop" />
-                              <TextBlock Text="3" Style="{StaticResource Small}" ToolTip="Third desktop" />
-                              <TextBlock Text="4" Style="{StaticResource Small}" ToolTip="Fourth desktop" />
-                            </mui:SpacingUniformGrid>
-                            <Path x:Name="SortArrow" DockPanel.Dock="Right" HorizontalAlignment="Center" VerticalAlignment="Center" Width="8" Height="6"
-                                Margin="4 0" Stretch="Fill" Opacity="0.5" Fill="{TemplateBinding Foreground}" RenderTransformOrigin="0.5,0.4"
-                                Visibility="Hidden" Data="M0,0 L1,0 0.5,1 z" />
-                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                          </DockPanel>
-                        </Border>
-                        <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left" Style="{StaticResource ColumnHeaderGripperStyle}" />
-                        <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right" Style="{StaticResource ColumnHeaderGripperStyle}" />
-                      </mui:Cell>
-                      <ControlTemplate.Triggers>
-                        <Trigger Property="SortDirection" Value="Ascending">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
-                          <Setter TargetName="SortArrow" Property="RenderTransform">
-                            <Setter.Value>
-                              <RotateTransform Angle="180" />
-                            </Setter.Value>
-                          </Setter>
-                        </Trigger>
-                        <Trigger Property="SortDirection" Value="Descending">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Visible" />
-                        </Trigger>
-                        <Trigger Property="CanUserSort" Value="False">
-                          <Setter TargetName="SortArrow" Property="Visibility" Value="Collapsed" />
-                        </Trigger>
-                        <Trigger Property="HorizontalContentAlignment" Value="Right">
-                          <Setter TargetName="SortArrow" Property="DockPanel.Dock" Value="Left" />
-                        </Trigger>
-                      </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                  </Setter.Value>
-                </Setter>
-              </Style>
-            </DataGridTemplateColumn.HeaderStyle>
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <mui:BooleanSwitch Value="{Binding AnyVisible}">
-                  <DockPanel>
-                    <TextBlock Text="%" DockPanel.Dock="Right" Margin="2 0 0 0" />
-                    <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
-                      <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                          <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
-                        </ItemsPanelTemplate>
-                      </ItemsControl.ItemsPanel>
-                      <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                          <mui:BetterTextBox Text="{Binding Scale}" Mode="Integer" Placeholder="100" Style="{StaticResource Borderless.White}"
-                              TextAlignment="Right" Width="32"
-                              Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-                        </DataTemplate>
-                      </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                  </DockPanel>
-                </mui:BooleanSwitch>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="94" SortMemberPath="First.IsVisible" HeaderStyle="{StaticResource DesktopsGridColumn.LeftAlignment}"
-              Header="{x:Static c:ControlsStrings.TableHeader_Visible}">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <CheckBox IsChecked="{Binding IsVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTemplateColumn x:Name="BlockedColumn" Width="94" SortMemberPath="First.IsBlocked"
-              HeaderStyle="{StaticResource DesktopsGridColumn.LeftAlignment}" Header="{x:Static c:ControlsStrings.TableHeader_Locked}">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="{x:Type t:AcFormEntry}">
-                <ItemsControl ItemsSource="{Binding Desktops}" HorizontalAlignment="Right">
-                  <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                      <mui:SpacingStackPanel Orientation="Horizontal" Spacing="2" />
-                    </ItemsPanelTemplate>
-                  </ItemsControl.ItemsPanel>
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <CheckBox IsChecked="{Binding IsBlocked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                          Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}" />
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-        </DataGrid.Columns>
-      </DataGrid>
-    </DockPanel>
-
-    <mui:SpacingStackPanel Spacing="4" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"
-        Margin="0 20 20 20">
+    <mui:SpacingStackPanel Spacing="4" Grid.Column="0" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 20 20">
       <c:UserPresetsControl x:Name="UserPresetsControl" UserPresetable="{Binding Presets}" />
       <Button Content="Combine presets to multi-desktop preset" Command="{Binding CombinePresetsCommand}"
           ToolTip="Use it if you want to switch between several presets during the race. But keep in mind that all used apps will be enabled and loaded." />

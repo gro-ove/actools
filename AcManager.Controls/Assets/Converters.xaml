@@ -3,6 +3,7 @@
     <c:AcTimeDisplayConverter x:Key="AcTimeDisplayConverter" />
     <c:AuthorVersionUrlToLabelConverter x:Key="AuthorVersionUrlToLabelConverter" />
     <c:CarIdToCarWrapperConverter x:Key="CarIdToCarWrapperConverter" />
+    <c:PostfixLabelConverter x:Key="PostfixLabelConverter" />
     <c:RealismLevelToColorConverter x:Key="RealismLevelToColorConverter" />
     <c:TemperatureToFahrenheitConverter x:Key="TemperatureToFahrenheitConverter" />
     <c:TimeSpanHhMmConverter x:Key="TimeSpanHhMmConverter" />

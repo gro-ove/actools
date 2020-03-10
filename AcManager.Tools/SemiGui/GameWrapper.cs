@@ -217,6 +217,7 @@ namespace AcManager.Tools.SemiGui {
             properties.SetAdditional(new ModeSpecificPresetsHelper());
             properties.SetAdditional(new WeatherSpecificVideoSettingsHelper());
             properties.SetAdditional(new CarSpecificControlsPresetHelper());
+            properties.SetAdditional(new CarSpecificFanatecSettingsHelper());
             properties.SetAdditional(new CarRaceTextures());
 
             if (PatchHelper.GetInstalledVersion() != null) {

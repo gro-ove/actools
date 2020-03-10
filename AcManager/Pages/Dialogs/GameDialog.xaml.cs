@@ -676,7 +676,7 @@ namespace AcManager.Pages.Dialogs {
 
             if (result == null || !result.IsNotCancelled) {
                 Model.CurrentState = ViewModel.State.Cancelled;
-                BeepingNoise.Play(SettingsHolder.Drive.CrashBeepingNoise).Ignore();
+                DelayedBeep().Ignore();
 
                 var whatsGoingOn = _properties?.PullAdditional<WhatsGoingOn>();
                 var solution = whatsGoingOn?.Solution;
@@ -710,6 +710,13 @@ namespace AcManager.Pages.Dialogs {
                 _properties != null ? tryAgainButton : null,
                 CloseButton
             };
+        }
+
+        private async Task DelayedBeep() {
+            await Task.Delay(200);
+            if (!IsClosed()) {
+                BeepingNoise.Play(SettingsHolder.Drive.CrashBeepingNoise).Ignore();
+            }
         }
 
         public void OnError(Exception exception) {

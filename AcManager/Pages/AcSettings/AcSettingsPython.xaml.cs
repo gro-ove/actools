@@ -16,6 +16,7 @@ using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using FirstFloor.ModernUI.Windows.Controls;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsPython : ILoadableContent {
@@ -58,9 +59,8 @@ namespace AcManager.Pages.AcSettings {
 
             private DelegateCommand _combinePresetsCommand;
 
-            public DelegateCommand CombinePresetsCommand => _combinePresetsCommand ?? (_combinePresetsCommand = new DelegateCommand(() => {
-                new CombinePythonAppsPresetsDialog().ShowDialog();
-            }));
+            public DelegateCommand CombinePresetsCommand
+                => _combinePresetsCommand ?? (_combinePresetsCommand = new DelegateCommand(() => { new CombinePythonAppsPresetsDialog().ShowDialog(); }));
         }
 
         public Task LoadAsync(CancellationToken cancellationToken) {
@@ -85,9 +85,13 @@ namespace AcManager.Pages.AcSettings {
             Model.Python.PropertyChanged += OnPythonPropertyChanged;
             this.OnActualUnload(() => Model.Python.PropertyChanged -= OnPythonPropertyChanged);
 
-            this.AddWidthCondition(600).Add(BlockedColumn);
-            this.AddWidthCondition(760).Add(ScaleColumn);
-            this.AddWidthCondition(1300).Add(PositionColumn);
+            //this.AddWidthCondition(600).Add(BlockedColumn);
+            //this.AddWidthCondition(760).Add(ScaleColumn);s
+            //this.AddWidthCondition(1300).Add(PositionColumn);
+
+            this.AddWidthCondition(x => x > 960 ? 4 : x > 720 ? 3 : 2).Add(
+                    x => this.FindChild<SpacingUniformGrid>("EnabledAppsListPanel"),
+                    (c, x) => c.Columns = (int)x);
         }
 
         private void UpdateListBox() {
@@ -114,6 +118,6 @@ namespace AcManager.Pages.AcSettings {
             }
         }
 
-        private void OnUnloaded(object sender, RoutedEventArgs e) {}
+        private void OnUnloaded(object sender, RoutedEventArgs e) { }
     }
 }

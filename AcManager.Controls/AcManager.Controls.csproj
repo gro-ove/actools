@@ -146,6 +146,7 @@
     <Compile Include="CarIcon.cs" />
     <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
+    <Compile Include="Converters\PostfixLabelConverter.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />
     <Compile Include="CountryIcon.cs" />
     <Compile Include="CustomShowroom\Dummy.cs" />
