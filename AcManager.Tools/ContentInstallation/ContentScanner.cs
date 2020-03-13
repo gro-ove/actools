@@ -679,31 +679,38 @@ namespace AcManager.Tools.ContentInstallation {
                 return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
             }
 
-            if (directory.HasSubFile("weather.lua") && directory.Parent.NameLowerCase == "weather") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, $"CSP Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
-                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather", directory.Name), 1e5);
+            PatchPluginEntry ret;
+            if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("controller.lua", "CSP Weather FX controller", @"weather-controllers")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("camera.lua", "CSP camera script", @"lua\chaser-camera")) != null) {
+                return ret;
+            }
+            if ((ret = await CheckPatchPlugin("fireworks.lua", "CSP fireworks script", @"lua\fireworks")) != null) {
+                return ret;
             }
 
-            if (directory.HasSubFile("controller.lua") && directory.Parent.NameLowerCase == "weather-controllers") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key },
-                        $"CSP Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
-                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather-controllers", directory.Name), 1e5);
-            }
-
-            if (directory.HasSubFile("camera.lua") && directory.Parent.NameLowerCase == "chaser-camera") {
-                var manifestInfo = directory.GetSubFile("manifest.ini");
-                var name = AcStringValues.NameFromId(directory.Name);
-                string version = null;
-                string description = null;
-                if (manifestInfo != null) {
-                    var data = IniFile.Parse((await manifestInfo.Info.ReadAsync() ?? throw new MissingContentException()).ToUtf8String())["ABOUT"];
-                    name = data.GetNonEmpty("NAME") ?? name;
-                    version = data.GetNonEmpty("VERSION");
-                    description = data.GetNonEmpty("DESCRIPTION");
+            async Task<PatchPluginEntry> CheckPatchPlugin(string fileName, string displayName, string relativePath) {
+                var directoryName = directory?.Name;
+                if (directoryName != null && directory.HasSubFile(fileName) && directory.Parent?.NameLowerCase == Path.GetFileName(relativePath)) {
+                    var manifestInfo = directory.GetSubFile("manifest.ini");
+                    var name = AcStringValues.NameFromId(directoryName);
+                    string version = null;
+                    string description = null;
+                    if (manifestInfo != null) {
+                        var data = IniFile.Parse((await manifestInfo.Info.ReadAsync() ?? throw new MissingContentException()).ToUtf8String())["ABOUT"];
+                        name = data.GetNonEmpty("NAME") ?? name;
+                        version = data.GetNonEmpty("VERSION");
+                        description = data.GetNonEmpty("DESCRIPTION");
+                    }
+                    return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"{displayName} “{name}”",
+                            Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", relativePath ?? "", directoryName), 1e5,
+                            version, description);
                 }
-                return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"CSP camera script “{name}”",
-                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "lua", "chaser-camera", directory.Name), 1e5,
-                        version, description);
+                return null;
             }
 
             // Mod

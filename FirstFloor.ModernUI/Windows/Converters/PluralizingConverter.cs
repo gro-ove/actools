@@ -58,6 +58,7 @@ namespace FirstFloor.ModernUI.Windows.Converters {
         }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture) {
+            if (value == null || value is string s && (s.Length == 0 || char.IsLetter(s[0]))) return string.Empty;
             return parameter == null ? null : PluralizeExt(value.As<int>(), parameter.ToString());
         }
 

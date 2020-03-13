@@ -134,6 +134,7 @@ namespace FirstFloor.ModernUI.Windows {
         protected static readonly Action EmptyDelegate = delegate {};
 
         public async void UpdateAfterRender() {
+            if (Application.Current.Dispatcher == null) return;
             await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
             Update();
         }
@@ -255,7 +256,9 @@ namespace FirstFloor.ModernUI.Windows {
                     _parent.InvalidateArrange();
                     _parent.ApplyTemplate();
                     _parent.UpdateLayout();
-                    await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
+                    if (Application.Current.Dispatcher != null) {
+                        await Application.Current.Dispatcher.InvokeAsync(EmptyDelegate, DispatcherPriority.Render).Task;
+                    }
                     Update();
                 } catch (Exception e) {
                     Logging.Error(e);

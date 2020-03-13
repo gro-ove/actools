@@ -11,6 +11,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
@@ -547,9 +548,15 @@ namespace AcManager.Tools.Objects {
                 _allowTyresOut = value;
                 if (Loaded) {
                     OnPropertyChanged();
+                    OnPropertyChanged(nameof(DisplayAllowTyresOut));
                     Changed = true;
                 }
             }
+        }
+
+        public string DisplayAllowTyresOut {
+            get => AllowTyresOut < 0 ? "Any" : AllowTyresOut.ToInvariantString();
+            set => AllowTyresOut = value?.As(-1) ?? -1;
         }
 
         private int _maxBallast;

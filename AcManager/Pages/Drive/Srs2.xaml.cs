@@ -47,6 +47,7 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             DataContext = new ViewModel();
             InitializeComponent();
+            this.AddWidthCondition(1200).Add(t => Browser.LeftSideContent as FrameworkElement);
         }
 
         private ViewModel Model => (ViewModel)DataContext;

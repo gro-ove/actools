@@ -1,9 +1,8 @@
 ﻿<UserControl x:Class="AcManager.Pages.ServerPreset.ServerPresetAssists" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:t="http://acstuff.ru/app/tools"
-    mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -82,8 +81,9 @@
         <Slider Minimum="0" Maximum="200" Value="{Binding TyreWearRate}" TickFrequency="25" TickPlacement="BottomRight" />
       </DockPanel>
       <DockPanel>
-        <mui:ValueLabel Value="{Binding AllowTyresOut}" Content="Allowed tyres out" />
-        <Slider Minimum="0" Maximum="4" Value="{Binding AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
+        <mui:ValueLabel Value="{Binding DisplayAllowTyresOut}" Content="Allowed tyres out"
+            Postfix="{Binding DisplayAllowTyresOut, Converter={StaticResource PluralizingConverter}, ConverterParameter=' tyre'}" />
+        <Slider Minimum="-1" Maximum="3" Value="{Binding AllowTyresOut}" TickFrequency="1" TickPlacement="BottomRight" />
       </DockPanel>
       <DockPanel>
         <mui:ValueLabel Value="{Binding MaxBallast}" Postfix="{x:Static t:ToolsStrings.Common_KilogramsPostfix}" Content="Max ballast" />

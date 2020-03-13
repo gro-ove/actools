@@ -43,11 +43,14 @@ namespace AcManager.Pages.Selected {
                 InitializeSpecs();
             }
 
+            [CanBeNull]
             private TrackObjectBase _selectedTrackConfiguration;
 
+            [CanBeNull]
             public TrackObjectBase SelectedTrackConfiguration {
-                get { return _selectedTrackConfiguration; }
+                get => _selectedTrackConfiguration;
                 set {
+                    if (value == null) return;
                     if (Equals(value, _selectedTrackConfiguration)) return;
                     _selectedTrackConfiguration?.UnsubscribeWeak(OnSelectedLayoutPropertyChanged);
                     _selectedTrackConfiguration = value;
@@ -77,16 +80,13 @@ namespace AcManager.Pages.Selected {
                         !await QuickDrive.RunAsync(track: SelectedTrackConfiguration)) {
                     DriveOptionsCommand.Execute();
                 }
-            }, () => SelectedTrackConfiguration.Enabled));
+            }, () => SelectedTrackConfiguration?.Enabled == true));
 
             private DelegateCommand _driveOptionsCommand;
 
-            public DelegateCommand DriveOptionsCommand
-                =>
-                        _driveOptionsCommand
-                                ?? (_driveOptionsCommand =
-                                        new DelegateCommand(() => { QuickDrive.Show(track: SelectedTrackConfiguration); },
-                                                () => SelectedTrackConfiguration.Enabled));
+            public DelegateCommand DriveOptionsCommand => _driveOptionsCommand ?? (_driveOptionsCommand = new DelegateCommand(
+                    () => QuickDrive.Show(track: SelectedTrackConfiguration),
+                    () => SelectedTrackConfiguration?.Enabled == true));
 
             public HierarchicalItemsView QuickDrivePresets {
                 get => _quickDrivePresets;
@@ -105,7 +105,7 @@ namespace AcManager.Pages.Selected {
             public void InitializeQuickDrivePresets() {
                 if (QuickDrivePresets == null) {
                     QuickDrivePresets = _helper.Create(new PresetsCategory(QuickDrive.PresetableKeyValue),
-                            p => { QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget(); });
+                            p => QuickDrive.RunAsync(track: SelectedTrackConfiguration, presetFilename: p.VirtualFilename).Forget());
                 }
             }
 
@@ -124,7 +124,7 @@ namespace AcManager.Pages.Selected {
 
             public AsyncCommand<bool> UpdateMapCommand => _trackMapUpdateCommand ?? (_trackMapUpdateCommand =
                     new AsyncCommand<bool>(v => TrackMapRendererWrapper.Run(SelectedTrackConfiguration, v),
-                            v => !v || SelectedTrackConfiguration.AiLaneFastExists));
+                            v => !v || SelectedTrackConfiguration?.AiLaneFastExists == true));
 
             private AsyncCommand _bakeShadersCommand;
 
@@ -254,49 +254,51 @@ namespace AcManager.Pages.Selected {
             }));
 
             protected override void FilterExec(string type) {
+                var cfg = SelectedTrackConfiguration;
+                if (cfg == null) return;
                 switch (type) {
                     case "author":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Author)
-                                ? @"author-" : $@"author:{Filter.Encode(SelectedTrackConfiguration.Author)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(cfg.Author)
+                                ? @"author-" : $@"author:{Filter.Encode(cfg.Author)}");
                         break;
 
                     case "country":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.Country)
-                                ? @"country-" : $@"country:{Filter.Encode(SelectedTrackConfiguration.Country)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(cfg.Country)
+                                ? @"country-" : $@"country:{Filter.Encode(cfg.Country)}");
                         break;
 
                     case "city":
-                        NewFilterTab(string.IsNullOrWhiteSpace(SelectedTrackConfiguration.City)
-                                ? @"city-" : $@"city:{Filter.Encode(SelectedTrackConfiguration.City)}");
+                        NewFilterTab(string.IsNullOrWhiteSpace(cfg.City)
+                                ? @"city-" : $@"city:{Filter.Encode(cfg.City)}");
                         break;
 
                     case "year":
-                        NewFilterTab(SelectedTrackConfiguration.Year.HasValue ? $@"year:{SelectedTrackConfiguration.Year}" : @"year-");
+                        NewFilterTab(cfg.Year.HasValue ? $@"year:{cfg.Year}" : @"year-");
                         break;
 
                     case "decade":
-                        if (!SelectedTrackConfiguration.Year.HasValue) {
+                        if (!cfg.Year.HasValue) {
                             NewFilterTab(@"year-");
                         }
 
-                        var start = (int)Math.Floor((SelectedTrackConfiguration.Year ?? 0) / 10d) * 10;
+                        var start = (int)Math.Floor((cfg.Year ?? 0) / 10d) * 10;
                         NewFilterTab($@"year>{start - 1} & year<{start + 10}");
                         break;
 
                     case "length":
-                        FilterDistance("length", SelectedTrackConfiguration.SpecsLengthValue, roundTo: 0.1, range: 0.3);
+                        FilterDistance("length", cfg.SpecsLengthValue, roundTo: 0.1, range: 0.3);
                         break;
 
                     case "width":
-                        FilterRange("width", SelectedTrackConfiguration.SpecsWidth, postfix: "m");
+                        FilterRange("width", cfg.SpecsWidth, postfix: "m");
                         break;
 
                     case "pits":
-                        FilterRange("pits", SelectedTrackConfiguration.SpecsPitboxes);
+                        FilterRange("pits", cfg.SpecsPitboxes);
                         break;
 
                     case "driven":
-                        FilterDistance("driven", SelectedTrackConfiguration.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
+                        FilterDistance("driven", cfg.TotalDrivenDistance, roundTo: 0.1, range: 0.3);
                         break;
 
                     case "notes":
@@ -323,24 +325,26 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _recalculatePitboxesCommand;
 
             public AsyncCommand RecalculatePitboxesCommand => _recalculatePitboxesCommand ?? (_recalculatePitboxesCommand = new AsyncCommand(async () => {
+                var cfg = SelectedTrackConfiguration;
+                if (cfg == null) return;
                 try {
                     using (WaitingDialog.Create("Loading model…")) {
                         int value;
 
-                        var modelsFilename = SelectedTrackConfiguration.ModelsFilename;
+                        var modelsFilename = cfg.ModelsFilename;
                         if (!File.Exists(modelsFilename)) {
-                            value = await LoadAndCountPits(Path.Combine(SelectedTrackConfiguration.Location, SelectedTrackConfiguration.Id + ".kn5"));
+                            value = await LoadAndCountPits(Path.Combine(cfg.Location, cfg.Id + ".kn5"));
                         } else {
                             value = 0;
                             foreach (var kn5Filename in new IniFile(modelsFilename).GetSections("MODEL")
-                                                                                   .Select(x => x.GetNonEmpty("FILE"))
-                                                                                   .NonNull()
-                                                                                   .Select(x => Path.Combine(SelectedTrackConfiguration.Location, x))) {
+                                    .Select(x => x.GetNonEmpty("FILE"))
+                                    .NonNull()
+                                    .Select(x => Path.Combine(cfg.Location, x))) {
                                 value += await LoadAndCountPits(kn5Filename);
                             }
                         }
 
-                        SelectedTrackConfiguration.SpecsPitboxes = SpecsFormat(AppStrings.TrackSpecs_Pitboxes_FormatTooltip, value);
+                        cfg.SpecsPitboxes = SpecsFormat(AppStrings.TrackSpecs_Pitboxes_FormatTooltip, value);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t recalculate pitboxes", e);
@@ -350,26 +354,30 @@ namespace AcManager.Pages.Selected {
             private AsyncCommand _recalculateLengthCommand;
 
             public AsyncCommand RecalculateLengthCommand => _recalculateLengthCommand ?? (_recalculateLengthCommand = new AsyncCommand(async () => {
+                var cfg = SelectedTrackConfiguration;
+                if (cfg == null) return;
                 try {
-                    var filename = SelectedTrackConfiguration.AiLaneFastFilename;
+                    var filename = cfg.AiLaneFastFilename;
                     if (!File.Exists(filename)) {
                         throw new InformativeException("Can’t recalculate length", "AI fast lane file is missing");
                     }
 
                     using (WaitingDialog.Create("Loading AI lane…")) {
                         var length = (await Task.Run(() => AiSpline.FromFile(filename).CalculateLength())).ToString("F0");
-                        SelectedTrackConfiguration.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, length);
+                        cfg.SpecsLength = SpecsFormat(AppStrings.TrackSpecs_Length_FormatTooltip, length);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t recalculate length", e);
                 }
-            }, () => SelectedTrackConfiguration.AiLaneFastExists));
+            }, () => SelectedTrackConfiguration?.AiLaneFastExists == true));
 
             private AsyncCommand _recalculateWidthCommand;
 
             public AsyncCommand RecalculateWidthCommand => _recalculateWidthCommand ?? (_recalculateWidthCommand = new AsyncCommand(async () => {
+                var cfg = SelectedTrackConfiguration;
+                if (cfg == null) return;
                 try {
-                    var filename = SelectedTrackConfiguration.AiLaneFastFilename;
+                    var filename = cfg.AiLaneFastFilename;
                     if (!File.Exists(filename)) {
                         throw new InformativeException("Can’t recalculate width", "AI fast lane file is missing");
                     }
@@ -383,20 +391,22 @@ namespace AcManager.Pages.Selected {
                         var minWidth = width.Item1.ToString("F0");
                         var maxWidth = width.Item2.ToString("F0");
                         var value = minWidth == maxWidth ? maxWidth : $"{minWidth}–{maxWidth}";
-                        SelectedTrackConfiguration.SpecsWidth = SpecsFormat(AppStrings.TrackSpecs_Width_FormatTooltip, value);
+                        cfg.SpecsWidth = SpecsFormat(AppStrings.TrackSpecs_Width_FormatTooltip, value);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t recalculate width", e);
                 }
-            }, () => SelectedTrackConfiguration.AiLaneFastExists));
+            }, () => SelectedTrackConfiguration?.AiLaneFastExists == true));
 
             private void InitializeSpecs() {
-                RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => SelectedTrackConfiguration.SpecsLength,
-                        v => SelectedTrackConfiguration.SpecsLength = v);
-                RegisterSpec("width", AppStrings.TrackSpecs_Width_FormatTooltip, () => SelectedTrackConfiguration.SpecsWidth,
-                        v => SelectedTrackConfiguration.SpecsWidth = v);
-                RegisterSpec("pits", AppStrings.TrackSpecs_Pitboxes_FormatTooltip, () => SelectedTrackConfiguration.SpecsPitboxes,
-                        v => SelectedTrackConfiguration.SpecsPitboxes = v);
+                var cfg = SelectedTrackConfiguration;
+                if (cfg == null) return;
+                RegisterSpec("length", AppStrings.TrackSpecs_Length_FormatTooltip, () => cfg.SpecsLength,
+                        v => cfg.SpecsLength = v);
+                RegisterSpec("width", AppStrings.TrackSpecs_Width_FormatTooltip, () => cfg.SpecsWidth,
+                        v => cfg.SpecsWidth = v);
+                RegisterSpec("pits", AppStrings.TrackSpecs_Pitboxes_FormatTooltip, () => cfg.SpecsPitboxes,
+                        v => cfg.SpecsPitboxes = v);
             }
 
             private DelegateCommand _manageSkinsCommand;

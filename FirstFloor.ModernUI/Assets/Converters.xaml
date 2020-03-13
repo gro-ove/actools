@@ -30,6 +30,7 @@
   <c:NullToBooleanConverter x:Key="NullToBooleanConverter" />
   <c:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
   <c:PercentageConverter x:Key="PercentageConverter" />
+  <c:LagToTimeEstimateConverter x:Key="LagToTimeEstimateConverter" />
   <c:ReadableTimeSpanConverter x:Key="ReadableTimeSpanConverter" />
   <c:SliderRoundConverter x:Key="SliderRoundConverter" />
   <c:SolidBrushToColorConverter x:Key="SolidBrushToColorConverter" />

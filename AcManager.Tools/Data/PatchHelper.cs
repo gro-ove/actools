@@ -26,6 +26,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeaturePovForButtons = "POV_FOR_BUTTONS";
         public static readonly string FeatureTrackDaySpeedLimit = "TRACK_DAY_SPEED_LIMIT";
         public static readonly string FeatureCustomBindingsJoystickModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
+        public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
 
         public static bool OptionPatchSupport = true;
 
@@ -157,44 +158,18 @@ namespace AcManager.Tools.Data {
         [CanBeNull]
         public static string GetInstalledVersion() {
             return GetManifest()["VERSION"].GetNonEmpty("SHADERS_PATCH");
-            // return _installed.Value?.Item1;
         }
 
         [CanBeNull]
         public static string GetInstalledBuild() {
             return GetManifest()["VERSION"].GetNonEmpty("SHADERS_PATCH_BUILD");
-            // return _installed.Value?.Item2;
         }
 
         public static void Reload() {
             _configs.Clear();
             _featureSupported.Clear();
             _installed.Reset();
-            ActionExtension.InvokeInMainThreadAsync(() => { Reloaded?.Invoke(null, EventArgs.Empty); });
+            ActionExtension.InvokeInMainThreadAsync(() => Reloaded?.Invoke(null, EventArgs.Empty));
         }
-
-        /*public static IUserPresetable Presets { get; } = new PatchPresets();
-
-        public class PatchPresets : IUserPresetable {
-            bool IUserPresetable.CanBeSaved => true;
-
-            string IUserPresetable.PresetableKey => "csp";
-
-            public PresetsCategory PresetableCategory { get; } = new PresetsCategory("Custom Shaders Patch Presets", ".zip");
-
-            public event EventHandler Changed;
-
-            public void ImportFromPresetData(string data) {
-            }
-
-            public string ExportToPresetData() {
-                var files = new DirectoryInfo(Path.Combine(GetRootDirectory(), "config")).GetFiles(".ini");
-                using (var stream = new MemoryStream())
-                using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
-
-                    // zip.AddString(key, JsonConvert.SerializeObject(data, Formatting.Indented));
-                }
-            }
-        }*/
     }
 }

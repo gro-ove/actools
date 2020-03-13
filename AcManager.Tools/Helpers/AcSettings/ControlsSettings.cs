@@ -80,6 +80,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 new KeyboardSpecificButtonEntry("LEFT", ToolsStrings.Controls_SteerLeft)
             }.Union(WheelGearsButtonEntries.Select(x => x.KeyboardButton)).ToArray();
 
+            KeyboardPatchButtonEntries = new[] {
+                new KeyboardSpecificButtonEntry("KEY_MODIFICATOR", "Forcing modifier", "__EXT_KEYBOARD_GAS_RAW"),
+                new KeyboardSpecificButtonEntry("KEY", "Forced throttle", "__EXT_KEYBOARD_GAS_RAW")
+            }.ToArray();
+
             #region Joystick entires
             ControllerCarExtraButtonEntries = new[] {
                 new ControllerButtonCombined("KERS", KeyboardButtonProvider, ToolsStrings.Controls_Kers),
@@ -274,6 +279,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
                     .Union(WheelHShifterButtonEntries)
                     .Union(KeyboardSpecificButtonEntries)
+                    .Union(KeyboardPatchButtonEntries)
                     .OfType<KeyboardButtonEntry>().First(x => x.Id == arg);
         }
 
@@ -1147,6 +1153,29 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }
+
+        private bool _keyboardPatchThrottleOverride;
+
+        public bool KeyboardPatchThrottleOverride {
+            get => _keyboardPatchThrottleOverride;
+            set => Apply(value, ref _keyboardPatchThrottleOverride);
+        }
+
+        private double _keyboardPatchThrottleLagUp;
+
+        public double KeyboardPatchThrottleLagUp {
+            get => _keyboardPatchThrottleLagUp;
+            set => Apply(value.Saturate(), ref _keyboardPatchThrottleLagUp);
+        }
+
+        private double _keyboardPatchThrottleLagDown;
+
+        public double KeyboardPatchThrottleLagDown {
+            get => _keyboardPatchThrottleLagDown;
+            set => Apply(value.Saturate(), ref _keyboardPatchThrottleLagDown);
+        }
+
+        public KeyboardButtonEntry[] KeyboardPatchButtonEntries { get; }
         #endregion
 
         #region Shaders Patch keys
@@ -1276,6 +1305,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 .Union(ControllerButtonEntries.Select(x => x.KeyboardButton))
                 .Union(ControllerButtonEntries.Select(x => x.ControllerButton))
                 .Union(KeyboardSpecificButtonEntries)
+                .Union(KeyboardPatchButtonEntries)
                 .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())
                 .Union(SystemButtonEntries.Select(x => x.WheelButton))
                 .Union(SystemButtonEntries.Select(x => x.WheelButtonModifier))
@@ -1440,6 +1470,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
             DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
             WheelSteerScale = Ini["STEER"].GetDouble("SCALE", 1d);
+            KeyboardPatchThrottleOverride = Ini["__EXT_KEYBOARD_GAS_RAW"].GetBool("OVERRIDE", false);
+            KeyboardPatchThrottleLagUp = Ini["__EXT_KEYBOARD_GAS_RAW"].GetDouble("LAG_UP", 0.5);
+            KeyboardPatchThrottleLagDown = Ini["__EXT_KEYBOARD_GAS_RAW"].GetDouble("LAG_DOWN", 0.2);
 
             foreach (var device in Devices.OfType<IDirectInputDevice>().Union(_placeholderDevices)) {
                 device.OriginalIniIds.Clear();
@@ -1509,6 +1542,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseSteering = section.GetBool("MOUSE_STEER", false);
             KeyboardMouseButtons = section.GetBool("MOUSE_ACCELERATOR_BRAKE", false);
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
+
+            section = Ini["__EXT_KEYBOARD_GAS_RAW"];
+            section.Set("OVERRIDE", KeyboardPatchThrottleOverride);
+            section.Set("LAG_UP", KeyboardPatchThrottleLagUp);
+            section.Set("LAG_DOWN", KeyboardPatchThrottleLagDown);
 
             section = Ini["X360"];
             ControllerSteeringStick = ControllerSticks.GetByIdOrDefault(section.GetNonEmpty("STEER_THUMB", ControllerSticks[0].Id));

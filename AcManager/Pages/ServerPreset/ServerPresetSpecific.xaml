@@ -250,7 +250,8 @@
                       <CheckBox IsChecked="{Binding WeatherFxCustomStartDate}" Width="121">
                         <Label Content="Specific date:" />
                       </CheckBox>
-                      <DatePicker IsEnabled="{Binding WeatherFxCustomStartDate}" SelectedDate="{Binding WeatherFxStartDate}" />
+                      <DatePicker IsEnabled="{Binding WeatherFxCustomStartDate}" SelectedDate="{Binding WeatherFxStartDate}"
+                          c:AcDateLimiter.After1970Only="True" />
                     </DockPanel>
 
                   </mui:SpacingStackPanel>
