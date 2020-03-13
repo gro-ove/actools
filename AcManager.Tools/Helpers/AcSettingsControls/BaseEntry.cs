@@ -23,8 +23,10 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         public bool IsWaiting {
             get => _isWaiting;
-            set => Apply(value, ref _isWaiting);
+            set => Apply(value, ref _isWaiting, OnIsWaitingChanged);
         }
+
+        protected virtual void OnIsWaitingChanged() { }
 
         public virtual EntryLayer Layer => EntryLayer.Basic;
 
@@ -39,14 +41,15 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                     Logging.Debug($"Set: {value?.DisplayName} (ID={value?.Id})");
                 }
 
+                OnInputArrived();
                 if (Equals(value, _input)) {
                     if (IsWaiting) IsWaiting = false;
                     return;
                 }
 
+                _input = value;
                 OnInputChanged(_input, value);
 
-                _input = value;
                 IsWaiting = false;
                 OnPropertyChanged();
 
@@ -58,6 +61,7 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
             return obj != null;
         }
 
+        public virtual void OnInputArrived() {}
         protected virtual void OnInputChanged([CanBeNull] T oldValue, [CanBeNull] T newValue) {}
 
         public abstract void Save(IniFile ini);

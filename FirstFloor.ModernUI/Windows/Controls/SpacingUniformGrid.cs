@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -87,10 +88,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             var childConstraint = new Size(
                     Math.Max(constraint.Width - _totalSpacingWidth, 0) / _columns,
                     double.PositiveInfinity);
-
+            var stackSizes = new List<double>();
             var maxChildDesiredWidth = 0d;
-            var summaryChildrenHeight = 0d;
-            var rowHeight = 0d;
+            var maxColumnHeight = 0d;
             var itemsInRow = 0;
 
             //  Measure each child, keeping track of maximum desired width and height.
@@ -101,22 +101,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 child.Measure(childConstraint);
                 var childDesiredSize = child.DesiredSize;
 
+                if (stackSizes.Count <= itemsInRow) {
+                    stackSizes.Add(0d);
+                }
+                stackSizes[itemsInRow] += childDesiredSize.Height + _verticalSpacing;
+                maxColumnHeight = Math.Max(maxColumnHeight, stackSizes[itemsInRow]);
+
                 if (maxChildDesiredWidth < childDesiredSize.Width) {
                     maxChildDesiredWidth = childDesiredSize.Width;
                 }
 
-                if (childDesiredSize.Height > rowHeight) {
-                    rowHeight = childDesiredSize.Height;
-                }
-
                 if (++itemsInRow == _columns) {
                     itemsInRow = 0;
-                    summaryChildrenHeight += rowHeight;
-                    rowHeight = 0d;
                 }
             }
 
-            return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, summaryChildrenHeight + _totalSpacingHeight);
+            return new Size(maxChildDesiredWidth * _columns + _totalSpacingWidth, maxColumnHeight);
         }
 
         private Size MeasureStackHorizontal(Size constraint) {
@@ -256,7 +256,36 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void ArrangeStackVertical(Size arrangeSize, UIElementCollection children) {
+            var stackSizes = new List<double>();
             var childBounds = new Rect(0, 0, Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns, 0);
+            var xStep = childBounds.Width + _horizontalSpacing;
+            var xBound = arrangeSize.Width - 1.0;
+
+            childBounds.X += xStep * FirstColumn;
+            var column = 0;
+            for (var i = 0; i < children.Count; i++) {
+                if (column >= stackSizes.Count) {
+                    stackSizes.Add(0d);
+                }
+
+                var child = children[i];
+                childBounds.Y = stackSizes[column];
+                childBounds.Height = child.DesiredSize.Height;
+                child.Arrange(childBounds);
+
+                if (child.Visibility != Visibility.Collapsed) {
+                    childBounds.X += xStep;
+                    stackSizes[column] += childBounds.Height + _verticalSpacing;
+                    if (childBounds.X >= xBound) {
+                        childBounds.X = 0;
+                        column = 0;
+                    } else {
+                        ++column;
+                    }
+                }
+            }
+
+            /*var childBounds = new Rect(0, 0, Math.Max(arrangeSize.Width - _totalSpacingWidth, 0) / _columns, 0);
             var xStep = childBounds.Width + _horizontalSpacing;
             var maxHeight = 0d;
             var xBound = arrangeSize.Width - 1.0;
@@ -281,7 +310,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         maxHeight = 0d;
                     }
                 }
-            }
+            }*/
         }
 
         private void ArrangeStackHorizontal(Size arrangeSize, UIElementCollection children) {

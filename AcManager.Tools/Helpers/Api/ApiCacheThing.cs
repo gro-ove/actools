@@ -90,10 +90,10 @@ namespace AcManager.Tools.Helpers.Api {
 
                 try {
                     var request = new HttpRequestMessage(HttpMethod.Get, url);
-
                     using (var timeout = new CancellationTokenSource(KunosApiProvider.OptionWebRequestTimeout))
                     using (var combined = CancellationTokenSource.CreateLinkedTokenSource(cancellation, timeout.Token))
-                    using (var response = await HttpClientHolder.Get().SendAsync(request, HttpCompletionOption.ResponseHeadersRead, combined.Token).ConfigureAwait(false)) {
+                    using (var response = await HttpClientHolder.Get().SendAsync(request,
+                            HttpCompletionOption.ResponseHeadersRead, combined.Token).ConfigureAwait(false)) {
                         byte[] data;
                         if (progress == null) {
                             data = await response.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
@@ -106,15 +106,17 @@ namespace AcManager.Tools.Helpers.Api {
                             }
                         }
 
-                        lock (_cache) {
-                            _cache[cacheKey] = Tuple.Create(data, DateTime.Now);
-                        }
+                        if (data.Length < 1e6) {
+                            lock (_cache) {
+                                _cache[cacheKey] = Tuple.Create(data, DateTime.Now);
+                            }
 
-                        if (actualAliveTime > TimeSpan.Zero) {
-                            try {
-                                File.WriteAllBytes(cacheFile.FullName, data);
-                            } catch (Exception e) {
-                                Logging.Warning(e);
+                            if (actualAliveTime > TimeSpan.Zero) {
+                                try {
+                                    File.WriteAllBytes(cacheFile.FullName, data);
+                                } catch (Exception e) {
+                                    Logging.Warning(e);
+                                }
                             }
                         }
 

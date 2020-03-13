@@ -2,53 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Presentation;
-using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 using StringBasedFilter;
 using StringBasedFilter.Parsing;
 using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Objects {
-    public class PythonAppReferencedValue<T> : NotifyPropertyChanged where T : struct {
-        [CanBeNull]
-        private readonly string _referenceKey;
-
-        public PythonAppReferencedValue(T value) {
-            Value = value;
-        }
-
-        public PythonAppReferencedValue([NotNull] string referenceKey) {
-            _referenceKey = referenceKey;
-        }
-
-        public T Value { get; private set; }
-
-        public bool Refresh([NotNull] IPythonAppConfigValueProvider provider) {
-            if (_referenceKey == null) return false;
-
-            var value = provider.Get(_referenceKey).As(default(T));
-            if (Equals(value, Value)) return false;
-
-            Value = value;
-            OnPropertyChanged(nameof(Value));
-            return true;
-        }
-
-        public static PythonAppReferencedValue<T> Parse(string value) {
-            if (value.Length > 1 && (value[0] == '\'' || value[0] == '"' || value[0] == '`'
-                    || value[0] == '“' || value[0] == '”' || value[0] == '_' || char.IsLetter(value[0]))) {
-                return new PythonAppReferencedValue<T>(value.Trim(' ', '\t', '\n', '\r', '"', '\'', '`', '“', '”'));
-            }
-            return new PythonAppReferencedValue<T>(value.As<T>());
-        }
-    }
-
-    public class PythonAppConfigValue : Displayable, IWithId {
+    public class PythonAppConfigValue : Displayable, IPythonAppConfigValue {
         public string OriginalKey { get; private set; }
 
         string IWithId<string>.Id => OriginalKey;
@@ -83,6 +49,13 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _isEnabled);
         }
 
+        private bool _isNew;
+
+        public bool IsNew {
+            get => _isNew;
+            set => Apply(value, ref _isNew);
+        }
+
         public string FilesRelativeDirectory { get; private set; }
 
         private static readonly Regex ValueCommentaryRegex = new Regex(@"^([^(;]*)(?:\(([^)]+)\))?(?:;(.*))?", RegexOptions.Compiled);
@@ -112,10 +85,16 @@ namespace AcManager.Tools.Objects {
         private static readonly Regex DependentRegex = new Regex(@"^(?:(.+);)?\s*(?:(not available)|(only)) with (.+)",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+        private static readonly Regex IsNewRegex = new Regex(@"^(?:(.+);)?\s*new\b",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
         private static readonly Regex DisabledRegex = new Regex(@"^(?:0|off|disabled|false|no|none)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         private static readonly Regex FileRegex = new Regex(@"^(local\s+)?(?:(dir|directory|folder|path)|(?:file|filename)(?:\s+\((.+)\))?$)",
+                RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+        private static readonly Regex PluginRegex = new Regex(@"^look for (\S+) in (\S+)$",
                 RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         internal class CustomBooleanTestEntry : ITestEntry {
@@ -152,17 +131,22 @@ namespace AcManager.Tools.Objects {
 
         private string _originalValue;
 
-        private void Set(string key, string value, [NotNull] string name, [CanBeNull] string toolTip, Func<IPythonAppConfigValueProvider, bool> isEnabledTest,
-                string originalValue) {
+        public void Set(string key, string value, string name, string toolTip,
+                Func<IPythonAppConfigValueProvider, bool> isEnabledTest, bool isNew, string originalValue) {
             OriginalKey = key;
             DisplayName = name;
             ToolTip = toolTip ?? key;
             Value = value;
             IsEnabledTest = isEnabledTest;
+            IsNew = isNew;
             _originalValue = originalValue;
             _resetCommand?.RaiseCanExecuteChanged();
             IsResettable = _originalValue != null;
             OnValueChanged();
+        }
+
+        public virtual void SetFilesRelativeDirectory(string directory) {
+            FilesRelativeDirectory = directory;
         }
 
         public bool IsChanged => _originalValue != Value;
@@ -182,23 +166,23 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _resetCommand;
 
-        public DelegateCommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(Reset, () => _originalValue != null));
+        public ICommand ResetCommand => _resetCommand ?? (_resetCommand = new DelegateCommand(Reset, () => _originalValue != null));
 
         [CanBeNull]
-        public static PythonAppConfigValue Create([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, string> pair, [CanBeNull] string commentary,
+        public static IPythonAppConfigValue Create([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, string> pair, [CanBeNull] string commentary,
                 [CanBeNull] string actualValue, bool isResetable) {
             string name = null, toolTip = null;
             Func<IPythonAppConfigValueProvider, bool> isEnabledTest = null;
-            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest);
+            var isNew = false;
+            var result = CreateInner(pair, commentary, ref name, ref toolTip, ref isEnabledTest, ref isNew);
             if (result == null) return null;
-
-            result.FilesRelativeDirectory = configParams.FilesRelativeDirectory;
 
             if (string.IsNullOrEmpty(name)) {
                 name = PythonAppConfig.ConvertKeyToName(pair.Key);
             }
 
-            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest, isResetable ? pair.Value : null);
+            result.SetFilesRelativeDirectory(configParams.FilesRelativeDirectory);
+            result.Set(pair.Key, actualValue ?? pair.Value, name, toolTip, isEnabledTest, isNew, isResetable ? pair.Value : null);
             return result;
         }
 
@@ -255,8 +239,8 @@ namespace AcManager.Tools.Objects {
         }
 
         [CanBeNull]
-        private static PythonAppConfigValue CreateInner(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] ref string name,
-                [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest) {
+        private static IPythonAppConfigValue CreateInner(KeyValuePair<string, string> pair, [CanBeNull] string commentary, [CanBeNull] ref string name,
+                [CanBeNull] ref string toolTip, [CanBeNull] ref Func<IPythonAppConfigValueProvider, bool> isEnabledTest, ref bool isNew) {
             var value = pair.Value;
             if (commentary != null) {
                 var match = ValueCommentaryRegex.Match(commentary);
@@ -273,12 +257,20 @@ namespace AcManager.Tools.Objects {
 
                     if (match.Groups[3].Success) {
                         var description = match.Groups[3].Value.Trim().WrapQuoted(out var unwrap);
-                        if (description == "hidden") return null;
+                        if (description == "hidden") {
+                            return null;
+                        }
 
                         var dependent = DependentRegex.Match(description);
                         if (dependent.Success) {
                             description = dependent.Groups[1].Value;
                             isEnabledTest = CreateDisabledFunc(dependent.Groups[4].Value.Trim(), dependent.Groups[2].Success, unwrap);
+                        }
+
+                        var isNewMatch = IsNewRegex.Match(description);
+                        if (isNewMatch.Success) {
+                            description = isNewMatch.Groups[1].Value;
+                            isNew = true;
                         }
 
                         if (NumberRegex.IsMatch(description)) {
@@ -313,6 +305,11 @@ namespace AcManager.Tools.Objects {
                         if (file.Success) {
                             return new PythonAppConfigFileValue(file.Groups[2].Success, !file.Groups[1].Success,
                                     file.Groups[3].Success ? unwrap(file.Groups[3].Value) : null);
+                        }
+
+                        var plugin = PluginRegex.Match(description);
+                        if (plugin.Success) {
+                            return new PythonAppConfigPluginValue(plugin.Groups[2].Value, plugin.Groups[1].Value);
                         }
 
                         if (description.IndexOf(',') != -1) {

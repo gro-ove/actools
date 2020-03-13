@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
-using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.Pages.Windows;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters.Testers;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using FirstFloor.ModernUI.Helpers;

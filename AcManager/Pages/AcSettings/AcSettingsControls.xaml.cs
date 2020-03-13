@@ -48,7 +48,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private void ResizingStuff() {
-            DetectedControllers.Visibility = ActualWidth > 640 ? Visibility.Visible : Visibility.Collapsed;
+            DetectedControllers.Visibility = ActualWidth > 800 ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -172,7 +172,15 @@ namespace AcManager.Pages.AcSettings {
         private void OnUnloaded(object sender, RoutedEventArgs e) { }
 
         private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
-            switch (e.Key) {
+            // Logging.Write("KEY: " + e.Key + ", i=" + (int)e.Key);
+            // Logging.Write("SKEY: " + e.SystemKey + ", i=" + (int)e.SystemKey);
+
+            var key = e.Key;
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Alt && key == Key.System) {
+                key = e.SystemKey;
+            }
+
+            switch (key) {
                 case Key.Escape:
                 case Key.Back:
                 case Key.Enter:
@@ -188,7 +196,7 @@ namespace AcManager.Pages.AcSettings {
                     break;
 
                 default:
-                    if (AcSettingsHolder.Controls.AssignKey(e.Key)) {
+                    if (AcSettingsHolder.Controls.AssignKey(key)) {
                         e.Handled = true;
                     }
                     break;

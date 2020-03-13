@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows;
-using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Filters.Testers;
+using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Objects;
 using AcTools.Utils.Helpers;

@@ -25,6 +25,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureDynamicShadowResolution = "DYNAMIC_SHADOWS_RESOLUTION";
         public static readonly string FeaturePovForButtons = "POV_FOR_BUTTONS";
         public static readonly string FeatureTrackDaySpeedLimit = "TRACK_DAY_SPEED_LIMIT";
+        public static readonly string FeatureCustomBindingsJoystickModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
 
         public static bool OptionPatchSupport = true;
 
@@ -107,7 +108,8 @@ namespace AcManager.Tools.Data {
                     : config[sectionKey[0].Trim()].GetPossiblyEmpty(sectionKey.Length == 2 ? sectionKey[1].Trim() : @"ENABLED") == keyValue[1].Trim());
         }
 
-        public static bool IsFeatureSupported([NotNull] string featureId) {
+        public static bool IsFeatureSupported([CanBeNull] string featureId) {
+            if (string.IsNullOrWhiteSpace(featureId)) return true;
             return _featureSupported.GetValueOrSet(featureId, () => {
                 if (GetInstalledVersion() == null || !GetConfig("general.ini")["BASIC"].GetBool("ENABLED", true)) return false;
                 var query = GetManifest()["FEATURES"].GetNonEmpty(featureId);
@@ -170,5 +172,29 @@ namespace AcManager.Tools.Data {
             _installed.Reset();
             ActionExtension.InvokeInMainThreadAsync(() => { Reloaded?.Invoke(null, EventArgs.Empty); });
         }
+
+        /*public static IUserPresetable Presets { get; } = new PatchPresets();
+
+        public class PatchPresets : IUserPresetable {
+            bool IUserPresetable.CanBeSaved => true;
+
+            string IUserPresetable.PresetableKey => "csp";
+
+            public PresetsCategory PresetableCategory { get; } = new PresetsCategory("Custom Shaders Patch Presets", ".zip");
+
+            public event EventHandler Changed;
+
+            public void ImportFromPresetData(string data) {
+            }
+
+            public string ExportToPresetData() {
+                var files = new DirectoryInfo(Path.Combine(GetRootDirectory(), "config")).GetFiles(".ini");
+                using (var stream = new MemoryStream())
+                using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, true)) {
+
+                    // zip.AddString(key, JsonConvert.SerializeObject(data, Formatting.Indented));
+                }
+            }
+        }*/
     }
 }

@@ -32,8 +32,13 @@
       <mui:BbCodeBlock
           Text="Custom Shaders Patch is specially prepared DLL file, which, when placed in AC root folder, adds new features such as dynamic lighting, 24h day, new physics features, various optimizations and a lot more. Most of it is split into extensions you can turn on and off, and configure them to fit your needs."
           DockPanel.Dock="Top" Margin="0 20 0 0" TextWrapping="Wrap" />
-      <mui:BbCodeBlock Text="[url=&quot;https://acstuff.ru/patch/&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
-          Margin="0 8 0 0" TextWrapping="Wrap" />
+      <WrapPanel Orientation="Horizontal" Margin="0 8 0 0">
+        <mui:BbCodeBlock Text="[url=&quot;https://acstuff.ru/patch/&quot;]More details &amp; list of features[/url]" DockPanel.Dock="Top"
+            TextWrapping="Wrap" />
+        <Line X1=".5" Y1="3" X2=".5" Y2="12" Margin="5 0" VerticalAlignment="Center" Stroke="{DynamicResource SeparatorBackground}" />
+        <mui:BbCodeBlock Text="[url=&quot;/Pages/ShadersPatch/ShadersCredits.xaml&quot;]Credits[/url]" DockPanel.Dock="Top"
+            TextWrapping="Wrap" />
+      </WrapPanel>
     </DockPanel>
 
     <mui:Cell Grid.Row="1" DataContext="{Binding Source={x:Static t:PatchUpdater.Instance}}">

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
@@ -33,7 +34,7 @@ namespace AcManager.Tools.Helpers {
 
         [Localizable(false)]
         public static void ViewDirectory([NotNull] string directory) {
-            ProcessExtension.Start(@"explorer", new [] { directory });
+            ProcessExtension.Start(@"explorer", new [] { FileUtils.NormalizePath(directory) });
         }
 
         [Localizable(false)]

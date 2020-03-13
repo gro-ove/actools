@@ -240,6 +240,7 @@
     <Compile Include="ContentInstallation\Entries\CustomFolderEntry.cs" />
     <Compile Include="ContentInstallation\Entries\ExtraEntries.cs" />
     <Compile Include="ContentInstallation\Entries\GenericModConfigEntry.cs" />
+    <Compile Include="ContentInstallation\Entries\PatchPluginEntry.cs" />
     <Compile Include="ContentInstallation\Entries\ShadersPatchEntry.cs" />
     <Compile Include="ContentInstallation\Implementations\DirectoryContentInstallator.cs" />
     <Compile Include="ContentInstallation\Implementations\SevenZipContentInstallator.cs" />
@@ -354,6 +355,7 @@
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\CustomButtonEntry.cs" />
+    <Compile Include="Helpers\AcSettingsControls\CustomButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntry.cs" />
     <Compile Include="Helpers\AcSettingsControls\SystemButtonEntryCombined.cs" />
     <Compile Include="Helpers\AcSettingsControls\WheelButtonAltEntry.cs" />
@@ -378,10 +380,13 @@
     <Compile Include="Helpers\Api\TheSetupMarket\TheSetupMarketApiProvider.cs" />
     <Compile Include="Helpers\AudioDevice.cs" />
     <Compile Include="Helpers\AudioDevices.cs" />
+    <Compile Include="Helpers\BatchAction.cs" />
     <Compile Include="Helpers\BeepingNoise.cs" />
     <Compile Include="Helpers\CamberExtravaganzaHelper.cs" />
+    <Compile Include="Helpers\CommonBatchActions.cs" />
     <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDeviceUtils.cs" />
+    <Compile Include="Helpers\DirectInput\KeyHelper.cs" />
     <Compile Include="Helpers\FaviconProvider.cs" />
     <Compile Include="Helpers\LazierCached.cs" />
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
@@ -389,6 +394,7 @@
     <Compile Include="Helpers\Loaders\LongenerLoader.cs" />
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
+    <Compile Include="Helpers\PackedDescription.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />
@@ -568,6 +574,7 @@
     <Compile Include="Objects\CarSkinComparer.cs" />
     <Compile Include="Objects\FontObjectBitmap.cs" />
     <Compile Include="Objects\ICarSetupObject.cs" />
+    <Compile Include="Objects\IPythonAppConfigValue.cs" />
     <Compile Include="Objects\IPythonAppConfigValueProvider.cs" />
     <Compile Include="Objects\PythonAppConfig.cs" />
     <Compile Include="Objects\PythonAppConfigBoolValue.cs" />
@@ -575,10 +582,15 @@
     <Compile Include="Objects\PythonAppConfigKeyValue.cs" />
     <Compile Include="Objects\PythonAppConfigNumberValue.cs" />
     <Compile Include="Objects\PythonAppConfigOptionsValue.cs" />
+    <Compile Include="Objects\PythonAppConfigParams.cs" />
+    <Compile Include="Objects\PythonAppConfigPluginInfo.cs" />
+    <Compile Include="Objects\PythonAppConfigPluginValue.cs" />
+    <Compile Include="Objects\PythonAppConfigProvider.cs" />
     <Compile Include="Objects\PythonAppConfigRangeValue.cs" />
     <Compile Include="Objects\PythonAppConfigs.cs" />
     <Compile Include="Objects\PythonAppConfigSection.cs" />
     <Compile Include="Objects\PythonAppConfigValue.cs" />
+    <Compile Include="Objects\PythonAppReferencedValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
     <Compile Include="Objects\RemoteCarSetupObject.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />

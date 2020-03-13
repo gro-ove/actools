@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,19 +6,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.ContentInstallation.Installators;
 using AcManager.Tools.Managers;
+using AcTools.DataFile;
 using AcTools.Utils;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.ContentInstallation.Entries {
-    public class CustomFolderEntry : ContentEntryBase {
-        private readonly string _relativeDestination;
+    public class PatchPluginEntry : ContentEntryBase {
+        private readonly string _destination;
         private readonly List<string> _toInstall;
 
-        public CustomFolderEntry([NotNull] string path, IEnumerable<string> items, string name, string relativeDestination, double priority = 10d,
+        public PatchPluginEntry([NotNull] string path, IEnumerable<string> items, string name, string destination, double priority = 10d,
                 string version = null, string description = null)
                 : base(path, "", name, version, null, description) {
-            _relativeDestination = relativeDestination;
+            _destination = destination;
             _toInstall = items.ToList();
             Priority = priority;
         }
@@ -28,7 +29,7 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         protected sealed override bool GenericModSupportedByDesign => false;
         public override string GenericModTypeName => Name;
         public override string NewFormat => Name;
-        public override string ExistingFormat => $"Update for {Name.ToSentenceMember()}";
+        public override string ExistingFormat => $"Update for {(Name.StartsWith("Weather FX") ? Name : Name.ToSentenceMember())}";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
             yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst, false);
@@ -64,12 +65,15 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         }
 
         private string InstallTo() {
-            return Path.Combine(AcRootDirectory.Instance.RequireValue, _relativeDestination);
+            return Path.Combine(AcRootDirectory.Instance.RequireValue, _destination);
         }
 
         protected override Task<Tuple<string, string>> GetExistingNameAndVersionAsync() {
             if (FileUtils.Exists(InstallTo())) {
-                return Task.FromResult(Tuple.Create(Name, (string)null));
+                return Task.Run(() => {
+                    var cfg = new IniFile(Path.Combine(_destination, "manifest.ini"))["ABOUT"];
+                    return Tuple.Create(cfg.GetNonEmpty("NAME", Name), cfg.GetNonEmpty("VERSION"));
+                });
             }
             return Task.FromResult<Tuple<string, string>>(null);
         }

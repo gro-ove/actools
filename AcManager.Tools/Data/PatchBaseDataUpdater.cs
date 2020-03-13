@@ -141,6 +141,7 @@ namespace AcManager.Tools.Data {
                 throw new InformativeException($"Can’t load piece of patch data “{Id}”");
             }
 
+
             if (IsToUnzip) {
                 using (var stream = new MemoryStream(data, false))
                 using (var archive = new ZipArchive(stream)) {
@@ -149,23 +150,27 @@ namespace AcManager.Tools.Data {
                     }
 
                     var destination = Parent.GetDestinationDirectory();
-                    foreach (var entry in archive.Entries) {
-                        if (!FilterEntry(entry)) {
-                            Logging.Error("Skipping invalid entry: " + entry.FullName);
-                            continue;
-                        }
+                    await Task.Run(() => {
+                        foreach (var entry in archive.Entries) {
+                            if (!FilterEntry(entry)) {
+                                Logging.Error("Skipping invalid entry: " + entry.FullName);
+                                continue;
+                            }
 
-                        var fullPath = Path.GetFullPath(Path.Combine(destination, entry.FullName));
-                        if (Path.GetFileName(fullPath).Length == 0) continue;
-                        Directory.CreateDirectory(Path.GetDirectoryName(fullPath) ?? "");
-                        entry.ExtractToFile(fullPath, true);
-                    }
+                            var fullPath = Path.GetFullPath(Path.Combine(destination, entry.FullName));
+                            if (Path.GetFileName(fullPath).Length == 0) continue;
+                            Directory.CreateDirectory(Path.GetDirectoryName(fullPath) ?? "");
+                            entry.ExtractToFile(fullPath, true);
+                        }
+                    });
                 }
             } else {
                 var destination = GetDestinationFilename();
                 if (destination != null) {
-                    Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
-                    File.WriteAllBytes(destination, data);
+                    await Task.Run(() => {
+                        Directory.CreateDirectory(Path.GetDirectoryName(destination) ?? "");
+                        File.WriteAllBytes(destination, data);
+                    });
                 }
             }
 
@@ -439,7 +444,7 @@ namespace AcManager.Tools.Data {
         }
 
         public Task TriggerAutoLoadAsync([CanBeNull] string id, IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
-            if (!PatchHelper.OptionPatchSupport) return Task.Delay(0);
+            if (!PatchHelper.OptionPatchSupport || cancellation.IsCancellationRequested) return Task.Delay(0);
 
             Logging.Debug($"Auto-loading stuff for “{id}” from {Title.ToSentenceMember()} list");
             if (!InstallAutomatically.Value || string.IsNullOrWhiteSpace(id)) return Task.Delay(0);

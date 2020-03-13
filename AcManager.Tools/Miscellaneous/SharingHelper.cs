@@ -68,7 +68,10 @@ namespace AcManager.Tools.Miscellaneous {
         Results,
 
         [LocalizedDescription(nameof(ToolsStrings.Shared_Weather))]
-        Weather
+        Weather,
+
+        [Description("Custom Shaders Patch settings")]
+        CspSettings,
     }
 
     public class SharedEntry : NotifyPropertyChanged {
@@ -124,7 +127,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
     }
 
-    public class SharedMetadata : Dictionary<string, string> {}
+    public class SharedMetadata : Dictionary<string, string> { }
 
     public class SharingHelper : NotifyPropertyChanged {
         public static SharingHelper Instance { get; private set; }
@@ -140,6 +143,7 @@ namespace AcManager.Tools.Miscellaneous {
                 case SharedEntryType.ControlsPreset:
                 case SharedEntryType.ForceFeedbackPreset:
                 case SharedEntryType.PpFilter:
+                case SharedEntryType.CspSettings:
                     return @".ini";
 
                 case SharedEntryType.QuickDrivePreset:
@@ -220,7 +224,8 @@ namespace AcManager.Tools.Miscellaneous {
             try {
                 entryType = (SharedEntryType)Enum.Parse(typeof(SharedEntryType), loaded.EntryType);
             } catch (Exception) {
-                NonfatalError.Notify(string.Format(ToolsStrings.SharingHelper_NotSupported, loaded.EntryType), ToolsStrings.SharingHelper_NotSupported_Commentary);
+                NonfatalError.Notify(string.Format(ToolsStrings.SharingHelper_NotSupported, loaded.EntryType),
+                        ToolsStrings.SharingHelper_NotSupported_Commentary);
                 Logging.Warning("Unsupported entry type: " + loaded.EntryType);
                 return null;
             }
@@ -266,7 +271,8 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         [ItemCanBeNull]
-        public static async Task<string> ShareAsync(SharedEntryType type, string name, string target, byte[] data, string customId = null, CancellationToken cancellation = default) {
+        public static async Task<string> ShareAsync(SharedEntryType type, string name, string target, byte[] data, string customId = null,
+                CancellationToken cancellation = default) {
             var authorName = SettingsHolder.Sharing.ShareAnonymously ? null : SettingsHolder.Sharing.SharingName;
             var result = await InternalUtils.ShareEntryAsync(type.ToString(), name, target, authorName, data, CmApiProvider.UserAgent, customId, cancellation);
             if (result == null || cancellation.IsCancellationRequested) {

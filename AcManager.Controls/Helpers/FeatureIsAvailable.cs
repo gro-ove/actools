@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Controls;
 using AcManager.Tools.Data;
 
 namespace AcManager.Controls.Helpers {
@@ -15,8 +16,16 @@ namespace AcManager.Controls.Helpers {
                 typeof(FeatureIsAvailable), new UIPropertyMetadata(OnFeatureChanged));
 
         private static void OnFeatureChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
-            if (d is FrameworkElement element && e.NewValue is string id) {
-                element.Visibility = string.IsNullOrWhiteSpace(id) || PatchHelper.IsFeatureSupported(id) ? Visibility.Visible : Visibility.Collapsed;
+            if (!(e.NewValue is string id) || PatchHelper.IsFeatureSupported(id)) return;
+            switch (d) {
+                case ColumnDefinition element: {
+                    element.Width = new GridLength(0d);
+                    element.MinWidth = 0d;
+                    break;
+                }
+                case FrameworkElement element:
+                    element.Visibility = Visibility.Collapsed;
+                    break;
             }
         }
     }

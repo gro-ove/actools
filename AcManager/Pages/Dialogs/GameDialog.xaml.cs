@@ -148,8 +148,10 @@ namespace AcManager.Pages.Dialogs {
             }
         }
 
-        public void OnProgress(string progress) {
-            Model.WaitingStatus = progress;
+        public void OnProgress(string message, AsyncProgressEntry? subProgress = null, Action subCancellationCallback = null) {
+            Model.WaitingStatus = message;
+            Model.WaitingProgress = subProgress ?? AsyncProgressEntry.Ready;
+            Model.SubCancellationCallback = subCancellationCallback;
         }
 
         public void OnProgress(Game.ProgressState progress) {
@@ -774,6 +776,27 @@ namespace AcManager.Pages.Dialogs {
                 get => _waitingStatus;
                 set => Apply(value, ref _waitingStatus);
             }
+
+            private AsyncProgressEntry _waitingProgress;
+
+            public AsyncProgressEntry WaitingProgress {
+                get => _waitingProgress;
+                set => Apply(value, ref _waitingProgress);
+            }
+
+            private Action _subCancellationCallback;
+
+            public Action SubCancellationCallback {
+                get => _subCancellationCallback;
+                set => Apply(value, ref _subCancellationCallback, () => _subCancelCommand?.RaiseCanExecuteChanged());
+            }
+
+            private DelegateCommand _subCancelCommand;
+
+            public DelegateCommand SubCancelCommand => _subCancelCommand ?? (_subCancelCommand = new DelegateCommand(() => {
+                SubCancellationCallback?.InvokeInMainThreadAsync();
+                SubCancellationCallback = null;
+            }, () => SubCancellationCallback != null));
 
             private string _errorMessage;
 

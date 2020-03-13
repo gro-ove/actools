@@ -36,7 +36,7 @@ namespace AcManager.Pages.Settings {
             }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
 
             InitializeComponent();
-            DataContext = new SettingsShadersPatch.ViewModel(true);
+            DataContext = SettingsShadersPatch.ViewModel.Create().SetupWatcher();
             Model.PropertyChanged += OnModelPropertyChanged;
             SetKeyboardInputs();
             UpdateConfigsTabs();

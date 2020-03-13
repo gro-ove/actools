@@ -85,6 +85,17 @@
     <StackPanel mui:Switch.When="{x:Static di:GameDialog+ViewModel+State.Waiting}" VerticalAlignment="Center" HorizontalAlignment="Center">
       <mui:ModernProgressRing Margin="8" IsActive="True" Width="80" Height="80" x:Name="ProgressRing" Effect="{DynamicResource GameLoadingAnimationEffect}" />
       <TextBlock Text="{Binding WaitingStatus}" TextAlignment="Center" />
+      <Border Height="40" Width="400" Margin="0 20 0 0">
+        <DockPanel VerticalAlignment="Top"
+            Visibility="{Binding WaitingProgress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+          <Button Content="Skip" Command="{Binding SubCancelCommand}" DockPanel.Dock="Right" Margin="8 0 0 0"
+              Visibility="{Binding SubCancellationCallback, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}" />
+          <TextBlock Text="{Binding WaitingProgress.Message}" TextAlignment="Left" DockPanel.Dock="Top" Style="{StaticResource Small}"
+              TextTrimming="WordEllipsis" />
+          <ProgressBar Height="4" Value="{Binding WaitingProgress.Progress, Mode=OneWay}" IsIndeterminate="{Binding WaitingProgress.IsIndeterminate}"
+              Margin="0 4 0 0" VerticalAlignment="Bottom" Maximum="1" Minimum="0" />
+        </DockPanel>
+      </Border>
     </StackPanel>
 
     <!-- Cancelled (AC might crashed) -->

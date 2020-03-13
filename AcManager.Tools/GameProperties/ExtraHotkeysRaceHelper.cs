@@ -143,7 +143,7 @@ namespace AcManager.Tools.GameProperties {
             private void ShowHoldDialog() {
                 if (!ShowDelay) return;
 
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                Application.Current.Dispatcher?.InvokeAsync(() => {
                     _textBlock = new TextBlock {
                         Text = $"Hold to {DelayedName.ToSentenceMember()}…",
                         Style = (Style)Application.Current.Resources["Title"],
@@ -266,7 +266,7 @@ namespace AcManager.Tools.GameProperties {
                 _textBlock = null;
                 CompositionTargetEx.Rendering -= OnRendering;
 
-                Application.Current.Dispatcher.InvokeAsync(async () => {
+                Application.Current.Dispatcher?.InvokeAsync(async () => {
                     var d = new Duration(TimeSpan.FromSeconds(0.12));
                     progress.Value = 1d;
                     progress.Foreground.BeginAnimation(SolidColorBrush.ColorProperty, new ColorAnimation((Color)Application.Current.Resources["GoColor"], d));
@@ -290,7 +290,7 @@ namespace AcManager.Tools.GameProperties {
                 _textBlock = null;
                 CompositionTargetEx.Rendering -= OnRendering;
 
-                Application.Current.Dispatcher.InvokeAsync(() => {
+                Application.Current.Dispatcher?.InvokeAsync(() => {
                     try {
                         dialog.Close();
                     } catch (Exception e) {
@@ -453,9 +453,11 @@ namespace AcManager.Tools.GameProperties {
             private IKeyboardListener _keyboard;
 
             private struct JoyKey {
-                public JoyKey(int joy, int button) {
+                public JoyKey(int joy, int button, int? joyModifier, int? buttonModifier) {
                     Joy = joy;
                     Button = button;
+                    JoyModifier = joyModifier < 0 ? null : joyModifier;
+                    ButtonModifier = buttonModifier < 0 ? null : buttonModifier;
                     Pov = null;
                     Direction = DirectInputPovDirection.Up;
                 }
@@ -463,17 +465,23 @@ namespace AcManager.Tools.GameProperties {
                 public JoyKey(int joy, int pov, DirectInputPovDirection direction) {
                     Joy = joy;
                     Button = null;
+                    JoyModifier = null;
+                    ButtonModifier = null;
                     Pov = pov;
                     Direction = direction;
                 }
 
                 public readonly int Joy;
+                public readonly int? JoyModifier;
                 public readonly int? Button;
+                public readonly int? ButtonModifier;
                 public readonly int? Pov;
                 public readonly DirectInputPovDirection Direction;
 
                 public bool Equals(JoyKey other) {
-                    return Joy == other.Joy && Button == other.Button && Pov == other.Pov && Direction == other.Direction;
+                    return Joy == other.Joy && Button == other.Button
+                            && JoyModifier == other.JoyModifier && ButtonModifier == other.ButtonModifier
+                            && Pov == other.Pov && Direction == other.Direction;
                 }
 
                 public override bool Equals(object obj) {
@@ -484,6 +492,8 @@ namespace AcManager.Tools.GameProperties {
                     unchecked {
                         var hashCode = Joy;
                         hashCode = (hashCode * 397) ^ Button.GetHashCode();
+                        hashCode = (hashCode * 397) ^ JoyModifier.GetHashCode();
+                        hashCode = (hashCode * 397) ^ ButtonModifier.GetHashCode();
                         hashCode = (hashCode * 397) ^ Pov.GetHashCode();
                         hashCode = (hashCode * 397) ^ (int)Direction;
                         return hashCode;
@@ -491,7 +501,7 @@ namespace AcManager.Tools.GameProperties {
                 }
 
                 public override string ToString() {
-                    return $"(Joy={Joy}, Button={Button ?? -1}, Pov={Pov ?? -1})";
+                    return $"(Joy={Joy}, Button={Button ?? -1}, Joy M.={JoyModifier ?? -1}, Button M.={ButtonModifier ?? -1}, Pov={Pov ?? -1})";
                 }
             }
 
@@ -536,8 +546,8 @@ namespace AcManager.Tools.GameProperties {
                         continue;
                     }
 
-                    var joyKey = button != -1 ? new JoyKey(joy, button) : new JoyKey(joy, pov, povDirection);
-                    joyToCommand[joyKey] = new HotkeyJoyCommand(/*Keys.RControlKey,*/ (Keys)key) {
+                    var joyKey = button != -1 ? new JoyKey(joy, button, null, null) : new JoyKey(joy, pov, povDirection);
+                    joyToCommand[joyKey] = new HotkeyJoyCommand( /*Keys.RControlKey,*/ (Keys)key) {
                         MinInterval = delay,
                         DelayedName = null
                     };
@@ -557,7 +567,9 @@ namespace AcManager.Tools.GameProperties {
                     if (isExtra && c.IsAvailableTest?.Invoke() == false) continue;
 
                     var joy = section.GetInt("JOY", -1);
+                    var joyModifier = section.GetInt("JOY_MODIFICATOR", -1);
                     var button = section.GetInt("BUTTON", -1);
+                    var buttonModifier = section.GetInt("BUTTON_MODIFICATOR", -1);
                     var pov = section.GetInt("__CM_POV", -1);
                     var povDirection = section.GetIntEnum("__CM_POV_DIR", DirectInputPovDirection.Up);
                     var key = section.GetInt("KEY", -1);
@@ -576,7 +588,7 @@ namespace AcManager.Tools.GameProperties {
                         continue;
                     }
 
-                    var joyKey = button != -1 ? new JoyKey(joy, button) : new JoyKey(joy, pov, povDirection);
+                    var joyKey = button != -1 ? new JoyKey(joy, button, joyModifier, buttonModifier) : new JoyKey(joy, pov, povDirection);
                     if (isExtra) {
                         c.ConsiderControlsIni(ini);
                     } else if (key != -1) {
@@ -624,14 +636,35 @@ namespace AcManager.Tools.GameProperties {
 
             private bool? _running;
 
+            private class JoystickHolder {
+                [NotNull]
+                public Joystick Device { get; }
+
+                [CanBeNull]
+                public JoystickState State;
+
+                public JoystickHolder(Joystick j) {
+                    Device = j;
+                }
+            }
+
             private async void Start() {
                 if (_running == null) {
                     _running = true;
                 }
 
                 var joysticks = await DirectInputScanner.GetAsync();
-                var joystickCommands = joysticks == null ? null : _joyToCommand?.GroupBy(x => x.Key.Joy).Select(x =>
-                        Tuple.Create(joysticks.ElementAtOrDefault(x.Key), x.ToArray())).Where(x => x.Item1 != null).ToList();
+                var usedJoysticks = _joyToCommand?
+                        .GroupBy(x => x.Key.Joy)
+                        .Select(x => new {
+                            Id = x.Key,
+                            Joystick = new JoystickHolder(joysticks?.ElementAtOrDefault(x.Key))
+                        })
+                        .Where(x => x.Joystick != null)
+                        .ToDictionary(x => x.Id, x => x.Joystick);
+                var joystickCommands = _joyToCommand?
+                        .Where(x => usedJoysticks?.ContainsKey(x.Key.Joy) == true)
+                        .ToList();
 
 #if DEBUG
                 var s = new Stopwatch();
@@ -641,7 +674,7 @@ namespace AcManager.Tools.GameProperties {
                 while (_running == true) {
 #if DEBUG
                     s.Start();
-                    OnTick(joystickCommands);
+                    OnTick(usedJoysticks, joystickCommands);
                     s.Stop();
 #else
                     OnTick(joystickCommands);
@@ -658,28 +691,31 @@ namespace AcManager.Tools.GameProperties {
                 }
             }
 
-            private void OnTick(List<Tuple<Joystick, KeyValuePair<JoyKey, JoyCommandBase>[]>> devices) {
-                if (devices == null) return;
+            private void OnTick(Dictionary<int, JoystickHolder> devices, List<KeyValuePair<JoyKey, JoyCommandBase>> commands) {
+                if (devices == null || commands == null) return;
 
                 var joyToCommand = _joyToCommand;
                 var keyToCommand = _keyToCommand;
 
                 var povAvailable = !(_ignorePovInPits && _isInPits);
-                for (var index = devices.Count - 1; index >= 0; index--) {
+                var toRemove = new List<int>();
+                foreach (var device in devices) {
                     try {
-                        var item = devices[index];
-                        var joystick = item.Item1;
+                        var item = device.Value;
+                        var joystick = item.Device;
                         if (joystick.Disposed) {
-                            devices.RemoveAt(index);
+                            toRemove.Add(device.Key);
                             continue;
                         }
 
                         if (joystick.Acquire().IsFailure || joystick.Poll().IsFailure) continue;
 
-                        var state = joystick.GetCurrentState();
-                        if (Result.Last.IsFailure) continue;
+                        item.State = joystick.GetCurrentState();
+                        if (Result.Last.IsFailure) {
+                            item.State = null;
+                        }
 
-                        var buttons = state.GetButtons();
+                        /*var buttons = state.GetButtons();
                         var povs = state.GetPointOfViewControllers();
                         var list = item.Item2;
                         for (var i = list.Length - 1; i >= 0; i--) {
@@ -688,36 +724,56 @@ namespace AcManager.Tools.GameProperties {
                             command.Value.SetJoyPressed(key.Button.HasValue
                                     ? buttons.ArrayElementAtOrDefault(key.Button.Value)
                                     : (povAvailable || key.Pov != 0) && key.Direction.IsInRange(povs.ArrayElementAtOrDefault(key.Pov ?? 0)));
-                        }
+                        }*/
                     } catch (DirectInputException e) when (e.Message.Contains(@"DIERR_UNPLUGGED")) {
-                        devices.RemoveAt(index);
+                        toRemove.Add(device.Key);
                     } catch (DirectInputException e) {
-                        devices.RemoveAt(index);
+                        toRemove.Add(device.Key);
                         Logging.Warning(e.Message);
                     } catch (Exception e) {
-                        devices.RemoveAt(index);
+                        toRemove.Add(device.Key);
                         Logging.Warning(e);
                     }
+                }
+
+                foreach (var key in toRemove) {
+                    devices.Remove(key);
+                }
+
+                foreach (var command in commands) {
+                    var key = command.Key;
+                    if (!devices.TryGetValue(key.Joy, out var device) || device.State == null) continue;
+                    command.Value.SetJoyPressed(key.Button.HasValue
+                            ? device.State.GetButtons().ArrayElementAtOrDefault(key.Button.Value)
+                                    && (!key.ButtonModifier.HasValue || !key.JoyModifier.HasValue
+                                            || devices.TryGetValue(key.JoyModifier.Value, out var modifierDevice)
+                                                    && modifierDevice.State.GetButtons().ArrayElementAtOrDefault(key.ButtonModifier.Value))
+                            : (povAvailable || key.Pov != 0)
+                                    && key.Direction.IsInRange(device.State.GetPointOfViewControllers().ArrayElementAtOrDefault(key.Pov ?? 0)));
                 }
 
                 string delayedName = null;
                 var delayedProgress = 0d;
 
-                for (var i = joyToCommand.Length - 1; i >= 0; i--) {
-                    var v = joyToCommand[i].Value;
-                    v.Update();
-                    if (v.IsDelayed) {
-                        delayedName = v.DelayedName;
-                        delayedProgress = v.Progress;
+                if (joyToCommand != null) {
+                    for (var i = joyToCommand.Length - 1; i >= 0; i--) {
+                        var v = joyToCommand[i].Value;
+                        v.Update();
+                        if (v.IsDelayed) {
+                            delayedName = v.DelayedName;
+                            delayedProgress = v.Progress;
+                        }
                     }
                 }
 
-                for (var i = keyToCommand.Length - 1; i >= 0; i--) {
-                    var v = keyToCommand[i].Value;
-                    v.Update();
-                    if (v.IsDelayed) {
-                        delayedName = v.DelayedName;
-                        delayedProgress = v.Progress;
+                if (keyToCommand != null) {
+                    for (var i = keyToCommand.Length - 1; i >= 0; i--) {
+                        var v = keyToCommand[i].Value;
+                        v.Update();
+                        if (v.IsDelayed) {
+                            delayedName = v.DelayedName;
+                            delayedProgress = v.Progress;
+                        }
                     }
                 }
 

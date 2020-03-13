@@ -700,6 +700,9 @@
     <Compile Include="Pages\Settings\SettingsIntegrated.xaml.cs">
       <DependentUpon>SettingsIntegrated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersCredits.xaml.cs">
+      <DependentUpon>ShadersCredits.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml.cs">
       <DependentUpon>ShadersDataBackgrounds.xaml</DependentUpon>
     </Compile>
@@ -1579,6 +1582,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ShadersPatch\ShadersCredits.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml" />

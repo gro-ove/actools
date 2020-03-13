@@ -22,7 +22,7 @@ namespace AcManager.Pages.AcSettings {
 
             UpdateListBox();
             AcSettingsHolder.Python.PropertyChanged += OnPythonPropertyChanged;
-            this.AddWidthCondition(900).Add(x => MainGrid.Columns = x ? 2 : 1);
+            this.AddWidthCondition(1200).Add(x => MainGrid.Columns = x ? 2 : 1);
         }
 
         private AcSettingsControls.ViewModel Model => (AcSettingsControls.ViewModel)DataContext;

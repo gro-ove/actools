@@ -15,7 +15,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls {
+namespace AcManager.Tools.Helpers {
     public abstract class BatchAction : Displayable, IWithId {
         [CanBeNull]
         private readonly string _paramsTemplateKey;

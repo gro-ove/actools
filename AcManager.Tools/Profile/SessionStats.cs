@@ -485,7 +485,7 @@ namespace AcManager.Tools.Profile {
                             Logging.Debug("Lap time is worse or the same");
                         }
                     } else {
-                        Logging.Debug($"Lap spoiled (before: {_completedLaps}), last spoiled: {_lapSpoiledId})");
+                        Logging.Debug($"Lap spoiled (before: {_completedLaps}, last spoiled: {_lapSpoiledId})");
                     }
 
                     _completedLaps = graphics.CompletedLaps;

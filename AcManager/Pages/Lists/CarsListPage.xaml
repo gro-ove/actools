@@ -113,7 +113,7 @@
       </mui:SpacingStackPanel>
     </DataTemplate>
 
-    <DataTemplate x:Key="Batch.AddTag" DataType="{x:Type c:CommonBatchActions+BatchAction_AddTag}">
+    <DataTemplate x:Key="Batch.AddTag" DataType="{x:Type t:CommonBatchActions+BatchAction_AddTag}">
       <DataTemplate.Resources>
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Themes/AcListPage.BatchStyle.xaml" />
       </DataTemplate.Resources>

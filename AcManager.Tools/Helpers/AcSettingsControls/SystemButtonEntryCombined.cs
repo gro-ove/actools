@@ -9,28 +9,6 @@ using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.AcSettingsControls {
-    public class CustomButtonEntryCombined : NotifyPropertyChanged {
-        [CanBeNull]
-        public CustomButtonEntry Button { get; }
-
-        [CanBeNull]
-        public CustomButtonEntry ButtonModifier { get; }
-
-        [NotNull]
-        public WheelButtonEntry WheelButton { get; }
-
-        public string ToolTip { get; }
-
-        public CustomButtonEntryCombined([LocalizationRequired(false)] string id, string displayName,
-                string toolTip = null, Keys? defaultKey = null, Keys? defaultModifierKey = null) {
-            WheelButton = new WheelButtonEntry(id, displayName, true);
-            Button = new CustomButtonEntry(id, displayName, defaultKey, false);
-            ButtonModifier = new CustomButtonEntry(id, displayName, defaultModifierKey, true);
-            Button.ModifierReference = ButtonModifier;
-            ToolTip = toolTip;
-        }
-    }
-
     public class SystemButtonEntryCombined : NotifyPropertyChanged {
         [CanBeNull]
         private readonly SystemButtonEntry _systemButtonReference;
@@ -50,6 +28,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
                 Keys? defaultKey = null) {
             _fixedValueCallback = fixedValueCallback;
             WheelButton = new WheelButtonEntry(id, displayName, true);
+            WheelButtonModifier = new WheelButtonEntry(id, displayName, false, true);
+            WheelButton.ModifierButton = WheelButtonModifier;
+            WheelButtonModifier.ModifierButton = WheelButton;
             SystemButton = fixedValueCallback == null ? new SystemButtonEntry(id, displayName, defaultKey) : null;
             ShiftToInvert = shiftToInvert;
             CustomCommand = customCommand;
@@ -87,6 +68,9 @@ namespace AcManager.Tools.Helpers.AcSettingsControls {
 
         [NotNull]
         public WheelButtonEntry WheelButton { get; }
+
+        [NotNull]
+        public WheelButtonEntry WheelButtonModifier { get; }
 
         [CanBeNull]
         public SystemButtonEntry SystemButton { get; }

@@ -141,10 +141,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BatchAction.cs" />
     <Compile Include="CarBlock.cs" />
     <Compile Include="CarIcon.cs" />
-    <Compile Include="CommonBatchActions.cs" />
     <Compile Include="ContextMenus.cs" />
     <Compile Include="Converters\PostfixLabelConverter.cs" />
     <Compile Include="Converters\TemperatureToFahrenheitConverter.cs" />

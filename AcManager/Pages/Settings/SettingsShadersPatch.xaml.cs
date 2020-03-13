@@ -11,13 +11,17 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Tools.ContentInstallation.Entries;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Managers;
+using AcManager.Tools.Managers.Presets;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
+using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -27,6 +31,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
+using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
 
 namespace AcManager.Pages.Settings {
@@ -50,10 +55,15 @@ namespace AcManager.Pages.Settings {
             }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
 
             InitializeComponent();
-            DataContext = new ViewModel(false);
+            DataContext = ViewModel.Create().SetupWatcher().SetupIssues();
             Model.PropertyChanged += OnModelPropertyChanged;
             SetKeyboardInputs();
             UpdateConfigsTabs();
+
+            InputBindings.AddRange(new[] {
+                new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(PresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control))
+            });
 
             ShadersPatchEntry.InstallationStart += OnPatchInstallationStart;
             ShadersPatchEntry.InstallationEnd += OnPatchInstallationEnd;
@@ -138,6 +148,7 @@ namespace AcManager.Pages.Settings {
 
         private void UpdateConfigsTabs() {
             try {
+                PageFrame.Source = Model.SelectedPage?.Config == null ? (Model.SelectedPage?.Source ?? PageFrame.Source) : null;
                 ConfigTab.Content = Model.SelectedPage?.Config;
             } catch (Exception e) {
                 Logging.Error(e);
@@ -152,15 +163,33 @@ namespace AcManager.Pages.Settings {
             EverythingIsFine
         }
 
-        public class ViewModel : NotifyPropertyChanged, IDisposable {
+        public class ViewModel : NotifyPropertyChanged, IDisposable, IUserPresetable {
+            private static ViewModel _instance;
+            private static int _referenceCount;
+
+            public static ViewModel Create() {
+                if (_instance == null) {
+                    _instance = new ViewModel();
+                    _referenceCount = 1;
+                } else {
+                    ++_referenceCount;
+                }
+                return _instance;
+            }
+
             private readonly bool _isLive;
             private readonly StoredValue _selectedPageId = Stored.Get("/Patch.SettingsPage.Selected");
 
             private FileSystemWatcher _watcher;
 
-            public ViewModel(bool isLive) {
-                Logging.Here();
+            public void Dispose() {
+                if (--_referenceCount > 0) return;
+                _watcher?.Dispose();
+                Configs?.Dispose();
+                _instance = null;
+            }
 
+            private ViewModel() {
                 try {
                     if (PatchHelper.GetInstalledVersion() == null) {
                         _selectedPageId.Value = null;
@@ -170,35 +199,33 @@ namespace AcManager.Pages.Settings {
                     _selectedPageId.Value = null;
                 }
 
-                Logging.Debug(AcRootDirectory.Instance.Value);
-                Logging.Debug(PatchHelper.GetRootDirectory());
-                Logging.Debug(FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config")));
-
                 Pages = new BetterObservableCollection<PatchPage>();
                 PagesView = new BetterListCollectionView(Pages);
                 PagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
-                Logging.Here();
-
-                _isLive = isLive;
+                _isLive = false;
                 _dir = FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config"));
-                Logging.Debug(_dir);
-
-                _watcher = new FileSystemWatcher(AcRootDirectory.Instance.RequireValue) {
-                    NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
-                    IncludeSubdirectories = true,
-                    EnableRaisingEvents = true
-                };
-                Logging.Here();
-
-                _watcher.Created += OnWatcherChanged;
-                _watcher.Changed += OnWatcherChanged;
-                _watcher.Deleted += OnWatcherChanged;
-                _watcher.Renamed += OnWatcherRenamed;
-                Logging.Debug(_watcher);
-
                 CreateConfigs();
+            }
+
+            public ViewModel SetupWatcher() {
+                if (_watcher == null) {
+                    _watcher = new FileSystemWatcher(AcRootDirectory.Instance.RequireValue) {
+                        NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName,
+                        IncludeSubdirectories = true,
+                        EnableRaisingEvents = true
+                    };
+                    _watcher.Created += OnWatcherChanged;
+                    _watcher.Changed += OnWatcherChanged;
+                    _watcher.Deleted += OnWatcherChanged;
+                    _watcher.Renamed += OnWatcherRenamed;
+                }
+                return this;
+            }
+
+            public ViewModel SetupIssues() {
                 RescanPossibleIssues();
+                return this;
             }
 
             private AsyncCommand _installPatchCommand;
@@ -227,6 +254,17 @@ namespace AcManager.Pages.Settings {
                     if (FileUtils.ArePathsEqual(filename, PatchHelper.GetManifestFilename())) {
                         _busyUpdateVersion.DoDelay(PatchHelper.Reload, 300);
                     }
+                } else if (Configs != null) {
+                    _busyCreateConfigs.DoDelay(() => {
+                        foreach (var item in Configs
+                                .SelectMany(x => x.Sections)
+                                .SelectMany(x => x)
+                                .OfType<PythonAppConfigPluginValue>()) {
+                            if (FileUtils.IsAffectedBy(filename, item.PluginsDirectory)) {
+                                item.ReloadPlugins();
+                            }
+                        }
+                    }, 300);
                 }
 
                 if (FileUtils.ArePathsEqual(directory, AcRootDirectory.Instance.RequireValue)) {
@@ -345,7 +383,9 @@ namespace AcManager.Pages.Settings {
 
             static ViewModel() {
                 if (!PatchHelper.OptionPatchSupport) return;
-                BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/reinstallCurrent"), PatchUpdater.Instance.ReinstallCommand);
+                BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/reinstallCurrent"), new AsyncCommand(
+                        () => PatchUpdater.Instance.ReinstallCommand?.ExecuteAsync(),
+                        () => PatchUpdater.Instance.ReinstallCommand?.CanExecute() == true));
                 BbCodeBlock.AddLinkCommand(new Uri("cmd://settingsShadersPatch/fixPatch/unblockPatch"), new DelegateCommand(() => {
                     FileUtils.Unblock(PatchHelper.GetMainFilename());
                     Instance?.Model?.RescanPossibleIssues();
@@ -405,9 +445,12 @@ namespace AcManager.Pages.Settings {
             }
 
             private readonly Busy _configsSaveBusy = new Busy();
+            private bool _configsPresetApplying;
 
             private void OnConfigsValueChanged(object sender, EventArgs e) {
+                if (_configsPresetApplying) return;
                 _configsSaveBusy.DoDelay(SaveConfigs, 100);
+                Changed?.Invoke(this, EventArgs.Empty);
             }
 
             private void CreateConfigs() {
@@ -423,14 +466,18 @@ namespace AcManager.Pages.Settings {
                 }
 
                 FileUtils.EnsureDirectoryExists(Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension"));
+
+                var selectedPageId = SelectedPage?.Id ?? _selectedPageId.Value;
                 Configs = new PythonAppConfigs(new PythonAppConfigParams(_dir) {
                     FilesRelativeDirectory = AcRootDirectory.Instance.Value ?? _dir,
                     ScanFunc = d => Directory.GetFiles(d, "*.ini").Where(x => !Path.GetFileName(x).StartsWith(@"data_")),
                     ConfigFactory = (p, f) => {
                         var fileName = Path.GetFileName(f);
-                        if (fileName == null) return null;
-                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
+                        if (fileName == null) {
+                            return null;
+                        }
 
+                        var userEditedFile = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", fileName);
                         var cfg = PythonAppConfig.Create(p, f, true, userEditedFile);
                         if (_isLive && cfg.Sections.GetByIdOrDefault("ℹ")?.GetByIdOrDefault("LIVE_SUPPORT")?.Value == @"0") {
                             return null;
@@ -443,13 +490,13 @@ namespace AcManager.Pages.Settings {
                         [@"IS_LIVE__"] = _isLive.As<string>()
                     }
                 });
-
                 Mode = Configs?.Count > 0 ? Mode.EverythingIsFine : Mode.NoConfigs;
-                Pages.ReplaceEverythingBy_Direct(PatchHelper.OptionPatchSupport
-                        ? BasePages.Concat(Configs.Select(x => new PatchPage(x)))
-                        : Configs.Select(x => new PatchPage(x)));
 
-                SelectedPage = Pages?.GetByIdOrDefault(_selectedPageId.Value) ?? Pages?.FirstOrDefault();
+                var configPages = Configs.Select(x =>
+                        Pages.FirstOrDefault(y => y.Config == x) ?? new PatchPage(x));
+                Pages.ReplaceEverythingBy(PatchHelper.OptionPatchSupport ? BasePages.Concat(configPages) : configPages);
+
+                SelectedPage = Pages.GetByIdOrDefault(selectedPageId) ?? Pages.FirstOrDefault();
                 if (Configs != null) {
                     Configs.ValueChanged += OnConfigsValueChanged;
                 }
@@ -458,17 +505,12 @@ namespace AcManager.Pages.Settings {
             }
 
             private readonly string _dir;
-            // private readonly IDisposable _patchDirectoryWatcher;
-            // private readonly IDisposable _configDirectoryWatcher;
-            // private readonly IDisposable _dwriteWatcher;
 
             private Mode _mode;
 
             public Mode Mode {
                 get => _mode;
-                set => Apply(value, ref _mode, () => {
-                    _installPatchCommand?.RaiseCanExecuteChanged();
-                });
+                set => Apply(value, ref _mode, () => _installPatchCommand?.RaiseCanExecuteChanged());
             }
 
             public const string PageIdInformation = "information";
@@ -551,13 +593,74 @@ namespace AcManager.Pages.Settings {
                 set => Apply(value, ref _configs);
             }
 
-            public void Dispose() {
-                /* _patchDirectoryWatcher?.Dispose();
-                _configDirectoryWatcher?.Dispose();
-                _dwriteWatcher?.Dispose(); */
-                _watcher?.Dispose();
-                Configs?.Dispose();
+            public IUserPresetable Presets => this;
+
+            public void ResetSelectedPage() {
+                _selectedPage = null;
+                OnPropertyChanged(nameof(SelectedPage));
             }
+
+            bool IUserPresetable.CanBeSaved => true;
+
+            public string PresetableKey => "csp";
+
+            public PresetsCategory PresetableCategory { get; } = new PresetsCategory("Custom Shaders Patch Presets", ".ini");
+
+            public event EventHandler Changed;
+
+            public void ImportFromPresetData(string data) {
+                var configs = Configs;
+                if (configs == null) return;
+                _configsPresetApplying = true;
+                foreach (var config in configs) {
+                    config.ValuesIni().Clear();
+                }
+                foreach (var section in IniFile.Parse(data)) {
+                    var pieces = section.Key.Split('/');
+                    if (pieces.Length != 2) continue;
+
+                    var target = configs.FirstOrDefault(x => x.PresetId == pieces[0]);
+                    if (target == null) continue;
+
+                    var targetSection = target.ValuesIni()[pieces[1]];
+                    foreach (var pair in section.Value) {
+                        targetSection.Set(pair.Key, pair.Value);
+                    }
+                }
+                foreach (var config in configs) {
+                    config.ApplyChangesFromIni();
+                }
+                _configsPresetApplying = false;
+                SaveConfigs();
+            }
+
+            public string ExportToPresetData() {
+                var configs = Configs;
+                if (configs == null) return null;
+                var ret = new IniFile();
+                foreach (var config in configs) {
+                    foreach (var section in config.Export()) {
+                        var target = ret[config.PresetId + "/" + section.Key];
+                        foreach (var pair in section.Value) {
+                            target.Set(pair.Key, pair.Value);
+                        }
+                    }
+                }
+                return ret.ToString();
+            }
+
+            private AsyncCommand _shareCommand;
+
+            public AsyncCommand ShareCommand => _shareCommand ?? (_shareCommand = new AsyncCommand(async () => {
+                try {
+                    var data = ExportToPresetData();
+                    if (data == null) return;
+                    await SharingUiHelper.ShareAsync(SharedEntryType.CspSettings,
+                            Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(PresetableKey)), null, data);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t share preset", e);
+                }
+            }));
         }
 
         public LocalKeyBindingsController KeyBindingsController { get; }
@@ -594,5 +697,7 @@ namespace AcManager.Pages.Settings {
                 return dlg.ShowAndWaitAsync();
             });
         }
+
+        private void OnFrameNavigated(object sender, NavigationEventArgs e) { }
     }
 }

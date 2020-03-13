@@ -108,27 +108,28 @@ namespace AcManager.Tools.Profile {
                             var fixedCount = 0;
                             using (var waiting = WaitingDialog.Create("Fixing values")) {
                                 var directory = Path.Combine(appDirectoryCallback(), "personal_best");
-                                var files = await Task.Run(() => new DirectoryInfo(directory).GetFiles("*_pb.ini"));
+                                if (Directory.Exists(directory)) {
+                                    var files = await Task.Run(() => new DirectoryInfo(directory).GetFiles("*_pb.ini"));
+                                    for (var i = 0; i < files.Length; i++) {
+                                        var file = files[i];
+                                        if (file.Length != 11) continue;
 
-                                for (var i = 0; i < files.Length; i++) {
-                                    var file = files[i];
-                                    if (file.Length != 11) continue;
+                                        var bytes = File.ReadAllBytes(file.FullName);
+                                        if (bytes.Length != 11 || bytes[0] != 0x80 || bytes[1] != 3 || bytes[2] != (byte)'L') continue;
 
-                                    var bytes = File.ReadAllBytes(file.FullName);
-                                    if (bytes.Length != 11 || bytes[0] != 0x80 || bytes[1] != 3 || bytes[2] != (byte)'L') continue;
+                                        waiting.Report(file.Name, i, files.Length);
 
-                                    waiting.Report(file.Name, i, files.Length);
+                                        var value = BitConverter.ToInt64(bytes, 3);
+                                        using (var writer = new BinaryWriter(File.Create(file.FullName))) {
+                                            writer.Write(new byte[] { 0x80, 3, (byte)'L' });
+                                            writer.Write(Encoding.ASCII.GetBytes(value.As<string>()));
+                                            writer.Write((byte)'\n');
+                                            writer.Write((byte)'.');
+                                        }
 
-                                    var value = BitConverter.ToInt64(bytes, 3);
-                                    using (var writer = new BinaryWriter(File.Create(file.FullName))) {
-                                        writer.Write(new byte[] { 0x80, 3, (byte)'L' });
-                                        writer.Write(Encoding.ASCII.GetBytes(value.As<string>()));
-                                        writer.Write((byte)'\n');
-                                        writer.Write((byte)'.');
+                                        fixedCount++;
+                                        await Task.Yield();
                                     }
-
-                                    fixedCount++;
-                                    await Task.Yield();
                                 }
                             }
 

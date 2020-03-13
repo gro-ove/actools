@@ -22,8 +22,10 @@
           </Grid.ContextMenu>
 
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="130" />
+            <ColumnDefinition Width="1.2*" MaxWidth="160" />
             <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="0.75*" MinWidth="80" />
+            <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="1.5*" MinWidth="160" />
           </Grid.ColumnDefinitions>
 
@@ -82,7 +84,36 @@
             </mui:ReferenceSwitch.NonNull>
           </mui:ReferenceSwitch>
 
-          <Button Grid.Column="2" ToolTip="{x:Static c:ControlsStrings.Controls_SteeringWheelButton}" Margin="4 0 0 0" Style="{StaticResource WaitingButton}"
+          <Button Grid.Column="2" ToolTip="Steering wheel button as modifier" Margin="20 0 0 0" Style="{StaticResource WaitingButton}"
+              Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButtonModifier}"
+              IsEnabled="{Binding WheelButton.Input, Converter={StaticResource NullToBooleanConverter}, ConverterParameter='inverse'}">
+            <Button.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="{x:Static c:ControlsStrings.Common_Clear}" Command="{Binding WheelButtonModifier.ClearCommand}" InputGestureText="Delete" />
+              </ContextMenu>
+            </Button.ContextMenu>
+
+            <mui:Cell HorizontalAlignment="Stretch" Margin="0 -2" DataContext="{Binding WheelButtonModifier}">
+              <mui:Cell Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse hidden'}">
+                <TextBlock Text="{Binding Input.Device.DisplayName}" DockPanel.Dock="Top" Style="{StaticResource Small}" HorizontalAlignment="Left"
+                    TextTrimming="CharacterEllipsis" FontStyle="{Binding Input.Device.IsVirtual, Converter={StaticResource BooleanToFontStyleConverter}}" />
+                <TextBlock Text="{Binding Input.DisplayName}" FontWeight="Bold" HorizontalAlignment="Left" Margin="0 8 0 0" TextTrimming="CharacterEllipsis" />
+                <TextBlock Text="No modifier" Opacity="0.5" HorizontalAlignment="Left" VerticalAlignment="Center"
+                    Visibility="{Binding Input, Converter={StaticResource NullToVisibilityConverter}}" TextTrimming="CharacterEllipsis"
+                    Style="{StaticResource Small}" />
+                <Rectangle Fill="{DynamicResource Accent}" Width="4" Margin="-4 0" HorizontalAlignment="Right"
+                    Visibility="{Binding Input.Value, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}" />
+              </mui:Cell>
+              <TextBlock Text="{x:Static c:ControlsStrings.Controls_WaitingForInput}" HorizontalAlignment="Left" VerticalAlignment="Center"
+                  Visibility="{Binding IsWaiting, Converter={StaticResource BooleanToVisibilityConverter}}" TextTrimming="CharacterEllipsis" />
+            </mui:Cell>
+          </Button>
+
+          <DockPanel Grid.Column="3" Margin="0 1 0 -1">
+            <TextBlock Style="{StaticResource Label}" TextAlignment="Left" Text="+" />
+          </DockPanel>
+
+          <Button Grid.Column="4" ToolTip="{x:Static c:ControlsStrings.Controls_SteeringWheelButton}" Margin="4 0 0 0" Style="{StaticResource WaitingButton}"
               Command="{Binding ToggleWaitingCommand, Source={x:Static acset:AcSettingsHolder.Controls}}" CommandParameter="{Binding WheelButton}"
               IsEnabled="{Binding IsWheelButtonAllowed}">
             <Button.ContextMenu>

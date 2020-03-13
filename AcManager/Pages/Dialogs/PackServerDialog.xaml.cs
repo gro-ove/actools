@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using AcManager.Controls;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;

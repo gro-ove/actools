@@ -680,14 +680,30 @@ namespace AcManager.Tools.ContentInstallation {
             }
 
             if (directory.HasSubFile("weather.lua") && directory.Parent.NameLowerCase == "weather") {
-                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, $"Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, $"CSP Weather FX script “{AcStringValues.NameFromId(directory.Name)}”",
                         Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather", directory.Name), 1e5);
             }
 
             if (directory.HasSubFile("controller.lua") && directory.Parent.NameLowerCase == "weather-controllers") {
                 return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key },
-                        $"Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
+                        $"CSP Weather FX controller “{AcStringValues.NameFromId(directory.Name)}”",
                         Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "weather-controllers", directory.Name), 1e5);
+            }
+
+            if (directory.HasSubFile("camera.lua") && directory.Parent.NameLowerCase == "chaser-camera") {
+                var manifestInfo = directory.GetSubFile("manifest.ini");
+                var name = AcStringValues.NameFromId(directory.Name);
+                string version = null;
+                string description = null;
+                if (manifestInfo != null) {
+                    var data = IniFile.Parse((await manifestInfo.Info.ReadAsync() ?? throw new MissingContentException()).ToUtf8String())["ABOUT"];
+                    name = data.GetNonEmpty("NAME") ?? name;
+                    version = data.GetNonEmpty("VERSION");
+                    description = data.GetNonEmpty("DESCRIPTION");
+                }
+                return new PatchPluginEntry(directory.Key ?? "", new[] { directory.Key }, $"CSP camera script “{name}”",
+                        Path.Combine(AcRootDirectory.Instance.RequireValue, "extension", "lua", "chaser-camera", directory.Name), 1e5,
+                        version, description);
             }
 
             // Mod

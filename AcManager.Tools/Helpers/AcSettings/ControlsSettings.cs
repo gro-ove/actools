@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties.InGameApp;
 using AcManager.Tools.Helpers.AcSettingsControls;
 using AcManager.Tools.Helpers.DirectInput;
@@ -22,6 +23,7 @@ using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
+using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
 using SlimDX.DirectInput;
@@ -43,6 +45,20 @@ namespace AcManager.Tools.Helpers.AcSettings {
         static ControlsSettings() {
             PresetsDirectory = Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "controllers");
             UserPresetsDirectory = Path.Combine(PresetsDirectory, SubUserPresets);
+        }
+
+        private static string CapitalizeFirst(string s) {
+            if (s == string.Empty) return string.Empty;
+            if (s.Length == 1) return s.ToUpperInvariant();
+            return char.ToUpperInvariant(s[0]) + s.Substring(1);
+        }
+
+        private static bool ParseKey(string v, out Keys k) {
+            if (string.Equals(v, "ctrl", StringComparison.OrdinalIgnoreCase)) {
+                k = Keys.Control;
+                return true;
+            }
+            return Enum.TryParse(v, true, out k);
         }
 
         internal ControlsSettings() : base("controls", false) {
@@ -113,32 +129,57 @@ namespace AcManager.Tools.Helpers.AcSettings {
             #endregion
 
             #region Constructing custom patch entries
-            CustomCarButtonEntries = new[] {
-                new CustomButtonEntryCombined("__EXT_TURNSIGNAL_LEFT", "Left turn signal", "For cars with turn signals defined", Keys.Left, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_TURNSIGNAL_RIGHT", "Right turn signal", "For cars with turn signals defined", Keys.Right, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_HAZARDS", "Hazards", "For cars with hazards defined", Keys.Down, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_WIPERS_MORE", "Speed up wipers", null, Keys.NumPad2, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_WIPERS_LESS", "Slow down wipers", null, Keys.NumPad1, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_WIPERS_OFF", "Stop wipers", null, Keys.NumPad0, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_TELLTALE_RESET", "Reset telltale", null, Keys.R, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_LOW_BEAM", "High/low beams", "Switch between high and low beams", Keys.L, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_LIGHT_A", "Extra light A", "Toggle extra light A", Keys.NumPad7, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_LIGHT_B", "Extra light B", "Toggle extra light B", Keys.NumPad8, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_LIGHT_C", "Extra light C", "Toggle extra light C", Keys.NumPad9, Keys.Alt),
-                new CustomButtonEntryCombined("__EXT_LIGHT_D", "Extra light D", "Toggle extra light D", Keys.Oemplus, Keys.Alt),
-            };
+            var manifest = PatchHelper.GetManifest();
+            var sectionsList = new List<CustomButtonEntrySection>();
+            for (var i = 0; i < 999; i++) {
+                var k = manifest[$@"INPUT_GROUP_{i}"];
+                var n = k.GetNonEmpty("GROUP_NAME");
+                if (string.IsNullOrWhiteSpace(n)) continue;
 
-            CustomExtraButtonEntries = new[] {
-                new CustomButtonEntryCombined("__EXT_CHAT_SHORTCUTS_BASE", "Chat shortcuts", "Show popup with chat shortcuts", Keys.Oemtilde),
-                new CustomButtonEntryCombined("__EXT_FREECAM_SWITCH_PRESETS", "Freer camera switch", "Switch between Freer Camera settings", Keys.Scroll),
-            };
+                var list = new List<CustomButtonEntryCombined>();
+                foreach (var p in k) {
+                    if (!p.Key.StartsWith("__") || p.Key.EndsWith("_")) continue;
 
-            CustomLookButtonEntries = new[] {
-                new CustomButtonEntryCombined("__EXT_LOOK_LEFT", "Look left"),
-                new CustomButtonEntryCombined("__EXT_LOOK_RIGHT", "Look right"),
-                new CustomButtonEntryCombined("__EXT_LOOK_BACK", "Look back"),
-                // new CustomButtonEntryCombined("__EXT_LOOK_ZOOM", "Zoom"),
-            };
+                    var value = p.Value.WrapQuoted(out var unwrap)
+                            .Split(',').Select(x => x.Trim()).Where(x => x.Length > 0).ToList();
+                    if (value.Count < 1 || value.Count > 2) continue;
+
+                    var keys = new List<Keys>();
+                    var modifiers = new List<Keys>();
+                    if (value.Count > 1) {
+                        var broken = false;
+                        foreach (var v in unwrap(value[1]).Split('+')) {
+                            if (ParseKey(v, out Keys key)) {
+                                keys.Add(key);
+                            } else {
+                                broken = true;
+                            }
+                        }
+                        for (var j = 0; j < keys.Count - 1; j++) {
+                            if (keys[j].IsInputModifier(out var normalized)) {
+                                modifiers.Add(normalized);
+                            } else {
+                                broken = true;
+                            }
+                        }
+                        if (broken) continue;
+                    }
+
+                    string description = null;
+                    var name = unwrap(value[0]);
+                    var index = name.IndexOf('(');
+                    if (index != -1 && name.EndsWith(")")) {
+                        description = CapitalizeFirst(name.Substring(index + 1, name.Length - index - 2)).TrimEnd('.');
+                        name = name.Substring(0, index);
+                    }
+
+                    list.Add(new CustomButtonEntryCombined(p.Key, name, description,
+                            keys.Count > 0 ? keys.LastOrDefault() : (Keys?)null, modifiers));
+                }
+
+                sectionsList.Add(new CustomButtonEntrySection { DisplayName = n, Entries = list.ToArray() });
+            }
+            CustomButtonEntrySections = sectionsList.ToArray();
             #endregion
 
             #region Constructing system entries
@@ -229,11 +270,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private KeyboardButtonEntry KeyboardButtonProvider(string arg) {
             return WheelButtonEntries.Select(x => x.KeyboardButton)
-                                     .Select(x => (IEntry)x)
-                                     .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
-                                     .Union(WheelHShifterButtonEntries)
-                                     .Union(KeyboardSpecificButtonEntries)
-                                     .OfType<KeyboardButtonEntry>().First(x => x.Id == arg);
+                    .Select(x => (IEntry)x)
+                    .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
+                    .Union(WheelHShifterButtonEntries)
+                    .Union(KeyboardSpecificButtonEntries)
+                    .OfType<KeyboardButtonEntry>().First(x => x.Id == arg);
         }
 
         private void OnVideoPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -556,7 +597,15 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 }
                 if (waiting == null) return;
 
+                if (waiting is CustomButtonEntry c
+                        && provider is KeyboardInputButton k
+                        && k.Key.IsInputModifier(out var modifier)) {
+                    c.AddModifier(modifier);
+                    return;
+                }
+
                 if (waiting.Input == provider) {
+                    waiting.OnInputArrived();
                     waiting.IsWaiting = false;
                     if (OptionDebugControlles) {
                         Logging.Debug("Input equals to provider");
@@ -574,8 +623,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (waiting.Layer != EntryLayer.NoIntersection) {
                     var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && waiting.Layer == x.Layer).ToList();
                     if (existing.Any()) {
+                        var providerName = new [] {
+                            (waiting as WheelButtonEntry)?.ModifierButton?.Input?.DisplayName, provider.DisplayName
+                        }.NonNull().JoinToString(@"+");
                         var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
-                                await ConflictResolver.Resolve(provider.DisplayName, existing.Select(x => x.DisplayName));
+                                await ConflictResolver.Resolve(providerName, existing.Select(x => x.DisplayName));
                         switch (solution) {
                             case AcControlsConflictSolution.Cancel:
                                 return;
@@ -1098,14 +1150,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
         #endregion
 
         #region Shaders Patch keys
-        public CustomButtonEntryCombined[] CustomCarButtonEntries { get; }
-        public CustomButtonEntryCombined[] CustomExtraButtonEntries { get; }
-        public CustomButtonEntryCombined[] CustomLookButtonEntries { get; }
+        public class CustomButtonEntrySection : Displayable {
+            public CustomButtonEntryCombined[] Entries { get; set; }
+        }
+
+        public CustomButtonEntrySection[] CustomButtonEntrySections { get; }
 
         [NotNull]
-        public IEnumerable<CustomButtonEntryCombined> CustomButtonEntries => CustomCarButtonEntries
-                .Concat(CustomExtraButtonEntries)
-                .Concat(CustomLookButtonEntries);
+        public IEnumerable<CustomButtonEntryCombined> CustomButtonEntries => CustomButtonEntrySections.SelectMany(x => x.Entries);
         #endregion
 
         #region System shortcuts (Ctrl+…)
@@ -1215,21 +1267,21 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private const string HandbrakeId = "HANDBRAKE";
 
         [NotNull]
-        private IEnumerable<IEntry> Entries
-            => WheelAxleEntries
-                    .Select(x => (IEntry)x)
-                    .Union(WheelButtonEntries.Select(x => x.KeyboardButton))
-                    .Union(WheelButtonEntries.Select(x => x.WheelButton))
-                    .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
-                    .Union(WheelHShifterButtonEntries)
-                    .Union(ControllerButtonEntries.Select(x => x.KeyboardButton))
-                    .Union(ControllerButtonEntries.Select(x => x.ControllerButton))
-                    .Union(KeyboardSpecificButtonEntries)
-                    .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())
-                    .Union(SystemButtonEntries.Select(x => x.WheelButton))
-                    .Union(CustomButtonEntries.Select(x => x.Button).NonNull())
-                    .Union(CustomButtonEntries.Select(x => x.ButtonModifier).NonNull())
-                    .Union(CustomButtonEntries.Select(x => x.WheelButton));
+        private IEnumerable<IEntry> Entries => WheelAxleEntries
+                .Select(x => (IEntry)x)
+                .Union(WheelButtonEntries.Select(x => x.KeyboardButton))
+                .Union(WheelButtonEntries.Select(x => x.WheelButton))
+                .Union(WheelButtonEntries.OfType<WheelButtonCombinedAlt>().Select(x => x.WheelButtonAlt))
+                .Union(WheelHShifterButtonEntries)
+                .Union(ControllerButtonEntries.Select(x => x.KeyboardButton))
+                .Union(ControllerButtonEntries.Select(x => x.ControllerButton))
+                .Union(KeyboardSpecificButtonEntries)
+                .Union(SystemButtonEntries.Select(x => x.SystemButton).NonNull())
+                .Union(SystemButtonEntries.Select(x => x.WheelButton))
+                .Union(SystemButtonEntries.Select(x => x.WheelButtonModifier))
+                .Union(CustomButtonEntries.Select(x => x.Button).NonNull())
+                .Union(CustomButtonEntries.Select(x => x.WheelButton))
+                .Union(CustomButtonEntries.Select(x => x.WheelButtonModifier));
 
         private bool _skip;
 

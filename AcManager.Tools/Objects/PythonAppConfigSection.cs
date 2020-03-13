@@ -8,7 +8,7 @@ using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
-    public class PythonAppConfigSection : ObservableCollection<PythonAppConfigValue>, IWithId {
+    public class PythonAppConfigSection : ObservableCollection<IPythonAppConfigValue>, IWithId {
         public string Key { get; }
 
         public string DisplayName { get; }
@@ -16,10 +16,19 @@ namespace AcManager.Tools.Objects {
 
         private static readonly Regex SectionName = new Regex(@"^([^(]*)(?:\((.+)\))?", RegexOptions.Compiled);
 
+        public string HintTop { get; }
+
+        public string HintBottom { get; }
+
         public PythonAppConfigSection([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, [CanBeNull] IniFileSection values)
-                : base(pair.Value.Select(x => PythonAppConfigValue.Create(configParams, x,
-                        pair.Value.Commentaries?.GetValueOrDefault(x.Key)?.Split('\n')[0], values?.GetValueOrDefault(x.Key), values != null)).NonNull()) {
+                : base(pair.Value
+                        .Where(x => !x.Key.StartsWith("__HINT"))
+                        .Select(x => PythonAppConfigValue.Create(configParams, x,
+                                pair.Value.Commentaries?.GetValueOrDefault(x.Key)?.Split('\n')[0],
+                                values?.GetValueOrDefault(x.Key), values != null)).NonNull()) {
             Key = pair.Key;
+            HintTop = pair.Value.GetNonEmpty("__HINT_TOP");
+            HintBottom = pair.Value.GetNonEmpty("__HINT_BOTTOM");
 
             var commentary = pair.Value.Commentary?.Split('\n')[0].Trim();
             if (commentary == @"hidden") {
@@ -42,6 +51,7 @@ namespace AcManager.Tools.Objects {
         public string Order => this.GetByIdOrDefault("ORDER")?.Value;
         public string Description => this.GetByIdOrDefault("DESCRIPTION")?.Value;
         public string ShortDescription => this.GetByIdOrDefault("SHORT_DESCRIPTION")?.Value;
+
         public string Url {
             get {
                 var url = this.GetByIdOrDefault("URL")?.Value;

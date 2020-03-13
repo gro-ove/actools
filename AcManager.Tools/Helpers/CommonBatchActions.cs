@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Data;
-using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
@@ -16,7 +15,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using JetBrains.Annotations;
 
-namespace AcManager.Controls {
+namespace AcManager.Tools.Helpers {
     public static class CommonBatchActions {
         public static readonly BatchAction[] DefaultSet = {
             BatchAction_AddToFavourites.Instance,
