@@ -7,7 +7,7 @@ namespace AcManager.Tools.Miscellaneous {
         string Id { get; }
 
         [CanBeNull]
-        string InstalledVersion { get; }
+        string Version { get; }
 
         CupContentType CupContentType { get; }
 

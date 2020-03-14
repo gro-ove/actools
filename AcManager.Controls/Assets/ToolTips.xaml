@@ -69,7 +69,7 @@
               </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
             <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
-            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding InstalledVersion}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
           </c:PropertiesGrid>
           <DockPanel Margin="0 4 0 0">
             <Label Content="Recent changes:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />
@@ -98,9 +98,7 @@
               </mui:BooleanSwitch.False>
             </mui:BooleanSwitch>
             <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
-            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding InstalledVersion}" Placeholder="Not set" />
-            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Version:" Text="{Binding Version}" Placeholder="Not set" />
-            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Id:" Text="{Binding Id}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
           </c:PropertiesGrid>
           <DockPanel Margin="0 4 0 0">
             <Label Content="Recent changes:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />

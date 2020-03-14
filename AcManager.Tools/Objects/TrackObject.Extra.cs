@@ -3,13 +3,11 @@ using AcTools.Utils.Helpers;
 
 namespace AcManager.Tools.Objects {
     public partial class TrackObject : ICupSupportedObject {
-        string ICupSupportedObject.InstalledVersion => Version;
         public CupContentType CupContentType => CupContentType.Track;
         public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id, Version) ?? false;
         public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType, Id);
 
         protected override void OnVersionChanged() {
-            OnPropertyChanged(nameof(ICupSupportedObject.InstalledVersion));
             OnPropertyChanged(nameof(IsCupUpdateAvailable));
             OnPropertyChanged(nameof(CupUpdateInformation));
         }

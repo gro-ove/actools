@@ -36,7 +36,7 @@
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding InstalledVersion}" Placeholder="Not set" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
       <mui:BooleanSwitch c:PropertiesGrid.Label="Prefer clean installation:" Value="{Binding CupUpdateInformation.PreferCleanInstallation}">
         <mui:BooleanSwitch.True>
           <TextBlock Text="No" />

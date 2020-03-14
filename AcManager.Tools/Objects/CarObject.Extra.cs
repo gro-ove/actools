@@ -28,13 +28,11 @@ namespace AcManager.Tools.Objects {
         private LazierThis<double?> _steerLock;
         public double? SteerLock => _steerLock.Get(() => AcdData?.GetIniFile("car.ini")["CONTROLS"].GetDoubleNullable("STEER_LOCK") * 2d);
 
-        string ICupSupportedObject.InstalledVersion => Version;
         public CupContentType CupContentType => CupContentType.Car;
         public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType.Car, Id, Version) ?? false;
         public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType.Car, Id);
 
         protected override void OnVersionChanged() {
-            OnPropertyChanged(nameof(ICupSupportedObject.InstalledVersion));
             OnPropertyChanged(nameof(IsCupUpdateAvailable));
             OnPropertyChanged(nameof(CupUpdateInformation));
         }
