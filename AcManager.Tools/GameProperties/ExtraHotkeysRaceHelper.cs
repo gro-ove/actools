@@ -677,7 +677,7 @@ namespace AcManager.Tools.GameProperties {
                     OnTick(usedJoysticks, joystickCommands);
                     s.Stop();
 #else
-                    OnTick(joystickCommands);
+                    OnTick(usedJoysticks, joystickCommands);
 #endif
                     Thread.Sleep(8);
 

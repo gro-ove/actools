@@ -295,7 +295,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <!--<mui:BbCodeBlock Text="{Binding CupUpdateSummary}" DockPanel.Dock="Top" Margin="8 0 8 8" Style="{StaticResource Small}" />-->
-        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" DataContext="{x:Static t:ContentInstallationManager.Instance}" Margin="8 0"
+        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" Margin="8 0"
             HorizontalSpacing="8">
           <Button Visibility="Hidden">
             <DockPanel>
@@ -304,7 +304,7 @@
               <TextBlock Text="View details" />
             </DockPanel>
           </Button>
-          <Button>
+          <Button Command="{Binding InstallAllCommand}">
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                   Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource DownloadIconData}" />

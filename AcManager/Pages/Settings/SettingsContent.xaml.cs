@@ -36,6 +36,12 @@ namespace AcManager.Pages.Settings {
                         && MegaStorage.GetEncrypted<string>(KeySession) != null && MegaStorage.GetEncrypted<string>(KeyToken) != null;
             }
 
+            private DelegateCommand _resetCupRegistriesCommand;
+
+            public DelegateCommand ResetCupRegistriesCommand => _resetCupRegistriesCommand ?? (_resetCupRegistriesCommand = new DelegateCommand(() => {
+                Holder.CupRegistries = "https://acstuff.ru/cup/";
+            }));
+
             public string DefaultTemporaryFilesLocation { get; } = Path.GetTempPath();
 
             private ICommand _changeTemporaryFilesLocationCommand;

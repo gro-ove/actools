@@ -282,7 +282,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                         remoteData.Dispose();
                         remoteData = await client.OpenReadTaskAsync(Url);
                         cancellation.ThrowIfCancellationRequested();
-                        client.LogResponseHeaders();
+                        // client.LogResponseHeaders();
 
                         // It’s unknown if resume is supported or not at this point
                         if (resumeSupported == null) {

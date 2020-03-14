@@ -536,7 +536,14 @@
         </ContextMenu>
       </FrameworkElement.ContextMenu>
 
-      <ContentControl Content="{Binding}" ToolTip="{Binding ToolTip}" IsEnabled="{Binding IsEnabled}">
+      <ContentControl Content="{Binding}" IsEnabled="{Binding IsEnabled}">
+        <ContentControl.ToolTip>
+          <ToolTip Visibility="{Binding ToolTip.Length, Converter={StaticResource MoreToVisibilityConverter}, FallbackValue={x:Static Visibility.Collapsed}}">
+            <ToolTip.Content>
+              <TextBlock MaxWidth="400" TextWrapping="Wrap" Text="{Binding ToolTip}" />
+            </ToolTip.Content>
+          </ToolTip>
+        </ContentControl.ToolTip>
         <ContentControl.Resources>
           <DataTemplate DataType="{x:Type t:PythonAppConfigBoolValue}">
             <CheckBox IsChecked="{Binding Value}" Height="23" VerticalAlignment="Top" mui:NewMarkService.New="{Binding IsNew}">

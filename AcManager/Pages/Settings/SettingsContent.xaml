@@ -210,6 +210,29 @@
           <mui:BetterTextBox Text="{Binding Holder.FontIconCharacter}" ToolTip="{x:Static g:AppStrings.Settings_Content_FontIconSymbol_Tooltip}"
               Placeholder="?" />
         </DockPanel>
+
+        <!-- CUP -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mods auto-update:" />
+
+        <DockPanel>
+          <Label Content="Registries:" />
+          <mui:BetterTextBox Text="{Binding Holder.CupRegistries}" Placeholder="?" mui:ContextMenuAdvancement.PropagateToChildren="True" Height="80"
+              AcceptsReturn="True" TextWrapping="Wrap">
+            <mui:BetterTextBox.ToolTip>
+              <ToolTip>
+                <ToolTip.Content>
+                  <TextBlock MaxWidth="400" TextWrapping="Wrap"
+                      Text="Registries are websites providing information about new versions. If you want to create your own, please let me know, and I’ll describe it in detail." />
+                </ToolTip.Content>
+              </ToolTip>
+            </mui:BetterTextBox.ToolTip>
+            <mui:BetterTextBox.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Reset to default" Command="{Binding ResetCupRegistriesCommand}" />
+              </ContextMenu>
+            </mui:BetterTextBox.ContextMenu>
+          </mui:BetterTextBox>
+        </DockPanel>
       </StackPanel>
 
     </mui:SpacingUniformGrid>

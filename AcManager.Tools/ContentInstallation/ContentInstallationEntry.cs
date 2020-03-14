@@ -618,8 +618,12 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         } catch (InformativeException e) {
                             Logging.Warning(e);
-                            FailedMessage = e.Message;
-                            FailedCommentary = e.SolutionCommentary;
+                            if (e.Message == ToolsStrings.Common_CannotDownloadFile) {
+                                FailedMessage = $"Can’t download file: {e.SolutionCommentary.ToSentenceMember()}";
+                            } else {
+                                FailedMessage = e.Message;
+                                FailedCommentary = e.SolutionCommentary;
+                            }
                             return false;
                         } catch (Exception e) {
                             Logging.Warning(e);
