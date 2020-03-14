@@ -425,7 +425,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 ClipboardHelper.SetText(piece);
                 Toast.Show(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name),
                         AppStrings.WebSource_SharedMessageCopiedTitle,
-                        () => { WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"); });
+                        () => WindowsHelper.ViewInBrowser(@"https://acstuff.ru/f/d/24-content-manager-websites-with-mods"));
             }));
 
             [CanBeNull]
@@ -1204,10 +1204,20 @@ window.$KEY = outline.stop.bind(outline);
                 return await _resultTask.Task;
 
                 void AutoDownload() {
+                    string suggestedRule = null;
                     _webBlock.PageLoaded += async (sender, args) => {
+                        var targetUrl = _url;
+                        if (targetUrl == null) return;
+
                         var url = args.Tab.LoadedUrl;
-                        if (string.Equals(url.GetDomainNameFromUrl(), _url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
-                            Logging.Debug(args.Tab.ActiveUrl);
+                        Logging.Debug("URL: " + url);
+                        if (string.Equals(url.GetDomainNameFromUrl(), targetUrl.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
+                            Logging.Debug(url);
+                            GetSuggestionAsync(targetUrl).ContinueWith(r => {
+                                Logging.Debug("Suggested rule: " + r.Result?.Rule);
+                                suggestedRule = r.Result?.Rule;
+                            }).Ignore();
+                            Logging.Debug("Run rule: " + _source.AutoDownloadRule);
                             RunRule(_source.AutoDownloadRule);
                         } else if (await FlexibleLoader.IsSupportedAsync(url, default(CancellationToken))) {
                             // Create a Loader and use it
@@ -1226,14 +1236,18 @@ window.$KEY = outline.stop.bind(outline);
                         }
                     };
 
-                    Task.Delay(5000).ContinueWith(t => {
-                        /*var url = _webBlock.CurrentTab?.ActiveUrl;
-                        if (!string.IsNullOrWhiteSpace(url)
-                                && !string.Equals(_webBlock.CurrentTab?.ActiveUrl.GetDomainNameFromUrl(),
-                                        _source.Url.GetDomainNameFromUrl(), StringComparison.OrdinalIgnoreCase)) {
-                            ContentInstallationManager.Instance.InstallAsync(url, params)
-                            Cancel();
-                        } else */
+                    Task.Delay(7000).ContinueWith(t => {
+                        if (suggestedRule != null && suggestedRule != _source.AutoDownloadRule) {
+                            RunRule(suggestedRule);
+                            Task.Delay(4000).ContinueWith(t1 => {
+                                if (_onDownloadFired) {
+                                    _source.AutoDownloadRule = suggestedRule;
+                                } else {
+                                    ActionExtension.InvokeInMainThread(FailSafe);
+                                }
+                            });
+                            return;
+                        }
 
                         if (!_onDownloadFired) {
                             ActionExtension.InvokeInMainThread(FailSafe);

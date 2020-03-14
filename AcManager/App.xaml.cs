@@ -391,6 +391,7 @@ namespace AcManager {
 
             Storage.TemporaryBackupsDirectory = FilesStorage.Instance.GetTemporaryDirectory("Storages Backups");
             CupClient.Initialize();
+            CupViewModel.Initialize();
             Superintendent.Initialize();
             ModsWebBrowser.Initialize();
 
@@ -645,7 +646,6 @@ namespace AcManager {
 
             ValuesStorage.SetEncrypted(AppKeyDialog.AppKeyRevokedKey, InternalUtils.Revoked);
             InternalUtils.SetKey(null, null);
-
 
             Current.Dispatcher?.Invoke(() => {
                 if (Current?.MainWindow is MainWindow && Current.MainWindow.IsActive) {

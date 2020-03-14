@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using AcManager.Controls.Helpers;
 using AcManager.Tools.AcObjectsNew;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
@@ -155,7 +156,7 @@ namespace AcManager.Controls {
 
         [CanBeNull]
         public static ToolTip GetCupUpdateToolTip(FrameworkElement obj = null) {
-            return GetToolTip(@"CupUpdateTooltip", obj);
+            return GetToolTip(obj.GetValue(CupUi.InformationModeProperty) as bool? == true ? @"CupInformationTooltip" : @"CupUpdateTooltip", obj);
         }
 
         private static void SetToolTip(FrameworkElement obj, [CanBeNull] ToolTip t, object dataContext) {

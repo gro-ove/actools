@@ -71,6 +71,7 @@ namespace AcManager.Controls.UserControls.Web {
         }
 
         public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+            Logging.Debug(url.GetDomainNameFromUrl());
             if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
                 toInject.Add(@"<script>!function(){
 window.__AC = {};

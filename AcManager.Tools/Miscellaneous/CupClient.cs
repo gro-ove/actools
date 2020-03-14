@@ -19,7 +19,7 @@ using Newtonsoft.Json.Linq;
 namespace AcManager.Tools.Miscellaneous {
     public class CupClient {
         private static ApiCacheThing _cache;
-        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(1)));
+        private static ApiCacheThing Cache => _cache ?? (_cache = new ApiCacheThing("CUP", TimeSpan.FromHours(3)));
 
         [CanBeNull]
         public static CupClient Instance { get; private set; }
@@ -64,7 +64,6 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private async Task CheckRegistriesAsync() {
-            return;
             foreach (var registry in SettingsHolder.Content.CupRegistries.Split(new[] { ';', '\n', ' ' }, StringSplitOptions.RemoveEmptyEntries)) {
                 try {
                     await LoadList(registry);
@@ -102,7 +101,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             public override string ToString() {
-                return $"{Type}/{Id}";
+                return $@"{Type}/{Id}";
             }
         }
 
@@ -153,7 +152,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
 
             public override string ToString() {
-                return $"(version={Version}; limited={IsToUpdateManually})";
+                return $@"(version={Version}; limited={IsToUpdateManually})";
             }
         }
 
@@ -163,8 +162,8 @@ namespace AcManager.Tools.Miscellaneous {
 
         private async Task LoadExtendedInformation(CupKey key, string registry) {
             try {
-                var data =
-                        JsonConvert.DeserializeObject<CupInformation>(await Cache.GetStringAsync($"{registry}/{key.Type.ToString().ToLowerInvariant()}/{key.Id}"));
+                var data = JsonConvert.DeserializeObject<CupInformation>(
+                        await Cache.GetStringAsync($@"{registry}/{key.Type.ToString().ToLowerInvariant()}/{key.Id}"));
                 data.SourceRegistry = registry.ApartFromLast("/");
                 data.IsExtendedLoaded = true;
                 RegisterLatestVersion(key, data);
@@ -195,9 +194,9 @@ namespace AcManager.Tools.Miscellaneous {
 
             return _installationUrlTaskCache.Get(async () => {
                 try {
-                    var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
+                    var url = $@"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/get";
                     using (var client = new CookieAwareWebClient()) {
-                        var updateUrl = await client.GetFinalRedirectAsync(url);
+                        var updateUrl = await client.GetFinalRedirectAsync(url, 1);
                         if (updateUrl != null) {
                             information._updateUrl = updateUrl;
                         }
@@ -218,11 +217,11 @@ namespace AcManager.Tools.Miscellaneous {
 
             return _reportTaskCache.Get(async () => {
                 try {
-                    var url = $"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/complain";
+                    var url = $@"{information.SourceRegistry}/{type.ToString().ToLowerInvariant()}/{id}/complain";
                     using (var client = new CookieAwareWebClient()) {
                         await client.UploadStringTaskAsync(url, "");
                         IgnoreUpdate(type, id);
-                        Toast.Show("Update reported", "Update reported and will be ignored. Thank you for your participation");
+                        Toast.Show("Update reported", "Update reported and will be ignored. Thank you for your contribution");
                         return true;
                     }
                 } catch (Exception e) {
@@ -236,7 +235,10 @@ namespace AcManager.Tools.Miscellaneous {
 
         public Task<bool> InstallUpdateAsync(CupContentType type, [NotNull] string id) {
             var information = GetInformation(type, id);
-            if (information == null) return Task.FromResult(false);
+            if (information == null) {
+                Logging.Warning($"Failed to update: information == null (type={type}, ID={id})");
+                return Task.FromResult(false);
+            }
 
             return _installTaskCache.Get(async () => {
                 var updateUrl = await GetUpdateUrlAsync(type, id);
@@ -248,8 +250,8 @@ namespace AcManager.Tools.Miscellaneous {
                 }
 
                 var idsToUpdate = new[] { id }.Append(information.AlternativeIds ?? new string[0]).ToArray();
-                return updateUrl != null &&
-                        await ContentInstallationManager.Instance.InstallAsync(updateUrl, new ContentInstallationParams(true) {
+                return updateUrl != null && await ContentInstallationManager.Instance.InstallAsync(updateUrl,
+                        new ContentInstallationParams(true) {
                             // Actual installation params
                             PreferCleanInstallation = information.PreferCleanInstallation,
 
@@ -263,32 +265,26 @@ namespace AcManager.Tools.Miscellaneous {
                             Version = information.Version,
                             InformationUrl = information.InformationUrl,
                             SyncDetails = true
-
-                            /*PostInstallation = {
-                                async (progress, token) => {
-                                    var manager = GetAssociatedManager(type);
-                                    if (manager == null) return;
-
-                                    progress.Report(new AsyncProgressEntry("Syncing versions…", 0.9999));
-                                    await Task.Delay(1000);
-                                    foreach (var cupSupportedObject in idsToUpdate.Select(x => manager.GetObjectById(x) as ICupSupportedObject).NonNull()) {
-                                        Logging.Debug($"Set values: {cupSupportedObject}={information.Version}");
-                                        cupSupportedObject.SetValues(information.Author, information.InformationUrl, information.Version);
-                                    }
-                                }
-                            }*/
                         });
             }, type, id);
+        }
+
+        private ICupSupportedObject GetLoaded(CupContentType type, [NotNull] string id) {
+            return GetAssociatedManager(type)?.WrappersAsIList.OfType<AcItemWrapper>().GetByIdOrDefault(id)?.Value as ICupSupportedObject;
         }
 
         public void IgnoreUpdate(CupContentType type, [NotNull] string id) {
             var information = GetInformation(type, id);
             if (information == null) return;
             _storage.Set($"ignore:{new CupKey(type, id)}:{information.Version}", true);
+            _versions.Remove(new CupKey(type, id));
+            GetLoaded(type, id).OnCupUpdateAvailableChanged();
         }
 
         public void IgnoreAllUpdates(CupContentType type, [NotNull] string id) {
             _storage.Set($"ignore:{new CupKey(type, id)}", true);
+            _versions.Remove(new CupKey(type, id));
+            GetLoaded(type, id).OnCupUpdateAvailableChanged();
         }
 
         private readonly Dictionary<CupKey, CupInformation> _versions = new Dictionary<CupKey, CupInformation>();
@@ -310,7 +306,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private async Task LoadList(string registry) {
-            var list = JObject.Parse(await Cache.GetStringAsync(registry + "/list"));
+            var list = JObject.Parse(await Cache.GetStringAsync($@"{registry}/list"));
             foreach (var p in list) {
                 if (!Enum.TryParse<CupContentType>(p.Key, true, out var type)) {
                     Logging.Warning("Not supported type: " + type);

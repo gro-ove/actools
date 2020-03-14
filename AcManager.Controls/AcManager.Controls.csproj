@@ -60,20 +60,20 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CefSharp, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.dll</HintPath>
+    <Reference Include="CefSharp, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Core, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
+    <Reference Include="CefSharp.Core, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.Wpf, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
+    <Reference Include="CefSharp.Wpf, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.Wpf.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="CefSharp.WinForms, Version=71.0.0.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
-      <HintPath>..\Libraries\CefSharp-71.0.0-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
+    <Reference Include="CefSharp.WinForms, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.WinForms.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
@@ -308,6 +308,7 @@
     <Compile Include="ViewModels\AssistsViewModel.cs" />
     <Compile Include="ViewModels\AcObjectListCollectionViewWrapperBase.cs" />
     <Compile Include="ViewModels\AssistsViewModelBase.cs" />
+    <Compile Include="ViewModels\CupViewModel.cs" />
     <Compile Include="ViewModels\DiapasonMapper.cs" />
     <Compile Include="ViewModels\RaceGridEntry.cs" />
     <Compile Include="ViewModels\RaceGridMode.cs" />

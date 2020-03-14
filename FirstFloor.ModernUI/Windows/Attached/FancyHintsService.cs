@@ -55,6 +55,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         [ThreadStatic]
         private static Random _random;
+
         public static Random RandomInstance => _random ?? (_random = new Random(Guid.NewGuid().GetHashCode()));
 
         public string Id { get; }
@@ -65,9 +66,13 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public bool CloseOnResize { get; }
 
         private static void DebugMessage(string msg) {
+#if DEBUG
+            Logging.Debug(msg);
+#else
             if (OptionDebugMode) {
                 Logging.Debug(msg);
             }
+#endif
         }
 
         public async void Trigger(TimeSpan delay) {
@@ -294,7 +299,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
                     Elements.Remove(reference);
                     u.Loaded -= OnElementLoaded;
                 }
-            } else if (reference == null){
+            } else if (reference == null) {
                 Elements.Add(new WeakReference<FrameworkElement>(u));
                 if (u.IsLoaded) {
                     OnElementLoaded(u, null);
@@ -328,7 +333,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             obj.SetValue(HorizontalAlignmentProperty, value);
         }
 
-        public static readonly DependencyProperty HorizontalAlignmentProperty = DependencyProperty.RegisterAttached("HorizontalAlignment", typeof(HorizontalAlignment),
+        public static readonly DependencyProperty HorizontalAlignmentProperty = DependencyProperty.RegisterAttached("HorizontalAlignment",
+                typeof(HorizontalAlignment),
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(HorizontalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
 
         public static VerticalAlignment GetVerticalAlignment(DependencyObject obj) {
@@ -341,7 +347,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         public static readonly DependencyProperty VerticalAlignmentProperty = DependencyProperty.RegisterAttached("VerticalAlignment", typeof(VerticalAlignment),
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(VerticalAlignment.Stretch, FrameworkPropertyMetadataOptions.None));
-
 
         public static HorizontalAlignment GetHorizontalContentAlignment(DependencyObject obj) {
             return obj.GetValue(HorizontalContentAlignmentProperty) as HorizontalAlignment? ?? default;
@@ -410,7 +415,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
 
         public static readonly DependencyProperty AttachToProperty = DependencyProperty.RegisterAttached("AttachTo", typeof(object),
                 typeof(FancyHintsService), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.Inherits));
-
         #endregion
     }
 }

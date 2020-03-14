@@ -82,4 +82,35 @@
       </mui:BooleanSwitch.False>
     </mui:BooleanSwitch>
   </ToolTip>
+
+  <ToolTip x:Key="CupInformationTooltip" d:DataContext="{d:DesignInstance t:ICupSupportedObject}" x:Shared="False">
+    <mui:BooleanSwitch Value="{Binding IsCupUpdateAvailable}">
+      <mui:BooleanSwitch.True>
+        <StackPanel Margin="20 8">
+          <TextBlock Text="New version:" Style="{StaticResource Heading2}" />
+          <c:PropertiesGrid Columns="1" HorizontalSpacing="4" VerticalSpacing="4" Margin="0 8 0 0" LabelPadding="0 1 0 0" LabelWidth="160">
+            <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsToUpdateManually}">
+              <mui:BooleanSwitch.True>
+                <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
+              </mui:BooleanSwitch.True>
+              <mui:BooleanSwitch.False>
+                <TextBlock Foreground="{DynamicResource Go}" Text="Yes" FontWeight="Bold" />
+              </mui:BooleanSwitch.False>
+            </mui:BooleanSwitch>
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding InstalledVersion}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Version:" Text="{Binding Version}" Placeholder="Not set" />
+            <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Id:" Text="{Binding Id}" Placeholder="Not set" />
+          </c:PropertiesGrid>
+          <DockPanel Margin="0 4 0 0">
+            <Label Content="Recent changes:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />
+            <mui:PlaceholderTextBlock Text="{Binding CupUpdateInformation.Changelog}" Placeholder="Not set" MaxHeight="60" />
+          </DockPanel>
+        </StackPanel>
+      </mui:BooleanSwitch.True>
+      <mui:BooleanSwitch.False>
+        <TextBlock Text="No update found" Style="{StaticResource Heading1}" />
+      </mui:BooleanSwitch.False>
+    </mui:BooleanSwitch>
+  </ToolTip>
 </ResourceDictionary>

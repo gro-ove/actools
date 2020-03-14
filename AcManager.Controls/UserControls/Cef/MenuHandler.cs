@@ -18,7 +18,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
         void IContextMenuHandler.OnContextMenuDismissed(IWebBrowser browserControl, IBrowser browser, IFrame frame) {
             var chromium = (ChromiumWebBrowser)browserControl;
-            chromium.Dispatcher.Invoke(() => { chromium.ContextMenu = null; });
+            chromium.Dispatcher?.Invoke(() => { chromium.ContextMenu = null; });
         }
 
         private static CefMenuCommand[] GetMenuItems(IMenuModel model) {
@@ -79,7 +79,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 });
                 contextMenu.Items.Add(new MenuItem {
                     Header = "Show developer tools",
-                    Command = new DelegateCommand(browser.ShowDevTools)
+                    Command = new DelegateCommand(() => browser.ShowDevTools())
                 });
 
                 chromium.ContextMenu = contextMenu;

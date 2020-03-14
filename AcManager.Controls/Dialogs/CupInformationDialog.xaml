@@ -49,7 +49,7 @@
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Made by:" Text="{Binding CupUpdateInformation.Author}" Placeholder="Not set" />
       <mui:PathTrimmingTextBlock c:PropertiesGrid.Label="More information at:" Text="{Binding CupUpdateInformation.InformationUrl}" Placeholder="Not set"
           Style="{StaticResource RichTextBox.Hyperlink}" MouseLeftButtonUp="OnHyperlinkMouseUp" MouseLeftButtonDown="OnHyperlinkMouseDown"
-          SelectionChanged="OnHyperlinkMouseSelection" Margin="-5 0 0 0" />
+          SelectionChanged="OnHyperlinkMouseSelection" />
     </c:PropertiesGrid>
 
     <DockPanel Margin="0 4 0 0">

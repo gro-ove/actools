@@ -49,6 +49,18 @@ namespace AcManager.Controls.Helpers {
                 "Amount of information displayed depends on window’s size, so UI could be a bit more flexible. It’s not the best system, but it’s better than everything being fixed size.",
                 startupsDelay: 1, probability: 0.8, triggersDelay: 0, closeOnResize: true);
 
+        public static readonly FancyHint DownloadsList = new FancyHint(
+                "downloads-menu",
+                "Download is started",
+                "Here, you can check all the downloads and install things when loading is finished",
+                startupsDelay: 0, forced: true);
+
+        public static readonly FancyHint ContentUpdatesArrived = new FancyHint(
+                "content-updates-arrived",
+                "Updates for mods",
+                "It seems like Content Manager just found some. Would you like to download them?",
+                startupsDelay: 0, forced: true);
+
         public static readonly FancyHint MultiSelectionMode = new FancyHint(
                 "multiselection-mode",
                 "Hold [i]Ctrl[/i] or [i]Shift[/i] and click here for multi-selection mode",

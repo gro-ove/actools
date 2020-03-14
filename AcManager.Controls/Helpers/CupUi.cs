@@ -14,6 +14,18 @@ namespace AcManager.Controls.Helpers {
             return (ICupSupportedObject)obj.GetValue(ObjectProperty);
         }
 
+        public static bool GetInformationMode(DependencyObject obj) {
+            return (bool)obj.GetValue(InformationModeProperty);
+        }
+
+        public static void SetInformationMode(DependencyObject obj, bool value) {
+            obj.SetValue(InformationModeProperty, value);
+        }
+
+        public static readonly DependencyProperty InformationModeProperty = DependencyProperty.RegisterAttached("InformationMode", typeof(bool),
+                typeof(CupUi), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
+
+
         public static void SetObject(DependencyObject obj, ICupSupportedObject value) {
             obj.SetValue(ObjectProperty, value);
         }

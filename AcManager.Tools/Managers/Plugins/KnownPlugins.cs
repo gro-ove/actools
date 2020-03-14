@@ -2,7 +2,7 @@
 
 namespace AcManager.Tools.Managers.Plugins {
     public static class KnownPlugins {
-        public static readonly string CefSharp = $@"CefSharp-71.0.0-{BuildInformation.Platform}";
+        public static readonly string CefSharp = $@"CefSharp-79.1.360-{BuildInformation.Platform}";
         public static readonly string Fann = $@"Fann-{BuildInformation.Platform}";
         public static readonly string Fmod = @"Fmod";
         public static readonly string Magick = $@"Magick-7.0.4-{BuildInformation.Platform}";

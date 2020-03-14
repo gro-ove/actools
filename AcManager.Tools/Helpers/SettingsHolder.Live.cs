@@ -30,6 +30,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _srsCollectCombinations;
+
+            public bool SrsCollectCombinations {
+                get => _srsCollectCombinations ?? (_srsCollectCombinations = ValuesStorage.Get("Settings.LiveSettings.SrsCollectCombinations", true)).Value;
+                set {
+                    if (Equals(value, _srsCollectCombinations)) return;
+                    _srsCollectCombinations = value;
+                    ValuesStorage.Set("Settings.LiveSettings.SrsCollectCombinations", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _srsAutoMode;
 
             public bool SrsAutoMode {

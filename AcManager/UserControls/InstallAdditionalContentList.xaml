@@ -432,7 +432,7 @@
                     <MenuItem.Header>
                       <DockPanel MaxWidth="400">
                         <TextBlock Text="From: " />
-                        <mui:PathTrimmingTextBlock Text="{Binding Source}" />
+                        <mui:PathTrimmingTextBlock Text="{Binding Source}" IsHitTestVisible="False" />
                       </DockPanel>
                     </MenuItem.Header>
                   </MenuItem>

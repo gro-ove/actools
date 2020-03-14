@@ -41,9 +41,12 @@
           <Label Content="{x:Static g:AppStrings.Common_DevMode}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}">
-          <Label Content="Show occasional hints" />
-        </CheckBox>
+        <DockPanel>
+          <Button DockPanel.Dock="Right" Command="{Binding ResetOccasionalHintsCommand}" Content="Reset occasional hits to see them again" />
+          <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" VerticalAlignment="Center">
+            <Label Content="Show occasional hints" />
+          </CheckBox>
+        </DockPanel>
 
         <DockPanel>
           <Label Content="“Don’t show again” in dialogs:" />
@@ -125,8 +128,8 @@
         </DockPanel>
 
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
-        <Button Command="{Binding ShowContentManagerDataCommand}" Content="Open app’s data folder" />
-        <Button Command="{Binding ShowContentManagerLogsCommand}" Content="Open logs folder" />
+          <Button Command="{Binding ShowContentManagerDataCommand}" Content="Open app’s data folder" />
+          <Button Command="{Binding ShowContentManagerLogsCommand}" Content="Open logs folder" />
         </mui:SpacingUniformGrid>
 
         <!-- Beta access -->

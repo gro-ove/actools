@@ -193,13 +193,15 @@ namespace AcManager.Controls.UserControls.Web {
 
         public void Execute(string js, bool onload = false) {
             if (_broken) return;
-            try {
-                _something.Execute(onload ?
-                        @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
-                        @"(function(){" + js + @"})();");
-            } catch (Exception e) {
-                Logging.Warning(e);
-            }
+            ActionExtension.InvokeInMainThreadAsync(() => {
+                try {
+                    _something.Execute(onload ?
+                            @"(function(){ var f = function(){" + js + @"}; if (!document.body) window.addEventListener('load', f, false); else f(); })();" :
+                            @"(function(){" + js + @"})();");
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+            });
         }
 
         public void Execute(string fnName, params object[] args) {

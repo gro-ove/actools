@@ -47,7 +47,11 @@ namespace AcManager.Pages.Drive {
         public void Initialize() {
             DataContext = new ViewModel();
             InitializeComponent();
-            this.AddWidthCondition(1200).Add(t => Browser.LeftSideContent as FrameworkElement);
+            if (SettingsHolder.Live.SrsCollectCombinations) {
+                this.AddWidthCondition(1200).Add(t => Browser.LeftSideContent as FrameworkElement);
+            } else {
+                Browser.LeftSideContent = null;
+            }
         }
 
         private ViewModel Model => (ViewModel)DataContext;
@@ -128,9 +132,8 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand _quickDrive;
 
-            public DelegateCommand QuickDriveCommand => _quickDrive ?? (_quickDrive = new DelegateCommand(() => {
-                QuickDrive.Show(SelectedCar, track: Track, mode: QuickDrive.ModePractice);
-            }));
+            public DelegateCommand QuickDriveCommand
+                => _quickDrive ?? (_quickDrive = new DelegateCommand(() => { QuickDrive.Show(SelectedCar, track: Track, mode: QuickDrive.ModePractice); }));
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -262,7 +265,7 @@ window.external.SetDriverNames(JSON.stringify([].map.call(document.querySelector
             public void SetDriverNames(string value) {
                 try {
                     DriverNames?.Invoke(this, new DriverNamesEventArgs {
-                            Names = JsonConvert.DeserializeObject<List<string>>(value).Distinct().ToList()
+                        Names = JsonConvert.DeserializeObject<List<string>>(value).Distinct().ToList()
                     });
                 } catch (Exception e) {
                     Logging.Error(e);

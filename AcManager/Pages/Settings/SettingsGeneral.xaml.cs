@@ -152,6 +152,12 @@ namespace AcManager.Pages.Settings {
             [Localizable(false)]
             public DelegateCommand ResetDoNotAskAgainsCommand => _resetDoNotAskAgainsCommand ?? (_resetDoNotAskAgainsCommand =
                     new DelegateCommand(() => ValuesStorage.Storage.CleanUp(x => x.StartsWith("_stored:__doNotAskAgain_"))));
+
+            private DelegateCommand _resetOccasionalHintsCommand;
+
+            public DelegateCommand ResetOccasionalHintsCommand => _resetOccasionalHintsCommand ?? (_resetOccasionalHintsCommand = new DelegateCommand(() => {
+                ValuesStorage.Storage.CleanUp(x => x.StartsWith("__fancyHint:shown:"));
+            }));
         }
 
         private bool _loaded;

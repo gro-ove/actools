@@ -401,11 +401,11 @@ namespace AcManager.Tools.ContentInstallation.Implementations {
             await GetFiles(filtered.Where(x => !x.Item2).Select(x => x.Item1), async s => {
                 for (var i = 0; i < filtered.Count; i++) {
                     var entry = filtered[i];
-                    Logging.Debug(entry.Item1 + "→" + entry.Item4);
+                    // Logging.Debug(entry.Item1 + "→" + entry.Item4);
 
                     if (entry.Item2) {
                         FileUtils.EnsureDirectoryExists(entry.Item4);
-                    } else {
+                    } else if (entry.Item4 != null) {
                         FileUtils.EnsureFileDirectoryExists(entry.Item4);
                         progress?.Report(Path.GetFileName(entry.Item4), i, filtered.Count);
 

@@ -322,7 +322,7 @@ namespace AcManager.Tools.Helpers {
 
         public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
             using (SetAutoRedirect(false))
-            using (SetMethod("HEAD")) {
+            using (SetMethod(@"HEAD")) {
                 var newUrl = url;
                 do {
                     try {
@@ -335,7 +335,7 @@ namespace AcManager.Tools.Helpers {
                             case HttpStatusCode.RedirectKeepVerb:
                             case HttpStatusCode.RedirectMethod:
                                 if (ResponseHeaders == null) return newUrl;
-                                newUrl = ResponseHeaders["Location"];
+                                newUrl = ResponseHeaders[@"Location"];
                                 if (newUrl == null) return url;
                                 if (newUrl.IndexOf(@"://", StringComparison.Ordinal) == -1) {
                                     // Doesn't have a URL Schema, meaning it's a relative or absolute URL
@@ -352,7 +352,7 @@ namespace AcManager.Tools.Helpers {
                         Logging.Warning(ex);
                         return null;
                     }
-                } while (maxRedirectCount-- > 0);
+                } while (--maxRedirectCount > 0);
                 return newUrl;
             }
         }

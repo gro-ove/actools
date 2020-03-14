@@ -149,17 +149,17 @@ namespace AcManager.Pages.Windows {
             InternalUtils.Launch(this);
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => x.Source.OriginalString.Contains(@"/online.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += OnlineLinkChanged;
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
+                    .Where(x => x.Source.OriginalString.Contains(@"/laptimes_table.xaml", StringComparison.OrdinalIgnoreCase))) {
                 result.LinkChanged += LapTimesLinkChanged;
             }
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
-                                                 .Where(x => x.GroupKey == "media" || x.GroupKey == "content")) {
+                    .Where(x => x.GroupKey == "media" || x.GroupKey == "content")) {
                 result.LinkChanged += ContentLinkChanged;
             }
 
@@ -179,7 +179,7 @@ namespace AcManager.Pages.Windows {
             }
 
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
-
+            if (CupClient.Instance != null) CupClient.Instance.NewLatestVersion += OnNewLatestVersion;
             Activated += OnActivated;
 
             if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
@@ -222,6 +222,10 @@ namespace AcManager.Pages.Windows {
                     NavigateTo(new Uri("/Pages/Miscellaneous/DownloadsList.xaml", UriKind.Relative));
                 }
             });
+
+            if (!AppAppearanceManager.Instance.DownloadsInSeparatePage) {
+                FancyHints.DownloadsList.Trigger();
+            }
         }
 
         private void OnActivated(object sender, EventArgs e) {
@@ -274,7 +278,7 @@ namespace AcManager.Pages.Windows {
             DownloadsEntry.IsAvailable = value;
             BrowserLinkGroup.GroupKey = value ? @"downloads" : @"content";
             TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey != null)
-                      .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
+                    .ForEach(x => x.IsShown = AppAppearanceManager.Instance.IsTitleLinkVisible(x.GroupKey) != false);
             AppAppearanceManager.Instance.TitleLinkEntries.ForEach(x => x.PropertyChanged += OnTitleLinkEnabledChanged);
         }
 
@@ -435,7 +439,7 @@ namespace AcManager.Pages.Windows {
                 Logging.Debug("Changelog entries: " + changelog.Count);
                 if (changelog.Any()) {
                     ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                      .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                            .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
                             MessageBoxButton.OK);
                 } else {
                     ModernDialog.ShowMessage(AppStrings.AdditionalContent_NothingFound.ToSentence(), AppStrings.Changelog_RecentChanges_Title,
@@ -472,6 +476,11 @@ namespace AcManager.Pages.Windows {
                 ApplyDynamicBackground(background, AppArguments.GetDouble(AppFlag.BackgroundOpacity, 0.5));
             }
 
+            if (CupViewModel.Instance.ToUpdate.Count > 0) {
+                FancyHints.ContentUpdatesArrived.Trigger();
+            } else {
+                CupViewModel.Instance.NewUpdate += (o, args) => FancyHints.ContentUpdatesArrived.Trigger();
+            }
             Logging.Debug("Main window is loaded and ready");
         }
 
@@ -526,13 +535,13 @@ namespace AcManager.Pages.Windows {
 
         private void UpdateAboutIsNew() {
             TitleLinks.FirstOrDefault(x => x.DisplayName == AppStrings.Main_About)?
-                      .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
+                    .SetNew(AboutHelper.Instance.HasNewImportantTips || AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ReleaseNotes)?
-                          .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
+                    .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ReleaseNotes)?
+                    .SetNew(AboutHelper.Instance.HasNewReleaseNotes);
             MenuLinkGroups.SelectMany(x => x.Links)
-                          .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ImportantTips)?
-                          .SetNew(AboutHelper.Instance.HasNewImportantTips);
+                    .FirstOrDefault(x => x.DisplayName == AppStrings.Main_ImportantTips)?
+                    .SetNew(AboutHelper.Instance.HasNewImportantTips);
         }
 
         private void OnAboutPropertyChanged(object sender, PropertyChangedEventArgs e) {
@@ -997,6 +1006,29 @@ namespace AcManager.Pages.Windows {
             await Task.Yield();
             s.Stop();
             s.Begin();
+        }
+
+        private Border _cupNotificationPanel;
+
+        private void OnCupNotificationPanelLoaded(object sender, RoutedEventArgs e) {
+            _cupNotificationPanel = (Border)sender;
+            if (_cupNotificationPanel.Child == null) {
+                var child = (FrameworkElement)FindResource(@"CupNotificationBlock");
+                _cupNotificationPanel.Child = child;
+            }
+        }
+
+        private async void OnNewLatestVersion(object sender, CupEventArgs e) {
+            var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
+            if (manager == null) return;
+            if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && obj.IsCupUpdateAvailable) {
+                FancyHints.ContentUpdatesArrived.Trigger();
+            }
+        }
+
+        private void OnDownloadsButtonClick(object sender, MouseButtonEventArgs e) {
+            var glow = this.FindChild<FrameworkElement>("UpdateMarkGlow");
+            (glow?.Parent as Panel)?.Children.Remove(glow);
         }
     }
 }

@@ -104,10 +104,10 @@ namespace AcManager.Controls.UserControls.Cef {
                 return;
             }
 
-            args.Frame.LoadStringForUrl($@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
+            args.Frame.LoadHtml($@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
 <h2>Failed to load URL {args.FailedUrl}</h2>
 <p>Error: {args.ErrorText} ({args.ErrorCode}).</p>
-</body></html>", args.FailedUrl);
+</body></html>");
         }
 
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
@@ -169,7 +169,10 @@ namespace AcManager.Controls.UserControls.Cef {
             try {
                 if (_inner != null) {
                     CefSharpHelper.AcApiHandler.Register(_inner, _jsBridge?.AcApiHosts.ToArray(), OnAcApiRequest);
-                    _inner.RegisterJsObject(@"external", _jsBridge, new BindingOptions { CamelCaseJavascriptNames = false });
+                    _inner.JavascriptObjectRepository.Register(@"external", _jsBridge, false, new BindingOptions {
+                        Binder = BindingOptions.DefaultBinder.Binder,
+                        CamelCaseJavascriptNames = false
+                    });
                 }
             } catch (Exception e) {
                 Logging.Warning(e);
@@ -294,6 +297,10 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         void IDisplayHandler.OnFullscreenModeChange(IWebBrowser browserControl, IBrowser browser, bool fullscreen) { }
+
+        public void OnLoadingProgressChange(IWebBrowser chromiumWebBrowser, IBrowser browser, double progress) {
+            // TODO
+        }
 
         bool IDisplayHandler.OnTooltipChanged(IWebBrowser browserControl, ref string text) {
             return false;

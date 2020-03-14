@@ -94,6 +94,10 @@
             <Label Content="{x:Static g:AppStrings.Settings_Live_CustomStyle}" />
           </CheckBox>
 
+          <CheckBox IsChecked="{Binding Live.SrsCollectCombinations}">
+            <Label Content="Collect race combinations for quick testing and training" />
+          </CheckBox>
+
           <!--<CheckBox IsChecked="{Binding Live.SrsAutoMode}" ToolTip="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Live_SrsJoinFromOnline}" />
           </CheckBox>

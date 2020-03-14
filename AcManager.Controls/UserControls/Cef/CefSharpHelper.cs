@@ -32,6 +32,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
                 // TODO: Try the new way?
                 CefSharpSettings.LegacyJavascriptBindingEnabled = true;
+                CefSharpSettings.WcfEnabled = true;
                 CefSharp.Cef.EnableHighDPISupport();
 
                 var path = PluginsManager.Instance.GetPluginDirectory(KnownPlugins.CefSharp);

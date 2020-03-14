@@ -18,8 +18,8 @@
           </DockPanel>
           <Button Style="{StaticResource Go.Button}" Content="Offline race" FontSize="11" Padding="4 0" VerticalAlignment="Stretch" DockPanel.Dock="Right"
               Margin="4 0 0 0" Command="{Binding LocalRaceCommand}" Height="23" />
-          <Button Content="Quick Drive" FontSize="11" Padding="4 0" VerticalAlignment="Stretch" DockPanel.Dock="Right"
-              Margin="4 0 0 0" Command="{Binding QuickDriveCommand}" Height="23" />
+          <Button Content="Quick Drive" FontSize="11" Padding="4 0" VerticalAlignment="Stretch" DockPanel.Dock="Right" Margin="4 0 0 0"
+              Command="{Binding QuickDriveCommand}" Height="23" />
           <mui:Switch Value="{Binding Cars.Count}">
             <DockPanel mui:Switch.When="1" DataContext="{Binding Cars[0]}" Background="Transparent" mui:Draggable.Data="{Binding}" c:ToolTips.Car="{Binding}"
                 c:ContextMenus.Car="{Binding}" Margin="7 0 0 0">
@@ -58,15 +58,14 @@
         <c:WebBlock x:Name="Browser" UserAgent="Assetto Corsa Launcher" StartPage="http://www.simracingsystem.com" PreferTransparentBackground="True"
             NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2" AlwaysKeepAlive="True">
           <c:WebBlock.LeftSideContent>
-            <ItemsControl Width="320" Tag="RaceCombinationsPanel" ItemsSource="{Binding RaceCombinations}" Style="{StaticResource VirtualizingItemsControl}"
-                ItemTemplate="{StaticResource DetectedCombination}" />
-            <!--<Border Width="320">
-              <DockPanel Visibility="{Binding RaceCombinations.Count, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}">
+            <mui:Switch Value="{Binding RaceCombinations.Count}" Width="320">
+              <TextBlock mui:Switch.When="0" Text="No combinations are detected" Style="{StaticResource Heading2}" Margin="20 20" />
+              <DockPanel>
                 <TextBlock Text="Detected combinations:" DockPanel.Dock="Top" Style="{StaticResource Heading2}" Margin="20 20" />
-                <ItemsControl ItemsSource="{Binding RaceCombinations}" Style="{StaticResource VirtualizingItemsControl}"
+                <ItemsControl Tag="RaceCombinationsPanel" ItemsSource="{Binding RaceCombinations}" Style="{StaticResource ScrollingItemsControl}"
                     ItemTemplate="{StaticResource DetectedCombination}" />
               </DockPanel>
-            </Border>-->
+            </mui:Switch>
           </c:WebBlock.LeftSideContent>
         </c:WebBlock>
       </mui:BooleanSwitch.True>
