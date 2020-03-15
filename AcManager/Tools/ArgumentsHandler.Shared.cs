@@ -6,7 +6,6 @@ using AcManager.Controls;
 using AcManager.Controls.ViewModels;
 using AcManager.CustomShowroom;
 using AcManager.Pages.Drive;
-using AcManager.Pages.Settings;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
@@ -210,7 +209,7 @@ namespace AcManager.Tools {
 
         private static ArgumentHandleResult ProcessSharedCspSettings(SharedEntry shared, byte[] data) {
             var result = ShowDialog(shared);
-            using (var model = SettingsShadersPatch.ViewModel.Create()) {
+            using (var model = PatchSettingsModel.Create()) {
                 switch (result) {
                     case Choise.Save:
                     case Choise.ApplyAndSave:

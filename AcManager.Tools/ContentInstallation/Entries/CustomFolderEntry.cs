@@ -13,12 +13,14 @@ using JetBrains.Annotations;
 namespace AcManager.Tools.ContentInstallation.Entries {
     public class CustomFolderEntry : ContentEntryBase {
         private readonly string _relativeDestination;
+        private readonly bool _onlyUpdating;
         private readonly List<string> _toInstall;
 
         public CustomFolderEntry([NotNull] string path, IEnumerable<string> items, string name, string relativeDestination, double priority = 10d,
-                string version = null, string description = null)
+                string version = null, string description = null, bool onlyUpdating = false)
                 : base(path, "", name, version, null, description) {
             _relativeDestination = relativeDestination;
+            _onlyUpdating = onlyUpdating;
             _toInstall = items.ToList();
             Priority = priority;
         }
@@ -31,14 +33,16 @@ namespace AcManager.Tools.ContentInstallation.Entries {
         public override string ExistingFormat => $"Update for {Name.ToSentenceMember()}";
 
         protected override IEnumerable<UpdateOption> GetUpdateOptions() {
-            yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst, false);
+            if (!_onlyUpdating) {
+                yield return new UpdateOption(ToolsStrings.Installator_RemoveExistingFirst, false);
+            }
             yield return new UpdateOption(ToolsStrings.Installator_UpdateEverything, false);
         }
 
         protected override ICopyCallback GetCopyCallback(string destination) {
             var path = EntryPath;
             var first = true;
-            var cleanInstall = SelectedOption?.DisplayName == ToolsStrings.Installator_RemoveExistingFirst;
+            var cleanInstall = !_onlyUpdating && SelectedOption?.DisplayName == ToolsStrings.Installator_RemoveExistingFirst;
             return new CopyCallback(info => {
                 var filename = info.Key;
 

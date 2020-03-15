@@ -369,6 +369,7 @@
     <Compile Include="Pages\AcSettings\AcSettingsDamageDisplayer.xaml.cs">
       <DependentUpon>AcSettingsDamageDisplayer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\AcSettings\AcSettingsPython_detailed.xaml.cs" />
     <Compile Include="Pages\AcSettings\AcSettingsSystem.xaml.cs">
       <DependentUpon>AcSettingsSystem.xaml</DependentUpon>
     </Compile>
@@ -1815,6 +1816,7 @@
     <Content Include="About\Licenses\Meta.Vlc\LICENSE" />
     <Content Include="About\Licenses\SmartThreadPool\SmartThreadPool.txt" />
     <Content Include="About\Licenses\WpfNotifyIcon\WpfNotifyIcon.txt" />
+    <Page Include="Pages\AcSettings\AcSettingsPython_detailed.xaml" />
     <Resource Include="Assets\Img\AppOff.png" />
     <Resource Include="Assets\Img\AppOn.png" />
     <None Include="About\Filtering\More About Expressions.txt" />

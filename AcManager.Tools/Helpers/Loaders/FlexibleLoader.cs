@@ -54,6 +54,7 @@ namespace AcManager.Tools.Helpers.Loaders {
             Register<GoogleDriveLoader>(GoogleDriveLoader.Test);
             Register<YandexDiskLoader>(YandexDiskLoader.Test);
             Register<MediaFireLoader>(MediaFireLoader.Test);
+            Register<ShareModsLoader>(ShareModsLoader.Test);
             Register<DropboxLoader>(DropboxLoader.Test);
             Register<OneDriveLoader>(OneDriveLoader.Test);
             Register<AdFlyLoader>(AdFlyLoader.Test);
@@ -67,6 +68,7 @@ namespace AcManager.Tools.Helpers.Loaders {
                     GoogleDriveLoader.Test(url) ||
                     YandexDiskLoader.Test(url) ||
                     MediaFireLoader.Test(url) ||
+                    ShareModsLoader.Test(url) ||
                     DropboxLoader.Test(url) ||
                     OneDriveLoader.Test(url) ||
                     AdFlyLoader.Test(url) ||

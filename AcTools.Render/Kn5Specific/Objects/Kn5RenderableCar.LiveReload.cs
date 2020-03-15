@@ -112,6 +112,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _suspensionsPack = null;
             DisposeHelper.Dispose(ref _suspensionLines);
             ReupdatePreudoSteer();
+            OnPropertyChanged(nameof(SuspensionsPack));
         }
     }
 }

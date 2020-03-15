@@ -9,6 +9,7 @@ using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.PresetsPerMode;
 using AcManager.Tools.Managers.Presets;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
@@ -134,6 +135,8 @@ namespace AcManager.Pages.AcSettings {
 
             public HierarchicalGroup VideoPresets { get; }
 
+            public HierarchicalGroup PatchPresets { get; }
+
             public ViewModel() {
                 Entries = new ChangeableObservableCollection<PresetPerMode>();
                 Modes = new BetterObservableCollection<Mode>();
@@ -141,6 +144,7 @@ namespace AcManager.Pages.AcSettings {
                 AppPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.AppsPresetsKey)));
                 AudioPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.AudioPresetsKey)));
                 VideoPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(new PresetsCategory(AcSettingsHolder.VideoPresetsKey)));
+                PatchPresets = new HierarchicalGroup("", UserPresetsControl.GroupPresets(PatchSettingsModel.Category));
 
                 UpdateModes();
                 FilesStorage.Instance.Watcher(ContentCategory.PresetsPerModeConditions).Update += OnCategoriesUpdate;

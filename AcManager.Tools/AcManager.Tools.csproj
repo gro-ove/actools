@@ -392,6 +392,7 @@
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
     <Compile Include="Helpers\Loaders\ILoaderFactory.cs" />
     <Compile Include="Helpers\Loaders\LongenerLoader.cs" />
+    <Compile Include="Helpers\Loaders\ShareModsLoader.cs" />
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
@@ -562,6 +563,7 @@
     <Compile Include="Miscellaneous\ICupSupportedObject.cs" />
     <Compile Include="Miscellaneous\ILocalKeyBindingInput.cs" />
     <Compile Include="Miscellaneous\OAuth.cs" />
+    <Compile Include="Miscellaneous\PatchSettingsModel.cs" />
     <Compile Include="Miscellaneous\ReplayReader.cs" />
     <Compile Include="Objects\CarObject.Controls.cs" />
     <Compile Include="Objects\CarObject.CustomData.cs" />

@@ -325,7 +325,7 @@ namespace AcManager.Tools.ContentInstallation {
                     }
                 } else {
                     trackId = directory.Files.Where(x => x.NameLowerCase.EndsWith(".kn5")).OrderByDescending(x => x.Size)
-                                       .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
+                            .FirstOrDefault()?.NameLowerCase.ApartFromLast(".kn5");
                     if (trackId == null) {
                         Logging.Write("Can’t determine ID");
                         return null;
@@ -492,7 +492,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var carId = directory.Name ??
                             directory.GetSubDirectory("sfx")?.Files.Select(x => x.NameLowerCase)
-                                     .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
+                                    .FirstOrDefault(x => x.EndsWith(@".bank") && x.Count('.') == 1 && x != @"common.bank")?.ApartFromLast(@".bank");
 
                     if (carId != null) {
                         return new CarContentEntry(directory.Key ?? "", carId, parsed.GetStringValueOnly("parent") != null,
@@ -516,7 +516,7 @@ namespace AcManager.Tools.ContentInstallation {
                     var parsed = JsonExtension.Parse(data.ToUtf8String());
                     var showroomId = directory.Name ??
                             directory.Files.Where(x => x.NameLowerCase.EndsWith(@".kn5")).OrderByDescending(x => x.Info.Size)
-                                     .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
+                                    .FirstOrDefault()?.NameLowerCase.ApartFromLast(@".kn5");
                     if (showroomId != null) {
                         return new ShowroomContentEntry(directory.Key ?? "", showroomId,
                                 parsed.GetStringValueOnly("name"), parsed.GetStringValueOnly("version"), icon);
@@ -679,6 +679,14 @@ namespace AcManager.Tools.ContentInstallation {
                 return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "GBW scripts", "__gbwSuite");
             }
 
+            if (directory.Name == "cars" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Cars configs", "extension/config/cars", onlyUpdating: true);
+            }
+
+            if (directory.Name == "tracks" && directory.Parent?.Name == "config" && directory.Parent?.Parent?.Name == "extension") {
+                return new CustomFolderEntry(directory.Key ?? "", new[] { directory.Key }, "Track configs", "extension/config/tracks", onlyUpdating: true);
+            }
+
             PatchPluginEntry ret;
             if ((ret = await CheckPatchPlugin("weather.lua", "CSP Weather FX script", @"weather")) != null) {
                 return ret;
@@ -828,8 +836,8 @@ namespace AcManager.Tools.ContentInstallation {
                     if (presets == null || presets.Count == 0) return null;
 
                     var resources = ini.GetNonEmpty("EffectSearchPaths")?.Split(',')
-                                       .Concat(ini.GetNonEmpty("TextureSearchPaths")?.Split(',') ?? new string[0])
-                                       .Select(ToRelativePath).NonNull().ToList() ?? new List<string>();
+                            .Concat(ini.GetNonEmpty("TextureSearchPaths")?.Split(',') ?? new string[0])
+                            .Select(ToRelativePath).NonNull().ToList() ?? new List<string>();
 
                     return new ReshadeSetupEntry(file.Key, presets.JoinToReadableString(), presets.Concat(resources));
 

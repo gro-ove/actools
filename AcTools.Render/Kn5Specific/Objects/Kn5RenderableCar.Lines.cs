@@ -131,7 +131,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 for (var i = lines.Length - 1; i >= 0; i--) {
                     var line = lines[i];
-                    line.Renderable.ParentMatrix = parent.Matrix;
+                    line.Renderable.ParentMatrix = parent.RootObject.Matrix;
                     line.Renderable.Draw(holder, camera, SpecialRenderMode.Simple);
                 }
             }

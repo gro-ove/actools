@@ -100,6 +100,14 @@
             </Border>
           </DockPanel>
 
+          <DockPanel DataContext="{Binding CustomShadersPatch}">
+            <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
+              <Label Content="CSP:" ToolTip="Custom Shaders Patch" />
+            </CheckBox>
+            <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.PatchPresets, ElementName=This}" SelectedItem="{Binding Value}" FixedMode="False"
+                SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
+          </DockPanel>
+
           <CheckBox IsChecked="{Binding RearViewMirror}" Style="{StaticResource CheckBox.Separate}" IsThreeState="True">
             <Label Content="Rear view mirror" />
           </CheckBox>

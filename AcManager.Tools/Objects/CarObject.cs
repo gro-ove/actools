@@ -654,6 +654,7 @@ namespace AcManager.Tools.Objects {
                 // Various files
                 yield return Add("body_shadow.png", "tyre_?_shadow.png", "collider.kn5", "driver_base_pos.knh", "logo.png");
                 yield return Add("animations/*.ksanim");
+                yield return Add("extension/*");
                 yield return Add("sfx/GUIDs.txt", $"sfx/{t.Id}.bank");
                 yield return Add("texture/*", "texture/flames/*.dds", "texture/flames/*.png");
                 yield return Add("ui/badge.png", "ui/ui_car.json", "ui/upgrade.png", "ui/cm_*.json");

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Managers.Presets;
+using AcManager.Tools.Miscellaneous;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
@@ -32,7 +33,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         protected override string GetPresetName(string filename) {
             return FileUtils.GetRelativePath(filename, PresetsManager.Instance.GetDirectory(_presetsCategory))
-                            .ApartFromLast(_presetsCategory.Extension);
+                    .ApartFromLast(_presetsCategory.Extension);
         }
     }
 
@@ -104,8 +105,8 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         public JObject Export() {
             return new JObject {
-                ["enabled"] = IsEnabled,
-                ["filename"] = Filename
+                [@"enabled"] = IsEnabled,
+                [@"filename"] = Filename
             };
         }
 
@@ -120,6 +121,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         public CustomPresetEntryBase Audio { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.AudioPresetsCategory);
         public CustomPresetEntryBase Video { get; } = new CustomPresetEntry(false, null, AcSettingsHolder.VideoPresetsCategory);
         public CustomPresetEntryBase Controls { get; } = new ControlsPresetEntry(false, null);
+        public CustomPresetEntryBase CustomShadersPatch { get; } = new CustomPresetEntry(false, null, PatchSettingsModel.Category);
 
         private bool? _rearViewMirror;
 
@@ -161,6 +163,12 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                     File.WriteAllText(AcSettingsHolder.Controls.Filename, backup.Controls);
                 }
 
+                if (backup.CustomShadersPatch != null) {
+                    using (var model = PatchSettingsModel.Create()) {
+                        model.ImportFromPresetData(backup.CustomShadersPatch);
+                    }
+                }
+
                 if (backup.RearViewMirror != null) {
                     AcSettingsHolder.Gameplay.DisplayMirror = backup.RearViewMirror.Value;
                 }
@@ -176,7 +184,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         }
 
         private class Backup {
-            public string Apps, Audio, Video, Controls;
+            public string Apps, Audio, Video, Controls, CustomShadersPatch;
             public bool? RearViewMirror;
         }
 
@@ -200,6 +208,12 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
                     backup.Controls = File.ReadAllText(AcSettingsHolder.Controls.Filename);
                 } catch (Exception e) {
                     Logging.Warning(e);
+                }
+            }
+
+            if (set.CustomShadersPatch.IsActuallyEnabled()) {
+                using (var model = PatchSettingsModel.Create()) {
+                    backup.CustomShadersPatch = model.ExportToPresetData();
                 }
             }
 
@@ -295,10 +309,15 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
             var backup = new PresetsPerModeBackup(this);
 
-            var apps = ApplyWithUpdate(Apps, AcSettingsHolder.AppsPresets, "apps");
-            Apply(Audio, AcSettingsHolder.AudioPresets, "audio");
-            Apply(Video, AcSettingsHolder.VideoPresets, "video");
-            Apply(Controls, AcSettingsHolder.Controls.Filename, "controls");
+            var apps = ApplyWithUpdate(Apps, AcSettingsHolder.AppsPresets, @"apps");
+            Apply(Audio, AcSettingsHolder.AudioPresets, @"audio");
+            Apply(Video, AcSettingsHolder.VideoPresets, @"video");
+            Apply(Controls, AcSettingsHolder.Controls.Filename, @"controls");
+            if (CustomShadersPatch.IsActuallyEnabled()) {
+                using (var model = PatchSettingsModel.Create()) {
+                    ApplyWithUpdate(CustomShadersPatch, model, @"csp");
+                }
+            }
 
             if (RearViewMirror.HasValue) {
                 AcSettingsHolder.Gameplay.DisplayMirror = RearViewMirror.Value;
@@ -322,6 +341,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         private void Initialize() {
             Controls.PropertyChanged += OnPropertyChanged;
+            CustomShadersPatch.PropertyChanged += OnPropertyChanged;
             Apps.PropertyChanged += OnPropertyChanged;
             Audio.PropertyChanged += OnPropertyChanged;
             Video.PropertyChanged += OnPropertyChanged;
@@ -382,9 +402,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
 
         private DelegateCommand _deleteCommand;
 
-        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            Deleted = true;
-        }));
+        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => { Deleted = true; }));
 
         private void Load(string serialized) {
             var jObject = JObject.Parse(serialized);
@@ -393,6 +411,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             Enabled = jObject.GetBoolValueOnly("enabled") ?? true;
             RearViewMirror = jObject.GetBoolValueOnly("mirror");
             Controls.Import(jObject["controls"] as JObject);
+            CustomShadersPatch.Import(jObject["csp"] as JObject);
             Apps.Import(jObject["apps"] as JObject);
             Audio.Import(jObject["audio"] as JObject);
             Video.Import(jObject["video"] as JObject);
@@ -404,6 +423,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
             ["enabled"] = Enabled,
             ["mirror"] = RearViewMirror,
             ["controls"] = Controls.Export(),
+            ["csp"] = CustomShadersPatch.Export(),
             ["apps"] = Apps.Export(),
             ["audio"] = Audio.Export(),
             ["video"] = Video.Export()
@@ -424,11 +444,7 @@ namespace AcManager.Tools.Helpers.PresetsPerMode {
         protected PresetsPerModeBase() {
             Saveable = new SaveHelper<SaveableData>(DefaultKey, () => new SaveableData {
                 Entries = GetEntries().Select(x => x.Serialized).ToList()
-            }, o => {
-                SetEntries(o.Entries.Select(CreateEntry));
-            }, () => {
-                SetEntries(null);
-            });
+            }, o => { SetEntries(o.Entries.Select(CreateEntry)); }, () => { SetEntries(null); });
         }
 
         protected virtual PresetPerMode CreateEntry(string serialized) {

@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Controls.Helpers;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -36,7 +37,7 @@ namespace AcManager.Pages.Settings {
             }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
 
             InitializeComponent();
-            DataContext = SettingsShadersPatch.ViewModel.Create().SetupWatcher();
+            DataContext = PatchSettingsModel.Create().SetupWatcher();
             Model.PropertyChanged += OnModelPropertyChanged;
             SetKeyboardInputs();
             UpdateConfigsTabs();
@@ -98,7 +99,7 @@ namespace AcManager.Pages.Settings {
             KeyBindingsController.Set(Model.SelectedPage?.Config?.Sections.SelectMany().OfType<PythonAppConfigKeyValue>());
         }
 
-        private SettingsShadersPatch.ViewModel Model => (SettingsShadersPatch.ViewModel)DataContext;
+        private PatchSettingsModel Model => (PatchSettingsModel)DataContext;
 
         protected override void OnKeyDown(KeyEventArgs e) {
             if (e.Key == Key.Tab) {

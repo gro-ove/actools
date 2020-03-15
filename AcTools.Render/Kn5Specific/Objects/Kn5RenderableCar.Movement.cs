@@ -143,6 +143,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _suspensionMovables?.DisposeEverything();
             _suspensionMovables = null;
             DataObjectMoved = false;
+            OnPropertyChanged(nameof(SuspensionsPack));
         }
 
         public bool MoveObject(Vector2 relativeFrom, Vector2 relativeDelta, CameraBase camera, bool tryToClone) {

@@ -6,6 +6,7 @@
     <mui:ModernTab x:Name="Tab" Layout="List" SelectedSource="/Pages/AcSettings/AcSettingsGeneral.xaml" SaveKey="__AcSettingsPage.SelectedPage">
       <mui:ModernTab.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Apps}" Source="/Pages/AcSettings/AcSettingsPython.xaml" />
+        <mui:Link DisplayName="App windows" Source="/Pages/AcSettings/AcSettingsPython_detailed.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Video}" Source="/Pages/AcSettings/AcSettingsVideo.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_ViewAndUi}" Source="/Pages/AcSettings/AcSettingsView.xaml" />
         <mui:Link DisplayName="{x:Static g:AppStrings.AcSettings_Audio}" Source="/Pages/AcSettings/AcSettingsAudio.xaml" />

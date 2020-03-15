@@ -1,11 +1,9 @@
 ﻿<UserControl x:Class="AcManager.Pages.Settings.SettingsShadersPatch" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:set="clr-namespace:AcManager.Pages.Settings"
-    xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:g="clr-namespace:AcManager"
-    mc:Ignorable="d" FocusVisualStyle="{x:Null}"
-    d:DataContext="{d:DesignInstance set:SettingsShadersPatch+ViewModel}" Loaded="OnLoaded">
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager"
+    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" FocusVisualStyle="{x:Null}" d:DataContext="{d:DesignInstance set:SettingsShadersPatch+ViewModel}"
+    Loaded="OnLoaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -16,12 +14,12 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-  <mui:Switch Value="{Binding Mode}">
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
+  <mui:Switch Value="{Binding MainModel.Mode}">
+    <DockPanel mui:Switch.When="{x:Static t:PatchSettingsModel+PatchMode.NoShadersPatch}" HorizontalAlignment="Center" VerticalAlignment="Center"
         Margin="{StaticResource ContentMarginWithPadding}" Width="480">
       <TextBlock Text="Custom Shaders Patch is not installed" TextWrapping="Wrap" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
-        <Button Margin="0 8 0 0" Command="{Binding InstallPatchCommand}" Style="{StaticResource Go.Button}">
+        <Button Margin="0 8 0 0" Command="{Binding MainModel.InstallPatchCommand}" Style="{StaticResource Go.Button}">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
@@ -40,11 +38,11 @@
       </mui:SpacingUniformGrid>
     </DockPanel>
 
-    <DockPanel mui:Switch.When="{x:Static set:SettingsShadersPatch+Mode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
+    <DockPanel mui:Switch.When="{x:Static t:PatchSettingsModel+PatchMode.NoConfigs}" HorizontalAlignment="Center" VerticalAlignment="Center"
         Margin="{StaticResource ContentMarginWithPadding}" Width="480">
       <TextBlock Text="Configs for Custom Shaders Patch are missing. Reinstall?" TextWrapping="Wrap" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
       <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="20">
-        <Button Margin="0 8 0 0" Command="{Binding InstallPatchCommand}" Style="{StaticResource Go.Button}">
+        <Button Margin="0 8 0 0" Command="{Binding MainModel.InstallPatchCommand}" Style="{StaticResource Go.Button}">
           <DockPanel IsHitTestVisible="False">
             <Path Data="{StaticResource DownloadIconData}" Width="10" Height="10"
                 Fill="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}" Stretch="Uniform" DockPanel.Dock="Left" Margin="0 0 4 0"
@@ -71,8 +69,9 @@
       </Grid.ColumnDefinitions>
 
       <!-- Link list -->
-      <ListBox x:Name="LinksList" ItemsSource="{Binding PagesView}" SelectedItem="{Binding SelectedPage}" Style="{StaticResource VirtualizingListBox}"
-          IsEnabled="{Binding IsBlocked, Converter={StaticResource InvertBooleanConverter}}" VirtualizingStackPanel.IsVirtualizingWhenGrouping="True">
+      <ListBox x:Name="LinksList" ItemsSource="{Binding MainModel.PagesView}" SelectedItem="{Binding MainModel.SelectedPage}"
+          Style="{StaticResource VirtualizingListBox}" IsEnabled="{Binding MainModel.IsBlocked, Converter={StaticResource InvertBooleanConverter}}"
+          VirtualizingStackPanel.IsVirtualizingWhenGrouping="True">
         <ListBox.RenderTransform>
           <TranslateTransform />
         </ListBox.RenderTransform>
@@ -124,7 +123,7 @@
           </Style>
         </ListBox.ItemContainerStyle>
         <ListBox.ItemTemplate>
-          <DataTemplate DataType="{x:Type set:SettingsShadersPatch+ViewModel+PatchPage}">
+          <DataTemplate DataType="{x:Type t:PatchSettingsModel+PatchPage}">
             <DockPanel Background="Transparent" mui:Draggable.Data="{Binding}" Margin="10 2 2 2">
               <DockPanel.ToolTip>
                 <ToolTip
@@ -167,17 +166,19 @@
           <TranslateTransform />
         </mui:Cell.RenderTransform>
         <TextBlock Text="No page selected" Foreground="{DynamicResource WindowTextReadOnly}" Style="{StaticResource Small}"
-            Visibility="{Binding SelectedPage, Converter={StaticResource NullToVisibilityConverter}}" />
-        <mui:Cell Visibility="{Binding SelectedPage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-          <mui:ModernFrame x:Name="PageFrame" Visibility="{Binding SelectedPage.Source, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
+            Visibility="{Binding MainModel.SelectedPage, Converter={StaticResource NullToVisibilityConverter}}" />
+        <mui:Cell Visibility="{Binding MainModel.SelectedPage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+          <mui:ModernFrame x:Name="PageFrame"
+              Visibility="{Binding MainModel.SelectedPage.Source, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}"
               Navigated="OnFrameNavigated" />
-          <DockPanel Visibility="{Binding SelectedPage.Source, Converter={StaticResource NullToVisibilityConverter}}">
+          <DockPanel Visibility="{Binding MainModel.SelectedPage.Source, Converter={StaticResource NullToVisibilityConverter}}">
             <!--<c:MessageBlock DockPanel.Dock="Bottom" Margin="0 8 0 0">
               <mui:BbCodeBlock Text="Changed will be saved automatically." />
             </c:MessageBlock>-->
             <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 20 0 0">
-              <c:UserPresetsControl x:Name="PresetsControl" UserPresetable="{Binding Presets}" MinWidth="300" Margin="0 0 4 0" />
-              <Button Command="{Binding ShareCommand}" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}" Content="{x:Static g:AppStrings.Common_Share}" />
+              <c:UserPresetsControl x:Name="PresetsControl" UserPresetable="{Binding MainModel.Presets}" MinWidth="300" Margin="0 0 4 0" />
+              <Button Command="{Binding ShareCommand}" ToolTip="{x:Static g:AppStrings.Common_Share_SettingsTooltip}"
+                  Content="{x:Static g:AppStrings.Common_Share}" />
             </StackPanel>
             <ContentControl x:Name="ConfigTab" ContentTemplate="{StaticResource PythonAppConfig.NoHeader}" />
           </DockPanel>
