@@ -25,6 +25,7 @@ namespace AcManager.Pages.Settings {
         public SettingsAppearance() {
             InitializeComponent();
             DataContext = new ViewModel();
+            BackgroundChangeMenu.DataContext = DataContext;
             this.AddWidthCondition(1080).Add(v => Grid.Columns = v ? 2 : 1);
         }
 
@@ -180,24 +181,46 @@ namespace AcManager.Pages.Settings {
 
             private DelegateCommand _changeBackgroundImageCommand;
 
-            public DelegateCommand ChangeBackgroundImageCommand => _changeBackgroundImageCommand ?? (_changeBackgroundImageCommand = new DelegateCommand(() => {
-                var dialog = new OpenFileDialog {
-                    Filter = FileDialogFilters.ImagesFilter,
-                    Title = "Select background image",
-                    InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? AcPaths.GetDocumentsScreensDirectory(),
-                    RestoreDirectory = true
-                };
+            public DelegateCommand ChangeBackgroundImageCommand => _changeBackgroundImageCommand
+                    ?? (_changeBackgroundImageCommand = new DelegateCommand(() => {
+                        var dialog = new OpenFileDialog {
+                            Filter = FileDialogFilters.ImagesFilter,
+                            Title = "Select background image",
+                            InitialDirectory = Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename) ?? AcPaths.GetDocumentsScreensDirectory(),
+                            RestoreDirectory = true
+                        };
 
-                if (dialog.ShowDialog() == true) {
-                    AppAppearanceManager.BackgroundFilename = dialog.FileName;
-                }
-            }));
+                        if (dialog.ShowDialog() == true) {
+                            AppAppearanceManager.BackgroundFilename = dialog.FileName;
+                        }
+                    }));
+
+            private DelegateCommand _changeBackgroundSlideshowCommand;
+
+            public DelegateCommand ChangeBackgroundSlideshowCommand => _changeBackgroundSlideshowCommand
+                    ?? (_changeBackgroundSlideshowCommand = new DelegateCommand(() => {
+                        var dialog = new FolderBrowserDialog {
+                            ShowNewFolderButton = false,
+                            Description = "Select folder with background images",
+                            SelectedPath = (AppAppearanceManager.BackgroundFilename?.EndsWith(@"\") == true
+                                    ? AppAppearanceManager.BackgroundFilename.TrimEnd('\\')
+                                    : Path.GetDirectoryName(AppAppearanceManager.BackgroundFilename))
+                                    ?? AcPaths.GetDocumentsScreensDirectory()
+                        };
+
+                        if (dialog.ShowDialog() == DialogResult.OK) {
+                            AppAppearanceManager.BackgroundFilename = dialog.SelectedPath.TrimEnd('/', '\\') + @"\\";
+                        }
+                    }));
 
             private DelegateCommand _resetBackgroundImageCommand;
 
-            public DelegateCommand ResetBackgroundImageCommand => _resetBackgroundImageCommand ?? (_resetBackgroundImageCommand = new DelegateCommand(() => {
-                AppAppearanceManager.BackgroundFilename = null;
-            }));
+            public DelegateCommand ResetBackgroundImageCommand => _resetBackgroundImageCommand
+                    ?? (_resetBackgroundImageCommand = new DelegateCommand(() => AppAppearanceManager.BackgroundFilename = null));
+        }
+
+        private void OnBackgroundChangeClick(object sender, RoutedEventArgs e) {
+            BackgroundChangeMenu.IsOpen = !BackgroundChangeMenu.IsOpen;
         }
     }
 }

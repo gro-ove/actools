@@ -574,7 +574,7 @@ Author: [b]{3}[/b]</value>
     <value>Search engine:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>Look at Wikipedia by default</value>
+    <value>Limit search to Wikipedia</value>
   </data>
   <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
     <value>Change brand's icon automatically</value>

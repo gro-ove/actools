@@ -8,7 +8,6 @@ using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.ViewModels {
@@ -55,9 +54,7 @@ namespace AcManager.Controls.ViewModels {
             var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
             if (manager == null) return;
             if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && !CupSupportedObjects.Contains(obj)) {
-                Logging.Debug(CupSupportedObjects.Contains(obj));
                 CupSupportedObjects.Add(obj);
-                Logging.Debug(CupSupportedObjects.Count);
                 if (obj.IsCupUpdateAvailable) {
                     NewUpdate?.Invoke(this, EventArgs.Empty);
                 }
@@ -77,7 +74,7 @@ namespace AcManager.Controls.ViewModels {
             _cupProcessing = false;
         }
 
-        public void AddItem(CupEventArgs e) {
+        private void AddItem(CupEventArgs e) {
             _cupToProcess.Enqueue(e);
             if (!_cupProcessing) {
                 RunCupProcessing().Ignore();

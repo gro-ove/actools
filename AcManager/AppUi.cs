@@ -27,8 +27,10 @@ namespace AcManager {
             _application = application ?? throw new ArgumentNullException(nameof(application));
 
             // Extra close-if-nothing-shown timer just to be sure
-            _timer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnTimer, _application.Dispatcher);
-            _timer.Start();
+            if (_application.Dispatcher != null) {
+                _timer = new DispatcherTimer(TimeSpan.FromSeconds(2), DispatcherPriority.Background, OnTimer, _application.Dispatcher);
+                _timer.Start();
+            }
         }
 
         private int _nothing;

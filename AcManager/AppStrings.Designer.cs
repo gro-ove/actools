@@ -7165,7 +7165,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Look at Wikipedia by default.
+        ///   Looks up a localized string similar to Limit search to Wikipedia.
         /// </summary>
         public static string Settings_Content_LookAtWikipedia {
             get {

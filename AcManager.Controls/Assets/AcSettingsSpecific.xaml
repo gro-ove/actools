@@ -526,7 +526,7 @@
   <DataTemplate x:Key="PythonAppConfig.ItemTemplate" DataType="t:IPythonAppConfigValue">
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding IsNonDefault}" Value="True">
-        <Setter Property="TextBlock.Foreground" Value="{DynamicResource RatingBrush}" />
+        <Setter Property="TextBlock.Foreground" Value="{DynamicResource Accent}" />
       </DataTrigger>
     </DataTemplate.Triggers>
     <Border mui:ContextMenuAdvancement.PropagateToChildren="True" Background="Transparent">
@@ -551,7 +551,7 @@
             </CheckBox>
             <DataTemplate.Triggers>
               <DataTrigger Binding="{Binding IsNonDefault}" Value="True">
-                <Setter Property="Foreground" Value="{DynamicResource RatingBrush}" TargetName="Label" />
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" TargetName="Label" />
               </DataTrigger>
             </DataTemplate.Triggers>
           </DataTemplate>

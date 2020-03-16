@@ -480,7 +480,8 @@ namespace AcManager.Pages.Drive {
 
             public DateTime SpecificDateValue {
                 get => _specificDateValue;
-                set => Apply(Math.Max(value.ToUnixTimestamp(), 0L).ToDateTime(), ref _specificDateValue, SaveLater);
+                set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now :  value,
+                ref _specificDateValue, SaveLater);
             }
 
             private bool _randomTime;

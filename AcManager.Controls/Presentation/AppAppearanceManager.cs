@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
@@ -33,6 +36,8 @@ namespace AcManager.Controls.Presentation {
         public const string KeyForceMenuAtTopInFullscreenMode = "appearance_forceMenuAtTopInFullscreenMode";
         public const string KeyBackgroundImage = "appearance_backgroundImage";
         public const string KeyBackgroundOpacity = "appearance_backgroundImageOpacity";
+        public const string KeyBackgroundBlur = "appearance_backgroundImageBlur";
+        public const string KeySlideshowChangeRate = "appearance_slideshowChangeRate";
         public const string KeyBackgroundStretch = "appearance_backgroundImageStretch";
         public const string KeySoftwareRendering = "appearance_softwareRendering";
         public const string KeyBitmapScaling = "appearance_bitmapScaling";
@@ -169,7 +174,9 @@ namespace AcManager.Controls.Presentation {
                 AccentDisplayColor = ValuesStorage.Get<string>(KeyAccentDisplayColor);
                 BackgroundFilename = ValuesStorage.Get<string>(KeyBackgroundImage);
                 BackgroundOpacity = ValuesStorage.Get(KeyBackgroundOpacity, 0.2);
+                BackgroundBlur = ValuesStorage.Get(KeyBackgroundBlur, 0);
                 BackgroundStretch = ValuesStorage.Get(KeyBackgroundStretch, Stretch.UniformToFill);
+                SlideshowChangeRate = ValuesStorage.Get(KeySlideshowChangeRate, SlideshowChangeRates.ElementAt(3).Value);
                 IdealFormattingMode = ValuesStorage.Get<bool?>(KeyIdealFormattingMode);
                 BlurImageViewerBackground = ValuesStorage.Get<bool>(KeyBlurImageViewerBackground);
                 SmallFont = ValuesStorage.Get<bool>(KeySmallFont);
@@ -182,7 +189,7 @@ namespace AcManager.Controls.Presentation {
                 PopupToolBars = ValuesStorage.Get<bool>(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.GetByIdOrDefault(ValuesStorage.Get<string>(KeyFrameAnimation)) ?? FrameAnimations.First();
 
-                UpdateBackgroundImageBrush().Forget();
+                UpdateBackgroundImageBrush(false).Forget();
             } finally {
                 _loading = false;
             }
@@ -193,28 +200,89 @@ namespace AcManager.Controls.Presentation {
         }
 
         #region Background
-        private async Task UpdateBackgroundImageBrush() {
-            var image = _backgroundFilename == null ? BetterImage.Image.Empty : await BetterImage.LoadBitmapSourceAsync(_backgroundFilename);
+        private Regex _slideshowFilter;
+        private List<string> _slideshowFiles;
+        private GoodShuffle<string> _slideshowShuffle;
+        private CancellationTokenSource _slideshowWaitCancellation;
+        private string _slideshowLast;
 
-            ImageBrush brush;
+        private async Task StartSlideshowTimer() {
+            _slideshowWaitCancellation?.Cancel();
+            if (SlideshowChangeRate == TimeSpan.MaxValue
+                    || SlideshowChangeRate.TotalSeconds < 3d) {
+                return;
+            }
+            using (var c = new CancellationTokenSource()) {
+                _slideshowWaitCancellation = c;
+                await Task.Delay(SlideshowChangeRate, c.Token);
+                if (_slideshowWaitCancellation == c) {
+                    _slideshowWaitCancellation = null;
+                    if (SlideshowMode) {
+                        UpdateBackgroundImageBrush(false).Ignore();
+                    }
+                }
+            }
+        }
+
+        private async Task UpdateBackgroundImageBrush(bool keepSlideshow) {
+            BetterImage.Image image;
+            if (_backgroundFilename == null) {
+                image = BetterImage.Image.Empty;
+            } else if (SlideshowMode) {
+                if (_slideshowFilter == null) {
+                    _slideshowFilter = new Regex(@"\.(?:bmp|png|jpe?g|gif)$", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                }
+
+                var files = await Task.Run(() => FileUtils.GetFilesRecursive(_backgroundFilename.TrimEnd('\\'))
+                        .Where(x => _slideshowFilter.IsMatch(x)).OrderBy(x => x).ToList());
+                if (_slideshowFiles == null || !files.SequenceEqual(_slideshowFiles)) {
+                    _slideshowFiles = files;
+                    _slideshowShuffle = GoodShuffle.Get(_slideshowFiles);
+                    _slideshowLast = null;
+                }
+
+                _slideshowLast = (keepSlideshow ? _slideshowLast : null) ?? _slideshowShuffle.Next;
+                image = await BetterImage.LoadBitmapSourceAsync(_slideshowLast);
+                StartSlideshowTimer().Ignore();
+            } else {
+                image = await BetterImage.LoadBitmapSourceAsync(_backgroundFilename);
+            }
+
+            Brush brush;
             if (image.ImageSource == null) {
                 brush = null;
-            } else {
-                brush = new ImageBrush {
+            } else if (_backgroundBlur <= 0.01d || _backgroundStretch == Stretch.None) {
+                var imageBrush = new ImageBrush {
                     ImageSource = image.ImageSource,
                     Opacity = _backgroundOpacity,
                     Stretch = _backgroundStretch,
                     AlignmentX = AlignmentX.Center,
                     AlignmentY = AlignmentY.Center
                 };
-
                 if (_backgroundStretch == Stretch.None) {
-                    brush.TileMode = TileMode.Tile;
-                    brush.Viewport = new Rect(0, 0, image.Width, image.Height);
-                    brush.ViewportUnits = BrushMappingMode.Absolute;
+                    imageBrush.TileMode = TileMode.Tile;
+                    imageBrush.Viewport = new Rect(0, 0, image.Width, image.Height);
+                    imageBrush.ViewportUnits = BrushMappingMode.Absolute;
                 }
-
-                brush.Freeze();
+                imageBrush.Freeze();
+                brush = imageBrush;
+            } else {
+                brush = new VisualBrush {
+                    Visual = new Border() {
+                        Child = new BetterImage {
+                            ImageSource = image.ImageSource,
+                            Stretch = _backgroundStretch,
+                            Margin = new Thickness(-_backgroundBlur * 100d),
+                            Effect = new BlurEffect { Radius = _backgroundBlur * 100d }
+                        },
+                        CacheMode = new BitmapCache(0.5d),
+                        ClipToBounds = true
+                    },
+                    Opacity = _backgroundOpacity,
+                    Stretch = _backgroundStretch,
+                    AlignmentX = AlignmentX.Center,
+                    AlignmentY = AlignmentY.Center
+                };
             }
 
             Application.Current.Resources["WindowBackgroundContentBrush"] = brush;
@@ -234,8 +302,29 @@ namespace AcManager.Controls.Presentation {
                 if (Equals(value, _backgroundFilename)) return;
                 _backgroundFilename = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(SlideshowMode));
                 ValuesStorage.Set(KeyBackgroundImage, value);
-                UpdateBackgroundImageBrush().Forget();
+                UpdateBackgroundImageBrush(false).Forget();
+            }
+        }
+
+        public bool SlideshowMode => BackgroundFilename?.EndsWith(@"\") == true;
+
+        private double _backgroundBlur;
+
+        public double BackgroundBlur {
+            get => _backgroundBlur;
+            set {
+                if (_loading) {
+                    _backgroundBlur = value;
+                    return;
+                }
+
+                if (Equals(value, _backgroundBlur)) return;
+                _backgroundBlur = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyBackgroundBlur, value);
+                UpdateBackgroundImageBrush(true).Forget();
             }
         }
 
@@ -253,8 +342,43 @@ namespace AcManager.Controls.Presentation {
                 _backgroundOpacity = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyBackgroundOpacity, value);
-                UpdateBackgroundImageBrush().Forget();
+                UpdateBackgroundImageBrush(true).Forget();
             }
+        }
+
+        public SettingEntry<TimeSpan>[] SlideshowChangeRates { get; } = new[] {
+            TimeSpan.FromSeconds(5d),
+            TimeSpan.FromSeconds(30d),
+            TimeSpan.FromMinutes(1d),
+            TimeSpan.FromMinutes(3d),
+            TimeSpan.FromMinutes(5d),
+            TimeSpan.FromMinutes(10d),
+            TimeSpan.FromMinutes(30d),
+            TimeSpan.FromMinutes(120d),
+        }.Select(x => new SettingEntry<TimeSpan>(x, x.ToReadableTime()))
+                .Append(new SettingEntry<TimeSpan>(TimeSpan.MaxValue, "Only at launch")).ToArray();
+
+        private TimeSpan _slideshowChangeRate;
+
+        public TimeSpan SlideshowChangeRate {
+            get => _slideshowChangeRate;
+            set {
+                if (_loading) {
+                    _slideshowChangeRate = value;
+                    return;
+                }
+
+                if (Equals(value, _slideshowChangeRate)) return;
+                _slideshowChangeRate = value;
+                ValuesStorage.Set(KeySlideshowChangeRate, value);
+                OnPropertyChanged();
+                StartSlideshowTimer().Forget();
+            }
+        }
+
+        public SettingEntry<TimeSpan> SlideshowChangeRateMode {
+            get => SlideshowChangeRates.GetByIdOrDefault(SlideshowChangeRate);
+            set => SlideshowChangeRate = value.Value;
         }
 
         public SettingEntry<Stretch>[] StretchModes { get; } = {
@@ -284,7 +408,7 @@ namespace AcManager.Controls.Presentation {
                 ValuesStorage.Set(KeyBackgroundStretch, value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(BackgroundStretchMode));
-                UpdateBackgroundImageBrush().Forget();
+                UpdateBackgroundImageBrush(true).Forget();
             }
         }
         #endregion
@@ -369,11 +493,11 @@ namespace AcManager.Controls.Presentation {
 
         private bool _hideImageViewerButtons;
 
-        public bool HideImageViewerButtons{
+        public bool HideImageViewerButtons {
             get => _hideImageViewerButtons;
             set {
                 if (Equals(value, _hideImageViewerButtons)) return;
-                _hideImageViewerButtons= value;
+                _hideImageViewerButtons = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyHideImageViewerButtons, value);
             }

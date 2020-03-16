@@ -17,6 +17,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [ContractAnnotation(@"s: null => false")]
         public static bool IsAnyUrl(this string s) {
+            if (s == null) return false;
             var i = s.IndexOf(@"://", StringComparison.Ordinal);
             if (i == -1) return false;
             for (; i > 0; i--) {
@@ -27,8 +28,8 @@ namespace FirstFloor.ModernUI.Helpers {
 
         [ContractAnnotation(@"s: null => false")]
         public static bool IsWebUrl(this string s) {
-            return s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
-                    s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase);
+            return s != null && (s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
+                    s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase));
         }
 
         [ContractAnnotation(@"s: null => null; s: notnull => notnull")]

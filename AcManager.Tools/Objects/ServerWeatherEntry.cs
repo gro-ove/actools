@@ -148,11 +148,11 @@ namespace AcManager.Tools.Objects {
             set => Apply(value, ref _weatherFxCustomStartDate);
         }
 
-        private DateTime _weatherFxStartDate;
+        private DateTime _weatherFxStartDate = DateTime.Now;
 
         public DateTime WeatherFxStartDate {
             get => _weatherFxStartDate;
-            set => Apply(value, ref _weatherFxStartDate);
+            set => Apply(value.ToUnixTimestamp() < TimeSpan.FromHours(12).TotalSeconds ? DateTime.Now :  value, ref _weatherFxStartDate);
         }
 
         private bool _weatherSet;

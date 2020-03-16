@@ -740,7 +740,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
         }
 
-        public static async Task<Image> LoadBitmapSourceAsync(string filename, int decodeWidth = -1, int decodeHeight = -1) {
+        [NotNull]
+        public static async Task<Image> LoadBitmapSourceAsync([CanBeNull] string filename, int decodeWidth = -1, int decodeHeight = -1) {
             if (filename.IsWebUrl()) {
                 Uri uri;
                 try {
@@ -1082,9 +1083,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                     });
 
                     if (OptionDisplayImmediate) {
-                        Dispatcher.Invoke(result);
+                        Dispatcher?.Invoke(result);
                     } else {
-                        Dispatcher.BeginInvoke(DispatcherPriority.Background, result);
+                        Dispatcher?.BeginInvoke(DispatcherPriority.Background, result);
                     }
                 });
             } else {

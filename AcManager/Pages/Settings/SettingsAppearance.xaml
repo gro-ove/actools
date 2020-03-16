@@ -155,8 +155,39 @@
           <Label Content="Background:" />
           <Button Command="{Binding ResetBackgroundImageCommand}" Content="Reset"
               Visibility="{Binding AppAppearanceManager.BackgroundFilename, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
-          <Button Command="{Binding ChangeBackgroundImageCommand}" Content="Change" />
+          <Button Content="Change" Click="OnBackgroundChangeClick">
+            <Button.ContextMenu>
+              <ContextMenu x:Name="BackgroundChangeMenu">
+                <MenuItem Header="Single image" Command="{Binding ChangeBackgroundImageCommand}" />
+                <MenuItem Header="Folder for slideshow" Command="{Binding ChangeBackgroundSlideshowCommand}" />
+              </ContextMenu>
+            </Button.ContextMenu>
+          </Button>
           <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}" Placeholder="Theme-defined" />
+        </DockPanel>
+
+        <DockPanel Visibility="{Binding AppAppearanceManager.SlideshowMode, Converter={StaticResource BooleanToVisibilityConverter}}">
+          <DockPanel.IsEnabled>
+            <MultiBinding Converter="{StaticResource AndConverter}">
+              <Binding Path="AppAppearanceManager.BackgroundFilename" Converter="{StaticResource NullToBooleanConverter}" ConverterParameter="inverse" />
+              <Binding Path="FancyBackgroundManager.Enabled" Converter="{StaticResource InvertBooleanConverter}" />
+            </MultiBinding>
+          </DockPanel.IsEnabled>
+          <Label Content="Change picture every:" />
+          <mui:BetterComboBox ItemsSource="{Binding AppAppearanceManager.SlideshowChangeRates}"
+              SelectedItem="{Binding AppAppearanceManager.SlideshowChangeRateMode, Mode=TwoWay}" DisplayMemberPath="DisplayName" IsEditable="False" />
+        </DockPanel>
+
+        <DockPanel>
+          <DockPanel.IsEnabled>
+            <MultiBinding Converter="{StaticResource AndConverter}">
+              <Binding Path="AppAppearanceManager.BackgroundFilename" Converter="{StaticResource NullToBooleanConverter}" ConverterParameter="inverse" />
+              <Binding Path="FancyBackgroundManager.Enabled" Converter="{StaticResource InvertBooleanConverter}" />
+            </MultiBinding>
+          </DockPanel.IsEnabled>
+          <Label Content="Placement:" />
+          <mui:BetterComboBox ItemsSource="{Binding AppAppearanceManager.StretchModes}"
+              SelectedItem="{Binding AppAppearanceManager.BackgroundStretchMode, Mode=TwoWay}" DisplayMemberPath="DisplayName" IsEditable="False" />
         </DockPanel>
 
         <DockPanel>
@@ -176,12 +207,14 @@
           <DockPanel.IsEnabled>
             <MultiBinding Converter="{StaticResource AndConverter}">
               <Binding Path="AppAppearanceManager.BackgroundFilename" Converter="{StaticResource NullToBooleanConverter}" ConverterParameter="inverse" />
+              <Binding Path="AppAppearanceManager.BackgroundStretch" Converter="{StaticResource EnumToBooleanConverter}" ConverterParameter="≠None" />
               <Binding Path="FancyBackgroundManager.Enabled" Converter="{StaticResource InvertBooleanConverter}" />
             </MultiBinding>
           </DockPanel.IsEnabled>
-          <Label Content="Placement:" />
-          <ComboBox ItemsSource="{Binding AppAppearanceManager.StretchModes}" SelectedItem="{Binding AppAppearanceManager.BackgroundStretchMode, Mode=TwoWay}"
-              DisplayMemberPath="DisplayName" />
+          <mui:ValueLabel Value="{Binding AppAppearanceManager.BackgroundBlur, Converter={StaticResource PercentageConverter}}" mui:BetterTextBox.Minimum="0"
+              mui:BetterTextBox.Maximum="1" Content="Blur" Postfix="%" />
+          <Slider Minimum="0" Maximum="1" TickFrequency="0.1" TickPlacement="BottomRight"
+              Value="{Binding AppAppearanceManager.BackgroundBlur, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}" />
         </DockPanel>
 
         <!-- Interface -->
