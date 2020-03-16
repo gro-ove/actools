@@ -58,10 +58,9 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-      <Reference Include="AcTools.AcdEncryption, Culture=neutral, processorArchitecture=MSIL">
-          <HintPath>..\Libraries\AcTools.AcdEncryption\AcTools.AcdEncryption.dll</HintPath>
-          <SpecificVersion>False</SpecificVersion>
-      </Reference>
+    <Reference Include="AcTools.AcdEncryption, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\Libraries\AcTools\AcTools.AcdEncryption.dll</HintPath>
+    </Reference>
     <Reference Include="Magick.NET-Q8-$(ActualPlatform), Culture=neutral, processorArchitecture=$(ActualPlatform)">
       <HintPath>..\Libraries\Magick.NET-7.0.4-$(ActualPlatform)\Magick.NET-Q8-$(ActualPlatform).dll</HintPath>
       <Private>True</Private>
