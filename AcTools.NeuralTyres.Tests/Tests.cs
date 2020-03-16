@@ -4,25 +4,16 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms.DataVisualization.Charting;
-using AcTools.AcdEncryption;
-using AcTools.AcdFile;
 using AcTools.DataFile;
 using AcTools.NeuralTyres.Data;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
-using NUnit.Framework;
 
 // ReSharper disable RedundantAssignment
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
 namespace AcTools.NeuralTyres.Tests {
-    // [TestFixture]
     public class Tests {
-        // [SetUp]
-        public void SetUp() {
-            Acd.Factory = new AcdFactory();
-        }
-
         private void BuildChart(params Action<Series>[] series) {
             using (var ch = new Chart()) {
                 ch.ChartAreas.Add(new ChartArea());
@@ -38,7 +29,6 @@ namespace AcTools.NeuralTyres.Tests {
             }
         }
 
-        // [Test]
         public void Main() {
             var carsFromWebApp = new[] {
                 /*"lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",
@@ -100,7 +90,6 @@ namespace AcTools.NeuralTyres.Tests {
             Console.WriteLine(neural.Conjure(width.Denormalize(0.5), radius.Denormalize(0.5), profile.Denormalize(0.5))[testKey]);
         }
 
-        // [Test]
         public void MainSingleNet() {
             var carsFromWebApp = new[] {
                 "lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",

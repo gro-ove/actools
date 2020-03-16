@@ -15,6 +15,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
@@ -174,7 +175,7 @@ namespace AcManager.Controls.Presentation {
                 AccentDisplayColor = ValuesStorage.Get<string>(KeyAccentDisplayColor);
                 BackgroundFilename = ValuesStorage.Get<string>(KeyBackgroundImage);
                 BackgroundOpacity = ValuesStorage.Get(KeyBackgroundOpacity, 0.2);
-                BackgroundBlur = ValuesStorage.Get(KeyBackgroundBlur, 0);
+                BackgroundBlur = ValuesStorage.Get(KeyBackgroundBlur, 0d);
                 BackgroundStretch = ValuesStorage.Get(KeyBackgroundStretch, Stretch.UniformToFill);
                 SlideshowChangeRate = ValuesStorage.Get(KeySlideshowChangeRate, SlideshowChangeRates.ElementAt(3).Value);
                 IdealFormattingMode = ValuesStorage.Get<bool?>(KeyIdealFormattingMode);
@@ -189,7 +190,7 @@ namespace AcManager.Controls.Presentation {
                 PopupToolBars = ValuesStorage.Get<bool>(KeyPopupToolBars);
                 FrameAnimation = FrameAnimations.GetByIdOrDefault(ValuesStorage.Get<string>(KeyFrameAnimation)) ?? FrameAnimations.First();
 
-                UpdateBackgroundImageBrush(false).Forget();
+                UpdateBackgroundImageBrush(false);
             } finally {
                 _loading = false;
             }
@@ -218,13 +219,13 @@ namespace AcManager.Controls.Presentation {
                 if (_slideshowWaitCancellation == c) {
                     _slideshowWaitCancellation = null;
                     if (SlideshowMode) {
-                        UpdateBackgroundImageBrush(false).Ignore();
+                        UpdateBackgroundImageBrush(false);
                     }
                 }
             }
         }
 
-        private async Task UpdateBackgroundImageBrush(bool keepSlideshow) {
+        private async Task UpdateBackgroundImageBrushUI(bool keepSlideshow) {
             BetterImage.Image image;
             if (_backgroundFilename == null) {
                 image = BetterImage.Image.Empty;
@@ -268,7 +269,7 @@ namespace AcManager.Controls.Presentation {
                 brush = imageBrush;
             } else {
                 brush = new VisualBrush {
-                    Visual = new Border() {
+                    Visual = new Border {
                         Child = new BetterImage {
                             ImageSource = image.ImageSource,
                             Stretch = _backgroundStretch,
@@ -288,6 +289,10 @@ namespace AcManager.Controls.Presentation {
             Application.Current.Resources["WindowBackgroundContentBrush"] = brush;
         }
 
+        private void UpdateBackgroundImageBrush(bool keepSlideshow) {
+            ActionExtension.InvokeInMainThreadAsync(() => UpdateBackgroundImageBrushUI(keepSlideshow).Ignore());
+        }
+
         private string _backgroundFilename;
 
         [CanBeNull]
@@ -304,7 +309,7 @@ namespace AcManager.Controls.Presentation {
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(SlideshowMode));
                 ValuesStorage.Set(KeyBackgroundImage, value);
-                UpdateBackgroundImageBrush(false).Forget();
+                UpdateBackgroundImageBrush(false);
             }
         }
 
@@ -324,7 +329,7 @@ namespace AcManager.Controls.Presentation {
                 _backgroundBlur = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyBackgroundBlur, value);
-                UpdateBackgroundImageBrush(true).Forget();
+                UpdateBackgroundImageBrush(true);
             }
         }
 
@@ -342,7 +347,7 @@ namespace AcManager.Controls.Presentation {
                 _backgroundOpacity = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyBackgroundOpacity, value);
-                UpdateBackgroundImageBrush(true).Forget();
+                UpdateBackgroundImageBrush(true);
             }
         }
 
@@ -408,7 +413,7 @@ namespace AcManager.Controls.Presentation {
                 ValuesStorage.Set(KeyBackgroundStretch, value);
                 OnPropertyChanged();
                 OnPropertyChanged(nameof(BackgroundStretchMode));
-                UpdateBackgroundImageBrush(true).Forget();
+                UpdateBackgroundImageBrush(true);
             }
         }
         #endregion

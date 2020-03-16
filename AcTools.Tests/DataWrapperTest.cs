@@ -1,7 +1,5 @@
 ﻿using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using AcTools.AcdEncryption;
 using AcTools.AcdFile;
 using AcTools.DataFile;
