@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Threading;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Converters;
 using NUnit.Framework;
@@ -31,7 +32,7 @@ namespace FirstFloor.ModernUI.Tests {
 
         [Test]
         public void PluralizingTest() {
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             Assert.AreEqual("hour", PluralizingConverter.PluralizeExt(1, "hour"));
             Assert.AreEqual("hours", PluralizingConverter.PluralizeExt(5, "hour"));
             Assert.AreEqual("1 hour", PluralizingConverter.PluralizeExt(1, "{0} hour"));
@@ -40,14 +41,15 @@ namespace FirstFloor.ModernUI.Tests {
             Assert.AreEqual("11 hours", PluralizingConverter.PluralizeExt(11, "{0} hour"));
             Assert.AreEqual("21 hours", PluralizingConverter.PluralizeExt(21, "{0} hour"));
 
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("ru");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru");
+            Assert.AreEqual("ru", CultureInfo.CurrentUICulture.Name);
             Assert.AreEqual("1 час", PluralizingConverter.PluralizeExt(1, "{0} час"));
             Assert.AreEqual("2 часа", PluralizingConverter.PluralizeExt(2, "{0} час"));
             Assert.AreEqual("5 часов", PluralizingConverter.PluralizeExt(5, "{0} час"));
             Assert.AreEqual("11 часов", PluralizingConverter.PluralizeExt(11, "{0} час"));
             Assert.AreEqual("21 час", PluralizingConverter.PluralizeExt(21, "{0} час"));
 
-            CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("es");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("es");
             Assert.AreEqual("1 libro", PluralizingConverter.PluralizeExt(1, "{0} libro"));
             Assert.AreEqual("5 libros", PluralizingConverter.PluralizeExt(5, "{0} libro"));
             Assert.AreEqual("5 borradores", PluralizingConverter.PluralizeExt(5, "{0} borrador"));

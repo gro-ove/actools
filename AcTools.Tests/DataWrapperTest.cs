@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using AcTools.AcdEncryption;
 using AcTools.AcdFile;
 using AcTools.DataFile;
 using NUnit.Framework;
@@ -13,6 +14,11 @@ namespace AcTools.Tests {
 
         private static string TestDir => GetTestDir();
 
+        [SetUp]
+        public void SetUp() {
+            Acd.Factory = new AcdFactory();
+        }
+
         [Test]
         public void TestPacked() {
             var file = DataWrapper.FromCarDirectory(Path.Combine(TestDir, "data", "peugeot_504"));
@@ -22,19 +28,6 @@ namespace AcTools.Tests {
             file = DataWrapper.FromCarDirectory(Path.Combine(TestDir, "data", "peugeot_504_unpacked"));
             Assert.AreEqual("VALID_INI_FILE", file.GetRawFile("mirrors.ini").Content);
             Assert.AreEqual("VALID_LUT_FILE", file.GetRawFile("power.lut").Content);
-        }
-
-        [Test]
-        public void TestEnc() {
-            var enc = AcdEncryption.FromAcdFilename("anything/actually");
-            var bytes = Encoding.UTF8.GetBytes("Long testing string with русскими символами and emojis like 😺");
-            var cloned = bytes.ToArray();
-
-            //enc.Encrypt(cloned);
-            //enc.Decrypt(cloned);
-            // TODO
-
-            Assert.IsTrue(bytes.SequenceEqual(cloned));
         }
     }
 }

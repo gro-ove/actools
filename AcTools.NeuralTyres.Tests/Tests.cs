@@ -16,9 +16,9 @@ using NUnit.Framework;
 // ReSharper disable ConditionIsAlwaysTrueOrFalse
 
 namespace AcTools.NeuralTyres.Tests {
-    [TestFixture]
+    // [TestFixture]
     public class Tests {
-        [SetUp]
+        // [SetUp]
         public void SetUp() {
             Acd.Factory = new AcdFactory();
         }
@@ -38,7 +38,7 @@ namespace AcTools.NeuralTyres.Tests {
             }
         }
 
-        [Test]
+        // [Test]
         public void Main() {
             var carsFromWebApp = new[] {
                 /*"lotus_exige_s", "lotus_exige_s", "lotus_evora_gte", "lotus_elise_sc", "alfa_mito_qv",

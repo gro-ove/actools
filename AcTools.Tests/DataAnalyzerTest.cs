@@ -2,6 +2,8 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using AcTools.AcdEncryption;
+using AcTools.AcdFile;
 using AcTools.DataAnalyzer;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -15,6 +17,11 @@ namespace AcTools.Tests {
         private static string GetTestDir([CallerFilePath] string callerFilePath = null) => Path.Combine(Path.GetDirectoryName(callerFilePath) ?? "", "test");
 
         private static string TestDir => GetTestDir();
+
+        [SetUp]
+        public void SetUp() {
+            Acd.Factory = new AcdFactory();
+        }
 
         [Test]
         public void Wrapper() {

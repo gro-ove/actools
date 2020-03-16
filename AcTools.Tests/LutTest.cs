@@ -122,7 +122,7 @@ namespace AcTools.Tests {
             });
 
             // interpolation itself
-            Assert.IsTrue(lut.InterpolateCubic(0.003) > lut.InterpolateCubic(0.001));
+            Assert.IsTrue(lut.InterpolateCubic(0.003) < lut.InterpolateCubic(0.001));
         }
 
         [Test]
