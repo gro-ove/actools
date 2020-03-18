@@ -46,9 +46,10 @@ namespace AcManager.Tools.Helpers {
 
             public DelayEntry TheSetupMarketCacheListPeriod {
                 get {
-                    var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
+                    /*var saved = ValuesStorage.Get<TimeSpan?>("Settings.IntegratedSettings.TheSetupMarketCacheListPeriod");
                     return _theSetupMarketCacheListPeriod ?? (_theSetupMarketCacheListPeriod = Periods.FirstOrDefault(x => x.TimeSpan == saved) ??
-                            Periods.ElementAt(3));
+                            Periods.ElementAt(3));*/
+                    return Periods.Last();
                 }
                 set {
                     if (Equals(value, _theSetupMarketCacheListPeriod)) return;

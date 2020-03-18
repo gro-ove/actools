@@ -705,7 +705,11 @@
       <DockPanel Margin="0 0 0 20">
         <TextBlock Text="{Binding DisplayName, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" DockPanel.Dock="Top" Margin="0 0 0 8"
             TextWrapping="Wrap" Style="{StaticResource Label}" ToolTip="{Binding ToolTip}" />
-        <c:MessageBlock DockPanel.Dock="Bottom" Margin="20 8 0 0"
+        <c:MessageBlock DockPanel.Dock="Top" Margin="20 0 20 8"
+            Visibility="{Binding HintTop, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
+          <mui:BbCodeBlock Text="{Binding HintTop}" Style="{StaticResource Small}" />
+        </c:MessageBlock>
+        <c:MessageBlock DockPanel.Dock="Bottom" Margin="20 8 20 0"
             Visibility="{Binding HintBottom, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse'}">
           <mui:BbCodeBlock Text="{Binding HintBottom}" Style="{StaticResource Small}" />
         </c:MessageBlock>

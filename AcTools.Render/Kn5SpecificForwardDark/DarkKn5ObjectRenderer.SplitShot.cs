@@ -60,7 +60,7 @@ namespace AcTools.Render.Kn5SpecificForwardDark {
                     for (var i = 0; i < cuts * cuts; i++) {
                         var x = i % cuts;
                         var y = i / cuts;
-                        progress?.Report(new Tuple<string, double?>($"X={x}, Y={y}, piece by piece", (double)i / (cuts * cuts) * 0.5));
+                        progress?.Report(new Tuple<string, double?>($"x={x}, y={y}, piece by piece", (double)i / (cuts * cuts) * 0.5));
                         if (cancellation.IsCancellationRequested) return;
 
                         SetCutProjection(cuts, x, y, baseCut);

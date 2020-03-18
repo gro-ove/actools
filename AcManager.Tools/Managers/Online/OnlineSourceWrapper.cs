@@ -76,7 +76,7 @@ namespace AcManager.Tools.Managers.Online {
         private OnlineManagerStatus _status = OnlineManagerStatus.Waiting;
 
         public OnlineManagerStatus Status {
-            get { return _status; }
+            get => _status;
             set {
                 if (!Equals(value, _status)) {
                     _status = value;
@@ -97,7 +97,7 @@ namespace AcManager.Tools.Managers.Online {
         private AsyncProgressEntry _loadingProgress;
 
         public AsyncProgressEntry LoadingProgress {
-            get { return _loadingProgress; }
+            get => _loadingProgress;
             set => Apply(value, ref _loadingProgress);
         }
 
@@ -105,7 +105,7 @@ namespace AcManager.Tools.Managers.Online {
 
         [CanBeNull]
         public ErrorInformation Error {
-            get { return _error; }
+            get => _error;
             set {
                 if (!Equals(value, _error)) {
                     _error = value;
@@ -123,7 +123,7 @@ namespace AcManager.Tools.Managers.Online {
         private bool _backgroundLoading;
 
         public bool BackgroundLoading {
-            get { return IsBackgroundLoadable || _backgroundLoading; }
+            get => IsBackgroundLoadable || _backgroundLoading;
             set {
                 if (IsBackgroundLoadable || Equals(value, _backgroundLoading)) return;
                 _backgroundLoading = value;
@@ -193,14 +193,11 @@ namespace AcManager.Tools.Managers.Online {
         private void RegisterCustomer(CancellationToken cancellation) {
             var customerId = cancellation.GetHashCode();
             _customers.Add(customerId);
-            cancellation.Register(() => {
-                OnCancelled(customerId).Forget();
-            });
+            cancellation.Register(() => { OnCancelled(customerId).Forget(); });
         }
 
         private async Task OnCancelled(int customerId) {
             if (!_customers.Remove(customerId) || _customers.Count != 0) return;
-
             await Task.Delay(200);
             if (_customers.Count == 0) {
                 _cancellationSource?.Cancel();
@@ -346,8 +343,3 @@ namespace AcManager.Tools.Managers.Online {
         }
     }
 }
-
-
-
-
-

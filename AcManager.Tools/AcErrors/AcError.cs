@@ -39,7 +39,10 @@ namespace AcManager.Tools.AcErrors {
 
             if (Category != AcErrorCategory.CarSkin
                     && (type != AcErrorType.Data_JsonIsMissing || !Equals(args.FirstOrDefault(), @"ui_skin.json"))
-                    && type != AcErrorType.Car_ParentIsMissing) {
+                    && type != AcErrorType.Car_ParentIsMissing
+                    && type != AcErrorType.Track_PreviewIsMissing
+                    && type != AcErrorType.Track_OutlineIsMissing
+                    && type != AcErrorType.Track_MapIsMissing) {
                 Logging.Write(Message);
             }
 

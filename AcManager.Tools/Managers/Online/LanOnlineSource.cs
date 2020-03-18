@@ -5,7 +5,6 @@ using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Dialogs;
-using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Managers.Online {
     public class LanOnlineSource : IOnlineBackgroundSource {
@@ -22,7 +21,6 @@ namespace AcManager.Tools.Managers.Online {
         }
 
         public async Task<bool> LoadAsync(ItemAddCallback<ServerInformation> callback, IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
-            Logging.Here();
             await KunosApiProvider.TryToGetLanListAsync(callback, progress, cancellation);
             return !cancellation.IsCancellationRequested;
         }

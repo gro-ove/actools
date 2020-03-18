@@ -86,6 +86,7 @@ namespace AcManager.Tools.Helpers {
                 _loaded = true;
                 ValuesStorage.Set(Key, _value ?? NoneValue);
                 InternalUtils.SetSteamId(_value);
+                SettingsHolder.Online.CachingServerAvailable = false;
             }
         }
 

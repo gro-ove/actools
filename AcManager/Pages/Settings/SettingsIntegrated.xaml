@@ -33,17 +33,16 @@
           <Label Content="Add available setups counter" />
         </CheckBox>
 
-        <c:MessageBlock Margin="0 0 0 8">
+        <!--<c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
             <mui:BbCodeBlock.Text>To avoid overloading TSM server, heavy caching is applying. Please, keep periods big. If you want to see the newest setups, I recommend to use browser with that extension for now.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
-        </c:MessageBlock>
-
-        <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
+        </c:MessageBlock>-->
+        <!--<DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Cache list of setups for:" />
           <ComboBox ItemsSource="{Binding Integrated.Periods}" SelectedItem="{Binding Integrated.TheSetupMarketCacheListPeriod}"
               DisplayMemberPath="DisplayName" />
-        </DockPanel>
+        </DockPanel>-->
 
         <DockPanel IsEnabled="{Binding Integrated.TheSetupMarketTab}">
           <Label Content="Cache data per setup for:" />

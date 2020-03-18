@@ -70,6 +70,32 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _cachingServerAvailable;
+
+            public bool CachingServerAvailable {
+                get => _cachingServerAvailable ?? (_cachingServerAvailable =
+                        ValuesStorage.Get("Settings.OnlineSettings.CachingServerAvailable", false)).Value;
+                set {
+                    if (Equals(value, _cachingServerAvailable)) return;
+                    _cachingServerAvailable = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.CachingServerAvailable", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _useCachingServer;
+
+            public bool UseCachingServer {
+                get => _useCachingServer ?? (_useCachingServer =
+                        ValuesStorage.Get("Settings.OnlineSettings.UseCachingServer", false)).Value;
+                set {
+                    if (Equals(value, _useCachingServer)) return;
+                    _useCachingServer = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.UseCachingServer", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _compactUi;
 
             public bool CompactUi {

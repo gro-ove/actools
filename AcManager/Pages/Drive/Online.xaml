@@ -28,6 +28,22 @@
         <MenuItem Header="{x:Static g:AppStrings.Toolbar_Reload}" InputGestureText="Ctrl+R" Command="{Binding RefreshCommand}" />
         <MenuItem Header="{x:Static g:AppStrings.Online_AddByIp}" InputGestureText="Ctrl+A" Command="{Binding AddNewServerCommand}"
             Visibility="{Binding UserListMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Separator />
+        <MenuItem Header="Use caching server for lobby" DataContext="{Binding Source={x:Static t:SettingsHolder.Online}}"
+            IsChecked="{Binding UseCachingServer}" IsEnabled="{Binding CachingServerAvailable}" mui:NewMarkService.New="True"
+            ToolTipService.ShowOnDisabled="True" IsCheckable="True">
+          <MenuItem.ToolTip>
+            <DockPanel MaxWidth="300">
+              <TextBlock Text="Might be faster, but updates only once every ten minutes. Better to use with direct information loading." TextWrapping="Wrap"
+                  DockPanel.Dock="Top" />
+              <mui:BbCodeBlock Text="[b]Please note:[/b] you need to load regular server list at least once for this option to work." Margin="0 4 0 -8"
+                  TextWrapping="Wrap"
+                  Visibility="{Binding CachingServerAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse'}" />
+            </DockPanel>
+          </MenuItem.ToolTip>
+        </MenuItem>
+        <MenuItem Header="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" DataContext="{Binding Source={x:Static t:SettingsHolder.Online}}"
+            IsChecked="{Binding LoadServerInformationDirectly}" IsCheckable="True" />
       </ContextMenu>
     </ResourceDictionary>
   </UserControl.Resources>
@@ -36,32 +52,34 @@
     <mui:Switch Style="{StaticResource ContentRoot}" Value="{Binding Pack.Status}">
       <!-- Loading -->
       <mui:Cell mui:Switch.When="{x:Static t:OnlineManagerStatus.Loading}" Margin="20">
-        <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="200">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <DockPanel Margin="0 0 0 8" Width="200">
-                <ProgressBar x:Name="ProgressBar" Maximum="1" Width="200" Height="4" Value="{Binding LoadingProgress.Progress, Mode=OneWay}"
-                    IsIndeterminate="{Binding LoadingProgress.IsIndeterminate}" DockPanel.Dock="Bottom" />
-                <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" Margin="0 0 8 4" DockPanel.Dock="Left" />
-                <TextBlock x:Name="Message" Text="{Binding LoadingProgress.Message}" Style="{StaticResource Small}" Margin="0 0 0 6" TextAlignment="Right"
-                    TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" />
-              </DockPanel>
-              <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding LoadingProgress.IsReady}" Value="True">
-                  <Setter TargetName="ProgressBar" Property="IsIndeterminate" Value="False" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding LoadingProgress.Message}" Value="{x:Null}">
-                  <Setter TargetName="Message" Property="Visibility" Value="Collapsed" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Status}" Value="{x:Static t:OnlineManagerStatus.Error}">
-                  <Setter TargetName="ProgressBar" Property="Visibility" Value="Hidden" />
-                  <Setter TargetName="Message" Property="Visibility" Value="Visible" />
-                  <Setter TargetName="Message" Property="Text" Value="{Binding Error.Message}" />
-                </DataTrigger>
-              </DataTemplate.Triggers>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        <DockPanel HorizontalAlignment="Center" VerticalAlignment="Center" Width="200">
+          <ItemsControl ItemsSource="{Binding Pack.SourceWrappers}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <DockPanel Margin="0 0 0 8" Width="200">
+                  <ProgressBar x:Name="ProgressBar" Maximum="1" Width="200" Height="4" Value="{Binding LoadingProgress.Progress, Mode=OneWay}"
+                      IsIndeterminate="{Binding LoadingProgress.IsIndeterminate}" DockPanel.Dock="Bottom" />
+                  <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" Margin="0 0 8 4" DockPanel.Dock="Left" />
+                  <TextBlock x:Name="Message" Text="{Binding LoadingProgress.Message}" Style="{StaticResource Small}" Margin="0 0 0 6" TextAlignment="Right"
+                      TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" VerticalAlignment="Bottom" />
+                </DockPanel>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding LoadingProgress.IsReady}" Value="True">
+                    <Setter TargetName="ProgressBar" Property="IsIndeterminate" Value="False" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding LoadingProgress.Message}" Value="{x:Null}">
+                    <Setter TargetName="Message" Property="Visibility" Value="Collapsed" />
+                  </DataTrigger>
+                  <DataTrigger Binding="{Binding Status}" Value="{x:Static t:OnlineManagerStatus.Error}">
+                    <Setter TargetName="ProgressBar" Property="Visibility" Value="Hidden" />
+                    <Setter TargetName="Message" Property="Visibility" Value="Visible" />
+                    <Setter TargetName="Message" Property="Text" Value="{Binding Error.Message}" />
+                  </DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </DockPanel>
       </mui:Cell>
 
       <!-- Error -->
@@ -72,8 +90,29 @@
           <mui:BbCodeBlock Text="{Binding Commentary}" Margin="0 4 0 0" FontStyle="Italic"
               Visibility="{Binding Commentary, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
         </StackPanel>
-        <Button Command="{Binding RefreshCommand}" CommandParameter="True" Content="{x:Static c:ControlsStrings.Common_TryAgain}"
-            Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
+        <Button Command="{Binding RefreshCommand}" CommandParameter="True"
+            Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 0 0 8">
+          <DockPanel>
+            <Path Data="{StaticResource RefreshIconData}" Width="14" Height="14" Margin="0 0 8 0" VerticalAlignment="Center" Stretch="Uniform"
+                Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+            <TextBlock Text="{x:Static c:ControlsStrings.Common_TryAgain}" />
+          </DockPanel>
+        </Button>
+        <Border Visibility="{Binding Pack.Error.IsFatal, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" Margin="0 0 0 8">
+          <Button Command="{Binding SwitchToCachingCommand}"
+              Visibility="{Binding SwitchToCachingCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=hidden}">
+            <Button.ToolTip>
+              <TextBlock MaxWidth="400" TextWrapping="Wrap"
+                  Text="Caching server helps to reduce load on main AC lobby server and speed things up, and supply data for some time in case AC lobby server would go under maintenance. And loading data directly from remote servers instead of going through AC lobby server would ensure data is the freshest." />
+            </Button.ToolTip>
+            <DockPanel>
+              <Path Data="{StaticResource GitForkIconData}" Width="14" Height="14" Margin="0 0 8 0" VerticalAlignment="Center" Stretch="Uniform"
+                  Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}" />
+              <TextBlock Text="Switch to caching server and direct loading" DockPanel.Dock="Top" Margin="0 0 0 2" />
+              <TextBlock Text="Can be disabled later in Settings/Online" Style="{StaticResource Small}" />
+            </DockPanel>
+          </Button>
+        </Border>
       </StackPanel>
 
       <!-- Loaded -->

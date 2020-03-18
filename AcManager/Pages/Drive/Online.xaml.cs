@@ -72,7 +72,7 @@ namespace AcManager.Pages.Drive {
                 new InputBinding(Model.AddNewServerCommand, new KeyGesture(Key.A, ModifierKeys.Control)),
                 new InputBinding(new DelegateCommand(() => OnScrollToSelectedButtonClick(null, null)),
                         new KeyGesture(Key.V, ModifierKeys.Control | ModifierKeys.Shift)),
-            new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
+                new InputBinding(Model.RefreshCommand, new KeyGesture(Key.R, ModifierKeys.Control)),
             });
 
             InitializeComponent();
@@ -168,7 +168,6 @@ namespace AcManager.Pages.Drive {
                 Frame.Width = value ? 670 : 450;
             }
         }
-
 
         private void ResizingStuff() {
             var width = ActualWidth;
@@ -377,7 +376,7 @@ namespace AcManager.Pages.Drive {
                     var splitIndex = filterParam.LastIndexOf('@');
                     if (splitIndex != -1) {
                         sources = filterParam.Substring(splitIndex + 1).Split(',').Select(x => x.Trim().ToLowerInvariant())
-                                             .Distinct().ToArray();
+                                .Distinct().ToArray();
                         filter = splitIndex == 0 ? null : filterParam.Substring(0, splitIndex);
                     } else {
                         filter = filterParam;
@@ -386,9 +385,9 @@ namespace AcManager.Pages.Drive {
 
                 Pack = OnlineManager.Instance.GetSourcesPack(sources);
                 UserListMode = Pack.SourceWrappers.Count == 1 && FileBasedOnlineSources.Instance.GetUserSources()
-                                                                                       .Select(x => x.Id)
-                                                                                       .Append(FileBasedOnlineSources.FavouritesKey)
-                                                                                       .Contains(Pack.SourceWrappers[0].Id);
+                        .Select(x => x.Id)
+                        .Append(FileBasedOnlineSources.FavouritesKey)
+                        .Contains(Pack.SourceWrappers[0].Id);
 
                 ListFilter = GetFilter(filter, sources);
                 Key = GetKey(filterParam);
@@ -430,7 +429,7 @@ namespace AcManager.Pages.Drive {
                     // In case pack is basically ready, but there is still something loads in background,
                     // we need to use StartLoading() anyway — current loading process will be cancelled,
                     // if there is no “listeners”
-                    StartLoading().Forget();
+                    StartLoading(false).Forget();
                 }
 
                 if (Pack.Status == OnlineManagerStatus.Ready) {
@@ -466,11 +465,15 @@ namespace AcManager.Pages.Drive {
 
             private CancellationTokenSource _currentLoading;
 
-            private async Task StartLoading() {
+            private async Task StartLoading(bool reloadMode) {
                 var cancellation = new CancellationTokenSource();
                 try {
                     _currentLoading = cancellation;
-                    await Pack.EnsureLoadedAsync(cancellation.Token);
+                    if (reloadMode) {
+                        await Pack.ReloadAsync(false, cancellation.Token);
+                    } else {
+                        await Pack.EnsureLoadedAsync(cancellation.Token);
+                    }
                 } finally {
                     if (Equals(_currentLoading, cancellation)) {
                         _currentLoading = null;
@@ -625,21 +628,27 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand<string> _changeSortingCommand;
 
-            public DelegateCommand<string> ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(o => {
-                SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];
-            }));
+            public DelegateCommand<string> ChangeSortingCommand
+                =>
+                        _changeSortingCommand
+                                ?? (_changeSortingCommand =
+                                        new DelegateCommand<string>(
+                                                o => {
+                                                    SortingMode = SortingModes.GetByIdOrDefault(o)
+                                                            ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];
+                                                }));
 
             private DelegateCommand _setAsDefaultSortingCommand;
 
-            public DelegateCommand SetAsDefaultSortingCommand => _setAsDefaultSortingCommand ?? (_setAsDefaultSortingCommand = new DelegateCommand(() => {
-                DefaultSortingMode.Value = SortingMode.Id;
-            }));
+            public DelegateCommand SetAsDefaultSortingCommand
+                => _setAsDefaultSortingCommand ?? (_setAsDefaultSortingCommand = new DelegateCommand(() => { DefaultSortingMode.Value = SortingMode.Id; }));
 
             private DelegateCommand _setAsDefaultFiltersCommand;
 
-            public DelegateCommand SetAsDefaultFiltersCommand => _setAsDefaultFiltersCommand ?? (_setAsDefaultFiltersCommand = new DelegateCommand(() => {
-                DefaultQuickFilters.Value = Filters.GetFilterString();
-            }));
+            public DelegateCommand SetAsDefaultFiltersCommand
+                =>
+                        _setAsDefaultFiltersCommand
+                                ?? (_setAsDefaultFiltersCommand = new DelegateCommand(() => { DefaultQuickFilters.Value = Filters.GetFilterString(); }));
 
             private ICommand _addNewServerCommand;
 
@@ -653,6 +662,15 @@ namespace AcManager.Pages.Drive {
                 // why pinging doesn’t crash when collection is getting updated?
                 await Pack.ReloadAsync(nonReadyOnly ?? false);
             }));
+
+            private AsyncCommand _switchToCachingCommand;
+
+            public AsyncCommand SwitchToCachingCommand => _switchToCachingCommand ?? (_switchToCachingCommand = new AsyncCommand(async () => {
+                SettingsHolder.Online.LoadServerInformationDirectly = true;
+                SettingsHolder.Online.UseCachingServer = true;
+                await Pack.ReloadAsync();
+            }, () => SettingsHolder.Online.CachingServerAvailable && !SettingsHolder.Online.UseCachingServer
+                    && Pack.SourceWrappers.Count == 1 && Pack.SourceWrappers[0].Id == KunosOnlineSource.Key));
 
             protected void OnCurrentChanged(object sender, EventArgs e) {
                 // base.OnCurrentChanged(sender, e);
@@ -691,7 +709,7 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public void OnFragmentNavigation(FragmentNavigationEventArgs e) {}
+        public void OnFragmentNavigation(FragmentNavigationEventArgs e) { }
 
         public void OnNavigatedFrom(NavigationEventArgs e) {
             Model.Unload();
@@ -734,6 +752,6 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        public void OnNavigatingFrom(NavigatingCancelEventArgs e) {}
+        public void OnNavigatingFrom(NavigatingCancelEventArgs e) { }
     }
 }

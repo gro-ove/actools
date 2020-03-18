@@ -494,7 +494,7 @@ namespace AcManager.Tools.Managers.Online {
                 state = IsAbleToInstallMissingContent.Updates;
             }
 
-            Logging.Debug($"Result: {state}");
+            // Logging.Debug($"Result: {state}");
             IsAbleToInstallMissingContentState = state;
             return missingSomething ? ServerStatus.MissingContent : (ServerStatus?)null;
         }

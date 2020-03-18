@@ -20,6 +20,13 @@ namespace AcManager.Tools.Objects {
 
         public string HintBottom { get; }
 
+        private static string PrepareHint(string hint) {
+            if (string.IsNullOrWhiteSpace(hint)) return null;
+            hint = Regex.Replace(hint, @"<(?=[a-z/])", "[");
+            hint = Regex.Replace(hint, @"(?<=[a-z""])>", "]");
+            return hint;
+        }
+
         public PythonAppConfigSection([NotNull] PythonAppConfigParams configParams, KeyValuePair<string, IniFileSection> pair, [CanBeNull] IniFileSection values)
                 : base(pair.Value
                         .Where(x => !x.Key.StartsWith("__HINT"))
@@ -27,8 +34,8 @@ namespace AcManager.Tools.Objects {
                                 pair.Value.Commentaries?.GetValueOrDefault(x.Key)?.Split('\n')[0],
                                 values?.GetValueOrDefault(x.Key), values != null)).NonNull()) {
             Key = pair.Key;
-            HintTop = pair.Value.GetNonEmpty("__HINT_TOP");
-            HintBottom = pair.Value.GetNonEmpty("__HINT_BOTTOM");
+            HintTop = PrepareHint(pair.Value.GetNonEmpty("__HINT_TOP"));
+            HintBottom = PrepareHint(pair.Value.GetNonEmpty("__HINT_BOTTOM"));
 
             var commentary = pair.Value.Commentary?.Split('\n')[0].Trim();
             if (commentary == @"hidden") {

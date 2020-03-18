@@ -64,6 +64,20 @@
           <ComboBox ItemsSource="{Binding Online.OnlineServers}" SelectedItem="{Binding Online.OnlineServer}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
+        <CheckBox IsChecked="{Binding Online.UseCachingServer}" IsEnabled="{Binding Online.CachingServerAvailable}" mui:NewMarkService.New="True"
+            ToolTipService.ShowOnDisabled="True">
+          <CheckBox.ToolTip>
+            <DockPanel MaxWidth="300">
+              <TextBlock Text="Might be faster, but updates only once every ten minutes. Better to use with direct information loading." TextWrapping="Wrap"
+                  DockPanel.Dock="Top" />
+              <mui:BbCodeBlock Text="[b]Please note:[/b] you need to load regular server list at least once for this option to work." Margin="0 4 0 -8"
+                  TextWrapping="Wrap"
+                  Visibility="{Binding Online.CachingServerAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse'}" />
+            </DockPanel>
+          </CheckBox.ToolTip>
+          <Label Content="Use caching proxy server for lobby" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Online.LoadServerInformationDirectly}" ToolTip="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" />
         </CheckBox>

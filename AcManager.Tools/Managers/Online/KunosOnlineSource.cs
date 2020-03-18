@@ -41,7 +41,8 @@ namespace AcManager.Tools.Managers.Online {
                 throw new Exception(ToolsStrings.Common_SteamIdIsMissing);
             }
 
-            var data = await Task.Run(() => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress)), cancellation);
+            var data = await Task.Run(
+                    () => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress), cancellation), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {

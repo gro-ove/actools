@@ -294,7 +294,7 @@ namespace AcManager.Tools.Miscellaneous {
         public event EventHandler<CupEventArgs> NewLatestVersion;
 
         private void RegisterLatestVersion([NotNull] CupKey key, [NotNull] CupInformation information) {
-            Logging.Debug("New update: " + key + information);
+            // Logging.Debug("New update: " + key + information);
 
             if (_storage.Get<bool>($"ignore:{key}") || _storage.Get<bool>($"ignore:{key}:{information.Version}") ||
                     _versions.TryGetValue(key, out var existing) && existing.Version.IsVersionNewerThan(information.Version)) {
