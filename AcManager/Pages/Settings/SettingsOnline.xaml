@@ -68,7 +68,7 @@
             ToolTipService.ShowOnDisabled="True">
           <CheckBox.ToolTip>
             <DockPanel MaxWidth="300">
-              <TextBlock Text="Might be faster, but updates only once every ten minutes. Better to use with direct information loading." TextWrapping="Wrap"
+              <TextBlock Text="Might be faster. Better to use with direct information loading to speed things up even more." TextWrapping="Wrap"
                   DockPanel.Dock="Top" />
               <mui:BbCodeBlock Text="[b]Please note:[/b] you need to load regular server list at least once for this option to work." Margin="0 4 0 -8"
                   TextWrapping="Wrap"
@@ -91,10 +91,10 @@
           <Label Content="Show extended information if content is missing" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Online.SearchForMissingContent}">
+        <!--<CheckBox IsChecked="{Binding Online.SearchForMissingContent}">
           <CheckBox.ToolTip>Please, keep in mind that some content found might not be exactly legal (for example, models might be ported)</CheckBox.ToolTip>
           <Label Content="Search for links to missing content automatically" />
-        </CheckBox>
+        </CheckBox>-->
 
       </StackPanel>
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Main_Online}" Style="{StaticResource SettingsPanel}" set:Search.Keywords="online;servers">

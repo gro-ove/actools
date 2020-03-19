@@ -34,7 +34,7 @@
             ToolTipService.ShowOnDisabled="True" IsCheckable="True">
           <MenuItem.ToolTip>
             <DockPanel MaxWidth="300">
-              <TextBlock Text="Might be faster, but updates only once every ten minutes. Better to use with direct information loading." TextWrapping="Wrap"
+              <TextBlock Text="Might be faster. Better to use with direct information loading to speed things up even more." TextWrapping="Wrap"
                   DockPanel.Dock="Top" />
               <mui:BbCodeBlock Text="[b]Please note:[/b] you need to load regular server list at least once for this option to work." Margin="0 4 0 -8"
                   TextWrapping="Wrap"

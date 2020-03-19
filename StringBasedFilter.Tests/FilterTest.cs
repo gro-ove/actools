@@ -111,6 +111,18 @@ namespace StringBasedFilter.Tests {
         }
 
         [Test]
+        public void HyphenTest() {
+            var filter = Filter.Create(new StringTester(), "A-B");
+            var s = filter.ToString();
+            Console.WriteLine(s);
+            Assert.IsTrue(filter.Test("A-BC"));
+            Assert.IsFalse(filter.Test("A"));
+            Assert.IsFalse(filter.Test("BC"));
+            Assert.IsTrue(filter.Test("A A-B"));
+            Assert.IsFalse(filter.Test("qA B"));
+        }
+
+        [Test]
         public void QuotesTest() {
             var em0 = Filter.Create(new StringTester(), "!");
             Assert.IsFalse(em0.Test("!"));
