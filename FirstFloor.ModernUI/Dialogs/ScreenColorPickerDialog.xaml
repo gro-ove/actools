@@ -54,10 +54,7 @@
     <Border x:Name="UpperPart" Background="Transparent" VerticalAlignment="Top" Height="200" />
     <Border x:Name="Flash" Background="White" IsHitTestVisible="False" />
     <Popup x:Name="FloatingTip" AllowsTransparency="True" Placement="Relative" IsHitTestVisible="False">
-      <Grid Margin="4" IsHitTestVisible="False">
-        <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-        <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
-
+      <Grid IsHitTestVisible="False">
         <Border Background="{DynamicResource WindowBackground}" BorderThickness="1" BorderBrush="{DynamicResource WindowBorderActive}" Padding="5 4 5 4"
             CornerRadius="0">
           <DockPanel>

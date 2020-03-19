@@ -190,9 +190,7 @@
               <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" Margin="1"
                   IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}"
                   PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
-                <mui:Cell Margin="4" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                  <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                  <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+                <mui:Cell Margin="0" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
                   <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
                       BorderThickness="1" Margin="0 -1 0 0">
                     <!-- popup border thickness not dependent on BorderThickness property-->

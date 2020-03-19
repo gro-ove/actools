@@ -84,9 +84,8 @@
       <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Right" VerticalOffset="-3" HorizontalOffset="-2"
           IsOpen="{Binding Path=IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
-        <c:Cell Margin="4" Background="{DynamicResource PopupBackground}">
-          <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-          <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+        <c:Cell Margin="0" Background="{DynamicResource PopupBackground}">
+
           <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
               Margin="0 -1 0 0">
             <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">

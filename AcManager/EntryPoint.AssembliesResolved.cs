@@ -187,9 +187,9 @@ namespace AcManager {
         private static void UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs args) {
             _crashed = true;
             var e = args.Exception as Exception;
-            var app = System.Windows.Application.Current;
-            if (app != null) {
-                app.Dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
+            var dispatcher = System.Windows.Application.Current?.Dispatcher;
+            if (dispatcher != null) {
+                dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
             } else {
                 UnhandledExceptionHandler(e);
             }

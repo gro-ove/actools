@@ -344,9 +344,7 @@
             <Popup x:Name="PART_Popup" PlacementTarget="{Binding ElementName=PART_TextBox}" Placement="Bottom" HorizontalOffset="-4"
                 IsOpen="{Binding IsChecked, ElementName=PART_Button, Mode=TwoWay}" VerticalOffset="-5" StaysOpen="False" AllowsTransparency="True"
                 PopupAnimation="Slide">
-              <c:Cell x:Name="PART_Root" Margin="4" HorizontalAlignment="Center">
-                <Border Background="#0C000000" BorderBrush="#0F000000" BorderThickness="1" CornerRadius="2.5" Margin="-1" />
-                <Border Background="#0A000000" BorderBrush="#0C000000" BorderThickness="1" CornerRadius="2.75" Margin="-2" />
+              <c:Cell x:Name="PART_Root" Margin="0" HorizontalAlignment="Center">
                 <c:ColorPickerPanel x:Name="PART_Panel" Background="{DynamicResource PopupBackground}" BorderThickness="0" Margin="1"
                     Color="{Binding Color, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Border BorderBrush="{DynamicResource Accent}" BorderThickness="1" />
