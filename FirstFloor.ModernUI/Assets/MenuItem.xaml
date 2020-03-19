@@ -85,9 +85,7 @@
           IsOpen="{Binding Path=IsSubmenuOpen,RelativeSource={RelativeSource TemplatedParent}}" Focusable="False"
           PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}">
         <c:Cell Margin="0" Background="{DynamicResource PopupBackground}">
-
-          <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
-              Margin="0 -1 0 0">
+          <Border x:Name="SubMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1">
             <ScrollViewer x:Name="SubMenuScrollViewer" CanContentScroll="True" Foreground="{DynamicResource ItemText}">
               <Grid RenderOptions.ClearTypeHint="Enabled">
                 <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.TabNavigation="Cycle" KeyboardNavigation.DirectionalNavigation="Cycle"

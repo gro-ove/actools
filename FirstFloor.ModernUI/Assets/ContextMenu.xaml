@@ -32,7 +32,7 @@
                   ScaleY="{Binding AppScale, Source={x:Static mui:AppearanceManager.Instance}, Mode=OneTime}" />
             </c:Cell.LayoutTransform>
             <Border x:Name="ContextMenuBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                BorderThickness="1" Margin="0 -1 0 0">
+                BorderThickness="1">
               <ScrollViewer x:Name="ContextMenuScrollViewer">
                 <c:Cell RenderOptions.ClearTypeHint="Enabled">
                   <Canvas Height="0" Width="0" HorizontalAlignment="Left" VerticalAlignment="Top">

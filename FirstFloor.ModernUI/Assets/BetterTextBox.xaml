@@ -211,7 +211,6 @@
     <Setter Property="FontSize" Value="{DynamicResource SmallFontSize}" />
   </Style>
 
-  <!--combobox-->
   <Style x:Key="BetterComboBoxEditableTextBox" TargetType="{x:Type c:BetterTextBox}" BasedOn="{StaticResource TextBoxBase.CommonBase}">
     <Setter Property="Template" Value="{StaticResource BetterTextBoxControlTemplate.Simple}" />
   </Style>
@@ -223,7 +222,7 @@
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
         <c:Cell Margin="0" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
           <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
-              Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+              TextBlock.Foreground="{DynamicResource WindowText}">
             <ScrollViewer x:Name="DropDownScrollViewer">
               <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -266,7 +265,7 @@
           PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
         <c:Cell Margin="0" MinWidth="{Binding ActualWidth, ElementName=MainGrid}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
           <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}" BorderThickness="1"
-              Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+              TextBlock.Foreground="{DynamicResource WindowText}">
             <ScrollViewer x:Name="DropDownScrollViewer">
               <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -322,7 +321,7 @@
             PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
           <c:Cell Margin="0" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
             <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+                BorderThickness="1" TextBlock.Foreground="{DynamicResource WindowText}">
               <ScrollViewer x:Name="DropDownScrollViewer">
                 <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
@@ -380,7 +379,7 @@
             PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}">
           <c:Cell Margin="0" MinWidth="{Binding ElementName=MainGrid,Path=ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
             <Border x:Name="DropDownBorder" Background="{DynamicResource PopupBackground}" BorderBrush="{DynamicResource WindowBorderActive}"
-                BorderThickness="1" Margin="0 -1 0 0" TextBlock.Foreground="{DynamicResource WindowText}">
+                BorderThickness="1" TextBlock.Foreground="{DynamicResource WindowText}">
               <ScrollViewer x:Name="DropDownScrollViewer">
                 <ItemsPresenter x:Name="ItemsPresenter" RenderOptions.ClearTypeHint="Enabled" KeyboardNavigation.DirectionalNavigation="Contained"
                     SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
