@@ -276,7 +276,7 @@ namespace AcManager {
             var e = args.ExceptionObject as Exception;
             var app = System.Windows.Application.Current;
             if (app != null) {
-                app.Dispatcher.Invoke(() => { UnhandledExceptionHandler(e); });
+                app.Dispatcher?.Invoke(() => { UnhandledExceptionHandler(e); });
             } else {
                 UnhandledExceptionHandler(e);
             }

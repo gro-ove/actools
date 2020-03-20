@@ -304,11 +304,16 @@
         <!-- System -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="System:" />
 
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DisallowTransparency}" ToolTip="Might improve performance or resolve issues with Wine"
+            mui:NewMarkService.New="True">
+          <Label Content="Disable windows transparency" />
+        </CheckBox>
+
         <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
           <Button Visibility="{Binding SoftwareRenderingRestartRequired, Converter={StaticResource BooleanToVisibilityConverter}}"
               Command="{Binding RestartCommand}" Content="{x:Static g:AppStrings.Common_Restart}" Margin="0 -2" />
-          <CheckBox IsChecked="{Binding SoftwareRendering}">
-            <Label Content="Disable hardware acceleration for UI (not recommended)" TextBlock.Foreground="{DynamicResource Error}" />
+          <CheckBox IsChecked="{Binding AppAppearanceManager.SoftwareRenderingMode}">
+            <Label Content="Disable hardware acceleration for UI" TextBlock.Foreground="{DynamicResource Error}" />
           </CheckBox>
         </DockPanel>
       </StackPanel>

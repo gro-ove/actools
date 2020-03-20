@@ -254,9 +254,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-// #if !DEBUG
+            // #if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-// #endif
+            // #endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -624,6 +624,20 @@ namespace AcManager {
             }
         }
 
+        private static void DisableWindowsTransparency(DependencyProperty dp, Type type) {
+            try {
+                var m = dp.GetMetadata(type);
+                var p = m.GetType().GetProperty("Sealed",
+                        System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                        ?? throw new Exception("Sealed property is missing");
+                p.SetValue(m, false);
+                m.CoerceValueCallback = (d, o) => false;
+                p.SetValue(m, true);
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+        }
+
         private static void PrepareUi() {
             try {
                 ToolTipService.ShowOnDisabledProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(true));
@@ -631,6 +645,11 @@ namespace AcManager {
                 ToolTipService.BetweenShowDelayProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(600));
                 ToolTipService.ShowDurationProperty.OverrideMetadata(typeof(DependencyObject), new FrameworkPropertyMetadata(60000));
                 ItemsControl.IsTextSearchCaseSensitiveProperty.OverrideMetadata(typeof(ComboBox), new FrameworkPropertyMetadata(true));
+
+                if (AppAppearanceManager.Instance.DisallowTransparency) {
+                    DisableWindowsTransparency(Window.AllowsTransparencyProperty, typeof(Window));
+                    DisableWindowsTransparency(Popup.AllowsTransparencyProperty, typeof(Popup));
+                }
             } catch (Exception e) {
                 Logging.Error(e);
             }
@@ -713,7 +732,7 @@ namespace AcManager {
                     if (changelog.Any()) {
                         Toast.Show(AppStrings.App_AppUpdated, AppStrings.App_AppUpdated_Details, () => {
                             ModernDialog.ShowMessage(changelog.Select(x => $@"[b]{x.Version}[/b]{Environment.NewLine}{x.Changes}")
-                                                              .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
+                                    .JoinToString(Environment.NewLine.RepeatString(2)), AppStrings.Changelog_RecentChanges_Title,
                                     MessageBoxButton.OK);
                         });
                     }
@@ -732,10 +751,10 @@ namespace AcManager {
                 await Task.Delay(5000);
                 await Task.Run(() => {
                     foreach (var f in from file in Directory.GetFiles(FilesStorage.Instance.GetDirectory("Logs"))
-                                      where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
-                                      let info = new FileInfo(file)
-                                      where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
-                                      select info) {
+                        where file.EndsWith(@".txt") || file.EndsWith(@".log") || file.EndsWith(@".json")
+                        let info = new FileInfo(file)
+                        where info.LastWriteTime < DateTime.Now - TimeSpan.FromDays(3)
+                        select info) {
                         f.Delete();
                     }
                 });

@@ -30,6 +30,7 @@ namespace AcManager.Controls.Presentation {
         public const string KeyAccentDisplayColor = "appearance_accentColor_d";
         public const string KeyIdealFormattingMode = "appearance_idealFormattingMode_2";
         public const string KeyBlurImageViewerBackground = "appearance_blurImageViewerBackground";
+        public const string KeyDisallowTransparency = "appearance_disallowTransparency";
         public const string KeyHideImageViewerButtons = "appearance_hideImageViewerButtons";
         public const string KeySmallFont = "appearance_smallFont";
         public const string KeyLargerTitleLinks = "appearance_biggerTitleLinks";
@@ -180,6 +181,7 @@ namespace AcManager.Controls.Presentation {
                 SlideshowChangeRate = ValuesStorage.Get(KeySlideshowChangeRate, SlideshowChangeRates.ElementAt(3).Value);
                 IdealFormattingMode = ValuesStorage.Get<bool?>(KeyIdealFormattingMode);
                 BlurImageViewerBackground = ValuesStorage.Get<bool>(KeyBlurImageViewerBackground);
+                DisallowTransparency = ValuesStorage.Get<bool>(KeyDisallowTransparency);
                 SmallFont = ValuesStorage.Get<bool>(KeySmallFont);
                 LargerTitleLinks = ValuesStorage.Get<bool>(KeyLargerTitleLinks);
                 BoldTitleLinks = ValuesStorage.Get<bool>(KeyBoldTitleLinks);
@@ -493,6 +495,18 @@ namespace AcManager.Controls.Presentation {
                 _blurImageViewerBackground = value;
                 OnPropertyChanged();
                 ValuesStorage.Set(KeyBlurImageViewerBackground, value);
+            }
+        }
+
+        private bool _disallowTransparency;
+
+        public bool DisallowTransparency {
+            get => _disallowTransparency;
+            set {
+                if (Equals(value, _disallowTransparency)) return;
+                _disallowTransparency = value;
+                OnPropertyChanged();
+                ValuesStorage.Set(KeyDisallowTransparency, value);
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ using AcManager.Controls.Presentation;
 using AcManager.Tools.Helpers;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -56,6 +58,7 @@ namespace AcManager.Pages.Settings {
         public class ViewModel : NotifyPropertyChanged {
             private static BitmapScalingMode? _originalScalingMode;
             private static bool? _originalSoftwareRendering;
+            private static bool? _originalDisableTransparency;
 
             public FancyBackgroundManager FancyBackgroundManager => FancyBackgroundManager.Instance;
             public AppearanceManager AppearanceManager => AppearanceManager.Instance;
@@ -83,7 +86,6 @@ namespace AcManager.Pages.Settings {
                 _forceScreen = Screens.GetByIdOrDefault(AppearanceManager.Instance.ForceScreenName);
 
                 BitmapScaling = BitmapScalings.FirstOrDefault(x => x.Value == AppAppearanceManager.BitmapScalingMode) ?? BitmapScalings.First();
-                SoftwareRendering = AppAppearanceManager.SoftwareRenderingMode;
                 TextFormatting = AppAppearanceManager.IdealFormattingMode == null ? TextFormattings[0] :
                         AppAppearanceManager.IdealFormattingMode.Value ? TextFormattings[2] : TextFormattings[1];
 
@@ -92,7 +94,17 @@ namespace AcManager.Pages.Settings {
                 }
 
                 if (!_originalSoftwareRendering.HasValue) {
-                    _originalSoftwareRendering = SoftwareRendering;
+                    _originalSoftwareRendering = AppAppearanceManager.SoftwareRenderingMode;
+                    _originalDisableTransparency = AppAppearanceManager.DisallowTransparency;
+                }
+
+                AppAppearanceManager.SubscribeWeak(OnAppAppearanceManagerChanged);
+            }
+
+            private void OnAppAppearanceManagerChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(AppAppearanceManager.SoftwareRenderingMode)
+                        || e.PropertyName == nameof(AppAppearanceManager.DisallowTransparency)) {
+                    OnPropertyChanged(nameof(SoftwareRenderingRestartRequired));
                 }
             }
 
@@ -137,28 +149,8 @@ namespace AcManager.Pages.Settings {
                 new BitmapScalingEntry { DisplayName = Tools.ToolsStrings.AcSettings_Quality_High, Value = BitmapScalingMode.HighQuality }
             };
 
-            private bool _softwareRenderingRestartRequired;
-
-            public bool SoftwareRenderingRestartRequired {
-                get => _softwareRenderingRestartRequired;
-                set => Apply(value, ref _softwareRenderingRestartRequired);
-            }
-
-            private bool _softwareRendering;
-
-            public bool SoftwareRendering {
-                get => _softwareRendering;
-                set {
-                    if (Equals(value, _softwareRendering)) return;
-                    _softwareRendering = value;
-                    OnPropertyChanged();
-
-                    if (_originalScalingMode.HasValue) {
-                        AppAppearanceManager.SoftwareRenderingMode = value;
-                        SoftwareRenderingRestartRequired = value != _originalSoftwareRendering;
-                    }
-                }
-            }
+            public bool SoftwareRenderingRestartRequired => AppAppearanceManager.SoftwareRenderingMode != _originalSoftwareRendering
+                    || AppAppearanceManager.DisallowTransparency != _originalDisableTransparency;
 
             private Displayable _textFormatting;
 
