@@ -74,6 +74,7 @@ namespace AcManager.Controls.UserControls.Web {
             Logging.Debug(url.GetDomainNameFromUrl());
             if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
                 toInject.Add(@"<script>!function(){
+window.__ACClasses = {};
 window.__AC = {};
 window.__AC.CarsArray = JSON.parse(window.external.GetCars());
 window.__AC.TracksArray = JSON.parse(window.external.GetTracks());
@@ -93,6 +94,7 @@ function find(a, f, p1, p2) {
 }
 window.__AC.findCar = find.bind(null, __AC.CarsArray);
 window.__AC.findTrack = find.bind(null, __AC.TracksArray);
+window.__AC.getDbValue = window.external.GetDbValue;
 }()</script>");
             }
         }
@@ -118,6 +120,14 @@ window.__AC.findTrack = find.bind(null, __AC.TracksArray);
                     ActionExtension.InvokeInMainThreadAsync(() => TrackAccessed?.Invoke(this, new AcItemAccessedEventArgs { Id = track.IdWithLayout }));
                 }
             }
+        }
+
+        [UsedImplicitly]
+        public string GetDbValue(string id) {
+            if (id == "player.guid") {
+                return SteamIdHelper.Instance.Value;
+            }
+            return null;
         }
 
         [UsedImplicitly]

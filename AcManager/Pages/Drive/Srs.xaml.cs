@@ -344,7 +344,7 @@ document.getElementById('{Model.CarId}5').innerHTML = '<img src=""{
                 ShowExtensionMessage = false;
             }));
 
-            public string StartPage => SteamIdHelper.Instance.IsReady ? @"http://www.simracingsystem.com/race4.php" : null;
+            public string StartPage => SteamIdHelper.Instance.IsReady ? @"https://www.simracingsystem.com/race4.php" : null;
 
             public void Reset() {
                 Server = null;
@@ -743,7 +743,7 @@ window.external.SetCars(JSON.stringify(a));", true);
             }
 
             public string GetStyle(string url, bool transparentBackgroundSupported) {
-                return SettingsHolder.Live.SrsCustomStyle && url.StartsWith(@"http://www.simracingsystem.com") ?
+                return SettingsHolder.Live.SrsCustomStyle && url.StartsWith(@"https://www.simracingsystem.com") ?
                         GetCustomStyle() : null;
             }
         }

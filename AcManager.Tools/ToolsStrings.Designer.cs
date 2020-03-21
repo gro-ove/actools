@@ -19,12 +19,12 @@ namespace AcManager.Tools {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ToolsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Tools {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Tools.ToolsStrings", typeof(ToolsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -403,7 +403,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure there is no runned app working with object’s folder..
+        ///   Looks up a localized string similar to Make sure there are no running apps working with object’s folder..
         /// </summary>
         public static string AcObject_CannotToggle_Commentary {
             get {
@@ -880,7 +880,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Highspeed shaking.
+        ///   Looks up a localized string similar to High speed shaking.
         /// </summary>
         public static string AcSettings_View_HighspeedShaking {
             get {
@@ -1222,7 +1222,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Automatically syncronize RPM on downshifts.
+        ///   Looks up a localized string similar to Automatically synchronize RPM on downshifts.
         /// </summary>
         public static string Assists_AutoBlip_Tooltip {
             get {
@@ -2797,7 +2797,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background.
+        ///   Looks up a localized string similar to Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app is supposed to run in background.
         /// </summary>
         public static string GameCommand_TimeoutExceeded_Commentary {
             get {
@@ -4050,7 +4050,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments.
+        ///   Looks up a localized string similar to Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievements.
         /// </summary>
         public static string Settings_Starter_Sse_Description {
             get {
@@ -4302,7 +4302,7 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure there is no runned app working with showroom’s sound files..
+        ///   Looks up a localized string similar to Make sure there are no running app working with showroom’s sound files..
         /// </summary>
         public static string ShowroomObject_CannotToggleSound_Commentary {
             get {

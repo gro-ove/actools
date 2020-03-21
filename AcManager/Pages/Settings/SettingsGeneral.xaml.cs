@@ -7,6 +7,7 @@ using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Starters;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
@@ -98,12 +99,13 @@ namespace AcManager.Pages.Settings {
             private DelegateCommand _changeSteamIdCommand;
 
             public DelegateCommand ChangeSteamIdCommand => _changeSteamIdCommand ?? (_changeSteamIdCommand = new DelegateCommand(() => {
+                if (SteamStarter.IsInitialized) return;
                 if (ModernDialog.ShowMessage("Do you want to change Steam ID? RSR and SRS progress are linked to it. Also, app will be restarted.",
                         "Change Steam ID", MessageBoxButton.YesNo) != MessageBoxResult.Yes) return;
                 if (new AcRootDirectorySelector(false, true).ShowDialog() == true) {
                     WindowsHelper.RestartCurrentApplication();
                 }
-            }));
+            }, () => !SteamStarter.IsInitialized));
 
             private DelegateCommand _changeAppKeyCommand;
 

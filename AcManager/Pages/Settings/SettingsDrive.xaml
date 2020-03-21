@@ -20,6 +20,8 @@
               <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters" />
             </DockPanel>
           </Label>
+          <Button Command="{Binding SwitchToSteamStarterCommand}" Content="Switch to Steam starter"
+              Visibility="{Binding SwitchToSteamStarterCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
             <ComboBox.ItemContainerStyle>
               <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">

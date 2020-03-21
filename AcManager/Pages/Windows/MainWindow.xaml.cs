@@ -870,6 +870,12 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
+            if (e.Source.OriginalString.IsWebUrl()) {
+                WindowsHelper.ViewInBrowser(e.Source.OriginalString);
+                e.Cancel = true;
+                return;
+            }
+
             if (e.Source.OriginalString.Contains(@"/Pages/About/")) {
                 _lastAboutSection.Value = e.Source;
             }

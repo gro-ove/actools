@@ -1,0 +1,10 @@
+<UserControl x:Class="AcManager.Pages.Drive.TempSurvey" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d">
+
+  <mui:SpacingStackPanel Margin="200 40" HorizontalAlignment="Center" VerticalAlignment="Center" Spacing="20">
+    <TextBlock Text="Hello there!" Style="{StaticResource Title}" />
+    <mui:BbCodeBlock
+        Text="If you like competitive online racing, maybe you would be interested in taking [url=&quot;https://docs.google.com/forms/d/e/1FAIpQLSdEsZHa9RWyQo65Po3zBjdq-q1NE-yunm6F08WC87NC3icqlg/viewform&quot;]this survey[/url] to help a friend of mine to decide on the next project? Your contribution would be very important to help to design it better. Thank you!" />
+  </mui:SpacingStackPanel>
+</UserControl>

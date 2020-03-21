@@ -69,7 +69,8 @@ namespace AcManager.Tools.Helpers {
 
             public static readonly StarterType AppIdStarterType = new StarterType(
                     "AppID",
-                    string.Format(ToolsStrings.Common_Recommended, "AppID"),
+                    // string.Format(ToolsStrings.Common_Recommended, "AppID"),
+                    "AppID",
                     "Adds “steam_appid.txt” with AC’s Steam ID to AC root folder thus allowing to run “acs.exe” directly. Thanks to [url=\"http://www.assettocorsa.net/forum/index.php?members/zkirtaem.135368/\"]@Zkirtaem[/url] for the idea.");
 
             public static readonly StarterType SidePassageStarterType = new StarterType(
@@ -79,7 +80,7 @@ namespace AcManager.Tools.Helpers {
 
             public static readonly StarterType SteamStarterType = new StarterType(
                     "Steam",
-                    "Replacement",
+                    "Steam",
                     "For this starter, you have to replace the original “AssettoCorsa.exe” with “Content Manager.exe”. This way, CM will get an access to Steam as if it is the original launcher.",
                     nonSelectable: true, requiresSteam: false /* because it is Steam! sort of */);
 

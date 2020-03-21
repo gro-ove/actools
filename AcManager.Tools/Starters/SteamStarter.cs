@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using AcTools.Windows;
 using FirstFloor.ModernUI.Dialogs;
@@ -59,6 +60,12 @@ namespace AcManager.Tools.Starters {
             RunCallbacks().Forget();
             SteamUtils.SetOverlayNotificationPosition(ENotificationPosition.k_EPositionBottomLeft);
 
+            try {
+                SteamIdHelper.Instance.Value = SteamUser.GetSteamID().ToString();
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
+
             AppDomain.CurrentDomain.ProcessExit += (sender, args) => {
                 SteamAPI.Shutdown();
             };
@@ -67,6 +74,7 @@ namespace AcManager.Tools.Starters {
         private static bool AreFilesSame(string a, string b) {
             // because of symlinks… not that it’s a common case, but for me, it is
             if (!string.Equals(Path.GetFileName(a), Path.GetFileName(b), StringComparison.OrdinalIgnoreCase)) return false;
+            if (a == null || b == null) return a == b;
 
             var ai = new FileInfo(a);
             var bi = new FileInfo(b);

@@ -41,10 +41,15 @@ namespace AcManager.Tools.Helpers.Loaders {
                 await _client.LoginAnonymousAsync();
             }
 
-            var information = await _client.GetNodeFromLinkAsync(_uri);
-            TotalSize = information.Size;
-            FileName = information.Name;
-            return true;
+            try {
+                var information = await _client.GetNodeFromLinkAsync(_uri);
+                TotalSize = information.Size;
+                FileName = information.Name;
+                return true;
+            } catch (ApiException e) {
+                WindowsHelper.ViewInBrowser(_uri);
+                throw new InformativeException("Unsupported link", "Please download it manually.", e);
+            }
         }
 
         public bool UsesClientToDownload => false;
@@ -69,6 +74,9 @@ namespace AcManager.Tools.Helpers.Loaders {
                 return d.Filename;
             } catch (Exception e) when (IsBandwidthLimitExceeded(e)) {
                 throw new InformativeException("Bandwidth limit exceeded", "That’s Mega.nz for you.", e);
+            } catch (ApiException e) {
+                WindowsHelper.ViewInBrowser(_uri);
+                throw new InformativeException("Unsupported link", "Please download it manually.", e);
             }
 
             bool IsBandwidthLimitExceeded(Exception e) {

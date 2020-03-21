@@ -465,6 +465,9 @@
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Drive\TempSurvey.xaml.cs">
+      <DependentUpon>TempSurvey.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\UserChampionships_SelectedPage.xaml.cs">
       <DependentUpon>UserChampionships_SelectedPage.xaml</DependentUpon>
     </Compile>
@@ -1157,6 +1160,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\TempSurvey.xaml" />
     <Page Include="Pages\Drive\UserChampionships_SelectedPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

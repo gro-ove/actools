@@ -161,6 +161,7 @@ namespace AcManager.Pages.Dialogs {
                     break;
                 case Game.ProgressState.Launching:
                     if (AcRootDirectory.CheckDirectory(MainExecutingFile.Directory)
+                            && MainExecutingFile.Name != "AssettoCorsa.exe"
                             && new IniFile(AcPaths.GetCfgVideoFilename())["CAMERA"].GetNonEmpty("MODE") == "OCULUS"
                             && MessageDialog.Show(
                                     "Oculus Rift might not work properly with Content Manager is in AC root folder. It’s better to move it to avoid potential issues.",
@@ -175,7 +176,7 @@ namespace AcManager.Pages.Dialogs {
                             ProcessExtension.Start(newLocation, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
                             Environment.Exit(0);
                         } catch (Exception e) {
-                            NonfatalError.Notify("Failed to move CM executable", "I’m afraid you’ll have to do it manually.", e);
+                            NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
                         }
                     }
 

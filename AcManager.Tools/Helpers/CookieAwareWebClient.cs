@@ -322,11 +322,12 @@ namespace AcManager.Tools.Helpers {
 
         public async Task<string> GetFinalRedirectAsync(string url, int maxRedirectCount = 8) {
             using (SetAutoRedirect(false))
-            using (SetMethod(@"HEAD")) {
+            using (SetMethod(@"GET")) {
                 var newUrl = url;
                 do {
                     try {
-                        await DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
+                        (await OpenReadTaskAsync(newUrl).ConfigureAwait(false)).Dispose();
+                        // await DownloadStringTaskAsync(newUrl).ConfigureAwait(false);
                         switch (StatusCode) {
                             case HttpStatusCode.OK:
                                 return newUrl;

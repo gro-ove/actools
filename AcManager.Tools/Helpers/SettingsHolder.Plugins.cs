@@ -12,11 +12,11 @@ namespace AcManager.Tools.Helpers {
             private bool? _cefFilterAds;
 
             public bool CefFilterAds {
-                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.Get("Settings.PluginsSettings.CefFilterAds", false)).Value;
+                get => _cefFilterAds ?? (_cefFilterAds = ValuesStorage.Get("Settings.PluginsSettings.CefFilterAds2", false)).Value;
                 set {
                     if (Equals(value, _cefFilterAds)) return;
                     _cefFilterAds = value;
-                    ValuesStorage.Set("Settings.PluginsSettings.CefFilterAds", value);
+                    ValuesStorage.Set("Settings.PluginsSettings.CefFilterAds2", value);
                     OnPropertyChanged();
                 }
             }

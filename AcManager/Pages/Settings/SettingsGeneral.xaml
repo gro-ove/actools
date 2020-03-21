@@ -21,7 +21,8 @@
 
         <DockPanel ToolTip="Used for online">
           <Label Content="Steam profile:" />
-          <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
+          <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}"
+              Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True">
             <TextBox.Text>
               <MultiBinding StringFormat="{}{0} ({1})" Mode="OneWay">
@@ -32,7 +33,8 @@
           </mui:BetterTextBox>
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Common.LaunchSteamAtStart}" mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding Common.LaunchSteamAtStart}" mui:NewMarkService.New="True"
+            Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" >
           <Label Content="Launch Steam automatically when Content Manager starts" />
         </CheckBox>
 

@@ -55,7 +55,7 @@
   <mui:ReferenceSwitch.NonNull>
     <mui:BooleanSwitch Value="{Binding IsReady, Source={x:Static l:Srs2.Requirement}}">
       <mui:BooleanSwitch.True>
-        <c:WebBlock x:Name="Browser" UserAgent="Assetto Corsa Launcher" StartPage="http://www.simracingsystem.com" PreferTransparentBackground="True"
+        <c:WebBlock x:Name="Browser" UserAgent="Assetto Corsa Launcher" StartPage="https://www.simracingsystem.com" PreferTransparentBackground="True"
             NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2" AlwaysKeepAlive="True">
           <c:WebBlock.LeftSideContent>
             <mui:Switch Value="{Binding RaceCombinations.Count}" Width="320">

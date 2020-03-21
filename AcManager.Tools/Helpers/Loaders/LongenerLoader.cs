@@ -17,16 +17,14 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public LongenerLoader(string url) : base(url) { }
 
-        protected override Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
+        protected override async Task<string> GetRedirectOverrideAsync(string url, CookieAwareWebClient client, CancellationToken cancellation) {
             if (IsYouTubeWrapped(url)) {
-                return Task.FromResult(new Uri(url, UriKind.RelativeOrAbsolute).GetQueryParam("q"));
+                return new Uri(url, UriKind.RelativeOrAbsolute).GetQueryParam("q");
             }
-
             if (IsFacebookWrapped(url)) {
-                return Task.FromResult(new Uri(url, UriKind.RelativeOrAbsolute).GetQueryParam("u"));
+                return new Uri(url, UriKind.RelativeOrAbsolute).GetQueryParam("u");
             }
-
-            return client.GetFinalRedirectAsync(url);
+            return await client.GetFinalRedirectAsync(url);
         }
     }
 }

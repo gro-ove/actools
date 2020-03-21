@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -12,10 +13,12 @@ using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
-using AcManager.Tools.Miscellaneous;
+using AcManager.Tools.Starters;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
@@ -35,20 +38,19 @@ namespace AcManager.Pages.Dialogs {
 
         private ViewModel Model => (ViewModel)DataContext;
 
-        public AcRootDirectorySelector() : this(true, true) {}
+        public AcRootDirectorySelector() : this(true, true) { }
 
         public AcRootDirectorySelector(bool changeAcRoot, bool changeSteamId) {
             InitializeComponent();
-            DataContext = new ViewModel(changeAcRoot, changeSteamId);
+            DataContext = new ViewModel(changeAcRoot, changeSteamId && !SteamStarter.IsInitialized);
 
             if (AppArguments.Values.Any()) {
                 ProcessArguments(AppArguments.Values);
             }
 
             Buttons = new[] {
-                CreateExtraDialogButton(UiStrings.Ok, new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => {
-                    CloseWithResult(MessageBoxResult.OK);
-                }))),
+                CreateExtraDialogButton(UiStrings.Ok,
+                        new CombinedCommand(Model.ApplyCommand, new DelegateCommand(() => { CloseWithResult(MessageBoxResult.OK); }))),
                 CancelButton
             };
 
@@ -138,6 +140,7 @@ namespace AcManager.Pages.Dialogs {
 
                     IsValueAcceptable = AcRootDirectory.CheckDirectory(_value, out _previousInacceptanceReason);
                     OnErrorsChanged();
+                    _getSteamIdCommand?.RaiseCanExecuteChanged();
                 }
             }
 
@@ -175,7 +178,7 @@ namespace AcManager.Pages.Dialogs {
 
             private CancellationTokenSource _cancellationTokenSource;
 
-            private ICommand _changeAcRootCommand;
+            private DelegateCommand _changeAcRootCommand;
 
             public ICommand ChangeAcRootCommand => _changeAcRootCommand ?? (_changeAcRootCommand = new DelegateCommand(() => {
                 var dialog = new FolderBrowserDialog {
@@ -188,10 +191,39 @@ namespace AcManager.Pages.Dialogs {
                 }
             }));
 
-            private ICommand _getSteamIdCommand;
+            private DelegateCommand _getSteamIdCommand;
 
-            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async () => {
-                using (_cancellationTokenSource = new CancellationTokenSource()) {
+            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new DelegateCommand(() => {
+                var acRoot = IsValueAcceptable ? Value : AcRootDirectory.Instance.Value;
+                if (acRoot == null) return;
+
+                if (Keyboard.Modifiers == ModifierKeys.Alt) {
+                    var id = Prompt.Show("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
+                    if (id != null) {
+                        SetSteamId(id);
+                    }
+                } else if (ShowMessage(
+                        "Your Steam ID is not in the list? In that case, Content Manager would need to replace official launcher. There are other benefits to this as well: races will launch faster and more reliably, Content Manager will be able to check challenges progress more directly, it would get Steam overlay. Or, you could always get the original launcher back by simply renaming “AssettoCorsa_original.exe” back to “AssettoCorsa.exe”.[br][br]So, replace it now?",
+                        "Fix Steam ID", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    try {
+                        var acLauncher = AcPaths.GetAcLauncherFilename(acRoot);
+                        if (File.Exists(acLauncher)) {
+                            var acLauncherNewPlace = Path.Combine(acRoot, "AssettoCorsa_original.exe");
+                            if (!File.Exists(acLauncherNewPlace)) {
+                                File.Move(acLauncher, acLauncherNewPlace);
+                            } else {
+                                FileUtils.Recycle(acLauncher);
+                            }
+                        }
+                        File.Copy(MainExecutingFile.Location, acLauncher, true);
+                        ProcessExtension.Start(acLauncher, new[] { @"--restart", @"--move-app=" + MainExecutingFile.Location });
+                        Environment.Exit(0);
+                    } catch (Exception e) {
+                        NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
+                    }
+                }
+
+                /*using (_cancellationTokenSource = new CancellationTokenSource()) {
                     try {
                         var packed = await OAuth.GetCode("Steam", $"{InternalUtils.MainApiDomain}/u/steam?s={AdditionalSalt}", null,
                                 @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)");
@@ -202,17 +234,17 @@ namespace AcManager.Pages.Dialogs {
                         NonfatalError.Notify("Can’t get Steam ID", e);
                     }
                 }
+                _cancellationTokenSource = null;*/
+            }, () => IsValueAcceptable ? Value != null : AcRootDirectory.Instance.Value != null));
 
-                _cancellationTokenSource = null;
-            }));
-
-            private CommandBase _applyCommand;
+            private DelegateCommand _applyCommand;
 
             public ICommand ApplyCommand => _applyCommand ?? (_applyCommand = new DelegateCommand(() => {
                 Logging.Write($"[Initial setup] AC root=“{Value}”, Steam ID=“{SteamProfile.SteamId}”");
                 AcRootDirectory.Instance.Value = Value?.Trim();
                 SteamIdHelper.Instance.Value = SteamProfile.SteamId;
                 JustReviewed();
+                _getSteamIdCommand?.RaiseCanExecuteChanged();
             }, () => IsValueAcceptable));
 
             public IEnumerable GetErrors(string propertyName) {

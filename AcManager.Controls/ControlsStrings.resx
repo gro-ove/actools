@@ -198,7 +198,7 @@
     <value>Can’t play video</value>
   </data>
   <data name="Video_CannotPlay_Commentary" xml:space="preserve">
-    <value>Please, go to the Settings and enable VLC addon.</value>
+    <value>Please, go to the Settings and enable VLC plugin.</value>
   </data>
   <data name="AcObject_CityLabel" xml:space="preserve">
     <value>City:</value>
@@ -298,7 +298,7 @@
     <value>Enable developer apps</value>
   </data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Enable free camera (press F7 on track)</value>
+    <value>Enable free camera (while in game, press F7 and navigate via arrow keys, right mouse button and scrolling wheel)</value>
   </data>
   <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
     <value>Use different name online</value>
@@ -423,7 +423,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Disable SweetFX</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
+    <value>Apparently SweetFX doesn’t affect the result, but could decrease loading time</value>
   </data>
   <data name="Showroom_FovLabel" xml:space="preserve">
     <value>FOV:</value>
@@ -444,7 +444,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Can’t play video</value>
   </data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
-    <value>Make sure VLC addon is installed properly.</value>
+    <value>Make sure VLC plugin is installed properly.</value>
   </data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
     <value>Texture is missing!</value>
@@ -546,7 +546,7 @@ Entry type: [b]{2}[/b]</value>
     <value>Skin editing mode</value>
   </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
-    <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
+    <value>Use PSD, XCF, etc. instead if exists (Magick.NET plugin is required)</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
     <value>Update ambient shadows</value>
@@ -930,7 +930,7 @@ Depth mode: [b]{4}[/b]</value>
     <value>Set to 0 for Logitech G920, keep 1 for everything else</value>
   </data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re experiencing problems with CPU, increase it to 2-4, it might help</value>
   </data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Exposure:</value>

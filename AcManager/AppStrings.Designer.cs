@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -900,7 +900,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Height from the ground.
+        ///   Looks up a localized string similar to Relative height.
         /// </summary>
         public static string AcSettings_Skidmarks_Height {
             get {
@@ -2056,7 +2056,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable all video effets like reflections or glare (recommended).
+        ///   Looks up a localized string similar to Enable all video effects like reflections or glare (recommended).
         /// </summary>
         public static string CarPreviews_AllEffects_Tooltip {
             get {
@@ -2119,7 +2119,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apparantly SweetFX doesn&apos;t affect the result, but could decrease loading time.
+        ///   Looks up a localized string similar to Apparently SweetFX doesn&apos;t affect the result, but could decrease loading time.
         /// </summary>
         public static string CarPreviews_DisableSweetFx_Tooltip {
             get {
@@ -3623,7 +3623,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attempt to find any car fitting selected grid type is failed..
+        ///   Looks up a localized string similar to Attempt to find any car fitting selected grid type has failed..
         /// </summary>
         public static string Drive_CannotStart_CannotFindAnyCar {
             get {
@@ -7147,7 +7147,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Smaller value may increase UI responsiveness, but decrease loading times.
+        ///   Looks up a localized string similar to Smaller value may increase UI responsiveness, but decrease loading speed.
         /// </summary>
         public static string Settings_Content_LoadingConcurrency_Tooltip {
             get {
@@ -7889,7 +7889,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Remove all nonimportant values.
+        ///   Looks up a localized string similar to Remove all unimportant values.
         /// </summary>
         public static string Settings_General_ValuesCleanUp_Tooltip {
             get {
@@ -8069,7 +8069,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Custom translations.
+        ///   Looks up a localized string similar to Custom translations:.
         /// </summary>
         public static string Settings_Locale_CustomTranslationsHeader {
             get {
@@ -9018,7 +9018,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to With nothing, only emptyness.
+        ///   Looks up a localized string similar to With nothing, only emptiness.
         /// </summary>
         public static string Solution_MakeEmptyModel_Details {
             get {
@@ -9126,7 +9126,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible).
+        ///   Looks up a localized string similar to App will make an attempt to read known properties from damaged JSON file (be careful, data loss is possible).
         /// </summary>
         public static string Solution_RestoreJsonFile_Details {
             get {
@@ -10449,7 +10449,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Share replay using Google Drive (Ctrl+Page Up).
+        ///   Looks up a localized string similar to Share replay using cloud storage selected in settings (Ctrl+Page Up).
         /// </summary>
         public static string Toolbar_UploadAndShare_ReplayTooltip {
             get {

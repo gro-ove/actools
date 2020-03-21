@@ -236,7 +236,7 @@ Author: [b]{3}[/b]</value>
     <value>Try to restore JSON file</value>
   </data>
   <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
-    <value>App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible)</value>
+    <value>App will make an attempt to read known properties from damaged JSON file (be careful, data loss is possible)</value>
   </data>
   <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
     <value>Can’t restore damaged JSON</value>
@@ -395,7 +395,7 @@ Author: [b]{3}[/b]</value>
     <value>Enable disabled skin</value>
   </data>
   <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
-    <value>With nothing, only emptyness</value>
+    <value>With nothing, only emptiness</value>
   </data>
   <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
     <value>Select or create a new upgrade icon with the editor</value>
@@ -595,7 +595,7 @@ Author: [b]{3}[/b]</value>
     <value>Font’s icon symbol:</value>
   </data>
   <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
-    <value>Smaller value may increase UI responsiveness, but decrease loading times</value>
+    <value>Smaller value may increase UI responsiveness, but decrease loading speed</value>
   </data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
     <value>For example, on disabling</value>
@@ -793,7 +793,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Clean up</value>
   </data>
   <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
-    <value>Remove all nonimportant values</value>
+    <value>Remove all unimportant values</value>
   </data>
   <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
     <value>Saving time:</value>
@@ -1449,7 +1449,7 @@ If you need some other values, please, contact us and we’ll add them.
     <value>Upload &amp; share</value>
   </data>
   <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
-    <value>Share replay using Google Drive (Ctrl+Page Up)</value>
+    <value>Share replay using cloud storage selected in settings (Ctrl+Page Up)</value>
   </data>
   <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
     <value>Save changed INI-file (Ctrl+S)</value>
@@ -2469,13 +2469,13 @@ To play, unpack “{1}” to “…\Documents\Assetto Corsa\replay”.</value>
     <value>Use FXAA for previews</value>
   </data>
   <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
-    <value>Enable all video effets like reflections or glare (recommended)</value>
+    <value>Enable all video effects like reflections or glare (recommended)</value>
   </data>
   <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
     <value>Resize previews to Kunos size 1022×575 (highly recommended)</value>
   </data>
   <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>Apparantly SweetFX doesn't affect the result, but could decrease loading time</value>
+    <value>Apparently SweetFX doesn't affect the result, but could decrease loading time</value>
   </data>
   <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos watermark will be temporary hidden</value>
@@ -3082,7 +3082,7 @@ But if you don't want to waste 200 MB: TIFF image, 96 bit per pixel, ZIP</value>
     <value>Quantity</value>
   </data>
   <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
-    <value>Height from the ground</value>
+    <value>Relative height</value>
   </data>
   <data name="AcSettings_Mirrors" xml:space="preserve">
     <value>Mirrors:</value>
@@ -3323,7 +3323,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>AI cars filtering…</value>
   </data>
   <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
-    <value>Attempt to find any car fitting selected grid type is failed.</value>
+    <value>Attempt to find any car fitting selected grid type has failed.</value>
   </data>
   <data name="Drive_CannotFilter" xml:space="preserve">
     <value>Can’t filter appropriate cars for starting grid</value>
@@ -3479,7 +3479,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <value>How to translate</value>
   </data>
   <data name="Settings_Locale_CustomTranslationsHeader" xml:space="preserve">
-    <value>Custom translations</value>
+    <value>Custom translations:</value>
   </data>
   <data name="Settings_Locale_ResxMode" xml:space="preserve">
     <value>Translate RESX files</value>

@@ -176,7 +176,7 @@
     <value>Disable font</value>
   </data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>Make sure there is no runned app working with object’s folder.</value>
+    <value>Make sure there are no running apps working with object’s folder.</value>
   </data>
   <data name="AcObject_CannotToggleExt" xml:space="preserve">
     <value>Can’t toggle: {0}</value>
@@ -229,11 +229,11 @@
     <value>Can’t toggle sound</value>
   </data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
-    <value>Make sure there is no runned app working with showroom’s sound files.</value>
+    <value>Make sure there are no running app working with showroom’s sound files.</value>
   </data>
   <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
     <value>{0} pit</value>
-    <comment>Last word should be pluralized automatically, see LocatiozationHelper</comment>
+    <comment>Last word should be pluralized automatically, see LocalizationHelper</comment>
   </data>
   <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
     <value>Can’t connect to remote server</value>
@@ -851,7 +851,7 @@
     <value>Unknown problem (Process=null)</value>
   </data>
   <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
-    <value>Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background</value>
+    <value>Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app is supposed to run in background</value>
   </data>
   <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
     <value>Timeout exceeded</value>
@@ -1350,7 +1350,7 @@
     <value>Glancing angle</value>
   </data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
-    <value>Highspeed shaking</value>
+    <value>High speed shaking</value>
   </data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
     <value>G-Forces:</value>
@@ -1429,7 +1429,7 @@
     <value>Autoblip</value>
   </data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
-    <value>Automatically syncronize RPM on downshifts</value>
+    <value>Automatically synchronize RPM on downshifts</value>
   </data>
   <data name="Assists_AutoClutch" xml:space="preserve">
     <value>Automatic clutch</value>
@@ -1583,7 +1583,7 @@
     <value>Modified version of original launcher, obsolete since 1.7 release</value>
   </data>
   <data name="Settings_Starter_Sse_Description" xml:space="preserve">
-    <value>Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments</value>
+    <value>Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievements</value>
   </data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
     <value>Just tries to run acs.exe directly; in most cases will fail</value>

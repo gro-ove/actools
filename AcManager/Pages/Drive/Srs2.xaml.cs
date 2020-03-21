@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
@@ -224,14 +225,33 @@ namespace AcManager.Pages.Drive {
 
             public string GetStyle(string url, bool transparentBackgroundSupported) {
                 TransparentBackgroundSupported = transparentBackgroundSupported;
-                return SettingsHolder.Live.SrsCustomStyle && url.StartsWith(@"http://www.simracingsystem.com") ?
+                return SettingsHolder.Live.SrsCustomStyle && url.StartsWith(@"https://www.simracingsystem.com") ?
                         PrepareStyle(BinaryResources.SrsStyle, transparentBackgroundSupported) : null;
             }
+        }
+
+        private static string _srsFix;
+
+        private static string GetSrsFix() {
+            if (_srsFix == null) {
+                var srsScript = Path.Combine(AcRootDirectory.Instance.RequireValue, @"launcher\themes\default\modules\srs\srs.js");
+                try {
+                    if (File.Exists(srsScript)) {
+                        _srsFix = $@"<script>{File.ReadAllText(srsScript)}</script>";
+                    }
+                } catch (Exception e) {
+                    Logging.Error(e);
+                }
+                _srsFix = _srsFix ??
+                        @"<script>function SRS_go(e, t, s, n, a, c, r, i, o) { $.get(""ac://setsetting/race?REMOTE/SERVER_IP="" + e), $.get(""ac://setsetting/race?REMOTE/SERVER_PORT="" + t), $.get(""ac://setsetting/race?REMOTE/SERVER_HTTP_PORT="" + s), $.get(""ac://setsetting/race?REMOTE/REQUESTED_CAR="" + n), $.get(""ac://setsetting/race?REMOTE/NAME="" + a), $.get(""ac://setsetting/race?REMOTE/TEAM=""), $.get(""ac://setsetting/race?REMOTE/PASSWORD=""), $.get(""ac://setsetting/race?CAR_0/SETUP=""), $.get(""ac://setsetting/race?CAR_0/MODEL=-""), $.get(""ac://setsetting/race?CAR_0/SKIN=""), $.get(""ac://setsetting/race?CAR_0/NATIONALITY="" + i), $.get(""ac://setsetting/race?CAR_0/NATION_CODE="" + o), $.get(""ac://setsetting/race?CAR_0/DRIVER_NAME="" + a), $.get(""ac://setsetting/race?REMOTE/GUID="" + r), $.get(""ac://setsetting/race?REPLAY/ACTIVE=0""), $.get(""ac://setsetting/race?REMOTE/ACTIVE=1""), $.get(""ac://start/""); }</script>";
+            }
+            return _srsFix;
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
         public class SrsFixAcCompatibleApiBridge : AcCompatibleApiBridge {
             public SrsFixAcCompatibleApiBridge() {
+                _srsFix = null;
                 AcApiHosts.Add(@"simracingsystem.com");
             }
 
@@ -256,10 +276,11 @@ namespace AcManager.Pages.Drive {
                     replacements.Add(new KeyValuePair<string, string>(@"<body style=""background:none;"">", @"<body>"));
                 }
 
+                base.PageInject(url, toInject, replacements);
                 toInject.Add(@"<script>!function(){ window.addEventListener('load', e => {
 window.external.SetDriverNames(JSON.stringify([].map.call(document.querySelectorAll('#shoutbox [data-username]'), i => i.getAttribute('data-username'))));
 }); }()</script>");
-                base.PageInject(url, toInject, replacements);
+                toInject.Add(GetSrsFix());
             }
 
             public void SetDriverNames(string value) {

@@ -652,6 +652,16 @@ namespace AcManager.Tools.ContentInstallation {
                 return new TexturesConfigEntry(directory.Key ?? "", directory.Name ?? @"people");
             }
 
+            if (directory.HasSubFile("module.ini") && directory.HasSubFile(directory.Name + ".html")) {
+                var iconFile = await (directory.GetSubDirectory("graphics")?.Files.FirstOrDefault(
+                        x => x.NameLowerCase.Contains("icon"))?.Info.ReadAsync() ?? Task.FromResult((byte[])null));
+                var data = await directory.GetSubFile("module.ini").Info.ReadAsync() ?? throw new MissingContentException();
+                var manifest = IniFile.Parse(data.ToUtf8String())["MODULE"];
+                cancellation.ThrowIfCancellationRequested();
+                return new OriginalLauncherModuleEntry(directory.Key ?? "", directory.Name, manifest.GetNonEmpty("NAME"),
+                        manifest.GetNonEmpty("VERSION"), iconFile, manifest.GetNonEmpty("DESCRIPTION"));
+            }
+
             if (directory.HasSubFile(PatchHelper.MainFileName) && directory.HasSubDirectory("extension")) {
                 var dwrite = directory.GetSubFile(PatchHelper.MainFileName);
                 var extension = directory.GetSubDirectory("extension");
@@ -659,11 +669,13 @@ namespace AcManager.Tools.ContentInstallation {
                 string version;
                 if (manifest != null) {
                     var data = await manifest.Info.ReadAsync() ?? throw new MissingContentException();
+                    cancellation.ThrowIfCancellationRequested();
                     version = IniFile.Parse(data.ToUtf8String())["VERSION"].GetNonEmpty("SHADERS_PATCH");
                 } else {
                     var description = directory.GetSubFile("description.jsgme");
                     if (description != null) {
                         var data = await description.Info.ReadAsync() ?? throw new MissingContentException();
+                        cancellation.ThrowIfCancellationRequested();
                         version = Regex.Match(data.ToUtf8String(), @"(?<=v)\d.*").Value?.TrimEnd('.').Or(null);
                     } else {
                         var parent = directory;
@@ -710,6 +722,7 @@ namespace AcManager.Tools.ContentInstallation {
                     string description = null;
                     if (manifestInfo != null) {
                         var data = IniFile.Parse((await manifestInfo.Info.ReadAsync() ?? throw new MissingContentException()).ToUtf8String())["ABOUT"];
+                        cancellation.ThrowIfCancellationRequested();
                         name = data.GetNonEmpty("NAME") ?? name;
                         version = data.GetNonEmpty("VERSION");
                         description = data.GetNonEmpty("DESCRIPTION");

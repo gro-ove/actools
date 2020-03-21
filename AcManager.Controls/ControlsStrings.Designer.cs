@@ -19,12 +19,12 @@ namespace AcManager.Controls {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class ControlsStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager.Controls {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.Controls.ControlsStrings", typeof(ControlsStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -1078,7 +1078,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help.
+        ///   Looks up a localized string similar to Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re experiencing problems with CPU, increase it to 2-4, it might help.
         /// </summary>
         public static string Controls_SkipFfbSteps_Tooltip {
             get {
@@ -1366,7 +1366,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use PSD, XCF, etc. instead if exists (Magick.NET addon is required).
+        ///   Looks up a localized string similar to Use PSD, XCF, etc. instead if exists (Magick.NET plugin is required).
         /// </summary>
         public static string CustomShowroom_EditingMode_Tooltip {
             get {
@@ -1961,7 +1961,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable free camera (press F7 on track).
+        ///   Looks up a localized string similar to Enable free camera (while in game, press F7 and navigate via arrow keys, right mouse button and scrolling wheel).
         /// </summary>
         public static string QuickSwitches_FreeCamera_Tooltip {
             get {
@@ -2341,7 +2341,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apparantly SweetFX doesn’t affect the result, but could decrease loading time.
+        ///   Looks up a localized string similar to Apparently SweetFX doesn’t affect the result, but could decrease loading time.
         /// </summary>
         public static string Showroom_DisableSweetFx_Tooltip {
             get {
@@ -2557,7 +2557,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please, go to the Settings and enable VLC addon..
+        ///   Looks up a localized string similar to Please, go to the Settings and enable VLC plugin..
         /// </summary>
         public static string Video_CannotPlay_Commentary {
             get {
@@ -2575,7 +2575,7 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make sure VLC addon is installed properly..
+        ///   Looks up a localized string similar to Make sure VLC plugin is installed properly..
         /// </summary>
         public static string VideoViewer_CannotPlay_Commentary {
             get {
