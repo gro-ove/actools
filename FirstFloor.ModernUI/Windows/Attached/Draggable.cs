@@ -76,7 +76,6 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public static readonly DependencyProperty ForceDisabledProperty = DependencyProperty.RegisterAttached("ForceDisabled", typeof(bool),
                 typeof(Draggable), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.Inherits));
 
-
         public static bool GetEnabled(FrameworkElement obj) {
             return obj.GetValue(EnabledProperty) as bool? == true;
         }
@@ -118,7 +117,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             obj.SetValue(IsDestinationHighlightedProperty, value);
         }
 
-        public static readonly DependencyProperty IsDestinationHighlightedProperty = DependencyProperty.RegisterAttached("IsDestinationHighlighted", typeof(bool),
+        public static readonly DependencyProperty IsDestinationHighlightedProperty = DependencyProperty.RegisterAttached("IsDestinationHighlighted",
+                typeof(bool),
                 typeof(Draggable), new FrameworkPropertyMetadata(false));
 
         private static void OnEnabledChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
@@ -291,10 +291,10 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static bool MoveFromItemsControl(IInputElement element, MouseEventArgs e) {
             if (!(element is ItemsControl items)) return false;
             var item = items.GetFromPoint<FrameworkElement>(e.GetPosition(element))?
-                            .GetParents()
-                            .OfType<FrameworkElement>()
-                            .FirstOrDefault(x => items.ItemsSource.OfType<object>().Contains(x.DataContext) ||
-                                    ReferenceEquals(x.TemplatedParent, element));
+                    .GetParents()
+                    .OfType<FrameworkElement>()
+                    .FirstOrDefault(x => items.ItemsSource.OfType<object>().Contains(x.DataContext) ||
+                            ReferenceEquals(x.TemplatedParent, element));
             return MoveBasic(item);
         }
 
@@ -377,8 +377,8 @@ namespace FirstFloor.ModernUI.Windows.Attached {
             obj.SetValue(DestinationConverterProperty, value);
         }
 
-        public static readonly DependencyProperty DestinationConverterProperty = DependencyProperty.RegisterAttached("DestinationConverter", typeof(IDraggableDestinationConverter),
-                typeof(Draggable), new UIPropertyMetadata(OnDestinationConverterChanged));
+        public static readonly DependencyProperty DestinationConverterProperty = DependencyProperty.RegisterAttached("DestinationConverter",
+                typeof(IDraggableDestinationConverter), typeof(Draggable), new UIPropertyMetadata(OnDestinationConverterChanged));
 
         private static void OnDestinationConverterChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (!(d is ItemsControl element) || !(e.NewValue is IDraggableDestinationConverter)) return;
@@ -411,12 +411,12 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         [CanBeNull]
         private static IEnumerable GetActualList([CanBeNull] ItemsControl itemsControl) {
             var list = itemsControl?.ItemsSource;
-            if (list is CompositeCollection) {
-                list = ((CompositeCollection)list).OfType<CollectionContainer>()
-                                                                       .Select(x => x.Collection)
-                                                                       .OfType<ListCollectionView>()
-                                                                       .Select(x => x.SourceCollection)
-                                                                       .FirstOrDefault();
+            if (list is CompositeCollection collection) {
+                list = collection.OfType<CollectionContainer>()
+                        .Select(x => x.Collection)
+                        .OfType<ListCollectionView>()
+                        .Select(x => x.SourceCollection)
+                        .FirstOrDefault();
             }
 
             return list;
@@ -425,15 +425,15 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         private static MethodInfo GetListMethod(IList list, Type type, bool add) {
             return (add
                     ? from x in list.GetType().GetMethods()
-                      where x.Name == "Add"
-                      let p = x.GetParameters()
-                      where p.Length == 1 && (p[0].ParameterType == type || type.IsSubclassOf(p[0].ParameterType))
-                      select x
+                        where x.Name == "Add"
+                        let p = x.GetParameters()
+                        where p.Length == 1 && (p[0].ParameterType == type || type.IsSubclassOf(p[0].ParameterType))
+                        select x
                     : from x in list.GetType().GetMethods()
-                      where x.Name == "Insert"
-                      let p = x.GetParameters()
-                      where p.Length == 2 && (p[1].ParameterType == type || type.IsSubclassOf(p[1].ParameterType))
-                      select x).FirstOrDefault();
+                        where x.Name == "Insert"
+                        let p = x.GetParameters()
+                        where p.Length == 2 && (p[1].ParameterType == type || type.IsSubclassOf(p[1].ParameterType))
+                        select x).FirstOrDefault();
         }
 
         public static bool IsCopyAction(this DragEventArgs e) {

@@ -6,5 +6,6 @@
     <TextBlock Text="Hello there!" Style="{StaticResource Title}" />
     <mui:BbCodeBlock
         Text="If you like competitive online racing, maybe you would be interested in taking [url=&quot;https://docs.google.com/forms/d/e/1FAIpQLSdEsZHa9RWyQo65Po3zBjdq-q1NE-yunm6F08WC87NC3icqlg/viewform&quot;]this survey[/url] to help a friend of mine to decide on the next project? Your contribution would be very important to help to design it better. Thank you!" />
+    <Button Content="Hide this page" Click="OnButtonClick" />
   </mui:SpacingStackPanel>
 </UserControl>

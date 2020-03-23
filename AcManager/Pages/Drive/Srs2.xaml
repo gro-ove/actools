@@ -58,14 +58,20 @@
         <c:WebBlock x:Name="Browser" UserAgent="Assetto Corsa Launcher" StartPage="https://www.simracingsystem.com" PreferTransparentBackground="True"
             NewWindowsBehavior="MultiTab" Loaded="OnWebBlockLoaded" Margin="0 4 0 0" SaveKey="Srs2.CurrentLocation" KeepAliveKey="Srs2" AlwaysKeepAlive="True">
           <c:WebBlock.LeftSideContent>
-            <mui:Switch Value="{Binding RaceCombinations.Count}" Width="320">
-              <TextBlock mui:Switch.When="0" Text="No combinations are detected" Style="{StaticResource Heading2}" Margin="20 20" />
-              <DockPanel>
-                <TextBlock Text="Detected combinations:" DockPanel.Dock="Top" Style="{StaticResource Heading2}" Margin="20 20" />
-                <ItemsControl Tag="RaceCombinationsPanel" ItemsSource="{Binding RaceCombinations}" Style="{StaticResource ScrollingItemsControl}"
-                    ItemTemplate="{StaticResource DetectedCombination}" />
-              </DockPanel>
-            </mui:Switch>
+            <DockPanel Width="320">
+              <c:MessageBlock DockPanel.Dock="Bottom" Margin="20 12 20 20">
+                <mui:BbCodeBlock
+                    Text="You registered, but Join button doesn’t work? Fixing this bug, but for now, [url=&quot;cmd://findSrsServers&quot;]click here[/url] and join manually." />
+              </c:MessageBlock>
+              <mui:Switch Value="{Binding RaceCombinations.Count}">
+                <TextBlock mui:Switch.When="0" Text="No combinations are detected" Style="{StaticResource Heading2}" Margin="20 20" />
+                <DockPanel>
+                  <TextBlock Text="Detected combinations:" DockPanel.Dock="Top" Style="{StaticResource Heading2}" Margin="20 20" />
+                  <ItemsControl Tag="RaceCombinationsPanel" ItemsSource="{Binding RaceCombinations}" Style="{StaticResource ScrollingItemsControl}"
+                      ItemTemplate="{StaticResource DetectedCombination}" />
+                </DockPanel>
+              </mui:Switch>
+            </DockPanel>
           </c:WebBlock.LeftSideContent>
         </c:WebBlock>
       </mui:BooleanSwitch.True>

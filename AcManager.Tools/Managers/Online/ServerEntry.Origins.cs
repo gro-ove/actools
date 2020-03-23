@@ -203,7 +203,7 @@ namespace AcManager.Tools.Managers.Online {
                 _extendedDataLastModified = Tuple.Create(_extendedDataLastModified.Item1, result.Item2);
             }
 
-            Logging.Debug(result.Item1 == null ? "Cached information used!" : "New information loaded: " + result.Item2);
+            // Logging.Debug(result.Item1 == null ? "Cached information used!" : "New information loaded: " + result.Item2);
             if (result.Item1 != null) return result.Item1;
 
             var r = _extendedDataLastModified?.Item1;

@@ -444,6 +444,25 @@ namespace AcManager {
             BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"),
                     new DelegateCommand<string>(id => NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
 
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"),
+                    new DelegateCommand(() => new ModernDialog {
+                        ShowTitle = false,
+                        ShowTopBlob = false,
+                        Title = "Connect to SimRacingSystem",
+                        Content = new ModernFrame {
+                            Source = new Uri("/Pages/Drive/Online.xaml?Filter=SimRacingSystem", UriKind.Relative)
+                        },
+                        MinHeight = 400,
+                        MinWidth = 800,
+                        MaxHeight = DpiAwareWindow.UnlimitedSize,
+                        MaxWidth = DpiAwareWindow.UnlimitedSize,
+                        Padding = new Thickness(0),
+                        ButtonsMargin = new Thickness(8, -32, 8, 8),
+                        SizeToContent = SizeToContent.Manual,
+                        ResizeMode = ResizeMode.CanResizeWithGrip,
+                        LocationAndSizeKey = @".SrsJoinDialog"
+                    }.ShowDialog()));
+
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {
                     ArgumentsHandler.ProcessArguments(new[] { args.Uri.ToString() }, true).Forget();

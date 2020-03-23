@@ -337,6 +337,10 @@ console.log(result);
                 return false;
             }
 
+            if (index < length - 3 && s[index] == ':' && char.IsDigit(s[index + 1])) {
+                for (index++; char.IsDigit(s[index]); index++) { }
+            }
+
             if (index >= length || s[index] != '/') {
                 urlLength = index - start;
             } else {

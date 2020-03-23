@@ -277,8 +277,8 @@
           </DockPanel>
         </StackPanel>
 
-        <ListBox mui:Draggable.Enabled="True" SelectionMode="Extended" ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}"
-            Style="{StaticResource VirtualizingListBox}">
+        <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:UserChampionshipRoundExtended.DraggableFormat}" SelectionMode="Extended"
+            ItemTemplateSelector="{StaticResource RoundsListDataTemplateSelector}" Style="{StaticResource VirtualizingListBox}">
           <ListBox.ItemsPanel>
             <ItemsPanelTemplate>
               <VirtualizingStackPanel IsItemsHost="True" CacheLength="{TemplateBinding VirtualizingPanel.CacheLength}"
@@ -442,7 +442,8 @@
                 </c:ModernPopup>
               </mui:ContextMenuButton>
               <mui:DoubleValueLabel Value="{Binding RaceGridViewModel.AiAggressionMin}" SecondValue="{Binding RaceGridViewModel.AiAggression}" Postfix='%'
-                  JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}" RelativeRangeStringFormat="0.#" />
+                  JoinIfEqual="True" RelativeRange="{mui:Stored 'aiRelativeRange=True'}" Content="{x:Static t:ToolsStrings.Race_OpponentsAggression}"
+                  RelativeRangeStringFormat="0.#" />
             </DockPanel>
 
             <!--<StackPanel>
@@ -539,7 +540,8 @@
             Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}" PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Enable}" Command="{Binding SelectedObject.ToggleCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Enable_Tooltip}"
-            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" PreviewMouseLeftButtonUp="OnToggleClick" />
+            Visibility="{Binding SelectedObject.Enabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}"
+            PreviewMouseLeftButtonUp="OnToggleClick" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Save}" Command="{Binding SelectedObject.SaveCommand}"
             ToolTip="{x:Static g:AppStrings.Toolbar_Save_JsonTooltip}" />
         <Button Content="{x:Static g:AppStrings.Toolbar_Delete}" Command="{Binding SelectedObject.DeleteCommand}"

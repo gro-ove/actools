@@ -152,8 +152,12 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 return true;
             }
 
-            if (MoveSuspension(relativeFrom, relativeDelta, camera)
-                    || AreWingsVisible && _wingsLines?.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out _) == true
+            if (MoveSuspension(relativeFrom, relativeDelta, camera)) {
+                DataObjectMoved = true;
+                return true;
+            }
+
+            if (AreWingsVisible && _wingsLines?.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out _) == true
                     || AreFlamesVisible && _flamesLines?.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out _) == true
                     || IsFuelTankVisible && _fuelTankLines?.MoveObject(relativeFrom, relativeDelta, camera, tryToClone, out _) == true) {
                 DataObjectMoved = true;

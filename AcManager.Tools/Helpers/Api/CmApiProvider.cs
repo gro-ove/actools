@@ -394,7 +394,7 @@ namespace AcManager.Tools.Helpers.Api {
             return LazierCached.CreateAsync(@".OnlineData:" + id,
                     () => InternalUtils.GetOnlineDataAsync(id, UserAgent, cancellation).ContinueWith(
                             r => {
-                                Logging.Debug(JsonConvert.SerializeObject(r.Result));
+                                // Logging.Debug(JsonConvert.SerializeObject(r.Result));
                                 return JsonConvert.DeserializeObject<ServerInformationExtra>(r.Result);
                             },
                             TaskContinuationOptions.OnlyOnRanToCompletion)

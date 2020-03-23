@@ -446,6 +446,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             if (suspension != null) {
                 foreach (var m in suspension) {
                     if (m.Movable.MoveObject(relativeFrom, relativeDelta, camera, false, out _)) {
+                        SuspensionsPack.RaiseMeasurementsChanged();
                         _suspensionLines?.Dispose();
                         _suspensionLines = null;
                         return true;

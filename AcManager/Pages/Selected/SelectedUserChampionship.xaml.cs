@@ -586,8 +586,8 @@ namespace AcManager.Pages.Selected {
         private void OnRoundDescriptionDoubleClick(object sender, MouseButtonEventArgs e) {
             if (e.ChangedButton != MouseButton.Left) return;
             if (((FrameworkElement)sender).DataContext is UserChampionshipRoundExtended round) {
-                round.Description = Prompt.Show("Round description:", "Round Description", round.Description, round.Track?.Description, multiline: true) ??
-                        round.Description;
+                round.Description = Prompt.Show("Round description:", "Round Description", round.Description,
+                        round.Track?.Description, multiline: true) ?? round.Description;
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using AcTools.DataFile;
 using AcTools.Render.Base.Cameras;
 using AcTools.Render.Base.Utils;
@@ -315,6 +316,11 @@ namespace AcTools.Render.Data {
             [CanBeNull]
             public SuspensionsGroupBase Rear { get; }
 
+            public void RaiseMeasurementsChanged() {
+                Front?.RaiseMeasurementsChanged();
+                Rear?.RaiseMeasurementsChanged();
+            }
+
             public Vector3 TranslateRelativeToCarModel([NotNull] SuspensionBase suspension, Vector3 point) {
                 return Vector3.TransformCoordinate(point, TranslateRelativeToCarModel(suspension));
             }
@@ -377,9 +383,17 @@ namespace AcTools.Render.Data {
             public abstract string Caster { get; }
             public abstract string Trail { get; }
 
-            public event PropertyChangedEventHandler PropertyChanged {
-                add { }
-                remove { }
+            public event PropertyChangedEventHandler PropertyChanged;
+
+            [NotifyPropertyChangedInvocator]
+            protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            }
+
+            public void RaiseMeasurementsChanged() {
+                OnPropertyChanged(nameof(Kpi));
+                OnPropertyChanged(nameof(Caster));
+                OnPropertyChanged(nameof(Trail));
             }
         }
 
@@ -478,6 +492,9 @@ namespace AcTools.Render.Data {
 
             public void ResetLinesCache() {
                 _debugLines = null;
+                _kpi = null;
+                _caster = null;
+                _trail = null;
             }
 
             public DebugLine[] DebugLines => _debugLines ?? (_debugLines = DebugLinesOverride.ToArrayIfItIsNot());

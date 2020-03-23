@@ -473,7 +473,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 _strictIndicesNever = true;
             }
 
-            if (!_strictIndicesNever && devices?.GroupBy(x => x.Properties.ProductId).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
+            if (!_strictIndicesNever && devices?.GroupBy(x => {
+                try {
+                    return x.Properties.ProductId;
+                } catch (Exception e) {
+                    Logging.Warning(e.Message);
+                    return 0;
+                }
+            }).Where(x => x.Key != 0).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
                 DirectInputDevice.OptionStrictIndices = true;
                 _placeholderDevices.Clear();
                 Reload();
