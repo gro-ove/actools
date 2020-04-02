@@ -223,6 +223,7 @@
     <Compile Include="AcPlugins\Messages\RequestSessionInfo.cs" />
     <Compile Include="AcPlugins\Messages\RequestSetSession.cs" />
     <Compile Include="AcPlugins\PluginMessage.cs" />
+    <Compile Include="AcTelemetryListener\TelemetryListener.cs" />
     <Compile Include="BinaryResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -289,6 +290,7 @@
     <Compile Include="Data\PatchBaseDataUpdater.cs" />
     <Compile Include="Data\PatchCarsDataUpdater.cs" />
     <Compile Include="Data\PatchCarsTexturesDataUpdater.cs" />
+    <Compile Include="Data\PatchCarsVaoDataUpdater.cs" />
     <Compile Include="Data\PatchHelper.cs" />
     <Compile Include="Data\PatchTracksDataUpdater.cs" />
     <Compile Include="Data\PatchTracksVaoDataUpdater.cs" />

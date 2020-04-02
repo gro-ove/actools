@@ -1,0 +1,4 @@
+name: acplugins by Minolin
+url: https://github.com/minolin/acplugins
+content: LICENSE
+sid: 9wzmb03w

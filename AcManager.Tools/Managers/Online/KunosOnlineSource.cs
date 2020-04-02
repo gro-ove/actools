@@ -42,7 +42,7 @@ namespace AcManager.Tools.Managers.Online {
             }
 
             var data = await Task.Run(
-                    () => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress), cancellation), cancellation);
+                    () => KunosApiProvider.TryToGetList(progress == null ? null : new ProgressConverter(progress)), cancellation);
             // if (cancellation.IsCancellationRequested) return false;
 
             if (data == null) {

@@ -343,6 +343,8 @@ namespace AcManager.Tools.SemiGui {
                                     PatchSubProgress($"Backgrounds for track {trackName}"), cancellation.Token);
                             await PatchCarsDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
                                     PatchSubProgress($"Config for car {carName}"), cancellation.Token);
+                            await PatchCarsVaoDataUpdater.Instance.TriggerAutoLoadAsync(properties.BasicProperties?.CarId,
+                                    PatchSubProgress($"Ambient occlusion patch for car {carName}"), cancellation.Token);
                             ui.OnProgress("Final preparations…");
 
                             IProgress<AsyncProgressEntry> PatchSubProgress(string target) {

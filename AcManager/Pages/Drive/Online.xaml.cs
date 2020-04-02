@@ -628,32 +628,23 @@ namespace AcManager.Pages.Drive {
 
             private DelegateCommand<string> _changeSortingCommand;
 
-            public DelegateCommand<string> ChangeSortingCommand
-                =>
-                        _changeSortingCommand
-                                ?? (_changeSortingCommand =
-                                        new DelegateCommand<string>(
-                                                o => {
-                                                    SortingMode = SortingModes.GetByIdOrDefault(o)
-                                                            ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0];
-                                                }));
+            public DelegateCommand<string> ChangeSortingCommand => _changeSortingCommand ?? (_changeSortingCommand = new DelegateCommand<string>(
+                    o => SortingMode = SortingModes.GetByIdOrDefault(o) ?? SortingModes.GetByIdOrDefault(DefaultSortingMode.Value) ?? SortingModes[0]));
 
             private DelegateCommand _setAsDefaultSortingCommand;
 
-            public DelegateCommand SetAsDefaultSortingCommand
-                => _setAsDefaultSortingCommand ?? (_setAsDefaultSortingCommand = new DelegateCommand(() => { DefaultSortingMode.Value = SortingMode.Id; }));
+            public DelegateCommand SetAsDefaultSortingCommand => _setAsDefaultSortingCommand ?? (_setAsDefaultSortingCommand = new DelegateCommand(
+                    () => DefaultSortingMode.Value = SortingMode.Id));
 
             private DelegateCommand _setAsDefaultFiltersCommand;
 
-            public DelegateCommand SetAsDefaultFiltersCommand
-                =>
-                        _setAsDefaultFiltersCommand
-                                ?? (_setAsDefaultFiltersCommand = new DelegateCommand(() => { DefaultQuickFilters.Value = Filters.GetFilterString(); }));
+            public DelegateCommand SetAsDefaultFiltersCommand => _setAsDefaultFiltersCommand ?? (_setAsDefaultFiltersCommand = new DelegateCommand(
+                    () => DefaultQuickFilters.Value = Filters.GetFilterString()));
 
             private ICommand _addNewServerCommand;
 
-            public ICommand AddNewServerCommand => _addNewServerCommand ??
-                    (_addNewServerCommand = UserListMode ? new AsyncCommand(() => AddServerManually(Pack.SourceWrappers[0].Id)) : UnavailableCommand.Instance);
+            public ICommand AddNewServerCommand => _addNewServerCommand ?? (_addNewServerCommand = UserListMode ? new AsyncCommand(
+                    () => AddServerManually(Pack.SourceWrappers[0].Id)) : UnavailableCommand.Instance);
 
             private AsyncCommand<bool?> _refreshCommand;
 

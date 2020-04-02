@@ -716,6 +716,9 @@
     <Compile Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml.cs">
       <DependentUpon>ShadersDataCarsTextures.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\ShadersPatch\ShadersDataCarsVao.xaml.cs">
+      <DependentUpon>ShadersDataCarsVao.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml.cs">
       <DependentUpon>ShadersDataTracksConfigs.xaml</DependentUpon>
     </Compile>
@@ -1591,6 +1594,7 @@
     <Page Include="Pages\ShadersPatch\ShadersDataBackgrounds.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataCarsConfigs.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataCarsTextures.xaml" />
+    <Page Include="Pages\ShadersPatch\ShadersDataCarsVao.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataLists.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataTracksConfigs.xaml" />
     <Page Include="Pages\ShadersPatch\ShadersDataTracksVao.xaml" />

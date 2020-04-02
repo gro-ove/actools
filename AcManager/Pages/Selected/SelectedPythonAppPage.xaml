@@ -86,7 +86,7 @@
         <c:PropertiesGrid Columns="2" Margin="0 8 0 8">
           <mui:BetterTextBox c:PropertiesGrid.Label="ID:" Text="{Binding SelectedObject.Id, Mode=OneWay}" Style="{StaticResource Borderless}" IsReadOnly="True" />
 
-          <mui:Cell ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
+          <DockPanel ToolTip="{x:Static c:ControlsStrings.AcObject_Author_Tooltip}" mui:ContextMenuAdvancement.PropagateToChildren="True">
             <c:PropertiesGrid.Label>
               <MultiBinding Converter="{x:Static selected:SelectedAcObjectViewModel.VersionInfoLabelConverter}">
                 <Binding Path="SelectedObject" />
@@ -106,7 +106,7 @@
             <mui:BbCodeBlock Text="{Binding SelectedObject.VersionInfoDisplay}" Placeholder="?" MouseUp="OnVersionInfoBlockClick" TextWrapping="NoWrap"
                 TextTrimming="CharacterEllipsis" />
             <Border Background="Transparent" MouseUp="OnVersionInfoBlockClick" />
-          </mui:Cell>
+          </DockPanel>
         </c:PropertiesGrid>
 
         <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" Margin="0 8 0 4" />

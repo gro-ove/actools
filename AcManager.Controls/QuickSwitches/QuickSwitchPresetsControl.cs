@@ -11,8 +11,8 @@ namespace AcManager.Controls.QuickSwitches {
                 typeof(QuickSwitchPresetsControl));
 
         public Geometry IconData {
-            get { return (Geometry)GetValue(IconDataProperty); }
-            set { SetValue(IconDataProperty, value); }
+            get => (Geometry)GetValue(IconDataProperty);
+            set => SetValue(IconDataProperty, value);
         }
     }
 }

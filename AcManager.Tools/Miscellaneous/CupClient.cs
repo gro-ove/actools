@@ -81,7 +81,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             public CupKey(CupContentType type, [NotNull] string id) {
                 Type = type;
-                Id = id ?? throw new ArgumentNullException(nameof(id));
+                Id = (id ?? throw new ArgumentNullException(nameof(id))).ToLowerInvariant();
             }
 
             protected bool Equals(CupKey other) {
@@ -270,7 +270,7 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         private ICupSupportedObject GetLoaded(CupContentType type, [NotNull] string id) {
-            return GetAssociatedManager(type)?.WrappersAsIList.OfType<AcItemWrapper>().GetByIdOrDefault(id)?.Value as ICupSupportedObject;
+            return GetAssociatedManager(type)?.WrappersAsIList.OfType<AcItemWrapper>().GetByIdOrDefault(id, StringComparison.InvariantCultureIgnoreCase)?.Value as ICupSupportedObject;
         }
 
         public void IgnoreUpdate(CupContentType type, [NotNull] string id) {

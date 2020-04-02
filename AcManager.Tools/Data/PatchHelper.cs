@@ -27,6 +27,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureTrackDaySpeedLimit = "TRACK_DAY_SPEED_LIMIT";
         public static readonly string FeatureCustomBindingsJoystickModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
+        public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
 
         public static bool OptionPatchSupport = true;
 

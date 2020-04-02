@@ -298,7 +298,7 @@ namespace AcManager.Tools.ContentInstallation {
                             return false;
                         }
 
-                        if (double.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out double v)) {
+                        if (double.TryParse(n, NumberStyles.Any, CultureInfo.InvariantCulture, out _)) {
                             // Numbers: 0.kn5, 10.kn5, …
                             // Kunos name their extra files like that.
                             return false;

@@ -469,7 +469,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
         private void RescanDevices([CanBeNull] IList<Joystick> devices) {
             _skip = true;
 
-            if (!_strictIndicesNever && devices?.Any(x => x.Information.ProductName.Contains(@"FANATEC")) == true) {
+            if (!_strictIndicesNever
+                    && devices?.Any(x => x.Information.ProductName.Contains(@"FANATEC")) == true
+                    && devices.All(x => !x.Information.ProductName.Contains(@"CSW"))) {
                 _strictIndicesNever = true;
             }
 
@@ -1477,9 +1479,6 @@ namespace AcManager.Tools.Helpers.AcSettings {
             WheelUseHShifter = Ini["SHIFTER"].GetBool("ACTIVE", false);
             DebouncingInterval = Ini["STEER"].GetInt("DEBOUNCING_MS", 50);
             WheelSteerScale = Ini["STEER"].GetDouble("SCALE", 1d);
-            KeyboardPatchThrottleOverride = Ini["__EXT_KEYBOARD_GAS_RAW"].GetBool("OVERRIDE", false);
-            KeyboardPatchThrottleLagUp = Ini["__EXT_KEYBOARD_GAS_RAW"].GetDouble("LAG_UP", 0.5);
-            KeyboardPatchThrottleLagDown = Ini["__EXT_KEYBOARD_GAS_RAW"].GetDouble("LAG_DOWN", 0.2);
 
             foreach (var device in Devices.OfType<IDirectInputDevice>().Union(_placeholderDevices)) {
                 device.OriginalIniIds.Clear();
@@ -1551,9 +1550,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
             KeyboardMouseSteeringSpeed = section.GetDouble("MOUSE_SPEED", 0.1);
 
             section = Ini["__EXT_KEYBOARD_GAS_RAW"];
-            section.Set("OVERRIDE", KeyboardPatchThrottleOverride);
-            section.Set("LAG_UP", KeyboardPatchThrottleLagUp);
-            section.Set("LAG_DOWN", KeyboardPatchThrottleLagDown);
+            KeyboardPatchThrottleOverride = section.GetBool("OVERRIDE", false);
+            KeyboardPatchThrottleLagUp = section.GetDouble("LAG_UP", 0.5);
+            KeyboardPatchThrottleLagDown = section.GetDouble("LAG_DOWN", 0.2);
 
             section = Ini["X360"];
             ControllerSteeringStick = ControllerSticks.GetByIdOrDefault(section.GetNonEmpty("STEER_THUMB", ControllerSticks[0].Id));
@@ -1651,6 +1650,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             section.Set("MOUSE_STEER", KeyboardMouseSteering);
             section.Set("MOUSE_ACCELERATOR_BRAKE", KeyboardMouseButtons);
             section.Set("MOUSE_SPEED", KeyboardMouseSteeringSpeed);
+
+            section = Ini["__EXT_KEYBOARD_GAS_RAW"];
+            section.Set("OVERRIDE", KeyboardPatchThrottleOverride);
+            section.Set("LAG_UP", KeyboardPatchThrottleLagUp);
+            section.Set("LAG_DOWN", KeyboardPatchThrottleLagDown);
 
             section = Ini["X360"];
             section.Set("STEER_THUMB", ControllerSteeringStick?.Id ?? ControllerSticks[0].Id);

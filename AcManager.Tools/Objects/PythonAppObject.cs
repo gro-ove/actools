@@ -199,8 +199,10 @@ namespace AcManager.Tools.Objects {
         }
 
         public CupContentType CupContentType => CupContentType.App;
-        public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id, Version) ?? false;
-        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType, Id);
+
+        public bool IsCupUpdateAvailable => CupClient.Instance?.ContainsAnUpdate(CupContentType, Id.ToLowerInvariant(), Version) ?? false;
+
+        public CupClient.CupInformation CupUpdateInformation => CupClient.Instance?.GetInformation(CupContentType, Id.ToLowerInvariant());
 
         protected override void OnVersionChanged() {
             OnPropertyChanged(nameof(IsCupUpdateAvailable));

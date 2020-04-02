@@ -278,6 +278,8 @@
     </Setter>
   </Style>
 
+  <Style TargetType="qs:ShadersPatchPresetsControl" BasedOn="{StaticResource {x:Type qs:QuickSwitchPresetsControl}}" />
+
   <Style TargetType="qs:QuickSwitchSlider">
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
     <Setter Property="Foreground" Value="{DynamicResource ButtonText}" />

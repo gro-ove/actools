@@ -424,6 +424,8 @@ namespace AcManager.Tools.Miscellaneous {
                     new Uri("/Pages/ShadersPatch/ShadersDataCarsConfigs.xaml", UriKind.Relative)),
             new PatchPage("Cars textures", "For tyres to change look with setups",
                     new Uri("/Pages/ShadersPatch/ShadersDataCarsTextures.xaml", UriKind.Relative)),
+            new PatchPage("Cars VAO", "Per-vertex ambient occlusion",
+                    new Uri("/Pages/ShadersPatch/ShadersDataCarsVao.xaml", UriKind.Relative)),
             new PatchPage("Tracks configs", "Lights and more",
                     new Uri("/Pages/ShadersPatch/ShadersDataTracksConfigs.xaml", UriKind.Relative)),
             new PatchPage("Tracks VAO", "Per-vertex ambient occlusion",

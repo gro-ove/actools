@@ -6,6 +6,7 @@ using System.Windows;
 using AcManager.Tools.Helpers;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 
@@ -20,7 +21,9 @@ namespace AcManager.Pages.Settings {
 
             var widgets = new Dictionary<string, WidgetEntry>(_widgets.Length);
             foreach (var key in _widgets) {
+                Logging.Debug(key);
                 widgets[key] = new WidgetEntry(key, (FrameworkElement)FindResource(key));
+                Logging.Debug(widgets[key]);
                 await Task.Delay(10, cancellationToken);
                 if (cancellationToken.IsCancellationRequested) return;
             }
@@ -35,6 +38,7 @@ namespace AcManager.Pages.Settings {
                 _widgets = Resources.MergedDictionaries.SelectMany(x => x.Keys.OfType<string>()).Where(x => x.StartsWith(@"Widget")).ToArray();
             }
 
+            Logging.Write(_widgets.JoinToString("\n"));
             DataContext = new ViewModel(_widgets.Select(x => new WidgetEntry(x, (FrameworkElement)FindResource(x))).ToDictionary(x => x.Key, x => x));
         }
 
@@ -72,7 +76,7 @@ namespace AcManager.Pages.Settings {
                 Widgets = widgets;
 
                 var active = SettingsHolder.Drive.QuickSwitchesList;
-                
+
                 // clean up all invalid entries from saved list
                 if (active.Any(x => !widgets.Keys.Contains(x))) {
                     active = active.Where(widgets.Keys.Contains).ToArray();

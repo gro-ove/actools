@@ -16,7 +16,7 @@
 
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">
 
-        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2}" />
+        <TextBlock Text="The Setup Market:" Style="{StaticResource SettingsPanel.Heading2.First}" />
 
         <c:MessageBlock Margin="0 0 0 8">
           <mui:BbCodeBlock>
@@ -160,6 +160,11 @@
           <Button Content="Browse" Command="{Binding Integrated.SelectDBoxLocationCommand}" />
           <mui:BetterTextBox Text="{Binding Integrated.DBoxLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
+
+        <c:MessageBlock Margin="0 0 0 8" c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureSharedMemoryReduceGForcesWhenSlow}">
+          <mui:BbCodeBlock
+              Text="You can use Custom Shaders Patch to reduce G-forces for cars going slower than 6 km/h. There is an option for it in General settings." />
+        </c:MessageBlock>
 
       </StackPanel>
       <StackPanel set:Search.Category="Integrated" Style="{StaticResource SettingsPanel}">

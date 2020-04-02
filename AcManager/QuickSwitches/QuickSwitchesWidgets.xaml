@@ -56,7 +56,7 @@
       Content="{x:Static c:ControlsStrings.QuickSwitches_OnlineName}" IconData="{StaticResource UserTieIconData}"
       ToolTip="{x:Static c:ControlsStrings.QuickSwitches_OnlineName_Tooltip}" />
 
-  <!--comboboxes-->
+  <!-- Drop down lists -->
   <c:QuickSwitchPresetsControl x:Key="WidgetUiPresets" UserPresetable="{x:Static t:AcSettingsHolder.AppsPresets}" IconData="{StaticResource ScreenIconData}"
       ToolTip="{x:Static c:ControlsStrings.QuickSwitches_UiPresets_Tooltip}" />
   <c:QuickSwitchPresetsControl x:Key="WidgetAudioPresets" UserPresetable="{x:Static t:AcSettingsHolder.AudioPresets}" IconData="{StaticResource AudioIconData}"
@@ -99,8 +99,10 @@
   <c:QuickSwitchComboBox x:Key="WidgetPpFilters" ItemsSource="{Binding Enabled, Source={x:Static t:PpFiltersManager.Instance}}"
       SelectedItem="{Binding PostProcessingFilterObject, Source={x:Static t:AcSettingsHolder.Video}}" IconData="{StaticResource PpFilterIconData}"
       ToolTip="{x:Static c:ControlsStrings.QuickSwitches_PpFilters_Tooltip}" DisplayMemberPath="DisplayName" />
+  <c:ShadersPatchPresetsControl x:Key="WidgetShadersPatchPresets"
+      IconData="{StaticResource BulbIconData}" ToolTip="Switch between settings of Custom Shaders Patch" />
 
-  <!--sliders-->
+  <!-- Sliders -->
   <c:QuickSwitchSlider x:Key="WidgetExposure" DataContext="{x:Static t:AcSettingsHolder.Exposure}" Maximum="200" Minimum="0" Value="{Binding Value}"
       Content="{x:Static c:ControlsStrings.QuickSwitches_Exposure}" IconData="{StaticResource SunIconData}" TickFrequency="5"
       DisplayValue="{Binding Value, StringFormat='{}{0}%'}" ToolTip="{x:Static c:ControlsStrings.QuickSwitches_Exposure_Tooltip}" />

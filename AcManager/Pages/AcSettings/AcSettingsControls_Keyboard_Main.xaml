@@ -80,7 +80,7 @@
           <DockPanel>
             <mui:ValueLabel Value="{Binding Controls.KeyboardPatchThrottleLagDown, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F1}'}"
                 Postfix="%" mui:BetterTextBox.Mode="Number" Content="Lag down" />
-            <mui:FormattedSlider Minimum="0" Maximum="99.9"
+            <mui:FormattedSlider Minimum="0" Maximum="1" TickFrequency="0.1"
                 TickPlacement="BottomRight" AutoToolTipPlacement="BottomRight"
                 AutoToolTipFormat="{Binding Controls.KeyboardPatchThrottleLagDown, Converter={StaticResource LagToTimeEstimateConverter}, StringFormat='Time (approximate): {0:F2} s'}">
               <Slider.Value>
