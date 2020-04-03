@@ -51,7 +51,7 @@
             </MenuItem.ItemsSource>
           </MenuItem>
         </mui:ButtonWithComboBox>
-        <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Selected_CarSkinPage_CMShowroom}" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
             PreviewMouseDown="OnCustomShowroomButtonMouseDown" MenuItems="{Binding CustomShowroomPresets}" />
         <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
             Command="{Binding DriveCommand}" PreviewMouseDown="OnDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
@@ -68,10 +68,10 @@
             ToolTip="{x:Static g:AppStrings.Toolbar_CarSetups_Tooltip}" />
       </ToolBar>
       <ToolBar Band="0" BandIndex="0">
-        <Button Content="Analyze" Command="{Binding CarAnalyzerCommand}">
+        <Button Content="{x:Static g:AppStrings.Toolbar_Analyze}" Command="{Binding CarAnalyzerCommand}">
           <Button.ToolTip>Check for some common issues and fix them immediately (Alt+A)</Button.ToolTip>
         </Button>
-        <Button Content="Replace tyres" Command="{Binding ReplaceTyresCommand}">
+        <Button Content="{x:Static g:AppStrings.Selected_CarPage_ReplaceTyres}" Command="{Binding ReplaceTyresCommand}">
           <Button.ToolTip>Replace sets of tyres by some tyres from Kunos (Alt+T)</Button.ToolTip>
         </Button>
       </ToolBar>
@@ -166,7 +166,7 @@
           <c:RatingBar Rating="{Binding SelectedObject.Rating}" DockPanel.Dock="Bottom" Margin="0 12 0 0" HorizontalAlignment="Center" />
           <Border DockPanel.Dock="Top" x:Name="SkinsListExtendedModeParent" Margin="0 0 0 12" MaxHeight="180" Visibility="Collapsed" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
-              Placeholder="None" />
+              Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
       </Grid>
 
@@ -281,7 +281,7 @@
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
                       <MenuItem Header="{x:Static g:AppStrings.Filter_ByAuthor}" Command="{Binding Path=FilterCommand}" CommandParameter="author" />
-                      <MenuItem Header="Filter by origin" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_FilterByOrigin}" Command="{Binding Path=FilterCommand}" CommandParameter="origin" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                   <Button DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" Visibility="Collapsed" c:CupUi.Object="{Binding SelectedObject}">
@@ -435,9 +435,9 @@
                 <c:NotesBlock c:PropertiesGrid.Label="Notes:" AcObject="{Binding SelectedObject}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Filter by having notes" Command="{Binding Path=FilterCommand}" CommandParameter="notes" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_FilterByHavingNotes}" Command="{Binding Path=FilterCommand}" CommandParameter="notes" />
                       <Separator />
-                      <MenuItem Header="Clear notes" Command="{Binding Path=ClearNotesCommand}" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_ClearNotes}" Command="{Binding Path=ClearNotesCommand}" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </c:NotesBlock>
@@ -456,7 +456,7 @@
                     <ContextMenu>
                       <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
                       <Separator />
-                      <MenuItem Header="Clear stats from this car" Command="{Binding Path=ClearStatsCommand}" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_CarPage_ClearStatsFromThisCar}" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>
@@ -468,7 +468,7 @@
                     <ContextMenu>
                       <MenuItem Header="Filter by similar max speed achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
                       <Separator />
-                      <MenuItem Header="Clear stats from this car" Command="{Binding Path=ClearStatsCommand}" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_CarPage_ClearStatsFromThisCar}" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
                   </FrameworkElement.ContextMenu>
                 </mui:PlaceholderTextBlock>

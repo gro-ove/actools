@@ -62,7 +62,7 @@
       </c:MessageBlock>
 
       <!-- Replays autosave -->
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Replays autosave:" />
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_General_ReplaysAutosave}" />
 
       <CheckBox IsChecked="{Binding Replay.Autosave}" ToolTip="Autosave replays using new AC mechanism added in 1.14 update">
         <Label Content="{x:Static g:AppStrings.Settings_Replays_AutosaveReplays}" />
@@ -71,22 +71,22 @@
       <StackPanel Style="{StaticResource SettingsPanel}" Margin="0"
           Visibility="{Binding Replay.Autosave, Converter={StaticResource BooleanToVisibilityConverter}}">
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Replay.MinTimeSecond}" mui:BetterTextBox.Minimum="0" Postfix=" sec" Content="Minimum time" />
+          <mui:ValueLabel Value="{Binding Replay.MinTimeSecond}" mui:BetterTextBox.Minimum="0" Postfix=" sec" Content="{x:Static g:AppStrings.AcSettings_General_MinimumTime}" />
           <Slider Minimum="0" Maximum="120" Value="{Binding Replay.MinTimeSecond}" TickFrequency="12" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Replay.RacesLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for races" />
+          <mui:ValueLabel Value="{Binding Replay.RacesLimit}" mui:BetterTextBox.Minimum="0" Content="{x:Static g:AppStrings.AcSettings_General_LimitForRaces}" />
           <Slider Minimum="0" Maximum="20" Value="{Binding Replay.RacesLimit}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Replay.QualifyLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for qualifications" />
+          <mui:ValueLabel Value="{Binding Replay.QualifyLimit}" mui:BetterTextBox.Minimum="0" Content="{x:Static g:AppStrings.AcSettings_General_LimitForQualifications}" />
           <Slider Minimum="0" Maximum="20" Value="{Binding Replay.QualifyLimit}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Replay.OthersLimit}" mui:BetterTextBox.Minimum="0" Content="Limit for other sessions" />
+          <mui:ValueLabel Value="{Binding Replay.OthersLimit}" mui:BetterTextBox.Minimum="0" Content="{x:Static g:AppStrings.AcSettings_General_LimitForOtherSessions}" />
           <Slider Minimum="0" Maximum="20" Value="{Binding Replay.OthersLimit}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
       </StackPanel>

@@ -835,6 +835,7 @@ namespace AcManager.Pages.Windows {
 
         // In general, that information should be provided by webpages directly, but just in case some of
         // them will fail to do that, here are some lower-priority messages.
+        [Localizable(false)]
         private void UpdateDiscordRichPresence() {
             string details;
             switch (CurrentGroupKey) {
@@ -842,7 +843,7 @@ namespace AcManager.Pages.Windows {
                     details = "Preparing to a race";
                     break;
                 case "lapTimes":
-                    details = AppStrings.Main_LapTimes;
+                    details = "Lap times";
                     break;
                 case "stats":
                     details = "Stats";

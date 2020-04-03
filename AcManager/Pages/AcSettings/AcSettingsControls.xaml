@@ -36,16 +36,16 @@
     <DockPanel Grid.Row="0" Grid.Column="1" Width="164" Margin="20 0 20 0" x:Name="DetectedControllers">
       <DockPanel Margin="0 0 0 8" DockPanel.Dock="Top">
         <mui:ModernButton EllipseDiameter="20" IconWidth="10" IconHeight="10" IconData="{StaticResource GearIconData}" VerticalAlignment="Center"
-            Command="{Binding Controls.RunControlPanelCommand}" ToolTip="Device settings" DockPanel.Dock="Right" Margin="8 0 0 0" />
+            Command="{Binding Controls.RunControlPanelCommand}" ToolTip="{x:Static g:AppStrings.AcSettings_Controls_DeviceSettings_Tooltip}" DockPanel.Dock="Right" Margin="8 0 0 0" />
         <TextBlock Style="{StaticResource Heading2}" Text="{x:Static g:AppStrings.Controls_DetectedControllersHeader}" />
       </DockPanel>
       <mui:BooleanSwitch Value="{Binding Controls.IsScanningInProgress}">
         <mui:BooleanSwitch.True>
           <DockPanel Margin="8 20 8 60" VerticalAlignment="Center">
             <mui:ModernProgressRing IsActive="True" Width="80" Height="80" HorizontalAlignment="Center" VerticalAlignment="Center" DockPanel.Dock="Top" />
-            <TextBlock TextWrapping="Wrap" Text="Scanning…" DockPanel.Dock="Top" Margin="0 8 0 0" />
+            <TextBlock TextWrapping="Wrap" Text="{x:Static t:ToolsStrings.Common_Scanning}" DockPanel.Dock="Top" Margin="0 8 0 0" />
             <mui:BbCodeBlock TextWrapping="Wrap" DockPanel.Dock="Top" Margin="0 8 0 0" Style="{StaticResource Small}"
-                Text="If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url]." />
+                Text="{x:Static g:AppStrings.AcSettings_Controls_Scanning_Hint}" />
           </DockPanel>
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
@@ -63,7 +63,7 @@
                     <StackPanel Width="164" Margin="0 0 0 8" Background="Transparent">
                       <StackPanel.ContextMenu>
                         <ContextMenu>
-                          <MenuItem Header="Edit names" Click="OnDeviceEditNamesClick" />
+                          <MenuItem Header="{x:Static g:AppStrings.AcSettings_Controls_EditNames}" Click="OnDeviceEditNamesClick" />
                         </ContextMenu>
                       </StackPanel.ContextMenu>
                       <StackPanel.ToolTip>
@@ -148,7 +148,7 @@
               <DockPanel Margin="0 4 0 0">
                 <mui:ContextMenuButton DockPanel.Dock="Right" Margin="0 2 0 -2">
                   <ContextMenu>
-                    <MenuItem Header="Scan devices at launch" IsCheckable="True"
+                    <MenuItem Header="{x:Static g:AppStrings.AcSettings_Controls_ScanDevicesAtLaunch}" IsCheckable="True"
                         IsChecked="{Binding ScanControllersAutomatically, Source={x:Static t:SettingsHolder.Drive}}">
                       <MenuItem.ToolTip>
                         <ToolTip>
@@ -178,7 +178,7 @@
     </DockPanel>
 
     <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Right" Margin="0 20 20 20" Orientation="Horizontal">
-      <Button Command="{Binding ResetSystemBindinsCommand}" Content="Reset system bindings" Margin="0 0 4 0"
+      <Button Command="{Binding ResetSystemBindinsCommand}" Content="{x:Static g:AppStrings.AcSettings_Controls_ResetSystemBindings}" Margin="0 0 4 0"
           Visibility="{Binding ResetSystemBindinsCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
       <Grid MinWidth="300">
         <Grid.ContextMenu>

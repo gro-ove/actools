@@ -3,7 +3,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:acset="clr-namespace:AcManager.Tools.Helpers.AcSettings;assembly=AcManager.Tools" xmlns:c="http://acstuff.ru/app/controls"
     xmlns:acs="clr-namespace:AcManager.Tools.Helpers.AcSettingsControls;assembly=AcManager.Tools" xmlns:acsc="clr-namespace:AcManager.Pages.AcSettings"
-    xmlns:t="http://acstuff.ru/app/tools" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
+    xmlns:t="http://acstuff.ru/app/tools" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" Loaded="OnLoaded" Unloaded="OnUnloaded">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -167,29 +167,29 @@
       <mui:SpacingUniformGrid x:Name="MainGrid" VerticalStackMode="True">
         <StackPanel Margin="0 0 0 20">
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Race:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Race}" />
           <ItemsControl ItemsSource="{Binding SystemRaceButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Online:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Online}" />
           <ItemsControl ItemsSource="{Binding SystemOnlineButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Car:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Car}" />
           <ItemsControl ItemsSource="{Binding SystemCarButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="UI:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_UI}" />
           <ItemsControl ItemsSource="{Binding SystemUiButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
         </StackPanel>
         <StackPanel>
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Replay:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Replay}" />
           <ItemsControl ItemsSource="{Binding SystemReplayButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Discord:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Discord}" />
           <ItemsControl ItemsSource="{Binding SystemDiscordButtonEntries}" ItemTemplate="{StaticResource SystemButtonEntryCombinedTemplate}" Margin="0 0 20 20"
               IsEnabled="{Binding IsOverlayAvailable}" />
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Options:" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_System_Options}" />
           <StackPanel Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
 
             <mui:BooleanSwitch Value="{Binding IsOverlayAvailable}">

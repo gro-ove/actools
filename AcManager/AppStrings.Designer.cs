@@ -585,6 +585,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t get the list of audio devices.
+        /// </summary>
+        public static string AcSettings_Audio_CantGetTheListOfAudioDevices {
+            get {
+                return ResourceManager.GetString("AcSettings_Audio_CantGetTheListOfAudioDevices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device name:.
         /// </summary>
         public static string AcSettings_Audio_DeviceName {
@@ -693,6 +702,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string AcSettings_Audio_Unknown {
+            get {
+                return ResourceManager.GetString("AcSettings_Audio_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Wind.
         /// </summary>
         public static string AcSettings_Audio_Wind {
@@ -783,6 +801,186 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device settings.
+        /// </summary>
+        public static string AcSettings_Controls_DeviceSettings_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_DeviceSettings_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Edit names.
+        /// </summary>
+        public static string AcSettings_Controls_EditNames {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_EditNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset system bindings.
+        /// </summary>
+        public static string AcSettings_Controls_ResetSystemBindings {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_ResetSystemBindings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Scan devices at launch.
+        /// </summary>
+        public static string AcSettings_Controls_ScanDevicesAtLaunch {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_ScanDevicesAtLaunch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url]..
+        /// </summary>
+        public static string AcSettings_Controls_Scanning_Hint {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Scanning_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Center boost gain.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use it to multiply FFB when wheel is placed in center.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Center boost range.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable FFB post-processing.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hardware lock (experimental).
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_HardwareLock {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_HardwareLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Logitech hardware lock options:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Post-processing:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_PostProcessing {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_PostProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mode:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Car {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Car", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Discord:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Discord {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Discord", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Online:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Online {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Online", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Options:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Options {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Race:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Race {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Race", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replay:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_Replay {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_Replay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UI:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_System_UI {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_System_UI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default value:.
         /// </summary>
         public static string AcSettings_DefaultValue {
@@ -815,6 +1013,87 @@ namespace AcManager {
         public static string AcSettings_FieldOfView_Tooltip {
             get {
                 return ResourceManager.GetString("AcSettings_FieldOfView_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep camera in the car.
+        /// </summary>
+        public static string AcSettings_General_KeepCameraInTheCar {
+            get {
+                return ResourceManager.GetString("AcSettings_General_KeepCameraInTheCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit for other sessions.
+        /// </summary>
+        public static string AcSettings_General_LimitForOtherSessions {
+            get {
+                return ResourceManager.GetString("AcSettings_General_LimitForOtherSessions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit for qualifications.
+        /// </summary>
+        public static string AcSettings_General_LimitForQualifications {
+            get {
+                return ResourceManager.GetString("AcSettings_General_LimitForQualifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Limit for races.
+        /// </summary>
+        public static string AcSettings_General_LimitForRaces {
+            get {
+                return ResourceManager.GetString("AcSettings_General_LimitForRaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum time.
+        /// </summary>
+        public static string AcSettings_General_MinimumTime {
+            get {
+                return ResourceManager.GetString("AcSettings_General_MinimumTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pit stops:.
+        /// </summary>
+        public static string AcSettings_General_PitStops {
+            get {
+                return ResourceManager.GetString("AcSettings_General_PitStops", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Presets count.
+        /// </summary>
+        public static string AcSettings_General_PresetsCount {
+            get {
+                return ResourceManager.GetString("AcSettings_General_PresetsCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replays autosave:.
+        /// </summary>
+        public static string AcSettings_General_ReplaysAutosave {
+            get {
+                return ResourceManager.GetString("AcSettings_General_ReplaysAutosave", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use mouse pit stop.
+        /// </summary>
+        public static string AcSettings_General_UseMousePitStop {
+            get {
+                return ResourceManager.GetString("AcSettings_General_UseMousePitStop", resourceCulture);
             }
         }
         
@@ -999,6 +1278,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable Python apps.
+        /// </summary>
+        public static string AcSettings_Python_EnablePythonApps {
+            get {
+                return ResourceManager.GetString("AcSettings_Python_EnablePythonApps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep developer apps flag with apps presets.
+        /// </summary>
+        public static string AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets {
+            get {
+                return ResourceManager.GetString("AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Post-replay event command:.
         /// </summary>
         public static string AcSettings_Replays_EventPostLabel {
@@ -1175,6 +1472,15 @@ namespace AcManager {
         public static string AcSettings_System_SimulationValueLabel {
             get {
                 return ResourceManager.GetString("AcSettings_System_SimulationValueLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to VR camera shake.
+        /// </summary>
+        public static string AcSettings_System_VRCameraShake {
+            get {
+                return ResourceManager.GetString("AcSettings_System_VRCameraShake", resourceCulture);
             }
         }
         
@@ -1422,6 +1728,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Performance hit: .
+        /// </summary>
+        public static string AcSettings_Video_PerformanceHit {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_PerformanceHit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Huge approximation, might not correlate with reality. Measured in 1920×1080 resolution..
+        /// </summary>
+        public static string AcSettings_Video_PerformanceHit_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_PerformanceHit_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pixels per display.
         /// </summary>
         public static string AcSettings_Video_PixelsPerDisplay {
@@ -1494,6 +1818,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resolution and FPS:.
+        /// </summary>
+        public static string AcSettings_Video_ResolutionAndFPS {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_ResolutionAndFPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Resolution:.
         /// </summary>
         public static string AcSettings_Video_ResolutionLabel {
@@ -1562,6 +1895,24 @@ namespace AcManager {
         public static string AcSettings_Video_SystemHeader {
             get {
                 return ResourceManager.GetString("AcSettings_Video_SystemHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time-limited benchmark.
+        /// </summary>
+        public static string AcSettings_Video_TimeLimitedBenchmark {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_TimeLimitedBenchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use it to get similar results if you need to compare settings.
+        /// </summary>
+        public static string AcSettings_Video_TimeLimitedBenchmark_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Video_TimeLimitedBenchmark_Tooltip", resourceCulture);
             }
         }
         
@@ -3906,6 +4257,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Booking is finished.
+        /// </summary>
+        public static string Dialogs_BookingDialog_BookingIsFinished {
+            get {
+                return ResourceManager.GetString("Dialogs_BookingDialog_BookingIsFinished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Done.
         /// </summary>
         public static string Dialogs_CarUpdatePreviewsDialog_Done {
@@ -3956,6 +4316,33 @@ namespace AcManager {
         public static string Dialogs_GameDialog_TotalTime {
             get {
                 return ResourceManager.GetString("Dialogs_GameDialog_TotalTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Can’t load image.
+        /// </summary>
+        public static string Dialogs_ImageEditor_CantLoadImage {
+            get {
+                return ResourceManager.GetString("Dialogs_ImageEditor_CantLoadImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use mouse wheel or +/− keys to adjust the size of the area. Hold Ctrl or Shift to adjust accuracy..
+        /// </summary>
+        public static string Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust {
+            get {
+                return ResourceManager.GetString("Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drop files or links to download here.
+        /// </summary>
+        public static string Dialogs_InstallAdditionalContentDialog_Hint {
+            get {
+                return ResourceManager.GetString("Dialogs_InstallAdditionalContentDialog_Hint", resourceCulture);
             }
         }
         
@@ -4284,6 +4671,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Maximum amount of contacts per kilometer.
+        /// </summary>
+        public static string Drive_OnlineServer_MaximumOfContacts_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_MaximumOfContacts_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset stats.
         /// </summary>
         public static string Drive_OnlineServer_ResetStats {
@@ -4446,11 +4842,47 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Can’t start the race.
+        /// </summary>
+        public static string Drive_Quick_CantStartTheRace {
+            get {
+                return ResourceManager.GetString("Drive_Quick_CantStartTheRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Car-specific Fanatec settings.
         /// </summary>
         public static string Drive_Quick_CarSpecificFanatecSettings {
             get {
                 return ResourceManager.GetString("Drive_Quick_CarSpecificFanatecSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change car to random.
+        /// </summary>
+        public static string Drive_Quick_ChangeCarToRandom {
+            get {
+                return ResourceManager.GetString("Drive_Quick_ChangeCarToRandom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change skin to random.
+        /// </summary>
+        public static string Drive_Quick_ChangeSkinToRandom {
+            get {
+                return ResourceManager.GetString("Drive_Quick_ChangeSkinToRandom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change track to random.
+        /// </summary>
+        public static string Drive_Quick_ChangeTrackToRandom {
+            get {
+                return ResourceManager.GetString("Drive_Quick_ChangeTrackToRandom", resourceCulture);
             }
         }
         
@@ -4464,11 +4896,65 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Randomize everything.
+        /// </summary>
+        public static string Drive_Quick_RandomizeEverything {
+            get {
+                return ResourceManager.GetString("Drive_Quick_RandomizeEverything", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set random temperature.
+        /// </summary>
+        public static string Drive_Quick_SetRandomTemperature {
+            get {
+                return ResourceManager.GetString("Drive_Quick_SetRandomTemperature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set random time.
+        /// </summary>
+        public static string Drive_Quick_SetRandomTime {
+            get {
+                return ResourceManager.GetString("Drive_Quick_SetRandomTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Set random weather.
+        /// </summary>
+        public static string Drive_Quick_SetRandomWeather {
+            get {
+                return ResourceManager.GetString("Drive_Quick_SetRandomWeather", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show current gear only.
         /// </summary>
         public static string Drive_Quick_ShowCurrentGearOnly {
             get {
                 return ResourceManager.GetString("Drive_Quick_ShowCurrentGearOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting the race….
+        /// </summary>
+        public static string Drive_Quick_StartingTheRace {
+            get {
+                return ResourceManager.GetString("Drive_Quick_StartingTheRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, and fix it.
+        /// </summary>
+        public static string Drive_Quick_YesAndFixIt {
+            get {
+                return ResourceManager.GetString("Drive_Quick_YesAndFixIt", resourceCulture);
             }
         }
         
@@ -7591,11 +8077,74 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clear stats from this car.
+        /// </summary>
+        public static string Selected_CarPage_ClearStatsFromThisCar {
+            get {
+                return ResourceManager.GetString("Selected_CarPage_ClearStatsFromThisCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replace tyres.
+        /// </summary>
+        public static string Selected_CarPage_ReplaceTyres {
+            get {
+                return ResourceManager.GetString("Selected_CarPage_ReplaceTyres", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Default value:.
+        /// </summary>
+        public static string Selected_CarSetupPage_DefaultValue {
+            get {
+                return ResourceManager.GetString("Selected_CarSetupPage_DefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown.
+        /// </summary>
+        public static string Selected_CarSetupPage_Unknown {
+            get {
+                return ResourceManager.GetString("Selected_CarSetupPage_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to CM Showroom.
         /// </summary>
         public static string Selected_CarSkinPage_CMShowroom {
             get {
                 return ResourceManager.GetString("Selected_CarSkinPage_CMShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear notes.
+        /// </summary>
+        public static string Selected_ClearNotes {
+            get {
+                return ResourceManager.GetString("Selected_ClearNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by having notes.
+        /// </summary>
+        public static string Selected_FilterByHavingNotes {
+            get {
+                return ResourceManager.GetString("Selected_FilterByHavingNotes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by origin.
+        /// </summary>
+        public static string Selected_FilterByOrigin {
+            get {
+                return ResourceManager.GetString("Selected_FilterByOrigin", resourceCulture);
             }
         }
         
@@ -9004,6 +9553,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Load assists with Quick Drive presets.
+        /// </summary>
+        public static string Settings_Drive_LoadAssistsWithQuickDrivePresets {
+            get {
+                return ResourceManager.GetString("Settings_Drive_LoadAssistsWithQuickDrivePresets", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Local address.
         /// </summary>
         public static string Settings_Drive_LocalAddress {
@@ -9274,6 +9832,24 @@ namespace AcManager {
         public static string Settings_Drive_UiModuleFallback {
             get {
                 return ResourceManager.GetString("Settings_Drive_UiModuleFallback", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For Track Day, use Practice as a session type.
+        /// </summary>
+        public static string Settings_Drive_UsePracticeForTrackDay {
+            get {
+                return ResourceManager.GetString("Settings_Drive_UsePracticeForTrackDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This way, there&apos;ll be a crew for pitstops, but bots might be more passive.
+        /// </summary>
+        public static string Settings_Drive_UsePracticeForTrackDay_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_UsePracticeForTrackDay_Tooltip", resourceCulture);
             }
         }
         
@@ -12781,6 +13357,24 @@ namespace AcManager {
         public static string WebSource_SharedMessageCopiedTitle {
             get {
                 return ResourceManager.GetString("WebSource_SharedMessageCopiedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original launcher (appears with Steam starter).
+        /// </summary>
+        public static string Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter {
+            get {
+                return ResourceManager.GetString("Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video settings (FPS counter).
+        /// </summary>
+        public static string Windows_MainWindow_VideoSettingsFPSCounter {
+            get {
+                return ResourceManager.GetString("Windows_MainWindow_VideoSettingsFPSCounter", resourceCulture);
             }
         }
     }

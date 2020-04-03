@@ -20,20 +20,20 @@
                   <mui:BooleanSwitch Value="{Binding HasDefaultValue}">
                     <mui:BooleanSwitch.True>
                       <TextBlock>
-                        <Run Text="Default value:" />
+                        <Run Text="{x:Static g:AppStrings.Selected_CarSetupPage_DefaultValue}" />
                         <Run Text="{Binding DefaultValue, Mode=OneWay}" /><Run Text="{Binding UnitsPostfix, Mode=OneWay}" />
                       </TextBlock>
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
                       <TextBlock>
-                        <Run Text="Default value:" />
-                        <Run Text="Unknown" />
+                        <Run Text="{x:Static g:AppStrings.Selected_CarSetupPage_DefaultValue}" />
+                        <Run Text="{x:Static g:AppStrings.Selected_CarSetupPage_Unknown}" />
                       </TextBlock>
                     </mui:BooleanSwitch.False>
                   </mui:BooleanSwitch>
                 </MenuItem.Header>
               </MenuItem>
-              <MenuItem IsEnabled="{Binding HasDefaultValue}" Command="{Binding ResetCommand}" Header="Reset" />
+              <MenuItem IsEnabled="{Binding HasDefaultValue}" Command="{Binding ResetCommand}" Header="{x:Static c:ControlsStrings.Common_Reset}" />
             </ContextMenu>
           </Border.ContextMenu>
           <mui:ReferenceSwitch Value="{Binding Values}">
@@ -105,7 +105,7 @@
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Rating:" />
+          <Label Content="{x:Static c:ControlsStrings.Common_Rating}" />
           <c:RatingBar Rating="{Binding SelectedObject.Rating}" HorizontalAlignment="Left" />
         </DockPanel>
       </StackPanel>

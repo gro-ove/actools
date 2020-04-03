@@ -37,21 +37,4 @@
       </DataTemplate.Triggers>
     </DataTemplate>
   </ListBox.ItemTemplate>
-  <!-- For testing StretchyWrapPanel: -->
-  <!--<ListBox.Template>
-    <ControlTemplate TargetType="ListBox">
-      <Border CornerRadius="2" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-        <DockPanel>
-          <CheckBox Checked="OnFixedWidthChecked" Unchecked="OnFixedWidthChecked" Content="ItemWidth=80" DockPanel.Dock="Top" Margin="0 0 0 4" />
-          <CheckBox Checked="OnRearrangeForBestFitChecked" Unchecked="OnRearrangeForBestFitChecked" Content="RearrangeForBestFit=True" DockPanel.Dock="Top" Margin="0 0 0 4" />
-          <CheckBox Checked="OnStretchToFillChecked" Unchecked="OnStretchToFillChecked" Content="StretchToFill=True" DockPanel.Dock="Top" Margin="0 0 0 4" />
-          <CheckBox Checked="OnStretchProportionallyChecked" Unchecked="OnStretchProportionallyChecked" Content="StretchProportionally=True" DockPanel.Dock="Top" Margin="0 0 0 4" />
-          <ScrollViewer x:Name="ScrollViewer" Padding="{TemplateBinding Padding}" Background="{TemplateBinding Background}" BorderBrush="Transparent"
-              BorderThickness="0">
-            <ItemsPresenter />
-          </ScrollViewer>
-        </DockPanel>
-      </Border>
-    </ControlTemplate>
-  </ListBox.Template>-->
 </sl:SelectionTagsList>

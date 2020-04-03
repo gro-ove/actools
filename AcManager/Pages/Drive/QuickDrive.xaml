@@ -22,7 +22,6 @@
         <MenuItem Header="{x:Static g:AppStrings.Drive_SetTimeManuallyHeader}" IsChecked="{Binding RealConditionsManualTime}" IsCheckable="True" />
         <MenuItem Header="{x:Static g:AppStrings.Drive_ConsiderTimezones}" IsChecked="{Binding RealConditionsTimezones}" IsCheckable="True"
             IsEnabled="{Binding RealConditionsManualTime, Converter={StaticResource InvertBooleanConverter}}" />
-        <!--<MenuItem Header="Real lighting" IsChecked="{Binding RealConditionsLighting}" IsCheckable="True" IsEnabled="False" />-->
       </ContextMenu>
 
       <mui:HierarchicalComboBox x:Key="CarSpecificControlsComboBox" ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}"

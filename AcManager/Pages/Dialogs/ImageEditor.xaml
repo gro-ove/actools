@@ -10,7 +10,7 @@
     <Thickness x:Key="MarginThickness">-1</Thickness>
   </mui:ModernDialog.Resources>
   <DockPanel>
-    <TextBlock Text="Use mouse wheel or +/− keys to adjust the size of the area. Hold Ctrl or Shift to adjust accuracy." DockPanel.Dock="Bottom"
+    <TextBlock Text="{x:Static g:AppStrings.Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust}" DockPanel.Dock="Bottom"
         Margin="0 20 0 0" Style="{StaticResource Small}" />
     <mui:BorderyViewbox SizeChanged="OnViewboxSizeChanged" x:Name="Viewbox" StretchDirection="DownOnly" Stretch="Uniform">
       <mui:Cell x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="OnMouseDown" ClipToBounds="True">

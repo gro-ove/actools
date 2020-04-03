@@ -78,7 +78,7 @@
           <DockPanel Style="{x:Null}">
             <TextBlock Text="{Binding Controls.DisplayHardwareLockSupported, StringFormat='{}Supported controllers: {0}'}" Style="{StaticResource Small}"
                 TextWrapping="Wrap" DockPanel.Dock="Bottom" Margin="0 2 0 0" />
-            <Label Content="Hardware lock (experimental)" />
+            <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_HardwareLock}" />
           </DockPanel>
         </CheckBox>
 
@@ -88,7 +88,8 @@
             <ContentControl.Resources>
               <DataTemplate DataType="{x:Type w:LogitechOptions}">
                 <StackPanel Style="{StaticResource SettingsPanel}">
-                  <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Logitech hardware lock options:" />
+                  <TextBlock Style="{StaticResource SettingsPanel.Heading2}"
+                      Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions}" />
 
                   <TextBlock Foreground="{DynamicResource Error}" TextWrapping="Wrap" Style="{StaticResource Small}" Margin="0 0 0 8"
                       Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
@@ -163,24 +164,26 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.AcSettings_Controls}" Style="{StaticResource SettingsPanel}">
 
         <!-- Post-Processing -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Post-processing:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_PostProcessing}" />
 
-        <DockPanel ToolTip="Use it to multiply FFB when wheel is placed in center">
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostGain}" Content="Center boost gain" Postfix="%" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip}">
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostGain}"
+              Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain}" Postfix="%" />
           <Slider Minimum="0" Maximum="100" Value="{Binding Controls.WheelFfbWheelCenterBoostGain}" TickFrequency="10" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <DockPanel ToolTip="Use it to multiply FFB when wheel is placed in center">
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostRange}" Content="Center boost range" Postfix="%" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip}">
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbWheelCenterBoostRange}"
+              Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange}" Postfix="%" />
           <Slider Minimum="0" Maximum="20" Value="{Binding Controls.WheelFfbWheelCenterBoostRange}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
 
         <CheckBox IsChecked="{Binding FfPostProcess.Enabled}">
-          <Label Content="Enable FFB post-processing" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing}" />
         </CheckBox>
 
         <DockPanel Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Label Content="Mode:" Width="80" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode}" Width="80" />
           <ComboBox ItemsSource="{Binding FfPostProcess.Types}" SelectedItem="{Binding FfPostProcess.Type, Mode=TwoWay}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
@@ -188,7 +191,8 @@
             Visibility="{Binding FfPostProcess.Enabled, Converter={StaticResource BooleanToVisibilityConverter}}">
           <StackPanel mui:Switch.When="GAMMA" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%" Content="Gamma" Width="80" />
+              <mui:ValueLabel Value="{Binding FfPostProcess.Gamma, Converter={StaticResource PercentageConverter}}" Postfix="%"
+                  Content="{x:Static с:ControlsStrings.Controls_GammaAxis}" Width="80" />
               <Slider Minimum="0" Maximum="2" Value="{Binding FfPostProcess.Gamma, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}"
                   TickFrequency="0.2" TickPlacement="BottomRight" />
             </DockPanel>

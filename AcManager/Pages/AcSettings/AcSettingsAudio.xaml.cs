@@ -30,7 +30,7 @@ namespace AcManager.Pages.AcSettings {
             try {
                 _audioDevicesList = await Task.Run(() => GetAudioDevicesList());
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+                NonfatalError.NotifyBackground(AppStrings.AcSettings_Audio_CantGetTheListOfAudioDevices, e);
             }
         }
 
@@ -38,7 +38,7 @@ namespace AcManager.Pages.AcSettings {
             try {
                 _audioDevicesList = GetAudioDevicesList();
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+                NonfatalError.NotifyBackground(AppStrings.AcSettings_Audio_CantGetTheListOfAudioDevices, e);
             }
         }
 
@@ -67,7 +67,7 @@ namespace AcManager.Pages.AcSettings {
                 _audioDevicesList = GetAudioDevicesList();
                 Model.AudioOutputDevices = _audioDevicesList;
             } catch (Exception e) {
-                NonfatalError.NotifyBackground("Can’t get the list of audio devices", e);
+                NonfatalError.NotifyBackground(AppStrings.AcSettings_Audio_CantGetTheListOfAudioDevices, e);
             }
         }
 
@@ -79,7 +79,7 @@ namespace AcManager.Pages.AcSettings {
             var current = AcSettingsHolder.Audio.EndPointName;
             if (!string.IsNullOrWhiteSpace(current) && result.All(x => x.DisplayName != current)) {
                 var deviceName = Regex.Match(current, @"\((.+)\)").Groups[1].Value;
-                result.Insert(0, new AudioDevice(current, string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName,
+                result.Insert(0, new AudioDevice(current, string.IsNullOrWhiteSpace(deviceName) ? AppStrings.AcSettings_Audio_Unknown : deviceName,
                         @"%windir%\system32\mmres.dll,-3004", DeviceState.NotPresent));
             }
 

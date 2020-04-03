@@ -1,8 +1,8 @@
 ﻿<tools:ContentTool x:Class="AcManager.Pages.ContentTools.FilesCompressor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
-    xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:c="http://acstuff.ru/app/controls" xmlns:oxy="http://oxyplot.org/wpf" mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance tools:FilesCompressor}">
+    xmlns:tools="clr-namespace:AcManager.Pages.ContentTools" xmlns:c="http://acstuff.ru/app/controls" xmlns:oxy="http://oxyplot.org/wpf"
+    xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance tools:FilesCompressor}">
   <FrameworkElement.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -73,7 +73,8 @@
 
       <DataGrid Grid.Column="2" ItemsSource="{Binding FilesToCompress}" Style="{StaticResource DataGrid.Lite}">
         <DataGrid.Columns>
-          <DataGridTemplateColumn Width="1*" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Path}" SortDirection="Ascending" SortMemberPath="RelativePath">
+          <DataGridTemplateColumn Width="1*" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Path}" SortDirection="Ascending"
+              SortMemberPath="RelativePath">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -100,7 +101,8 @@
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}" SortMemberPath="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}">
+          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}"
+              SortMemberPath="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">

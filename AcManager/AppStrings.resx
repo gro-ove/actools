@@ -4525,4 +4525,163 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
       <value>Video settings (FPS counter)</value>
     </data>
+    <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+      <value>Can’t get the list of audio devices</value>
+    </data>
+    <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+      <value>Unknown</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_HardwareLock" xml:space="preserve">
+      <value>Hardware lock (experimental)</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions" xml:space="preserve">
+      <value>Logitech hardware lock options:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+      <value>Enable FFB post-processing</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+      <value>Mode:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+      <value>Center boost range</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+      <value>Center boost gain</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+      <value>Use it to multiply FFB when wheel is placed in center</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+      <value>Post-processing:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+      <value>Race:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+      <value>Online:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+      <value>Car:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+      <value>UI:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+      <value>Replay:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Discord" xml:space="preserve">
+      <value>Discord:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+      <value>Options:</value>
+    </data>
+    <data name="AcSettings_Controls_Scanning_Hint" xml:space="preserve">
+      <value>If it takes too long, one of devices connected to your PC might have buggy drivers. For example, Corsair K55 keyboard is known to cause this issue with DirectInput8. [url=&quot;https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow&quot;]More information[/url].</value>
+    </data>
+    <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+      <value>Device settings</value>
+    </data>
+    <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+      <value>Edit names</value>
+    </data>
+    <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+      <value>Scan devices at launch</value>
+    </data>
+    <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+      <value>Reset system bindings</value>
+    </data>
+    <data name="AcSettings_General_PitStops" xml:space="preserve">
+      <value>Pit stops:</value>
+    </data>
+    <data name="AcSettings_General_UseMousePitStop" xml:space="preserve">
+      <value>Use mouse pit stop</value>
+    </data>
+    <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+      <value>Keep camera in the car</value>
+    </data>
+    <data name="AcSettings_General_PresetsCount" xml:space="preserve">
+      <value>Presets count</value>
+    </data>
+    <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
+      <value>Replays autosave:</value>
+    </data>
+    <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+      <value>Minimum time</value>
+    </data>
+    <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+      <value>Limit for races</value>
+    </data>
+    <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+      <value>Limit for qualifications</value>
+    </data>
+    <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+      <value>Limit for other sessions</value>
+    </data>
+    <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+      <value>Enable Python apps</value>
+    </data>
+    <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+      <value>Keep developer apps flag with apps presets</value>
+    </data>
+    <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+      <value>VR camera shake</value>
+    </data>
+    <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+      <value>Performance hit: </value>
+    </data>
+    <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+      <value>Huge approximation, might not correlate with reality. Measured in 1920×1080 resolution.</value>
+    </data>
+    <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+      <value>Resolution and FPS:</value>
+    </data>
+    <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+      <value>Time-limited benchmark</value>
+    </data>
+    <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+      <value>Use it to get similar results if you need to compare settings</value>
+    </data>
+    <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
+      <value>Use mouse wheel or +/− keys to adjust the size of the area. Hold Ctrl or Shift to adjust accuracy.</value>
+    </data>
+    <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
+      <value>Drop files or links to download here</value>
+    </data>
+    <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+      <value>Maximum amount of contacts per kilometer</value>
+    </data>
+    <data name="Selected_FilterByOrigin" xml:space="preserve">
+      <value>Filter by origin</value>
+    </data>
+    <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+      <value>Replace tyres</value>
+    </data>
+    <data name="Selected_ClearNotes" xml:space="preserve">
+      <value>Clear notes</value>
+    </data>
+    <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+      <value>Filter by having notes</value>
+    </data>
+    <data name="Selected_CarPage_ClearStatsFromThisCar" xml:space="preserve">
+      <value>Clear stats from this car</value>
+    </data>
+    <data name="Selected_CarSetupPage_Unknown" xml:space="preserve">
+      <value>Unknown</value>
+    </data>
+    <data name="Selected_CarSetupPage_DefaultValue" xml:space="preserve">
+      <value>Default value:</value>
+    </data>
+    <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+      <value>Load assists with Quick Drive presets</value>
+    </data>
+    <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
+      <value>For Track Day, use Practice as a session type</value>
+    </data>
+    <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
+      <value>This way, there'll be a crew for pitstops, but bots might be more passive</value>
+    </data>
+    <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
+      <value>Booking is finished</value>
+    </data>
 </root>

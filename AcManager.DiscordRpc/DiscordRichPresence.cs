@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
@@ -51,6 +52,7 @@ namespace AcManager.DiscordRpc {
         }
     }
 
+    [Localizable(false)]
     public class DiscordRichPresence : NotifyPropertyChanged, IDisposable, IComparer<DiscordRichPresence> {
         private readonly int _priority;
 
@@ -81,7 +83,7 @@ namespace AcManager.DiscordRpc {
 
         private string _details;
 
-        [NotNull]
+        [NotNull, Localizable(false)]
         public string Details {
             get => _details;
             set {

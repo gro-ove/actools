@@ -447,7 +447,7 @@
                       </ToolTip>
                     </FrameworkElement.ToolTip>
                   </mui:BbCodeBlock>
-                  <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="Maximum amount of contacts per kilometer"
+                  <TextBlock c:PropertiesGrid.Label="Contacts:" ToolTip="{x:Static g:AppStrings.Drive_OnlineServer_MaximumOfContacts_Tooltip}"
                       Text="{Binding MaxContactsPerKm, StringFormat='{}{0:F1} per km', TargetNullValue='not limited'}" Background="Transparent" />
                   <c:TemperatureBlock c:PropertiesGrid.Label="Ambient:" Text="{Binding AmbientTemperature, TargetNullValue='?'}" Background="Transparent" />
                   <TextBlock c:PropertiesGrid.Label="Wind:" Background="Transparent">

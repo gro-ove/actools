@@ -718,6 +718,15 @@ namespace AcManager.Controls {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rating:.
+        /// </summary>
+        public static string Common_Rating {
+            get {
+                return ResourceManager.GetString("Common_Rating", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recommended value: {0}%.
         /// </summary>
         public static string Common_RecommendedPercentageFormat {

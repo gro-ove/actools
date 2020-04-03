@@ -67,7 +67,7 @@ namespace AcManager.Pages.Dialogs {
             InitializeComponent();
             ArgumentsHandler.HandlePasteEvent(this);
             Buttons = new[] {
-                CreateExtraDialogButton("Remove completed", ContentInstallationManager.Instance.RemoveCompletedCommand),
+                CreateExtraDialogButton(AppStrings.MainWindow_Downloads_RemoveCompleted, ContentInstallationManager.Instance.RemoveCompletedCommand),
                 IsAlone ? CloseButton : CreateCloseDialogButton(UiStrings.Toolbar_Hide, true, false, MessageBoxResult.None)
             };
         }

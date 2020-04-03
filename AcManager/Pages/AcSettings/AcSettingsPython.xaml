@@ -98,7 +98,7 @@
 
     <StackPanel Style="{StaticResource SettingsPanel}" Grid.Column="0">
       <CheckBox IsChecked="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}" mui:NewMarkService.New="True">
-        <Label Content="Enable Python apps" />
+        <Label Content="{x:Static g:AppStrings.AcSettings_Python_EnablePythonApps}" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding DeveloperApps, Source={x:Static t:AcSettingsHolder.System}}"
@@ -108,7 +108,7 @@
 
       <CheckBox IsChecked="{Binding SaveDevAppsInAppsPresets, Source={x:Static t:SettingsHolder.Drive}}"
           IsEnabled="{Binding EnablePythonApps, Source={x:Static t:AcSettingsHolder.Gameplay}}">
-        <Label Content="Keep developer apps flag with apps presets" />
+        <Label Content="{x:Static g:AppStrings.AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets}" />
       </CheckBox>
     </StackPanel>
 

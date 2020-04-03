@@ -38,7 +38,7 @@
             </MenuItem.ItemsSource>
           </MenuItem>
         </mui:ButtonWithComboBox>
-        <mui:ButtonWithComboBox Content="CM Showroom" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
+        <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Selected_CarSkinPage_CMShowroom}" ButtonToolTip="View car in custom CM showroom (Alt+H)" Command="{Binding OpenInCustomShowroomCommand}"
             PreviewMouseDown="OnCustomShowroomButtonMouseDown" MenuItems="{Binding CustomShowroomPresets}" />
         <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.Toolbar_Drive}" ButtonToolTip="{x:Static g:AppStrings.Toolbar_Drive_CarTooltip}"
             Command="{Binding DriveCommand}" PreviewMouseDown="OnQuickDriveButtonMouseDown" Style="{StaticResource Go.ToolBarButtonWithComboBox}">
@@ -277,7 +277,7 @@
 
         <!-- Description -->
         <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.Description}" AcceptsReturn="True" TextWrapping="Wrap"
-            Placeholder="None" />
+            Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </StackPanel>
     </StackPanel>
   </c:AcObjectBase>

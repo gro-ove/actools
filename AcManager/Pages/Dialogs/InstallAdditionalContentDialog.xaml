@@ -8,7 +8,7 @@
     ResizeMode="CanResizeWithGrip" AllowDrop="True" Drop="OnDrop" DragEnter="OnDragEnter" ButtonsRowContentAlignment="Stretch" Closed="OnClosed"
     KeyDown="OnKeyDown" x:Name="This" Padding="0 20">
   <mui:ModernDialog.ButtonsRowContent>
-    <TextBlock Text="Drop or paste files or links your want to add to the queue here" Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
+    <TextBlock Text="{x:Static g:AppStrings.Dialogs_InstallAdditionalContentDialog_Hint}" Style="{StaticResource Small}" TextWrapping="Wrap" MaxWidth="200"
         HorizontalAlignment="Left" />
   </mui:ModernDialog.ButtonsRowContent>
   <uc:InstallAdditionalContentList />

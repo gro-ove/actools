@@ -41,7 +41,7 @@
         </CheckBox>-->
 
         <CheckBox IsChecked="{Binding System.VrCameraShake}">
-          <Label Content="VR camera shake" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_System_VRCameraShake}" />
         </CheckBox>
 
         <DockPanel>

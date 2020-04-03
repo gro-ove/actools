@@ -130,7 +130,7 @@ namespace AcManager.Pages.Dialogs {
                 CommandManager.InvalidateRequerySuggested();
 
                 if (value) {
-                    Toast.Show("Booking is finished", AppStrings.Srs_ReadyNotification,
+                    Toast.Show(AppStrings.Dialogs_BookingDialog_BookingIsFinished, AppStrings.Srs_ReadyNotification,
                             () => ServerEntry?.JoinCommand.ExecuteAsync(ServerEntry.ActualJoin));
                 }
             }
