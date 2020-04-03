@@ -84,7 +84,7 @@
             </TextBlock.Text>
           </TextBlock>
           <DockPanel ToolTip="Set a password if you want a private server" Margin="0 20 0 8">
-            <Label Content="Password:" />
+            <Label Content="{x:Static g:AppStrings.Online_PasswordLabel}" />
             <mui:BetterTextBox Text="{Binding SelectedObject.Password}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
           </DockPanel>
           <DockPanel>
@@ -111,7 +111,7 @@
           </DockPanel>
           <DockPanel Margin="0 0 0 8">
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.WelcomeMessage}" AcceptsReturn="True" TextWrapping="Wrap"
-                Placeholder="None" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
+                Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="200" DockPanel.Dock="Bottom" Margin="20 8 0 0" x:Name="WelcomeMessageTextArea" />
             <Label Content="Welcome message:" HorizontalAlignment="Left" />
           </DockPanel>
         </StackPanel>
@@ -142,7 +142,7 @@
           </DockPanel>
           <DockPanel Margin="0 0 0 8">
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ManagerDescription}" AcceptsReturn="False" TextWrapping="Wrap"
-                Placeholder="None" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+                Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
             <Label Content="Manager description:" HorizontalAlignment="Left" Width="200" />
           </DockPanel>
         </StackPanel>

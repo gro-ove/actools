@@ -6,7 +6,7 @@
     WindowStartupLocation="CenterScreen" LocationAndSizeKey="__AcRootDirectorySelector_LS"
     d:DataContext="{d:DesignInstance di:AcRootDirectorySelector+ViewModel}" MaxHeight="1200" ButtonsRowContentAlignment="Left" WindowStyle="None">
   <mui:ModernDialog.ButtonsRowContent>
-    <Button Content="Install recommended plugins" Command="{Binding Recommended.InstallAllCommand, Source={x:Static t:PluginsManager.Instance}}" />
+    <Button Content="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins}" Command="{Binding Recommended.InstallAllCommand, Source={x:Static t:PluginsManager.Instance}}" />
   </mui:ModernDialog.ButtonsRowContent>
   <mui:ModernDialog.Resources>
     <ResourceDictionary>
@@ -18,7 +18,7 @@
   <StackPanel Width="500">
     <mui:BbCodeBlock Text="{x:Static g:AppStrings.AcRoot_Welcome}" Margin="0 0 0 20"
         Visibility="{Binding FirstRun, Converter={StaticResource BooleanToVisibilityConverter}}" />
-    <mui:BbCodeBlock Text="App just has been updated. Please, review if these settings are still valid:" Margin="0 0 0 20"
+    <mui:BbCodeBlock Text="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview}" Margin="0 0 0 20"
         Visibility="{Binding ReviewMode, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
     <!-- AC root -->
@@ -42,7 +42,7 @@
 
     <!-- Player name -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-      <TextBlock Text="What’s your name?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <TextBlock Text="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_WhatsYourName}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
       <DockPanel Margin="20 8 0 0">
         <mui:BetterTextBox Text="{Binding PlayerName, Source={x:Static t:SettingsHolder.Drive}}" Placeholder="?" />
       </DockPanel>
@@ -50,17 +50,17 @@
 
     <!-- Shortcut -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-      <TextBlock Text="Add a shortcut to Start Menu?" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
-      <TextBlock Margin="20 8 0 0" Text="With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10." Style="{StaticResource Small}" />
+      <TextBlock Text="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu}" Style="{StaticResource Heading2}" Margin="0 20 0 0" />
+      <TextBlock Margin="20 8 0 0" Text="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip}" Style="{StaticResource Small}" />
       <StackPanel Margin="20 8 0 0" Orientation="Horizontal">
-        <Button Content="Create (recommended)" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
-        <Button Content="Delete" Command="{x:Static mui:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
+        <Button Content="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_Create}" Command="{x:Static mui:AppShortcut.CreateShortcutCommand}" Margin="0 0 4 0" />
+        <Button Content="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_Delete}" Command="{x:Static mui:AppShortcut.DeleteShortcutCommand}" Margin="0 0 4 0" />
       </StackPanel>
     </StackPanel>
 
     <!-- Plugins -->
     <StackPanel Visibility="{Binding SettingsRun, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
-      <TextBlock Text="Would you like to install some plugins as well?" Style="{StaticResource Heading2}" Margin="0 20 0 0"
+      <TextBlock Text="{x:Static g:AppStrings.Dialogs_AcRootDirectorySelector_InstallSomePlugins}" Style="{StaticResource Heading2}" Margin="0 20 0 0"
           Visibility="{Binding Recommended.ListView.Count, Source={x:Static t:PluginsManager.Instance}, Converter={StaticResource MoreToVisibilityConverter}, ConverterParameter=0}" />
       <ItemsControl Margin="20 8 0 0" ItemsSource="{Binding Recommended.ListView, Source={x:Static t:PluginsManager.Instance}}"
           mui:FancyScroll.Outside="True" ItemTemplate="{StaticResource PluginItemTemplate.NoOptions}" Height="440"

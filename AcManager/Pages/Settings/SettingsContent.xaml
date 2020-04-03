@@ -102,8 +102,8 @@
             <DockPanel>
               <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogIn}" DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding MegaLogInCommand}" />
               <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
-                <mui:BetterTextBox Text="{Binding MegaUserEmail}" Placeholder="E-mail" />
-                <mui:ProperPasswordBox Password="{Binding MegaUserPassword}" Placeholder="Password" />
+                <mui:BetterTextBox Text="{Binding MegaUserEmail}" Placeholder="{x:Static g:AppStrings.Settings_Content_EMail}" />
+                <mui:ProperPasswordBox Password="{Binding MegaUserPassword}" Placeholder="{x:Static g:AppStrings.Online_FilterPassword_Short}" />
               </mui:SpacingUniformGrid>
             </DockPanel>
           </mui:BooleanSwitch.False>

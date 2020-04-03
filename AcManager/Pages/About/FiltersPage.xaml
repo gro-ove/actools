@@ -27,7 +27,7 @@
               </Grid.ColumnDefinitions>
 
               <Ellipse Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="2"
-                  Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Width="8" Height="8" ToolTip="New!"
+                  Fill="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType=ListBoxItem}}" Width="8" Height="8" ToolTip="{x:Static g:AppStrings.About_NewTooltip}"
                   Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}" />
               <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding DisplayName}" FontSize="{DynamicResource SmallFontSize}" TextTrimming="CharacterEllipsis" />
             </Grid>

@@ -10,7 +10,7 @@
       </ResourceDictionary.MergedDictionaries>
 
       <ContextMenu x:Key="FileContextMenu" d:DataContext="{d:DesignInstance tools:FilesCompressor+FileToCompress}">
-        <MenuItem Header="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
+        <MenuItem Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_ViewInExplorer}" Command="{Binding ViewInExplorerCommand}" />
       </ContextMenu>
     </ResourceDictionary>
   </FrameworkElement.Resources>
@@ -21,27 +21,22 @@
       <TextBlock Text="{Binding ProgressValue.Message}" />
     </mui:SpacingStackPanel>
     <mui:SelectableBbCodeBlock VerticalAlignment="Bottom" Style="{StaticResource RichTextBox.Small.ReadOnly}"
-        Text="CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
-sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
-have proper compression already, and it will only slightly slow down AC loading.
-[br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do
-anyway while it’s waiting for disk to get the data, and there will much less data to read.
-[br][br]Of course, [b]it shouldn’t affect FPS in any way[/b]: AC doesn’t load resources dynamically." />
+        Text="{x:Static g:AppStrings.ContentTools_FilesCompressor_Description}" />
   </mui:Cell>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
   </DockPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Some error happened" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
     <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
   </DockPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Ready}">
     <mui:SpacingStackPanel DockPanel.Dock="Bottom" Style="{DynamicResource BottomRow}" Spacing="4" Orientation="Horizontal">
-      <Button Content="Compress" Command="{Binding CompressCommand}" />
-      <Button Content="Decompress" Command="{Binding DecompressCommand}" />
+      <Button Content="{x:Static g:AppStrings.ContentTools_FilesCompressor_Compress}" Command="{Binding CompressCommand}" />
+      <Button Content="{x:Static g:AppStrings.ContentTools_FilesCompressor_Decompress}" Command="{Binding DecompressCommand}" />
     </mui:SpacingStackPanel>
 
     <Grid>
@@ -72,13 +67,13 @@ anyway while it’s waiting for disk to get the data, and there will much less d
         </Border>
         <ListBox ItemsSource="{Binding CompressionMode}" SelectedItem="{Binding CompressionMode.SelectedItem}" DisplayMemberPath="DisplayName"
             ItemContainerStyle="{StaticResource RadioBoxListItem}" DockPanel.Dock="Bottom" ScrollViewer.VerticalScrollBarVisibility="Disabled" />
-        <Label Content="Compression algorithm:" DockPanel.Dock="Bottom" Margin="8 0 0 4" />
+        <Label Content="{x:Static g:AppStrings.ContentTools_FilesCompressor_CompressionAlgorithm}" DockPanel.Dock="Bottom" Margin="8 0 0 4" />
         <oxy:PlotView Model="{Binding PlotModel}" Height="200" Margin="0 20" Background="Transparent" Foreground="{DynamicResource WindowText}" />
       </DockPanel>
 
       <DataGrid Grid.Column="2" ItemsSource="{Binding FilesToCompress}" Style="{StaticResource DataGrid.Lite}">
         <DataGrid.Columns>
-          <DataGridTemplateColumn Width="1*" Header="Path" SortDirection="Ascending" SortMemberPath="RelativePath">
+          <DataGridTemplateColumn Width="1*" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Path}" SortDirection="Ascending" SortMemberPath="RelativePath">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -87,7 +82,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="Original" SortMemberPath="FileInfo.Length">
+          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Original}" SortMemberPath="FileInfo.Length">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -96,7 +91,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="Compressed" SortMemberPath="CompressedSize">
+          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Compressed}" SortMemberPath="CompressedSize">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -105,7 +100,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
               </DataTemplate>
             </DataGridTemplateColumn.CellTemplate>
           </DataGridTemplateColumn>
-          <DataGridTemplateColumn Width="110" Header="Ratio" SortMemberPath="Ratio">
+          <DataGridTemplateColumn Width="110" Header="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}" SortMemberPath="{x:Static g:AppStrings.ContentTools_FilesCompressor_Ratio}">
             <DataGridTemplateColumn.CellTemplate>
               <DataTemplate DataType="{x:Type tools:FilesCompressor+FileToCompress}">
                 <Border Background="Transparent" ContextMenu="{StaticResource FileContextMenu}" mui:ContextMenuAdvancement.PropagateToChildren="True">
@@ -114,7 +109,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
                       <TextBlock Text="{Binding Ratio, Converter={StaticResource PercentageConverter}, StringFormat='{}{0:F1}%'}" />
                     </mui:BooleanSwitch.True>
                     <mui:BooleanSwitch.False>
-                      <TextBlock Text="Not compressed" />
+                      <TextBlock Text="{x:Static g:AppStrings.ContentTools_FilesCompressor_NotCompressed}" />
                     </mui:BooleanSwitch.False>
                   </mui:BooleanSwitch>
                 </Border>

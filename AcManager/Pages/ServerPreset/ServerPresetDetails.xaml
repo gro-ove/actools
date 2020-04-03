@@ -121,8 +121,8 @@
           <TextBlock Text="{Binding DisplayName}" Style="{StaticResource SettingsPanel.Heading2.First}" Margin="-20 0 0 8" />
 
           <DockPanel Visibility="{Binding CanBePacked, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Label Content="ID:" />
-            <Button Padding="12 0 12 2" Margin="0 -5 0 -1" Content="Open" Command="{Binding AcObject.ViewInExplorerCommand}" />
+            <Label Content="{x:Static g:AppStrings.AcObject_IdLabel}" />
+            <Button Padding="12 0 12 2" Margin="0 -5 0 -1" Content="{x:Static g:AppStrings.Settings_General_Open}" Command="{Binding AcObject.ViewInExplorerCommand}" />
             <mui:BetterTextBox IsReadOnly="True" Style="{StaticResource Borderless.Small}" Text="{Binding AcObject.Id, Mode=OneWay}" />
           </DockPanel>
 
@@ -171,7 +171,7 @@
               </ContextMenu>
             </mui:ContextMenuButton>
             <Label Content="Download from:" />
-            <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="None" Style="{StaticResource Borderless.Small}" />
+            <mui:BetterTextBox Text="{Binding DownloadUrl}" Placeholder="{x:Static t:ToolsStrings.Common_None}" Style="{StaticResource Borderless.Small}" />
           </DockPanel>
 
           <DockPanel Visibility="{Binding ShareMode, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠None'}"
@@ -262,7 +262,7 @@
 
           <DockPanel>
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.DetailsDescription}" AcceptsReturn="True" TextWrapping="Wrap"
-                Placeholder="None" Height="120" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
+                Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="120" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
             <Label Content="Server description (both BB-codes and emojis are allowed):" HorizontalAlignment="Left" Width="300" />
           </DockPanel>
 

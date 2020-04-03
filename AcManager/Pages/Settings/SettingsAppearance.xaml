@@ -163,7 +163,7 @@
               </ContextMenu>
             </Button.ContextMenu>
           </Button>
-          <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}" Placeholder="Theme-defined" />
+          <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}" Placeholder="{x:Static g:AppStrings.Settings_Appearance_ThemeDefined}" />
         </DockPanel>
 
         <DockPanel Visibility="{Binding AppAppearanceManager.SlideshowMode, Converter={StaticResource BooleanToVisibilityConverter}}">

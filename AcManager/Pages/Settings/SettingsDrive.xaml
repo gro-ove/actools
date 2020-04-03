@@ -81,7 +81,7 @@
         </DockPanel>
 
         <c:MessageBlock Margin="0 0 0 8" set:Search.LinkedTo="{Binding ElementName=RaceResultsLimit}">
-          <mui:BbCodeBlock Text="When limit is exceeded, oldest results will be recycled after the end of the race." TextWrapping="Wrap" />
+          <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Drive_RaceResults_Hint}" TextWrapping="Wrap" />
         </c:MessageBlock>
 
         <!-- Shared memory -->
@@ -90,7 +90,7 @@
         </TextBlock>
 
         <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="{x:Static g:AppStrings.Settings_Drive_HibernateCMWhileRacing}" ToolTip="This way, CM won't waste precious CPU and/or GPU time when it's so needed" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_HibernateCMWhileRacing}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">

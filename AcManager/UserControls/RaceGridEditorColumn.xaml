@@ -210,7 +210,7 @@
                   <mui:BetterTextBox x:Name="PriorityTextBox" DockPanel.Dock="Right" Margin="4 0 0 0" Text="{Binding CandidatePriority}"
                       ToolTip="{x:Static g:AppStrings.RaceGrid_CandidatePriority}" Style="{StaticResource Borderless.White.Small}" VerticalAlignment="Center"
                       Width="20" Mode="Positive" />
-                  <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                  <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="{x:Static g:AppStrings.RaceGridEditor_AILimitationsAreActive_Tooltip}" DockPanel.Dock="Left" Margin="0 1 4 0"
                       VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                       Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
                   <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="NameTextBlock" Text="{Binding DisplayName}" />
@@ -262,7 +262,7 @@
                       </Button>
                       <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Error}" Stretch="Uniform"
                           Visibility="Collapsed" x:Name="ErrorIcon" Margin="2 2 4 0" VerticalAlignment="Center" />
-                      <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="AI limitations are on" DockPanel.Dock="Left" Margin="0 1 4 0"
+                      <Path Width="8" Height="8" Data="{StaticResource LockIconData}" ToolTip="{x:Static g:AppStrings.RaceGridEditor_AILimitationsAreActive_Tooltip}" DockPanel.Dock="Left" Margin="0 1 4 0"
                           VerticalAlignment="Center" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                           Visibility="{Binding AiLimitationDetails.IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" Stretch="Uniform" />
                       <mui:BbCodeBlock Mode="WithoutBbCodes" x:Name="EntryName" Text="{Binding DisplayName}" />

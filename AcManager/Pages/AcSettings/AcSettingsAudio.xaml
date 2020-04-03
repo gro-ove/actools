@@ -22,9 +22,9 @@
           <Slider Minimum="0" Maximum="200" Value="{Binding Audio.SkidsEntryPoint}" TickFrequency="20" TickPlacement="BottomRight" />
         </DockPanel>
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Output device:" x:Name="DevicesHeading" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Audio_OutputDevice}" x:Name="DevicesHeading" />
         <DockPanel x:Name="DevicesPanel">
-          <Label Content="Device name:" />
+          <Label Content="{x:Static g:AppStrings.AcSettings_Audio_DeviceName}" />
           <mui:BetterComboBox ItemsSource="{Binding AudioOutputDevices}" SelectedItem="{Binding SelectedAudioDevice}" IsEditable="False">
             <mui:BetterComboBox.ItemContainerStyle>
               <Style TargetType="ComboBoxItem" BasedOn="{StaticResource {x:Type ComboBoxItem}}">

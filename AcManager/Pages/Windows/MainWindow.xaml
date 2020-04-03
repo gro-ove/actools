@@ -301,7 +301,7 @@
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
                   Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource ListCheckIconData}" />
-              <TextBlock Text="View details" />
+              <TextBlock Text="{x:Static g:AppStrings.MainWindow_ContentUpdate_ViewDetails}" />
             </DockPanel>
           </Button>
           <Button Command="{Binding InstallAllCommand}">

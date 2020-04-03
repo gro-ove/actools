@@ -17,11 +17,11 @@
   </mui:SpacingStackPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
   </DockPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Some error happened" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
     <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
   </DockPanel>
 
@@ -66,7 +66,7 @@
 
         <mui:BooleanSwitch Value="{Binding RatingMode}">
           <mui:SpacingStackPanel Spacing="4" MinHeight="120">
-            <TextBlock Text="More details:" Style="{StaticResource Label.Padding}" />
+            <TextBlock Text="{x:Static g:AppStrings.ContentTools_CarAnalyzer_MoreDetails}" Style="{StaticResource Label.Padding}" />
             <mui:ReferenceSwitch Value="{Binding Ratings}">
               <mui:ReferenceSwitch.Null>
                 <ProgressBar IsIndeterminate="True" />
@@ -87,7 +87,7 @@
                                 Visibility="{Binding Rate, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
                           </TextBlock.ToolTip>
                         </TextBlock>
-                        <Button DockPanel.Dock="Right" Content="More…" Command="{Binding ShowInformationCommand}" Margin="8 0 0 0"
+                        <Button DockPanel.Dock="Right" Content="{x:Static g:AppStrings.ContentTools_CarAnalyzer_More}" Command="{Binding ShowInformationCommand}" Margin="8 0 0 0"
                             Visibility="{Binding ShowInformationCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <TextBlock Text="{Binding Message}" DockPanel.Dock="Top" Margin="0 -1 0 0" />
                         <TextBlock Text="{Binding Details}" Style="{StaticResource Small}" Margin="0 1 0 0" />
@@ -103,7 +103,7 @@
         <TextBlock Text="{Binding LeftUnsolved, StringFormat='{}{0} unsolved issues:'}" Style="{StaticResource Label.Padding}" />
 
         <mui:Switch Value="{Binding Aspects.Count}">
-          <TextBlock mui:Switch.When="0" Opacity="0.5" Text="No issues found" />
+          <TextBlock mui:Switch.When="0" Opacity="0.5" Text="{x:Static g:AppStrings.ContentTools_CarAnalyzer_NoIssuesFound}" />
           <ItemsControl ItemsSource="{Binding Aspects}" IsEnabled="{Binding ReloadCommand.IsAbleToExecute}">
             <ItemsControl.ItemTemplate>
               <DataTemplate DataType="{x:Type t:ContentRepairSuggestion}">
@@ -118,7 +118,7 @@
                           </DataTemplate>
                         </ItemsControl.ItemTemplate>
                       </ItemsControl>
-                      <Button Content="Hide" Command="{Binding HideCommand}" />
+                      <Button Content="{x:Static mui:UiStrings.Toolbar_Hide}" Command="{Binding HideCommand}" />
                     </StackPanel>
                     <DockPanel Dock="Top" Margin="0 0 0 4">
                       <Path x:Name="PART_AlertIcon" Data="{StaticResource AlertIconData}" Width="12" Height="12" DockPanel.Dock="Left"

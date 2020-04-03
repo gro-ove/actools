@@ -168,7 +168,7 @@
     </StackPanel>
 
     <StackPanel mui:Switch.When="{x:Static di:CarUpdatePreviewsDialog+Phase.ResultSummary}" Orientation="Vertical" VerticalAlignment="Center">
-      <TextBlock Text="Done" Style="{StaticResource Heading1}" />
+      <TextBlock Text="{x:Static g:AppStrings.Dialogs_CarUpdatePreviewsDialog_Done}" Style="{StaticResource Heading1}" />
 
       <mui:SpacingStackPanel Visibility="{Binding Errors.Count, Converter={StaticResource MoreToVisibilityConverter}}" Margin="0 20 0 0" Spacing="8">
         <TextBlock Text="{Binding Errors.Count, StringFormat='Encountered errors: {0}'}" />

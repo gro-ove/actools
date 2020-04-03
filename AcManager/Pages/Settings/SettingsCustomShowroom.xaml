@@ -101,13 +101,13 @@
           </DockPanel>
 
           <DockPanel>
-            <Label Content="Reset heavy options for previews:" Width="200" />
+            <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_ResetHeavyOptionsForPreviews}" Width="200" />
             <Button Command="{Binding ResetHeavyPreviewsCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}"
                 ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>
 
           <DockPanel>
-            <Label Content="Reset all for previews:" Width="200" />
+            <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_ResetAllForPreviews}" Width="200" />
             <Button Command="{Binding ResetPreviewsCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}"
                 ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>

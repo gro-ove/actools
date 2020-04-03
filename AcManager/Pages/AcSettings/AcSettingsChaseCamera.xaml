@@ -22,22 +22,22 @@
 
       <StackPanel Style="{StaticResource SettingsPanel}">
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Params:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_ChaseCamera_Params}" />
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding SelectedCamera.Distance}" Postfix=" m" Content="Distance" />
+          <mui:ValueLabel Value="{Binding SelectedCamera.Distance}" Postfix=" m" Content="{x:Static g:AppStrings.WeatherEdit_Distance}" />
           <Slider Minimum="0" Maximum="5" Value="{Binding SelectedCamera.Distance, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}"
               TickFrequency="0.5" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding SelectedCamera.Height}" Postfix=" m" Content="Height" />
+          <mui:ValueLabel Value="{Binding SelectedCamera.Height}" Postfix=" m" Content="{x:Static t:ToolsStrings.Common_Height}" />
           <Slider Minimum="0" Maximum="5" Value="{Binding SelectedCamera.Height, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.01}"
               TickFrequency="0.5" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding SelectedCamera.PitchDeg}" Postfix="°" Content="Pitch" />
+          <mui:ValueLabel Value="{Binding SelectedCamera.PitchDeg}" Postfix="°" Content="{x:Static g:AppStrings.AcSettings_ChaseCamera_Pitch}" />
           <Slider Minimum="-90" Maximum="90" TickFrequency="18" TickPlacement="BottomRight"
               Value="{Binding SelectedCamera.PitchDeg, Converter={StaticResource SliderRoundConverter}, ConverterParameter=0.1}" />
         </DockPanel>

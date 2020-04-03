@@ -44,15 +44,15 @@
 
       <DockPanel x:Key="CarSpecificFanatecPanel" x:Shared="False" DataContext="{Binding SelectedCar}">
         <CheckBox IsChecked="{Binding FanatecCustomSettings}" Margin="0 0 0 8" DockPanel.Dock="Top">
-          <Label Content="Car-specific Fanatec settings" />
+          <Label Content="{x:Static g:AppStrings.Drive_Quick_CarSpecificFanatecSettings}" />
         </CheckBox>
         <StackPanel IsEnabled="{Binding FanatecCustomSettings}">
           <CheckBox IsChecked="{Binding FanatecDisable}" Margin="0 0 0 8">
-            <Label Content="Disable LEDs and display" />
+            <Label Content="{x:Static g:AppStrings.Drive_Quick_DisableLEDsAndDisplay}" />
           </CheckBox>
           <CheckBox IsChecked="{Binding FanatecOnlyShowGear}" Margin="0 0 0 0"
               IsEnabled="{Binding FanatecDisable, Converter={StaticResource InvertBooleanConverter}}">
-            <Label Content="Show current gear only" />
+            <Label Content="{x:Static g:AppStrings.Drive_Quick_ShowCurrentGearOnly}" />
           </CheckBox>
         </StackPanel>
       </DockPanel>

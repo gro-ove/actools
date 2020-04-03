@@ -56,13 +56,13 @@
 
     <StackPanel Margin="20 0">
       <StackPanel Margin="0 0 0 20" Visibility="{Binding ServerEntry.BookingErrorMessage, Converter={StaticResource NullToVisibilityConverter}}">
-        <TextBlock Text="Left:" Style="{StaticResource Label}" />
+        <TextBlock Text="{x:Static g:AppStrings.Online_LeftLabel}" Style="{StaticResource Label}" />
         <TextBlock Text="{Binding ServerEntry.BookingTimeLeft, StringFormat='{}{0:hh}:{0:mm}:{0:ss}'}" Style="{StaticResource Heading1}" FontSize="24"
             Margin="20 8 0 0" />
       </StackPanel>
       <StackPanel Margin="0 0 0 20"
           Visibility="{Binding ServerEntry.BookingErrorMessage, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-        <TextBlock Text="Error:" Style="{StaticResource Label}" />
+        <TextBlock Text="{x:Static g:AppStrings.RaceResult_ErrorHeader}" Style="{StaticResource Label}" />
         <TextBlock Text="{Binding ServerEntry.BookingErrorMessage}" Style="{StaticResource Heading1}" FontSize="24" Margin="20 8 0 0" />
       </StackPanel>
     </StackPanel>

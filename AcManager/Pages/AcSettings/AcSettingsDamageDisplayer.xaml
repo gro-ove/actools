@@ -44,12 +44,12 @@
         <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Params:" />
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding DamageDisplayer.X}" Postfix=" px" Content="X" />
+          <mui:ValueLabel Value="{Binding DamageDisplayer.X}" Postfix=" px" Content="{x:Static c:ControlsStrings.TableHeader_X}" />
           <Slider x:Name="XSlider" Minimum="0" Maximum="2000" Value="{Binding DamageDisplayer.X}" TickFrequency="100" TickPlacement="BottomRight" />
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding DamageDisplayer.Y}" Postfix=" px" Content="Y" />
+          <mui:ValueLabel Value="{Binding DamageDisplayer.Y}" Postfix=" px" Content="{x:Static c:ControlsStrings.TableHeader_Y}" />
           <Slider x:Name="YSlider" Minimum="0" Maximum="2000" Value="{Binding DamageDisplayer.Y}" TickFrequency="100" TickPlacement="BottomRight" />
         </DockPanel>
 

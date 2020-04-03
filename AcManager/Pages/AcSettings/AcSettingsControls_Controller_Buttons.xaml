@@ -19,7 +19,7 @@
       <mui:SpacingUniformGrid x:Name="MainGrid" VerticalStackMode="True">
         <StackPanel>
 
-          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="Miscellaneous" />
+          <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.AcSettings_Miscellaneous}" />
           <ItemsControl ItemsSource="{Binding ControllerCarExtraButtonEntries}" Margin="0 0 20 20" ItemTemplate="{StaticResource ControllerButtonEntryTemplate}" />
 
           <TextBlock Style="{StaticResource Heading2}" Margin="0 0 0 4" Text="{x:Static g:AppStrings.Controls_BrakeBalance}" />

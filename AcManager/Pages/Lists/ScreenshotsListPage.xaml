@@ -4,21 +4,7 @@
     xmlns:lists="clr-namespace:AcManager.Pages.Lists" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d" FocusVisualStyle="{x:Null}"
     d:DataContext="{d:DesignInstance lists:ScreenshotsListPage+ViewModel}">
   <Grid Style="{StaticResource ContentRootWithPadding}">
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition />
-    </Grid.RowDefinitions>
-
-    <Grid Margin="0 0 0 20">
-      <Rectangle Stroke="{DynamicResource SeparatorBackground}" StrokeThickness="1" StrokeDashArray="4 4" SnapsToDevicePixels="True" />
-      <StackPanel Margin="8">
-        <TextBlock Style="{StaticResource Label}" Text="Still WIP" />
-        <TextBlock TextWrapping="Wrap"
-            Text="This section is in a very early stage and will be fully reworked later. First, I have to find a way to render previews without hanging whole program." />
-      </StackPanel>
-    </Grid>
-
-    <ListBox Grid.Row="1" ItemsSource="{Binding Screenshots}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    <ListBox ItemsSource="{Binding Screenshots}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
         ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.CanContentScroll="True">
       <ListBox.ItemsPanel>
         <ItemsPanelTemplate>

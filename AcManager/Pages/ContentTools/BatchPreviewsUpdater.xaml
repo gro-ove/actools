@@ -20,11 +20,11 @@
   </mui:SpacingStackPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Empty}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Nothing to display" Style="{StaticResource Heading1}" />
+    <TextBlock Text="{x:Static g:AppStrings.Online_NothingToDisplay}" Style="{StaticResource Heading1}" />
   </DockPanel>
 
   <DockPanel mui:Switch.When="{x:Static tools:Stage.Error}" Margin="0 0 0 100" HorizontalAlignment="Center" VerticalAlignment="Center">
-    <TextBlock Text="Some error happened" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
+    <TextBlock Text="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_SomeErrorHappened}" Style="{StaticResource Heading1}" DockPanel.Dock="Top" />
     <TextBlock Text="{Binding Error}" Margin="0 20 0 0" />
   </DockPanel>
 
@@ -33,7 +33,7 @@
       <TextBlock Text="{Binding TotalSelected, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} {skin} selected in total'}"
           Style="{StaticResource Small}" Width="100" TextWrapping="Wrap" VerticalAlignment="Center" Margin="0 0 4 0" />
 
-      <mui:ButtonWithComboBox Content="Auto-Select" Command="{Binding SelectDifferentCommand}" ButtonToolTip="Select all previews made with different style"
+      <mui:ButtonWithComboBox Content="{x:Static g:AppStrings.ContentTools_BatchPreviewsUpdater_AutoSelect}" Command="{Binding SelectDifferentCommand}" ButtonToolTip="Select all previews made with different style"
           PreviewMouseDown="OnDifferentButtonMouseDown"
           Visibility="{Binding CustomShowroomPreviews, Source={x:Static t:SettingsHolder.CustomShowroom}, Converter={StaticResource BooleanToVisibilityConverter}}">
         <mui:ButtonWithComboBox.MenuItems>
@@ -52,7 +52,7 @@
         </mui:ButtonWithComboBox.MenuItems>
       </mui:ButtonWithComboBox>
 
-      <Button Content="Options" Command="{Binding UpdatePreviewsOptionsCommand}" />
+      <Button Content="{x:Static c:ControlsStrings.Common_Options}" Command="{Binding UpdatePreviewsOptionsCommand}" />
     </mui:SpacingStackPanel>
 
     <Grid>

@@ -4244,4 +4244,246 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
       <value>Reset all:</value>
     </data>
+    <data name="Settings_CustomShowroom_ResetHeavyOptionsForPreviews" xml:space="preserve">
+      <value>Reset heavy options for previews:</value>
+    </data>
+    <data name="Settings_CustomShowroom_ResetAllForPreviews" xml:space="preserve">
+      <value>Reset all for previews:</value>
+    </data>
+    <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
+      <value>When limit is exceeded, oldest results will be recycled after the end of the race.</value>
+    </data>
+    <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+      <value>Output device:</value>
+    </data>
+    <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+      <value>Device name:</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+      <value>Rumble effects</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_SteeringDeadzone" xml:space="preserve">
+      <value>Steering deadzone</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_SteeringFilter" xml:space="preserve">
+      <value>Steering filter</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_SteeringGamma" xml:space="preserve">
+      <value>Steering gamma</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+      <value>Steer thumb:</value>
+    </data>
+    <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
+      <value>Steering and FFB</value>
+    </data>
+    <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+      <value>Pitch</value>
+    </data>
+    <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+      <value>Params:</value>
+    </data>
+    <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+      <value>Some error happened</value>
+    </data>
+    <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+      <value>Auto-Select</value>
+    </data>
+    <data name="Dialogs_CarUpdatePreviewsDialog_Done" xml:space="preserve">
+      <value>Done</value>
+    </data>
+    <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+      <value>Best delta</value>
+    </data>
+    <data name="Dialogs_GameDialog_TotalDelta" xml:space="preserve">
+      <value>Total delta</value>
+    </data>
+    <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+      <value>Total time</value>
+    </data>
+    <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+      <value>Benchmark:</value>
+    </data>
+    <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+      <value>Game crashed</value>
+    </data>
+    <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+      <value>Join TS server</value>
+    </data>
+    <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+      <value>Wait for this car</value>
+    </data>
+    <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+      <value>Wait until this car will be available and then join</value>
+    </data>
+    <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+      <value>Wait for any car</value>
+    </data>
+    <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+      <value>Wait until any car will be available and then join</value>
+    </data>
+    <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+      <value>Reset stats</value>
+    </data>
+    <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+      <value>Get link to stats</value>
+    </data>
+    <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+      <value>Track is missing</value>
+    </data>
+    <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+      <value>Car is missing</value>
+    </data>
+    <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+      <value>Skin for booking:</value>
+    </data>
+    <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+      <value>Server is empty</value>
+    </data>
+    <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+      <value>Stop</value>
+    </data>
+    <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+      <value>CM Showroom</value>
+    </data>
+    <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+      <value>Car-specific Fanatec settings</value>
+    </data>
+    <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+      <value>Disable LEDs and display</value>
+    </data>
+    <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+      <value>Show current gear only</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins" xml:space="preserve">
+      <value>Install recommended plugins</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
+      <value>App just has been updated. Please, review if these settings are still valid:</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_WhatsYourName" xml:space="preserve">
+      <value>What’s your name?</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+      <value>Add a shortcut to Start Menu?</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip" xml:space="preserve">
+      <value>With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10.</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
+      <value>Create (recommended)</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_Delete" xml:space="preserve">
+      <value>Delete</value>
+    </data>
+    <data name="Dialogs_AcRootDirectorySelector_InstallSomePlugins" xml:space="preserve">
+      <value>Would you like to install some plugins as well?</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+      <value>View in Explorer</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Description" xml:space="preserve">
+      <value>CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
+sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
+have proper compression already, and it will only slightly slow down AC loading.
+[br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do
+anyway while it’s waiting for disk to get the data, and there will much less data to read.
+[br][br]Of course, [b]it shouldn’t affect FPS in any way[/b]: AC doesn’t load resources dynamically.</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+      <value>Compress</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+      <value>Decompress</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+      <value>Compression algorithm:</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+      <value>Path</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+      <value>Original</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+      <value>Compressed</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+      <value>Ratio</value>
+    </data>
+    <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+      <value>Not compressed</value>
+    </data>
+    <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+      <value>No issues found</value>
+    </data>
+    <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+      <value>More…</value>
+    </data>
+    <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+      <value>More details:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+      <value>Condition:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+      <value>Enabled</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+      <value>Apps:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+      <value>Audio:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+      <value>Video:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
+      <value>CSP:</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+      <value>Custom Shaders Patch</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+      <value>Rear view mirror</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+      <value>Update presets if some settings changed during the race</value>
+    </data>
+    <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+      <value>Create new</value>
+    </data>
+    <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+      <value>View details</value>
+    </data>
+    <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+      <value>Theme-defined</value>
+    </data>
+    <data name="Settings_Content_EMail" xml:space="preserve">
+      <value>E-mail</value>
+    </data>
+    <data name="TrackStateEditor_Description" xml:space="preserve">
+      <value>Description:</value>
+    </data>
+    <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+      <value>Initial grip</value>
+    </data>
+    <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+      <value>Amount of grip at the session start</value>
+    </data>
+    <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+      <value>Grip transfer</value>
+    </data>
+    <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+      <value>How much of added grip will transfer to the next session</value>
+    </data>
+    <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+      <value>Grip randomization</value>
+    </data>
+    <data name="TrackStateEditor_LapGain" xml:space="preserve">
+      <value>Lap gain</value>
+    </data>
+    <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
+      <value>AI limitations are on</value>
+    </data>
 </root>

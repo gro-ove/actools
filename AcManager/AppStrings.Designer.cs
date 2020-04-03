@@ -585,6 +585,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device name:.
+        /// </summary>
+        public static string AcSettings_Audio_DeviceName {
+            get {
+                return ResourceManager.GetString("AcSettings_Audio_DeviceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Engine.
         /// </summary>
         public static string AcSettings_Audio_Engine {
@@ -639,6 +648,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Output device:.
+        /// </summary>
+        public static string AcSettings_Audio_OutputDevice {
+            get {
+                return ResourceManager.GetString("AcSettings_Audio_OutputDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Surface.
         /// </summary>
         public static string AcSettings_Audio_Surface {
@@ -684,11 +702,83 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Params:.
+        /// </summary>
+        public static string AcSettings_ChaseCamera_Params {
+            get {
+                return ResourceManager.GetString("AcSettings_ChaseCamera_Params", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pitch.
+        /// </summary>
+        public static string AcSettings_ChaseCamera_Pitch {
+            get {
+                return ResourceManager.GetString("AcSettings_ChaseCamera_Pitch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Controls.
         /// </summary>
         public static string AcSettings_Controls {
             get {
                 return ResourceManager.GetString("AcSettings_Controls", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rumble effects.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_RumbleEffects {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_RumbleEffects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering and FFB.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_SteeringAndFFB {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_SteeringAndFFB", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering deadzone.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_SteeringDeadzone {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_SteeringDeadzone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering filter.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_SteeringFilter {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_SteeringFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steering gamma.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_SteeringGamma {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_SteeringGamma", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steer thumb:.
+        /// </summary>
+        public static string AcSettings_Controls_Controller_Main_SteerThumb {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Controller_Main_SteerThumb", resourceCulture);
             }
         }
         
@@ -797,6 +887,96 @@ namespace AcManager {
         public static string AcSettings_Miscellaneous {
             get {
                 return ResourceManager.GetString("AcSettings_Miscellaneous", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Apps:.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_Apps {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_Apps", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Audio:.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_Audio {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_Audio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Condition:.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_Condition {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_Condition", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_CreateNew {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_CreateNew", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CSP:.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_CSP {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_CSP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom Shaders Patch.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_CSP_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_CSP_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enabled.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_Enabled {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_Enabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rear view mirror.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_RearViewMirror {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_RearViewMirror", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update presets if some settings changed during the race.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Video:.
+        /// </summary>
+        public static string AcSettings_PresetsPerMode_Video {
+            get {
+                return ResourceManager.GetString("AcSettings_PresetsPerMode_Video", resourceCulture);
             }
         }
         
@@ -2974,6 +3154,145 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto-Select.
+        /// </summary>
+        public static string ContentTools_BatchPreviewsUpdater_AutoSelect {
+            get {
+                return ResourceManager.GetString("ContentTools_BatchPreviewsUpdater_AutoSelect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some error happened.
+        /// </summary>
+        public static string ContentTools_BatchPreviewsUpdater_SomeErrorHappened {
+            get {
+                return ResourceManager.GetString("ContentTools_BatchPreviewsUpdater_SomeErrorHappened", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More….
+        /// </summary>
+        public static string ContentTools_CarAnalyzer_More {
+            get {
+                return ResourceManager.GetString("ContentTools_CarAnalyzer_More", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More details:.
+        /// </summary>
+        public static string ContentTools_CarAnalyzer_MoreDetails {
+            get {
+                return ResourceManager.GetString("ContentTools_CarAnalyzer_MoreDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No issues found.
+        /// </summary>
+        public static string ContentTools_CarAnalyzer_NoIssuesFound {
+            get {
+                return ResourceManager.GetString("ContentTools_CarAnalyzer_NoIssuesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compress.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Compress {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Compress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compressed.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Compressed {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Compressed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compression algorithm:.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_CompressionAlgorithm {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_CompressionAlgorithm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Decompress.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Decompress {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Decompress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM scans for all models and textures (KN5 and DDS files) — those files can be well compressed,
+        ///sometimes even in several times. There is not much benefit in compressing files like soundbanks or PNG images: those formats
+        ///have proper compression already, and it will only slightly slow down AC loading.
+        ///[br][br]I recommend to use the best compression algorithm, LZX. It will add some CPU load during loading, but CPU has nothing to do
+        ///anyway while it’s waiting for disk to get the data, and there will much less da [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Description {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not compressed.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_NotCompressed {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_NotCompressed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Original.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Original {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Original", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Path.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Path {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ratio.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_Ratio {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_Ratio", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View in Explorer.
+        /// </summary>
+        public static string ContentTools_FilesCompressor_ViewInExplorer {
+            get {
+                return ResourceManager.GetString("ContentTools_FilesCompressor_ViewInExplorer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ABS:.
         /// </summary>
         public static string Controls_Abs {
@@ -3515,6 +3834,132 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add a shortcut to Start Menu?.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With it, CM will be able to use proper notifications in Windows 8, 8.1 or 10..
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App just has been updated. Please, review if these settings are still valid:.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create (recommended).
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_Create {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_Delete {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install recommended plugins.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Would you like to install some plugins as well?.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_InstallSomePlugins {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_InstallSomePlugins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to What’s your name?.
+        /// </summary>
+        public static string Dialogs_AcRootDirectorySelector_WhatsYourName {
+            get {
+                return ResourceManager.GetString("Dialogs_AcRootDirectorySelector_WhatsYourName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string Dialogs_CarUpdatePreviewsDialog_Done {
+            get {
+                return ResourceManager.GetString("Dialogs_CarUpdatePreviewsDialog_Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Benchmark:.
+        /// </summary>
+        public static string Dialogs_GameDialog_Benchmark {
+            get {
+                return ResourceManager.GetString("Dialogs_GameDialog_Benchmark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best delta.
+        /// </summary>
+        public static string Dialogs_GameDialog_BestDelta {
+            get {
+                return ResourceManager.GetString("Dialogs_GameDialog_BestDelta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game crashed.
+        /// </summary>
+        public static string Dialogs_GameDialog_GameCrashed {
+            get {
+                return ResourceManager.GetString("Dialogs_GameDialog_GameCrashed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total delta.
+        /// </summary>
+        public static string Dialogs_GameDialog_TotalDelta {
+            get {
+                return ResourceManager.GetString("Dialogs_GameDialog_TotalDelta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Total time.
+        /// </summary>
+        public static string Dialogs_GameDialog_TotalTime {
+            get {
+                return ResourceManager.GetString("Dialogs_GameDialog_TotalTime", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actual temperature:.
         /// </summary>
         public static string Drive_ActualTemperature {
@@ -3812,6 +4257,114 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Car is missing.
+        /// </summary>
+        public static string Drive_OnlineServer_CarIsMissing {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_CarIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get link to stats.
+        /// </summary>
+        public static string Drive_OnlineServer_GetLinkToStats {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_GetLinkToStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Join TS server.
+        /// </summary>
+        public static string Drive_OnlineServer_JoinTSServer {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_JoinTSServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset stats.
+        /// </summary>
+        public static string Drive_OnlineServer_ResetStats {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_ResetStats", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server is empty.
+        /// </summary>
+        public static string Drive_OnlineServer_ServerIsEmpty {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_ServerIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Skin for booking:.
+        /// </summary>
+        public static string Drive_OnlineServer_SkinForBooking {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_SkinForBooking", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string Drive_OnlineServer_Stop {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_Stop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Track is missing.
+        /// </summary>
+        public static string Drive_OnlineServer_TrackIsMissing {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_TrackIsMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for any car.
+        /// </summary>
+        public static string Drive_OnlineServer_WaitForAnyCar {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_WaitForAnyCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait until any car will be available and then join.
+        /// </summary>
+        public static string Drive_OnlineServer_WaitForAnyCar_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_WaitForAnyCar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait for this car.
+        /// </summary>
+        public static string Drive_OnlineServer_WaitForThisCar {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_WaitForThisCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wait until this car will be available and then join.
+        /// </summary>
+        public static string Drive_OnlineServer_WaitForThisCar_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_OnlineServer_WaitForThisCar_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Limited by number of pits available ({0}).
         /// </summary>
         public static string Drive_OpponentsMaximumLimitation_Tooltip {
@@ -3889,6 +4442,33 @@ namespace AcManager {
         public static string Drive_PickSkinsSequentially_Tooltip {
             get {
                 return ResourceManager.GetString("Drive_PickSkinsSequentially_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car-specific Fanatec settings.
+        /// </summary>
+        public static string Drive_Quick_CarSpecificFanatecSettings {
+            get {
+                return ResourceManager.GetString("Drive_Quick_CarSpecificFanatecSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable LEDs and display.
+        /// </summary>
+        public static string Drive_Quick_DisableLEDsAndDisplay {
+            get {
+                return ResourceManager.GetString("Drive_Quick_DisableLEDsAndDisplay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show current gear only.
+        /// </summary>
+        public static string Drive_Quick_ShowCurrentGearOnly {
+            get {
+                return ResourceManager.GetString("Drive_Quick_ShowCurrentGearOnly", resourceCulture);
             }
         }
         
@@ -5722,6 +6302,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to View details.
+        /// </summary>
+        public static string MainWindow_ContentUpdate_ViewDetails {
+            get {
+                return ResourceManager.GetString("MainWindow_ContentUpdate_ViewDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Downloads:.
         /// </summary>
         public static string MainWindow_Downloads {
@@ -6712,6 +7301,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AI limitations are on.
+        /// </summary>
+        public static string RaceGridEditor_AILimitationsAreActive_Tooltip {
+            get {
+                return ResourceManager.GetString("RaceGridEditor_AILimitationsAreActive_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Best combo: .
         /// </summary>
         public static string RaceResult_BestCombo {
@@ -6989,6 +7587,15 @@ namespace AcManager {
         public static string Select_ManageSetups_Tooltip {
             get {
                 return ResourceManager.GetString("Select_ManageSetups_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CM Showroom.
+        /// </summary>
+        public static string Selected_CarSkinPage_CMShowroom {
+            get {
+                return ResourceManager.GetString("Selected_CarSkinPage_CMShowroom", resourceCulture);
             }
         }
         
@@ -7434,6 +8041,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Theme-defined.
+        /// </summary>
+        public static string Settings_Appearance_ThemeDefined {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ThemeDefined", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Theme:.
         /// </summary>
         public static string Settings_Appearance_ThemeLabel {
@@ -7574,6 +8190,15 @@ namespace AcManager {
         public static string Settings_Content_DownloadPreviews_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Content_DownloadPreviews_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail.
+        /// </summary>
+        public static string Settings_Content_EMail {
+            get {
+                return ResourceManager.GetString("Settings_Content_EMail", resourceCulture);
             }
         }
         
@@ -8082,11 +8707,29 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset all for previews:.
+        /// </summary>
+        public static string Settings_CustomShowroom_ResetAllForPreviews {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_ResetAllForPreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset heavy options:.
         /// </summary>
         public static string Settings_CustomShowroom_ResetHeavyOptions {
             get {
                 return ResourceManager.GetString("Settings_CustomShowroom_ResetHeavyOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset heavy options for previews:.
+        /// </summary>
+        public static string Settings_CustomShowroom_ResetHeavyOptionsForPreviews {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_ResetHeavyOptionsForPreviews", resourceCulture);
             }
         }
         
@@ -8523,6 +9166,15 @@ namespace AcManager {
         public static string Settings_Drive_QuickDriveHeader {
             get {
                 return ResourceManager.GetString("Settings_Drive_QuickDriveHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to When limit is exceeded, oldest results will be recycled after the end of the race..
+        /// </summary>
+        public static string Settings_Drive_RaceResults_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RaceResults_Hint", resourceCulture);
             }
         }
         
@@ -11596,6 +12248,69 @@ namespace AcManager {
         public static string TrackSpecs_Width_Tooltip {
             get {
                 return ResourceManager.GetString("TrackSpecs_Width_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description:.
+        /// </summary>
+        public static string TrackStateEditor_Description {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grip randomization.
+        /// </summary>
+        public static string TrackStateEditor_GripRandomization {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_GripRandomization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grip transfer.
+        /// </summary>
+        public static string TrackStateEditor_GripTransfer {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_GripTransfer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to How much of added grip will transfer to the next session.
+        /// </summary>
+        public static string TrackStateEditor_GripTransfer_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_GripTransfer_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Initial grip.
+        /// </summary>
+        public static string TrackStateEditor_InitialGrip {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_InitialGrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Amount of grip at the session start.
+        /// </summary>
+        public static string TrackStateEditor_InitialGrip_Tooltip {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_InitialGrip_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Lap gain.
+        /// </summary>
+        public static string TrackStateEditor_LapGain {
+            get {
+                return ResourceManager.GetString("TrackStateEditor_LapGain", resourceCulture);
             }
         }
         

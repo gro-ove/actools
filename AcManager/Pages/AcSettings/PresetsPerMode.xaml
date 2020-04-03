@@ -41,7 +41,7 @@
       <DataTemplate x:Key="EntryDataTemplate" DataType="{x:Type as:PresetsPerMode+PresetPerModeUi}">
         <StackPanel Style="{StaticResource SettingsCompactPanel}" Width="220" Margin="8" Background="Transparent" TextBlock.FontWeight="Normal">
           <DockPanel>
-            <Label Content="Condition:" Width="80" />
+            <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Condition}" Width="80" />
             <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.Modes, ElementName=This}" SelectedItem="{Binding Mode}" FixedMode="False">
               <mui:HierarchicalComboBox.SelectedContent>
                 <DataTemplate>
@@ -62,12 +62,12 @@
           </DockPanel>
 
           <CheckBox IsChecked="{Binding Enabled}" Style="{StaticResource CheckBox.Separate}">
-            <Label Content="Enabled" />
+            <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Enabled}" />
           </CheckBox>
 
           <DockPanel DataContext="{Binding Apps}" Margin="0 20 0 8">
             <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
-              <Label Content="Apps:" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Apps}" />
             </CheckBox>
             <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.AppPresets, ElementName=This}" SelectedItem="{Binding Value}" FixedMode="False"
                 SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
@@ -75,7 +75,7 @@
 
           <DockPanel DataContext="{Binding Audio}">
             <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
-              <Label Content="Audio:" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Audio}" />
             </CheckBox>
             <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.AudioPresets, ElementName=This}" SelectedItem="{Binding Value}" FixedMode="False"
                 SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
@@ -83,7 +83,7 @@
 
           <DockPanel DataContext="{Binding Video}">
             <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
-              <Label Content="Video:" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_Video}" />
             </CheckBox>
             <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.VideoPresets, ElementName=This}" SelectedItem="{Binding Value}" FixedMode="False"
                 SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
@@ -91,7 +91,7 @@
 
           <DockPanel DataContext="{Binding Controls}">
             <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
-              <Label Content="Controls:" />
+              <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_Controls}" />
             </CheckBox>
             <Border IsEnabled="{Binding IsEnabled}">
               <mui:HierarchicalComboBox ItemsSource="{Binding Presets, Source={x:Static c:ControlsPresets.Instance}}" SelectedItem="{Binding Value}"
@@ -102,20 +102,20 @@
 
           <DockPanel DataContext="{Binding CustomShadersPatch}">
             <CheckBox IsChecked="{Binding IsEnabled}" Style="{StaticResource CheckBox}">
-              <Label Content="CSP:" ToolTip="Custom Shaders Patch" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_CSP}" ToolTip="{x:Static g:AppStrings.AcSettings_PresetsPerMode_CSP_Tooltip}" />
             </CheckBox>
             <mui:HierarchicalComboBox ItemsSource="{Binding DataContext.PatchPresets, ElementName=This}" SelectedItem="{Binding Value}" FixedMode="False"
                 SelectedContent="{StaticResource SelectedDataTemplate}" IsEnabled="{Binding IsEnabled}" />
           </DockPanel>
 
           <CheckBox IsChecked="{Binding RearViewMirror}" Style="{StaticResource CheckBox.Separate}" IsThreeState="True">
-            <Label Content="Rear view mirror" />
+            <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_RearViewMirror}" />
           </CheckBox>
 
           <TextBlock Text="{Binding ConditionId, StringFormat='ID: {0}'}" Style="{StaticResource Small}" Margin="0 20 0 0" TextTrimming="CharacterEllipsis" />
           <TextBlock Text="{Binding ConditionFn, StringFormat='Func.: {0}'}" Style="{StaticResource Small}" Margin="0 0 0 8" TextTrimming="CharacterEllipsis" />
 
-          <Button Margin="0 20 0 0" Command="{Binding DeleteCommand}" Content="Remove" />
+          <Button Margin="0 20 0 0" Command="{Binding DeleteCommand}" Content="{x:Static g:AppStrings.Settings_Sharing_Remove}" />
         </StackPanel>
       </DataTemplate>
     </ResourceDictionary>
@@ -130,7 +130,7 @@
 
     <CheckBox IsChecked="{Binding PresetsPerModeAutoUpdate, Source={x:Static t:SettingsHolder.Drive}}" Margin="0 0 0 20" DockPanel.Dock="Top">
       <CheckBox.ToolTip>If custom preset (such as Apps preset) is applied, but during the race, settings were changed, update it.</CheckBox.ToolTip>
-      <Label Content="Update presets if some settings changed during the race" />
+      <Label Content="{x:Static g:AppStrings.AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace}" />
     </CheckBox>
 
     <ListBox mui:Draggable.Enabled="True" mui:Draggable.Destination="{x:Static t:PresetPerMode.DraggableFormat}" ScrollViewer.CanContentScroll="False"
@@ -161,7 +161,7 @@
               <mui:SpacingStackPanel Spacing="8">
                 <Path Data="{StaticResource AddIconData}" Stretch="Fill" Width="12" Height="12" HorizontalAlignment="Center"
                     Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" Margin="0 1 0 -1" />
-                <TextBlock Text="Create new" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
+                <TextBlock Text="{x:Static g:AppStrings.AcSettings_PresetsPerMode_CreateNew}" VerticalAlignment="Center" Style="{StaticResource Heading2}" />
               </mui:SpacingStackPanel>
             </Button>
           </Border>

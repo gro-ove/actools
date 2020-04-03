@@ -13,7 +13,7 @@
         <DockPanel>
           <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
               Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource AddMultipleIconData}" />
-          <TextBlock Text="Install all" />
+          <TextBlock Text="{x:Static g:AppStrings.MainWindow_Downloads_InstallAll}" />
         </DockPanel>
       </Button>
       <Button Command="{Binding RemoveCompletedCommand}"
@@ -21,7 +21,7 @@
         <DockPanel>
           <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
               Stretch="Uniform" Margin="0 0 4 0" VerticalAlignment="Center" Data="{StaticResource CleanUpIconData}" />
-          <TextBlock Text="Remove completed" />
+          <TextBlock Text="{x:Static g:AppStrings.MainWindow_Downloads_RemoveCompleted}" />
         </DockPanel>
       </Button>
     </mui:SpacingUniformGrid>

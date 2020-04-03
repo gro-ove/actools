@@ -20,7 +20,7 @@
   </StackPanel>
 
   <mui:SpacingStackPanel Spacing="4" DockPanel.Dock="Bottom" Margin="0 8 0 0">
-    <TextBlock Text="Description:" Style="{StaticResource Label.Padding}" />
+    <TextBlock Text="{x:Static g:AppStrings.TrackStateEditor_Description}" Style="{StaticResource Label.Padding}" />
     <mui:BetterTextBox Margin="4 0" Text="{Binding Description}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Placeholder="?"
         Style="{StaticResource Borderless}" />
   </mui:SpacingStackPanel>
@@ -28,27 +28,27 @@
   <mui:SpacingUniformGrid Columns="2" HorizontalSpacing="8" VerticalSpacing="8"
       Visibility="{Binding WeatherDefined, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
     <StackPanel>
-      <mui:ValueLabel Content="Initial grip" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}}" Postfix="%"
-          ToolTip="Amount of grip at the session start" />
+      <mui:ValueLabel Content="{x:Static g:AppStrings.TrackStateEditor_InitialGrip}" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}}" Postfix="%"
+          ToolTip="{x:Static g:AppStrings.TrackStateEditor_InitialGrip_Tooltip}" />
       <Slider Minimum="85" Maximum="100" Value="{Binding GripStart, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}" TickFrequency="3"
           TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Grip transfer" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}}" Postfix="%"
-          ToolTip="How much of added grip will transfer to the next session" />
+      <mui:ValueLabel Content="{x:Static g:AppStrings.TrackStateEditor_GripTransfer}" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}}" Postfix="%"
+          ToolTip="{x:Static g:AppStrings.TrackStateEditor_GripTransfer_Tooltip}" />
       <Slider Minimum="0" Maximum="100" Value="{Binding GripTransfer, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
           TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Grip randomization" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}}" Postfix="%" />
+      <mui:ValueLabel Content="{x:Static g:AppStrings.TrackStateEditor_GripRandomization}" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}}" Postfix="%" />
       <Slider Minimum="0" Maximum="100" Value="{Binding GripRandomness, Converter={StaticResource PercentageConverter}, ConverterParameter=0.1}"
           TickFrequency="10" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
 
     <StackPanel>
-      <mui:ValueLabel Content="Lap gain" Value="{Binding LapGain}"
+      <mui:ValueLabel Content="{x:Static g:AppStrings.TrackStateEditor_LapGain}" Value="{Binding LapGain}"
           Postfix="{Binding LapGain, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static c:ControlsStrings.Common_LapsPostfix}}" />
       <Slider Minimum="0" Maximum="700" Value="{Binding LapGain}" TickFrequency="70" TickPlacement="BottomRight" IsSnapToTickEnabled="False" />
     </StackPanel>
