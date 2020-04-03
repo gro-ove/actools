@@ -352,8 +352,8 @@
     <value>Víkend</value>
   </data>
   <data name="Controls_Brakes" xml:space="preserve">
-    <value>Pedál brzdy</value>
-  </data>
+    <value>Brzdy</value>
+  <alternative>Pedál brzdy</alternative></data>
   <data name="Controls_Celebrate" xml:space="preserve">
     <value>Oslava</value>
   </data>
@@ -361,8 +361,8 @@
     <value>Další kamera</value>
   </data>
   <data name="Controls_Clutch" xml:space="preserve">
-    <value>Pedál spojky</value>
-  </data>
+    <value>Spojka</value>
+  <alternative>Pedál spojky</alternative></data>
   <data name="Controls_Complain" xml:space="preserve">
     <value>Stěžovat si</value>
   </data>
@@ -466,8 +466,8 @@
     <value>Zatočit vpravo</value>
   </data>
   <data name="Controls_Throttle" xml:space="preserve">
-    <value>Pedál plynu</value>
-  </data>
+    <value>Plyn</value>
+  <alternative>Pedál plynu</alternative></data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
     <value>Gamepad pro Xbox 360 (s případnou klávesnicí)</value>
   </data>

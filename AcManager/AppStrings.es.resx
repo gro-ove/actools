@@ -605,7 +605,8 @@ Author: [b]{3}[/b]</alternative></data>
   <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
     <value>Puede alternarlo en cualquier momento presionando M
 </value>
-  <alternative>En mi opinion eso empeora bastante las imagenes</alternative></data>
+  <alternative>En mi opinion eso empeora bastante las imagenes</alternative><alternative>Puede alternarlo en cualquier momento presionando M
+</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
     <value>Puedes cambiarlo en cualquier momento pulsando F</value>
   </data>
@@ -3440,7 +3441,8 @@ Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternat
   <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
     <value>Eliminar completado
 </value>
-  </data>
+  <alternative>Eliminar completado
+</alternative></data>
   <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
     <value>Instalar todo</value>
   </data>
