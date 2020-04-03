@@ -4486,4 +4486,34 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
       <value>AI limitations are on</value>
     </data>
+    <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+      <value>Randomize everything</value>
+    </data>
+    <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+      <value>Set random temperature</value>
+    </data>
+    <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+      <value>Set random weather</value>
+    </data>
+    <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+      <value>Set random time</value>
+    </data>
+    <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+      <value>Change track to random</value>
+    </data>
+    <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+      <value>Change skin to random</value>
+    </data>
+    <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+      <value>Change car to random</value>
+    </data>
+    <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+      <value>Starting the race…</value>
+    </data>
+    <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+      <value>Can’t start the race</value>
+    </data>
+    <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+      <value>Yes, and fix it</value>
+    </data>
 </root>
