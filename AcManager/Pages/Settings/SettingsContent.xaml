@@ -30,20 +30,19 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_ScrollAutomatically}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.MentionCmInPackedContent}"
-            ToolTip="I’ve added that bit just so more people using CM would know it supports installing stuff from files or folders dragged onto it, but you can always disable it">
-          <Label Content="While packing, mention in description that packed content might be installed by dragging it onto Content Manager" />
+        <CheckBox IsChecked="{Binding Holder.MentionCmInPackedContent}">
+          <Label Content="{x:Static g:AppStrings.Settings_Content_MentionCMInPacked}" />
         </CheckBox>
 
         <!-- Power and torque curves -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Power and torque curves:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_PowerAndTorqueCurves}" />
 
         <CheckBox IsChecked="{Binding Holder.CurversInDrive}">
-          <Label Content="Show curves in Drive section" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_ShowCurvesInDriveSection}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.SmoothCurves}" ToolTip="Might be less accurate since I have no idea what interpolation algorithm AC uses">
-          <Label Content="Smooth curves" />
+        <CheckBox IsChecked="{Binding Holder.SmoothCurves}">
+          <Label Content="{x:Static g:AppStrings.Settings_Content_SmoothCurves}" />
         </CheckBox>
 
         <!-- Find information specific -->
@@ -59,11 +58,11 @@
           <Label Content="{x:Static g:AppStrings.Settings_Content_LookAtWikipedia}" />
         </CheckBox>
 
-        <!-- Missing content -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Origin icons:" />
+        <!-- Origin icons -->
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_OriginIcons}" />
 
         <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.MarkKunosContent}">
-          <Label Content="Show origin icons in lists (such as Kunos or RSS icon)" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_ShowOriginIconsInLists}" />
         </CheckBox>
 
         <c:MessageBlock set:Search.Include="False">
@@ -73,35 +72,35 @@
         </c:MessageBlock>
 
         <!-- Missing content -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Downloading content:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_DownloadingContent}" />
 
         <DockPanel set:Search.Keywords="missing;missing content;installation;download;install">
-          <Label Content="Temporary files location:" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_TemporaryFilesLocation}" />
           <Button Command="{Binding ChangeTemporaryFilesLocationCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
           <mui:BetterTextBox Text="{Binding Holder.TemporaryFilesLocation}" Placeholder="{Binding DefaultTemporaryFilesLocation}" />
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Search missing content via:" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_SearchMissingContentVia}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Holder.MissingContentSearchEntries}"
               SelectedItem="{Binding Holder.MissingContentSearch}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
         <!-- Mega credentials -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mega.nz credentials:"
-            ToolTip="Optional, but help with download quotas. Just in case, CM doesn’t store your password, but instead, it stores access tokens." />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_MegaNzCredentials}"
+            ToolTip="{x:Static g:AppStrings.Settings_Content_MegaNzCredentials_Tooltip}" />
 
         <mui:BooleanSwitch Value="{Binding MegaReady}">
           <mui:BooleanSwitch.True>
             <DockPanel>
-              <mui:AsyncButton Content="Log out" DockPanel.Dock="Right" Margin="8 0 0 0" Command="{Binding MegaLogOutCommand}" />
-              <TextBlock Text="Signed as: " />
+              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogOut}" DockPanel.Dock="Right" Margin="8 0 0 0" Command="{Binding MegaLogOutCommand}" />
+              <TextBlock Text="{x:Static g:AppStrings.Settings_Content_SignedAs}" />
               <mui:BetterTextBox Text="{Binding MegaUserEmail}" Style="{StaticResource Borderless}" IsReadOnly="True" VerticalAlignment="Center" />
             </DockPanel>
           </mui:BooleanSwitch.True>
           <mui:BooleanSwitch.False>
             <DockPanel>
-              <mui:AsyncButton Content="Log in" DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding MegaLogInCommand}" />
+              <mui:AsyncButton Content="{x:Static g:AppStrings.Settings_Content_LogIn}" DockPanel.Dock="Bottom" Margin="0 8 0 0" Command="{Binding MegaLogInCommand}" />
               <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
                 <mui:BetterTextBox Text="{Binding MegaUserEmail}" Placeholder="E-mail" />
                 <mui:ProperPasswordBox Password="{Binding MegaUserPassword}" Placeholder="Password" />
@@ -125,37 +124,33 @@
         </CheckBox>
 
         <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsYearPostfixAlt}" IsEnabled="{Binding Holder.CarsYearPostfix}">
-          <Label Content="Four digit for year postfix" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_FourDigitForYearPostfix}" />
         </CheckBox>
 
         <CheckBox set:Search.Keywords="cars;display;ui" IsChecked="{Binding Holder.CarsDisplayNameCleanUp}">
-          <CheckBox.ToolTip>
-            <TextBlock MaxWidth="400" TextWrapping="Wrap"
-                Text="Please remember: cars names will remain protected under trademark laws even with this option is enabled! Please, avoid manufacturing cars with the same names." />
-          </CheckBox.ToolTip>
-          <Label Content="Hide symbols like ™ from car names" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_HideSymbolsLikeFromCarNames}" />
         </CheckBox>
 
         <CheckBox set:Search.Keywords="display;ui" IsChecked="{Binding Holder.ShowNotesIconInLists}" mui:NewMarkService.New="True">
-          <Label Content="Mark objects (such as cars or tracks) with notes with a special icon" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_MarkObjectsWithNotesWithIcon}" />
         </CheckBox>
 
         <CheckBox set:Search.Keywords="display;ui;cars" IsChecked="{Binding Holder.ShowCarPreviewInToolTips}" mui:NewMarkService.New="True">
-          <Label Content="Show car previews in tooltips" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_ShowCarPreviewsInTooltips}" />
         </CheckBox>
 
         <CheckBox set:Search.Keywords="ui;display;cars" IsChecked="{Binding Holder.CarsFixSpecs}">
-          <Label Content="Fix missing spaces in specs in Drive section" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_FixMissingSpacesInSpecsInDrive}" />
         </CheckBox>
 
         <DockPanel set:Search.Keywords="cars">
-          <Label Content="Tyres replacement filter" />
-          <mui:HistoricalTextBox Text="{Binding Holder.CarReplaceTyresDonorFilter}" ToolTip="Keep it empty or use “*” to allow any cars" Placeholder="*"
+          <Label Content="{x:Static g:AppStrings.Settings_Content_TyresReplacementFilter}" />
+          <mui:HistoricalTextBox Text="{Binding Holder.CarReplaceTyresDonorFilter}" ToolTip="{x:Static g:AppStrings.Settings_Content_TyresReplacementFilter_Tooltip}" Placeholder="*"
               SaveKey="__CarReplaceTyresDonorFilters" />
         </DockPanel>
 
         <DockPanel set:Search.Keywords="cars;specs">
-          <Label Content="P/W ratio format:" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_PWRatioFormat}" />
           <mui:BetterComboBox ItemsSource="{Binding Holder.CarsDisplayPwRatioFormat}" SelectedItem="{Binding Holder.CarsDisplayPwRatioFormat.SelectedItem}"
               DisplayMemberPath="DisplayName" IsEditable="False" />
         </DockPanel>
@@ -168,23 +163,18 @@
         </CheckBox>
 
         <CheckBox set:Search.Keywords="cars;specs;display;ui" IsChecked="{Binding Holder.DisplaySteerLock}">
-          <Label Content="Display steer lock" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_DisplaySteerLock}" />
         </CheckBox>
 
-        <!--<CheckBox set:Search.Keywords="display;ui;appearance" IsChecked="{Binding Holder.OldLayout}"
-            ToolTip="Old layout for Content/Cars page, with vertical list of skins">
-          <Label Content="Old layout" />
-        </CheckBox>-->
-
         <!-- Car skins specific -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Car skins:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_CarSkins}" />
 
         <CheckBox set:Search.Keywords="cars;skins" IsChecked="{Binding Holder.CarSkinsDisplayId}">
-          <Label Content="Display skin IDs instead of names" />
+          <Label Content="{x:Static g:AppStrings.Settings_Content_DisplaySkinIDsInsteadOfNames}" />
         </CheckBox>
 
         <DockPanel set:Search.Keywords="cars;skins">
-          <Label Content="Sort by:" />
+          <Label Content="{x:Static g:AppStrings.Online_SortByLabel}" />
           <mui:BetterComboBox ItemsSource="{Binding Holder.CarSkinsSorting}" SelectedItem="{Binding Holder.CarSkinsSorting.SelectedItem}"
               DisplayMemberPath="DisplayName" IsEditable="False" />
         </DockPanel>
@@ -206,7 +196,7 @@
         </DockPanel>
 
         <!-- CUP -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Mods auto-update:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Content_ModsAutoUpdate}" />
 
         <DockPanel>
           <Label Content="Registries:" />

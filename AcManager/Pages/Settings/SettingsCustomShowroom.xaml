@@ -17,23 +17,23 @@
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Toolbar_CustomShowroom}" Style="{StaticResource SettingsPanel}">
 
         <CheckBox IsChecked="{Binding Holder.CustomShowroomInstead}">
-          <Label Content="Use Custom Showroom instead of the original one is some cases">
+          <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_UseCustomShowroomInstead}">
             <Label.ToolTip>Such as double-click on car’s skin icon in Content/Cars</Label.ToolTip>
           </Label>
         </CheckBox>
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Previews:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_Previews}" />
 
         <CheckBox IsChecked="{Binding Holder.CustomShowroomPreviews}">
-          <Label Content="Use Custom Showroom for previews" />
+          <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_UseCustomShowroomForPreviews}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Holder.DetailedExifForPreviews}">
-          <Label Content="Add extended information in EXIF data" />
+          <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_AddExtendedInformationInEXIFData}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Holder.PreviewsRecycleOld}" ToolTip="Quite slow operation">
-          <Label Content="Move previous preview to the Recycle Bin" />
+        <CheckBox IsChecked="{Binding Holder.PreviewsRecycleOld}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin}" />
         </CheckBox>
 
         <c:MessageBlock CloseKey="fancy-showroom-previews">
@@ -51,7 +51,7 @@
         <!--<TextBlock Style="{StaticResource SettingsPanel.Small}" Margin="0 0 0 20" Text="{x:Static g:AppStrings.Settings_CustomShowroom_TypeComment}"
           TextWrapping="Wrap" />-->
 
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Controls:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_Controls}" />
 
         <CheckBox IsChecked="{Binding Holder.SmartCameraPivot}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_AutoAdjustPivot}" />
@@ -66,11 +66,11 @@
 
         <!--lite specific-->
         <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_CustomShowroom_LiteHeader}" />-->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Quality:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_QualityHeader}" />
 
         <CheckBox IsChecked="{Binding Holder.UseOldLiteShowroom}">
           <CheckBox.ToolTip>It’s rendering is way less accurate and it doesn’t support skinned meshes, but maybe you still need it for whatever reason?</CheckBox.ToolTip>
-          <Label Content="Use the old version" />
+          <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_UseTheOldVersion}" />
         </CheckBox>
 
         <StackPanel Style="{StaticResource SettingsPanel}"
@@ -91,25 +91,25 @@
         <StackPanel Style="{StaticResource SettingsPanel}"
             Visibility="{Binding Holder.UseOldLiteShowroom, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
           <DockPanel>
-            <Label Content="Reset heavy options:" Width="200" />
-            <Button Command="{Binding ResetHeavyCommand}" Content="Reset" ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+            <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_ResetHeavyOptions}" Width="200" />
+            <Button Command="{Binding ResetHeavyCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>
 
           <DockPanel>
-            <Label Content="Reset all:" Width="200" />
-            <Button Command="{Binding ResetCommand}" Content="Reset" ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+            <Label Content="{x:Static g:AppStrings.Settings_CustomShowroom_ResetAll}" Width="200" />
+            <Button Command="{Binding ResetCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}" ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="Reset heavy options for previews:" Width="200" />
-            <Button Command="{Binding ResetHeavyPreviewsCommand}" Content="Reset"
-                ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+            <Button Command="{Binding ResetHeavyPreviewsCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}"
+                ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>
 
           <DockPanel>
             <Label Content="Reset all for previews:" Width="200" />
-            <Button Command="{Binding ResetPreviewsCommand}" Content="Reset"
-                ToolTip="Use it if showroom crashes — for example, because of way too high settings" />
+            <Button Command="{Binding ResetPreviewsCommand}" Content="{x:Static c:ControlsStrings.Common_Reset}"
+                ToolTip="{x:Static g:AppStrings.Settings_CustomShowroom_Reset_Tooltip}" />
           </DockPanel>
         </StackPanel>
 
@@ -118,15 +118,6 @@
             <mui:BbCodeBlock.Text>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially compaing to the new one. And it was very slow.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
-
-        <!--<TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="Paint Shop:" />
-
-        <DockPanel>
-          <Label Content="Sources:" />
-          <ae:TextEditor Margin="0 0 0 0" Height="200"
-              c:AvalonExtension.Text="{Binding Holder.PaintShopSources, Converter={x:Static c:AvalonExtension.LinesArrayToTextConverter}, UpdateSourceTrigger=LostFocus}"
-              ToolTip="Just put the URLs to GitHub repositories or direct links here, one URL per line" />
-        </DockPanel>-->
 
       </StackPanel>
 

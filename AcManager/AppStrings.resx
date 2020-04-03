@@ -3902,4 +3902,346 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
       <value>App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed</value>
     </data>
+    <data name="Settings_Appearance_UIScale" xml:space="preserve">
+      <value>UI scale</value>
+    </data>
+    <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+      <value>Narrow scrollbars</value>
+    </data>
+    <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+      <value>Popup scrollbars</value>
+    </data>
+    <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+      <value>Larger font</value>
+    </data>
+    <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+      <value>Bold font</value>
+    </data>
+    <data name="Settings_Appearance_Links" xml:space="preserve">
+      <value>Links:</value>
+    </data>
+    <data name="Settings_Appearance_Background" xml:space="preserve">
+      <value>Background:</value>
+    </data>
+    <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+      <value>Folder for slideshow</value>
+    </data>
+    <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+      <value>Change picture every:</value>
+    </data>
+    <data name="Settings_Appearance_Placement" xml:space="preserve">
+      <value>Placement:</value>
+    </data>
+    <data name="Settings_Appearance_Opacity" xml:space="preserve">
+      <value>Opacity</value>
+    </data>
+    <data name="Settings_Appearance_Blur" xml:space="preserve">
+      <value>Blur</value>
+    </data>
+    <data name="Settings_Appearance_Interface" xml:space="preserve">
+      <value>Interface:</value>
+    </data>
+    <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+      <value>Bind to screen:</value>
+    </data>
+    <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+      <value>Title links and menu:</value>
+    </data>
+    <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+      <value>No configurable apps found</value>
+    </data>
+    <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+      <value>Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url].</value>
+    </data>
+    <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+      <value>Use Custom Showroom instead of the original one is some cases</value>
+    </data>
+    <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+      <value>Show draggable areas next to search boxes</value>
+    </data>
+    <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+      <value>With this option disabled, you can drag them by close button</value>
+    </data>
+    <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+      <value>Show downloads &amp; installations list in that menu in the upper right corner</value>
+    </data>
+    <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+      <value>Automatically navigate to downloads page when new download is started</value>
+    </data>
+    <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+      <value>You can access disabled links via that menu next to window’s buttons, or via hotkeys.</value>
+    </data>
+    <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+      <value>Single image</value>
+    </data>
+    <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
+      <value>Do not interfere with windows’ location and size</value>
+    </data>
+    <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
+      <value>Use it in case CM fails to position windows correctly.[br][br]I’m still trying to find a solution to this problem.</value>
+    </data>
+    <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+      <value>Force fullscreen mode</value>
+    </data>
+    <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+      <value>Fullscreen over taskbar</value>
+    </data>
+    <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+      <value>Show back button in the main window</value>
+    </data>
+    <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+      <value>Open new windows on the same screen as the first one despite saved location</value>
+    </data>
+    <data name="Settings_Appearance_StickMainMenuAtTheTop" xml:space="preserve">
+      <value>Stick main menu at the top in fullscreen mode</value>
+    </data>
+    <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
+      <value>Semi-transparent tools in Custom Showroom and DirectX-specific tools</value>
+    </data>
+    <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
+      <value>Fast-access buttons over car and track in Quick Drive</value>
+    </data>
+    <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+      <value>Open skins and setups lists in new window</value>
+    </data>
+    <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
+      <value>If disabled, hold Ctrl while opening skins or setups to open them in a new window anyway</value>
+    </data>
+    <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+      <value>Disable hardware acceleration for UI</value>
+    </data>
+    <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+      <value>Disable windows transparency</value>
+    </data>
+    <data name="Settings_Appearance_DisableWindowsTransparency_Tooltip" xml:space="preserve">
+      <value>Might improve performance or resolve issues with Wine</value>
+    </data>
+    <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+      <value>Hide buttons in Image Viewer’s unless there is a mouse pointer on top</value>
+    </data>
+    <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+      <value>Blur Image Viewer’s background</value>
+    </data>
+    <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+      <value>Works only on Windows 7 or Windows 10</value>
+    </data>
+    <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+      <value>Blur buttons’ background (might decrease performance)</value>
+    </data>
+    <data name="Settings_Appearance_ImageViewer" xml:space="preserve">
+      <value>Image viewer:</value>
+    </data>
+    <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
+      <value>Changes won’t affect already shown windows.</value>
+    </data>
+    <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
+      <value>Try to start Steam if not running (recommended)</value>
+    </data>
+    <data name="Settings_General_Open" xml:space="preserve">
+      <value>Open</value>
+    </data>
+    <data name="Settings_General_SteamProfile" xml:space="preserve">
+      <value>Steam profile:</value>
+    </data>
+    <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+      <value>Used for online</value>
+    </data>
+    <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+      <value>Launch Steam automatically when Content Manager starts</value>
+    </data>
+    <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
+      <value>Reset occasional hits to see them again</value>
+    </data>
+    <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
+      <value>Show occasional hints</value>
+    </data>
+    <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
+      <value>“Don’t show again” in dialogs:</value>
+    </data>
+    <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+      <value>Reset “Do not show again” checkboxes</value>
+    </data>
+    <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+      <value>Windows Registry:</value>
+    </data>
+    <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+      <value>Show notification with recent changes after update</value>
+    </data>
+    <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+      <value>Recent changes notification</value>
+    </data>
+    <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+      <value>Open app’s data folder</value>
+    </data>
+    <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+      <value>Open logs folder</value>
+    </data>
+    <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
+      <value>Keep results of the last</value>
+    </data>
+    <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+      <value>Hibernate CM while racing</value>
+    </data>
+    <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+      <value>Smooth curves</value>
+    </data>
+    <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+      <value>Temperature units:</value>
+    </data>
+    <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+      <value>Use imperial units</value>
+    </data>
+    <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+      <value>Use 12-hour clock</value>
+    </data>
+    <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+      <value>Clear cache</value>
+    </data>
+    <data name="Settings_Sharing_Remove" xml:space="preserve">
+      <value>Remove</value>
+    </data>
+    <data name="Settings_Sharing_Content" xml:space="preserve">
+      <value>Content:</value>
+    </data>
+    <data name="Settings_Drive_SwitchToSteamStarter" xml:space="preserve">
+      <value>Switch to Steam starter</value>
+    </data>
+    <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+      <value>Stop service on CM exit</value>
+    </data>
+    <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+      <value>Terminate loading immediately if Escape is pressed</value>
+    </data>
+    <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+      <value>Continue race if Escape pressed</value>
+    </data>
+    <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+      <value>Monitor FPS during the race</value>
+    </data>
+    <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+      <value>Beep if race is cancelled:</value>
+    </data>
+    <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
+      <value>Might help to spot if game is crashed in VR</value>
+    </data>
+    <data name="Settings_Drive_MonitorFPS_Tooltip" xml:space="preserve">
+      <value>You’ll see the result in [b]Settings/Assetto Corsa/Video[/b]</value>
+    </data>
+    <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+      <value>Real Head Motion:</value>
+    </data>
+    <data name="Settings_Drive_RHMIntegration" xml:space="preserve">
+      <value>RHM integration</value>
+    </data>
+    <data name="Settings_Drive_RHMLocation" xml:space="preserve">
+      <value>RHM location:</value>
+    </data>
+    <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+      <value>Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”</value>
+    </data>
+    <data name="Settings_Content_TemporaryFilesLocation" xml:space="preserve">
+      <value>Temporary files location:</value>
+    </data>
+    <data name="Settings_Content_OriginIcons" xml:space="preserve">
+      <value>Origin icons:</value>
+    </data>
+    <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+      <value>Show origin icons in lists (such as Kunos or RSS icon)</value>
+    </data>
+    <data name="Settings_Content_DownloadingContent" xml:space="preserve">
+      <value>Downloading content:</value>
+    </data>
+    <data name="Settings_Content_SearchMissingContentVia" xml:space="preserve">
+      <value>Search missing content via:</value>
+    </data>
+    <data name="Settings_Content_ShowCurvesInDriveSection" xml:space="preserve">
+      <value>Show curves in Drive section</value>
+    </data>
+    <data name="Settings_Content_MentionCMInPacked" xml:space="preserve">
+      <value>While packing, mention in description that packed content might be installed by dragging it onto Content Manager</value>
+    </data>
+    <data name="Settings_Content_PowerAndTorqueCurves" xml:space="preserve">
+      <value>Power and torque curves:</value>
+    </data>
+    <data name="Settings_Content_FourDigitForYearPostfix" xml:space="preserve">
+      <value>Four digit for year postfix</value>
+    </data>
+    <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
+      <value>Hide symbols like ™ from car names</value>
+    </data>
+    <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
+      <value>Show car previews in tooltips</value>
+    </data>
+    <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
+      <value>Fix missing spaces in specs in Drive section</value>
+    </data>
+    <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
+      <value>P/W ratio format:</value>
+    </data>
+    <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+      <value>Display steer lock</value>
+    </data>
+    <data name="Settings_Content_CarSkins" xml:space="preserve">
+      <value>Car skins:</value>
+    </data>
+    <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
+      <value>Display skin IDs instead of names</value>
+    </data>
+    <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+      <value>Mods auto-update:</value>
+    </data>
+    <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
+      <value>Mark objects (such as cars or tracks) with notes with a special icon</value>
+    </data>
+    <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+      <value>Mega.nz credentials:</value>
+    </data>
+    <data name="Settings_Content_MegaNzCredentials_Tooltip" xml:space="preserve">
+      <value>Optional, but help with download quotas. Just in case, CM doesn’t store your password, but instead, it stores access tokens.</value>
+    </data>
+    <data name="Settings_Content_LogOut" xml:space="preserve">
+      <value>Log out</value>
+    </data>
+    <data name="Settings_Content_SignedAs" xml:space="preserve">
+      <value>Signed as: </value>
+    </data>
+    <data name="Settings_Content_LogIn" xml:space="preserve">
+      <value>Log in</value>
+    </data>
+    <data name="Settings_Content_TyresReplacementFilter" xml:space="preserve">
+      <value>Tyres replacement filter</value>
+    </data>
+    <data name="Settings_Content_TyresReplacementFilter_Tooltip" xml:space="preserve">
+      <value>Keep it empty or use “*” to allow any cars</value>
+    </data>
+    <data name="Settings_CustomShowroom_Previews" xml:space="preserve">
+      <value>Previews:</value>
+    </data>
+    <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+      <value>Use Custom Showroom for previews</value>
+    </data>
+    <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
+      <value>Add extended information in EXIF data</value>
+    </data>
+    <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+      <value>Move previous preview to the Recycle Bin</value>
+    </data>
+    <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
+      <value>It’s quite a slow operation, so it might be better to disable it</value>
+    </data>
+    <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+      <value>Controls:</value>
+    </data>
+    <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+      <value>Use the old version</value>
+    </data>
+    <data name="Settings_CustomShowroom_ResetHeavyOptions" xml:space="preserve">
+      <value>Reset heavy options:</value>
+    </data>
+    <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
+      <value>Use it if showroom crashes — for example, because of way too high settings</value>
+    </data>
+    <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
+      <value>Reset all:</value>
+    </data>
 </root>

@@ -15,12 +15,12 @@
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_AcFolderLabel}" />
           <Button Command="{Binding ChangeAcRootCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-          <Button Command="{Binding OpenAcRootCommand}" Content="Open" />
+          <Button Command="{Binding OpenAcRootCommand}" Content="{x:Static g:AppStrings.Settings_General_Open}" />
           <mui:PathTrimmingTextBlock Text="{Binding AcRootDirectoryValue, Mode=OneTime}" />
         </DockPanel>
 
-        <DockPanel ToolTip="Used for online">
-          <Label Content="Steam profile:" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_General_SteamProfile_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_General_SteamProfile}" />
           <Button Command="{Binding ChangeSteamIdCommand}" Content="{x:Static c:ControlsStrings.Common_Change}"
               Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <mui:BetterTextBox Style="{StaticResource Borderless}" IsReadOnly="True">
@@ -35,7 +35,7 @@
 
         <CheckBox IsChecked="{Binding Common.LaunchSteamAtStart}" mui:NewMarkService.New="True"
             Visibility="{Binding ChangeSteamIdCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" >
-          <Label Content="Launch Steam automatically when Content Manager starts" />
+          <Label Content="{x:Static g:AppStrings.Settings_General_LaunchSteamAutomatically}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Common.DeveloperMode}"
@@ -44,15 +44,15 @@
         </CheckBox>
 
         <DockPanel>
-          <Button DockPanel.Dock="Right" Command="{Binding ResetOccasionalHintsCommand}" Content="Reset occasional hits to see them again" />
+          <Button DockPanel.Dock="Right" Command="{Binding ResetOccasionalHintsCommand}" Content="{x:Static g:AppStrings.Settings_General_ResetOccasionalHits}" />
           <CheckBox IsChecked="{Binding Enabled, Source={x:Static mui:FancyHintsService.Instance}}" VerticalAlignment="Center">
-            <Label Content="Show occasional hints" />
+            <Label Content="{x:Static g:AppStrings.Settings_General_ShowOccasionalHints}" />
           </CheckBox>
         </DockPanel>
 
         <DockPanel>
-          <Label Content="“Don’t show again” in dialogs:" />
-          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="Reset “Do not show again” checkboxes" />
+          <Label Content="{x:Static g:AppStrings.Settings_General_DontShowAgainInDialogs}" />
+          <Button Command="{Binding ResetDoNotAskAgainsCommand}" Content="{x:Static g:AppStrings.Settings_General_ResetDoNotShowAgainCheckboxes}" />
         </DockPanel>
 
         <!-- App key and shortcut -->
@@ -69,7 +69,7 @@
         </CheckBox>
 
         <DockPanel>
-          <Label Content="Windows Registry:" />
+          <Label Content="{x:Static g:AppStrings.Settings_General_WindowsRegistry}" />
           <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.RegistryModes}" SelectedItem="{Binding Common.RegistryMode}"
               DisplayMemberPath="DisplayName" />
         </DockPanel>
@@ -98,8 +98,8 @@
         <TextBlock Text="{Binding AppUpdater.LatestError}" Style="{StaticResource SettingsPanel.Warning}"
             Visibility="{Binding AppUpdater.LatestError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" />
 
-        <CheckBox IsChecked="{Binding Common.ShowDetailedChangelog}" ToolTip="Show notification with recent changes after update">
-          <Label Content="Recent changes notification" />
+        <CheckBox IsChecked="{Binding Common.ShowDetailedChangelog}" ToolTip="{x:Static g:AppStrings.Settings_General_ShowRecentChangesNotification_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_General_RecentChangesNotification}" />
         </CheckBox>
 
         <!-- Content version -->
@@ -130,8 +130,8 @@
         </DockPanel>
 
         <mui:SpacingUniformGrid Rows="1" HorizontalSpacing="8">
-          <Button Command="{Binding ShowContentManagerDataCommand}" Content="Open app’s data folder" />
-          <Button Command="{Binding ShowContentManagerLogsCommand}" Content="Open logs folder" />
+          <Button Command="{Binding ShowContentManagerDataCommand}" Content="{x:Static g:AppStrings.Settings_General_OpenAppsDataFolder}" />
+          <Button Command="{Binding ShowContentManagerLogsCommand}" Content="{x:Static g:AppStrings.Settings_General_OpenLogsFolder}" />
         </mui:SpacingUniformGrid>
 
         <!-- Beta access -->

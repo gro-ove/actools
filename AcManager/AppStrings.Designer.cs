@@ -19,7 +19,7 @@ namespace AcManager {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
@@ -5198,8 +5198,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///{0} sample.
+        ///   Looks up a localized string similar to {0} sample.
         /// </summary>
         public static string Main_FPS_TakenFormat {
             get {
@@ -7012,11 +7011,191 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Automatically navigate to downloads page when new download is started.
+        /// </summary>
+        public static string Settings_Appearance_AutomaticallyNavigateToDownloadsPage {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_AutomaticallyNavigateToDownloadsPage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Background:.
+        /// </summary>
+        public static string Settings_Appearance_Background {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Background", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bind to screen:.
+        /// </summary>
+        public static string Settings_Appearance_BindToScreen {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BindToScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Changes won’t affect already shown windows..
+        /// </summary>
+        public static string Settings_Appearance_BindToScreen_Hint {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BindToScreen_Hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blur.
+        /// </summary>
+        public static string Settings_Appearance_Blur {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Blur", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blur buttons’ background (might decrease performance).
+        /// </summary>
+        public static string Settings_Appearance_BlurButtonsBackground {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BlurButtonsBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Blur Image Viewer’s background.
+        /// </summary>
+        public static string Settings_Appearance_BlurImageViewersBackground {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BlurImageViewersBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Works only on Windows 7 or Windows 10.
+        /// </summary>
+        public static string Settings_Appearance_BlurImageViewersBackground_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BlurImageViewersBackground_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bold font.
+        /// </summary>
+        public static string Settings_Appearance_BoldFont {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_BoldFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Change picture every:.
+        /// </summary>
+        public static string Settings_Appearance_ChangePictureEvery {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ChangePictureEvery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable hardware acceleration for UI.
+        /// </summary>
+        public static string Settings_Appearance_DisableHardwareAccelerationForUI {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_DisableHardwareAccelerationForUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disable windows transparency.
+        /// </summary>
+        public static string Settings_Appearance_DisableWindowsTransparency {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_DisableWindowsTransparency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Might improve performance or resolve issues with Wine.
+        /// </summary>
+        public static string Settings_Appearance_DisableWindowsTransparency_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_DisableWindowsTransparency_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Do not interfere with windows’ location and size.
+        /// </summary>
+        public static string Settings_Appearance_DoNotInterfereWithWindows {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_DoNotInterfereWithWindows", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use it in case CM fails to position windows correctly.[br][br]I’m still trying to find a solution to this problem..
+        /// </summary>
+        public static string Settings_Appearance_DoNotInterfereWithWindows_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_DoNotInterfereWithWindows_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Dynamic background.
         /// </summary>
         public static string Settings_Appearance_DynamicBackground {
             get {
                 return ResourceManager.GetString("Settings_Appearance_DynamicBackground", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fast-access buttons over car and track in Quick Drive.
+        /// </summary>
+        public static string Settings_Appearance_FastAccessButtons {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_FastAccessButtons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Folder for slideshow.
+        /// </summary>
+        public static string Settings_Appearance_FolderForSlideshow {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_FolderForSlideshow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force fullscreen mode.
+        /// </summary>
+        public static string Settings_Appearance_ForceFullscreenMode {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ForceFullscreenMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fullscreen over taskbar.
+        /// </summary>
+        public static string Settings_Appearance_FullscreenOverTaskbar {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_FullscreenOverTaskbar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide buttons in Image Viewer’s unless there is a mouse pointer on top.
+        /// </summary>
+        public static string Settings_Appearance_HideButtonsInImageViewers {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_HideButtonsInImageViewers", resourceCulture);
             }
         }
         
@@ -7039,6 +7218,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Image viewer:.
+        /// </summary>
+        public static string Settings_Appearance_ImageViewer {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ImageViewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Interface:.
+        /// </summary>
+        public static string Settings_Appearance_Interface {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Interface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Larger font.
+        /// </summary>
+        public static string Settings_Appearance_LargerFont {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_LargerFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Large search boxes.
         /// </summary>
         public static string Settings_Appearance_LargeSearchBoxes {
@@ -7053,6 +7259,78 @@ namespace AcManager {
         public static string Settings_Appearance_LargeSearchBoxes_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Appearance_LargeSearchBoxes_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Links:.
+        /// </summary>
+        public static string Settings_Appearance_Links {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Links", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Narrow scrollbars.
+        /// </summary>
+        public static string Settings_Appearance_NarrowScrollbars {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_NarrowScrollbars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Opacity.
+        /// </summary>
+        public static string Settings_Appearance_Opacity {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Opacity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open new windows on the same screen as the first one despite saved location.
+        /// </summary>
+        public static string Settings_Appearance_OpenNewWindowsOnTheSameScreen {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_OpenNewWindowsOnTheSameScreen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open skins and setups lists in new window.
+        /// </summary>
+        public static string Settings_Appearance_OpenSkinsAndSetupsNewWindow {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_OpenSkinsAndSetupsNewWindow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to If disabled, hold Ctrl while opening skins or setups to open them in a new window anyway.
+        /// </summary>
+        public static string Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Placement:.
+        /// </summary>
+        public static string Settings_Appearance_Placement {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_Placement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Popup scrollbars.
+        /// </summary>
+        public static string Settings_Appearance_PopupScrollbars {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_PopupScrollbars", resourceCulture);
             }
         }
         
@@ -7075,11 +7353,74 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Semi-transparent tools in Custom Showroom and DirectX-specific tools.
+        /// </summary>
+        public static string Settings_Appearance_SemiTransparentToolsInCustomShowroom {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_SemiTransparentToolsInCustomShowroom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show back button in the main window.
+        /// </summary>
+        public static string Settings_Appearance_ShowBackButton {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ShowBackButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show downloads &amp; installations list in that menu in the upper right corner.
+        /// </summary>
+        public static string Settings_Appearance_ShowDownloadsAmpInstallationsList {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ShowDownloadsAmpInstallationsList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show draggable areas next to search boxes.
+        /// </summary>
+        public static string Settings_Appearance_ShowDraggableAreas {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ShowDraggableAreas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With this option disabled, you can drag them by close button.
+        /// </summary>
+        public static string Settings_Appearance_ShowDraggableAreas_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_ShowDraggableAreas_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Single image.
+        /// </summary>
+        public static string Settings_Appearance_SingleImage {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_SingleImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Small font.
         /// </summary>
         public static string Settings_Appearance_SmallFont {
             get {
                 return ResourceManager.GetString("Settings_Appearance_SmallFont", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stick main menu at the top in fullscreen mode.
+        /// </summary>
+        public static string Settings_Appearance_StickMainMenuAtTheTop {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_StickMainMenuAtTheTop", resourceCulture);
             }
         }
         
@@ -7102,11 +7443,38 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Title links and menu:.
+        /// </summary>
+        public static string Settings_Appearance_TitleLinksAndMenu {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_TitleLinksAndMenu", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Transition animation:.
         /// </summary>
         public static string Settings_Appearance_TransitionAnimationLabel {
             get {
                 return ResourceManager.GetString("Settings_Appearance_TransitionAnimationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to UI scale.
+        /// </summary>
+        public static string Settings_Appearance_UIScale {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_UIScale", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can access disabled links via that menu next to window’s buttons, or via hotkeys..
+        /// </summary>
+        public static string Settings_Appearance_YouCanAccessDisabledLinks {
+            get {
+                return ResourceManager.GetString("Settings_Appearance_YouCanAccessDisabledLinks", resourceCulture);
             }
         }
         
@@ -7125,6 +7493,15 @@ namespace AcManager {
         public static string Settings_Content_CarsHeader {
             get {
                 return ResourceManager.GetString("Settings_Content_CarsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car skins:.
+        /// </summary>
+        public static string Settings_Content_CarSkins {
+            get {
+                return ResourceManager.GetString("Settings_Content_CarSkins", resourceCulture);
             }
         }
         
@@ -7156,6 +7533,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Display skin IDs instead of names.
+        /// </summary>
+        public static string Settings_Content_DisplaySkinIDsInsteadOfNames {
+            get {
+                return ResourceManager.GetString("Settings_Content_DisplaySkinIDsInsteadOfNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display steer lock.
+        /// </summary>
+        public static string Settings_Content_DisplaySteerLock {
+            get {
+                return ResourceManager.GetString("Settings_Content_DisplaySteerLock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading content:.
+        /// </summary>
+        public static string Settings_Content_DownloadingContent {
+            get {
+                return ResourceManager.GetString("Settings_Content_DownloadingContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download previews of common showrooms.
         /// </summary>
         public static string Settings_Content_DownloadPreviews {
@@ -7170,6 +7574,15 @@ namespace AcManager {
         public static string Settings_Content_DownloadPreviews_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Content_DownloadPreviews_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix missing spaces in specs in Drive section.
+        /// </summary>
+        public static string Settings_Content_FixMissingSpacesInSpecsInDrive {
+            get {
+                return ResourceManager.GetString("Settings_Content_FixMissingSpacesInSpecsInDrive", resourceCulture);
             }
         }
         
@@ -7201,6 +7614,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Four digit for year postfix.
+        /// </summary>
+        public static string Settings_Content_FourDigitForYearPostfix {
+            get {
+                return ResourceManager.GetString("Settings_Content_FourDigitForYearPostfix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide symbols like ™ from car names.
+        /// </summary>
+        public static string Settings_Content_HideSymbolsLikeFromCarNames {
+            get {
+                return ResourceManager.GetString("Settings_Content_HideSymbolsLikeFromCarNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Information search:.
         /// </summary>
         public static string Settings_Content_InformationSearchHeader {
@@ -7224,6 +7655,24 @@ namespace AcManager {
         public static string Settings_Content_LoadingConcurrencyLabel {
             get {
                 return ResourceManager.GetString("Settings_Content_LoadingConcurrencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log in.
+        /// </summary>
+        public static string Settings_Content_LogIn {
+            get {
+                return ResourceManager.GetString("Settings_Content_LogIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log out.
+        /// </summary>
+        public static string Settings_Content_LogOut {
+            get {
+                return ResourceManager.GetString("Settings_Content_LogOut", resourceCulture);
             }
         }
         
@@ -7255,6 +7704,78 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mark objects (such as cars or tracks) with notes with a special icon.
+        /// </summary>
+        public static string Settings_Content_MarkObjectsWithNotesWithIcon {
+            get {
+                return ResourceManager.GetString("Settings_Content_MarkObjectsWithNotesWithIcon", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mega.nz credentials:.
+        /// </summary>
+        public static string Settings_Content_MegaNzCredentials {
+            get {
+                return ResourceManager.GetString("Settings_Content_MegaNzCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Optional, but help with download quotas. Just in case, CM doesn’t store your password, but instead, it stores access tokens..
+        /// </summary>
+        public static string Settings_Content_MegaNzCredentials_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Content_MegaNzCredentials_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to While packing, mention in description that packed content might be installed by dragging it onto Content Manager.
+        /// </summary>
+        public static string Settings_Content_MentionCMInPacked {
+            get {
+                return ResourceManager.GetString("Settings_Content_MentionCMInPacked", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mods auto-update:.
+        /// </summary>
+        public static string Settings_Content_ModsAutoUpdate {
+            get {
+                return ResourceManager.GetString("Settings_Content_ModsAutoUpdate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Origin icons:.
+        /// </summary>
+        public static string Settings_Content_OriginIcons {
+            get {
+                return ResourceManager.GetString("Settings_Content_OriginIcons", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Power and torque curves:.
+        /// </summary>
+        public static string Settings_Content_PowerAndTorqueCurves {
+            get {
+                return ResourceManager.GetString("Settings_Content_PowerAndTorqueCurves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to P/W ratio format:.
+        /// </summary>
+        public static string Settings_Content_PWRatioFormat {
+            get {
+                return ResourceManager.GetString("Settings_Content_PWRatioFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Automatically scroll to selected item.
         /// </summary>
         public static string Settings_Content_ScrollAutomatically {
@@ -7282,11 +7803,101 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search missing content via:.
+        /// </summary>
+        public static string Settings_Content_SearchMissingContentVia {
+            get {
+                return ResourceManager.GetString("Settings_Content_SearchMissingContentVia", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show car previews in tooltips.
+        /// </summary>
+        public static string Settings_Content_ShowCarPreviewsInTooltips {
+            get {
+                return ResourceManager.GetString("Settings_Content_ShowCarPreviewsInTooltips", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show curves in Drive section.
+        /// </summary>
+        public static string Settings_Content_ShowCurvesInDriveSection {
+            get {
+                return ResourceManager.GetString("Settings_Content_ShowCurvesInDriveSection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show origin icons in lists (such as Kunos or RSS icon).
+        /// </summary>
+        public static string Settings_Content_ShowOriginIconsInLists {
+            get {
+                return ResourceManager.GetString("Settings_Content_ShowOriginIconsInLists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Showrooms:.
         /// </summary>
         public static string Settings_Content_ShowroomsHeader {
             get {
                 return ResourceManager.GetString("Settings_Content_ShowroomsHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signed as: .
+        /// </summary>
+        public static string Settings_Content_SignedAs {
+            get {
+                return ResourceManager.GetString("Settings_Content_SignedAs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Smooth curves.
+        /// </summary>
+        public static string Settings_Content_SmoothCurves {
+            get {
+                return ResourceManager.GetString("Settings_Content_SmoothCurves", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Temporary files location:.
+        /// </summary>
+        public static string Settings_Content_TemporaryFilesLocation {
+            get {
+                return ResourceManager.GetString("Settings_Content_TemporaryFilesLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tyres replacement filter.
+        /// </summary>
+        public static string Settings_Content_TyresReplacementFilter {
+            get {
+                return ResourceManager.GetString("Settings_Content_TyresReplacementFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep it empty or use “*” to allow any cars.
+        /// </summary>
+        public static string Settings_Content_TyresReplacementFilter_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Content_TyresReplacementFilter_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add extended information in EXIF data.
+        /// </summary>
+        public static string Settings_CustomShowroom_AddExtendedInformationInEXIFData {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_AddExtendedInformationInEXIFData", resourceCulture);
             }
         }
         
@@ -7323,6 +7934,15 @@ namespace AcManager {
         public static string Settings_CustomShowroom_Bloom_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_CustomShowroom_Bloom_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Controls:.
+        /// </summary>
+        public static string Settings_CustomShowroom_Controls {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_Controls", resourceCulture);
             }
         }
         
@@ -7399,6 +8019,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Move previous preview to the Recycle Bin.
+        /// </summary>
+        public static string Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It’s quite a slow operation, so it might be better to disable it.
+        /// </summary>
+        public static string Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use MSAA.
         /// </summary>
         public static string Settings_CustomShowroom_Msaa {
@@ -7417,6 +8055,42 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Previews:.
+        /// </summary>
+        public static string Settings_CustomShowroom_Previews {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_Previews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use it if showroom crashes — for example, because of way too high settings.
+        /// </summary>
+        public static string Settings_CustomShowroom_Reset_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_Reset_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset all:.
+        /// </summary>
+        public static string Settings_CustomShowroom_ResetAll {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_ResetAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset heavy options:.
+        /// </summary>
+        public static string Settings_CustomShowroom_ResetHeavyOptions {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_ResetHeavyOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Default showroom:.
         /// </summary>
         public static string Settings_CustomShowroom_Showroom {
@@ -7431,6 +8105,33 @@ namespace AcManager {
         public static string Settings_CustomShowroom_TypeComment {
             get {
                 return ResourceManager.GetString("Settings_CustomShowroom_TypeComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Custom Showroom for previews.
+        /// </summary>
+        public static string Settings_CustomShowroom_UseCustomShowroomForPreviews {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_UseCustomShowroomForPreviews", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use Custom Showroom instead of the original one is some cases.
+        /// </summary>
+        public static string Settings_CustomShowroom_UseCustomShowroomInstead {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_UseCustomShowroomInstead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use the old version.
+        /// </summary>
+        public static string Settings_CustomShowroom_UseTheOldVersion {
+            get {
+                return ResourceManager.GetString("Settings_CustomShowroom_UseTheOldVersion", resourceCulture);
             }
         }
         
@@ -7489,6 +8190,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Beep if race is cancelled:.
+        /// </summary>
+        public static string Settings_Drive_BeepIfRaceIsCancelled {
+            get {
+                return ResourceManager.GetString("Settings_Drive_BeepIfRaceIsCancelled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Might help to spot if game is crashed in VR.
+        /// </summary>
+        public static string Settings_Drive_BeepIfRaceIsCancelled_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_BeepIfRaceIsCancelled_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cache brands.
         /// </summary>
         public static string Settings_Drive_CacheBrands {
@@ -7521,6 +8240,15 @@ namespace AcManager {
         public static string Settings_Drive_ChangeCarSkin {
             get {
                 return ResourceManager.GetString("Settings_Drive_ChangeCarSkin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue race if Escape pressed.
+        /// </summary>
+        public static string Settings_Drive_ContinueRaceIfEscapePressed {
+            get {
+                return ResourceManager.GetString("Settings_Drive_ContinueRaceIfEscapePressed", resourceCulture);
             }
         }
         
@@ -7597,6 +8325,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hibernate CM while racing.
+        /// </summary>
+        public static string Settings_Drive_HibernateCMWhileRacing {
+            get {
+                return ResourceManager.GetString("Settings_Drive_HibernateCMWhileRacing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keep results of the last.
+        /// </summary>
+        public static string Settings_Drive_KeepResultsOfTheLast {
+            get {
+                return ResourceManager.GetString("Settings_Drive_KeepResultsOfTheLast", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”.
+        /// </summary>
+        public static string Settings_Drive_KeepResultsOfTheLast_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_KeepResultsOfTheLast_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Kunos career:.
         /// </summary>
         public static string Settings_Drive_KunosCareerHeader {
@@ -7620,6 +8375,24 @@ namespace AcManager {
         public static string Settings_Drive_LocalAddress_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Drive_LocalAddress_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Monitor FPS during the race.
+        /// </summary>
+        public static string Settings_Drive_MonitorFPS {
+            get {
+                return ResourceManager.GetString("Settings_Drive_MonitorFPS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You’ll see the result in [b]Settings/Assetto Corsa/Video[/b].
+        /// </summary>
+        public static string Settings_Drive_MonitorFPS_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_MonitorFPS_Tooltip", resourceCulture);
             }
         }
         
@@ -7754,6 +8527,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Real Head Motion:.
+        /// </summary>
+        public static string Settings_Drive_RealHeadMotion {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RealHeadMotion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RHM integration.
+        /// </summary>
+        public static string Settings_Drive_RHMIntegration {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RHMIntegration", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to RHM location:.
+        /// </summary>
+        public static string Settings_Drive_RHMLocation {
+            get {
+                return ResourceManager.GetString("Settings_Drive_RHMLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Don&apos;t show results of Practice session.
         /// </summary>
         public static string Settings_Drive_SkipPracticeResults {
@@ -7777,6 +8577,42 @@ namespace AcManager {
         public static string Settings_Drive_StartImmediately {
             get {
                 return ResourceManager.GetString("Settings_Drive_StartImmediately", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop service on CM exit.
+        /// </summary>
+        public static string Settings_Drive_StopServiceOnCMExit {
+            get {
+                return ResourceManager.GetString("Settings_Drive_StopServiceOnCMExit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Switch to Steam starter.
+        /// </summary>
+        public static string Settings_Drive_SwitchToSteamStarter {
+            get {
+                return ResourceManager.GetString("Settings_Drive_SwitchToSteamStarter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terminate loading immediately if Escape is pressed.
+        /// </summary>
+        public static string Settings_Drive_TerminateLoadingIfEscapeIsPressed {
+            get {
+                return ResourceManager.GetString("Settings_Drive_TerminateLoadingIfEscapeIsPressed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Try to start Steam if not running (recommended).
+        /// </summary>
+        public static string Settings_Drive_TryToStartSteamIfNotRunning {
+            get {
+                return ResourceManager.GetString("Settings_Drive_TryToStartSteamIfNotRunning", resourceCulture);
             }
         }
         
@@ -7925,6 +8761,114 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to “Don’t show again” in dialogs:.
+        /// </summary>
+        public static string Settings_General_DontShowAgainInDialogs {
+            get {
+                return ResourceManager.GetString("Settings_General_DontShowAgainInDialogs", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Launch Steam automatically when Content Manager starts.
+        /// </summary>
+        public static string Settings_General_LaunchSteamAutomatically {
+            get {
+                return ResourceManager.GetString("Settings_General_LaunchSteamAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open.
+        /// </summary>
+        public static string Settings_General_Open {
+            get {
+                return ResourceManager.GetString("Settings_General_Open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open app’s data folder.
+        /// </summary>
+        public static string Settings_General_OpenAppsDataFolder {
+            get {
+                return ResourceManager.GetString("Settings_General_OpenAppsDataFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open logs folder.
+        /// </summary>
+        public static string Settings_General_OpenLogsFolder {
+            get {
+                return ResourceManager.GetString("Settings_General_OpenLogsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent changes notification.
+        /// </summary>
+        public static string Settings_General_RecentChangesNotification {
+            get {
+                return ResourceManager.GetString("Settings_General_RecentChangesNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset “Do not show again” checkboxes.
+        /// </summary>
+        public static string Settings_General_ResetDoNotShowAgainCheckboxes {
+            get {
+                return ResourceManager.GetString("Settings_General_ResetDoNotShowAgainCheckboxes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset occasional hits to see them again.
+        /// </summary>
+        public static string Settings_General_ResetOccasionalHits {
+            get {
+                return ResourceManager.GetString("Settings_General_ResetOccasionalHits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show occasional hints.
+        /// </summary>
+        public static string Settings_General_ShowOccasionalHints {
+            get {
+                return ResourceManager.GetString("Settings_General_ShowOccasionalHints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show notification with recent changes after update.
+        /// </summary>
+        public static string Settings_General_ShowRecentChangesNotification_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_General_ShowRecentChangesNotification_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Steam profile:.
+        /// </summary>
+        public static string Settings_General_SteamProfile {
+            get {
+                return ResourceManager.GetString("Settings_General_SteamProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Used for online.
+        /// </summary>
+        public static string Settings_General_SteamProfile_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_General_SteamProfile_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update to non-tested versions.
         /// </summary>
         public static string Settings_General_TestingAccess {
@@ -7988,6 +8932,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Windows Registry:.
+        /// </summary>
+        public static string Settings_General_WindowsRegistry {
+            get {
+                return ResourceManager.GetString("Settings_General_WindowsRegistry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start Menu shortcut (for modern notifications, recommended).
         /// </summary>
         public static string Settings_General_WindowsShortcut {
@@ -8002,6 +8955,15 @@ namespace AcManager {
         public static string Settings_General_WindowsShortcut_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_General_WindowsShortcut_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear cache.
+        /// </summary>
+        public static string Settings_LapTimes_ClearCache {
+            get {
+                return ResourceManager.GetString("Settings_LapTimes_ClearCache", resourceCulture);
             }
         }
         
@@ -8285,6 +9247,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Temperature units:.
+        /// </summary>
+        public static string Settings_Locale_TemperatureUnits {
+            get {
+                return ResourceManager.GetString("Settings_Locale_TemperatureUnits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update locale before start up.
         /// </summary>
         public static string Settings_Locale_UpdateBeforeStartUp {
@@ -8299,6 +9270,24 @@ namespace AcManager {
         public static string Settings_Locale_UpdateBeforeStartUp_Tooltip {
             get {
                 return ResourceManager.GetString("Settings_Locale_UpdateBeforeStartUp_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use 12-hour clock.
+        /// </summary>
+        public static string Settings_Locale_Use12HourClock {
+            get {
+                return ResourceManager.GetString("Settings_Locale_Use12HourClock", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use imperial units.
+        /// </summary>
+        public static string Settings_Locale_UseImperialUnits {
+            get {
+                return ResourceManager.GetString("Settings_Locale_UseImperialUnits", resourceCulture);
             }
         }
         
@@ -8510,6 +9499,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]..
+        /// </summary>
+        public static string Settings_PythonApps_ChangedWillBeSavedAutomatically {
+            get {
+                return ResourceManager.GetString("Settings_PythonApps_ChangedWillBeSavedAutomatically", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No configurable apps found.
+        /// </summary>
+        public static string Settings_PythonApps_NoConfigurableAppsFound {
+            get {
+                return ResourceManager.GetString("Settings_PythonApps_NoConfigurableAppsFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Quick Switches.
         /// </summary>
         public static string Settings_QuickSwitches {
@@ -8667,7 +9674,7 @@ namespace AcManager {
         ///
         ///  Modifiers:
         ///   [b][mono]{…:l}[/mono][/b] — lowercase;
-        ///   [b][ [rest of string was truncated]&quot;;.
+        ///   [b][mono]{…:u}[/m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string Settings_Replays_NameFormat_Tooltip {
             get {
@@ -8735,6 +9742,15 @@ namespace AcManager {
         public static string Settings_Sharing_BigFilesSelectedFolder {
             get {
                 return ResourceManager.GetString("Settings_Sharing_BigFilesSelectedFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content:.
+        /// </summary>
+        public static string Settings_Sharing_Content {
+            get {
+                return ResourceManager.GetString("Settings_Sharing_Content", resourceCulture);
             }
         }
         
@@ -8807,6 +9823,15 @@ namespace AcManager {
         public static string Settings_Sharing_NameLabel {
             get {
                 return ResourceManager.GetString("Settings_Sharing_NameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove.
+        /// </summary>
+        public static string Settings_Sharing_Remove {
+            get {
+                return ResourceManager.GetString("Settings_Sharing_Remove", resourceCulture);
             }
         }
         

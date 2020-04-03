@@ -993,4 +993,7 @@ Depth mode: [b]{4}[/b]</value>
   <data name="Common_ScrollToSelected" xml:space="preserve">
     <value>Scroll to selected (Ctrl+Shift+V)</value>
   </data>
+    <data name="Common_WhatIsIt" xml:space="preserve">
+      <value>What is it?</value>
+    </data>
 </root>

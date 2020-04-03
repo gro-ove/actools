@@ -33,11 +33,6 @@
         <mui:BbCodeBlock
             Text="Selected directory is located on a different drive! Hard links won’t work, which will cause whole process of enabling and disabling mods marginally slower and will lead to wasting space." />
       </c:MessageBlock>
-
-      <!--<DockPanel ToolTip="Will be created if missing">
-        <Label Content="Mods directory name:" />
-        <mui:BetterComboBox x:Name="DirectoryNames" Text="{Binding GenericMods.ModsDirectoryName}" Placeholder="mods" />
-      </DockPanel>-->
     </StackPanel>
   </ScrollViewer>
 </UserControl>

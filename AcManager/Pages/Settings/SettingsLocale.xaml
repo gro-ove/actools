@@ -18,7 +18,7 @@
       </TextBlock>
 
       <DockPanel>
-        <Label Content="Temperature units:" />
+        <Label Content="{x:Static g:AppStrings.Settings_Locale_TemperatureUnits}" />
         <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.TemperatureUnitModes}" SelectedItem="{Binding Common.TemperatureUnitMode}">
           <mui:BetterComboBox.ItemTemplate>
             <DataTemplate>
@@ -29,11 +29,11 @@
       </DockPanel>
 
       <CheckBox IsChecked="{Binding Common.UseImperialUnits}">
-        <Label Content="Use imperial units" />
+        <Label Content="{x:Static g:AppStrings.Settings_Locale_UseImperialUnits}" />
       </CheckBox>
 
       <CheckBox IsChecked="{Binding Common.Use12HrTimeFormat}">
-        <Label Content="Use 12-hour clock" />
+        <Label Content="{x:Static g:AppStrings.Settings_Locale_Use12HourClock}" />
       </CheckBox>
 
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}">

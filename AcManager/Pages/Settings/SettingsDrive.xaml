@@ -20,7 +20,7 @@
               <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=starters" />
             </DockPanel>
           </Label>
-          <Button Command="{Binding SwitchToSteamStarterCommand}" Content="Switch to Steam starter"
+          <Button Command="{Binding SwitchToSteamStarterCommand}" Content="{x:Static g:AppStrings.Settings_Drive_SwitchToSteamStarter}"
               Visibility="{Binding SwitchToSteamStarterCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
           <ComboBox ItemsSource="{Binding Drive.StarterTypes}" SelectedItem="{Binding Drive.SelectedStarterType}" DisplayMemberPath="DisplayName">
             <ComboBox.ItemContainerStyle>
@@ -45,12 +45,12 @@
 
         <CheckBox IsChecked="{Binding Drive.AcServiceStopAtExit}"
             Visibility="{Binding Drive.SelectedStarterType.Id, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='AC Service'}">
-          <Label Content="Stop service on CM exit" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_StopServiceOnCMExit}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.RunSteamIfNeeded}"
             Visibility="{Binding Drive.SelectedStarterType.RequiresSteam, Converter={StaticResource BooleanToVisibilityConverter}}">
-          <Label Content="Try to start Steam if not running (recommended)" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_TryToStartSteamIfNotRunning}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.Use32BitVersion}">
@@ -65,8 +65,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_SkipPracticeResults}" />
         </CheckBox>
 
-        <DockPanel x:Name="RaceResultsLimit" ToolTip="Results are stored in “…\AppData\Local\AcTools Content Manager\Progress\Sessions”" Margin="0 20 0 8">
-          <mui:ValueLabel Value="{Binding Drive.RaceResultsLimit}" Content="Keep results of the last"
+        <DockPanel x:Name="RaceResultsLimit" ToolTip="{x:Static g:AppStrings.Settings_Drive_KeepResultsOfTheLast_Tooltip}" Margin="0 20 0 8">
+          <mui:ValueLabel Value="{Binding Drive.RaceResultsLimit}" Content="{x:Static g:AppStrings.Settings_Drive_KeepResultsOfTheLast}"
               Postfix="{Binding Drive.RaceResultsLimit, Converter={StaticResource PluralizingConverter}, ConverterParameter='{} {session}'}"
               Width="{x:Static system:Double.NaN}" DockPanel.Dock="Top" Margin="0 0 0 4" />
           <Slider Minimum="0" Maximum="1">
@@ -89,31 +89,27 @@
           <TextBlock.Text>AC’s shared memory:</TextBlock.Text>
         </TextBlock>
 
-        <!--<CheckBox IsChecked="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="Watch for AC shared memory" ToolTip="Used for proper hibernation and other stuff" />
-        </CheckBox>-->
-
         <CheckBox IsChecked="{Binding Drive.HideWhileRacing}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="Hibernate CM while racing" ToolTip="This way, CM won't waste precious CPU and/or GPU time when it's so needed" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_HibernateCMWhileRacing}" ToolTip="This way, CM won't waste precious CPU and/or GPU time when it's so needed" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.ImmediateCancel}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="Terminate loading immediately if Escape is pressed" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_TerminateLoadingIfEscapeIsPressed}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.ContinueOnEscape}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
-          <Label Content="Continue race if Escape pressed" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_ContinueRaceIfEscapePressed}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.MonitorFramesPerSecond}" IsEnabled="{Binding Drive.WatchForSharedMemory}">
           <CheckBox.ToolTip>
-            <mui:BbCodeBlock Text="You’ll see the result in [b]Settings/Assetto Corsa/Video[/b]" />
+            <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Drive_MonitorFPS_Tooltip}" />
           </CheckBox.ToolTip>
-          <Label Content="Monitor FPS during the race" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_MonitorFPS}" />
         </CheckBox>
 
-        <DockPanel ToolTip="Might help to spot if game is crashed in VR">
-          <Label Content="Beep if race is cancelled:" />
+        <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_BeepIfRaceIsCancelled}" />
           <mui:BetterComboBox ItemsSource="{Binding Drive.BeepingNoises}" SelectedItem="{Binding Drive.CrashBeepingNoise}" IsEditable="False"
               mui:NewMarkService.New="True">
             <mui:BetterComboBox.ItemTemplate>
@@ -230,19 +226,19 @@
         </CheckBox>
 
         <!-- Real head motion -->
-        <DockPanel set:Search.SubCategory="Real Head Motion:" Margin="0 20 0 8" Style="{x:Null}">
-          <TextBlock Text="Real Head Motion:" Style="{StaticResource Heading2}" />
+        <DockPanel set:Search.SubCategory="{x:Static g:AppStrings.Settings_Drive_RealHeadMotion}" Margin="0 20 0 8" Style="{x:Null}">
+          <TextBlock Text="{x:Static g:AppStrings.Settings_Drive_RealHeadMotion}" Style="{StaticResource Heading2}" />
           <Button Style="{StaticResource MoreDetailsSuperscript}"
               CommandParameter="http://www.assettocorsa.net/forum/index.php?threads/real-head-motion-1-0-2.4755/" />
         </DockPanel>
 
         <CheckBox IsChecked="{Binding Drive.RhmIntegration}">
-          <Label Content="RHM integration" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_RHMIntegration}" />
         </CheckBox>
 
         <DockPanel IsEnabled="{Binding Drive.RhmIntegration}">
-          <Label Content="RHM location:" />
-          <Button Content="Browse" Command="{Binding Drive.SelectRhmLocationCommand}" />
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_RHMLocation}" />
+          <Button Content="{x:Static mui:UiStrings.Common_Browse}" Command="{Binding Drive.SelectRhmLocationCommand}" />
           <mui:BetterTextBox Text="{Binding Drive.RhmLocation}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         </DockPanel>
 
@@ -304,19 +300,6 @@
         <CheckBox IsChecked="{Binding Drive.WeatherSpecificTyreSmoke}" ToolTip="{x:Static g:AppStrings.Settings_Drive_WeatherParticles_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_WeatherParticles}" />
         </CheckBox>
-
-        <!--<CheckBox IsChecked="{Binding Drive.PatchAcToDisableShadows}" set:Search.Keywords="video;graphics;shadows"
-            Margin="0 12 0 0" VerticalContentAlignment="Top" ToolTip="If needed, backup will be saved as “acs_backup_shadows.exe”.">
-          <mui:SpacingStackPanel Spacing="2">
-            <Label>
-              <TextBlock Text="If shadows are disabled, patch AC to fully disable them (global)" />
-            </Label>
-            <mui:BbCodeBlock Style="{StaticResource Small}" Text="Supported AC versions:" />
-            <mui:BbCodeBlock Style="{StaticResource Small}" Text="{Binding Value, Source={x:Static t:AcShadowsPatcher.SupportedVersions}}" />
-            <mui:BbCodeBlock Style="{StaticResource Small}"
-                Text="Thanks to [url=&quot;http://www.racedepartment.com/downloads/ac-disable-shadows-patcher.17067/&quot;]@lianju[/url] for help in implementation" />
-          </mui:SpacingStackPanel>
-        </CheckBox>-->
       </StackPanel>
 
     </mui:SpacingUniformGrid>
