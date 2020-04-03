@@ -19,12 +19,12 @@ namespace AcManager {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -3596,6 +3596,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Avoid cars without skin numbers.
+        /// </summary>
+        public static string Drive_AvoidCarsWithoutSkinNumbers {
+            get {
+                return ResourceManager.GetString("Drive_AvoidCarsWithoutSkinNumbers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Might greatly reduce variety.
+        /// </summary>
+        public static string Drive_AvoidCarsWithoutSkinNumbers_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_AvoidCarsWithoutSkinNumbers_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t filter appropriate cars for starting grid.
         /// </summary>
         public static string Drive_CannotFilter {
@@ -3677,6 +3695,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do not record ghost car.
+        /// </summary>
+        public static string Drive_DoNotRecordGhostCar {
+            get {
+                return ResourceManager.GetString("Drive_DoNotRecordGhostCar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Fixed opponents strength.
         /// </summary>
         public static string Drive_FixedOpponentsStrength {
@@ -3700,6 +3727,24 @@ namespace AcManager {
         public static string Drive_GhostCarAdvantage {
             get {
                 return ResourceManager.GetString("Drive_GhostCarAdvantage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Car variety limit.
+        /// </summary>
+        public static string Drive_GridCarVarietyLimit {
+            get {
+                return ResourceManager.GetString("Drive_GridCarVarietyLimit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to With this slider, you can limit the maximum number of various cars for AC to load.
+        /// </summary>
+        public static string Drive_GridCarVarietyLimit_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_GridCarVarietyLimit_Tooltip", resourceCulture);
             }
         }
         
@@ -3826,6 +3871,24 @@ namespace AcManager {
         public static string Drive_Penalties {
             get {
                 return ResourceManager.GetString("Drive_Penalties", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pick skins sequentially.
+        /// </summary>
+        public static string Drive_PickSkinsSequentially {
+            get {
+                return ResourceManager.GetString("Drive_PickSkinsSequentially", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed.
+        /// </summary>
+        public static string Drive_PickSkinsSequentially_Tooltip {
+            get {
+                return ResourceManager.GetString("Drive_PickSkinsSequentially_Tooltip", resourceCulture);
             }
         }
         

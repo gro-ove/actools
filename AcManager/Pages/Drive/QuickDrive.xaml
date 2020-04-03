@@ -42,7 +42,6 @@
         </mui:HierarchicalComboBox.SelectedContent>
       </mui:HierarchicalComboBox>
 
-
       <DockPanel x:Key="CarSpecificFanatecPanel" x:Shared="False" DataContext="{Binding SelectedCar}">
         <CheckBox IsChecked="{Binding FanatecCustomSettings}" Margin="0 0 0 8" DockPanel.Dock="Top">
           <Label Content="Car-specific Fanatec settings" />

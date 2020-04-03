@@ -3882,4 +3882,25 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
     <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
       <value>Connected drivers</value>
     </data>
+    <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+      <value>Do not record ghost car</value>
+    </data>
+    <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+      <value>Car variety limit</value>
+    </data>
+    <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+      <value>With this slider, you can limit the maximum number of various cars for AC to load</value>
+    </data>
+    <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+      <value>Avoid cars without skin numbers</value>
+    </data>
+    <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+      <value>Might greatly reduce variety</value>
+    </data>
+    <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+      <value>Pick skins sequentially</value>
+    </data>
+    <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+      <value>App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed</value>
+    </data>
 </root>

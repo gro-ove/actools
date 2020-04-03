@@ -34,7 +34,7 @@
 
     <StackPanel Margin="{StaticResource ElementMargin}" Grid.Row="2" Grid.Column="0" IsEnabled="{Binding GhostCar}">
       <CheckBox Margin="8 0 0 0" IsChecked="{Binding DoNotRecordGhostCar}">
-        <Label Content="Do not record ghost car" />
+        <Label Content="{x:Static g:AppStrings.Drive_DoNotRecordGhostCar}" />
       </CheckBox>
     </StackPanel>
 

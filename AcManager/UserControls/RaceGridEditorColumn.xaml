@@ -83,18 +83,18 @@
                     LabelUnchecked="{x:Static t:ToolsStrings.Drive_GridArrangeWay_Random}" IsChecked="{Binding ShuffleCandidates}" />
               </DockPanel>
 
-              <DockPanel IsEnabled="{Binding Mode.CandidatesMode}" ToolTip="With this slider, you can limit the maximum number of various cars for AC to load">
-                <mui:ValueLabel Value="{Binding DisplayVarietyLimitation}" Content="Car variety limit" mui:BetterTextBox.Mode="IntegerOrZeroLabel" />
+              <DockPanel IsEnabled="{Binding Mode.CandidatesMode}" ToolTip="{x:Static g:AppStrings.Drive_GridCarVarietyLimit_Tooltip}">
+                <mui:ValueLabel Value="{Binding DisplayVarietyLimitation}" Content="{x:Static g:AppStrings.Drive_GridCarVarietyLimit}" mui:BetterTextBox.Mode="IntegerOrZeroLabel" />
                 <Slider Minimum="0" Maximum="25" Value="{Binding VarietyLimitation}" TickFrequency="5" TickPlacement="BottomRight" />
               </DockPanel>
 
               <CheckBox IsChecked="{Binding SequentialSkins}"
-                  ToolTip="App will try to arrange skins in ascending order, while respecting filter and keeping everything shuffled if needed">
-                <Label Content="Pick skins sequentially" />
+                  ToolTip="{x:Static g:AppStrings.Drive_PickSkinsSequentially_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Drive_PickSkinsSequentially}" />
               </CheckBox>
 
-              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}" ToolTip="Might greatly reduce variety">
-                <Label Content="Avoid cars without skin numbers" />
+              <CheckBox IsChecked="{Binding AvoidCarsWithoutNumbers}" IsEnabled="{Binding SequentialSkins}" ToolTip="{x:Static g:AppStrings.Drive_AvoidCarsWithoutSkinNumbers_Tooltip}">
+                <Label Content="{x:Static g:AppStrings.Drive_AvoidCarsWithoutSkinNumbers}" />
               </CheckBox>
 
               <TextBlock Text="{x:Static t:ToolsStrings.Common_GlobalHeader}" Style="{StaticResource SettingsPanel.Heading2}" />
