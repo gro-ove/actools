@@ -82,6 +82,10 @@
           <Label Content="{x:Static g:AppStrings.Settings_Online_LoadInformationDirectly}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding Online.PausePingingInRace}">
+          <Label Content="Pause pinging during the race" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="Ping servers only once and while pressing Refresh button, like in original launcher">
           <Label Content="Ping servers once" />
         </CheckBox>

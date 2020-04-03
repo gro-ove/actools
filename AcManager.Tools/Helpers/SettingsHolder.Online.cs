@@ -206,6 +206,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _pausePingingInRace;
+
+            public bool PausePingingInRace {
+                get => _pausePingingInRace ?? (_pausePingingInRace = ValuesStorage.Get("Settings.OnlineSettings.PausePingingInRace", true)).Value;
+                set {
+                    if (Equals(value, _pausePingingInRace)) return;
+                    _pausePingingInRace = value;
+                    ValuesStorage.Set("Settings.OnlineSettings.PausePingingInRace", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _pingOnlyOnce;
 
             public bool PingOnlyOnce {

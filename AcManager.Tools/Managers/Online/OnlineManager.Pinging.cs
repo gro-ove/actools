@@ -1,8 +1,10 @@
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AcManager.Tools.Helpers;
+using AcManager.Tools.SemiGui;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -53,12 +55,16 @@ namespace AcManager.Tools.Managers.Online {
                             Logging.Write("Not everying was pinged in the previous iteration, let’s try again");
                         }
 
+                        while (GameWrapper.IsInGame && SettingsHolder.Online.PausePingingInRace) {
+                            await Task.Delay(TimeSpan.FromSeconds(1d));
+                        }
+
                         var ordered = List.OrderByDescending(x => (priorityFilter?.Test(x) == true ? 1000 : 0) + x.ConnectedDrivers).ToList();
                         await ordered.Select
                                 (async x => {
                                     // ReSharper disable once AccessToDisposedClosure
                                     if (linked.IsCancellationRequested) return;
-
+                                    if (GameWrapper.IsInGame && SettingsHolder.Online.PausePingingInRace) return;
                                     if (x.Status == ServerStatus.Unloaded) {
                                         await x.Update(ServerEntry.UpdateMode.Lite);
                                         SetPinged(Pinged + 1);
