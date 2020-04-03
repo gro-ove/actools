@@ -158,8 +158,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Velikost:</value>
   </data>
   <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
-    <value>Aktivované appky</value>
-  </data>
+    <value>Povolené appky:</value>
+  <alternative>Aktivované appky</alternative></data>
   <data name="AcSettings_Audio" xml:space="preserve">
     <value>Zvuk</value>
   </data>
@@ -203,11 +203,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Zorné pole</value>
   </data>
   <data name="AcSettings_GhostCar" xml:space="preserve">
-    <value>Duch auta</value>
-  </data>
+    <value>Duch auta:</value>
+  <alternative>Duch auta</alternative></data>
   <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
-    <value>Max. neprůhlednost při</value>
-  </data>
+    <value>Max. neprůhled. při</value>
+  <alternative>Max. neprůhlednost při</alternative></data>
   <data name="AcSettings_GhostCar_Opacity" xml:space="preserve">
     <value>Neprůhlednost</value>
   </data>
@@ -227,11 +227,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Různé</value>
   </data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
-    <value>Ukazatel příblížení:</value>
-  </data>
+    <value>Radar:</value>
+  <alternative>Ukazatel příblížení:</alternative></data>
   <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
-    <value>Zobrazit indikátor nejbližších soupeřů</value>
-  </data>
+    <value>Při hraní vizuálně upozorňovat na auta v nejbližším okolí</value>
+  <alternative>Zobrazit indikátor nejbližších soupeřů</alternative></data>
   <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
     <value>Provést po přehrání:</value>
   </data>
@@ -272,8 +272,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Povolit volný pohyb kamery</value>
   </data>
   <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Pro volný pohyb kamery ve hře stiskněte klávesu F7 </value>
-  </data>
+    <value>Pro volný pohyb kamery ve hře stiskněte klávesu F7 a parametry kamery měňte šipkami i myší</value>
+  <alternative>Pro volný pohyb kamery ve hře stiskněte klávesu F7 </alternative></data>
   <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
     <value>Formát screenshotů:</value>
   </data>
@@ -338,8 +338,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Zpoždění snímku</value>
   </data>
   <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
-    <value>Maximální zpoždění snímku, kdy při volbě "auto" vše obstarává grafická karta</value>
-  </data>
+    <value>Maximální zpoždění snímku, kdy při volbě "auto" vše obstarává grafický čip</value>
+  <alternative>Maximální zpoždění snímku, kdy při volbě "auto" vše obstarává grafická karta</alternative></data>
   <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
     <value>Degradace textur</value>
   </data>
@@ -443,8 +443,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Odhlásit se</value>
   </data>
   <data name="Controls_Abs" xml:space="preserve">
-    <value>Stupeň ABS:</value>
-  </data>
+    <value>Síla ABS:</value>
+  <alternative>Stupeň ABS:</alternative></data>
   <data name="Controls_AdditionalBindings" xml:space="preserve">
     <value>Dodatečná přiřazení:</value>
   </data>
@@ -479,8 +479,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Umožnit řízení myší</value>
   </data>
   <data name="Controls_EngineBrake" xml:space="preserve">
-    <value>Intenzita brždění motorem:</value>
-  </data>
+    <value>Síla brzdění motorem:</value>
+  <alternative>Intenzita brždění motorem:</alternative></data>
   <data name="Controls_ForceFeedback" xml:space="preserve">
     <value>Zpětná odezva</value>
   </data>
@@ -500,8 +500,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Převrátit zpětnou odezvu</value>
   </data>
   <data name="Controls_KeyboardSteeringHeader" xml:space="preserve">
-    <value>Řízení klávesnicí</value>
-  </data>
+    <value>Řízení klávesnicí:</value>
+  <alternative>Řízení klávesnicí</alternative></data>
   <data name="Controls_MguK" xml:space="preserve">
     <value>Motorgenerátory:</value>
   </data>
@@ -512,8 +512,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Řízení myší:</value>
   </data>
   <data name="Controls_OppositeLockSpeed" xml:space="preserve">
-    <value>Rychlost vyrovnání smysku</value>
-  </data>
+    <value>Rychl. vyrovnání smyku</value>
+  <alternative>Rychlost vyrovnání smysku</alternative></data>
   <data name="Controls_RemoveOld" xml:space="preserve">
     <value>Ano, odstranit staré</value>
   </data>
@@ -554,8 +554,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Otestovat nynější přednastavení v Rychlovce</value>
   </data>
   <data name="Controls_TractionControl" xml:space="preserve">
-    <value>Úroveň kontroly trakce:</value>
-  </data>
+    <value>Síla kontroly trakce:</value>
+  <alternative>Úroveň kontroly trakce:</alternative></data>
   <data name="Controls_Turbo" xml:space="preserve">
     <value>Síla turba:</value>
   </data>
@@ -575,8 +575,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Aplikace jinak tiše přesune předchozí změněné verze do Koše</value>
   </data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Nelze vytvořit nový autosalon</value>
-  </data>
+    <value>Nový autosalon nelze vytvořit</value>
+  <alternative>Nelze vytvořit nový autosalon</alternative></data>
   <data name="Drive_ActualTemperature" xml:space="preserve">
     <value>Skutečná teplota:</value>
   </data>
@@ -605,11 +605,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Nemohu vyfiltrovat odpovídající auta pro startovní rošt</value>
   </data>
   <data name="Drive_CannotFilter_Commentary" xml:space="preserve">
-    <value>Pokud jste provedli nějaké změny v GridTypes.json, ujistěte se že jsou správné.</value>
-  </data>
+    <value>Pokud jste provedli nějaké změny v GridTypes.json, ujistěte se, že jsou správné.</value>
+  <alternative>Pokud jste provedli nějaké změny v GridTypes.json, ujistěte se že jsou správné.</alternative></data>
   <data name="Drive_CannotInitializeLua" xml:space="preserve">
-    <value>Nemohu inicializovat Lua</value>
-  </data>
+    <value>Lua nelze inicializovat </value>
+  <alternative>Nemohu inicializovat Lua</alternative></data>
   <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
     <value>Pokus o nalezení jakéhokoliv vozu dle zvoleného startovního roštu selhal.</value>
   </data>
@@ -620,8 +620,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Zvolte prosím trať.</value>
   </data>
   <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
-    <value>Vyberte prosím aspoň jednoho soupeře.</value>
-  </data>
+    <value>Vyberte prosím alespoň jednoho soupeře.</value>
+  <alternative>Vyberte prosím aspoň jednoho soupeře.</alternative></data>
   <data name="Drive_CannotStart_Title" xml:space="preserve">
     <value>Nelze odstartovat závod</value>
   </data>
@@ -638,8 +638,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Náskok ducha auta</value>
   </data>
   <data name="Drive_InvalidScript" xml:space="preserve">
-    <value>Neplatný s kript</value>
-  </data>
+    <value>Neplatný skript</value>
+  <alternative>Neplatný s kript</alternative></data>
   <data name="Drive_JumpStartPenalty" xml:space="preserve">
     <value>Trest za ulitý start:</value>
   </data>
@@ -656,8 +656,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Místní počasí</value>
   </data>
   <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
-    <value>Omezený počtem dostupných boxů</value>
-  </data>
+    <value>Maximální počet soupeřů je omezený počtem dostupných boxů na dané trati</value>
+  <alternative>Omezený počtem dostupných boxů</alternative></data>
   <data name="Drive_OpponentsStrength" xml:space="preserve">
     <value>Dovednost soupeřů</value>
   </data>
@@ -674,8 +674,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Náhodná</value>
   </data>
   <data name="Drive_Penalties" xml:space="preserve">
-    <value>Tresty</value>
-  </data>
+    <value>Udělování trestů hrou</value>
+  <alternative>Tresty</alternative></data>
   <data name="Drive_RaceDuration" xml:space="preserve">
     <value>Délka závodu</value>
   </data>
@@ -695,32 +695,32 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Startovní pozice</value>
   </data>
   <data name="Drive_Temperature" xml:space="preserve">
-    <value>Teplota vzduchu okolí</value>
-  </data>
+    <value>Teplota vzduchu</value>
+  <alternative>Teplota vzduchu okolí</alternative></data>
   <data name="Drive_Temperature_Warning" xml:space="preserve">
     <value>Zadaná teplota je mimo rozsah, a tak se použila nejbližší hodnota</value>
   </data>
   <data name="Drive_Time" xml:space="preserve">
-    <value>Denní čas</value>
-  </data>
+    <value>Denní doba</value>
+  <alternative>Denní čas</alternative></data>
   <data name="Drive_Time_Warning" xml:space="preserve">
     <value>Zadaný čas je mimo rozsah, a tak se použila nejbližší hodnota</value>
   </data>
   <data name="Drive_TimeMultiplerLabel" xml:space="preserve">
-    <value>Zrychlení času</value>
-  </data>
+    <value>Tok času</value>
+  <alternative>Zrychlení času</alternative></data>
   <data name="Drive_TrackStateLabel" xml:space="preserve">
-    <value>Kondice trati</value>
-  </data>
+    <value>Kondice trati:</value>
+  <alternative>Kondice trati</alternative></data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>Předehřát preumatiky</value>
-  </data>
+    <value>Předehřát pneumatiky</value>
+  <alternative>Předehřát preumatiky</alternative></data>
   <data name="Drive_Weather_CannotLoad" xml:space="preserve">
     <value>Nelze načíst skutečné počasí</value>
   </data>
   <data name="Drive_WeatherLabel" xml:space="preserve">
-    <value>Počasí</value>
-  </data>
+    <value>Počasí:</value>
+  <alternative>Počasí</alternative></data>
   <data name="KunosCareer_LapsLabel" xml:space="preserve">
     <value>Kol:</value>
   </data>
@@ -749,8 +749,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Teplota vzduchu:</value>
   </data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
-    <value>Denní čas:</value>
-  </data>
+    <value>Denní doba:</value>
+  <alternative>Denní čas:</alternative></data>
   <data name="KunosCareer_TrackState" xml:space="preserve">
     <value>Kondice trati:</value>
   </data>
@@ -785,8 +785,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Užitečné tipy</value>
   </data>
   <data name="Main_Language" xml:space="preserve">
-    <value>Jazyk</value>
-  </data>
+    <value>Jazyk a region</value>
+  <alternative>Jazyk</alternative></data>
   <data name="Main_Media" xml:space="preserve">
     <value>Média</value>
   </data>
@@ -812,8 +812,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Nastavení</value>
   </data>
   <data name="Main_Setups" xml:space="preserve">
-    <value>Nastavení aut</value>
-  </data>
+    <value>Nastavení auta</value>
+  <alternative>Nastavení aut</alternative></data>
   <data name="Main_Showrooms" xml:space="preserve">
     <value>Autosalony</value>
   </data>
@@ -866,14 +866,14 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Seřadit podle pingu</value>
   </data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
-    <value>Kapacita</value>
-  </data>
+    <value>Kapacity</value>
+  <alternative>Kapacita</alternative></data>
   <data name="Online_Sorting_CarsNumber" xml:space="preserve">
-    <value>Čísla aut</value>
-  </data>
+    <value>Počtu aut</value>
+  <alternative>Čísla aut</alternative></data>
   <data name="Online_Sorting_Drivers" xml:space="preserve">
-    <value>Soupeři</value>
-  </data>
+    <value>Soupeřů</value>
+  <alternative>Soupeři</alternative></data>
   <data name="Online_Sorting_Name" xml:space="preserve">
     <value>Jména</value>
   </data>
@@ -881,8 +881,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Čas:</value>
   </data>
   <data name="RaceGrid_Candidates" xml:space="preserve">
-    <value>Možní soupeři:</value>
-  </data>
+    <value>Auta možných soupeřů:</value>
+  <alternative>Možní soupeři:</alternative></data>
   <data name="RaceGrid_ClassFormat" xml:space="preserve">
     <value>Třída: {0}</value>
   </data>
@@ -893,8 +893,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Soupeři</value>
   </data>
   <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
-    <value>Spravovat nastavení aut</value>
-  </data>
+    <value>Spravovat nastavení auta</value>
+  <alternative>Spravovat nastavení aut</alternative></data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>Nastavení videohry:</value>
   </data>
@@ -932,8 +932,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Téma:</value>
   </data>
   <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
-    <value>Animovat přechody:</value>
-  </data>
+    <value>Animace přechodů:</value>
+  <alternative>Animovat přechody:</alternative></data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">
     <value>Auta:</value>
   </data>
@@ -947,8 +947,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Nejspíše nemáte čas je všechny aktualizovat</value>
   </data>
   <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
-    <value>Symbol, který bude použit pro ikonu</value>
-  </data>
+    <value>Jeden symbol, který bude použit pro ikonu písma</value>
+  <alternative>Symbol, který bude použit pro ikonu</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Písma:</value>
   </data>
@@ -956,17 +956,17 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Informativní vyhledávání:</value>
   </data>
   <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
-    <value>Menší hodnota může zvýtšit odezvu uživatelského rozhraní, ale snížit načítací časy</value>
-  </data>
+    <value>Menší hodnota může zlepšit odezvu uživatelského rozhraní, ale prodloužit načítací časy</value>
+  <alternative>Menší hodnota může zvýtšit odezvu uživatelského rozhraní, ale snížit načítací časy</alternative></data>
   <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
     <value>Počet souběžných načítání:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>Implicitně přecházet na Wikipedii</value>
-  </data>
+    <value>Implicitně omezit hledání na Wikipedii</value>
+  <alternative>Implicitně přecházet na Wikipedii</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
-    <value>Implicitně přidá “site:wikipedia.org”</value>
-  </data>
+    <value>Do vyhledávacího pole implicitně přidá “site:wikipedia.org”</value>
+  <alternative>Implicitně přidá “site:wikipedia.org”</alternative></data>
   <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
     <value>Označovat jako nové po dobu:</value>
   </data>
@@ -1010,8 +1010,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Použít 32bitovou verzi</value>
   </data>
   <data name="Settings_Drive_AiLevelInDriverName" xml:space="preserve">
-    <value>Ve jménu jezdce zobrazit úroveň dovednosti</value>
-  </data>
+    <value>Ve jméně jezdce zobrazit úroveň dovednosti</value>
+  <alternative>Ve jménu jezdce zobrazit úroveň dovednosti</alternative></data>
   <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
     <value>Platí pouze pro proměnlivou úroveň dovednosti</value>
   </data>
@@ -1019,8 +1019,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Vždy zaznamenat ducha auta v režimu rychlého kola</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
-    <value>Zaznamenat ducha auta v režimu rychlého kola, i když je skrytý</value>
-  </data>
+    <value>Zaznamenat ducha auta v režimu rychlého kola, i když je jinak skrytý</value>
+  <alternative>Zaznamenat ducha auta v režimu rychlého kola, i když je skrytý</alternative></data>
   <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
     <value>Umožnit změnu úrovně dovednosti soupeřů</value>
   </data>
@@ -1052,8 +1052,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Rozšířené počasí:</value>
   </data>
   <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
-    <value>Kariéra od vývojářů Kunos:</value>
-  </data>
+    <value>Kariéra od Kunosu:</value>
+  <alternative>Kariéra od vývojářů Kunos:</alternative></data>
   <data name="Settings_Drive_LocalAddress" xml:space="preserve">
     <value>Místní adresa:</value>
   </data>
@@ -1079,8 +1079,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Dočasně přepíše system/cfg/ppfilters/default.ini vybraným PP filtrem, pokud je aktivován režim virtuální reality Oculus Rift </value>
   </data>
   <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
-    <value>Hráčovo jméno:</value>
-  </data>
+    <value>Hráčova identita:</value>
+  <alternative>Hráčovo jméno:</alternative></data>
   <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
     <value>Tento příkaz bude proveden, jakmile acs.exe skončí, ale před načtením všech výsledkových json souborů.
 
@@ -1096,8 +1096,8 @@ Potřebujete-li některé další hodnoty, kontaktujte nás prosím a my je při
 Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value>
   </data>
   <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
-    <value>Příkaz pro pozávodní událost:</value>
-  </data>
+    <value>Pozávodní událost:</value>
+  <alternative>Příkaz pro pozávodní událost:</alternative></data>
   <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
     <value>Tento příkaz bude proveden před startem acs.exe, ale po nastavení všech inicializačních souborů.
 
@@ -1113,8 +1113,8 @@ Potřebujete-li některé další hodnoty, kontaktujte nás prosím a my je při
 Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value>
   </data>
   <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
-    <value>Příkaz pro předzávodní událost:</value>
-  </data>
+    <value>Předzávodní událost:</value>
+  <alternative>Příkaz pro předzávodní událost:</alternative></data>
   <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
     <value>Rychlovka:</value>
   </data>
@@ -1134,14 +1134,14 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Použít částice výchozího počasí</value>
   </data>
   <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
-    <value>Částice se vrátí později</value>
-  </data>
+    <value>Částice se vrátí do původního stavu později</value>
+  <alternative>Částice se vrátí později</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
     <value>Použít PP filtr výchozího počasí</value>
   </data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
-    <value>PP filtr se vrátí později</value>
-  </data>
+    <value>PP filtr se vrátí do původního stavu později</value>
+  <alternative>PP filtr se vrátí později</alternative></data>
   <data name="Settings_General" xml:space="preserve">
     <value>Obecné</value>
   </data>
@@ -1170,14 +1170,14 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Zkontrolovat aktualizace</value>
   </data>
   <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
-    <value>Zkontrolovat aktualizace:</value>
-  </data>
+    <value>Kontrolovat aktualizace:</value>
+  <alternative>Zkontrolovat aktualizace:</alternative></data>
   <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
     <value>Verze dat:</value>
   </data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
-    <value>Aktualizovat na netestované verze</value>
-  </data>
+    <value>Aktualizovat na důkladně neotestované verze</value>
+  <alternative>Aktualizovat na netestované verze</alternative></data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
     <value>Přístup k testování:</value>
   </data>
@@ -1212,14 +1212,14 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Jak vyrobit fanouškovský překlad</value>
   </data>
   <data name="Settings_Locale_Installed" xml:space="preserve">
-    <value>Nainstalovaný jazyk</value>
-  </data>
+    <value>Vestavěný fanouškovský překlad</value>
+  <alternative>Nainstalovaný jazyk</alternative></data>
   <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
     <value>Jazyk:</value>
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
-    <value>Přepsat retězce rozbaleným překladem, pokud existuje</value>
-  </data>
+    <value>Přepsat řetězce rozbaleným překladem, pokud existuje</value>
+  <alternative>Přepsat retězce rozbaleným překladem, pokud existuje</alternative></data>
   <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
     <value>Rozbalený překlad bude načten z “AppData\Local\AcTools Content Manager\Locales\(ID)”, kde ID představuje vámi vybraný jazyk</value>
   </data>
@@ -1239,8 +1239,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Restartovat</value>
   </data>
   <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
-    <value>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a souběžným přidržením klávesy Ctrl</value>
-  </data>
+    <value>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a současným přidržením klávesy Ctrl</value>
+  <alternative>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a souběžným přidržením klávesy Ctrl</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
     <value>Pro provedení změn nezapomeňte restartovat aplikaci</value>
   </data>
@@ -1320,11 +1320,11 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Správce přednastavení serveru:</value>
   </data>
   <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
-    <value>Zobrazit loga značek v seznamu aut</value>
-  </data>
+    <value>Zobrazit znaky značek v seznamu aut</value>
+  <alternative>Zobrazit loga značek v seznamu aut</alternative></data>
   <data name="Settings_Plugins" xml:space="preserve">
-    <value>Zástuvné moduly</value>
-  </data>
+    <value>Zásuvné moduly</value>
+  <alternative>Zástuvné moduly</alternative></data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
     <value>Rychlé přepínače</value>
   </data>
@@ -1332,8 +1332,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Vybrané:</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>Rychlé přepínače – malé překryvné menu, které umožňuje různé akce, ať už se v Content Manageru pohybujete kdekoliv. Přetažením položek z knihovny můžete nabídku akcí měnit.[br][br]Pro zobrazení přepínačů stiskněte Alt+~ nebo klikněte na pravé tlačítko myši. Akce můžete aktivovat i pomocí Alt+1 až Alt+9.[br][br]Přejete-li si zde nějakou novou akci, [url="https://trello.com/c/w5xT6ssZ/49-contacts"]kontaktujte nás[/url].</value>
-  </data>
+    <value>Rychlé přepínače – malé překryvné menu, které umožňuje různé akce, ať už se v Content Manageru pohybujete kdekoliv, přičemž přetažením položek z knihovny můžete nabídku akcí měnit. Pro jejich zobrazení stiskněte Alt+~ nebo klikněte na pravé tlačítko myši. Akce můžete aktivovat i pomocí Alt+1 až Alt+9.[br][br]Přejete-li si zde nějakou novou akci, [url="https://trello.com/c/w5xT6ssZ/49-contacts"]kontaktujte nás[/url].</value>
+  <alternative>Rychlé přepínače – malé překryvné menu, které umožňuje různé akce, ať už se v Content Manageru pohybujete kdekoliv. Přetažením položek z knihovny můžete nabídku akcí měnit.[br][br]Pro zobrazení přepínačů stiskněte Alt+~ nebo klikněte na pravé tlačítko myši. Akce můžete aktivovat i pomocí Alt+1 až Alt+9.[br][br]Přejete-li si zde nějakou novou akci, [url="https://trello.com/c/w5xT6ssZ/49-contacts"]kontaktujte nás[/url].</alternative></data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
     <value>Povolit Rychlé přepínače</value>
   </data>
@@ -1344,14 +1344,14 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Automaticky přidat koncovku ".acreplay" k novým opakovaným záznamům</value>
   </data>
   <data name="Settings_Replays_AddExtension_Tooltip" xml:space="preserve">
-    <value>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou</value>
-  </data>
+    <value>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou, aby je šlo spouštět přímo z Průzkumníka Windows</value>
+  <alternative>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou</alternative></data>
   <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
     <value>Přidat k existujícím</value>
   </data>
   <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
-    <value>Přidat ".acreaplay" ke všem existujícícm opakovaným záznamům</value>
-  </data>
+    <value>Přidat ".acreaplay" ke všem existujícím opakovaným záznamům</value>
+  <alternative>Přidat ".acreaplay" ke všem existujícícm opakovaným záznamům</alternative></data>
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
     <value>Automatické ukládání</value>
   </data>
@@ -1362,29 +1362,26 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Názvy a koncovky souborů:</value>
   </data>
   <data name="Settings_Replays_ExtensionHeader_Tooltip" xml:space="preserve">
-    <value>Díky rozšíření “.acreplay” budete moci spustit opakovaný záznam přes Průzkumníka Windows</value>
-  </data>
+    <value>Díky koncovce “.acreplay” budete moci spustit opakovaný záznam přes Průzkumníka Windows</value>
+  <alternative>Díky rozšíření “.acreplay” budete moci spustit opakovaný záznam přes Průzkumníka Windows</alternative></data>
   <data name="Settings_Replays_LoadInformation" xml:space="preserve">
     <value>Načíst informace o opakovaných záznamech</value>
   </data>
   <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
     <value>Pokusí se z opakovaných záznamů načíst informace o trati, autu a počasí pro účely záložky Média/Opakované záznamy</value>
   </data>
-  <data name="Settings_Sharing" xml:space="preserve">
-    <value>Sdílení</value>
-  </data>
   <data name="Settings_Sharing_Anonymously" xml:space="preserve">
     <value>Sdílet anonymně</value>
   </data>
   <data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
-    <value>Úložiště:</value>
-  </data>
+    <value>[b][mono]{type}[/mono][/b] — typ závodu;</value>
+  <alternative>Úložiště:</alternative></data>
   <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
-    <value>Složka:</value>
-  </data>
+    <value>[b][mono]{car}[/mono][/b] — název auta;</value>
+  <alternative>Složka:</alternative></data>
   <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
-    <value>Automaticky kopírovat odkaz do schránky</value>
-  </data>
+    <value>[b][mono]{date}[/mono][/b] — datum a denní doba v náležitém formátu;</value>
+  <alternative>Automaticky kopírovat odkaz do schránky</alternative></data>
   <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
     <value>Historie:</value>
   </data>
@@ -1398,14 +1395,14 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Typ</value>
   </data>
   <data name="Settings_Sharing_NameLabel" xml:space="preserve">
-    <value>Sdílené jméno:</value>
-  </data>
+    <value>Podpis:</value>
+  <alternative>Sdílené jméno:</alternative></data>
   <data name="Settings_Sharing_Unnamed" xml:space="preserve">
-    <value>Znemožnit sdílení pod jiným jménem</value>
-  </data>
+    <value>Zakázat sdílení uživatelských jmen</value>
+  <alternative>Znemožnit sdílení pod jiným jménem</alternative></data>
   <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
-    <value>Zkontrolovat parametry před sdílením</value>
-  </data>
+    <value>Potvrdit parametry před sdílením</value>
+  <alternative>Zkontrolovat parametry před sdílením</alternative></data>
   <data name="Tags_CleanUp" xml:space="preserve">
     <value>Vyčistit tagy</value>
   </data>
@@ -1419,17 +1416,17 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Analyzovat</value>
   </data>
   <data name="Toolbar_CarSetups" xml:space="preserve">
-    <value>Nastavení aut</value>
-  </data>
+    <value>Nastavení auta</value>
+  <alternative>Nastavení aut</alternative></data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
-    <value>Spravovat nastavení aut (Ctrl+U)</value>
-  </data>
+    <value>Spravovat nastavení auta (Ctrl+U)</value>
+  <alternative>Spravovat nastavení aut (Ctrl+U)</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
     <value>Vlastní autosalon</value>
   </data>
   <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
-    <value>Za názvem auta uvádět rok výroby</value>
-  </data>
+    <value>Za názvem auta uvádět rok vzniku</value>
+  <alternative>Za názvem auta uvádět rok výroby</alternative></data>
   <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
     <value>Potvrdit před odebráním</value>
   </data>
@@ -1437,6 +1434,2265 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Všechen odebraný obsah může být obnoven z Koše</value>
   </data>
   <data name="Common_RoadTemperature" xml:space="preserve">
-    <value>Teplota trati:</value>
+    <value>Teplota trati: </value>
+  <alternative>Teplota trati:</alternative></data>
+  <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
+    <value>… kg/koní</value>
+  </data>
+  <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
+    <value>… koní</value>
+  </data>
+  <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
+    <value>… s z 0 na 100 km/h</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
+    <value>[b][mono]{car.id}[/mono][/b] — ID auta;</value>
+  </data>
+  <data name="Settings_Sharing_CustomIds" xml:space="preserve">
+    <value>[b][mono]{date_ac}[/mono][/b] — datum a denní doba ve formátu videohry.</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
+    <value>[b][mono]{track.id}[/mono][/b] — Id trati;</value>
+  </data>
+  <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
+    <value>[b][mono]{track}[/mono][/b] — název trati;</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
+    <value>[url="{0}"]{1}[/url] není nainstalováno. Přejete si to napravit?</value>
+  </data>
+  <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
+    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]Tady[/url] je seznam úprav používaných RSR (včetně stahovacích odkazů).</value>
+  </data>
+  <data name="Drive_Weather_Warning" xml:space="preserve">
+    <value>{}Skutečné počasí ({0}) není podporováno</value>
+  </data>
+  <data name="Replay_SharedReadMe" xml:space="preserve">
+    <value>{0}
+
+Pro přehrání rozbalte “{1}” do “…\Documents\Assetto Corsa\replay”.</value>
+  </data>
+  <data name="List_Apps" xml:space="preserve">
+    <value>{0} appek</value>
+  </data>
+  <data name="List_Cars" xml:space="preserve">
+    <value>{0} aut</value>
+  </data>
+  <data name="List_Showrooms" xml:space="preserve">
+    <value>{0} autosalonů</value>
+  </data>
+  <data name="List_PpFilters" xml:space="preserve">
+    <value>{0} filtrů</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>{0} modelů řidiče</value>
+  </data>
+  <data name="Dialog_CarSetupsFormat" xml:space="preserve">
+    <value>{0} nastavení aut</value>
+  </data>
+  <data name="List_Setups" xml:space="preserve">
+    <value>{0} nastavení aut</value>
+  </data>
+  <data name="List_Fonts" xml:space="preserve">
+    <value>{0} písem</value>
+  </data>
+  <data name="List_Weather" xml:space="preserve">
+    <value>{0} počasí</value>
+  </data>
+  <data name="List_ServerPresets" xml:space="preserve">
+    <value>{0} přednastavení</value>
+  </data>
+  <data name="List_Replays" xml:space="preserve">
+    <value>{0} opakovaných záznamů</value>
+  </data>
+  <data name="Online_ServersFormat" xml:space="preserve">
+    <value>{0} serverů</value>
+  </data>
+  <data name="Dialog_CarSkinsFormat" xml:space="preserve">
+    <value>{0} skinů</value>
+  </data>
+  <data name="List_Skins" xml:space="preserve">
+    <value>{0} skinů</value>
+  </data>
+  <data name="CarSpecs_Title" xml:space="preserve">
+    <value>{0} specifikací</value>
+  </data>
+  <data name="List_Tracks" xml:space="preserve">
+    <value>{0} tratí</value>
+  </data>
+  <data name="Online_AddServer" xml:space="preserve">
+    <value>Adresa serveru (IP &amp; HTTP nebo TCP port):</value>
+  </data>
+  <data name="Common_Update" xml:space="preserve">
+    <value>Aktualizaci</value>
+  </data>
+  <data name="CarSpecs_UpdateCurves" xml:space="preserve">
+    <value>Aktualizovat křivky</value>
+  </data>
+  <data name="Toolbar_UpdateMap" xml:space="preserve">
+    <value>Aktualizovat mapu</value>
+  </data>
+  <data name="Toolbar_UpdatePreview" xml:space="preserve">
+    <value>Aktualizovat náhled</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
+    <value>Aktualizovat náhled autosalonu (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
+    <value>Aktualizovat náhled počasí (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
+    <value>Aktualizovat náhled skinu (Ctrl+P)</value>
+  </data>
+  <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
+    <value>Aktualizovat náhled trati (Ctrl+P)</value>
+  </data>
+  <data name="CarPreviews_Title" xml:space="preserve">
+    <value>Aktualizovat náhledy</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews" xml:space="preserve">
+    <value>Aktualizovat náhledy</value>
+  </data>
+  <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
+    <value>Aktualizovat specifikace točivého momentu a výkonu?</value>
+  </data>
+  <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
+    <value>Aktualizovat všechny náhledy (Ctrl+P)</value>
+  </data>
+  <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
+    <value>Aplikace bude restartována</value>
+  </data>
+  <data name="AppKey_PreRestart_Message" xml:space="preserve">
+    <value>Aplikace nyní bude restartovaná, ale nemělo by to zabrat dlouho. Ještě jednou díky za vaší podporu!
+
+[i]Klíč prosím s nikým nesdílejte, protože jinak by mohl být kompromitován.[/i]</value>
+  </data>
+  <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
+    <value>Aplikace převezme {0} {opponent} z tohoto seznamu</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>Aplikace se pokusí přečíst známé vlastnosti z poškozeného souboru JSON (opatrně – může dojít ke ztrátě dat)</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline_Tooltip" xml:space="preserve">
+    <value>Appka automaticky nastaví speciální SRS jméno pro předejití problémů</value>
+  </data>
+  <data name="AcSettings_Apps" xml:space="preserve">
+    <value>Appky</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
+    <value>Archiv je zašifrovaný. Zadejte heslo:</value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
+    <value>Archiv může být poškozený, nebo heslo neplatné.</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
+    <value>Automaticky přepínat appku RSR</value>
+  </data>
+  <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
+    <value>Automaticky přepočítat poměr výkonu a váhy</value>
+  </data>
+  <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
+    <value>Automaticky zobrazit nebo skrýt appku RSR, pokud závod nesouvisí s RSR</value>
+  </data>
+  <data name="Toolbar_Showroom" xml:space="preserve">
+    <value>Autosalon</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
+    <value>Autosalon chybí.</value>
+  </data>
+  <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
+    <value>Autosalon chybí. Otevřít nastavení?</value>
+  </data>
+  <data name="WeatherEdit_Color" xml:space="preserve">
+    <value>Barva</value>
+  </data>
+  <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
+    <value>Barva textu:</value>
+  </data>
+  <data name="Common_ColorLabel" xml:space="preserve">
+    <value>Barva:</value>
+  </data>
+  <data name="LiveryIcon_ColorLabel" xml:space="preserve">
+    <value>Barva:</value>
+  </data>
+  <data name="Main_ServerRunning" xml:space="preserve">
+    <value>Běží</value>
+  </data>
+  <data name="Solution_GenerateNew_Details" xml:space="preserve">
+    <value>Bude vytvořen nový prázdný soubor; nezapomeňte na určení náležitých hodnot a následné uložení</value>
+  </data>
+  <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
+    <value>Čas potřebný na zrychlení z 0 na 100 km/h; doporučený formát: “{0}”</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>Čekám na konec opakovaného záznamu...</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>Čekám na konec testu výkonu...</value>
+  </data>
+  <data name="Race_Waiting" xml:space="preserve">
+    <value>Čekám na konec závodu...</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>Celková délka, doporučený formát: “{0}”</value>
+  </data>
+  <data name="AdditionalContent_PathFormat" xml:space="preserve">
+    <value>Cesta: {0}</value>
+  </data>
+  <data name="Common_GotId" xml:space="preserve">
+    <value>Chápu</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
+    <value>Chcete nejvyšší kvalitu screenshotů?</value>
+  </data>
+  <data name="Page_Wip_Commentary" xml:space="preserve">
+    <value>Chcete-li se dozvědět více o vývoji, [url="https://trello.com/b/MwqpL8Bw/content-manager"]zde najdete nástěnku na Trellu[/url] s množstvím informací.</value>
+  </data>
+  <data name="Rsr_Commentary" xml:space="preserve">
+    <value>Chcete-li zahájit RSR relaci přímo z prohlížeče, [url="https://github.com/gro-ove/actools-cm-download-extension"]stáhněte si příslušný doplňek[/url]!</value>
+  </data>
+  <data name="RaceResult_ResultProcessingError" xml:space="preserve">
+    <value>Chyba zpracování výsledků</value>
+  </data>
+  <data name="RaceResult_ErrorHeader" xml:space="preserve">
+    <value>Chyba:</value>
+  </data>
+  <data name="Font_MissingFonts" xml:space="preserve">
+    <value>Chybějící písma</value>
+  </data>
+  <data name="Online_FilterMissing_Short" xml:space="preserve">
+    <value>Chybí</value>
+  </data>
+  <data name="Arguments_MetadataIsMissing" xml:space="preserve">
+    <value>Chybí metadata.</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>Chybí model řidiče</value>
+  </data>
+  <data name="AcObject_NumberLabel" xml:space="preserve">
+    <value>Číslo</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
+    <value>Číslo skinu změněno</value>
+  </data>
+  <data name="AdditionalContent_WhatToUpdateLabel" xml:space="preserve">
+    <value>Co aktualizovat:</value>
+  </data>
+  <data name="App_AppUpdated" xml:space="preserve">
+    <value>Content Manager byl aktualizovaný</value>
+  </data>
+  <data name="Hibernate_TrayText" xml:space="preserve">
+    <value>Content Manager je skrytý</value>
+  </data>
+  <data name="UpgradeIcon_Commentary" xml:space="preserve">
+    <value>Ctrl+I: kurzíva, Ctrl+B: tučné</value>
+  </data>
+  <data name="App_DataUpdated" xml:space="preserve">
+    <value>Data byla aktualizována</value>
+  </data>
+  <data name="AcObject_DateLabel" xml:space="preserve">
+    <value>Datum:</value>
+  </data>
+  <data name="LiveryIcon_Shape_Diagonal" xml:space="preserve">
+    <value>Diagonála</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalWithCircle" xml:space="preserve">
+    <value>Diagonála s kruhem</value>
+  </data>
+  <data name="LiveryIcon_Shape_DiagonalLineWithCircle" xml:space="preserve">
+    <value>Diagonální čára s kruhem</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands_Tooltip" xml:space="preserve">
+    <value>Dialog výběru v autě</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
+    <value>Díky za pomoc?</value>
+  </data>
+  <data name="AppKey_PreRestart_Title" xml:space="preserve">
+    <value>Díky!</value>
+  </data>
+  <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
+    <value>Dodatečné</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
+    <value>Doporučený formát: DDS obrázek, 32f.32f.32f.32f, 5120×2560
+Pokud ale nechcete zabrat 200 MB: obrázek TIFF, 96 bitů na pixel, ZIP</value>
+  </data>
+  <data name="AcError_AvailableSolutions" xml:space="preserve">
+    <value>Dostupné {solution}:</value>
+  </data>
+  <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
+    <value>Dovednost soupeřů:</value>
+  </data>
+  <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
+    <value>Dvojité pruhy</value>
+  </data>
+  <data name="Toolbar_EditMode" xml:space="preserve">
+    <value>Editační režim</value>
+  </data>
+  <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
+    <value>Filtr chybí. Otevřít nastavení?</value>
+  </data>
+  <data name="Filter_ByCar" xml:space="preserve">
+    <value>Filtrovat dle auta</value>
+  </data>
+  <data name="Filter_ByAuthor" xml:space="preserve">
+    <value>Filtrovat dle autora</value>
+  </data>
+  <data name="Filter_ByNumber" xml:space="preserve">
+    <value>Filtrovat dle čísla</value>
+  </data>
+  <data name="Filter_ByDecade" xml:space="preserve">
+    <value>Filtrovat dle dekády</value>
+  </data>
+  <data name="Filter_ByDriver" xml:space="preserve">
+    <value>Filtrovat dle jména závodníka</value>
+  </data>
+  <data name="Filter_ByTorque" xml:space="preserve">
+    <value>Filtrovat dle krouťáku</value>
+  </data>
+  <data name="Filter_ByTopSpeed" xml:space="preserve">
+    <value>Filtrovat dle maximálky</value>
+  </data>
+  <data name="Filter_ByCity" xml:space="preserve">
+    <value>Filtrovat dle města</value>
+  </data>
+  <data name="Filter_ByWeather" xml:space="preserve">
+    <value>Filtrovat dle počasí</value>
+  </data>
+  <data name="Filter_ByWeight" xml:space="preserve">
+    <value>Filtrovat dle podobné váhy</value>
+  </data>
+  <data name="Filter_ByPower" xml:space="preserve">
+    <value>Filtrovat dle podobného výkonu</value>
+  </data>
+  <data name="Filter_ByAcceleration" xml:space="preserve">
+    <value>Filtrovat dle podobného zrychlení</value>
+  </data>
+  <data name="Filter_ByPwRatio" xml:space="preserve">
+    <value>Filtrovat dle poměru výkon/hmotnost</value>
+  </data>
+  <data name="Filter_ByPriority" xml:space="preserve">
+    <value>Filtrovat dle priority</value>
+  </data>
+  <data name="Filter_ByYear" xml:space="preserve">
+    <value>Filtrovat dle roku</value>
+  </data>
+  <data name="Filter_ByTag" xml:space="preserve">
+    <value>Filtrovat dle tagu</value>
+  </data>
+  <data name="Filter_ByTrack" xml:space="preserve">
+    <value>Filtrovat dle trati</value>
+  </data>
+  <data name="Filter_ByClass" xml:space="preserve">
+    <value>Filtrovat dle třídy</value>
+  </data>
+  <data name="Filter_ByTeam" xml:space="preserve">
+    <value>Filtrovat dle týmu</value>
+  </data>
+  <data name="Filter_ByAge" xml:space="preserve">
+    <value>Filtrovat dle věku</value>
+  </data>
+  <data name="Filter_BySize" xml:space="preserve">
+    <value>Filtrovat dle velikosti</value>
+  </data>
+  <data name="Filter_ByCountry" xml:space="preserve">
+    <value>Filtrovat dle země</value>
+  </data>
+  <data name="Filter_ByBrand" xml:space="preserve">
+    <value>Filtrovat dle značky</value>
+  </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>Filtrovat podle podobné délky</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>Filtrovat podle podobné šířky</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>Filtrovat podle podobného počtu zastávek v boxech</value>
+  </data>
+  <data name="Settings_Replays_NameFormat" xml:space="preserve">
+    <value>Formát jmen opakovaných záznamů</value>
+  </data>
+  <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
+    <value>Formuláře:</value>
+  </data>
+  <data name="Common_ShootingCancelled" xml:space="preserve">
+    <value>Fotografování zrušeno</value>
+  </data>
+  <data name="WeatherEdit_AngleGamma" xml:space="preserve">
+    <value>Gama úhlu</value>
+  </data>
+  <data name="Online_FilterPassword_Short" xml:space="preserve">
+    <value>Heslo</value>
+  </data>
+  <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
+    <value>Heslo je neplatné</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
+    <value>Heslo není platné, zkuste to znovu:</value>
+  </data>
+  <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
+    <value>Hmotnost bez řidiče, doporučený formát: “{0}”</value>
+  </data>
+  <data name="CarSpecs_WeightLabel" xml:space="preserve">
+    <value>Hmotnost:</value>
+  </data>
+  <data name="LiveryIcon_NumberValue" xml:space="preserve">
+    <value>Hodnota</value>
+  </data>
+  <data name="LiveryIcon_Title" xml:space="preserve">
+    <value>Ikona skinu</value>
+  </data>
+  <data name="UpgradeIcon_Title" xml:space="preserve">
+    <value>Ikona Upgradu</value>
+  </data>
+  <data name="AcSettings_SessionInformation" xml:space="preserve">
+    <value>Informace o relaci:</value>
+  </data>
+  <data name="VersionInfo_Title" xml:space="preserve">
+    <value>Informace o verzi</value>
+  </data>
+  <data name="Toolbar_FindInformation" xml:space="preserve">
+    <value>Informace online</value>
+  </data>
+  <data name="Race_Initializing" xml:space="preserve">
+    <value>Inicializuji...</value>
+  </data>
+  <data name="AdditionalContent_Installing" xml:space="preserve">
+    <value>Instaluji {0}…</value>
+  </data>
+  <data name="Common_HowTo_Title" xml:space="preserve">
+    <value>Jak na to</value>
+  </data>
+  <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
+    <value>Je vyžadováno heslo</value>
+  </data>
+  <data name="Arguments_Shared_JustGo" xml:space="preserve">
+    <value>Jen jít</value>
+  </data>
+  <data name="Solution_SetBrandName_Details" xml:space="preserve">
+    <value>Jen nastavit nový jméno značky</value>
+  </data>
+  <data name="Solution_SetName_Details" xml:space="preserve">
+    <value>Jen nastavit nový název</value>
+  </data>
+  <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
+    <value>Jen použít</value>
+  </data>
+  <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
+    <value>Jen uložit</value>
+  </data>
+  <data name="Common_OneMoreThing" xml:space="preserve">
+    <value>Ještě jedna věc</value>
+  </data>
+  <data name="Controls_GearShiftDebouncing" xml:space="preserve">
+    <value>Jistější řazení</value>
+  </data>
+  <data name="Car_PackExistingDataMessage" xml:space="preserve">
+    <value>Již existují rozbalená data. Nahradit je?[br][br]Původní “data.acd” bude přesunuto do Koše.</value>
+  </data>
+  <data name="AcObject_DriverNameLabel" xml:space="preserve">
+    <value>Závodník:</value>
+  </data>
+  <data name="Arguments_SharedMessage" xml:space="preserve">
+    <value>Jméno: [b]{0}[/b]
+{1}: [b]{2}[/b]
+Autor: [b]{3}[/b]</value>
+  </data>
+  <data name="KunosCareer_Title" xml:space="preserve">
+    <value>Kariéra od Kunosu</value>
+  </data>
+  <data name="Select_Categories" xml:space="preserve">
+    <value>Kategorie</value>
+  </data>
+  <data name="AppKey_Title" xml:space="preserve">
+    <value>Klíč aplikace</value>
+  </data>
+  <data name="AppKey_KeyWasRevoked" xml:space="preserve">
+    <value>Klíč byl zneplatněn</value>
+  </data>
+  <data name="AppKey_InvalidKey" xml:space="preserve">
+    <value>Klíč je neplatný nebo neúplný</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
+    <value>Klíč zneplatněn</value>
+  </data>
+  <data name="Online_ClientsLabel" xml:space="preserve">
+    <value>Klientů:</value>
+  </data>
+  <data name="Srs_ReadyNotification" xml:space="preserve">
+    <value>Kliknutím se připojíte k závodu</value>
+  </data>
+  <data name="AcObject_Cloning" xml:space="preserve">
+    <value>Klonuji...</value>
+  </data>
+  <data name="UpgradeIcon_Library" xml:space="preserve">
+    <value>Knihovna</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
+    <value>Koeficient teploty</value>
+  </data>
+  <data name="RaceResult_Laps" xml:space="preserve">
+    <value>Kol:</value>
+  </data>
+  <data name="LiveryIcon_Number_Condensed" xml:space="preserve">
+    <value>Kondenzované</value>
+  </data>
+  <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
+    <value>Konfigurace:</value>
+  </data>
+  <data name="AcRoot_Prompt" xml:space="preserve">
+    <value>Kořenová složka videohry:</value>
+  </data>
+  <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
+    <value>Křivky barvy:</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
+    <value>Křivky budou přepočítány pomocí engine.ini, ale budete muset poskytnout úbytek výkonu</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
+    <value>Křivky budou přepočítány pomocí engine.ini, power.lut a hodnot výkonu a kroutícího momentu z ui_car.json</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
+    <value>Křivky budou změněny tak, aby seděly hodnoty výkonu a kroutícího momentu z ui_car.json (můžete je vidět výše)</value>
+  </data>
+  <data name="CarSpecs_TorqueLabel" xml:space="preserve">
+    <value>Krouťák:</value>
+  </data>
+  <data name="LiveryIcon_Shape_Circle" xml:space="preserve">
+    <value>Kruh</value>
+  </data>
+  <data name="LiveryIcon_Style_Gloss" xml:space="preserve">
+    <value>Lesk</value>
+  </data>
+  <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
+    <value>Líbivý autosalon:</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
+    <value>Líbivý vlastní autosalon</value>
+  </data>
+  <data name="About_ReportAnIssue_Sent" xml:space="preserve">
+    <value>Log odeslán</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
+    <value>Lze kdykoliv přepínat stiskem klávesy F</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
+    <value>Lze kdykoliv přepínat stiskem klávesy M</value>
+  </data>
+  <data name="AcObject_Version_TooltipExt" xml:space="preserve">
+    <value>Lze použít pro automatickou aktualizaci</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
+    <value>Maska pro SRS servery:</value>
+  </data>
+  <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
+    <value>Maximálka:</value>
+  </data>
+  <data name="CarSpecs_Torque_Tooltip" xml:space="preserve">
+    <value>Maximální kroutící moment, doporučený formát: “{0}”</value>
+  </data>
+  <data name="CarSpecs_MaxSpeed_Tooltip" xml:space="preserve">
+    <value>Maximální rychlost, doporučený formát: “{0}”</value>
+  </data>
+  <data name="RaceResult_MaxLevel" xml:space="preserve">
+    <value>Maximální úroveň</value>
+  </data>
+  <data name="CarSpecs_Power_Tooltip" xml:space="preserve">
+    <value>Maximální výkon, doporučený formát: “{0}”</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Město:</value>
+  </data>
+  <data name="Main_Lan" xml:space="preserve">
+    <value>Místní síť</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
+    <value>Místo vytváření screenshotu vyberete hotový soubor s obrázkem</value>
+  </data>
+  <data name="WeatherEdit_FogHeader" xml:space="preserve">
+    <value>Mlha:</value>
+  </data>
+  <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
+    <value>Množství oblaků</value>
+  </data>
+  <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
+    <value>Mraky:</value>
+  </data>
+  <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
+    <value>Musíte nejdříve určit hodnoty výkonu a kroutícího momentu.</value>
+  </data>
+  <data name="Online_FilterBooking_Short" xml:space="preserve">
+    <value>Nábor</value>
+  </data>
+  <data name="RaceGrid_LoadingProgress" xml:space="preserve">
+    <value>Načteno {1} z {0}</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>Náhodný</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>Náhodný</value>
+  </data>
+  <data name="Toolbar_ReplaceSound" xml:space="preserve">
+    <value>Nahradit zvuk</value>
+  </data>
+  <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
+    <value>Najít informace o autě online (Ctrl+I)</value>
+  </data>
+  <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
+    <value>Najít informace o trati online (Ctrl+I)</value>
+  </data>
+  <data name="Solution_FindTrack" xml:space="preserve">
+    <value>Najít trať</value>
+  </data>
+  <data name="Toolbar_Clone" xml:space="preserve">
+    <value>Naklonovat</value>
+  </data>
+  <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
+    <value>Naklonovat počasí (Ctrl+Shift+D)</value>
+  </data>
+  <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
+    <value>Naposledy skenováno: {0}</value>
+  </data>
+  <data name="AcObject_FontLastScannedNever" xml:space="preserve">
+    <value>Naposledy skenováno: nikdy</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
+    <value>Násob. vyp. HDR </value>
+  </data>
+  <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
+    <value>Nasbírat seznam aut na písmo (Ctrl+U)</value>
+  </data>
+  <data name="WeatherEdit_Multipler" xml:space="preserve">
+    <value>Násobič</value>
+  </data>
+  <data name="RaceGrid_CandidatePriority" xml:space="preserve">
+    <value>Násobič náhodné příležitosti</value>
+  </data>
+  <data name="WeatherEdit_SpeedMultipler_Tooltip" xml:space="preserve">
+    <value>Násobič základní rychlosti</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon" xml:space="preserve">
+    <value>Nastavit “{0}” jako ikonu</value>
+  </data>
+  <data name="Solution_SetBrandBadge" xml:space="preserve">
+    <value>Nastavit {0} jako znak</value>
+  </data>
+  <data name="Solution_SetupPreview" xml:space="preserve">
+    <value>Nastavit a vygenerovat nový náhled</value>
+  </data>
+  <data name="Solution_SetUpgradeIcon_Details" xml:space="preserve">
+    <value>Nastavit ikonu upgradu z úložiště Obsahu</value>
+  </data>
+  <data name="Solution_SetName" xml:space="preserve">
+    <value>Nastavit název</value>
+  </data>
+  <data name="Solution_SetNameFromId" xml:space="preserve">
+    <value>Nastavit název na základě ID</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName" xml:space="preserve">
+    <value>Nastavit název značky na základě názvu auta</value>
+  </data>
+  <data name="Solution_SetupLivery" xml:space="preserve">
+    <value>Nastavit novou ikonu skinu</value>
+  </data>
+  <data name="Solution_SetupPreview_Details" xml:space="preserve">
+    <value>Nastavit nový náhled skrz nastavení</value>
+  </data>
+  <data name="Solution_SetBrandName" xml:space="preserve">
+    <value>Nastavit znak značky</value>
+  </data>
+  <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
+    <value>Nastavit znak značky z úložiště Obsahu</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
+    <value>Nastavte na Nízké nebo normální, pokud registrujete problémy se zvukem</value>
+  </data>
+  <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
+    <value>Nastavte pozici kamery ručně a pak stiskněte F8 pro záchyt obrazovky</value>
+  </data>
+  <data name="CreateShowroom_NameLabel" xml:space="preserve">
+    <value>Název:</value>
+  </data>
+  <data name="Race_CleaningUp" xml:space="preserve">
+    <value>Něco čistím...</value>
+  </data>
+  <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
+    <value>Něco jako toto:</value>
+  </data>
+  <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
+    <value>Něco se pokazilo.</value>
+  </data>
+  <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
+    <value>Nejdříve ji musíte povolit</value>
+  </data>
+  <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
+    <value>Nejlepší hodnota: “SimRacingSystem*”</value>
+  </data>
+  <data name="RaceResult_BestLap" xml:space="preserve">
+    <value>Nejlepší kolo:</value>
+  </data>
+  <data name="RaceResult_BestCombo" xml:space="preserve">
+    <value>Nejlepší kombinace:</value>
+  </data>
+  <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
+    <value>Nelze aktualizovat náhled autosalonu</value>
+  </data>
+  <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
+    <value>Nelze aktualizovat náhledy zakázaných aut či skinů.</value>
+  </data>
+  <data name="Changelog_CannotLoad" xml:space="preserve">
+    <value>Nelze načíst seznam změn</value>
+  </data>
+  <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
+    <value>Nelze nainstalovat {0}</value>
+  </data>
+  <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
+    <value>Nelze nainstalovat autosalon “{0}”</value>
+  </data>
+  <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
+    <value>Nelze nainstalovat dodatečný obsah</value>
+  </data>
+  <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
+    <value>Nelze nainstalovat nastavení auta</value>
+  </data>
+  <data name="AdditionalContent_CannotInstall" xml:space="preserve">
+    <value>Nelze nainstalovat obsah ze souboru</value>
+  </data>
+  <data name="Common_CannotFindCarById" xml:space="preserve">
+    <value>Nelze nalézt auto pomocí poskytnutého ID</value>
+  </data>
+  <data name="Common_CannotFindObjectById" xml:space="preserve">
+    <value>Nelze nalézt objekt pomocí poskytnutého ID</value>
+  </data>
+  <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
+    <value>Nelze obnovit poškozený soubor JSON</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin" xml:space="preserve">
+    <value>Nelze odebrat “ui_skin.json”</value>
+  </data>
+  <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
+    <value>Nelze odeslat logy</value>
+  </data>
+  <data name="AppKey_CannotCheck" xml:space="preserve">
+    <value>Nelze ověřit klíč</value>
+  </data>
+  <data name="Common_CannotAddToLibrary" xml:space="preserve">
+    <value>Nelze přidat nový záznam do knihovny</value>
+  </data>
+  <data name="Online_CannotAddServer" xml:space="preserve">
+    <value>Server nelze přidat </value>
+  </data>
+  <data name="AdditionalContent_CannotUnpack" xml:space="preserve">
+    <value>Nelze rozbalit</value>
+  </data>
+  <data name="Weather_CannotShare" xml:space="preserve">
+    <value>Počasí nelze sdílet </value>
+  </data>
+  <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
+    <value>Nelze stáhnout autosalon “{0}”</value>
+  </data>
+  <data name="CarPreviews_CannotSave" xml:space="preserve">
+    <value>Nelze uložit náhledy</value>
+  </data>
+  <data name="AcError_CannotSolveProblem" xml:space="preserve">
+    <value>Nelze vyřešit problém</value>
+  </data>
+  <data name="Car_CannotPackData" xml:space="preserve">
+    <value>Data nelze zabalit </value>
+  </data>
+  <data name="Common_CannotStartRace" xml:space="preserve">
+    <value>Závod nelze zahájit </value>
+  </data>
+  <data name="LiveryIcon_CannotChange" xml:space="preserve">
+    <value>Ikonu skinu nelze změnit </value>
+  </data>
+  <data name="UpgradeIcon_CannotChange" xml:space="preserve">
+    <value>Ikonu upgradu nelze změnit.</value>
+  </data>
+  <data name="BrandBadge_CannotChange" xml:space="preserve">
+    <value>Znak značky nelze změnit </value>
+  </data>
+  <data name="Solution_ChangeBrandBadge" xml:space="preserve">
+    <value>Změnit znak značky</value>
+  </data>
+  <data name="Arguments_CannotParseRequest" xml:space="preserve">
+    <value>Požadavek nelze provést </value>
+  </data>
+  <data name="Replay_CannotShare" xml:space="preserve">
+    <value>Opakovaný záznam nelze sdílet </value>
+  </data>
+  <data name="Main_CannotProcessArgument" xml:space="preserve">
+    <value>Nelze zpracovat argument: “{0}”</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest" xml:space="preserve">
+    <value>Požadavek nelze zpracovat </value>
+  </data>
+  <data name="CropImage_Skip" xml:space="preserve">
+    <value>Neořezávat</value>
+  </data>
+  <data name="Rsr_InvalidParameters" xml:space="preserve">
+    <value>Neplatné RSR parametry</value>
+  </data>
+  <data name="Main_NotSupportedRequest" xml:space="preserve">
+    <value>Nepodporovaný požadavek: “{0}”</value>
+  </data>
+  <data name="Arguments_SharedUnsupported" xml:space="preserve">
+    <value>Nepodporovaný typ: “{0}”</value>
+  </data>
+  <data name="Main_UnhandledException" xml:space="preserve">
+    <value>Nezvládnutá vyjímka:
+
+{0}</value>
+  </data>
+  <data name="AdditionalContent_NothingFound" xml:space="preserve">
+    <value>Nic nebylo nalezeno</value>
+  </data>
+  <data name="App_NewVersion" xml:space="preserve">
+    <value>Nová verze</value>
+  </data>
+  <data name="Common_NewName" xml:space="preserve">
+    <value>Nové jméno</value>
+  </data>
+  <data name="UpgradeIcon_New" xml:space="preserve">
+    <value>Nový</value>
+  </data>
+  <data name="Solution_SetNameFromId_Details" xml:space="preserve">
+    <value>Nový název bude: “{0}”</value>
+  </data>
+  <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
+    <value>Nový název značku bude: “{0}”</value>
+  </data>
+  <data name="Common_NewBrandName" xml:space="preserve">
+    <value>Nový název značky</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
+    <value>Nový spouštěč je připraven, nyní bez jakéhokoliv záplatování</value>
+  </data>
+  <data name="UpgradeIcon_Current" xml:space="preserve">
+    <value>Nynější</value>
+  </data>
+  <data name="App_DataUpdated_Details" xml:space="preserve">
+    <value>Nynější verze: {0}</value>
+  </data>
+  <data name="CarPreviews_Progress" xml:space="preserve">
+    <value>Nyní aktualizuji: {0} ({1}/{2})</value>
+  </data>
+  <data name="Main_OfficialSupportNotification" xml:space="preserve">
+    <value>Nyní s oficiální podporou!</value>
+  </data>
+  <data name="Solution_RemoveObject_Details" xml:space="preserve">
+    <value>Objekt bude přesunut do Koše</value>
+  </data>
+  <data name="Toolbar_Refresh" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="Toolbar_Reload" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
+    <value>Obnovit (Ctrl+R)</value>
+  </data>
+  <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
+    <value>Obnovit informace o serveru (Ctrl+R)</value>
+  </data>
+  <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
+    <value>Od verze 1.7 Kunos přidal oficiální podporu pro vlastní spouštěče. V zásadě funguje jako Starter+, ale Content Manager nemusí nahrazovat AssettoCorsa.exe, což je skvělé! Chtěli byste přepnout na nový Official Starter?</value>
+  </data>
+  <data name="Solution_MakeIndependent_Details" xml:space="preserve">
+    <value>Odebrat ID chybějícího rodiče z ui_car.json</value>
+  </data>
+  <data name="Solution_FixName_Details" xml:space="preserve">
+    <value>Odebrat neplatné symboly</value>
+  </data>
+  <data name="Solution_RemoveObject" xml:space="preserve">
+    <value>Odebrat objekt</value>
+  </data>
+  <data name="Solution_RemoveReplay" xml:space="preserve">
+    <value>Odebrat opakovaný záznam</value>
+  </data>
+  <data name="Rsr_Quit" xml:space="preserve">
+    <value>Odejít</value>
+  </data>
+  <data name="Toolbar_UploadAndShare" xml:space="preserve">
+    <value>Sdílet v cloudu</value>
+  </data>
+  <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
+    <value>Odlehčený autosalon je kompatibilní s DirectX 10, což je pro grafickou kartu mnohem méně náročné, takže je to skvělé řešení pro kreslení skinů</value>
+  </data>
+  <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
+    <value>Odlehčený autosalon:</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
+    <value>Odlehčený vlastní autosalon</value>
+  </data>
+  <data name="Solution_RemoveReplay_Details" xml:space="preserve">
+    <value>Opakovaný záznam bude přesunut do Koše</value>
+  </data>
+  <data name="Replay_DefaultUploadedName" xml:space="preserve">
+    <value>Opakovaný záznam videohry</value>
+  </data>
+  <data name="RaceResult_TryAgain" xml:space="preserve">
+    <value>Opakovat jízdu</value>
+  </data>
+  <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
+    <value>Opatrně, změna ID může způsobit problémy online!</value>
+  </data>
+  <data name="Online_Pinged" xml:space="preserve">
+    <value>Opingováno {0} z {1}</value>
+  </data>
+  <data name="CarSpecs_FixFormat" xml:space="preserve">
+    <value>Opravit formát</value>
+  </data>
+  <data name="CarSpecs_FixFormats" xml:space="preserve">
+    <value>Opravit formáty</value>
+  </data>
+  <data name="Solution_FixName" xml:space="preserve">
+    <value>Opravit jméno</value>
+  </data>
+  <data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
+    <value>Originální zvuk se nahradí zvukem jiného auta (Alt+S)</value>
+  </data>
+  <data name="CropImage_Title" xml:space="preserve">
+    <value>Oříznout obrázek</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>Osa</value>
+  </data>
+  <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
+    <value>Ostatní vlivy barev na oblaky:
+ • [b]0%:[/b] berou se v úvahu jen efekty barev na oblaky;
+ • [b]50%:[/b] 50 % barvy oblak a 50 % efektů;
+ • [b]100%:[/b] bere se v úvahu jen barva oblaků</value>
+  </data>
+  <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
+    <value>Otestovat filtr v autosalonu (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
+    <value>Otestovat nastavení auta (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
+    <value>Otestovat počasí na trati (Ctrl+G)</value>
+  </data>
+  <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
+    <value>Otevřít složku auta (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
+    <value>Otevřít složku autosalonu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
+    <value>Otevřít složku modelu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>Otevřít složku modelu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
+    <value>Otevřít složku nastavení auta (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
+    <value>Otevřít složku opakovaného záznamu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
+    <value>Otevřít složku písma (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
+    <value>Otevřít složku počasí (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
+    <value>Otevřít složku PP filtru (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
+    <value>Otevřít složku skinu (Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
+    <value>Otevřít složku trati (Ctrl+F)</value>
+  </data>
+  <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
+    <value>Placatý</value>
+  </data>
+  <data name="Online_FilterFull_Short" xml:space="preserve">
+    <value>Plné</value>
+  </data>
+  <data name="KunosCareer_FullyCompleted" xml:space="preserve">
+    <value>Plně dokončeno</value>
+  </data>
+  <data name="AcObject_WeatherLabel" xml:space="preserve">
+    <value>Počasí:</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>Počet zastávek v boxech i omezení počtu aut na trati, doporučený formát: “{0}”</value>
+  </data>
+  <data name="LiveryIcon_NumberHeader" xml:space="preserve">
+    <value>Počet:</value>
+  </data>
+  <data name="CarPreviews_LookAtLabel" xml:space="preserve">
+    <value>Podívejte se na:</value>
+  </data>
+  <data name="WeatherEdit_Cover" xml:space="preserve">
+    <value>Pokrývka</value>
+  </data>
+  <data name="AcObject_Author_TooltipExt" xml:space="preserve">
+    <value>Pokud vytváříte svojí vlastní modifikaci, použijte prosím toto pole místo popisu (nebo jméno, samozřejmě)</value>
+  </data>
+  <data name="Solution_FindTrack_Details" xml:space="preserve">
+    <value>Pokusit se najít trať online</value>
+  </data>
+  <data name="Solution_RestoreJsonFile" xml:space="preserve">
+    <value>Pokusit se obnovit soubor JSON</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
+    <value>Pomalejší a méně přesné, ale s náležitým osvětlením a odrazy</value>
+  </data>
+  <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
+    <value>Poměr výkonu a váhy, doporučený formát: “{0}”</value>
+  </data>
+  <data name="RaceResult_SaveReplay" xml:space="preserve">
+    <value>Ponechat opakovaný záznam</value>
+  </data>
+  <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
+    <value>Popište problém a zanechejte na sebe prosím kontakt, pokud chcete získat odpověď nebo pomoci vyřešit problém.</value>
+  </data>
+  <data name="Drive_AiArrangeOrder" xml:space="preserve">
+    <value>Pořadí soupeřů:</value>
+  </data>
+  <data name="Online_AddServer_Tooltip" xml:space="preserve">
+    <value>Port mohl být vynechán, takže aplikace oskenuje všechny určité porty</value>
+  </data>
+  <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
+    <value>Postranní pruhy</value>
+  </data>
+  <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
+    <value>Pouze pro vývojářské účely (Alt+J)</value>
+  </data>
+  <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
+    <value>Použije se, když je zakázáno HDR</value>
+  </data>
+  <data name="AcObject_Url_TooltipExt" xml:space="preserve">
+    <value>Použijte toto pole, pokud jste úpravce hry a máte webové stránky s doplňujícími informacemi a novými verzemi objektu</value>
+  </data>
+  <data name="Arguments_Shared_Apply" xml:space="preserve">
+    <value>Použít</value>
+  </data>
+  <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
+    <value>Použít a uložit</value>
+  </data>
+  <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
+    <value>Použít auto v Rychlovce (Ctrl+G)</value>
+  </data>
+  <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
+    <value>Použít FXAA</value>
+  </data>
+  <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
+    <value>Použít jako:</value>
+  </data>
+  <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
+    <value>Použít jen FFB</value>
+  </data>
+  <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
+    <value>Použít jiné jméno, pokud je povolen formulář RSR</value>
+  </data>
+  <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
+    <value>Použít MSAA</value>
+  </data>
+  <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
+    <value>Použít trať v Rychlovce (Ctrl+G)</value>
+  </data>
+  <data name="AcObject_FontUsedInLabel" xml:space="preserve">
+    <value>Použito v:</value>
+  </data>
+  <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
+    <value>Používá se pro ukládání nebo automatické ukládání opakovaných záznamů po jízdě.
+
+Hodnoty pro nahrazení:
+ [b][mono]{type}[/mono][/b] — typ závodu;
+ [b][mono]{car}[/mono][/b] — název auta;
+ [b][mono]{car.id}[/mono][/b] — ID auta;
+ [b][mono]{track}[/mono][/b] — název trati;
+ [b][mono]{track.id}[/mono][/b] — Id trati;
+ [b][mono]{date}[/mono][/b] — datum a denní doba v náležitém formátu;
+ [b][mono]{date_ac}[/mono][/b] — datum a denní doba ve formátu videohry.
+
+Proměnné:
+ [b][mono]{…:l}[/mono][/b] — malými;
+ [b][mono]{…:u}[/mono][/b] — velkými;
+ [b][mono]{…:0}[/mono][/b] — jen první symbol.
+
+Příklady:
+ [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — výchozí formát Kunosu;
+ [b][mono]({type:l0}) {car:l} on {track:l}.acreplay[/mono][/b] — něco jako “[w] bmw m3 e30 on brands hatch.acreplay”.
+
+Chcete-li nějaké další hodnoty, kontaktujte nás prosím a my je přidáme.
+
+[b]Varování[/b]:
+Nepoužívejte symbol “[” nebo “]”!</value>
+  </data>
+  <data name="Weather_KunosReadme" xml:space="preserve">
+    <value>Používáme rovnici pro vytvoření grafu, který určuje teplotu asfaltu vůči teplotě prostředí, počasí a denní době.
+
+
+Graf si můžete zkontrolovat pod [url=""""http://fooplot.com/plot/3x7y44pfli""""]tímto odkazem[/url].
+
+Používá se tato rovnice:
+[mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+
+Změňte hodnoty 1 v (((-10*1)*x)+10*1), abyste viděli vaše výsledky v grafech.
+Povolené hodnoty jsou -1 až 1."</value>
+  </data>
+  <data name="AcObject_AppActivated" xml:space="preserve">
+    <value>Povoleno</value>
+  </data>
+  <data name="Settings_Live_EnableSrs" xml:space="preserve">
+    <value>Povolí záložku Měření času RSR (Sim Racing System)</value>
+  </data>
+  <data name="Solution_Enable" xml:space="preserve">
+    <value>Povolit</value>
+  </data>
+  <data name="Toolbar_Enable" xml:space="preserve">
+    <value>Povolit</value>
+  </data>
+  <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
+    <value>Povolit (Ctrl+D)</value>
+  </data>
+  <data name="Solution_EnableSkin" xml:space="preserve">
+    <value>Povolit {0}</value>
+  </data>
+  <data name="CarPreviews_Fxaa" xml:space="preserve">
+    <value>Povolit FXAA</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
+    <value>Povolit nejlepší kvalitu</value>
+  </data>
+  <data name="CarPreviews_AllEffects" xml:space="preserve">
+    <value>Povolit všechny efekty</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>Povolit všechny video efekty jako odlesky a zář (doporučeno)</value>
+  </data>
+  <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
+    <value>Povolit vyhlazování hran FXAA pro náhledy</value>
+  </data>
+  <data name="Solution_EnableSkin_Details" xml:space="preserve">
+    <value>Povolit zakázaný skin</value>
+  </data>
+  <data name="Settings_Live_EnableRsr" xml:space="preserve">
+    <value>Povolit záložku Měření času RSR</value>
+  </data>
+  <data name="Toolbar_TurnOnSound" xml:space="preserve">
+    <value>Povolit zvuk</value>
+  </data>
+  <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
+    <value>Povolit zvuk (Ctrl+I)</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
+    <value>Požadovaných sérií zatím není dosaženo</value>
+  </data>
+  <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
+    <value>Pozice kamery:</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
+    <value>Pozici kamery určete manuálně a pak stiskněte F8 pro</value>
+  </data>
+  <data name="Main_PpFilters" xml:space="preserve">
+    <value>PP filtry</value>
+  </data>
+  <data name="Online_FilterEmpty_Short" xml:space="preserve">
+    <value>Prázdné</value>
+  </data>
+  <data name="Car_PackKunosDataMessage" xml:space="preserve">
+    <value>Přebalíte původní data od Kunosu. Výsledek se nejspíš bude lišit, takže nebudete moci hrát online. Určitě chcete pokračovat?[br][br]Původní “data.acd” bude přesunuto do Koše.</value>
+  </data>
+  <data name="LiveryIcon_Style_Gradient" xml:space="preserve">
+    <value>Přechod</value>
+  </data>
+  <data name="Main_ServerPresets" xml:space="preserve">
+    <value>Přednastavení</value>
+  </data>
+  <data name="Toolbar_Play" xml:space="preserve">
+    <value>Přehrát</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
+    <value>Přejete si použít toto přednastavení, nebo ho uložit na později?</value>
+  </data>
+  <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
+    <value>Přejete si použít toto přednastavení?</value>
+  </data>
+  <data name="Toolbar_Rename" xml:space="preserve">
+    <value>Přejmenovat</value>
+  </data>
+  <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
+    <value>Přejmenovat appku podle nového názvu (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
+    <value>Přejmenovat opakovaný záznam podle nového názvu (Ctrl+S)</value>
+  </data>
+  <data name="App_LocaleUpdated" xml:space="preserve">
+    <value>Překlad byl aktualizován</value>
+  </data>
+  <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
+    <value>Přepněte do editačního režimu, chcete-li měnit ostatní parametry počasí.</value>
+  </data>
+  <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
+    <value>Přepněte na BMW, nainstalujte plugin Magick.NET a nezapomeňte povolit automatickou konverzi v Nastavení/Jízda</value>
+  </data>
+  <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
+    <value>Přepnout do editačního režimu (Ctrl+E)</value>
+  </data>
+  <data name="CarSpecs_Recalculate" xml:space="preserve">
+    <value>Přepočítat</value>
+  </data>
+  <data name="CarSpecs_Recalculate_PwRatioTooltip" xml:space="preserve">
+    <value>Přepočítat hodnoty pomocí hodnot výkonu a hmotnosti</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
+    <value>Přepočítat křivky pouze pomocí dat</value>
+  </data>
+  <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
+    <value>Přepočítat křivky pomocí dat a hodnot výkonu a kroutícího momentu</value>
+  </data>
+  <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
+    <value>Přepočítat z dat</value>
+  </data>
+  <data name="WeatherEdit_CutOff" xml:space="preserve">
+    <value>Přerušení</value>
+  </data>
+  <data name="AcObject_UsingsRescan" xml:space="preserve">
+    <value>Přeskenovat</value>
+  </data>
+  <data name="Toolbar_RescanUsings" xml:space="preserve">
+    <value>Přeskenovat použití</value>
+  </data>
+  <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
+    <value>Přeskenovat použití a zakázat všechny nepoužitá písma (Ctrl+Shift+D)</value>
+  </data>
+  <data name="Solution_Enable_Details" xml:space="preserve">
+    <value>Přesunou písmo z "fonts-off" do "fonts"</value>
+  </data>
+  <data name="Toolbar_Delete_AppTooltip" xml:space="preserve">
+    <value>Přesunout appku do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
+    <value>Přesunout auto do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
+    <value>Přesunout autosalon do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Solution_MakeGeneric_Details" xml:space="preserve">
+    <value>Přesunout do složky s generiky</value>
+  </data>
+  <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
+    <value>Přesunout nastavení auta do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
+    <value>Přesunout opakovaný záznam do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
+    <value>Přesunout písmo do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_WeatherTooltip" xml:space="preserve">
+    <value>Přesunout počasí do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
+    <value>Přesunout PP filtr do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
+    <value>Přesunout skin do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Toolbar_Delete_TrackTooltip" xml:space="preserve">
+    <value>Přesunout trať do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="Common_AddToLibrary" xml:space="preserve">
+    <value>Přidat do knihovny?</value>
+  </data>
+  <data name="UpgradeIcon_AddAs" xml:space="preserve">
+    <value>Přidat jako novou ikonu upgradu:</value>
+  </data>
+  <data name="Online_AddServer_Title" xml:space="preserve">
+    <value>Přidat nové servery</value>
+  </data>
+  <data name="Online_AddNewServer" xml:space="preserve">
+    <value>Přidat nový server</value>
+  </data>
+  <data name="Online_AddByIp" xml:space="preserve">
+    <value>Přidat podle IP adresy</value>
+  </data>
+  <data name="Toolbar_Join" xml:space="preserve">
+    <value>Přidat se</value>
+  </data>
+  <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
+    <value>Připojit se k serveru (Ctrl+G)</value>
+  </data>
+  <data name="Online_AddingServer" xml:space="preserve">
+    <value>Přidávám server...</value>
+  </data>
+  <data name="BrandBadge_AddAs" xml:space="preserve">
+    <value>Přidejte nový znak pro (název značky):</value>
+  </data>
+  <data name="AcSettings_System_Logging" xml:space="preserve">
+    <value>Přihlášení (doporučené)</value>
+  </data>
+  <data name="AcObject_PriorityLabel" xml:space="preserve">
+    <value>Priorita:</value>
+  </data>
+  <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
+    <value>Připojuji se z Online</value>
+  </data>
+  <data name="Race_Preparing" xml:space="preserve">
+    <value>Připravuji...</value>
+  </data>
+  <data name="Arguments_SharedMessage_For" xml:space="preserve">
+    <value>Pro</value>
+  </data>
+  <data name="Srs_Commentary" xml:space="preserve">
+    <value>Pro případ, že se nemůžete do této sekce připojit (nebo promeškali čas na připojení), použijte sekci Online</value>
+  </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>Pro toto auto není zastávka v boxech</value>
+  </data>
+  <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
+    <value>Pro ucházející online zážitek (Ctrl+Alt+J)</value>
+  </data>
+  <data name="Main_Profile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
+    <value>Prohlédnout si “readme_weather.txt”</value>
+  </data>
+  <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
+    <value>Prohlédnout si auto v autosalonu (Ctrl+H)</value>
+  </data>
+  <data name="Toolbar_Drive" xml:space="preserve">
+    <value>Projet se</value>
+  </data>
+  <data name="WeatherEdit_Blend" xml:space="preserve">
+    <value>Prolnutí</value>
+  </data>
+  <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
+    <value>Promiňte, ale váš klíč byl kompromitován a zneplatněn.</value>
+  </data>
+  <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
+    <value>Průhlednost mraků</value>
+  </data>
+  <data name="LiveryIcon_Shape_Stripes" xml:space="preserve">
+    <value>Pruhy</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalStripes" xml:space="preserve">
+    <value>Pruhy na šířku</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>Průměrná šířka trati, doporučený formát: “{0}”</value>
+  </data>
+  <data name="Online_SessionsLabel" xml:space="preserve">
+    <value>Relace:</value>
+  </data>
+  <data name="App_LocaleUpdated_Details" xml:space="preserve">
+    <value>Restartovat aplikace pro uplatnění změn</value>
+  </data>
+  <data name="Main_LapTimesGrid" xml:space="preserve">
+    <value>Rošt</value>
+  </data>
+  <data name="Toolbar_UnpackData" xml:space="preserve">
+    <value>Rozbalit data</value>
+  </data>
+  <data name="LiveryIcon_Shape_HorizontalSplit" xml:space="preserve">
+    <value>Rozdělené na šířku</value>
+  </data>
+  <data name="LiveryIcon_Shape_VerticalSplit" xml:space="preserve">
+    <value>Rozdělené na výšku</value>
+  </data>
+  <data name="Rsr_AppIsMissing" xml:space="preserve">
+    <value>RSR appka chybí</value>
+  </data>
+  <data name="Rsr_AppIsDisabled" xml:space="preserve">
+    <value>RSR appka je zakázána</value>
+  </data>
+  <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
+    <value>RSR jméno:</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
+    <value>RSR se změnilo.</value>
+  </data>
+  <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
+    <value>RSR vrátilo soubor v nepodporovaném formátu.</value>
+  </data>
+  <data name="CarPreviews_Manual" xml:space="preserve">
+    <value>Ručně</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
+    <value>Ruční režim</value>
+  </data>
+  <data name="Rsr_SessionName" xml:space="preserve">
+    <value>Rychlé kolo RSR</value>
+  </data>
+  <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
+    <value>Rychlejší a přesnější; hodí se pro úpravy a kreslení skinů</value>
+  </data>
+  <data name="About_ReportAnIssue_Title" xml:space="preserve">
+    <value>S jakým problémem se potýkáte?</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>S ničím, jen prázdnotou</value>
+  </data>
+  <data name="AppKey_Tooltip" xml:space="preserve">
+    <value>S nikým prosím klíč nesdílejte, neboť by mohl být zneplatněn!</value>
+  </data>
+  <data name="Common_Share_WeatherTooltip" xml:space="preserve">
+    <value>Sdílet  počasí (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
+    <value>Sdílet filtr (Ctrl+Page Up)</value>
+  </data>
+  <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
+    <value>Sdílet nastavení auta (Ctrl+Page Up)</value>
+  </data>
+  <data name="Common_Share_SettingsTooltip" xml:space="preserve">
+    <value>Sdílet nynější nastavení (Ctrl+Page Up)</value>
+  </data>
+  <data name="Common_Share" xml:space="preserve">
+    <value>Sdílet odkaz</value>
+  </data>
+  <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
+    <value>Sdílet opakovaný záznam pomocí Google Drive (Ctrl+Page Up)</value>
+  </data>
+  <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
+    <value>Sekundární barva:</value>
+  </data>
+  <data name="Online_ServerWithIdIsMissing" xml:space="preserve">
+    <value>Server s poskytnutým ID “{0}” chybí</value>
+  </data>
+  <data name="Online_FilterMissing" xml:space="preserve">
+    <value>Servery s chybějícím obsahem</value>
+  </data>
+  <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
+    <value>Šířka přeháňky</value>
+  </data>
+  <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
+    <value>Skin bude přesunut do Koše</value>
+  </data>
+  <data name="Toolbar_CarSkins" xml:space="preserve">
+    <value>Skiny</value>
+  </data>
+  <data name="AcError_StackTrace" xml:space="preserve">
+    <value>Sloužit stopu:
+[mono]{0}[/mono]</value>
+  </data>
+  <data name="Toolbar_Folder" xml:space="preserve">
+    <value>Složka</value>
+  </data>
+  <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
+    <value>Složka je nepřijatelná</value>
+  </data>
+  <data name="Toolbar_Delete" xml:space="preserve">
+    <value>Smazat</value>
+  </data>
+  <data name="Car_DeleteSkin" xml:space="preserve">
+    <value>Smazat skin</value>
+  </data>
+  <data name="Toolbar_DeleteJson" xml:space="preserve">
+    <value>Smazat soubor JSON</value>
+  </data>
+  <data name="Common_FileIsMissingDot" xml:space="preserve">
+    <value>Soubor “{0}” chybí.</value>
+  </data>
+  <data name="Weather_CannotShare_Commentary" xml:space="preserve">
+    <value>Soubory jsou moc velké. Limit je {0}.</value>
+  </data>
+  <data name="AcObject_GeoTagsLabel" xml:space="preserve">
+    <value>Souřadnice:</value>
+  </data>
+  <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
+    <value>Speciální:</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>Spouštím opakovaný záznam...</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>Spouštím test výkonu...</value>
+  </data>
+  <data name="Common_Manage" xml:space="preserve">
+    <value>Spravovat</value>
+  </data>
+  <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
+    <value>Spravovat skiny (Ctrl+K)</value>
+  </data>
+  <data name="Toolbar_Play_Tooltip" xml:space="preserve">
+    <value>Zahájit přehrávání opakovaného záznamu (Ctrl+G)</value>
+  </data>
+  <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
+    <value>SRS server je připraven</value>
+  </data>
+  <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
+    <value>Stáhněte si ji [url="http://www.radiators-champ.com/RSRLiveTiming/"]zde[/url].</value>
+  </data>
+  <data name="AdditionalContent_Title" xml:space="preserve">
+    <value>Stahování a instalace</value>
+  </data>
+  <data name="LiveryIcon_StyleLabel" xml:space="preserve">
+    <value>Styl:</value>
+  </data>
+  <data name="LiveryIcon_Style_Bright" xml:space="preserve">
+    <value>Světlost</value>
+  </data>
+  <data name="WeatherEdit_Brightness" xml:space="preserve">
+    <value>Světlost</value>
+  </data>
+  <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
+    <value>Svislá osa</value>
+  </data>
+  <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
+    <value>Symbol ikony písma:</value>
+  </data>
+  <data name="Page_Wip" xml:space="preserve">
+    <value>Tahle sekce ještě není připravena</value>
+  </data>
+  <data name="LiveryIcon_Style_Solid" xml:space="preserve">
+    <value>Těleso</value>
+  </data>
+  <data name="LiveryIcon_Number_Light" xml:space="preserve">
+    <value>Tenké</value>
+  </data>
+  <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
+    <value>Tenté (s konturou)</value>
+  </data>
+  <data name="RaceResult_Threoretical" xml:space="preserve">
+    <value>Teoretický:</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
+    <value>Teplota vzduchu</value>
+  </data>
+  <data name="LiveryIcon_TertiaryColorLabel" xml:space="preserve">
+    <value>Terciální barva:</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
+    <value>Testování koeficientu teploty:</value>
+  </data>
+  <data name="AcObject_TrackLabel" xml:space="preserve">
+    <value>Trať:</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleHorizontalSplit" xml:space="preserve">
+    <value>Trojité rozdělení na šířku</value>
+  </data>
+  <data name="LiveryIcon_Shape_TripleVerticalSplit" xml:space="preserve">
+    <value>Trojité rozdělení na výšku</value>
+  </data>
+  <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
+    <value>Tvar:</value>
+  </data>
+  <data name="AcObject_TeamLabel" xml:space="preserve">
+    <value>Tým:</value>
+  </data>
+  <data name="CarSpecs_TransmissionLoss" xml:space="preserve">
+    <value>Úbytek výkonu</value>
+  </data>
+  <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
+    <value>Úbytek výkonu pro {0}</value>
+  </data>
+  <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
+    <value>Uhlík</value>
+  </data>
+  <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že jde o platný formát.</value>
+  </data>
+  <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že jsou nainstalovány všechny potřebné ody.</value>
+  </data>
+  <data name="LiveryIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že livery.png není zaneprázdněné</value>
+  </data>
+  <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že požadované auto a trať jsou nainstalované a dostupné.</value>
+  </data>
+  <data name="Skin_CannotRemoveUiSkin_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že se soubor nepoužívá.</value>
+  </data>
+  <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že soubor znaku značky je přepsatelný.</value>
+  </data>
+  <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že webová stránka RSR náležitě funguje.</value>
+  </data>
+  <data name="UpgradeIcon_CannotChange_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že do souboru ikony upgradu lze zapisovat.</value>
+  </data>
+  <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že jsou data platná.</value>
+  </data>
+  <data name="Settings_Drive_CacheBrands" xml:space="preserve">
+    <value>Ukládat značky do vyrovnávací paměti</value>
+  </data>
+  <data name="Toolbar_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
+    <value>Uložit a použít</value>
+  </data>
+  <data name="Arguments_SaveAsGeneric" xml:space="preserve">
+    <value>Üložit jako generikum</value>
+  </data>
+  <data name="Main_UnsavedChanges" xml:space="preserve">
+    <value>Uložit změny následujících položek?</value>
+  </data>
+  <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
+    <value>Uložit změny souboru INI (Ctrl+S)</value>
+  </data>
+  <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
+    <value>Uložit změny souboru JSON (Ctrl+S)</value>
+  </data>
+  <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
+    <value>Určit křivku výkonu</value>
+  </data>
+  <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
+    <value>Váha/výkon:</value>
+  </data>
+  <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
+    <value>Vaše Steam ID pro režim online:</value>
+  </data>
+  <data name="CreateShowroom_InShadow" xml:space="preserve">
+    <value>Ve stínu</value>
+  </data>
+  <data name="About_VersionFormat" xml:space="preserve">
+    <value>Verze: {0}</value>
+  </data>
+  <data name="Common_MoreInformationInMainLog" xml:space="preserve">
+    <value>Více informací v Main Log.log.</value>
+  </data>
+  <data name="Main_AssettoCorsa" xml:space="preserve">
+    <value>Videohra</value>
+  </data>
+  <data name="AcRoot_Welcome" xml:space="preserve">
+    <value>Vítejte v Content Manageru a díky že ho používáte! Zbývá určit jen pár věcí:</value>
+  </data>
+  <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
+    <value>Vlajka “--force-locale” je nastavena!</value>
+  </data>
+  <data name="Common_ViewUserFolder" xml:space="preserve">
+    <value>Vlastní knihovna</value>
+  </data>
+  <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
+    <value>Vlastní optimalizovaný styl pro vestavěnou webovou stránku RSR</value>
+  </data>
+  <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
+    <value>Vlastní optimalizovaný styl pro vestavěnou webovou stránku SRS</value>
+  </data>
+  <data name="Settings_Live_CustomStyle" xml:space="preserve">
+    <value>Vlastní styl</value>
+  </data>
+  <data name="AppKey_Prompt" xml:space="preserve">
+    <value>Vložte klíč aplikace (XXXX-XXXX-…):</value>
+  </data>
+  <data name="AcObject_EnterNewId" xml:space="preserve">
+    <value>Vložte nové ID:</value>
+  </data>
+  <data name="Solution_SetName_Prompt" xml:space="preserve">
+    <value>Vložte nový název</value>
+  </data>
+  <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
+    <value>Vložte nový název značky</value>
+  </data>
+  <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Vodoznak Kunos bude dočasně skryt</value>
+  </data>
+  <data name="Select_All" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
+    <value>Všechen postup v tomto šampionátu bude ztracen. Opravdu si to přejete?</value>
+  </data>
+  <data name="Online_AllCarsAreTaken" xml:space="preserve">
+    <value>Všechna auta jsou zabrána</value>
+  </data>
+  <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
+    <value>Vyberte autosalon, filter atd.</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
+    <value>Vyberte nebo vytvořte novou ikonu upgradu pomocí editoru</value>
+  </data>
+  <data name="Solution_ChangeParent_Details" xml:space="preserve">
+    <value>Vyberte nového rodiče ze seznamu aut</value>
+  </data>
+  <data name="Solution_SetupLivery_Details" xml:space="preserve">
+    <value>Vyberte novou ikonu skinu pomocí aplikace Livery Icon Editor</value>
+  </data>
+  <data name="BrandBadge_SelectNew" xml:space="preserve">
+    <value>Vyberte nový znak značky</value>
+  </data>
+  <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
+    <value>Vyberte nový znak značky ze seznamu</value>
+  </data>
+  <data name="Common_SelectFile" xml:space="preserve">
+    <value>Vyberte soubor</value>
+  </data>
+  <data name="Common_SelectImageForPreview" xml:space="preserve">
+    <value>Vyberte soubor pro náhled</value>
+  </data>
+  <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
+    <value>Vyberte soubor s panoramatem</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
+    <value>Vybrat autosalon, filtr, pozici kamery atd.</value>
+  </data>
+  <data name="UpgradeIcon_SelectNew" xml:space="preserve">
+    <value>Vybrat novou ikonu upgradu</value>
+  </data>
+  <data name="CarParent_Title" xml:space="preserve">
+    <value>Vybrat rodiče</value>
+  </data>
+  <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
+    <value>Vybrat soubor s obrázkem</value>
+  </data>
+  <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
+    <value>Výchozí autosalon</value>
+  </data>
+  <data name="Toolbar_GenerateLivery" xml:space="preserve">
+    <value>Vygenerovat ikonu skinu</value>
+  </data>
+  <data name="Solution_RandomLivery" xml:space="preserve">
+    <value>Vygenerovat náhodnou ikonu skinu</value>
+  </data>
+  <data name="Solution_RandomLivery_Details" xml:space="preserve">
+    <value>Vygenerovat náhodnou ikonu skinu pomocí náhodného nastavení</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
+    <value>Vygenerovat náhodný skin</value>
+  </data>
+  <data name="Solution_GenerateLivery" xml:space="preserve">
+    <value>Vygenerovat novou ikonu skinu</value>
+  </data>
+  <data name="Solution_GenerateLivery_Details" xml:space="preserve">
+    <value>Vygenerovat novou ikonu skinu pomocí posledního nastavení nebo aplikace Livery Icon Editor</value>
+  </data>
+  <data name="Toolbar_GenerateRandomLivery_Tooltip" xml:space="preserve">
+    <value>Vygenerovat novou ikonu skinu s použitím náhodného nastavení</value>
+  </data>
+  <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
+    <value>Vygenerovat novou ikonu skinu s použitím posledního nastavení editoru ikony skinu</value>
+  </data>
+  <data name="Solution_GeneratePreview" xml:space="preserve">
+    <value>Vygenerovat nový náhled</value>
+  </data>
+  <data name="Solution_GeneratePreview_Details" xml:space="preserve">
+    <value>Vygenerovat nový náhled pomocí nedávno použitého přednastavení</value>
+  </data>
+  <data name="Solution_GenerateNew" xml:space="preserve">
+    <value>Vygenerovat nový soubor</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>Vyhodit model do Koše (Ctrl+Delete)</value>
+  </data>
+  <data name="CarSpecs_PowerLabel" xml:space="preserve">
+    <value>Výkon:</value>
+  </data>
+  <data name="Common_DisablingFormat" xml:space="preserve">
+    <value>Vypínám {0}…</value>
+  </data>
+  <data name="Toolbar_DisableEditMode" xml:space="preserve">
+    <value>Vypnout editační režim</value>
+  </data>
+  <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
+    <value>Vypnout editační režim (Ctrl+E)</value>
+  </data>
+  <data name="Toolbar_TurnOffSound" xml:space="preserve">
+    <value>Vypnout zvuk</value>
+  </data>
+  <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
+    <value>Vyřešit všechny podobné chyby</value>
+  </data>
+  <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
+    <value>Výška přeháňky</value>
+  </data>
+  <data name="LiveryIcon_ResultLabel" xml:space="preserve">
+    <value>Výsledek:</value>
+  </data>
+  <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
+    <value>Vytvoří variaci na teplotu asfaltu založenou na počasí, teplotě prostředí a času. Více informací v “readme_weather.txt”</value>
+  </data>
+  <data name="Solution_MakeGeneric" xml:space="preserve">
+    <value>Vytvořit generikum</value>
+  </data>
+  <data name="Solution_MakeIndependent" xml:space="preserve">
+    <value>Vytvořit nezávislost</value>
+  </data>
+  <data name="Toolbar_CreateNewFont" xml:space="preserve">
+    <value>Vytvořit nové písmo</value>
+  </data>
+  <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
+    <value>Vytvořit nové písmo pomocí nástroje od Kunos (Ctrl+N)</value>
+  </data>
+  <data name="CreateShowroom_Title" xml:space="preserve">
+    <value>Vytvořit nový autosalon</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
+    <value>Vytvořit nový autosalon</value>
+  </data>
+  <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
+    <value>Vytvořit nový autosalon z existujícího panorama (Ctrl+N)</value>
+  </data>
+  <data name="Solution_MakeEmptyModel" xml:space="preserve">
+    <value>Vytvořit prázdný model</value>
+  </data>
+  <data name="Solution_CreateEmptySkin" xml:space="preserve">
+    <value>Vytvořit prázdný skin</value>
+  </data>
+  <data name="Toolbar_CreateJson" xml:space="preserve">
+    <value>Vytvořit soubor JSON</value>
+  </data>
+  <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
+    <value>Vytvořte nový prázdný skin nazvaný "default"</value>
+  </data>
+  <data name="Settings_Dev" xml:space="preserve">
+    <value>Vývojář</value>
+  </data>
+  <data name="Common_DevMode" xml:space="preserve">
+    <value>Vývojářský režim</value>
+  </data>
+  <data name="WeatherEdit_Distance" xml:space="preserve">
+    <value>Vzdálenost</value>
+  </data>
+  <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
+    <value>Vzdálenost od středu skyboxu k přeháňce</value>
+  </data>
+  <data name="Toolbar_PackData" xml:space="preserve">
+    <value>Zabalit data</value>
+  </data>
+  <data name="CarPreviews_TakenTime" xml:space="preserve">
+    <value>Zachyceno {0}</value>
+  </data>
+  <data name="CarPreviews_ShotIn4k" xml:space="preserve">
+    <value>Zachytávat v 3840×2160</value>
+  </data>
+  <data name="Race_LaunchingGame" xml:space="preserve">
+    <value>Zahajuji relaci...</value>
+  </data>
+  <data name="Srs_StartAtLabel" xml:space="preserve">
+    <value>Začít v:</value>
+  </data>
+  <data name="AcError_SolutionsNotFound" xml:space="preserve">
+    <value>Žádné z řešení není dostupné.</value>
+  </data>
+  <data name="Common_Go_RaceTooltip" xml:space="preserve">
+    <value>Zahájit jízdu (Ctrl+G)</value>
+  </data>
+  <data name="RaceResult_UnsaveReplay" xml:space="preserve">
+    <value>Zahodit opakovaný záznam</value>
+  </data>
+  <data name="Toolbar_Disable" xml:space="preserve">
+    <value>Zakázat</value>
+  </data>
+  <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
+    <value>Zakázat (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_DisableUnused" xml:space="preserve">
+    <value>Zakázat nepoužité</value>
+  </data>
+  <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
+    <value>Zakázat zvuk (Ctrl+I)</value>
+  </data>
+  <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
+    <value>Základní barva; budou přidány barva slunečního svitu, světel a prostředí</value>
+  </data>
+  <data name="WeatherEdit_Headlights" xml:space="preserve">
+    <value>Zapnout světlomety</value>
+  </data>
+  <data name="RaceResult_CancelledHeader" xml:space="preserve">
+    <value>Závod byl zrušen</value>
+  </data>
+  <data name="AcObject_DriverLabel" xml:space="preserve">
+    <value>Závodník:</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Závodníků online:</value>
+  </data>
+  <data name="Online_LeftLabel" xml:space="preserve">
+    <value>Zbývá:</value>
+  </data>
+  <data name="Weather_SeemsEmpty" xml:space="preserve">
+    <value>Zdá se prázdné?</value>
+  </data>
+  <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Zdá se, že SweetFX vizuálně neovlivňuje výsledek, ale může snížit čas načítání</value>
+  </data>
+  <data name="Select_Countries" xml:space="preserve">
+    <value>Země</value>
+  </data>
+  <data name="AppKey_GetNewKey" xml:space="preserve">
+    <value>Získat nový klíč</value>
+  </data>
+  <data name="RsrStarter_GettingInformation" xml:space="preserve">
+    <value>Získávám informace o událost...</value>
+  </data>
+  <data name="Main_Live" xml:space="preserve">
+    <value>Živě</value>
+  </data>
+  <data name="Toolbar_CopyValues" xml:space="preserve">
+    <value>Zkopírovat hodnoty</value>
+  </data>
+  <data name="Toolbar_CopyValues_Tooltip" xml:space="preserve">
+    <value>Zkopírovat hodnoty do jiných konfigurací</value>
+  </data>
+  <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
+    <value>Zkuste vložit náležitý formát hodnoty</value>
+  </data>
+  <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
+    <value>Změnit číslo skinu na “{0}”?</value>
+  </data>
+  <data name="Toolbar_ChangeId" xml:space="preserve">
+    <value>Změnit ID</value>
+  </data>
+  <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
+    <value>Změnit ID počasí (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
+    <value>Změnit ID skinu (Ctrl+Shift+F2)</value>
+  </data>
+  <data name="Toolbar_ChangeLivery" xml:space="preserve">
+    <value>Změnit ikonu skinu</value>
+  </data>
+  <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
+    <value>Změnit ikonu upgradu</value>
+  </data>
+  <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
+    <value>Změnit livery.png skinu (Alt+J)</value>
+  </data>
+  <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
+    <value>Změnit na hodnoty výkonu a točivého momentu</value>
+  </data>
+  <data name="Solution_ChangeParent" xml:space="preserve">
+    <value>Změnit rodiče</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews" xml:space="preserve">
+    <value>Změnit velikost náhledů</value>
+  </data>
+  <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
+    <value>Změnit velikost náhledů na velikost těch od Kunosu (1022×575; vysoce doporučeno)</value>
+  </data>
+  <data name="Select_Brands" xml:space="preserve">
+    <value>Značky</value>
+  </data>
+  <data name="BrandBadge_Title" xml:space="preserve">
+    <value>Znak značky</value>
+  </data>
+  <data name="Online_FilterFull" xml:space="preserve">
+    <value>Zobrazit plné servery</value>
+  </data>
+  <data name="Online_FilterEmpty" xml:space="preserve">
+    <value>Zobrazit prázdné servery</value>
+  </data>
+  <data name="Online_FilterPassword" xml:space="preserve">
+    <value>Zobrazit servery chráněné heslem</value>
+  </data>
+  <data name="Online_FilterWithBooking" xml:space="preserve">
+    <value>Zobrazit servery, která umožňují rezervaci</value>
+  </data>
+  <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
+    <value>Zpoždění:</value>
+  </data>
+  <data name="CarPreviews_CancelledMessage" xml:space="preserve">
+    <value>Zrušeno.</value>
+  </data>
+  <data name="Rsr_Quit_Tooltip" xml:space="preserve">
+    <value>Zrušit registraci</value>
+  </data>
+  <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
+    <value>Zrychlení:</value>
+  </data>
+  <data name="About_ThanksForTranslationHeader" xml:space="preserve">
+    <value>Zvláštní poděkování za fanouškovské překlady:</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>Smazat záložku stránky “{0}”?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Popis pro {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>Nemohu změnit nastavení auta</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Asi je to příliš mnoho dat</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>Zpráva s detaily se zkopírovala do schánky</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>Fanouškovský překlad byl aktualizován. Přejete si nyní aplikaci restartovat, aby se projevily změny?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Překlad byl aktualizován</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Nejlepší kolo na této trati:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Najeto v autě:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Najeto na trati:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Specifické funkce vozu</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Načíst asistenty s přednastaveními Rychlovky (globální)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>Přidržte při výběru přednastavení Ctrl, abyste toto chování jedenkrát prohodili</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>Použít rozbalená data, pokud existují</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>Použít rozbalená data (globální)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>Resetovat vlajku specifickou pro auto</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>Opravit auto</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {important issue} nalezeno</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>Nebylo zvoleno žádné auto</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>Nebyla zvolena žádná trať</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>Rychlost větru v metrech za sekundu</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>Rychlost větru v relativním rozsahu</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>Směr větru ve stupních</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>Náhodná rychlost větru</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>Náhodný směr větru</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>Vítr</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>Konkrétní datum</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>Náhodná denní doba</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>Nastavit parametry větru ručně</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>Ideální podmínky</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>Náhodná teplota vzduchu</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>Vlastní teplota trati</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>Teplota trati</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>Stažené:</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>Odebrání dokončeno</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>Nainstalovat vše</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>Když sem přesunete například auto, otevře se v sekci Obsahu</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0} se instaluje</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>Odebrat vše</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>Prohlédnout si historii změn</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>Přeskočit tuto aktualizaci</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>Vypnout automatické aktualizace</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>Zachyceno {0} {error}</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>Časy kol</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>Historie</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>Stažené</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>Nastavení Content Manageru</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>Nastavení videohry</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>Nastavení appek</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>Nastavení CSP</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>O programu</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>Rychlá kola</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>Závody</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>Sprint</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>Boj s časem</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>Dosud nesplněno</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>Je co zlepšovat</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>Šampionát</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>Místní síť</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>Tabulka</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>Zdroje</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Pouze auta od Kunosu</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Pouze auta a tratě od Kunosu</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>Pouze modifikace</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>Nejoblíbenější</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>Modely závodníků</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>Fanouškovské šampionáty</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>Získat nové modifikace</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>Modifikace</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>Nástroje</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>Stahování a instalace</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>Vše o filtrování</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>Spravovat zdroje</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>původní spouštěč</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>Výkon předchozí seance</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>Výkon předchozí seance</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>Průměr:</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>Zachyceno:</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0} příklad</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1} snímků za vteřinu</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>Změnit auto</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>Otevřít v autosalonu</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>Spravovat nastavení auta</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>Spravovat auto</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>Změnit trať</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>Spravovat trať</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>Denní doba je mimo rozsah počasí</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>Počet</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>Obtížnost</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>Žádný náhled</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>Skutečné podmínky...</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>Nastavit řazení jako výchozí pro nové záložky</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>Nastavit filtry jako výchozí pro nové záložky</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>Obnovit</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>Nebylo nic nalezeno.</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>Výchozí</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>Jméno (původní)</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>Oblíbené</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>Připojení závodníci</value>
   </data>
 </root>

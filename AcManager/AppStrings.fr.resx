@@ -537,8 +537,8 @@ Auteur : [b]{3}[/b]</value>
     <value>Merci !</value>
   </data>
   <data name="Dialog_CarSetupsFormat" xml:space="preserve">
-    <value>{0} Réglages</value>
-  </data>
+    <value>{0} réglages</value>
+  <alternative>{0} Réglages</alternative></data>
   <data name="Main_Setups" xml:space="preserve">
     <value>Réglages</value>
   </data>
@@ -1116,8 +1116,8 @@ Auteur : [b]{3}[/b]</value>
     <value>Utiliser les fuseaux horaires</value>
   </data>
   <data name="Drive_Weather_Warning" xml:space="preserve">
-    <value>{} Météo réelle ({0}) non supportée</value>
-  <alternative>{} météo réelle ({0}) non supportée</alternative></data>
+    <value>{} Météo actuelle ({0}) non supportée</value>
+  <alternative>{} météo réelle ({0}) non supportée</alternative><alternative>{} Météo réelle ({0}) non supportée</alternative></data>
   <data name="Drive_Temperature" xml:space="preserve">
     <value>Température</value>
   </data>
@@ -3411,5 +3411,50 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
   </data>
   <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
     <value>Valeurs de simulation</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>Supprimer signet du site “{0}”?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Description pour {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>Impossibilité de partager les réglages</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Possiblement trop de données</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>Message détaillé copié dans le presse-papiers</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>Archive mise à jour. Souhaitez-vous redémarrer l'application maintenant?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Archive mise à jour</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Meilleur tour du circuit:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Piloter le véhicule :</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Piloter sur le circuit :</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Contrôles spécifiques au véhicule</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Charger assistances avec préréglage de course rapide (global)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>Pressez Ctrl et sélectionné le préréglage pour inverser le comportement qu'une fois</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>Utiliser données décompressées si existant</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>Utiliser données décompressées (global)</value>
   </data>
 </root>

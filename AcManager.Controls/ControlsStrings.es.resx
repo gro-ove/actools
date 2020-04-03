@@ -917,4 +917,10 @@ Material: [b]{10}[/b]</alternative></data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Bloqueado</value>
   </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Desplácese hasta seleccionado (Ctrl+Mayús+V)</value>
+  </data>
 </root>

@@ -255,4 +255,22 @@
   <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
     <value>Show Admin Password Input</value>
   </data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Make sure there is no runned app working with object’s folder.</value>
+  </data>
+  <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
+    <value>Highspeed shaking</value>
+  </data>
+  <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
+    <value>Automatically syncronize RPM on downshifts</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Fastest one, runs race directly without using Steam at all; online will work, but you’ll miss all achievments</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Make sure there is no runned app working with showroom’s sound files.</value>
+  </data>
 </root>

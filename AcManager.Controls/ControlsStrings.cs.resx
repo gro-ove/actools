@@ -130,14 +130,14 @@
     <value>Vyjížděcí</value>
   </data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>Automatický virtuální meziplyn</value>
-  </data>
+    <value>Automatický meziplyn:</value>
+  <alternative>Automatický virtuální meziplyn</alternative></data>
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
-    <value>Automatická virtuální spojka:</value>
-  </data>
+    <value>Automatická spojka:</value>
+  <alternative>Automatická virtuální spojka:</alternative></data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>Automatické virtuální řazení</value>
-  </data>
+    <value>Automatické řazení:</value>
+  <alternative>Automatické virtuální řazení</alternative></data>
   <data name="Assists_FuelLabel" xml:space="preserve">
     <value>Palivo:</value>
   </data>
@@ -151,8 +151,8 @@
     <value>Kontrola stability:</value>
   </data>
   <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>Opotřebování pneumatik:</value>
-  </data>
+    <value>Opotřebení pneumatik:</value>
+  <alternative>Opotřebování pneumatik:</alternative></data>
   <data name="AssistsPreset_Gamer" xml:space="preserve">
     <value>Hráč</value>
   </data>
@@ -169,8 +169,8 @@
     <value>Expozice:</value>
   </data>
   <data name="Common_MinutePostfix" xml:space="preserve">
-    <value>minut</value>
-  </data>
+    <value> minut</value>
+  <alternative>minut</alternative></data>
   <data name="Common_MinutesPostfix" xml:space="preserve">
     <value> min</value>
   </data>
@@ -190,8 +190,8 @@
     <value>Doporučená hodnota: {0}%</value>
   </data>
   <data name="Common_Reset" xml:space="preserve">
-    <value>Resetovat</value>
-  </data>
+    <value>Resetovat na výchozí</value>
+  <alternative>Resetovat</alternative></data>
   <data name="Common_ResetToRecommendedValue" xml:space="preserve">
     <value>Resetovat na doporučenou hodnotu</value>
   </data>
@@ -205,8 +205,8 @@
     <value>Vestavěná přednastavení</value>
   </data>
   <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
-    <value>Smazat nastavení klávesníce</value>
-  </data>
+    <value>Smazat nastavení klávesnice</value>
+  <alternative>Smazat nastavení klávesníce</alternative></data>
   <data name="Controls_ClearWheelBinding" xml:space="preserve">
     <value>Smazat nastavení volantu</value>
   </data>
@@ -223,8 +223,8 @@
     <value>Efekty:</value>
   </data>
   <data name="Controls_EnhancedUndersteer" xml:space="preserve">
-    <value>Zesíléní efektu nedotáčivosti</value>
-  </data>
+    <value>Zesílení efektu nedotáčivosti</value>
+  <alternative>Zesíléní efektu nedotáčivosti</alternative></data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
     <value>Experimentální:</value>
   </data>
@@ -256,8 +256,8 @@
     <value>Minimální síla</value>
   </data>
   <data name="Controls_MinumumDamperLevel" xml:space="preserve">
-    <value>Minimální úroveň tlumičů</value>
-  </data>
+    <value>Min. úroveň tlumičů</value>
+  <alternative>Minimální úroveň tlumičů</alternative></data>
   <data name="Controls_MiscellaneousHeader" xml:space="preserve">
     <value>Různé:</value>
   </data>
@@ -280,8 +280,8 @@
     <value>Povrch</value>
   </data>
   <data name="Controls_SkipFfbSteps" xml:space="preserve">
-    <value>Přeskočit kroky zpětné odezvy</value>
-  </data>
+    <value>Přeskočit kroky odezvy</value>
+  <alternative>Přeskočit kroky zpětné odezvy</alternative></data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
     <value>Určuje, kolik kroků fyzikálního enginu se přeskočí, aby fungovaly volanty s nižší vstupní vyrovnávací pamětí zpětné odezvy. Máte-li problémy s procesorem, může pomoci zvýšení na hodnotu 2 až 4.</value>
   </data>
@@ -292,8 +292,8 @@
     <value>Měkký zámek</value>
   </data>
   <data name="Controls_SpeedSensitivity" xml:space="preserve">
-    <value>Citlivost na rychlost</value>
-  </data>
+    <value>Citlivost na rychl.</value>
+  <alternative>Citlivost na rychlost</alternative></data>
   <data name="Controls_SteeringWheelButton" xml:space="preserve">
     <value>Tlačítko volantu</value>
   </data>
@@ -316,8 +316,8 @@
     <value>Stáhnout a nainstalovat ({0})</value>
   </data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>Uložit přednastavení</value>
-  </data>
+    <value>Uložit</value>
+  <alternative>Uložit přednastavení</alternative></data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
     <value>Uložit nynější nastavení jako přednastavení (Ctrl+S)</value>
   </data>
@@ -343,20 +343,20 @@
     <value>Expozice</value>
   </data>
   <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
-    <value>Změna expozice</value>
-  </data>
+    <value>Změna expozice (výchozí hodnota: 100 %)</value>
+  <alternative>Změna expozice</alternative></data>
   <data name="QuickSwitches_Fov" xml:space="preserve">
     <value>Zorné pole</value>
   </data>
   <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
-    <value>Změna zorného pole ve svislé ose</value>
-  </data>
+    <value>Změna zorného pole ve svislé ose (výchozí hodnota: 56°)</value>
+  <alternative>Změna zorného pole ve svislé ose</alternative></data>
   <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>Volná kamera</value>
   </data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Povolit/zakázat volný pohyb kamery (ve hře stiskněte klávesu F7) </value>
-  </data>
+    <value>Volný pohyb kamery (ve hře stiskněte klávesu F7 a parametry kamery měňte šipkami i myší) </value>
+  <alternative>Povolit/zakázat volný pohyb kamery (ve hře stiskněte klávesu F7) </alternative></data>
   <data name="QuickSwitches_Fullscreen" xml:space="preserve">
     <value>Bez rámu okna</value>
   </data>
@@ -370,20 +370,20 @@
     <value>Paže</value>
   </data>
   <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
-    <value>Skrýt virtuální paže vašeho řidiče</value>
-  </data>
+    <value>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt virtuální paže vašeho řidiče</alternative></data>
   <data name="QuickSwitches_HideDriver" xml:space="preserve">
-    <value>Řidič</value>
-  </data>
+    <value>Řidiči</value>
+  <alternative>Řidič</alternative></data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
-    <value>Skrýt vašeho řidiče</value>
-  </data>
+    <value>Skrýt virtuální řidiče ve všech pohledech</value>
+  <alternative>Skrýt vašeho řidiče</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Volant</value>
   </data>
   <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
-    <value>Skrýt volant vašeho auta</value>
-  </data>
+    <value>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt volant vašeho auta</alternative></data>
   <data name="QuickSwitches_Leaderboard" xml:space="preserve">
     <value>Výsledky</value>
   </data>
@@ -394,8 +394,8 @@
     <value>Zámek kamery</value>
   </data>
   <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
-    <value>Mířit palubní kamerou na horizont</value>
-  </data>
+    <value>Palubní kamerou vždy mířit na horizont</value>
+  <alternative>Mířit palubní kamerou na horizont</alternative></data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
     <value>Pohyb volantu</value>
   </data>
@@ -406,14 +406,14 @@
     <value>Zrcátko</value>
   </data>
   <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
-    <value>Zobrazit virtuální zpětné zrcátko</value>
-  </data>
+    <value>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</value>
+  <alternative>Zobrazit virtuální zpětné zrcátko</alternative></data>
   <data name="QuickSwitches_Names" xml:space="preserve">
     <value>Jména</value>
   </data>
   <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
-    <value>Zobrazovat jména soupeřů</value>
-  </data>
+    <value>Zobrazovat nad auty jména soupeřů</value>
+  <alternative>Zobrazovat jména soupeřů</alternative></data>
   <data name="QuickSwitches_Nearest" xml:space="preserve">
     <value>Radar</value>
   </data>
@@ -421,8 +421,8 @@
     <value>Online jméno </value>
   </data>
   <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
-    <value>Použít alternativní jméno online</value>
-  </data>
+    <value>Použít v režimu online alternativní jméno </value>
+  <alternative>Použít alternativní jméno online</alternative></data>
   <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
     <value>Přepínat mezi PP filtry</value>
   </data>
@@ -446,5 +446,488 @@
   </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value> kol</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> bod</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value> kol</value>
+  </data>
+  <data name="KunosCareer_Error" xml:space="preserve">
+    <value>{0} chyb</value>
+  </data>
+  <data name="Share_Shared" xml:space="preserve">
+    <value>{0} sdíleno</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
+    <value>Aktualizovat ambientní stíny</value>
+  </data>
+  <data name="Plugins_Update" xml:space="preserve">
+    <value>Aktualizovat na {0}</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Aktualizuji stíny...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
+    <value>Ambientní stíny</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="Online_CarIsMissingLabel" xml:space="preserve">
+    <value>Auto chybí:</value>
+  </data>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>Autor, verze a URL</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Autor:</value>
+  </data>
+  <data name="Showroom_DialogHeader" xml:space="preserve">
+    <value>Autosalon</value>
+  </data>
+  <data name="Showroom_ShowroomLabel" xml:space="preserve">
+    <value>Autosalon:</value>
+  </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>Čekám...</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
+    <value>Data jsou zašifrována</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>Datum</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>Difuze</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>Dobré zprávy!</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>Dokončeno</value>
+  </data>
+  <data name="KunosCareer_CompletedLabel" xml:space="preserve">
+    <value>Dokončeno: </value>
+  </data>
+  <data name="TableHeader_Ai" xml:space="preserve">
+    <value>Dovednost</value>
+  </data>
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+    <value>Drátový model</value>
+  </data>
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
+    <value>Editační režim skinu</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Exportovat</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
+    <value>Exportovat mapování textury</value>
+  </data>
+  <data name="Common_FilterLabel" xml:space="preserve">
+    <value>Filtr:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>Formát:</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>Generický</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Instaluji...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Iterace</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Jas</value>
+  </data>
+  <data name="Common_Clear" xml:space="preserve">
+    <value>Jasno</value>
+  </data>
+  <data name="Share_VerifyMessageHeader" xml:space="preserve">
+    <value>Je všechno v pořádku?</value>
+  </data>
+  <data name="Online_PasswordRequired" xml:space="preserve">
+    <value>Je vyžadováno heslo</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>Jméno</value>
+  </data>
+  <data name="Share_VerifyMessage" xml:space="preserve">
+    <value>Jméno autora: [b]{0}[/b]
+Název položky: [b]{1}[/b]
+Typ položky: [b]{2}[/b]</value>
+  </data>
+  <data name="Common_AreYouSure" xml:space="preserve">
+    <value>Jste si jistí?</value>
+  </data>
+  <data name="Share_SharedMessageAlternative" xml:space="preserve">
+    <value>Klikněte pro otevření odkazu</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>Komprimuji...</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Materiál:</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>Měli jste pořídit aspoň jeden screenshot.</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Město:</value>
+  </data>
+  <data name="Replay_CrMessage_Commentary" xml:space="preserve">
+    <value>Můžete jít do Nastavení a povolit "Automaticky ukládat opakované záznamy", abyste předešli ztrátě něčeho hodnotného.</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Načítám model...</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Načítám...</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>Národnosti</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Nastavení</value>
+  </data>
+  <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
+    <value>Nastavení shaderu:</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Nástroje</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Název</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>Název materiálu: [b]{0}[/b]
+Shader: [b]{1}[/b]
+
+Režim prolnutí: [b]{2}[/b]
+Alpha test: [b]{3}[/b]
+Režim hloubky: [b]{4}[/b]</value>
+  </data>
+  <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
+    <value>Název objektu: [b]{0}[/b]
+Třída: [b]{1}[/b]
+
+Aktivní: [b]{2}[/b]
+Vykreslitelný: [b]{3}[/b]
+Viditelný: [b]{4}[/b]
+
+Průhledný: [b]{5}[/b]
+Vržené stíny: [b]{6}[/b]
+
+Vrstva: [b]{7}[/b]
+LOD v: [b]{8}[/b]
+LOD v: [b]{9}[/b]
+
+Materiál: [b]{10}[/b]</value>
+  </data>
+  <data name="Plugins_NotAvailable" xml:space="preserve">
+    <value>Nedostupné; požadovaná verze aplikace je {0}.</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>Nejlepší kolo</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
+    <value>Nelze aktualizovat ambientní stíny</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Nelze aktualizovat náhled</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>Nelze exportovat texturu</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
+    <value>Nelze odvodit rozměry</value>
+  </data>
+  <data name="Showroom_CannotStart" xml:space="preserve">
+    <value>Nelze otevřít autosalon</value>
+  </data>
+  <data name="Video_CannotPlay" xml:space="preserve">
+    <value>Nelze přehrát video</value>
+  </data>
+  <data name="VideoViewer_CannotPlay" xml:space="preserve">
+    <value>Nelze přehrát video</value>
+  </data>
+  <data name="Share_CannotShare" xml:space="preserve">
+    <value>Nelze sdílet {0}</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>Nelze spustit Uživatelský autosalon</value>
+  </data>
+  <data name="ImageViewer_CannotSave" xml:space="preserve">
+    <value>Nelze uložit obrázek</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Objektů:</value>
+  </data>
+  <data name="ImageViewer_DefaultName" xml:space="preserve">
+    <value>Obrázek</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>Odesílám...</value>
+  </data>
+  <data name="Share_SharedMessage" xml:space="preserve">
+    <value>Odkaz byl zkopírován do schránky</value>
+  </data>
+  <data name="Replay_CrMessage" xml:space="preserve">
+    <value>Opakovaný záznam bude přepsán po dalším závodě. Přejmenujte ho, abyste ho zachovali.</value>
+  </data>
+  <data name="Car_OpenInCustomShowroom" xml:space="preserve">
+    <value>Otevřít ve vlastním autosalonu</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Ovládání</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Palivo</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Palivo:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Pneumatiky:</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>Potomek bude přesunut k novému rodiči!</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
+    <value>Použijte pro ně prosím platný formát.</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>Použít místo toho PSD, XCF apod., pokud existují (je vyžadován doplněk Magick.NET)</value>
+  </data>
+  <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
+    <value>Požadované série zatím nejsou dokončeny</value>
+  </data>
+  <data name="KunosCareer_RequiredSeries" xml:space="preserve">
+    <value>Požadované série: {0}</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>Přejděte prosím do Nastavení a povolte přídavek VLC.</value>
+  </data>
+  <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
+    <value>Přesunout ui_skin.json do Koše (Alt+Delete)</value>
+  </data>
+  <data name="Online_JoinUsing" xml:space="preserve">
+    <value>Přidejte se pomocí {0}</value>
+  </data>
+  <data name="Common_Preparing" xml:space="preserve">
+    <value>Připravuji...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Přizpůsobit velikost</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping" xml:space="preserve">
+    <value>Prohlédnout si mapování</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
+    <value>Prohlédnout v 1024×1024</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
+    <value>Prohlédnout v 2048×2048</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
+    <value>Prohlédnout v 4096×4096</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
+    <value>Prohlédnout v 512×512</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
+    <value>Prohlédnout ve vlastním rozlišení</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Resetovat</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
+    <value>Resetovat na doporučené hodnoty</value>
+  </data>
+  <data name="Common_OfflineMode" xml:space="preserve">
+    <value>Režim Offline</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Rodič:</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Rodičovské auto (pokud je zvoleno, toto auto bude jeho upravenou verzí)</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Rok vzniku</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Rok:</value>
+  </data>
+  <data name="Common_Unpack" xml:space="preserve">
+    <value>Rozbalit {0}</value>
+  </data>
+  <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
+    <value>Rozměry (\[šířka]×\[výška]):</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Rozměry:</value>
+  </data>
+  <data name="Share_EnterNameHeader" xml:space="preserve">
+    <value>Sdílet jako</value>
+  </data>
+  <data name="Share_InProgress" xml:space="preserve">
+    <value>Sdílím...</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Skrýt kola</value>
+  </data>
+  <data name="Showroom_HideWatermark" xml:space="preserve">
+    <value>Skrýt vodoznak</value>
+  </data>
+  <data name="Common_FolderExists" xml:space="preserve">
+    <value>Složka “{0}” již existuje. Přepsat soubory?</value>
+  </data>
+  <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
+    <value>Souřadnice:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specifikace:</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Stahuji...</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Statistika</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>Světla</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>Textura chybí!</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>Textury:</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>Trať</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Třída:</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Trojúhelníků:</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>Typ:</value>
+  </data>
+  <data name="CarParent_MakeIndependent" xml:space="preserve">
+    <value>Učinit nezávislým</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že je přídavek VLC náležitě nainstalován.</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Uložit</value>
+  </data>
+  <data name="FindInformation_SaveAsDescription" xml:space="preserve">
+    <value>Uložit jako popis</value>
+  </data>
+  <data name="FindInformation_SaveAsYear" xml:space="preserve">
+    <value>Uložit jako rok</value>
+  </data>
+  <data name="FindInformation_SaveAsCountry" xml:space="preserve">
+    <value>Uložit jako zemi</value>
+  </data>
+  <data name="ImageViewer_Save_Title" xml:space="preserve">
+    <value>Uložit obrázek jako</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Velikost</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>Velikost stínu bude uložena do "data/ambient_shadows.ini", ale data jsou zašifrována, takže se nijak neprojeví. Přejete si pokračovat?</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>Velikost:</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Verze:</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>Viditelný</value>
+  </data>
+  <data name="Share_EnterCustomIdHeader" xml:space="preserve">
+    <value>Vlastní ID</value>
+  </data>
+  <data name="Share_EnterCustomId" xml:space="preserve">
+    <value>Vložit vlastní ID:</value>
+  </data>
+  <data name="Share_EnterName" xml:space="preserve">
+    <value>Vložte jméno, nebo nechte pole volné:</value>
+  </data>
+  <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
+    <value>Vodoznak Kunosu bude dočasně skryt</value>
+  </data>
+  <data name="FindInformation_Description" xml:space="preserve">
+    <value>Vyberte rok nebo popis a stiskněte OK; podržte Ctrl pro rozšíření popisu místo jeho nahrazení.</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Vybrané</value>
+  </data>
+  <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
+    <value>Vytvořit nový soubor ui_skin.json (Alt+S)</value>
+  </data>
+  <data name="Common_DevTools" xml:space="preserve">
+    <value>Vývojářské nástroje</value>
+  </data>
+  <data name="WebBrowser_Prompt" xml:space="preserve">
+    <value>Webová stránka říká</value>
+  </data>
+  <data name="Showroom_DisableSweetFx" xml:space="preserve">
+    <value>Zakázat SweetFX</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>Zamknutý</value>
+  </data>
+  <data name="Online_DriversOnlineLabel" xml:space="preserve">
+    <value>Závodníků online:</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Zdá se, že SweetFX vizuálně neovlivňuje výsledek, ale může snížit čas načítání</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Země:</value>
+  </data>
+  <data name="Common_TryAgain" xml:space="preserve">
+    <value>Zkusit znovu</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Změnit</value>
+  </data>
+  <data name="Common_ChangeSkin" xml:space="preserve">
+    <value>Změnit skin</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Značka:</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Znovunačítám textury...</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Zrušené</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>Ztlumit k rohům</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>Zvýraznit velikost</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Stupňů</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Posunout k vybraným (Ctrl+Shift+V)</value>
   </data>
 </root>

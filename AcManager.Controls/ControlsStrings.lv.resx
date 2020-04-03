@@ -927,4 +927,10 @@ Ieraksta tips: [b]{2}[/b]</value>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Bloķēts</value>
   </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Grādi</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Ritināt līdz izvēlētajam (Ctrl+Shift+V)</value>
+  </data>
 </root>

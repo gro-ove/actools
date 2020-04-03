@@ -375,14 +375,14 @@
     <value>Oui</value>
   </data>
   <data name="Progress_Downloading" xml:space="preserve">
-    <value>{0} Chargement</value>
-  <alternative>{0} chargé</alternative></data>
+    <value>Chargement {0}</value>
+  <alternative>{0} chargé</alternative><alternative>{0} Chargement</alternative></data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
     <value>{0} sur {1} chargé</value>
   <alternative>{0} of {1} chargé</alternative></data>
   <data name="Progress_Uploading" xml:space="preserve">
-    <value>{0} envoyé</value>
-  <alternative>{0} uploadé</alternative><alternative>{0} téléversé</alternative></data>
+    <value>Envoyé {0}</value>
+  <alternative>{0} uploadé</alternative><alternative>{0} téléversé</alternative><alternative>{0} envoyé</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
     <value>{0} sur {1} envoyé</value>
   <alternative>{0} of {1} uploadé</alternative><alternative>{0} of {1} téléversé</alternative><alternative>{0} of {1} envoyé</alternative></data>

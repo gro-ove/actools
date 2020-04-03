@@ -603,8 +603,9 @@ Author: [b]{3}[/b]</alternative></data>
     <value>Desactivalo si necesitas maximo rendimiento</value>
   </data>
   <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
-    <value>En mi opinion eso empeora bastante las imagenes</value>
-  </data>
+    <value>Puede alternarlo en cualquier momento presionando M
+</value>
+  <alternative>En mi opinion eso empeora bastante las imagenes</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
     <value>Puedes cambiarlo en cualquier momento pulsando F</value>
   </data>
@@ -3323,8 +3324,8 @@ Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternat
     <value>Estadisticas</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Tiempos de vuelta recientes</value>
-  </data>
+    <value>Tiempos</value>
+  <alternative>Tiempos de vuelta recientes</alternative></data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>Tabla de Tiempos</value>
   </data>
@@ -3402,5 +3403,210 @@ Pero si no quieres malgastar 200 MB: TIFF Image, 96 bit per pixel, ZIP</alternat
   </data>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>... whp</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Descripcion para {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>La configuracion no se puede compartir</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Posiblemente ay demasiados datos.</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>El mensaje con detalles se copia en portapapeles.</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>Locales personalizados actualizados. ¿Desea reiniciar la aplicación ahora?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Locales actualizados</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Mejor vuelta en esta pista:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Conducido en el coche:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Conducido en la pista:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Controles específicos del coche</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>Descargas:</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>Eliminar completado
+</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>Instalar todo</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>Suelta un coche o algo más aquí para abrirlo en la sección Gestión de contenido</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0} instalacion</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>Eliminar todo</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>Ver registro de cambios</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>Omitir esta actualización</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>Desactivar actualizaciones automáticas</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>Atrapado {0} {error}</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>Tiempos</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>Estadisticas</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>Descargas</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>CM configuracion</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>AC configuracion</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>Apps Configuracion</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>CSP configuracion</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>Acerca de Content Manager</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>Carreras</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>No Completado</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>Algo que mejorar</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>Campeonatos</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>Tabla</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>Fuentes</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Solo coches de Kunos</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Solo coches y pistas de Kunos</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>Solo Mods</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>Mas utilizado</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>Campeonatos de usuarios</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>Consigue nuevos mods</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>Herramientas</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>Descargas e instalaciones</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>Todo sobre el filtrado</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>Launcher original</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>Actuación de la sesión anterior</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>Actuación de la sesión anterior</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>Promedio:</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>Minimo:</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0} muestra</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1} fps por segundo</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>Cambiar de coche</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>Abierto en showroom</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>Administrar configuraciones</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>Gestionar coche</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>Cambiar pista</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>Gestionar pista</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>El tiempo está fuera del alcance del clima</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>Dificultad</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>Sin vista previa</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>Condiciones reales...</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>Establecer la ordenación como predeterminada para las nuevas pestañas</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>Establecer filtros como predeterminados para nuevas pestañas</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>Actualizar</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>Nada encontrado</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>Defecto</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>Nombre (original)</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>Favoritos</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>Conductores conectados</value>
   </data>
 </root>

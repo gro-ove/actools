@@ -190,8 +190,8 @@
     <value>Zobrazit ukazatel při poškození</value>
   </data>
   <data name="AcSettings_View_DriversNames" xml:space="preserve">
-    <value>Zobrazit nad soupeři jejich jména</value>
-  </data>
+    <value>Zobrazovat nad auty jména soupeřů</value>
+  <alternative>Zobrazit nad soupeři jejich jména</alternative></data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
     <value>Intenzita vizuální simulace přetížení:</value>
   </data>
@@ -202,11 +202,11 @@
     <value>Rychlost rozhlédnutí</value>
   </data>
   <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
-    <value>Skrýt vaše virtuální paže</value>
-  </data>
+    <value>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt vaše virtuální paže</alternative></data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
-    <value>Skrýt váš virtuální volant</value>
-  </data>
+    <value>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt váš virtuální volant</alternative></data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
     <value>Třes při rychlé jízdě</value>
   </data>
@@ -247,29 +247,26 @@
     <value>Pohled:</value>
   </data>
   <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
-    <value>Zobrazit virtuální zpětné zrcátko</value>
-  </data>
-  <data name="Assists_AbsLabel" xml:space="preserve">
-    <value>ABS</value>
-  </data>
+    <value>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</value>
+  <alternative>Zobrazit virtuální zpětné zrcátko</alternative></data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Protiblokovací systém brzd</value>
   </data>
   <data name="Assists_AutoBlip" xml:space="preserve">
-    <value>Automatický virtuální meziplyn</value>
-  </data>
+    <value>Automatický meziplyn</value>
+  <alternative>Automatický virtuální meziplyn</alternative></data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
     <value>Automaticky synchronizovat otáčky při podřazování pro předejití smyku</value>
   </data>
   <data name="Assists_AutoClutch" xml:space="preserve">
-    <value>Automatická virtuální spojka</value>
-  </data>
+    <value>Automatická spojka</value>
+  <alternative>Automatická virtuální spojka</alternative></data>
   <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
-    <value>Automatické sešlápnutí virtuální spojky při přeřazení</value>
-  </data>
+    <value>Automatické sešlápnutí virtuální spojky při přeřazování</value>
+  <alternative>Automatické sešlápnutí virtuální spojky při přeřazení</alternative></data>
   <data name="Assists_AutoShifting" xml:space="preserve">
-    <value>Automatické virtuální řazení</value>
-  </data>
+    <value>Automatické řazení</value>
+  <alternative>Automatické virtuální řazení</alternative></data>
   <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
     <value>Nepleťte si s automatickou převodovkou</value>
   </data>
@@ -403,8 +400,8 @@
     <value>Třetí rychlostní stupeň</value>
   </data>
   <data name="Controls_GlanceBack" xml:space="preserve">
-    <value>Za hlavu</value>
-  </data>
+    <value>Za sebe</value>
+  <alternative>Za hlavu</alternative></data>
   <data name="Controls_GlanceLeft" xml:space="preserve">
     <value>Doleva</value>
   </data>
@@ -490,8 +487,8 @@
     <value>Přidat auto do seznamu</value>
   </data>
   <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
-    <value>Náhodný</value>
-  </data>
+    <value>Náhodné</value>
+  <alternative>Náhodný</alternative></data>
   <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
     <value>Promíchat</value>
   </data>
@@ -502,8 +499,8 @@
     <value>Sestavování roštu...</value>
   </data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Použít jména skinů, pokud jsou dostupná</value>
-  </data>
+    <value>Použít názvy skinů, pokud jsou dostupné</value>
+  <alternative>Použít jména skinů, pokud jsou dostupná</alternative></data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>Odebrat vybraná auta ze seznamu</value>
   </data>
@@ -523,8 +520,8 @@
     <value>Průjezd boxy</value>
   </data>
   <data name="JumpStartPenalty_Pits" xml:space="preserve">
-    <value>Zastávka v boxech</value>
-  </data>
+    <value>Zpožděný start z boxů</value>
+  <alternative>Zastávka v boxech</alternative></data>
   <data name="KunosCareer_Championship" xml:space="preserve">
     <value>Šampionát</value>
   </data>
@@ -565,8 +562,8 @@
     <value>Náhodná</value>
   </data>
   <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
-    <value>Náhodná</value>
-  </data>
+    <value>Náhodný</value>
+  <alternative>Náhodná</alternative></data>
   <data name="Session_Drag" xml:space="preserve">
     <value>Sprint</value>
   </data>
@@ -599,5 +596,1099 @@
   </data>
   <data name="Shared_UserChampionship" xml:space="preserve">
     <value>Šampionát</value>
+  </data>
+  <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
+    <value>“[url="http://assetto-db.com/car/{0}"]{0}[/url]”</value>
+  </data>
+  <data name="Online_Session_LapsDuration" xml:space="preserve">
+    <value>“{0}” kol</value>
+  </data>
+  <data name="Online_YouFormat" xml:space="preserve">
+    <value>{0} (Vy)</value>
+  </data>
+  <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
+    <value>{0} boxů</value>
+  </data>
+  <data name="SpecialEvent_Description" xml:space="preserve">
+    <value>{0} v {1}.</value>
+  </data>
+  <data name="ContentInstallation_CarExisting" xml:space="preserve">
+    <value>Aktualizace pro {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackExisting" xml:space="preserve">
+    <value>Aktualizace pro {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
+    <value>Aktualizace pro autosalon {0}</value>
+  </data>
+  <data name="ContentInstallation_FontExisting" xml:space="preserve">
+    <value>Aktualizace pro písmo “{0}”</value>
+  </data>
+  <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
+    <value>Aktualizace pro počasí “{0}”</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>Aktualizace selhala</value>
+  </data>
+  <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
+    <value>Aktualizace skinu {0} pro {1}</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory, zachovat informace o uživatelském rozhraní i náhled skinu</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory, zachovat informace uživatelského rozhraní</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory, zachovat informace uživatelského rozhraní i náhledy skinů</value>
+  </data>
+  <data name="Installator_KeepSkinPreview" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory, zachovat náhled skinu</value>
+  </data>
+  <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
+    <value>Aktualizovat přes existující soubory, zachovat náhledy skinů</value>
+  </data>
+  <data name="OfficialStarter_UpdateAC" xml:space="preserve">
+    <value>Aktualizujte prosím videohru nebo změňte spouštěč na nějaký jiný.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Aplikaci nelze aktualizovat kvůli chybějícím povolením.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Aplikaci nelze aktualizovat kvůli chybějícím povolením. Aktualizujte ji prosím ručně.</value>
+  </data>
+  <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
+    <value>Assetto-DB.com se změnilo.</value>
+  </data>
+  <data name="DirectLoader_AcClubChanged" xml:space="preserve">
+    <value>AssettoCorsa.club se změnilo.</value>
+  </data>
+  <data name="Online_Server_CarsAreMissing" xml:space="preserve">
+    <value>Auta {0} chybí.</value>
+  </data>
+  <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
+    <value>Autentifikační token chybí</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>auto</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>Auto “{0}” chybí</value>
+  </data>
+  <data name="Online_Server_CarIsMissing" xml:space="preserve">
+    <value>Auto {0} chybí.</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Auto ID chybí</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>autosalon</value>
+  </data>
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+    <value>Bitmapa písma chybí</value>
+  </data>
+  <data name="PlaceConditionType_Points" xml:space="preserve">
+    <value>Bodů</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>Brzda</value>
+  </data>
+  <data name="DirectLoader_RecursionDetected" xml:space="preserve">
+    <value>Byla detekována rekurze</value>
+  </data>
+  <data name="PlaceConditionType_Time" xml:space="preserve">
+    <value>Čas</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
+    <value>Čas vypršel</value>
+  </data>
+  <data name="Weather_Cold" xml:space="preserve">
+    <value>Chladno</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Chyba syntaxe v {0} na řádku {1}</value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Chyba syntaxe v balíku {0} na řádku {1}</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Chyba zápisu: {0}</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Chybí Steam ID</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Cíl</value>
+  </data>
+  <data name="Installator_RemoveExistingFirst" xml:space="preserve">
+    <value>Čistá instalace</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>Čtyři plochy na snímek</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
+    <value>Data {0} nejsou zabalena, takže je uživatelé mohou změnit před připojením a získat tak neférovou výhodu.
+
+Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sdílet zabalené verze.</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Data nejsou šifrována</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Délka</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Denní doba</value>
+  </data>
+  <data name="Weather_Rain" xml:space="preserve">
+    <value>Déšť</value>
+  </data>
+  <data name="Weather_Sleet" xml:space="preserve">
+    <value>Déšť se sněhem</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
+    <value>Doporučený formát: “…° N” nebo “…° S”</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
+    <value>Doporučený formát: “…°W” nebo “…° E”</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>Dvě plochy na snímek</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Exportuji...</value>
+  </data>
+  <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
+    <value>Google Drive se změnilo.</value>
+  </data>
+  <data name="Online_AdminPassword" xml:space="preserve">
+    <value>Heslo administrátora:</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Heslo není platné</value>
+  </data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>Heslo není platné</value>
+  </data>
+  <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
+    <value>Heslo není platné</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
+    <value>Horizont (nízko)</value>
+  </data>
+  <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
+    <value>Horizont (vysoko)</value>
+  </data>
+  <data name="Weather_Hot" xml:space="preserve">
+    <value>Horko</value>
+  </data>
+  <data name="Settings_DefaultPlayerName" xml:space="preserve">
+    <value>Hráč</value>
+  </data>
+  <data name="Weather_Thunderstorm" xml:space="preserve">
+    <value>Hromobití</value>
+  </data>
+  <data name="Weather_Hurricane" xml:space="preserve">
+    <value>Hurikán</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>ID chybí</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>ID je chybné</value>
+  </data>
+  <data name="Common_IdIsTaken" xml:space="preserve">
+    <value>ID je zabrané</value>
+  </data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Ikona aktualizace chybí</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI soubor byl změněn. Má se znovunačíst? Všechny místní změny budou ztraceny.</value>
+  </data>
+  <data name="Weather_HeavyThunderstorm" xml:space="preserve">
+    <value>Intenzivní bouřka</value>
+  </data>
+  <data name="Weather_HeavyRain" xml:space="preserve">
+    <value>Intenzivní déšť</value>
+  </data>
+  <data name="Weather_HeavySleet" xml:space="preserve">
+    <value>Intenzivní déšť se sněhem</value>
+  </data>
+  <data name="Weather_HeavyDrizzle" xml:space="preserve">
+    <value>Intenzivní mrholení</value>
+  </data>
+  <data name="Weather_HeavySnow" xml:space="preserve">
+    <value>Intenzivní sněžení</value>
+  </data>
+  <data name="Online_Server_UnhandledError" xml:space="preserve">
+    <value>Interní chyba: {0}.</value>
+  </data>
+  <data name="Weather_Clear" xml:space="preserve">
+    <value>Jasno</value>
+  </data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Je mi líto, ale rozbalování metodou {0} není podporováno</value>
+  </data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>Je vyžadována AcRootDirectory </value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Je vyžadováno heslo</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>Jedna plocha na snímek</value>
+  </data>
+  <data name="KunosCareer_SingleEvents" xml:space="preserve">
+    <value>Jednotlivé podniky</value>
+  </data>
+  <data name="SingleEvents" xml:space="preserve">
+    <value>Jednotlivé události</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Již není platný</value>
+  </data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>Jméno by nemělo obsahovat symboly jako “[” nebo “]”</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Jméno chybí</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON soubor byl změněn. Má se znovunačíst? Všechny místní změny budou ztraceny.</value>
+  </data>
+  <data name="Online_YouAreOnThisServer" xml:space="preserve">
+    <value>Jste na tomto serveru</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
+    <value>Když funkci vypnete, vždy ji můžete zapnout v nastavení online režimu</value>
+  </data>
+  <data name="Uploader_RootDirectory" xml:space="preserve">
+    <value>Kořen</value>
+  </data>
+  <data name="Weather_Smoke" xml:space="preserve">
+    <value>Kouř</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Krouťák</value>
+  </data>
+  <data name="Weather_Hail" xml:space="preserve">
+    <value>Krupobití</value>
+  </data>
+  <data name="Weather_FewClouds" xml:space="preserve">
+    <value>Lehce oblačno</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>Levé přední</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>Levé zadní</value>
+  </data>
+  <data name="CustomShowroom_Fancy" xml:space="preserve">
+    <value>Líbivý</value>
+  </data>
+  <data name="DifficultyLevel_Alien" xml:space="preserve">
+    <value>Mimozemská</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Místo je zabráno</value>
+  </data>
+  <data name="Weather_Fog" xml:space="preserve">
+    <value>Mlha</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Množství</value>
+  </data>
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+    <value>Model (soubor KN5) chybí</value>
+  </data>
+  <data name="LogHelper_DriverIsMissing" xml:space="preserve">
+    <value>Model závodníka nejspíš chybí</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Modifikace</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Modifikovaná verze originálního spouštěče, zastaralá od verze 1.7</value>
+  </data>
+  <data name="Settings_Starter_UiModule" xml:space="preserve">
+    <value>Modul uživatelského rozhraní</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Modul uživatelského rozhraní “CM Helper” byl nainstalovaný a aktivovaný. Nezapomeňte restartovat AssettoCorsa.exe před závoděním!</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Mraky (content/texture/clouds) možná chybí</value>
+  </data>
+  <data name="Weather_Drizzle" xml:space="preserve">
+    <value>Mrholení</value>
+  </data>
+  <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
+    <value>Na tento server vám byl zamezen přístup</value>
+  </data>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Rezervace</value>
+  </data>
+  <data name="Online_BookingResult_Closed" xml:space="preserve">
+    <value>Rezervace byla ukončena</value>
+  </data>
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
+    <value>Načítám nezvládnutou chybu: {0}</value>
+  </data>
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Náhled skinu ({0}/preview.jpg) chybí</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>Náhodné</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Náhodné</value>
+  </data>
+  <data name="Settings_Starter_Naive" xml:space="preserve">
+    <value>Naivní</value>
+  </data>
+  <data name="TrackGeoTags_FindIt" xml:space="preserve">
+    <value>Najdi to</value>
+  </data>
+  <data name="Common_UnhandledError_Commentary" xml:space="preserve">
+    <value>Nastala nějaká neznámá chyba.</value>
+  </data>
+  <data name="Shared_CarSetup" xml:space="preserve">
+    <value>Nastavení auta</value>
+  </data>
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+    <value>Nastavení trati ({0}) chybí</value>
+  </data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>Nástroj pro rozbalení nebyl inicializován</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>Název značky chybí</value>
+  </data>
+  <data name="Common_NA" xml:space="preserve">
+    <value>nedostupné</value>
+  </data>
+  <data name="Settings_Starter_Sse_Description" xml:space="preserve">
+    <value>Nejrychlejší; zahájí závod napřímo bez použití Steamu; online režim bude fungovat, ale budou vám chybět všechny achievementy</value>
+  </data>
+  <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Některá auta toto písmo potřebují. Opravdu chcete písmo smazat?</value>
+  </data>
+  <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
+    <value>Některá auta toto písmo potřebují. Opravdu chcete písmo smazat?</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Nelze aktualizovat aplikaci</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Nelze číst data</value>
+  </data>
+  <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
+    <value>Nelze dokončit autorizační proces</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>Nelze inicializovat Lua</value>
+  </data>
+  <data name="Online_CannotLoadData" xml:space="preserve">
+    <value>Nelze načíst data</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
+    <value>Nelze načíst data Content Manageru.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Nelze načíst novou verzi</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Nelze načíst novou verzi.</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Nelze načíst obrázek pomocí Magick.NET</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
+    <value>Nelze nahradit zvuk auta</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Nelze najít režim závodního startovního roštu s ID “{0}”</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Nelze naklonovat objekt</value>
+  </data>
+  <data name="Online_Server_CannotRefresh" xml:space="preserve">
+    <value>Nelze obnovit informace serveru.</value>
+  </data>
+  <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
+    <value>Nelze obnovit nezazáplatovanou verzi původního spouštěče. Obnovte ho prosím [url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]manuálně[/url].</value>
+  </data>
+  <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
+    <value>Nelze obnovit nezazáplatovanou verzi původního spouštěče. Obnovte ho prosím ručně: je potřeba nahradit soubor “AssettoCorsa.exe” souborem “AssettoCorsa_backup_sp.exe”.</value>
+  </data>
+  <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
+    <value>Nelze oduložit opakovaný záznam</value>
+  </data>
+  <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
+    <value>Nelze použít Official Starter: vaše verze videohry je příliš stará. Přejete si raději přepnout na Tricky Starter? Vždy to můžete změnit v Nastavení/Jízda.</value>
+  </data>
+  <data name="Replay_CannotRenameReplays" xml:space="preserve">
+    <value>Nelze přejmenovat opakovaný záznam</value>
+  </data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Nelze přepnout</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
+    <value>Nelze přepnout zvuk</value>
+  </data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>Nelze přepnout: {0}</value>
+  </data>
+  <data name="Fonts_RescanUsings" xml:space="preserve">
+    <value>Nelze přeskenovat auta</value>
+  </data>
+  <data name="Common_CannotDo" xml:space="preserve">
+    <value>Nelze provést</value>
+  </data>
+  <data name="Common_CannotDo_Title" xml:space="preserve">
+    <value>Nelze provést</value>
+  </data>
+  <data name="GameCommand_CannotExecute" xml:space="preserve">
+    <value>Nelze provést příkaz</value>
+  </data>
+  <data name="Online_CannotParseAddress" xml:space="preserve">
+    <value>Nelze provést rozbor adresy</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>Nelze rozbalit {0}</value>
+  </data>
+  <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
+    <value>Nelze sdílet soubor z Google Drive</value>
+  </data>
+  <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
+    <value>Nelze se připojit ke vzdálenému serveru</value>
+  </data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Nelze smazat</value>
+  </data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>Nelze smazat existující složku</value>
+  </data>
+  <data name="OfficialStarter_CannotRun" xml:space="preserve">
+    <value>Nelze spustit</value>
+  </data>
+  <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Nelze stáhnout informace o poslední verzi.</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>Nelze stáhnout soubor</value>
+  </data>
+  <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
+    <value>Nelze uložit opakovaný záznam</value>
+  </data>
+  <data name="PpFilterObject_CannotSave" xml:space="preserve">
+    <value>Nelze uložit PP filtr</value>
+  </data>
+  <data name="OfficialStarter_CannotRunGame" xml:space="preserve">
+    <value>Nelze zahájit závod</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Nelze zakázat</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Nelze získat ID z cesty</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared" xml:space="preserve">
+    <value>Nelze získat sdílenou položku</value>
+  </data>
+  <data name="SharingHelper_NotSupported" xml:space="preserve">
+    <value>Nelze získat sdílenou položku, nej její typ “{0}” není podporován</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>Nelze změnit ID</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>Nelze změnit toto ID: {0}</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
+    <value>Nemohu aktualizovat {0}. Aktualizaci budete muset provést ručně.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>Nemohu smazat původní soubor “{0}” pro instalaci aktualizace. Zkuste ji smazat ručně a pak spusťte “{1}”.</value>
+  </data>
+  <data name="RhmService_CannotStart" xml:space="preserve">
+    <value>Nemohu spustit RHM</value>
+  </data>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Není implementováno</value>
+  </data>
+  <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
+    <value>Neplatné umístění</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Neplatný formát</value>
+  </data>
+  <data name="NotSupported" xml:space="preserve">
+    <value>Nepodporováno</value>
+  </data>
+  <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
+    <value>Nepodporovaný formát</value>
+  </data>
+  <data name="Common_UndefinedError" xml:space="preserve">
+    <value>Neznámá chyba</value>
+  </data>
+  <data name="GameCommand_UnknownProblem" xml:space="preserve">
+    <value>Neznámý problém (Process=null)</value>
+  </data>
+  <data name="Online_ScanningNothingFound" xml:space="preserve">
+    <value>Nic nebylo nalezeno</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Nová trať {0}</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Nové auto {0}</value>
+  </data>
+  <data name="ContentInstallation_FontNew" xml:space="preserve">
+    <value>Nové písmo “{0}”</value>
+  </data>
+  <data name="ContentInstallation_WeatherNew" xml:space="preserve">
+    <value>Nové počasí“{0}”</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Nový autosalon {0}</value>
+  </data>
+  <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
+    <value>Nový skin {0} pro {1}</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Obecné:</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Objekt nelze přesunout</value>
+  </data>
+  <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
+    <value>Objekty odpružení (SUSP_LF, SUSP_LR, …) chybí</value>
+  </data>
+  <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
+    <value>Objekty s koly (WHEEL_LF, WHEEL_LR, …) chybí</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
+    <value>Obloha (nízko)</value>
+  </data>
+  <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
+    <value>Obloha (vysoko)</value>
+  </data>
+  <data name="Solving_RestoreFrom" xml:space="preserve">
+    <value>Obnovit z …{0}</value>
+  </data>
+  <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
+    <value>Obnovte prosím originální spouštěč a zkuste to znovu (nebo změňte spouštěč).</value>
+  </data>
+  <data name="CustomShowroom_Lite" xml:space="preserve">
+    <value>Odlehčený</value>
+  </data>
+  <data name="Settings_Starter_Official" xml:space="preserve">
+    <value>Oficiální</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Oficiální způsob spouštění od Kunosu; může být pomalé a nespolehlivé, ale nevyžaduje záplatování</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
+    <value>Okolí (nízko)</value>
+  </data>
+  <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
+    <value>Okolí (vysoko)</value>
+  </data>
+  <data name="Shared_Replay" xml:space="preserve">
+    <value>Opakovaný záznam</value>
+  </data>
+  <data name="Common_AcReplay" xml:space="preserve">
+    <value>Opakovaný záznam videohry</value>
+  </data>
+  <data name="Weather_Haze" xml:space="preserve">
+    <value>Opar</value>
+  </data>
+  <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
+    <value>Originální soubor bude přesunut do Koše</value>
+  </data>
+  <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
+    <value>Originální spouštěč chybí, změňte prosím spouštěč.</value>
+  </data>
+  <data name="Input_Axle" xml:space="preserve">
+    <value>Osa {0}</value>
+  </data>
+  <data name="SyntaxError_Solution" xml:space="preserve">
+    <value>Otevřít soubor</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>Pět ploch na snímek</value>
+  </data>
+  <data name="Weather_Sand" xml:space="preserve">
+    <value>Písek</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>písmo</value>
+  </data>
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+    <value>Písmo se používá, ale je zakázáno</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>Plyn</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>počasí</value>
+  </data>
+  <data name="Shared_Weather" xml:space="preserve">
+    <value>Počasí</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>Počasí {0} chybí.</value>
+  </data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Podmínka události “{0}” ještě není podporována</value>
+  </data>
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Potisk skinu ({0}/livery.png) chybí</value>
+  </data>
+  <data name="Settings_Period_OnOpening" xml:space="preserve">
+    <value>Pouze při otevírání</value>
+  </data>
+  <data name="Uploader_RequestFailed" xml:space="preserve">
+    <value>Požadavek GET selhal</value>
+  </data>
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+    <value>Požadovaná trať “{0}” chybí</value>
+  </data>
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+    <value>Požadované auto “{0}” chybí</value>
+  </data>
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+    <value>Požadované počasí “{0}” chybí</value>
+  </data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>Požadovaný obsah chybí</value>
+  </data>
+  <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
+    <value>Požadovaný skin “{1}” pro {0} chybí</value>
+  </data>
+  <data name="Shared_PpFilter" xml:space="preserve">
+    <value>PP filtr</value>
+  </data>
+  <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
+    <value>PP filtr “{0}” chybí</value>
+  </data>
+  <data name="Weather_Dust" xml:space="preserve">
+    <value>Prašno</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>Pravé přední</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>Pravé zadní</value>
+  </data>
+  <data name="ReplayObject_PreviousSession" xml:space="preserve">
+    <value>Předchozí relace</value>
+  </data>
+  <data name="Presets_FileFilter" xml:space="preserve">
+    <value>Přednastavení (*{0})|*{0}</value>
+  </data>
+  <data name="Shared_AssistsSetupPreset" xml:space="preserve">
+    <value>Přednastavení asistentů</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>Přednastavení kondice trati</value>
+  </data>
+  <data name="Shared_VideoSettingsPreset" xml:space="preserve">
+    <value>Přednastavení nastavení grafiky</value>
+  </data>
+  <data name="Shared_AudioSettingsPreset" xml:space="preserve">
+    <value>Přednastavení nastavení zvuku</value>
+  </data>
+  <data name="Shared_ControlsPreset" xml:space="preserve">
+    <value>Přednastavení herních zařízení</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>Přednastavení RHM</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Přednastavení startovního roštu</value>
+  </data>
+  <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
+    <value>Přednastavení zpětné vazy</value>
+  </data>
+  <data name="Weather_Squalls" xml:space="preserve">
+    <value>Přeháňka</value>
+  </data>
+  <data name="Weather_OvercastClouds" xml:space="preserve">
+    <value>Přeháňkové mraky</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Přidá zvláštní modul uživatelského rozhraní do originálního spouštěče, který naslouchá některým příkazům a zahájí závod; použijte pokud potřebujete Content Manager a originální spouštěč potřebujete mít naráz</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Přístup byl odepřen</value>
+  </data>
+  <data name="Online_Server_SessionInProcess" xml:space="preserve">
+    <value>probíhá</value>
+  </data>
+  <data name="Weather_BrokenClouds" xml:space="preserve">
+    <value>Průtrž mračen</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>Původní</value>
+  </data>
+  <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
+    <value>Režim boje s časem není na vybrané trati podporován</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Režim závodního startovního roštu chybí</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>Řízení</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Rodič auta chybí</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Rodičovské auto chybí</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Rozbalená verze nepodporuje automatické aktualizace.</value>
+  </data>
+  <data name="Weather_ScatteredClouds" xml:space="preserve">
+    <value>Rozptýlené mraky</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Rychlost</value>
+  </data>
+  <data name="Online_BookingResult_ServerFull" xml:space="preserve">
+    <value>Server je plný</value>
+  </data>
+  <data name="Online_CannotAccessServer" xml:space="preserve">
+    <value>Server není přístupný</value>
+  </data>
+  <data name="Online_Server_CannotPing" xml:space="preserve">
+    <value>Server není přístupný (pin selhal).</value>
+  </data>
+  <data name="Online_Server_Unavailable" xml:space="preserve">
+    <value>Server není přístupný.</value>
+  </data>
+  <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
+    <value>Server říká: “{0}”</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>Šest ploch na snímek</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Shader “{0}”chybí (možná byl odebrán v nějaké aktualizaci videohry), model potřebuje opravu</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Síla</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Šířka</value>
+  </data>
+  <data name="Online_ScanningProgress" xml:space="preserve">
+    <value>Skenuji ({0}/{1}), {2} nalezeno…</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>Skin {0} chybí.</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>skin auta</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>Skiny {0} chybí.</value>
+  </data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Skiny chybí</value>
+  </data>
+  <data name="Online_Server_SessionEnded" xml:space="preserve">
+    <value>skončilo</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>Skrip by měl vrátit filtrovací funkci</value>
+  </data>
+  <data name="Weather_LightThunderstorm" xml:space="preserve">
+    <value>Slabá bouřka</value>
+  </data>
+  <data name="Weather_LightDrizzle" xml:space="preserve">
+    <value>Slabé mrholení</value>
+  </data>
+  <data name="Weather_LightSnow" xml:space="preserve">
+    <value>Slabé sněžení</value>
+  </data>
+  <data name="Weather_LightRain" xml:space="preserve">
+    <value>Slabý déšť</value>
+  </data>
+  <data name="Weather_LightSleet" xml:space="preserve">
+    <value>Slabý déšť se sněhem</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>Složka “{0}” chybí</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Složka “ui” chybí</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>Složka chybí</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>Složka není určena</value>
+  </data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Složka se skiny není dostupná</value>
+  </data>
+  <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
+    <value>Slunce (nízko)</value>
+  </data>
+  <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
+    <value>Slunce (vysoko)</value>
+  </data>
+  <data name="FontObject_DeleteFont" xml:space="preserve">
+    <value>Smazat písmo</value>
+  </data>
+  <data name="DifficultyLevel_Easy" xml:space="preserve">
+    <value>Snadná</value>
+  </data>
+  <data name="Weather_Snow" xml:space="preserve">
+    <value>Sníh</value>
+  </data>
+  <data name="AcError_FileIsMissing" xml:space="preserve">
+    <value>Soubor “{0}” chybí</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>Soubor “{0}” chybí</value>
+  </data>
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
+    <value>Soubor “{0}” je poškozen</value>
+  </data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>Soubor “colorCurves.ini” chybí</value>
+  </data>
+  <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
+    <value>Soubor nelze odeslat na Google Drive</value>
+  </data>
+  <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
+    <value>Soubor nenalezen</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Soubor se stále analyzuje, ale některé hodnoty mohly být přeskočeny.</value>
+  </data>
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
+    <value>Statický</value>
+  </data>
+  <data name="DifficultyLevel_Medium" xml:space="preserve">
+    <value>Střední</value>
+  </data>
+  <data name="TagIsMissing_Format" xml:space="preserve">
+    <value>Tag “{0}” chybí</value>
+  </data>
+  <data name="JumpStart_TeleportToPit" xml:space="preserve">
+    <value>Teleportovat do boxů</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Tento typ objektu nelze zakázat.</value>
+  </data>
+  <data name="DifficultyLevel_Hard" xml:space="preserve">
+    <value>Těžká</value>
+  </data>
+  <data name="Input_Button" xml:space="preserve">
+    <value>Tlačítko {0}</value>
+  </data>
+  <data name="Weather_Tornado" xml:space="preserve">
+    <value>Tornádo</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>trať</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>Trať “{0}” chybí</value>
+  </data>
+  <data name="Online_Server_TrackIsMissing" xml:space="preserve">
+    <value>Trať {0} chybí.</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>Tři plochy na snímek</value>
+  </data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>Události pro “{0}” chybí</value>
+  </data>
+  <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že adresa serveru je platná a server je přístupný.</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že funguje internetové připojení.</value>
+  </data>
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
+    <value>Ujistěte se, že funguje internetové připojení.</value>
+  </data>
+  <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že je dostupné internetové připojení a nic se neděje ve složce Data.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že je funkční internetové připojení a že má aplikace povolení pro zápis do své složky.</value>
+  </data>
+  <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že máte dost místa a původní soubory mohou být odebrány.</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že máte dost volného místa.</value>
+  </data>
+  <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že máte poslední verzi Content Manageru</value>
+  </data>
+  <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že neběží žádná appka spjatá se složkou objektu</value>
+  </data>
+  <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že příkaz netrvá déle než {0:F1} sekund; použijte “start [app.exe]” místo “[app.exe]” pokud má aplikace běžet na pozadí</value>
+  </data>
+  <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že se žádná z těchto složek právě nepoužívá.</value>
+  </data>
+  <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
+    <value>Ujistěte se, že jeho soubor může být přepsán.</value>
+  </data>
+  <data name="PlaceConditionType_Position" xml:space="preserve">
+    <value>Umístění</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Varování</value>
+  </data>
+  <data name="Weather_Windy" xml:space="preserve">
+    <value>Větrno</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>Vlastní přednastavení autosalonu</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>Vlastní přednastavení náhledů</value>
+  </data>
+  <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
+    <value>Vložte nový autentifikační kód Google Drive:</value>
+  </data>
+  <data name="RaceGrid_You" xml:space="preserve">
+    <value>Vy</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
+    <value>Vyberte jiné auto.</value>
+  </data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>Vyberte jiné ID.</value>
+  </data>
+  <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
+    <value>Vyberte prosím auto podporované serverem</value>
+  </data>
+  <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
+    <value>Vyberte prosím soubor v původní (pod)složce.</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Vybrané auto nemá náležitý zvuk</value>
+  </data>
+  <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
+    <value>Výchozí PP filtr (default.ini) chybí, ale je požadován</value>
+  </data>
+  <data name="PlaceConditionType_Wins" xml:space="preserve">
+    <value>Výher</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Výška</value>
+  </data>
+  <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
+    <value>Vytvoří se nový soubor obsahující název založený na ID</value>
+  </data>
+  <data name="Solving_CreateNewFile" xml:space="preserve">
+    <value>Vytvořit nový soubor</value>
+  </data>
+  <data name="KunosCareer_Start" xml:space="preserve">
+    <value>Začít</value>
+  </data>
+  <data name="FontObject_DisableFont" xml:space="preserve">
+    <value>Zakázat písmo</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>Záludný</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Záludný způsob zahájení závodu; jedna z nejrychlejších, ale nefunguje bez Steamu a internetového připojení</value>
+  </data>
+  <data name="JumpStart_CarLocked" xml:space="preserve">
+    <value>Zamknout auto</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Zamluvili jste si místo na tomto serveru</value>
+  </data>
+  <data name="Weather_Mist" xml:space="preserve">
+    <value>Závoj</value>
+  </data>
+  <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
+    <value>Zeměpisná délka</value>
+  </data>
+  <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
+    <value>Zeměpisná šířka</value>
+  </data>
+  <data name="Online_GettingInformationDirectly" xml:space="preserve">
+    <value>Získávám informace napřímo</value>
+  </data>
+  <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
+    <value>Získávám informace napřímo (druhý pokus)...</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Ujistěte se, že máte dost volného místa.</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Ujistěte se, že neběží žádná aplikace používající zvuk autosalonu.</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Zkouší spouštět acs.exe napřímo, ale většinou selže</value>
+  </data>
+  <data name="TryAgainDot" xml:space="preserve">
+    <value>Zkusit znovu.</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Zkuste prosím obrázek trochu zmenšit</value>
+  </data>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>Znak značky chybí</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Znovunačíst soubor?</value>
+  </data>
+  <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
+    <value>Zobrazit jak administrátor zadává heslo</value>
+  </data>
+  <data name="Drive_GridArrangeWay" xml:space="preserve">
+    <value>Způsob uspořádání:</value>
+  </data>
+  <data name="Solving_Cancelled" xml:space="preserve">
+    <value>Zrušeno</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Nejlepší kola:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Nejlepší kolo:</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Zátěž</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Omezovač průtoku vzduchu</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Přizpůsobit dovednost soupeřů na základě poměru výkonu a váhy</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Míra nahodilosti:</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Zobrazit relativní rozsah</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Zobrazovat agresivitu soupeřů ve jméně</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Agresivita soupeřů</value>
   </data>
 </root>

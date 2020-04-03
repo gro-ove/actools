@@ -236,4 +236,22 @@ Material: [b]{10}[/b]</value>
   <data name="Common_RoundPostfix" xml:space="preserve">
     <value> lap</value>
   </data>
+  <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
+    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
+    <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
+  </data>
+  <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
+    <value>Enable free camera (press F7 on track)</value>
+  </data>
+  <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
+    <value>Apparantly SweetFX doesn’t affect the result, but could decrease loading time</value>
+  </data>
+  <data name="Video_CannotPlay_Commentary" xml:space="preserve">
+    <value>Please, go to the Settings and enable VLC addon.</value>
+  </data>
+  <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
+    <value>Make sure VLC addon is installed properly.</value>
+  </data>
 </root>

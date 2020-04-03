@@ -3412,4 +3412,7 @@ Gültige Werte liegen zwischen -1 und 1.</alternative></data>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>... Leistung an den Reifen</value>
   </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>With nothing, only emptyness</value>
+  </data>
 </root>

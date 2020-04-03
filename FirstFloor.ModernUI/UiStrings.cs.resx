@@ -238,8 +238,8 @@
     <value>Vyberte jakoukoliv barvu na obrazovce</value>
   </data>
   <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
-    <value>Odpovídající kandidáty nelze nalezt</value>
-  </data>
+    <value>Odpovídající kandidáty nelze nalézt</value>
+  <alternative>Odpovídající kandidáty nelze nalezt</alternative></data>
   <data name="Restore" xml:space="preserve">
     <value>Obnovit</value>
   </data>
@@ -284,5 +284,245 @@
   </data>
   <data name="Toolbar_Invite" xml:space="preserve">
     <value>Pozvat</value>
+  </data>
+  <data name="SuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Zkopírujte[/url] detaily chyby do schránky. Zkuste [url=cmd://refresh]obnovit[/url] tuto stránku nebo přejděte [url=cmd://browseback]zpět[/url].</value>
+  </data>
+  <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
+    <value>[url=cmd://copy]Zkopírujte[/url] podrobnosti chyby do schránky. Zkuste [url=cmd://restart]restartovat[/url] aplikaci nebo ji jen [url=cmd://exit]zavřete[/url].</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} z {1}</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Aktualizovat na verzi [b]{0}[/b]</value>
+  </data>
+  <data name="KeyAltLeft" xml:space="preserve">
+    <value>Alt (levý)</value>
+  </data>
+  <data name="KeyAltRight" xml:space="preserve">
+    <value>Alt (pravý)</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Ano</value>
+  </data>
+  <data name="KeyNumberPad" xml:space="preserve">
+    <value>Číslice {0}</value>
+  </data>
+  <data name="KeyControlLeft" xml:space="preserve">
+    <value>Control (levý)</value>
+  </data>
+  <data name="KeyControlRight" xml:space="preserve">
+    <value>Control (pravý)</value>
+  </data>
+  <data name="KeyMediaNextTrack" xml:space="preserve">
+    <value>Další skladba</value>
+  </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDS soubory (*.dds)|*.dds|Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Domů</value>
+  </data>
+  <data name="KeyBrowserHome" xml:space="preserve">
+    <value>Domů v prohlížeči</value>
+  </data>
+  <data name="KeyContextMenu" xml:space="preserve">
+    <value>Kontextové menu</value>
+  </data>
+  <data name="KeySpace" xml:space="preserve">
+    <value>Mezerník</value>
+  </data>
+  <data name="Progress_Downloading" xml:space="preserve">
+    <value>Načteno {0}</value>
+  </data>
+  <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
+    <value>Načteno {0} z {1}</value>
+  </data>
+  <data name="NavigationFailed" xml:space="preserve">
+    <value>Navigace selhala</value>
+  </data>
+  <data name="NavigateLink" xml:space="preserve">
+    <value>Navigační odkaz</value>
+  </data>
+  <data name="Suggestions" xml:space="preserve">
+    <value>Návrhy</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="NavigationFailedSourceNotSpecified" xml:space="preserve">
+    <value>Nelze přejít na  {0}, nebyl určen zdroj</value>
+  </data>
+  <data name="NavigationFailedFrameNotFound" xml:space="preserve">
+    <value>Nelze přejít na {0}, nelze najít cíl ModernFrame “{1}”</value>
+  </data>
+  <data name="UnexpectedToken" xml:space="preserve">
+    <value>Neočekávaný token</value>
+  </data>
+  <data name="UnknownOS" xml:space="preserve">
+    <value>Neznámý operační systém</value>
+  </data>
+  <data name="UnknownTokenType" xml:space="preserve">
+    <value>Neznámý typ tokenu</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>NOVÉ</value>
+  </data>
+  <data name="KeyBrowserFavorites" xml:space="preserve">
+    <value>Oblíbené v prohlížeči</value>
+  </data>
+  <data name="KeyBrowserRefresh" xml:space="preserve">
+    <value>Obnovit v prohlížeči</value>
+  </data>
+  <data name="ImagesFilter" xml:space="preserve">
+    <value>Obrázkové soubory|*.jpg;*.jpeg;*.png;*.bmp;*.gif;*.tif|Všechny soubory (*.*)|*.*</value>
+  </data>
+  <data name="Toolbar_Unfavourite_Tooltip" xml:space="preserve">
+    <value>Odebrat server ze seznamu oblíbených (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
+    <value>Odebrat server ze seznamu skrytých</value>
+  </data>
+  <data name="Progress_Uploading" xml:space="preserve">
+    <value>Odesláno {0}</value>
+  </data>
+  <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
+    <value>Odesláno {0} z {1}</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>OMEZENÝ</value>
+  </data>
+  <data name="UIThreadRequired" xml:space="preserve">
+    <value>Operace vyžaduje vlákno uživatelského rozhraní</value>
+  </data>
+  <data name="KeyLaunchMail" xml:space="preserve">
+    <value>Otevřít mail</value>
+  </data>
+  <data name="KeyHelp" xml:space="preserve">
+    <value>Pomoc</value>
+  </data>
+  <data name="KeyMediaPreviousTrack" xml:space="preserve">
+    <value>Předchozí skladba</value>
+  </data>
+  <data name="KeyMediaPlayPause" xml:space="preserve">
+    <value>Přehrát</value>
+  </data>
+  <data name="Go" xml:space="preserve">
+    <value>Přejít</value>
+  </data>
+  <data name="KeyZoom" xml:space="preserve">
+    <value>Přiblížení</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Přidat</value>
+  </data>
+  <data name="Toolbar_Favourite_Tooltip" xml:space="preserve">
+    <value>Přidat server na seznam oblíbených (Ctrl+D)</value>
+  </data>
+  <data name="Toolbar_Hide_Tooltip" xml:space="preserve">
+    <value>Přidat server na seznam skrytých serverů (pro jeho otevření vyhledejte “@hidden”)</value>
+  </data>
+  <data name="RaceGrid_ShareHeader" xml:space="preserve">
+    <value>Sdílet startovní rošt</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Sestupný</value>
+  </data>
+  <data name="KeyShiftLeft" xml:space="preserve">
+    <value>Shift (levý)</value>
+  </data>
+  <data name="KeyShiftRight" xml:space="preserve">
+    <value>Shift (pravý)</value>
+  </data>
+  <data name="KeyLeftArrow" xml:space="preserve">
+    <value>Šipka doleva</value>
+  </data>
+  <data name="KeyDownArrow" xml:space="preserve">
+    <value>Šipka dolů</value>
+  </data>
+  <data name="KeyRightArrow" xml:space="preserve">
+    <value>Šipka doprava</value>
+  </data>
+  <data name="KeyUpArrow" xml:space="preserve">
+    <value>Šipka nahoru</value>
+  </data>
+  <data name="HidePassword" xml:space="preserve">
+    <value>Skrýt heslo</value>
+  </data>
+  <data name="KeyVolumeDown" xml:space="preserve">
+    <value>Snížení hlasitosti</value>
+  </data>
+  <data name="KeyLaunchApplication1" xml:space="preserve">
+    <value>Spustit oblíbenou aplikací 1</value>
+  </data>
+  <data name="KeyLaunchApplication2" xml:space="preserve">
+    <value>Spustit oblíbenou aplikací 2</value>
+  </data>
+  <data name="StackTrace" xml:space="preserve">
+    <value>Trasa stohu</value>
+  </data>
+  <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
+    <value>Uložit startovní rošt jako přednastavení</value>
+  </data>
+  <data name="FatalError_Message" xml:space="preserve">
+    <value>V aplikaci nastala chyba a je nutné ji restartovat.</value>
+  </data>
+  <data name="Forward" xml:space="preserve">
+    <value>Vpřed</value>
+  </data>
+  <data name="KeyBrowserForward" xml:space="preserve">
+    <value>Vpřed v prohlížeči</value>
+  </data>
+  <data name="FiltersLinkAll" xml:space="preserve">
+    <value>Vše</value>
+  </data>
+  <data name="SelectColor" xml:space="preserve">
+    <value>Vybrat barvu</value>
+  </data>
+  <data name="KeySelectMedia" xml:space="preserve">
+    <value>Vybrat média</value>
+  </data>
+  <data name="KeyBrowserSearch" xml:space="preserve">
+    <value>Vyhledávat v prohlížeči</value>
+  </data>
+  <data name="Toolbar_OnlineCancelBooking" xml:space="preserve">
+    <value>Vzdát se místa</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Vzestupně</value>
+  </data>
+  <data name="KeyWindowsLeft" xml:space="preserve">
+    <value>Windows (levý)</value>
+  </data>
+  <data name="KeyWindowsRight" xml:space="preserve">
+    <value>Windows (pravý)</value>
+  </data>
+  <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
+    <value>Zahrnout heslo</value>
+  </data>
+  <data name="KeyMediaStop" xml:space="preserve">
+    <value>Zastavit</value>
+  </data>
+  <data name="KeyBrowserStop" xml:space="preserve">
+    <value>Zastavit v prohlížeči</value>
+  </data>
+  <data name="Source" xml:space="preserve">
+    <value>Zdroj</value>
+  </data>
+  <data name="ShowPassword" xml:space="preserve">
+    <value>Zobrazit heslo</value>
+  </data>
+  <data name="KeyBrowserBack" xml:space="preserve">
+    <value>Zpět v prohlížeči</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Zrušit</value>
+  </data>
+  <data name="KeyVolumeMute" xml:space="preserve">
+    <value>Ztišit</value>
+  </data>
+  <data name="KeyVolumeUp" xml:space="preserve">
+    <value>Zvýšení hlasitosti</value>
   </data>
 </root>

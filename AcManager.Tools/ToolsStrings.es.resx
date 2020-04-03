@@ -1629,4 +1629,28 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
   <data name="Controls_Steer" xml:space="preserve">
     <value>Dirección</value>
   </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Mejores vueltas:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Mejor vuelta:</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>m/s</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Lastre</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Organizar la resistencia de la IA basada en la relación P/W</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Aleatorio:</value>
+  </data>
 </root>

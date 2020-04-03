@@ -1089,4 +1089,28 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
     <value>Keep in mind that all removed content always can be restored from Recycle Bin</value>
   </data>
+  <data name="AcSettings_Skidmarks_Height" xml:space="preserve">
+    <value>Height from the ground</value>
+  </data>
+  <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
+    <value>Enable all video effets like reflections or glare (recommended)</value>
+  </data>
+  <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
+    <value>Attempt to find any car fitting selected grid type is failed.</value>
+  </data>
+  <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
+    <value>Look at Wikipedia by default</value>
+  </data>
+  <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
+    <value>Remove all nonimportant values</value>
+  </data>
+  <data name="Solution_MakeEmptyModel_Details" xml:space="preserve">
+    <value>With nothing, only emptyness</value>
+  </data>
+  <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
+    <value>App will make an attempt to read known properties from damaged JSON file (be carefull, data loss is possible)</value>
+  </data>
+  <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
+    <value>Share replay using Google Drive (Ctrl+Page Up)</value>
+  </data>
 </root>
