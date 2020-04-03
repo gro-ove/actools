@@ -3812,8 +3812,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Taken:</value>
     </data>
     <data name="Main_FPS_TakenFormat" xml:space="preserve">
-      <value>
-{0} sample</value>
+      <value>{0} sample</value>
     </data>
     <data name="Main_FPS_ValueFormat" xml:space="preserve">
       <value>{0:F1} frames per second</value>
