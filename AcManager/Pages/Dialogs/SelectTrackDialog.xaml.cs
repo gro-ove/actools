@@ -29,7 +29,7 @@ namespace AcManager.Pages.Dialogs {
 
         public static Uri FavouritesUri() {
             return UriExtension.Create("/Pages/Miscellaneous/AcObjectSelectList.xaml?Type=track&Filter=fav+&Title={0}",
-                    "Favourites");
+                    AppStrings.Online_Sorting_Favourites);
         }
 
         public static Uri RatingUri(double rating) {

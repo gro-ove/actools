@@ -56,21 +56,21 @@ using QuickSwitchesBlock = AcManager.QuickSwitches.QuickSwitchesBlock;
 
 namespace AcManager.Pages.Windows {
     public partial class MainWindow : IFancyBackgroundListener, INavigateUriHandler {
-        private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", "Downloads");
+        private static readonly TitleLinkEnabledEntry DownloadsEntry = new TitleLinkEnabledEntry("downloads", AppStrings.Main_Downloads);
 
         public static TitleLinkEnabledEntry[] GetTitleLinksEntries() {
             return new[] {
                 // new TitleLinkEnabledEntry("drive", AppStrings.Main_Drive),
-                new TitleLinkEnabledEntry("lapTimes", "Lap times"),
-                new TitleLinkEnabledEntry("stats", "Results"),
+                new TitleLinkEnabledEntry("lapTimes", AppStrings.Main_LapTimes),
+                new TitleLinkEnabledEntry("stats", AppStrings.Main_Results),
                 new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
                 new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
                 DownloadsEntry,
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
                 new TitleLinkEnabledEntry("settings", AppStrings.Main_Settings),
                 new TitleLinkEnabledEntry("about", AppStrings.Main_About),
-                new TitleLinkEnabledEntry("originalLauncher", "Original launcher (appears with Steam starter)"),
-                new TitleLinkEnabledEntry("settings/video", "Video settings (FPS counter)", false),
+                new TitleLinkEnabledEntry("originalLauncher", AppStrings.Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter),
+                new TitleLinkEnabledEntry("settings/video", AppStrings.Windows_MainWindow_VideoSettingsFPSCounter, false),
             };
         }
 
@@ -842,7 +842,7 @@ namespace AcManager.Pages.Windows {
                     details = "Preparing to a race";
                     break;
                 case "lapTimes":
-                    details = "Lap times";
+                    details = AppStrings.Main_LapTimes;
                     break;
                 case "stats":
                     details = "Stats";

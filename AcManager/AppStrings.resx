@@ -4516,4 +4516,13 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
       <value>Yes, and fix it</value>
     </data>
+    <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
+      <value>Can’t load image</value>
+    </data>
+    <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+      <value>Original launcher (appears with Steam starter)</value>
+    </data>
+    <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+      <value>Video settings (FPS counter)</value>
+    </data>
 </root>

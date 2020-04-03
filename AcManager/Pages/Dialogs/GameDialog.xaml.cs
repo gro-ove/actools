@@ -591,7 +591,7 @@ namespace AcManager.Pages.Dialogs {
                     Application.Current?.MainWindow?.Activate();
                 } else {
                     Model.CurrentState = ViewModel.State.Error;
-                    Model.ErrorMessage = "Nothing to display";
+                    Model.ErrorMessage = AppStrings.Online_NothingToDisplay;
                     Buttons = new[] { CloseButton };
                 }
                 return;

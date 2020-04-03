@@ -182,7 +182,7 @@ namespace AcManager.Pages.Dialogs {
             CommandManager.InvalidateRequerySuggested();
 
             if (_image.IsBroken) {
-                NonfatalError.Notify("Can’t load image");
+                NonfatalError.Notify(AppStrings.Dialogs_ImageEditor_CantLoadImage);
                 CloseWithResult(MessageBoxResult.Cancel);
             } else {
                 _model.TotalWidth = MainGrid.Width = _image.Width;
