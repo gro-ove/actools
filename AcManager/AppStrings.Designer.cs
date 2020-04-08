@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -846,6 +846,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ABS effect.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_ABSEffect {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_ABSEffect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Center boost gain.
         /// </summary>
         public static string AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain {
@@ -882,6 +891,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Handle mode:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_HandleMode {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_HandleMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hardware lock (experimental).
         /// </summary>
         public static string AcSettings_Controls_Wheel_ForceFeedback_HardwareLock {
@@ -891,11 +909,56 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Just drag’n’drop it if needed.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import CSV.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_ImportCSV {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_ImportCSV", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import CSV from WheelCheck (just drag’n’drop it if needed).
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Import LUT.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_ImportLUT {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_ImportLUT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Logitech hardware lock options:.
         /// </summary>
         public static string AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions {
             get {
                 return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LUT:.
+        /// </summary>
+        public static string AcSettings_Controls_Wheel_ForceFeedback_LUT {
+            get {
+                return ResourceManager.GetString("AcSettings_Controls_Wheel_ForceFeedback_LUT", resourceCulture);
             }
         }
         
@@ -4347,6 +4410,60 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete tag….
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_DeleteTag {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_DeleteTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the tag.
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Names:.
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_Names {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_Names", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Just put the names here, one name per line.
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_Names_Tooltip {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_Names_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New tag.
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_NewTag {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_NewTag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Restore deleted.
+        /// </summary>
+        public static string Dialogs_OnlineDriverTags_RestoreDeleted {
+            get {
+                return ResourceManager.GetString("Dialogs_OnlineDriverTags_RestoreDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Actual temperature:.
         /// </summary>
         public static string Drive_ActualTemperature {
@@ -5643,6 +5760,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Launch.
+        /// </summary>
+        public static string Lists_ToolsListPage_Launch {
+            get {
+                return ResourceManager.GetString("Lists_ToolsListPage_Launch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Can’t change livery icon.
         /// </summary>
         public static string LiveryIcon_CannotChange {
@@ -6887,6 +7013,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Remove all sessions with missing content.
+        /// </summary>
+        public static string Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip {
+            get {
+                return ResourceManager.GetString("Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove missing.
+        /// </summary>
+        public static string Miscellaneous_PlayerStats_RemoveMissing {
+            get {
+                return ResourceManager.GetString("Miscellaneous_PlayerStats_RemoveMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sessions not found..
+        /// </summary>
+        public static string Miscellaneous_PlayerStats_SessionsNotFound {
+            get {
+                return ResourceManager.GetString("Miscellaneous_PlayerStats_SessionsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add by IP.
         /// </summary>
         public static string Online_AddByIp {
@@ -8086,6 +8239,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Power graph:.
+        /// </summary>
+        public static string Selected_CarPage_New_PowerGraph {
+            get {
+                return ResourceManager.GetString("Selected_CarPage_New_PowerGraph", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [i]Did you know?[/i] You can right-click on a property to filter cars by it..
+        /// </summary>
+        public static string Selected_CarPage_New_Property_Tooltip {
+            get {
+                return ResourceManager.GetString("Selected_CarPage_New_Property_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of ready to be installed setups on The Setup Market.
+        /// </summary>
+        public static string Selected_CarPage_New_TSMSetups_Tooltip {
+            get {
+                return ResourceManager.GetString("Selected_CarPage_New_TSMSetups_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replace tyres.
         /// </summary>
         public static string Selected_CarPage_ReplaceTyres {
@@ -8145,6 +8325,24 @@ namespace AcManager {
         public static string Selected_FilterByOrigin {
             get {
                 return ResourceManager.GetString("Selected_FilterByOrigin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by similar driven distance.
+        /// </summary>
+        public static string Selected_FilterBySimilarDrivenDistance {
+            get {
+                return ResourceManager.GetString("Selected_FilterBySimilarDrivenDistance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by similar max speed achieved.
+        /// </summary>
+        public static string Selected_FilterBySimilarMaxSpeedAchieved {
+            get {
+                return ResourceManager.GetString("Selected_FilterBySimilarMaxSpeedAchieved", resourceCulture);
             }
         }
         
@@ -9364,6 +9562,24 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Allow decimal values for track state.
+        /// </summary>
+        public static string Settings_Drive_AllowDecimalValuesForTrackState {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AllowDecimalValuesForTrackState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Might cause issues with some apps if used.
+        /// </summary>
+        public static string Settings_Drive_AllowDecimalValuesForTrackState_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_AllowDecimalValuesForTrackState_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Always record ghost in hotlap mode.
         /// </summary>
         public static string Settings_Drive_AlwaysRecordGhost {
@@ -9432,6 +9648,24 @@ namespace AcManager {
         public static string Settings_Drive_ChangeCarSkin {
             get {
                 return ResourceManager.GetString("Settings_Drive_ChangeCarSkin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Check if track fits selected mode.
+        /// </summary>
+        public static string Settings_Drive_CheckIfTrackFitsSelectedMode {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CheckIfTrackFitsSelectedMode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do..
+        /// </summary>
+        public static string Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip", resourceCulture);
             }
         }
         
@@ -9760,6 +9994,24 @@ namespace AcManager {
         public static string Settings_Drive_RHMLocation {
             get {
                 return ResourceManager.GetString("Settings_Drive_RHMLocation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show extra drop-down lists for skins, car modification and track layout.
+        /// </summary>
+        public static string Settings_Drive_ShowExtraDropDownListsForSkins {
+            get {
+                return ResourceManager.GetString("Settings_Drive_ShowExtraDropDownListsForSkins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Might slightly show app down.
+        /// </summary>
+        public static string Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip", resourceCulture);
             }
         }
         
@@ -10547,6 +10799,33 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Always allow to use password.
+        /// </summary>
+        public static string Settings_Online_AlwaysAllowToUsePassword {
+            get {
+                return ResourceManager.GetString("Settings_Online_AlwaysAllowToUsePassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable if you&apos;re going to connect as an admin.
+        /// </summary>
+        public static string Settings_Online_AlwaysAllowToUsePassword_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_AlwaysAllowToUsePassword_Tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto-refresh selected:.
+        /// </summary>
+        public static string Settings_Online_AutoRefreshSelected {
+            get {
+                return ResourceManager.GetString("Settings_Online_AutoRefreshSelected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compact UI.
         /// </summary>
         public static string Settings_Online_CompactUi {
@@ -10561,6 +10840,33 @@ namespace AcManager {
         public static string Settings_Online_ConnectionHeader {
             get {
                 return ResourceManager.GetString("Settings_Online_ConnectionHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Display:.
+        /// </summary>
+        public static string Settings_Online_Display {
+            get {
+                return ResourceManager.GetString("Settings_Online_Display", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fix names:.
+        /// </summary>
+        public static string Settings_Online_FixNames {
+            get {
+                return ResourceManager.GetString("Settings_Online_FixNames", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh might be required after changing.
+        /// </summary>
+        public static string Settings_Online_FixNames_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_FixNames_Tooltip", resourceCulture);
             }
         }
         
@@ -10601,6 +10907,51 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage drivers tags.
+        /// </summary>
+        public static string Settings_Online_ManageDriversTags {
+            get {
+                return ResourceManager.GetString("Settings_Online_ManageDriversTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage lists.
+        /// </summary>
+        public static string Settings_Online_ManageLists {
+            get {
+                return ResourceManager.GetString("Settings_Online_ManageLists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Passwords:.
+        /// </summary>
+        public static string Settings_Online_Passwords {
+            get {
+                return ResourceManager.GetString("Settings_Online_Passwords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pause pinging during the race.
+        /// </summary>
+        public static string Settings_Online_PausePingingDuringTheRace {
+            get {
+                return ResourceManager.GetString("Settings_Online_PausePingingDuringTheRace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping attempts.
+        /// </summary>
+        public static string Settings_Online_PingAttempts {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ping concurrency.
         /// </summary>
         public static string Settings_Online_PingConcurrency {
@@ -10624,6 +10975,24 @@ namespace AcManager {
         public static string Settings_Online_PingingHeader {
             get {
                 return ResourceManager.GetString("Settings_Online_PingingHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping servers once.
+        /// </summary>
+        public static string Settings_Online_PingServersOnce {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingServersOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ping servers only once and while pressing Refresh button, like in original launcher.
+        /// </summary>
+        public static string Settings_Online_PingServersOnce_Tooltip {
+            get {
+                return ResourceManager.GetString("Settings_Online_PingServersOnce_Tooltip", resourceCulture);
             }
         }
         
@@ -10682,6 +11051,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Presets folder.
+        /// </summary>
+        public static string Settings_Online_PresetsFolder {
+            get {
+                return ResourceManager.GetString("Settings_Online_PresetsFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Remember passwords.
         /// </summary>
         public static string Settings_Online_RememberPasswords {
@@ -10714,6 +11092,15 @@ namespace AcManager {
         public static string Settings_Online_ShowBrandBadges {
             get {
                 return ResourceManager.GetString("Settings_Online_ShowBrandBadges", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show extended information if content is missing.
+        /// </summary>
+        public static string Settings_Online_ShowExtendedInformationIfContentIsMissing {
+            get {
+                return ResourceManager.GetString("Settings_Online_ShowExtendedInformationIfContentIsMissing", resourceCulture);
             }
         }
         

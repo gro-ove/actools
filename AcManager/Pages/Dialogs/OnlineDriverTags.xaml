@@ -18,8 +18,8 @@
   </mui:ModernDialog.Resources>
   <mui:ModernDialog.ButtonsRowContent>
     <mui:SpacingUniformGrid VerticalSpacing="4" Columns="1">
-      <Button Content="New tag" Command="{Binding NewTagCommand}" />
-      <Button Content="Restore deleted" Command="{Binding RestoreDeletedCommand}"
+      <Button Content="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_NewTag}" Command="{Binding NewTagCommand}" />
+      <Button Content="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_RestoreDeleted}" Command="{Binding RestoreDeletedCommand}"
           Visibility="{Binding RestoreDeletedCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </mui:SpacingUniformGrid>
   </mui:ModernDialog.ButtonsRowContent>
@@ -43,15 +43,15 @@
         <DockPanel Margin="0 0 0 8" Width="240">
           <c:PropertiesGrid Columns="1" DockPanel.Dock="Top" VerticalSpacing="8">
             <mui:BetterTextBox x:Name="TextBox" c:PropertiesGrid.Label="Name:"
-                Text="{Binding Tag.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" ToolTip="Name of the tag" />
+                Text="{Binding Tag.DisplayName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Placeholder="?" ToolTip="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip}" />
             <mui:ColorPicker c:PropertiesGrid.Label="Color:" Color="{Binding Tag.Color, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
           </c:PropertiesGrid>
-          <Button DockPanel.Dock="Bottom" Content="Delete tag…" Command="{Binding DeleteCommand}" Margin="0 8 0 0"
+          <Button DockPanel.Dock="Bottom" Content="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_DeleteTag}" Command="{Binding DeleteCommand}" Margin="0 8 0 0"
               Visibility="{Binding IsBuiltIn, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
           <mui:Cell DockPanel.Dock="Top" Margin="0 8 0 0" Height="{Binding ActualHeight, ElementName=TextBox}">
-            <TextBlock Style="{StaticResource Label.Padding}" Text="Names:" />
+            <TextBlock Style="{StaticResource Label.Padding}" Text="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_Names}" />
           </mui:Cell>
-          <ae:TextEditor Margin="0 8 0 0" c:AvalonExtension.Text="{Binding Data}" ToolTip="Just put the names here, one name per line" />
+          <ae:TextEditor Margin="0 8 0 0" c:AvalonExtension.Text="{Binding Data}" ToolTip="{x:Static g:AppStrings.Dialogs_OnlineDriverTags_Names_Tooltip}" />
         </DockPanel>
       </DataTemplate>
     </ItemsControl.ItemTemplate>

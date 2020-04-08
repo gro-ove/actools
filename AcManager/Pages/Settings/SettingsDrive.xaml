@@ -132,8 +132,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_UsePracticeForTrackDay}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="Might slightly show app down" set:Search.Keywords="quick;drive;appearance;ui">
-          <Label Content="Show extra drop-down lists for skins, car modification and track layout" />
+        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip}" set:Search.Keywords="quick;drive;appearance;ui">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_ShowExtraDropDownListsForSkins}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveExpandBounds}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ExpandBounds_Tooltip}"
@@ -142,8 +142,8 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveCheckTrack}" set:Search.Keywords="quick;drive"
-            ToolTip="I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do.">
-          <Label Content="Check if track fits selected mode" />
+            ToolTip="{x:Static g:AppStrings.Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_CheckIfTrackFitsSelectedMode}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.AlwaysRecordGhost}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AlwaysRecordGhost_Tooltip}"
@@ -166,8 +166,8 @@
           <mui:BetterTextBox Text="{Binding Drive.LocalAddress}" Placeholder="?" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Drive.AllowDecimalTrackState}" ToolTip="Might cause issues with some apps if used" set:Search.Keywords="quick;drive">
-          <Label Content="Allow decimal values for track state" />
+        <CheckBox IsChecked="{Binding Drive.AllowDecimalTrackState}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState_Tooltip}" set:Search.Keywords="quick;drive">
+          <Label Content="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Drive.QuickDriveAiLimitations}" set:Search.Keywords="quick;drive;trackday"

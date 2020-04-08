@@ -22,13 +22,13 @@
 
   <ToolTip x:Key="CarSkinPreviewTooltip" d:DataContext="{d:DesignInstance t:CarSkinObject}" x:Shared="False">
     <c:PropertiesGrid Columns="1" Width="240" LabelWidth="80">
-      <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="None" />-->
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding DisplayName}" Placeholder="None" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="None" />
-      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="None" />
+      <!--<mui:PlaceholderTextBlock c:PropertiesGrid.Label="ID:" Text="{Binding Id}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />-->
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding DisplayName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Driver:" Text="{Binding DriverName}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+      <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Team:" Text="{Binding Team}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       <mui:Switch Value="{Binding SkinNumber}" c:PropertiesGrid.Label="Number:">
-        <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="None" />
-        <mui:PlaceholderTextBlock Text="{Binding SkinNumber}" Placeholder="None" />
+        <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
+        <mui:PlaceholderTextBlock Text="{Binding SkinNumber}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </mui:Switch>
     </c:PropertiesGrid>
   </ToolTip>
@@ -45,7 +45,7 @@
       <mui:BbCodeBlock Mode="WithoutBbCodes" Style="{StaticResource Heading2}" Text="{Binding DisplayName}" Margin="0 0 0 4" />
       <mui:BetterImage Filename="{Binding PreviewImage}" MaxWidth="480" />
       <c:PropertiesGrid Columns="2" Width="480" LabelWidth="80" Margin="0 6 0 0">
-        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="None" />
+        <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Type:" Text="{Binding Type}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Time:" Text="{Binding DisplayTimeDiapason}" Placeholder="Any" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Coefficient:" Text="{Binding TemperatureCoefficient, StringFormat='{}{0:F2}'}" Placeholder="1" />
         <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Temperature:" Text="{Binding DisplayTemperatureDiapason}" Placeholder="Any" />

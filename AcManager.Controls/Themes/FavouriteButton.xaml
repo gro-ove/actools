@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI">
+    xmlns:ac="clr-namespace:AcManager.Controls" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:t="http://acstuff.ru/app/tools">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBlock.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
@@ -85,11 +85,10 @@
             <DockPanel>
               <Button x:Name="PART_EditButton" Padding="4" DockPanel.Dock="Right" Margin="4 -4 0 -4" Visibility="Hidden" VerticalAlignment="Center">
                 <Path Width="8" Height="8" Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" Stretch="Fill"
-                    VerticalAlignment="Center" HorizontalAlignment="Center"
-                    Data="{StaticResource NotesIconData}" />
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Data="{StaticResource NotesIconData}" />
               </Button>
-              <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding AcObject.Notes, RelativeSource={RelativeSource TemplatedParent}}"
-                  TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" Placeholder="None" VerticalAlignment="Center" />
+              <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding AcObject.Notes, RelativeSource={RelativeSource TemplatedParent}}" TextWrapping="NoWrap"
+                  TextTrimming="CharacterEllipsis" Placeholder="{x:Static t:ToolsStrings.Common_None}" VerticalAlignment="Center" />
             </DockPanel>
           </Border>
           <ControlTemplate.Triggers>
@@ -131,9 +130,9 @@
                   </VisualBrush>
                 </Path.Fill>
               </Path>
-              <Slider x:Name="Slider" Minimum="0" Maximum="5" TickFrequency="0.5" TickPlacement="None" IsSnapToTickEnabled="True" IsTabStop="True"
-                  Focusable="True" Value="{Binding Rating, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Opacity="0" IsHitTestVisible="False"
-                  TabIndex="0" />
+              <Slider x:Name="Slider" Minimum="0" Maximum="5" TickFrequency="0.5" TickPlacement="None"
+                  IsSnapToTickEnabled="True" IsTabStop="True" Focusable="True"
+                  Value="{Binding Rating, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Opacity="0" IsHitTestVisible="False" TabIndex="0" />
             </mui:Cell>
           </Border>
 

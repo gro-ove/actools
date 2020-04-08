@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using AcManager.Tools;
 using AcManager.Tools.AcObjectsNew;
 using FirstFloor.ModernUI.Dialogs;
 
@@ -28,7 +29,7 @@ namespace AcManager.Controls {
         private void Edit() {
             var obj = AcObject;
             if (obj != null) {
-                obj.Notes = Prompt.Show(null, $"Notes for {obj.DisplayName}", obj.Notes, "None", multiline: true,
+                obj.Notes = Prompt.Show(null, $"Notes for {obj.DisplayName}", obj.Notes, ToolsStrings.Common_None, multiline: true,
                         comment: "Notes are for personal, saved on this computer information. You can sort by notes as well, with “notes:word” query.")
                         ?? obj.Notes;
             }

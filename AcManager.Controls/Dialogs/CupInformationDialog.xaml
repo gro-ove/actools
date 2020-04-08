@@ -17,10 +17,10 @@
       <Label Content="Install in one click:" Margin="0 1 0 0" Width="160" VerticalAlignment="Top" />
       <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupObject.CupUpdateInformation.IsLimited}">
         <mui:BooleanSwitch.True>
-          <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
+          <TextBlock Foreground="{DynamicResource Error}" Text="{x:Static mui:UiStrings.No}" FontWeight="Bold" />
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
-          <TextBlock Foreground="{DynamicResource Go}" Text="Yes" FontWeight="Bold" />
+          <TextBlock Foreground="{DynamicResource Go}" Text="{x:Static mui:UiStrings.Yes}" FontWeight="Bold" />
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
     </DockPanel>-->
@@ -29,20 +29,20 @@
         DataContext="{Binding CupObject}">
       <mui:BooleanSwitch c:PropertiesGrid.Label="Install in one click:" Value="{Binding CupUpdateInformation.IsToUpdateManually}">
         <mui:BooleanSwitch.True>
-          <TextBlock Foreground="{DynamicResource Error}" Text="No" FontWeight="Bold" />
+          <TextBlock Foreground="{DynamicResource Error}" Text="{x:Static mui:UiStrings.No}" FontWeight="Bold" />
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
-          <TextBlock Foreground="{DynamicResource Go}" Text="Yes" FontWeight="Bold" />
+          <TextBlock Foreground="{DynamicResource Go}" Text="{x:Static mui:UiStrings.Yes}" FontWeight="Bold" />
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="New version:" Text="{Binding CupUpdateInformation.Version}" Placeholder="Not set" />
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Installed version:" Text="{Binding Version}" Placeholder="Not set" />
       <mui:BooleanSwitch c:PropertiesGrid.Label="Prefer clean installation:" Value="{Binding CupUpdateInformation.PreferCleanInstallation}">
         <mui:BooleanSwitch.True>
-          <TextBlock Text="No" />
+          <TextBlock Text="{x:Static mui:UiStrings.No}" />
         </mui:BooleanSwitch.True>
         <mui:BooleanSwitch.False>
-          <TextBlock Text="Yes" />
+          <TextBlock Text="{x:Static mui:UiStrings.Yes}" />
         </mui:BooleanSwitch.False>
       </mui:BooleanSwitch>
       <mui:PlaceholderTextBlock c:PropertiesGrid.Label="Name:" Text="{Binding CupUpdateInformation.Name}" Placeholder="Not set" />

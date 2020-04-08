@@ -17,7 +17,7 @@
         </DockPanel>
 
         <DockPanel>
-          <Label Content="Auto-refresh selected:" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_AutoRefreshSelected}" />
           <ComboBox ItemsSource="{Binding Online.RefreshPeriods}" SelectedItem="{Binding Online.RefreshPeriod}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
@@ -26,17 +26,17 @@
         </CheckBox>-->
 
         <DockPanel>
-          <Label Content="Fix names:" ToolTip="Refresh might be required after changing" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_FixNames}" ToolTip="{x:Static g:AppStrings.Settings_Online_FixNames_Tooltip}" />
           <ComboBox ItemsSource="{Binding Online.FixNamesModes}" SelectedItem="{Binding Online.FixNamesMode}" DisplayMemberPath="DisplayName" />
         </DockPanel>
 
         <mui:SpacingUniformGrid HorizontalSpacing="4" Rows="1">
-          <Button Content="Manage lists" Command="{Binding ManageListsCommand}" />
-          <Button Content="Manage drivers tags" Command="{Binding ManageDriversTagsCommand}" />
+          <Button Content="{x:Static g:AppStrings.Settings_Online_ManageLists}" Command="{Binding ManageListsCommand}" />
+          <Button Content="{x:Static g:AppStrings.Settings_Online_ManageDriversTags}" Command="{Binding ManageDriversTagsCommand}" />
         </mui:SpacingUniformGrid>
 
         <!-- Display -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Display:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_Display}" />
 
         <CheckBox IsChecked="{Binding Online.CompactUi}">
           <Label Content="{x:Static g:AppStrings.Settings_Online_CompactUi}" set:Search.Keywords="appearance;ui" />
@@ -47,14 +47,14 @@
         </CheckBox>
 
         <!-- Passwords -->
-        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="Passwords:" />
+        <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_Passwords}" />
 
         <CheckBox IsChecked="{Binding Online.RememberPasswords}">
           <Label Content="{x:Static g:AppStrings.Settings_Online_RememberPasswords}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.AlwaysAllowToUsePassword}">
-          <Label Content="Always allow to use password" ToolTip="Enable if you're going to connect as an admin" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword}" ToolTip="{x:Static g:AppStrings.Settings_Online_AlwaysAllowToUsePassword_Tooltip}" />
         </CheckBox>
 
         <!-- Connection -->
@@ -83,16 +83,16 @@
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.PausePingingInRace}">
-          <Label Content="Pause pinging during the race" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_PausePingingDuringTheRace}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="Ping servers only once and while pressing Refresh button, like in original launcher">
-          <Label Content="Ping servers once" />
+        <CheckBox IsChecked="{Binding Online.PingOnlyOnce}" ToolTip="{x:Static g:AppStrings.Settings_Online_PingServersOnce_Tooltip}">
+          <Label Content="{x:Static g:AppStrings.Settings_Online_PingServersOnce}" />
         </CheckBox>
 
         <CheckBox IsChecked="{Binding Online.LoadServersWithMissingContent}">
           <CheckBox.ToolTip>If you’re sure you won’t need any information about servers with missing content, disable this option to reduce pinging time (reload lists after changing)</CheckBox.ToolTip>
-          <Label Content="Show extended information if content is missing" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_ShowExtendedInformationIfContentIsMissing}" />
         </CheckBox>
 
         <!--<CheckBox IsChecked="{Binding Online.SearchForMissingContent}">
@@ -125,7 +125,7 @@
 
         <DockPanel>
           <mui:ValueLabel Value="{Binding Online.PingAttempts}" mui:BetterTextBox.Minimum="1" mui:BetterTextBox.Maximum="1000" mui:BetterTextBox.Mode="Integer"
-              Content="Ping attempts" />
+              Content="{x:Static g:AppStrings.Settings_Online_PingAttempts}" />
           <Slider Minimum="1" Maximum="20" Value="{Binding Online.PingAttempts}" TickFrequency="2" TickPlacement="BottomRight" />
         </DockPanel>
 
@@ -169,9 +169,9 @@
         <!-- Server manager -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Online_ServerPresetsManagerHeader}" />
         <DockPanel>
-          <Label Content="Presets folder" />
+          <Label Content="{x:Static g:AppStrings.Settings_Online_PresetsFolder}" />
           <Button Command="{Binding ChangeServerPresetsDirectoryCommand}" Content="{x:Static c:ControlsStrings.Common_Change}" />
-          <Button Command="{Binding OpenServerPresetsDirectoryCommand}" Content="Open" />
+          <Button Command="{Binding OpenServerPresetsDirectoryCommand}" Content="{x:Static g:AppStrings.Settings_General_Open}" />
           <mui:PathTrimmingTextBlock Text="{Binding Online.ServerPresetsDirectory, Mode=OneTime}" />
         </DockPanel>
         <CheckBox IsChecked="{Binding Online.ServerPresetsUpdateDataAutomatically}" mui:LimitedService.Limited="True">

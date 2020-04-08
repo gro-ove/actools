@@ -1,7 +1,7 @@
 ﻿<UserControl x:Class="AcManager.Pages.Lists.ToolsListPage" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:li="clr-namespace:AcManager.Pages.Lists"
-    xmlns:ct="clr-namespace:AcManager.Pages.ContentTools" xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d">
+    xmlns:ct="clr-namespace:AcManager.Pages.ContentTools" xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d">
   <ItemsControl Margin="{StaticResource ContentMarginWithPadding}">
     <ItemsControl.Template>
       <ControlTemplate TargetType="ItemsControl">
@@ -15,7 +15,8 @@
       <DataTemplate DataType="li:ToolLink">
         <Border Background="{DynamicResource CardBackground}" BorderThickness="1" BorderBrush="{DynamicResource CardBorder}" Padding="20" Margin="20">
           <DockPanel>
-            <Button Command="{Binding LaunchCommand}" IsEnabled="{Binding IsAvailable}" Content="Launch" DockPanel.Dock="Bottom" />
+            <Button Command="{Binding LaunchCommand}" IsEnabled="{Binding IsAvailable}" Content="{x:Static g:AppStrings.Lists_ToolsListPage_Launch}"
+                DockPanel.Dock="Bottom" />
             <DockPanel Dock="Bottom" Margin="0 0 0 4"
                 Visibility="{Binding IsAvailable, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}">
               <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"

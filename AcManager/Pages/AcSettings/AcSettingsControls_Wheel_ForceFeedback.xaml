@@ -50,7 +50,7 @@
         </DockPanel>
 
         <DockPanel>
-          <mui:ValueLabel Value="{Binding Controls.WheelFfbAbsEffect}" Postfix="%" Content="ABS effect" />
+          <mui:ValueLabel Value="{Binding Controls.WheelFfbAbsEffect}" Postfix="%" Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ABSEffect}" />
           <Slider Minimum="0" Maximum="150" Value="{Binding Controls.WheelFfbAbsEffect}" TickFrequency="15" TickPlacement="BottomRight" />
         </DockPanel>
 
@@ -144,7 +144,7 @@
                       Text="Although CM uses official Logitech SDK and calls a couple of some well-documented functions, there is a small chance it might mess your steering wheel up, and you would need to spend some time fixing it back. Please, be careful." />
 
                   <DockPanel>
-                    <Label Content="Handle mode:" Width="80" />
+                    <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_HandleMode}" Width="80" />
                     <ComboBox ItemsSource="{Binding HandleOptions}" SelectedItem="{Binding Handle}">
                       <ComboBox.ItemTemplate>
                         <DataTemplate>
@@ -199,10 +199,10 @@
           </StackPanel>
           <StackPanel mui:Switch.When="LUT" Style="{StaticResource SettingsPanel}" Margin="0">
             <DockPanel>
-              <Label Content="LUT:" Width="80" />
-              <Button x:Name="ImportCsvButton" Content="Import CSV" Command="{Binding ImportCsvCommand}"
-                  ToolTip="Import CSV from WheelCheck (just drag’n’drop it if needed)" />
-              <Button Content="Import LUT" Command="{Binding ImportLutCommand}" ToolTip="Just drag’n’drop it if needed" />
+              <Label Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_LUT}" Width="80" />
+              <Button x:Name="ImportCsvButton" Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportCSV}" Command="{Binding ImportCsvCommand}"
+                  ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip}" />
+              <Button Content="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_ImportLUT}" Command="{Binding ImportLutCommand}" ToolTip="{x:Static g:AppStrings.AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip}" />
               <mui:BetterComboBox ItemsSource="{Binding FfPostProcess.LutNames}" SelectedItem="{Binding FfPostProcess.LutName, Mode=TwoWay}" />
             </DockPanel>
 

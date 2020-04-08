@@ -4684,4 +4684,133 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
       <value>Booking is finished</value>
     </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+      <value>Import CSV</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+      <value>Import CSV from WheelCheck (just drag’n’drop it if needed)</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+      <value>Import LUT</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+      <value>Just drag’n’drop it if needed</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_LUT" xml:space="preserve">
+      <value>LUT:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+      <value>Handle mode:</value>
+    </data>
+    <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+      <value>ABS effect</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+      <value>New tag</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+      <value>Restore deleted</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+      <value>Name of the tag</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+      <value>Delete tag…</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+      <value>Names:</value>
+    </data>
+    <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+      <value>Just put the names here, one name per line</value>
+    </data>
+    <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+      <value>Launch</value>
+    </data>
+    <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+      <value>Sessions not found.</value>
+    </data>
+    <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+      <value>Remove missing</value>
+    </data>
+    <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+      <value>Remove all sessions with missing content</value>
+    </data>
+    <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+      <value>Power graph:</value>
+    </data>
+    <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+      <value>[i]Did you know?[/i] You can right-click on a property to filter cars by it.</value>
+    </data>
+    <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+      <value>Filter by similar driven distance</value>
+    </data>
+    <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+      <value>Filter by similar max speed achieved</value>
+    </data>
+    <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+      <value>Number of ready to be installed setups on The Setup Market</value>
+    </data>
+    <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+      <value>Allow decimal values for track state</value>
+    </data>
+    <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+      <value>Might cause issues with some apps if used</value>
+    </data>
+    <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+      <value>Check if track fits selected mode</value>
+    </data>
+    <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+      <value>I wouldn’t recommend to disable it, CM will offer you to fix track’s description if anything is wrong. But, if you’re using non-default tags, definetly do.</value>
+    </data>
+    <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+      <value>Show extra drop-down lists for skins, car modification and track layout</value>
+    </data>
+    <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+      <value>Might slightly show app down</value>
+    </data>
+    <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+      <value>Auto-refresh selected:</value>
+    </data>
+    <data name="Settings_Online_ManageLists" xml:space="preserve">
+      <value>Manage lists</value>
+    </data>
+    <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+      <value>Manage drivers tags</value>
+    </data>
+    <data name="Settings_Online_Display" xml:space="preserve">
+      <value>Display:</value>
+    </data>
+    <data name="Settings_Online_Passwords" xml:space="preserve">
+      <value>Passwords:</value>
+    </data>
+    <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+      <value>Always allow to use password</value>
+    </data>
+    <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+      <value>Enable if you're going to connect as an admin</value>
+    </data>
+    <data name="Settings_Online_FixNames" xml:space="preserve">
+      <value>Fix names:</value>
+    </data>
+    <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+      <value>Refresh might be required after changing</value>
+    </data>
+    <data name="Settings_Online_PingAttempts" xml:space="preserve">
+      <value>Ping attempts</value>
+    </data>
+    <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+      <value>Presets folder</value>
+    </data>
+    <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+      <value>Ping servers once</value>
+    </data>
+    <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+      <value>Ping servers only once and while pressing Refresh button, like in original launcher</value>
+    </data>
+    <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+      <value>Pause pinging during the race</value>
+    </data>
+    <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+      <value>Show extended information if content is missing</value>
+    </data>
 </root>

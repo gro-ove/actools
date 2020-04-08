@@ -204,7 +204,7 @@
                 SourcePower="{Binding SelectedObject.SpecsPowerCurve}" Height="200" />
             <mui:ContextMenuButton DockPanel.Dock="Right" Click="OnPowerGraphContextMenuClick"
                 mui:FancyHintsService.Hint="{Binding Id, Source={x:Static c:FancyHints.RecalculateCurves}, Mode=OneTime}" />
-            <TextBlock Style="{StaticResource Label}" Text="Power graph:" />
+            <TextBlock Style="{StaticResource Label}" Text="{x:Static g:AppStrings.Selected_CarPage_New_PowerGraph}" />
           </DockPanel>
 
           <mui:SpacingUniformGrid Grid.Column="1" Rows="1" HorizontalSpacing="20" Margin="20 0 0 0">
@@ -425,7 +425,7 @@
               </c:PropertiesGrid>
 
               <c:MessageBlock CloseKey="carpagemsg">
-                <mui:BbCodeBlock Text="[i]Did you know?[/i] You can right-click on a property to filter cars by it." />
+                <mui:BbCodeBlock Text="{x:Static g:AppStrings.Selected_CarPage_New_Property_Tooltip}" />
               </c:MessageBlock>
             </mui:SpacingStackPanel>
 
@@ -444,7 +444,7 @@
 
                 <mui:BooleanSwitch Value="{Binding TheSetupMarketCounter, Source={x:Static t:SettingsHolder.Integrated}}" CollapseOnFalse="True"
                     c:PropertiesGrid.Label="Setups on TSM:">
-                  <DockPanel Background="Transparent" ToolTip="Number of ready to be installed setups on The Setup Market">
+                  <DockPanel Background="Transparent" ToolTip="{x:Static g:AppStrings.Selected_CarPage_New_TSMSetups_Tooltip}">
                     <Button Content="…" Padding="4 0" DockPanel.Dock="Right" Margin="4 0 1 0" Click="OnTsmSetupsButtonClick" />
                     <mui:PlaceholderTextBlock Placeholder="…" Text="{Binding SelectedObject.TsmSetupsCount}" />
                   </DockPanel>
@@ -454,7 +454,7 @@
                     Text="{Binding SelectedObject.TotalDrivenDistanceKm, Converter={StaticResource MultiplyConverter}, ConverterParameter={x:Static t:SettingsHolder+CommonSettings.DistanceMultiplier}, StringFormat={x:Static t:SettingsHolder+CommonSettings.DistanceFormat}}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Filter by similar driven distance" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_FilterBySimilarDrivenDistance}" Command="{Binding Path=FilterCommand}" CommandParameter="driven" />
                       <Separator />
                       <MenuItem Header="{x:Static g:AppStrings.Selected_CarPage_ClearStatsFromThisCar}" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
@@ -466,7 +466,7 @@
                     Visibility="{Binding SelectedObject.MaxSpeedAchieved, Converter={StaticResource EnumToVisibilityConverter}, ConverterParameter='≠0'}">
                   <FrameworkElement.ContextMenu>
                     <ContextMenu>
-                      <MenuItem Header="Filter by similar max speed achieved" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
+                      <MenuItem Header="{x:Static g:AppStrings.Selected_FilterBySimilarMaxSpeedAchieved}" Command="{Binding Path=FilterCommand}" CommandParameter="topspeedachieved" />
                       <Separator />
                       <MenuItem Header="{x:Static g:AppStrings.Selected_CarPage_ClearStatsFromThisCar}" Command="{Binding Path=ClearStatsCommand}" />
                     </ContextMenu>
