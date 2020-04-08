@@ -525,4 +525,10 @@
   <data name="KeyVolumeUp" xml:space="preserve">
     <value>Zvýšení hlasitosti</value>
   </data>
+  <data name="Toolbar_Invite_Tooltip" xml:space="preserve">
+    <value>Sdílejte odkaz na tento server, aby se k vám přátelé mohli rychleji přidat (Ctrl+PgUp)</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Procházet</value>
+  </data>
 </root>

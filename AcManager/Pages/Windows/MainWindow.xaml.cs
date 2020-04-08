@@ -330,7 +330,7 @@ namespace AcManager.Pages.Windows {
             // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
-            ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
+            // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
         }
 
         /// <summary>

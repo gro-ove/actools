@@ -8,7 +8,6 @@ using AcManager.Tools.Miscellaneous;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 
 namespace AcManager.Controls.ViewModels {
@@ -54,7 +53,7 @@ namespace AcManager.Controls.ViewModels {
         private async Task RunCupItem(CupEventArgs e) {
             var manager = CupClient.Instance?.GetAssociatedManager(e.Key.Type);
             if (manager == null) return;
-            Logging.Debug($"ID: {e.Key.Id}, manager: {manager}, item: {await manager.GetObjectByIdAsync(e.Key.Id)}");
+            // Logging.Debug($"ID: {e.Key.Id}, manager: {manager}, item: {await manager.GetObjectByIdAsync(e.Key.Id)}");
             if (await manager.GetObjectByIdAsync(e.Key.Id) is ICupSupportedObject obj && !CupSupportedObjects.Contains(obj)) {
                 CupSupportedObjects.Add(obj);
                 if (obj.IsCupUpdateAvailable) {

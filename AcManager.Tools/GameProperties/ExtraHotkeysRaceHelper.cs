@@ -703,7 +703,7 @@ namespace AcManager.Tools.GameProperties {
                     try {
                         var item = device.Value;
                         var joystick = item.Device;
-                        if (joystick.Disposed) {
+                        if (joystick?.Disposed != false) {
                             toRemove.Add(device.Key);
                             continue;
                         }

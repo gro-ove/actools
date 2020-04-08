@@ -77,8 +77,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
         private Token Newline() {
             Match('\r', 0, 1);
-            Match('\n');
-
+            Match('\n', 0, 1);
             return new Token(string.Empty, TokenLineBreak);
         }
 

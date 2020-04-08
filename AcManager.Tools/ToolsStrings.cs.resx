@@ -232,8 +232,8 @@
     <value>Omezit jeho pohyb</value>
   </data>
   <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
-    <value>Omezení úhlu otáčení vašeho virtuálního volantu</value>
-  </data>
+    <value>Omezení rozsahu otáčení vašeho virtuálního volantu</value>
+  <alternative>Omezení úhlu otáčení vašeho virtuálního volantu</alternative></data>
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
     <value>Zobrazit rozestupy vůči soupeřům</value>
   </data>
@@ -532,8 +532,8 @@
     <value>bod</value>
   </data>
   <data name="KunosCareer_Resume" xml:space="preserve">
-    <value>Shrnutí</value>
-  </data>
+    <value>Zkusit znovu</value>
+  <alternative>Shrnutí</alternative></data>
   <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
     <value>Zkouším provést ping pro nalezení HTTP portu...</value>
   </data>
@@ -1383,8 +1383,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Shader “{0}”chybí (možná byl odebrán v nějaké aktualizaci videohry), model potřebuje opravu</value>
   </data>
   <data name="Common_Power" xml:space="preserve">
-    <value>Síla</value>
-  </data>
+    <value>Výkon</value>
+  <alternative>Síla</alternative></data>
   <data name="Common_Width" xml:space="preserve">
     <value>Šířka</value>
   </data>

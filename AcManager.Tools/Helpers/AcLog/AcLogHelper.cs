@@ -74,74 +74,97 @@ namespace AcManager.Tools.Helpers.AcLog {
                     }
                 }
 
-                var i = log.IndexOf(@"CRASH in:", StringComparison.Ordinal);
-                string crash;
-                if (i != -1) {
-                    crash = log.Substring(i);
-                    if (crash.Contains(@" evaluateTimeFromTrackSpline")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.TimeAttackNotSupported);
+                {
+                    const string s = "[CSP SAYS] ";
+                    var i = log.IndexOf(s, StringComparison.Ordinal);
+                    if (i != -1) {
+                        var error = log.Substring(i + s.Length).Trim().Split('\n')[0].Trim();
+                        return new WhatsGoingOn(WhatsGoingOnType.CustomShadersPatchReported, error);
                     }
+                }
 
-                    if (crash.Contains(@"PyTraceBack_Print")) {
-                        var inits = Regex.Matches(log, @"\bInit PyPlugin:([^\n\r]+)").OfType<Match>().LastOrDefault();
-                        if (inits?.Success == true) {
-                            var appId = inits.Groups[1].Value.Trim();
-                            return new WhatsGoingOn(WhatsGoingOnType.AppMightBeBroken, appId) {
-                                Fix = AcSettingsHolder.Python.IsActivated(appId) ? token => {
-                                    AcSettingsHolder.Python.SetActivated(appId, false);
-                                    return Task.Delay(0);
-                                } : (Func<CancellationToken, Task>)null,
-                                FixDisplayName = "Disable app"
-                            };
+                {
+                    const string s = "Kunos Simulazioni: CRITICAL ERROR";
+                    var i = log.IndexOf(s, StringComparison.Ordinal);
+                    if (i != -1) {
+                        var error = log.Substring(i + s.Length).Trim().Split('\n')[0].Trim();
+                        if (error == "CANNOT HAVE 0 CARS IN RACE.INI") {
+                            return new WhatsGoingOn(WhatsGoingOnType.NoCarsFound);
                         }
+                        return new WhatsGoingOn(WhatsGoingOnType.CriticalError, error);
                     }
-
-                    if (crash.Contains(@"SkyBox::updateCloudsGeneration")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.CloudsMightBeMissing);
-                    }
-
-                    if (crash.Contains(@"DriverModel::DriverModel")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.DriverModelIsMissing);
-                    }
-
-                    if (crash.Contains(@"KGLTexture::initSize")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.WrongTextureFormat);
-                    }
-
-                    if (crash.Contains(@"CarAvatar::resetMultVolume")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.CarSoundIsBroken);
-                    }
-
-                    if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
-                    }
-
-                    if (crash.Contains(@"\drivetrain.cpp")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.DrivetrainIsDamaged, TryToGetCarName(log.Substring(0, i)));
-                    }
-
-                    if (crash.Contains(@"\analoginstruments.cpp")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.AnalogInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
-                    }
-
-                    if (crash.Contains(@"\digitalinstruments.cpp")) {
-                        return new WhatsGoingOn(WhatsGoingOnType.DigitalInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
-                    }
-                } else {
-                    crash = null;
                 }
 
-                var extension = Extensions.Select(x => x.Detect(log, crash)).NonNull().FirstOrDefault();
-                if (extension != null) {
-                    return extension;
-                }
+                {
+                    var i = log.IndexOf(@"CRASH in:", StringComparison.Ordinal);
+                    string crash;
+                    if (i != -1) {
+                        crash = log.Substring(i);
+                        if (crash.Contains(@" evaluateTimeFromTrackSpline")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.TimeAttackNotSupported);
+                        }
 
-                if (crash != null) {
-                    var cleanedUp = CleanUpCrash(crash);
-                    if (string.IsNullOrWhiteSpace(cleanedUp)) {
-                        return new WhatsGoingOn(WhatsGoingOnType.UnknownEmptyCrash);
+                        if (crash.Contains(@"PyTraceBack_Print")) {
+                            var inits = Regex.Matches(log, @"\bInit PyPlugin:([^\n\r]+)").OfType<Match>().LastOrDefault();
+                            if (inits?.Success == true) {
+                                var appId = inits.Groups[1].Value.Trim();
+                                return new WhatsGoingOn(WhatsGoingOnType.AppMightBeBroken, appId) {
+                                    Fix = AcSettingsHolder.Python.IsActivated(appId) ? token => {
+                                        AcSettingsHolder.Python.SetActivated(appId, false);
+                                        return Task.Delay(0);
+                                    } : (Func<CancellationToken, Task>)null,
+                                    FixDisplayName = "Disable app"
+                                };
+                            }
+                        }
+
+                        if (crash.Contains(@"SkyBox::updateCloudsGeneration")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.CloudsMightBeMissing);
+                        }
+
+                        if (crash.Contains(@"DriverModel::DriverModel")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.DriverModelIsMissing);
+                        }
+
+                        if (crash.Contains(@"KGLTexture::initSize")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.WrongTextureFormat);
+                        }
+
+                        if (crash.Contains(@"CarAvatar::resetMultVolume")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.CarSoundIsBroken);
+                        }
+
+                        if (crash.Contains(@"AISpline::getPointWithOffset") || crash.Contains(@"AISpline::calculateNormals")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.AiSplineMissing);
+                        }
+
+                        if (crash.Contains(@"\drivetrain.cpp")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.DrivetrainIsDamaged, TryToGetCarName(log.Substring(0, i)));
+                        }
+
+                        if (crash.Contains(@"\analoginstruments.cpp")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.AnalogInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
+                        }
+
+                        if (crash.Contains(@"\digitalinstruments.cpp")) {
+                            return new WhatsGoingOn(WhatsGoingOnType.DigitalInstrumentsAreDamaged, TryToGetCarName(log.Substring(0, i)));
+                        }
+                    } else {
+                        crash = null;
                     }
-                    return new WhatsGoingOn(WhatsGoingOnType.UnknownCrash, CleanUpCrash(crash));
+
+                    var extension = Extensions.Select(x => x.Detect(log, crash)).NonNull().FirstOrDefault();
+                    if (extension != null) {
+                        return extension;
+                    }
+
+                    if (crash != null) {
+                        var cleanedUp = CleanUpCrash(crash);
+                        if (string.IsNullOrWhiteSpace(cleanedUp)) {
+                            return new WhatsGoingOn(WhatsGoingOnType.UnknownEmptyCrash);
+                        }
+                        return new WhatsGoingOn(WhatsGoingOnType.UnknownCrash, CleanUpCrash(crash));
+                    }
                 }
             } catch (Exception e) {
                 Logging.Write("Can’t determine what’s going on: " + e);

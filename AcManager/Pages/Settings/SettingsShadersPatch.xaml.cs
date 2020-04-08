@@ -33,7 +33,7 @@ namespace AcManager.Pages.Settings {
         public SettingsShadersPatch() {
             Instance = this;
 
-            Logging.Here();
+            // Logging.Here();
             PatchHelper.Reload();
             KeyBindingsController = new LocalKeyBindingsController(this);
             /*InputBindings.Add(new InputBinding(new DelegateCommand(() => {
@@ -43,33 +43,33 @@ namespace AcManager.Pages.Settings {
                 Model.SelectedApp?.ReloadCommand.Execute(null);
             }), new KeyGesture(Key.R, ModifierKeys.Control)));*/
 
-            Logging.Here();
+            // Logging.Here();
             InitializeComponent();
             DataContext = new ViewModel();
-            Logging.Here();
+            // Logging.Here();
             Model.MainModel.PropertyChanged += OnModelPropertyChanged;
-            Logging.Here();
+            // Logging.Here();
             SetKeyboardInputs();
-            Logging.Here();
+            // Logging.Here();
             UpdateConfigsTabs();
-            Logging.Here();
+            // Logging.Here();
 
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
                 PresetsControl != null ? new InputBinding(PresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)) : null
             }.NonNull().ToList());
-            Logging.Here();
+            // Logging.Here();
 
             ShadersPatchEntry.InstallationStart += OnPatchInstallationStart;
             ShadersPatchEntry.InstallationEnd += OnPatchInstallationEnd;
-            Logging.Here();
+            // Logging.Here();
 
             if (PatchHelper.OptionPatchSupport) {
                 PatchUpdater.Instance.PropertyChanged += OnPatchUpdaterPropertyChanged;
-                Logging.Here();
+                // Logging.Here();
             }
 
-            Logging.Here();
+            // Logging.Here();
             this.OnActualUnload(() => {
                 Model?.Dispose();
                 if (PatchHelper.OptionPatchSupport) {
@@ -77,7 +77,7 @@ namespace AcManager.Pages.Settings {
                 }
                 Instance = null;
             });
-            Logging.Here();
+            // Logging.Here();
         }
 
         private void OnPatchInstallationStart(object sender, CancelEventArgs e) {

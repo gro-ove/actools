@@ -373,8 +373,8 @@
     <value>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</value>
   <alternative>Skrýt virtuální paže vašeho řidiče</alternative></data>
   <data name="QuickSwitches_HideDriver" xml:space="preserve">
-    <value>Řidiči</value>
-  <alternative>Řidič</alternative></data>
+    <value>Skrytí řidičů</value>
+  <alternative>Řidič</alternative><alternative>Řidiči</alternative></data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
     <value>Skrýt virtuální řidiče ve všech pohledech</value>
   <alternative>Skrýt vašeho řidiče</alternative></data>
@@ -397,8 +397,8 @@
     <value>Palubní kamerou vždy mířit na horizont</value>
   <alternative>Mířit palubní kamerou na horizont</alternative></data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
-    <value>Pohyb volantu</value>
-  </data>
+    <value>Zámek volantu</value>
+  <alternative>Pohyb volantu</alternative></data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
     <value>Nepohybovat virtuálním volantem</value>
   </data>
@@ -706,11 +706,11 @@ Materiál: [b]{10}[/b]</value>
     <value>Použít místo toho PSD, XCF apod., pokud existují (je vyžadován doplněk Magick.NET)</value>
   </data>
   <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
-    <value>Požadované série zatím nejsou dokončeny</value>
-  </data>
+    <value>Zatím nebyly dokončeny série nutné pro postup na vyšší úroveň</value>
+  <alternative>Požadované série zatím nejsou dokončeny</alternative></data>
   <data name="KunosCareer_RequiredSeries" xml:space="preserve">
-    <value>Požadované série: {0}</value>
-  </data>
+    <value>Nejdříve dokončete tyto série: {0}</value>
+  <alternative>Požadované série: {0}</alternative></data>
   <data name="Video_CannotPlay_Commentary" xml:space="preserve">
     <value>Přejděte prosím do Nastavení a povolte přídavek VLC.</value>
   </data>
@@ -929,5 +929,11 @@ Materiál: [b]{10}[/b]</value>
   </data>
   <data name="Common_ScrollToSelected" xml:space="preserve">
     <value>Posunout k vybraným (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Co to je?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Hodnocení</value>
   </data>
 </root>

@@ -539,7 +539,7 @@
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
-        <mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />
+        <!--<mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />-->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
     <mui:LinkGroupFilterable x:Name="OnlineGroup" GroupKey="drive" DisplayName="{x:Static g:AppStrings.Main_Online}" AddAllLink="False"

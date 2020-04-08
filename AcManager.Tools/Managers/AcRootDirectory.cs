@@ -161,9 +161,9 @@ namespace AcManager.Tools.Managers {
 
                 var appsDirectory = Path.Combine(directory, @"apps");
                 if (!Directory.Exists(appsDirectory)) {
-                    Logging.Warning("Apps folder not found: " + appsDirectory);
-                    Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
-                    Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
+                    // Logging.Warning("Apps folder not found: " + appsDirectory);
+                    // Logging.Warning("All directories found: " + Directory.GetDirectories(directory).JoinToString(@", "));
+                    // Logging.Warning("All files found: " + Directory.GetFiles(directory).JoinToString(@", "));
                     reason = string.Format(ToolsStrings.AcRootDirectory_MissingDirectory, @"apps");
                     return false;
                 }
