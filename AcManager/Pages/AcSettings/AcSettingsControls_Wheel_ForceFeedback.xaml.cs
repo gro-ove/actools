@@ -61,13 +61,13 @@ namespace AcManager.Pages.AcSettings {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop) && !e.Data.GetDataPresent(DataFormats.UnicodeText)) return;
 
             Focus();
-            var inputFile = e.GetInputFiles().FirstOrDefault(x => x.EndsWith(".csv", StringComparison.OrdinalIgnoreCase) ||
-                    x.EndsWith(".lut", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(Path.GetFileName(x), "LUTLibrary.dll", StringComparison.OrdinalIgnoreCase));
+            var inputFile = e.GetInputFiles().FirstOrDefault(x => x.EndsWith(@".csv", StringComparison.OrdinalIgnoreCase) ||
+                    x.EndsWith(@".lut", StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(Path.GetFileName(x), @"LUTLibrary.dll", StringComparison.OrdinalIgnoreCase));
             if (inputFile != null) {
                 e.Handled = true;
 
-                if (!string.Equals(Path.GetFileName(inputFile), "LUTLibrary.dll", StringComparison.OrdinalIgnoreCase)) {
+                if (!string.Equals(Path.GetFileName(inputFile), @"LUTLibrary.dll", StringComparison.OrdinalIgnoreCase)) {
                     Model.Import(inputFile);
                 } else {
                     LutLibraryWrapper.Install(inputFile);
@@ -164,14 +164,14 @@ namespace AcManager.Pages.AcSettings {
                             Path.GetFileNameWithoutExtension(filename) + ".lut", "?", required: true, maxLength: 120);
                     if (string.IsNullOrWhiteSpace(name)) return;
 
-                    if (!name.EndsWith(".lut", StringComparison.OrdinalIgnoreCase)) {
-                        name += ".lut";
+                    if (!name.EndsWith(@".lut", StringComparison.OrdinalIgnoreCase)) {
+                        name += @".lut";
                     }
 
                     var lutData = new LutDataFile();
                     var lut = _wrapper.ToLut(filename);
                     if (lut == null) {
-                        throw new Exception("Expected field or method is missing");
+                        throw new Exception(@"Expected field or method is missing");
                     }
 
                     lutData.Values.AddRange(lut);
@@ -206,7 +206,7 @@ namespace AcManager.Pages.AcSettings {
             }
 
             public void Import(string filename) {
-                if (filename.EndsWith(".csv", StringComparison.OrdinalIgnoreCase)) {
+                if (filename.EndsWith(@".csv", StringComparison.OrdinalIgnoreCase)) {
                     ImportCsv(filename);
                 } else {
                     ImportLut(filename);

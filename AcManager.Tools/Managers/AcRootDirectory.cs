@@ -22,7 +22,7 @@ namespace AcManager.Tools.Managers {
         public static AcRootDirectory Instance { get; private set; }
 
         public static AcRootDirectory Initialize(string directory = null) {
-            if (Instance != null) throw new Exception("Already initialized");
+            if (Instance != null) throw new Exception(@"Already initialized");
             return Instance = new AcRootDirectory(directory);
         }
 

@@ -76,8 +76,12 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
         }
 
         private Token Newline() {
-            Match('\r', 0, 1);
-            Match('\n', 0, 1);
+            if (La(1) == '\r') {
+                Consume();
+            }
+            if (La(1) == '\n') {
+                Consume();
+            }
             return new Token(string.Empty, TokenLineBreak);
         }
 
@@ -95,7 +99,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                 Consume();
             }
 
-            return new Token(GetMark().Replace("\\[", "["), TokenText);
+            return new Token(GetMark().Replace(@"\[", @"["), TokenText);
         }
 
         private Token Attribute() {
@@ -116,7 +120,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
 
                     Consume();
                 }
-                token = new Token(GetMark().Replace("\\\"", "\"").Replace("\\'", "'"), TokenAttribute);
+                token = new Token(GetMark().Replace(@"\""", @"""").Replace(@"\'", @"'"), TokenAttribute);
                 Consume();
             } else {
                 Mark();
@@ -200,7 +204,7 @@ namespace FirstFloor.ModernUI.Windows.Controls.BbCode {
                         return Text(true);
 
                     default:
-                        throw new ParseException("Invalid state");
+                        throw new ParseException(@"Invalid state");
                 }
             }
         }

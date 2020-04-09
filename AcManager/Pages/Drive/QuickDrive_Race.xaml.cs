@@ -133,7 +133,8 @@ namespace AcManager.Pages.Drive {
                     var lapDuration = bestLapTime * 1.1 ?? track.GuessApproximateLapDuration(car).TotalSeconds;
                     var totalLength = track.SpecsLengthValue / 1e3 * LapsNumber;
                     var approximateDuration = TimeSpan.FromSeconds(lapDuration * LapsNumber).ToReadableTime();
-                    return $"Total length: {totalLength:F1} km\n{approximateDuration}";
+                    var distanceFormatted = string.Format(SettingsHolder.CommonSettings.DistanceFormat, totalLength * SettingsHolder.CommonSettings.DistanceMultiplier);
+                    return $"Total length: {distanceFormatted}\n{approximateDuration}";
                 }
             }
             #endregion

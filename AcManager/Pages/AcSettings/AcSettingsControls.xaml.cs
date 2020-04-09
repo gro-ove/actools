@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using AcManager.Controls;
 using AcManager.Controls.Helpers;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
@@ -60,8 +61,8 @@ namespace AcManager.Pages.AcSettings {
                 var filename = Controls.CurrentPresetFilename;
                 filename = FileRelatedDialogs.Save(new SaveDialogParams {
                     InitialDirectory = ControlsSettings.UserPresetsDirectory,
-                    Filters = { new DialogFilterPiece("Presets", "*.ini") },
-                    DetaultExtension = ".ini",
+                    Filters = { new DialogFilterPiece(ControlsStrings.Common_Presets, "*.ini") },
+                    DetaultExtension = @".ini",
                     DefaultFileName = o ?? Path.GetFileNameWithoutExtension(filename),
                     CustomPlaces = {
                         new FileDialogCustomPlace(ControlsSettings.UserPresetsDirectory)

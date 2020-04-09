@@ -23,8 +23,7 @@ namespace AcManager.Controls.UserControls.Web {
         public static readonly string DefaultUserAgent;
 
         static FormsWebBrowserWrapper() {
-            var windows = $"Windows NT {Environment.OSVersion.Version};{(Environment.Is64BitOperatingSystem ? @" WOW64;" : "")}";
-            DefaultUserAgent = $"Mozilla/5.0 ({windows} ContentManager/{BuildInformation.AppVersion}) like Gecko";
+            DefaultUserAgent = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.1.2222.33 Safari/537.36";
         }
         #endregion
 

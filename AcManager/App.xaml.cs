@@ -254,9 +254,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-            // #if !DEBUG
+            //#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-            // #endif
+            //#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -562,8 +562,8 @@ namespace AcManager {
 
             // Reshade?
             var loadReShade = AppArguments.GetBool(AppFlag.ForceReshade);
-            if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), "kn5only", StringComparison.OrdinalIgnoreCase)) {
-                loadReShade = AppArguments.Values.Any(x => x.EndsWith(".kn5", StringComparison.OrdinalIgnoreCase));
+            if (!loadReShade && string.Equals(AppArguments.Get(AppFlag.ForceReshade), @"kn5only", StringComparison.OrdinalIgnoreCase)) {
+                loadReShade = AppArguments.Values.Any(x => x.EndsWith(@".kn5", StringComparison.OrdinalIgnoreCase));
             }
 
             if (loadReShade) {
@@ -648,7 +648,7 @@ namespace AcManager {
                 var m = dp.GetMetadata(type);
                 var p = m.GetType().GetProperty("Sealed",
                         System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
-                        ?? throw new Exception("Sealed property is missing");
+                        ?? throw new Exception(@"Sealed property is missing");
                 p.SetValue(m, false);
                 m.CoerceValueCallback = (d, o) => false;
                 p.SetValue(m, true);
