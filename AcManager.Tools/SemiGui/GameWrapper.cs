@@ -300,6 +300,8 @@ namespace AcManager.Tools.SemiGui {
                 IsInGame = true;
 
                 try {
+                    FileUtils.TryToDelete(AcPaths.GetLogFilename());
+
                     Game.Result result;
                     using (ReplaysExtensionSetter.OnlyNewIfEnabled())
                     using (ScreenshotsConverter.OnlyNewIfEnabled()) {

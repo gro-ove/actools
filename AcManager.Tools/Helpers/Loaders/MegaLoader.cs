@@ -11,12 +11,17 @@ using FirstFloor.ModernUI.Helpers;
 
 namespace AcManager.Tools.Helpers.Loaders {
     internal class MegaLoader : ILoader {
-        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?mega(?:\.co)?\.nz/#", RegexOptions.IgnoreCase);
+        // https://mega.nz/file/55MFAa4Z#uIILkF1kpXekTS0L8sxBGS5zzCEc00LLidIOVM2-Vt8
+        public static bool Test(string url) => Regex.IsMatch(url, @"^https?://(?:www.)?mega(?:\.co)?\.nz/(?:#|file/)", RegexOptions.IgnoreCase);
 
         private readonly Uri _uri;
         private MegaApiClient _client;
 
         public MegaLoader(string url) {
+            var match = Regex.Match(url, @"\.nz/file/([^#]{4,12})#(.+)");
+            if (match.Success) {
+                url = $@"https://mega.nz/#!{match.Groups[1]}!{match.Groups[2]}";
+            }
             _uri = new Uri(url);
         }
 

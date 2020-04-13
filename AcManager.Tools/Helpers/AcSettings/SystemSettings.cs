@@ -9,19 +9,19 @@ using FirstFloor.ModernUI.Helpers;
 namespace AcManager.Tools.Helpers.AcSettings {
     public class SystemSettings : IniSettings {
         internal SystemSettings() : base("assetto_corsa", systemConfig: true) {
-            PatchHelper.Reloaded += (sender, args) => {
-                ScreenshotFormats = DefaultScreenshotFormats().ToList();
-            };
+            PatchHelper.Reloaded += (sender, args) => { ScreenshotFormats = DefaultScreenshotFormats().ToList(); };
         }
 
         public static IEnumerable<SettingEntry> DefaultScreenshotFormats() {
             return new[] {
                 new SettingEntry("JPG", ToolsStrings.AcSettings_ScreenshotFormat_Jpeg),
-                new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp)
-            }.Concat(PatchHelper.IsFeatureSupported(PatchHelper.FeatureExtraScreenshotFormats)
+                new SettingEntry("BMP", ToolsStrings.AcSettings_ScreenshotFormat_Bmp),
+                new SettingEntry("PNG", "PNG (requires Custom Shaders Patch)")
+            };
+            /*.Concat(PatchHelper.IsFeatureSupported(PatchHelper.FeatureExtraScreenshotFormats)
                     ? PatchHelper.GetConfig("data_manifest.ini")["FEATURES"].GetStrings("SUPPORTED_SCREENSHOT_FORMATS")
                             .Select(x => new SettingEntry(x, $"{x} (added by Custom Shaders Patch)"))
-                    : new SettingEntry[0]);
+                    : new SettingEntry[0]);*/
         }
 
         private List<SettingEntry> _screenshotFormats = DefaultScreenshotFormats().ToList();

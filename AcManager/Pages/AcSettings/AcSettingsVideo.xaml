@@ -83,7 +83,17 @@
           <!-- Resolution -->
           <TextBlock Style="{StaticResource SettingsPanel.Heading2.First}" Text="{x:Static g:AppStrings.AcSettings_Video_ResolutionAndFPS}" />
 
-          <CheckBox IsChecked="{Binding Video.Fullscreen}">
+          <DockPanel>
+            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
+            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
+          </DockPanel>
+
+          <c:MessageBlock CloseKey="oculusRiftWarningBlock" Margin="0 0 0 8">
+            <mui:BbCodeBlock
+                Text="[b]Important note:[/b] Oculus Rift might not work properly with Content Manager in AC root folder. It’s better to move it somewhere else to avoid potential issues." />
+          </c:MessageBlock>
+
+          <CheckBox IsChecked="{Binding Video.Fullscreen}" Margin="0 20 0 8">
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_Fullscreen}" />
           </CheckBox>
 
@@ -120,20 +130,28 @@
             <Label Content="{x:Static g:AppStrings.AcSettings_Video_LimitFramerate}" />
           </CheckBox>
 
-          <DockPanel Margin="0 20 0 8">
-            <Label Content="{x:Static g:AppStrings.AcSettings_Video_RenderingModeLabel}" />
-            <ComboBox ItemsSource="{Binding Video.CameraModes}" SelectedItem="{Binding Video.CameraMode}" DisplayMemberPath="DisplayName" />
-          </DockPanel>
-
-          <c:MessageBlock CloseKey="oculusRiftWarningBlock" Margin="0 0 0 8">
-            <mui:BbCodeBlock
-                Text="[b]Important note:[/b] Oculus Rift might not work properly with Content Manager in AC root folder. It’s better to move it somewhere else to avoid potential issues." />
-          </c:MessageBlock>
-
           <DockPanel Visibility="{Binding Video.FramerateLimitEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
             <mui:ValueLabel Value="{Binding Video.FramerateLimit}" mui:BetterTextBox.Minimum="1" Postfix="{x:Static c:ControlsStrings.Common_FpsPostfix}"
                 Content="{x:Static g:AppStrings.AcSettings_Video_Framerate}" />
             <Slider Minimum="30" Maximum="240" Value="{Binding Video.FramerateLimit}" TickFrequency="21" TickPlacement="BottomRight" />
+          </DockPanel>
+
+          <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureWindowPosition}" mui:NewMarkService.New="True"
+              IsEnabled="{Binding Video.Fullscreen, Converter={StaticResource InvertBooleanConverter}}"
+              ToolTip="Requires Custom Shaders Patch, available only without fullscreen mode" ToolTipService.ShowOnDisabled="True">
+            <Label Content="Show on screen:" />
+            <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
+              <mui:BetterComboBox.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock x:Name="PART_DisplayName" Text="{Binding DisplayName}" />
+                  <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Static mui:BetterComboBox.NullValue}">
+                      <Setter TargetName="PART_DisplayName" Property="Text" Value="Default" />
+                    </DataTrigger>
+                  </DataTemplate.Triggers>
+                </DataTemplate>
+              </mui:BetterComboBox.ItemTemplate>
+            </mui:BetterComboBox>
           </DockPanel>
 
           <!-- Quality -->

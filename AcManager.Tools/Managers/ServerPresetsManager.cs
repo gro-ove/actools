@@ -41,7 +41,7 @@ namespace AcManager.Tools.Managers {
                 if (string.IsNullOrWhiteSpace(PresetsDirectory) || !Path.IsPathRooted(PresetsDirectory)) {
                     throw new Exception();
                 }
-            } catch (Exception e) {
+            } catch {
                 Logging.Error($"Invalid value for PresetsDirectory: {PresetsDirectory}");
                 PresetsDirectory = Path.Combine(ServerDirectory, @"presets");
             }

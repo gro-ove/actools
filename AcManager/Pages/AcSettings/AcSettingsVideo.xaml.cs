@@ -1,8 +1,10 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using AcManager.Controls;
 using AcManager.Controls.Helpers;
@@ -15,18 +17,72 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
+using AcTools.DataFile;
 using AcTools.Processes;
+using AcTools.Utils;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
+using JetBrains.Annotations;
+using Application = System.Windows.Application;
 
 namespace AcManager.Pages.AcSettings {
     public partial class AcSettingsVideo : ILoadableContent {
         public partial class ViewModel : NotifyPropertyChanged {
+            public SettingEntry[] Screens { get; }
+
+            private SettingEntry _forceScreen;
+            private Busy _forceScreenSave = new Busy();
+
+            [CanBeNull]
+            public SettingEntry ForceScreen {
+                get => _forceScreen;
+                set {
+                    if (Equals(value, _forceScreen)) return;
+                    _forceScreen = value;
+                    OnPropertyChanged();
+                    _forceScreenSave.DoDelay(() => {
+                        var filename = PatchHelper.GetWindowPositionConfig();
+                        FileUtils.EnsureFileDirectoryExists(filename);
+                        var acWindowCfg = new IniFile(filename);
+                        var window = Screen.AllScreens.FirstOrDefault(x => x.DeviceName == value?.Id);
+                        if (window == null) {
+                            acWindowCfg.Clear();
+                        } else {
+                            acWindowCfg["AC_WINDOW_POSITION"].Set("REAL_X", window.Bounds.Left);
+                            acWindowCfg["AC_WINDOW_POSITION"].Set("REAL_Y", window.Bounds.Top);
+                            acWindowCfg["AC_WINDOW_POSITION"].Set("X", window.Bounds.Left + 8);
+                            acWindowCfg["AC_WINDOW_POSITION"].Set("Y", window.Bounds.Top + 31);
+                        }
+                        acWindowCfg.Save();
+                    }, 1000);
+                }
+            }
+
             private readonly AcSettingsVideo _uiParent;
 
             internal ViewModel(AcSettingsVideo uiParent) {
                 _uiParent = uiParent;
+
+                if (PatchHelper.IsFeatureSupported(PatchHelper.FeatureWindowPosition)) {
+                    var acWindowCfg = new IniFile(PatchHelper.GetWindowPositionConfig());
+                    var windowX = acWindowCfg["AC_WINDOW_POSITION"].GetIntNullable("REAL_X");
+                    var windowY = acWindowCfg["AC_WINDOW_POSITION"].GetIntNullable("REAL_Y");
+                    var friendlyNames = ScreenInterrogatory.GetFriendlyNames();
+                    Screens = Screen.AllScreens.Select(x => new SettingEntry(x.DeviceName, GetScreenName(x, friendlyNames?.GetValueOrDefault(x)))).ToArray();
+                    if (windowX.HasValue && windowY.HasValue) {
+                        var screen = Screen.AllScreens.FirstOrDefault(x => x.Bounds.Left == windowX.Value && x.Bounds.Top == windowY.Value);
+                        _forceScreen = Screens.GetByIdOrDefault(screen?.DeviceName);
+                    } else {
+                        _forceScreen = null;
+                    }
+                }
+            }
+
+            private static string GetScreenName(Screen x, [CanBeNull] string friendlyName) {
+                return $@"{friendlyName ?? x.DeviceName} ({x.Bounds.ToString().Replace(@",", @", ").TrimStart('{').TrimEnd('}')})";
             }
 
             public VideoSettings Video => AcSettingsHolder.Video;

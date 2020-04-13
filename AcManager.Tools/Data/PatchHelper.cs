@@ -28,6 +28,7 @@ namespace AcManager.Tools.Data {
         public static readonly string FeatureCustomBindingsJoystickModifiers = "CUSTOM_BINDINGS_JOYSTICK_MODIFIERS";
         public static readonly string FeatureKeyboardForcedThrottle = "KEYBOARD_FORCED_THROTTLE";
         public static readonly string FeatureSharedMemoryReduceGForcesWhenSlow = "SHARED_MEMORY_REDUCE_GFORCES_WHEN_SLOW";
+        public static readonly string FeatureWindowPosition = "WINDOW_POSITION";
 
         public static bool OptionPatchSupport = true;
 
@@ -110,10 +111,15 @@ namespace AcManager.Tools.Data {
                     : config[sectionKey[0].Trim()].GetPossiblyEmpty(sectionKey.Length == 2 ? sectionKey[1].Trim() : @"ENABLED") == keyValue[1].Trim());
         }
 
+        public static string GetWindowPositionConfig() {
+            return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", "window_position.ini");
+        }
+
         public static bool IsFeatureSupported([CanBeNull] string featureId) {
             if (string.IsNullOrWhiteSpace(featureId)) return true;
             return _featureSupported.GetValueOrSet(featureId, () => {
                 if (GetInstalledVersion() == null || !GetConfig("general.ini")["BASIC"].GetBool("ENABLED", true)) return false;
+                if (featureId == FeatureWindowPosition) return true;
                 var query = GetManifest()["FEATURES"].GetNonEmpty(featureId);
                 if (string.IsNullOrWhiteSpace(query)) return false;
                 var filter = Filter.Create(query, new FilterParams { CustomTestEntryFactory = FeatureTestEntryFactory });

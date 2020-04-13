@@ -38,7 +38,7 @@ namespace AcManager.Tools.Helpers.Api {
         [CanBeNull]
         public static string GetString(string url) {
             try {
-                var result = InternalUtils.CmGetData_v2(url, UserAgent);
+                var result = InternalUtils.CmGetData_v3(url, UserAgent);
                 return result == null ? null : Encoding.UTF8.GetString(result);
             } catch (Exception e) {
                 Logging.Warning($"Cannot read as UTF8 from {url}: " + e);
@@ -83,7 +83,7 @@ namespace AcManager.Tools.Helpers.Api {
 
         [CanBeNull]
         public static byte[] GetData(string url) {
-            return InternalUtils.CmGetData_v2(url, UserAgent);
+            return InternalUtils.CmGetData_v3(url, UserAgent);
         }
 
         [ItemCanBeNull]

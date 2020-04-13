@@ -132,7 +132,8 @@ namespace AcManager.Tools.Helpers.Api {
             if (SettingsHolder.Online.CachingServerAvailable && SettingsHolder.Online.UseCachingServer) {
                 try {
                     var watch = Stopwatch.StartNew();
-                    var ret = LoadList(@"http://193.176.79.190:12013/list", OptionWebRequestTimeout, cancellation, ServerInformationComplete.Deserialize);
+                    var ret = LoadList(InternalUtils.GetKunosServerProxyUri(), OptionWebRequestTimeout, cancellation,
+                            ServerInformationComplete.Deserialize);
                     Logging.Write($"Fast loading with proxy lobby server: {watch.Elapsed.TotalMilliseconds:F1} ms");
                     return ret;
                 } catch (Exception e) {

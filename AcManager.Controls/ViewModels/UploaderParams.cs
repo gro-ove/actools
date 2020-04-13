@@ -125,8 +125,7 @@ namespace AcManager.Controls.ViewModels {
         public AsyncCommand<CancellationToken?> LogOutCommand => _logOutCommand ?? (_logOutCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
                 await SelectedUploader.ResetAsync(c ?? default);
-            } catch (Exception e) when (e.IsCancelled()) {
-            } catch (WebException e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (WebException e) {
                 NonfatalError.Notify("Can’t log out", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t log out", e);
@@ -142,8 +141,7 @@ namespace AcManager.Controls.ViewModels {
         public AsyncCommand<CancellationToken?> SignInCommand => _signInCommand ?? (_signInCommand = new AsyncCommand<CancellationToken?>(async c => {
             try {
                 await SelectedUploader.SignInAsync(c ?? default);
-            } catch (Exception e) when (e.IsCancelled()) {
-            } catch (WebException e) {
+            } catch (Exception e) when (e.IsCancelled()) { } catch (WebException e) {
                 NonfatalError.Notify("Can’t sign in", ToolsStrings.Common_MakeSureInternetWorks, e);
             } catch (Exception e) {
                 NonfatalError.Notify("Can’t sign in", e);
@@ -162,7 +160,7 @@ namespace AcManager.Controls.ViewModels {
                     IsBusy++;
                     UploaderDirectories = await SelectedUploader.GetDirectoriesAsync(c ?? default);
                     UploaderDirectory = UploaderDirectories.GetChildByIdOrDefault(SelectedUploader.DestinationDirectoryId);
-                } catch (Exception e) {
+                } catch (NotSupportedException) { } catch (Exception e) {
                     NonfatalError.Notify("Can’t load list of directories", ToolsStrings.Common_MakeSureInternetWorks, e);
                 } finally {
                     IsBusy--;
