@@ -581,4 +581,10 @@
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{0} sur {1}</value>
   </data>
+  <data name="Ordinalizing_Zeroth" xml:space="preserve">
+    <value>Zero</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Naviguer</value>
+  </data>
 </root>

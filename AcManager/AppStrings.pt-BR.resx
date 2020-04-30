@@ -3349,4 +3349,19 @@ Content Manager [url=""/Pages/About/License.xaml|_top""]License[/url]."</value>
   <data name="Controls_Axis" xml:space="preserve">
     <value>Eixo</value>
   </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>Apagar favorito de um site "{0}"?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Descrição para {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>Não é possível compartilhar as configurações.</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Provavelmente há muitos dados.</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>A mensagem com os detalhes foi copiada para a área de transferência</value>
+  </data>
 </root>

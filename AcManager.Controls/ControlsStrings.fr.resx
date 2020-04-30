@@ -298,8 +298,8 @@
     <value> °C</value>
   <alternative> °C</alternative></data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} adversaire</value>
-  </data>
+    <value>{0}  adversaire</value>
+  <alternative>{0} adversaire</alternative></data>
   <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} erreur</value>
   </data>
@@ -908,5 +908,17 @@ Depth mode (Mode de profondeur) : [b]{4}[/b]</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Verrouiller</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Degrés</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Faites défiler pour sélectionner (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Qu'est-ce ?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Évaluation:</value>
   </data>
 </root>

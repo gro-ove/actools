@@ -487,11 +487,11 @@
     <value>Přidat auto do seznamu</value>
   </data>
   <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
-    <value>Náhodné</value>
-  <alternative>Náhodný</alternative></data>
+    <value>Náhodný</value>
+  <alternative>Náhodné</alternative></data>
   <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
-    <value>Promíchat</value>
-  </data>
+    <value>Promíchaný</value>
+  <alternative>Promíchat</alternative></data>
   <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
     <value>Způsob seřazení možných soupeřů</value>
   </data>
@@ -694,8 +694,8 @@
     <value>Bodů</value>
   </data>
   <data name="Controls_Brake" xml:space="preserve">
-    <value>Brzda</value>
-  </data>
+    <value>Brzdy</value>
+  <alternative>Brzda</alternative></data>
   <data name="DirectLoader_RecursionDetected" xml:space="preserve">
     <value>Byla detekována rekurze</value>
   </data>
@@ -957,8 +957,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Nastala nějaká neznámá chyba.</value>
   </data>
   <data name="Shared_CarSetup" xml:space="preserve">
-    <value>Nastavení auta</value>
-  </data>
+    <value>Seřízení</value>
+  <alternative>Nastavení auta</alternative></data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
     <value>Nastavení trati ({0}) chybí</value>
   </data>

@@ -3362,4 +3362,64 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>...par</value>
   </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>Eliminare il collegamento al sito web “{0}”?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Descrizione per {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>Impossibile condividere le impostazioni</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Forse, ci sono troppi dati.</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>Il messaggio con le informazioni è copiato negli appunti</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>Impostazioni locali personalizzate aggiornate. Vuoi riavviare l'applicazione ora?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Impostazioni locali aggiornate. Vuoi riavviare l'applicazione ora?</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Miglior giro su questa pista:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Guida in auto:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Guidato su pista:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Controllo specifici dell'auto</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Carica gli aiuti con le impostazioni predefinite Quick Drive (globale)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>Tieni premuto Ctrl mentre selezioni l'impostazione predefinita per invertire questo comportamento per la singola occasione</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>Usa dati decompressi se ci sono</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>Usa dati decompressi (globale)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>Reimposta la bandiera specifica dell'auto</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>Aggiusta l'auto</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {problema importante} trovato</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>Non è stata selezionata alcuna auto</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>Non è stato selezionato alcun tracciato</value>
+  </data>
 </root>

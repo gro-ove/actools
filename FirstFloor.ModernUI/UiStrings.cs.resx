@@ -427,8 +427,8 @@
     <value>Sdílet startovní rošt</value>
   </data>
   <data name="Common_Descending" xml:space="preserve">
-    <value>Sestupný</value>
-  </data>
+    <value>Sestupně</value>
+  <alternative>Sestupný</alternative></data>
   <data name="KeyShiftLeft" xml:space="preserve">
     <value>Shift (levý)</value>
   </data>

@@ -812,8 +812,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Nastavení</value>
   </data>
   <data name="Main_Setups" xml:space="preserve">
-    <value>Nastavení auta</value>
-  <alternative>Nastavení aut</alternative></data>
+    <value>Seřízení</value>
+  <alternative>Nastavení aut</alternative><alternative>Nastavení auta</alternative></data>
   <data name="Main_Showrooms" xml:space="preserve">
     <value>Autosalony</value>
   </data>
@@ -893,8 +893,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Soupeři</value>
   </data>
   <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
-    <value>Spravovat nastavení auta</value>
-  <alternative>Spravovat nastavení aut</alternative></data>
+    <value>Spravovat seřízení</value>
+  <alternative>Spravovat nastavení aut</alternative><alternative>Spravovat nastavení auta</alternative></data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
     <value>Nastavení videohry:</value>
   </data>
@@ -1416,11 +1416,11 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Analyzovat</value>
   </data>
   <data name="Toolbar_CarSetups" xml:space="preserve">
-    <value>Nastavení auta</value>
-  <alternative>Nastavení aut</alternative></data>
+    <value>Seřízení</value>
+  <alternative>Nastavení aut</alternative><alternative>Nastavení auta</alternative></data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
-    <value>Spravovat nastavení auta (Ctrl+U)</value>
-  <alternative>Spravovat nastavení aut (Ctrl+U)</alternative></data>
+    <value>Spravovat seřízení (Ctrl+U)</value>
+  <alternative>Spravovat nastavení aut (Ctrl+U)</alternative><alternative>Spravovat nastavení auta (Ctrl+U)</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
     <value>Vlastní autosalon</value>
   </data>
@@ -1487,11 +1487,11 @@ Pro přehrání rozbalte “{1}” do “…\Documents\Assetto Corsa\replay”.<
     <value>{0} modelů řidiče</value>
   </data>
   <data name="Dialog_CarSetupsFormat" xml:space="preserve">
-    <value>{0} nastavení aut</value>
-  </data>
+    <value>{0} seřízení</value>
+  <alternative>{0} nastavení aut</alternative></data>
   <data name="List_Setups" xml:space="preserve">
-    <value>{0} nastavení aut</value>
-  </data>
+    <value>{0} seřízení</value>
+  <alternative>{0} nastavení aut</alternative></data>
   <data name="List_Fonts" xml:space="preserve">
     <value>{0} písem</value>
   </data>
@@ -2029,11 +2029,11 @@ Autor: [b]{3}[/b]</value>
     <value>Načteno {1} z {0}</value>
   </data>
   <data name="Drive_Time_Random" xml:space="preserve">
-    <value>Náhodný</value>
-  </data>
+    <value>Náhodná</value>
+  <alternative>Náhodný</alternative></data>
   <data name="Drive_Temperature_Random" xml:space="preserve">
-    <value>Náhodný</value>
-  </data>
+    <value>Náhodná</value>
+  <alternative>Náhodný</alternative></data>
   <data name="Toolbar_ReplaceSound" xml:space="preserve">
     <value>Nahradit zvuk</value>
   </data>
@@ -2155,8 +2155,8 @@ Autor: [b]{3}[/b]</value>
     <value>Nelze nainstalovat dodatečný obsah</value>
   </data>
   <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
-    <value>Nelze nainstalovat nastavení auta</value>
-  </data>
+    <value>Nelze nainstalovat seřízení</value>
+  <alternative>Nelze nainstalovat nastavení auta</alternative></data>
   <data name="AdditionalContent_CannotInstall" xml:space="preserve">
     <value>Nelze nainstalovat obsah ze souboru</value>
   </data>
@@ -2370,8 +2370,8 @@ Autor: [b]{3}[/b]</value>
     <value>Otestovat filtr v autosalonu (Ctrl+G)</value>
   </data>
   <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
-    <value>Otestovat nastavení auta (Ctrl+G)</value>
-  </data>
+    <value>Otestovat seřízení (Ctrl+G)</value>
+  <alternative>Otestovat nastavení auta (Ctrl+G)</alternative></data>
   <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
     <value>Otestovat počasí na trati (Ctrl+G)</value>
   </data>
@@ -2388,8 +2388,8 @@ Autor: [b]{3}[/b]</value>
     <value>Otevřít složku modelu (Ctrl+F)</value>
   </data>
   <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
-    <value>Otevřít složku nastavení auta (Ctrl+F)</value>
-  </data>
+    <value>Otevřít složku seřízení (Ctrl+F)</value>
+  <alternative>Otevřít složku nastavení auta (Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
     <value>Otevřít složku opakovaného záznamu (Ctrl+F)</value>
   </data>
@@ -2681,8 +2681,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Přesunout do složky s generiky</value>
   </data>
   <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
-    <value>Přesunout nastavení auta do Koše (Ctrl+Delete)</value>
-  </data>
+    <value>Přesunout seřízení do Koše (Ctrl+Delete)</value>
+  <alternative>Přesunout nastavení auta do Koše (Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
     <value>Přesunout opakovaný záznam do Koše (Ctrl+Delete)</value>
   </data>
@@ -2843,8 +2843,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Sdílet filtr (Ctrl+Page Up)</value>
   </data>
   <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
-    <value>Sdílet nastavení auta (Ctrl+Page Up)</value>
-  </data>
+    <value>Sdílet seřízení (Ctrl+Page Up)</value>
+  <alternative>Sdílet nastavení auta (Ctrl+Page Up)</alternative></data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
     <value>Sdílet nynější nastavení (Ctrl+Page Up)</value>
   </data>
@@ -2852,8 +2852,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Sdílet odkaz</value>
   </data>
   <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
-    <value>Sdílet opakovaný záznam pomocí Google Drive (Ctrl+Page Up)</value>
-  </data>
+    <value>Sdílet opakovaný záznam pomocí cloudové služby zvolené v Nastavení (Ctrl+Page Up)</value>
+  <alternative>Sdílet opakovaný záznam pomocí Google Drive (Ctrl+Page Up)</alternative></data>
   <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
     <value>Sekundární barva:</value>
   </data>
@@ -3405,8 +3405,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Popis pro {0}</value>
   </data>
   <data name="WebSource_FailedToShareTitle" xml:space="preserve">
-    <value>Nemohu změnit nastavení auta</value>
-  </data>
+    <value>Nelze sdílet seřízení</value>
+  <alternative>Nemohu změnit nastavení auta</alternative></data>
   <data name="WebSource_FailedToShareMessage" xml:space="preserve">
     <value>Asi je to příliš mnoho dat</value>
   </data>
@@ -3645,8 +3645,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Otevřít v autosalonu</value>
   </data>
   <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
-    <value>Spravovat nastavení auta</value>
-  </data>
+    <value>Spravovat seřízení</value>
+  <alternative>Spravovat nastavení auta</alternative></data>
   <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
     <value>Spravovat auto</value>
   </data>
@@ -3774,8 +3774,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Použít v některých případech Vlastní autosalon místo toho původního</value>
   </data>
   <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
-    <value>Zobrazit vedle vyhledávacích polí tažitelnou oblast</value>
-  </data>
+    <value>Zobrazit na záložkách vyhledávání tažitelnou oblast</value>
+  <alternative>Zobrazit vedle vyhledávacích polí tažitelnou oblast</alternative></data>
   <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
     <value>Když je tato možnost deaktivována, můžete je táhnout za zavírací tlačítko</value>
   </data>
@@ -3819,11 +3819,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Vyskakovací tlačítka nad náhledem auta trati v Rychlovce</value>
   </data>
   <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
-    <value>Otevírat seznamy skinů a nastavení aut v novém okně</value>
-  </data>
+    <value>Otevírat seznamy skinů a seřízení aut v novém okně</value>
+  <alternative>Otevírat seznamy skinů a nastavení aut v novém okně</alternative></data>
   <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
-    <value>Pokud je volba deaktivována, můžete seznamy skinů a nastavení aut jednorázově otevírat v novém okně pomocí kliknutí a přidržení klávesy Ctrl</value>
-  </data>
+    <value>Pokud je volba deaktivována, můžete seznamy skinů a seřízení aut jednorázově otevírat v novém okně pomocí kliknutí a přidržení klávesy Ctrl</value>
+  <alternative>Pokud je volba deaktivována, můžete seznamy skinů a nastavení aut jednorázově otevírat v novém okně pomocí kliknutí a přidržení klávesy Ctrl</alternative></data>
   <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
     <value>Vypnout hardwarovou akceleraci pro vykreslování uživatelského rozhraní</value>
   </data>
@@ -4292,14 +4292,14 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Nastavit vše náhodně</value>
   </data>
   <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
-    <value>Nastavit náhodnou teplotu</value>
-  </data>
+    <value>Nastavit náhodnou teplotu vzduchu</value>
+  <alternative>Nastavit náhodnou teplotu</alternative></data>
   <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
     <value>Nastavit náhodné počasí</value>
   </data>
   <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
-    <value>Nastavit náhodný čas</value>
-  </data>
+    <value>Nastavit náhodnou denní dobu</value>
+  <alternative>Nastavit náhodný čas</alternative></data>
   <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
     <value>Vybrat náhodnou trať</value>
   </data>
@@ -4473,5 +4473,131 @@ Povolené hodnoty jsou -1 až 1."</value>
   </data>
   <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
     <value>Rezervace vypršely</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>Importovat CSV</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>Importovat CSV z WheelChecku (můžete použít přetažení)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>Importovat LUT</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>Můžete použít přetažení</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>Režim řízení:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>ABS efekt:</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>Nový tag</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>Obnovit smazané</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>Název tagu</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>Smazat tag...</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>Názvy:</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>Vložte sem jména, každé na jeden řádek</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>Spustit</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>Relace nenalezeny.</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>Odebrat chybějící</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>Odebrat všechny relace s chybějícím obsahem</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>Graf výkonu:</value>
+  </data>
+  <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+    <value>[i]Věděli jste?[/i] Můžete kliknutím pravým tlačítkem myši na vlastnost, abyste pomocí ní vyfiltrovali auta.</value>
+  </data>
+  <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+    <value>Filtrovat dle podobné ujeté vzdálenosti</value>
+  </data>
+  <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+    <value>Filtrovat dle podobné dosažené maximální rychlosti</value>
+  </data>
+  <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+    <value>Počet seřízení připravených k instalaci v Setup Marketu</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>Povolit decimální hodnoty pro stav trati</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>Může způsobit problémy s některými appkami</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>Kontrolovat, zda trať sedí vybranému režimu</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>Nedoporučuje se vypínat – Content Manager nabídne opravu popisku trati, když se něco zvrtne.  Pokud ale používáte ne-výchozí tagy, směle do toho.</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>Zobrazovat dodatečné roletové seznamy pro skiny, úpravy aut a konfigurace trati</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>Může aplikaci lehce zpomalit</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>Znovuobnovit vybrané</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>Spravovat seznamy</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>Spravovat tagy jezdců</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>Zobrazit:</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>Hesla:</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+    <value>Vždy povolit používání hesel</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+    <value>Povolit, pokud se chystáte připojit jako administrátor</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>Opravit jména:</value>
+  </data>
+  <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+    <value>Může být vyžadováno obnovení</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Uskutečněných pingů</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>Složka přednastavení:</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>Opingovat server jen jednou</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>Opingovat server jen jednou a při mačkání tlačítka Obnovit, jako v původním spouštěči</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>Zapauzovat pingování během závodu</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>Zobrazit rozšířené informace, pokud obsah chybí</value>
   </data>
 </root>

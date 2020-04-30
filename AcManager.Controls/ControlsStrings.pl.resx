@@ -479,8 +479,8 @@
     <value>Ładowanie modelu ...</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Nie można uruchomić niestandardowy salon</value>
-  </data>
+    <value>Nie można uruchomić salon CM</value>
+  <alternative>Nie można uruchomić niestandardowy salon</alternative></data>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Narzędzia</value>
   </data>
@@ -727,8 +727,8 @@ Tryb głębi: [b]{4}[/b]</value>
     <value>Nie można zaktualizować cieni otoczenia</value>
   </data>
   <data name="Common_Change" xml:space="preserve">
-    <value>Zmiana</value>
-  </data>
+    <value>Zmień</value>
+  <alternative>Zmiana</alternative></data>
   <data name="Common_Generic" xml:space="preserve">
     <value>Ogólny</value>
   <alternative>Rodzaj</alternative></data>
@@ -950,5 +950,17 @@ Tryb głębi: [b]{4}[/b]</value>
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>Zablokowane</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Stopni</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Przewiń do zaznaczonego (Ctrl + Shift + V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Co to jest?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Ocena:</value>
   </data>
 </root>

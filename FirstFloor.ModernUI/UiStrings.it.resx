@@ -555,4 +555,7 @@
   <data name="FatalCrashSuggestionsMessage" xml:space="preserve">
     <value>[url=cmd://copy]Copia[/url] i dettagli dell'errore negli appunti. Prova a [url=cmd://restart]riavviare[/url] questa app o semplicemente [url=cmd://exit]chiudi[/url].</value>
   </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} su {1}</value>
+  </data>
 </root>

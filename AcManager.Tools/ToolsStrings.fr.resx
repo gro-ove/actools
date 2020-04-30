@@ -1549,8 +1549,8 @@
     <value>Pénalité de départ</value>
   </data>
   <data name="Session_TrackDay" xml:space="preserve">
-    <value>Jour de la piste</value>
-  </data>
+    <value>Journée circuit</value>
+  <alternative>Jour de la piste</alternative></data>
   <data name="RaceGrid_CannotUpdate" xml:space="preserve">
     <value>Impossible de mettre à jour la grille de course</value>
   </data>
@@ -1660,5 +1660,38 @@ Voulez-vous l'emballer avant de démarrer le serveur? Mais n'oubliez pas de part
   </data>
   <data name="Controls_Steer" xml:space="preserve">
     <value>Direction</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Meilleurs tours :</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Meilleur tour :</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>m/s</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Lester</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Restrcition</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Modifer la difficulté de l'IA en fonction du rapport P / W</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Randomisation</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Afficher la plage relative</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Montrer l'agressivité dans le nom du pilote</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Aggressivité des adversaires</value>
   </data>
 </root>

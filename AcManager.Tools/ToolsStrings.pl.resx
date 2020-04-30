@@ -1645,4 +1645,31 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   <data name="Controls_Steer" xml:space="preserve">
     <value>Kierownica</value>
   </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Najlepsze okrążenia</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Najlepsze okrążenie</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Balast</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Ograniczenia</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Rozmieść siłę AI na podstawie stosunku mocy/wagi</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Losowość</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Pokaż zakres względny</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Pokaż poziom agresji w nazwie AI</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Agresja przeciwników</value>
+  </data>
 </root>

@@ -185,8 +185,8 @@
     <value>Chcesz zastosować to ustawienie czy zapisać go na później?</value>
   <alternative>Chcesz zastosować tę ustawienie czy zapisać go na później?</alternative></data>
   <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
-    <value>Chcesz zastosować to ustawienie?</value>
-  <alternative>Chcesz zastosować tę ustawienie?</alternative></data>
+    <value>Chciałbyś zastosować ten preset?</value>
+  <alternative>Chcesz zastosować tę ustawienie?</alternative><alternative>Chcesz zastosować to ustawienie?</alternative></data>
   <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
     <value>Zastosuj &amp; Zapisz</value>
   </data>
@@ -638,8 +638,8 @@
     <value>Szybka Jazda:</value>
   </data>
   <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
-    <value>Powiększ limit</value>
-  </data>
+    <value>Zwiększ limit okrążeń</value>
+  <alternative>Powiększ limit</alternative></data>
   <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
     <value>Kariera Kunos:</value>
   </data>
@@ -729,8 +729,8 @@
     <value>Wersja danych:</value>
   </data>
   <data name="Settings_General_ValuesHeader" xml:space="preserve">
-    <value>Wartości magazynowane:</value>
-  </data>
+    <value>Wartość repozytorium:</value>
+  <alternative>Wartości magazynowane:</alternative></data>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
     <value>Wyczyść</value>
   </data>
@@ -1045,8 +1045,8 @@
     <value>Wybierz salon, filtr itp.</value>
   </data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Niestandardowy salon</value>
-  </data>
+    <value>Salon CM</value>
+  <alternative>Niestandardowy salon</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
     <value>Szybsze i dokładniejsze, pomocne dla modujących lub malujących skórki</value>
   <alternative>Szybsze i dokładniejsze, pomocne dla modujących lub tworzących malowania</alternative></data>
@@ -1856,8 +1856,8 @@ Aby odtworzyć, wypakuj “{1}” do “X:\User\nazwa_użytkownika\Documents\Ass
     <value>Nazwy</value>
   </data>
   <data name="Online_Sorting_Drivers" xml:space="preserve">
-    <value>Kierowców włącznie z rez.</value>
-  <alternative>Kierowców</alternative></data>
+    <value>Kierowców z rezerwacją</value>
+  <alternative>Kierowców</alternative><alternative>Kierowców włącznie z rez.</alternative></data>
   <data name="Online_Sorting_Capacity" xml:space="preserve">
     <value>Slotów</value>
   <alternative>Pojemności</alternative></data>
@@ -3137,8 +3137,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
     <value>Wtyczki</value>
   </data>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
-    <value>Pokaż poziom IA w nazwie kierowcy</value>
-  </data>
+    <value>Pokaż poziom AI w nazwie kierowcy</value>
+  <alternative>Pokaż poziom IA w nazwie kierowcy</alternative></data>
   <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
     <value>Pokaż logo marki na liście samochodów</value>
   </data>
@@ -3387,5 +3387,1195 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</alternativ
   </data>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
     <value>Czekaj na koniec testu wydajności ...</value>
+  </data>
+  <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
+    <value>… km</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>Usunąć zakładkę do strony internetowej „{0}”?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>Opis {0}</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>Nie można udostępnić ustawień</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>Być może jest za dużo danych.</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>Wiadomość ze szczegółami jest skopiowana do schowka</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>Zaktualizowano ustawienia języka. Czy chcesz teraz ponownie uruchomić aplikację?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Aktualizacja języka</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Najlepsze okrążenie na tym torze:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Przejechane tym samochodem</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Przejechane po torze</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Specyficzne sterowanie dla samochodu</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Załaduj asysty z presetów Szybka Jazda (globalnie)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>Przytrzymaj Ctrl podczas wybierania presetu, aby odwrócić to zachowanie za jednym razem</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>Użyj rozpakowanych danych, jeśli istnieją</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>Użyj rozpakowanych danych (globalnie)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>Zresetuj specyficzne oflagowanie samochodu</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>Napraw samochód</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>Znaleziono {0} {ważny problem}</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>Nie wybrano auta</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>Nie wybrano toru</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>Prędkość wiatru w metrach na sekundę</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>Prędkość wiatru we względnym zakresie</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>Kierunek wiatru w stopniach</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>Losowa prędkość wiatru</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>Losowy kierunek wiatru</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>Wiatr</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>Sprecyzuj datę</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>Losowy czas</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>Ustaw wiatr ręcznie</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>Idealne warunki</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>Temperatura losowa</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>Dowolna temperatura asfaltu</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>Temperatura asfaltu</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>Pobrane</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>Usuń ukończone</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>Instaluj wszystko</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>instalowanie</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>Usuń wszystko</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>Pokaż zmiany</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>Pomiń aktualizację</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>Wyłącz automatyczne aktualizacje</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>Wyłapano {0} {błąd}</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>Czasy okrążeń</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>Wyniki</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>Pobrane</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>Ustawienia CM</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>Ustawienia AC</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>Ustawienia aplikacji</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>Ustawienia CSP</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>O CM</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>Szybkie okrążenia</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>Wyścigi</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>Wyścigi równoległe</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>Próba czasowa</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>Jeszcze nie ukończone</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>Do poprawy</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>Mistrzostwa</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>Tabela</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>Żródło danych</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Tylko samochody Kunos</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Tylko samochody i tory Kunos</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>Tylko mody</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>Najbardziej używane</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>Modele kierowcy</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>Własne mistrzostwa</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>Zdobądź nowe mody</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>Mody</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>Narzędzia</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>Pobierz i zainstaluj</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>Wszystko o filtrowaniu</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>Zarządzaj źródłami</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>originalny starter</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>Wydajność poprzedniej sesji</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>Wydajność poprzedniej sesji:</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>Średnia:</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>Odebrano</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>Próbek {0}</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1} klatek na sekundę</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>Zmień auto</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>Otwórz w salonie</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>Zarządzaj setupem</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>Zarządzaj autem</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>Zmień tor</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>Zarządzaj torem</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>Czas jest poza zakresem pogody</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>Łącznie</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>Trudność</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>Brak podglądu</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>Rzeczywiste warunki…</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>Ustaw sortowanie jako domyślne dla nowych kart</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>Ustaw filtry jako domyślne dla nowych kart</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>Odświerz</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>Nic nie znaleziono</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>Domyślne</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>Nazwa (oryginał)</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>Ulubione</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>Podłączonych kierowców</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>Nie nagrywaj ducha samochodu</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+    <value>Limit odmian samochodów</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+    <value>Za pomocą suwaka określ maksymalną liczbę różnych samochodów przeciwnika</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>Unikaj samochodów bez numerów skórek</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+    <value>Może znacznie zmniejszyć różnorodność</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+    <value>Wybierz skórki sekwencyjnie</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+    <value>Aplikacja spróbuje ułożyć skórki w kolejności rosnącej, przy jednoczesnym poszanowaniu filtra i zachowaniu wszystkiego w razie potrzeby</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>Skala interfejsu użytkownika</value>
+  </data>
+  <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+    <value>Wąskie paski przewijania</value>
+  </data>
+  <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+    <value>Wyskakujące paski przewijania</value>
+  </data>
+  <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+    <value>Większa czcionka</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>Pogrubiona czcionka</value>
+  </data>
+  <data name="Settings_Appearance_Background" xml:space="preserve">
+    <value>Tło:</value>
+  </data>
+  <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+    <value>Folder do pokazu slajdów</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>Zmień zdjęcie co:</value>
+  </data>
+  <data name="Settings_Appearance_Placement" xml:space="preserve">
+    <value>Umieszczenie:</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>Przezroczystość</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>Rozmycie</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+    <value>Powiązanie z ekranem:</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>Linki tytułowe i menu:</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>Nie znaleziono konfigurowalnych aplikacji</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>Zmiany zostaną zapisane automatycznie. Jeśli chcesz zoptymalizować sposób wyświetlania plików konfiguracyjnych, możesz znaleźć więcej informacji na ich temat [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>W niektórych przypadkach skorzystaj z salonu CM zamiast oryginalnego</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+    <value>Pokaż rozwijany obszar obok pól wyszukiwania</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>Gdy ta opcja jest wyłączona, możesz przeciągać je za pomocą przycisku zamykania</value>
+  </data>
+  <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+    <value>Pokaż listę pobrań i instalacji w menu w prawym górnym rogu</value>
+  </data>
+  <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+    <value>Automatycznie przejdź do strony pobierania po rozpoczęciu pobierania</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>Możesz uzyskać dostęp do wyłączonych linków za pomocą tego menu obok przycisków okna lub skrótów klawiszowych.</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>Pojedynczy obraz</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
+    <value>Nie koliduj z lokalizacją i rozmiarem systemu Windows</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
+    <value>Użyj go, jeśli CM nie umie poprawnie ustawić okien.[br][br]Wciąż próbuję znaleźć rozwiązanie tego problemu.</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>Wymuś tryb pełnoekranowy</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>Pełny ekran na pasku zadań</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>Pokaż przycisk Wstecz w oknie głównym</value>
+  </data>
+  <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+    <value>Otwórz nowe okna na tym samym ekranie, co pierwszy pomimo zapisanej lokalizacji</value>
+  </data>
+  <data name="Settings_Appearance_StickMainMenuAtTheTop" xml:space="preserve">
+    <value>Trzymaj menu główne u góry w trybie pełnoekranowym</value>
+  </data>
+  <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
+    <value>Półprzezroczyste narzędzia w salonie CM i narzędziach DirectX</value>
+  </data>
+  <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
+    <value>Przyciski szybkiego dostępu do samochodu i toru w Szybka Jazda</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+    <value>Otwórz listy skórek i setupów w nowym oknie</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
+    <value>Jeśli jest wyłączone, przytrzymaj klawisz Ctrl podczas otwierania skórek lub setupów, aby  otworzyć je w nowym oknie</value>
+  </data>
+  <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+    <value>Wyłącz przyspieszenie sprzętowe dla interfejsu użytkownika</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+    <value>Wyłącz przezroczystość okien</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency_Tooltip" xml:space="preserve">
+    <value>Może poprawić wydajność lub rozwiązać problemy z Wine</value>
+  </data>
+  <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+    <value>Ukryj przyciski w przeglądarce zdjęć, chyba że na górze znajduje się wskaźnik myszy</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+    <value>Rozmyj tło przeglądarki zdjęć</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+    <value>Działa tylko w systemie Windows 7 lub Windows 10</value>
+  </data>
+  <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+    <value>Tło przycisków rozmycia (może obniżyć wydajność)</value>
+  </data>
+  <data name="Settings_Appearance_ImageViewer" xml:space="preserve">
+    <value>Przeglądarka zdjęć:</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
+    <value>Zmiany nie wpłyną na już wyświetlone okna.</value>
+  </data>
+  <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
+    <value>Spróbuj uruchomić Steam, jeśli nie działa (zalecane)</value>
+  </data>
+  <data name="Settings_General_Open" xml:space="preserve">
+    <value>Otwórz</value>
+  </data>
+  <data name="Settings_General_SteamProfile" xml:space="preserve">
+    <value>Profil Steam:</value>
+  </data>
+  <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+    <value>Używane w Internecie</value>
+  </data>
+  <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+    <value>Uruchom Steam automatycznie po uruchomieniu Content Managera</value>
+  </data>
+  <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
+    <value>Zresetuj okazjonalne wskazówki, aby zobaczyć je ponownie</value>
+  </data>
+  <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
+    <value>Pokaż okazjonalne wskazówki</value>
+  </data>
+  <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
+    <value>„Nie pokazuj ponownie” w oknach dialogowych:</value>
+  </data>
+  <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+    <value>Zresetuj „Nie pokazuj ponownie” w oknach dialogowych:</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>Rejestr systemu Windows:</value>
+  </data>
+  <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+    <value>Pokaż powiadomienie o najnowszych zmianach po aktualizacji</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>Powiadomienie o ostatnich zmianach</value>
+  </data>
+  <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+    <value>Otwórz folder danych aplikacji</value>
+  </data>
+  <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+    <value>Otwórz folder z logami</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
+    <value>Zachowaj ostatnie wyniki</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>Uśpij CM podczas wyścigu</value>
+  </data>
+  <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+    <value>Zaokrągl krzywe</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>Jednostki temperatury:</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>Użyj jednostek imperialnych</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>Użyj 12-godzinnego zegara</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>Wyczyść pamięć podręczną</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>Zawartość:</value>
+  </data>
+  <data name="Settings_Drive_SwitchToSteamStarter" xml:space="preserve">
+    <value>Przełącz na starter Steam</value>
+  </data>
+  <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+    <value>Zatrzymaj usługę przy wyjściu CM</value>
+  </data>
+  <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+    <value>Natychmiast przerwij ładowanie, jeśli zostanie naciśnięty klawisz Escape</value>
+  </data>
+  <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+    <value>Kontynuuj wyścig, jeśli zostanie naciśnięty klawisz Escape</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+    <value>Monitoruj FPS podczas wyścigu</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+    <value>Sygnał dźwiękowy w przypadku odwołania wyścigu:</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
+    <value>Może pomóc w wykryciu awarii gry w VR</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS_Tooltip" xml:space="preserve">
+    <value>Zobaczysz wynik w [b]Settings/Assetto Corsa/Video[/b]</value>
+  </data>
+  <data name="Settings_Drive_RHMIntegration" xml:space="preserve">
+    <value>Integracja z RHM</value>
+  </data>
+  <data name="Settings_Drive_RHMLocation" xml:space="preserve">
+    <value>Lokalizacja RHM:</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+    <value>Wyniki są przechowywane w “…\AppData\Local\AcTools Content Manager\Progress\Sessions”</value>
+  </data>
+  <data name="Settings_Content_TemporaryFilesLocation" xml:space="preserve">
+    <value>Lokalizacja plików tymczasowych:</value>
+  </data>
+  <data name="Settings_Content_OriginIcons" xml:space="preserve">
+    <value>Oryginalne ikony</value>
+  </data>
+  <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+    <value>Pokaż oryginalne ikony na listach (takie jak ikona Kunos lub RSS)</value>
+  </data>
+  <data name="Settings_Content_DownloadingContent" xml:space="preserve">
+    <value>Pobieranie zawartości:</value>
+  </data>
+  <data name="Settings_Content_SearchMissingContentVia" xml:space="preserve">
+    <value>Wyszukaj brakującą zawartość za pomocą:</value>
+  </data>
+  <data name="Settings_Content_ShowCurvesInDriveSection" xml:space="preserve">
+    <value>Pokaż krzywe w sekcji Jazda</value>
+  </data>
+  <data name="Settings_Content_MentionCMInPacked" xml:space="preserve">
+    <value>Podczas pakowania wspomnij w opisie, że spakowaną zawartość można zainstalować, przeciągając ją do Content Manager</value>
+  </data>
+  <data name="Settings_Content_PowerAndTorqueCurves" xml:space="preserve">
+    <value>Krzywe mocy i momentu obrotowego:</value>
+  </data>
+  <data name="Settings_Content_FourDigitForYearPostfix" xml:space="preserve">
+    <value>Rok pochodzenia w czterocyfrowej wersji</value>
+  </data>
+  <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
+    <value>Ukryj symbole takie jak ™ przed nazwami samochodów</value>
+  </data>
+  <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
+    <value>Pokaż podgląd samochodów w podpowiedzi</value>
+  </data>
+  <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
+    <value>Napraw brakujące spacje w specyfikacjach w sekcji Jazda</value>
+  </data>
+  <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
+    <value>Format współczynnika mocy/wagi:</value>
+  </data>
+  <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+    <value>Wyświetl blokadę skrętu</value>
+  </data>
+  <data name="Settings_Content_CarSkins" xml:space="preserve">
+    <value>Skórki samochodowe:</value>
+  </data>
+  <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
+    <value>Wyświetlaj ID skór zamiast nazw</value>
+  </data>
+  <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+    <value>Automatyczna aktualizacja modów:</value>
+  </data>
+  <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
+    <value>Oznacz obiekty (takie jak samochody lub tory) notatkami ze specjalną ikoną</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+    <value>Poświadczenia Mega.nz:</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials_Tooltip" xml:space="preserve">
+    <value>Opcjonalne, ale może pomoc w udziałach pobierania. Na wszelki wypadek CM nie przechowuje Twojego hasła, ale tylko tokeny dostępu.</value>
+  </data>
+  <data name="Settings_Content_LogOut" xml:space="preserve">
+    <value>Wyloguj się</value>
+  </data>
+  <data name="Settings_Content_SignedAs" xml:space="preserve">
+    <value>Podpisany jako:</value>
+  </data>
+  <data name="Settings_Content_LogIn" xml:space="preserve">
+    <value>Zaloguj sie</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter" xml:space="preserve">
+    <value>Filtruj wymiany opon</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter_Tooltip" xml:space="preserve">
+    <value>Pozostaw puste lub użyj „*”, aby zezwolić na dowolne samochody</value>
+  </data>
+  <data name="Settings_CustomShowroom_Previews" xml:space="preserve">
+    <value>Podglądy:</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+    <value>Użyj salonu CM dla podglądu</value>
+  </data>
+  <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
+    <value>Dodaj rozszerzone informacje w danych EXIF</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+    <value>Przenieś poprzedni podgląd do Kosza</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
+    <value>Jest to dość powolne działanie, więc może lepiej, żeby go wyłączyć</value>
+  </data>
+  <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+    <value>Sterowanie:</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+    <value>Użyj starej wersji</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptions" xml:space="preserve">
+    <value>Zresetuj ciężkie opcje:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
+    <value>Użyj tego, jeśli salon się zawiesi - na przykład z powodu zbyt wysokich ustawień</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
+    <value>Zresetuj wszystko:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptionsForPreviews" xml:space="preserve">
+    <value>Zresetuj ciężkie opcje podglądów:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAllForPreviews" xml:space="preserve">
+    <value>Zresetuj wszystko dla podglądów:</value>
+  </data>
+  <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
+    <value>Po przekroczeniu limitu starsze wyniki zostaną przeniesione do Kosza po wyścigu.</value>
+  </data>
+  <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+    <value>Urządzenie wyjściowe:</value>
+  </data>
+  <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+    <value>Nazwa urządzenia:</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+    <value>Efekty dudnienia</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringDeadzone" xml:space="preserve">
+    <value>Martwa strefa kierownicy</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringFilter" xml:space="preserve">
+    <value>Filtr sterowania</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringGamma" xml:space="preserve">
+    <value>Sterowanie gamma</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
+    <value>Sterowanie i FFB</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>Nachylenie</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+    <value>Parametry:</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+    <value>Wystąpił jakiś błąd</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+    <value>Automatyczny wybór</value>
+  </data>
+  <data name="Dialogs_CarUpdatePreviewsDialog_Done" xml:space="preserve">
+    <value>Zrobione</value>
+  </data>
+  <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+    <value>Najlepsza delta</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalDelta" xml:space="preserve">
+    <value>Całkowita delta</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+    <value>Czas całkowity</value>
+  </data>
+  <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+    <value>Test wydajności:</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>Gra się zawiesiła</value>
+  </data>
+  <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+    <value>Dołącz do serwera TS</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+    <value>Poczekaj na ten samochód</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+    <value>Poczekaj, aż ten samochód będzie dostępny, a następnie dołącz</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+    <value>Poczekaj na dowolny samochód</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+    <value>Poczekaj, aż dowolny samochód będzie dostępny, a następnie dołącz</value>
+  </data>
+  <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+    <value>Resetuj statystyki</value>
+  </data>
+  <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+    <value>Uzyskaj link do statystyk</value>
+  </data>
+  <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+    <value>Brak toru</value>
+  </data>
+  <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+    <value>Brakuje samochodu</value>
+  </data>
+  <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+    <value>Skórka do rezerwacji:</value>
+  </data>
+  <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+    <value>Serwer jest pusty</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>Zatrzymaj</value>
+  </data>
+  <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+    <value>Salon CM</value>
+  </data>
+  <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+    <value>Specyficzne ustawienia Fanatec dla samochodu</value>
+  </data>
+  <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+    <value>Wyłącz diody LED i wyświetlacz</value>
+  </data>
+  <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+    <value>Pokaż tylko bieżący bieg</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins" xml:space="preserve">
+    <value>Zainstaluj zalecane wtyczki</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
+    <value>Aplikacja została właśnie zaktualizowana. Sprawdź, czy te ustawienia są nadal aktualne:</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_WhatsYourName" xml:space="preserve">
+    <value>Jak masz na imię?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+    <value>Dodać skrót do menu Start?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip" xml:space="preserve">
+    <value>Dzięki temu CM będzie mógł używać odpowiednich powiadomień w Windows 8, 8.1 lub 10.</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
+    <value>Utwórz (zalecane)</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallSomePlugins" xml:space="preserve">
+    <value>Czy chcesz również zainstalować niektóre wtyczki?</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+    <value>Zobacz w Eksploratorze</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Description" xml:space="preserve">
+    <value>„CM skanuje wszystkie modele i tekstury (pliki KN5 i DDS) - pliki te można dobrze skompresować,
+czasami nawet kilka razy. Kompresja plików, takich jak dźwiękowe lub obrazy PNG, nie przynosi większych korzyści: te formaty
+mają już odpowiednią kompresję i tylko nieznacznie spowolnią ładowanie AC.
+[br][br]Polecam użycie najlepszego algorytmu kompresji, LZX. To doda obciążenie procesora podczas ładowania, ale procesor nie ma nic do roboty
+tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie mniej do odczytu.
+[br][br]Oczywiście [b]nie powinno to wpływać na FPS w żaden sposób[/b]: AC nie ładuje zasobów dynamicznie”.</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+    <value>Kompresuj</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+    <value>Dekompresuj</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+    <value>Algorytm kompresji:</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+    <value>Ścieżka</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+    <value>Oryginał</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+    <value>Skompresowano</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+    <value>Współczynnik</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+    <value>Nie skompresowano</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+    <value>Nie znaleziono problemów</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+    <value>Więcej…</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+    <value>Więcej szczegółów:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+    <value>Warunki:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+    <value>Włączone</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>Aplikacje:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>Wideo:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+    <value>Lusterko wsteczne</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+    <value>Zaktualizuj presety, jeśli niektóre ustawienia uległy zmianie podczas wyścigu</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+    <value>Twórz nowe</value>
+  </data>
+  <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+    <value>Pokaż szczegóły</value>
+  </data>
+  <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+    <value>Motyw zdefiniowany</value>
+  </data>
+  <data name="TrackStateEditor_Description" xml:space="preserve">
+    <value>Opis:</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+    <value>Początkowa przyczepność</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+    <value>Poziom przyczepności na początku sesji</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+    <value>Transfer przyczepności</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+    <value>Ile dodać przyczepnościprzy przejściu do następnej sesji</value>
+  </data>
+  <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+    <value>Przyczepność losowa</value>
+  </data>
+  <data name="TrackStateEditor_LapGain" xml:space="preserve">
+    <value>Zysk okrążenia</value>
+  </data>
+  <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
+    <value>Ograniczenia AI są włączone</value>
+  </data>
+  <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+    <value>Losuj wszystko</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+    <value>Ustaw losową temperaturę</value>
+  </data>
+  <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+    <value>Ustaw losową pogodę</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+    <value>Ustaw losowy czas</value>
+  </data>
+  <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+    <value>Zmień tor na losowy</value>
+  </data>
+  <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+    <value>Zmień skórkę na losową</value>
+  </data>
+  <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+    <value>Zmień samochód na losowy</value>
+  </data>
+  <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+    <value>Rozpoczynanie wyścigu…</value>
+  </data>
+  <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+    <value>Nie można rozpocząć wyścigu</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>Tak i napraw to</value>
+  </data>
+  <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
+    <value>Nie można załadować obrazu</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>Oryginalny starter (pojawia się wraz ze starterem Steam)</value>
+  </data>
+  <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+    <value>Ustawienia wideo (licznik FPS)</value>
+  </data>
+  <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+    <value>Nie można uzyskać listy urządzeń audio</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>Nieznany</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HardwareLock" xml:space="preserve">
+    <value>Blokada sprzętowa (eksperymentalna)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions" xml:space="preserve">
+    <value>Opcje blokady sprzętowej Logitech:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+    <value>Włącz przetwarzanie końcowe FFB</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>Tryb:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>Centralny zakres wzmocnienia</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>Zwiększenie wzmocnienia środkowego</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>Użyj tego mnożnika FFB, gdy koło jest umieszczone w środku</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>Przetwarzanie końcowe:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>Wyścig:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>Samochód:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+    <value>Interfejs użytkownika:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>Powtórka:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+    <value>Opcje:</value>
+  </data>
+  <data name="AcSettings_Controls_Scanning_Hint" xml:space="preserve">
+    <value>Jeśli trwa to zbyt długo, jedno z urządzeń podłączonych do komputera może mieć wadliwe sterowniki. Na przykład klawiatura Corsair K55 powoduje ten problem z DirectInput8. [url="https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow"]More information[/url].</value>
+  </data>
+  <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+    <value>Ustawienia urządzenia</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>Edytuj nazwy</value>
+  </data>
+  <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+    <value>Skanuj urządzenia przy uruchomieniu</value>
+  </data>
+  <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+    <value>Zresetuj powiązania systemowe</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>Pit stopy:</value>
+  </data>
+  <data name="AcSettings_General_UseMousePitStop" xml:space="preserve">
+    <value>Użyj myszki do pit stopu</value>
+  </data>
+  <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+    <value>Trzymaj kamerę w samochodzie</value>
+  </data>
+  <data name="AcSettings_General_PresetsCount" xml:space="preserve">
+    <value>Liczba presetów</value>
+  </data>
+  <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
+    <value>Automatyczne zapis powtórki</value>
+  </data>
+  <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+    <value>Minimalny czas</value>
+  </data>
+  <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+    <value>Limit dla wyścigów</value>
+  </data>
+  <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+    <value>Limit dla kwalifikacji</value>
+  </data>
+  <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+    <value>Limit na inne sesje</value>
+  </data>
+  <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+    <value>Włącz aplikacje Python</value>
+  </data>
+  <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+    <value>Zachowaj flagi aplikacji programisty z ustawieniami aplikacji</value>
+  </data>
+  <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+    <value>Drgania kamery VR</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+    <value>Ogromne przybliżenie, może nie korelować z rzeczywistością. Zmierzone w rozdzielczości 1920 × 1080.</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+    <value>Rozdzielczość i FPS:</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+    <value>Ograniczony czas testu</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+    <value>Użyj tego, aby uzyskać podobne wyniki, jeśli chcesz porównać ustawienia</value>
+  </data>
+  <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
+    <value>Użyj kółka myszy lub klawiszy +/−, aby dostosować rozmiar obszaru. Przytrzymaj Ctrl lub Shift, aby dostosować dokładność.</value>
+  </data>
+  <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
+    <value>Upuść pliki lub linki do pobrania tutaj</value>
+  </data>
+  <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+    <value>Maksymalna liczba kontaktów na kilometr</value>
+  </data>
+  <data name="Selected_FilterByOrigin" xml:space="preserve">
+    <value>Filtruj według pochodzenia</value>
+  </data>
+  <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+    <value>Wymień opony</value>
+  </data>
+  <data name="Selected_ClearNotes" xml:space="preserve">
+    <value>Wyczyść notatki</value>
+  </data>
+  <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+    <value>Filtruj według notatek</value>
+  </data>
+  <data name="Selected_CarPage_ClearStatsFromThisCar" xml:space="preserve">
+    <value>Wyczyść statystyki z tego samochodu</value>
+  </data>
+  <data name="Selected_CarSetupPage_Unknown" xml:space="preserve">
+    <value>Nieznany</value>
+  </data>
+  <data name="Selected_CarSetupPage_DefaultValue" xml:space="preserve">
+    <value>Domyślna wartość:</value>
+  </data>
+  <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>Załaduj asysty z presetów Szybka Jazda</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
+    <value>W przypadku Dnia Testów użyj Ćwiczenia jako typu sesji</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
+    <value>W ten sposób będzie dostępna załoga do postojów, ale boty mogą być bardziej pasywne</value>
+  </data>
+  <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
+    <value>Rezerwacja jest zakończona</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>Importuj CSV</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>Zaimportuj CSV z WheelCheck (po prostu przeciągnij i upuść go w razie potrzeby)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>Importuj LUT</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>Po prostu przeciągnij i upuść w razie potrzeby</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>Tryb obsługi:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>Efekt ABS</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>Nowy tag</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>Przywróć usunięte</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>Nazwa tagu</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>Usuń tag…</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>Nazwy:</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>Wystarczy wpisać tutaj nazwy, po jednej nazwie w wierszu</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>Uruchom</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>Nie znaleziono sesji.</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>Usuń brakujące</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>Usuń wszystkie sesje z brakującą zawartością</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>Wykres mocy:</value>
+  </data>
+  <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+    <value>[i]Czy wiesz?[/i] Możesz kliknąć nieruchomość prawym przyciskiem myszy, aby przefiltrować samochody według niej.</value>
+  </data>
+  <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+    <value>Filtruj według podobnej odległości przejechanej</value>
+  </data>
+  <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+    <value>Filtruj według osiągniętej podobnej prędkości maksymalnej</value>
+  </data>
+  <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+    <value>Liczba gotowych do zainstalowania konfiguracji w The Setup Market</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>Zezwalaj na wartości dziesiętne dla stanu toru</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>Może powodować problemy z niektórymi aplikacjami, jeśli są używane</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>Sprawdź, czy tor pasuje do wybranego trybu</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>Nie polecam tego wyłączać, CM zaproponuje Ci naprawienie opisu toru, jeśli coś jest nie tak. Ale jeśli używasz tagów innych niż domyślne, zdecydowanie skorzystaj.</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>Pokaż dodatkowe listy rozwijane dla skórek, modyfikacji samochodu i konfiguracki toru</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>Może nieco wyświetlić aplikację niżej</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>Wybrano automatyczne odświeżanie:</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>Zarządzaj listami</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>Zarządzaj tagami kierowców</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>Wyświetl:</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>Hasła:</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+    <value>Zawsze zezwalaj na używanie hasła</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+    <value>Włącz, jeśli zamierzasz połączyć się jako administrator</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>Napraw nazwy:</value>
+  </data>
+  <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+    <value>Po zmianie może być wymagane odświeżenie</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Próby pingowania</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>Folder presetów</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>Zapinguj jeden raz serwery</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>Zapinguj serwery tylko raz naciskając przycisk Odśwież, jak w oryginalnym programie uruchamiającym</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>Zatrzymaj pingowanie podczas wyścigu</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>Pokaż rozszerzone informacje, jeśli brakuje zawartości</value>
   </data>
 </root>
