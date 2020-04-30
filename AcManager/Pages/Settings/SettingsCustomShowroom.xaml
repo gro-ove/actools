@@ -115,7 +115,7 @@
 
         <c:MessageBlock CloseKey="bye-bye-fancy-showroom">
           <mui:BbCodeBlock>
-            <mui:BbCodeBlock.Text>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially compaing to the new one. And it was very slow.</mui:BbCodeBlock.Text>
+            <mui:BbCodeBlock.Text>In the previous version, there was the Fancy showroom, but we’ve got rid of it. Speaking as it is, it wasn’t fancy, and could barely be called “showroom”, especially comparing to the new one. And it was very slow.</mui:BbCodeBlock.Text>
           </mui:BbCodeBlock>
         </c:MessageBlock>
 

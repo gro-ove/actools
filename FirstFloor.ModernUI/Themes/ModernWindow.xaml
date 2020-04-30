@@ -53,7 +53,7 @@
                   <ContentControl Content="{TemplateBinding BackgroundContent}" />
 
                   <!-- Title bar -->
-                  <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar">
+                  <DockPanel VerticalAlignment="Top" Panel.ZIndex="10" x:Name="PART_TitleBar" Visibility="{TemplateBinding TitleButtonsVisibility}">
                     <!-- Window system buttons-->
                     <StackPanel x:Name="PART_SystemButtonsPanel" DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Top"
                         WindowChrome.IsHitTestVisibleInChrome="True">
@@ -139,7 +139,7 @@
                         <!-- Main menu -->
                         <c:ModernMenu LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu" SaveKey="{TemplateBinding SaveKey}"
                             DefaultSource="{TemplateBinding DefaultContentSource}" a:InputBindingBehavior.PropagateToWindow="True"
-                            WindowChrome.IsHitTestVisibleInChrome="True" />
+                            WindowChrome.IsHitTestVisibleInChrome="True" TopRowVisibility="{TemplateBinding MenuTopRowVisibility}" />
                       </DockPanel>
 
                       <!-- Content frame -->

@@ -118,7 +118,8 @@
 
             <Path VerticalAlignment="Center" DockPanel.Dock="Left" Height="8" Width="6" Margin="0 -1 2 1" Stretch="Uniform"
                 Fill="{Binding (TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
-                Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z" />
+                Data="F1 M 28.5,23L 36.5,23L 36.5,31L 28.5,31L 28.5,23 Z M 28.5,34L 36.5,34L 36.5,42L 28.5,42L 28.5,34 Z M 39.5,23L 47.5,23L 47.5,31L 39.5,31L 39.5,23 Z M 28.5,45L 36.5,45L 36.5,53L 28.5,53L 28.5,45 Z M 39.5,34L 47.5,34L 47.5,42L 39.5,42L 39.5,34 Z M 39.5,45L 47.5,45L 47.5,53L 39.5,53L 39.5,45 Z"
+                Visibility="{DynamicResource ModernSubMenuDraggablePoints}" />
 
             <Button Focusable="False" x:Name="CloseButton" DockPanel.Dock="Right" Margin="0 0 -4 0" Command="{Binding CloseCommand}">
               <Border Background="Transparent">
@@ -187,7 +188,7 @@
             <ListBox ItemsSource="{TemplateBinding VisibleLinkGroups}"
                 SelectedItem="{Binding SelectedLinkGroup, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.CanContentScroll="False"
-                ScrollViewer.PanningMode="Both" Height="40">
+                ScrollViewer.PanningMode="Both" Height="40" Visibility="{TemplateBinding TopRowVisibility}">
               <ListBox.ItemContainerStyle>
                 <Style TargetType="ListBoxItem">
                   <Setter Property="FocusVisualStyle" Value="{x:Null}" />

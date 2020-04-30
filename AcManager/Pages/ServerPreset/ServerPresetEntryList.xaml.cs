@@ -26,13 +26,17 @@ namespace AcManager.Pages.ServerPreset {
         public ServerPresetEntryList() {
             InitializeComponent();
             this.AddWidthCondition(720)
-                .Add(SavedDriversPanel);
+                    .Add(SavedDriversPanel);
             this.AddWidthCondition(960)
-                .Add(BallastColumn)
-                .Add(RestrictorColumn)
-                .AddInverted(SomethingMightBeHiddenPanel);
+                    .Add(BallastColumn)
+                    .Add(RestrictorColumn)
+                    .AddInverted(SomethingMightBeHiddenPanel);
             this.AddWidthCondition(1080)
-                .Add(TeamColumn);
+                    .Add(TeamColumn);
+
+            if (AppArguments.Has(AppFlag.ServerManagementMode)) {
+                EntriesGrid.RowStyle = TryFindResource("RowStyleWithSpacing") as Style ?? EntriesGrid.RowStyle;
+            }
         }
 
         private void OnDrop(object sender, DragEventArgs e) {
@@ -148,9 +152,8 @@ namespace AcManager.Pages.ServerPreset {
 
         private ICommand _closeAddingPopupCommand;
 
-        public ICommand ClosePopupsCommand => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new DelegateCommand(() => {
-            SelectCarPopup.IsOpen = false;
-        }));
+        public ICommand ClosePopupsCommand
+            => _closeAddingPopupCommand ?? (_closeAddingPopupCommand = new DelegateCommand(() => { SelectCarPopup.IsOpen = false; }));
 
         private CommandBase _addOpponentCarCommand;
 

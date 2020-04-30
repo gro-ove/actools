@@ -1,5 +1,6 @@
 ﻿using System;
 using FirstFloor.ModernUI.Commands;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Presentation {
     public class Link : Displayable {
@@ -52,6 +53,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private Uri _source;
 
+        [CanBeNull]
         public virtual Uri Source {
             get => _source;
             set {

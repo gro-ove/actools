@@ -78,6 +78,11 @@
       <Style x:Key="RowStyle" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.DetailsAlways.RibbonLeft}">
         <Setter Property="Padding" Value="0 4" />
       </Style>
+
+      <Style x:Key="RowStyleWithSpacing" TargetType="DataGridRow" BasedOn="{StaticResource DataGridRow.DetailsAlways.RibbonLeft}">
+        <Setter Property="Margin" Value="0 8" />
+        <Setter Property="Padding" Value="0 4" />
+      </Style>
     </ResourceDictionary>
   </UserControl.Resources>
 
@@ -182,7 +187,7 @@
       </Grid>
     </c:ModernPopup>
 
-    <DataGrid ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
+    <DataGrid x:Name="EntriesGrid" ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
         mui:Draggable.Enabled="True" MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
         CellStyle="{StaticResource DataGridCell.Transparent}"><!-- TODO: SelectionMode="Extended"-->
       <!--<mui:Draggable.DestinationConverter>

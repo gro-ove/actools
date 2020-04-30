@@ -95,9 +95,9 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_PopupScrollbars}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas_Tooltip}">
+        <!--<CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas}" />
-        </CheckBox>
+        </CheckBox>-->
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_TransitionAnimationLabel}" />
@@ -123,10 +123,15 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_BoldFont}" />
         </CheckBox>
 
+        <CheckBox IsChecked="{Binding AppearanceManager.ForceMenuAtTopInFullscreenMode}">
+          <Label Content="{x:Static g:AppStrings.Settings_Appearance_StickMainMenuAtTheTop}" />
+        </CheckBox>
+
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_Links}" />
-          <ListBox ItemsSource="{Binding AppAppearanceManager.TitleLinkEntries}" Style="{StaticResource VirtualizingListBox}" DisplayMemberPath="DisplayName"
-              VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True">
+          <ListBox ItemsSource="{Binding AppAppearanceManager.TitleLinkEntries}" DisplayMemberPath="DisplayName"
+              VirtualizingPanel.IsContainerVirtualizable="False" mui:ListBoxHelper.ProperMultiSelectionMode="True"
+              ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListBox.ItemContainerStyle>
               <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource CheckBoxListBoxItem}"
                   d:DataContext="{d:DesignInstance c:TitleLinkEnabledEntry}">
@@ -163,7 +168,8 @@
               </ContextMenu>
             </Button.ContextMenu>
           </Button>
-          <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}" Placeholder="{x:Static g:AppStrings.Settings_Appearance_ThemeDefined}" />
+          <mui:PathTrimmingTextBlock Text="{Binding AppAppearanceManager.BackgroundFilename}"
+              Placeholder="{x:Static g:AppStrings.Settings_Appearance_ThemeDefined}" />
         </DockPanel>
 
         <DockPanel Visibility="{Binding AppAppearanceManager.SlideshowMode, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -230,8 +236,8 @@
         <StackPanel Visibility="{Binding AppearanceManager.ManageWindowsLocation, Converter={StaticResource BooleanToVisibilityConverter}}">
           <DockPanel ToolTip="{x:Static g:AppStrings.Settings_Appearance_ImageScaling_Tooltip}">
             <Label Content="{x:Static g:AppStrings.Settings_Appearance_BindToScreen}" />
-            <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Appearance_BindToScreen_Hint}" DockPanel.Dock="Bottom" Style="{StaticResource BbCodeBlock.Small}"
-                Margin="0 2 0 0" />
+            <mui:BbCodeBlock Text="{x:Static g:AppStrings.Settings_Appearance_BindToScreen_Hint}" DockPanel.Dock="Bottom"
+                Style="{StaticResource BbCodeBlock.Small}" Margin="0 2 0 0" />
             <mui:BetterComboBox ItemsSource="{Binding Screens}" SelectedItem="{Binding ForceScreen, Mode=TwoWay}" Nullable="True" IsEditable="False">
               <mui:BetterComboBox.ItemTemplate>
                 <DataTemplate>
@@ -264,15 +270,12 @@
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ShowBackButton}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppearanceManager.ForceMenuAtTopInFullscreenMode}">
-          <Label Content="{x:Static g:AppStrings.Settings_Appearance_StickMainMenuAtTheTop}" />
-        </CheckBox>
-
         <CheckBox IsChecked="{Binding AppAppearanceManager.SemiTransparentAttachedTools}" set:Search.Keywords="custom showroom">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_SemiTransparentToolsInCustomShowroom}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas_Tooltip}">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.ShowSubMenuDraggableIcons}"
+            ToolTip="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas_Tooltip}">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_ShowDraggableAreas}" />
         </CheckBox>
 
@@ -304,8 +307,8 @@
         <!-- System -->
         <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.AcSettings_Video_SystemHeader}" />
 
-        <CheckBox IsChecked="{Binding AppAppearanceManager.DisallowTransparency}" ToolTip="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency_Tooltip}"
-            mui:NewMarkService.New="True">
+        <CheckBox IsChecked="{Binding AppAppearanceManager.DisallowTransparency}"
+            ToolTip="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency_Tooltip}" mui:NewMarkService.New="True">
           <Label Content="{x:Static g:AppStrings.Settings_Appearance_DisableWindowsTransparency}" />
         </CheckBox>
 

@@ -24,7 +24,7 @@ namespace AcManager {
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class AppStrings {
         
-        private static global::System.Resources.ResourceManager resourceMan;
+        private static FirstFloor.ModernUI.CustomResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
@@ -36,10 +36,10 @@ namespace AcManager {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
+        public static FirstFloor.ModernUI.CustomResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
+                    FirstFloor.ModernUI.CustomResourceManager temp = new FirstFloor.ModernUI.CustomResourceManager("AcManager.AppStrings", typeof(AppStrings).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -756,7 +756,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Steering and FFB.
+        ///   Looks up a localized string similar to Steering and FFB:.
         /// </summary>
         public static string AcSettings_Controls_Controller_Main_SteeringAndFFB {
             get {
@@ -9508,7 +9508,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Use Custom Showroom instead of the original one is some cases.
+        ///   Looks up a localized string similar to Use Custom Showroom instead of the original one in some cases.
         /// </summary>
         public static string Settings_CustomShowroom_UseCustomShowroomInstead {
             get {
@@ -10097,7 +10097,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This way, there&apos;ll be a crew for pitstops, but bots might be more passive.
+        ///   Looks up a localized string similar to This way, there&apos;ll be a crew for pit stops, but bots might be more passive.
         /// </summary>
         public static string Settings_Drive_UsePracticeForTrackDay_Tooltip {
             get {
@@ -10304,7 +10304,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset occasional hits to see them again.
+        ///   Looks up a localized string similar to Display already shown hints again.
         /// </summary>
         public static string Settings_General_ResetOccasionalHits {
             get {
@@ -11114,7 +11114,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]..
+        ///   Looks up a localized string similar to Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url]..
         /// </summary>
         public static string Settings_PythonApps_ChangedWillBeSavedAutomatically {
             get {

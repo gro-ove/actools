@@ -302,6 +302,8 @@ namespace AcManager.Pages.Dialogs {
                         }.ToString();
 
                         var profileRange = 5; // ProfileRange;
+
+                        // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                         if (profileRange > 1) {
                             for (var i = 0; i < profileRange; i++) {
                                 list.Add(GetPiece(false, (i + 1d) / (profileRange + 1d), yRange));

@@ -62,7 +62,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     IsCSPBypassing = true,
                     IsDisplayIsolated = false,
                     IsLocal = false,
-                    IsSecure = false,
+                    IsSecure = true,
                     IsStandard = false,
                     SchemeHandlerFactory = AcApiHandler
                 });
@@ -85,6 +85,7 @@ namespace AcManager.Controls.UserControls.Cef {
                     }
                 };
 
+                CefSharp.Cef.AddCrossOriginWhitelistEntry(@"https://www.simracingsystem.com", @"ac", string.Empty, true);
                 CefSharp.Cef.Initialize(settings, false,
                         wpfMode && !OptionMultiThreadedMessageLoop ? new WpfBrowserProcessHandler(Application.Current.Dispatcher) : new BrowserProcessHandler());
                 Logging.Write("CEF is initialized");

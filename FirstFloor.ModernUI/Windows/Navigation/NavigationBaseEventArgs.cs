@@ -1,5 +1,6 @@
 ﻿using FirstFloor.ModernUI.Windows.Controls;
 using System;
+using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Navigation {
     /// <summary>
@@ -14,6 +15,7 @@ namespace FirstFloor.ModernUI.Windows.Navigation {
         /// <summary>
         /// Gets the source uri for the target being navigated to.
         /// </summary>
+        [CanBeNull]
         public Uri Source { get; internal set; }
     }
 }

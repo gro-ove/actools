@@ -11,6 +11,12 @@ namespace AcManager {
         PatchSupport,
 
         /// <summary>
+        /// Hide everything by server management.
+        /// Example: --server-management-mode.
+        /// </summary>
+        ServerManagementMode,
+
+        /// <summary>
         /// For development purposes.
         /// Example: --hide-race-cancel-button.
         /// </summary>

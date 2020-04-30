@@ -3951,10 +3951,10 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>No configurable apps found</value>
     </data>
     <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
-      <value>Changed will be saved automatically. If you want to opmitize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url].</value>
+      <value>Changes will be saved automatically. If you want to optimize the way configuration files are shown, you can find more information about them [url=&quot;https://acstuff.ru/f/d/19-content-manager-python-app-configs&quot;]here[/url].</value>
     </data>
     <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
-      <value>Use Custom Showroom instead of the original one is some cases</value>
+      <value>Use Custom Showroom instead of the original one in some cases</value>
     </data>
     <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
       <value>Show draggable areas next to search boxes</value>
@@ -4050,7 +4050,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Launch Steam automatically when Content Manager starts</value>
     </data>
     <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
-      <value>Reset occasional hits to see them again</value>
+      <value>Display already shown hints again</value>
     </data>
     <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
       <value>Show occasional hints</value>
@@ -4275,7 +4275,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Steer thumb:</value>
     </data>
     <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
-      <value>Steering and FFB</value>
+      <value>Steering and FFB:</value>
     </data>
     <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
       <value>Pitch</value>
@@ -4679,7 +4679,7 @@ anyway while it’s waiting for disk to get the data, and there will much less d
       <value>For Track Day, use Practice as a session type</value>
     </data>
     <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
-      <value>This way, there'll be a crew for pitstops, but bots might be more passive</value>
+      <value>This way, there'll be a crew for pit stops, but bots might be more passive</value>
     </data>
     <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
       <value>Booking is finished</value>

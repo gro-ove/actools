@@ -249,6 +249,22 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(BackButtonVisibilityProperty, value);
         }
 
+        public static readonly DependencyProperty TitleButtonsVisibilityProperty = DependencyProperty.Register(nameof(TitleButtonsVisibility), typeof(Visibility),
+                typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility TitleButtonsVisibility {
+            get => (Visibility)GetValue(TitleButtonsVisibilityProperty);
+            set => SetValue(TitleButtonsVisibilityProperty, value);
+        }
+
+        public static readonly DependencyProperty MenuTopRowVisibilityProperty = DependencyProperty.Register(nameof(MenuTopRowVisibility), typeof(Visibility),
+                typeof(ModernWindow), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility MenuTopRowVisibility {
+            get => (Visibility)GetValue(MenuTopRowVisibilityProperty);
+            set => SetValue(MenuTopRowVisibilityProperty, value);
+        }
+
         public static readonly DependencyProperty ShowErrorsButtonProperty = DependencyProperty.Register(nameof(ShowErrorsButton), typeof(bool),
                 typeof(ModernWindow), new PropertyMetadata(true));
 

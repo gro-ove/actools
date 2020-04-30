@@ -111,7 +111,8 @@ namespace AcManager.Tools.Helpers.Api {
         }
 
         [NotNull]
-        private static T[] LoadList<T>(string uri, TimeSpan timeout, CancellationToken cancellation, Func<Stream, T[]> deserializationFn) where T : ServerInformation {
+        private static T[] LoadList<T>(string uri, TimeSpan timeout, CancellationToken cancellation, Func<Stream, T[]> deserializationFn)
+                where T : ServerInformation {
             var request = new HttpRequestMessage(HttpMethod.Get, uri);
             try {
                 using (var cancellationTimer = new CancellationTokenSource(timeout))
@@ -275,6 +276,10 @@ namespace AcManager.Tools.Helpers.Api {
                         }
                     }
                 }
+            }
+
+            if (result.SessionTypes != null && result.Session >= 0 && result.Session < result.SessionTypes.Length) {
+                result.Session = result.SessionTypes[result.Session];
             }
 
             return result;

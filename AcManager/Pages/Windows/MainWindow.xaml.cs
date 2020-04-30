@@ -146,6 +146,12 @@ namespace AcManager.Pages.Windows {
             }
 
             LinkNavigator.Commands.Add(new Uri("cmd://enterKey"), Model.EnterKeyCommand);
+            if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
+                TitleLinks.Remove(OriginalLauncher);
+            } else {
+                LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
+            }
+
             InternalUtils.Launch(this);
 
             foreach (var result in MenuLinkGroups.OfType<LinkGroupFilterable>()
@@ -181,12 +187,6 @@ namespace AcManager.Pages.Windows {
             FileBasedOnlineSources.Instance.Update += OnOnlineSourcesUpdate;
             if (CupClient.Instance != null) CupClient.Instance.NewLatestVersion += OnNewLatestVersion;
             Activated += OnActivated;
-
-            if (SettingsHolder.Drive.SelectedStarterType != SettingsHolder.DriveSettings.SteamStarterType) {
-                TitleLinks.Remove(OriginalLauncher);
-            } else {
-                LinkNavigator.Commands.Add(new Uri("cmd://originalLauncher"), new DelegateCommand(SteamStarter.StartOriginalLauncher));
-            }
 
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
@@ -872,13 +872,13 @@ namespace AcManager.Pages.Windows {
         }
 
         private void OnFrameNavigating(object sender, NavigatingCancelEventArgs e) {
-            if (e.Source.OriginalString.IsWebUrl()) {
+            if (e.Source?.OriginalString.IsWebUrl() == true) {
                 WindowsHelper.ViewInBrowser(e.Source.OriginalString);
                 e.Cancel = true;
                 return;
             }
 
-            if (e.Source.OriginalString.Contains(@"/Pages/About/")) {
+            if (e.Source?.OriginalString.Contains(@"/Pages/About/") == true) {
                 _lastAboutSection.Value = e.Source;
             }
             MakeSureOnlineIsReady(e.Source);

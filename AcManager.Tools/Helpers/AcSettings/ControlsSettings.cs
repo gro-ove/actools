@@ -471,7 +471,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
             if (!_strictIndicesNever
                     && devices?.Any(x => x.Information.ProductName.Contains(@"FANATEC")) == true
-                    && devices.All(x => !x.Information.ProductName.Contains(@"CSW"))) {
+                    && devices.All(x => !x.Information.ProductName.Contains(@"CSW"))
+                    && devices.All(x => !x.Information.ProductName.Contains(@"MobearTec"))) {
                 _strictIndicesNever = true;
             }
 

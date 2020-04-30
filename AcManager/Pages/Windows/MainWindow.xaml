@@ -784,8 +784,7 @@
         </TextBlock.ContextMenu>
       </TextBlock>
     </mui:TitleLink>
-    <mui:TitleLink x:Name="OriginalLauncher" GroupKey="originalLauncher" Content="{x:Static g:AppStrings.Main_OriginalLauncherLink}"
-        Source="{x:Static w:MainWindow.OriginalLauncherUrl}" />
+    <mui:TitleLink x:Name="OriginalLauncher" Content="{x:Static g:AppStrings.Main_OriginalLauncherLink}" Source="{x:Static w:MainWindow.OriginalLauncherUrl}" />
     <mui:TitleLink Content="switch to full version" Source="{x:Static w:MainWindow.EnterKeyUrl}" IsAccented="True" />
     <mui:TitleLink GroupKey="settings/video" Source="/Pages/AcSettings/AcSettingsVideo.xaml">
       <mui:ReferenceSwitch Value="{Binding LastSessionPerformanceData, Source={x:Static t:AcSettingsHolder.Video}}">

@@ -238,6 +238,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public static readonly DependencyProperty SelectedSourceProperty = DependencyProperty.Register("SelectedSource", typeof(Uri),
                 typeof(ModernMenu), new PropertyMetadata(OnSelectedSourceChanged));
 
+        [CanBeNull]
         public Uri SelectedSource {
             get => (Uri)GetValue(SelectedSourceProperty);
             set => SetValue(SelectedSourceProperty, value);
@@ -364,7 +365,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 // find the current select group and link based on the selected source
                 var linkInfo = (from g in LinkGroups
                                 from l in g.Links
-                                where l.Source.SamePath(SelectedSource)
+                                where SelectedSource == null ? l.Source == null : l.Source?.SamePath(SelectedSource) == true
                                 select new {
                                     Group = g,
                                     Link = l
@@ -421,6 +422,14 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         public Uri DefaultSource {
             get => (Uri)GetValue(DefaultSourceProperty);
             set => SetValue(DefaultSourceProperty, value);
+        }
+
+        public static readonly DependencyProperty TopRowVisibilityProperty = DependencyProperty.Register(nameof(TopRowVisibility), typeof(Visibility),
+                typeof(ModernMenu), new PropertyMetadata(Visibility.Visible));
+
+        public Visibility TopRowVisibility {
+            get => (Visibility)GetValue(TopRowVisibilityProperty);
+            set => SetValue(TopRowVisibilityProperty, value);
         }
     }
 }

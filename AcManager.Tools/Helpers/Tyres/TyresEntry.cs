@@ -172,7 +172,7 @@ namespace AcManager.Tools.Helpers.Tyres {
 
         public static string GetDisplayProfile(double radius, double rimRadius, double width, bool? roundNicely = null) {
             var profile = GetProfile(radius, rimRadius, width);
-            return double.IsNaN(profile) ? @"?" : (100d * profile).Round((roundNicely ?? OptionRoundNicely) ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
+            return double.IsNaN(profile) ? @"?" : (100d * profile).Round(roundNicely ?? OptionRoundNicely ? 5d : 0.5d).ToString(CultureInfo.CurrentUICulture);
         }
 
         public static string GetDisplayWidth(double width, bool? roundNicely = null) {
@@ -181,7 +181,7 @@ namespace AcManager.Tools.Helpers.Tyres {
 
         public static string GetDisplayRimRadius(double rimRadius, bool? roundNicely = null) {
             return rimRadius <= 0 || double.IsNaN(rimRadius) ? @"?" :
-                    (rimRadius * 100 / 2.54 * 2 - 1).Round((roundNicely ?? OptionRoundNicely) ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
+                    (rimRadius * 100 / 2.54 * 2 - 1).Round(roundNicely ?? OptionRoundNicely ? 0.1d : 0.01d).ToString(CultureInfo.CurrentUICulture);
         }
         #endregion
 
