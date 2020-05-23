@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using AcManager.Controls;
 using AcManager.Pages.Dialogs;
+using AcManager.Properties;
 using AcManager.Tools;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
@@ -201,7 +202,7 @@ namespace AcManager.CustomShowroom {
                         if (!PluginsManager.Instance.IsPluginEnabled(KnownPlugins.Magick)) {
                             NonfatalError.Notify("Can’t edit skins without Magick.NET plugin", "Please, go to Settings/Plugins and install it first.");
                             value = Mode.Main;
-                            /*} else {
+                        /*} else {
                             LoadSkinItems();*/
                         }
                     }
@@ -410,6 +411,25 @@ namespace AcManager.CustomShowroom {
                 ShotHeight = defaultSize.Height;
 
                 _shots.PreviewScreenshot += OnScreenshot;
+                Car.ChangedFile += OnCarChangedFile;
+            }
+
+            private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
+                var paintShopFile = Path.Combine(Car.Location, @"ui", @"cm_paintshop.json");
+                var paintShopDirectory = Path.Combine(Car.Location, @"ui", @"cm_paintshop");
+                if (FileUtils.IsAffectedBy(paintShopFile, args.Filename)
+                        || FileUtils.IsAffectedBy(paintShopDirectory, args.Filename)) {
+                    OnPaintShopDataChanged(sender, args);
+                }
+
+                var cameraTrajectoryFile = CameraTrajectoryFilename;
+                if (FileUtils.IsAffectedBy(cameraTrajectoryFile, args.Filename)) {
+                    if (Renderer?.CameraTrajectoryActive == true) {
+                        Renderer.SetCameraTrajectory(File.ReadAllText(CameraTrajectoryFilename));
+                    }
+                    _cameraTrajectoryAvailable = null;
+                    OnPropertyChanged(nameof(CameraTrajectoryAvailable));
+                }
             }
 
             private void OnScreenshot(object sender, CancelEventArgs cancelEventArgs) {
@@ -565,6 +585,7 @@ namespace AcManager.CustomShowroom {
             public Coordinates CameraLookAt { get; } = new Coordinates();
 
             private void OnCameraCoordinatesChanged(object sender, PropertyChangedEventArgs e) {
+                if (CameraTrajectoryActive || CameraAutoRotate) return;
                 SaveLater();
                 UpdateCamera();
             }
@@ -578,6 +599,7 @@ namespace AcManager.CustomShowroom {
                     _cameraFov = value;
                     OnPropertyChanged();
                     UpdateCamera();
+                    if (CameraTrajectoryActive || CameraAutoRotate) return;
                     SaveLater();
                 }
             }
@@ -591,6 +613,7 @@ namespace AcManager.CustomShowroom {
                     _cameraTilt = value;
                     OnPropertyChanged();
                     UpdateCamera();
+                    if (CameraTrajectoryActive || CameraAutoRotate) return;
                     SaveLater();
                 }
             }
@@ -604,6 +627,7 @@ namespace AcManager.CustomShowroom {
                     _cameraOrbit = value;
                     OnPropertyChanged();
                     UpdateCamera();
+                    if (CameraTrajectoryActive || CameraAutoRotate) return;
                     SaveLater();
                 }
             }
@@ -618,6 +642,49 @@ namespace AcManager.CustomShowroom {
 
                     if (!_cameraBusy && Renderer != null) {
                         Renderer.AutoRotate = value;
+                    }
+
+                    OnPropertyChanged();
+                    SaveLater();
+                }
+            }
+
+            public string CameraTrajectoryFilename => Path.Combine(Car.Location, @"ui", @"camera_trajectory.json");
+
+            private bool? _cameraTrajectoryAvailable;
+
+            public bool CameraTrajectoryAvailable {
+                get => _cameraTrajectoryAvailable ?? (_cameraTrajectoryAvailable = File.Exists(CameraTrajectoryFilename)).Value;
+                set => Apply(value, ref _cameraTrajectoryAvailable);
+            }
+
+            private DelegateCommand _editTrajectoriesCommand;
+
+            public DelegateCommand EditTrajectoriesCommand => _editTrajectoriesCommand ?? (_editTrajectoriesCommand = new DelegateCommand(() => {
+                if (!File.Exists(CameraTrajectoryFilename)) {
+                    File.WriteAllBytes(CameraTrajectoryFilename, BinaryResources.ShowroomDefaultTrajectories);
+                }
+                WindowsHelper.OpenFile(CameraTrajectoryFilename);
+            }));
+
+            private bool _cameraTrajectoryActive;
+
+            public bool CameraTrajectoryActive {
+                get => _cameraTrajectoryActive;
+                set {
+                    var newValue = value && CameraTrajectoryAvailable;
+                    if (Equals(newValue, _cameraTrajectoryActive)) return;
+                    _cameraTrajectoryActive = newValue;
+
+                    if (!_cameraBusy && Renderer != null) {
+                        if (newValue) {
+                            try {
+                                Renderer.SetCameraTrajectory(File.ReadAllText(CameraTrajectoryFilename));
+                            } catch (Exception e) {
+                                Logging.Error(e);
+                            }
+                        }
+                        Renderer.CameraTrajectoryActive = newValue;
                     }
 
                     OnPropertyChanged();
@@ -725,6 +792,7 @@ namespace AcManager.CustomShowroom {
                     }
 
                     renderer.AutoRotate = CameraAutoRotate;
+                    renderer.CameraTrajectoryActive = CameraTrajectoryActive;
                     renderer.AutoRotateSpeed = (float)CameraAutoRotateSpeed;
                     renderer.AutoAdjustTarget = CameraAutoAdjustTarget;
                 } finally {
@@ -810,6 +878,10 @@ namespace AcManager.CustomShowroom {
 
                     case nameof(Renderer.AutoRotate):
                         CameraAutoRotate = Renderer?.AutoRotate != false;
+                        break;
+
+                    case nameof(Renderer.CameraTrajectoryActive):
+                        CameraTrajectoryActive = Renderer?.CameraTrajectoryActive != false;
                         break;
 
                     case nameof(Renderer.AutoRotateSpeed):
@@ -1064,6 +1136,7 @@ namespace AcManager.CustomShowroom {
 
             public void Dispose() {
                 Renderer = null;
+                Car.ChangedFile -= OnCarChangedFile;
                 DisposeSkinItems();
             }
         }

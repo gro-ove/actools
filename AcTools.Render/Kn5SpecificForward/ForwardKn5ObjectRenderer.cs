@@ -19,6 +19,7 @@ using AcTools.Render.Shaders;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
+using Newtonsoft.Json;
 using SlimDX;
 using SlimDX.DirectWrite;
 using FontStyle = SlimDX.DirectWrite.FontStyle;
@@ -39,6 +40,23 @@ namespace AcTools.Render.Kn5SpecificForward {
                 _autoRotate = value;
                 OnPropertyChanged();
             }
+        }
+
+        private bool _cameraTrajectoryActive;
+
+        public bool CameraTrajectoryActive {
+            get => _cameraTrajectoryActive;
+            set {
+                if (value == _cameraTrajectoryActive) return;
+                _cameraTrajectoryActive = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void SetCameraTrajectory(string data) {
+            _curves = GoodShuffle.Get(JsonConvert.DeserializeObject<CameraMovementCurve[]>(data));
+            _curves.RemoveLimit();
+            _currentCurve = null;
         }
 
         private float _autoRotateSpeed = 1f;
@@ -807,7 +825,97 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
             }
         }
 
-        private float _elapsedCamera;
+        private class CameraClipboardData {
+            public Vector3 Pos, Look;
+            public float Tilt, Fov, Duration, X;
+
+            internal CameraClipboardData() { }
+
+            [JsonConstructor]
+            public CameraClipboardData(float[] pos, float[] look, float tilt, float fov, float duration = 0.0f) {
+                Pos = pos.ToVector3();
+                Look = look.ToVector3();
+                Tilt = tilt;
+                Fov = fov.ToRadians();
+                Duration = duration;
+            }
+        }
+
+        private class CameraMovementCurve {
+            public double Duration;
+            public CameraClipboardData[] Items;
+
+            [JsonConstructor]
+            public CameraMovementCurve(double duration, CameraClipboardData[] items) {
+                Duration = duration;
+                Items = items ?? new CameraClipboardData[0];
+
+                var left = duration;
+                var notSet = 0;
+                foreach (var v in Items) {
+                    if (v.Duration > 0.0f) {
+                        left -= v.Duration;
+                    } else {
+                        notSet++;
+                    }
+                }
+
+                var x = 0.0;
+                foreach (var v in Items) {
+                    if (v.Duration == 0.0f) {
+                        v.Duration = (float)(left / notSet);
+                    }
+
+                    v.X = (float)x;
+                    x += v.Duration;
+                }
+            }
+
+            private CameraClipboardData GetClamped(int i) {
+                return Items[i < 0 ? 0 : i >= Items.Length ? Items.Length - 1 : i];
+            }
+
+            private Vector3 GetTangent(Func<CameraClipboardData, Vector3> data, int k) {
+                return GetTangent(data, GetClamped(k - 1), GetClamped(k + 1));
+            }
+
+            private Vector3 GetTangent(Func<CameraClipboardData, Vector3> data, CameraClipboardData p, CameraClipboardData n) {
+                return (data(n) - data(p)); // / Math.Abs(n.X - p.X);
+                // return (data(n) - data(p)) / Math.Abs(n.X - p.X);
+            }
+
+            private Vector3 InterpolateCubic(Func<CameraClipboardData, Vector3> data, double pos) {
+                var index = pos * (Items.Length - 1);
+                var k = (int)index;
+                var p1 = GetClamped(k);
+                var p2 = GetClamped(k + 1);
+                var t1 = (float)(index - k);
+                var t2 = t1 * t1;
+                var t3 = t1 * t2;
+                return (2 * t3 - 3 * t2 + 1) * data(p1) + (t3 - 2 * t2 + t1) * GetTangent(data, k) +
+                        (-2 * t3 + 3 * t2) * data(p2) + (t3 - t2) * GetTangent(data, k + 1);
+            }
+
+            public CameraClipboardData InterpolateCubic(double pos) {
+                pos = pos.Saturate();
+                var index = pos * (Items.Length - 1);
+                var from = (int)Math.Floor(index);
+                var to = (int)Math.Ceiling(index);
+                var blend = (float)(index - from);
+                var a = Items[from];
+                var b = Items[to];
+                return new CameraClipboardData {
+                    Pos = InterpolateCubic(x => x.Pos, pos),
+                    Look = InterpolateCubic(x => x.Look, pos),
+                    Fov = a.Fov * (1.0f - blend) + b.Fov * blend,
+                    Tilt = a.Tilt * (1.0f - blend) + b.Tilt * blend
+                };
+            }
+        }
+
+        private GoodShuffle<CameraMovementCurve> _curves;
+        private CameraMovementCurve _currentCurve;
+        private double _currentCurveElapsed;
         private float _lastOffset;
 
         protected override void OnTickOverride(float dt) {
@@ -848,15 +956,40 @@ Magick.NET: {(ImageUtils.IsMagickSupported ? "Yes" : "No")}".Trim();
                     cam.SetLens(cam.Aspect);
                 }
 
-                _elapsedCamera = 0f;
+                _currentCurve = null;
                 IsDirty = true;
             } else {
                 _lastOffset = float.MaxValue;
-                if (AutoRotate && CameraOrbit != null) {
-                    CameraOrbit.Alpha -= dt * AutoRotateSpeed * 0.29f;
-                    // CameraOrbit.Beta += ((_elapsedCamera * 0.39f).Sin() * 0.2f + 0.15f - CameraOrbit.Beta) / 10f;
-                    _elapsedCamera += dt * AutoRotateSpeed;
 
+                if (CameraTrajectoryActive) {
+                    if (_curves != null) {
+                        if (_currentCurve == null || dt >= _currentCurveElapsed) {
+                            _currentCurve = _curves.Next;
+                            _currentCurveElapsed = _currentCurve.Duration;
+                        }
+
+                        var data = _currentCurve?.InterpolateCubic(1.0 - _currentCurveElapsed / _currentCurve.Duration);
+                        if (data != null) {
+                            UseFpsCamera = true;
+                            AutoRotate = false;
+                            if (!(Camera is FpsCamera)) {
+                                Camera = new FpsCamera(data.Fov);
+                            } else {
+                                Camera.FovY = data.Fov;
+                            }
+
+                            Camera.LookAt(data.Pos, data.Look, data.Tilt);
+                            Camera.SetLens(AspectRatio);
+                            PrepareCamera(Camera);
+                            IsDirty = true;
+                        }
+
+                        _currentCurveElapsed -= dt;
+                    } else {
+                        CameraTrajectoryActive = false;
+                    }
+                } else if (AutoRotate && CameraOrbit != null) {
+                    CameraOrbit.Alpha -= dt * AutoRotateSpeed * 0.29f;
                     IsDirty = true;
                 }
             }

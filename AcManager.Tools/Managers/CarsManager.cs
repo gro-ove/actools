@@ -57,6 +57,7 @@ namespace AcManager.Tools.Managers {
             @"ui\upgrade.png",
             @"ui\ui_car.json",
             @"ui\cm_paintshop.json",
+            @"ui\camera_trajectory.json",
         };
 
         private static readonly string[] WatchedSkinFileNames = {

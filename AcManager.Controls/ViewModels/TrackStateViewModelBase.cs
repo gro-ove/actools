@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
@@ -141,7 +142,11 @@ namespace AcManager.Controls.ViewModels {
         }
 
         public byte[] ToBytes() {
-            return Encoding.UTF8.GetBytes(Saveable.ToSerializedString() ?? "");
+            try {
+                return Encoding.UTF8.GetBytes(Saveable.ToSerializedString() ?? @"{}");
+            } catch (Exception e) {
+                return Encoding.UTF8.GetBytes(@"{}");
+            }
         }
 
         public Game.TrackProperties ToProperties() {

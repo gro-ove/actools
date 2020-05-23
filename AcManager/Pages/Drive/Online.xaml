@@ -247,7 +247,7 @@
                     </mui:BooleanSwitch>
 
                     <TextBlock Foreground="{DynamicResource WindowTextReadOnly}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
-                        Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}{0} server'}">
+                        Text="{Binding MainList.Count, Mode=OneWay, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.Online_ServersFormat}}">
                       <TextBlock.ToolTip>
                         <TextBlock>
                           <TextBlock.Text>

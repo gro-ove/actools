@@ -346,9 +346,16 @@
                   <Label Content="Orbit camera" />
                 </CheckBox>
 
-                <CheckBox IsChecked="{Binding CameraAutoRotate}">
+                <CheckBox IsChecked="{Binding CameraAutoRotate}" IsEnabled="{Binding CameraOrbit}">
                   <Label Content="Auto-rotate" />
                 </CheckBox>
+
+                <DockPanel>
+                  <Button Command="{Binding EditTrajectoriesCommand}" Content="Edit" DockPanel.Dock="Right" Margin="4 0 0 0" Padding="4 0" />
+                  <CheckBox IsChecked="{Binding CameraTrajectoryActive}" IsEnabled="{Binding CameraTrajectoryAvailable}">
+                    <Label Content="Follow trajectory" />
+                  </CheckBox>
+                </DockPanel>
 
                 <DockPanel IsEnabled="{Binding CameraAutoRotate}">
                   <mui:ValueLabel Value="{Binding CameraAutoRotateSpeed, Converter={StaticResource PercentageConverter}, ConverterParameter=1}"

@@ -94,7 +94,7 @@ namespace AcManager.Tools.GameProperties {
 
                         try {
                             await Task.Delay(timeout, token);
-                        } catch (Exception e) when (e.IsCancelled()) {}
+                        } catch (Exception e) when (e.IsCancelled()) { }
 
                         _keptAlive += s.Elapsed;
 
@@ -191,35 +191,45 @@ namespace AcManager.Tools.GameProperties {
         }
 
         private bool NonCmInstanceRunned() {
-            var name = Path.GetFileNameWithoutExtension(SettingsHolder.Drive.RhmLocation);
-            return Process.GetProcessesByName(name).Any(x => x.Id != _process?.Id);
+            try {
+                var name = Path.GetFileNameWithoutExtension(SettingsHolder.Drive.RhmLocation);
+                return Process.GetProcessesByName(name).Any(x => x.Id != _process?.Id);
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return false;
+            }
         }
 
         private async Task<bool> RunRhmAsync(bool keepVisible = false) {
-            if (SettingsHolder.Drive.RhmLocation == null) return false;
-
             try {
-                _process = Process.Start(new ProcessStartInfo {
-                    FileName = SettingsHolder.Drive.RhmLocation,
-                    WorkingDirectory = Path.GetDirectoryName(SettingsHolder.Drive.RhmLocation) ?? ""
-                });
-                if (_process == null) throw new Exception(@"Process=NULL");
+                if (SettingsHolder.Drive.RhmLocation == null) return false;
+
+                try {
+                    _process = Process.Start(new ProcessStartInfo {
+                        FileName = SettingsHolder.Drive.RhmLocation,
+                        WorkingDirectory = Path.GetDirectoryName(SettingsHolder.Drive.RhmLocation) ?? ""
+                    });
+                    if (_process == null) throw new Exception(@"Process=NULL");
+                } catch (Exception e) {
+                    NonfatalError.Notify(ToolsStrings.RhmService_CannotStart, e);
+                    return false;
+                }
+
+                ChildProcessTracker.AddProcess(_process);
+                if (keepVisible) return true;
+
+                for (var i = 0; i < 100; i++) {
+                    if (SetVisibility(false)) return true;
+                    await Task.Delay(50);
+                }
+
+                NonfatalError.Notify("Can’t find app’s window");
+                EnsureStopped();
+                return false;
             } catch (Exception e) {
-                NonfatalError.Notify(ToolsStrings.RhmService_CannotStart, e);
+                Logging.Warning(e);
                 return false;
             }
-
-            ChildProcessTracker.AddProcess(_process);
-            if (keepVisible) return true;
-
-            for (var i = 0; i < 100; i++) {
-                if (SetVisibility(false)) return true;
-                await Task.Delay(50);
-            }
-
-            NonfatalError.Notify("Can’t find app’s window");
-            EnsureStopped();
-            return false;
         }
 
         private async Task<bool> EnsureRunnedAsync(bool keepVisible = false) {

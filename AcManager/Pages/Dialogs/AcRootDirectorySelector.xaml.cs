@@ -13,6 +13,7 @@ using AcManager.Internal;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
+using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Starters;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -25,6 +26,8 @@ using JetBrains.Annotations;
 
 namespace AcManager.Pages.Dialogs {
     public partial class AcRootDirectorySelector {
+        public static bool OptionUseCustomSteamIdApproach = false;
+
         private const string WizardVersion = "2";
         private const string KeyWizardVersion = "_wizardVersion";
 
@@ -191,18 +194,21 @@ namespace AcManager.Pages.Dialogs {
                 }
             }));
 
-            private DelegateCommand _getSteamIdCommand;
+            private AsyncCommand _getSteamIdCommand;
 
-            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new DelegateCommand(() => {
+            public ICommand GetSteamIdCommand => _getSteamIdCommand ?? (_getSteamIdCommand = new AsyncCommand(async () => {
                 var acRoot = IsValueAcceptable ? Value : AcRootDirectory.Instance.Value;
                 if (acRoot == null) return;
 
-                if (Keyboard.Modifiers == ModifierKeys.Alt) {
+                if (Keyboard.Modifiers == (ModifierKeys.Alt | ModifierKeys.Shift)) {
                     var id = Prompt.Show("Enter new Steam ID:", "Change Steam ID", SteamIdHelper.Instance.Value);
                     if (id != null) {
                         SetSteamId(id);
                     }
-                } else if (ShowMessage(
+                    return;
+                }
+
+                if (OptionUseCustomSteamIdApproach && ShowMessage(
                         "Your Steam ID is not in the list? In that case, Content Manager would need to replace official launcher. There are other benefits to this as well: races will launch faster and more reliably, Content Manager will be able to check challenges progress more directly, it would get Steam overlay. Or, you could always get the original launcher back by simply renaming “AssettoCorsa_original.exe” back to “AssettoCorsa.exe”.[br][br]So, replace it now?",
                         "Fix Steam ID", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
                     try {
@@ -221,9 +227,10 @@ namespace AcManager.Pages.Dialogs {
                     } catch (Exception e) {
                         NonfatalError.Notify("Failed to move Content Manager executable", "I’m afraid you’ll have to do it manually.", e);
                     }
+                    return;
                 }
 
-                /*using (_cancellationTokenSource = new CancellationTokenSource()) {
+                using (_cancellationTokenSource = new CancellationTokenSource()) {
                     try {
                         var packed = await OAuth.GetCode("Steam", $"{InternalUtils.MainApiDomain}/u/steam?s={AdditionalSalt}", null,
                                 @"CM Steam ID Helper: (\w+)", description: "Enter the authentication code:", title: "Steam (via acstuff.ru)");
@@ -234,7 +241,7 @@ namespace AcManager.Pages.Dialogs {
                         NonfatalError.Notify("Can’t get Steam ID", e);
                     }
                 }
-                _cancellationTokenSource = null;*/
+                _cancellationTokenSource = null;
             }, () => IsValueAcceptable ? Value != null : AcRootDirectory.Instance.Value != null));
 
             private DelegateCommand _applyCommand;

@@ -650,7 +650,7 @@ namespace AcManager.CustomShowroom {
         private void OnCameraMoved(object sender, EventArgs e) {
             if (CameraIgnoreNext) {
                 CameraIgnoreNext = false;
-            } else if (!Renderer.ShotInProcess) {
+            } else if (!Renderer.ShotInProcess && !Renderer.AutoRotate && !Renderer.CameraTrajectoryActive) {
                 if (LockCamera) {
                     PushCamera();
                 } else {

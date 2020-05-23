@@ -36,7 +36,6 @@ namespace AcManager.CustomShowroom {
                 Renderer?.DisposePaintShop();
                 FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update -= OnPaintShopDataChanged;
                 FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update -= OnLicensePlatesChanged;
-                Car.ChangedFile -= OnCarChangedFile;
                 SkinItems = null;
             }
 
@@ -111,7 +110,6 @@ namespace AcManager.CustomShowroom {
                             UpdateLicensePlatesStyles();
                             FilesStorage.Instance.Watcher(ContentCategory.PaintShop).Update += OnPaintShopDataChanged;
                             FilesStorage.Instance.Watcher(ContentCategory.LicensePlates).Update += OnLicensePlatesChanged;
-                            Car.ChangedFile += OnCarChangedFile;
                             SkinFlagCountry = SettingsHolder.Drive.PlayerNationality;
                         }
 
@@ -119,15 +117,6 @@ namespace AcManager.CustomShowroom {
                         SkinNumber = Skin.SkinNumber.As(1);
                         SaveAsSkinIdSuggested = Path.GetFileName(FileUtils.EnsureUnique(Path.Combine(Car.SkinsDirectory, "generated")));
                     }));
-
-            private void OnCarChangedFile(object sender, AcObjectFileChangedArgs args) {
-                var paintShopFile = Path.Combine(Car.Location, @"ui", @"cm_paintshop.json");
-                var paintShopDirectory = Path.Combine(Car.Location, @"ui", @"cm_paintshop");
-                if (FileUtils.IsAffectedBy(paintShopFile, args.Filename)
-                        || FileUtils.IsAffectedBy(paintShopDirectory, args.Filename)) {
-                    OnPaintShopDataChanged(sender, args);
-                }
-            }
 
             private IList<PaintableItem> _skinItems;
 
@@ -512,6 +501,7 @@ namespace AcManager.CustomShowroom {
             }
 
             private void OnPaintShopDataChanged(object sender, EventArgs e) {
+                if (SkinItems == null) return;
                 UpdatePaintShopData();
             }
 

@@ -111,7 +111,8 @@ namespace AcManager.Pages.Settings {
             "AcSettingsControls_Wheel_Main",
             "AcSettingsDamageDisplayer",
             "AcSettingsPage",
-            "AcSettingsPython",
+            "AcSettingsChaseCamera",
+            // "AcSettingsPython",
             "PresetsPerMode",
         };
 

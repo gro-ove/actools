@@ -118,6 +118,16 @@ namespace AcManager.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] ShowroomDefaultTrajectories {
+            get {
+                object obj = ResourceManager.GetObject("ShowroomDefaultTrajectories", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ShowroomPanoramaTemplate {
             get {
                 object obj = ResourceManager.GetObject("ShowroomPanoramaTemplate", resourceCulture);
