@@ -11,7 +11,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.ContentRepair")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -33,11 +33,12 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.1419")]
-[assembly: AssemblyFileVersion("1.0.1.1419")]
+[assembly: AssemblyVersion("1.0.1.1426")]
+[assembly: AssemblyFileVersion("1.0.1.1426")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/tools", "AcManager.ContentRepair")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app/tools", "t")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 18/02/23 03:34:57
+// Modified at: 19/03/29 20:02:16
+// Modified at: 3/10/2020 8:09:13 PM

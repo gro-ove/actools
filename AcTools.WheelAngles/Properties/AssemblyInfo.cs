@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.WheelAngles")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.0.85")]
-[assembly: AssemblyFileVersion("1.0.0.85")]
-// Modified at: 18/03/30 22:04:45
+[assembly: AssemblyVersion("1.0.0.105")]
+[assembly: AssemblyFileVersion("1.0.0.105")]
+// Modified at: 19/01/11 20:05:55
+// Modified at: 3/8/2020 3:47:46 PM

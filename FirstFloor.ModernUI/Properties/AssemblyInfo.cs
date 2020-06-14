@@ -4,6 +4,8 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Resources;
 using System;
+
+// ReSharper disable once RedundantUsingDirective
 using System.Runtime.CompilerServices;
 
 // General Information about an assembly is controlled through the following

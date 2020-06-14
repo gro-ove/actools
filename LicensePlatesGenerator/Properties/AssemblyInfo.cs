@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("License Plates Generator")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,6 +31,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.4.31")]
-[assembly: AssemblyFileVersion("1.0.4.31")]
-// Modified at: 17/12/03 00:25:04
+[assembly: AssemblyVersion("1.0.4.34")]
+[assembly: AssemblyFileVersion("1.0.4.34")]
+// Modified at: 18/05/22 22:58:47
+// Modified at: 3/9/2020 12:04:19 AM

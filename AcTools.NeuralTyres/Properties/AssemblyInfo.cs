@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcTools.NeuralTyres")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -35,8 +35,9 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("1.0.0.119")]
-[assembly: AssemblyFileVersion("1.0.0.119")]
+[assembly: AssemblyVersion("1.0.0.124")]
+[assembly: AssemblyFileVersion("1.0.0.124")]
 
 [assembly: InternalsVisibleTo("AcTools.NeuralTyres.Tests")]
-// Modified at: 18/02/15 02:05:28
+// Modified at: 18/05/22 22:56:25
+// Modified at: 5/22/2018 10:56:25 PM

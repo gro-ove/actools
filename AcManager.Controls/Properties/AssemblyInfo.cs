@@ -12,7 +12,7 @@ using System.Windows.Markup;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("AcClub")]
 [assembly: AssemblyProduct("AcManager.Controls")]
-[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2018")]
+[assembly: AssemblyCopyright("Copyright © AcClub, 2015-2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -50,8 +50,8 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.13622")]
-[assembly: AssemblyFileVersion("1.0.1.13622")]
+[assembly: AssemblyVersion("1.0.1.15446")]
+[assembly: AssemblyFileVersion("1.0.1.15446")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/controls", "AcManager.Controls.Converters")]
@@ -68,3 +68,4 @@ using System.Windows.Markup;
 
 [assembly: NeutralResourcesLanguage("en-US")]
 // Modified at: 18/04/09 20:14:01
+// Modified at: 6/14/2020 11:00:42 PM
