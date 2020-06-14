@@ -7,16 +7,16 @@ using SystemHalf;
 using JetBrains.Annotations;
 
 namespace AcTools {
-    /// <summary>
-    /// Optimized version of BinaryReader — reads stuff to internal buffer, caches everything,
-    /// works in ACSII encoding (todo: fix), has minified amount of different checks. Also, has
-    /// some additional methods for skipping and seeking, which, if possible, won’t call Seek()
-    /// of underlying Stream at all and would only change cursor in cached data instead.
-    ///
-    /// Mostly, was made for Kunos binary files.
-    /// </summary>
+    /// <inheritdoc />
+    ///  <summary>
+    ///  Optimized version of BinaryReader — reads stuff to internal buffer, caches everything,
+    ///  works in ACSII encoding (todo: fix), has minified amount of different checks. Also, has
+    ///  some additional methods for skipping and seeking, which, if possible, won't call Seek()
+    ///  of underlying Stream at all and would only change cursor in cached data instead.
+    ///  Mostly, was made for Kunos binary files.
+    ///  </summary>
     public class ReadAheadBinaryReader : IDisposable {
-        public static readonly bool IsLittleEndian = true;
+        protected const bool IsLittleEndian = true;
 
         private readonly Stream _stream;
         private readonly byte[] _buffer;
@@ -37,7 +37,7 @@ namespace AcTools {
                 _parent = parent;
             }
 
-            public override void Flush() {}
+            public override void Flush() { }
 
             public override long Seek(long offset, SeekOrigin origin) {
                 return _parent.Seek(offset, origin);
@@ -167,19 +167,21 @@ namespace AcTools {
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private void Require(int count) {
-            if (_left < count) {
-                if (_left > 0) {
-                    Array.Copy(_buffer, _total - _left, _buffer, 0, _left);
-                }
-
-                if (_left < 0) _left = 0;
-
-                var leftToFill = _buffer.Length - _left;
-                _left += _stream.Read(_buffer, _left, leftToFill);
-                _total = _left;
-
-                if (_left < count) throw new EndOfStreamException("Unexpected end");
+            if (_left >= count) {
+                return;
             }
+
+            if (_left > 0) {
+                Array.Copy(_buffer, _total - _left, _buffer, 0, _left);
+            }
+
+            if (_left < 0) _left = 0;
+
+            var leftToFill = _buffer.Length - _left;
+            _left += _stream.Read(_buffer, _left, leftToFill);
+            _total = _left;
+
+            if (_left < count) throw new EndOfStreamException("Unexpected end");
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -244,12 +246,12 @@ namespace AcTools {
             fixed (byte* numPtr = &value[startIndex]) {
                 if (startIndex % 8 == 0) return *(long*)numPtr;
                 if (BitConverter.IsLittleEndian) {
-                    return (uint)(*numPtr | numPtr[1] << 8 | numPtr[2] << 16 | numPtr[3] << 24) |
-                            (long)(numPtr[4] | numPtr[5] << 8 | numPtr[6] << 16 | numPtr[7] << 24) << 32;
+                    return (uint)(*numPtr | (numPtr[1] << 8) | (numPtr[2] << 16) | (numPtr[3] << 24)) |
+                            ((long)(numPtr[4] | (numPtr[5] << 8) | (numPtr[6] << 16) | (numPtr[7] << 24)) << 32);
                 }
 
-                int num = *numPtr << 24 | numPtr[1] << 16 | numPtr[2] << 8 | numPtr[3];
-                return (uint)(numPtr[4] << 24 | numPtr[5] << 16 | numPtr[6] << 8) | numPtr[7] | (long)num << 32;
+                int num = (*numPtr << 24) | (numPtr[1] << 16) | (numPtr[2] << 8) | numPtr[3];
+                return (uint)((numPtr[4] << 24) | (numPtr[5] << 16) | (numPtr[6] << 8)) | numPtr[7] | ((long)num << 32);
             }
         }
 
@@ -555,8 +557,8 @@ namespace AcTools {
         }
 
         public long Position {
-            get { return BaseStream.Position; }
-            set { BaseStream.Position = value; }
+            get => BaseStream.Position;
+            set => BaseStream.Position = value;
         }
     }
 }

@@ -15,12 +15,12 @@ namespace CustomTracksBakery {
         private readonly Kn5Material _kn5Material;
 
         private EffectBakeryShaders _effect;
-        private bool _multilayer;
+        private readonly bool _multilayer;
         private bool _init;
 
-        private float _propDiffuse;
-        private float _propMagicMult;
-        private Vector4 _propMultilayerMult;
+        private readonly float _propDiffuse;
+        private readonly float _propMagicMult;
+        private readonly Vector4 _propMultilayerMult;
 
         internal Kn5MaterialToBake([CanBeNull] Kn5Material kn5Material) {
             _kn5Material = kn5Material;
