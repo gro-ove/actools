@@ -236,6 +236,10 @@ namespace AcTools.Utils {
                 }
             }
 
+            if (count == 0) {
+                return Color.Transparent;
+            }
+
             return Color.FromArgb(
                     (average[0] / count).ClampToByte(),
                     (average[1] / count).ClampToByte(),

@@ -227,7 +227,7 @@ namespace AcManager.Pages.Dialogs {
         [CanBeNull]
         public static CarObject Show([CanBeNull] CarObject car, [CanBeNull] ref CarSkinObject carSkin) {
             var dialog = new SelectCarDialog(car ?? CarsManager.Instance.GetDefault()) {
-                SelectedSkin = car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
+                SelectedSkin = carSkin != null && car?.EnabledSkinsListView.Contains(carSkin) == true ? carSkin : car?.SelectedSkin
             };
 
             dialog.ShowDialog();

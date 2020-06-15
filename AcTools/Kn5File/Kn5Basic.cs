@@ -50,7 +50,7 @@ namespace AcTools.Kn5File {
         }
 
         [CanBeNull]
-        public Kn5Node GetNode([NotNull] string path) {
+        public Kn5Node GetNode(string path) {
             var pieces = path.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries);
             var node = RootNode;
 
@@ -77,7 +77,6 @@ namespace AcTools.Kn5File {
             return null;
         }
 
-        [CanBeNull]
         public string GetObjectPath([NotNull] Kn5Node node) {
             return GetObjectPath(RootNode, node);
         }

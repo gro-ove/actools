@@ -38,13 +38,11 @@ namespace AcTools.Utils.Helpers {
             }
         }
 
-        [NotNull]
         public static void WriteBytes([NotNull] this Stream s, byte[] data) {
             if (s == null) throw new ArgumentNullException(nameof(s));
             s.Write(data, 0, data.Length);
         }
 
-        [NotNull]
         public static void WriteBytesAndDispose([NotNull] this Stream s, byte[] data) {
             using (s) {
                 WriteBytes(s, data);

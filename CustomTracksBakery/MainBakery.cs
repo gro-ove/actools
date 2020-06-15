@@ -299,7 +299,7 @@ namespace CustomTracksBakery {
         private static StoreMode _setStoreMode;
 
         public int RenderNode(Vector3 pos, Vector3 look, DeviceContextHolder h, float distanceThreshold, EffectBakeryShaders effect) {
-            if ((Kn5MaterialToBake.SecondPass || Kn5MaterialToBake.GrassPass) && (Mode != _setStoreMode)) {
+            if ((Kn5MaterialToBake.SecondPass || Kn5MaterialToBake.GrassPass) && Mode != _setStoreMode) {
                 effect.FxSecondPassMode.Set((float)Mode);
                 _setStoreMode = Mode;
             }
@@ -1368,7 +1368,7 @@ namespace CustomTracksBakery {
                     + $"progress: {100d * _progressBaked / _progressTotal:F1}%; ETA: {leftSeconds.ToReadableTime()}; {counter} draw calls)");
         }
 
-        void ProcessQueue() {
+        private void ProcessQueue() {
             var processAtOnce = Math.Min(100, QueueSize);
             if (_extractQueue.Count > QueueSize + processAtOnce) {
                 for (var j = 0; j < processAtOnce; j++) {
@@ -1378,7 +1378,7 @@ namespace CustomTracksBakery {
             }
         }
 
-        void FinalizeAll() {
+        private void FinalizeAll() {
             for (var j = 0; j < _extractQueue.Count; j++) {
                 Finalize(_extractQueue[j]);
             }
@@ -1386,7 +1386,7 @@ namespace CustomTracksBakery {
             _extractQueue.Clear();
         }
 
-        void Finalize(ExtractTexture t) {
+        private void Finalize(ExtractTexture t) {
             /*if (t.VertexId % 20 == 0) {
                 var yVal = obj.Vertices[groups[t.VertexId].Indices[0]].Position.Y;
                 Resource.SaveTextureToFile(Device.ImmediateContext, t.Texture, ImageFileFormat.Dds,

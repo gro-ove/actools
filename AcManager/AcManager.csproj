@@ -62,9 +62,6 @@
     <ManifestKeyFile>
     </ManifestKeyFile>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\Output\x86\Debug\</OutputPath>

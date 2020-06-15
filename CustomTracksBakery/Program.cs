@@ -369,7 +369,7 @@ namespace CustomTracksBakery {
                     SpecialGrassAmbient = !options.NoSpecialGrassAmbient,
                     SurfacesFilter = options.Surfaces,
                     SurfacesAoOpacity = options.SurfacesAoOpacity,
-                    SetMiltiplierForSkipped = options.SetMiltiplierForSkipped,
+                    SetMiltiplierForSkipped = options.SetMiltiplierForSkipped
                 }) {
                     if (!string.IsNullOrWhiteSpace(options.DebugPos)) {
                         bakery.DebugMode = true;

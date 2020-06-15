@@ -70,7 +70,7 @@ namespace AcManager.Pages.AcSettings {
         }
 
         private ViewModel Model => (ViewModel)DataContext;
-        private bool _ignore;
+        // private bool _ignore;
 
         public void Initialize() {
             DataContext = new ViewModel();

@@ -624,6 +624,9 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
                 // Regular loading
                 using (var stream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    if (stream.Length > 40 * 1024 * 1024) {
+                        throw new Exception($"Image “{filename}” is way too big to display: {stream.Length.ToReadableSize()}");
+                    }
                     var result = new byte[stream.Length];
                     await stream.ReadAsync(result, 0, result.Length, cancellation).ConfigureAwait(false);
                     return await ConvertSpecialAsync(result).ConfigureAwait(false);
@@ -1039,24 +1042,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             return false;
         }
 
-        private async void ReloadImageAsync() {
-            var loading = ++_loading;
-            _broken = false;
-
-            var filename = Filename;
-
-            if (OptionAdditionalDelay > TimeSpan.Zero) {
-                await Task.Delay(OptionAdditionalDelay);
-                if (loading != _loading || Filename != filename) return;
-            }
-
-            byte[] data;
-            if (OptionReadFileSync) {
-                data = ReadBytes(filename);
-            } else {
-                data = await ReadBytesAsync(filename);
-                if (loading != _loading || Filename != filename) return;
-            }
+        private void ApplyReloadImage(string filename, int loading, byte[] data) {
+            if (loading != _loading || Filename != filename) return;
 
             if (data == null) {
                 SetCurrent(Image.Empty);
@@ -1090,6 +1077,27 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 });
             } else {
                 SetCurrent(LoadBitmapSourceFromBytes(data, decodeWidth, decodeHeight, sourceDebug: filename));
+            }
+        }
+
+        private async void ReloadImageAsync() {
+            var loading = ++_loading;
+            _broken = false;
+
+            var filename = Filename;
+
+            if (OptionAdditionalDelay > TimeSpan.Zero) {
+                await Task.Delay(OptionAdditionalDelay);
+                if (loading != _loading || Filename != filename) return;
+            }
+
+            if (OptionReadFileSync) {
+                ApplyReloadImage(filename, loading, ReadBytes(filename));
+            } else {
+                ApplyReloadImage(filename, loading, await ReadBytesAsync(filename));
+                /*ThreadPool.Run(() => {
+                    ApplyReloadImage(filename, loading, ReadBytes(filename));
+                });*/
             }
         }
 

@@ -281,7 +281,7 @@ namespace AcTools.Utils.Helpers {
             IEnumerable<Piece> GetPiece(string part) {
                 var n = part.IndexOfAny(new[] { '-', '…', '—', '–' });
                 if (n == 0) {
-                    var m = part.IndexOfAny(new[] { '-', '…', '—', '–' }, n + 1);
+                    var m = part.IndexOfAny(new[] { '-', '…', '—', '–' }, 1);
                     if (m != -1 && m != 1) {
                         n = m;
                     }
