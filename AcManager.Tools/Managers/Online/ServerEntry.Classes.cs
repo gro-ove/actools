@@ -113,7 +113,7 @@ namespace AcManager.Tools.Managers.Online {
                 CarWrapper = carWrapper;
             }
 
-            public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) {}
+            public CarEntry(string carId) : this(carId, CarsManager.Instance.GetWrapperById(carId)) { }
 
             public bool UpdateCarObject() {
                 var co = CarsManager.Instance.GetWrapperById(Id);
@@ -130,7 +130,7 @@ namespace AcManager.Tools.Managers.Online {
             [CanBeNull]
             public string AvailableSkinId {
                 get => _availableSkinId;
-                set {
+                private set {
                     if (Equals(value, _availableSkinId)) return;
                     _availableSkinId = value;
                     _availableSkinSet = false;
@@ -141,6 +141,24 @@ namespace AcManager.Tools.Managers.Online {
                     if (Total == 0 && value != null && CarObject != null) {
                         CarObject.SelectedSkin = AvailableSkin;
                     }
+                }
+            }
+
+            private ServerDriverCspOptions _cspOptions;
+
+            public ServerDriverCspOptions CspOptions {
+                get => _cspOptions;
+                set => Apply(value, ref _cspOptions);
+            }
+
+            public void SetAvailableSkinId(string skinId, string cspParams) {
+                AvailableSkinId = skinId;
+
+                if (string.IsNullOrWhiteSpace(cspParams)) {
+                    CspOptions = null;
+                } else {
+                    CspOptions = new ServerDriverCspOptions();
+                    CspOptions.LoadPacked(cspParams);
                 }
             }
 
@@ -215,17 +233,20 @@ namespace AcManager.Tools.Managers.Online {
 
             public string CarId { get; }
 
+            public string CspParams { get; }
+
             public string CarSkinId { get; }
 
             public bool IsConnected { get; }
 
             public bool IsBookedForPlayer { get; }
 
-            public CurrentDriver(ServerActualCarInformation x) {
+            public CurrentDriver(ServerActualCarInformation x, bool allowCspParams) {
                 Name = x.DriverName;
                 Team = x.DriverTeam;
                 CarId = x.CarId;
                 CarSkinId = x.CarSkinId;
+                CspParams = x.CspParams;
                 IsConnected = x.IsConnected;
                 IsBookedForPlayer = x.IsRequestedGuid;
 
@@ -341,10 +362,13 @@ namespace AcManager.Tools.Managers.Online {
 
             private DelegateCommand<string> _removeTagCommand;
 
-            public DelegateCommand<string> RemoveTagCommand => _removeTagCommand ?? (_removeTagCommand = new DelegateCommand<string>(s => {
-                Tags = Tags.Where(x => x.Id != s).ToArray();
-            }));
+            public DelegateCommand<string> RemoveTagCommand
+                => _removeTagCommand ?? (_removeTagCommand = new DelegateCommand<string>(s => { Tags = Tags.Where(x => x.Id != s).ToArray(); }));
             #endregion
+
+            public bool SameAs(ServerActualCarInformation x) {
+                return Name == x.DriverName && Team == x.DriverTeam && CarId == x.CarId && CarSkinId == x.CarSkinId && CspParams == x.CspParams;
+            }
         }
 
         public class DriverTag : NotifyPropertyChanged, IWithId {
@@ -494,10 +518,10 @@ namespace AcManager.Tools.Managers.Online {
 
             public static IEnumerable<string> GetNames(string tagId) {
                 return from key in TagsStorage.Keys
-                       where key.StartsWith(KeyTagsPrefix) && TagsStorage.GetStringList(key).Contains(tagId)
-                       select key.Substring(KeyTagsPrefix.Length)
-                       into converted
-                       select TagsStorage.Get(KeyOriginalNamePrefix + converted, converted);
+                    where key.StartsWith(KeyTagsPrefix) && TagsStorage.GetStringList(key).Contains(tagId)
+                    select key.Substring(KeyTagsPrefix.Length)
+                    into converted
+                    select TagsStorage.Get(KeyOriginalNamePrefix + converted, converted);
             }
 
             public static void SetNames(string tagId, IEnumerable<string> names) {
@@ -585,4 +609,3 @@ namespace AcManager.Tools.Managers.Online {
         public static readonly HasAnyFriendsHolder HasAnyFriends = new HasAnyFriendsHolder();
     }
 }
-

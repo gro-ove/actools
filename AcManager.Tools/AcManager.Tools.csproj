@@ -614,6 +614,7 @@
     <Compile Include="Objects\PythonAppReferencedValue.cs" />
     <Compile Include="Objects\PythonAppWindow.cs" />
     <Compile Include="Objects\RemoteCarSetupObject.cs" />
+    <Compile Include="Objects\ServerDriverCspOptions.cs" />
     <Compile Include="Objects\ServerPresetDetailsMode.cs" />
     <Compile Include="Objects\ServerPresetObject.Ftp.cs" />
     <Compile Include="Objects\ServerPresetObject.LegalTyres.cs" />

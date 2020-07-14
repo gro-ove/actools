@@ -194,5 +194,20 @@ namespace AcManager.Pages.ServerPreset {
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        private void CspTweaksResetAllClick(object sender, RoutedEventArgs e) {
+            foreach (var entry in Model.SelectedObject.DriverEntries) {
+                entry.CspOptions.ResetCommand.Execute();
+            }
+        }
+
+        private void CspTweaksCopyToOtherCarsClick(object sender, RoutedEventArgs e) {
+            string result = null;
+            if (((sender as FrameworkElement)?.DataContext as ServerPresetDriverEntry)?.CspOptions?.Pack(out result) == true) {
+                foreach (var entry in Model.SelectedObject.DriverEntries) {
+                    entry.CspOptions.LoadPacked(result);
+                }
+            }
+        }
     }
 }

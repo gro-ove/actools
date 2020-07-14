@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
     public class PythonAppConfigs : ObservableCollection<PythonAppConfig>, IDisposable {
-        public event EventHandler ValueChanged;
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         [NotNull]
         public PythonAppConfigParams ConfigParams { get; }
@@ -64,9 +64,9 @@ namespace AcManager.Tools.Objects {
             return result;
         }
 
-        private void OnValueChanged(object sender, EventArgs e) {
+        private void OnValueChanged(object sender, ValueChangedEventArgs e) {
             UpdateReferenced();
-            ValueChanged?.Invoke(this, EventArgs.Empty);
+            ValueChanged?.Invoke(this, e);
         }
 
         private void UpdateReferenced() {

@@ -43,6 +43,7 @@ namespace AcManager.Tools.Objects {
 
         public class PackedEntry : IDisposable {
             public readonly string Key;
+            public bool IsExecutable { get; }
 
             private string _filename;
             private bool _temporaryFilename;
@@ -52,6 +53,8 @@ namespace AcManager.Tools.Objects {
                 Key = key;
                 _filename = filename;
                 _content = content;
+
+                IsExecutable = Path.GetExtension(key) != @".ini" && Path.GetExtension(key) != @".acd";
             }
 
             [CanBeNull]
@@ -90,6 +93,18 @@ namespace AcManager.Tools.Objects {
                     _filename = null;
                 }
             }
+        }
+
+        private bool TrackPreprocess(string filename, out string pathPrefix, out string newContent) {
+            if (CspRequiredActual && string.Equals(Path.GetFileName(filename), @"surfaces.ini", StringComparison.OrdinalIgnoreCase)) {
+                pathPrefix = "csp";
+                newContent = File.ReadAllText(filename).Replace("[SURFACE_0]", "[CSPFACE_0]");
+                return true;
+            }
+
+            pathPrefix = null;
+            newContent = null;
+            return false;
         }
 
         [ItemCanBeNull]
@@ -219,7 +234,8 @@ namespace AcManager.Tools.Objects {
 
             // Entry list
             var entryList = EntryListIniObject?.Clone() ?? new IniFile();
-            entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+            entryList.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section,
+                    CspRequiredActual));
             result.Add(PackedEntry.FromContent("cfg/entry_list.ini", entryList.Stringify()));
 
             // Cars
@@ -236,13 +252,24 @@ namespace AcManager.Tools.Objects {
             var localPath = TrackLayoutId != null ? Path.Combine(TrackId, TrackLayoutId) : TrackId;
             foreach (var file in TrackDataToKeep) {
                 var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file);
-                if (File.Exists(actualData)) {
+                if (!File.Exists(actualData)) continue;
+                if (TrackPreprocess(actualData, out var pathPrefix, out var newContent)) {
+                    result.Add(PackedEntry.FromContent(Path.Combine(@"content", @"tracks", pathPrefix, localPath, @"data", file), newContent));
+                } else {
                     result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", localPath, @"data", file), actualData));
                 }
             }
 
+            {
+                var modelsFileName = TrackLayoutId == null ? @"models.ini" : $@"models_{TrackLayoutId}.ini";
+                var actualData = Path.Combine(AcPaths.GetTracksDirectory(root), TrackId, modelsFileName);
+                if (File.Exists(actualData)) {
+                    result.Add(PackedEntry.FromFile(Path.Combine(@"content", @"tracks", TrackId, modelsFileName), actualData));
+                }
+            }
+
             // System
-            var systemSurfaces = Path.Combine(ServerPresetsManager.ServerDirectory, "system", "data", "surfaces.ini");
+            var systemSurfaces = Path.Combine(ServerPresetsManager.ServerDirectory, @"system", @"data", @"surfaces.ini");
             if (File.Exists(systemSurfaces)) {
                 result.Add(PackedEntry.FromFile("system/data/surfaces.ini", systemSurfaces));
             }
@@ -261,17 +288,35 @@ namespace AcManager.Tools.Objects {
             }
         }
 
-        private static void PrepareTrack([NotNull] string trackId, [CanBeNull] string configurationId) {
+        private void PrepareTrack([NotNull] string trackId, [CanBeNull] string configurationId) {
             var root = AcRootDirectory.Instance.RequireValue;
             var localPath = configurationId != null ? Path.Combine(trackId, configurationId) : trackId;
 
             foreach (var file in TrackDataToKeep) {
                 var actualData = new FileInfo(Path.Combine(AcPaths.GetTracksDirectory(root), localPath, @"data", file));
-                var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", localPath, @"data", file));
-
-                if (actualData.Exists && (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime)) {
+                if (!actualData.Exists) continue;
+                if (TrackPreprocess(actualData.FullName, out var pathPrefix, out var newContent)) {
+                    var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", pathPrefix, localPath, @"data", file));
                     Directory.CreateDirectory(serverData.DirectoryName ?? "");
-                    FileUtils.HardLinkOrCopy(actualData.FullName, serverData.FullName, true);
+                    File.WriteAllText(serverData.FullName, newContent);
+                } else {
+                    var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", localPath, @"data", file));
+                    if (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime) {
+                        Directory.CreateDirectory(serverData.DirectoryName ?? "");
+                        FileUtils.HardLinkOrCopy(actualData.FullName, serverData.FullName, true);
+                    }
+                }
+            }
+
+            {
+                var modelsFileName = TrackLayoutId == null ? @"models.ini" : $@"models_{TrackLayoutId}.ini";
+                var actualData = new FileInfo(Path.Combine(AcPaths.GetTracksDirectory(root), TrackId, modelsFileName));
+                if (actualData.Exists) {
+                    var serverData = new FileInfo(Path.Combine(root, @"server", @"content", @"tracks", TrackId, modelsFileName));
+                    if (!serverData.Exists || actualData.LastWriteTime > serverData.LastWriteTime) {
+                        Directory.CreateDirectory(serverData.DirectoryName ?? "");
+                        FileUtils.HardLinkOrCopy(actualData.FullName, serverData.FullName, true);
+                    }
                 }
             }
         }
@@ -383,7 +428,7 @@ namespace AcManager.Tools.Objects {
 
                 await Task.Run(() => {
                     using (var stream = new MemoryStream(wrapperBytes, false))
-                    using (var archive = new ZipArchive(stream)){
+                    using (var archive = new ZipArchive(stream)) {
                         try {
                             var entry = archive.GetEntry("acServerWrapper.exe");
                             if (entry != null) {
@@ -409,7 +454,8 @@ namespace AcManager.Tools.Objects {
             return (await CmApiProvider.GetStaticDataAsync("ac_server_wrapper-linux-x64", TimeSpan.Zero, cancellation: cancellation))?.Item1;
         }
 
-        private async Task RunWrapper(string serverExecutable, ICollection<string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation) {
+        private async Task RunWrapper(string serverExecutable, ICollection<string> log, [CanBeNull] IProgress<AsyncProgressEntry> progress,
+                CancellationToken cancellation) {
             progress?.Report(AsyncProgressEntry.FromStringIndetermitate("Loading wrapper…"));
             var wrapperFilename = await LoadWinWrapper(cancellation);
             if (cancellation.IsCancellationRequested) return;

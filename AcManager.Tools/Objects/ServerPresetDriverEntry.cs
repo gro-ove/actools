@@ -17,13 +17,22 @@ namespace AcManager.Tools.Objects {
         public ServerPresetDriverEntry(IniFileSection section) {
             CarId = section.GetNonEmpty("MODEL") ?? DefaultCarId;
 
-            CarSkinId = section.GetNonEmpty("SKIN");
+            var carSkinId = section.GetNonEmpty("SKIN")?.Split('/');
+            CarSkinId = carSkinId?[0];
+            CspOptions.LoadPacked(carSkinId?.ElementAtOrDefault(1));
+
             SpectatorMode = section.GetBool("SPECTATOR_MODE", false);
             DriverName = section.GetNonEmpty("DRIVERNAME");
             TeamName = section.GetNonEmpty("TEAM");
             Guid = section.GetNonEmpty("GUID");
             Ballast = section.GetDouble("BALLAST", 0d);
             Restrictor = section.GetDouble("RESTRICTOR", 0d);
+            CspOptions.PropertyChanged += (sender, args) => {
+                Logging.Write($"ARG: {args.PropertyName}");
+
+                // ReSharper disable once NotResolvedInText
+                OnPropertyChanged(@"CspOptions.Inner");
+            };
         }
 
         bool IDraggableCloneable.CanBeCloned => true;
@@ -34,13 +43,17 @@ namespace AcManager.Tools.Objects {
 
         public ServerPresetDriverEntry Clone() {
             var s = new IniFileSection(null);
-            SaveTo(s);
+            SaveTo(s, true);
             return new ServerPresetDriverEntry(s);
         }
 
-        public void SaveTo(IniFileSection section) {
+        public void SaveTo(IniFileSection section, bool allowCspOptions) {
             section.SetOrRemove("MODEL", CarId);
-            section.SetOrRemove("SKIN", CarSkinId);
+            if (allowCspOptions && CspOptions.Pack(out var packed)) {
+                section.Set("SKIN", CarSkinId + "/" + packed);
+            } else {
+                section.SetOrRemove("SKIN", CarSkinId);
+            }
             section.SetOrRemove("SPECTATOR_MODE", SpectatorMode);
             section.SetOrRemove("DRIVERNAME", DriverName);
             section.SetOrRemove("TEAM", TeamName);
@@ -127,7 +140,10 @@ namespace AcManager.Tools.Objects {
                 }
                 return _carSkinObject;
             }
-            set => CarSkinId = value?.Id;
+            set {
+                if (value == null) return;
+                CarSkinId = value.Id;
+            }
         }
 
         private bool _spectatorMode;
@@ -196,15 +212,14 @@ namespace AcManager.Tools.Objects {
         private int _index;
 
         public int Index {
-            get { return _index; }
+            get => _index;
             set => Apply(value, ref _index);
         }
 
         private DelegateCommand _randomSkinCommand;
 
-        public DelegateCommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand = new DelegateCommand(() => {
-            CarSkinId = CarObject?.SkinsManager.Enabled.RandomElementOrDefault()?.Id ?? CarSkinId;
-        }));
+        public DelegateCommand RandomSkinCommand => _randomSkinCommand ?? (_randomSkinCommand =
+                new DelegateCommand(() => CarSkinId = CarObject?.SkinsManager.Enabled.RandomElementOrDefault()?.Id ?? CarSkinId));
 
         private bool _deleted;
 
@@ -215,9 +230,7 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _deleteCommand;
 
-        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => {
-            Deleted = true;
-        }));
+        public DelegateCommand DeleteCommand => _deleteCommand ?? (_deleteCommand = new DelegateCommand(() => { Deleted = true; }));
 
         private bool _cloned;
 
@@ -228,9 +241,7 @@ namespace AcManager.Tools.Objects {
 
         private DelegateCommand _cloneCommand;
 
-        public DelegateCommand CloneCommand => _cloneCommand ?? (_cloneCommand = new DelegateCommand(() => {
-            Cloned = true;
-        }));
+        public DelegateCommand CloneCommand => _cloneCommand ?? (_cloneCommand = new DelegateCommand(() => { Cloned = true; }));
 
         private DelegateCommand _storeCommand;
 
@@ -245,5 +256,7 @@ namespace AcManager.Tools.Objects {
         public const string DraggableFormat = "Data-ServerPresetDriverEntry";
 
         string IDraggable.DraggableFormat => DraggableFormat;
+
+        public ServerDriverCspOptions CspOptions { get; } = new ServerDriverCspOptions();
     }
 }

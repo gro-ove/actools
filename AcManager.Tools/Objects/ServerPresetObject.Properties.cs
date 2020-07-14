@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using AcManager.Tools.Data;
 using AcManager.Tools.Managers;
 using AcTools;
 using AcTools.Processes;
@@ -63,6 +64,32 @@ namespace AcManager.Tools.Objects {
                     // TODO: missing track id error
                 }
             }
+        }
+
+        public bool CspRequiredActual => CspRequired && RequiredCspVersion != PatchHelper.NonExistentVersion;
+
+        private bool _cspRequired;
+
+        public bool CspRequired {
+            get => _cspRequired;
+            set => Apply(value, ref _cspRequired, () => {
+                if (Loaded) {
+                    Changed = true;
+                    OnPropertyChanged(nameof(CspRequiredActual));
+                }
+            });
+        }
+
+        private int? _requiredCspVersion;
+
+        public int? RequiredCspVersion {
+            get => _requiredCspVersion;
+            set => Apply(value, ref _requiredCspVersion, () => {
+                if (Loaded) {
+                    Changed = true;
+                    OnPropertyChanged(nameof(CspRequiredActual));
+                }
+            });
         }
 
         private string[] _carIds = new string[0];
@@ -1015,6 +1042,20 @@ namespace AcManager.Tools.Objects {
             set {
                 if (Equals(value, _ftpClearBeforeUpload)) return;
                 _ftpClearBeforeUpload = value;
+                if (Loaded) {
+                    OnPropertyChanged();
+                    Changed = true;
+                }
+            }
+        }
+
+        private bool _ftpUploadDataOnly;
+
+        public bool FtpUploadDataOnly {
+            get => _ftpUploadDataOnly;
+            set {
+                if (Equals(value, _ftpUploadDataOnly)) return;
+                _ftpUploadDataOnly = value;
                 if (Loaded) {
                     OnPropertyChanged();
                     Changed = true;

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Runtime.InteropServices;
-using FirstFloor.ModernUI.Helpers;
 using HidLibrary;
 using JetBrains.Annotations;
 
@@ -15,7 +14,6 @@ namespace AcTools.WheelAngles.Implementations {
         }
 
         public virtual bool Test(string productGuid) {
-            Logging.Debug(productGuid);
             return string.Equals(productGuid, "0D5A16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(productGuid, "0D5F16D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)
                     || string.Equals(productGuid, "0D6016D0-0000-0000-0000-504944564944", StringComparison.OrdinalIgnoreCase)

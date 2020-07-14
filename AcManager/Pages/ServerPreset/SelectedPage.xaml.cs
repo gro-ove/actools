@@ -98,6 +98,8 @@ namespace AcManager.Pages.ServerPreset {
                 }
             }
 
+            public CarObject Car => Cars.FirstOrDefault();
+
             private int _maximumCapacity;
 
             public int MaximumCapacity {

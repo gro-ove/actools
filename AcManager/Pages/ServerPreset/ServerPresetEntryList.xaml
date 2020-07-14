@@ -11,6 +11,7 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/IconData.xaml" />
         <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ModernButton.xaml" />
+        <mui:SharedResourceDictionary Source="/FirstFloor.ModernUI;component/Themes/ContextMenuButton.xaml" />
       </ResourceDictionary.MergedDictionaries>
 
       <DataTemplate x:Key="Detailed.CarDataTemplate" DataType="{x:Type t:ServerPresetDriverEntry}">
@@ -187,9 +188,9 @@
       </Grid>
     </c:ModernPopup>
 
-    <DataGrid x:Name="EntriesGrid" ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}" RowDetailsVisibilityMode="Visible"
-        mui:Draggable.Enabled="True" MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop" RowStyle="{StaticResource RowStyle}"
-        CellStyle="{StaticResource DataGridCell.Transparent}"><!-- TODO: SelectionMode="Extended"-->
+    <DataGrid x:Name="EntriesGrid" ItemsSource="{Binding SelectedObject.DriverEntries}" Style="{StaticResource DataGrid.Lite}"
+        RowDetailsVisibilityMode="Visible" mui:Draggable.Enabled="True" MinRowHeight="20" CanUserSortColumns="False" Drop="OnDrop"
+        RowStyle="{StaticResource RowStyle}" CellStyle="{StaticResource DataGridCell.Transparent}"><!-- TODO: SelectionMode="Extended"-->
       <!--<mui:Draggable.DestinationConverter>
         <l:ServerPresetDriverEntryDraggableConverter />
       </mui:Draggable.DestinationConverter>-->
@@ -230,6 +231,39 @@
                   </DockPanel>
                 </Button>
                 <Button Content="Random skin" Padding="4 2" Margin="0 -4 0 0" Command="{Binding RandomSkinCommand}" />
+
+                <mui:ContextMenuButton Style="{StaticResource ContextMenuButton.AsButton}" Padding="4 2" Margin="0 -4 0 0"
+                    Visibility="{Binding DataContext.SelectedObject.CspRequiredActual, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource BooleanToVisibilityConverter}}">
+                  <mui:ContextMenuButton.Template>
+                    <ControlTemplate TargetType="{x:Type mui:ContextMenuButton}">
+                      <Border x:Name="PART_Button" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                          BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" Padding="{TemplateBinding Padding}">
+                        <TextBlock Text="CSP" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0" />
+                      </Border>
+                    </ControlTemplate>
+                  </mui:ContextMenuButton.Template>
+                  <ContextMenu>
+                    <MenuItem Header="Blocked controller type" StaysOpenOnClick="True">
+                      <MenuItem Header="Block keyboard" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.BlockKeyboard}"
+                          IsEnabled="{Binding CspOptions.CanBlockKeyboard}" />
+                      <MenuItem Header="Block joystick" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.BlockJoystick}"
+                          IsEnabled="{Binding CspOptions.CanBlockJoystick}" />
+                      <MenuItem Header="Block steering wheel" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.BlockSteeringWheel}"
+                          IsEnabled="{Binding CspOptions.CanBlockSteeringWheel}" />
+                    </MenuItem>
+                    <MenuItem Header="Force headlights" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.ForceHeadlights}" />
+                    <MenuItem Header="Allow to change color in pits" IsCheckable="True" StaysOpenOnClick="True"
+                        IsChecked="{Binding CspOptions.AllowColorChange}" />
+                    <!--<MenuItem Header="Allow teleporting" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowTeleporting}" />
+                    <MenuItem Header="Allow immediate repair" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowImmediateRepair}" />
+                    <MenuItem Header="Allow immediate refuel" IsCheckable="True" StaysOpenOnClick="True" IsChecked="{Binding CspOptions.AllowImmediateRefuel}" />-->
+                    <Separator />
+                    <MenuItem Header="Copy these tweaks to other cars" Click="CspTweaksCopyToOtherCarsClick" />
+                    <MenuItem Header="Reset for this entry" Command="{Binding CspOptions.ResetCommand}" />
+                    <MenuItem Header="Reset all tweaks for all cars" Click="CspTweaksResetAllClick" />
+                  </ContextMenu>
+                </mui:ContextMenuButton>
+
                 <Button Content="Store" Padding="4 2" Margin="0 -4 0 0" Command="{Binding StoreCommand}" />
                 <Button Content="Clone" Padding="4 2" Margin="0 -4 0 0" Command="{Binding CloneCommand}" />
                 <Button Content="Delete" Padding="4 2" Margin="0 -4 0 0" Command="{Binding DeleteCommand}" />

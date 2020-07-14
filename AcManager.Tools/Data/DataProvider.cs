@@ -58,6 +58,8 @@ namespace AcManager.Tools.Data {
             _countryByKunosIds.Reset();
             _brandCountries.Reset();
             _years.Reset();
+
+            _trackParams = null;
         }
 
         private void OnUpdate(object sender, EventArgs e) {

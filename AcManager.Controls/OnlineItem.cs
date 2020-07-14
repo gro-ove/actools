@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Online;
 using AcManager.Tools.Objects;
@@ -218,6 +219,9 @@ namespace AcManager.Controls {
             if (!_fullyLoaded) return;
 
             var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
+            if (pieces < 3 && (_requiresCspAvailable || _requiresCspMissing)) {
+                ++pieces;
+            }
             var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
             if (pieces > 0) {
                 const double iconHeight = 12d;
@@ -241,7 +245,16 @@ namespace AcManager.Controls {
                         ShowToolTip(@"iconFriends", () => "Your friend is here");
                         return;
                     }
-                    // iconOffset += iconHeight + iconMargin;
+                    iconOffset += iconHeight + iconMargin;
+                }
+
+                if (_requiresCspAvailable || _requiresCspMissing) {
+                    if (new Rect(6, iconOffset, 12, iconHeight).Contains(pos)) {
+                        ShowToolTip(@"iconCsp", () => _cspProhibited
+                                ? "Custom Shaders Patch is not available on this server"
+                                : "Custom Shaders Patch is required on this server");
+                        return;
+                    }
                 }
             }
 
@@ -334,9 +347,13 @@ namespace AcManager.Controls {
 
         private static Style _labelStyle;
         private static Brush _areaBrush;
+        private static Pen _cspProhibitedPen;
         private static Typeface _typeface, _labelTypeface;
         private static Brush _blockText, _blockTextActive, _blockBackground, _blockBackgroundActive;
-        private static BitmapSource _alertIcon, _passwordIcon, _bookedIcon, _friendsIcon;
+
+        private static BitmapSource _alertIcon, _passwordIcon, _bookedIcon, _friendsIcon,
+                _cspIconAvailable, _cspIconMissing;
+
         private static TextFormattingMode _formattingMode;
         private static Brush _foreground, _hint;
 
@@ -345,6 +362,7 @@ namespace AcManager.Controls {
 
             _labelStyle = FindStaticResource<Style>(@"Label");
             _areaBrush = FindStaticResource<Brush>(@"SlightBackgroundHint");
+            _cspProhibitedPen = new Pen(FindStaticResource<Brush>(@"Error"), 1.5d);
             _typeface = new Typeface(new FontFamily(@"Segoe UI"), FontStyles.Normal, FontWeights.Normal, FontStretches.Normal);
             _labelTypeface = new Typeface(
                     new FontFamily(new Uri(@"pack://application:,,,/FirstFloor.ModernUI;component/Fonts/#Segoe Condensed", UriKind.Absolute),
@@ -360,6 +378,8 @@ namespace AcManager.Controls {
             _passwordIcon = ToBitmap(@"LockIconData", @"WindowText");
             _bookedIcon = ToBitmap(@"TriangleFlagIconData", @"Go");
             _friendsIcon = ToBitmap(@"MultiplePeopleIconData", @"WindowText");
+            _cspIconAvailable = ToBitmap(@"BulbIconData", @"WindowText");
+            _cspIconMissing = ToBitmap(@"BulbIconData", @"Error");
 
             _foreground = (Brush)GetValue(TextBlock.ForegroundProperty);
             _hint = _foreground is SolidColorBrush solidColorBrush ? GetHalfTransparent(solidColorBrush) : _foreground;
@@ -385,6 +405,9 @@ namespace AcManager.Controls {
             UpdatePasswordState(server);
             UpdateBookedState(server);
             UpdateFriendsState(server);
+            UpdateCspStateAvailable(server);
+            UpdateCspStateMissing(server);
+            UpdateCspStateProhibited(server);
             UpdatePing(server);
             UpdateTimeLeft(server);
             UpdateDisplayClients(server);
@@ -417,7 +440,10 @@ namespace AcManager.Controls {
         private string _currentTrackId;
 
         private ImageSource _countryBitmap;
-        private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends;
+
+        private bool _errorFlag, _fullyLoaded = true, _passwordRequired, _bookedForPlayer, _hasFriends,
+                _requiresCspAvailable, _requiresCspMissing, _cspProhibited;
+
         private int _sessionsCount;
 
         private class ObjToRender {
@@ -600,6 +626,18 @@ namespace AcManager.Controls {
 
         private void UpdateFriendsState(ServerEntry n) {
             _hasFriends = n.HasFriends;
+        }
+
+        private void UpdateCspStateAvailable(ServerEntry n) {
+            _requiresCspAvailable = n.CspRequiredAvailable;
+        }
+
+        private void UpdateCspStateMissing(ServerEntry n) {
+            _requiresCspMissing = n.CspRequiredMissing;
+        }
+
+        private void UpdateCspStateProhibited(ServerEntry n) {
+            _cspProhibited = n.RequiredCspVersion == PatchHelper.NonExistentVersion;
         }
 
         private void UpdateDisplayClients(ServerEntry server) {
@@ -944,6 +982,9 @@ namespace AcManager.Controls {
                     }*/
 
                     var pieces = (_bookedForPlayer ? 1 : 0) + (_passwordRequired ? 1 : 0) + (_hasFriends ? 1 : 0);
+                    if (pieces < 3 && (_requiresCspAvailable || _requiresCspMissing)) {
+                        ++pieces;
+                    }
                     if (pieces > 0) {
                         var iconOffset = (60d - pieces * ReferenceIconHeight + (pieces - 1d) * ReferenceIconMargin) / 2d;
                         if (_bookedForPlayer) {
@@ -956,6 +997,14 @@ namespace AcManager.Controls {
                         }
                         if (_hasFriends) {
                             dc.DrawImage(_friendsIcon, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                            iconOffset += ReferenceIconHeight + ReferenceIconMargin;
+                        }
+
+                        if (_requiresCspAvailable || _requiresCspMissing) {
+                            dc.DrawImage(_requiresCspAvailable ? _cspIconAvailable : _cspIconMissing, new Rect(6, iconOffset, 12, ReferenceIconHeight));
+                            if (_cspProhibited) {
+                                dc.DrawLine(_cspProhibitedPen, new Point(6, iconOffset), new Point(18, iconOffset + ReferenceIconHeight));
+                            }
                         }
                     }
 
@@ -1070,6 +1119,15 @@ namespace AcManager.Controls {
                     break;
                 case nameof(ServerEntry.HasFriends):
                     UpdateFriendsState(server);
+                    break;
+                case nameof(ServerEntry.CspRequiredAvailable):
+                    UpdateCspStateAvailable(server);
+                    break;
+                case nameof(ServerEntry.CspRequiredMissing):
+                    UpdateCspStateMissing(server);
+                    break;
+                case nameof(ServerEntry.RequiredCspVersion):
+                    UpdateCspStateProhibited(server);
                     break;
                 case nameof(ServerEntry.HasErrors):
                     UpdateErrorFlag(server);

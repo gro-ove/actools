@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
@@ -43,6 +44,8 @@ namespace AcManager.Tools.Managers.Online {
                 IndexDirectDownloader.AvailableIdsLoaded += OnAvailableIdsLoaded;
                 IndexDirectDownloader.LoadAvailableIdsAsync();
             }
+
+            PatchHelper.Reloaded += OnPatchReloaded;
         }
 
         private void OnAvailableIdsLoaded(object sender, EventArgs eventArgs) {
@@ -69,6 +72,12 @@ namespace AcManager.Tools.Managers.Online {
             var car = (CarObject)sender;
             for (var i = List.Count - 1; i >= 0; i--) {
                 List[i].OnCarVersionChanged(car);
+            }
+        }
+
+        private void OnPatchReloaded(object sender, EventArgs e) {
+            for (var i = List.Count - 1; i >= 0; i--) {
+                List[i].CheckCspState();
             }
         }
 

@@ -2,9 +2,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:AcManager.Pages.ServerPreset"
     xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:t="http://acstuff.ru/app/tools"
-    xmlns:c="http://acstuff.ru/app/controls"
-    xmlns:g="clr-namespace:AcManager"
-    mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
+    xmlns:c="http://acstuff.ru/app/controls" xmlns:g="clr-namespace:AcManager" mc:Ignorable="d" d:DataContext="{d:DesignInstance local:SelectedPage+ViewModel}">
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -27,7 +25,7 @@
 
         <StackPanel Margin="0 0 20 0" Grid.Column="0" Background="Gray" Width="160" Height="120">
           <Button Padding="0" Width="160" Height="120" Command="{Binding ChangeTrackCommand}" HorizontalContentAlignment="Stretch"
-              VerticalContentAlignment="Stretch">
+              VerticalContentAlignment="Stretch" c:ToolTips.Track="{Binding Track}" c:ContextMenus.Track="{Binding Track}" mui:Draggable.Data="{Binding Track}">
             <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False" DataContext="{Binding Track}">
               <mui:BetterImage Filename="{Binding PreviewImage}" DecodeWidth="160" Stretch="UniformToFill" />
               <mui:BetterImage Filename="{Binding OutlineImage}" DecodeWidth="160" ShowBroken="False" />
@@ -38,9 +36,9 @@
         </StackPanel>
 
         <StackPanel Margin="0 0 20 0" Grid.Column="1" Background="Gray" Width="160" Height="120">
-          <Button Padding="0" Width="160" Height="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"
-              Command="GoToPage" CommandParameter="/Pages/ServerPreset/ServerPresetEntryList.xaml"
-              >
+          <Button Padding="0" Width="160" Height="120" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Command="GoToPage"
+              CommandParameter="/Pages/ServerPreset/ServerPresetEntryList.xaml" c:ToolTips.Car="{Binding Car}" c:ContextMenus.Car="{Binding Car}"
+              mui:Draggable.Data="{Binding Car}">
             <Grid Margin="-1" ClipToBounds="True" IsHitTestVisible="False">
               <mui:BetterImage Filename="{Binding Cars[0].SelectedSkin.PreviewImage}" DecodeWidth="320" Stretch="UniformToFill" />
               <TextBlock Padding="4" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}"
@@ -146,6 +144,20 @@
             <mui:BetterTextBox Style="{StaticResource Borderless}" Text="{Binding SelectedObject.ManagerDescription}" AcceptsReturn="False" TextWrapping="Wrap"
                 Placeholder="{x:Static t:ToolsStrings.Common_None}" Height="60" DockPanel.Dock="Bottom" Margin="20 8 0 0" />
             <Label Content="Manager description:" HorizontalAlignment="Left" Width="200" />
+          </DockPanel>
+
+          <TextBlock Text="Custom Shaders Patch:" Style="{StaticResource SettingsPanel.Heading2}" />
+          <CheckBox IsChecked="{Binding SelectedObject.CspRequired}" ToolTip="If CSP is not installed, track would be shown as not available">
+            <Label Content="Require CSP to join" />
+          </CheckBox>
+          <DockPanel Margin="0 0 0 8"
+              ToolTip="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}, StringFormat='{}Version ID is a single number, minimum version is {0} (previous builds do not support this filtering system)'}">
+            <Label Content="Minimum version:" />
+            <Button x:Name="CspVersionAutoFill" Click="CspVersionAutoFillClick" Content="Auto-fill" DockPanel.Dock="Right" Margin="8 0 0 0"
+                ToolTip="Use version of CSP you have installed" />
+            <mui:BetterTextBox Text="{Binding SelectedObject.RequiredCspVersion}"
+                Placeholder="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Mode="Integer"
+                Minimum="{Binding Source={x:Static t:PatchHelper.MinimumTestOnlineVersion}}" Maximum="65535" />
           </DockPanel>
         </StackPanel>
       </Grid>

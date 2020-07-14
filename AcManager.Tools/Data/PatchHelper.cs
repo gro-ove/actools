@@ -17,6 +17,10 @@ using StringBasedFilter.TestEntries;
 
 namespace AcManager.Tools.Data {
     public class PatchHelper {
+        public static int MinimumTestOnlineVersion { get; } = 1061;
+        public static int NonExistentVersion { get; } = 999999;
+
+        public static readonly string FeatureTestOnline = "CSP_TEST_ONLINE";
         public static readonly string FeatureFullDay = "CONDITIONS_24H";
         public static readonly string FeatureSpecificDate = "CONDITIONS_SPECIFIC_DATE";
         public static readonly string FeatureCustomGForces = "VIEW_CUSTOM_GFORCES";
@@ -62,6 +66,7 @@ namespace AcManager.Tools.Data {
 
         private static Dictionary<string, IniFile> _configs = new Dictionary<string, IniFile>();
         private static Dictionary<string, bool> _featureSupported = new Dictionary<string, bool>();
+        private static bool? _active;
 
         [CanBeNull]
         private static string TryToRead(string filename) {
@@ -115,10 +120,14 @@ namespace AcManager.Tools.Data {
             return Path.Combine(AcPaths.GetDocumentsCfgDirectory(), "extension", "window_position.ini");
         }
 
+        public static bool IsActive() {
+            return (_active ?? (_active = GetConfig("general.ini")["BASIC"].GetBool("ENABLED", true))).Value;
+        }
+
         public static bool IsFeatureSupported([CanBeNull] string featureId) {
             if (string.IsNullOrWhiteSpace(featureId)) return true;
             return _featureSupported.GetValueOrSet(featureId, () => {
-                if (GetInstalledVersion() == null || !GetConfig("general.ini")["BASIC"].GetBool("ENABLED", true)) return false;
+                if (GetInstalledVersion() == null || !IsActive()) return false;
                 if (featureId == FeatureWindowPosition) return true;
                 var query = GetManifest()["FEATURES"].GetNonEmpty(featureId);
                 if (string.IsNullOrWhiteSpace(query)) return false;
@@ -172,7 +181,17 @@ namespace AcManager.Tools.Data {
             return GetManifest()["VERSION"].GetNonEmpty("SHADERS_PATCH_BUILD");
         }
 
+        [CanBeNull]
+        public static string GetActiveBuild() {
+            var result = GetInstalledBuild();
+            if (result != null && !IsActive()) {
+                return null;
+            }
+            return result;
+        }
+
         public static void Reload() {
+            _active = null;
             _configs.Clear();
             _featureSupported.Clear();
             _installed.Reset();

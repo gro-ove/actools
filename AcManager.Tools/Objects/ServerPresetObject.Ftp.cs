@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,11 +62,15 @@ namespace AcManager.Tools.Objects {
 
                     using (var waiting = new WaitingDialog { FirstAppearDelay = TimeSpan.Zero })
                     using (var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(waiting.CancellationToken, c ?? CancellationToken.None)) {
-                        waiting.Report("Packing…");
+                        waiting.Report("Uploading…");
 
                         var cancellation = cancellationSource.Token;
                         var packed = await PackServerData(true, FtpMode, false, cancellation);
                         if (packed == null || cancellation.IsCancellationRequested) return;
+
+                        if (FtpUploadDataOnly) {
+                            packed = packed.Where(x => !x.IsExecutable).ToList();
+                        }
 
                         if (FtpClearBeforeUpload) {
                             try {

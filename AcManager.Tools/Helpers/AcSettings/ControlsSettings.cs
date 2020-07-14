@@ -367,16 +367,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         private void UpdateHardwareLockAvailability() {
-#if DEBUG
-            Logging.Debug("Devices: " + Devices.Select(x => x.Id).JoinToReadableString());
-#endif
-
             object options = null;
             IsHardwareLockSupported = Devices.Any(x => {
-#if DEBUG
-                Logging.Debug(x.Id);
-#endif
-                if (!WheelSteerLock.IsSupported(x.Id, out var o)) return false;
+                if (!WheelSteerLock.IsSupported(x.ProductId, out var o)) return false;
                 if (o != null) options = o;
                 return true;
             });
@@ -433,14 +426,13 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         private readonly List<PlaceholderInputDevice> _placeholderDevices = new List<PlaceholderInputDevice>(1);
 
-        private PlaceholderInputDevice GetPlaceholderDevice([CanBeNull] string id, string displayName, int iniId) {
-            var placeholder = _placeholderDevices.FirstOrDefault(y => y.DisplayName == displayName
-                    && (!DirectInputDevice.OptionStrictIndices || iniId == y.Index))
-                    ?? _placeholderDevices.Where(y => (!DirectInputDevice.OptionStrictIndices || iniId == y.Index)).GetByIdOrDefault(id);
+        private PlaceholderInputDevice GetPlaceholderDevice([CanBeNull] string instanceId, [CanBeNull] string productId, string displayName, int iniId) {
+            var placeholder = _placeholderDevices.FirstOrDefault(y => y.DisplayName == displayName)
+                    ?? (instanceId != null ? _placeholderDevices.FirstOrDefault(x => x.InstanceId == instanceId) : null);
             if (placeholder == null) {
-                placeholder = new PlaceholderInputDevice(id, displayName, iniId);
+                placeholder = new PlaceholderInputDevice(instanceId, productId, displayName, iniId);
                 _placeholderDevices.Add(placeholder);
-            } else if (!placeholder.OriginalIniIds.Contains(iniId) && !DirectInputDevice.OptionStrictIndices) {
+            } else if (!placeholder.OriginalIniIds.Contains(iniId)) {
                 placeholder.OriginalIniIds.Add(iniId);
             }
 
@@ -448,11 +440,12 @@ namespace AcManager.Tools.Helpers.AcSettings {
         }
 
         private PlaceholderInputDevice GetPlaceholderDevice(DirectInputDevice device) {
-            return GetPlaceholderDevice(device.Id, device.DisplayName, device.Index);
+            return GetPlaceholderDevice(device.InstanceId, device.ProductId, device.DisplayName, device.Index);
         }
 
         private void UpdatePlaceholders() {
-            foreach (var source in _placeholderDevices.Where(x => Entries.OfType<IDirectInputEntry>().All(y => y.Device != x)).ToList()) {
+            foreach (var source in _placeholderDevices.Where(x =>
+                    Entries.OfType<IDirectInputEntry>().All(y => y.Device != x)).ToList()) {
                 _placeholderDevices.Remove(source);
             }
 
@@ -464,31 +457,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
             }
         }
 
-        private static bool _strictIndicesNever;
-
         private void RescanDevices([CanBeNull] IList<Joystick> devices) {
             _skip = true;
-
-            if (!_strictIndicesNever
-                    && devices?.Any(x => x.Information.ProductName.Contains(@"FANATEC")) == true
-                    && devices.All(x => !x.Information.ProductName.Contains(@"CSW"))
-                    && devices.All(x => !x.Information.ProductName.Contains(@"MobearTec"))) {
-                _strictIndicesNever = true;
-            }
-
-            if (!_strictIndicesNever && devices?.GroupBy(x => {
-                try {
-                    return x.Properties.ProductId;
-                } catch (Exception e) {
-                    Logging.Warning(e.Message);
-                    return 0;
-                }
-            }).Where(x => x.Key != 0).Any(x => x.Count() > 1) == true && !DirectInputDevice.OptionStrictIndices) {
-                DirectInputDevice.OptionStrictIndices = true;
-                _placeholderDevices.Clear();
-                Reload();
-            }
-
             SetCanSave(true);
 
             try {
@@ -554,11 +524,14 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     device.Dispose();
                 }
 
+                Logging.Debug("New devices:" + newDevices.Select(x => $"\n{x.Index}: {x.DisplayName}, PGUID={x.ProductId}, IGUID={x.InstanceId}")
+                        .JoinToString("").Or(" none"));
+
                 Devices.ReplaceEverythingBy(newDevices);
                 UpdatePlaceholders();
 
                 foreach (var device in newDevices) {
-                    ProductGuids[device.DisplayName] = device.Id;
+                    ProductGuids[device.DisplayName] = device.ProductId;
 
                     for (var i = 0; i < device.Axis.Length; i++) {
                         device.Axis[i].PropertyChanged += DeviceAxleEventHandler;
@@ -578,11 +551,8 @@ namespace AcManager.Tools.Helpers.AcSettings {
                     checkedPlaceholders.Add(placeholder);
 
                     if (!placeholder.OriginalIniIds.Contains(actualDevice.Index)) {
-                        if (OptionDebugControlles) {
-                            Logging.Warning(
-                                    $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual — {actualDevice.Index}");
-                        }
-
+                        Logging.Warning(
+                                $"{placeholder.DisplayName} index changed: saved as {placeholder.OriginalIniIds.JoinToString("+")}, actual: {actualDevice.Index}");
                         FixMessedOrderAsync().Forget();
                     }
                 }
@@ -639,7 +609,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 if (waiting.Layer != EntryLayer.NoIntersection) {
                     var existing = Entries.OfType<BaseEntry<T>>().Where(x => x.Input == provider && waiting.Layer == x.Layer).ToList();
                     if (existing.Any()) {
-                        var providerName = new [] {
+                        var providerName = new[] {
                             (waiting as WheelButtonEntry)?.ModifierButton?.Input?.DisplayName, provider.DisplayName
                         }.NonNull().JoinToString(@"+");
                         var solution = ConflictResolver == null ? AcControlsConflictSolution.ClearPrevious :
@@ -1485,6 +1455,9 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 device.OriginalIniIds.Clear();
             }
 
+            Logging.Debug("Devices:" + Devices.Select(x => $"\n{x.Index}: {x.DisplayName}, PGUID={x.ProductId}, IGUID={x.InstanceId}")
+                    .JoinToString("").Or(" none"));
+
             var orderChanged = false;
             var devices = Ini["CONTROLLERS"].Keys.Where(x => x.StartsWith(@"CON")).Select(x => new {
                 IniId = FlexibleParser.TryParseInt(x.Substring(3)),
@@ -1494,38 +1467,36 @@ namespace AcManager.Tools.Helpers.AcSettings {
                 var iniId = x.IniId;
                 if (!iniId.HasValue) return null;
 
-                var id = Ini["CONTROLLERS"].GetNonEmpty($"PGUID{x.IniId}");
+                var instanceId = Ini["CONTROLLERS"].GetNonEmpty($"__IGUID{x.IniId}");
+                var productId = Ini["CONTROLLERS"].GetNonEmpty($"PGUID{x.IniId}");
 
                 // Filter out fake placeholder just in case
-                if (id == @"0") return null;
+                if (productId == @"0") return null;
 
-                if (id != null) {
-                    ProductGuids[x.Name] = id;
+                if (productId != null) {
+                    ProductGuids[x.Name] = productId;
                 }
 
-                if (!DirectInputDevice.OptionStrictIndices) {
-                    var device = Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name)
-                            ?? Devices.GetByIdOrDefault(id);
-                    if (device != null) {
-                        if (OptionDebugControlles) {
-                            Logging.Debug($"{device.DisplayName}: actual index={device.Index}, config index={x.IniId}");
-                        }
-
-                        if (device.Index != x.IniId) {
-                            orderChanged = true;
-                        }
-
-                        device.OriginalIniIds.Add(iniId.Value);
-                        return device;
+                var device = instanceId != null ? Devices.FirstOrDefault(y => y.InstanceId == instanceId)
+                        : Devices.FirstOrDefault(y => y.Device.InstanceName == x.Name)
+                                ?? Devices.FirstOrDefault(y => y.ProductId == productId);
+                if (device != null) {
+                    Logging.Debug($"{device.DisplayName}: actual index={device.Index}, config index={x.IniId}");
+                    if (device.Index != x.IniId) {
+                        orderChanged = true;
                     }
+
+                    device.OriginalIniIds.Add(iniId.Value);
+                    return device;
                 }
 
-                return (IDirectInputDevice)GetPlaceholderDevice(id, x.Name, iniId.Value);
+                Logging.Debug($"Device {x.Name} is missing, using placeholder (index: {iniId.Value})");
+                return (IDirectInputDevice)GetPlaceholderDevice(instanceId, productId, x.Name, iniId.Value);
             }).NonNull().ToList();
 
             if (devices.All(x => !x.IsController)) {
                 devices.Add((IDirectInputDevice)Devices.FirstOrDefault(x => x.IsController)
-                        ?? GetPlaceholderDevice(@"0", @"Controller (Placeholder)", -1));
+                        ?? GetPlaceholderDevice(null, @"0", @"Controller (Placeholder)", -1));
             }
 
             if (OptionDebugControlles) {
@@ -1621,10 +1592,11 @@ namespace AcManager.Tools.Helpers.AcSettings {
             UpdatePlaceholders();
             Ini["CONTROLLERS"] = Devices
                     .Select(x => (IDirectInputDevice)x)
-                    .Union(_placeholderDevices.Where(x => x.Id != "0"))
+                    .Union(_placeholderDevices.Where(x => x.ProductId != "0"))
                     .Aggregate(new IniFileSection(null), (s, d, i) => {
                         s.Set("CON" + d.Index, d.DisplayName);
-                        s.Set("PGUID" + d.Index, d.Id ?? ProductGuids.GetValueOrDefault(d.DisplayName));
+                        s.SetOrRemove("__IGUID" + d.Index, d.InstanceId);
+                        s.Set("PGUID" + d.Index, d.ProductId ?? ProductGuids.GetValueOrDefault(d.DisplayName));
                         return s;
                     });
 

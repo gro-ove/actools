@@ -15,6 +15,13 @@ using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Objects {
+    public class ValueChangedEventArgs : EventArgs {
+        public PythonAppConfig Source { get; set; }
+        public string Section { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
+    }
+
     public sealed class PythonAppConfig : Displayable, IWithId {
         public PythonAppObject Parent { get; }
 
@@ -27,7 +34,7 @@ namespace AcManager.Tools.Objects {
         private readonly string _defaultsFilename;
         private readonly IniFile _valuesIniFile;
 
-        public event EventHandler ValueChanged;
+        public event EventHandler<ValueChangedEventArgs> ValueChanged;
 
         public bool IsResettable { get; }
         public bool IsSingleSection { get; }
@@ -131,10 +138,18 @@ namespace AcManager.Tools.Objects {
                     IsNonDefault = isNonDefault;
                 }
 
-                ValueChanged?.Invoke(this, EventArgs.Empty);
+                if (sender is PythonAppConfigValue value)
+                {
+                    ValueChanged?.Invoke(this, new ValueChangedEventArgs {
+                        Source = this,
+                        Section = Sections.FirstOrDefault(x => x.Contains(value))?.Id,
+                        Key = value.OriginalKey,
+                        Value = value.Value
+                    });
 
-                if (sender is PythonAppConfigValue value && value.OriginalKey == @"ENABLED") {
-                    OnPropertyChanged(nameof(IsActive));
+                    if (value.OriginalKey == @"ENABLED") {
+                        OnPropertyChanged(nameof(IsActive));
+                    }
                 }
             }
         }

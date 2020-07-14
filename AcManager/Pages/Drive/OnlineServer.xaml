@@ -322,8 +322,8 @@
                     <TextBlock Text="{Binding Track.Name}" Padding="4" />
                   </DockPanel>
                   <mui:Cell Visibility="{Binding Track, Converter={StaticResource NullToVisibilityConverter}}" Background="{DynamicResource CardBackground}">
-                    <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Drive_OnlineServer_TrackIsMissing}" Foreground="{DynamicResource CardHeaderTextDisabled}"
-                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
+                    <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Drive_OnlineServer_TrackIsMissing}"
+                        Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
                     <TextBlock Padding="4" VerticalAlignment="Bottom" Background="{DynamicResource DarkStripeBackground}" Text="{Binding TrackId}"
                         Foreground="{DynamicResource ItemTextDisabled}" IsHitTestVisible="False" />
                   </mui:Cell>
@@ -337,8 +337,17 @@
                       c:ImageViewerService.Image="{Binding SelectedCarEntry.PreviewImage}" HorizontalAlignment="Center" />
                   <Border Visibility="{Binding SelectedCarEntry.CarObject, Converter={StaticResource NullToVisibilityConverter}}"
                       Background="{DynamicResource CardBackground}">
-                    <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Drive_OnlineServer_CarIsMissing}" Foreground="{DynamicResource CardHeaderTextDisabled}"
-                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
+                    <TextBlock Style="{StaticResource Heading1}" Text="{x:Static g:AppStrings.Drive_OnlineServer_CarIsMissing}"
+                        Foreground="{DynamicResource CardHeaderTextDisabled}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 0 20" />
+                  </Border>
+
+                  <Border Background="Transparent" Width="16" Height="16" HorizontalAlignment="Right" Margin="8" VerticalAlignment="Top"
+                      Visibility="{Binding SelectedCarEntry.CspOptions, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                    <Border.ToolTip>
+                      <mui:BbCodeBlock Text="{Binding SelectedCarEntry.CspOptions.Description}" Mode="Extended" />
+                    </Border.ToolTip>
+                    <Path Data="{StaticResource BulbIconData}" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
+                        Stretch="Uniform" />
                   </Border>
 
                   <!-- Selection ComboBox -->
@@ -497,7 +506,8 @@
             <!-- Current drivers list -->
             <mui:Switch Value="{Binding CurrentDrivers.Count, FallbackValue=-1}"
                 Visibility="{Binding TrackId, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-              <TextBlock mui:Switch.When="0" Text="{x:Static g:AppStrings.Drive_OnlineServer_ServerIsEmpty}" Style="{StaticResource Label.Padding}" VerticalAlignment="Top" />
+              <TextBlock mui:Switch.When="0" Text="{x:Static g:AppStrings.Drive_OnlineServer_ServerIsEmpty}" Style="{StaticResource Label.Padding}"
+                  VerticalAlignment="Top" />
 
               <DockPanel>
                 <TextBlock Style="{StaticResource Label.Padding}" DockPanel.Dock="Top"
@@ -585,7 +595,8 @@
             TextBlock.Foreground="{DynamicResource WindowText}" HorizontalAlignment="Center" VerticalAlignment="Bottom"
             Visibility="{Binding AutoJoinActive, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="20" MaxWidth="320" Margin="20">
           <DockPanel>
-            <Button Command="{Binding StopAutoJoinCommand}" DockPanel.Dock="Bottom" HorizontalAlignment="Left" Margin="0 20 0 0" Content="{x:Static g:AppStrings.Drive_OnlineServer_Stop}" />
+            <Button Command="{Binding StopAutoJoinCommand}" DockPanel.Dock="Bottom" HorizontalAlignment="Left" Margin="0 20 0 0"
+                Content="{x:Static g:AppStrings.Drive_OnlineServer_Stop}" />
             <Path Data="{StaticResource RefreshIconData}" Width="12" Height="12" DockPanel.Dock="Left" Fill="{DynamicResource Go}" Stretch="Uniform"
                 Margin="0 8 8 0" VerticalAlignment="Top" RenderTransformOrigin="0.5, 0.5">
               <Path.RenderTransform>

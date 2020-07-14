@@ -1787,4 +1787,18 @@ Would you like to pack it before starting the server? But don’t forget to shar
     <data name="Common_Unit_Hz" xml:space="preserve">
       <value> Hz</value>
     </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+      <value>Loading players list…</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+      <value>Loading cars ({0})…</value>
+      <comment>Car ID in brackets</comment>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+      <value>Loading {0} skins…</value>
+      <comment>{0} is for the name of the car </comment>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+      <value>Loading actual server information…</value>
+  </data>
 </root>

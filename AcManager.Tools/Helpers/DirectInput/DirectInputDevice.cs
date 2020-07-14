@@ -13,12 +13,12 @@ using SlimDX.DirectInput;
 
 namespace AcManager.Tools.Helpers.DirectInput {
     public sealed class DirectInputDevice : Displayable, IDirectInputDevice, IDisposable {
-        public static bool OptionStrictIndices = false;
-
         [NotNull]
         public DeviceInstance Device { get; }
 
-        public string Id { get; }
+        public string InstanceId { get; }
+
+        public string ProductId { get; }
 
         public bool IsVirtual => false;
 
@@ -29,18 +29,11 @@ namespace AcManager.Tools.Helpers.DirectInput {
         public IList<int> OriginalIniIds { get; }
 
         public bool Same(IDirectInputDevice other) {
-            if (OptionStrictIndices) {
-                return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0") && Index == other.Index;
-            }
-            return other != null && (Id == other.Id || DisplayName == other.DisplayName || IsController && other.Id == @"0");
+            return other != null && (this.IsSameAs(other) || IsController && other.InstanceId == @"0");
         }
 
         public bool Same(DeviceInstance other, int index) {
-            if (OptionStrictIndices) {
-                return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName) && Index == index;
-            }
-            return other != null && (Id == GuidToString(other.ProductGuid) || DisplayName == other.InstanceName);
-            // || Id == @"0" && DirectInputDeviceUtils.IsController(other.InstanceName)
+            return other != null && InstanceId == GuidToString(other.InstanceGuid);
         }
 
         public DirectInputAxle GetAxle(int id) {
@@ -66,7 +59,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private readonly Joystick _joystick;
 
         public override string ToString() {
-            return $"DirectInputDevice({Id}:{DisplayName}, Ini={Index})";
+            return $"DirectInputDevice({InstanceId}:{DisplayName}, Ini={Index})";
         }
 
         public void RunControlPanel() {
@@ -91,7 +84,8 @@ namespace AcManager.Tools.Helpers.DirectInput {
         private DirectInputDevice([NotNull] Joystick device, int index) {
             Device = device.Information;
 
-            Id = GuidToString(device.Information.ProductGuid);
+            InstanceId = GuidToString(device.Information.InstanceGuid);
+            ProductId = GuidToString(device.Information.ProductGuid);
             Index = index;
             IsController = DirectInputDeviceUtils.IsController(device.Information.InstanceName);
             OriginalIniIds = new List<int>();
@@ -140,10 +134,6 @@ namespace AcManager.Tools.Helpers.DirectInput {
             }
 
             DisplayName = displayName ?? FixDisplayName(Device.InstanceName);
-            if (OptionStrictIndices) {
-                DisplayName += $@" ({Index + 1})";
-            }
-
             Proc(Axis, axisP);
             Proc(Buttons, buttonsP);
             Proc(Povs, povsP);

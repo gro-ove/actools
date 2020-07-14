@@ -125,7 +125,10 @@
         <Label Content="Folder:" />
         <mui:BetterTextBox Text="{Binding SelectedObject.FtpDirectory}" Placeholder="{x:Static t:ToolsStrings.Common_None}" />
       </DockPanel>
-      <DockPanel>
+      <CheckBox IsChecked="{Binding SelectedObject.FtpUploadDataOnly}">
+        <Label Content="Upload data only, without executable" />
+      </CheckBox>
+      <DockPanel IsEnabled="{Binding SelectedObject.FtpUploadDataOnly, Converter={StaticResource InvertBooleanConverter}}">
         <Label Content="Target:" />
         <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Modes}" SelectedItem="{Binding SelectedObject.FtpMode}">
           <mui:BetterComboBox.ItemTemplate>

@@ -19,9 +19,35 @@ namespace AcManager.Tools {
     public class ContextMenusProvider : IContextMenusProvider {
         public void SetCarObjectMenu(ContextMenu menu, CarObject car, CarSkinObject skin) {
             menu.AddItem("Manage setups", () => CarSetupsListPage.Open(car))
-                .AddItem("Manage skins", () => CarSkinsListPage.Open(car))
-                .AddSeparator();
+                    .AddItem("Manage skins", () => CarSkinsListPage.Open(car))
+                    .AddSeparator();
             CarBlock.OnShowroomContextMenu(menu, car, skin);
+
+            menu.AddSeparator();
+
+            var ratingBar = new RatingBar { Rating = car.Rating ?? 0 };
+            ratingBar.SetBinding(RatingBar.RatingProperty, new Binding("Rating") { Source = car });
+            menu.AddItem(new MenuItem {
+                StaysOpenOnClick = true,
+                Header = new DockPanel {
+                    Margin = new Thickness(0d, 0d, -40d, 0d),
+                    Children = {
+                        new TextBlock { Text = "Rating:", Width = 80 },
+                        ratingBar,
+                        new FavouriteButton { IsChecked = car.IsFavourite }
+                    }
+                }
+            });
+            menu.AddItem(new MenuItem {
+                StaysOpenOnClick = true,
+                Header = new DockPanel {
+                    Margin = new Thickness(0d, 0d, -40d, 0d),
+                    Children = {
+                        new TextBlock { Text = "Notes:", Width = 80 },
+                        new NotesBlock { AcObject = car }
+                    }
+                }
+            });
 
             menu.AddSeparator();
 
@@ -30,10 +56,10 @@ namespace AcManager.Tools {
             }
 
             menu.AddItem("Open car in Content tab", () => CarsListPage.Show(car, skin?.Id))
-                .AddItem(AppStrings.Toolbar_Folder, car.ViewInExplorer);
+                    .AddItem(AppStrings.Toolbar_Folder, car.ViewInExplorer);
         }
 
-        public void SetCarSkinObjectMenu(ContextMenu menu, CarSkinObject skin) {}
+        public void SetCarSkinObjectMenu(ContextMenu menu, CarSkinObject skin) { }
 
         public void SetTrackObjectMenu(ContextMenu menu, TrackObjectBase track) {
             var mainTrack = track.MainTrackObject;
@@ -58,6 +84,33 @@ namespace AcManager.Tools {
             }
 
             menu.AddItem("Manage skins", () => TrackSkinsListPage.Open(track.MainTrackObject));
+
+            menu.AddSeparator();
+
+            var ratingBar = new RatingBar { Rating = track.MainTrackObject.Rating ?? 0 };
+            ratingBar.SetBinding(RatingBar.RatingProperty, new Binding("Rating") { Source = track.MainTrackObject });
+            menu.AddItem(new MenuItem {
+                StaysOpenOnClick = true,
+                Header = new DockPanel {
+                    Margin = new Thickness(0d, 0d, -40d, 0d),
+                    Children = {
+                        new TextBlock { Text = "Rating:", Width = 80 },
+                        ratingBar,
+                        new FavouriteButton { IsChecked = track.MainTrackObject.IsFavourite }
+                    }
+                }
+            });
+            menu.AddItem(new MenuItem {
+                StaysOpenOnClick = true,
+                Header = new DockPanel {
+                    Margin = new Thickness(0d, 0d, -40d, 0d),
+                    Children = {
+                        new TextBlock { Text = "Notes:", Width = 80 },
+                        new NotesBlock { AcObject = track.MainTrackObject }
+                    }
+                }
+            });
+
             menu.AddSeparator();
 
             if (!QuickDrive.IsActive()) {
@@ -65,7 +118,7 @@ namespace AcManager.Tools {
             }
 
             menu.AddItem("Open track in Content tab", () => TracksListPage.Show(track), isEnabled: InternalUtils.IsAllRight)
-                .AddItem(AppStrings.Toolbar_Folder, track.ViewInExplorer);
+                    .AddItem(AppStrings.Toolbar_Folder, track.ViewInExplorer);
         }
 
         public void SetWeatherObjectMenu(ContextMenu menu, WeatherObject weather) {
@@ -79,15 +132,14 @@ namespace AcManager.Tools {
         public void SetCupUpdateMenu(ContextMenu menu, ICupSupportedObject obj) {
             var client = CupClient.Instance;
             var information = obj.CupUpdateInformation;
-            if (client == null ||  information == null) return;
+            if (client == null || information == null) return;
 
             if (information.IsToUpdateManually) {
                 menu.AddItem("Download and install update", new AsyncCommand(() =>
                         client.InstallUpdateAsync(obj.CupContentType, obj.Id)),
                         iconData: (Geometry)Icons["UpdateIconData"]);
-                menu.AddItem("Download update", new AsyncCommand(async () => {
-                    WindowsHelper.ViewInBrowser(await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id));
-                }));
+                menu.AddItem("Download update",
+                        new AsyncCommand(async () => { WindowsHelper.ViewInBrowser(await client.GetUpdateUrlAsync(obj.CupContentType, obj.Id)); }));
                 menu.AddSeparator();
             } else {
                 menu.AddItem("Get update", new AsyncCommand(async () => {
@@ -100,15 +152,13 @@ namespace AcManager.Tools {
             menu.AddItem("View information", () => new CupInformationDialog(obj).ShowDialog());
 
             if (!string.IsNullOrWhiteSpace(information.InformationUrl)) {
-                menu.AddItem("Open information page", () => {
-                    WindowsHelper.ViewInBrowser(information.InformationUrl);
-                });
+                menu.AddItem("Open information page", () => { WindowsHelper.ViewInBrowser(information.InformationUrl); });
             }
 
             menu.AddSeparator()
-                .AddItem("Ignore update", () => client.IgnoreUpdate(obj.CupContentType, obj.Id))
-                .AddItem("Ignore all updates", () => client.IgnoreAllUpdates(obj.CupContentType, obj.Id))
-                .AddItem("Report update as broken", new AsyncCommand(() => client.ReportUpdateAsync(obj.CupContentType, obj.Id)));
+                    .AddItem("Ignore update", () => client.IgnoreUpdate(obj.CupContentType, obj.Id))
+                    .AddItem("Ignore all updates", () => client.IgnoreAllUpdates(obj.CupContentType, obj.Id))
+                    .AddItem("Report update as broken", new AsyncCommand(() => client.ReportUpdateAsync(obj.CupContentType, obj.Id)));
         }
     }
 }

@@ -185,7 +185,7 @@ namespace AcManager.Pages.Dialogs {
                         }
 
                         if (Mode == ServerPresetPackMode.Windows) {
-                            outputStream.AddZipDescription(Server.Name);
+                            outputStream.AddZipDescription(Server.DisplayName ?? "Server for Assetto Corsa");
                         }
                     } finally {
                         // not needed here actually, but if it’s IDisposable, let’s keep it clean

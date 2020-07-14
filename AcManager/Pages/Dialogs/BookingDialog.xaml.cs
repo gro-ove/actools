@@ -41,7 +41,7 @@ namespace AcManager.Pages.Dialogs {
                     var carEntry = ServerEntry.SelectedCarEntry;
                     if (carEntry == null) return;
 
-                    carEntry.AvailableSkinId = value?.Id;
+                    carEntry.SetAvailableSkinId(value?.Id, null);
                     ServerEntry.JoinCommand.ExecuteAsync(null).Ignore();
                 }
             }

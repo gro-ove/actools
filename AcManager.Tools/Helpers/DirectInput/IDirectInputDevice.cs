@@ -1,9 +1,12 @@
 using System.Collections.Generic;
-using AcTools.Utils.Helpers;
 using JetBrains.Annotations;
 
 namespace AcManager.Tools.Helpers.DirectInput {
-    public interface IDirectInputDevice : IWithId {
+    public interface IDirectInputDevice {
+        string InstanceId { get; }
+
+        string ProductId { get; }
+
         bool IsVirtual { get; }
 
         bool IsController { get; }
@@ -24,5 +27,12 @@ namespace AcManager.Tools.Helpers.DirectInput {
 
         [CanBeNull]
         DirectInputPov GetPov(int id, DirectInputPovDirection direction);
+    }
+
+    public static class DirectInputDeviceExtension {
+        public static bool IsSameAs(this IDirectInputDevice a, IDirectInputDevice b) {
+            return a.InstanceId == b.InstanceId
+                    || (a.InstanceId == null || b.InstanceId == null) && (a.ProductId == b.ProductId || a.DisplayName == b.DisplayName);
+        }
     }
 }

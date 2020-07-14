@@ -66,7 +66,7 @@ namespace FirstFloor.ModernUI.Windows.Attached {
         public bool CloseOnResize { get; }
 
         private static void DebugMessage(string msg) {
-#if DEBUG
+#if DEBUG_
             Logging.Debug(msg);
 #else
             if (OptionDebugMode) {

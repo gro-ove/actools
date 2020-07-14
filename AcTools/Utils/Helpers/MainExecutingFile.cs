@@ -8,7 +8,8 @@ namespace AcTools.Utils.Helpers {
         private static string _name;
         private static string _directory;
 
-        public static string Location => _location ?? (_location = Assembly.GetEntryAssembly().Location);
+        public static string Location => _location ?? (_location = Assembly.GetEntryAssembly()?.Location ?? "");
+
 
         public static string Name => _name ?? (_name = Path.GetFileName(Location));
 

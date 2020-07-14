@@ -19,6 +19,9 @@ namespace AcManager.Tools.Filters.Testers {
                 case "ip":
                     return nameof(ServerEntry.Ip);
 
+                case "csp":
+                    return nameof(ServerEntry.RequiredCspVersion);
+
                 case "d":
                 case "drivers":
                 case "players":
@@ -133,6 +136,9 @@ namespace AcManager.Tools.Filters.Testers {
 
                 case "carid":
                     return obj.Cars?.Any(x => value.Test(x.Id)) == true;
+
+                case "csp":
+                    return obj.RequiredCspVersion > 0;
 
                 case "c":
                 case "car":

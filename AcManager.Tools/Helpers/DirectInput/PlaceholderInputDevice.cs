@@ -7,13 +7,14 @@ namespace AcManager.Tools.Helpers.DirectInput {
         [CanBeNull]
         private readonly DisplayInputParams _axesP, _buttonsP, _povsP;
 
-        public PlaceholderInputDevice([CanBeNull] string id, string displayName, int index) {
-            Id = id;
+        public PlaceholderInputDevice([CanBeNull] string instanceId, [CanBeNull] string productId, string displayName, int index) {
+            InstanceId = instanceId;
+            ProductId = productId;
             Index = index;
             IsController = DirectInputDeviceUtils.IsController(displayName);
             OriginalIniIds = new List<int> { index };
 
-            if (id != null && DisplayInputParams.Get(id, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP)) {
+            if (productId != null && DisplayInputParams.Get(productId, out var gotDisplayName, out _axesP, out _buttonsP, out _povsP)) {
                 DisplayName = gotDisplayName;
             } else {
                 DisplayInputParams.Get(DirectInputDeviceUtils.GetXboxControllerGuid(), out _, out _axesP, out _buttonsP, out _povsP);
@@ -22,7 +23,10 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         [CanBeNull]
-        public string Id { get; }
+        public string ProductId { get; }
+
+        [CanBeNull]
+        public string InstanceId { get; }
 
         public bool IsVirtual => true;
 
@@ -42,7 +46,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
                 = new Dictionary<Tuple<int, DirectInputPovDirection>, DirectInputPov>();
 
         public bool Same(IDirectInputDevice other) {
-            return other != null && (Id == other.Id || DisplayName == other.DisplayName || Id == @"0" && other.IsController);
+            return other != null && (this.IsSameAs(other) || InstanceId == @"0" && other.IsController);
         }
 
         public DirectInputAxle GetAxle(int id) {
@@ -71,7 +75,7 @@ namespace AcManager.Tools.Helpers.DirectInput {
         }
 
         public override string ToString() {
-            return $"PlaceholderInputDevice({Id}:{DisplayName}, Ini={Index})";
+            return $"PlaceholderInputDevice({InstanceId}:{DisplayName}, Ini={Index})";
         }
     }
 }

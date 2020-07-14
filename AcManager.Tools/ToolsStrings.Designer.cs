@@ -3292,6 +3292,42 @@ namespace AcManager.Tools {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading actual server information….
+        /// </summary>
+        public static string Online_LoadingActualInformation {
+            get {
+                return ResourceManager.GetString("Online_LoadingActualInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading cars ({0})….
+        /// </summary>
+        public static string Online_LoadingCars {
+            get {
+                return ResourceManager.GetString("Online_LoadingCars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading players list….
+        /// </summary>
+        public static string Online_LoadingPlayersList {
+            get {
+                return ResourceManager.GetString("Online_LoadingPlayersList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading {0} skins….
+        /// </summary>
+        public static string Online_LoadingSkins {
+            get {
+                return ResourceManager.GetString("Online_LoadingSkins", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Nothing found.
         /// </summary>
         public static string Online_ScanningNothingFound {

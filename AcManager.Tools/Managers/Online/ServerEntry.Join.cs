@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using AcManager.Tools.Data;
 using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.AcLog;
+using AcManager.Tools.Helpers.AcSettings;
 using AcManager.Tools.Helpers.Api;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
@@ -40,6 +42,14 @@ namespace AcManager.Tools.Managers.Online {
                 yield break;
             }
 
+            if (CspRequiredMissing) {
+                if (RequiredCspVersion == PatchHelper.NonExistentVersion) {
+                    yield return "Custom Shaders Patch should be disabled";
+                } else {
+                    yield return $"Custom Shaders Patch with version ID {RequiredCspVersion} or newer is required";
+                }
+            }
+
             if (Status != ServerStatus.Ready && Status != ServerStatus.MissingContent) {
                 yield return "CM isn’t ready";
             }
@@ -72,6 +82,20 @@ namespace AcManager.Tools.Managers.Online {
 
             if (!BookingMode && SelectedCarEntry?.IsAvailable != true && SelectedCarEntry?.CarExists == true) {
                 yield return "Selected car isn’t available";
+            }
+
+            var cspOptions = SelectedCarEntry?.CspOptions;
+            if (RequiredCspVersion != 0 && cspOptions?.BlockingAnyInputScheme == true) {
+                var controlsScheme = AcSettingsHolder.Controls.InputMethod;
+                if (cspOptions.BlockKeyboard && controlsScheme.Value == "KEYBOARD") {
+                    yield return "Keyboards are not allowed";
+                }
+                if (cspOptions.BlockJoystick && controlsScheme.Value == "X360") {
+                    yield return "Joysticks are not allowed";
+                }
+                if (cspOptions.BlockSteeringWheel && controlsScheme.Value == "WHEEL") {
+                    yield return "Steering wheels are not allowed";
+                }
             }
         }
 

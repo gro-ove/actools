@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Helpers.Api.Kunos;
 using AcManager.Tools.Objects;
@@ -10,6 +11,7 @@ using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Serialization;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 
@@ -75,6 +77,25 @@ namespace AcManager.Tools.Managers.Online {
                 _missingTrackError = null;
             } else {
                 _missingTrackError = string.Format(ToolsStrings.Online_Server_TrackIsMissing, IdToBb(TrackId, false));
+            }
+        }
+
+        public void CheckCspState() {
+            var missingBefore = CspRequiredMissing;
+            if (RequiredCspVersion == PatchHelper.NonExistentVersion) {
+                CspRequiredAvailable = PatchHelper.GetActiveBuild() == null;
+                CspRequiredMissing = PatchHelper.GetActiveBuild() != null;
+            } else if (RequiredCspVersion > 0) {
+                CspRequiredAvailable = PatchHelper.GetActiveBuild().As(-1) >= RequiredCspVersion;
+                CspRequiredMissing = !CspRequiredAvailable;
+            } else {
+                CspRequiredAvailable = false;
+                CspRequiredMissing = false;
+            }
+
+            if (CspRequiredMissing != missingBefore) {
+                UpdateErrorsList();
+                AvailableUpdate();
             }
         }
 
@@ -156,9 +177,26 @@ namespace AcManager.Tools.Managers.Online {
                 SetSelectedCarEntry(Cars.FirstOrDefault());
             }
 
-            if (TrackId != information.TrackId) {
-                TrackId = information.TrackId;
-                Track = TrackId == null ? null : GetTrack(TrackId);
+            if (information.TrackId != null) {
+                var trackIdPieces = information.TrackId.Substring(information.TrackId.StartsWith(@"csp/") ? 4 : 0)
+                        .Split(new[] { @"/../" }, StringSplitOptions.None);
+                if (trackIdPieces.Length == 2) {
+                    RequiredCspVersion = Math.Max(PatchHelper.MinimumTestOnlineVersion, trackIdPieces[0].As(0));
+                    CheckCspState();
+                } else {
+                    RequiredCspVersion = 0;
+                    CheckCspState();
+                }
+
+                if (trackIdPieces.Last() != TrackId) {
+                    TrackId = trackIdPieces.Last();
+                    Track = TrackId == null ? null : GetTrack(TrackId);
+                }
+            } else if (TrackId != null) {
+                TrackId = null;
+                Track = null;
+                RequiredCspVersion = 0;
+                CheckCspState();
             }
 
             if (!IsFullyLoaded) {

@@ -7,6 +7,7 @@ using System.Windows;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcTools.DataFile;
@@ -113,12 +114,12 @@ namespace AcManager.Tools.Objects {
         private static string PasswordKeyGenerator() {
             // Server presets might be shared, to let’s chunk in tons of data potentially unavailable to somebody else
             return new StringBuilder().Append(SteamIdHelper.Instance.Value).Append('/')
-                                      .Append(AcRootDirectory.Instance.Value).Append('/')
-                                      .Append(MainExecutingFile.Location).Append('/')
-                                      .Append(Environment.UserName).Append('/')
-                                      .Append(Environment.MachineName).Append('/')
-                                      .Append(@"is8grzju0rlc6nxw")
-                                      .ToString().GetChecksum();
+                    .Append(AcRootDirectory.Instance.Value).Append('/')
+                    .Append(MainExecutingFile.Location).Append('/')
+                    .Append(Environment.UserName).Append('/')
+                    .Append(Environment.MachineName).Append('/')
+                    .Append(@"is8grzju0rlc6nxw")
+                    .ToString().GetChecksum();
         }
 
         protected override void LoadData(IniFile ini) {
@@ -151,7 +152,23 @@ namespace AcManager.Tools.Objects {
             SendIntervalHz = section.GetInt("CLIENT_SEND_INTERVAL_HZ", 18);
             Threads = section.GetInt("NUM_THREADS", 2);
 
-            TrackId = section.GetNonEmpty("TRACK", "imola");
+            var trackId = section.GetNonEmpty("TRACK", "imola");
+            var trackIdPieces = trackId.Substring(trackId.StartsWith(@"csp/") ? 4 : 0)
+                    .Split(new[] { @"/../" }, StringSplitOptions.None);
+            if (trackIdPieces.Length == 2) {
+                CspRequired = true;
+                RequiredCspVersion = trackIdPieces[0].As<int?>(null);
+            } else {
+                CspRequired = false;
+                RequiredCspVersion = null;
+            }
+            TrackId = trackIdPieces.Last();
+
+            if (!CspRequired && cmSection.GetBool("PREVENT_CSP", false)) {
+                CspRequired = true;
+                RequiredCspVersion = PatchHelper.NonExistentVersion;
+            }
+
             TrackLayoutId = section.GetNonEmpty("CONFIG_TRACK");
             CarIds = section.GetStrings("CARS", ';');
 
@@ -203,7 +220,7 @@ namespace AcManager.Tools.Objects {
             ManagerDescription = data.GetNonEmpty("DESCRIPTION");
             WebLink = data.GetNonEmpty("WEBLINK");
             SetupItems.ReplaceEverythingBy_Direct(Enumerable.Range(0, 99).Select(x => data.GetNonEmpty("FIXED_SETUP_" + x)?.Split('|'))
-                                                            .Where(x => x?.Length == 2).Select(x => SetupItem.Create(x[1], x[0].As(false))).NonNull());
+                    .Where(x => x?.Length == 2).Select(x => SetupItem.Create(x[1], x[0].As(false))).NonNull());
 
             var ftp = ini["FTP"];
             FtpHost = ftp.GetNonEmpty("HOST");
@@ -214,6 +231,7 @@ namespace AcManager.Tools.Objects {
             // Storing password separately, to avoid conflicts with the official manager and its encryption
             FtpPassword = StringCipher.Decrypt(ftp.GetNonEmpty("__CM_PASSWORD"), PasswordKey.RequireValue);
             FtpClearBeforeUpload = ftp.GetBool("__CM_CLEAR_BEFORE_UPLOAD", false);
+            FtpUploadDataOnly = ftp.GetBool("__CM_DATA_ONLY", true);
         }
 
         private void LoadEntryListData(IniFile ini) {
@@ -247,7 +265,9 @@ namespace AcManager.Tools.Objects {
             section.Set("CLIENT_SEND_INTERVAL_HZ", SendIntervalHz);
             section.Set("NUM_THREADS", Threads);
 
-            section.Set("TRACK", TrackId ?? "");
+            section.Set("TRACK",
+                    (CspRequired ? (RequiredCspVersion == PatchHelper.NonExistentVersion ? "" : @"csp/") + (RequiredCspVersion ?? 0) + @"/../" : "") + TrackId);
+
             section.Set("CONFIG_TRACK", TrackLayoutId ?? "");
             section.Set("CARS", CarIds, ';');
 
@@ -328,12 +348,13 @@ namespace AcManager.Tools.Objects {
             ftp.Set("FOLDER", FtpDirectory);
             ftp.Set("__CM_PASSWORD", StringCipher.Encrypt(FtpPassword, PasswordKey.RequireValue));
             ftp.Set("__CM_CLEAR_BEFORE_UPLOAD", FtpClearBeforeUpload);
+            ftp.Set("__CM_DATA_ONLY", FtpUploadDataOnly);
             ftp.SetIntEnum("LINUX", FtpMode);
         }
 
         public override async Task SaveAsync() {
             var entryIni = EntryListIniObject ?? IniFile.Empty;
-            entryIni.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section));
+            entryIni.SetSections("CAR", DriverEntries, (entry, section) => entry.SaveTo(section, CspRequiredActual));
 
             var mainIni = IniObject ?? IniFile.Empty;
             SaveData(mainIni);

@@ -7931,7 +7931,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no pit stop for this car.
+        ///   Looks up a localized string similar to There is no pit stall for this car.
         /// </summary>
         public static string RaceGrid_OverTheLimit {
             get {
@@ -10097,7 +10097,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This way, there&apos;ll be a crew for pit stops, but bots might be more passive.
+        ///   Looks up a localized string similar to This way, there&apos;ll be a crew for pit stalls, but bots might be more passive.
         /// </summary>
         public static string Settings_Drive_UsePracticeForTrackDay_Tooltip {
             get {
@@ -13188,7 +13188,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Amount of pit stops as well as limit for a number of cars on the track, recommended format: “{0}”.
+        ///   Looks up a localized string similar to Amount of pit stalls as well as limit for a number of cars on the track, recommended format: “{0}”.
         /// </summary>
         public static string TrackSpecs_Pitboxes_Tooltip {
             get {

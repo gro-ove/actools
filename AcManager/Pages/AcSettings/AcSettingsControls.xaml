@@ -71,7 +71,7 @@
                             Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}">
                           <StackPanel Margin="4">
                             <TextBlock Text="{Binding DisplayName}" Style="{StaticResource Heading2}" />
-                            <TextBlock Text="{Binding Id, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
+                            <TextBlock Text="{Binding ProductId, StringFormat='{}AC ID: {0}'}" FontWeight="Bold" />
                             <TextBlock Text="{Binding Device.ProductName, StringFormat='{}Product name: {0}'}" />
                             <TextBlock Text="{Binding Device.ProductGuid, StringFormat='{}Product GUID: {0}'}" />
                             <TextBlock Text="{Binding Device.ForceFeedbackDriverGuid, StringFormat='{}FFB GUID: {0}'}" />

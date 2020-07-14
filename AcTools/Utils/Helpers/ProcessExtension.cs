@@ -201,7 +201,7 @@ namespace AcTools.Utils.Helpers {
                 AcToolsLogging.Write("Management failed!");
 
                 // won’t work if processes were compiled for different architectures
-                path = process.MainModule.FileName;
+                path = process.MainModule?.FileName;
                 AcToolsLogging.Write("MainModule.FileName: " + path);
                 return path;
             } catch (Exception e) {

@@ -208,6 +208,9 @@ namespace AcManager.Tools.Miscellaneous {
 
             var changelogFile = new FileInfo(Path.Combine(AcRootDirectory.Instance.RequireValue, "changelog.txt"));
             var version = changelogFile.Exists ? File.ReadAllLines(changelogFile.FullName)[0] : null;
+            if (version?.StartsWith(@"1.") == false) {
+                version = null;
+            }
 
             var mainFile = new FileInfo(PatchHelper.GetMainFilename());
             var pdbFile = new FileInfo(Path.Combine(AcRootDirectory.Instance.RequireValue, "acs.pdb"));
@@ -305,13 +308,23 @@ namespace AcManager.Tools.Miscellaneous {
             foreach (var config in _configs) {
                 config.Save();
             }
+
+            if (_enabledDirty) {
+                _enabledDirty = false;
+                PatchHelper.Reload();
+            }
         }
 
         private readonly Busy _configsSaveBusy = new Busy();
         private bool _configsPresetApplying;
+        private bool _enabledDirty;
 
-        private void OnConfigsValueChanged(object sender, EventArgs e) {
+        private void OnConfigsValueChanged(object sender, ValueChangedEventArgs e) {
             if (_configsPresetApplying) return;
+            if (e.Source.FileNameWithoutExtension == "general" && e.Section == "BASIC" && e.Key == "ENABLED") {
+                _enabledDirty = true;
+            }
+
             _configsSaveBusy.DoDelay(SaveConfigs, 100);
             Changed?.Invoke(this, EventArgs.Empty);
         }
@@ -499,6 +512,7 @@ namespace AcManager.Tools.Miscellaneous {
             }
             _configsPresetApplying = false;
             SaveConfigs();
+            PatchHelper.Reload();
         }
 
         public string ExportToPresetData() {

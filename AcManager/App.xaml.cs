@@ -254,9 +254,9 @@ namespace AcManager {
             AppArguments.Set(AppFlag.FbxMultiMaterial, ref Kn5.OptionJoinToMultiMaterial);
 
             Acd.Factory = new AcdFactory();
-            #if !DEBUG
+#if !DEBUG
             Kn5.Factory = Kn5New.GetFactoryInstance();
-            #endif
+#endif
             Lazier.SyncAction = ActionExtension.InvokeInMainThreadAsync;
             KeyboardListenerFactory.Register<KeyboardListener>();
 
@@ -419,17 +419,49 @@ namespace AcManager {
             BbCodeBlock.OptionImageCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Images");
             BbCodeBlock.OptionEmojiCacheDirectory = FilesStorage.Instance.GetTemporaryFilename("Emoji");
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/car"),
-                    new DelegateCommand<string>(
-                            id => {
-                                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car));
-                            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/enable"), new DelegateCommand(() => {
+                using (var model = PatchSettingsModel.Create()) {
+                    var item = model.Configs?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .GetByIdOrDefault("ENABLED");
+                    if (item != null) {
+                        item.Value = @"1";
+                    }
+                }
+            }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/track"),
-                    new DelegateCommand<string>(
-                            id => {
-                                WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track));
-                            }));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/disable"), new DelegateCommand(() => {
+                using (var model = PatchSettingsModel.Create()) {
+                    var item = model.Configs?
+                            .FirstOrDefault(x => x.FileNameWithoutExtension == "general")?.Sections.GetByIdOrDefault("BASIC")?
+                            .GetByIdOrDefault("ENABLED");
+                    if (item != null) {
+                        item.Value = @"0";
+                    }
+                }
+            }));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://csp/update"), new DelegateCommand<string>(id => {
+                var version = id.As(0);
+                if (version == 0) {
+                    Logging.Error($"Wrong parameter: {id}");
+                    return;
+                }
+
+                var versionInfo = PatchUpdater.Instance.Versions.FirstOrDefault(x => x.Build == version);
+                if (versionInfo == null) {
+                    Logging.Error($"Version {version} is missing");
+                    return;
+                }
+
+                PatchUpdater.Instance.InstallAsync(versionInfo, CancellationToken.None);
+            }));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/car"), new DelegateCommand<string>(
+                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Car)); }));
+
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findMissing/track"), new DelegateCommand<string>(
+                    id => { WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(id, SettingsHolder.MissingContentType.Track)); }));
 
             BbCodeBlock.AddLinkCommand(new Uri("cmd://downloadMissing/car"), new DelegateCommand<string>(id => {
                 var s = id.Split('|');
@@ -441,27 +473,26 @@ namespace AcManager {
                 IndexDirectDownloader.DownloadTrackAsync(s[0], s.ArrayElementAtOrDefault(1)).Forget();
             }));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"),
-                    new DelegateCommand<string>(id => NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://createNeutralLut"), new DelegateCommand<string>(id =>
+                    NeutralColorGradingLut.CreateNeutralLut(id.As(16))));
 
-            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"),
-                    new DelegateCommand(() => new ModernDialog {
-                        ShowTitle = false,
-                        ShowTopBlob = false,
-                        Title = "Connect to SimRacingSystem",
-                        Content = new ModernFrame {
-                            Source = new Uri("/Pages/Drive/Online.xaml?Filter=SimRacingSystem", UriKind.Relative)
-                        },
-                        MinHeight = 400,
-                        MinWidth = 800,
-                        MaxHeight = DpiAwareWindow.UnlimitedSize,
-                        MaxWidth = DpiAwareWindow.UnlimitedSize,
-                        Padding = new Thickness(0),
-                        ButtonsMargin = new Thickness(8, -32, 8, 8),
-                        SizeToContent = SizeToContent.Manual,
-                        ResizeMode = ResizeMode.CanResizeWithGrip,
-                        LocationAndSizeKey = @".SrsJoinDialog"
-                    }.ShowDialog()));
+            BbCodeBlock.AddLinkCommand(new Uri("cmd://findSrsServers"), new DelegateCommand(() => new ModernDialog {
+                ShowTitle = false,
+                ShowTopBlob = false,
+                Title = "Connect to SimRacingSystem",
+                Content = new ModernFrame {
+                    Source = new Uri("/Pages/Drive/Online.xaml?Filter=SimRacingSystem", UriKind.Relative)
+                },
+                MinHeight = 400,
+                MinWidth = 800,
+                MaxHeight = DpiAwareWindow.UnlimitedSize,
+                MaxWidth = DpiAwareWindow.UnlimitedSize,
+                Padding = new Thickness(0),
+                ButtonsMargin = new Thickness(8, -32, 8, 8),
+                SizeToContent = SizeToContent.Manual,
+                ResizeMode = ResizeMode.CanResizeWithGrip,
+                LocationAndSizeKey = @".SrsJoinDialog"
+            }.ShowDialog()));
 
             BbCodeBlock.DefaultLinkNavigator.PreviewNavigate += (sender, args) => {
                 if (args.Uri.IsAbsoluteUri && args.Uri.Scheme == "acmanager") {

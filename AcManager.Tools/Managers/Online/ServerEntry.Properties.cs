@@ -289,6 +289,27 @@ namespace AcManager.Tools.Managers.Online {
             set => Apply(value, ref _isAvailable);
         }
 
+        private int _requiredCspVersion;
+
+        public int RequiredCspVersion {
+            get => _requiredCspVersion;
+            set => Apply(value, ref _requiredCspVersion);
+        }
+
+        private bool _cspRequiredAvailable;
+
+        public bool CspRequiredAvailable {
+            get => _cspRequiredAvailable;
+            set => Apply(value, ref _cspRequiredAvailable);
+        }
+
+        private bool _cspRequiredMissing;
+
+        public bool CspRequiredMissing {
+            get => _cspRequiredMissing;
+            set => Apply(value, ref _cspRequiredMissing);
+        }
+
         private string _trackId;
 
         [CanBeNull]

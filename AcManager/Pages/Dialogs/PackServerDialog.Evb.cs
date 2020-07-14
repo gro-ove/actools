@@ -110,7 +110,12 @@ namespace AcManager.Pages.Dialogs {
 
                     // Processing
                     var evb = Shell32.FindExecutable(manifest);
-                    if (Path.GetFileName(evb)?.Contains("enigma", StringComparison.OrdinalIgnoreCase) != true || !File.Exists(evb)) {
+
+                    if (Path.GetFileName(evb) == "enigmavb.exe") {
+                        evb = Path.Combine(Path.GetDirectoryName(evb) ?? "", "enigmavbconsole.exe");
+                    }
+
+                    if (Path.GetFileName(evb)?.Contains("enigmavbconsole", StringComparison.OrdinalIgnoreCase) != true || !File.Exists(evb)) {
                         throw new InformativeException("Enigma Virtual Box not found",
                                 "Please, make sure it’s installed and .EVB-files are associated with its “enigmavbconsole.exe” executable.");
                     }
