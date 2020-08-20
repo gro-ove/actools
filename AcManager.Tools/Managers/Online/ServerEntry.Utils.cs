@@ -26,84 +26,26 @@ namespace AcManager.Tools.Managers.Online {
                 return @"zzzz";
             }
 
-            if (IsUnlikelyToBeCheat(char.ToLowerInvariant(name[0]))) {
-                return name.ToLowerInvariant();
-            }
-
-            var r = new StringBuilder(name.Length);
-            var l = 0;
-
-            var p = '\0';
-            var pFits = false;
-
-            for (var i = 0; i < name.Length; i++) {
-                var c = name[i];
-                if (c == '.') continue;
-
-                c = char.ToLowerInvariant(c);
-                if (c == 'v') {
-                    var skip = false;
-                    for (var j = i + 1; j < name.Length; j++) {
-                        if (char.IsDigit(name[j]) || name[j] == '.') {
-                            skip = true;
-                            i++;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    if (skip) {
-                        continue;
-                    }
-                }
-
-                var cFits = (char.IsLetter(c) || pFits && char.IsDigit(c))
-                        && (c != p || l > 0 || IsUnlikelyToBeCheat(c));
-
-                if (pFits) {
-                    if (l < 2 && cFits && p == 'a' && c == 'c' && !NextIsLetter()) {
-                        pFits = false;
-                        continue;
-                    }
-
-                    if (cFits || l > 0) {
-                        l++;
-                        r.Append(p);
-                    }
-                }
-
-                if (l > 5) {
-                    return r.Append(name.Substring(i)).ToString();
-                }
-
-                p = c;
-                pFits = cFits;
-
-                bool NextIsLetter() {
-                    return i + 1 < name.Length && char.IsLetter(name[i + 1]);
-                }
-            }
-
-            if (pFits) {
-                r.Append(p);
-            }
-
-            if (l > 0) {
-                return r.ToString();
+            name = name.ToLowerInvariant();
+            if (IsUnlikelyToBeCheat(name[0])) {
+                return name;
             }
 
             var lettersOnly = LettersOnly(name);
             return lettersOnly.Length > 0 ? lettersOnly : @"zzz:" + name;
 
             bool IsUnlikelyToBeCheat(char c) {
-                return c > 'c' && c <= 'z';
+                return c > 'a' && c <= 'z';
             }
 
             string LettersOnly(string s) {
                 var o = new StringBuilder(s.Length);
+                var v = s.Length > 3 && IsUnlikelyToBeCheat(s[1]);
                 for (var i = 0; i < s.Length; i++) {
+                    var c = s[i];
                     if (char.IsLetterOrDigit(s[i])) {
-                        o.Append(char.ToLowerInvariant(s[i]));
+                        v = v || IsUnlikelyToBeCheat(c);
+                        if (v) o.Append(char.ToLowerInvariant(s[i]));
                     }
                 }
                 return o.ToString();
