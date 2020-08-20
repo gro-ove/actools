@@ -475,6 +475,74 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
+        /*private static Queue<Socket> _socketsPool = new Queue<Socket>();
+
+        [ItemCanBeNull]
+        public static async Task<Tuple<int, TimeSpan>> TryToPingServerAsync(string ip, int port, int timeout, bool logging = false) {
+            var socket = _socketsPool.Count > 0 ? _socketsPool.Dequeue() : new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {
+                SendTimeout = timeout,
+                ReceiveTimeout = timeout
+            };
+
+            var buffer = new byte[3];
+            if (logging) Logging.Debug("Socket created");
+
+            void Callback(object sender, SocketAsyncEventArgs args) {
+                return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+            }
+
+            try {
+                var bytes = BitConverter.GetBytes(200);
+                var endpoint = new IPEndPoint(IPAddress.Parse(ip), port);
+                if (logging) Logging.Debug("Sending bytes to: " + endpoint);
+
+                var e = new SocketAsyncEventArgs { RemoteEndPoint = endpoint };
+                e.SetBuffer(bytes, 0, bytes.Length);
+                e.Completed += Callback;
+
+                var completedAsync = false;
+                try {
+                    completedAsync = socket.SendAsync(e);
+                } catch (SocketException se) {
+                    Console.WriteLine("Socket Exception: " + se.ErrorCode + " Message: " + se.Message);
+                }
+
+                if (!completedAsync) {
+                    Callback(null, e);
+                }
+
+                await Task.Factory.FromAsync(socket.BeginSendTo(bytes, 0, bytes.Length, SocketFlags.None, endpoint, null, socket),
+                        socket.EndSendTo);
+                if (logging) Logging.Debug("Bytes sent");
+
+                var timer = Stopwatch.StartNew();
+                var elapsed = TimeSpan.Zero;
+
+                if (logging) Logging.Debug("Receiving response…");
+                var begin = socket.BeginReceive(buffer, 0, buffer.Length, SocketFlags.None, a => { elapsed = timer.Elapsed; }, socket);
+                if (begin == null) {
+                    if (logging) Logging.Warning("Failed to begin receiving response");
+                    return null;
+                }
+
+                if (logging) Logging.Debug("Waiting for the end of response");
+                await Task.Factory.FromAsync(begin, socket.EndReceive);
+
+                if (logging) Logging.Debug("Response: " + buffer.JoinToString(", "));
+                if (buffer[0] != 200 || buffer[1] + buffer[2] <= 0) {
+                    if (logging) Logging.Warning("Invalid response, consider as an error");
+                    return null;
+                }
+
+                if (logging) Logging.Write("Pinging is a success");
+                return new Tuple<int, TimeSpan>(BitConverter.ToInt16(buffer, 1), elapsed);
+            } catch (Exception) {
+                return null;
+            } finally {
+                _socketsPool.Enqueue(socket);
+            }
+        }*/
+
         [CanBeNull]
         public static Tuple<int, TimeSpan> TryToPingServer(string ip, int port, int timeout, bool logging = false) {
             using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp) {

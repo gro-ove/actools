@@ -31,6 +31,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _showSharedDialog;
+
+            public bool ShowSharedDialog {
+                get => _showSharedDialog ?? (_showSharedDialog = ValuesStorage.Get("Settings.SharingSettings.ShowSharedDialog", true)).Value;
+                set {
+                    if (Equals(value, _showSharedDialog)) return;
+                    _showSharedDialog = value;
+                    ValuesStorage.Set("Settings.SharingSettings.ShowSharedDialog", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _copyLinkToClipboard;
 
             public bool CopyLinkToClipboard {

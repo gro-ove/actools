@@ -56,6 +56,7 @@ namespace AcManager.Pages.Settings {
 
             InputBindings.AddRange(new[] {
                 new InputBinding(Model.ShareCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control)),
+                new InputBinding(Model.ShareSectionCommand, new KeyGesture(Key.PageUp, ModifierKeys.Control | ModifierKeys.Shift)),
                 PresetsControl != null ? new InputBinding(PresetsControl.SaveCommand, new KeyGesture(Key.S, ModifierKeys.Control)) : null
             }.NonNull().ToList());
             // Logging.Here();
@@ -181,6 +182,20 @@ namespace AcManager.Pages.Settings {
                     if (data == null) return;
                     await SharingUiHelper.ShareAsync(SharedEntryType.CspSettings,
                             Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(MainModel.PresetableKey)), null, data);
+                } catch (Exception e) {
+                    NonfatalError.Notify("Can’t share preset", e);
+                }
+            }));
+
+            private AsyncCommand _shareSectionCommand;
+
+            public AsyncCommand ShareSectionCommand => _shareSectionCommand ?? (_shareSectionCommand = new AsyncCommand(async () => {
+                try {
+                    var data = MainModel.ExportToPresetData(new[]{ MainModel.SelectedPage?.Config }.NonNull());
+                    if (data == null) return;
+                    await SharingUiHelper.ShareAsync(SharedEntryType.CspSettings,
+                            Path.GetFileNameWithoutExtension(UserPresetsControl.GetCurrentFilename(MainModel.PresetableKey)),
+                            MainModel.SelectedPage?.DisplayName, data);
                 } catch (Exception e) {
                     NonfatalError.Notify("Can’t share preset", e);
                 }

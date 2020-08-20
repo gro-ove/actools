@@ -181,17 +181,17 @@
     <value>JPG</value>
   </data>
   <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
-    <value>Umožnit překrývání appek</value>
-  </data>
+    <value>Překrývání appek</value>
+  <alternative>Umožnit překrývání appek</alternative></data>
   <data name="AcSettings_View_CameraHeader" xml:space="preserve">
     <value>Kamera:</value>
   </data>
   <data name="AcSettings_View_Damage" xml:space="preserve">
-    <value>Zobrazit ukazatel při poškození</value>
-  </data>
+    <value>Zobrazovat ukazatel při poškození</value>
+  <alternative>Zobrazit ukazatel při poškození</alternative></data>
   <data name="AcSettings_View_DriversNames" xml:space="preserve">
-    <value>Zobrazovat nad auty jména soupeřů</value>
-  <alternative>Zobrazit nad soupeři jejich jména</alternative></data>
+    <value>Zobrazovat nad auty nacionále soupeřů</value>
+  <alternative>Zobrazit nad soupeři jejich jména</alternative><alternative>Zobrazovat nad auty jména soupeřů</alternative></data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
     <value>Intenzita vizuální simulace přetížení:</value>
   </data>
@@ -202,11 +202,11 @@
     <value>Rychlost rozhlédnutí</value>
   </data>
   <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
-    <value>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</value>
-  <alternative>Skrýt vaše virtuální paže</alternative></data>
+    <value>Skrývat virtuální paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt vaše virtuální paže</alternative><alternative>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</alternative></data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
-    <value>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
-  <alternative>Skrýt váš virtuální volant</alternative></data>
+    <value>Skrývat virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt váš virtuální volant</alternative><alternative>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</alternative></data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
     <value>Třes při rychlé jízdě</value>
   </data>
@@ -214,8 +214,8 @@
     <value>Příčný směr</value>
   </data>
   <data name="AcSettings_View_Leaderboard" xml:space="preserve">
-    <value>Zobrazit výsledky závodu</value>
-  </data>
+    <value>Zobrazovat výsledky závodu</value>
+  <alternative>Zobrazit výsledky závodu</alternative></data>
   <data name="AcSettings_View_LockCamera" xml:space="preserve">
     <value>Palubní kamerou vždy mířit na horizont</value>
   </data>
@@ -223,8 +223,8 @@
     <value>Jen v příčném směru</value>
   </data>
   <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
-    <value>Nepohybovat vaším virtuálním volantem</value>
-  </data>
+    <value>Nepohybovat virtuálním volantem při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Nepohybovat vaším virtuálním volantem</alternative></data>
   <data name="AcSettings_View_Longtudinal" xml:space="preserve">
     <value>Podélný směr</value>
   </data>
@@ -235,8 +235,8 @@
     <value>Omezení rozsahu otáčení vašeho virtuálního volantu</value>
   <alternative>Omezení úhlu otáčení vašeho virtuálního volantu</alternative></data>
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
-    <value>Zobrazit rozestupy vůči soupeřům</value>
-  </data>
+    <value>Zobrazovat rozestupy vůči soupeřům</value>
+  <alternative>Zobrazit rozestupy vůči soupeřům</alternative></data>
   <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
     <value>Jednotky:</value>
   </data>
@@ -247,8 +247,8 @@
     <value>Pohled:</value>
   </data>
   <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
-    <value>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</value>
-  <alternative>Zobrazit virtuální zpětné zrcátko</alternative></data>
+    <value>Při příhodných pohledech zobrazovat plně virtuální vnitřní zpětné zrcátko (F11)</value>
+  <alternative>Zobrazit virtuální zpětné zrcátko</alternative><alternative>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</alternative></data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>Protiblokovací systém brzd</value>
   </data>
@@ -307,11 +307,11 @@
     <value>Zlepší odpich při prudkém zrychlení</value>
   </data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>Předehřát pneumatiky</value>
-  </data>
+    <value>Předehřívat pneumatiky</value>
+  <alternative>Předehřát pneumatiky</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
-    <value>Předehřát pneumatiky v boxech pomocí návleků</value>
-  </data>
+    <value>Předehřívat pneumatiky v boxech pomocí návleků</value>
+  <alternative>Předehřát pneumatiky v boxech pomocí návleků</alternative></data>
   <data name="Assists_TyreWear" xml:space="preserve">
     <value>Opotřebování pneumatik</value>
   </data>
@@ -373,8 +373,8 @@
     <value>Aktivovat DRS</value>
   </data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
-    <value>Zablikat světly</value>
-  </data>
+    <value>Zablikání světly</value>
+  <alternative>Zablikat světly</alternative></data>
   <data name="Controls_Gear_Fifth" xml:space="preserve">
     <value>Pátý rychlostní stupeň</value>
   </data>
@@ -499,8 +499,8 @@
     <value>Sestavování roštu...</value>
   </data>
   <data name="Drive_GridNamesFromSkins" xml:space="preserve">
-    <value>Použít názvy skinů, pokud jsou dostupné</value>
-  <alternative>Použít jména skinů, pokud jsou dostupná</alternative></data>
+    <value>Používat názvy skinů, pokud jsou dostupné</value>
+  <alternative>Použít jména skinů, pokud jsou dostupná</alternative><alternative>Použít názvy skinů, pokud jsou dostupné</alternative></data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>Odebrat vybraná auta ze seznamu</value>
   </data>
@@ -568,8 +568,8 @@
     <value>Sprint</value>
   </data>
   <data name="Session_Hotlap" xml:space="preserve">
-    <value>Rychlé kolo</value>
-  </data>
+    <value>Rekordman</value>
+  <alternative>Rychlé kolo</alternative></data>
   <data name="Session_Practice" xml:space="preserve">
     <value>Trénink</value>
   </data>
@@ -580,8 +580,8 @@
     <value>Závod</value>
   </data>
   <data name="Session_TimeAttack" xml:space="preserve">
-    <value>Boj s časem</value>
-  </data>
+    <value>Proti času</value>
+  <alternative>Boj s časem</alternative></data>
   <data name="Session_TrackDay" xml:space="preserve">
     <value>Traťový den</value>
   </data>
@@ -831,8 +831,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Jasno</value>
   </data>
   <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
-    <value>Je mi líto, ale rozbalování metodou {0} není podporováno</value>
-  </data>
+    <value>Je mi líto, ale dešifrování metodou {0} není podporováno</value>
+  <alternative>Je mi líto, ale rozbalování metodou {0} není podporováno</alternative></data>
   <data name="AcRootDirectory_Required" xml:space="preserve">
     <value>Je vyžadována AcRootDirectory </value>
   </data>
@@ -1560,11 +1560,11 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Větrno</value>
   </data>
   <data name="Shared_CustomShowroomPreset" xml:space="preserve">
-    <value>Vlastní přednastavení autosalonu</value>
-  </data>
+    <value>Přednastavení Vlastního autosalonu</value>
+  <alternative>Vlastní přednastavení autosalonu</alternative></data>
   <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
-    <value>Vlastní přednastavení náhledů</value>
-  </data>
+    <value>Přednastavení Vlastních náhledů</value>
+  <alternative>Vlastní přednastavení náhledů</alternative></data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
     <value>Vložte nový autentifikační kód Google Drive:</value>
   </data>
@@ -1650,14 +1650,14 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Zkuste prosím obrázek trochu zmenšit</value>
   </data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>Znak značky chybí</value>
-  </data>
+    <value>Emblém značky chybí</value>
+  <alternative>Znak značky chybí</alternative></data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
     <value>Znovunačíst soubor?</value>
   </data>
   <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
-    <value>Zobrazit jak administrátor zadává heslo</value>
-  </data>
+    <value>Zobrazovat jak administrátor zadává heslo</value>
+  <alternative>Zobrazit jak administrátor zadává heslo</alternative></data>
   <data name="Drive_GridArrangeWay" xml:space="preserve">
     <value>Způsob uspořádání:</value>
   </data>
@@ -1683,8 +1683,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Míra nahodilosti:</value>
   </data>
   <data name="Race_ShowRelativeRange" xml:space="preserve">
-    <value>Zobrazit relativní rozsah</value>
-  </data>
+    <value>Zobrazovat relativní rozsah</value>
+  <alternative>Zobrazit relativní rozsah</alternative></data>
   <data name="Race_ShowAIAggression" xml:space="preserve">
     <value>Zobrazovat agresivitu soupeřů ve jméně</value>
   </data>

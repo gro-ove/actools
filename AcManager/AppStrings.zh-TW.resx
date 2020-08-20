@@ -118,13 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Main_UnhandledException" xml:space="preserve">
-    <value>未處理的異常:
+    <value>未處理的異常：
   
   {0}</value>
-  </data>
+  <alternative>未處理的異常:
+  
+  {0}</alternative></data>
   <data name="App_AppUpdated" xml:space="preserve">
-    <value>內容管理員已更新</value>
-  </data>
+    <value>Content Manager已更新</value>
+  <alternative>內容管理員已更新</alternative></data>
   <data name="App_DataUpdated" xml:space="preserve">
     <value>資料已更新</value>
   </data>
@@ -132,20 +134,20 @@
     <value>軟體語言版本已更新</value>
   </data>
   <data name="App_NewVersion" xml:space="preserve">
-    <value>有新版本可用</value>
-  </data>
+    <value>有新版本可更新</value>
+  <alternative>有新版本可用</alternative></data>
   <data name="App_AppUpdated_Details" xml:space="preserve">
     <value>點擊查看更新日誌</value>
   </data>
   <data name="App_DataUpdated_Details" xml:space="preserve">
-    <value>目前版本: {0}</value>
-  </data>
+    <value>目前版本： {0}</value>
+  <alternative>目前版本: {0}</alternative></data>
   <data name="App_LocaleUpdated_Details" xml:space="preserve">
     <value>重啟app以完成更新</value>
   </data>
   <data name="App_NewVersion_Details" xml:space="preserve">
-    <value>更新已經準備好: {0}</value>
-  </data>
+    <value>已經準備好更新： {0}</value>
+  <alternative>更新已經準備好: {0}</alternative></data>
   <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
     <value>無法安裝第三方內容</value>
   </data>
@@ -153,8 +155,8 @@
     <value>無法開始比賽</value>
   </data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
-    <value>請確定必需的車輛和賽道已經安裝且可以使用</value>
-  </data>
+    <value>請確定必要的車輛和賽道已經安裝且可以使用</value>
+  <alternative>請確定必需的車輛和賽道已經安裝且可以使用</alternative></data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
     <value>無法分析請求</value>
   </data>
@@ -162,37 +164,39 @@
     <value>無法處理請求</value>
   </data>
   <data name="Arguments_CannotProcessRequest_Commentary" xml:space="preserve">
-    <value>請確定資料有效</value>
-  </data>
+    <value>請確定資料有效。</value>
+  <alternative>請確定資料有效</alternative></data>
   <data name="Arguments_CannotInstallSetup_Commentary" xml:space="preserve">
     <value>RSR已更改</value>
   </data>
   <data name="Arguments_CannotInstallSetup_CommentaryFormat" xml:space="preserve">
-    <value>RSR返回了一個不支持的格式</value>
-  </data>
+    <value>RSR傳回了一個不支援的格式。</value>
+  <alternative>RSR返回了一個不支持的格式</alternative></data>
   <data name="Arguments_SaveAsGeneric" xml:space="preserve">
-    <value>以通用格式保存</value>
-  </data>
+    <value>以通用格式儲存</value>
+  <alternative>以通用格式保存</alternative></data>
   <data name="Arguments_SharedMessage" xml:space="preserve">
-    <value>名字: [b]{0}[/b]
+    <value>名稱：[b]{0}[/b]
+  {1}：[b]{2}[/b]
+  作者：[b]{3}[/b]</value>
+  <alternative>名字: [b]{0}[/b]
   {1}: [b]{2}[/b]
-  作者: [b]{3}[/b]</value>
-  </data>
+  作者: [b]{3}[/b]</alternative></data>
   <data name="Arguments_SharedMessage_For" xml:space="preserve">
     <value>為</value>
   </data>
   <data name="Arguments_Shared_ShouldApplyOrSave" xml:space="preserve">
-    <value>立刻使用當前的預設,或者另存新檔供以後使用?</value>
-  </data>
+    <value>立刻使用目前的預設，或者另存新檔供以後使用？</value>
+  <alternative>立刻使用當前的預設,或者另存新檔供以後使用?</alternative></data>
   <data name="Arguments_Shared_ShouldApply" xml:space="preserve">
-    <value>你想套用這個預設值嗎?</value>
-  </data>
+    <value>您想套用這個預設值嗎？</value>
+  <alternative>你想套用這個預設值嗎?</alternative></data>
   <data name="Arguments_Shared_ApplyAndSave" xml:space="preserve">
-    <value>套用並保存</value>
-  </data>
+    <value>套用並儲存</value>
+  <alternative>套用並保存</alternative></data>
   <data name="Arguments_Shared_SaveAndApply" xml:space="preserve">
-    <value>保存並套用</value>
-  </data>
+    <value>儲存並套用</value>
+  <alternative>保存並套用</alternative></data>
   <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
     <value>僅套用</value>
   </data>
@@ -200,8 +204,8 @@
     <value>套用</value>
   </data>
   <data name="Arguments_Shared_SaveOnly" xml:space="preserve">
-    <value>僅保存</value>
-  </data>
+    <value>僅儲存</value>
+  <alternative>僅保存</alternative></data>
   <data name="Arguments_CannotInstallCarSetup" xml:space="preserve">
     <value>無法安裝車輛調校</value>
   </data>
@@ -215,56 +219,56 @@
     <value>直接執行</value>
   </data>
   <data name="Arguments_SharedUnsupported" xml:space="preserve">
-    <value>暫不支持的類型: “{0}”</value>
-  </data>
+    <value>暫不支援的類型：「{0}」</value>
+  <alternative>暫不支持的類型: “{0}”</alternative></data>
   <data name="RsrStarter_GettingInformation" xml:space="preserve">
-    <value>正在讀取賽事信息…</value>
-  </data>
+    <value>正在讀取賽事資訊…</value>
+  <alternative>正在讀取賽事信息…</alternative></data>
   <data name="Solution_RestoreJsonFile" xml:space="preserve">
-    <value>嘗試恢復JSON檔案</value>
-  </data>
+    <value>嘗試回復JSON檔案</value>
+  <alternative>嘗試恢復JSON檔案</alternative></data>
   <data name="Solution_RestoreJsonFile_Details" xml:space="preserve">
-    <value>APP將嘗試從損壞的JSON檔案裡讀取可用的參數(注意,資料可能會遺失)</value>
-  </data>
+    <value>APP將嘗試從損壞的JSON檔案裡讀取可用的參數（注意，資料可能會遺失）</value>
+  <alternative>APP將嘗試從損壞的JSON檔案裡讀取可用的參數(注意,資料可能會遺失)</alternative></data>
   <data name="Solution_CannotRestoreJsonFile" xml:space="preserve">
-    <value>無法保存損壞的JSON檔案</value>
-  </data>
+    <value>無法儲存損壞的JSON檔案</value>
+  <alternative>無法保存損壞的JSON檔案</alternative></data>
   <data name="Solution_SetName" xml:space="preserve">
-    <value>輸入姓名</value>
-  </data>
+    <value>輸入名稱</value>
+  <alternative>輸入姓名</alternative></data>
   <data name="Solution_SetName_Details" xml:space="preserve">
-    <value>僅設定一個新的名字</value>
-  </data>
+    <value>僅設定一個新的名稱</value>
+  <alternative>僅設定一個新的名字</alternative></data>
   <data name="Solution_SetName_Prompt" xml:space="preserve">
-    <value>輸入一個新的名字</value>
-  </data>
+    <value>輸入一個新的名稱</value>
+  <alternative>輸入一個新的名字</alternative></data>
   <data name="Common_NewName" xml:space="preserve">
-    <value>添加名字</value>
-  </data>
+    <value>添加名稱</value>
+  <alternative>添加名字</alternative></data>
   <data name="Solution_SetNameFromId" xml:space="preserve">
-    <value>基於ID設置名字</value>
-  </data>
+    <value>基於ID設定名稱</value>
+  <alternative>基於ID設置名字</alternative></data>
   <data name="Solution_SetNameFromId_Details" xml:space="preserve">
-    <value>新名字將會是: “{0}”</value>
-  </data>
+    <value>新名稱將為：「{0}」</value>
+  <alternative>新名字將會是: “{0}”</alternative></data>
   <data name="Solution_SetBrandName" xml:space="preserve">
-    <value>設置品牌名</value>
-  </data>
+    <value>設定品牌名稱</value>
+  <alternative>設置品牌名</alternative></data>
   <data name="Solution_SetBrandName_Details" xml:space="preserve">
-    <value>設置一個新的品牌名</value>
-  </data>
+    <value>設定一個新的品牌名稱</value>
+  <alternative>設置一個新的品牌名</alternative></data>
   <data name="Solution_SetBrandName_Prompt" xml:space="preserve">
-    <value>輸入新的品牌名</value>
-  </data>
+    <value>輸入新的品牌名稱</value>
+  <alternative>輸入新的品牌名</alternative></data>
   <data name="Common_NewBrandName" xml:space="preserve">
-    <value>新的品牌名</value>
-  </data>
+    <value>新的品牌名稱</value>
+  <alternative>新的品牌名</alternative></data>
   <data name="Solution_SetBrandNameFromName" xml:space="preserve">
-    <value>基於車名設置品牌名</value>
-  </data>
+    <value>基於車名設定品牌名稱</value>
+  <alternative>基於車名設置品牌名</alternative></data>
   <data name="Solution_SetBrandNameFromName_Details" xml:space="preserve">
-    <value>新的品牌名是: “{0}”</value>
-  </data>
+    <value>新的品牌名將為:：「{0}」</value>
+  <alternative>新的品牌名是: “{0}”</alternative></data>
   <data name="Solution_RemoveObject" xml:space="preserve">
     <value>移除物件</value>
   </data>
@@ -275,14 +279,14 @@
     <value>產生新的檔案</value>
   </data>
   <data name="Solution_GenerateNew_Details" xml:space="preserve">
-    <value>新的空白檔案已經建立,別忘了設定合適的參數並保存</value>
-  </data>
+    <value>新的空白檔案已經建立,別忘了設定合適的參數並儲存</value>
+  <alternative>新的空白檔案已經建立,別忘了設定合適的參數並保存</alternative></data>
   <data name="Solution_MakeIndependent" xml:space="preserve">
     <value>使其獨立</value>
   </data>
   <data name="Solution_MakeIndependent_Details" xml:space="preserve">
-    <value>從ui_car.json檔案裡移除遺失了父元素的ID</value>
-  </data>
+    <value>從ui_car.json檔案裡移除已遺失的源車型ID</value>
+  <alternative>從ui_car.json檔案裡移除遺失了父元素的ID</alternative></data>
   <data name="Solution_ChangeParent" xml:space="preserve">
     <value>更改源車型</value>
   </data>
@@ -290,8 +294,8 @@
     <value>從車輛列表裡選擇源車型</value>
   </data>
   <data name="Solution_SetBrandBadge" xml:space="preserve">
-    <value>設置 {0} 品牌標誌</value>
-  </data>
+    <value>設定 {0} 品牌標誌</value>
+  <alternative>設置 {0} 品牌標誌</alternative></data>
   <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
     <value>從資料庫中選擇品牌標誌</value>
   </data>
@@ -302,11 +306,11 @@
     <value>從列表中選擇新的品牌標誌</value>
   </data>
   <data name="Solution_SetUpgradeIcon" xml:space="preserve">
-    <value>設置 “{0}” 圖標</value>
-  </data>
+    <value>設定 「{0}」圖示</value>
+  <alternative>設置 “{0}” 圖標</alternative></data>
   <data name="Solution_ChangeUpgradeIcon" xml:space="preserve">
-    <value>更換升級車型圖標</value>
-  </data>
+    <value>更換升級車型圖示</value>
+  <alternative>更換升級車型圖標</alternative></data>
   <data name="Solution_MakeEmptyModel" xml:space="preserve">
     <value>建立一個空模型</value>
   </data>
@@ -320,23 +324,23 @@
     <value>尋找賽道</value>
   </data>
   <data name="Solution_MakeGeneric" xml:space="preserve">
-    <value>生成通用文件</value>
-  </data>
+    <value>生成通用檔案</value>
+  <alternative>生成通用文件</alternative></data>
   <data name="Solution_GeneratePreview" xml:space="preserve">
     <value>生成新的預覽圖</value>
   </data>
   <data name="Solution_SetupPreview" xml:space="preserve">
-    <value>設置和生成新的預覽圖</value>
-  </data>
+    <value>設定和生成新的預覽圖</value>
+  <alternative>設置和生成新的預覽圖</alternative></data>
   <data name="Solution_GenerateLivery" xml:space="preserve">
-    <value>生成新的塗裝圖標</value>
-  </data>
+    <value>生成新的塗裝圖示</value>
+  <alternative>生成新的塗裝圖標</alternative></data>
   <data name="Solution_RandomLivery" xml:space="preserve">
-    <value>生成隨機塗裝圖標</value>
-  </data>
+    <value>生成隨機塗裝圖示</value>
+  <alternative>生成隨機塗裝圖標</alternative></data>
   <data name="Solution_SetupLivery" xml:space="preserve">
-    <value>設置新的塗裝圖標</value>
-  </data>
+    <value>設定新的塗裝圖示</value>
+  <alternative>設置新的塗裝圖標</alternative></data>
   <data name="Solution_RemoveReplay" xml:space="preserve">
     <value>刪除重播</value>
   </data>
@@ -350,29 +354,29 @@
     <value>重播將會被扔到到資源回收桶</value>
   </data>
   <data name="Solution_SetupLivery_Details" xml:space="preserve">
-    <value>用塗裝編輯器選擇一個新的塗裝圖標</value>
-  </data>
+    <value>用塗裝編輯器選擇一個新的塗裝圖示</value>
+  <alternative>用塗裝編輯器選擇一個新的塗裝圖標</alternative></data>
   <data name="Solution_RandomLivery_Details" xml:space="preserve">
-    <value>用隨機設定生成一個新的塗裝圖標</value>
-  </data>
+    <value>用隨機設定生成一個新的塗裝圖示</value>
+  <alternative>用隨機設定生成一個新的塗裝圖標</alternative></data>
   <data name="Solution_GenerateLivery_Details" xml:space="preserve">
-    <value>使用塗裝編輯的上一個設定來生成新的塗裝圖標</value>
-  </data>
+    <value>使用塗裝編輯的上一個設定來生成新的塗裝圖示</value>
+  <alternative>使用塗裝編輯的上一個設定來生成新的塗裝圖標</alternative></data>
   <data name="Solution_SetupPreview_Details" xml:space="preserve">
-    <value>使用當前設定選擇一個新的預覽圖</value>
-  </data>
+    <value>使用目前設定選擇一個新的預覽圖</value>
+  <alternative>使用當前設定選擇一個新的預覽圖</alternative></data>
   <data name="Solution_GeneratePreview_Details" xml:space="preserve">
     <value>用最近使用過的預設生成新的預覽圖</value>
   </data>
   <data name="Solution_MakeGeneric_Details" xml:space="preserve">
-    <value>移動到通用文件夾</value>
-  </data>
+    <value>移動到一般資料夾</value>
+  <alternative>移動到通用文件夾</alternative></data>
   <data name="Solution_FindTrack_Details" xml:space="preserve">
-    <value>嘗試在網絡上尋找賽道</value>
-  </data>
+    <value>嘗試在網路上尋找賽道</value>
+  <alternative>嘗試在網絡上尋找賽道</alternative></data>
   <data name="Solution_Enable_Details" xml:space="preserve">
-    <value>將字體從“fonts-off”移動到“fonts”以重新啟用字體</value>
-  </data>
+    <value>將字型從「fonts-off」移動到「fonts」以重新啟用字型</value>
+  <alternative>將字體從“fonts-off”移動到“fonts”以重新啟用字體</alternative></data>
   <data name="Solution_CreateEmptySkin_Details" xml:space="preserve">
     <value>建立一個名稱叫"default"的空白塗裝</value>
   </data>
@@ -386,35 +390,35 @@
     <value>生成空模型</value>
   </data>
   <data name="Solution_ChangeUpgradeIcon_Details" xml:space="preserve">
-    <value>用編輯器選擇或創建一個新的升級圖標</value>
-  </data>
+    <value>用編輯器選擇或建立一個新的升級圖示</value>
+  <alternative>用編輯器選擇或創建一個新的升級圖標</alternative></data>
   <data name="Solution_SetUpgradeIcon_Details" xml:space="preserve">
-    <value>從內容存儲中設置升級圖標</value>
-  </data>
+    <value>從內容存儲中設定升級圖示</value>
+  <alternative>從內容存儲中設置升級圖標</alternative></data>
   <data name="Main_Title" xml:space="preserve">
     <value>Content Manager</value>
   </data>
   <data name="Main_OfficialSupportNotification" xml:space="preserve">
-    <value>已獲得Assetto Corsa官方支援!</value>
-  </data>
+    <value>已獲得Assetto Corsa官方支援！</value>
+  <alternative>已獲得Assetto Corsa官方支援!</alternative></data>
   <data name="Main_OfficialSupportNotification_Details" xml:space="preserve">
-    <value>新的啟動方式已經可以使用,不再需要手動安裝補丁</value>
-  </data>
+    <value>已可以使用新的啟動方式，不再需要手動安裝補丁</value>
+  <alternative>新的啟動方式已經可以使用,不再需要手動安裝補丁</alternative></data>
   <data name="Main_OfficialSupportNotification_Message" xml:space="preserve">
-    <value>從1.7版本開始Kunos官方增加了對於第三方啟動器的支持.簡而言之,現在啟動器的工作方式和之前的Starter+啟動模式類似,但是現在CM不再需要替換AssettoCorsa.exe文件,而且效果很好!你想要切換到最新的官方啟動模式嗎?</value>
-  </data>
+    <value>從1.7版本開始Kunos官方增加了對於第三方啟動器的支援。換言之，現在啟動器的運作方式和過去的Starter+啟動模式類似，但是現在CM不再需要替換AssettoCorsa.exe檔案，而且效果很好！您想要切換到最新的官方啟動模式嗎？</value>
+  <alternative>從1.7版本開始Kunos官方增加了對於第三方啟動器的支持.簡而言之,現在啟動器的工作方式和之前的Starter+啟動模式類似,但是現在CM不再需要替換AssettoCorsa.exe文件,而且效果很好!你想要切換到最新的官方啟動模式嗎?</alternative></data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
-    <value>無法處理輸入值</value>
-  </data>
+    <value>無法處理輸入值：「{0}」</value>
+  <alternative>無法處理輸入值</alternative></data>
   <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
-    <value>請確定格式正確</value>
-  </data>
+    <value>請確定格式正確。</value>
+  <alternative>請確定格式正確</alternative></data>
   <data name="Main_Settings" xml:space="preserve">
-    <value>設置</value>
-  </data>
+    <value>設定</value>
+  <alternative>設置</alternative></data>
   <data name="Main_Server" xml:space="preserve">
-    <value>服務器</value>
-  </data>
+    <value>伺服器</value>
+  <alternative>服務器</alternative></data>
   <data name="Main_Drive" xml:space="preserve">
     <value>駕駛</value>
   </data>
@@ -433,27 +437,24 @@
   <data name="Main_ImportantTips" xml:space="preserve">
     <value>重要提示</value>
   </data>
-  <data name="Main_Apps" xml:space="preserve">
-    <value>插件</value>
-  </data>
   <data name="Main_Fonts" xml:space="preserve">
-    <value>字體</value>
-  </data>
+    <value>字型</value>
+  <alternative>字體</alternative></data>
   <data name="Main_PpFilters" xml:space="preserve">
-    <value>後處理濾鏡</value>
-  </data>
+    <value>後期處理濾鏡</value>
+  <alternative>後處理濾鏡</alternative></data>
   <data name="Main_Weather" xml:space="preserve">
     <value>天氣</value>
   </data>
   <data name="Main_Rsr" xml:space="preserve">
-    <value>RSR在線圈速榜</value>
-  </data>
+    <value>線上圈速榜（RSR）</value>
+  <alternative>RSR在線圈速榜</alternative></data>
   <data name="Main_Srs" xml:space="preserve">
-    <value>SRS在線聯賽</value>
-  </data>
+    <value>線上聯賽（SRS）</value>
+  <alternative>SRS在線聯賽</alternative></data>
   <data name="Main_QuickDrive" xml:space="preserve">
-    <value>快速遊戲</value>
-  </data>
+    <value>試駕</value>
+  <alternative>快速遊戲</alternative></data>
   <data name="Main_Career" xml:space="preserve">
     <value>生涯模式</value>
   </data>
@@ -464,8 +465,8 @@
     <value>單機遊戲</value>
   </data>
   <data name="Main_Live" xml:space="preserve">
-    <value>在線聯賽</value>
-  </data>
+    <value>線上聯賽</value>
+  <alternative>在線聯賽</alternative></data>
   <data name="Main_Language" xml:space="preserve">
     <value>語言</value>
   </data>
@@ -479,8 +480,8 @@
     <value>遊戲截圖</value>
   </data>
   <data name="Main_Replays" xml:space="preserve">
-    <value>遊戲錄影</value>
-  </data>
+    <value>遊戲重播</value>
+  <alternative>遊戲錄影</alternative></data>
   <data name="Main_Cars" xml:space="preserve">
     <value>車輛</value>
   </data>
@@ -488,161 +489,161 @@
     <value>賽道</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>展廳</value>
-  </data>
+    <value>展示廳</value>
+  <alternative>展廳</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>其他內容</value>
   </data>
   <data name="Main_ServerPresets" xml:space="preserve">
-    <value>服務器預設</value>
-  </data>
+    <value>預設伺服器</value>
+  <alternative>服務器預設</alternative></data>
   <data name="Main_ServerRunning" xml:space="preserve">
-    <value>服務器運行中</value>
-  </data>
+    <value>伺服器運行中</value>
+  <alternative>服務器運行中</alternative></data>
   <data name="Common_ColorLabel" xml:space="preserve">
-    <value>顏色:</value>
-  </data>
+    <value>顏色：</value>
+  <alternative>顏色:</alternative></data>
   <data name="Settings_Appearance_ThemeLabel" xml:space="preserve">
-    <value>主題:</value>
-  </data>
+    <value>主題：</value>
+  <alternative>主題:</alternative></data>
   <data name="Settings_Appearance_SmallFont" xml:space="preserve">
-    <value>小字體</value>
-  </data>
+    <value>小字型</value>
+  <alternative>小字體</alternative></data>
   <data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
-    <value>字體渲染:</value>
-  </data>
+    <value>字型渲染：</value>
+  <alternative>字體渲染:</alternative></data>
   <data name="Settings_Appearance_ImageScalingLabel" xml:space="preserve">
-    <value>圖象縮放質量:</value>
-  </data>
+    <value>圖片縮放品質：</value>
+  <alternative>圖象縮放質量:</alternative></data>
   <data name="Settings_Appearance_PopupToolbars" xml:space="preserve">
     <value>彈出式工具欄</value>
   </data>
   <data name="Settings_Appearance_LargeSearchBoxes" xml:space="preserve">
-    <value>大尺寸搜索框</value>
-  </data>
+    <value>大尺寸搜尋框</value>
+  <alternative>大尺寸搜索框</alternative></data>
   <data name="Settings_Appearance_DynamicBackground" xml:space="preserve">
     <value>動態背景</value>
   </data>
   <data name="Settings_Appearance_TransitionAnimationLabel" xml:space="preserve">
-    <value>過渡動畫:</value>
-  </data>
+    <value>過渡動畫：</value>
+  <alternative>過渡動畫:</alternative></data>
   <data name="Settings_Appearance_LargeSearchBoxes_Tooltip" xml:space="preserve">
-    <value>請試試F6/Ctrl+T/Ctrl+W/Ctrl+Tab等快捷鍵</value>
-  </data>
+    <value>請試試F6/Ctrl+T/Ctrl+W/Ctrl+Tab等快捷鍵。</value>
+  <alternative>請試試F6/Ctrl+T/Ctrl+W/Ctrl+Tab等快捷鍵</alternative></data>
   <data name="Settings_Appearance_PopupToolbars_Tooltip" xml:space="preserve">
-    <value>提示:每一個按鈕都有一個鍵盤快捷鍵</value>
-  </data>
+    <value>提示：每一個按鈕都有一個鍵盤快捷鍵</value>
+  <alternative>提示:每一個按鈕都有一個鍵盤快捷鍵</alternative></data>
   <data name="Common_Restart" xml:space="preserve">
     <value>重新啟動</value>
   </data>
   <data name="Settings_Appearance_ImageScaling_Tooltip" xml:space="preserve">
-    <value>重啟app以應用更改</value>
-  </data>
+    <value>重啟app以套用更改</value>
+  <alternative>重啟app以應用更改</alternative></data>
   <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
-    <value>標記為新內容:</value>
-  </data>
+    <value>標記為新內容：</value>
+  <alternative>標記為新內容:</alternative></data>
   <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
-    <value>加載並發性設置:</value>
-  </data>
+    <value>載入並行性設定:</value>
+  <alternative>加載並發性設置:</alternative></data>
   <data name="Settings_Content_ScrollAutomatically" xml:space="preserve">
     <value>滾動列表時自動選擇內容</value>
   </data>
   <data name="Settings_Content_InformationSearchHeader" xml:space="preserve">
-    <value>搜索相關信息:</value>
-  </data>
+    <value>搜尋相關資訊：</value>
+  <alternative>搜索相關信息:</alternative></data>
   <data name="Settings_Content_SearchEngine" xml:space="preserve">
-    <value>搜索引擎:</value>
-  </data>
+    <value>搜尋引擎：</value>
+  <alternative>搜索引擎:</alternative></data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>默認查詢維基百科</value>
-  </data>
+    <value>僅限查詢維基百科</value>
+  <alternative>默認查詢維基百科</alternative></data>
   <data name="Settings_Content_ChangeBrandIcon" xml:space="preserve">
-    <value>自動修改車標</value>
-  </data>
+    <value>自動修改車輛品牌標誌</value>
+  <alternative>自動修改車標</alternative></data>
   <data name="Settings_Content_CarsHeader" xml:space="preserve">
-    <value>車輛:</value>
-  </data>
+    <value>車輛：</value>
+  <alternative>車輛:</alternative></data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>展廳:</value>
-  </data>
+    <value>展示廳：</value>
+  <alternative>展廳:</alternative></data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
     <value>下載車輛預覽圖</value>
   </data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
-    <value>字體:</value>
-  </data>
+    <value>字型：</value>
+  <alternative>字體:</alternative></data>
   <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
-    <value>字體圖標:</value>
-  </data>
+    <value>字型圖示：</value>
+  <alternative>字體圖標:</alternative></data>
   <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
-    <value>更小的數值會提高UI的響應速度,但是列表加載速度會下降</value>
-  </data>
+    <value>更小的數值會提高UI的反應速度，但是列表載入速度會下降</value>
+  <alternative>更小的數值會提高UI的響應速度,但是列表加載速度會下降</alternative></data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
-    <value>在滾動列表的同時會自動選擇滾動光標指向的內容</value>
-  </data>
+    <value>例如，在停用</value>
+  <alternative>在滾動列表的同時會自動選擇滾動光標指向的內容</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
-    <value>默認添加“site:wikipedia.org”以使用維基百科搜索</value>
-  </data>
+    <value>預設添加「site:wikipedia.org」以使用維基百科搜尋</value>
+  <alternative>默認添加“site:wikipedia.org”以使用維基百科搜索</alternative></data>
   <data name="Settings_Content_DownloadPreviews_Tooltip" xml:space="preserve">
-    <value>使用通用展廳背景下載車輛預覽圖</value>
-  </data>
+    <value>全部更新恐怕會消耗許多時間</value>
+  <alternative>使用通用展廳背景下載車輛預覽圖</alternative></data>
   <data name="Settings_Content_FontIconSymbol_Tooltip" xml:space="preserve">
-    <value>一個用作圖標的符號</value>
-  </data>
+    <value>一個用作圖示的符號</value>
+  <alternative>一個用作圖標的符號</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
-    <value>默認使用:</value>
-  </data>
+    <value>預設使用：</value>
+  <alternative>默認使用:</alternative></data>
   <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
-    <value>精簡化展廳兼容DirectX 10,非常簡潔並且對顯卡要求低,非常適合用於製作車輛塗裝的工作</value>
-  </data>
+    <value>精簡展示廳兼容DirectX 10，簡潔且對顯卡要求低，適合用於製作車輛塗裝</value>
+  <alternative>精簡化展廳兼容DirectX 10,非常簡潔並且對顯卡要求低,非常適合用於製作車輛塗裝的工作</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
-    <value>自動調整展廳內相機機位</value>
-  </data>
+    <value>自動調整展示廳內相機機位</value>
+  <alternative>自動調整展廳內相機機位</alternative></data>
   <data name="Settings_CustomShowroom_InvertMouseButtons" xml:space="preserve">
-    <value>展廳中反轉滑鼠按鍵</value>
-  </data>
+    <value>於展示廳中反轉滑鼠按鍵</value>
+  <alternative>展廳中反轉滑鼠按鍵</alternative></data>
   <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
-    <value>精簡化展廳:</value>
-  </data>
+    <value>精簡展示廳：</value>
+  <alternative>精簡化展廳:</alternative></data>
   <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
-    <value>高特效展廳:</value>
-  </data>
+    <value>精緻展示廳：</value>
+  <alternative>高特效展廳:</alternative></data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
-    <value>使用高光特效</value>
-  </data>
+    <value>使用高動態範圍（HDR）</value>
+  <alternative>使用高光特效</alternative></data>
   <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
-    <value>使用多重採樣抗鋸齒</value>
-  </data>
+    <value>使用多重採樣抗鋸齒（MSAA）</value>
+  <alternative>使用多重採樣抗鋸齒</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
-    <value>使用快速近似抗鋸齒</value>
-  </data>
+    <value>使用快速近似抗鋸齒（FXAA）</value>
+  <alternative>使用快速近似抗鋸齒</alternative></data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>默認展廳:</value>
-  </data>
+    <value>預設展示廳：</value>
+  <alternative>默認展廳:</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
-    <value>按住Ctrl鍵運行可以使用其他展廳</value>
-  </data>
+    <value>啟動時按住Ctrl鍵可以使用其他展示廳</value>
+  <alternative>按住Ctrl鍵運行可以使用其他展廳</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot_Tooltip" xml:space="preserve">
-    <value>儘可能保持車輛位於鏡頭正中(不使用複雜計算)</value>
-  </data>
+    <value>儘可能保持車輛位於鏡頭正中央（不使用繁複計算）</value>
+  <alternative>儘可能保持車輛位於鏡頭正中(不使用複雜計算)</alternative></data>
   <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
-    <value>按住滑鼠左鍵平移視角,右鍵旋轉車輛</value>
-  </data>
+    <value>按住滑鼠左鍵平移視角，右鍵旋轉車輛</value>
+  <alternative>按住滑鼠左鍵平移視角,右鍵旋轉車輛</alternative></data>
   <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
-    <value>如果需要提高性能,關閉這個選項</value>
-  </data>
+    <value>如果需要提高效能，關閉這個選項</value>
+  <alternative>如果需要提高性能,關閉這個選項</alternative></data>
   <data name="Settings_CustomShowroom_Msaa_Tooltip" xml:space="preserve">
-    <value>我個人覺得開啟這個選項會讓效果更差</value>
-  </data>
+    <value>這個選項可以隨時按M鍵開啟和關閉</value>
+  <alternative>我個人覺得開啟這個選項會讓效果更差</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa_Tooltip" xml:space="preserve">
-    <value>這個選項可以在任意時刻按F鍵開啟和關閉</value>
-  </data>
+    <value>這個選項可以隨時按F鍵開啟和關閉</value>
+  <alternative>這個選項可以在任意時刻按F鍵開啟和關閉</alternative></data>
   <data name="Settings_Drive_Starter" xml:space="preserve">
     <value>遊戲啟動模式</value>
   </data>
   <data name="Settings_Drive_32bit" xml:space="preserve">
-    <value>使用32位版本</value>
-  </data>
+    <value>使用32位元版本</value>
+  <alternative>使用32位版本</alternative></data>
   <data name="Settings_Drive_StartImmediately" xml:space="preserve">
     <value>立即開始比賽</value>
   </data>
@@ -650,26 +651,26 @@
     <value>不顯示練習賽成績</value>
   </data>
   <data name="Settings_Drive_PlayerNameHeader" xml:space="preserve">
-    <value>玩家名:</value>
-  </data>
+    <value>玩家名稱：</value>
+  <alternative>玩家名:</alternative></data>
   <data name="Settings_Drive_NameLabel" xml:space="preserve">
-    <value>名字:</value>
-  </data>
+    <value>名稱：</value>
+  <alternative>名字:</alternative></data>
   <data name="Settings_Drive_NationalityLabel" xml:space="preserve">
-    <value>國籍:</value>
-  </data>
+    <value>國籍：</value>
+  <alternative>國籍:</alternative></data>
   <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
-    <value>聯機遊戲別名:</value>
-  </data>
+    <value>聯機遊戲別稱：</value>
+  <alternative>聯機遊戲別名:</alternative></data>
   <data name="Settings_Drive_QuickDriveHeader" xml:space="preserve">
-    <value>快速遊戲:</value>
-  </data>
+    <value>試駕：</value>
+  <alternative>快速遊戲:</alternative></data>
   <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
     <value>去除遊戲限制</value>
   </data>
   <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
-    <value>官方生涯賽事:</value>
-  </data>
+    <value>官方生涯賽事：</value>
+  <alternative>官方生涯賽事:</alternative></data>
   <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
     <value>允許調整AI強度</value>
   </data>
@@ -677,10 +678,22 @@
     <value>允許變更車輛塗裝</value>
   </data>
   <data name="Settings_Drive_EventsHeader" xml:space="preserve">
-    <value>遊戲相關事件:</value>
-  </data>
+    <value>遊戲相關事件：</value>
+  <alternative>遊戲相關事件:</alternative></data>
   <data name="Settings_Drive_PreCommand_Tooltip" xml:space="preserve">
-    <value>以下命令會在設定好所有的配置ini文件之後,運行ace.exe進入遊戲之前執行
+    <value>以下指令會在設定好所有的配置ini檔案之後，於運行ace.exe進入遊戲之前執行。
+  
+  可以替換的數值和修改格式：
+  [b][mono]{type}[/mono][/b] — 修改比賽類型
+  [b][mono]{car}[/mono][/b] — 修改車輛名稱
+  [b][mono]{car.id}[/mono][/b] — 修改車輛ID
+  [b][mono]{track}[/mono][/b] — 修改賽道名稱
+  [b][mono]{track.id}[/mono][/b] — 修改賽道ID
+  
+  如果您想要該指令支援更多數值修改，請聯絡我們進行添加。
+  
+  工作資料夾會被設定為「我的檔案」裡的Assetto Corsa資料夾。</value>
+  <alternative>以下命令會在設定好所有的配置ini文件之後,運行ace.exe進入遊戲之前執行
   
   可以替換的數值和修改格式:
   [b][mono]{type}[/mono][/b] — 修改比賽類型
@@ -691,16 +704,27 @@
   
   如果你想要軟件支持更多的數值修改,請聯繫我們,我們會進行增加
   
-  工作文件夾會被設定為“文檔”裡的Assetto Corsa文件夾</value>
-  </data>
+  工作文件夾會被設定為“文檔”裡的Assetto Corsa文件夾</alternative></data>
   <data name="Settings_Drive_PreCommandLabel" xml:space="preserve">
-    <value>賽事啟動前運行指令:</value>
-  </data>
+    <value>賽事啟動前運行指令：</value>
+  <alternative>賽事啟動前運行指令:</alternative></data>
   <data name="Settings_Drive_PostCommandLabel" xml:space="preserve">
-    <value>賽事結束後運行指令:</value>
-  </data>
+    <value>賽事結束後運行指令：</value>
+  <alternative>賽事結束後運行指令:</alternative></data>
   <data name="Settings_Drive_PostCommand_Tooltip" xml:space="preserve">
-    <value>以下命令會在遊戲關閉acs.exe程序退出之後,Content Manager讀取比賽結果的json文件之前執行
+    <value>以下指令會在遊戲關閉acs.exe程式退出之後，於Content Manager讀取比賽結果的json檔案之前執行。
+  
+  可以替換的數值和修改格式：
+  [b][mono]{type}[/mono][/b] — 修改比賽類型
+  [b][mono]{car}[/mono][/b] — 修改車輛名稱
+  [b][mono]{car.id}[/mono][/b] — 修改車輛ID
+  [b][mono]{track}[/mono][/b] — 修改賽道名稱
+  [b][mono]{track.id}[/mono][/b] — 修改賽道ID
+  
+  如果您想要該指令支援更多數值修改，請聯絡我們進行添加。
+  
+  工作資料夾會被設定為「我的檔案」裡的Assetto Corsa資料夾。</value>
+  <alternative>以下命令會在遊戲關閉acs.exe程序退出之後,Content Manager讀取比賽結果的json文件之前執行
   
   可以替換的數值和修改格式:
   [b][mono]{type}[/mono][/b] — 修改比賽類型
@@ -711,11 +735,10 @@
   
   如果你想要軟件支持更多的數值修改,請聯繫我們,我們會進行增加
   
-  工作文件夾會被設定為“文檔”裡的Assetto Corsa文件夾</value>
-  </data>
+  工作文件夾會被設定為“文檔”裡的Assetto Corsa文件夾</alternative></data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
-    <value>如果對應天氣的雲彩貼圖可用,替代默認雲彩</value>
-  </data>
+    <value>如果有的話，使用對應天氣的雲彩貼圖取代預設雲彩</value>
+  <alternative>如果對應天氣的雲彩貼圖可用,替代默認雲彩</alternative></data>
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
     <value>退出遊戲時自動將BMP格式的截圖轉換為JPEG格式</value>
   </data>
@@ -729,56 +752,56 @@
     <value>暫時替換雲彩貼圖</value>
   </data>
   <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
-    <value>允許設定如999圈的比賽等超出遊戲本身允許範圍的內容,可能引起的問題請玩家後果自負</value>
-  </data>
+    <value>允許設定如999圈的比賽等超出遊戲本身允許範圍的內容（可能引起的問題請玩家後果自負）</value>
+  <alternative>允許設定如999圈的比賽等超出遊戲本身允許範圍的內容,可能引起的問題請玩家後果自負</alternative></data>
   <data name="Settings_General_AcFolderLabel" xml:space="preserve">
-    <value>Assetto Corsa遊戲文件夾:</value>
-  </data>
+    <value>Assetto Corsa遊戲資料夾：</value>
+  <alternative>Assetto Corsa遊戲文件夾:</alternative></data>
   <data name="Common_DevMode" xml:space="preserve">
     <value>開發者模式</value>
   </data>
   <data name="Settings_General_AppHeader" xml:space="preserve">
-    <value>插件:</value>
-  </data>
+    <value>App：</value>
+  <alternative>插件:</alternative></data>
   <data name="Settings_General_AppKeyLabel" xml:space="preserve">
-    <value>插件編號:</value>
-  </data>
+    <value>App編號：</value>
+  <alternative>插件編號:</alternative></data>
   <data name="Settings_General_WindowsShortcut" xml:space="preserve">
-    <value>開始菜單快捷方式(開啟後支持在最新Windows通知中心中顯示消息)</value>
-  </data>
+    <value>開始功能表捷徑（開啟後支援在最新Windows通知中心中顯示通知）</value>
+  <alternative>開始菜單快捷方式(開啟後支持在最新Windows通知中心中顯示消息)</alternative></data>
   <data name="Settings_General_WindowsShortcut_Tooltip" xml:space="preserve">
-    <value>創建開始菜單快捷方式.如果希望在Windows 8, 8.1和10的通知中心中接收Content Manager的推送,必須創建此快捷方式</value>
-  </data>
+    <value>建立開始功能表捷徑。如果希望在Windows 8、8.1和10的通知中心中接收Content Manager的推播通知，必須建立此捷徑</value>
+  <alternative>創建開始菜單快捷方式.如果希望在Windows 8, 8.1和10的通知中心中接收Content Manager的推送,必須創建此快捷方式</alternative></data>
   <data name="Settings_General_AutoUpdatesHeader" xml:space="preserve">
-    <value>自動更新:</value>
-  </data>
+    <value>自動更新：</value>
+  <alternative>自動更新:</alternative></data>
   <data name="Settings_General_CheckForUpdatesLabel" xml:space="preserve">
-    <value>檢查更新:</value>
-  </data>
+    <value>檢查更新：</value>
+  <alternative>檢查更新:</alternative></data>
   <data name="Settings_General_AppVersionLabel" xml:space="preserve">
-    <value>Content Manager版本:</value>
-  </data>
+    <value>Content Manager版本：</value>
+  <alternative>Content Manager版本:</alternative></data>
   <data name="Settings_General_CheckForUpdates" xml:space="preserve">
     <value>檢查更新</value>
   </data>
   <data name="Settings_General_ContentVersionLabel" xml:space="preserve">
-    <value>數據版本:</value>
-  </data>
+    <value>數據版本：</value>
+  <alternative>數據版本:</alternative></data>
   <data name="Settings_General_ValuesHeader" xml:space="preserve">
-    <value>數值緩存庫:</value>
-  </data>
+    <value>數值緩存庫：</value>
+  <alternative>數值緩存庫:</alternative></data>
   <data name="Settings_General_ValuesCleanUp" xml:space="preserve">
     <value>清理</value>
   </data>
   <data name="Settings_General_ValuesCleanUp_Tooltip" xml:space="preserve">
-    <value>清理所有不重要的數據</value>
-  </data>
+    <value>移除所有不重要的數據</value>
+  <alternative>清理所有不重要的數據</alternative></data>
   <data name="Settings_General_ValuesSavingTimeLabel" xml:space="preserve">
-    <value>節省時間:</value>
-  </data>
+    <value>時間節省了：</value>
+  <alternative>節省時間:</alternative></data>
   <data name="Settings_General_TestingAccessHeader" xml:space="preserve">
-    <value>試用測試版本:</value>
-  </data>
+    <value>試用測試版：</value>
+  <alternative>試用測試版本:</alternative></data>
   <data name="Settings_General_TestingAccess" xml:space="preserve">
     <value>升級到測試版</value>
   </data>
@@ -786,38 +809,38 @@
     <value>{0} 項</value>
   </data>
   <data name="Settings_General_ChangeAcRoot_Message" xml:space="preserve">
-    <value>是否確認修改文件夾路徑?Content Manager將重新啟動.</value>
-  </data>
+    <value>您是否確認要修改資料夾路徑？Content Manager將重新啟動。</value>
+  <alternative>是否確認修改文件夾路徑?Content Manager將重新啟動.</alternative></data>
   <data name="Settings_General_ChangeAcRoot" xml:space="preserve">
-    <value>修改Assetto Corsa遊戲文件夾根目錄路徑</value>
-  </data>
+    <value>修改Assetto Corsa遊戲資料夾根目錄路徑</value>
+  <alternative>修改Assetto Corsa遊戲文件夾根目錄路徑</alternative></data>
   <data name="Settings_Live_EnableRsr" xml:space="preserve">
-    <value>啟用RSR Live Timing在線圈速榜頁面</value>
-  </data>
+    <value>啟用RSR Live Timing線上圈速榜頁面</value>
+  <alternative>啟用RSR Live Timing在線圈速榜頁面</alternative></data>
   <data name="Settings_Live_CustomStyle" xml:space="preserve">
     <value>使用Content Manager配色</value>
   </data>
   <data name="Settings_Live_RsrCustomStyle_Tooltip" xml:space="preserve">
-    <value>啟用為RSR在線圈速榜特別優化的內嵌網頁界面風格</value>
-  </data>
+    <value>啟用為RSR線上圈速榜特別改良的內嵌網頁界面風格</value>
+  <alternative>啟用為RSR在線圈速榜特別優化的內嵌網頁界面風格</alternative></data>
   <data name="Settings_Live_SrsCustomStyle_Tooltip" xml:space="preserve">
-    <value>啟用為SRS在線聯賽特別優化的內嵌網頁界面風格</value>
-  </data>
+    <value>啟用為SRS線上聯賽特別改良的內嵌網頁界面風格</value>
+  <alternative>啟用為SRS在線聯賽特別優化的內嵌網頁界面風格</alternative></data>
   <data name="Settings_Live_RsrNameLabel" xml:space="preserve">
-    <value>RSR玩家用戶名:</value>
-  </data>
+    <value>RSR玩家用戶名稱：</value>
+  <alternative>RSR玩家用戶名:</alternative></data>
   <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
-    <value>使用RSR頁面時啟用另外的玩家名</value>
-  </data>
+    <value>使用RSR頁面時使用不同的玩家名稱</value>
+  <alternative>使用RSR頁面時啟用另外的玩家名</alternative></data>
   <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
-    <value>自動啟動RSR在線圈速榜插件</value>
-  </data>
+    <value>自動啟動RSR線上圈速榜App</value>
+  <alternative>自動啟動RSR在線圈速榜插件</alternative></data>
   <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
-    <value>根據啟動的賽事是否被RSR支持,自動開啟和關閉RSR遊戲插件</value>
-  </data>
+    <value>根據啟動的賽事是否支援RSR，自動開啟和關閉RSR遊戲App</value>
+  <alternative>根據啟動的賽事是否被RSR支持,自動開啟和關閉RSR遊戲插件</alternative></data>
   <data name="Settings_Live_EnableSrs" xml:space="preserve">
-    <value>啟用在線聯賽系統Sim Racing System(SRS)標籤頁</value>
-  </data>
+    <value>啟用線上聯賽系統Sim Racing System（SRS）標籤頁</value>
+  <alternative>啟用在線聯賽系統Sim Racing System(SRS)標籤頁</alternative></data>
   <data name="Settings_Live_SrsJoinFromOnline" xml:space="preserve">
     <value>從多人聯機頁面加入比賽</value>
   </data>
@@ -825,11 +848,11 @@
     <value>Content Manager會自動設定一個特殊的SRS名以避免發生錯誤</value>
   </data>
   <data name="Settings_Live_SrsOnlineMaskLabel" xml:space="preserve">
-    <value>SRS服務器篩選器</value>
-  </data>
+    <value>SRS伺服器篩選器</value>
+  <alternative>SRS服務器篩選器</alternative></data>
   <data name="Settings_Live_SrsOnlineMask_Tooltip" xml:space="preserve">
-    <value>默認值:"SimRacingSystem"</value>
-  </data>
+    <value>預設值：「SimRacingSystem*」</value>
+  <alternative>默認值:"SimRacingSystem"</alternative></data>
   <data name="Settings_Online_RememberPasswords" xml:space="preserve">
     <value>記住密碼</value>
   </data>
@@ -837,65 +860,65 @@
     <value>簡潔風格界面</value>
   </data>
   <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
-    <value>連接:</value>
-  </data>
+    <value>連線：</value>
+  <alternative>連接:</alternative></data>
   <data name="Settings_Online_ServerLabel" xml:space="preserve">
-    <value>服務器:</value>
-  </data>
+    <value>伺服器：</value>
+  <alternative>服務器:</alternative></data>
   <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
-    <value>直接加載服務器信息</value>
-  </data>
+    <value>直接載入伺服器資訊</value>
+  <alternative>直接加載服務器信息</alternative></data>
   <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
-    <value>不連接到AC服務器而直接加載服務器信息,可能可以提高加載速度並且提供更直接的服務器信息,但是可能會導致當前賽程等信息缺失</value>
-  </data>
+    <value>不連線到AC伺服器而直接載入伺服器資訊，可能可以提高載入速度並且提供更直接的伺服器資訊，但是可能會導致目前賽程等資訊遺失</value>
+  <alternative>不連接到AC服務器而直接加載服務器信息,可能可以提高加載速度並且提供更直接的服務器信息,但是可能會導致當前賽程等信息缺失</alternative></data>
   <data name="Settings_Online_PingingHeader" xml:space="preserve">
-    <value>測試網絡延遲:</value>
-  </data>
+    <value>測試網路延遲：</value>
+  <alternative>測試網絡延遲:</alternative></data>
   <data name="Settings_Online_PingWithThreads" xml:space="preserve">
-    <value>關閉非同步API而使用線程測試網絡延遲</value>
-  </data>
+    <value>關閉非同步API並使用線程來測試網路延遲</value>
+  <alternative>關閉非同步API而使用線程測試網絡延遲</alternative></data>
   <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
-    <value>最準確的測試網絡延遲的方式,但是速度也最慢</value>
-  </data>
+    <value>速度最慢但最準確的網路延遲測試方法</value>
+  <alternative>最準確的測試網絡延遲的方式,但是速度也最慢</alternative></data>
   <data name="Settings_Online_PingConcurrency" xml:space="preserve">
-    <value>測試網絡延遲的並發數</value>
-  </data>
+    <value>Ping並行性</value>
+  <alternative>測試網絡延遲的並發數</alternative></data>
   <data name="Settings_Online_PingConcurrency_Tooltip" xml:space="preserve">
-    <value>提高這個數值可以讓服務器列表加載速度增加,但是提供的延遲信息也會更加不準確</value>
-  </data>
+    <value>提高這個數值可以讓伺服器列表載入更快，但是提供的延遲資訊也會更加不準確</value>
+  <alternative>提高這個數值可以讓服務器列表加載速度增加,但是提供的延遲信息也會更加不準確</alternative></data>
   <data name="Settings_Online_PingTimeout" xml:space="preserve">
-    <value>網絡連接超時</value>
-  </data>
+    <value>連線超時</value>
+  <alternative>網絡連接超時</alternative></data>
   <data name="Settings_Online_AddingByIpHeader" xml:space="preserve">
-    <value>添加服務器IP地址</value>
-  </data>
+    <value>按伺服器IP位址添加：</value>
+  <alternative>添加服務器IP地址</alternative></data>
   <data name="Settings_Online_PortsLabel" xml:space="preserve">
-    <value>搜索連接埠號</value>
-  </data>
+    <value>掃描連接埠號</value>
+  <alternative>搜索連接埠號</alternative></data>
   <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
-    <value>窮舉嘗試連接例如“9000-10000”的連接埠號</value>
-  </data>
+    <value>窮舉嘗試連接的連接埠號（如：9000-10000）</value>
+  <alternative>窮舉嘗試連接例如“9000-10000”的連接埠號</alternative></data>
   <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
-    <value>窮舉嘗試連接例如“9600,9602,9700-9750”的連接埠號</value>
-  </data>
+    <value>窮舉嘗試連接的連接埠號（如：9600,9602,9700-9750）</value>
+  <alternative>窮舉嘗試連接例如“9600,9602,9700-9750”的連接埠號</alternative></data>
   <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
-    <value>搜索連接埠號超時</value>
-  </data>
+    <value>掃描連接埠號超時</value>
+  <alternative>搜索連接埠號超時</alternative></data>
   <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>區域網路:</value>
-  </data>
+    <value>區域網路：</value>
+  <alternative>區域網路:</alternative></data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
-    <value>通過區域網路連接搜索服務器:</value>
-  </data>
+    <value>透過區域網路連接搜尋伺服器：</value>
+  <alternative>通過區域網路連接搜索服務器:</alternative></data>
   <data name="Settings_Online_ServerPresetsManagerHeader" xml:space="preserve">
-    <value>服務器預設管理器:</value>
-  </data>
+    <value>伺服器預設管理器：</value>
+  <alternative>服務器預設管理器:</alternative></data>
   <data name="Settings_General" xml:space="preserve">
-    <value>常規設置</value>
-  </data>
+    <value>一般設定</value>
+  <alternative>常規設置</alternative></data>
   <data name="Settings_QuickSwitches" xml:space="preserve">
-    <value>快捷菜單</value>
-  </data>
+    <value>捷徑開關</value>
+  <alternative>快捷菜單</alternative></data>
   <data name="Settings_Sharing" xml:space="preserve">
     <value>分享</value>
   </data>
@@ -903,55 +926,79 @@
     <value>外觀</value>
   </data>
   <data name="Settings_Dev" xml:space="preserve">
-    <value>開發者設置</value>
-  </data>
+    <value>開發者設定</value>
+  <alternative>開發者設置</alternative></data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
-    <value>啟用快速開關</value>
-  </data>
+    <value>啟用捷徑開關</value>
+  <alternative>啟用快速開關</alternative></data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>快速菜單:這是一個小型的彈出式窗口,允許玩家在軟件的任意位置調節一些設定.使用Alt+~組合鍵或者滑鼠右鍵可以呼出快捷菜單.你也可以使用Alt+1……Alt+9快捷鍵快速調整設定.如果你希望Content Manager增加更多的快捷菜單設置內容,請在[url="https://trello.com/c/ad89Y9rL/71-quick-switches"]這裡[/url]或者[url="https://trello.com/c/w5xT6ssZ/49-contacts"]這裡[/url]告訴我們.</value>
-  </data>
+    <value>捷徑開關：這是一個小型的彈出式視窗，能玩家在程式任意頁面調節一些設定。使用Alt+~組合鍵或者滑鼠右鍵可以開啟捷徑開關。您也可以使用Alt+1⋯⋯Alt+9快捷鍵快速調整設定。如果您希望Content Manager增加更多的捷徑開關設定內容，請在[url="https://trello.com/c/ad89Y9rL/71-quick-switches"]這裡[/url]或者[url="https://trello.com/c/w5xT6ssZ/49-contacts"]這裡[/url]告訴我們。</value>
+  <alternative>快速菜單:這是一個小型的彈出式窗口,允許玩家在軟件的任意位置調節一些設定.使用Alt+~組合鍵或者滑鼠右鍵可以呼出快捷菜單.你也可以使用Alt+1……Alt+9快捷鍵快速調整設定.如果你希望Content Manager增加更多的快捷菜單設置內容,請在[url="https://trello.com/c/ad89Y9rL/71-quick-switches"]這裡[/url]或者[url="https://trello.com/c/w5xT6ssZ/49-contacts"]這裡[/url]告訴我們.</alternative></data>
   <data name="Settings_QuickSwitches_AddedLabel" xml:space="preserve">
-    <value>添加了:</value>
-  </data>
+    <value>添加了：</value>
+  <alternative>添加了:</alternative></data>
   <data name="Settings_QuickSwitches_LibraryLabel" xml:space="preserve">
-    <value>庫:</value>
-  </data>
+    <value>資料庫：</value>
+  <alternative>庫:</alternative></data>
   <data name="Settings_Replays_LoadInformation" xml:space="preserve">
-    <value>加載遊戲錄影信息</value>
-  </data>
+    <value>載入遊戲重播資訊</value>
+  <alternative>加載遊戲錄影信息</alternative></data>
   <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
-    <value>嘗試從遊戲錄影中讀取賽道,車輛和天氣信息並顯示在媒體/遊戲錄影標籤頁</value>
-  </data>
+    <value>嘗試從遊戲重播中讀取賽道、車輛和天氣資訊並顯示在媒體/遊戲重播標籤頁</value>
+  <alternative>嘗試從遊戲錄影中讀取賽道,車輛和天氣信息並顯示在媒體/遊戲錄影標籤頁</alternative></data>
   <data name="Settings_Replays_AddExtension" xml:space="preserve">
-    <value>自動給新錄影添加“.acreplay”尾碼</value>
-  </data>
+    <value>新重播自動添加「.acreplay」尾碼</value>
+  <alternative>自動給新錄影添加“.acreplay”尾碼</alternative></data>
   <data name="Settings_Replays_AddExtension_Tooltip" xml:space="preserve">
-    <value>自動給遊戲保存的新錄影添加“.acreplay”尾碼</value>
-  </data>
+    <value>遊戲儲存的新重播自動添加「.acreplay」尾碼</value>
+  <alternative>自動給遊戲保存的新錄影添加“.acreplay”尾碼</alternative></data>
   <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
-    <value>給所有錄影添加“.acreplay”尾碼</value>
-  </data>
+    <value>給所有重播添加「.acreplay」尾碼</value>
+  <alternative>給所有錄影添加“.acreplay”尾碼</alternative></data>
   <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
-    <value>給已有錄影添加尾碼</value>
-  </data>
+    <value>給已有重播添加尾碼</value>
+  <alternative>給已有錄影添加尾碼</alternative></data>
   <data name="Settings_Replays_ExtensionHeader_Tooltip" xml:space="preserve">
-    <value>帶有“.acreplay”尾碼的文件可以直接在Windows資源管理器裡雙擊打開並播放</value>
-  </data>
+    <value>帶有「.acreplay」尾碼的檔案可以直接在Windows檔案總管中雙擊開啟並播放</value>
+  <alternative>帶有“.acreplay”尾碼的文件可以直接在Windows資源管理器裡雙擊打開並播放</alternative></data>
   <data name="Settings_Replays_ExtensionHeader" xml:space="preserve">
-    <value>遊戲錄影文件名和擴展名</value>
-  </data>
+    <value>遊戲重播檔案名稱和副檔名</value>
+  <alternative>遊戲錄影文件名和擴展名</alternative></data>
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
-    <value>自動保存遊戲錄影</value>
-  </data>
+    <value>自動儲存遊戲重播</value>
+  <alternative>自動保存遊戲錄影</alternative></data>
   <data name="Settings_Replays_AutosaveReplays_Tooltip" xml:space="preserve">
-    <value>遊戲自動保存的名為“cr”的錄影文件會被自動重命名</value>
-  </data>
+    <value>遊戲自動儲存名稱為「cr」的重播檔案會被自動重新命名</value>
+  <alternative>遊戲自動保存的名為“cr”的錄影文件會被自動重命名</alternative></data>
   <data name="Settings_Replays_NameFormat" xml:space="preserve">
-    <value>遊戲錄影文件名格式</value>
-  </data>
+    <value>遊戲重播檔案名稱格式</value>
+  <alternative>遊戲錄影文件名格式</alternative></data>
   <data name="Settings_Replays_NameFormat_Tooltip" xml:space="preserve">
-    <value>設定自動保存的遊戲錄影文件名
+    <value>設定自動儲存的遊戲重播檔案名稱。
+  
+  可供使用的值：
+  [b][mono]{type}[/mono][/b] — 比賽類型
+  [b][mono]{car}[/mono][/b] — 車輛名稱
+  [b][mono]{car.id}[/mono][/b] — 車輛ID
+  [b][mono]{track}[/mono][/b] — 賽道名稱
+  [b][mono]{track.id}[/mono][/b] — 賽道ID
+  [b][mono]{date}[/mono][/b] — 系統格式的日期和時間
+  [b][mono]{date_ac}[/mono][/b] — AC格式的日期和時間
+  
+  修改檔案名稱中字元格式:
+  [b][mono]{…:l}[/mono][/b] — 小寫字母
+  [b][mono]{…:u}[/mono][/b] — 大寫字母
+  [b][mono]{…:0}[/mono][/b] — 只取首字母
+  
+  範例：
+  [b][mono]{car.id}_{track.id}_{date_ac}[/mono][/b] — 預設AC遊戲重播檔案名稱格式
+  [b][mono]（{type:l0}） {car:l} on {track:l}.acreplay[/mono][/b] — 檔案名稱例如：「[w] bmw m3 e30 on brands hatch.acreplay」.
+  
+  如果您希望添加其他的一些可以使用的值，請聯絡我們進行添加。
+  
+  [b]警告：[/b]
+  請勿使用某些特殊符號例如方括弧「[」或者「]」！</value>
+  <alternative>設定自動保存的遊戲錄影文件名
   
   可供使用的值:
   [b][mono]{type}[/mono][/b] — 比賽類型
@@ -974,134 +1021,133 @@
   如果你希望添加其他的一些可以使用的值,請聯繫我們進行添加
   
   [b]警告:[/b]
-  不要使用某些特殊符號例如方括弧“[”或者“]”!</value>
-  </data>
+  不要使用某些特殊符號例如方括弧“[”或者“]”!</alternative></data>
   <data name="Settings_AcSettingsHeader" xml:space="preserve">
-    <value>AC設置:</value>
-  </data>
+    <value>AC設定：</value>
+  <alternative>AC設置:</alternative></data>
   <data name="AcSettings_Replays_QualityLabel" xml:space="preserve">
-    <value>遊戲錄影質量:</value>
-  </data>
+    <value>遊戲重播品質：</value>
+  <alternative>遊戲錄影質量:</alternative></data>
   <data name="AcSettings_Replays_MaximumSize" xml:space="preserve">
-    <value>錄影文件大小上限:</value>
-  </data>
+    <value>重播檔案大小上限：</value>
+  <alternative>錄影文件大小上限:</alternative></data>
   <data name="AcSettings_Replays_RecommendedMaximumSizeFormat" xml:space="preserve">
-    <value>遊戲錄影文件的大小上限(推薦值):{0} MB</value>
-  </data>
+    <value>遊戲重播檔案的大小上限（推薦值）：{0} MB</value>
+  <alternative>遊戲錄影文件的大小上限(推薦值):{0} MB</alternative></data>
   <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
-    <value>與遊戲錄影相關的事件:</value>
-  </data>
+    <value>與遊戲重播相關的事件：</value>
+  <alternative>與遊戲錄影相關的事件:</alternative></data>
   <data name="AcSettings_Replays_EventPreLabel" xml:space="preserve">
-    <value>錄影播放前執行的指令:</value>
-  </data>
+    <value>重播播放前執行的指令：</value>
+  <alternative>錄影播放前執行的指令:</alternative></data>
   <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
-    <value>錄影播放後執行的指令:</value>
-  </data>
+    <value>重播播放後執行的指令：</value>
+  <alternative>錄影播放後執行的指令:</alternative></data>
   <data name="Settings_Sharing_CopyLinkAutomatically" xml:space="preserve">
     <value>自動複製連結到剪貼板</value>
   </data>
   <data name="Settings_Sharing_NameLabel" xml:space="preserve">
-    <value>分享時使用的玩家暱稱:</value>
-  </data>
+    <value>分享時使用的玩家暱稱：</value>
+  <alternative>分享時使用的玩家暱稱:</alternative></data>
   <data name="Settings_Sharing_Anonymously" xml:space="preserve">
     <value>匿名分享</value>
   </data>
   <data name="Settings_Sharing_Unnamed" xml:space="preserve">
-    <value>分享時屏蔽自定義玩家名</value>
-  </data>
+    <value>分享時停用自定義玩家名稱</value>
+  <alternative>分享時屏蔽自定義玩家名</alternative></data>
   <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
     <value>分享前驗證參數</value>
   </data>
   <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
-    <value>特殊:</value>
-  </data>
+    <value>特殊：</value>
+  <alternative>特殊:</alternative></data>
   <data name="Settings_Sharing_CustomIds" xml:space="preserve">
     <value>自定義ID</value>
   </data>
   <data name="Settings_Sharing_BigFilesHeader" xml:space="preserve">
-    <value>大文件分享設置:</value>
-  </data>
+    <value>大檔案分享設定：</value>
+  <alternative>大文件分享設置:</alternative></data>
   <data name="Settings_Sharing_BigFilesDestinationLabel" xml:space="preserve">
-    <value>文件位置:</value>
-  </data>
+    <value>檔案位置：</value>
+  <alternative>文件位置:</alternative></data>
   <data name="Common_SignOut" xml:space="preserve">
-    <value>退出登錄</value>
-  </data>
+    <value>登出</value>
+  <alternative>退出登錄</alternative></data>
   <data name="Common_SignIn" xml:space="preserve">
-    <value>登錄</value>
-  </data>
+    <value>登入</value>
+  <alternative>登錄</alternative></data>
   <data name="Settings_Sharing_BigFilesFolderLabel" xml:space="preserve">
-    <value>文件夾:</value>
-  </data>
+    <value>資料夾：</value>
+  <alternative>文件夾:</alternative></data>
   <data name="Common_Update" xml:space="preserve">
     <value>更新</value>
   </data>
   <data name="Settings_Sharing_BigFilesFoldersUpdate_Tooltip" xml:space="preserve">
-    <value>點擊“更新”以重新載入文件夾列表</value>
-  </data>
+    <value>點擊「更新」以重新載入資料夾列表</value>
+  <alternative>點擊“更新”以重新載入文件夾列表</alternative></data>
   <data name="Settings_Sharing_BigFilesSelectedFolder" xml:space="preserve">
-    <value>已選擇的文件夾:{0}</value>
-  </data>
+    <value>已選取資料夾：{0}</value>
+  <alternative>已選擇的文件夾:{0}</alternative></data>
   <data name="Common_IdFormat" xml:space="preserve">
-    <value>ID:{0}</value>
-  </data>
+    <value>ID：{0}</value>
+  <alternative>ID:{0}</alternative></data>
   <data name="Settings_Sharing_HistoryHeader" xml:space="preserve">
-    <value>歷史:</value>
-  </data>
+    <value>歷史：</value>
+  <alternative>歷史:</alternative></data>
   <data name="Settings_Sharing_HistoryTableType" xml:space="preserve">
     <value>類型</value>
   </data>
   <data name="Settings_Sharing_HistoryTableName" xml:space="preserve">
-    <value>文件名</value>
-  </data>
+    <value>檔案名</value>
+  <alternative>文件名</alternative></data>
   <data name="Settings_Sharing_HistoryTableTarget" xml:space="preserve">
     <value>目標</value>
   </data>
   <data name="Toolbar_Folder" xml:space="preserve">
-    <value>文件夾</value>
-  </data>
+    <value>資料夾</value>
+  <alternative>文件夾</alternative></data>
   <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
-    <value>打開車輛文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟車輛資料夾（Ctrl+F）</value>
+  <alternative>打開車輛文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Reload" xml:space="preserve">
-    <value>刷新</value>
-  </data>
+    <value>重新整理</value>
+  <alternative>刷新</alternative></data>
   <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
-    <value>刷新(Ctrl+R)</value>
-  </data>
+    <value>重新整理（Ctrl+R）</value>
+  <alternative>刷新(Ctrl+R)</alternative></data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>展廳</value>
-  </data>
+    <value>展示廳</value>
+  <alternative>展廳</alternative></data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>在展廳中觀賞車輛(Ctrl+H)</value>
-  </data>
+    <value>於展示廳中觀賞車輛（Ctrl+H）</value>
+  <alternative>在展廳中觀賞車輛(Ctrl+H)</alternative></data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>選擇展廳、濾鏡和其他設定</value>
-  </data>
+    <value>選擇展示廳、濾鏡和其他設定。</value>
+  <alternative>選擇展廳、濾鏡和其他設定</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>自定義展廳</value>
-  </data>
+    <value>自定義展示廳</value>
+  <alternative>自定義展廳</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>簡潔風自定義展廳</value>
-  </data>
+    <value>簡潔風自定義展示廳</value>
+  <alternative>簡潔風自定義展廳</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
-    <value>更快速和更準確的展廳,便於製作mod和車輛塗裝</value>
-  </data>
+    <value>快速精準的展示廳，便於製作mod和車輛塗裝</value>
+  <alternative>更快速和更準確的展廳,便於製作mod和車輛塗裝</alternative></data>
   <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
-    <value>高特效展廳</value>
-  </data>
+    <value>精緻自定義展示廳</value>
+  <alternative>高特效展廳</alternative></data>
   <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
-    <value>更慢和效果更不準確的展廳,但是具有更好的光照和反光效果</value>
-  </data>
+    <value>慢且效果更不準確的展示廳，但有更好的明暗和反光效果</value>
+  <alternative>更慢和效果更不準確的展廳,但是具有更好的光照和反光效果</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
-    <value>駕駛</value>
-  </data>
+    <value>駕駛車輛</value>
+  <alternative>駕駛</alternative></data>
   <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
-    <value>在快速遊戲模式中使用這輛車(Ctrl+G)</value>
-  </data>
+    <value>在試駕模式中使用這輛車（Ctrl+G）</value>
+  <alternative>在快速遊戲模式中使用這輛車(Ctrl+G)</alternative></data>
   <data name="Toolbar_Analyze" xml:space="preserve">
-    <value>分析</value>
-  </data>
+    <value>車輛分析</value>
+  <alternative>分析</alternative></data>
   <data name="Toolbar_CarSkins" xml:space="preserve">
     <value>車輛塗裝</value>
   </data>
@@ -1109,20 +1155,20 @@
     <value>車輛調校</value>
   </data>
   <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
-    <value>管理車輛塗裝(Ctrl+K)</value>
-  </data>
+    <value>管理車輛塗裝（Ctrl+K）</value>
+  <alternative>管理車輛塗裝(Ctrl+K)</alternative></data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
-    <value>管理車輛調校(Ctrl+U)</value>
-  </data>
+    <value>管理車輛調校（Ctrl+U）</value>
+  <alternative>管理車輛調校(Ctrl+U)</alternative></data>
   <data name="AcObject_EnterNewId" xml:space="preserve">
-    <value>輸入新ID:</value>
-  </data>
+    <value>輸入新ID：</value>
+  <alternative>輸入新ID:</alternative></data>
   <data name="AcObject_ChangeId_Tooltip" xml:space="preserve">
-    <value>請注意,修改ID可能會導致多人聯機遊戲錯誤!</value>
-  </data>
+    <value>請注意：修改ID可能會導致多人聯機遊戲錯誤！</value>
+  <alternative>請注意,修改ID可能會導致多人聯機遊戲錯誤!</alternative></data>
   <data name="AcObject_Cloning" xml:space="preserve">
-    <value>複製中……</value>
-  </data>
+    <value>複製中⋯⋯</value>
+  <alternative>複製中……</alternative></data>
   <data name="Tags_CleanUp" xml:space="preserve">
     <value>清理標籤</value>
   </data>
@@ -1133,17 +1179,17 @@
     <value>清理和排序標籤</value>
   </data>
   <data name="AcObject_Author_TooltipExt" xml:space="preserve">
-    <value>如果你是mod製作者,請使用這個“作者”域記錄mod作者名,不要使用mod的“描述”域或者“名稱”域</value>
-  </data>
+    <value>如果您是mod作者，請將作者名稱記錄在「作者」區域，而非「描述」或「名稱」區域</value>
+  <alternative>如果你是mod製作者,請使用這個“作者”域記錄mod作者名,不要使用mod的“描述”域或者“名稱”域</alternative></data>
   <data name="AcObject_Url_TooltipExt" xml:space="preserve">
-    <value>如果你是mod製作者並且有一個網頁提供這個mod的更多信息和新版本內容,請使用mod的這個“URL”域提供網頁的連結</value>
-  </data>
+    <value>請留意，如果您是mod作者並且有網頁提供這個mod的更多資訊和新版本內容，請使用「網址」區域提供網頁連結</value>
+  <alternative>如果你是mod製作者並且有一個網頁提供這個mod的更多信息和新版本內容,請使用mod的這個“URL”域提供網頁的連結</alternative></data>
   <data name="AcObject_Version_TooltipExt" xml:space="preserve">
-    <value>這個“版本”域將來也許可以被用於實現mod自動更新</value>
-  </data>
+    <value>「版本」區域未來可能可用於mod自動更新</value>
+  <alternative>這個“版本”域將來也許可以被用於實現mod自動更新</alternative></data>
   <data name="Filter_ByAuthor" xml:space="preserve">
-    <value>按作者名篩選</value>
-  </data>
+    <value>按作者名稱篩選</value>
+  <alternative>按作者名篩選</alternative></data>
   <data name="Filter_ByTag" xml:space="preserve">
     <value>按標籤篩選</value>
   </data>
@@ -1208,20 +1254,20 @@
     <value>按車輛篩選</value>
   </data>
   <data name="Toolbar_Disable" xml:space="preserve">
-    <value>禁用</value>
-  </data>
+    <value>停用</value>
+  <alternative>禁用</alternative></data>
   <data name="Toolbar_Enable" xml:space="preserve">
     <value>啟用</value>
   </data>
   <data name="Toolbar_Save" xml:space="preserve">
-    <value>保存</value>
-  </data>
+    <value>儲存</value>
+  <alternative>保存</alternative></data>
   <data name="Toolbar_Delete" xml:space="preserve">
     <value>刪除</value>
   </data>
   <data name="Toolbar_FindInformation" xml:space="preserve">
-    <value>尋找信息</value>
-  </data>
+    <value>搜尋資訊</value>
+  <alternative>尋找信息</alternative></data>
   <data name="Toolbar_UpdatePreviews" xml:space="preserve">
     <value>更新預覽圖</value>
   </data>
@@ -1232,53 +1278,53 @@
     <value>解包數據</value>
   </data>
   <data name="Toolbar_ReplaceSound" xml:space="preserve">
-    <value>替換聲音</value>
-  </data>
+    <value>取代音檔</value>
+  <alternative>替換聲音</alternative></data>
   <data name="Toolbar_PackData_Tooltip" xml:space="preserve">
-    <value>提供更好的在線遊戲效果(Ctrl+J)</value>
-  </data>
+    <value>提供更佳的線上遊戲效果（Ctrl+J）</value>
+  <alternative>提供更好的在線遊戲效果(Ctrl+J)</alternative></data>
   <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
-    <value>僅供開發者使用(Alt+J)</value>
-  </data>
+    <value>僅供開發者使用（Alt+J）</value>
+  <alternative>僅供開發者使用(Alt+J)</alternative></data>
   <data name="Toolbar_ReplaceSound_Tooltip" xml:space="preserve">
-    <value>用其他車輛的聲音替換本車聲音</value>
-  </data>
+    <value>用其他車輛的音檔替換本車音檔（Alt+S）</value>
+  <alternative>用其他車輛的聲音替換本車聲音</alternative></data>
   <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
-    <value>禁用(Ctrl+D)</value>
-  </data>
+    <value>停用（Ctrl+D）</value>
+  <alternative>禁用(Ctrl+D)</alternative></data>
   <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
-    <value>啟用(Ctrl+D)</value>
-  </data>
+    <value>啟用（Ctrl+D）</value>
+  <alternative>啟用(Ctrl+D)</alternative></data>
   <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
-    <value>保存對JSON文件的修改(Ctrl+S)</value>
-  </data>
+    <value>儲存對JSON檔案的更動（Ctrl+S）</value>
+  <alternative>保存對JSON文件的修改(Ctrl+S)</alternative></data>
   <data name="Toolbar_Delete_CarTooltip" xml:space="preserve">
-    <value>將車輛移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將車輛移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將車輛移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
-    <value>搜索這輛車的信息(Ctrl+I)</value>
-  </data>
+    <value>搜尋這輛車的資訊（Ctrl+I）</value>
+  <alternative>搜索這輛車的信息(Ctrl+I)</alternative></data>
   <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
-    <value>更新所有的預覽圖(Ctrl+P)</value>
-  </data>
+    <value>更新所有的預覽圖（Ctrl+P）</value>
+  <alternative>更新所有的預覽圖(Ctrl+P)</alternative></data>
   <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
     <value>手動模式</value>
   </data>
   <data name="Toolbar_UpdatePreviewsManually_Tooltip" xml:space="preserve">
-    <value>手動調節攝像機視角,之後按F8鍵拍攝預覽圖</value>
-  </data>
+    <value>手動調節照相機視角，並按F8鍵拍攝預覽圖</value>
+  <alternative>手動調節攝像機視角,之後按F8鍵拍攝預覽圖</alternative></data>
   <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
-    <value>選擇展廳、濾鏡、攝像機機位等設定</value>
-  </data>
+    <value>選擇展示廳、濾鏡、照相機機位等設定。</value>
+  <alternative>選擇展廳、濾鏡、攝像機機位等設定</alternative></data>
   <data name="Car_CannotPackData" xml:space="preserve">
     <value>無法打包數據</value>
   </data>
   <data name="Car_PackKunosDataMessage" xml:space="preserve">
-    <value>你即將重新打包原版Assetto Corsa數據.這操作可能產生未知的結果,有可能會導致你無法進行多人遊戲.你確定要繼續嗎?[br][br]原始數據“data.acd”將被移動至回收站</value>
-  </data>
+    <value>您即將重新打包原版Kunos資料。此操作可能產生未知後果，導致您無法進行多人遊戲。您確定要繼續嗎？[br][br]原始數據「data.acd」將被移動至回收桶。</value>
+  <alternative>你即將重新打包原版Assetto Corsa數據.這操作可能產生未知的結果,有可能會導致你無法進行多人遊戲.你確定要繼續嗎?[br][br]原始數據“data.acd”將被移動至回收站</alternative></data>
   <data name="Car_PackExistingDataMessage" xml:space="preserve">
-    <value>打包數據已經存在.是否進行替換?[br][br]原始數據“data.acd”將被移動至回收站</value>
-  </data>
+    <value>打包數據已經存在，是否進行替換？[br][br]原始數據「data.acd」將被移動至回收桶。</value>
+  <alternative>打包數據已經存在.是否進行替換?[br][br]原始數據“data.acd”將被移動至回收站</alternative></data>
   <data name="Common_CannotFindObjectById" xml:space="preserve">
     <value>無法找到指定ID對應的對象</value>
   </data>
@@ -1289,11 +1335,11 @@
     <value>更換車輛塗裝</value>
   </data>
   <data name="Toolbar_GenerateLivery" xml:space="preserve">
-    <value>生成車輛塗裝</value>
-  </data>
+    <value>產生車輛塗裝</value>
+  <alternative>生成車輛塗裝</alternative></data>
   <data name="Toolbar_GenerateRandomLivery" xml:space="preserve">
-    <value>生成隨機塗裝</value>
-  </data>
+    <value>產生隨機塗裝</value>
+  <alternative>生成隨機塗裝</alternative></data>
   <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
     <value>使用塗裝編輯器的最後一次設定生成新的車輛塗裝</value>
   </data>
@@ -1304,254 +1350,254 @@
     <value>刪除車輛塗裝</value>
   </data>
   <data name="Car_DeleteSkin_Tooltip" xml:space="preserve">
-    <value>車輛塗裝即將被移動到回收站</value>
-  </data>
+    <value>車輛塗裝即將被移動到回收桶</value>
+  <alternative>車輛塗裝即將被移動到回收站</alternative></data>
   <data name="Car_SkinFormat" xml:space="preserve">
-    <value>車輛塗裝:{0}</value>
-  </data>
+    <value>車輛塗裝：{0}</value>
+  <alternative>車輛塗裝:{0}</alternative></data>
   <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
-    <value>打開塗裝文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟塗裝資料夾（Ctrl+F）</value>
+  <alternative>打開塗裝文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
-    <value>打開調校文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟調校資料夾（Ctrl+F）</value>
+  <alternative>打開調校文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
-    <value>打開字體文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟字型資料夾（Ctrl+F）</value>
+  <alternative>打開字體文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
-    <value>打開後處理濾鏡文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟後期處理濾鏡資料夾（Ctrl+F）</value>
+  <alternative>打開後處理濾鏡文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
-    <value>打開插件文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟App資料夾（Ctrl+F）</value>
+  <alternative>打開插件文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
-    <value>打開錄影文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟重播資料夾（Ctrl+F）</value>
+  <alternative>打開錄影文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
-    <value>打開賽道文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟賽道資料夾（Ctrl+F）</value>
+  <alternative>打開賽道文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
-    <value>打開天氣文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟天氣資料夾（Ctrl+F）</value>
+  <alternative>打開天氣文件夾(Ctrl+F)</alternative></data>
   <data name="Common_Share" xml:space="preserve">
     <value>分享</value>
   </data>
   <data name="Common_Share_SettingsTooltip" xml:space="preserve">
-    <value>分享當前設置(Ctrl+Page Up)</value>
-  </data>
+    <value>分享目前設定（Ctrl+Page Up）</value>
+  <alternative>分享當前設置(Ctrl+Page Up)</alternative></data>
   <data name="Common_Test" xml:space="preserve">
     <value>測試</value>
   </data>
   <data name="Toolbar_Delete_SetupTooltip" xml:space="preserve">
-    <value>將調校移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將調校移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將調校移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_SkinTooltip" xml:space="preserve">
-    <value>將塗裝移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將塗裝移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將塗裝移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_FontTooltip" xml:space="preserve">
-    <value>將字體移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將字型移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將字體移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_PpFilterTooltip" xml:space="preserve">
-    <value>將濾鏡移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將濾鏡移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將濾鏡移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_AppTooltip" xml:space="preserve">
-    <value>將插件移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將app移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將插件移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_ReplayTooltip" xml:space="preserve">
-    <value>將錄影移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將重播移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將錄影移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
-    <value>將展廳移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將展示廳移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將展廳移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_TrackTooltip" xml:space="preserve">
-    <value>將賽道移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將賽道移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將賽道移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Delete_WeatherTooltip" xml:space="preserve">
-    <value>將天氣移動到回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將天氣移動到回收桶（Ctrl+Delete）</value>
+  <alternative>將天氣移動到回收站(Ctrl+Delete)</alternative></data>
   <data name="Toolbar_Rename" xml:space="preserve">
-    <value>重命名</value>
-  </data>
+    <value>重新命名</value>
+  <alternative>重命名</alternative></data>
   <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
-    <value>重命名錄影文件(Ctrl+S)</value>
-  </data>
+    <value>重新命名重播檔案（Ctrl+S）</value>
+  <alternative>重命名錄影文件(Ctrl+S)</alternative></data>
   <data name="Toolbar_UploadAndShare" xml:space="preserve">
-    <value>上傳和分享</value>
-  </data>
+    <value>上傳並分享</value>
+  <alternative>上傳和分享</alternative></data>
   <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
-    <value>使用Google Drive分享遊戲錄影(Ctrl+Page Up)</value>
-  </data>
+    <value>使用Google Drive分享遊戲重播（Ctrl+Page Up）</value>
+  <alternative>使用Google Drive分享遊戲錄影(Ctrl+Page Up)</alternative></data>
   <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
-    <value>保存對INI文件的修改(Ctrl+S)</value>
-  </data>
+    <value>儲存對INI檔案的修改（Ctrl+S）</value>
+  <alternative>保存對INI文件的修改(Ctrl+S)</alternative></data>
   <data name="Toolbar_Clone" xml:space="preserve">
     <value>複製</value>
   </data>
   <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
-    <value>複製天氣(Ctrl+Shift+D)</value>
-  </data>
+    <value>複製天氣（Ctrl+Shift+D）</value>
+  <alternative>複製天氣(Ctrl+Shift+D)</alternative></data>
   <data name="Toolbar_Share_SetupTooltip" xml:space="preserve">
-    <value>分享車輛調校(Ctrl+Page Up)</value>
-  </data>
+    <value>分享車輛調校（Ctrl+Page Up）</value>
+  <alternative>分享車輛調校(Ctrl+Page Up)</alternative></data>
   <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
-    <value>測試車輛調校(Ctrl+G)</value>
-  </data>
+    <value>測試車輛調校（Ctrl+G）</value>
+  <alternative>測試車輛調校(Ctrl+G)</alternative></data>
   <data name="AcObject_TrackLabel" xml:space="preserve">
-    <value>賽道:</value>
-  </data>
+    <value>賽道：</value>
+  <alternative>賽道:</alternative></data>
   <data name="Toolbar_ChangeId" xml:space="preserve">
     <value>更換ID</value>
   </data>
   <data name="Toolbar_ChangeId_SkinTooltip" xml:space="preserve">
-    <value>更換車輛塗裝的ID(Ctrl+Shift+F2)</value>
-  </data>
+    <value>更換車輛塗裝的ID（Ctrl+Shift+F2）</value>
+  <alternative>更換車輛塗裝的ID(Ctrl+Shift+F2)</alternative></data>
   <data name="Toolbar_DeleteJson" xml:space="preserve">
-    <value>刪除JSON文件</value>
-  </data>
+    <value>刪除JSON檔案</value>
+  <alternative>刪除JSON文件</alternative></data>
   <data name="Toolbar_CreateJson" xml:space="preserve">
-    <value>創建JSON文件</value>
-  </data>
+    <value>建立JSON檔案</value>
+  <alternative>創建JSON文件</alternative></data>
   <data name="Common_Go" xml:space="preserve">
-    <value>出發!</value>
-  </data>
+    <value>出發！</value>
+  <alternative>出發!</alternative></data>
   <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
-    <value>分享濾鏡(Ctrl+Page Up)</value>
-  </data>
+    <value>分享濾鏡（Ctrl+Page Up）</value>
+  <alternative>分享濾鏡(Ctrl+Page Up)</alternative></data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>在展廳中測試濾鏡(Ctrl+G)</value>
-  </data>
+    <value>在展示廳中測試濾鏡（Ctrl+G）</value>
+  <alternative>在展廳中測試濾鏡(Ctrl+G)</alternative></data>
   <data name="Font_MissingFonts" xml:space="preserve">
-    <value>缺少字體</value>
-  </data>
+    <value>遺失字型</value>
+  <alternative>缺少字體</alternative></data>
   <data name="Common_DisablingFormat" xml:space="preserve">
-    <value>正在關閉 {)</value>
-  </data>
+    <value>正在關閉 {0}⋯⋯</value>
+  <alternative>正在關閉 {)</alternative></data>
   <data name="Common_CannotFindCarById" xml:space="preserve">
     <value>無法找到指定ID對應的車輛</value>
   </data>
   <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
-    <value>更新車輛塗裝預覽圖(Ctrl+P)</value>
-  </data>
+    <value>更新車輛塗裝預覽圖（Ctrl+P）</value>
+  <alternative>更新車輛塗裝預覽圖(Ctrl+P)</alternative></data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
-    <value>更換車輛塗裝的livery.png文件(Ctrl+L)</value>
-  </data>
+    <value>更換車輛塗裝的livery.png檔案（Ctrl+L）</value>
+  <alternative>更換車輛塗裝的livery.png文件(Ctrl+L)</alternative></data>
   <data name="AcObject_TeamLabel" xml:space="preserve">
-    <value>車隊:</value>
-  </data>
+    <value>車隊：</value>
+  <alternative>車隊:</alternative></data>
   <data name="AcObject_DriverLabel" xml:space="preserve">
-    <value>車手:</value>
-  </data>
+    <value>車手：</value>
+  <alternative>車手:</alternative></data>
   <data name="AcObject_NumberLabel" xml:space="preserve">
-    <value>車號:</value>
-  </data>
+    <value>車號：</value>
+  <alternative>車號:</alternative></data>
   <data name="AcObject_PriorityLabel" xml:space="preserve">
-    <value>優先級:</value>
-  </data>
+    <value>優先等級：</value>
+  <alternative>優先級:</alternative></data>
   <data name="Skin_CannotRemoveUiSkin" xml:space="preserve">
-    <value>無法刪除“ui_skin.json”</value>
-  </data>
+    <value>無法刪除「ui_skin.json」</value>
+  <alternative>無法刪除“ui_skin.json”</alternative></data>
   <data name="Skin_CannotRemoveUiSkin_Commentary" xml:space="preserve">
-    <value>請確保文件沒有被打開</value>
-  </data>
+    <value>請確認檔案沒有被開啟。</value>
+  <alternative>請確保文件沒有被打開</alternative></data>
   <data name="Toolbar_RescanUsings" xml:space="preserve">
-    <value>重新掃瞄字體使用情況</value>
-  </data>
+    <value>重新掃瞄字型使用情況</value>
+  <alternative>重新掃瞄字體使用情況</alternative></data>
   <data name="Toolbar_RescanUsings_Tooltip" xml:space="preserve">
-    <value>收集使用了每一種字體的車輛的數據(Ctrl+U)</value>
-  </data>
+    <value>依字型使用情況列出車輛清單（Ctrl+U）</value>
+  <alternative>收集使用了每一種字體的車輛的數據(Ctrl+U)</alternative></data>
   <data name="Toolbar_CreateNewFont" xml:space="preserve">
-    <value>創建新字體</value>
-  </data>
+    <value>建立新字型</value>
+  <alternative>創建新字體</alternative></data>
   <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
-    <value>使用Kunos工具創建新字體(Ctrl+N)</value>
-  </data>
+    <value>使用Kunos工具建立新字型（Ctrl+N）</value>
+  <alternative>使用Kunos工具創建新字體(Ctrl+N)</alternative></data>
   <data name="Toolbar_DisableUnused" xml:space="preserve">
-    <value>禁用未使用的字體</value>
-  </data>
+    <value>停用未使用的字型</value>
+  <alternative>禁用未使用的字體</alternative></data>
   <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
-    <value>重新掃瞄字體使用情況,禁用所有未使用的字體(Ctrl+Shift+D)</value>
-  </data>
+    <value>重新掃瞄字型使用情況，停用所有未使用的字型（Ctrl+Shift+D）</value>
+  <alternative>重新掃瞄字體使用情況,禁用所有未使用的字體(Ctrl+Shift+D)</alternative></data>
   <data name="AcObject_FontTestLabel" xml:space="preserve">
-    <value>測試:</value>
-  </data>
+    <value>測試：</value>
+  <alternative>測試:</alternative></data>
   <data name="AcObject_FontUsedInLabel" xml:space="preserve">
-    <value>被用於:</value>
-  </data>
+    <value>用於：</value>
+  <alternative>被用於:</alternative></data>
   <data name="AcObject_FontLastScannedFormat" xml:space="preserve">
-    <value>最近一次掃瞄:{0}</value>
-  </data>
+    <value>最近一次掃瞄：{0}</value>
+  <alternative>最近一次掃瞄:{0}</alternative></data>
   <data name="AcObject_FontLastScannedNever" xml:space="preserve">
-    <value>最後一次掃瞄:從未掃瞄過</value>
-  </data>
+    <value>最後一次掃瞄：從未掃瞄</value>
+  <alternative>最後一次掃瞄:從未掃瞄過</alternative></data>
   <data name="AcObject_UsingsRescan" xml:space="preserve">
     <value>重新掃瞄</value>
   </data>
   <data name="AcObject_AppActivated" xml:space="preserve">
-    <value>已激活</value>
-  </data>
+    <value>已啟用</value>
+  <alternative>已激活</alternative></data>
   <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
-    <value>重命名插件(Ctrl+S)</value>
-  </data>
+    <value>重新命名App（Ctrl+S）</value>
+  <alternative>重命名插件(Ctrl+S)</alternative></data>
   <data name="Toolbar_Play" xml:space="preserve">
     <value>播放</value>
   </data>
   <data name="Toolbar_Play_Tooltip" xml:space="preserve">
-    <value>播放遊戲錄影(Ctrl+G)</value>
-  </data>
+    <value>播放遊戲重播（Ctrl+G）</value>
+  <alternative>播放遊戲錄影(Ctrl+G)</alternative></data>
   <data name="AcObject_DateLabel" xml:space="preserve">
-    <value>日期:</value>
-  </data>
+    <value>日期：</value>
+  <alternative>日期:</alternative></data>
   <data name="AcObject_SizeLabel" xml:space="preserve">
-    <value>文件大小:</value>
-  </data>
+    <value>檔案大小：</value>
+  <alternative>文件大小:</alternative></data>
   <data name="AcObject_DriverNameLabel" xml:space="preserve">
-    <value>車手名:</value>
-  </data>
+    <value>車手名稱：</value>
+  <alternative>車手名:</alternative></data>
   <data name="AcObject_WeatherLabel" xml:space="preserve">
-    <value>天氣:</value>
-  </data>
+    <value>天氣：</value>
+  <alternative>天氣:</alternative></data>
   <data name="Replay_CannotShare" xml:space="preserve">
-    <value>無法分享遊戲錄影</value>
-  </data>
+    <value>無法分享遊戲重播</value>
+  <alternative>無法分享遊戲錄影</alternative></data>
   <data name="Replay_DefaultUploadedName" xml:space="preserve">
-    <value>默認錄影上傳名</value>
-  </data>
+    <value>預設重播上傳名稱</value>
+  <alternative>默認錄影上傳名</alternative></data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>打開展廳文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟展示廳資料夾（Ctrl+F）</value>
+  <alternative>打開展廳文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>創建新的展廳</value>
-  </data>
+    <value>建立新的展示廳</value>
+  <alternative>創建新的展廳</alternative></data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>使用已有的全景照片穿件新的展廳(Ctrl+N)</value>
-  </data>
+    <value>使用現存全景照片建立新的展示廳（Ctrl+N）</value>
+  <alternative>使用已有的全景照片穿件新的展廳(Ctrl+N)</alternative></data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>更新展廳預覽圖(Ctrl+P)</value>
-  </data>
+    <value>更新展示廳預覽圖（Ctrl+P）</value>
+  <alternative>更新展廳預覽圖(Ctrl+P)</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>關閉聲音</value>
   </data>
   <data name="Toolbar_TurnOnSound" xml:space="preserve">
-    <value>打開聲音</value>
-  </data>
+    <value>開啟聲音</value>
+  <alternative>打開聲音</alternative></data>
   <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
-    <value>禁用聲音(Ctrl+I)</value>
-  </data>
+    <value>停用聲音（Ctrl+I）</value>
+  <alternative>禁用聲音(Ctrl+I)</alternative></data>
   <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
-    <value>開啟聲音(Ctrl+I)</value>
-  </data>
+    <value>開啟聲音（Ctrl+I）</value>
+  <alternative>開啟聲音(Ctrl+I)</alternative></data>
   <data name="Common_ShootingCancelled" xml:space="preserve">
-    <value>拍照已經取消</value>
-  </data>
+    <value>拍照取消</value>
+  <alternative>拍照已經取消</alternative></data>
   <data name="Showroom_CannotUpdatePreview" xml:space="preserve">
-    <value>無法更新展廳預覽圖</value>
-  </data>
+    <value>無法更新展示廳預覽圖</value>
+  <alternative>無法更新展廳預覽圖</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
-    <value>在快速遊戲模式中使用這條賽道(Ctrl+G)</value>
-  </data>
+    <value>在試駕模式中使用這條賽道（Ctrl+G）</value>
+  <alternative>在快速遊戲模式中使用這條賽道(Ctrl+G)</alternative></data>
   <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
-    <value>查找賽道的更多信息(Ctrl+I)</value>
-  </data>
+    <value>搜尋賽道的更多資訊（Ctrl+I）</value>
+  <alternative>查找賽道的更多信息(Ctrl+I)</alternative></data>
   <data name="Toolbar_CopyValues" xml:space="preserve">
     <value>複製數值</value>
   </data>
@@ -1559,8 +1605,8 @@
     <value>將數據複製到賽道的其他佈局裡</value>
   </data>
   <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
-    <value>更新賽道預覽圖(Ctrl+P)</value>
-  </data>
+    <value>更新賽道預覽圖（Ctrl+P）</value>
+  <alternative>更新賽道預覽圖(Ctrl+P)</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting" xml:space="preserve">
     <value>使用已有圖片更新預覽圖</value>
   </data>
@@ -1571,17 +1617,17 @@
     <value>更新賽道地圖</value>
   </data>
   <data name="AcObject_TrackLayoutNameLabel" xml:space="preserve">
-    <value>佈局名:</value>
-  </data>
+    <value>賽道佈局名稱：</value>
+  <alternative>佈局名:</alternative></data>
   <data name="Filter_ByCity" xml:space="preserve">
     <value>按城市篩選</value>
   </data>
   <data name="AcObject_CityLabel" xml:space="preserve">
-    <value>城市:</value>
-  </data>
+    <value>城市：</value>
+  <alternative>城市:</alternative></data>
   <data name="AcObject_GeoTagsLabel" xml:space="preserve">
-    <value>地理位置標籤:</value>
-  </data>
+    <value>地理位置標籤：</value>
+  <alternative>地理位置標籤:</alternative></data>
   <data name="Toolbar_EditMode" xml:space="preserve">
     <value>編輯模式</value>
   </data>
@@ -1589,47 +1635,47 @@
     <value>關閉編輯模式</value>
   </data>
   <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
-    <value>更新天氣預覽圖(Ctrl+P)</value>
-  </data>
+    <value>更新天氣預覽圖（Ctrl+P）</value>
+  <alternative>更新天氣預覽圖(Ctrl+P)</alternative></data>
   <data name="Toolbar_ChangeId_WeatherTooltip" xml:space="preserve">
-    <value>更改天氣ID(Ctrl+Shift+F2)</value>
-  </data>
+    <value>更改天氣ID（Ctrl+Shift+F2）</value>
+  <alternative>更改天氣ID(Ctrl+Shift+F2)</alternative></data>
   <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
-    <value>在賽道上測試天氣(Ctrl+G)</value>
-  </data>
+    <value>在賽道上測試天氣（Ctrl+G）</value>
+  <alternative>在賽道上測試天氣(Ctrl+G)</alternative></data>
   <data name="Common_Share_WeatherTooltip" xml:space="preserve">
-    <value>分享天氣(Ctrl+Page Up)</value>
-  </data>
+    <value>分享天氣（Ctrl+Page Up）</value>
+  <alternative>分享天氣(Ctrl+Page Up)</alternative></data>
   <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
-    <value>作為:</value>
-  </data>
+    <value>作為：</value>
+  <alternative>作為:</alternative></data>
   <data name="Weather_SeemsEmpty" xml:space="preserve">
-    <value>好像是空的?</value>
-  </data>
+    <value>似乎空的？</value>
+  <alternative>好像是空的?</alternative></data>
   <data name="Weather_SeemsEmpty_Commentary" xml:space="preserve">
-    <value>如果你想編輯其他天氣參數,請切換到編輯模式</value>
-  </data>
+    <value>如果您想編輯其他天氣參數，請切換到編輯模式。</value>
+  <alternative>如果你想編輯其他天氣參數,請切換到編輯模式</alternative></data>
   <data name="WeatherEdit_Headlights" xml:space="preserve">
-    <value>打開車燈</value>
-  </data>
+    <value>開啟車燈</value>
+  <alternative>打開車燈</alternative></data>
   <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
-    <value>查看"readme_weather.txt"</value>
-  </data>
+    <value>查看「readme_weather.txt」</value>
+  <alternative>查看"readme_weather.txt"</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficient_Tooltip" xml:space="preserve">
-    <value>創建和天氣,時間,大氣溫度相關的賽道溫度變數,更多信息請參閱"readme_weather.txt"</value>
-  </data>
+    <value>建立和天氣、時間、大氣溫度相關的賽道溫度變數。更多資訊請參閱「readme_weather.txt」</value>
+  <alternative>創建和天氣,時間,大氣溫度相關的賽道溫度變數,更多信息請參閱"readme_weather.txt"</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficient" xml:space="preserve">
     <value>溫度係數</value>
   </data>
   <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
-    <value>溫度係數測試:</value>
-  </data>
+    <value>溫度係數測試：</value>
+  <alternative>溫度係數測試:</alternative></data>
   <data name="WeatherEdit_TemperatureCoefficientAirTemperature" xml:space="preserve">
-    <value>空氣溫度</value>
-  </data>
+    <value>氣溫</value>
+  <alternative>空氣溫度</alternative></data>
   <data name="WeatherEdit_CloudsHeader" xml:space="preserve">
-    <value>雲:</value>
-  </data>
+    <value>雲：</value>
+  <alternative>雲:</alternative></data>
   <data name="WeatherEdit_Cover" xml:space="preserve">
     <value>覆蓋</value>
   </data>
@@ -1640,14 +1686,14 @@
     <value>顏色</value>
   </data>
   <data name="WeatherEdit_FogHeader" xml:space="preserve">
-    <value>霧:</value>
-  </data>
+    <value>霧：</value>
+  <alternative>霧:</alternative></data>
   <data name="WeatherEdit_Brightness" xml:space="preserve">
     <value>亮度</value>
   </data>
   <data name="WeatherEdit_Blend" xml:space="preserve">
-    <value>混合</value>
-  </data>
+    <value>混合度</value>
+  <alternative>混合</alternative></data>
   <data name="WeatherEdit_Distance" xml:space="preserve">
     <value>距離</value>
   </data>
@@ -1655,44 +1701,47 @@
     <value>伽馬角度</value>
   </data>
   <data name="WeatherEdit_HdrOffMultipler" xml:space="preserve">
-    <value>HDR關閉係數</value>
-  </data>
+    <value>高動態範圍（HDR）關閉係數</value>
+  <alternative>HDR關閉係數</alternative></data>
   <data name="WeatherEdit_Multipler" xml:space="preserve">
     <value>係數</value>
   </data>
   <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
-    <value>切換到編輯模式(Ctrl+E)</value>
-  </data>
+    <value>切換到編輯模式（Ctrl+E）</value>
+  <alternative>切換到編輯模式(Ctrl+E)</alternative></data>
   <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
-    <value>從編輯模式切換(Ctrl+E)</value>
-  </data>
+    <value>從編輯模式切換（Ctrl+E）</value>
+  <alternative>從編輯模式切換(Ctrl+E)</alternative></data>
   <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
-    <value>顏色曲線:</value>
-  </data>
+    <value>顏色曲線：</value>
+  <alternative>顏色曲線:</alternative></data>
   <data name="WeatherEdit_AdditionalHeader" xml:space="preserve">
-    <value>附加:</value>
-  </data>
+    <value>附加：</value>
+  <alternative>附加:</alternative></data>
   <data name="WeatherEdit_Cover_Tooltip" xml:space="preserve">
     <value>調整雲層透明度</value>
   </data>
   <data name="WeatherEdit_CutOff_Tooltip" xml:space="preserve">
-    <value>調整其他影響到雲層的顏色:
+    <value>調整其他影響到雲層的顏色：
+  • [b]0%:[/b] 只考慮雲層特效顏色
+  • [b]50%:[/b] 50%雲層本身顏色和50%特效
+  • [b]100%:[/b] 只考慮雲層本身顏色</value>
+  <alternative>調整其他影響到雲層的顏色:
   • [b]0%:[/b] 只考慮雲層特效顏色;
   • [b]50%:[/b] 50%雲層本身顏色和50%特效;
-  • [b]100%:[/b] 只考慮雲層本身顏色</value>
-  </data>
+  • [b]100%:[/b] 只考慮雲層本身顏色</alternative></data>
   <data name="WeatherEdit_Color_Tooltip" xml:space="preserve">
-    <value>基礎顏色,太陽光線,光線顏色和大氣將會被增加進來</value>
-  </data>
+    <value>基色。陽光、光色和環境色將被添加到此</value>
+  <alternative>基礎顏色,太陽光線,光線顏色和大氣將會被增加進來</alternative></data>
   <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
-    <value>天空盒子寬度</value>
-  </data>
+    <value>天空盒寬度</value>
+  <alternative>天空盒子寬度</alternative></data>
   <data name="WeatherEdit_Height_Tooltip" xml:space="preserve">
-    <value>天空盒子高度</value>
-  </data>
+    <value>天空盒高度</value>
+  <alternative>天空盒子高度</alternative></data>
   <data name="WeatherEdit_Radius_Tooltip" xml:space="preserve">
-    <value>天空盒子中心到quad的距離</value>
-  </data>
+    <value>天空盒中心到quad的距離</value>
+  <alternative>天空盒子中心到quad的距離</alternative></data>
   <data name="WeatherEdit_Number_Tooltip" xml:space="preserve">
     <value>雲量</value>
   </data>
@@ -1700,22 +1749,24 @@
     <value>基礎速度因子</value>
   </data>
   <data name="WeatherEdit_HdrOffMultipler_Tooltip" xml:space="preserve">
-    <value>在HDR關閉的時候啟用</value>
-  </data>
+    <value>在高動態範圍（HDR）的時候啟用</value>
+  <alternative>在HDR關閉的時候啟用</alternative></data>
   <data name="Replay_SharedReadMe" xml:space="preserve">
     <value>{0}
   
-  要想播放,請解壓 “{1}”到 “…\Documents\Assetto Corsa\replay”.</value>
-  </data>
+  若想播放，請解壓 「{1}」到 「…\Documents\Assetto Corsa\replay」。</value>
+  <alternative>{0}
+  
+  要想播放,請解壓 “{1}”到 “…\Documents\Assetto Corsa\replay”.</alternative></data>
   <data name="Page_Wip" xml:space="preserve">
     <value>此功能尚未開發完成</value>
   </data>
   <data name="Page_Wip_Commentary" xml:space="preserve">
-    <value>如果你想知道關於開發更多的信息,[url="https://trello.com/b/MwqpL8Bw/content-manager"]這個論壇[/url] 有很多信息.</value>
-  </data>
+    <value>如果您想知道關於開發更多的資訊，[url="https://trello.com/b/MwqpL8Bw/content-manager"]這個論壇[/url] 有很多資訊。</value>
+  <alternative>如果你想知道關於開發更多的信息,[url="https://trello.com/b/MwqpL8Bw/content-manager"]這個論壇[/url] 有很多信息.</alternative></data>
   <data name="List_Setups" xml:space="preserve">
-    <value>{0} 設置</value>
-  </data>
+    <value>{0} 設定</value>
+  <alternative>{0} 設置</alternative></data>
   <data name="List_Skins" xml:space="preserve">
     <value>{0} 塗裝</value>
   </data>
@@ -1723,23 +1774,20 @@
     <value>{0} 車輛</value>
   </data>
   <data name="List_Fonts" xml:space="preserve">
-    <value>{0} 字體</value>
-  </data>
+    <value>{0} 字型</value>
+  <alternative>{0} 字體</alternative></data>
   <data name="List_PpFilters" xml:space="preserve">
     <value>{0} 濾鏡</value>
   </data>
-  <data name="List_Apps" xml:space="preserve">
-    <value>{0} 插件</value>
-  </data>
   <data name="List_Replays" xml:space="preserve">
-    <value>{0} 錄影</value>
-  </data>
+    <value>{0} 重播</value>
+  <alternative>{0} 錄影</alternative></data>
   <data name="List_ServerPresets" xml:space="preserve">
     <value>{0} 預設</value>
   </data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} 展廳</value>
-  </data>
+    <value>{0} 展示廳</value>
+  <alternative>{0} 展廳</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} 賽道</value>
   </data>
@@ -1747,56 +1795,56 @@
     <value>{0} 天氣</value>
   </data>
   <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
-    <value>尚未解鎖:需要先完成其他賽事</value>
-  </data>
+    <value>尚未解鎖：需要先完成其他賽事</value>
+  <alternative>尚未解鎖:需要先完成其他賽事</alternative></data>
   <data name="KunosCareer_FullyCompleted" xml:space="preserve">
     <value>系列賽完成</value>
   </data>
   <data name="KunosCareer_ProgressFormat" xml:space="preserve">
-    <value>進度: {0}</value>
-  </data>
+    <value>進度：{0}</value>
+  <alternative>進度: {0}</alternative></data>
   <data name="KunosCareer_Title" xml:space="preserve">
     <value>Kunos 生涯</value>
   </data>
   <data name="KunosCareer_LeftToEarn" xml:space="preserve">
-    <value>未獲得:</value>
-  </data>
+    <value>尚未獲得：</value>
+  <alternative>未獲得:</alternative></data>
   <data name="KunosCareer_Next" xml:space="preserve">
-    <value>下場比賽</value>
-  </data>
+    <value>下一場比賽</value>
+  <alternative>下場比賽</alternative></data>
   <data name="KunosCareer_SeriesGoal" xml:space="preserve">
-    <value>系列賽目標:</value>
-  </data>
+    <value>系列賽目標：</value>
+  <alternative>系列賽目標:</alternative></data>
   <data name="KunosCareer_TimeLabel" xml:space="preserve">
-    <value>時間:</value>
-  </data>
+    <value>時間：</value>
+  <alternative>時間:</alternative></data>
   <data name="KunosCareer_WeatherLabel" xml:space="preserve">
-    <value>天氣:</value>
-  </data>
+    <value>天氣：</value>
+  <alternative>天氣:</alternative></data>
   <data name="KunosCareer_TemperatureLabel" xml:space="preserve">
-    <value>氣溫:</value>
-  </data>
+    <value>氣溫：</value>
+  <alternative>氣溫:</alternative></data>
   <data name="KunosCareer_TrackState" xml:space="preserve">
-    <value>賽道狀態:</value>
-  </data>
+    <value>賽道狀態：</value>
+  <alternative>賽道狀態:</alternative></data>
   <data name="KunosCareer_StartingPositionLabel" xml:space="preserve">
-    <value>發車位置:</value>
-  </data>
+    <value>發車位置：</value>
+  <alternative>發車位置:</alternative></data>
   <data name="KunosCareer_OpponentsLabel" xml:space="preserve">
-    <value>對手:</value>
-  </data>
+    <value>對手：</value>
+  <alternative>對手:</alternative></data>
   <data name="KunosCareer_LapsLabel" xml:space="preserve">
-    <value>圈數:</value>
-  </data>
+    <value>圈數：</value>
+  <alternative>圈數:</alternative></data>
   <data name="KunosCareer_AiLevelLabel" xml:space="preserve">
-    <value>AI強度:</value>
-  </data>
+    <value>AI強度：</value>
+  <alternative>AI強度:</alternative></data>
   <data name="Online_SortByName" xml:space="preserve">
-    <value>按服務器名排序</value>
-  </data>
+    <value>按伺服器名排序</value>
+  <alternative>按服務器名排序</alternative></data>
   <data name="Online_SortByDrivers" xml:space="preserve">
-    <value>按在線人數排序</value>
-  </data>
+    <value>按線上人數排序</value>
+  <alternative>按在線人數排序</alternative></data>
   <data name="Online_SortByCapacity" xml:space="preserve">
     <value>按最大人數排序</value>
   </data>
@@ -1804,32 +1852,32 @@
     <value>按車輛編號排序</value>
   </data>
   <data name="Online_SortByPing" xml:space="preserve">
-    <value>按網絡延遲排序</value>
-  </data>
+    <value>按網路延遲排序</value>
+  <alternative>按網絡延遲排序</alternative></data>
   <data name="Online_AddByIp" xml:space="preserve">
-    <value>用IP地址添加服務器</value>
-  </data>
+    <value>用IP位址添加伺服器</value>
+  <alternative>用IP地址添加服務器</alternative></data>
   <data name="Online_Pinged" xml:space="preserve">
     <value>{1}次中ping了{0}次</value>
   </data>
   <data name="Online_ServersFormat" xml:space="preserve">
-    <value>{0}服務器</value>
-  </data>
+    <value>{0}伺服器</value>
+  <alternative>{0}服務器</alternative></data>
   <data name="Online_FilterWithBooking" xml:space="preserve">
-    <value>顯示需要報名的服務器</value>
-  </data>
+    <value>顯示需要報名的伺服器</value>
+  <alternative>顯示需要報名的服務器</alternative></data>
   <data name="Online_FilterEmpty" xml:space="preserve">
-    <value>顯示空的服務器</value>
-  </data>
+    <value>顯示空的伺服器</value>
+  <alternative>顯示空的服務器</alternative></data>
   <data name="Online_FilterFull" xml:space="preserve">
-    <value>顯示滿的服務器</value>
-  </data>
+    <value>顯示滿的伺服器</value>
+  <alternative>顯示滿的服務器</alternative></data>
   <data name="Online_FilterPassword" xml:space="preserve">
-    <value>顯示需要密碼的服務器</value>
-  </data>
+    <value>顯示需要密碼的伺服器</value>
+  <alternative>顯示需要密碼的服務器</alternative></data>
   <data name="Online_FilterMissing" xml:space="preserve">
-    <value>顯示使用了未安裝內容的服務器</value>
-  </data>
+    <value>顯示使用了未安裝內容的伺服器</value>
+  <alternative>顯示使用了未安裝內容的服務器</alternative></data>
   <data name="Online_SortByLabel" xml:space="preserve">
     <value>排序方式:</value>
   </data>
@@ -1846,50 +1894,50 @@
     <value>需密碼</value>
   </data>
   <data name="Online_FilterMissing_Short" xml:space="preserve">
-    <value>缺內容</value>
-  </data>
+    <value>遺失內容</value>
+  <alternative>缺內容</alternative></data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
     <value>沒有符合條件的結果</value>
   </data>
   <data name="Online_AddNewServer" xml:space="preserve">
-    <value>添加新服務器</value>
-  </data>
+    <value>添加新伺服器</value>
+  <alternative>添加新服務器</alternative></data>
   <data name="Online_PasswordLabel" xml:space="preserve">
-    <value>密碼:</value>
-  </data>
+    <value>密碼：</value>
+  <alternative>密碼:</alternative></data>
   <data name="Online_SkinIsMissing" xml:space="preserve">
-    <value>缺少車輛塗裝</value>
-  </data>
+    <value>遺失車輛塗裝</value>
+  <alternative>缺少車輛塗裝</alternative></data>
   <data name="Online_AllCarsAreTaken" xml:space="preserve">
     <value>所有可選車輛都已被占用</value>
   </data>
   <data name="Online_ClientsLabel" xml:space="preserve">
-    <value>人數:</value>
-  </data>
+    <value>人數：</value>
+  <alternative>人數:</alternative></data>
   <data name="Online_TimeLabel" xml:space="preserve">
-    <value>時間:</value>
-  </data>
+    <value>時間：</value>
+  <alternative>時間:</alternative></data>
   <data name="Online_LeftLabel" xml:space="preserve">
-    <value>剩餘:</value>
-  </data>
+    <value>剩餘：</value>
+  <alternative>剩餘:</alternative></data>
   <data name="Online_SessionsLabel" xml:space="preserve">
-    <value>賽程:</value>
-  </data>
+    <value>賽程：</value>
+  <alternative>賽程:</alternative></data>
   <data name="Online_DriversOnlineLabel" xml:space="preserve">
-    <value>在線車手:</value>
-  </data>
+    <value>線上車手：</value>
+  <alternative>在線車手:</alternative></data>
   <data name="Toolbar_Refresh" xml:space="preserve">
-    <value>刷新</value>
-  </data>
+    <value>重新整理</value>
+  <alternative>刷新</alternative></data>
   <data name="Toolbar_Join" xml:space="preserve">
     <value>加入</value>
   </data>
   <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
-    <value>刷新服務器信息(Ctrl+R)</value>
-  </data>
+    <value>重新整理伺服器資訊（Ctrl+R）</value>
+  <alternative>刷新服務器信息(Ctrl+R)</alternative></data>
   <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
-    <value>加入服務器(Ctrl+G)</value>
-  </data>
+    <value>加入伺服器（Ctrl+G）</value>
+  <alternative>加入服務器(Ctrl+G)</alternative></data>
   <data name="Online_Sorting_Name" xml:space="preserve">
     <value>名稱</value>
   </data>
@@ -1906,56 +1954,56 @@
     <value>延遲</value>
   </data>
   <data name="Online_AddServer" xml:space="preserve">
-    <value>服務器地址(IP &amp; HTTP 或者 TCP 連接埠):</value>
-  </data>
+    <value>伺服器地址（IP &amp; HTTP 或者 TCP 連接埠）:</value>
+  <alternative>服務器地址(IP &amp; HTTP 或者 TCP 連接埠):</alternative></data>
   <data name="Online_AddServer_Title" xml:space="preserve">
-    <value>添加新服務器</value>
-  </data>
+    <value>添加新伺服器</value>
+  <alternative>添加新服務器</alternative></data>
   <data name="Online_AddServer_Tooltip" xml:space="preserve">
-    <value>可以省略連接埠號,CM會自動掃瞄所有可用的連接埠號</value>
-  </data>
+    <value>可以省略連接埠號。CM會自動掃瞄所有可用的連接埠號</value>
+  <alternative>可以省略連接埠號,CM會自動掃瞄所有可用的連接埠號</alternative></data>
   <data name="Online_AddingServer" xml:space="preserve">
-    <value>正在添加服務器…</value>
-  </data>
+    <value>正在添加伺服器…</value>
+  <alternative>正在添加服務器…</alternative></data>
   <data name="Online_CannotAddServer" xml:space="preserve">
-    <value>無法添加服務器</value>
-  </data>
+    <value>無法添加伺服器</value>
+  <alternative>無法添加服務器</alternative></data>
   <data name="Online_ServerWithIdIsMissing" xml:space="preserve">
-    <value>找不到ID為“{0}”的服務器</value>
-  </data>
+    <value>找不到ID為「{0}」的伺服器</value>
+  <alternative>找不到ID為“{0}”的服務器</alternative></data>
   <data name="Drive_Time" xml:space="preserve">
-    <value>時間:</value>
-  </data>
+    <value>時間</value>
+  <alternative>時間:</alternative></data>
   <data name="Drive_Time_Warning" xml:space="preserve">
-    <value>現實時間超出遊戲支持範圍,使用最接近的時間</value>
-  </data>
+    <value>賽道實際時間超出遊戲支援範圍，使用最接近的時間</value>
+  <alternative>現實時間超出遊戲支持範圍,使用最接近的時間</alternative></data>
   <data name="Drive_RealConditions" xml:space="preserve">
-    <value>現實天氣</value>
-  </data>
+    <value>賽道實際天氣</value>
+  <alternative>現實天氣</alternative></data>
   <data name="Drive_ConsiderTimezones" xml:space="preserve">
     <value>考慮切換時區</value>
   </data>
   <data name="Drive_WeatherLabel" xml:space="preserve">
-    <value>天氣:</value>
-  </data>
+    <value>天氣：</value>
+  <alternative>天氣:</alternative></data>
   <data name="Drive_Weather_Warning" xml:space="preserve">
-    <value>遊戲不支持{}賽道現實天氣天氣 ({0})</value>
-  </data>
+    <value>遊戲不支援{}賽道實際天氣 （{0}）</value>
+  <alternative>遊戲不支持{}賽道現實天氣天氣 ({0})</alternative></data>
   <data name="Drive_Temperature" xml:space="preserve">
     <value>溫度</value>
   </data>
   <data name="Drive_ActualTemperature" xml:space="preserve">
-    <value>現實溫度:</value>
-  </data>
+    <value>賽道實際溫度：</value>
+  <alternative>現實溫度:</alternative></data>
   <data name="Drive_LoadingFailed" xml:space="preserve">
     <value>載入失敗</value>
   </data>
   <data name="Drive_Temperature_Warning" xml:space="preserve">
-    <value>實際溫度超過遊戲支持範圍,使用最接近的數值</value>
-  </data>
+    <value>賽道實際溫度超過遊戲支援範圍，使用最接近的數值</value>
+  <alternative>實際溫度超過遊戲支持範圍,使用最接近的數值</alternative></data>
   <data name="Drive_TrackStateLabel" xml:space="preserve">
-    <value>賽道:</value>
-  </data>
+    <value>賽道：</value>
+  <alternative>賽道:</alternative></data>
   <data name="Drive_TimeMultiplerLabel" xml:space="preserve">
     <value>時間倍率</value>
   </data>
@@ -1966,8 +2014,8 @@
     <value>懲罰</value>
   </data>
   <data name="Drive_StartFrom" xml:space="preserve">
-    <value>起步位置:</value>
-  </data>
+    <value>起步位置：</value>
+  <alternative>起步位置:</alternative></data>
   <data name="Drive_GhostCar" xml:space="preserve">
     <value>幽靈車</value>
   </data>
@@ -1987,8 +2035,8 @@
     <value>倒序排序</value>
   </data>
   <data name="Drive_OpponentsStrengthMin" xml:space="preserve">
-    <value>AI強度(最小值)</value>
-  </data>
+    <value>AI強度（最小值）</value>
+  <alternative>AI強度(最小值)</alternative></data>
   <data name="Drive_ArrangeInReverseOrder_Tooltip" xml:space="preserve">
     <value>最強的對手將會排位在最後起步</value>
   </data>
@@ -1999,8 +2047,8 @@
     <value>搶跑判罰</value>
   </data>
   <data name="Drive_OpponentsMaximumLimitation_Tooltip" xml:space="preserve">
-    <value>受到賽道維修區位置總數限制 ({0})</value>
-  </data>
+    <value>受到賽道維修區位置總數限制 （{0}）</value>
+  <alternative>受到賽道維修區位置總數限制 ({0})</alternative></data>
   <data name="Drive_SkipSession" xml:space="preserve">
     <value>跳過</value>
   </data>
@@ -2014,47 +2062,47 @@
     <value>收到</value>
   </data>
   <data name="Rsr_Commentary" xml:space="preserve">
-    <value>如果你在使用基於Chrome的瀏覽器, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]這裡[/url] 有一個插件,點擊就可以直接從瀏覽器裡啟動RSR賽事!</value>
-  </data>
+    <value>如果您在使用基於Chrome的瀏覽器，[url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]這個app[/url] 可以直接從瀏覽器裡啟動RSR賽事！</value>
+  <alternative>如果你在使用基於Chrome的瀏覽器, [url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]這裡[/url] 有一個插件,點擊就可以直接從瀏覽器裡啟動RSR賽事!</alternative></data>
   <data name="Common_Go_RaceTooltip" xml:space="preserve">
-    <value>開始比賽(Ctrl+G)</value>
-  </data>
+    <value>開始比賽（Ctrl+G）</value>
+  <alternative>開始比賽(Ctrl+G)</alternative></data>
   <data name="Rsr_AppIsMissing" xml:space="preserve">
-    <value>未找到RSR圈速榜插件</value>
-  </data>
+    <value>未找到RSR圈速榜app</value>
+  <alternative>未找到RSR圈速榜插件</alternative></data>
   <data name="Rsr_AppIsDisabled" xml:space="preserve">
-    <value>RSR圈速榜插件被禁用</value>
-  </data>
+    <value>RSR圈速榜app被停用</value>
+  <alternative>RSR圈速榜插件被禁用</alternative></data>
   <data name="Rsr_InvalidParameters" xml:space="preserve">
     <value>無效RSR參數</value>
   </data>
   <data name="Rsr_AppIsMissing_Commentary" xml:space="preserve">
-    <value>[url="http://www.radiators-champ.com/RSRLiveTiming/"]點擊 [/url]下載.</value>
-  </data>
+    <value>[url="http://www.radiators-champ.com/RSRLiveTiming/"]點擊 [/url]下載。</value>
+  <alternative>[url="http://www.radiators-champ.com/RSRLiveTiming/"]點擊 [/url]下載.</alternative></data>
   <data name="Rsr_AppIsDisabled_Commentary" xml:space="preserve">
-    <value>你需要首先啟用RSR插件</value>
-  </data>
+    <value>您需要首先啟用RSR app</value>
+  <alternative>你需要首先啟用RSR插件</alternative></data>
   <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
     <value>確定RSR網站正常工作</value>
   </data>
   <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
-    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]這裡[/url]有RSR使用的mod (包括下載連結).</value>
-  </data>
+    <value>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]這裡[/url]有RSR使用的mod （包括下載連結）。</value>
+  <alternative>[url="https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]這裡[/url]有RSR使用的mod (包括下載連結).</alternative></data>
   <data name="Rsr_SessionName" xml:space="preserve">
     <value>RSR圈速挑戰</value>
   </data>
   <data name="Srs_Commentary" xml:space="preserve">
-    <value>如果遇到了無法用這個頁面加入比賽的情況(或者錯過了進入服務器的時間),請試試使用多人聯機頁面進入服務器</value>
-  </data>
+    <value>如果遇到了無法用這個頁面加入比賽的情況（或者錯過了進入伺服器的時間），試著使用多人聯機頁面進入伺服器。</value>
+  <alternative>如果遇到了無法用這個頁面加入比賽的情況(或者錯過了進入服務器的時間),請試試使用多人聯機頁面進入服務器</alternative></data>
   <data name="Srs_IpLabel" xml:space="preserve">
-    <value>IP地址:</value>
-  </data>
+    <value>IP地址：</value>
+  <alternative>IP地址:</alternative></data>
   <data name="Srs_PortLabel" xml:space="preserve">
-    <value>連接埠號:</value>
-  </data>
+    <value>連接埠號：</value>
+  <alternative>連接埠號:</alternative></data>
   <data name="Srs_StartAtLabel" xml:space="preserve">
-    <value>比賽時間:</value>
-  </data>
+    <value>比賽時間：</value>
+  <alternative>比賽時間:</alternative></data>
   <data name="Rsr_Quit" xml:space="preserve">
     <value>退出</value>
   </data>
@@ -2062,108 +2110,109 @@
     <value>退出註冊</value>
   </data>
   <data name="Srs_ReadyNotificationHeader" xml:space="preserve">
-    <value>SRS服務器已經可以加入</value>
-  </data>
+    <value>SRS伺服器已經可以加入</value>
+  <alternative>SRS服務器已經可以加入</alternative></data>
   <data name="Srs_ReadyNotification" xml:space="preserve">
     <value>點擊加入比賽</value>
   </data>
   <data name="Srs_CarIsMissing_Commentary" xml:space="preserve">
-    <value>請確保所有必需的mod都安裝好了</value>
-  </data>
+    <value>請確保必要的mod都已安裝。</value>
+  <alternative>請確保所有必需的mod都安裝好了</alternative></data>
   <data name="AcError_SolveAllSimilarErrors" xml:space="preserve">
     <value>解決所有類似的錯誤</value>
   </data>
   <data name="AcError_AvailableSolutions" xml:space="preserve">
-    <value>可能的解決方法 {solution}:</value>
-  </data>
+    <value>可能的解決方法 {solution}：</value>
+  <alternative>可能的解決方法 {solution}:</alternative></data>
   <data name="AcError_StackTrace" xml:space="preserve">
-    <value>堆棧跟蹤: [mono]{0}[/mono]</value>
-  </data>
+    <value>堆棧追蹤：[mono]{0}[/mono]</value>
+  <alternative>堆棧跟蹤: [mono]{0}[/mono]</alternative></data>
   <data name="AcError_SolutionsNotFound" xml:space="preserve">
-    <value>沒有可用的解決方案</value>
-  </data>
+    <value>沒有可用的解決方案。</value>
+  <alternative>沒有可用的解決方案</alternative></data>
   <data name="AcError_CannotSolveProblem" xml:space="preserve">
     <value>無法解決問題</value>
   </data>
   <data name="AcRoot_Welcome" xml:space="preserve">
-    <value>歡迎來到Content Manager,感謝使用!在啟動前你只需要再做幾件事:</value>
-  </data>
+    <value>歡迎來到Content Manager，感謝您的使用！在啟動前您只需要再做幾件事：</value>
+  <alternative>歡迎來到Content Manager,感謝使用!在啟動前你只需要再做幾件事:</alternative></data>
   <data name="AcRoot_Prompt" xml:space="preserve">
-    <value>Assetto Corsa遊戲根目錄:</value>
-  </data>
+    <value>Assetto Corsa遊戲根目錄：</value>
+  <alternative>Assetto Corsa遊戲根目錄:</alternative></data>
   <data name="Common_RequiredValue" xml:space="preserve">
     <value>必需的參數</value>
   </data>
   <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
-    <value>目錄不可用</value>
-  </data>
+    <value>資料夾無法使用</value>
+  <alternative>目錄不可用</alternative></data>
   <data name="AppKey_Prompt" xml:space="preserve">
-    <value>輸入Content Manager解鎖碼(XXXX-XXXX-…):</value>
-  </data>
+    <value>輸入Content Manager解鎖金鑰（XXXX-XXXX-…）:</value>
+  <alternative>輸入Content Manager解鎖碼(XXXX-XXXX-…):</alternative></data>
   <data name="AppKey_Title" xml:space="preserve">
-    <value>解鎖碼</value>
-  </data>
+    <value>解鎖金鑰</value>
+  <alternative>解鎖碼</alternative></data>
   <data name="AppKey_Tooltip" xml:space="preserve">
-    <value>請勿分享解鎖碼,否則解鎖碼可能會被作廢!</value>
-  </data>
+    <value>請勿分享解鎖金鑰，否則該金鑰可能會被作廢！</value>
+  <alternative>請勿分享解鎖碼,否則解鎖碼可能會被作廢!</alternative></data>
   <data name="AppKey_KeyWasRevoked" xml:space="preserve">
-    <value>解鎖碼已作廢</value>
-  </data>
+    <value>該金鑰已作廢</value>
+  <alternative>解鎖碼已作廢</alternative></data>
   <data name="Drive_StartingPosition" xml:space="preserve">
     <value>發車位置</value>
   </data>
   <data name="AppKey_AppWillBeRestarted" xml:space="preserve">
-    <value>程序將會重啟</value>
-  </data>
+    <value>程式將會重啟</value>
+  <alternative>程序將會重啟</alternative></data>
   <data name="AppKey_GetNewKey" xml:space="preserve">
-    <value>獲得一個新的解鎖碼</value>
-  </data>
+    <value>獲得一個新的解鎖金鑰</value>
+  <alternative>獲得一個新的解鎖碼</alternative></data>
   <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
-    <value>解鎖碼作廢</value>
-  </data>
+    <value>金鑰作廢</value>
+  <alternative>解鎖碼作廢</alternative></data>
   <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
-    <value>對不起,你的解鎖碼已經損壞而且被作廢.你願意聯繫我們取得一個新的解鎖碼嗎?</value>
-  </data>
+    <value>對不起，您的解鎖金鑰已經損壞且作廢。</value>
+  <alternative>對不起,你的解鎖碼已經損壞而且被作廢.你願意聯繫我們取得一個新的解鎖碼嗎?</alternative></data>
   <data name="AppKey_PreRestart_Message" xml:space="preserve">
-    <value>現在程序將會重啟,不會花太久,再一次感謝你的支持!
-  [i]請勿分享解鎖碼,否則解鎖碼可能會被作廢.[/i]</value>
-  </data>
+    <value>現在程式將會重啟，這不會花太久的時間。再次感謝您的支持！
+  [i]請勿分享解鎖金鑰，否則該金鑰可能會被作廢。[/i]</value>
+  <alternative>現在程序將會重啟,不會花太久,再一次感謝你的支持!
+  [i]請勿分享解鎖碼,否則解鎖碼可能會被作廢.[/i]</alternative></data>
   <data name="AppKey_PreRestart_Title" xml:space="preserve">
-    <value>謝謝!</value>
-  </data>
+    <value>謝謝！</value>
+  <alternative>謝謝!</alternative></data>
   <data name="AppKey_CannotCheck" xml:space="preserve">
-    <value>無法校驗解鎖碼</value>
-  </data>
+    <value>無法校驗解鎖金鑰</value>
+  <alternative>無法校驗解鎖碼</alternative></data>
   <data name="AppKey_InvalidKey" xml:space="preserve">
-    <value>解鎖碼無效</value>
-  </data>
+    <value>解鎖金鑰無效</value>
+  <alternative>解鎖碼無效</alternative></data>
   <data name="BrandBadge_Title" xml:space="preserve">
     <value>品牌標誌</value>
   </data>
   <data name="Common_SelectFile" xml:space="preserve">
-    <value>選擇文件</value>
-  </data>
+    <value>選擇檔案</value>
+  <alternative>選擇文件</alternative></data>
   <data name="Common_ViewUserFolder" xml:space="preserve">
-    <value>查看用戶文件夾</value>
-  </data>
+    <value>查看用戶資料夾</value>
+  <alternative>查看用戶文件夾</alternative></data>
   <data name="BrandBadge_CannotChange" xml:space="preserve">
     <value>無法更改品牌標誌</value>
   </data>
   <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
-    <value>確定品牌標誌文件可寫</value>
-  </data>
+    <value>確定品牌標誌檔案可覆寫</value>
+  <alternative>確定品牌標誌文件可寫</alternative></data>
   <data name="BrandBadge_SelectNew" xml:space="preserve">
     <value>選擇新品牌的標誌</value>
   </data>
   <data name="BrandBadge_AddAs" xml:space="preserve">
-    <value>給(品牌名)增加新標誌</value>
-  </data>
+    <value>給（品牌名稱）增加新標誌</value>
+  <alternative>給(品牌名)增加新標誌</alternative></data>
   <data name="Common_AddToLibrary" xml:space="preserve">
-    <value>是否添加入庫?</value>
-  </data>
+    <value>是否添加入資料庫？</value>
+  <alternative>是否添加入庫?</alternative></data>
   <data name="Common_CannotAddToLibrary" xml:space="preserve">
-    <value>無法將新內容加入庫中</value>
-  </data>
+    <value>無法將新內容加入資料庫中</value>
+  <alternative>無法將新內容加入庫中</alternative></data>
   <data name="Dialog_CarSetupsFormat" xml:space="preserve">
     <value>{0} 調校</value>
   </data>
@@ -2180,62 +2229,62 @@
     <value>{0} 車輛數據</value>
   </data>
   <data name="CarSpecs_PowerLabel" xml:space="preserve">
-    <value>馬力:</value>
-  </data>
+    <value>制動馬力：</value>
+  <alternative>馬力:</alternative></data>
   <data name="CarSpecs_TorqueLabel" xml:space="preserve">
-    <value>扭矩:</value>
-  </data>
+    <value>扭矩：</value>
+  <alternative>扭矩:</alternative></data>
   <data name="CarSpecs_WeightLabel" xml:space="preserve">
-    <value>車重:</value>
-  </data>
+    <value>車重：</value>
+  <alternative>車重:</alternative></data>
   <data name="CarSpecs_MaxSpeedLabel" xml:space="preserve">
-    <value>最高時速:</value>
-  </data>
+    <value>最高時速：</value>
+  <alternative>最高時速:</alternative></data>
   <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
-    <value>加速能力:</value>
-  </data>
+    <value>加速能力：</value>
+  <alternative>加速能力:</alternative></data>
   <data name="CarSpecs_PwRatioLabel" xml:space="preserve">
-    <value>推重比:</value>
-  </data>
+    <value>功率重量比：</value>
+  <alternative>推重比:</alternative></data>
   <data name="CarSpecs_Power_FormatTooltip" xml:space="preserve">
-    <value>...馬力</value>
-  </data>
+    <value>⋯⋯制動馬力</value>
+  <alternative>...馬力</alternative></data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
-    <value>...牛米</value>
-  </data>
+    <value>⋯⋯牛公尺</value>
+  <alternative>...牛米</alternative></data>
   <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
-    <value>...千克</value>
-  </data>
+    <value>⋯⋯公斤</value>
+  <alternative>...千克</alternative></data>
   <data name="CarSpecs_MaxSpeed_FormatTooltip" xml:space="preserve">
-    <value>...千米/小時</value>
-  </data>
+    <value>⋯⋯公里/小時</value>
+  <alternative>...千米/小時</alternative></data>
   <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
-    <value>...秒 0到100千米/小時</value>
-  </data>
+    <value>⋯⋯秒 0到100公里/小時</value>
+  <alternative>...秒 0到100千米/小時</alternative></data>
   <data name="CarSpecs_PwRatio_FormatTooltip" xml:space="preserve">
-    <value>...千克/馬力</value>
-  </data>
+    <value>⋯⋯公斤/馬力</value>
+  <alternative>...千克/馬力</alternative></data>
   <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
-    <value>自動重新計算推重比</value>
-  </data>
+    <value>自動重新計算功率重量比</value>
+  <alternative>自動重新計算推重比</alternative></data>
   <data name="CarSpecs_Power_Tooltip" xml:space="preserve">
-    <value>最大馬力值,推薦的格式為:“{0}”</value>
-  </data>
+    <value>最大馬力值，推薦的格式為：「{0}」</value>
+  <alternative>最大馬力值,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_Torque_Tooltip" xml:space="preserve">
-    <value>最大扭矩值,推薦的格式為:“{0}”</value>
-  </data>
+    <value>最大扭矩值，推薦的格式為：「{0}」</value>
+  <alternative>最大扭矩值,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_Weight_Tooltip" xml:space="preserve">
-    <value>不含車手體重的車重,推薦的格式為:“{0}”</value>
-  </data>
+    <value>不含車手體重的車重，推薦的格式為：「{0}」</value>
+  <alternative>不含車手體重的車重,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_MaxSpeed_Tooltip" xml:space="preserve">
-    <value>最高時速,推薦的格式為:“{0}”</value>
-  </data>
+    <value>最高時速,推薦的格式為：「{0}」</value>
+  <alternative>最高時速,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
-    <value>0到100千米/小時加速時間,推薦的格式為:“{0}”</value>
-  </data>
+    <value>0到100公里/小時加速時間，推薦的格式為：「{0}」</value>
+  <alternative>0到100千米/小時加速時間,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_PwRatio_Tooltip" xml:space="preserve">
-    <value>推重比,推薦的格式為:“{0}”</value>
-  </data>
+    <value>功率重量比，推薦的格式為：「{0}」</value>
+  <alternative>推重比,推薦的格式為:“{0}”</alternative></data>
   <data name="CarSpecs_FixFormats" xml:space="preserve">
     <value>修正格式</value>
   </data>
@@ -2246,29 +2295,29 @@
     <value>修正格式</value>
   </data>
   <data name="CarSpecs_FixFormat_Tooltip" xml:space="preserve">
-    <value>嘗試為數據設置正確的格式</value>
-  </data>
+    <value>嘗試為數據設定正確的格式</value>
+  <alternative>嘗試為數據設置正確的格式</alternative></data>
   <data name="CarSpecs_Recalculate" xml:space="preserve">
     <value>重新計算</value>
   </data>
   <data name="CarSpecs_Recalculate_PwRatioTooltip" xml:space="preserve">
-    <value>使用馬力和車重數據重新計算數據</value>
-  </data>
+    <value>使用制動馬力和車重數據重新計算數據</value>
+  <alternative>使用馬力和車重數據重新計算數據</alternative></data>
   <data name="CarSpecs_Recalculate_WeightTooltip" xml:space="preserve">
     <value>根據車輛數據重新計算</value>
   </data>
   <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
-    <value>設置外特性曲線</value>
-  </data>
+    <value>設定外特性曲線</value>
+  <alternative>設置外特性曲線</alternative></data>
   <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
-    <value>是否複製新的扭矩和馬力數值?</value>
-  </data>
+    <value>是否複製新的扭矩和制動馬力數值？</value>
+  <alternative>是否複製新的扭矩和馬力數值?</alternative></data>
   <data name="Common_OneMoreThing" xml:space="preserve">
     <value>除此之外</value>
   </data>
   <data name="CarSpecs_SpecifyPowerAndTorqueFirst" xml:space="preserve">
-    <value>你需要首先設定功率和扭矩數值</value>
-  </data>
+    <value>您需要首先設定功率和扭矩數值</value>
+  <alternative>你需要首先設定功率和扭矩數值</alternative></data>
   <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
     <value>通過馬力和扭矩數據歸一化外特性曲線</value>
   </data>
@@ -2279,14 +2328,14 @@
     <value>只使用車輛數據重新計算外特性曲線</value>
   </data>
   <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會重新歸一化以匹配ui_car.json中設定的功率和扭矩數值(你可以在上面看到效果)</value>
-  </data>
+    <value>外特性曲線將會重新歸一化以配合ui_car.json中設定的功率和扭矩數值（您可以在上面看到效果）</value>
+  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中設定的功率和扭矩數值(你可以在上面看到效果)</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會重新歸一化以匹配ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</value>
-  </data>
+    <value>外特性曲線將會重新歸一化以配合ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</value>
+  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會根據engine.ini重新計算,但是你需要提供變速箱能量損失數據</value>
-  </data>
+    <value>外特性曲線將會根據engine.ini重新計算，但是您需要提供變速箱能量損失數據</value>
+  <alternative>外特性曲線將會根據engine.ini重新計算,但是你需要提供變速箱能量損失數據</alternative></data>
   <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
     <value>變速箱能量損失 {0}</value>
   </data>
@@ -2297,11 +2346,11 @@
     <value>更新預覽圖</value>
   </data>
   <data name="CarPreviews_CameraPositionLabel" xml:space="preserve">
-    <value>攝像機鏡頭位置:</value>
-  </data>
+    <value>相機鏡頭位置：</value>
+  <alternative>攝像機鏡頭位置:</alternative></data>
   <data name="CarPreviews_LookAtLabel" xml:space="preserve">
-    <value>鏡頭朝向:</value>
-  </data>
+    <value>鏡頭朝向：</value>
+  <alternative>鏡頭朝向:</alternative></data>
   <data name="CarPreviews_ResizePreviews" xml:space="preserve">
     <value>調整預覽圖大小</value>
   </data>
@@ -2309,14 +2358,14 @@
     <value>開啟所有特效</value>
   </data>
   <data name="CarPreviews_Fxaa" xml:space="preserve">
-    <value>開啟快速近似抗鋸齒</value>
-  </data>
+    <value>開啟快速近似抗鋸齒（FXAA）</value>
+  <alternative>開啟快速近似抗鋸齒</alternative></data>
   <data name="CarPreviews_ShotIn4k" xml:space="preserve">
-    <value>使用3840x2160分辨率拍攝</value>
-  </data>
+    <value>使用3840x2160解析度拍攝</value>
+  <alternative>使用3840x2160分辨率拍攝</alternative></data>
   <data name="CarPreviews_ExposureLabel" xml:space="preserve">
-    <value>曝光度:</value>
-  </data>
+    <value>曝光度：</value>
+  <alternative>曝光度:</alternative></data>
   <data name="CarPreviews_TakenTime" xml:space="preserve">
     <value>用時 {0}</value>
   </data>
@@ -2324,50 +2373,50 @@
     <value>開啟這個選項可以提供最佳畫質</value>
   </data>
   <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
-    <value>開啟快速近似抗鋸齒拍攝預覽圖</value>
-  </data>
+    <value>開啟快速近似抗鋸齒（FXAA）拍攝預覽圖</value>
+  <alternative>開啟快速近似抗鋸齒拍攝預覽圖</alternative></data>
   <data name="CarPreviews_AllEffects_Tooltip" xml:space="preserve">
-    <value>啟動所有的圖象特效,例如反光和眩光(推薦使用)</value>
-  </data>
+    <value>啟動所有的影像特效,例如反光和眩光（推薦使用）</value>
+  <alternative>啟動所有的圖象特效,例如反光和眩光(推薦使用)</alternative></data>
   <data name="CarPreviews_ResizePreviews_Tooltip" xml:space="preserve">
-    <value>將預覽圖調整為官方預覽圖大小1022x575(強烈推薦使用)</value>
-  </data>
+    <value>將預覽圖調整為官方預覽圖大小1022x575（強烈推薦使用）</value>
+  <alternative>將預覽圖調整為官方預覽圖大小1022x575(強烈推薦使用)</alternative></data>
   <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>SweetFx不會影響到最後的效果,但是有可能會導致載入時間變長</value>
-  </data>
+    <value>SweetFx不會影響到最後的效果，但是有可能會導致載入時間變長</value>
+  <alternative>SweetFx不會影響到最後的效果,但是有可能會導致載入時間變長</alternative></data>
   <data name="CarPreviews_HideWatermark_Tooltip" xml:space="preserve">
-    <value>Kunos的圖標水印會被暫時隱藏</value>
-  </data>
+    <value>Kunos的圖示水印會被暫時隱藏</value>
+  <alternative>Kunos的圖標水印會被暫時隱藏</alternative></data>
   <data name="CarPreviews_ShowroomIsMissing" xml:space="preserve">
-    <value>[url="{0}"]{1}[/url] 沒有安裝.需要安裝嗎?</value>
-  </data>
+    <value>[url="{0}"]{1}[/url] 沒有安裝。需要安裝嗎？</value>
+  <alternative>[url="{0}"]{1}[/url] 沒有安裝.需要安裝嗎?</alternative></data>
   <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
-    <value>未找到展廳</value>
-  </data>
+    <value>未找到展示廳</value>
+  <alternative>未找到展廳</alternative></data>
   <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
-    <value>無法下載展廳 “{0}”</value>
-  </data>
+    <value>無法下載展示廳 「{0}」</value>
+  <alternative>無法下載展廳 “{0}”</alternative></data>
   <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
-    <value>無法安裝展廳 “{0}”</value>
-  </data>
+    <value>無法安裝展示廳 「{0}」</value>
+  <alternative>無法安裝展廳 “{0}”</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
-    <value>無法保存預覽圖</value>
-  </data>
+    <value>無法儲存預覽圖</value>
+  <alternative>無法保存預覽圖</alternative></data>
   <data name="CarPreviews_Manual" xml:space="preserve">
     <value>手動模式</value>
   </data>
   <data name="CarPreviews_Manual_Tooltip" xml:space="preserve">
-    <value>手動設定攝像機機位,之後按F8鍵開始拍攝</value>
-  </data>
+    <value>手動設定相機機位，之後按F8鍵開始拍攝</value>
+  <alternative>手動設定攝像機機位,之後按F8鍵開始拍攝</alternative></data>
   <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
-    <value>未找到展廳.打開設置菜單進行修改?</value>
-  </data>
+    <value>未找到展示廳。開啟設定選項進行修改？</value>
+  <alternative>未找到展廳.打開設置菜單進行修改?</alternative></data>
   <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
-    <value>未找到濾鏡.打開設置菜單進行修改?</value>
-  </data>
+    <value>未找到濾鏡。開啟設定選項進行修改？</value>
+  <alternative>未找到濾鏡.打開設置菜單進行修改?</alternative></data>
   <data name="CarPreviews_CannotUpdateForDisabled" xml:space="preserve">
-    <value>無法為已屏蔽的車輛或者塗裝更新預覽圖</value>
-  </data>
+    <value>無法為已停用的車輛或者塗裝更新預覽圖</value>
+  <alternative>無法為已屏蔽的車輛或者塗裝更新預覽圖</alternative></data>
   <data name="CarPreviews_SomethingWentWrong" xml:space="preserve">
     <value>發生了錯誤</value>
   </data>
@@ -2375,11 +2424,11 @@
     <value>已取消</value>
   </data>
   <data name="CarPreviews_Progress" xml:space="preserve">
-    <value>開始更新:{0} ({1}/{2})</value>
-  </data>
+    <value>開始更新:{0} （{1}/{2}）</value>
+  <alternative>開始更新:{0} ({1}/{2})</alternative></data>
   <data name="CarParent_Title" xml:space="preserve">
-    <value>選擇父對象</value>
-  </data>
+    <value>選擇源車型</value>
+  <alternative>選擇父對象</alternative></data>
   <data name="Common_HowTo_Title" xml:space="preserve">
     <value>如何</value>
   </data>
@@ -2390,13 +2439,22 @@
     <value>無法分享天氣</value>
   </data>
   <data name="Common_FileIsMissingDot" xml:space="preserve">
-    <value>找不到文件“{0}”</value>
-  </data>
+    <value>找不到檔案「{0}」。</value>
+  <alternative>找不到文件“{0}”</alternative></data>
   <data name="Weather_CannotShare_Commentary" xml:space="preserve">
-    <value>文件太大.文件大小上限為{0}</value>
-  </data>
+    <value>檔案太大。檔案大小上限為{0}</value>
+  <alternative>文件太大.文件大小上限為{0}</alternative></data>
   <data name="Weather_KunosReadme" xml:space="preserve">
-    <value>我們使用一個公式來確定路面溫度與環境溫度、天氣和時間之間的關係
+    <value>我們使用一條公式來確定路面溫度與環境溫度、天氣和時間之間的關係。
+  
+  在[url="http://fooplot.com/plot/3x7y44pfli"]這裡[/url]可以查看到公式對應的圖表。
+  
+  具體公式為：
+  [mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
+  
+  修改 (((-10*1)*x)+10*1)中的α可以看到修改之後的結果。
+  α範圍為-1 to 1。</value>
+  <alternative>我們使用一個公式來確定路面溫度與環境溫度、天氣和時間之間的關係
   
   在[url="http://fooplot.com/plot/3x7y44pfli"]這裡[/url]可以查看到公式對應的圖表
   
@@ -2404,65 +2462,64 @@
   [mono](((-10×α)*x)+10*α)*2((exp(-6*x)*(0.4*sin(6*x))+0.1)*(15/1.5)*sin(0.9*x))+15[/mono]
   
   修改 (((-10*α)*x)+10*α) 中的α可以看到修改之後的結果
-  α範圍為-1 to 1.</value>
-  </data>
+  α範圍為-1 to 1.</alternative></data>
   <data name="RaceResult_CancelledHeader" xml:space="preserve">
-    <value>比賽取消</value>
-  </data>
+    <value>賽事取消</value>
+  <alternative>比賽取消</alternative></data>
   <data name="RaceResult_ErrorHeader" xml:space="preserve">
-    <value>錯誤:</value>
-  </data>
+    <value>錯誤：</value>
+  <alternative>錯誤:</alternative></data>
   <data name="RaceResult_MaxLevel" xml:space="preserve">
-    <value>最大值:</value>
-  </data>
+    <value>最大值：</value>
+  <alternative>最大值:</alternative></data>
   <data name="RaceResult_BestCombo" xml:space="preserve">
-    <value>最佳組合:</value>
-  </data>
+    <value>最佳組合：</value>
+  <alternative>最佳組合:</alternative></data>
   <data name="RaceResult_Laps" xml:space="preserve">
-    <value>圈數:</value>
-  </data>
+    <value>圈數：</value>
+  <alternative>圈數:</alternative></data>
   <data name="RaceResult_BestLap" xml:space="preserve">
-    <value>最快圈:</value>
-  </data>
+    <value>最快單圈：</value>
+  <alternative>最快圈:</alternative></data>
   <data name="RaceResult_TryAgain" xml:space="preserve">
     <value>重試</value>
   </data>
   <data name="RaceResult_UnsaveReplay" xml:space="preserve">
-    <value>拋棄已保存錄影</value>
-  </data>
+    <value>拋棄已儲存重播</value>
+  <alternative>拋棄已保存錄影</alternative></data>
   <data name="RaceResult_SaveReplay" xml:space="preserve">
-    <value>保存遊戲錄影</value>
-  </data>
+    <value>儲存遊戲重播</value>
+  <alternative>保存遊戲錄影</alternative></data>
   <data name="RaceResult_ResultProcessingError" xml:space="preserve">
     <value>處理比賽結果時發生錯誤</value>
   </data>
   <data name="Common_MoreInformationInMainLog" xml:space="preserve">
-    <value>在Main Log.log文件中查看更多信息</value>
-  </data>
+    <value>在Main Log.log檔案中查看更多資訊。</value>
+  <alternative>在Main Log.log文件中查看更多信息</alternative></data>
   <data name="Race_Initializing" xml:space="preserve">
-    <value>初始化中……</value>
-  </data>
+    <value>初始化中⋯⋯</value>
+  <alternative>初始化中……</alternative></data>
   <data name="Race_Preparing" xml:space="preserve">
-    <value>準備中……</value>
-  </data>
+    <value>準備中⋯⋯</value>
+  <alternative>準備中……</alternative></data>
   <data name="Race_LaunchingGame" xml:space="preserve">
-    <value>啟動遊戲……</value>
-  </data>
+    <value>啟動遊戲⋯⋯</value>
+  <alternative>啟動遊戲……</alternative></data>
   <data name="Race_Waiting" xml:space="preserve">
-    <value>等待比賽結束……</value>
-  </data>
+    <value>等待比賽結束⋯⋯</value>
+  <alternative>等待比賽結束……</alternative></data>
   <data name="Race_CleaningUp" xml:space="preserve">
-    <value>清理數據……</value>
-  </data>
+    <value>清理數據⋯⋯</value>
+  <alternative>清理數據……</alternative></data>
   <data name="RaceResult_Threoretical" xml:space="preserve">
-    <value>理論圈速:</value>
-  </data>
+    <value>理論圈速：</value>
+  <alternative>理論圈速:</alternative></data>
   <data name="CropImage_Title" xml:space="preserve">
-    <value>圖片剪切</value>
-  </data>
+    <value>圖片裁切</value>
+  <alternative>圖片剪切</alternative></data>
   <data name="CropImage_Skip" xml:space="preserve">
-    <value>不要剪切圖片</value>
-  </data>
+    <value>不要裁切圖片</value>
+  <alternative>不要剪切圖片</alternative></data>
   <data name="AdditionalContent_Title" xml:space="preserve">
     <value>安裝附加內容</value>
   </data>
@@ -2470,26 +2527,26 @@
     <value>未找到內容</value>
   </data>
   <data name="AdditionalContent_WhatToUpdateLabel" xml:space="preserve">
-    <value>有升級的內容:</value>
-  </data>
+    <value>有升級的內容：</value>
+  <alternative>有升級的內容:</alternative></data>
   <data name="AdditionalContent_IdFormat" xml:space="preserve">
-    <value>ID:{0}</value>
-  </data>
+    <value>ID：{0}</value>
+  <alternative>ID:{0}</alternative></data>
   <data name="AdditionalContent_PathFormat" xml:space="preserve">
-    <value>路徑:{0}</value>
-  </data>
+    <value>路徑：{0}</value>
+  <alternative>路徑:{0}</alternative></data>
   <data name="AdditionalContent_CannotInstall" xml:space="preserve">
-    <value>無法從文件安裝內容</value>
-  </data>
+    <value>無法從檔案安裝內容</value>
+  <alternative>無法從文件安裝內容</alternative></data>
   <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
-    <value>壓縮包有密碼,請輸入密碼:</value>
-  </data>
+    <value>壓縮包有密碼，請輸入密碼：</value>
+  <alternative>壓縮包有密碼,請輸入密碼:</alternative></data>
   <data name="AdditionalContent_InputPassword_Title" xml:space="preserve">
     <value>需要密碼</value>
   </data>
   <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
-    <value>密碼無效,請重試:</value>
-  </data>
+    <value>密碼無效，請重試：</value>
+  <alternative>密碼無效,請重試:</alternative></data>
   <data name="AdditionalContent_PasswordIsInvalid" xml:space="preserve">
     <value>密碼無效</value>
   </data>
@@ -2497,53 +2554,53 @@
     <value>無法解包</value>
   </data>
   <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
-    <value>壓縮包可能損壞,或者密碼不正確</value>
-  </data>
+    <value>壓縮包可能損壞，或者密碼不正確。</value>
+  <alternative>壓縮包可能損壞,或者密碼不正確</alternative></data>
   <data name="AdditionalContent_Installing" xml:space="preserve">
-    <value>開始安裝{0}……</value>
-  </data>
+    <value>開始安裝{0}⋯⋯</value>
+  <alternative>開始安裝{0}……</alternative></data>
   <data name="AdditionalContent_CannotInstallFormat" xml:space="preserve">
     <value>無法安裝{0}</value>
   </data>
   <data name="LiveryIcon_Title" xml:space="preserve">
-    <value>塗裝圖標</value>
-  </data>
+    <value>塗裝圖示</value>
+  <alternative>塗裝圖標</alternative></data>
   <data name="LiveryIcon_ResultLabel" xml:space="preserve">
-    <value>結果:</value>
-  </data>
+    <value>結果：</value>
+  <alternative>結果:</alternative></data>
   <data name="LiveryIcon_StyleLabel" xml:space="preserve">
-    <value>風格:</value>
-  </data>
+    <value>風格:：</value>
+  <alternative>風格:</alternative></data>
   <data name="LiveryIcon_ShapeLabel" xml:space="preserve">
-    <value>形狀:</value>
-  </data>
+    <value>形狀：</value>
+  <alternative>形狀:</alternative></data>
   <data name="LiveryIcon_ColorLabel" xml:space="preserve">
-    <value>顏色:</value>
-  </data>
+    <value>顏色：</value>
+  <alternative>顏色:</alternative></data>
   <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
-    <value>第二顏色:</value>
-  </data>
+    <value>第二顏色：</value>
+  <alternative>第二顏色:</alternative></data>
   <data name="LiveryIcon_TertiaryColorLabel" xml:space="preserve">
-    <value>第三顏色:</value>
-  </data>
+    <value>第三顏色：</value>
+  <alternative>第三顏色:</alternative></data>
   <data name="LiveryIcon_NumberHeader" xml:space="preserve">
-    <value>數字:</value>
-  </data>
+    <value>數字：</value>
+  <alternative>數字:</alternative></data>
   <data name="LiveryIcon_NumberValue" xml:space="preserve">
     <value>數值</value>
   </data>
   <data name="LiveryIcon_TextColorLabel" xml:space="preserve">
-    <value>字體顏色:</value>
-  </data>
+    <value>字型顏色：</value>
+  <alternative>字體顏色:</alternative></data>
   <data name="LiveryIcon_Number_Condensed" xml:space="preserve">
-    <value>緊湊字體</value>
-  </data>
+    <value>緊湊字型</value>
+  <alternative>緊湊字體</alternative></data>
   <data name="LiveryIcon_Number_Light" xml:space="preserve">
-    <value>細筆劃字體</value>
-  </data>
+    <value>細體字型</value>
+  <alternative>細筆劃字體</alternative></data>
   <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
-    <value>細筆劃字體(有描邊)</value>
-  </data>
+    <value>細體字型（有描邊）</value>
+  <alternative>細筆劃字體(有描邊)</alternative></data>
   <data name="LiveryIcon_Shape_Flat" xml:space="preserve">
     <value>平面圖形</value>
   </data>
@@ -2554,8 +2611,8 @@
     <value>條紋</value>
   </data>
   <data name="LiveryIcon_Shape_SideStripes" xml:space="preserve">
-    <value>側麵條紋</value>
-  </data>
+    <value>側面條紋</value>
+  <alternative>側麵條紋</alternative></data>
   <data name="LiveryIcon_Shape_DoubleStripes" xml:space="preserve">
     <value>雙條紋</value>
   </data>
@@ -2599,17 +2656,17 @@
     <value>亮色</value>
   </data>
   <data name="LiveryIcon_ChangeNumber_Message" xml:space="preserve">
-    <value>是否將塗裝的編號設置為“{0}”?</value>
-  </data>
+    <value>是否將塗裝的編號設定為「{0}」？</value>
+  <alternative>是否將塗裝的編號設置為“{0}”?</alternative></data>
   <data name="LiveryIcon_ChangeNumber_Title" xml:space="preserve">
     <value>塗裝編號已修改</value>
   </data>
   <data name="LiveryIcon_CannotChange" xml:space="preserve">
-    <value>無法修改塗裝圖標</value>
-  </data>
+    <value>無法修改塗裝圖示</value>
+  <alternative>無法修改塗裝圖標</alternative></data>
   <data name="LiveryIcon_CannotChange_Commentary" xml:space="preserve">
-    <value>請確保塗裝圖標文件livery.png未被占用</value>
-  </data>
+    <value>請確保塗裝圖示檔案livery.png已關閉</value>
+  <alternative>請確保塗裝圖標文件livery.png未被占用</alternative></data>
   <data name="Select_ManageSetups_Tooltip" xml:space="preserve">
     <value>管理車輛調校</value>
   </data>
@@ -2626,74 +2683,74 @@
     <value>國家</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>創建新展廳</value>
-  </data>
+    <value>建立新展示廳</value>
+  <alternative>創建新展廳</alternative></data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
-    <value>名稱:</value>
-  </data>
+    <value>名稱：</value>
+  <alternative>名稱:</alternative></data>
   <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
-    <value>全景圖:</value>
-  </data>
+    <value>全景圖：</value>
+  <alternative>全景圖:</alternative></data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
-    <value>全景圖樣例:</value>
-  </data>
+    <value>全景圖範例：</value>
+  <alternative>全景圖樣例:</alternative></data>
   <data name="CreateShowroom_Panorama_Commentary" xml:space="preserve">
-    <value>推薦的文件類型:DDS圖象文件,32f.32f.32f.32f,5120x2560分辨率.但是如果你不想浪費200MB的硬盤空間,可以使用TIFF圖象文件,每個像素96位,ZIP文件壓縮</value>
-  </data>
+    <value>推薦的檔案類型：DDS圖檔、32f.32f.32f.32f、5120x2560解析度。如果您不想浪費200MB的硬碟空間，推薦使用TIFF圖檔，每像素96位元、ZIP檔案壓縮</value>
+  <alternative>推薦的文件類型:DDS圖象文件,32f.32f.32f.32f,5120x2560分辨率.但是如果你不想浪費200MB的硬盤空間,可以使用TIFF圖象文件,每個像素96位,ZIP文件壓縮</alternative></data>
   <data name="CreateShowroom_InShadow" xml:space="preserve">
     <value>在陰影中</value>
   </data>
   <data name="CreateShowroom_SelectPanorama_Title" xml:space="preserve">
-    <value>選擇一個全景文件</value>
-  </data>
+    <value>選擇一個全景檔案</value>
+  <alternative>選擇一個全景文件</alternative></data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>無法創建新的展廳</value>
-  </data>
+    <value>無法建立新的展示廳</value>
+  <alternative>無法創建新的展廳</alternative></data>
   <data name="UpgradeIcon_Title" xml:space="preserve">
-    <value>升級車型圖標</value>
-  </data>
+    <value>升級車型圖示</value>
+  <alternative>升級車型圖標</alternative></data>
   <data name="UpgradeIcon_Editor" xml:space="preserve">
     <value>編輯器</value>
   </data>
   <data name="UpgradeIcon_Library" xml:space="preserve">
-    <value>庫</value>
-  </data>
+    <value>資料庫</value>
+  <alternative>庫</alternative></data>
   <data name="UpgradeIcon_SelectNew" xml:space="preserve">
-    <value>選擇一個新的升級車型圖標</value>
-  </data>
+    <value>選擇一個新的升級車型圖示</value>
+  <alternative>選擇一個新的升級車型圖標</alternative></data>
   <data name="UpgradeIcon_CannotChange" xml:space="preserve">
-    <value>無法更換升級車型圖標</value>
-  </data>
+    <value>無法更換升級車型圖示</value>
+  <alternative>無法更換升級車型圖標</alternative></data>
   <data name="UpgradeIcon_CannotChange_Commentary" xml:space="preserve">
-    <value>確認升級車型圖標文件可寫</value>
-  </data>
+    <value>確認升級車型圖示檔案可覆寫</value>
+  <alternative>確認升級車型圖標文件可寫</alternative></data>
   <data name="UpgradeIcon_AddAs" xml:space="preserve">
-    <value>作為新的升級車型圖標添加</value>
-  </data>
+    <value>作為新的升級車型圖示添加</value>
+  <alternative>作為新的升級車型圖標添加</alternative></data>
   <data name="UpgradeIcon_Current" xml:space="preserve">
-    <value>當前的</value>
-  </data>
+    <value>目前設定</value>
+  <alternative>當前的</alternative></data>
   <data name="UpgradeIcon_New" xml:space="preserve">
-    <value>新的</value>
-  </data>
+    <value>新設定</value>
+  <alternative>新的</alternative></data>
   <data name="UpgradeIcon_Commentary" xml:space="preserve">
-    <value>Ctrl+I:斜體,Ctrl+B:粗體</value>
-  </data>
+    <value>Ctrl+I：斜體，Ctrl+B：粗體</value>
+  <alternative>Ctrl+I:斜體,Ctrl+B:粗體</alternative></data>
   <data name="VersionInfo_Title" xml:space="preserve">
-    <value>版本信息</value>
-  </data>
+    <value>版本資訊</value>
+  <alternative>版本信息</alternative></data>
   <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
-    <value>延遲:</value>
-  </data>
+    <value>延遲：</value>
+  <alternative>延遲:</alternative></data>
   <data name="AcSettings_Audio_TyresOffset" xml:space="preserve">
     <value>響胎臨界設定</value>
   </data>
   <data name="AcSettings_Audio_LevelsHeader" xml:space="preserve">
-    <value>各項音量設定:</value>
-  </data>
+    <value>各項音量設定：</value>
+  <alternative>各項音量設定:</alternative></data>
   <data name="AcSettings_Audio_Master" xml:space="preserve">
-    <value>全局音量</value>
-  </data>
+    <value>全域音量</value>
+  <alternative>全局音量</alternative></data>
   <data name="AcSettings_Audio_Tyres" xml:space="preserve">
     <value>輪胎噪音</value>
   </data>
@@ -2713,53 +2770,53 @@
     <value>用戶界面</value>
   </data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
-    <value>如果聲音有問題,切換到低或者普通級別</value>
-  </data>
+    <value>如果您遇到聲音問題，切換到「低」或者「普通」</value>
+  <alternative>如果聲音有問題,切換到低或者普通級別</alternative></data>
   <data name="Controls_InputMethodLabel" xml:space="preserve">
-    <value>遊戲控制器類型:</value>
-  </data>
+    <value>遊戲控制器類型：</value>
+  <alternative>遊戲控制器類型:</alternative></data>
   <data name="Controls_DetectedControllersHeader" xml:space="preserve">
-    <value>檢測到的控制器:</value>
-  </data>
+    <value>偵測到的控制器：</value>
+  <alternative>檢測到的控制器:</alternative></data>
   <data name="Controls_WarnAboutUnsaved" xml:space="preserve">
-    <value>有更改為保存時顯示警告</value>
-  </data>
+    <value>對未儲存更動發出警告</value>
+  <alternative>有更改為保存時顯示警告</alternative></data>
   <data name="Controls_SharePreset" xml:space="preserve">
-    <value>分享預設</value>
-  </data>
+    <value>分享預設設定</value>
+  <alternative>分享預設</alternative></data>
   <data name="Controls_ShareFfbOnly" xml:space="preserve">
     <value>僅分享力回饋設定</value>
   </data>
   <data name="Controls_SharePreset_Tooltip" xml:space="preserve">
-    <value>僅分享基本設定,不分享實驗性設定</value>
-  </data>
+    <value>僅分享基本設定，不分享實驗性設定</value>
+  <alternative>僅分享基本設定,不分享實驗性設定</alternative></data>
   <data name="Controls_ShareFfbOnly_Tooltip" xml:space="preserve">
     <value>包括實驗性力回饋設定</value>
   </data>
   <data name="Controls_Test_Tooltip" xml:space="preserve">
-    <value>快速試駕測試當前預設</value>
-  </data>
+    <value>試駕測試目前預設試定</value>
+  <alternative>快速試駕測試當前預設</alternative></data>
   <data name="Controls_WarnAboutUnsaved_Tooltip" xml:space="preserve">
-    <value>否則,程序將會把上一個更改的版本靜默移動到回收站</value>
-  </data>
+    <value>否則，程式將把舊的更動版本自動移到回收桶。</value>
+  <alternative>否則,程序將會把上一個更改的版本靜默移動到回收站</alternative></data>
   <data name="Controls_SwapUsings" xml:space="preserve">
     <value>交換使用</value>
   </data>
   <data name="Controls_ApplyToAll" xml:space="preserve">
-    <value>否,應用到全部</value>
-  </data>
+    <value>否，全部套用</value>
+  <alternative>否,應用到全部</alternative></data>
   <data name="Controls_RemoveOld" xml:space="preserve">
-    <value>是,移除舊設定</value>
-  </data>
+    <value>是，移除舊設定</value>
+  <alternative>是,移除舊設定</alternative></data>
   <data name="Controls_AlreadyUsed" xml:space="preserve">
     <value>已經使用</value>
   </data>
   <data name="Controls_InvalidDirectory_Commentary" xml:space="preserve">
-    <value>請選擇初始文件夾(“cfg\controllers\savedsetups”)或者其他子文件夾裡的文件</value>
-  </data>
+    <value>請選擇初始資料夾（「cfg\controllers\savedsetups」）或者其他子資料夾裡的檔案</value>
+  <alternative>請選擇初始文件夾(“cfg\controllers\savedsetups”)或者其他子文件夾裡的文件</alternative></data>
   <data name="Controls_SharedFfbOnly" xml:space="preserve">
-    <value>{0} (僅僅力回饋)</value>
-  </data>
+    <value>{0} （僅力回饋）</value>
+  <alternative>{0} (僅僅力回饋)</alternative></data>
   <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
     <value>鍵盤</value>
   </data>
@@ -2767,14 +2824,14 @@
     <value>Xbox 360 控制器</value>
   </data>
   <data name="Controls_AlreadyUsed_MultipleMessage" xml:space="preserve">
-    <value>“{0}” 已經被 {1}和 {2}使用了. 你願意先移除舊的麼?</value>
-  </data>
+    <value>「{0}」 已經被 {1}和 {2}使用了。 您要先移除舊的嗎？</value>
+  <alternative>“{0}” 已經被 {1}和 {2}使用了. 你願意先移除舊的麼?</alternative></data>
   <data name="Controls_AlreadyUsed_Message" xml:space="preserve">
-    <value>“{0}” 已經被 {1}使用了. 你願意先移除舊的麼?</value>
-  </data>
+    <value>「{0}」 已經被 {1}使用了。 您要先移除舊的嗎？</value>
+  <alternative>“{0}” 已經被 {1}使用了. 你願意先移除舊的麼?</alternative></data>
   <data name="Controls_KeyboardSteeringHeader" xml:space="preserve">
-    <value>鍵盤轉向:</value>
-  </data>
+    <value>鍵盤轉向：</value>
+  <alternative>鍵盤轉向:</alternative></data>
   <data name="Controls_SteeringSpeed" xml:space="preserve">
     <value>轉向速度</value>
   </data>
@@ -2785,17 +2842,17 @@
     <value>方向回正速率</value>
   </data>
   <data name="Controls_MouseSteeringHeader" xml:space="preserve">
-    <value>滑鼠轉向:</value>
-  </data>
+    <value>滑鼠轉向：</value>
+  <alternative>滑鼠轉向:</alternative></data>
   <data name="Controls_EnableMouseSteering" xml:space="preserve">
     <value>開啟滑鼠轉向</value>
   </data>
   <data name="Controls_UseMouseButtons" xml:space="preserve">
-    <value>使用滑鼠鍵作為油門和剎車</value>
-  </data>
+    <value>使用滑鼠鍵作為油門和煞車</value>
+  <alternative>使用滑鼠鍵作為油門和剎車</alternative></data>
   <data name="Controls_AdditionalBindings" xml:space="preserve">
-    <value>額外按鍵設定:</value>
-  </data>
+    <value>額外按鍵設定：</value>
+  <alternative>額外按鍵設定:</alternative></data>
   <data name="Controls_Buttons" xml:space="preserve">
     <value>按鈕</value>
   </data>
@@ -2806,41 +2863,41 @@
     <value>配合鍵盤使用</value>
   </data>
   <data name="Controls_UseHShifter" xml:space="preserve">
-    <value>使用H檔</value>
-  </data>
+    <value>使用H型排檔</value>
+  <alternative>使用H檔</alternative></data>
   <data name="Controls_DeviceFormat" xml:space="preserve">
-    <value>設備:{0}</value>
-  </data>
+    <value>裝置：{0}</value>
+  <alternative>設備:{0}</alternative></data>
   <data name="Controls_ShiftersHeader" xml:space="preserve">
-    <value>換擋器:</value>
-  </data>
+    <value>排檔：</value>
+  <alternative>換擋器:</alternative></data>
   <data name="Controls_GearShiftDebouncing" xml:space="preserve">
     <value>換擋緩衝時間</value>
   </data>
   <data name="Controls_BrakeBalance" xml:space="preserve">
-    <value>剎車平衡:</value>
-  </data>
+    <value>煞車平衡：</value>
+  <alternative>剎車平衡:</alternative></data>
   <data name="Controls_Turbo" xml:space="preserve">
-    <value>渦輪增壓:</value>
-  </data>
+    <value>渦輪增壓：</value>
+  <alternative>渦輪增壓:</alternative></data>
   <data name="Controls_TractionControl" xml:space="preserve">
-    <value>牽引力控制:</value>
-  </data>
+    <value>牽引力控制：</value>
+  <alternative>牽引力控制:</alternative></data>
   <data name="Controls_EngineBrake" xml:space="preserve">
-    <value>引擎制動:</value>
-  </data>
+    <value>引擎制動：</value>
+  <alternative>引擎制動:</alternative></data>
   <data name="Controls_Miscellaneous" xml:space="preserve">
-    <value>雜項:</value>
-  </data>
+    <value>雜項：</value>
+  <alternative>雜項:</alternative></data>
   <data name="Controls_View" xml:space="preserve">
-    <value>視角:</value>
-  </data>
+    <value>視角：</value>
+  <alternative>視角:</alternative></data>
   <data name="Controls_Gestures" xml:space="preserve">
-    <value>手勢:</value>
-  </data>
+    <value>手勢：</value>
+  <alternative>手勢:</alternative></data>
   <data name="Controls_GearShiftDebouncing_Tooltip" xml:space="preserve">
-    <value>防止由於硬件問題的錯誤換擋</value>
-  </data>
+    <value>防止由於硬體問題的錯誤換擋</value>
+  <alternative>防止由於硬件問題的錯誤換擋</alternative></data>
   <data name="Controls_InvertFfb" xml:space="preserve">
     <value>力回饋反向</value>
   </data>
@@ -2848,20 +2905,20 @@
     <value>值</value>
   </data>
   <data name="AcSettings_ReplaysHeader" xml:space="preserve">
-    <value>錄影:</value>
-  </data>
+    <value>重播：</value>
+  <alternative>錄影:</alternative></data>
   <data name="AcSettings_Apps" xml:space="preserve">
-    <value>插件</value>
-  </data>
+    <value>App</value>
+  <alternative>插件</alternative></data>
   <data name="AcSettings_Video" xml:space="preserve">
-    <value>視頻</value>
-  </data>
+    <value>影片</value>
+  <alternative>視頻</alternative></data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>視角和用戶界面</value>
   </data>
   <data name="AcSettings_Audio" xml:space="preserve">
-    <value>音頻</value>
-  </data>
+    <value>聲音</value>
+  <alternative>音頻</alternative></data>
   <data name="AcSettings_Controls" xml:space="preserve">
     <value>控制</value>
   </data>
@@ -2872,29 +2929,29 @@
     <value>系統</value>
   </data>
   <data name="AcSettings_Apps_ActivatedLabel" xml:space="preserve">
-    <value>激活的插件:</value>
-  </data>
+    <value>啟動的app：</value>
+  <alternative>激活的插件:</alternative></data>
   <data name="AcSettings_Apps_FormsLabel" xml:space="preserve">
-    <value>列表:</value>
-  </data>
+    <value>列表：</value>
+  <alternative>列表:</alternative></data>
   <data name="AcSettings_System_SimulationValueLabel" xml:space="preserve">
-    <value>真實度(搞怪設定)</value>
-  </data>
+    <value>模擬度</value>
+  <alternative>真實度(搞怪設定)</alternative></data>
   <data name="AcSettings_System_DeveloperApps" xml:space="preserve">
-    <value>開發者插件</value>
-  </data>
+    <value>開發者app</value>
+  <alternative>開發者插件</alternative></data>
   <data name="AcSettings_System_FreeCamera" xml:space="preserve">
-    <value>允許自由相機</value>
-  </data>
+    <value>允許自由視角</value>
+  <alternative>允許自由相機</alternative></data>
   <data name="AcSettings_System_Logging" xml:space="preserve">
-    <value>登錄(推薦)</value>
-  </data>
+    <value>登錄（推薦）</value>
+  <alternative>登錄(推薦)</alternative></data>
   <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
-    <value>屏幕截圖格式:</value>
-  </data>
+    <value>螢幕截圖格式：</value>
+  <alternative>屏幕截圖格式:</alternative></data>
   <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
-    <value>切換到BMW格式,安裝 Magick.NET插件,請不要忘記在設置/駕駛頁面打開自動轉換功能</value>
-  </data>
+    <value>切換到BMP格式，安裝 Magick.NETapp並請不要忘記在設定/駕駛頁面開啟自動轉換功能</value>
+  <alternative>切換到BMW格式,安裝 Magick.NET插件,請不要忘記在設置/駕駛頁面打開自動轉換功能</alternative></data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
     <value>近身指示器</value>
   </data>
@@ -2902,8 +2959,8 @@
     <value>顯示近身對手</value>
   </data>
   <data name="AcSettings_Skidmarks" xml:space="preserve">
-    <value>胎痕</value>
-  </data>
+    <value>胎痕：</value>
+  <alternative>胎痕</alternative></data>
   <data name="AcSettings_Skidmarks_Quantity" xml:space="preserve">
     <value>數量</value>
   </data>
@@ -2911,17 +2968,17 @@
     <value>離地高度</value>
   </data>
   <data name="AcSettings_Mirrors" xml:space="preserve">
-    <value>後視鏡</value>
-  </data>
+    <value>後視鏡：</value>
+  <alternative>後視鏡</alternative></data>
   <data name="AcSettings_FieldOfView" xml:space="preserve">
-    <value>視場</value>
-  </data>
+    <value>視野範圍</value>
+  <alternative>視場</alternative></data>
   <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
     <value>垂直角度</value>
   </data>
   <data name="AcSettings_DefaultValue" xml:space="preserve">
-    <value>默認值:</value>
-  </data>
+    <value>預設值：</value>
+  <alternative>默認值:</alternative></data>
   <data name="AcSettings_Mirrors_RenderingDistance" xml:space="preserve">
     <value>渲染距離</value>
   </data>
@@ -2941,35 +2998,35 @@
     <value>記錄極限</value>
   </data>
   <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
-    <value>希望獲得最佳屏幕截圖質量?</value>
-  </data>
+    <value>希望獲得最佳螢幕截圖品質？</value>
+  <alternative>希望獲得最佳屏幕截圖質量?</alternative></data>
   <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
-    <value>按F7切換到自由相機模式</value>
-  </data>
+    <value>按F7切換到自由視角模式</value>
+  <alternative>按F7切換到自由相機模式</alternative></data>
   <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
-    <value>全屏</value>
-  </data>
+    <value>全螢幕</value>
+  <alternative>全屏</alternative></data>
   <data name="AcSettings_Video_ResolutionLabel" xml:space="preserve">
-    <value>分辨率:</value>
-  </data>
+    <value>解析度:</value>
+  <alternative>分辨率:</alternative></data>
   <data name="AcSettings_Video_FixResolutionAutomatically" xml:space="preserve">
-    <value>自動調整分辨率</value>
-  </data>
+    <value>自動調整解析度</value>
+  <alternative>自動調整分辨率</alternative></data>
   <data name="AcSettings_Video_CustomResolutionLabel" xml:space="preserve">
-    <value>自定義分辨率:</value>
-  </data>
+    <value>自定義解析度：</value>
+  <alternative>自定義分辨率:</alternative></data>
   <data name="AcSettings_Video_RenderingModeLabel" xml:space="preserve">
-    <value>渲染模式:</value>
-  </data>
+    <value>渲染模式：</value>
+  <alternative>渲染模式:</alternative></data>
   <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
     <value>垂直同步</value>
   </data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
-    <value>各向異性過濾:</value>
-  </data>
+    <value>各向異性過濾：</value>
+  <alternative>各向異性過濾:</alternative></data>
   <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
-    <value>抗鋸齒:</value>
-  </data>
+    <value>多重取樣抗鋸齒（MSAA）:</value>
+  <alternative>抗鋸齒:</alternative></data>
   <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
     <value>幀率限制</value>
   </data>
@@ -2977,35 +3034,35 @@
     <value>幀率</value>
   </data>
   <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
-    <value>質量:</value>
-  </data>
+    <value>品質：</value>
+  <alternative>質量:</alternative></data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
-    <value>環境細節:</value>
-  </data>
+    <value>環境細節：</value>
+  <alternative>環境細節:</alternative></data>
   <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
-    <value>陰影分辨率:</value>
-  </data>
+    <value>陰影解析度：</value>
+  <alternative>陰影分辨率:</alternative></data>
   <data name="AcSettings_Video_SmokeGenerationLabel" xml:space="preserve">
-    <value>煙霧生成:</value>
-  </data>
+    <value>煙霧生成：</value>
+  <alternative>煙霧生成:</alternative></data>
   <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
     <value>在後視鏡裡顯示煙霧</value>
   </data>
   <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
-    <value>後處理</value>
-  </data>
+    <value>後期處理：</value>
+  <alternative>後處理</alternative></data>
   <data name="AcSettings_Video_EnablePostProcessing" xml:space="preserve">
-    <value>允許後處理特效</value>
-  </data>
+    <value>允許後期處理特效</value>
+  <alternative>允許後處理特效</alternative></data>
   <data name="AcSettings_Video_OverallQualityLabel" xml:space="preserve">
-    <value>整體質量:</value>
-  </data>
+    <value>整體品質：</value>
+  <alternative>整體質量:</alternative></data>
   <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
-    <value>眩光質量:</value>
-  </data>
+    <value>眩光品質：</value>
+  <alternative>眩光質量:</alternative></data>
   <data name="AcSettings_Video_DepthOfFieldLabel" xml:space="preserve">
-    <value>景深:</value>
-  </data>
+    <value>景深：</value>
+  <alternative>景深:</alternative></data>
   <data name="AcSettings_Video_MotionBlur" xml:space="preserve">
     <value>動態模糊</value>
   </data>
@@ -3019,53 +3076,53 @@
     <value>雲隙光</value>
   </data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
-    <value>反射:</value>
-  </data>
+    <value>反射：</value>
+  <alternative>反射:</alternative></data>
   <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
-    <value>反射分辨率:</value>
-  </data>
+    <value>反射解析度：</value>
+  <alternative>反射分辨率:</alternative></data>
   <data name="AcSettings_Video_RenderingFrequencyLabel" xml:space="preserve">
-    <value>渲染頻率:</value>
-  </data>
+    <value>渲染頻率：</value>
+  <alternative>渲染頻率:</alternative></data>
   <data name="AcSettings_Video_RenderingDistance" xml:space="preserve">
     <value>渲染距離</value>
   </data>
   <data name="AcSettings_Video_MirrorsHeader" xml:space="preserve">
-    <value>後視鏡:</value>
-  </data>
+    <value>後視鏡：</value>
+  <alternative>後視鏡:</alternative></data>
   <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
-    <value>後視鏡分辨率:</value>
-  </data>
+    <value>後視鏡解析度：</value>
+  <alternative>後視鏡分辨率:</alternative></data>
   <data name="AcSettings_Video_HighQuality" xml:space="preserve">
-    <value>高質量</value>
-  </data>
+    <value>高品質</value>
+  <alternative>高質量</alternative></data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>單顯像素數</value>
   </data>
   <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
-    <value>系統:</value>
-  </data>
+    <value>系統：</value>
+  <alternative>系統:</alternative></data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>允許未支持的DX10(請自行負責,無法工作?)</value>
-  </data>
+    <value>允許不支援的DirectX 10（使用風險自負。無法使用？）</value>
+  <alternative>允許未支持的DX10(請自行負責,無法工作?)</alternative></data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
-    <value>天空盒子反射</value>
-  </data>
+    <value>天空盒反射</value>
+  <alternative>天空盒子反射</alternative></data>
   <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
-    <value>MIP LOD偏移</value>
-  </data>
+    <value>MIP層級偏移</value>
+  <alternative>MIP LOD偏移</alternative></data>
   <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
-    <value>最大幀延遲</value>
-  </data>
+    <value>最大幀率延遲</value>
+  <alternative>最大幀延遲</alternative></data>
   <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
-    <value>最大幀延遲,設置為"自動"則會基於顯卡設定自動調整</value>
-  </data>
+    <value>最大幀率延遲。設定為「自動」則會基於顯卡設定自動調整</value>
+  <alternative>最大幀延遲,設置為"自動"則會基於顯卡設定自動調整</alternative></data>
   <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
-    <value>設置如-1的負值可使畫面更鋭利</value>
-  </data>
+    <value>設定如-1的負值可使畫面更鋭利</value>
+  <alternative>設置如-1的負值可使畫面更鋭利</alternative></data>
   <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
-    <value>天空盒子反射增益</value>
-  </data>
+    <value>天空盒反射增益</value>
+  <alternative>天空盒子反射增益</alternative></data>
   <data name="Common_Manage" xml:space="preserve">
     <value>管理</value>
   </data>
@@ -3073,54 +3130,55 @@
     <value>[url="http://www.assettocorsa.net/"]Assetto Corsa[/url]的自定義啟動器和內容管理器</value>
   </data>
   <data name="About_MoreInformation" xml:space="preserve">
-    <value>更多信息</value>
-  </data>
+    <value>更多資訊</value>
+  <alternative>更多信息</alternative></data>
   <data name="About_ReportAnIssue" xml:space="preserve">
-    <value>報告問題</value>
-  </data>
+    <value>回報問題</value>
+  <alternative>報告問題</alternative></data>
   <data name="About_ContactInformation" xml:space="preserve">
-    <value>如果你對這個程序有任何問題或者建議,或者你只是想報告某些特殊的問題,請用 [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] 或者 [url="https://trello.com/c/w5xT6ssZ/49-contacts"]其他的方式[/url]來聯繫我們</value>
-  </data>
+    <value>如果您對這個程式有任何問題或者建議，或者您只是想回報某些特殊的問題，請用 [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] 或者 [url="https://trello.com/c/w5xT6ssZ/49-contacts"]其他的方式[/url]來聯絡我們</value>
+  <alternative>如果你對這個程序有任何問題或者建議,或者你只是想報告某些特殊的問題,請用 [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] 或者 [url="https://trello.com/c/w5xT6ssZ/49-contacts"]其他的方式[/url]來聯繫我們</alternative></data>
   <data name="About_ContactUsHeader" xml:space="preserve">
-    <value>聯繫我們:</value>
-  </data>
+    <value>聯絡我們：</value>
+  <alternative>聯繫我們:</alternative></data>
   <data name="About_DeveloperMode" xml:space="preserve">
-    <value>允許開發者模式?</value>
-  </data>
+    <value>允許開發者模式？</value>
+  <alternative>允許開發者模式?</alternative></data>
   <data name="About_DeveloperMode_Title" xml:space="preserve">
     <value>開發者模式</value>
   </data>
   <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
-    <value>請描述您遇到的問題,如果希望得到回覆或者希望能協助解決問題,請留下聯繫方式</value>
-  </data>
+    <value>描述一下問題。如果您想得到回覆，請留下聯絡方式，幫助我們解決問題。</value>
+  <alternative>請描述您遇到的問題,如果希望得到回覆或者希望能協助解決問題,請留下聯繫方式</alternative></data>
   <data name="About_ReportAnIssue_Title" xml:space="preserve">
-    <value>問題是什麼?</value>
-  </data>
+    <value>遇到了什麼問題？</value>
+  <alternative>問題是什麼?</alternative></data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
-    <value>日誌文件已經發送</value>
-  </data>
+    <value>日誌檔案已經發送</value>
+  <alternative>日誌文件已經發送</alternative></data>
   <data name="About_ReportAnIssue_Sent_Message" xml:space="preserve">
-    <value>非常感謝你的幫助!</value>
-  </data>
+    <value>非常感謝您的幫助！</value>
+  <alternative>非常感謝你的幫助!</alternative></data>
   <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
-    <value>無法發送日誌文件</value>
-  </data>
+    <value>無法發送日誌檔案</value>
+  <alternative>無法發送日誌文件</alternative></data>
   <data name="About_Footer" xml:space="preserve">
-    <value>Content Manager基於一些 [url="/Pages/About/Credits.xaml|_top"]開源軟件[/url]開發而成.
-  Content Manager [url="/Pages/About/License.xaml|_top"]許可[/url].</value>
-  </data>
+    <value>Content Manager使用 [url="/Pages/About/Credits.xaml|_top"]開源程式[/url]開發。
+  Content Manager [url="/Pages/About/License.xaml|_top"]許可[/url]。</value>
+  <alternative>Content Manager基於一些 [url="/Pages/About/Credits.xaml|_top"]開源軟件[/url]開發而成.
+  Content Manager [url="/Pages/About/License.xaml|_top"]許可[/url].</alternative></data>
   <data name="About_Copyright" xml:space="preserve">
     <value>版權所有 © 2016 AcClub. 保留所有權利</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>標記所有為已讀</value>
-  </data>
+    <value>全部標記為已讀</value>
+  <alternative>標記所有為已讀</alternative></data>
   <data name="About_VersionFormat" xml:space="preserve">
-    <value>版本:{0}</value>
-  </data>
+    <value>版本：{0}</value>
+  <alternative>版本:{0}</alternative></data>
   <data name="About_NewTooltip" xml:space="preserve">
-    <value>新特性!</value>
-  </data>
+    <value>新特色！</value>
+  <alternative>新特性!</alternative></data>
   <data name="Drive_InvalidScript" xml:space="preserve">
     <value>無效腳本</value>
   </data>
@@ -3131,17 +3189,17 @@
     <value>無法開始比賽</value>
   </data>
   <data name="Drive_CannotStart_SelectNonDisabled" xml:space="preserve">
-    <value>請選擇一些沒有被禁用的車</value>
-  </data>
+    <value>請選擇一些沒有被停用的車</value>
+  <alternative>請選擇一些沒有被禁用的車</alternative></data>
   <data name="Drive_CannotStart_SelectTrack" xml:space="preserve">
     <value>請選擇賽道</value>
   </data>
   <data name="Drive_CannotStart_SetOpponent" xml:space="preserve">
-    <value>請設置至少一個對手</value>
-  </data>
+    <value>請設定至少一個對手</value>
+  <alternative>請設置至少一個對手</alternative></data>
   <data name="Drive_AiFiltering" xml:space="preserve">
-    <value>AI車輛篩選器...</value>
-  </data>
+    <value>AI車輛篩選器⋯⋯</value>
+  <alternative>AI車輛篩選器...</alternative></data>
   <data name="Drive_CannotStart_CannotFindAnyCar" xml:space="preserve">
     <value>無法找到符合條件的車輛</value>
   </data>
@@ -3149,11 +3207,11 @@
     <value>無法篩選到合適的車輛</value>
   </data>
   <data name="Drive_CannotFilter_Commentary" xml:space="preserve">
-    <value>如果你修改過GridTypes.json,請確定文件正確</value>
-  </data>
+    <value>如果您修改過GridTypes.json,請確定檔案正確</value>
+  <alternative>如果你修改過GridTypes.json,請確定文件正確</alternative></data>
   <data name="Drive_AiCarsLoading" xml:space="preserve">
-    <value>正在加載AI車輛...</value>
-  </data>
+    <value>正在載入AI車輛⋯⋯</value>
+  <alternative>正在加載AI車輛...</alternative></data>
   <data name="Drive_Ordinal_Parameter" xml:space="preserve">
     <value>車手</value>
   </data>
@@ -3164,35 +3222,35 @@
     <value>末位</value>
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
-    <value>如果有未解包本地化語言文件則覆蓋字串</value>
-  </data>
+    <value>如果有未解包在地化語言檔案則覆蓋字串</value>
+  <alternative>如果有未解包本地化語言文件則覆蓋字串</alternative></data>
   <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
-    <value>解壓的本地化語音文件將從 “AppData\Local\AcTools Content Manager\Locales\(ID)”里加載,ID就是你選擇的本地化語音文件的ID</value>
-  </data>
+    <value>解壓的在地化語音檔案將從 「AppData\Local\AcTools Content Manager\Locales\（ID）」里載入。ID就是您選擇的在地化語音檔案的ID</value>
+  <alternative>解壓的本地化語音文件將從 “AppData\Local\AcTools Content Manager\Locales\(ID)”里加載,ID就是你選擇的本地化語音文件的ID</alternative></data>
   <data name="Settings_Locale_ForceLocaleWarning" xml:space="preserve">
-    <value>“--force-locale” 標誌位設置!</value>
-  </data>
+    <value>「--force-locale」 標誌位設定！</value>
+  <alternative>“--force-locale” 標誌位設置!</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
-    <value>在更改語言之後不要忘記重啟程序</value>
-  </data>
+    <value>在更改語言之後請重啟程式</value>
+  <alternative>在更改語言之後不要忘記重啟程序</alternative></data>
   <data name="KunosCareer_ResetProgress_Title" xml:space="preserve">
     <value>重置聯賽進程</value>
   </data>
   <data name="KunosCareer_ResetProgress_Message" xml:space="preserve">
-    <value>這個聯賽的所有的進度都會被丟失.你確定?</value>
-  </data>
+    <value>這個聯賽的所有的進度都會遺失。您確定要繼續？</value>
+  <alternative>這個聯賽的所有的進度都會被丟失.你確定?</alternative></data>
   <data name="AcSettings_Video_Benchmark" xml:space="preserve">
     <value>畫質測試</value>
   </data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
-    <value>開始畫質測試(Ctrl+G)</value>
-  </data>
+    <value>開始畫質測試（Ctrl+G）</value>
+  <alternative>開始畫質測試(Ctrl+G)</alternative></data>
   <data name="AcRoot_SteamId_Prompt" xml:space="preserve">
-    <value>在線遊戲使用的Steam ID:</value>
-  </data>
+    <value>線上遊戲使用的Steam ID：</value>
+  <alternative>在線遊戲使用的Steam ID:</alternative></data>
   <data name="Settings_Plugins" xml:space="preserve">
-    <value>插件</value>
-  </data>
+    <value>app</value>
+  <alternative>插件</alternative></data>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
     <value>在車手名字上顯示AI強度</value>
   </data>
@@ -3203,8 +3261,8 @@
     <value>在車手名字上顯示AI強度</value>
   </data>
   <data name="Settings_Drive_LocalAddress" xml:space="preserve">
-    <value>本地地址</value>
-  </data>
+    <value>當地位址</value>
+  <alternative>本地地址</alternative></data>
   <data name="Settings_Drive_CacheBrands" xml:space="preserve">
     <value>緩存品牌標誌</value>
   </data>
@@ -3218,23 +3276,23 @@
     <value>使用自定義天氣濾鏡</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>擴展天氣:</value>
-  </data>
+    <value>擴增天氣：</value>
+  <alternative>擴展天氣:</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
-    <value>畫面後處理濾鏡稍後將會被切換</value>
-  </data>
+    <value>畫面後期處理濾鏡稍後將會被切換</value>
+  <alternative>畫面後處理濾鏡稍後將會被切換</alternative></data>
   <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
-    <value>畫面後處理濾鏡稍後將會被恢復</value>
-  </data>
+    <value>畫面後期處理濾鏡稍後將會被回復</value>
+  <alternative>畫面後處理濾鏡稍後將會被恢復</alternative></data>
   <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
-    <value>覆蓋 Oculus Rift模式下的畫面後處理濾鏡</value>
-  </data>
+    <value>覆蓋 Oculus Rift模式下的畫面後期處理濾鏡</value>
+  <alternative>覆蓋 Oculus Rift模式下的畫面後處理濾鏡</alternative></data>
   <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
-    <value>如果 Oculus Rift模式被打開了,臨時用選擇的畫面後處理濾鏡覆蓋system/cfg/ppfilters/default.ini</value>
-  </data>
+    <value>如果啟用 Oculus Rift 模式，則用選定的後期處理濾鏡臨時覆蓋 system/cfg/ppfilters/default.ini</value>
+  <alternative>如果 Oculus Rift模式被打開了,臨時用選擇的畫面後處理濾鏡覆蓋system/cfg/ppfilters/default.ini</alternative></data>
   <data name="Settings_Drive_LocalAddress_Tooltip" xml:space="preserve">
-    <value>用於獲知本地天氣</value>
-  </data>
+    <value>用於獲知當地天氣</value>
+  <alternative>用於獲知本地天氣</alternative></data>
   <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
     <value>僅在非單一AI強度設定下有效</value>
   </data>
@@ -3245,20 +3303,20 @@
     <value>即使設定了隱藏幽靈車在圈速挑戰賽中也記錄幽靈車</value>
   </data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
-    <value>特別感謝翻譯者:</value>
-  </data>
+    <value>特別感謝翻譯者：</value>
+  <alternative>特別感謝翻譯者:</alternative></data>
   <data name="About_RecentChanges" xml:space="preserve">
     <value>最近更新</value>
   </data>
   <data name="RaceGrid_LoadingProgress" xml:space="preserve">
-    <value>{0}已經加載了{1}</value>
-  </data>
+    <value>{0}已載入{1}</value>
+  <alternative>{0}已經加載了{1}</alternative></data>
   <data name="RaceGrid_DetailedSettings" xml:space="preserve">
-    <value>詳細設置:</value>
-  </data>
+    <value>詳細設定：</value>
+  <alternative>詳細設置:</alternative></data>
   <data name="RaceGrid_ClassFormat" xml:space="preserve">
-    <value>類別:{0}</value>
-  </data>
+    <value>類別：{0}</value>
+  <alternative>類別:{0}</alternative></data>
   <data name="RaceGrid_CandidatePriority" xml:space="preserve">
     <value>備選車輛優先級</value>
   </data>
@@ -3266,26 +3324,26 @@
     <value>車輛車沒有維修區位置可用</value>
   </data>
   <data name="RaceGrid_Candidates" xml:space="preserve">
-    <value>備選車輛:</value>
-  </data>
+    <value>備選車輛：</value>
+  <alternative>備選車輛:</alternative></data>
   <data name="RaceGrid_Opponents" xml:space="preserve">
-    <value>對手:</value>
-  </data>
+    <value>對手：</value>
+  <alternative>對手:</alternative></data>
   <data name="Drive_LocalWeatherHeader" xml:space="preserve">
-    <value>本地天氣</value>
-  </data>
+    <value>玩家當地天氣</value>
+  <alternative>本地天氣</alternative></data>
   <data name="Drive_SetTimeManuallyHeader" xml:space="preserve">
-    <value>手動設置時間</value>
-  </data>
+    <value>手動設定時間</value>
+  <alternative>手動設置時間</alternative></data>
   <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
-    <value>使用本地天氣取代賽道實際天氣</value>
-  </data>
+    <value>使用玩家當地天氣取代賽道實際天氣</value>
+  <alternative>使用本地天氣取代賽道實際天氣</alternative></data>
   <data name="Drive_Weather_CannotLoad" xml:space="preserve">
-    <value>無法加載真實天氣</value>
-  </data>
+    <value>無法載入賽道實際天氣</value>
+  <alternative>無法加載真實天氣</alternative></data>
   <data name="Main_NotSupportedRequest" xml:space="preserve">
-    <value>不支持的請求: "{0}"</value>
-  </data>
+    <value>不支援的請求：「{0}」</value>
+  <alternative>不支持的請求: "{0}"</alternative></data>
   <data name="Settings_Locale_UpdateBeforeStartUp" xml:space="preserve">
     <value>在啟動前更新語言包</value>
   </data>
@@ -3299,8 +3357,8 @@
     <value>自定義翻譯</value>
   </data>
   <data name="Settings_Locale_ResxMode" xml:space="preserve">
-    <value>翻譯Resx文件</value>
-  </data>
+    <value>翻譯Resx檔案</value>
+  <alternative>翻譯Resx文件</alternative></data>
   <data name="Settings_Locale_Prepare" xml:space="preserve">
     <value>準備語言包</value>
   </data>
@@ -3311,11 +3369,11 @@
     <value>發送未打包語言包使其加入CM發佈版本中</value>
   </data>
   <data name="Settings_Locale_VersionLabel" xml:space="preserve">
-    <value>語言版本:</value>
-  </data>
+    <value>語言版本：</value>
+  <alternative>語言版本:</alternative></data>
   <data name="Settings_Locale_LanguageLabel" xml:space="preserve">
-    <value>語言:</value>
-  </data>
+    <value>語言：</value>
+  <alternative>語言:</alternative></data>
   <data name="Settings_Locale_LocaleId" xml:space="preserve">
     <value>語言編號</value>
   </data>
@@ -3329,17 +3387,17 @@
     <value>自定義</value>
   </data>
   <data name="Settings_Locale_OfficiallySupported" xml:space="preserve">
-    <value>官方支持</value>
-  </data>
+    <value>官方支援</value>
+  <alternative>官方支持</alternative></data>
   <data name="Settings_Locale_Installed" xml:space="preserve">
     <value>已安裝</value>
   </data>
   <data name="Settings_Locale_SetLocaleById" xml:space="preserve">
-    <value>根據語言編號設定軟件語言</value>
-  </data>
+    <value>根據語言編號設定軟體語言</value>
+  <alternative>根據語言編號設定軟件語言</alternative></data>
   <data name="Changelog_CannotLoad" xml:space="preserve">
-    <value>無法加載更新日誌</value>
-  </data>
+    <value>無法載入更新日誌</value>
+  <alternative>無法加載更新日誌</alternative></data>
   <data name="Changelog_RecentChanges_Title" xml:space="preserve">
     <value>最近更新</value>
   </data>
@@ -3350,17 +3408,17 @@
     <value>如果原生啟動器無法啟動遊戲，嘗試使用官方啟動器</value>
   </data>
   <data name="Main_UnsavedChangesHeader" xml:space="preserve">
-    <value>未保存的更改</value>
-  </data>
+    <value>更動未儲存</value>
+  <alternative>未保存的更改</alternative></data>
   <data name="Main_UnsavedChanges" xml:space="preserve">
-    <value>是否保存對以下項目的更改？</value>
-  </data>
+    <value>是否儲存對以下項目的更動？</value>
+  <alternative>是否保存對以下項目的更改？</alternative></data>
   <data name="Drive_AiArrangeOrder" xml:space="preserve">
     <value>AI發車順序:</value>
   </data>
   <data name="Drive_AiArrangeOrder_Tooltip" xml:space="preserve">
-    <value>如果你想要速度最快的AI在靠後位置發車,將這個選項設置為“升序”</value>
-  </data>
+    <value>如果您想要速度最快的AI在靠後位置發車，將這個選項設定為「升序」</value>
+  <alternative>如果你想要速度最快的AI在靠後位置發車,將這個選項設置為“升序”</alternative></data>
   <data name="Main_Profile" xml:space="preserve">
     <value>檔案</value>
   </data>
@@ -3368,23 +3426,23 @@
     <value>統計</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>最近圈速</value>
-  </data>
+    <value>最近單圈時間</value>
+  <alternative>最近圈速</alternative></data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
-    <value>圈速一覽</value>
-  </data>
+    <value>單圈時間一覽</value>
+  <alternative>圈速一覽</alternative></data>
   <data name="AcSettings_SessionInformation" xml:space="preserve">
-    <value>賽程信息</value>
-  </data>
+    <value>賽程資訊</value>
+  <alternative>賽程信息</alternative></data>
   <data name="Settings_Content_AddYearPostfix" xml:space="preserve">
-    <value>在車輛名稱前添加年份信息</value>
-  </data>
+    <value>在車輛名稱前添加年份資訊</value>
+  <alternative>在車輛名稱前添加年份信息</alternative></data>
   <data name="Settings_Content_ConfirmBeforeRemoval" xml:space="preserve">
     <value>刪除前需要確認</value>
   </data>
   <data name="Settings_Content_ConfirmBeforeRemoval_Tooltip" xml:space="preserve">
-    <value>請記住所有刪除的內容總是可以在回收站裡找到進行恢復</value>
-  </data>
+    <value>請記住，所有被刪除的內容總是可以從資源回收桶回復</value>
+  <alternative>請記住所有刪除的內容總是可以在回收站裡找到進行恢復</alternative></data>
   <data name="Filter_ByLength" xml:space="preserve">
     <value>篩選長度相近的賽道</value>
   </data>
@@ -3395,17 +3453,17 @@
     <value>篩選維修區位置數目相近的賽道</value>
   </data>
   <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
-    <value>打開模型文件夾(Ctrl+F)</value>
-  </data>
+    <value>開啟模型資料夾（Ctrl+F）</value>
+  <alternative>打開模型文件夾(Ctrl+F)</alternative></data>
   <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
-    <value>將模型移動至回收站(Ctrl+Delete)</value>
-  </data>
+    <value>將模型移動至資源回收桶（Ctrl+Delete）</value>
+  <alternative>將模型移動至回收站(Ctrl+Delete)</alternative></data>
   <data name="DriverModel_MissingDriverModels" xml:space="preserve">
-    <value>缺少車手模型</value>
-  </data>
+    <value>車手模型遺失</value>
+  <alternative>缺少車手模型</alternative></data>
   <data name="Common_RoadTemperature" xml:space="preserve">
-    <value>路面溫度:</value>
-  </data>
+    <value>路面溫度：</value>
+  <alternative>路面溫度:</alternative></data>
   <data name="List_DriverModels" xml:space="preserve">
     <value>{0}車手模型</value>
   </data>
@@ -3416,39 +3474,819 @@
     <value>隨機溫度</value>
   </data>
   <data name="TrackSpecs_Length_FormatTooltip" xml:space="preserve">
-    <value>… 米</value>
-  </data>
+    <value>… 公尺</value>
+  <alternative>… 米</alternative></data>
   <data name="TrackSpecs_Width_FormatTooltip" xml:space="preserve">
-    <value>… 米</value>
-  </data>
+    <value>… 公尺</value>
+  <alternative>… 米</alternative></data>
   <data name="TrackSpecs_Pitboxes_FormatTooltip" xml:space="preserve">
     <value>… 個</value>
   </data>
   <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
-    <value>賽道總長度,推薦格式: “{0}”</value>
-  </data>
+    <value>賽道總長度，推薦格式；「{0}」</value>
+  <alternative>賽道總長度,推薦格式: “{0}”</alternative></data>
   <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
-    <value>平均賽道寬度,推薦格式: “{0}”</value>
-  </data>
+    <value>平均賽道寬度，推薦格式；「{0}」</value>
+  <alternative>平均賽道寬度,推薦格式: “{0}”</alternative></data>
   <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
-    <value>維修區位置數目和車輛總數上限,推薦格式: “{0}”</value>
-  </data>
+    <value>維修站數量以及賽道上車輛數量的限制，推薦格式：「{0}」</value>
+  <alternative>維修區位置數目和車輛總數上限,推薦格式: “{0}”</alternative></data>
   <data name="Race_LaunchingReplay" xml:space="preserve">
-    <value>準備播放錄影...</value>
-  </data>
+    <value>準備播放重播⋯⋯</value>
+  <alternative>準備播放錄影...</alternative></data>
   <data name="Race_LaunchingBenchmark" xml:space="preserve">
-    <value>開始性能測試...</value>
-  </data>
+    <value>開始性能測試⋯⋯</value>
+  <alternative>開始性能測試...</alternative></data>
   <data name="Race_WaitingReplay" xml:space="preserve">
-    <value>等待錄影播放結束...</value>
-  </data>
+    <value>等待重播播放結束⋯⋯</value>
+  <alternative>等待錄影播放結束...</alternative></data>
   <data name="Race_WaitingBenchmark" xml:space="preserve">
-    <value>等待性能測試結束...</value>
-  </data>
+    <value>等待性能測試結束⋯⋯</value>
+  <alternative>等待性能測試結束...</alternative></data>
   <data name="Controls_Axis" xml:space="preserve">
     <value>軸</value>
   </data>
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>輪上馬力</value>
+  </data>
+  <data name="AcObject_IdLabel" xml:space="preserve">
+    <value>ID：</value>
+  </data>
+  <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+    <value>無法獲得音訊裝置列表</value>
+  </data>
+  <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+    <value>裝置名稱：</value>
+  </data>
+  <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+    <value>輸出裝置：</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+    <value>參數：</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>傾角</value>
+  </data>
+  <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+    <value>裝置設定</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>編輯名稱</value>
+  </data>
+  <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+    <value>重設系統綁定配置</value>
+  </data>
+  <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+    <value>啟動時掃描裝置</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>ABS效果</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>模式：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>車輛控制：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Discord" xml:space="preserve">
+    <value>Discord：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+    <value>線上模式：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+    <value>選項：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>賽事中：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>重播：</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_UI" xml:space="preserve">
+    <value>使用者介面：</value>
+  </data>
+  <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+    <value>將視角維持在車內</value>
+  </data>
+  <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+    <value>其他賽程的限制</value>
+  </data>
+  <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+    <value>資格限制</value>
+  </data>
+  <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+    <value>賽事限制</value>
+  </data>
+  <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+    <value>最小時間</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>維修區：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>App：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+    <value>聲音：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+    <value>條件：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+    <value>建立新檔</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP" xml:space="preserve">
+    <value>CSP：</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+    <value>啟用</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+    <value>後視鏡</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+    <value>如果在比賽中改變了一些設定，則更新預設值</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>影像：</value>
+  </data>
+  <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+    <value>開啟Python apps</value>
+  </data>
+  <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+    <value>以App預置保留開發者App標記</value>
+  </data>
+  <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+    <value>VR相機晃動</value>
+  </data>
+  <data name="AcSettings_Video_Fxaa" xml:space="preserve">
+    <value>快速近似抗鋸齒（FXAA）</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Oculus：</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>性能指標：</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+    <value>近似值，可能與實際情況不符。以1920×1080解析度測量。</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+    <value>解析度及幀率：</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+    <value>限時效能測試</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+    <value>如果您需要比較設置，請使用它來獲得類似的結果</value>
+  </data>
+  <data name="Arguments_SharedMessage_EmptyValue" xml:space="preserve">
+    <value>[/b][i]？[/i][b]</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+    <value>自動選取</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+    <value>發生錯誤</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+    <value>更多⋯⋯</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+    <value>查看更多資訊：</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+    <value>無錯誤</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+    <value>壓縮</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+    <value>壓縮檔</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+    <value>壓縮演算法：</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+    <value>解壓縮</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Description" xml:space="preserve">
+    <value>Content Manager將掃描所有模型和紋理文件（KN5和DDS文件）。這些文件很容易壓縮，有時甚至可以多次壓縮。如soundbanks音檔或PNG圖像這樣的文件則無壓縮必要，這些格式已經有適當的壓縮，而且它只會稍微減慢AC加載速度。[br][br]推薦使用LZX壓縮法。它在加載過程中會增加一些CPU的負載，但CPU會在等待磁碟獲取數據的過程中閒置，需要讀取的數據也會少很多。[br][br]當然，[b]應該不會對幀率有任何影響[/b]，因為AC不會動態載入資源。</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+    <value>未壓縮</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+    <value>原始檔</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+    <value>路徑</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+    <value>壓縮比</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+    <value>在檔案總管中瀏覽</value>
+  </data>
+  <data name="Controls_Abs" xml:space="preserve">
+    <value>防鎖死煞車系統（ABS）：</value>
+  </data>
+  <data name="Controls_MguK" xml:space="preserve">
+    <value>動能回收系統（MGU-K）：</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>自定義語言包已更新。您想現在重新啟動程式嗎？</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>語言包已更新</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>刪除標籤⋯⋯</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>標籤名稱</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>名稱：</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>在此輸入名稱，一行一個</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>新標籤</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>回復移除的標籤</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>避免沒有車號塗裝的車輛</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+    <value>可能會大大減少多樣性</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>不記錄幽靈車</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+    <value>車種多樣性限制</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+    <value>這個滑桿能讓您限制AC的各種車種的最大數量，改變多樣性。</value>
+  </data>
+  <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+    <value>車輛遺失</value>
+  </data>
+  <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+    <value>取得統計連結</value>
+  </data>
+  <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+    <value>加入語音伺服器</value>
+  </data>
+  <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+    <value>每公里最大接觸量</value>
+  </data>
+  <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+    <value>重置統計數據</value>
+  </data>
+  <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+    <value>伺服器無人</value>
+  </data>
+  <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+    <value>預定用途裝：</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+    <value>賽道遺失</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+    <value>等候任意空車</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+    <value>等到有空車的時候再加入</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+    <value>等候這輛空車</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+    <value>等到有了這款空車再加入</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+    <value>依序挑選塗裝</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+    <value>程式將依據過濾器嘗試按升序排列塗裝，並在需要時重新洗牌。</value>
+  </data>
+  <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+    <value>無法開始比賽</value>
+  </data>
+  <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+    <value>特定車輛的Fanatec設定</value>
+  </data>
+  <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+    <value>隨機車輛</value>
+  </data>
+  <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+    <value>隨機塗裝</value>
+  </data>
+  <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+    <value>隨機賽道</value>
+  </data>
+  <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+    <value>停用LED及顯示</value>
+  </data>
+  <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+    <value>隨機所有設定</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+    <value>設定隨機溫度</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+    <value>設定隨機時間</value>
+  </data>
+  <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+    <value>設定隨機天氣</value>
+  </data>
+  <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+    <value>僅顯示目前檔位</value>
+  </data>
+  <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+    <value>正在啟動比賽⋯⋯</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>是的，並修復它</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>啟動</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>關於Cotent Manager</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>AC設定</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>App設定</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>錦標賽</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>直線加速賽</value>
+  </data>
+  <data name="Main_Challenges_Drifts" xml:space="preserve">
+    <value>甩尾賽</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>圈速挑戰賽</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>尚未通過</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>競速賽</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>待改進</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>時間挑戰賽</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>CM設定</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>CSP設定</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>下載</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>下載及安裝</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>車手模型</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>關於過濾的所有內容</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>平均幀率：</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>最小幀率：</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>採樣：</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0}個樣本</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>前一賽程的效能：</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>前一賽程的效能</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1} 幀/秒</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>獲取新模組</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>管理來源</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>單圈時間</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>來源</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>紀錄表</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>模組</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>區域網路</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>官方啟動器</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>結果</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>僅限Kunos車輛</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>僅限Kunos車輛及賽道</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>僅限模組</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>最常使用</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>玩家錦標賽</value>
+  </data>
+  <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+    <value>查看細節</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>下載：</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>全部安裝</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>移除全部</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>移除已完成的下載</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>將車輛或者其他東西的檔案移到這裡，即可於Content Manager中開啟安裝</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0}正在安裝中</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>找到 {0} {error}</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>停用自動更新</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>略過此次更新</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>查看更新日誌</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>刪除所有遺失內容的賽程</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>移除缺失</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>找不到賽程。</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>重新整理</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>沒有找到結果。</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>將新標籤頁的過濾器設為預設值</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>將新標籤頁的排序設為預設值</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>已連線的車手</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>收藏夾</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>原始名稱</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>預設值</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>最佳單圈時間：</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>特定車輛控制器</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>更換車輛</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>更換賽道</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>自訂路面溫度</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>總趟數</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>該車輛里程：</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>該賽道里程：</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>修復車輛</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {important issue}已發現</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>理想狀態</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>以試駕預設設定載入輔助（全域）</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>同時選擇預設時按住Ctrl鍵，以反轉此行動</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>管理車輛</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>管理車輛設定</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>管理賽道</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>未選取車輛</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>未選取賽道</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>於展示廳中開啟車輛</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>隨機氣溫</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>隨機時間</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>路面溫度</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>手動設定風速及風向</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>特定日期</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>時間超出天氣限制</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>重至特定車輛旗標</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>使用未打包的數據（全域）</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>如果有的話使用未打包的數據</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>風速及風向</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>風向（角度）</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>風速（公尺/秒）</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>隨機風向</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>隨機風速</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>相對風速</value>
+  </data>
+  <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+    <value>當新的下載開始時自動導向下載頁面</value>
+  </data>
+  <data name="Settings_Appearance_Background" xml:space="preserve">
+    <value>背景：</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+    <value>綁定到螢幕上：</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>模糊</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>粗體字</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>圖片切換間格：</value>
+  </data>
+  <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+    <value>幻燈片資料夾：</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>強制全螢幕模式</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>全螢幕覆蓋工具列</value>
+  </data>
+  <data name="Settings_Appearance_Interface" xml:space="preserve">
+    <value>介面：</value>
+  </data>
+  <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+    <value>大字體</value>
+  </data>
+  <data name="Settings_Appearance_Links" xml:space="preserve">
+    <value>連結：</value>
+  </data>
+  <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+    <value>窄版捲動條</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>透明度</value>
+  </data>
+  <data name="Settings_Appearance_Placement" xml:space="preserve">
+    <value>顯示方式：</value>
+  </data>
+  <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+    <value>彈出式捲動條</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>於主視窗顯示返回鍵</value>
+  </data>
+  <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+    <value>在右上角的目錄中顯示下載和安裝列表</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+    <value>在搜尋框旁邊顯示可拖動的區域</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>停用該選項後，您可以透過關閉按鈕拖動它們</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>單一圖片</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>標題連結及目錄：</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>UI 尺寸</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>您可以通過視窗按鈕旁邊的目錄或通過熱鍵訪問停用的連結。</value>
+  </data>
+  <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+    <value>Mod 自動更新</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+    <value>使用自定義展示廳預覽</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>在某些情況下使用自定義展示廳代替原來的展示廳</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+    <value>使用舊版本</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>允許於賽道狀態使用小數值</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>可能會導致某些app出現問題</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>遊戲時將CM進入休眠模式</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>Windows機碼：</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>清除快取</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>溫度單位：</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>使用十二小時制</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>使用英制單位</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>管理車手標籤</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>管理列表</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>密碼：</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>比賽時暫停測試網路延遲</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Ping嘗試</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>Ping此伺服器</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>只需按一次重新整理就可以ping伺服器</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>預設資料夾</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>如果內容遺失，則顯示擴展資訊</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>更改將自動儲存。如果您想改良配置文件的顯示方式，您可以在這裡找到更多關於它們的資訊[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"][/url]。</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>未找到可配置的app</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>內容：</value>
+  </data>
+  <data name="Settings_Sharing_HistoryTableUrl" xml:space="preserve">
+    <value>網址</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>難度</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>無預覽</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>真實條件⋯⋯</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>刪除書籤「{0}」？</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>有可能是數據太多。</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>無法分享設定</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>{0}的描述</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>含有詳細資訊的訊息會被複製到剪貼板上。</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>原始啟動器（與Steam啟動器同時啟動）</value>
+  </data>
+  <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+    <value>影像設定（幀數計）</value>
   </data>
 </root>

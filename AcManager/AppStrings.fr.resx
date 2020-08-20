@@ -579,8 +579,8 @@ Auteur : [b]{3}[/b]</value>
     <value>Une mise à jour est disponible : {0}</value>
   <alternative>Une mise à jour est prête : {0}</alternative></data>
   <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
-    <value>Imposible d'installer du contenu supplémentaire</value>
-  <alternative>Imposible d'installer du conenu supplémentaire</alternative></data>
+    <value>Impossible d'installer du contenu supplémentaire</value>
+  <alternative>Imposible d'installer du conenu supplémentaire</alternative><alternative>Imposible d'installer du contenu supplémentaire</alternative></data>
   <data name="Arguments_CannotStartRace_Commentary" xml:space="preserve">
     <value>Assurez-vous que le véhicule et le circuit nécessaires sont installés et disponibles.</value>
   <alternative>Assurez-vous que la voiture et le circuit nécessaires soient installés et disponibles.</alternative></data>
@@ -1562,8 +1562,8 @@ Auteur : [b]{3}[/b]</value>
     <value>Activer le mode développeur ?</value>
   </data>
   <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
-    <value>Active le son (Ctrl+I)</value>
-  </data>
+    <value>Activer le son (Ctrl+I)</value>
+  <alternative>Active le son (Ctrl+I)</alternative></data>
   <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
     <value>Activer pour la meilleure qualité</value>
   </data>

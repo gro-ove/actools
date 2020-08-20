@@ -223,8 +223,8 @@
     <comment>Pour les réglages serveur, valeur de faux départ</comment>
   <alternative>Teleportation vers les stands</alternative></data>
   <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
-    <value>impossible de basculer le son</value>
-  </data>
+    <value>Impossible de basculer le son</value>
+  <alternative>impossible de basculer le son</alternative></data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
     <value>Vérifier qu'aucune application n'utilise actuellement les fichiers son du showroom.</value>
   <alternative>Vérifier qu'il n'y a aucune application en cours qui utilise lesfichiers sons du showroom.</alternative></data>
@@ -681,8 +681,8 @@
     <value>Triple écran</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0} (expérimentale)</value>
-  <alternative>{0} (experimentale)</alternative></data>
+    <value>{0} (expérimental)</value>
+  <alternative>{0} (experimentale)</alternative><alternative>{0} (expérimentale)</alternative></data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>Très haut</value>
   <alternative>Trés Haut</alternative></data>

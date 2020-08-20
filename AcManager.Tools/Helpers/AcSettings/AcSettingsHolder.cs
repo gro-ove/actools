@@ -248,6 +248,10 @@ namespace AcManager.Tools.Helpers.AcSettings {
         public static GhostSettings Ghost => _ghost ?? (_ghost = new GhostSettings());
 
 
+        private static LauncherSettings _launcher;
+        public static LauncherSettings Launcher => _launcher ?? (_launcher = new LauncherSettings());
+
+
         private static ProximityIndicatorSettings _proximityIndicator;
         public static ProximityIndicatorSettings ProximityIndicator => _proximityIndicator ?? (_proximityIndicator = new ProximityIndicatorSettings());
 

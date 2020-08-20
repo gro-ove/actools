@@ -4813,4 +4813,8 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
       <value>Show extended information if content is missing</value>
     </data>
+    <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
+        <value>Found {0} {update} for mods:</value>
+        <comment>{0} for number of updates</comment>
+    </data>
 </root>

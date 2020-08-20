@@ -142,6 +142,9 @@ namespace AcManager.Tools {
 
             try {
                 switch (custom.Path.ToLowerInvariant()) {
+                    case "launch":
+                        return ArgumentHandleResult.SuccessfulShow;
+
                     case "race/quick":
                         return await ProcessRaceQuick(custom);
 
@@ -153,6 +156,9 @@ namespace AcManager.Tools {
 
                     case "race/online/join":
                         return await ProcessRaceOnlineJoin(custom.Params);
+
+                    case "race/raceu":
+                        return await ProcessRaceRaceU(custom.Params);
 
                     case "setsteamid":
                         return ArgumentHandleResult.Ignore; // TODO?

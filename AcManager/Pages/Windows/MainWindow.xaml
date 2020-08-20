@@ -149,8 +149,7 @@
                   <BeginStoryboard>
                     <Storyboard RepeatBehavior="Forever">
                       <DoubleAnimation From="0" To="0.5" Storyboard.TargetProperty="(Ellipse.Opacity)" Duration="0:0:0.6" />
-                      <DoubleAnimation From="0.5" To="0" Storyboard.TargetProperty="(Ellipse.Opacity)" Duration="0:0:0.3"
-                          BeginTime="0:0:0.6" />
+                      <DoubleAnimation From="0.5" To="0" Storyboard.TargetProperty="(Ellipse.Opacity)" Duration="0:0:0.3" BeginTime="0:0:0.6" />
                     </Storyboard>
                   </BeginStoryboard>
                 </EventTrigger>
@@ -244,8 +243,12 @@
       <DockPanel x:Key="CupNotificationBlock" x:Shared="False" DataContext="{x:Static c:CupViewModel.Instance}"
           Visibility="{Binding ToUpdate.Count, Converter={StaticResource MoreToVisibilityConverter}}">
         <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-        <TextBlock DockPanel.Dock="Top" Margin="8 8 8 0" Style="{StaticResource Label}"
-            Text="{Binding ToUpdate.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter='{}Found {0} {update} for mods:'}" />
+        <TextBlock DockPanel.Dock="Top" Margin="8 8 8 0" Style="{StaticResource Label}">
+          <TextBlock.Text>
+            <Binding Path="ToUpdate.Count" Converter="{StaticResource PluralizingConverter}"
+                ConverterParameter="{x:Static g:AppStrings.MainWindow_FoundNModUpdates}" />
+          </TextBlock.Text>
+        </TextBlock>
         <ItemsControl Style="{StaticResource VirtualizingItemsControl}" MaxHeight="320" ItemsSource="{Binding ToUpdate}" DockPanel.Dock="Top"
             Margin="12 6 12 6">
           <ItemsControl.ItemTemplate>
@@ -295,8 +298,7 @@
           </ItemsControl.ItemTemplate>
         </ItemsControl>
         <!--<mui:BbCodeBlock Text="{Binding CupUpdateSummary}" DockPanel.Dock="Top" Margin="8 0 8 8" Style="{StaticResource Small}" />-->
-        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" Margin="8 0"
-            HorizontalSpacing="8">
+        <mui:SpacingUniformGrid Rows="1" HorizontalAlignment="Right" Margin="8 0" HorizontalSpacing="8">
           <Button Visibility="Hidden">
             <DockPanel>
               <Path Width="12" Height="12" DockPanel.Dock="Left" Fill="{Binding Path=(TextBlock.Foreground), RelativeSource={RelativeSource Self}}"
@@ -538,6 +540,7 @@
       <mui:LinkGroup.Links>
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
+        <!--<mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />-->
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
         <!--<mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />-->
       </mui:LinkGroup.Links>

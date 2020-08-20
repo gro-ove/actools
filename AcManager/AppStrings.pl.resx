@@ -4178,7 +4178,12 @@ mają już odpowiednią kompresję i tylko nieznacznie spowolnią ładowanie AC.
 [br][br]Polecam użycie najlepszego algorytmu kompresji, LZX. To doda obciążenie procesora podczas ładowania, ale procesor nie ma nic do roboty
 tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie mniej do odczytu.
 [br][br]Oczywiście [b]nie powinno to wpływać na FPS w żaden sposób[/b]: AC nie ładuje zasobów dynamicznie”.</value>
-  </data>
+  <alternative>„CM skanuje wszystkie modele i tekstury (pliki KN5 i DDS) - pliki te można dobrze skompresować,
+czasami nawet kilka razy. Kompresja plików, takich jak dźwiękowe lub obrazy PNG, nie przynosi większych korzyści: te formaty
+mają już odpowiednią kompresję i tylko nieznacznie spowolnią ładowanie AC.
+[br][br]Polecam użycie najlepszego algorytmu kompresji, LZX. To doda obciążenie procesora podczas ładowania, ale procesor nie ma nic do roboty
+tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie mniej do odczytu.
+[br][br]Oczywiście [b]nie powinno to wpływać na FPS w żaden sposób[/b]: AC nie ładuje zasobów dynamicznie”.</alternative></data>
   <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
     <value>Kompresuj</value>
   </data>
@@ -4577,5 +4582,11 @@ tak czy inaczej, gdy czeka na dysk, aby pobrać dane, a danych będzie znacznie 
   </data>
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>Pokaż rozszerzone informacje, jeśli brakuje zawartości</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>Upuść samochód lub coś innego tutaj, aby otworzyć go w sekcji Content Management</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>Wzrost wydajności:</value>
   </data>
 </root>

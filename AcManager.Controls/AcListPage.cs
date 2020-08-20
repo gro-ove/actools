@@ -289,11 +289,10 @@ namespace AcManager.Controls {
             public static readonly BatchActionComparer Instance = new BatchActionComparer();
 
             public int Compare(object x, object y) {
-                var gx = x as HierarchicalGroup;
                 var gy = y as HierarchicalGroup;
 
                 string sx, sy;
-                if (gx != null) {
+                if (x is HierarchicalGroup gx) {
                     if (gy == null) return -1;
                     sx = gx.DisplayName;
                     sy = gy.DisplayName;

@@ -118,56 +118,56 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Assists_IdealLineLabel" xml:space="preserve">
-    <value>建議行車路線:</value>
-  </data>
+    <value>建議行車路線：</value>
+  <alternative>建議行車路線:</alternative></data>
   <data name="Assists_Header" xml:space="preserve">
-    <value>駕駛輔助:</value>
-  </data>
+    <value>駕駛輔助：</value>
+  <alternative>駕駛輔助:</alternative></data>
   <data name="Assists_AutoShifterLabel" xml:space="preserve">
-    <value>自動換檔:</value>
-  </data>
+    <value>自動換檔：</value>
+  <alternative>自動換檔:</alternative></data>
   <data name="Assists_AutoClutchLabel" xml:space="preserve">
-    <value>自動離合</value>
-  </data>
+    <value>自動離合：</value>
+  <alternative>自動離合</alternative></data>
   <data name="Assists_AutoBlipLabel" xml:space="preserve">
-    <value>自動補油:</value>
-  </data>
+    <value>自動補油：</value>
+  <alternative>自動補油:</alternative></data>
   <data name="Assists_StabilityControlLabel" xml:space="preserve">
-    <value>車身穩定控制:</value>
-  </data>
+    <value>車身穩定控制：</value>
+  <alternative>車身穩定控制:</alternative></data>
   <data name="Assists_FuelLabel" xml:space="preserve">
-    <value>油量:</value>
-  </data>
+    <value>油量：</value>
+  <alternative>油量:</alternative></data>
   <data name="Assists_TyreWearLabel" xml:space="preserve">
-    <value>輪胎磨損:</value>
-  </data>
+    <value>輪胎磨損：</value>
+  <alternative>輪胎磨損:</alternative></data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
-    <value>網頁顯示:</value>
-  </data>
+    <value>網頁顯示</value>
+  <alternative>網頁顯示:</alternative></data>
   <data name="AcObject_CarBrandLabel" xml:space="preserve">
-    <value>品牌:</value>
-  </data>
+    <value>品牌：</value>
+  <alternative>品牌:</alternative></data>
   <data name="AcObject_ContryLabel" xml:space="preserve">
-    <value>國家:</value>
-  </data>
+    <value>國家：</value>
+  <alternative>國家:</alternative></data>
   <data name="AcObject_CarClassLabel" xml:space="preserve">
-    <value>類別:</value>
-  </data>
+    <value>類別：</value>
+  <alternative>類別:</alternative></data>
   <data name="AcObject_YearLabel" xml:space="preserve">
-    <value>年份:</value>
-  </data>
+    <value>年份：</value>
+  <alternative>年份:</alternative></data>
   <data name="AcObject_CarParentLabel" xml:space="preserve">
-    <value>源車型:</value>
-  </data>
+    <value>源車型：</value>
+  <alternative>源車型:</alternative></data>
   <data name="AcObject_SpecsLabel" xml:space="preserve">
-    <value>特性:</value>
-  </data>
+    <value>車輛數據：</value>
+  <alternative>特性:</alternative></data>
   <data name="AcObject_Author_Tooltip" xml:space="preserve">
-    <value>作者,版本&amp;網站連結</value>
-  </data>
+    <value>作者、版本及網址（Ctrl+點擊開啟連結）</value>
+  <alternative>作者,版本&amp;網站連結</alternative></data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>在展廳裡顯示</value>
-  </data>
+    <value>在展示廳裡顯示</value>
+  <alternative>在展廳裡顯示</alternative></data>
   <data name="Common_Presets" xml:space="preserve">
     <value>預設</value>
   </data>
@@ -175,47 +175,47 @@
     <value>選項</value>
   </data>
   <data name="Common_Settings" xml:space="preserve">
-    <value>設置</value>
-  </data>
+    <value>設定</value>
+  <alternative>設置</alternative></data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>在自定義展廳裡顯示</value>
-  </data>
+    <value>在自定義展示廳裡顯示</value>
+  <alternative>在自定義展廳裡顯示</alternative></data>
   <data name="KunosCareer_RequiredSeries" xml:space="preserve">
-    <value>需要完成系列賽: {0}</value>
-  </data>
+    <value>需要完成系列賽：{0}</value>
+  <alternative>需要完成系列賽: {0}</alternative></data>
   <data name="KunosCareer_RequiredSeriesAreNotFinishedYet" xml:space="preserve">
     <value>需要完成的系列賽還未完成</value>
   </data>
   <data name="KunosCareer_CompletedLabel" xml:space="preserve">
-    <value>已完成:</value>
-  </data>
+    <value>已完成：</value>
+  <alternative>已完成:</alternative></data>
   <data name="KunosCareer_Error" xml:space="preserve">
     <value>{0} 錯誤</value>
   </data>
   <data name="Video_CannotPlay" xml:space="preserve">
-    <value>無法播放視頻</value>
-  </data>
+    <value>無法播放影片</value>
+  <alternative>無法播放視頻</alternative></data>
   <data name="Video_CannotPlay_Commentary" xml:space="preserve">
-    <value>請前往設置打開VLC插件</value>
-  </data>
+    <value>請前往設定開啟VLCapp</value>
+  <alternative>請前往設置打開VLC插件</alternative></data>
   <data name="AcObject_CityLabel" xml:space="preserve">
-    <value>城市:</value>
-  </data>
+    <value>城市：</value>
+  <alternative>城市:</alternative></data>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
-    <value>地理標籤:</value>
-  </data>
+    <value>地理標籤：</value>
+  <alternative>地理標籤:</alternative></data>
   <data name="Presets_Save" xml:space="preserve">
-    <value>保存預設</value>
-  </data>
+    <value>儲存預設</value>
+  <alternative>保存預設</alternative></data>
   <data name="Presets_Save_Tooltip" xml:space="preserve">
-    <value>把當前設定保存為預設(Ctrl+S)</value>
-  </data>
+    <value>把目前設定儲存為預設（Ctrl+S）</value>
+  <alternative>把當前設定保存為預設(Ctrl+S)</alternative></data>
   <data name="Presets_Unsaved" xml:space="preserve">
-    <value>未保存</value>
-  </data>
+    <value>尚未儲存設定</value>
+  <alternative>未保存</alternative></data>
   <data name="QuickSwitches_Header" xml:space="preserve">
-    <value>快捷菜單</value>
-  </data>
+    <value>捷徑開關</value>
+  <alternative>快捷菜單</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>隱藏方向盤</value>
   </data>
@@ -223,8 +223,8 @@
     <value>隱藏虛擬方向盤</value>
   </data>
   <data name="QuickSwitches_LockWheel" xml:space="preserve">
-    <value>固定方向盤</value>
-  </data>
+    <value>鎖定方向盤</value>
+  <alternative>固定方向盤</alternative></data>
   <data name="QuickSwitches_LockCamera" xml:space="preserve">
     <value>鎖定視角</value>
   </data>
@@ -235,8 +235,8 @@
     <value>姓名</value>
   </data>
   <data name="QuickSwitches_Leaderboard" xml:space="preserve">
-    <value>排名板</value>
-  </data>
+    <value>排行榜</value>
+  <alternative>排名板</alternative></data>
   <data name="QuickSwitches_DamageUi" xml:space="preserve">
     <value>車損顯示器</value>
   </data>
@@ -244,71 +244,71 @@
     <value>近身指示器</value>
   </data>
   <data name="QuickSwitches_Fullscreen" xml:space="preserve">
-    <value>全屏</value>
-  </data>
+    <value>全螢幕</value>
+  <alternative>全屏</alternative></data>
   <data name="QuickSwitches_DevApps" xml:space="preserve">
-    <value>開發者插件</value>
-  </data>
+    <value>開發者app</value>
+  <alternative>開發者插件</alternative></data>
   <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>自由視角</value>
   </data>
   <data name="QuickSwitches_OnlineName" xml:space="preserve">
-    <value>在線名字</value>
-  </data>
+    <value>線上名字</value>
+  <alternative>在線名字</alternative></data>
   <data name="QuickSwitches_Exposure" xml:space="preserve">
     <value>曝光</value>
   </data>
   <data name="QuickSwitches_Fov" xml:space="preserve">
-    <value>視場</value>
-  </data>
+    <value>視野範圍</value>
+  <alternative>視場</alternative></data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
-    <value>固定方向盤</value>
-  </data>
+    <value>鎖定方向盤</value>
+  <alternative>固定方向盤</alternative></data>
   <data name="QuickSwitches_LockCamera_Tooltip" xml:space="preserve">
-    <value>鎖定駕駛視角到地平線</value>
-  </data>
+    <value>鎖定車頭視角於地平線上</value>
+  <alternative>鎖定駕駛視角到地平線</alternative></data>
   <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
     <value>顯示虛擬後視鏡</value>
   </data>
   <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
-    <value>顯示車手名字</value>
-  </data>
+    <value>顯示車手名稱</value>
+  <alternative>顯示車手名字</alternative></data>
   <data name="QuickSwitches_Leaderboard_Tooltip" xml:space="preserve">
-    <value>顯示排名板</value>
-  </data>
+    <value>顯示排行榜</value>
+  <alternative>顯示排名板</alternative></data>
   <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
     <value>顯示車損顯示器</value>
   </data>
   <data name="QuickSwitches_Fullscreen_Tooltip" xml:space="preserve">
-    <value>全屏模式(例如Shadowplay僅在全屏下可用)</value>
-  </data>
+    <value>全螢幕模式（例如Shadowplay僅在全螢幕下可用）</value>
+  <alternative>全屏模式(例如Shadowplay僅在全屏下可用)</alternative></data>
   <data name="QuickSwitches_DevApps_Tooltip" xml:space="preserve">
-    <value>啟用開發者插件</value>
-  </data>
+    <value>啟用開發者app</value>
+  <alternative>啟用開發者插件</alternative></data>
   <data name="QuickSwitches_FreeCamera_Tooltip" xml:space="preserve">
-    <value>允許自由視角(在遊戲裡按F7)</value>
-  </data>
+    <value>允許自由視角（在遊戲裡按F7）</value>
+  <alternative>允許自由視角(在遊戲裡按F7)</alternative></data>
   <data name="QuickSwitches_OnlineName_Tooltip" xml:space="preserve">
-    <value>在線使用不同的名字</value>
-  </data>
+    <value>於線上使用不同的名稱</value>
+  <alternative>在線使用不同的名字</alternative></data>
   <data name="QuickSwitches_UiPresets_Tooltip" xml:space="preserve">
-    <value>切換用戶界面預設</value>
-  </data>
+    <value>切換至預設用戶界面</value>
+  <alternative>切換用戶界面預設</alternative></data>
   <data name="QuickSwitches_ControlsPresets_Tooltip" xml:space="preserve">
-    <value>切換控制器預設</value>
-  </data>
+    <value>切換至預設控制器</value>
+  <alternative>切換控制器預設</alternative></data>
   <data name="QuickSwitches_VideoPresets_Tooltip" xml:space="preserve">
-    <value>切換畫面設置預設</value>
-  </data>
+    <value>切換至預設畫面設定</value>
+  <alternative>切換畫面設置預設</alternative></data>
   <data name="QuickSwitches_PpFilters_Tooltip" xml:space="preserve">
-    <value>切換後處理濾鏡預設</value>
-  </data>
+    <value>切換至預設後期處理濾鏡</value>
+  <alternative>切換後處理濾鏡預設</alternative></data>
   <data name="QuickSwitches_Exposure_Tooltip" xml:space="preserve">
-    <value>亮度</value>
-  </data>
+    <value>亮度等級</value>
+  <alternative>亮度</alternative></data>
   <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
-    <value>視場(垂直角度)</value>
-  </data>
+    <value>視野範圍（垂直角度）</value>
+  <alternative>視場(垂直角度)</alternative></data>
   <data name="QuickSwitches_HideArms" xml:space="preserve">
     <value>隱藏手臂</value>
   </data>
@@ -322,8 +322,8 @@
     <value>亮色調</value>
   </data>
   <data name="Theme_Nordschleife" xml:space="preserve">
-    <value>紐伯格林北環</value>
-  </data>
+    <value>紐柏林北環</value>
+  <alternative>紐伯格林北環</alternative></data>
   <data name="Animation_Modern" xml:space="preserve">
     <value>現代風格</value>
   </data>
@@ -337,11 +337,11 @@
     <value>下滑</value>
   </data>
   <data name="Controls_LoadPresetWarning" xml:space="preserve">
-    <value>加載"{0}"?當前的設置將會被覆蓋(不過稍後你可以從回收站恢復)</value>
-  </data>
+    <value>載入「{0}」？目前的設定將會被覆蓋（不過稍後您可以從回收桶回復）</value>
+  <alternative>加載"{0}"?當前的設置將會被覆蓋(不過稍後你可以從回收站恢復)</alternative></data>
   <data name="Common_AreYouSure" xml:space="preserve">
-    <value>是否確定?</value>
-  </data>
+    <value>是否確定？</value>
+  <alternative>是否確定?</alternative></data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
     <value>內建預設</value>
   </data>
@@ -349,37 +349,39 @@
     <value>用戶預設</value>
   </data>
   <data name="Controls_Preview_InputMethod" xml:space="preserve">
-    <value>控制器類型:[b]{0}[/b]</value>
-  </data>
+    <value>控制器類型：[b]{0}[/b]</value>
+  <alternative>控制器類型:[b]{0}[/b]</alternative></data>
   <data name="Controls_Preview_Devices" xml:space="preserve">
-    <value>設備:[b]{0}[/b]</value>
-  </data>
+    <value>裝置：[b]{0}[/b]</value>
+  <alternative>設備:[b]{0}[/b]</alternative></data>
   <data name="Controls_Preview_Device" xml:space="preserve">
-    <value>設備:[b]{0}[/b]</value>
-  </data>
+    <value>裝置：[b]{0}[/b]</value>
+  <alternative>設備:[b]{0}[/b]</alternative></data>
   <data name="Share_EnterName" xml:space="preserve">
-    <value>輸入名字或留空:</value>
-  </data>
+    <value>輸入名字或者留空：</value>
+  <alternative>輸入名字或留空:</alternative></data>
   <data name="Share_EnterNameHeader" xml:space="preserve">
     <value>分享為</value>
   </data>
   <data name="Share_EnterCustomId" xml:space="preserve">
-    <value>輸入自定義ID</value>
-  </data>
+    <value>輸入自定義ID：</value>
+  <alternative>輸入自定義ID</alternative></data>
   <data name="Share_EnterCustomIdHeader" xml:space="preserve">
     <value>自定義ID</value>
   </data>
   <data name="Share_VerifyMessage" xml:space="preserve">
-    <value>作者名: [b]{0}[/b]
+    <value>作者名：[b]{0}[/b]
+  分享名：[b]{1}[/b]
+  類型：[b]{2}[/b]</value>
+  <alternative>作者名: [b]{0}[/b]
   分享名: [b]{1}[/b]
-  類型: [b]{2}[/b]</value>
-  </data>
+  類型: [b]{2}[/b]</alternative></data>
   <data name="Share_VerifyMessageHeader" xml:space="preserve">
-    <value>所有的信息都正確嗎?</value>
-  </data>
+    <value>所有的資訊都正確嗎？</value>
+  <alternative>所有的信息都正確嗎?</alternative></data>
   <data name="Share_InProgress" xml:space="preserve">
-    <value>正在分享...</value>
-  </data>
+    <value>正在分享⋯⋯</value>
+  <alternative>正在分享...</alternative></data>
   <data name="Share_CannotShare" xml:space="preserve">
     <value>無法分享{0}</value>
   </data>
@@ -387,17 +389,17 @@
     <value>{0}已分享</value>
   </data>
   <data name="Share_SharedMessage" xml:space="preserve">
-    <value>連結已經複製到剪貼板</value>
-  </data>
+    <value>連結已經複製到剪貼簿</value>
+  <alternative>連結已經複製到剪貼板</alternative></data>
   <data name="Share_SharedMessageAlternative" xml:space="preserve">
-    <value>點擊打開連結</value>
-  </data>
+    <value>點擊開啟連結</value>
+  <alternative>點擊打開連結</alternative></data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>展廳:</value>
-  </data>
+    <value>展示廳：</value>
+  <alternative>展廳:</alternative></data>
   <data name="Common_FilterLabel" xml:space="preserve">
-    <value>篩選器:</value>
-  </data>
+    <value>篩選器：</value>
+  <alternative>篩選器:</alternative></data>
   <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
     <value>Kunos的水印將會暫時隱藏</value>
   </data>
@@ -405,35 +407,35 @@
     <value>隱藏水印</value>
   </data>
   <data name="Showroom_DisableSweetFx" xml:space="preserve">
-    <value>禁用SweetFX</value>
-  </data>
+    <value>停用SweetFX</value>
+  <alternative>禁用SweetFX</alternative></data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>SweetFX不會影響效果,但是可能減緩載入速度</value>
-  </data>
+    <value>SweetFX不會影響效果，但是可能減緩載入速度</value>
+  <alternative>SweetFX不會影響效果,但是可能減緩載入速度</alternative></data>
   <data name="Showroom_FovLabel" xml:space="preserve">
-    <value>視場:</value>
-  </data>
+    <value>視野範圍：</value>
+  <alternative>視場:</alternative></data>
   <data name="Showroom_CannotStart" xml:space="preserve">
-    <value>無法進入展廳</value>
-  </data>
+    <value>無法進入展示廳</value>
+  <alternative>無法進入展廳</alternative></data>
   <data name="ImageViewer_DefaultName" xml:space="preserve">
-    <value>圖象</value>
-  </data>
+    <value>圖片</value>
+  <alternative>圖象</alternative></data>
   <data name="ImageViewer_Save_Title" xml:space="preserve">
-    <value>保持圖象為</value>
-  </data>
+    <value>保持圖片為</value>
+  <alternative>保持圖象為</alternative></data>
   <data name="ImageViewer_CannotSave" xml:space="preserve">
-    <value>無法保存圖象</value>
-  </data>
+    <value>無法儲存圖片</value>
+  <alternative>無法保存圖象</alternative></data>
   <data name="VideoViewer_CannotPlay" xml:space="preserve">
-    <value>無法播放視頻</value>
-  </data>
+    <value>無法播放影片</value>
+  <alternative>無法播放視頻</alternative></data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
-    <value>請確定VLC插件正確安裝好了.</value>
-  </data>
+    <value>請確定VLCapp已正確安裝。</value>
+  <alternative>請確定VLC插件正確安裝好了.</alternative></data>
   <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
-    <value>找不到貼圖!</value>
-  </data>
+    <value>找不到貼圖！</value>
+  <alternative>找不到貼圖!</alternative></data>
   <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
     <value>類型:</value>
   </data>
@@ -453,29 +455,29 @@
     <value>查看貼圖</value>
   </data>
   <data name="CustomShowroom_ViewMapping_2048" xml:space="preserve">
-    <value>用2048x2048查看</value>
-  </data>
+    <value>以2048x2048查看</value>
+  <alternative>用2048x2048查看</alternative></data>
   <data name="CustomShowroom_ViewMapping_512" xml:space="preserve">
-    <value>用512x512查看</value>
-  </data>
+    <value>以512x512查看</value>
+  <alternative>用512x512查看</alternative></data>
   <data name="CustomShowroom_ViewMapping_1024" xml:space="preserve">
-    <value>用1024x10124查看</value>
-  </data>
+    <value>以1024x10124查看</value>
+  <alternative>用1024x10124查看</alternative></data>
   <data name="CustomShowroom_ViewMapping_4096" xml:space="preserve">
-    <value>用4096x4096查看</value>
-  </data>
+    <value>以4096x4096查看</value>
+  <alternative>用4096x4096查看</alternative></data>
   <data name="CustomShowroom_ViewMapping_Custom" xml:space="preserve">
-    <value>用自定義分辨率查看</value>
-  </data>
+    <value>以自定義解析度查看</value>
+  <alternative>用自定義分辨率查看</alternative></data>
   <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
-    <value>尺寸 ([Width]×[Height]):</value>
-  </data>
+    <value>尺寸 （\[Width]×\[Height]）:</value>
+  <alternative>尺寸 ([Width]×[Height]):</alternative></data>
   <data name="CustomShowroom_ViewMapping_ParsingFailed" xml:space="preserve">
-    <value>無法獲知尺寸</value>
-  </data>
+    <value>無法取得尺寸</value>
+  <alternative>無法獲知尺寸</alternative></data>
   <data name="CustomShowroom_ViewMapping_ParsingFailed_Commentary" xml:space="preserve">
-    <value>請使用有效的文件格式</value>
-  </data>
+    <value>請使用有效的檔案格式</value>
+  <alternative>請使用有效的文件格式</alternative></data>
   <data name="CustomShowroom_ViewMapping_Export" xml:space="preserve">
     <value>輸出材質貼圖</value>
   </data>
@@ -483,11 +485,11 @@
     <value>無法輸出材質</value>
   </data>
   <data name="CustomShowroom_Loading" xml:space="preserve">
-    <value>加載模型...</value>
-  </data>
+    <value>載入模型⋯⋯</value>
+  <alternative>加載模型...</alternative></data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>無法啟動展廳</value>
-  </data>
+    <value>無法啟動展示廳</value>
+  <alternative>無法啟動展廳</alternative></data>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>工具</value>
   </data>
@@ -495,26 +497,26 @@
     <value>已選擇</value>
   </data>
   <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
-    <value>名字:</value>
-  </data>
+    <value>名字：</value>
+  <alternative>名字:</alternative></data>
   <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
-    <value>材質:</value>
-  </data>
+    <value>材質：</value>
+  <alternative>材質:</alternative></data>
   <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
-    <value>貼圖:</value>
-  </data>
+    <value>貼圖：</value>
+  <alternative>貼圖:</alternative></data>
   <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
-    <value>多邊形:</value>
-  </data>
+    <value>多邊形：</value>
+  <alternative>多邊形:</alternative></data>
   <data name="CustomShowroom_StatsHeader" xml:space="preserve">
     <value>狀態</value>
   </data>
   <data name="CustomShowroom_Stats_FpsLabel" xml:space="preserve">
-    <value>幀率:</value>
-  </data>
+    <value>幀率：</value>
+  <alternative>幀率:</alternative></data>
   <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
-    <value>物體:</value>
-  </data>
+    <value>物體：</value>
+  <alternative>物體:</alternative></data>
   <data name="CustomShowroom_ControlHeader" xml:space="preserve">
     <value>控制</value>
   </data>
@@ -531,14 +533,14 @@
     <value>塗裝編輯模式</value>
   </data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
-    <value>自動更新貼圖,使用PSD,XCF等(需要Magick.NET插件)</value>
-  </data>
+    <value>自動更新貼圖。使用PSD、XCF等格式（需要Magick.NETapp）</value>
+  <alternative>自動更新貼圖,使用PSD,XCF等(需要Magick.NET插件)</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
     <value>更新環境陰影</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
-    <value>複位到推薦值</value>
-  </data>
+    <value>重置為建議值</value>
+  <alternative>複位到推薦值</alternative></data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
     <value>環境陰影</value>
   </data>
@@ -558,14 +560,14 @@
     <value>邊緣虛化</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
-    <value>複位到推薦值</value>
-  </data>
+    <value>重置為建議值</value>
+  <alternative>複位到推薦值</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
     <value>適應</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
-    <value>保存</value>
-  </data>
+    <value>儲存</value>
+  <alternative>保存</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
     <value>尺寸</value>
   </data>
@@ -573,23 +575,23 @@
     <value>高光尺寸</value>
   </data>
   <data name="Common_MetersPostfix" xml:space="preserve">
-    <value>米</value>
-  </data>
+    <value>公尺</value>
+  <alternative>米</alternative></data>
   <data name="Common_MinutesPostfix" xml:space="preserve">
     <value>分鐘</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
-    <value>更新陰影...</value>
-  </data>
+    <value>更新陰影⋯⋯</value>
+  <alternative>更新陰影...</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
-    <value>重新加載貼圖...</value>
-  </data>
+    <value>重新載入貼圖⋯⋯</value>
+  <alternative>重新加載貼圖...</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
-    <value>數據有加密</value>
-  </data>
+    <value>數據已加密</value>
+  <alternative>數據有加密</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
-    <value>陰影尺寸會被存儲到data/ambient_shadows.ini裡,但是資料被加密了,意味著不會有任何作用,繼續?</value>
-  </data>
+    <value>陰影尺寸會存儲存至「data/ambient_shadows.ini」，但是資料被加密了，故不會有任何作用。是否繼續？</value>
+  <alternative>陰影尺寸會被存儲到data/ambient_shadows.ini裡,但是資料被加密了,意味著不會有任何作用,繼續?</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
     <value>開發者工具</value>
   </data>
@@ -597,13 +599,28 @@
     <value>解壓{0}</value>
   </data>
   <data name="AcObject_VersionLabel" xml:space="preserve">
-    <value>版本:</value>
-  </data>
+    <value>版本：</value>
+  <alternative>版本:</alternative></data>
   <data name="Common_FolderExists" xml:space="preserve">
-    <value>文件夾"{0}"已經存在,覆蓋?</value>
-  </data>
+    <value>資料夾「{0}」已經存在。是否覆蓋？</value>
+  <alternative>文件夾"{0}"已經存在,覆蓋?</alternative></data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
-    <value>物體名字: [b]{0}[/b]
+    <value>物體名稱：[b]{0}[/b]
+  級別：[b]{1}[/b]
+  
+  啟動：[b]{2}[/b]
+  可渲染的：[b]{3}[/b]
+  可見：[b]{4}[/b]
+  
+  透明：[b]{5}[/b]
+  投射陰影：[b]{6}[/b]
+  
+  圖層：[b]{7}[/b]
+  LOD在：[b]{8}[/b]
+  LOD在：[b]{9}[/b]
+  
+  材質：[b]{10}[/b]</value>
+  <alternative>物體名字: [b]{0}[/b]
   級別: [b]{1}[/b]
   
   激活: [b]{2}[/b]
@@ -617,28 +634,32 @@
   LOD在: [b]{8}[/b]
   LOD在: [b]{9}[/b]
   
-  材質: [b]{10}[/b]</value>
-  </data>
+  材質: [b]{10}[/b]</alternative></data>
   <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
-    <value>材質名字: [b]{0}[/b]
+    <value>材質名稱：[b]{0}[/b]
+著色器：[b]{1}[/b]
+  
+  混合模式：[b]{2}[/b]
+  Alpha測試：[b]{3}[/b]
+  深度模式：[b]{4}[/b]</value>
+  <alternative>材質名字: [b]{0}[/b]
   Shader: [b]{1}[/b]
   
   混合模式: [b]{2}[/b]
   Alpha測試: [b]{3}[/b]
-  深度模式: [b]{4}[/b]</value>
-  </data>
+  深度模式: [b]{4}[/b]</alternative></data>
   <data name="CustomShowroom_ShaderProperties" xml:space="preserve">
-    <value>Shader屬性:</value>
-  </data>
+    <value>著色器屬性：</value>
+  <alternative>Shader屬性:</alternative></data>
   <data name="AcObject_AuthorLabel" xml:space="preserve">
-    <value>作者:</value>
-  </data>
+    <value>作者：</value>
+  <alternative>作者:</alternative></data>
   <data name="Common_Clear" xml:space="preserve">
     <value>清除</value>
   </data>
   <data name="Controls_ClickToAssign" xml:space="preserve">
-    <value>點擊設定按鍵</value>
-  </data>
+    <value>點擊以設定按鍵</value>
+  <alternative>點擊設定按鍵</alternative></data>
   <data name="Controls_WaitingForInput" xml:space="preserve">
     <value>等待輸入</value>
   </data>
@@ -655,8 +676,8 @@
     <value>伽馬</value>
   </data>
   <data name="Controls_FilterAxis" xml:space="preserve">
-    <value>濾波</value>
-  </data>
+    <value>過濾</value>
+  <alternative>濾波</alternative></data>
   <data name="Controls_SpeedSensitivity" xml:space="preserve">
     <value>轉向靈敏度</value>
   </data>
@@ -673,14 +694,14 @@
     <value>鍵盤按鍵</value>
   </data>
   <data name="Online_CarIsMissingLabel" xml:space="preserve">
-    <value>找不到車輛:</value>
-  </data>
+    <value>遺失車輛：</value>
+  <alternative>找不到車輛:</alternative></data>
   <data name="Online_TrackIsMissingLabel" xml:space="preserve">
-    <value>找不到賽道:</value>
-  </data>
+    <value>遺失賽道：</value>
+  <alternative>找不到賽道:</alternative></data>
   <data name="Online_DriversOnlineLabel" xml:space="preserve">
-    <value>在線車手:</value>
-  </data>
+    <value>線上車手：</value>
+  <alternative>在線車手:</alternative></data>
   <data name="Online_JoinUsing" xml:space="preserve">
     <value>使用{0}加入</value>
   </data>
@@ -691,8 +712,8 @@
     <value>需要密碼</value>
   </data>
   <data name="Common_Waiting" xml:space="preserve">
-    <value>等待結果…</value>
-  </data>
+    <value>等待結果⋯⋯</value>
+  <alternative>等待結果…</alternative></data>
   <data name="Common_Finished" xml:space="preserve">
     <value>比賽結束</value>
   </data>
@@ -712,14 +733,14 @@
     <value>職業難度</value>
   </data>
   <data name="Common_Loading" xml:space="preserve">
-    <value>加載中...</value>
-  </data>
+    <value>載入中⋯⋯</value>
+  <alternative>加載中...</alternative></data>
   <data name="Common_GoodNews" xml:space="preserve">
-    <value>好消息!</value>
-  </data>
+    <value>好消息！</value>
+  <alternative>好消息!</alternative></data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
-    <value>源車型(如果設置,這個車將可以添加升級版本)</value>
-  </data>
+    <value>源車型（設定後，這台車將是它的調校版）</value>
+  <alternative>源車型(如果設置,這個車將可以添加升級版本)</alternative></data>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
     <value>無法更新環境陰影</value>
   </data>
@@ -727,59 +748,59 @@
     <value>更改</value>
   </data>
   <data name="Common_Generic" xml:space="preserve">
-    <value>常規</value>
-  </data>
+    <value>一般</value>
+  <alternative>常規</alternative></data>
   <data name="AcObject_TyresLabel" xml:space="preserve">
-    <value>輪胎:</value>
-  </data>
+    <value>輪胎：</value>
+  <alternative>輪胎:</alternative></data>
   <data name="Common_PsiPostfix" xml:space="preserve">
     <value>psi</value>
   </data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
-    <value>油量:</value>
-  </data>
+    <value>油量：</value>
+  <alternative>油量:</alternative></data>
   <data name="AcObject_Fuel" xml:space="preserve">
     <value>油量</value>
   </data>
   <data name="Replay_CrMessage" xml:space="preserve">
-    <value>錄影會被下一次比賽覆蓋,改名以便保存.</value>
-  </data>
+    <value>重播將在下一場比賽後被覆蓋。重新命名以保留。</value>
+  <alternative>錄影會被下一次比賽覆蓋,改名以便保存.</alternative></data>
   <data name="Replay_CrMessage_Commentary" xml:space="preserve">
-    <value>你可以到設置裡打開"自動保存錄影"選項,以免丟失某些重要的錄影</value>
-  </data>
+    <value>您可以到設定裡開啟「自動儲存重播」選項，以遺失某些重要的重播</value>
+  <alternative>你可以到設置裡打開"自動保存錄影"選項,以免丟失某些重要的錄影</alternative></data>
   <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
-    <value>將ui_skin.json移動到回收站(Alt+Delete)</value>
-  </data>
+    <value>將ui_skin.json移動到回收桶（Alt+Delete）</value>
+  <alternative>將ui_skin.json移動到回收站(Alt+Delete)</alternative></data>
   <data name="Toolbar_CreateJson_Tooltip" xml:space="preserve">
-    <value>生成一個新的ui_skin.json文件(Alt+S)</value>
-  </data>
+    <value>生成一個新的ui_skin.json檔案（Alt+S）</value>
+  <alternative>生成一個新的ui_skin.json文件(Alt+S)</alternative></data>
   <data name="Common_Uploading" xml:space="preserve">
-    <value>上傳中...</value>
-  </data>
+    <value>上傳中⋯⋯</value>
+  <alternative>上傳中...</alternative></data>
   <data name="Common_Preparing" xml:space="preserve">
-    <value>準備中...</value>
-  </data>
+    <value>準備中⋯⋯</value>
+  <alternative>準備中...</alternative></data>
   <data name="Common_Compressing" xml:space="preserve">
-    <value>壓縮中...</value>
-  </data>
+    <value>壓縮中⋯⋯</value>
+  <alternative>壓縮中...</alternative></data>
   <data name="Common_CelsiusPostfix" xml:space="preserve">
     <value>°C</value>
   </data>
   <data name="Common_OpponentsFormat" xml:space="preserve">
-    <value>{0} 對手</value>
-  </data>
+    <value>{0}名對手</value>
+  <alternative>{0} 對手</alternative></data>
   <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
-    <value>推薦值:{0}%</value>
-  </data>
+    <value>推薦值：{0}%</value>
+  <alternative>推薦值:{0}%</alternative></data>
   <data name="Common_ResetToRecommendedValue" xml:space="preserve">
-    <value>重置到推薦值</value>
-  </data>
+    <value>重置為建議值</value>
+  <alternative>重置到推薦值</alternative></data>
   <data name="Common_ChangeSkin" xml:space="preserve">
     <value>更換塗裝</value>
   </data>
   <data name="Common_Reset" xml:space="preserve">
-    <value>複位</value>
-  </data>
+    <value>復位</value>
+  <alternative>複位</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
     <value>再試一次</value>
   </data>
@@ -787,8 +808,8 @@
     <value>離線模式</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>展廳:</value>
-  </data>
+    <value>展示廳：</value>
+  <alternative>展廳:</alternative></data>
   <data name="Common_SecondsPostfix" xml:space="preserve">
     <value>秒</value>
   </data>
@@ -802,38 +823,38 @@
     <value>分鐘</value>
   </data>
   <data name="Common_Downloading" xml:space="preserve">
-    <value>下載中...</value>
-  </data>
+    <value>下載中⋯⋯</value>
+  <alternative>下載中...</alternative></data>
   <data name="Common_Installing" xml:space="preserve">
-    <value>安裝中...</value>
-  </data>
+    <value>安裝中⋯⋯</value>
+  <alternative>安裝中...</alternative></data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
     <value>設為獨立車型</value>
   </data>
   <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
-    <value>子車型將會移動到新的源車型下!</value>
-  </data>
+    <value>子車型將會移動到新的源車型下！</value>
+  <alternative>子車型將會移動到新的源車型下!</alternative></data>
   <data name="FindInformation_Description" xml:space="preserve">
-    <value>選擇年份或者描述後點擊OK; 按住Ctrl則可以擴展描述</value>
-  </data>
+    <value>選擇年份或者描述後點擊OK。按住Ctrl鍵以擴展描述而不是替換它。</value>
+  <alternative>選擇年份或者描述後點擊OK; 按住Ctrl則可以擴展描述</alternative></data>
   <data name="FindInformation_SaveAndClose" xml:space="preserve">
-    <value>保存後關閉</value>
-  </data>
+    <value>儲存後關閉</value>
+  <alternative>保存後關閉</alternative></data>
   <data name="FindInformation_SaveAsYear" xml:space="preserve">
-    <value>保存為年份</value>
-  </data>
+    <value>儲存為年份</value>
+  <alternative>保存為年份</alternative></data>
   <data name="FindInformation_SaveAsCountry" xml:space="preserve">
-    <value>保存為國家</value>
-  </data>
+    <value>儲存為國家</value>
+  <alternative>保存為國家</alternative></data>
   <data name="FindInformation_SaveAsDescription" xml:space="preserve">
-    <value>保存為描述</value>
-  </data>
+    <value>儲存為描述</value>
+  <alternative>保存為描述</alternative></data>
   <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
     <value>無法更新預覽圖</value>
   </data>
   <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
-    <value>請至少生成一個屏幕截圖</value>
-  </data>
+    <value>請至少製作一個螢幕截圖</value>
+  <alternative>請至少生成一個屏幕截圖</alternative></data>
   <data name="Common_PointsPostfix" xml:space="preserve">
     <value>分</value>
   </data>
@@ -847,8 +868,8 @@
     <value>增益</value>
   </data>
   <data name="Controls_EffectsHeader" xml:space="preserve">
-    <value>特效:</value>
-  </data>
+    <value>特效：</value>
+  <alternative>特效:</alternative></data>
   <data name="Controls_KerbEffect" xml:space="preserve">
     <value>路肩效果</value>
   </data>
@@ -859,8 +880,8 @@
     <value>打滑效果</value>
   </data>
   <data name="Controls_MiscellaneousHeader" xml:space="preserve">
-    <value>雜項:</value>
-  </data>
+    <value>雜項：</value>
+  <alternative>雜項:</alternative></data>
   <data name="Controls_EnhancedUndersteer" xml:space="preserve">
     <value>增強轉向不足效果</value>
   </data>
@@ -871,11 +892,11 @@
     <value>力回饋跳幀</value>
   </data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>試驗性設定:</value>
-  </data>
+    <value>試驗性設定：</value>
+  <alternative>試驗性設定:</alternative></data>
   <data name="Controls_UnlockExperimental" xml:space="preserve">
-    <value>解開試驗性選項(謹慎!)</value>
-  </data>
+    <value>解開試驗性選項（謹慎！）</value>
+  <alternative>解開試驗性選項(謹慎!)</alternative></data>
   <data name="Controls_GyroscopicEffect" xml:space="preserve">
     <value>陀螺儀效果</value>
   </data>
@@ -886,29 +907,29 @@
     <value>最小減震級別</value>
   </data>
   <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
-    <value>對於G920設置到0,其他都設置為1</value>
-  </data>
+    <value>對於羅技G920設定到0，對其他產品設定為1</value>
+  <alternative>對於G920設置到0,其他都設置為1</alternative></data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>用於物理引擎跳過計算的設定,目的是在較低的力回饋輸入緩衝區的情況下適應方向盤;如果你遇到CPU導致的問題,試著增加這個設定2-4,也許會有所幫助</value>
-  </data>
+    <value>用於物理引擎跳過計算的設定，目的是在較低的力回饋輸入緩衝區的情況下適應方向盤。如果您遇到CPU導致的問題，試著增加這個設定2-4，也許會有所幫助</value>
+  <alternative>用於物理引擎跳過計算的設定,目的是在較低的力回饋輸入緩衝區的情況下適應方向盤;如果你遇到CPU導致的問題,試著增加這個設定2-4,也許會有所幫助</alternative></data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>曝光度</value>
   </data>
   <data name="Common_FpsPostfix" xml:space="preserve">
-    <value>FPS</value>
-  </data>
+    <value>幀率</value>
+  <alternative>FPS</alternative></data>
   <data name="Plugins_DownloadAndInstall" xml:space="preserve">
-    <value>下載和安裝({0})</value>
-  </data>
+    <value>下載並安裝（{0}）</value>
+  <alternative>下載和安裝({0})</alternative></data>
   <data name="Plugins_NotAvailable" xml:space="preserve">
-    <value>暫不支持,需要軟件版本為{0}</value>
-  </data>
+    <value>暫不支援，需要程式版本為{0}。</value>
+  <alternative>暫不支持,需要軟件版本為{0}</alternative></data>
   <data name="Plugins_Update" xml:space="preserve">
-    <value>升級(新版本:{0})</value>
-  </data>
+    <value>升級（新版本：{0}）</value>
+  <alternative>升級(新版本:{0})</alternative></data>
   <data name="Common_Unsaved" xml:space="preserve">
-    <value>未保存</value>
-  </data>
+    <value>尚未儲存</value>
+  <alternative>未保存</alternative></data>
   <data name="Theme_Black" xml:space="preserve">
     <value>黑色主題</value>
   </data>
@@ -922,8 +943,8 @@
     <value>圈</value>
   </data>
   <data name="Common_FahrenheitPostfix" xml:space="preserve">
-    <value>華氏度</value>
-  </data>
+    <value> °F</value>
+  <alternative>華氏度</alternative></data>
   <data name="TableHeader_Name" xml:space="preserve">
     <value>車手名</value>
   </data>
@@ -934,8 +955,8 @@
     <value>賽道</value>
   </data>
   <data name="TableHeader_BestLap" xml:space="preserve">
-    <value>最佳圈速</value>
-  </data>
+    <value>最佳單圈時間</value>
+  <alternative>最佳圈速</alternative></data>
   <data name="TableHeader_Date" xml:space="preserve">
     <value>日期</value>
   </data>
@@ -950,5 +971,20 @@
   </data>
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>鎖定</value>
+  </data>
+  <data name="AcObject_ErrorsHeader" xml:space="preserve">
+    <value>{Error}：</value>
+  </data>
+  <data name="AcObject_UrlLabel" xml:space="preserve">
+    <value>網址：</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>評級：</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>滾動到選定的位置（Ctrl+Shift+V）</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>度</value>
   </data>
 </root>

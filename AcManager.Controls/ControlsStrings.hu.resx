@@ -118,52 +118,52 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcObject_TrackGeoTagsLabel" xml:space="preserve">
-    <value>Geo Tags:</value>
-  </data>
+    <value>Geo Tag-ek (földrajzi hely):</value>
+  <alternative>Geo Tags:</alternative></data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Open In Custom Showroom</value>
-  </data>
+    <value>Megnyitás az egyedi bemutatóteremben</value>
+  <alternative>Open In Custom Showroom</alternative></data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Open In Showroom</value>
-  </data>
+    <value>Megnyitás a bemutatóteremben</value>
+  <alternative>Open In Showroom</alternative></data>
   <data name="CarParent_MakeIndependent" xml:space="preserve">
-    <value>Make Independent</value>
-  </data>
+    <value>Tegye függetlenné</value>
+  <alternative>Make Independent</alternative></data>
   <data name="Common_ChangeSkin" xml:space="preserve">
-    <value>Change Skin</value>
-  </data>
+    <value>Autófestés megváltoztatása</value>
+  <alternative>Change Skin</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
-    <value>Developer Tools</value>
-  </data>
+    <value>Fejlesztői eszközök</value>
+  <alternative>Developer Tools</alternative></data>
   <data name="Common_OfflineMode" xml:space="preserve">
-    <value>Offline Mode</value>
-  </data>
+    <value>Offline mód</value>
+  <alternative>Offline Mode</alternative></data>
   <data name="Common_TryAgain" xml:space="preserve">
-    <value>Try Again</value>
-  </data>
+    <value>Próbáld újra</value>
+  <alternative>Try Again</alternative></data>
   <data name="Controls_BuiltInPresets" xml:space="preserve">
-    <value>Built-in Presets</value>
-  </data>
+    <value>Beépített beállítássablonok (preset)</value>
+  <alternative>Built-in Presets</alternative></data>
   <data name="Controls_LoadPresetWarning" xml:space="preserve">
-    <value>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</value>
-  </data>
+    <value>Betöltöd a(z) “{0}” beállítást? A jelenlegi értékeket felülírja (viszont később visszaállíthatod a Lomtárból).</value>
+  <alternative>Load “{0}”? Current values will be replaced (but later could be restored from Recycle Bin).</alternative></data>
   <data name="Controls_UserPresets" xml:space="preserve">
-    <value>User Presets</value>
-  </data>
+    <value>Felhasználói beállítások</value>
+  <alternative>User Presets</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Reset" xml:space="preserve">
-    <value>Reset To Recommended Values</value>
-  </data>
+    <value>Visszaállítás az ajánlott értékekre</value>
+  <alternative>Reset To Recommended Values</alternative></data>
   <data name="CustomShowroom_AmbientShadows_Update" xml:space="preserve">
-    <value>Update Ambient Shadows</value>
-  </data>
+    <value>Környezeti árnyékok frissítése</value>
+  <alternative>Update Ambient Shadows</alternative></data>
   <data name="CustomShowroom_AmbientShadowsHeader" xml:space="preserve">
-    <value>Ambient Shadow</value>
-  </data>
+    <value>Környezeti árnyék</value>
+  <alternative>Ambient Shadow</alternative></data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedData" xml:space="preserve">
-    <value>Data Is Encrypted</value>
-  </data>
+    <value>Az adat titkosított</value>
+  <alternative>Data Is Encrypted</alternative></data>
   <data name="CustomShowroom_ObjectInformation" xml:space="preserve">
-    <value>Object name: [b]{0}[/b]
+    <value>Objektum neve: [b]{0}[/b]
 Class: [b]{1}[/b]
 
 Active: [b]{2}[/b]
@@ -177,8 +177,22 @@ Layer: [b]{7}[/b]
 LOD In: [b]{8}[/b]
 LOD In: [b]{9}[/b]
 
-Material: [b]{10}[/b]</value>
-  </data>
+Anyag: [b]{10}[/b]</value>
+  <alternative>Object name: [b]{0}[/b]
+Class: [b]{1}[/b]
+
+Active: [b]{2}[/b]
+Renderable: [b]{3}[/b]
+Visible: [b]{4}[/b]
+
+Transparent: [b]{5}[/b]
+Casting Shadows: [b]{6}[/b]
+
+Layer: [b]{7}[/b]
+LOD In: [b]{8}[/b]
+LOD In: [b]{9}[/b]
+
+Material: [b]{10}[/b]</alternative></data>
   <data name="CustomShowroom_ViewMapping" xml:space="preserve">
     <value>View Mapping</value>
   </data>
@@ -237,8 +251,8 @@ Material: [b]{10}[/b]</value>
     <value> lap</value>
   </data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
-    <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
-  </data>
+    <value>Az alacsonyabb bemeneti bufferrel rendelkező kormányok illesztése érdekében a játék fizikai motorja kihagy egyes lépéseket; ha processzor problémákat tapasztalsz, segíthet a 2-4 közötti értékre való emelése</value>
+  <alternative>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</alternative></data>
   <data name="CustomShowroom_EditingMode_Tooltip" xml:space="preserve">
     <value>Use PSD, XCF, etc. instead if exists (Magick.NET addon is required)</value>
   </data>
@@ -253,5 +267,406 @@ Material: [b]{10}[/b]</value>
   </data>
   <data name="VideoViewer_CannotPlay_Commentary" xml:space="preserve">
     <value>Make sure VLC addon is installed properly.</value>
+  </data>
+  <data name="AcObject_Author_Tooltip" xml:space="preserve">
+    <value>Készítő, verzió &amp; URL (Ctrl+click a link megnyitásához, ha be van állítva)</value>
+  </data>
+  <data name="AcObject_AuthorLabel" xml:space="preserve">
+    <value>Készítő:</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview" xml:space="preserve">
+    <value>Az előnézet nem frissíthető</value>
+  </data>
+  <data name="AcObject_CannotUpdatePreview_TrackCommentary" xml:space="preserve">
+    <value>Legalább egy képernyőmentést készítened kell.</value>
+  </data>
+  <data name="AcObject_CarBrandLabel" xml:space="preserve">
+    <value>Márka:</value>
+  </data>
+  <data name="AcObject_CarClassLabel" xml:space="preserve">
+    <value>Osztály:</value>
+  </data>
+  <data name="AcObject_CarParentLabel" xml:space="preserve">
+    <value>Alaptípus:</value>
+  </data>
+  <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
+    <value>Az autó alaptípusa (ha be van állítva, akkor ez az autó ennek lesz egy tuningolt változata)</value>
+  </data>
+  <data name="AcObject_CityLabel" xml:space="preserve">
+    <value>Város:</value>
+  </data>
+  <data name="AcObject_ContryLabel" xml:space="preserve">
+    <value>Ország:</value>
+  </data>
+  <data name="AcObject_Fuel" xml:space="preserve">
+    <value>Üzemanyag</value>
+  </data>
+  <data name="AcObject_FuelLabel" xml:space="preserve">
+    <value>Üzemanyag:</value>
+  </data>
+  <data name="AcObject_SpecsLabel" xml:space="preserve">
+    <value>Specifikációk:</value>
+  </data>
+  <data name="AcObject_TyresLabel" xml:space="preserve">
+    <value>Gumik:</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Verzió:</value>
+  </data>
+  <data name="AcObject_YearLabel" xml:space="preserve">
+    <value>Év:</value>
+  </data>
+  <data name="AcObject_YearLabel_CarTooltip" xml:space="preserve">
+    <value>Gyártás kezdetének éve</value>
+  </data>
+  <data name="Animation_Down" xml:space="preserve">
+    <value>Le</value>
+  </data>
+  <data name="Animation_Fade" xml:space="preserve">
+    <value>Áttűnés</value>
+  </data>
+  <data name="Animation_Up" xml:space="preserve">
+    <value>Fel</value>
+  </data>
+  <data name="Assists_AutoBlipLabel" xml:space="preserve">
+    <value>Automatikus gázelvétel váltásoknál:</value>
+  </data>
+  <data name="Assists_AutoClutchLabel" xml:space="preserve">
+    <value>Automata kuplung:</value>
+  </data>
+  <data name="Assists_AutoShifterLabel" xml:space="preserve">
+    <value>Automata váltó:</value>
+  </data>
+  <data name="Assists_FuelLabel" xml:space="preserve">
+    <value>Üzemanyag:</value>
+  </data>
+  <data name="Assists_Header" xml:space="preserve">
+    <value>Vezetési segédek:</value>
+  </data>
+  <data name="Assists_IdealLineLabel" xml:space="preserve">
+    <value>Ideális ív:</value>
+  </data>
+  <data name="Assists_StabilityControlLabel" xml:space="preserve">
+    <value>Stabilitás kontroll:</value>
+  </data>
+  <data name="Assists_TyreWearLabel" xml:space="preserve">
+    <value>Gumikopás:</value>
+  </data>
+  <data name="AssistsPreset_Gamer" xml:space="preserve">
+    <value>Megszállott játékos</value>
+  </data>
+  <data name="AssistsPreset_Intermediate" xml:space="preserve">
+    <value>Középhaladó</value>
+  </data>
+  <data name="AssistsPreset_Pro" xml:space="preserve">
+    <value>Profi</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>A gyerekek új szülőmappába lesznek áthelyezve!</value>
+  </data>
+  <data name="Common_AreYouSure" xml:space="preserve">
+    <value>Biztos vagy benne?</value>
+  </data>
+  <data name="Common_Cancelled" xml:space="preserve">
+    <value>Megszakítva</value>
+  </data>
+  <data name="Common_Change" xml:space="preserve">
+    <value>Változtat</value>
+  </data>
+  <data name="Common_Clear" xml:space="preserve">
+    <value>Tisztítás</value>
+  </data>
+  <data name="Common_Compressing" xml:space="preserve">
+    <value>Tömörítés…</value>
+  </data>
+  <data name="Common_Downloading" xml:space="preserve">
+    <value>Letöltés…</value>
+  </data>
+  <data name="Common_Error" xml:space="preserve">
+    <value>Hiba</value>
+  </data>
+  <data name="Common_ExposureLabel" xml:space="preserve">
+    <value>Expozíció:</value>
+  </data>
+  <data name="Common_FilterLabel" xml:space="preserve">
+    <value>Szűrő:</value>
+  </data>
+  <data name="Common_Finished" xml:space="preserve">
+    <value>Befejezve</value>
+  </data>
+  <data name="Common_FolderExists" xml:space="preserve">
+    <value>A(z) “{0}” mappa már létezik. Felülírja a benne lévő fájlokat?</value>
+  </data>
+  <data name="Common_FpsPostfix" xml:space="preserve">
+    <value>FPS</value>
+  </data>
+  <data name="Common_Generic" xml:space="preserve">
+    <value>Általános</value>
+  </data>
+  <data name="Common_GoodNews" xml:space="preserve">
+    <value>Jó hírek!</value>
+  </data>
+  <data name="Common_Installing" xml:space="preserve">
+    <value>Installálás…</value>
+  </data>
+  <data name="Common_LapsPostfix" xml:space="preserve">
+    <value> kör</value>
+  </data>
+  <data name="Common_Loading" xml:space="preserve">
+    <value>Betöltés…</value>
+  </data>
+  <data name="Common_MinutePostfix" xml:space="preserve">
+    <value> perc</value>
+  </data>
+  <data name="Common_MinutesPostfix" xml:space="preserve">
+    <value> min</value>
+  </data>
+  <data name="Common_OpponentsFormat" xml:space="preserve">
+    <value>{0} ellenfél</value>
+  </data>
+  <data name="Common_OpponentsPostfix" xml:space="preserve">
+    <value> ellenfél</value>
+  </data>
+  <data name="Common_Options" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Common_PointsPostfix" xml:space="preserve">
+    <value> pont</value>
+  </data>
+  <data name="Common_Preparing" xml:space="preserve">
+    <value>Előkészítés…</value>
+  </data>
+  <data name="Common_Presets" xml:space="preserve">
+    <value>Beállítássablonok</value>
+  </data>
+  <data name="Common_RecommendedPercentageFormat" xml:space="preserve">
+    <value>Ajánlott érték: {0}%</value>
+  </data>
+  <data name="Common_Reset" xml:space="preserve">
+    <value>Visszaállítás</value>
+  </data>
+  <data name="Common_ResetToRecommendedValue" xml:space="preserve">
+    <value>Visszaállítás az ajánlott értékre</value>
+  </data>
+  <data name="Common_Settings" xml:space="preserve">
+    <value>Beállítások</value>
+  </data>
+  <data name="Common_Unpack" xml:space="preserve">
+    <value>A(z) {0} kicsomagolása</value>
+  </data>
+  <data name="Common_Unsaved" xml:space="preserve">
+    <value>Nincs elmentve</value>
+  </data>
+  <data name="Common_Uploading" xml:space="preserve">
+    <value>Feltöltés…</value>
+  </data>
+  <data name="Common_Waiting" xml:space="preserve">
+    <value>Várakozás…</value>
+  </data>
+  <data name="Controls_ClearKeyboardBinding" xml:space="preserve">
+    <value>Billentyűkiosztás törlése</value>
+  </data>
+  <data name="Controls_ClearWheelBinding" xml:space="preserve">
+    <value>Kormánykiosztás törlése</value>
+  </data>
+  <data name="Controls_ClickToAssign" xml:space="preserve">
+    <value>Kattints a megadáshoz</value>
+  </data>
+  <data name="Controls_DamperGain" xml:space="preserve">
+    <value>Kormánycsillapítás erősítése</value>
+  </data>
+  <data name="Controls_DamperGain_Tooltip" xml:space="preserve">
+    <value>Logitech G920-hoz állítsd 0-ra, minden máshoz hagyd 1-en.</value>
+  </data>
+  <data name="Controls_EffectsHeader" xml:space="preserve">
+    <value>Hatások:</value>
+  </data>
+  <data name="Controls_EnhancedUndersteer" xml:space="preserve">
+    <value>Alulkormányzottsági hatás fokozása</value>
+  </data>
+  <data name="Controls_ExperimentalHeader" xml:space="preserve">
+    <value>Kísérleti beállítások:</value>
+  </data>
+  <data name="Controls_FilterAxis" xml:space="preserve">
+    <value>Kiegyenlítés (filter)</value>
+  </data>
+  <data name="Controls_Gain" xml:space="preserve">
+    <value>Erősítés</value>
+  </data>
+  <data name="Controls_GyroscopicEffect" xml:space="preserve">
+    <value>Giroszkópikus hatás</value>
+  </data>
+  <data name="Controls_InvertAxis" xml:space="preserve">
+    <value>Tengely megfordítása</value>
+  </data>
+  <data name="Controls_KerbEffect" xml:space="preserve">
+    <value>Rázókő</value>
+  </data>
+  <data name="Controls_KeyboardButton" xml:space="preserve">
+    <value>Billentyű</value>
+  </data>
+  <data name="Controls_MinimumForce" xml:space="preserve">
+    <value>Minimális erő</value>
+  </data>
+  <data name="Controls_MinumumDamperLevel" xml:space="preserve">
+    <value>Minimális csillapítási szint</value>
+  </data>
+  <data name="Controls_MiscellaneousHeader" xml:space="preserve">
+    <value>Egyebek:</value>
+  </data>
+  <data name="Controls_Preview_Device" xml:space="preserve">
+    <value>Eszköz: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_Devices" xml:space="preserve">
+    <value>Eszközök: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_Preview_InputMethod" xml:space="preserve">
+    <value>Beviteli mód: [b]{0}[/b]</value>
+  </data>
+  <data name="Controls_RangeFromAxis" xml:space="preserve">
+    <value>Kezdő érték</value>
+  </data>
+  <data name="Controls_RangeToAxis" xml:space="preserve">
+    <value>Végső érték</value>
+  </data>
+  <data name="Controls_RoadEffect" xml:space="preserve">
+    <value>Útfelület</value>
+  </data>
+  <data name="Controls_SkipFfbSteps" xml:space="preserve">
+    <value>FFB lépések kihagyása</value>
+  </data>
+  <data name="Controls_SlipEffect" xml:space="preserve">
+    <value>Megcsúszás</value>
+  </data>
+  <data name="Controls_SoftLock" xml:space="preserve">
+    <value>Kormányzási szög egyeztetése (Soft lock)</value>
+  </data>
+  <data name="Controls_SpeedSensitivity" xml:space="preserve">
+    <value>Sebességérzékenység</value>
+  </data>
+  <data name="Controls_SteeringWheelButton" xml:space="preserve">
+    <value>Kormány gombja</value>
+  </data>
+  <data name="Controls_UnlockExperimental" xml:space="preserve">
+    <value>Kísérleti beállítások engedélyezése (légy óvatos!)</value>
+  </data>
+  <data name="Controls_WaitingForInput" xml:space="preserve">
+    <value>Nyomd meg a kívánt gombot</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Brightness" xml:space="preserve">
+    <value>Fényerő</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
+    <value>Nem frissíthetőek a környezeti árnyékok</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Diffusion" xml:space="preserve">
+    <value>Diffúzió</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_FadeToEdges" xml:space="preserve">
+    <value>Széleknél elhalványul</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
+    <value>Kerekek elrejtése</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Iterations" xml:space="preserve">
+    <value>Iterációk</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Reloading" xml:space="preserve">
+    <value>Textúrák újratöltése…</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadows_Updating" xml:space="preserve">
+    <value>Árnyékolás frissítése…</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
+    <value>Az árnyék mérete mentve lesz a “data/ambient_shadows.ini”-be, de az adat titkosított, így semmi hatása nem lesz. Folytatod?</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Fit" xml:space="preserve">
+    <value>Illeszt</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Highlight" xml:space="preserve">
+    <value>Fénypont mérete</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Reset" xml:space="preserve">
+    <value>Visszaállítas</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSize_Save" xml:space="preserve">
+    <value>Mentés</value>
+  </data>
+  <data name="CustomShowroom_AmbientShadowsSizeHeader" xml:space="preserve">
+    <value>Méret</value>
+  </data>
+  <data name="CustomShowroom_CannotExport" xml:space="preserve">
+    <value>A textúra nem exportálható</value>
+  </data>
+  <data name="CustomShowroom_CannotStart" xml:space="preserve">
+    <value>Az egyéni bemutatóterem nem indítható</value>
+  </data>
+  <data name="CustomShowroom_Control_Lights" xml:space="preserve">
+    <value>Világítás</value>
+  </data>
+  <data name="CustomShowroom_Control_Wireframe" xml:space="preserve">
+    <value>Drótváz</value>
+  </data>
+  <data name="CustomShowroom_ControlHeader" xml:space="preserve">
+    <value>Irányítás</value>
+  </data>
+  <data name="CustomShowroom_EditingMode" xml:space="preserve">
+    <value>Festésszerkesztő mód</value>
+  </data>
+  <data name="CustomShowroom_Export" xml:space="preserve">
+    <value>Exportálás</value>
+  </data>
+  <data name="CustomShowroom_Loading" xml:space="preserve">
+    <value>Modell betöltése…</value>
+  </data>
+  <data name="CustomShowroom_MaterialInformation" xml:space="preserve">
+    <value>Anyag neve: [b]{0}[/b]
+Shader: [b]{1}[/b]
+
+Blend mode: [b]{2}[/b]
+Alpha test: [b]{3}[/b]
+Depth mode: [b]{4}[/b]</value>
+  </data>
+  <data name="CustomShowroom_Selected_MaterialLabel" xml:space="preserve">
+    <value>Anyag:</value>
+  </data>
+  <data name="CustomShowroom_Selected_NameLabel" xml:space="preserve">
+    <value>Név:</value>
+  </data>
+  <data name="CustomShowroom_Selected_TexturesLabel" xml:space="preserve">
+    <value>Textúrák:</value>
+  </data>
+  <data name="CustomShowroom_SelectedHeader" xml:space="preserve">
+    <value>Kiválasztott</value>
+  </data>
+  <data name="CustomShowroom_SkinHeader" xml:space="preserve">
+    <value>Festés</value>
+  </data>
+  <data name="CustomShowroom_Stats_ObjectsLabel" xml:space="preserve">
+    <value>Objektumok:</value>
+  </data>
+  <data name="CustomShowroom_Stats_TrianglesLabel" xml:space="preserve">
+    <value>Háromszögek:</value>
+  </data>
+  <data name="CustomShowroom_StatsHeader" xml:space="preserve">
+    <value>Adatok</value>
+  </data>
+  <data name="CustomShowroom_TextureDimensionsLabel" xml:space="preserve">
+    <value>Méretek:</value>
+  </data>
+  <data name="CustomShowroom_TextureFormatLabel" xml:space="preserve">
+    <value>Formátum:</value>
+  </data>
+  <data name="CustomShowroom_TextureIsMissing" xml:space="preserve">
+    <value>Hiányzó textúra!</value>
+  </data>
+  <data name="CustomShowroom_TextureSizeLabel" xml:space="preserve">
+    <value>Méret:</value>
+  </data>
+  <data name="CustomShowroom_TextureTypeLabel" xml:space="preserve">
+    <value>Típus:</value>
+  </data>
+  <data name="CustomShowroom_Tools_Title" xml:space="preserve">
+    <value>Eszközök</value>
   </data>
 </root>

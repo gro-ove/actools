@@ -331,8 +331,8 @@
     <value>HUD poškození</value>
   </data>
   <data name="QuickSwitches_DamageUi_Tooltip" xml:space="preserve">
-    <value>Zobrazit ukazatel při poškození</value>
-  </data>
+    <value>Zobrazovat ukazatel při poškození</value>
+  <alternative>Zobrazit ukazatel při poškození</alternative></data>
   <data name="QuickSwitches_DevApps" xml:space="preserve">
     <value>Pro vývojáře</value>
   </data>
@@ -370,20 +370,20 @@
     <value>Paže</value>
   </data>
   <data name="QuickSwitches_HideArms_Tooltip" xml:space="preserve">
-    <value>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</value>
-  <alternative>Skrýt virtuální paže vašeho řidiče</alternative></data>
+    <value>Skrývat virtuální paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt virtuální paže vašeho řidiče</alternative><alternative>Skrýt virtuální paže při pohledu "kokpit" (kamera 1)</alternative></data>
   <data name="QuickSwitches_HideDriver" xml:space="preserve">
-    <value>Skrytí řidičů</value>
-  <alternative>Řidič</alternative><alternative>Řidiči</alternative></data>
+    <value>Skrývat řidiče</value>
+  <alternative>Řidič</alternative><alternative>Řidiči</alternative><alternative>Skrytí řidičů</alternative></data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
-    <value>Skrýt virtuální řidiče ve všech pohledech</value>
-  <alternative>Skrýt vašeho řidiče</alternative></data>
+    <value>Skrývat virtuální řidiče ve všech pohledech</value>
+  <alternative>Skrýt vašeho řidiče</alternative><alternative>Skrýt virtuální řidiče ve všech pohledech</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>Volant</value>
   </data>
   <data name="QuickSwitches_HideWheel_Tooltip" xml:space="preserve">
-    <value>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
-  <alternative>Skrýt volant vašeho auta</alternative></data>
+    <value>Skrývat virtuální volant i paže při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Skrýt volant vašeho auta</alternative><alternative>Skrýt virtuální volant i paže při pohledu "kokpit" (kamera 1)</alternative></data>
   <data name="QuickSwitches_Leaderboard" xml:space="preserve">
     <value>Výsledky</value>
   </data>
@@ -400,20 +400,20 @@
     <value>Zámek volantu</value>
   <alternative>Pohyb volantu</alternative></data>
   <data name="QuickSwitches_LockWheel_Tooltip" xml:space="preserve">
-    <value>Nepohybovat virtuálním volantem</value>
-  </data>
+    <value>Neotáčet virtuálním volantem při pohledu "kokpit" (kamera 1)</value>
+  <alternative>Nepohybovat virtuálním volantem</alternative></data>
   <data name="QuickSwitches_Mirror" xml:space="preserve">
     <value>Zrcátko</value>
   </data>
   <data name="QuickSwitches_Mirror_Tooltip" xml:space="preserve">
-    <value>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</value>
-  <alternative>Zobrazit virtuální zpětné zrcátko</alternative></data>
+    <value>Při příhodných pohledech zobrazovat plně virtuální vnitřní zpětné zrcátko (F11)</value>
+  <alternative>Zobrazit virtuální zpětné zrcátko</alternative><alternative>Zobrazit vnitřní zpětné zrcátko ve virtuální podobě</alternative></data>
   <data name="QuickSwitches_Names" xml:space="preserve">
-    <value>Jména</value>
-  </data>
+    <value>Nacionále</value>
+  <alternative>Jména</alternative></data>
   <data name="QuickSwitches_Names_Tooltip" xml:space="preserve">
-    <value>Zobrazovat nad auty jména soupeřů</value>
-  <alternative>Zobrazovat jména soupeřů</alternative></data>
+    <value>Zobrazovat nad auty nacionále soupeřů</value>
+  <alternative>Zobrazovat jména soupeřů</alternative><alternative>Zobrazovat nad auty jména soupeřů</alternative></data>
   <data name="QuickSwitches_Nearest" xml:space="preserve">
     <value>Radar</value>
   </data>
@@ -679,11 +679,11 @@ Materiál: [b]{10}[/b]</value>
     <value>Odkaz byl zkopírován do schránky</value>
   </data>
   <data name="Replay_CrMessage" xml:space="preserve">
-    <value>Opakovaný záznam bude přepsán po dalším závodě. Přejmenujte ho, abyste ho zachovali.</value>
-  </data>
+    <value>Opakovaný záznam bude přepsán po další herní relaci. Přejmenujte ho, abyste ho zachovali.</value>
+  <alternative>Opakovaný záznam bude přepsán po dalším závodě. Přejmenujte ho, abyste ho zachovali.</alternative></data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Otevřít ve vlastním autosalonu</value>
-  </data>
+    <value>Otevřít ve Vlastním autosalonu</value>
+  <alternative>Otevřít ve vlastním autosalonu</alternative></data>
   <data name="CustomShowroom_ControlHeader" xml:space="preserve">
     <value>Ovládání</value>
   </data>
@@ -781,11 +781,11 @@ Materiál: [b]{10}[/b]</value>
     <value>Sdílím...</value>
   </data>
   <data name="CustomShowroom_AmbientShadows_HideWheels" xml:space="preserve">
-    <value>Skrýt kola</value>
-  </data>
+    <value>Skrývat kola</value>
+  <alternative>Skrýt kola</alternative></data>
   <data name="Showroom_HideWatermark" xml:space="preserve">
-    <value>Skrýt vodoznak</value>
-  </data>
+    <value>Skrývat vodoznak</value>
+  <alternative>Skrýt vodoznak</alternative></data>
   <data name="Common_FolderExists" xml:space="preserve">
     <value>Složka “{0}” již existuje. Přepsat soubory?</value>
   </data>

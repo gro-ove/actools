@@ -1700,4 +1700,34 @@
   <data name="Controls_Steer" xml:space="preserve">
     <value>转向</value>
   </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>最佳圈数：</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>最佳圈速：</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>镇流器</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>限流器</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>根据P / W比率安排A​​I强度</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>随机化：</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>显示相对范围</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>以驾驶员的名字显示AI的侵略性</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>对手的侵略性</value>
+  </data>
 </root>

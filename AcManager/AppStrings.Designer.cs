@@ -6986,6 +6986,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Found {0} {update} for mods:.
+        /// </summary>
+        public static string MainWindow_FoundNModUpdates {
+            get {
+                return ResourceManager.GetString("MainWindow_FoundNModUpdates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Disable auto-updates.
         /// </summary>
         public static string MainWindow_UpdateMenu_DisableAutoUpdates {

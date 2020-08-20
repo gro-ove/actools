@@ -1113,4 +1113,7 @@ If you need some other values, please, contact us and we’ll add them.
   <data name="Toolbar_UploadAndShare_ReplayTooltip" xml:space="preserve">
     <value>Share replay using Google Drive (Ctrl+Page Up)</value>
   </data>
+  <data name="RaceGrid_OverTheLimit" xml:space="preserve">
+    <value>There is no pit stop for this car</value>
+  </data>
 </root>

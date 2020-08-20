@@ -277,8 +277,8 @@
     <value>Skrýt</value>
   </data>
   <data name="Toolbar_Unhide" xml:space="preserve">
-    <value>Odkrýt</value>
-  </data>
+    <value>Odkrývat</value>
+  <alternative>Odkrýt</alternative></data>
   <data name="Toolbar_OnlineManageLists" xml:space="preserve">
     <value>Spravovat seznamy...</value>
   </data>
@@ -511,8 +511,8 @@
     <value>Zdroj</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
-    <value>Zobrazit heslo</value>
-  </data>
+    <value>Zobrazovat heslo</value>
+  <alternative>Zobrazit heslo</alternative></data>
   <data name="KeyBrowserBack" xml:space="preserve">
     <value>Zpět v prohlížeči</value>
   </data>

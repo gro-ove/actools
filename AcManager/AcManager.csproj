@@ -458,6 +458,9 @@
     <Compile Include="Pages\Dialogs\TyresMachineGraphViewer.cs" />
     <Compile Include="Pages\Drive\Online.QuickFilters.cs" />
     <Compile Include="Pages\Drive\OnlineServer.AutoJoin.cs" />
+    <Compile Include="Pages\Drive\RaceU.xaml.cs">
+      <DependentUpon>RaceU.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Drive\RealConditionsHelper.cs" />
     <Compile Include="Pages\Drive\Srs2.xaml.cs">
       <DependentUpon>Srs2.xaml</DependentUpon>
@@ -1156,6 +1159,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Pages\Drive\RaceU.xaml" />
     <Page Include="Pages\Drive\Srs2.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

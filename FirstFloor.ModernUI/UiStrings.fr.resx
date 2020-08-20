@@ -357,8 +357,8 @@
     <value>Fichiers DDS &amp; TIFF|*.dds;*.tif;*.tiff|Fichiers image|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|Tous les fichiers (*.*)|*.*</value>
   <alternative>DDS &amp; TIFF Files|*.dds;*.tif;*.tiff|Image Files|*.dds;*.tif;*.tiff;*.jpg;*.jpeg;*.png|All files (*.*)|*.*</alternative></data>
   <data name="UIThreadRequired" xml:space="preserve">
-    <value>L'Operation requiere le Thread UI</value>
-  </data>
+    <value>L'Opération requiere le Thread UI</value>
+  <alternative>L'Operation requiere le Thread UI</alternative></data>
   <data name="UnexpectedToken" xml:space="preserve">
     <value>Token inattendu</value>
   <alternative>Unexpected token</alternative></data>

@@ -139,11 +139,11 @@
     <value>Uploaded {0} of {1}</value>
   </data>
   <data name="RaceGrid_SavePresetHeader" xml:space="preserve">
-    <value>Save Race Grid As Preset</value>
-  </data>
+    <value>Mezőny elmentése előbeállításként</value>
+  <alternative>Save Race Grid As Preset</alternative></data>
   <data name="RaceGrid_ShareHeader" xml:space="preserve">
-    <value>Share Race Grid</value>
-  </data>
+    <value>Mezőny megosztása</value>
+  <alternative>Share Race Grid</alternative></data>
   <data name="ShowPassword" xml:space="preserve">
     <value>Show Password</value>
   </data>
@@ -182,5 +182,38 @@
   </data>
   <data name="Toolbar_Invite_IncludePasswordHeader" xml:space="preserve">
     <value>Include Password</value>
+  </data>
+  <data name="Back" xml:space="preserve">
+    <value>Vissza</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Mégse</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Bezárás</value>
+  </data>
+  <data name="Common_Add" xml:space="preserve">
+    <value>Hozzáadás</value>
+  </data>
+  <data name="Common_Ascending" xml:space="preserve">
+    <value>Növekvő</value>
+  </data>
+  <data name="Common_Descending" xml:space="preserve">
+    <value>Csökkenő</value>
+  </data>
+  <data name="Common_Oops" xml:space="preserve">
+    <value>Hoppá!</value>
+  </data>
+  <data name="Common_PleaseWait" xml:space="preserve">
+    <value>Kérem várjon…</value>
+  </data>
+  <data name="MarkLimited" xml:space="preserve">
+    <value>LIMITÁLT</value>
+  </data>
+  <data name="MarkNew" xml:space="preserve">
+    <value>ÚJ</value>
+  </data>
+  <data name="RaceGrid_CandidatesNotFound" xml:space="preserve">
+    <value>Nem találhatók megfelelő nevezők</value>
   </data>
 </root>

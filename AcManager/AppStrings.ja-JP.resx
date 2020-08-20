@@ -1498,8 +1498,8 @@
     <value>Kunosキャリア</value>
   </data>
   <data name="KunosCareer_TrackState" xml:space="preserve">
-    <value>トラック状態:</value>
-  </data>
+    <value>路面の状態:</value>
+  <alternative>トラック状態:</alternative></data>
   <data name="KunosCareer_WeatherLabel" xml:space="preserve">
     <value>天気:</value>
   </data>

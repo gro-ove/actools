@@ -403,7 +403,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                     return;
                 }
 
-                SharingUiHelper.ShowShared(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name), link);
+                SharingUiHelper.ShowShared(string.Format(AppStrings.WebSource_SharedDescriptionTitle, Name), link, true);
             }));
 
             private DelegateCommand _shareMarkdownCommand;
@@ -1505,7 +1505,7 @@ window.$KEY = outline.stop.bind(outline);
                     }
                 }
 
-                SharingUiHelper.ShowShared($"Link to install from {Source.Name}", link);
+                SharingUiHelper.ShowShared($"Link to install from {Source.Name}", link, true);
             }, () => DownloadPageUrl != null));
 
             public ViewModel([NotNull] WebSource source) {

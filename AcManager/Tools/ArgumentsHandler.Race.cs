@@ -248,5 +248,10 @@ namespace AcManager.Tools {
             await JoinInvitation(ip, httpPort.Value, password);
             return ArgumentHandleResult.Successful;
         }
+
+        private static async Task<ArgumentHandleResult> ProcessRaceRaceU(NameValueCollection p) {
+            RaceU.NavigateTo();
+            return ArgumentHandleResult.SuccessfulShow;
+        }
     }
 }

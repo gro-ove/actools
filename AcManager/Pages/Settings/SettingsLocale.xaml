@@ -36,13 +36,12 @@
         <Label Content="{x:Static g:AppStrings.Settings_Locale_Use12HourClock}" />
       </CheckBox>
 
-      <TextBlock Style="{StaticResource SettingsPanel.Heading2}">
-        <TextBlock.Text>Language:</TextBlock.Text>
-      </TextBlock>
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}"
+          Text="{Binding Source={x:Static g:AppStrings.Main_ContentManager}, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" />
 
       <DockPanel>
         <Label Content="{x:Static g:AppStrings.Settings_Locale_LanguageLabel}" />
-        <ComboBox ItemsSource="{Binding Locales}" SelectedItem="{Binding CurrentLocale}">
+        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Locales}" SelectedItem="{Binding CurrentLocale}">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <StackPanel ToolTip="{Binding DisplayHint}">
@@ -51,14 +50,15 @@
               </StackPanel>
             </DataTemplate>
           </ComboBox.ItemTemplate>
-        </ComboBox>
+        </mui:BetterComboBox>
       </DockPanel>
 
       <StackPanel Visibility="{Binding CurrentLocale.Id, Converter={StaticResource NullToVisibilityConverter}}">
         <DockPanel>
           <Label>
             <DockPanel Style="{x:Null}">
-              <TextBlock Text="{Binding Source={x:Static g:AppStrings.Settings_Locale_LocaleId}, Converter={StaticResource ColonConverter},
+              <TextBlock
+                  Text="{Binding Source={x:Static g:AppStrings.Settings_Locale_LocaleId}, Converter={StaticResource ColonConverter},
                   ConverterParameter=trim}" />
               <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="https://msdn.microsoft.com/en-us/library/ms533052(v=vs.85).aspx" />
             </DockPanel>
@@ -76,7 +76,8 @@
 
         <DockPanel>
           <Label Content="{x:Static g:AppStrings.Settings_General_CheckForUpdatesLabel}" />
-          <ComboBox ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Locale.UpdatePeriod}" DisplayMemberPath="DisplayName" />
+          <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding Common.Periods}" SelectedItem="{Binding Locale.UpdatePeriod}"
+              DisplayMemberPath="DisplayName" />
         </DockPanel>
 
         <!-- App version -->
@@ -93,6 +94,20 @@
           <Label Content="{x:Static g:AppStrings.Settings_Locale_UpdateBeforeStartUp}" />
         </CheckBox>
       </StackPanel>
+
+      <TextBlock Style="{StaticResource SettingsPanel.Heading2}"
+          Text="{Binding Source={x:Static g:AppStrings.Main_AssettoCorsa}, StringFormat={x:Static mui:ColonConverter.FormatNoSpaceAfterwards}}" />
+
+      <DockPanel DataContext="{Binding Source={x:Static t:AcSettingsHolder.Launcher}}">
+        <Label Content="{x:Static g:AppStrings.Settings_Locale_LanguageLabel}" />
+        <mui:BetterComboBox IsEditable="False" ItemsSource="{Binding LanguageEntries}" SelectedItem="{Binding LanguageEntry}">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding DisplayName}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </mui:BetterComboBox>
+      </DockPanel>
 
       <TextBlock Style="{StaticResource SettingsPanel.Heading2}" Text="{x:Static g:AppStrings.Settings_Locale_CustomTranslationsHeader}" />
       <Button Command="{Binding MoreInformationCommand}" Content="{x:Static g:AppStrings.Settings_Locale_HowToTranslate}" Margin="0 0 0 8" />

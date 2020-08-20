@@ -42,7 +42,7 @@ namespace AcManager.Pages.Selected {
 
             public DelegateCommand ShareCommand => _shareCommand ?? (_shareCommand = new DelegateCommand(() => {
                 var link = $@"{InternalUtils.MainApiDomain}/s/q:thesetupmarket/setup?id={SelectedObject.Id}";
-                SharingUiHelper.ShowShared("The Setup Market link", link);
+                SharingUiHelper.ShowShared("The Setup Market link", link, true);
             }));
         }
 

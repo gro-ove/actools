@@ -954,4 +954,10 @@
   <data name="TableHeader_Locked" xml:space="preserve">
     <value>锁定</value>
   </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>度</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>滚动到选定的（Ctrl + Shift + V）</value>
+  </data>
 </root>

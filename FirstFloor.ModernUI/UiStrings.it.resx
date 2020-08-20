@@ -130,8 +130,8 @@
     <value>Caricato {0}</value>
   <alternative>Uploaded {0}</alternative></data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Caricato {0} di {1}</value>
-  <alternative>Uploaded {0} di {1}</alternative></data>
+    <value>Caricati {0} di {1}</value>
+  <alternative>Uploaded {0} di {1}</alternative><alternative>Caricato {0} di {1}</alternative></data>
   <data name="Back" xml:space="preserve">
     <value>Indietro</value>
   </data>
@@ -557,5 +557,8 @@
   </data>
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{0} su {1}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Naviga</value>
   </data>
 </root>

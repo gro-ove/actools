@@ -31,7 +31,6 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Miscellaneous;
 using AcManager.Tools.Objects;
-using AcManager.Tools.Profile;
 using AcTools.DataFile;
 using AcTools.Processes;
 using AcTools.Utils;

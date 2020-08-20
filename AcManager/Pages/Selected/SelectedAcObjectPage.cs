@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -53,7 +54,7 @@ namespace AcManager.Pages.Selected {
             UpdateBindingsLaterAsync().Forget();
         }
 
-        private void ToggleObject() {
+        private async void ToggleObject() {
             if (this.GetParents().OfType<AcListPage>().FirstOrDefault()?.DataContext is IAcListPageViewModel v) {
                 var collection = v.GetAcWrapperCollectionView();
                 var index = collection.OfType<AcItemWrapper>().FindIndex(x => x.Id == SelectedAcObject.Id);
@@ -61,6 +62,7 @@ namespace AcManager.Pages.Selected {
                         ?? collection.OfType<AcItemWrapper>().ElementAtOrDefault(index - 1);
                 SelectedAcObject.ToggleCommand.Execute(null);
                 if (next != null) {
+                    await Task.Delay(TimeSpan.FromMilliseconds(100));
                     collection.MoveCurrentTo(next);
                 }
             } else {

@@ -121,38 +121,38 @@
     <value>無法執行遊戲</value>
   </data>
   <data name="OfficialStarter_OriginalLauncherIsMissing" xml:space="preserve">
-    <value>官方啟動器遺失,請在設置中更換啟動方式</value>
-  </data>
+    <value>官方啟動器遺失,請在設定中更換啟動方式</value>
+  <alternative>官方啟動器遺失,請在設置中更換啟動方式</alternative></data>
   <data name="OfficialStarter_RestoreOriginalLauncher" xml:space="preserve">
-    <value>請恢復使用官方啟動器再試一次(或者在設置中更換其他啟動方式)</value>
-  </data>
+    <value>請修復官方啟動器並再試一次（或者在設定中更換其他啟動方式）</value>
+  <alternative>請恢復使用官方啟動器再試一次(或者在設置中更換其他啟動方式)</alternative></data>
   <data name="OfficialStarter_RestoreLauncherManually" xml:space="preserve">
-    <value>無法恢復官方原版啟動器,請用Steam驗證本機檔案，手動修復官方啟動器,並且把“AssettoCorsa.exe”改名成“AssettoCorsa_backup_sp.exe”</value>
-  </data>
+    <value>無法修復官方原版啟動器，請用Steam驗證本機檔案以手動修復官方啟動器，並且把「AssettoCorsa.exe」改名成「AssettoCorsa_backup_sp.exe」。</value>
+  <alternative>無法恢復官方原版啟動器,請用Steam驗證本機檔案，手動修復官方啟動器,並且把“AssettoCorsa.exe”改名成“AssettoCorsa_backup_sp.exe”</alternative></data>
   <data name="OfficialStarter_CannotRun" xml:space="preserve">
     <value>無法執行</value>
   </data>
   <data name="OfficialStarter_GameIsTooOld" xml:space="preserve">
-    <value>無法使用官方啟動器:遊戲太老了.請問是否要切換到Tricky Starter?隨時可以在設置/駕駛部分改變這個設定</value>
-  </data>
+    <value>無法使用官方啟動器：您的AC遊戲版本過舊。請問是否要切換到Tricky Starter？您隨時可以在「設定/駕駛」中改變這個設定。</value>
+  <alternative>無法使用官方啟動器:遊戲太老了.請問是否要切換到Tricky Starter?隨時可以在設置/駕駛部分改變這個設定</alternative></data>
   <data name="NotSupported" xml:space="preserve">
-    <value>不支持</value>
-  </data>
+    <value>不支援</value>
+  <alternative>不支持</alternative></data>
   <data name="OfficialStarter_UpdateAC" xml:space="preserve">
-    <value>請升級AC然後更改啟動器為其他選項</value>
-  </data>
+    <value>請升級AC然後更改啟動器為其他選項。</value>
+  <alternative>請升級AC然後更改啟動器為其他選項</alternative></data>
   <data name="TryAgainDot" xml:space="preserve">
-    <value>再試一次</value>
-  </data>
+    <value>請再試一次。</value>
+  <alternative>再試一次</alternative></data>
   <data name="OfficialStarter_DownloadAndRestore" xml:space="preserve">
-    <value>無法恢復原版官方啟動器. 請[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]手動恢復[/url].</value>
-  </data>
+    <value>無法修復原版官方啟動器。請[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view？usp=drivesdk"]手動修復[/url]。</value>
+  <alternative>無法恢復原版官方啟動器. 請[url="https://drive.google.com/file/d/0B6GfX1zRa8pOcUxlTlU2WWZZTWM/view?usp=drivesdk"]手動恢復[/url].</alternative></data>
   <data name="ReplayHelper_CannotSaveReplay" xml:space="preserve">
-    <value>無法保存錄影</value>
-  </data>
+    <value>無法儲存重播</value>
+  <alternative>無法保存錄影</alternative></data>
   <data name="ReplayHelper_CannotUnsaveReplay" xml:space="preserve">
-    <value>無法取消錄影保存</value>
-  </data>
+    <value>無法取消儲存重播</value>
+  <alternative>無法取消錄影保存</alternative></data>
   <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
     <value>左前</value>
   </data>
@@ -169,17 +169,17 @@
     <value>無效的位置</value>
   </data>
   <data name="FontObject_Disabling_SomeCarsNeedThisFont" xml:space="preserve">
-    <value>有些車輛需要這個字體,你確定要禁用它?</value>
-  </data>
+    <value>有些車輛需要這個字型，您確定要停用它？</value>
+  <alternative>有些車輛需要這個字體,你確定要禁用它?</alternative></data>
   <data name="FontObject_DisableFont" xml:space="preserve">
-    <value>禁用字體</value>
-  </data>
+    <value>停用字型</value>
+  <alternative>禁用字體</alternative></data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>確定在目標文件夾裡沒有在運行的插件</value>
-  </data>
+    <value>確定在目標資料夾裡沒有在運行的app</value>
+  <alternative>確定在目標文件夾裡沒有在運行的插件</alternative></data>
   <data name="AcObject_CannotToggleExt" xml:space="preserve">
-    <value>無法切換:{0}</value>
-  </data>
+    <value>無法切換：{0}</value>
+  <alternative>無法切換:{0}</alternative></data>
   <data name="AcObject_CannotToggle" xml:space="preserve">
     <value>無法切換</value>
   </data>
@@ -187,11 +187,11 @@
     <value>無法刪除</value>
   </data>
   <data name="FontObject_DeleteFont" xml:space="preserve">
-    <value>刪除字體</value>
-  </data>
+    <value>刪除字型</value>
+  <alternative>刪除字體</alternative></data>
   <data name="FontObject_Deleting_SomeCarsNeedThisFont" xml:space="preserve">
-    <value>有些車輛需要這個字體,你確定要刪除它?</value>
-  </data>
+    <value>有些車輛需要這個字型，您確定要刪除它？</value>
+  <alternative>有些車輛需要這個字體,你確定要刪除它?</alternative></data>
   <data name="KunosCareer_Championship" xml:space="preserve">
     <value>錦標賽</value>
   </data>
@@ -199,17 +199,17 @@
     <value>獨立賽事</value>
   </data>
   <data name="PpFilterObject_CannotSave" xml:space="preserve">
-    <value>無法保持畫面後處理濾鏡</value>
-  </data>
+    <value>無法儲存畫面後期處理濾鏡</value>
+  <alternative>無法保持畫面後處理濾鏡</alternative></data>
   <data name="PpFilterObject_MakeSureCouldBeOverwritten" xml:space="preserve">
-    <value>確定文件是可寫的</value>
-  </data>
+    <value>請確認檔案可覆寫。</value>
+  <alternative>確定文件是可寫的</alternative></data>
   <data name="ReplayReader_UnsupportedFormat" xml:space="preserve">
-    <value>不支持的格式</value>
-  </data>
+    <value>不支援的格式</value>
+  <alternative>不支持的格式</alternative></data>
   <data name="ReplayObject_PreviousSession" xml:space="preserve">
-    <value>上一節</value>
-  </data>
+    <value>上一賽程</value>
+  <alternative>上一節</alternative></data>
   <data name="JumpStart_CarLocked" xml:space="preserve">
     <value>鎖定車輛</value>
   </data>
@@ -223,113 +223,113 @@
     <value>無法切換音效</value>
   </data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
-    <value>確定沒有正在運行的插件需要使用展廳的聲音文件</value>
-  </data>
+    <value>請確認有無正在運行的app需要使用展示廳的聲音檔案。</value>
+  <alternative>確定沒有正在運行的插件需要使用展廳的聲音文件</alternative></data>
   <data name="TrackBaseObject_Specs_PitsNumber" xml:space="preserve">
-    <value>{0} 號維修區位置</value>
-  </data>
+    <value>{0}號維修區位置</value>
+  <alternative>{0} 號維修區位置</alternative></data>
   <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
-    <value>無法連接到遠程服務器</value>
-  </data>
+    <value>無法連接到遠端伺服器</value>
+  <alternative>無法連接到遠程服務器</alternative></data>
   <data name="LogHelper_DriverIsMissing" xml:space="preserve">
-    <value>車手模型可能丟失</value>
-  </data>
+    <value>車手模型可能遺失</value>
+  <alternative>車手模型可能丟失</alternative></data>
   <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
     <value>密碼無效</value>
   </data>
   <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
-    <value>缺少懸掛系統對象 (SUSP_LF, SUSP_LR, …)</value>
-  </data>
+    <value>遺失懸吊系統對象 （SUSP_LF, SUSP_LR, …）</value>
+  <alternative>缺少懸掛系統對象 (SUSP_LF, SUSP_LR, …)</alternative></data>
   <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
-    <value>缺少輪胎對象 (WHEEL_LF, WHEEL_LR, …)</value>
-  </data>
+    <value>遺失輪胎對象 （WHEEL_LF, WHEEL_LR, …）</value>
+  <alternative>缺少輪胎對象 (WHEEL_LF, WHEEL_LR, …)</alternative></data>
   <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
-    <value>這條賽道不支持時間挑戰模式</value>
-  </data>
+    <value>這條賽道不支援時間挑戰模式</value>
+  <alternative>這條賽道不支持時間挑戰模式</alternative></data>
   <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
-    <value>找不到需要的畫面後處理濾鏡 (default.ini)</value>
-  </data>
+    <value>找不到需要的畫面後期處理濾鏡 （default.ini）</value>
+  <alternative>找不到需要的畫面後處理濾鏡 (default.ini)</alternative></data>
   <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
-    <value>找不到後處理濾鏡 "{0}"</value>
-  </data>
+    <value>找不到後期處理濾鏡 「{0}」</value>
+  <alternative>找不到後處理濾鏡 "{0}"</alternative></data>
   <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
-    <value>找不到Shader "{0}" (可能因為AC升級被去除),模型需要修正</value>
-  </data>
+    <value>找不到著色器「{0}」（可能因為AC升級而被去除），模型需要修正</value>
+  <alternative>找不到Shader "{0}" (可能因為AC升級被去除),模型需要修正</alternative></data>
   <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
-    <value>雲層(內容/貼圖/雲)可能丟失</value>
-  </data>
+    <value>雲層（內容/貼圖/雲）可能遺失</value>
+  <alternative>雲層(內容/貼圖/雲)可能丟失</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
-    <value>未壓縮版本不支持自動更新</value>
-  </data>
+    <value>未壓縮版本不支援自動更新。</value>
+  <alternative>未壓縮版本不支持自動更新</alternative></data>
   <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
     <value>無法更新Content Manager</value>
   </data>
   <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
-    <value>訪問被拒絶</value>
-  </data>
+    <value>沒有權限</value>
+  <alternative>訪問被拒絶</alternative></data>
   <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
-    <value>由於系統權限問題無法升級app,請手動升級</value>
-  </data>
+    <value>由於系統權限問題無法升級app，請手動升級</value>
+  <alternative>由於系統權限問題無法升級app,請手動升級</alternative></data>
   <data name="AppUpdater_CannotLoad" xml:space="preserve">
-    <value>無法加載新版本</value>
-  </data>
+    <value>無法載入新版本</value>
+  <alternative>無法加載新版本</alternative></data>
   <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
-    <value>請確定網絡連接可用以及Content Manager對文件夾有寫入權限</value>
-  </data>
+    <value>請確定網路連線可用以及Content Manager對資料夾有寫入權限。</value>
+  <alternative>請確定網絡連接可用以及Content Manager對文件夾有寫入權限</alternative></data>
   <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
     <value>由於權限問題無法升級app</value>
   </data>
   <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
-    <value>無法加載新版本</value>
-  </data>
+    <value>無法載入新版本。</value>
+  <alternative>無法加載新版本</alternative></data>
   <data name="AppUpdater_UpdateFailed" xml:space="preserve">
     <value>升級失敗</value>
   </data>
   <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
-    <value>無法刪除原始文件"{0}"進行升級,請嘗試手工刪除然後運行"{1}"</value>
-  </data>
+    <value>無法刪除原始檔案「{0}」進行升級，請嘗試手動刪除然後運行「{1}」。</value>
+  <alternative>無法刪除原始文件"{0}"進行升級,請嘗試手工刪除然後運行"{1}"</alternative></data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
-    <value>無法執行升級:{0}.請嘗試手工安裝新版本.</value>
-  </data>
+    <value>無法執行升級：{0}。請嘗試手動安裝新版本。</value>
+  <alternative>無法執行升級:{0}.請嘗試手工安裝新版本.</alternative></data>
   <data name="Shared_CarSetup" xml:space="preserve">
     <value>車輛調校</value>
   </data>
   <data name="Shared_ControlsPreset" xml:space="preserve">
-    <value>控制器預設</value>
-  </data>
+    <value>控制器預設設定</value>
+  <alternative>控制器預設</alternative></data>
   <data name="Shared_ForceFeedbackPreset" xml:space="preserve">
-    <value>力回饋預設</value>
-  </data>
+    <value>力回饋預設設定</value>
+  <alternative>力回饋預設</alternative></data>
   <data name="Shared_PpFilter" xml:space="preserve">
-    <value>後處理濾鏡</value>
-  </data>
+    <value>後期處理濾鏡</value>
+  <alternative>後處理濾鏡</alternative></data>
   <data name="Shared_QuickDrivePreset" xml:space="preserve">
-    <value>快速遊戲預設</value>
-  </data>
+    <value>試駕預設設定</value>
+  <alternative>快速遊戲預設</alternative></data>
   <data name="Shared_RaceGridPreset" xml:space="preserve">
-    <value>發車位預設</value>
-  </data>
+    <value>發車位預設設定</value>
+  <alternative>發車位預設</alternative></data>
   <data name="Shared_AssistsSetupPreset" xml:space="preserve">
-    <value>輔助預設</value>
-  </data>
+    <value>輔助預設設定</value>
+  <alternative>輔助預設</alternative></data>
   <data name="Shared_Replay" xml:space="preserve">
-    <value>錄影</value>
-  </data>
+    <value>重播</value>
+  <alternative>錄影</alternative></data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>天氣</value>
   </data>
   <data name="SharingHelper_CannotGetShared" xml:space="preserve">
-    <value>無法打開待分享文件</value>
-  </data>
+    <value>無法開啟待分享檔案</value>
+  <alternative>無法打開待分享文件</alternative></data>
   <data name="SharingHelper_NotSupported_Commentary" xml:space="preserve">
     <value>請確定Content Manager是最新版本</value>
   </data>
   <data name="SharingHelper_NotSupported" xml:space="preserve">
-    <value>無法打開待分享文件,不支持類型"{0}"</value>
-  </data>
+    <value>無法開啟待分享檔案，不支援類型「{0}」</value>
+  <alternative>無法打開待分享文件,不支持類型"{0}"</alternative></data>
   <data name="AcObject_CannotBeDisabled" xml:space="preserve">
-    <value>無法禁用</value>
-  </data>
+    <value>無法停用</value>
+  <alternative>無法禁用</alternative></data>
   <data name="AcObject_NotValidAnymore" xml:space="preserve">
     <value>不再有效</value>
   </data>
@@ -337,44 +337,44 @@
     <value>ID被占用了</value>
   </data>
   <data name="Online_CannotLoadData" xml:space="preserve">
-    <value>無法加載資料</value>
-  </data>
+    <value>無法載入資料</value>
+  <alternative>無法加載資料</alternative></data>
   <data name="Common_MakeSureInternetWorks" xml:space="preserve">
-    <value>請確定網絡連接可用</value>
-  </data>
+    <value>請確定網路連線可用</value>
+  <alternative>請確定網絡連接可用</alternative></data>
   <data name="Online_CannotParseAddress" xml:space="preserve">
-    <value>無法解析地址</value>
-  </data>
+    <value>無法解析位址</value>
+  <alternative>無法解析地址</alternative></data>
   <data name="Online_GettingInformationDirectly" xml:space="preserve">
-    <value>正在直接獲取信息...</value>
-  </data>
+    <value>正在直接獲取資訊⋯⋯</value>
+  <alternative>正在直接獲取信息...</alternative></data>
   <data name="Online_TryingToFindOutHttpPort" xml:space="preserve">
-    <value>正在試圖使用Ping指令尋找HTTP連接埠…</value>
-  </data>
+    <value>正在試圖使用Ping指令尋找HTTP連接埠⋯⋯</value>
+  <alternative>正在試圖使用Ping指令尋找HTTP連接埠…</alternative></data>
   <data name="Online_GettingInformationDirectly_SecondAttempt" xml:space="preserve">
-    <value>正在直接獲取信息(第二次嘗試)...</value>
-  </data>
+    <value>正在直接獲取訊息（第二次嘗試）⋯⋯</value>
+  <alternative>正在直接獲取信息(第二次嘗試)...</alternative></data>
   <data name="Online_CannotAccessServer" xml:space="preserve">
-    <value>無法加入服務器</value>
-  </data>
+    <value>無法加入伺服器</value>
+  <alternative>無法加入服務器</alternative></data>
   <data name="Common_Scanning" xml:space="preserve">
-    <value>掃瞄中...</value>
-  </data>
+    <value>掃瞄中⋯⋯</value>
+  <alternative>掃瞄中...</alternative></data>
   <data name="Online_ScanningNothingFound" xml:space="preserve">
-    <value>找不到服務器</value>
-  </data>
+    <value>找不到伺服器</value>
+  <alternative>找不到服務器</alternative></data>
   <data name="Online_ScanningNothingFound_Commentary" xml:space="preserve">
-    <value>確定服務器的地址正確而且可以連接到</value>
-  </data>
+    <value>確定伺服器的位址正確而且可以連接到</value>
+  <alternative>確定服務器的地址正確而且可以連接到</alternative></data>
   <data name="Online_ScanningProgress" xml:space="preserve">
-    <value>正在掃瞄 ({0}/{1}), {2} 已找到…</value>
-  </data>
+    <value>正在掃瞄 （{0}/{1}），{2} 已找到⋯⋯</value>
+  <alternative>正在掃瞄 ({0}/{1}), {2} 已找到…</alternative></data>
   <data name="Online_ScanningProgress_Found" xml:space="preserve">
-    <value>{0} 個服務器</value>
-  </data>
+    <value>{0}個伺服器</value>
+  <alternative>{0} 個服務器</alternative></data>
   <data name="Online_Session_LapsDuration" xml:space="preserve">
-    <value>{0} 圈</value>
-  </data>
+    <value>{0}圈</value>
+  <alternative>{0} 圈</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>找不到車輛 {0}</value>
   </data>
@@ -391,32 +391,32 @@
     <value>比賽結束</value>
   </data>
   <data name="Online_Server_CannotRefresh" xml:space="preserve">
-    <value>無法刷新服務器信息</value>
-  </data>
+    <value>無法重新整理伺服器資訊</value>
+  <alternative>無法刷新服務器信息</alternative></data>
   <data name="Online_Server_NotImplemented" xml:space="preserve">
     <value>未部署</value>
   </data>
   <data name="Online_Server_CannotPing" xml:space="preserve">
-    <value>服務器不可用(Ping指令失敗)</value>
-  </data>
+    <value>伺服器無法使用（Ping指令失敗）</value>
+  <alternative>服務器不可用(Ping指令失敗)</alternative></data>
   <data name="Online_Server_Unavailable" xml:space="preserve">
-    <value>服務器不可用</value>
-  </data>
+    <value>伺服器無法使用。</value>
+  <alternative>服務器不可用</alternative></data>
   <data name="Online_Server_CarsDoNotMatch" xml:space="preserve">
-    <value>車輛不吻合</value>
-  </data>
+    <value>車輛不吻合。</value>
+  <alternative>車輛不吻合</alternative></data>
   <data name="Online_Server_UnhandledError" xml:space="preserve">
-    <value>內部錯誤: {0}.</value>
-  </data>
+    <value>內部錯誤：{0}。</value>
+  <alternative>內部錯誤: {0}.</alternative></data>
   <data name="Plugins_CannotInstall" xml:space="preserve">
-    <value>無法安裝插件</value>
-  </data>
+    <value>無法安裝外掛程式</value>
+  <alternative>無法安裝插件</alternative></data>
   <data name="Presets_FileFilter" xml:space="preserve">
-    <value>預設 (*{0})|*{0}</value>
-  </data>
+    <value>預設 （*{0}）|*{0}</value>
+  <alternative>預設 (*{0})|*{0}</alternative></data>
   <data name="Presets_ChooseFileInInitialDirectory" xml:space="preserve">
-    <value>請選擇在初始文件夾或者子文件夾中的文件</value>
-  </data>
+    <value>請選擇在初始資料夾或者子資料夾中的檔案。</value>
+  <alternative>請選擇在初始文件夾或者子文件夾中的文件</alternative></data>
   <data name="Common_CannotDo_Title" xml:space="preserve">
     <value>無法執行</value>
   </data>
@@ -424,17 +424,17 @@
     <value>需要設定Assetto Corsa遊戲根目錄</value>
   </data>
   <data name="AcRootDirectory_NotDefined" xml:space="preserve">
-    <value>文件夾未定義</value>
-  </data>
+    <value>資料夾未定義</value>
+  <alternative>文件夾未定義</alternative></data>
   <data name="AcRootDirectory_Missing" xml:space="preserve">
-    <value>找不到文件夾</value>
-  </data>
+    <value>找不到資料夾</value>
+  <alternative>找不到文件夾</alternative></data>
   <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
-    <value>找不到文件夾 “{0}”</value>
-  </data>
+    <value>找不到資料夾「{0}」</value>
+  <alternative>找不到文件夾 “{0}”</alternative></data>
   <data name="AcRootDirectory_MissingFile" xml:space="preserve">
-    <value>找不到文件 “{0}”</value>
-  </data>
+    <value>找不到檔案「{0}」</value>
+  <alternative>找不到文件 “{0}”</alternative></data>
   <data name="AcObject_IdIsWrong" xml:space="preserve">
     <value>ID錯誤</value>
   </data>
@@ -448,11 +448,11 @@
     <value>無法重新掃瞄車輛</value>
   </data>
   <data name="Replay_CannotRenameReplays" xml:space="preserve">
-    <value>無法重命名錄影</value>
-  </data>
+    <value>無法重命名重播</value>
+  <alternative>無法重命名錄影</alternative></data>
   <data name="Replay_CannotRenameReplays_Commentary" xml:space="preserve">
-    <value>確定這些文件當前沒有被占用</value>
-  </data>
+    <value>確定這些檔案目前沒有被占用</value>
+  <alternative>確定這些文件當前沒有被占用</alternative></data>
   <data name="AdditionalContent_Car" xml:space="preserve">
     <value>車輛</value>
   </data>
@@ -460,11 +460,11 @@
     <value>塗裝</value>
   </data>
   <data name="AdditionalContent_Font" xml:space="preserve">
-    <value>字體</value>
-  </data>
+    <value>字型</value>
+  <alternative>字體</alternative></data>
   <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>展廳</value>
-  </data>
+    <value>展示廳</value>
+  <alternative>展廳</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>賽道</value>
   </data>
@@ -472,8 +472,8 @@
     <value>天氣</value>
   </data>
   <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
-    <value>文件未找到</value>
-  </data>
+    <value>檔案未找到</value>
+  <alternative>文件未找到</alternative></data>
   <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
     <value>需要密碼</value>
   </data>
@@ -484,8 +484,8 @@
     <value>解壓器未初始化</value>
   </data>
   <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
-    <value>不支持 {0} 加密方式</value>
-  </data>
+    <value>不支援 {0} 加密方式</value>
+  <alternative>不支持 {0} 加密方式</alternative></data>
   <data name="Installator_UpdateEverything" xml:space="preserve">
     <value>更新所有內容</value>
   </data>
@@ -493,20 +493,20 @@
     <value>先刪除已有項目</value>
   </data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>保留界面信息</value>
-  </data>
+    <value>保留界面訊息</value>
+  <alternative>保留界面信息</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
     <value>保留塗裝預覽</value>
   </data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>保留界面信息和塗裝預覽</value>
-  </data>
+    <value>保留界面訊息和塗裝預覽</value>
+  <alternative>保留界面信息和塗裝預覽</alternative></data>
   <data name="Installator_KeepSkinPreview" xml:space="preserve">
     <value>保留塗裝預覽</value>
   </data>
   <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
-    <value>保留界面信息和塗裝預覽</value>
-  </data>
+    <value>保留界面訊息和塗裝預覽</value>
+  <alternative>保留界面信息和塗裝預覽</alternative></data>
   <data name="Input_Axle" xml:space="preserve">
     <value>軸 {0}</value>
   </data>
@@ -514,32 +514,32 @@
     <value>按鈕 {0}</value>
   </data>
   <data name="Common_CannotDownloadFile" xml:space="preserve">
-    <value>無法下載文件</value>
-  </data>
+    <value>無法下載檔案</value>
+  <alternative>無法下載文件</alternative></data>
   <data name="DirectLoader_AcClubChanged" xml:space="preserve">
-    <value>AssettoCorsa.club有更改</value>
-  </data>
+    <value>AssettoCorsa.club已有更動。</value>
+  <alternative>AssettoCorsa.club有更改</alternative></data>
   <data name="DirectLoader_RecursionDetected" xml:space="preserve">
     <value>檢測到遞歸</value>
   </data>
   <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
-    <value>Assetto-DB.com有更改</value>
-  </data>
+    <value>Assetto-DB.com已有更動。</value>
+  <alternative>Assetto-DB.com有更改</alternative></data>
   <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
-    <value>請確定網絡連接可用</value>
-  </data>
+    <value>請確定網路連線可用。</value>
+  <alternative>請確定網絡連接可用</alternative></data>
   <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
-    <value>Google Drive有更改</value>
-  </data>
+    <value>Google Drive已有更動。</value>
+  <alternative>Google Drive有更改</alternative></data>
   <data name="Common_SteamIdIsMissing" xml:space="preserve">
-    <value>缺失Steam ID</value>
-  </data>
+    <value>遺失Steam ID</value>
+  <alternative>缺失Steam ID</alternative></data>
   <data name="Controls_Throttle" xml:space="preserve">
     <value>油門</value>
   </data>
   <data name="Controls_Brakes" xml:space="preserve">
-    <value>剎車</value>
-  </data>
+    <value>煞車</value>
+  <alternative>剎車</alternative></data>
   <data name="Controls_SteerLeft" xml:space="preserve">
     <value>左轉</value>
   </data>
@@ -550,8 +550,8 @@
     <value>方向盤</value>
   </data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
-    <value>Xbox 360 手柄</value>
-  </data>
+    <value>Xbox 360 手把</value>
+  <alternative>Xbox 360 手柄</alternative></data>
   <data name="Controls_KeyboardAndMouse" xml:space="preserve">
     <value>鍵盤和滑鼠</value>
   </data>
@@ -562,8 +562,8 @@
     <value>離合</value>
   </data>
   <data name="Controls_Handbrake" xml:space="preserve">
-    <value>手剎</value>
-  </data>
+    <value>手煞</value>
+  <alternative>手剎</alternative></data>
   <data name="Controls_NextGear" xml:space="preserve">
     <value>升檔</value>
   </data>
@@ -595,20 +595,20 @@
     <value>倒擋</value>
   </data>
   <data name="Controls_Kers" xml:space="preserve">
-    <value>KERS</value>
-  </data>
+    <value>動能回收系統（KERS）</value>
+  <alternative>KERS</alternative></data>
   <data name="Controls_Drs" xml:space="preserve">
-    <value>DRS</value>
-  </data>
+    <value>可變尾翼（DRS）</value>
+  <alternative>DRS</alternative></data>
   <data name="Controls_Headlights" xml:space="preserve">
-    <value>車燈</value>
-  </data>
+    <value>車頭燈</value>
+  <alternative>車燈</alternative></data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
     <value>閃爍車燈</value>
   </data>
   <data name="Controls_Horn" xml:space="preserve">
-    <value>鳴笛</value>
-  </data>
+    <value>喇叭</value>
+  <alternative>鳴笛</alternative></data>
   <data name="Controls_MoveToFront" xml:space="preserve">
     <value>前移</value>
   </data>
@@ -634,8 +634,8 @@
     <value>減少能量回收</value>
   </data>
   <data name="Controls_Mguh_Mode" xml:space="preserve">
-    <value>MGU-H模式</value>
-  </data>
+    <value>熱能回收系統（MGU-H）模式</value>
+  <alternative>MGU-H模式</alternative></data>
   <data name="Controls_GlanceLeft" xml:space="preserve">
     <value>向左看</value>
   </data>
@@ -655,17 +655,17 @@
     <value>抱怨</value>
   </data>
   <data name="Gameplay_Units_Metrical" xml:space="preserve">
-    <value>公制單位 (km/h)</value>
-  </data>
+    <value>公制單位 （km/h）</value>
+  <alternative>公制單位 (km/h)</alternative></data>
   <data name="Gameplay_Units_Imperial" xml:space="preserve">
-    <value>英制單位 (mph)</value>
-  </data>
+    <value>英制單位 （mph）</value>
+  <alternative>英制單位 (mph)</alternative></data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
-    <value>無法保存AC設定</value>
-  </data>
+    <value>無法儲存AC設定</value>
+  <alternative>無法保存AC設定</alternative></data>
   <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
-    <value>請確保Content Manager有權限寫入cfg文件夾</value>
-  </data>
+    <value>請確保Content Manager有權限寫入cfg資料夾</value>
+  <alternative>請確保Content Manager有權限寫入cfg文件夾</alternative></data>
   <data name="AcSettings_Off" xml:space="preserve">
     <value>關閉</value>
   </data>
@@ -685,8 +685,8 @@
     <value>非常高</value>
   </data>
   <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
-    <value>Bitmap (不壓縮)</value>
-  </data>
+    <value>Bitmap （不壓縮）</value>
+  <alternative>Bitmap (不壓縮)</alternative></data>
   <data name="AcSettings_CustomResolution" xml:space="preserve">
     <value>自定義</value>
   </data>
@@ -697,8 +697,8 @@
     <value>三屏</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0} (實驗性)</value>
-  </data>
+    <value>{0} （實驗性）</value>
+  <alternative>{0} (實驗性)</alternative></data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
     <value>非常高</value>
   </data>
@@ -706,8 +706,8 @@
     <value>最大</value>
   </data>
   <data name="AcSettings_Cubemap_Static" xml:space="preserve">
-    <value>固定</value>
-  </data>
+    <value>靜態</value>
+  <alternative>固定</alternative></data>
   <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
     <value>每幀1個面</value>
   </data>
@@ -730,11 +730,11 @@
     <value>KN5模型</value>
   </data>
   <data name="Common_AcReplay" xml:space="preserve">
-    <value>AC錄影</value>
-  </data>
+    <value>AC重播</value>
+  <alternative>AC錄影</alternative></data>
   <data name="Common_Disabled" xml:space="preserve">
-    <value>禁用</value>
-  </data>
+    <value>停用</value>
+  <alternative>禁用</alternative></data>
   <data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>玩家</value>
   </data>
@@ -751,8 +751,8 @@
     <value>原生啟動器</value>
   </data>
   <data name="Common_Recommended" xml:space="preserve">
-    <value>{0} (推薦)</value>
-  </data>
+    <value>{0} （推薦）</value>
+  <alternative>{0} (推薦)</alternative></data>
   <data name="Period_OneDay" xml:space="preserve">
     <value>1天</value>
   </data>
@@ -768,27 +768,21 @@
   <data name="Period_Month" xml:space="preserve">
     <value>月</value>
   </data>
-  <data name="SearchEngine_Bing" xml:space="preserve">
-    <value>必應</value>
-  </data>
-  <data name="SearchEngine_Google" xml:space="preserve">
-    <value>谷歌</value>
-  </data>
   <data name="SearchEngine_Baidu" xml:space="preserve">
     <value>百度</value>
   </data>
   <data name="CustomShowroom_Fancy" xml:space="preserve">
-    <value>高特效展廳</value>
-  </data>
+    <value>高特效展示廳</value>
+  <alternative>高特效展廳</alternative></data>
   <data name="CustomShowroom_Lite" xml:space="preserve">
-    <value>簡潔版展廳</value>
-  </data>
+    <value>簡潔版展示廳</value>
+  <alternative>簡潔版展廳</alternative></data>
   <data name="GameCommand_UnknownProblem" xml:space="preserve">
     <value>未知問題</value>
   </data>
   <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
-    <value>請確定運行指令的時間不會超過 {0:F1}秒; 如果程序需要在後台運行,請使用 “start [app.exe]” 代替 “[app.exe]” .</value>
-  </data>
+    <value>請確定運行指令的時間不會超過 {0:F1}秒。如果程式需要在背景運行，請使用 「start [app.exe]」代替「[app.exe]」。</value>
+  <alternative>請確定運行指令的時間不會超過 {0:F1}秒; 如果程序需要在後台運行,請使用 “start [app.exe]” 代替 “[app.exe]” .</alternative></data>
   <data name="GameCommand_TimeoutExceeded" xml:space="preserve">
     <value>超時</value>
   </data>
@@ -799,8 +793,8 @@
     <value>直線加速賽</value>
   </data>
   <data name="Session_Drift" xml:space="preserve">
-    <value>漂移</value>
-  </data>
+    <value>甩尾</value>
+  <alternative>漂移</alternative></data>
   <data name="Session_Booking" xml:space="preserve">
     <value>報名中</value>
   </data>
@@ -823,14 +817,14 @@
     <value>發生了某些無法處理的錯誤</value>
   </data>
   <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
-    <value>無法下載最新版本信息</value>
-  </data>
+    <value>無法下載最新版本資訊</value>
+  <alternative>無法下載最新版本信息</alternative></data>
   <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
     <value>無法載入內容包</value>
   </data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
-    <value>請確定網絡連接可用,並且在content文件夾中沒有執行其他操作</value>
-  </data>
+    <value>請確定網路連線可用，並在content資料夾中沒有執行其他操作</value>
+  <alternative>請確定網絡連接可用,並且在content文件夾中沒有執行其他操作</alternative></data>
   <data name="Weather_LightThunderstorm" xml:space="preserve">
     <value>小雷雨</value>
   </data>
@@ -871,8 +865,8 @@
     <value>小雨夾雪</value>
   </data>
   <data name="Weather_Sleet" xml:space="preserve">
-    <value>雨夾雪</value>
-  </data>
+    <value>霰</value>
+  <alternative>雨夾雪</alternative></data>
   <data name="Weather_HeavySleet" xml:space="preserve">
     <value>大雨夾雪</value>
   </data>
@@ -898,8 +892,8 @@
     <value>迷霧</value>
   </data>
   <data name="Weather_Smoke" xml:space="preserve">
-    <value>煙</value>
-  </data>
+    <value>煙霧</value>
+  <alternative>煙</alternative></data>
   <data name="Weather_Haze" xml:space="preserve">
     <value>霾</value>
   </data>
@@ -931,26 +925,26 @@
     <value>冰雹</value>
   </data>
   <data name="AcObject_CannotChangeId" xml:space="preserve">
-    <value>無法改變ID</value>
-  </data>
+    <value>無法更改ID</value>
+  <alternative>無法改變ID</alternative></data>
   <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
-    <value>無法改變ID:{0}</value>
-  </data>
+    <value>無法更改ID：{0}</value>
+  <alternative>無法改變ID:{0}</alternative></data>
   <data name="AcObject_ReloadAutomatically" xml:space="preserve">
-    <value>重新加載文件?</value>
-  </data>
+    <value>重新載入檔案？</value>
+  <alternative>重新加載文件?</alternative></data>
   <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
-    <value>INI文件已經被更改.確定重新載入?所有未保存的本地更改將丟失.</value>
-  </data>
+    <value>INI檔案已經被更改。確定重新載入？將遺失所有未儲存的更動。</value>
+  <alternative>INI文件已經被更改.確定重新載入?所有未保存的本地更改將丟失.</alternative></data>
   <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
-    <value>JSON文件已經被更改,是否重新載入?所有未保存的本地更改將丟失.</value>
-  </data>
+    <value>JSON檔案已經被更改。確定重新載入？將遺失所有未儲存的更動。</value>
+  <alternative>JSON文件已經被更改,是否重新載入?所有未保存的本地更改將丟失.</alternative></data>
   <data name="Common_CannotDo" xml:space="preserve">
     <value>無法執行</value>
   </data>
   <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
-    <value>對不起,你不能禁止這個類型的對象</value>
-  </data>
+    <value>抱歉，您不能禁止這個類型的對象</value>
+  <alternative>對不起,你不能禁止這個類型的對象</alternative></data>
   <data name="AcObject_CannotRemove" xml:space="preserve">
     <value>無法刪除已經存在的目錄</value>
   </data>
@@ -958,26 +952,26 @@
     <value>已取消</value>
   </data>
   <data name="Solving_RestoreFrom" xml:space="preserve">
-    <value>從{0} 恢復中...</value>
-  </data>
+    <value>從{0} 回復中⋯⋯</value>
+  <alternative>從{0} 恢復中...</alternative></data>
   <data name="Solving_RestoreFrom_Commentary" xml:space="preserve">
-    <value>如果有現存文件,現存文件將會被移動到回收站</value>
-  </data>
+    <value>如果有現存檔案，現存檔案將會被移動到資源回收桶</value>
+  <alternative>如果有現存文件,現存文件將會被移動到回收站</alternative></data>
   <data name="Solving_CreateNewFile" xml:space="preserve">
-    <value>創建新文件</value>
-  </data>
+    <value>建立新檔案</value>
+  <alternative>創建新文件</alternative></data>
   <data name="Solving_CreateNewFile_Commentary" xml:space="preserve">
-    <value>將會依據ID創建新文件</value>
-  </data>
+    <value>將會依據ID建立新檔案</value>
+  <alternative>將會依據ID創建新文件</alternative></data>
   <data name="Uploader_EnterGoogleDriveAuthenticationCode" xml:space="preserve">
-    <value>輸入Google Drive授權碼:</value>
-  </data>
+    <value>輸入Google Drive授權碼：</value>
+  <alternative>輸入Google Drive授權碼:</alternative></data>
   <data name="Uploader_CannotFinishAuthorization" xml:space="preserve">
     <value>無法完成授權過程</value>
   </data>
   <data name="Uploader_AuthenticationTokenIsMissing" xml:space="preserve">
-    <value>授權令牌丟失</value>
-  </data>
+    <value>遺失授權令牌</value>
+  <alternative>授權令牌丟失</alternative></data>
   <data name="Uploader_RequestFailed" xml:space="preserve">
     <value>GET請求失敗</value>
   </data>
@@ -985,137 +979,137 @@
     <value>根目錄</value>
   </data>
   <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
-    <value>無法上傳文件到Google Drive</value>
-  </data>
+    <value>無法上傳檔案到Google Drive</value>
+  <alternative>無法上傳文件到Google Drive</alternative></data>
   <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
     <value>請確保有足夠存儲空間</value>
   </data>
   <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
-    <value>無法分享Google Drive文件</value>
-  </data>
+    <value>無法分享Google Drive檔案</value>
+  <alternative>無法分享Google Drive文件</alternative></data>
   <data name="AcError_LoadingUnhandledError" xml:space="preserve">
-    <value>載入無法處理的錯誤: {0}</value>
-  </data>
+    <value>載入無法處理的錯誤：{0}</value>
+  <alternative>載入無法處理的錯誤: {0}</alternative></data>
   <data name="AcError_FileIsMissing" xml:space="preserve">
-    <value>文件 “{0}” 丟失</value>
-  </data>
+    <value>遺失檔案「{0}」</value>
+  <alternative>文件 “{0}” 丟失</alternative></data>
   <data name="AcError_FileIsDamaged" xml:space="preserve">
-    <value>文件 “{0}” 損壞</value>
-  </data>
+    <value>檔案「{0}」損壞</value>
+  <alternative>文件 “{0}” 損壞</alternative></data>
   <data name="AcError_NameIsMissing" xml:space="preserve">
-    <value>缺少名稱</value>
-  </data>
+    <value>遺失名稱</value>
+  <alternative>缺少名稱</alternative></data>
   <data name="AcError_BrandNameIsMissing" xml:space="preserve">
-    <value>缺少品牌名</value>
-  </data>
+    <value>遺失品牌名稱</value>
+  <alternative>缺少品牌名</alternative></data>
   <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
-    <value>缺少 “ui” 文件夾</value>
-  </data>
+    <value>遺失「ui」資料夾</value>
+  <alternative>缺少 “ui” 文件夾</alternative></data>
   <data name="AcError_EventsOfAreMissing" xml:space="preserve">
-    <value>“{0}” 中賽事缺失</value>
-  </data>
+    <value>「{0}」中賽事遺失</value>
+  <alternative>“{0}” 中賽事缺失</alternative></data>
   <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
-    <value>賽事天氣 “{0}” 尚未支持</value>
-  </data>
+    <value>賽事天氣「{0}」尚未支援</value>
+  <alternative>賽事天氣 “{0}” 尚未支持</alternative></data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
-    <value>缺少所需的內容</value>
-  </data>
+    <value>遺失所需的內容</value>
+  <alternative>缺少所需的內容</alternative></data>
   <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
-    <value>缺少賽道 “{0}”</value>
-  </data>
+    <value>遺失賽道「{0}」</value>
+  <alternative>缺少賽道 “{0}”</alternative></data>
   <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
-    <value>缺少車輛 “{0}”</value>
-  </data>
+    <value>遺失車輛「{0}」</value>
+  <alternative>缺少車輛 “{0}”</alternative></data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
-    <value>缺少{0} 的塗裝 “{1}”</value>
-  </data>
+    <value>遺失{0} 的塗裝「{1}｣</value>
+  <alternative>缺少{0} 的塗裝 “{1}”</alternative></data>
   <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
-    <value>缺少天氣 “{0}”</value>
-  </data>
+    <value>遺失天氣「{0}」</value>
+  <alternative>缺少天氣 “{0}”</alternative></data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>車輛缺少源車型</value>
-  </data>
+    <value>遺失車輛源車型</value>
+  <alternative>車輛缺少源車型</alternative></data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>缺少品牌標誌</value>
-  </data>
+    <value>遺失品牌標誌</value>
+  <alternative>缺少品牌標誌</alternative></data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
-    <value>缺少升級版車型圖標</value>
-  </data>
+    <value>遺失升級版車型圖示</value>
+  <alternative>缺少升級版車型圖標</alternative></data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>缺少車輛塗裝</value>
-  </data>
+    <value>遺失車輛塗裝</value>
+  <alternative>缺少車輛塗裝</alternative></data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>塗裝文件夾不可用</value>
-  </data>
+    <value>塗裝資料夾不可用</value>
+  <alternative>塗裝文件夾不可用</alternative></data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
-    <value>缺少車輛調校文件對應的賽道 ({0})</value>
-  </data>
+    <value>遺失車輛調校檔案對應的賽道 （{0}）</value>
+  <alternative>缺少車輛調校文件對應的賽道 ({0})</alternative></data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>缺少塗裝圖標 ({0}/livery.png)</value>
-  </data>
+    <value>遺失塗裝圖示 （{0}/livery.png）</value>
+  <alternative>缺少塗裝圖標 ({0}/livery.png)</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>缺少塗裝預覽圖 ({0}/preview.jpg)</value>
-  </data>
+    <value>遺失塗裝預覽圖（{0}/preview.jpg）</value>
+  <alternative>缺少塗裝預覽圖 ({0}/preview.jpg)</alternative></data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
-    <value>缺少模型文件 (KN5 文件)</value>
-  </data>
+    <value>遺失模型檔案（KN5 檔案）</value>
+  <alternative>缺少模型文件 (KN5 文件)</alternative></data>
   <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
-    <value>字體點陣圖文件缺失</value>
-  </data>
+    <value>遺失字型點陣圖檔案</value>
+  <alternative>字體點陣圖文件缺失</alternative></data>
   <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
-    <value>使用了被禁用的字體</value>
-  </data>
+    <value>使用了被停用的字型</value>
+  <alternative>使用了被禁用的字體</alternative></data>
   <data name="AcError_CarIsMissing" xml:space="preserve">
-    <value>缺少車輛 “{0}”</value>
-  </data>
+    <value>遺失車輛 「{0}」</value>
+  <alternative>缺少車輛 “{0}”</alternative></data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
-    <value>缺少賽道 “{0}”</value>
-  </data>
+    <value>遺失賽道 「{0}」</value>
+  <alternative>缺少賽道 “{0}”</alternative></data>
   <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
-    <value>名稱中不可含有如“[”或“]”的字元</value>
-  </data>
+    <value>名稱中不可含有如「[」或「]」的字元</value>
+  <alternative>名稱中不可含有如“[”或“]”的字元</alternative></data>
   <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
-    <value>缺少文件 “colorCurves.ini”</value>
-  </data>
+    <value>檔案「colorCurves.ini」遺失</value>
+  <alternative>缺少文件 “colorCurves.ini”</alternative></data>
   <data name="Common_None" xml:space="preserve">
     <value>無</value>
   </data>
   <data name="Weather_ColorCurves_HorizonLow" xml:space="preserve">
-    <value>地平線(低)</value>
-  </data>
+    <value>地平線（低）</value>
+  <alternative>地平線(低)</alternative></data>
   <data name="Weather_ColorCurves_HorizonHigh" xml:space="preserve">
-    <value>地平線(高)</value>
-  </data>
+    <value>地平線（高）</value>
+  <alternative>地平線(高)</alternative></data>
   <data name="Weather_ColorCurves_SkyLow" xml:space="preserve">
-    <value>天空(低)</value>
-  </data>
+    <value>天空（低）</value>
+  <alternative>天空(低)</alternative></data>
   <data name="Weather_ColorCurves_SkyHigh" xml:space="preserve">
-    <value>天空(高)</value>
-  </data>
+    <value>天空（高）</value>
+  <alternative>天空(高)</alternative></data>
   <data name="Weather_ColorCurves_SunLow" xml:space="preserve">
-    <value>太陽(低)</value>
-  </data>
+    <value>太陽（低）</value>
+  <alternative>太陽(低)</alternative></data>
   <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
-    <value>太陽(高)</value>
-  </data>
+    <value>太陽（高）</value>
+  <alternative>太陽(高)</alternative></data>
   <data name="Weather_ColorCurves_AmbientLow" xml:space="preserve">
-    <value>環境(低)</value>
-  </data>
+    <value>環境（低）</value>
+  <alternative>環境(低)</alternative></data>
   <data name="Weather_ColorCurves_AmbientHigh" xml:space="preserve">
-    <value>環境(高)</value>
-  </data>
+    <value>環境（高）</value>
+  <alternative>環境(高)</alternative></data>
   <data name="AcObject_CannotClone" xml:space="preserve">
     <value>無法複製對象</value>
   </data>
   <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
-    <value>請確保有足夠存儲空間</value>
-  </data>
+    <value>請確保有足夠儲存空間</value>
+  <alternative>請確保有足夠存儲空間</alternative></data>
   <data name="Units_BHP" xml:space="preserve">
     <value>馬力</value>
   </data>
   <data name="Units_Nm" xml:space="preserve">
-    <value>牛米</value>
-  </data>
+    <value>牛頓公尺</value>
+  <alternative>牛米</alternative></data>
   <data name="Common_Power" xml:space="preserve">
     <value>功率</value>
   </data>
@@ -1123,8 +1117,8 @@
     <value>扭矩</value>
   </data>
   <data name="Shared_VideoSettingsPreset" xml:space="preserve">
-    <value>圖象設置預設</value>
-  </data>
+    <value>圖片設定預設</value>
+  <alternative>圖象設置預設</alternative></data>
   <data name="Common_Width" xml:space="preserve">
     <value>寬度</value>
   </data>
@@ -1153,8 +1147,8 @@
     <value>普通</value>
   </data>
   <data name="AcSettings_Quality_Subpixel" xml:space="preserve">
-    <value>亞像素</value>
-  </data>
+    <value>次像素</value>
+  <alternative>亞像素</alternative></data>
   <data name="AcSettings_Quality_Ideal" xml:space="preserve">
     <value>最佳</value>
   </data>
@@ -1168,11 +1162,11 @@
     <value>無法從路徑中獲得ID</value>
   </data>
   <data name="Common_IdIsMissing" xml:space="preserve">
-    <value>缺少ID</value>
-  </data>
+    <value>遺失ID</value>
+  <alternative>缺少ID</alternative></data>
   <data name="Common_CarIdIsMissing" xml:space="preserve">
-    <value>車輛ID缺失</value>
-  </data>
+    <value>遺失車輛ID</value>
+  <alternative>車輛ID缺失</alternative></data>
   <data name="Common_Height" xml:space="preserve">
     <value>高度</value>
   </data>
@@ -1207,11 +1201,11 @@
     <value>新增賽道 {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
-    <value>新增展廳 {0}</value>
-  </data>
+    <value>新增展示廳 {0}</value>
+  <alternative>新增展廳 {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
-    <value>新增字體 {0}</value>
-  </data>
+    <value>新增字型 {0}</value>
+  <alternative>新增字體 {0}</alternative></data>
   <data name="ContentInstallation_WeatherNew" xml:space="preserve">
     <value>新增天氣 {0}</value>
   </data>
@@ -1225,20 +1219,20 @@
     <value>賽道 {0} 新版本</value>
   </data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>展廳 {0} 新版本</value>
-  </data>
+    <value>展示廳 {0} 新版本</value>
+  <alternative>展廳 {0} 新版本</alternative></data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
-    <value>字體 {0} 新版本</value>
-  </data>
+    <value>字型 {0} 新版本</value>
+  <alternative>字體 {0} 新版本</alternative></data>
   <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
     <value>天氣 {0} 新版本</value>
   </data>
   <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
-    <value>請選擇另一個ID.</value>
-  </data>
+    <value>請選擇另一個ID。</value>
+  <alternative>請選擇另一個ID.</alternative></data>
   <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
-    <value>單位:</value>
-  </data>
+    <value>單位：</value>
+  <alternative>單位:</alternative></data>
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
     <value>顯示和對手的時間差距</value>
   </data>
@@ -1255,11 +1249,11 @@
     <value>顯示車手名</value>
   </data>
   <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
-    <value>允許遊戲內插件窗口重疊</value>
-  </data>
+    <value>允許遊戲內app視窗重疊</value>
+  <alternative>允許遊戲內插件窗口重疊</alternative></data>
   <data name="AcSettings_View_CameraHeader" xml:space="preserve">
-    <value>視角:</value>
-  </data>
+    <value>視角：</value>
+  <alternative>視角:</alternative></data>
   <data name="AcSettings_View_LockCamera" xml:space="preserve">
     <value>鎖定駕駛視角到地平線</value>
   </data>
@@ -1273,8 +1267,8 @@
     <value>高速行駛抖動程度</value>
   </data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
-    <value>加速度模擬效果:</value>
-  </data>
+    <value>加速度模擬效果：</value>
+  <alternative>加速度模擬效果:</alternative></data>
   <data name="AcSettings_View_Locked" xml:space="preserve">
     <value>鎖定</value>
   </data>
@@ -1288,8 +1282,8 @@
     <value>水平方向</value>
   </data>
   <data name="AcSettings_View_ViewHeader" xml:space="preserve">
-    <value>顯示內容:</value>
-  </data>
+    <value>顯示內容：</value>
+  <alternative>顯示內容:</alternative></data>
   <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
     <value>隱藏車手手臂</value>
   </data>
@@ -1306,23 +1300,23 @@
     <value>虛擬方向盤轉動角度限制</value>
   </data>
   <data name="TrackGeoTags_LatitudeLabel" xml:space="preserve">
-    <value>緯度:</value>
-  </data>
+    <value>緯度：</value>
+  <alternative>緯度:</alternative></data>
   <data name="TrackGeoTags_LongitudeLabel" xml:space="preserve">
-    <value>經度:</value>
-  </data>
+    <value>經度：</value>
+  <alternative>經度:</alternative></data>
   <data name="TrackGeoTags_LatitudeLabel_Tooltip" xml:space="preserve">
-    <value>推薦格式: “…° N” 或 “…° S”</value>
-  </data>
+    <value>推薦格式：「…° N」或「…°S 」</value>
+  <alternative>推薦格式: “…° N” 或 “…° S”</alternative></data>
   <data name="TrackGeoTags_LongitudeLabel_Tooltip" xml:space="preserve">
-    <value>推薦格式: “…° W” 或 “…° E”</value>
-  </data>
+    <value>推薦格式：「…° W」或「…° E」</value>
+  <alternative>推薦格式: “…° W” 或 “…° E”</alternative></data>
   <data name="TrackGeoTags_FindIt" xml:space="preserve">
     <value>尋找位置</value>
   </data>
   <data name="OrdinalizingSubject_Server" xml:space="preserve">
-    <value>服務器</value>
-  </data>
+    <value>伺服器</value>
+  <alternative>服務器</alternative></data>
   <data name="Online_Server_SessionInProcess" xml:space="preserve">
     <value>比賽中</value>
   </data>
@@ -1333,20 +1327,20 @@
     <value>只在啟動時檢查</value>
   </data>
   <data name="Settings_Period_OnOpening" xml:space="preserve">
-    <value>只在打開時檢查</value>
-  </data>
+    <value>只在開啟時檢查</value>
+  <alternative>只在打開時檢查</alternative></data>
   <data name="Common_InvalidFormat" xml:space="preserve">
     <value>無效格式</value>
   </data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
-    <value>車輛制動防抱死系統</value>
-  </data>
+    <value>防鎖死煞車系統</value>
+  <alternative>車輛制動防抱死系統</alternative></data>
   <data name="Assists_AutoBlip" xml:space="preserve">
     <value>自動補油</value>
   </data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
-    <value>自動在降檔時補油匹配轉速</value>
-  </data>
+    <value>自動在降檔時補油以配合轉速</value>
+  <alternative>自動在降檔時補油匹配轉速</alternative></data>
   <data name="Assists_AutoClutch" xml:space="preserve">
     <value>自動離合</value>
   </data>
@@ -1372,8 +1366,8 @@
     <value>機械損傷</value>
   </data>
   <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
-    <value>允許開啟引擎,變速箱,懸掛系統等車輛部件的損毀系統</value>
-  </data>
+    <value>允許開啟引擎、變速箱、懸吊系統等車輛零件的損毀系統</value>
+  <alternative>允許開啟引擎,變速箱,懸掛系統等車輛部件的損毀系統</alternative></data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
     <value>尾流效應</value>
   </data>
@@ -1384,8 +1378,8 @@
     <value>車身穩定控制</value>
   </data>
   <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
-    <value>並不真實的穩定性輔助模擬,但是如果你剛開始學習開車或者漂移,這個輔助可能會有幫助</value>
-  </data>
+    <value>並不寫實的穩定性輔助模擬，但是如果您剛開始學習開車或者漂移,這個輔助可能會有幫助</value>
+  <alternative>並不真實的穩定性輔助模擬,但是如果你剛開始學習開車或者漂移,這個輔助可能會有幫助</alternative></data>
   <data name="Assists_Title" xml:space="preserve">
     <value>駕駛輔助</value>
   </data>
@@ -1423,8 +1417,8 @@
     <value>手動設定</value>
   </data>
   <data name="Drive_Grid_FilteredBy" xml:space="preserve">
-    <value>篩選方式...</value>
-  </data>
+    <value>篩選方式⋯⋯</value>
+  <alternative>篩選方式...</alternative></data>
   <data name="Drive_Grid_SameCar" xml:space="preserve">
     <value>同車型</value>
   </data>
@@ -1435,8 +1429,8 @@
     <value>向參賽名單中新增車輛</value>
   </data>
   <data name="Drive_GridBuilding" xml:space="preserve">
-    <value>設定參賽名單中...</value>
-  </data>
+    <value>設定參賽名單中⋯⋯</value>
+  <alternative>設定參賽名單中...</alternative></data>
   <data name="Drive_GridRemove_Tooltip" xml:space="preserve">
     <value>從列表中移除選擇的車輛</value>
   </data>
@@ -1465,8 +1459,8 @@
     <value>無法更新賽事參賽名單</value>
   </data>
   <data name="Common_SyntaxErrorFormat" xml:space="preserve">
-    <value>語法錯誤:{0}</value>
-  </data>
+    <value>語法錯誤：{0}</value>
+  <alternative>語法錯誤:{0}</alternative></data>
   <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
     <value>代碼應當返回賽事備選名單篩選函數</value>
   </data>
@@ -1477,38 +1471,38 @@
     <value>找不到賽事備選名單篩選模式</value>
   </data>
   <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
-    <value>無法找到ID為“{0}”的賽事備選名單篩選模式</value>
-  </data>
+    <value>無法找到ID為「{0}」的賽事備選名單篩選模式</value>
+  <alternative>無法找到ID為“{0}”的賽事備選名單篩選模式</alternative></data>
   <data name="Common_LuaFailed" xml:space="preserve">
     <value>無法初始化Lua</value>
   </data>
   <data name="Settings_Starter_Official_Description" xml:space="preserve">
-    <value>Kunos官方的啟動方式;可能很慢並且可靠性差,但是不需要對遊戲本身進行修改</value>
-  </data>
+    <value>Kunos官方的啟動方式，可能很慢並且可靠性差，但是不需要對遊戲本身進行修改</value>
+  <alternative>Kunos官方的啟動方式;可能很慢並且可靠性差,但是不需要對遊戲本身進行修改</alternative></data>
   <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
-    <value>特殊的啟動遊戲的方式;最快的啟動方法之一,但是必須要運行Steam同時保證網絡連接</value>
-  </data>
+    <value>特殊的啟動遊戲的方式，是最快的啟動方法之一，但是必須要運行Steam同時確保網路連接</value>
+  <alternative>特殊的啟動遊戲的方式;最快的啟動方法之一,但是必須要運行Steam同時保證網絡連接</alternative></data>
   <data name="Settings_Starter_UiModule" xml:space="preserve">
     <value>界面模組啟動器</value>
   </data>
   <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
-    <value>在官方啟動器中加入一個特殊的界面模組偵聽某些命令以啟動遊戲;如果你需要同時使用CM和官方啟動器,可以嘗試這個啟動模式</value>
-  </data>
+    <value>在官方啟動器中加入一個特殊的界面模組偵測某些命令以啟動遊戲。如果您需要同時使用CM和官方啟動器，可以嘗試這個啟動模式</value>
+  <alternative>在官方啟動器中加入一個特殊的界面模組偵聽某些命令以啟動遊戲;如果你需要同時使用CM和官方啟動器,可以嘗試這個啟動模式</alternative></data>
   <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
-    <value>官方啟動器的修改版,在AC1.7版本之後不再有效</value>
-  </data>
+    <value>官方啟動器的修改版，在AC1.7版本之後不再有效</value>
+  <alternative>官方啟動器的修改版,在AC1.7版本之後不再有效</alternative></data>
   <data name="Settings_Starter_Sse_Description" xml:space="preserve">
-    <value>最快的啟動模式,完全不使用Steam運行遊戲;多人聯機可以使用,但是將無法解鎖成就</value>
-  </data>
+    <value>最快的啟動模式，完全不使用Steam運行遊戲。多人聯機可用，但是將無法解鎖成就</value>
+  <alternative>最快的啟動模式,完全不使用Steam運行遊戲;多人聯機可以使用,但是將無法解鎖成就</alternative></data>
   <data name="Settings_Starter_Naive_Description" xml:space="preserve">
-    <value>嘗試直接運行acs.exe;多數情況下會失敗</value>
-  </data>
+    <value>嘗試直接運行acs.exe，但通常會運行失敗</value>
+  <alternative>嘗試直接運行acs.exe;多數情況下會失敗</alternative></data>
   <data name="MagickNet_CannotLoad" xml:space="preserve">
-    <value>無法使用Magick.NET載入圖象</value>
-  </data>
+    <value>無法使用Magick.NET載入圖片</value>
+  <alternative>無法使用Magick.NET載入圖象</alternative></data>
   <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
-    <value>請使用小一些的圖象文件</value>
-  </data>
+    <value>請使用小一些的圖片檔案</value>
+  <alternative>請使用小一些的圖象文件</alternative></data>
   <data name="Common_Submit" xml:space="preserve">
     <value>提交</value>
   </data>
@@ -1519,17 +1513,17 @@
     <value>在第{1}行的{0}語句中含有語法錯誤</value>
   </data>
   <data name="SyntaxError_Commentary" xml:space="preserve">
-    <value>文件還在解碼中,部分數值可能會被跳過</value>
-  </data>
+    <value>檔案還在解碼中，部分數值可能會被跳過</value>
+  <alternative>文件還在解碼中,部分數值可能會被跳過</alternative></data>
   <data name="SyntaxError_Solution" xml:space="preserve">
-    <value>打開文件</value>
-  </data>
+    <value>開啟檔案</value>
+  <alternative>打開文件</alternative></data>
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
-    <value>無法獲得可用分辨率列表</value>
-  </data>
+    <value>無法獲得可用解析度列表</value>
+  <alternative>無法獲得可用分辨率列表</alternative></data>
   <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
-    <value>界面模組“CM Helper”已經安裝並被激活。在開始賽事之前請不要忘記重啟AssettoCorsa.exe!</value>
-  </data>
+    <value>界面模組「CM Helper」已經安裝並被啟動。在開始賽事之前請不要忘記重啟AssettoCorsa.exe！</value>
+  <alternative>界面模組“CM Helper”已經安裝並被激活。在開始賽事之前請不要忘記重啟AssettoCorsa.exe!</alternative></data>
   <data name="RaceGrid_OpponentSkin_Random" xml:space="preserve">
     <value>隨機塗裝</value>
   </data>
@@ -1552,17 +1546,17 @@
     <value>使用車輛塗裝名</value>
   </data>
   <data name="Common_GlobalHeader" xml:space="preserve">
-    <value>全局:</value>
-  </data>
+    <value>全域：</value>
+  <alternative>全局:</alternative></data>
   <data name="RaceGrid_You" xml:space="preserve">
-    <value>你</value>
-  </data>
+    <value>您</value>
+  <alternative>你</alternative></data>
   <data name="Shared_UserChampionship" xml:space="preserve">
     <value>自定義錦標賽</value>
   </data>
   <data name="Shared_AudioSettingsPreset" xml:space="preserve">
-    <value>音頻設置預設</value>
-  </data>
+    <value>預設聲音設定</value>
+  <alternative>音頻設置預設</alternative></data>
   <data name="DifficultyLevel_Easy" xml:space="preserve">
     <value>簡單</value>
   </data>
@@ -1591,19 +1585,21 @@
     <value>解鎖成就需要的勝場數</value>
   </data>
   <data name="RhmService_CannotStart" xml:space="preserve">
-    <value>無法啟動真實頭部運動插件</value>
-  </data>
+    <value>無法啟動頭部跟隨視角app</value>
+  <alternative>無法啟動真實頭部運動插件</alternative></data>
   <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
-    <value>{0}的數據文件沒有打包,因此玩家可以在加入遊戲之前修改數據而從中獲利.
+    <value>{0}的數據檔案沒有打包，因此玩家可以在加入遊戲之前修改數據取得不公平優勢
 
-你是否想要在啟動服務器之前進行數據打包?如果這麼做,請不要忘記向玩家分享打包之後的版本</value>
-  </data>
+您想在啟動伺服器前打包嗎？但別忘了將打包後的版本分享給玩家</value>
+  <alternative>{0}的數據文件沒有打包,因此玩家可以在加入遊戲之前修改數據而從中獲利.
+
+你是否想要在啟動服務器之前進行數據打包?如果這麼做,請不要忘記向玩家分享打包之後的版本</alternative></data>
   <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
     <value>數據未加密</value>
   </data>
   <data name="Online_BookingResult_IllegalCar" xml:space="preserve">
-    <value>請選擇服務器支持的車輛</value>
-  </data>
+    <value>請選擇伺服器支援的車輛</value>
+  <alternative>請選擇服務器支持的車輛</alternative></data>
   <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
     <value>密碼不正確</value>
   </data>
@@ -1611,14 +1607,14 @@
     <value>報名已結束</value>
   </data>
   <data name="Online_BookingResult_Blacklisted" xml:space="preserve">
-    <value>你在這個服務器的黑名單上</value>
-  </data>
+    <value>您已在此伺服器的黑名單上</value>
+  <alternative>你在這個服務器的黑名單上</alternative></data>
   <data name="Online_BookingResult_ServerFull" xml:space="preserve">
-    <value>服務器已滿</value>
-  </data>
+    <value>伺服器已滿</value>
+  <alternative>服務器已滿</alternative></data>
   <data name="Online_BookingResult_UnsupportedNonOkMessage" xml:space="preserve">
-    <value>來自服務器的消息:"{0}"</value>
-  </data>
+    <value>伺服器公告：「{0}」</value>
+  <alternative>來自服務器的消息:"{0}"</alternative></data>
   <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
     <value>所選車輛沒有正確的音效</value>
   </data>
@@ -1629,44 +1625,44 @@
     <value>無法替換車輛音效</value>
   </data>
   <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
-    <value>請確定磁碟空間足夠,並且有權限移除原有的文件</value>
-  </data>
+    <value>請確定磁碟空間足夠,並且有權限移除原有的檔案</value>
+  <alternative>請確定磁碟空間足夠,並且有權限移除原有的文件</alternative></data>
   <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
-    <value>你已在此服務器上完成比賽報名</value>
-  </data>
+    <value>您已在此伺服器上完成比賽報名</value>
+  <alternative>你已在此服務器上完成比賽報名</alternative></data>
   <data name="Online_YouAreOnThisServer" xml:space="preserve">
-    <value>你已在此服務器上</value>
-  </data>
+    <value>您已加入此伺服器</value>
+  <alternative>你已在此服務器上</alternative></data>
   <data name="Online_YouFormat" xml:space="preserve">
-    <value>{0}(你自己)</value>
-  </data>
+    <value>{0}（您自己）</value>
+  <alternative>{0}(你自己)</alternative></data>
   <data name="Online_AdminPassword" xml:space="preserve">
-    <value>管理員密碼:</value>
-  </data>
+    <value>管理員密碼：</value>
+  <alternative>管理員密碼:</alternative></data>
   <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
     <value>顯示管理員密碼輸入</value>
   </data>
   <data name="Online_ShowAdminPasswordInput_Tooltip" xml:space="preserve">
-    <value>如果你關閉此設定,可以在多人聯機設置中重新打開</value>
-  </data>
+    <value>如果您關閉此設定,可以在多人聯機設定中重新開啟</value>
+  <alternative>如果你關閉此設定,可以在多人聯機設置中重新打開</alternative></data>
   <data name="TagIsMissing_Format" xml:space="preserve">
-    <value>找不到標籤"{0}"</value>
-  </data>
+    <value>遺失標籤「{0}」</value>
+  <alternative>找不到標籤"{0}"</alternative></data>
   <data name="Shared_TrackStatePreset" xml:space="preserve">
     <value>賽道狀態預設</value>
   </data>
   <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
-    <value>找不到車輛塗裝{0}</value>
-  </data>
+    <value>遺失車輛塗裝{0}</value>
+  <alternative>找不到車輛塗裝{0}</alternative></data>
   <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
-    <value>找不到車輛塗裝{0}</value>
-  </data>
+    <value>遺失車輛塗裝{0}</value>
+  <alternative>找不到車輛塗裝{0}</alternative></data>
   <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
-    <value>找不到天氣{0}</value>
-  </data>
+    <value>遺失天氣{0}</value>
+  <alternative>找不到天氣{0}</alternative></data>
   <data name="Shared_CustomShowroomPreset" xml:space="preserve">
-    <value>自定義展廳預設</value>
-  </data>
+    <value>自定義展示廳預設</value>
+  <alternative>自定義展廳預設</alternative></data>
   <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
     <value>自定義預覽圖預設</value>
   </data>
@@ -1680,15 +1676,60 @@
     <value>Mod天氣選項</value>
   </data>
   <data name="Shared_RhmPreset" xml:space="preserve">
-    <value>真實頭部運動插件RHM預設</value>
-  </data>
+    <value>預設頭部跟隨視角app</value>
+  <alternative>真實頭部運動插件RHM預設</alternative></data>
   <data name="Controls_Gas" xml:space="preserve">
     <value>油門</value>
   </data>
   <data name="Controls_Brake" xml:space="preserve">
-    <value>剎車</value>
-  </data>
+    <value>煞車</value>
+  <alternative>剎車</alternative></data>
   <data name="Controls_Steer" xml:space="preserve">
     <value>轉向</value>
+  </data>
+  <data name="Assists_AbsLabel" xml:space="preserve">
+    <value>ABS：</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>最佳單圈：</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>最佳圈速：</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>配重</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} 公里</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>英尺/秒</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value>公斤</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>公尺/秒</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>限流器</value>
+  </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value>赫</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>根據功率重量比安排AI強度</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>對手攻擊性</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>隨機化：</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>在車手名稱下顯示AI攻擊性</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>顯示關聯範圍</value>
   </data>
 </root>

@@ -22,6 +22,10 @@
     <mui:SpacingUniformGrid x:Name="Grid" Columns="1" HorizontalSpacing="20" VerticalStackMode="True" Margin="0">
 
       <StackPanel set:Search.Category="{x:Static g:AppStrings.Settings_Sharing}" Style="{StaticResource SettingsPanel}" Margin="0 0 20 0">
+        <CheckBox IsChecked="{Binding Sharing.ShowSharedDialog}">
+          <Label Content="Show message with a link after sharing" />
+        </CheckBox>
+
         <CheckBox IsChecked="{Binding Sharing.CopyLinkToClipboard}">
           <Label Content="{x:Static g:AppStrings.Settings_Sharing_CopyLinkAutomatically}" />
         </CheckBox>

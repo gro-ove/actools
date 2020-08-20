@@ -118,83 +118,83 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcSettings_CameraMode_SingleScreen" xml:space="preserve">
-    <value>Single Screen</value>
-  </data>
+    <value>Egyképernyős</value>
+  <alternative>Single Screen</alternative></data>
   <data name="AcSettings_CameraMode_TripleScreen" xml:space="preserve">
-    <value>Triple Screen</value>
-  </data>
+    <value>Háromképernyős</value>
+  <alternative>Triple Screen</alternative></data>
   <data name="AcSettings_Quality_VeryHigh" xml:space="preserve">
-    <value>Very High</value>
-  </data>
+    <value>Nagyon magas</value>
+  <alternative>Very High</alternative></data>
   <data name="AcSettings_Quality_VeryLow" xml:space="preserve">
-    <value>Very Low</value>
-  </data>
+    <value>Nagyon alacsony</value>
+  <alternative>Very Low</alternative></data>
   <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
-    <value>Can’t process update: {0}. Try to install a new version manually, sorry.</value>
-  </data>
+    <value>A következő frissítés nem hajtható végre: {0}. Sajnálom, próbáld meg manuálisan frissíteni.</value>
+  <alternative>Can’t process update: {0}. Try to install a new version manually, sorry.</alternative></data>
   <data name="Common_CannotDo_Title" xml:space="preserve">
-    <value>Can’t Do</value>
-  </data>
+    <value>Nem hajtható végre</value>
+  <alternative>Can’t Do</alternative></data>
   <data name="ContentInstallation_CarExisting" xml:space="preserve">
-    <value>New version for car {0}</value>
-  </data>
+    <value>Frissítés a(z) {0} autóhoz</value>
+  <alternative>New version for car {0}</alternative></data>
   <data name="ContentInstallation_CarSkinExisting" xml:space="preserve">
-    <value>New version for car skin {0}</value>
-  </data>
+    <value>{0} autófestés frissítése hozzá: {1}</value>
+  <alternative>New version for car skin {0}</alternative></data>
   <data name="ContentInstallation_CarSkinNew" xml:space="preserve">
-    <value>New car skin {0}</value>
-  </data>
+    <value>Új autófestés {0} hozzá: {1}</value>
+  <alternative>New car skin {0}</alternative></data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
-    <value>New version for font {0}</value>
-  </data>
+    <value>A(z) “{0}” betűtípus frissítése</value>
+  <alternative>New version for font {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
-    <value>New font {0}</value>
-  </data>
+    <value>Új betütípus “{0}”</value>
+  <alternative>New font {0}</alternative></data>
   <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
-    <value>Keep Skins Previews</value>
-  </data>
+    <value>Meglévő fájlok frissítése és az előnézetek megtartása</value>
+  <alternative>Keep Skins Previews</alternative></data>
   <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
-    <value>Keep UI Information</value>
-  </data>
+    <value>Meglévő fájlok frissítése és a UI információk megtartása</value>
+  <alternative>Keep UI Information</alternative></data>
   <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
-    <value>Keep UI Information &amp; Skins Previews</value>
-  </data>
+    <value>Meglévő fájlok frissítése és a UI infók és előnézetek megtartása</value>
+  <alternative>Keep UI Information &amp; Skins Previews</alternative></data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>New version for showroom {0}</value>
-  </data>
+    <value>{0} bemutatóterem frissítése</value>
+  <alternative>New version for showroom {0}</alternative></data>
   <data name="ContentInstallation_TrackExisting" xml:space="preserve">
-    <value>New version for track {0}</value>
-  </data>
+    <value>Frissítés a(z) {0} pályához</value>
+  <alternative>New version for track {0}</alternative></data>
   <data name="ContentInstallation_WeatherExisting" xml:space="preserve">
-    <value>New version for weather {0}</value>
-  </data>
+    <value>Frissítés a(z) {0} időjáráshoz</value>
+  <alternative>New version for weather {0}</alternative></data>
   <data name="ContentInstallation_WeatherNew" xml:space="preserve">
-    <value>New weather {0}</value>
-  </data>
+    <value>Új időjárás {0}</value>
+  <alternative>New weather {0}</alternative></data>
   <data name="ContentSyncronizer_CannotLoadContent" xml:space="preserve">
-    <value>Can’t load content pack</value>
-  </data>
+    <value>Nem lehet betölteni a tartalmat.</value>
+  <alternative>Can’t load content pack</alternative></data>
   <data name="ContentSyncronizer_CannotLoadContent_Commentary" xml:space="preserve">
-    <value>Make sure Internet connection is available and nothing is going on in Content folder.</value>
-  </data>
+    <value>Bizonyosodj meg az internetkapcsolat működéséről és arról, hogy semmi sem használja a content mappát.</value>
+  <alternative>Make sure Internet connection is available and nothing is going on in Content folder.</alternative></data>
   <data name="Controls_FlashHeadlights" xml:space="preserve">
-    <value>Flash Headlights</value>
-  </data>
+    <value>Fényszórók villantása</value>
+  <alternative>Flash Headlights</alternative></data>
   <data name="Controls_Mguh_Mode" xml:space="preserve">
-    <value>MGU-H Mode</value>
-  </data>
+    <value>MGU-H üzemmód</value>
+  <alternative>MGU-H Mode</alternative></data>
   <data name="Controls_Mguk_DecreaseDelivery" xml:space="preserve">
-    <value>Decrease Delivery</value>
-  </data>
+    <value>Leadás csökkentése</value>
+  <alternative>Decrease Delivery</alternative></data>
   <data name="Controls_Mguk_DecreaseRecovery" xml:space="preserve">
-    <value>Decrease Recovery</value>
-  </data>
+    <value>Visszatermelés csökkentése</value>
+  <alternative>Decrease Recovery</alternative></data>
   <data name="Controls_Mguk_IncreaseDelivery" xml:space="preserve">
-    <value>Increase Delivery</value>
-  </data>
+    <value>Leadás növelése</value>
+  <alternative>Increase Delivery</alternative></data>
   <data name="Controls_Mguk_IncreaseRecovery" xml:space="preserve">
-    <value>Increase Recovery</value>
-  </data>
+    <value>Visszatermelés növelése</value>
+  <alternative>Increase Recovery</alternative></data>
   <data name="Controls_Xbox360Gamepad" xml:space="preserve">
     <value>Xbox 360 gamepad</value>
   </data>
@@ -256,14 +256,14 @@
     <value>Show Admin Password Input</value>
   </data>
   <data name="AcObject_CannotToggle_Commentary" xml:space="preserve">
-    <value>Make sure there is no runned app working with object’s folder.</value>
-  </data>
+    <value>Bizonyosodj meg róla, hogy az objektumot tartalmazó mappán nem dolgozik más applikáció.</value>
+  <alternative>Make sure there is no runned app working with object’s folder.</alternative></data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
-    <value>Highspeed shaking</value>
-  </data>
+    <value>Nagy sebességű rázkódás</value>
+  <alternative>Highspeed shaking</alternative></data>
   <data name="Assists_AutoBlip_Tooltip" xml:space="preserve">
-    <value>Automatically syncronize RPM on downshifts</value>
-  </data>
+    <value>Automatikus gáfröccs visszaváltásnál az RPM szinkronizálására</value>
+  <alternative>Automatically syncronize RPM on downshifts</alternative></data>
   <data name="GameCommand_TimeoutExceeded_Commentary" xml:space="preserve">
     <value>Make sure command doesn’t take more than {0:F1} seconds; use “start [app.exe]” instead of “[app.exe]” if app supposed to run in background</value>
   </data>
@@ -272,5 +272,716 @@
   </data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
     <value>Make sure there is no runned app working with showroom’s sound files.</value>
+  </data>
+  <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
+    <value>A márkajelzés hiányzik</value>
+  </data>
+  <data name="AcError_BrandNameIsMissing" xml:space="preserve">
+    <value>A márka elnevezése hiányzik</value>
+  </data>
+  <data name="AcError_CarIsMissing" xml:space="preserve">
+    <value>A “{0}” autó hiányzik</value>
+  </data>
+  <data name="AcError_CarParentIsMissing" xml:space="preserve">
+    <value>Az autót tartalmazó mappa hiányzik</value>
+  </data>
+  <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
+    <value>A “colorCurves.ini” nevű fájl hiányzik</value>
+  </data>
+  <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
+    <value>Az “ui” mappa hiányzik</value>
+  </data>
+  <data name="AcError_EventConditionsAreNotSupported" xml:space="preserve">
+    <value>Az esemény feltétele “{0}” még nem támogatott</value>
+  </data>
+  <data name="AcError_EventsOfAreMissing" xml:space="preserve">
+    <value>A “{0}” -hoz tartozó események hiányoznak</value>
+  </data>
+  <data name="AcError_FileIsDamaged" xml:space="preserve">
+    <value>A “{0}” fájl sérült</value>
+  </data>
+  <data name="AcError_FileIsMissing" xml:space="preserve">
+    <value>A “{0}” fájl hiányzik</value>
+  </data>
+  <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
+    <value>Betűtípus bitmap-je hiányzik</value>
+  </data>
+  <data name="AcError_FontIsUsedButDisabled" xml:space="preserve">
+    <value>Betűtípus használatban van, de nincs engedélyeve</value>
+  </data>
+  <data name="AcError_LoadingUnhandledError" xml:space="preserve">
+    <value>Nem kezelt hiba a betöltés során: {0}</value>
+  </data>
+  <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
+    <value>A model (KN5 fájl) hiányzik</value>
+  </data>
+  <data name="AcError_NameIsMissing" xml:space="preserve">
+    <value>Hiányzó név</value>
+  </data>
+  <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
+    <value>A név nem tartalmazhatja a  “[” vagy “]” karaktereket</value>
+  </data>
+  <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
+    <value>A “{0}” autó hiányzik</value>
+  </data>
+  <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
+    <value>A szükséges tartalom hiányzik</value>
+  </data>
+  <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
+    <value>Az “{1}” skin hiányzik a {0} -hoz</value>
+  </data>
+  <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
+    <value>A “{0}” pálya hiányzik</value>
+  </data>
+  <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
+    <value>“{0}” időjárás hiányzik</value>
+  </data>
+  <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
+    <value>A ({0}) pályabeállítás hiányzik </value>
+  </data>
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Az autó festése ({0}/livery.png) hiányzik</value>
+  </data>
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Az autófestés előnézete ({0}/preview.jpg) hiányzik</value>
+  </data>
+  <data name="AcError_SkinsAreMissing" xml:space="preserve">
+    <value>Az autófestések hiányoznak</value>
+  </data>
+  <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
+    <value>Az autók festéseit tartalmazó mappa nem érhető el</value>
+  </data>
+  <data name="AcError_TrackIsMissing" xml:space="preserve">
+    <value>A “{0}” pálya hiányzik</value>
+  </data>
+  <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
+    <value>Frissítés ikon hiányzik</value>
+  </data>
+  <data name="AcObject_CannotBeDisabled" xml:space="preserve">
+    <value>Nem lehet letiltani</value>
+  </data>
+  <data name="AcObject_CannotBeMoved" xml:space="preserve">
+    <value>Az objektum nem áthelyezhető</value>
+  </data>
+  <data name="AcObject_CannotChangeId" xml:space="preserve">
+    <value>Az azonosítót nem lehet megváltoztatni</value>
+  </data>
+  <data name="AcObject_CannotChangeIdExt" xml:space="preserve">
+    <value>A következő azonosítót nem lehet megváltoztatni: {0}</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Az objektum nem klónozható</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy rendelkezésre áll elegendő hely a merevlemezen</value>
+  </data>
+  <data name="AcObject_CannotDelete" xml:space="preserve">
+    <value>Nem lehet törölni</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Az útvonal alapján az azonosító nem tudható meg</value>
+  </data>
+  <data name="AcObject_CannotRemove" xml:space="preserve">
+    <value>A már létrehozott mappa nem törölhető</value>
+  </data>
+  <data name="AcObject_CannotToggle" xml:space="preserve">
+    <value>Nem kapcsolható / változtatható</value>
+  </data>
+  <data name="AcObject_CannotToggleExt" xml:space="preserve">
+    <value>A következő dolog nem kapcsolható / változtatható: {0}</value>
+  </data>
+  <data name="AcObject_DisablingNotSupported_Commentary" xml:space="preserve">
+    <value>Sajnálom, az ilyen típusú objektumok nem tilthatóak le.</value>
+  </data>
+  <data name="AcObject_IdIsWrong" xml:space="preserve">
+    <value>Az azonosító hibás</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Már nem érvényes</value>
+  </data>
+  <data name="AcObject_PlaceIsTaken" xml:space="preserve">
+    <value>Place is taken / a hely elvéve</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically" xml:space="preserve">
+    <value>Újratöltse a fájlt?</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
+    <value>INI-fájl meg lett változtatva. Újratöltse? Az összes helyi változás el fog veszni.</value>
+  </data>
+  <data name="AcObject_ReloadAutomatically_Json" xml:space="preserve">
+    <value>JSON-fájl meg lett változtatva. Újratöltse? Az összes helyi változás el fog veszni.</value>
+  </data>
+  <data name="AcRootDirectory_Missing" xml:space="preserve">
+    <value>A mappa hiányzik</value>
+  </data>
+  <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
+    <value>A “{0}” mappa hiányzik</value>
+  </data>
+  <data name="AcRootDirectory_MissingFile" xml:space="preserve">
+    <value>A “{0}” fájl hiányzik</value>
+  </data>
+  <data name="AcRootDirectory_NotDefined" xml:space="preserve">
+    <value>A mappa nincs megadva</value>
+  </data>
+  <data name="AcRootDirectory_Required" xml:space="preserve">
+    <value>Assetto Corsa gyökérkönyvtár megadása szükséges</value>
+  </data>
+  <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
+    <value>Nem tudott pontos listát lekérni a felbontásokról</value>
+  </data>
+  <data name="AcSettings_CannotSave" xml:space="preserve">
+    <value>Nem menthetőek az AC beállítások</value>
+  </data>
+  <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy az app-nak hozzáférése van a cfg (config) mappához.</value>
+  </data>
+  <data name="AcSettings_Cubemap_FiveFaces" xml:space="preserve">
+    <value>5 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_Cubemap_FourFaces" xml:space="preserve">
+    <value>4 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_Cubemap_OneFace" xml:space="preserve">
+    <value>1 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_Cubemap_SixFaces" xml:space="preserve">
+    <value>6 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_Cubemap_Static" xml:space="preserve">
+    <value>Statikus</value>
+  </data>
+  <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
+    <value>3 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_Cubemap_TwoFaces" xml:space="preserve">
+    <value>2 "face" képkockánként</value>
+  </data>
+  <data name="AcSettings_CustomResolution" xml:space="preserve">
+    <value>Egyedi</value>
+  </data>
+  <data name="AcSettings_ExperimentalValue" xml:space="preserve">
+    <value>{0} (kísérleti)</value>
+  </data>
+  <data name="AcSettings_Off" xml:space="preserve">
+    <value>Ki</value>
+  </data>
+  <data name="AcSettings_Quality_High" xml:space="preserve">
+    <value>Magas</value>
+  </data>
+  <data name="AcSettings_Quality_Ideal" xml:space="preserve">
+    <value>Ideális</value>
+  </data>
+  <data name="AcSettings_Quality_Low" xml:space="preserve">
+    <value>Alacsony</value>
+  </data>
+  <data name="AcSettings_Quality_Medium" xml:space="preserve">
+    <value>Közepes</value>
+  </data>
+  <data name="AcSettings_Quality_Normal" xml:space="preserve">
+    <value>Normál</value>
+  </data>
+  <data name="AcSettings_ScreenshotFormat_Bmp" xml:space="preserve">
+    <value>Bitmap (tömörítés nélkül)</value>
+  </data>
+  <data name="AcSettings_View_AllowAppsOverlapping" xml:space="preserve">
+    <value>A játékbeli app-ok átfedésének engedélyezése</value>
+  </data>
+  <data name="AcSettings_View_CameraHeader" xml:space="preserve">
+    <value>Kamera:</value>
+  </data>
+  <data name="AcSettings_View_Damage" xml:space="preserve">
+    <value>Sérülések mutatása (GUI-n)</value>
+  </data>
+  <data name="AcSettings_View_DriversNames" xml:space="preserve">
+    <value>Játékosok neveinek mutatása</value>
+  </data>
+  <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
+    <value>G-erők:</value>
+  </data>
+  <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
+    <value>Ragyogási szög</value>
+  </data>
+  <data name="AcSettings_View_GlancingSpeed" xml:space="preserve">
+    <value>Ragyogási sebesség</value>
+  </data>
+  <data name="AcSettings_View_HideDriverArms" xml:space="preserve">
+    <value>Vezető kezének elrejtése</value>
+  </data>
+  <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
+    <value>Kormány elrejtése</value>
+  </data>
+  <data name="AcSettings_View_Lateral" xml:space="preserve">
+    <value>Laterális (oldalsó)</value>
+  </data>
+  <data name="AcSettings_View_Leaderboard" xml:space="preserve">
+    <value>Eredménytábla mutatása</value>
+  </data>
+  <data name="AcSettings_View_LockCamera" xml:space="preserve">
+    <value>Beltéri kamera rögzítése a horizonthoz</value>
+  </data>
+  <data name="AcSettings_View_Locked" xml:space="preserve">
+    <value>Rögzített</value>
+  </data>
+  <data name="AcSettings_View_LockSteeringWheel" xml:space="preserve">
+    <value>Kormány rögzítése (nem mozog)</value>
+  </data>
+  <data name="AcSettings_View_Longtudinal" xml:space="preserve">
+    <value>Longitudinális (hosszanti)</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit" xml:space="preserve">
+    <value>Kormányzási korlát</value>
+  </data>
+  <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
+    <value>Virtuális kormány forgási korlátja</value>
+  </data>
+  <data name="AcSettings_View_TimeGap" xml:space="preserve">
+    <value>Időkülönbség mutatása ellenfelekhez képest</value>
+  </data>
+  <data name="AcSettings_View_UnitsLabel" xml:space="preserve">
+    <value>Mértékegységek:</value>
+  </data>
+  <data name="AcSettings_View_Vertical" xml:space="preserve">
+    <value>Vertikális (függőleges)</value>
+  </data>
+  <data name="AcSettings_View_ViewHeader" xml:space="preserve">
+    <value>Nézet:</value>
+  </data>
+  <data name="AcSettings_View_VirtualMirror" xml:space="preserve">
+    <value>Mutassa a virtuális tükröt</value>
+  </data>
+  <data name="AdditionalContent_Car" xml:space="preserve">
+    <value>autó</value>
+  </data>
+  <data name="AdditionalContent_CarSkin" xml:space="preserve">
+    <value>autófestés</value>
+  </data>
+  <data name="AdditionalContent_Font" xml:space="preserve">
+    <value>betűtípus</value>
+  </data>
+  <data name="AdditionalContent_Showroom" xml:space="preserve">
+    <value>bemutatóterem</value>
+  </data>
+  <data name="AdditionalContent_Track" xml:space="preserve">
+    <value>pálya</value>
+  </data>
+  <data name="AdditionalContent_Weather" xml:space="preserve">
+    <value>Időjárás:</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Hozzáférés megtagadva</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Nem frissíthető az app, hiányzó engedélyek miatt. Kérlek frissítsd manuálisan.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Nem frissíthető az app, hiányzó engedélyek miatt.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Az új verzió nem indítható el.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy van internet hozzáférésed és az app-nak írási joga van ahhoz a mappához, amiben van.</value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Az új verzió nem indítható el.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>A “{0}” eredeti fájl nem eltávolítható, így a frissítést nem lehet telepíteni. Próbáld meg manuálisan eltávolítani majd futtasd a “{1}” -t.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Az app-ot nem lehetett frissíteni</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>A kicsomagolt verzió nem támogatja az automatikus frissítést.</value>
+  </data>
+  <data name="AppUpdater_UpdateFailed" xml:space="preserve">
+    <value>A frissítés sikertelen volt</value>
+  </data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>A kicsomagoló nem indult el</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Hibás jelszó</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Jelszó szükséges</value>
+  </data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Sajnálom, de a {0} tömörítés nem támogatott</value>
+  </data>
+  <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
+    <value>Fékerőelosztó rendszer</value>
+  </data>
+  <data name="Assists_AutoBlip" xml:space="preserve">
+    <value>Automatikus gázelvétel váltásoknál</value>
+  </data>
+  <data name="Assists_AutoClutch" xml:space="preserve">
+    <value>Automatikus kuplung</value>
+  </data>
+  <data name="Assists_AutoClutch_Tooltip" xml:space="preserve">
+    <value>Automatikusan nyomja meg a kuplungot váltásnál</value>
+  </data>
+  <data name="Assists_AutoShifting" xml:space="preserve">
+    <value>Automata váltás</value>
+  </data>
+  <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
+    <value>Ne kuszáljuk össze az automata váltóval</value>
+  </data>
+  <data name="Assists_FuelConsumption" xml:space="preserve">
+    <value>Üzemanyagfogyasztás</value>
+  </data>
+  <data name="Assists_IdealLine" xml:space="preserve">
+    <value>Ideális ív</value>
+  </data>
+  <data name="Assists_IdealLine_Tooltip" xml:space="preserve">
+    <value>Mutassa az ideális ívet</value>
+  </data>
+  <data name="Assists_MechanicalDamage" xml:space="preserve">
+    <value>Mechanikus sérülés</value>
+  </data>
+  <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
+    <value>A motor, váltó, felfüggesztés és egyebek sérüléseinek engedélyezése</value>
+  </data>
+  <data name="Assists_SlipstreamEffect" xml:space="preserve">
+    <value>Légörvény effektus</value>
+  </data>
+  <data name="Assists_SlipstreamEffect_Tooltip" xml:space="preserve">
+    <value>Légörvény effektus szorzója</value>
+  </data>
+  <data name="Assists_StabilityControl" xml:space="preserve">
+    <value>Stabilitási kontroll</value>
+  </data>
+  <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
+    <value>Nem valósághű, de segít ha kezdő vagy és tanulnál vezetni, driftelni</value>
+  </data>
+  <data name="Assists_Title" xml:space="preserve">
+    <value>Vezetési segédek</value>
+  </data>
+  <data name="Assists_TractionControlLabel" xml:space="preserve">
+    <value>Kipörgésgátló:</value>
+  </data>
+  <data name="Assists_TractionControlLabel_Tooltip" xml:space="preserve">
+    <value>Optimalizálja a tapadást a kigyorsításnál</value>
+  </data>
+  <data name="Assists_TyreBlankets" xml:space="preserve">
+    <value>Gumimelegítő papucsok</value>
+  </data>
+  <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
+    <value>Gumik melegítése a boxutcában</value>
+  </data>
+  <data name="Assists_TyreWear" xml:space="preserve">
+    <value>Gumikopás</value>
+  </data>
+  <data name="Assists_TyreWear_Tooltip" xml:space="preserve">
+    <value>Gumikops szorzója</value>
+  </data>
+  <data name="AssistState_Factory" xml:space="preserve">
+    <value>Gyári</value>
+  </data>
+  <data name="AssistState_Off" xml:space="preserve">
+    <value>Ki</value>
+  </data>
+  <data name="AssistState_On" xml:space="preserve">
+    <value>Be</value>
+  </data>
+  <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
+    <value>Nem lehet információt letölteni a legutolsó verzióról.</value>
+  </data>
+  <data name="CarParentIsMissing" xml:space="preserve">
+    <value>Hiányzik az autó alaptípusa</value>
+  </data>
+  <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
+    <value>Érvénytelen hely</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftFront" xml:space="preserve">
+    <value>Bal első</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_LeftRear" xml:space="preserve">
+    <value>Bal hátsó</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
+    <value>Jobb első</value>
+  </data>
+  <data name="CarSetupObject_TyresPressure_RightRear" xml:space="preserve">
+    <value>Jobb hátsó</value>
+  </data>
+  <data name="Championship" xml:space="preserve">
+    <value>Bajnokság</value>
+  </data>
+  <data name="Common_CannotDo" xml:space="preserve">
+    <value>Nem hajtható végre</value>
+  </data>
+  <data name="Common_CannotDownloadFile" xml:space="preserve">
+    <value>A fájlt nem lehet letölteni</value>
+  </data>
+  <data name="Common_CannotDownloadFile_Commentary" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy az internet elérhető.</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Nem olvasható adat</value>
+  </data>
+  <data name="Common_CannotUnpack" xml:space="preserve">
+    <value>A {0} nem kicsomagolható</value>
+  </data>
+  <data name="Common_CarIdIsMissing" xml:space="preserve">
+    <value>Az autó azonosítója hiányzik</value>
+  </data>
+  <data name="Common_Destination" xml:space="preserve">
+    <value>Cél</value>
+  </data>
+  <data name="Common_Disabled" xml:space="preserve">
+    <value>Letiltva</value>
+  </data>
+  <data name="Common_Exporting" xml:space="preserve">
+    <value>Exportálás…</value>
+  </data>
+  <data name="Common_GlobalHeader" xml:space="preserve">
+    <value>Globális:</value>
+  </data>
+  <data name="Common_Height" xml:space="preserve">
+    <value>Magasság</value>
+  </data>
+  <data name="Common_IdIsMissing" xml:space="preserve">
+    <value>Hiányzó azonosító</value>
+  </data>
+  <data name="Common_IdIsTaken" xml:space="preserve">
+    <value>Az azonosító elvéve</value>
+  </data>
+  <data name="Common_IdIsTaken_Commentary" xml:space="preserve">
+    <value>Válassz másik azonosítót.</value>
+  </data>
+  <data name="Common_InvalidFormat" xml:space="preserve">
+    <value>Érvénytelen formátum</value>
+  </data>
+  <data name="Common_Length" xml:space="preserve">
+    <value>Hossz</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>A Lua nem inicializálható</value>
+  </data>
+  <data name="Common_MakeSureInternetWorks" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy az internet elérhető.</value>
+  </data>
+  <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
+    <value>Bizonyosodj meg róla, hogy van elég hely a merevlemezen.</value>
+  </data>
+  <data name="Common_None" xml:space="preserve">
+    <value>Nincs</value>
+  </data>
+  <data name="Common_Number" xml:space="preserve">
+    <value>Szám</value>
+  </data>
+  <data name="Common_Power" xml:space="preserve">
+    <value>Teljesítmény</value>
+  </data>
+  <data name="Common_Radius" xml:space="preserve">
+    <value>Sugár</value>
+  </data>
+  <data name="Common_Recommended" xml:space="preserve">
+    <value>{0} (Ajánlott)</value>
+  </data>
+  <data name="Common_Scanning" xml:space="preserve">
+    <value>Scannelés…</value>
+  </data>
+  <data name="Common_Speed" xml:space="preserve">
+    <value>Sebesség</value>
+  </data>
+  <data name="Common_SteamIdIsMissing" xml:space="preserve">
+    <value>Hiányzó steam azonosító</value>
+  </data>
+  <data name="Common_Submit" xml:space="preserve">
+    <value>Közzétesz</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Szintaktikai hiba: {0}</value>
+  </data>
+  <data name="Common_Time" xml:space="preserve">
+    <value>Idő</value>
+  </data>
+  <data name="Common_Torque" xml:space="preserve">
+    <value>Nyomaték</value>
+  </data>
+  <data name="Common_UndefinedError" xml:space="preserve">
+    <value>Ismeretlen hiba</value>
+  </data>
+  <data name="Common_UnhandledError_Commentary" xml:space="preserve">
+    <value>Nem kezelt hiba történt.</value>
+  </data>
+  <data name="Common_Warning" xml:space="preserve">
+    <value>Figyelmeztetés</value>
+  </data>
+  <data name="Common_Weekend" xml:space="preserve">
+    <value>Versenyhétvége</value>
+  </data>
+  <data name="Common_Width" xml:space="preserve">
+    <value>Szélesség</value>
+  </data>
+  <data name="ContentInstallation_CarNew" xml:space="preserve">
+    <value>Új autó {0}</value>
+  </data>
+  <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
+    <value>Új bemutatóterem {0}</value>
+  </data>
+  <data name="ContentInstallation_TrackNew" xml:space="preserve">
+    <value>Új pálya {0}</value>
+  </data>
+  <data name="Controls_Brakes" xml:space="preserve">
+    <value>Fék</value>
+  </data>
+  <data name="Controls_Celebrate" xml:space="preserve">
+    <value>Ünneplés</value>
+  </data>
+  <data name="Controls_ChangeCamera" xml:space="preserve">
+    <value>Nézetváltás</value>
+  </data>
+  <data name="Controls_Clutch" xml:space="preserve">
+    <value>Kuplung</value>
+  </data>
+  <data name="Controls_Complain" xml:space="preserve">
+    <value>Panaszkodás</value>
+  </data>
+  <data name="Controls_Decrease" xml:space="preserve">
+    <value>Csökkentés</value>
+  </data>
+  <data name="Controls_Drs" xml:space="preserve">
+    <value>DRS aktiválása</value>
+  </data>
+  <data name="Controls_Gear_Fifth" xml:space="preserve">
+    <value>Ötödik fokozat</value>
+  </data>
+  <data name="Controls_Gear_First" xml:space="preserve">
+    <value>Első fokozat</value>
+  </data>
+  <data name="Controls_Gear_Fourth" xml:space="preserve">
+    <value>Negyedik fokozat</value>
+  </data>
+  <data name="Controls_Gear_Rear" xml:space="preserve">
+    <value>Hátrameneti fokozat</value>
+  </data>
+  <data name="Controls_Gear_Second" xml:space="preserve">
+    <value>Második fokozat</value>
+  </data>
+  <data name="Controls_Gear_Seventh" xml:space="preserve">
+    <value>Hetedik fokozat</value>
+  </data>
+  <data name="Controls_Gear_Sixth" xml:space="preserve">
+    <value>Hatodik fokozat</value>
+  </data>
+  <data name="Controls_Gear_Third" xml:space="preserve">
+    <value>Harmadik fokozat</value>
+  </data>
+  <data name="Controls_GlanceBack" xml:space="preserve">
+    <value>Hátra nézés</value>
+  </data>
+  <data name="Controls_GlanceLeft" xml:space="preserve">
+    <value>Balra nézés</value>
+  </data>
+  <data name="Controls_GlanceRight" xml:space="preserve">
+    <value>Jobbra nézés</value>
+  </data>
+  <data name="Controls_Handbrake" xml:space="preserve">
+    <value>Kézifék</value>
+  </data>
+  <data name="Controls_Headlights" xml:space="preserve">
+    <value>Fényszórók</value>
+  </data>
+  <data name="Controls_Horn" xml:space="preserve">
+    <value>Duda</value>
+  </data>
+  <data name="Controls_Increase" xml:space="preserve">
+    <value>Növelés</value>
+  </data>
+  <data name="Controls_Kers" xml:space="preserve">
+    <value>KERS aktiválása</value>
+  </data>
+  <data name="Controls_KeyboardAndMouse" xml:space="preserve">
+    <value>Billentyűzet és egér</value>
+  </data>
+  <data name="Controls_MoveToFront" xml:space="preserve">
+    <value>Első tengely felé</value>
+  </data>
+  <data name="Controls_MoveToRear" xml:space="preserve">
+    <value>Hátsó tengely felé</value>
+  </data>
+  <data name="Controls_NextGear" xml:space="preserve">
+    <value>Felváltás</value>
+  </data>
+  <data name="Controls_PreviousGear" xml:space="preserve">
+    <value>Visszaváltás</value>
+  </data>
+  <data name="Controls_Steering" xml:space="preserve">
+    <value>Kormányzás</value>
+  </data>
+  <data name="Controls_SteeringWheel" xml:space="preserve">
+    <value>Kormány</value>
+  </data>
+  <data name="Controls_SteerLeft" xml:space="preserve">
+    <value>Kormányzás balra</value>
+  </data>
+  <data name="Controls_SteerRight" xml:space="preserve">
+    <value>Kormányzás jobbra</value>
+  </data>
+  <data name="Controls_Throttle" xml:space="preserve">
+    <value>Gáz</value>
+  </data>
+  <data name="Drive_Grid_FilteredBy" xml:space="preserve">
+    <value>Szűrés a következők szerint…</value>
+  </data>
+  <data name="Drive_Grid_Manual" xml:space="preserve">
+    <value>Manuális</value>
+  </data>
+  <data name="Drive_Grid_SameCar" xml:space="preserve">
+    <value>Azonos autó</value>
+  </data>
+  <data name="Drive_Grid_SameGroup" xml:space="preserve">
+    <value>Azonos autókategória</value>
+  </data>
+  <data name="Drive_GridAdd_Tooltip" xml:space="preserve">
+    <value>További autó hozzáadása a listához</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Random" xml:space="preserve">
+    <value>Véletlenszerű</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Shuffle" xml:space="preserve">
+    <value>Keverés</value>
+  </data>
+  <data name="Drive_GridArrangeWay_Tooltip" xml:space="preserve">
+    <value>Nevezettek rendezései módja</value>
+  </data>
+  <data name="Drive_GridType" xml:space="preserve">
+    <value>Ellenfelek autói:</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>A versenymezőny nem frissíthető</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Nem található versenymezőny az ID-vel “{0}”</value>
+  </data>
+  <data name="Session_Booking" xml:space="preserve">
+    <value>Foglalás</value>
+  </data>
+  <data name="Session_Drag" xml:space="preserve">
+    <value>Gyorsulási verseny</value>
+  </data>
+  <data name="Session_Hotlap" xml:space="preserve">
+    <value>Gyors kör</value>
+  </data>
+  <data name="Session_Practice" xml:space="preserve">
+    <value>Gyakorlás</value>
+  </data>
+  <data name="Session_Qualification" xml:space="preserve">
+    <value>Kvalifikáció</value>
+  </data>
+  <data name="Session_Race" xml:space="preserve">
+    <value>Verseny</value>
+  </data>
+  <data name="Session_TimeAttack" xml:space="preserve">
+    <value>Időfutam</value>
+  </data>
+  <data name="Session_TrackDay" xml:space="preserve">
+    <value>Pályanap</value>
+  </data>
+  <data name="Shared_RaceGridPreset" xml:space="preserve">
+    <value>Mezőny előbeállítása</value>
   </data>
 </root>

@@ -3496,4 +3496,385 @@
   <data name="CarSpecs_PowerAtWheels_FormatTooltip" xml:space="preserve">
     <value>...轮上马力</value>
   </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>删除网站“ {0}”的书签？</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>{0}的说明</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>无法共享设置</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>可能有过多数据。</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>详细信息已复制到剪贴板</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>自定义语言文件已更新。 您想立即重新启动软件吗？</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>语言文件已更新</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>这条赛道上的最佳圈：</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>驾驶车辆：</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>驾驶的赛道：</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>汽车单独用的控制：</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>读取辅助与快速驾驶预设（全局）</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>选择预设时按住Ctrl键 可以一次反转此行为</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>使用解压缩的数据（如果存在）</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>使用解压缩的数据（全局）</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>重置汽车单独用的标志（flag）</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>修车</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>找到{0}个{important issue}</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>未选择车</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>未选择赛道</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>风速（米/秒）</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>相对风速</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>风向 度</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>随机风速</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>随机风向</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>风</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>具体日期</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>随机时间</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>手动设置风</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>理想条件</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>随机温度</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>自定义道路温度</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>道路温度</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>下载：</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>删除已完成的</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>全部安装</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>在“内容管理”部分中将汽车或其他物品放到此处以将其打开</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0}个正在安装</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>移除所有</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>查看变更日志</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>跳过此更新</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>禁用自动更新</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>抓到{0} {error}</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>单圈时间</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>结果</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>下载</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>CM设置</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>AC设定</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>CSP设定</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>关于内容管理器</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>赛事</value>
+  </data>
+  <data name="Main_Challenges_Drifts" xml:space="preserve">
+    <value>漂移</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>直线加速</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>尚未通过</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>有待改进</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>冠军赛</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>局域网</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>表</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>来源</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>仅Kunos的车</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>仅Kunos车和赛道</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>仅Mods</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>最常被使用</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>车手车型</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>用户冠军</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>获取新的mod</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>MOD</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>工具</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>下载和安装</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>有关过滤的一切</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>管理来源</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>原始启动器</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>上一节的表现</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>上一节的表现：</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>平均：</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>最低要求：</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>取了：</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0}个样本</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>每秒{0:F1}帧</value>
+  </data>
+  <data name="Main_FPS_Unknown" xml:space="preserve">
+    <value>？FPS</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>换车</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>在陈列室中打开</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>管理设置</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>管理车</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>变更赛道</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>管理赛道</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>时间超出天气范围</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>总</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>困难程度</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>无预览</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>实际情况…</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>将新标签的排序设置为默认</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>将过滤器设置为新选项卡的默认选项</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>刷新</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>什么都没找到。</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>默认</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>姓名（原）</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>收藏</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>连接的车手</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>不要记录鬼影车</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+    <value>汽车品种限制</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+    <value>使用此滑块，您可以限制要加载AC的各种汽车的最大数量</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>避免没有皮肤编号的汽车</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+    <value>可能大大减少品种</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+    <value>按顺序选择皮肤</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+    <value>应用会尝试按升序排列皮肤，同时按照过滤，并仍在需要时打乱排序</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>界面比例</value>
+  </data>
+  <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+    <value>窄滚动条</value>
+  </data>
+  <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+    <value>弹出的滚动条</value>
+  </data>
+  <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+    <value>较大的字体</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>粗体</value>
+  </data>
+  <data name="Settings_Appearance_Links" xml:space="preserve">
+    <value>链接：</value>
+  </data>
+  <data name="Settings_Appearance_Background" xml:space="preserve">
+    <value>背景：</value>
+  </data>
+  <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+    <value>幻灯片放映的文件夹</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>每次更换图片：</value>
+  </data>
+  <data name="Settings_Appearance_Placement" xml:space="preserve">
+    <value>放置：</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>不透明度</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>模糊</value>
+  </data>
+  <data name="Settings_Appearance_Interface" xml:space="preserve">
+    <value>界面：</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+    <value>绑定到屏幕：</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>标题链接和菜单：</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>找不到可配置的应用程序</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>更改将自动保存。如果您想优化显示配置文件的方式，可以在此处找到有关它们的更多信息[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"][/url].</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>在某些情况下，使用自定义的陈列室而不是原始陈列室</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+    <value>在搜索框旁边显示可拖动区域</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>禁用此选项后，您可以通过关闭按钮拖动它们</value>
+  </data>
+  <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+    <value>在右上角的菜单中显示下载和安装列表</value>
+  </data>
 </root>

@@ -1672,4 +1672,7 @@ Chciałbyś spakować to przed uruchomieniem serwera? Jeśli tak, nie zapomnij u
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>Agresja przeciwników</value>
   </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value>Hz</value>
+  </data>
 </root>

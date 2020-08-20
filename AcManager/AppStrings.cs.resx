@@ -233,11 +233,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Při hraní vizuálně upozorňovat na auta v nejbližším okolí</value>
   <alternative>Zobrazit indikátor nejbližších soupeřů</alternative></data>
   <data name="AcSettings_Replays_EventPostLabel" xml:space="preserve">
-    <value>Provést po přehrání:</value>
-  </data>
+    <value>Provádět po přehrání:</value>
+  <alternative>Provést po přehrání:</alternative></data>
   <data name="AcSettings_Replays_EventPreLabel" xml:space="preserve">
-    <value>Provést před přehráním:</value>
-  </data>
+    <value>Provádět před přehráním:</value>
+  <alternative>Provést před přehráním:</alternative></data>
   <data name="AcSettings_Replays_EventsHeader" xml:space="preserve">
     <value>Příkazy před a po přehrání opakovaných záznamů:</value>
   </data>
@@ -269,11 +269,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Vývojářské appky</value>
   </data>
   <data name="AcSettings_System_FreeCamera" xml:space="preserve">
-    <value>Povolit volný pohyb kamery</value>
-  </data>
+    <value>Volný pohyb kamery</value>
+  <alternative>Povolit volný pohyb kamery</alternative></data>
   <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Pro volný pohyb kamery ve hře stiskněte klávesu F7 a parametry kamery měňte šipkami i myší</value>
-  <alternative>Pro volný pohyb kamery ve hře stiskněte klávesu F7 </alternative></data>
+    <value>Po stisknutí klávesy F7 ve hře se pohybujte šipkami (s případným souběžným přidržením klávesy Ctrl či Shift) a myší</value>
+  <alternative>Pro volný pohyb kamery ve hře stiskněte klávesu F7 </alternative><alternative>Pro volný pohyb kamery ve hře stiskněte klávesu F7 a parametry kamery měňte šipkami i myší</alternative></data>
   <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
     <value>Formát screenshotů:</value>
   </data>
@@ -284,8 +284,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Kvalita grafiky a výkon</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>Povolit nepodporované rozhraní DirectX 10 (nemusí fungovat)</value>
-  </data>
+    <value>Nepodporované rozhraní DirectX 10 (nemusí fungovat)</value>
+  <alternative>Povolit nepodporované rozhraní DirectX 10 (nemusí fungovat)</alternative></data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
     <value>Anizotropické filtrování:</value>
   </data>
@@ -308,11 +308,11 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Hloubka ostrosti:</value>
   </data>
   <data name="AcSettings_Video_EnablePostProcessing" xml:space="preserve">
-    <value>Povolit post-processing</value>
-  </data>
+    <value>Post-processing</value>
+  <alternative>Povolit post-processing</alternative></data>
   <data name="AcSettings_Video_FixResolutionAutomatically" xml:space="preserve">
-    <value>Automaticky nastavit rozlišení</value>
-  </data>
+    <value>Automatická volba rozlišení</value>
+  <alternative>Automaticky nastavit rozlišení</alternative></data>
   <data name="AcSettings_Video_Framerate" xml:space="preserve">
     <value>Nepřekračovat</value>
   </data>
@@ -332,8 +332,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Vysoká kvalita</value>
   </data>
   <data name="AcSettings_Video_LimitFramerate" xml:space="preserve">
-    <value>Omezit snímkování</value>
-  </data>
+    <value>Omezené snímkování</value>
+  <alternative>Omezit snímkování</alternative></data>
   <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
     <value>Zpoždění snímku</value>
   </data>
@@ -404,14 +404,14 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Kouř:</value>
   </data>
   <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
-    <value>Zobrazit kouř v zrcátkách</value>
-  </data>
+    <value>Zobrazení kouře v zrcátkách</value>
+  <alternative>Zobrazit kouř v zrcátkách</alternative></data>
   <data name="AcSettings_Video_SystemHeader" xml:space="preserve">
     <value>Ostatní:</value>
   </data>
   <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
-    <value>Vertikální synchronizace</value>
-  </data>
+    <value>Vertikální synchronizace pro předejití trhání obrazu (zvýší input lag)</value>
+  <alternative>Vertikální synchronizace</alternative></data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
     <value>Okolní prostředí:</value>
   </data>
@@ -476,8 +476,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Zařízení: {0}</value>
   </data>
   <data name="Controls_EnableMouseSteering" xml:space="preserve">
-    <value>Umožnit řízení myší</value>
-  </data>
+    <value>Povolení řízení myší</value>
+  <alternative>Umožnit řízení myší</alternative></data>
   <data name="Controls_EngineBrake" xml:space="preserve">
     <value>Síla brzdění motorem:</value>
   <alternative>Intenzita brždění motorem:</alternative></data>
@@ -563,8 +563,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>"Háčková" řadící páka</value>
   </data>
   <data name="Controls_UseMouseButtons" xml:space="preserve">
-    <value>Použit tlačítka myši pro plyn a brzdu</value>
-  </data>
+    <value>Používat tlačítka myši pro plyn a brzdu</value>
+  <alternative>Použit tlačítka myši pro plyn a brzdu</alternative></data>
   <data name="Controls_View" xml:space="preserve">
     <value>Pohled:</value>
   </data>
@@ -590,8 +590,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Filtrování aut soupeřů</value>
   </data>
   <data name="Drive_AiLevelInDriverName" xml:space="preserve">
-    <value>Zobrazit míru dovednosti ve jménu soupeře</value>
-  </data>
+    <value>Zobrazení míry dovednosti ve jménu soupeře</value>
+  <alternative>Zobrazit míru dovednosti ve jménu soupeře</alternative></data>
   <data name="Drive_ArrangeInReverseOrder" xml:space="preserve">
     <value>Uspořádat v opačném pořadí</value>
   </data>
@@ -650,8 +650,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Načítání selhalo</value>
   </data>
   <data name="Drive_LocalWeather_Tooltip" xml:space="preserve">
-    <value>Použít místní počasí místo toho na trati</value>
-  </data>
+    <value>Používat místní počasí místo toho na trati</value>
+  <alternative>Použít místní počasí místo toho na trati</alternative></data>
   <data name="Drive_LocalWeatherHeader" xml:space="preserve">
     <value>Místní počasí</value>
   </data>
@@ -713,8 +713,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Kondice trati:</value>
   <alternative>Kondice trati</alternative></data>
   <data name="Drive_TyreBlankets" xml:space="preserve">
-    <value>Předehřát pneumatiky</value>
-  <alternative>Předehřát preumatiky</alternative></data>
+    <value>Předehřívat pneumatiky</value>
+  <alternative>Předehřát preumatiky</alternative><alternative>Předehřát pneumatiky</alternative></data>
   <data name="Drive_Weather_CannotLoad" xml:space="preserve">
     <value>Nelze načíst skutečné počasí</value>
   </data>
@@ -797,8 +797,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Rychlovka</value>
   </data>
   <data name="Main_RecentLapTimes" xml:space="preserve">
-    <value>Nedávné časy kol</value>
-  </data>
+    <value>Nedávné</value>
+  <alternative>Nedávné časy kol</alternative></data>
   <data name="Main_ReleaseNotes" xml:space="preserve">
     <value>Historie změn (EN)</value>
   </data>
@@ -839,8 +839,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Počasí</value>
   </data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
-    <value>Není co zobrazit</value>
-  <alternative>Nic k zobrazení</alternative></data>
+    <value>Není co zobrazovat</value>
+  <alternative>Nic k zobrazení</alternative><alternative>Není co zobrazit</alternative></data>
   <data name="Online_PasswordLabel" xml:space="preserve">
     <value>Heslo:</value>
   </data>
@@ -923,8 +923,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Nezapomeňte že ke každému tlačítku je přiřazena klávesová zkratka</value>
   </data>
   <data name="Settings_Appearance_SmallFont" xml:space="preserve">
-    <value>Malé písmo uvnitr stránek</value>
-  <alternative>Malé písmo</alternative></data>
+    <value>Malé písmo uvnitř stránek</value>
+  <alternative>Malé písmo</alternative><alternative>Malé písmo uvnitr stránek</alternative></data>
   <data name="Settings_Appearance_TextRenderingLabel" xml:space="preserve">
     <value>Vykreslování textu:</value>
   </data>
@@ -962,20 +962,20 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Počet souběžných načítání:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>Implicitně omezit hledání na Wikipedii</value>
-  <alternative>Implicitně přecházet na Wikipedii</alternative></data>
+    <value>Implicitně omezovat hledání na Wikipedii</value>
+  <alternative>Implicitně přecházet na Wikipedii</alternative><alternative>Implicitně omezit hledání na Wikipedii</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
-    <value>Do vyhledávacího pole implicitně přidá “site:wikipedia.org”</value>
-  <alternative>Implicitně přidá “site:wikipedia.org”</alternative></data>
+    <value>Do vyhledávacího pole implicitně přidává “site:wikipedia.org”</value>
+  <alternative>Implicitně přidá “site:wikipedia.org”</alternative><alternative>Do vyhledávacího pole implicitně přidá “site:wikipedia.org”</alternative></data>
   <data name="Settings_Content_MarkAsNewLabel" xml:space="preserve">
     <value>Označovat jako nové po dobu:</value>
   </data>
   <data name="Settings_Content_ScrollAutomatically" xml:space="preserve">
-    <value>Automaticky přesunout k vybrané položce</value>
-  </data>
+    <value>Automaticky přesouvat k vybrané položce</value>
+  <alternative>Automaticky přesunout k vybrané položce</alternative></data>
   <data name="Settings_Content_ScrollAutomatically_Tooltip" xml:space="preserve">
-    <value>Například při deaktivaci</value>
-  </data>
+    <value>Například při zakázání</value>
+  <alternative>Například při deaktivaci</alternative></data>
   <data name="Settings_Content_SearchEngine" xml:space="preserve">
     <value>Vyhledávač:</value>
   </data>
@@ -995,8 +995,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Deaktivujte pro maximální výkon; kdykoliv lze přepínat klávesou B</value>
   </data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
-    <value>Použít implicitně:</value>
-  </data>
+    <value>Používat implicitně:</value>
+  <alternative>Použít implicitně:</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType_Tooltip" xml:space="preserve">
     <value>Držte Ctrl než začnete vybírat ostatní</value>
   </data>
@@ -1004,38 +1004,38 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Prohodit tlačítka myši</value>
   </data>
   <data name="Settings_CustomShowroom_InvertMouseButtons_Tooltip" xml:space="preserve">
-    <value>Použít levé tlačítko myši pro posun a pravé pro rotaci</value>
-  </data>
+    <value>Používat levé tlačítko myši pro posun a pravé pro rotaci</value>
+  <alternative>Použít levé tlačítko myši pro posun a pravé pro rotaci</alternative></data>
   <data name="Settings_Drive_32bit" xml:space="preserve">
-    <value>Použít 32bitovou verzi</value>
-  </data>
+    <value>Používat 32bitovou verzi</value>
+  <alternative>Použít 32bitovou verzi</alternative></data>
   <data name="Settings_Drive_AiLevelInDriverName" xml:space="preserve">
-    <value>Ve jméně jezdce zobrazit úroveň dovednosti</value>
-  <alternative>Ve jménu jezdce zobrazit úroveň dovednosti</alternative></data>
+    <value>Ve jméně jezdce zobrazovat úroveň dovednosti</value>
+  <alternative>Ve jménu jezdce zobrazit úroveň dovednosti</alternative><alternative>Ve jméně jezdce zobrazit úroveň dovednosti</alternative></data>
   <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
     <value>Platí pouze pro proměnlivou úroveň dovednosti</value>
   </data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
-    <value>Vždy zaznamenat ducha auta v režimu rychlého kola</value>
-  </data>
+    <value>Vždy zaznamenávat ducha auta v režimu Rekordman</value>
+  <alternative>Vždy zaznamenat ducha auta v režimu rychlého kola</alternative></data>
   <data name="Settings_Drive_AlwaysRecordGhost_Tooltip" xml:space="preserve">
-    <value>Zaznamenat ducha auta v režimu rychlého kola, i když je jinak skrytý</value>
-  <alternative>Zaznamenat ducha auta v režimu rychlého kola, i když je skrytý</alternative></data>
+    <value>Zaznamenat ducha auta v režimu Rekordman, i když je jinak skrytý</value>
+  <alternative>Zaznamenat ducha auta v režimu rychlého kola, i když je skrytý</alternative><alternative>Zaznamenat ducha auta v režimu rychlého kola, i když je jinak skrytý</alternative></data>
   <data name="Settings_Drive_ChangeAiLevel" xml:space="preserve">
-    <value>Umožnit změnu úrovně dovednosti soupeřů</value>
-  </data>
+    <value>Povolení změny úrovně dovednosti soupeřů</value>
+  <alternative>Umožnit změnu úrovně dovednosti soupeřů</alternative></data>
   <data name="Settings_Drive_ChangeCarSkin" xml:space="preserve">
-    <value>Umožnit změnu skinu vašeho auta</value>
-  </data>
+    <value>Povolení změny skinu vašeho auta</value>
+  <alternative>Umožnit změnu skinu vašeho auta</alternative></data>
   <data name="Settings_Drive_ConvertScreenshots" xml:space="preserve">
-    <value>Automaticky při zavírání převést screenshoty z formátu BMP na JPG</value>
-  </data>
+    <value>Automaticky při zavírání převádět screenshoty z formátu BMP na JPG</value>
+  <alternative>Automaticky při zavírání převést screenshoty z formátu BMP na JPG</alternative></data>
   <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
-    <value>Doporučuji nejdříve povolit Magick.NET, což bude znamenat vyšší kvalitu</value>
-  </data>
+    <value>Doporučuje se nejdříve povolit Magick.NET, což bude znamenat vyšší kvalitu</value>
+  <alternative>Doporučuji nejdříve povolit Magick.NET, což bude znamenat vyšší kvalitu</alternative></data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
-    <value>Nahradit mraky </value>
-  </data>
+    <value>Nahrazovat mraky </value>
+  <alternative>Nahradit mraky </alternative></data>
   <data name="Settings_Drive_CustomClouds_Tooltip" xml:space="preserve">
     <value>Samozřejmě jen dočasně</value>
   </data>
@@ -1043,8 +1043,8 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Události související s videohrou:</value>
   </data>
   <data name="Settings_Drive_ExpandBounds" xml:space="preserve">
-    <value>Povolit rozšířená nastavení</value>
-  </data>
+    <value>Rozšířená nastavení</value>
+  <alternative>Povolit rozšířená nastavení</alternative></data>
   <data name="Settings_Drive_ExpandBounds_Tooltip" xml:space="preserve">
     <value>Umožní nastavit až 999 kol a podobně, ale použijte na vlastní riziko</value>
   </data>
@@ -1067,14 +1067,14 @@ Přečtěte si [url="/Pages/About/License.xaml|_top"]licenční ujednání[/url]
     <value>Národnost:</value>
   </data>
   <data name="Settings_Drive_OnlineName_Tooltip" xml:space="preserve">
-    <value>Použít v režimu online jiné jméno</value>
-  </data>
+    <value>Používat v režimu online jiné jméno</value>
+  <alternative>Použít v režimu online jiné jméno</alternative></data>
   <data name="Settings_Drive_OnlineNameLabel" xml:space="preserve">
     <value>Jméno pro režim online:</value>
   </data>
   <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
-    <value>Přepsat výchozí PP filtr v režimu virtuální reality Oculus Rift</value>
-  </data>
+    <value>Přepisovat výchozí PP filtr v režimu virtuální reality Oculus Rift</value>
+  <alternative>Přepsat výchozí PP filtr v režimu virtuální reality Oculus Rift</alternative></data>
   <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
     <value>Dočasně přepíše system/cfg/ppfilters/default.ini vybraným PP filtrem, pokud je aktivován režim virtuální reality Oculus Rift </value>
   </data>
@@ -1125,20 +1125,20 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Spouštěč videohry</value>
   </data>
   <data name="Settings_Drive_StartImmediately" xml:space="preserve">
-    <value>Okamžitě zahájit závod</value>
-  </data>
+    <value>Okamžitě zahajovat jízdu</value>
+  <alternative>Okamžitě zahájit závod</alternative></data>
   <data name="Settings_Drive_UiModuleFallback" xml:space="preserve">
     <value>Návrat k oficiálnímu spouštěči, pokud původní spouštěč  neběží</value>
   </data>
   <data name="Settings_Drive_WeatherParticles" xml:space="preserve">
-    <value>Použít částice výchozího počasí</value>
-  </data>
+    <value>Používat částice výchozího počasí</value>
+  <alternative>Použít částice výchozího počasí</alternative></data>
   <data name="Settings_Drive_WeatherParticles_Tooltip" xml:space="preserve">
     <value>Částice se vrátí do původního stavu později</value>
   <alternative>Částice se vrátí později</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter" xml:space="preserve">
-    <value>Použít PP filtr výchozího počasí</value>
-  </data>
+    <value>Používat PP filtr výchozího počasí</value>
+  <alternative>Použít PP filtr výchozího počasí</alternative></data>
   <data name="Settings_Drive_WeatherPpFilter_Tooltip" xml:space="preserve">
     <value>PP filtr se vrátí do původního stavu později</value>
   <alternative>PP filtr se vrátí později</alternative></data>
@@ -1209,8 +1209,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Fanouškovské překlady:</value>
   </data>
   <data name="Settings_Locale_HowToTranslate" xml:space="preserve">
-    <value>Jak vyrobit fanouškovský překlad</value>
-  </data>
+    <value>Jak vyrobit fanouškovský překlad (EN)</value>
+  <alternative>Jak vyrobit fanouškovský překlad</alternative></data>
   <data name="Settings_Locale_Installed" xml:space="preserve">
     <value>Vestavěný fanouškovský překlad</value>
   <alternative>Nainstalovaný jazyk</alternative></data>
@@ -1218,8 +1218,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Jazyk:</value>
   </data>
   <data name="Settings_Locale_LoadCustom" xml:space="preserve">
-    <value>Přepsat řetězce rozbaleným překladem, pokud existuje</value>
-  <alternative>Přepsat retězce rozbaleným překladem, pokud existuje</alternative></data>
+    <value>Přepisovat řetězce rozbaleným překladem, pokud existuje</value>
+  <alternative>Přepsat retězce rozbaleným překladem, pokud existuje</alternative><alternative>Přepsat řetězce rozbaleným překladem, pokud existuje</alternative></data>
   <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
     <value>Rozbalený překlad bude načten z “AppData\Local\AcTools Content Manager\Locales\(ID)”, kde ID představuje vámi vybraný jazyk</value>
   </data>
@@ -1239,8 +1239,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Restartovat</value>
   </data>
   <data name="Settings_Locale_RestartApp_Tooltip" xml:space="preserve">
-    <value>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a současným přidržením klávesy Ctrl</value>
-  <alternative>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a souběžným přidržením klávesy Ctrl</alternative></data>
+    <value>Restart Content Manageru lze provést i kliknutím na zavírací tlačítko se symbolem křížku a současným přidržením klávesy Ctrl</value>
+  <alternative>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a souběžným přidržením klávesy Ctrl</alternative><alternative>Alternativně můžete restart Content Manageru provést kliknutím na zavírací tlačítko se symbolem křížku a současným přidržením klávesy Ctrl</alternative></data>
   <data name="Settings_Locale_RestartMessage" xml:space="preserve">
     <value>Pro provedení změn nezapomeňte restartovat aplikaci</value>
   </data>
@@ -1281,11 +1281,11 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Skenovat pomocí:</value>
   </data>
   <data name="Settings_Online_LoadInformationDirectly" xml:space="preserve">
-    <value>Načíst informace o serveru napřímo</value>
-  </data>
+    <value>Načítat informace o serveru napřímo</value>
+  <alternative>Načíst informace o serveru napřímo</alternative></data>
   <data name="Settings_Online_LoadInformationDirectly_Tooltip" xml:space="preserve">
-    <value>Načíst informace o serveru napřímo bez přístupu k serverům videohry; může být rychlejší a aktuálnější, ale některé informace (jako aktivní relace) budou chybět</value>
-  </data>
+    <value>Načítat informace o serveru napřímo bez přístupu k serverům videohry; může být rychlejší a aktuálnější, ale některé informace (jako aktivní relace) budou chybět</value>
+  <alternative>Načíst informace o serveru napřímo bez přístupu k serverům videohry; může být rychlejší a aktuálnější, ale některé informace (jako aktivní relace) budou chybět</alternative></data>
   <data name="Settings_Online_PingConcurrency" xml:space="preserve">
     <value>Souběh pingů</value>
   </data>
@@ -1299,8 +1299,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Vypršení pingů</value>
   </data>
   <data name="Settings_Online_PingWithThreads" xml:space="preserve">
-    <value>Použít vlákna místo asynchronního API</value>
-  </data>
+    <value>Vlákna místo asynchronního API</value>
+  <alternative>Použít vlákna místo asynchronního API</alternative></data>
   <data name="Settings_Online_PingWithThreads_Tooltip" xml:space="preserve">
     <value>Nejkorektnější,  ale nejpomalejší provádění pingů</value>
   </data>
@@ -1320,8 +1320,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Správce přednastavení serveru:</value>
   </data>
   <data name="Settings_Online_ShowBrandBadges" xml:space="preserve">
-    <value>Zobrazit znaky značek v seznamu aut</value>
-  <alternative>Zobrazit loga značek v seznamu aut</alternative></data>
+    <value>Zobrazení emblémů značek v seznamu aut</value>
+  <alternative>Zobrazit loga značek v seznamu aut</alternative><alternative>Zobrazit znaky značek v seznamu aut</alternative></data>
   <data name="Settings_Plugins" xml:space="preserve">
     <value>Zásuvné moduly</value>
   <alternative>Zástuvné moduly</alternative></data>
@@ -1335,23 +1335,23 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Rychlé přepínače – malé překryvné menu, které umožňuje různé akce, ať už se v Content Manageru pohybujete kdekoliv, přičemž přetažením položek z knihovny můžete nabídku akcí měnit. Pro jejich zobrazení stiskněte Alt+~ nebo klikněte na pravé tlačítko myši. Akce můžete aktivovat i pomocí Alt+1 až Alt+9.[br][br]Přejete-li si zde nějakou novou akci, [url="https://trello.com/c/w5xT6ssZ/49-contacts"]kontaktujte nás[/url].</value>
   <alternative>Rychlé přepínače – malé překryvné menu, které umožňuje různé akce, ať už se v Content Manageru pohybujete kdekoliv. Přetažením položek z knihovny můžete nabídku akcí měnit.[br][br]Pro zobrazení přepínačů stiskněte Alt+~ nebo klikněte na pravé tlačítko myši. Akce můžete aktivovat i pomocí Alt+1 až Alt+9.[br][br]Přejete-li si zde nějakou novou akci, [url="https://trello.com/c/w5xT6ssZ/49-contacts"]kontaktujte nás[/url].</alternative></data>
   <data name="Settings_QuickSwitches_Enable" xml:space="preserve">
-    <value>Povolit Rychlé přepínače</value>
-  </data>
+    <value>Rychlé přepínače</value>
+  <alternative>Povolit Rychlé přepínače</alternative></data>
   <data name="Settings_QuickSwitches_LibraryLabel" xml:space="preserve">
     <value>Knihovna:</value>
   </data>
   <data name="Settings_Replays_AddExtension" xml:space="preserve">
-    <value>Automaticky přidat koncovku ".acreplay" k novým opakovaným záznamům</value>
-  </data>
+    <value>Automaticky přidávat koncovku ".acreplay" k novým opakovaným záznamům</value>
+  <alternative>Automaticky přidat koncovku ".acreplay" k novým opakovaným záznamům</alternative></data>
   <data name="Settings_Replays_AddExtension_Tooltip" xml:space="preserve">
-    <value>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou, aby je šlo spouštět přímo z Průzkumníka Windows</value>
-  <alternative>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou</alternative></data>
+    <value>Automaticky přidávat koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou, aby je šlo spouštět přímo z Průzkumníka Windows</value>
+  <alternative>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou</alternative><alternative>Automaticky přidá koncovku ".acreplay" k novým opakovaným záznamům vytvořeným videohrou, aby je šlo spouštět přímo z Průzkumníka Windows</alternative></data>
   <data name="Settings_Replays_AddExtensionToExisting" xml:space="preserve">
     <value>Přidat k existujícím</value>
   </data>
   <data name="Settings_Replays_AddExtensionToExisting_Tooltip" xml:space="preserve">
-    <value>Přidat ".acreaplay" ke všem existujícím opakovaným záznamům</value>
-  <alternative>Přidat ".acreaplay" ke všem existujícícm opakovaným záznamům</alternative></data>
+    <value>Přidávat ".acreplay" ke všem existujícím opakovaným záznamům</value>
+  <alternative>Přidat ".acreaplay" ke všem existujícícm opakovaným záznamům</alternative><alternative>Přidat ".acreaplay" ke všem existujícím opakovaným záznamům</alternative></data>
   <data name="Settings_Replays_AutosaveReplays" xml:space="preserve">
     <value>Automatické ukládání</value>
   </data>
@@ -1365,8 +1365,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Díky koncovce “.acreplay” budete moci spustit opakovaný záznam přes Průzkumníka Windows</value>
   <alternative>Díky rozšíření “.acreplay” budete moci spustit opakovaný záznam přes Průzkumníka Windows</alternative></data>
   <data name="Settings_Replays_LoadInformation" xml:space="preserve">
-    <value>Načíst informace o opakovaných záznamech</value>
-  </data>
+    <value>Načítat informace o opakovaných záznamech</value>
+  <alternative>Načíst informace o opakovaných záznamech</alternative></data>
   <data name="Settings_Replays_LoadInformation_Tooltip" xml:space="preserve">
     <value>Pokusí se z opakovaných záznamů načíst informace o trati, autu a počasí pro účely záložky Média/Opakované záznamy</value>
   </data>
@@ -1398,8 +1398,8 @@ Jako pracovní složka bude použita složka Assetto Corsa v Dokumentech.</value
     <value>Podpis:</value>
   <alternative>Sdílené jméno:</alternative></data>
   <data name="Settings_Sharing_Unnamed" xml:space="preserve">
-    <value>Zakázat sdílení uživatelských jmen</value>
-  <alternative>Znemožnit sdílení pod jiným jménem</alternative></data>
+    <value>Zakázání sdílení uživatelských jmen</value>
+  <alternative>Znemožnit sdílení pod jiným jménem</alternative><alternative>Zakázat sdílení uživatelských jmen</alternative></data>
   <data name="Settings_Sharing_VerifyParams" xml:space="preserve">
     <value>Potvrzovat parametry před sdílením</value>
   <alternative>Zkontrolovat parametry před sdílením</alternative><alternative>Potvrdit parametry před sdílením</alternative></data>
@@ -1562,10 +1562,12 @@ Pro přehrání rozbalte “{1}” do “…\Documents\Assetto Corsa\replay”.<
     <value>Aplikace bude restartována</value>
   </data>
   <data name="AppKey_PreRestart_Message" xml:space="preserve">
-    <value>Aplikace nyní bude restartovaná, ale nemělo by to zabrat dlouho. Ještě jednou díky za vaší podporu!
+    <value>Aplikace se nyní zrestartuje, ale nemělo by to zabrat dlouho. Ještě jednou díky za vaší podporu!
 
 [i]Klíč prosím s nikým nesdílejte, protože jinak by mohl být kompromitován.[/i]</value>
-  </data>
+  <alternative>Aplikace nyní bude restartovaná, ale nemělo by to zabrat dlouho. Ještě jednou díky za vaší podporu!
+
+[i]Klíč prosím s nikým nesdílejte, protože jinak by mohl být kompromitován.[/i]</alternative></data>
   <data name="Drive_ListOfPossibleOpponents_Tooltip" xml:space="preserve">
     <value>Aplikace převezme {0} {opponent} z tohoto seznamu</value>
   </data>
@@ -1588,11 +1590,11 @@ Pro přehrání rozbalte “{1}” do “…\Documents\Assetto Corsa\replay”.<
     <value>Automaticky přepínat appku RSR</value>
   </data>
   <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
-    <value>Automaticky přepočítat poměr výkonu a váhy</value>
-  </data>
+    <value>Automaticky přepočítávat poměr výkonu a váhy</value>
+  <alternative>Automaticky přepočítat poměr výkonu a váhy</alternative></data>
   <data name="Settings_Live_RsrAutoToggleApp_Tooltip" xml:space="preserve">
-    <value>Automaticky zobrazit nebo skrýt appku RSR, pokud závod nesouvisí s RSR</value>
-  </data>
+    <value>Automaticky zobrazovat nebo skrývat appku RSR, pokud závod nesouvisí s RSR</value>
+  <alternative>Automaticky zobrazit nebo skrýt appku RSR, pokud závod nesouvisí s RSR</alternative></data>
   <data name="Toolbar_Showroom" xml:space="preserve">
     <value>Autosalon</value>
   </data>
@@ -1969,8 +1971,8 @@ Autor: [b]{3}[/b]</value>
     <value>Líbivý autosalon:</value>
   </data>
   <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
-    <value>Líbivý vlastní autosalon</value>
-  </data>
+    <value>Líbivý Vlastní autosalon</value>
+  <alternative>Líbivý vlastní autosalon</alternative></data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
     <value>Log odeslán</value>
   </data>
@@ -2038,11 +2040,11 @@ Autor: [b]{3}[/b]</value>
     <value>Nahradit zvuk</value>
   </data>
   <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
-    <value>Najít informace o autě online (Ctrl+I)</value>
-  </data>
+    <value>Najít informace o autě online pomocí vestavěného prohlížeče (Ctrl+I)</value>
+  <alternative>Najít informace o autě online (Ctrl+I)</alternative></data>
   <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
-    <value>Najít informace o trati online (Ctrl+I)</value>
-  </data>
+    <value>Najít informace o trati online ve vestavěném prohlížeči (Ctrl+I)</value>
+  <alternative>Najít informace o trati online (Ctrl+I)</alternative></data>
   <data name="Solution_FindTrack" xml:space="preserve">
     <value>Najít trať</value>
   </data>
@@ -2077,8 +2079,8 @@ Autor: [b]{3}[/b]</value>
     <value>Nastavit “{0}” jako ikonu</value>
   </data>
   <data name="Solution_SetBrandBadge" xml:space="preserve">
-    <value>Nastavit {0} jako znak</value>
-  </data>
+    <value>Nastavit {0} jako emblém značky</value>
+  <alternative>Nastavit {0} jako znak</alternative></data>
   <data name="Solution_SetupPreview" xml:space="preserve">
     <value>Nastavit a vygenerovat nový náhled</value>
   </data>
@@ -2101,11 +2103,11 @@ Autor: [b]{3}[/b]</value>
     <value>Nastavit nový náhled skrz nastavení</value>
   </data>
   <data name="Solution_SetBrandName" xml:space="preserve">
-    <value>Nastavit znak značky</value>
-  </data>
+    <value>Nastavit jméno značky</value>
+  <alternative>Nastavit znak značky</alternative></data>
   <data name="Solution_SetBrandBadge_Details" xml:space="preserve">
-    <value>Nastavit znak značky z úložiště Obsahu</value>
-  </data>
+    <value>Nastavit emblém značky z úložiště Obsahu</value>
+  <alternative>Nastavit znak značky z úložiště Obsahu</alternative></data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
     <value>Nastavte na Nízké nebo normální, pokud registrujete problémy se zvukem</value>
   </data>
@@ -2212,11 +2214,11 @@ Autor: [b]{3}[/b]</value>
     <value>Ikonu upgradu nelze změnit.</value>
   </data>
   <data name="BrandBadge_CannotChange" xml:space="preserve">
-    <value>Znak značky nelze změnit </value>
-  </data>
+    <value>Emblém značky nelze změnit </value>
+  <alternative>Znak značky nelze změnit </alternative></data>
   <data name="Solution_ChangeBrandBadge" xml:space="preserve">
-    <value>Změnit znak značky</value>
-  </data>
+    <value>Změnit emblém značky</value>
+  <alternative>Změnit znak značky</alternative></data>
   <data name="Arguments_CannotParseRequest" xml:space="preserve">
     <value>Požadavek nelze provést </value>
   </data>
@@ -2325,8 +2327,8 @@ Autor: [b]{3}[/b]</value>
     <value>Odlehčený autosalon:</value>
   </data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Odlehčený vlastní autosalon</value>
-  </data>
+    <value>Odlehčený Vlastní autosalon</value>
+  <alternative>Odlehčený vlastní autosalon</alternative></data>
   <data name="Solution_RemoveReplay_Details" xml:space="preserve">
     <value>Opakovaný záznam bude přesunut do Koše</value>
   </data>
@@ -2481,20 +2483,20 @@ Autor: [b]{3}[/b]</value>
     <value>Použít auto v Rychlovce (Ctrl+G)</value>
   </data>
   <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
-    <value>Použít FXAA</value>
-  </data>
+    <value>Používat FXAA</value>
+  <alternative>Použít FXAA</alternative></data>
   <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
     <value>Použít jako:</value>
   </data>
   <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
-    <value>Použít jen FFB</value>
-  </data>
+    <value>Používat jen FFB</value>
+  <alternative>Použít jen FFB</alternative></data>
   <data name="Settings_Live_RsrName_Tooltip" xml:space="preserve">
-    <value>Použít jiné jméno, pokud je povolen formulář RSR</value>
-  </data>
+    <value>Používat jiné jméno, pokud je povolen formulář RSR</value>
+  <alternative>Použít jiné jméno, pokud je povolen formulář RSR</alternative></data>
   <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
-    <value>Použít MSAA</value>
-  </data>
+    <value>Používat MSAA</value>
+  <alternative>Použít MSAA</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
     <value>Použít trať v Rychlovce (Ctrl+G)</value>
   </data>
@@ -2543,8 +2545,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Povoleno</value>
   </data>
   <data name="Settings_Live_EnableSrs" xml:space="preserve">
-    <value>Povolí záložku Měření času RSR (Sim Racing System)</value>
-  </data>
+    <value>Záložka Měření času RSR (Sim Racing System)</value>
+  <alternative>Povolí záložku Měření času RSR (Sim Racing System)</alternative></data>
   <data name="Solution_Enable" xml:space="preserve">
     <value>Povolit</value>
   </data>
@@ -2558,11 +2560,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Povolit {0}</value>
   </data>
   <data name="CarPreviews_Fxaa" xml:space="preserve">
-    <value>Povolit FXAA</value>
-  </data>
+    <value>FXAA</value>
+  <alternative>Povolit FXAA</alternative></data>
   <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
-    <value>Povolit nejlepší kvalitu</value>
-  </data>
+    <value>Povolte pro nejlepší kvalitu</value>
+  <alternative>Povolit nejlepší kvalitu</alternative></data>
   <data name="CarPreviews_AllEffects" xml:space="preserve">
     <value>Povolit všechny efekty</value>
   </data>
@@ -2570,20 +2572,20 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Povolit všechny video efekty jako odlesky a zář (doporučeno)</value>
   </data>
   <data name="CarPreviews_Fxaa_Tooltip" xml:space="preserve">
-    <value>Povolit vyhlazování hran FXAA pro náhledy</value>
-  </data>
+    <value>Vyhlazování hran FXAA pro náhledy</value>
+  <alternative>Povolit vyhlazování hran FXAA pro náhledy</alternative></data>
   <data name="Solution_EnableSkin_Details" xml:space="preserve">
     <value>Povolit zakázaný skin</value>
   </data>
   <data name="Settings_Live_EnableRsr" xml:space="preserve">
-    <value>Povolit záložku Měření času RSR</value>
-  </data>
+    <value>Záložky Měření času RSR</value>
+  <alternative>Povolit záložku Měření času RSR</alternative></data>
   <data name="Toolbar_TurnOnSound" xml:space="preserve">
-    <value>Povolit zvuk</value>
-  </data>
+    <value>Zvuk</value>
+  <alternative>Povolit zvuk</alternative></data>
   <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
-    <value>Povolit zvuk (Ctrl+I)</value>
-  </data>
+    <value>Aktivuje zvuk (Ctrl+I)</value>
+  <alternative>Povolit zvuk (Ctrl+I)</alternative></data>
   <data name="KunosCareer_RequiredSeriesAreNotDoneYet" xml:space="preserve">
     <value>Požadovaných sérií zatím není dosaženo</value>
   </data>
@@ -2726,8 +2728,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Přidávám server...</value>
   </data>
   <data name="BrandBadge_AddAs" xml:space="preserve">
-    <value>Přidejte nový znak pro (název značky):</value>
-  </data>
+    <value>Přidat jako nový emblém pro (název značky):</value>
+  <alternative>Přidejte nový znak pro (název značky):</alternative></data>
   <data name="AcSettings_System_Logging" xml:space="preserve">
     <value>Přihlášení (doporučené)</value>
   </data>
@@ -3006,8 +3008,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Ujistěte se, že se soubor nepoužívá.</value>
   </data>
   <data name="BrandBadge_CannotChange_Commentary" xml:space="preserve">
-    <value>Ujistěte se, že soubor znaku značky je přepsatelný.</value>
-  </data>
+    <value>Ujistěte se, že soubor emblému značky je přepsatelný.</value>
+  <alternative>Ujistěte se, že soubor znaku značky je přepsatelný.</alternative></data>
   <data name="Rsr_InvalidParameters_Commentary" xml:space="preserve">
     <value>Ujistěte se, že webová stránka RSR náležitě funguje.</value>
   </data>
@@ -3114,11 +3116,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Vyberte novou ikonu skinu pomocí aplikace Livery Icon Editor</value>
   </data>
   <data name="BrandBadge_SelectNew" xml:space="preserve">
-    <value>Vyberte nový znak značky</value>
-  </data>
+    <value>Vyberte nový emblém značky</value>
+  <alternative>Vyberte nový znak značky</alternative></data>
   <data name="Solution_ChangeBrandBadge_Details" xml:space="preserve">
-    <value>Vyberte nový znak značky ze seznamu</value>
-  </data>
+    <value>Vyberte nový emblém značky ze seznamu</value>
+  <alternative>Vyberte nový znak značky ze seznamu</alternative></data>
   <data name="Common_SelectFile" xml:space="preserve">
     <value>Vyberte soubor</value>
   </data>
@@ -3165,8 +3167,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Vygenerovat novou ikonu skinu s použitím náhodného nastavení</value>
   </data>
   <data name="Toolbar_GenerateLivery_Tooltip" xml:space="preserve">
-    <value>Vygenerovat novou ikonu skinu s použitím posledního nastavení editoru ikony skinu</value>
-  </data>
+    <value>Vygenerovat novou ikonu skinu s použitím posledního nastavení aplikace Livery Icon Editor</value>
+  <alternative>Vygenerovat novou ikonu skinu s použitím posledního nastavení editoru ikony skinu</alternative></data>
   <data name="Solution_GeneratePreview" xml:space="preserve">
     <value>Vygenerovat nový náhled</value>
   </data>
@@ -3369,20 +3371,20 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Značky</value>
   </data>
   <data name="BrandBadge_Title" xml:space="preserve">
-    <value>Znak značky</value>
-  </data>
+    <value>Emblém značky</value>
+  <alternative>Znak značky</alternative></data>
   <data name="Online_FilterFull" xml:space="preserve">
-    <value>Zobrazit plné servery</value>
-  </data>
+    <value>Zobrazení plných serverů</value>
+  <alternative>Zobrazit plné servery</alternative></data>
   <data name="Online_FilterEmpty" xml:space="preserve">
-    <value>Zobrazit prázdné servery</value>
-  </data>
+    <value>Zobrazení prázdných serverů</value>
+  <alternative>Zobrazit prázdné servery</alternative></data>
   <data name="Online_FilterPassword" xml:space="preserve">
-    <value>Zobrazit servery chráněné heslem</value>
-  </data>
+    <value>Zobrazení serverů chráněných heslem</value>
+  <alternative>Zobrazit servery chráněné heslem</alternative></data>
   <data name="Online_FilterWithBooking" xml:space="preserve">
-    <value>Zobrazit servery, která umožňují rezervaci</value>
-  </data>
+    <value>Zobrazení serverů, která umožňují rezervaci</value>
+  <alternative>Zobrazit servery, která umožňují rezervaci</alternative></data>
   <data name="AcSettings_Audio_LatencyLabel" xml:space="preserve">
     <value>Zpoždění:</value>
   </data>
@@ -3432,8 +3434,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Specifické funkce vozu</value>
   </data>
   <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
-    <value>Načíst asistenty s přednastaveními Rychlovky (globální)</value>
-  </data>
+    <value>Načítat asistenty s přednastaveními Rychlovky (globální)</value>
+  <alternative>Načíst asistenty s přednastaveními Rychlovky (globální)</alternative></data>
   <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
     <value>Přidržte při výběru přednastavení Ctrl, abyste toto chování jedenkrát prohodili</value>
   </data>
@@ -3723,8 +3725,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Úzké postranní posuvníky</value>
   </data>
   <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
-    <value>Zobrazit široké postranní posuvníky až po najetí myši</value>
-  </data>
+    <value>Zobrazovat široké postranní posuvníky až po najetí myši</value>
+  <alternative>Zobrazit široké postranní posuvníky až po najetí myši</alternative></data>
   <data name="Settings_Appearance_LargerFont" xml:space="preserve">
     <value>Větší písmo v záhlaví</value>
   <alternative>Větší písmo</alternative></data>
@@ -3771,20 +3773,20 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Změny budou uloženy automaticky. Chcete-li optimalizovat způsob, jakým se konfigurační soubory zobrazují, podívejte se [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]sem[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
-    <value>Použít v některých případech Vlastní autosalon místo toho původního</value>
-  </data>
+    <value>Používat v některých případech Vlastní autosalon místo toho původního</value>
+  <alternative>Použít v některých případech Vlastní autosalon místo toho původního</alternative></data>
   <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
-    <value>Zobrazit na záložkách vyhledávání tažitelnou oblast</value>
-  <alternative>Zobrazit vedle vyhledávacích polí tažitelnou oblast</alternative></data>
+    <value>Zobrazovat na záložkách vyhledávání tažitelnou oblast</value>
+  <alternative>Zobrazit vedle vyhledávacích polí tažitelnou oblast</alternative><alternative>Zobrazit na záložkách vyhledávání tažitelnou oblast</alternative></data>
   <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
     <value>Když je tato možnost deaktivována, můžete je táhnout za zavírací tlačítko</value>
   </data>
   <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
-    <value>Zobrazit seznam stahování a instalací v hamburger menu</value>
-  </data>
+    <value>Zobrazovat seznam stahování a instalací v hamburger menu</value>
+  <alternative>Zobrazit seznam stahování a instalací v hamburger menu</alternative></data>
   <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
-    <value>Automaticky přejít do sekce Stahování, když je zahájeno nové stahování </value>
-  </data>
+    <value>Přecházet do sekce Stahování, když je zahájeno nové stahování </value>
+  <alternative>Automaticky přejít do sekce Stahování, když je zahájeno nové stahování </alternative></data>
   <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
     <value>Odkazy skryté v záhlaví zůstávají přístupné přes hamburger menu či klávesové zkratky.</value>
   </data>
@@ -3798,11 +3800,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Hodí se pro případ, že se okna Content Manageru neumísťují korektně.[br][br]Na řešení problému se stále pracuje.</value>
   </data>
   <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
-    <value>Vynutit maximalizaci okna</value>
-  </data>
+    <value>Vynucovat maximalizaci okna</value>
+  <alternative>Vynutit maximalizaci okna</alternative></data>
   <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
-    <value>Při maximalizaci překrýt hlavní panel Windows</value>
-  </data>
+    <value>Při maximalizaci překrývat hlavní panel Windows</value>
+  <alternative>Při maximalizaci překrýt hlavní panel Windows</alternative></data>
   <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
     <value>Zobrazovat v hlavním okně šipku pro návrat</value>
   </data>
@@ -3852,8 +3854,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Změny se neprojeví v již zobrazených oknech.</value>
   </data>
   <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
-    <value>Pokusit se spustit Steam, pokud neběží (doporučeno)</value>
-  </data>
+    <value>Pokoušet se spustit Steam, pokud neběží (doporučeno)</value>
+  <alternative>Pokusit se spustit Steam, pokud neběží (doporučeno)</alternative></data>
   <data name="Settings_General_Open" xml:space="preserve">
     <value>Otevřít</value>
   </data>
@@ -3882,8 +3884,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Registr Windows:</value>
   </data>
   <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
-    <value>Po aktualizaci zobrazit notifikaci s nedávnými změnami</value>
-  </data>
+    <value>Po aktualizaci zobrazovat notifikaci s nedávnými změnami</value>
+  <alternative>Po aktualizaci zobrazit notifikaci s nedávnými změnami</alternative></data>
   <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
     <value>Notifikace s výpisem nedávných změn</value>
   </data>
@@ -3894,11 +3896,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Otevřít složku se záznamy</value>
   </data>
   <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
-    <value>Zachovat výsledky posledních</value>
-  </data>
+    <value>Zachovávat výsledky posledních</value>
+  <alternative>Zachovat výsledky posledních</alternative></data>
   <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
-    <value>Uspat Content Manager při závodění</value>
-  </data>
+    <value>Při hraní uspávat Content Manager</value>
+  <alternative>Uspat Content Manager při závodění</alternative></data>
   <data name="Settings_Content_SmoothCurves" xml:space="preserve">
     <value>Zaoblené křivky</value>
   </data>
@@ -3906,11 +3908,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Jednotky teploty:</value>
   </data>
   <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
-    <value>Používat imperiální jednotky</value>
-  </data>
+    <value>Imperiální jednotky</value>
+  <alternative>Používat imperiální jednotky</alternative></data>
   <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
-    <value>Používat 12hodinový formát času</value>
-  </data>
+    <value>12hodinový formát času</value>
+  <alternative>Používat 12hodinový formát času</alternative></data>
   <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
     <value>Vyprázdnit vyrovnávací paměť</value>
   </data>
@@ -3924,14 +3926,14 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Přepnout na Steam spouštěč</value>
   </data>
   <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
-    <value>Zastavit službu při ukončení Content Manageru</value>
-  </data>
+    <value>Zastavovat službu při ukončení Content Manageru</value>
+  <alternative>Zastavit službu při ukončení Content Manageru</alternative></data>
   <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
-    <value>Ukončit načítání při stisku klávesy Esc</value>
-  </data>
+    <value>Ukončení načítání stiskem klávesy Esc</value>
+  <alternative>Ukončit načítání při stisku klávesy Esc</alternative></data>
   <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
-    <value>Pokračovat v závodě, když je stisknuta klávesa Esc</value>
-  </data>
+    <value>Pokračovat v hraní, když je stisknuta klávesa Esc</value>
+  <alternative>Pokračovat v závodě, když je stisknuta klávesa Esc</alternative></data>
   <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
     <value>Během závodu měřit snímkovací frekvenci</value>
   </data>
@@ -3981,26 +3983,26 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Rok vzniku v plném čtyřciferném znění</value>
   </data>
   <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
-    <value>Skrýt symboly jako ™ v názvech aut</value>
-  </data>
+    <value>Skrývat symboly jako ™ v názvech aut</value>
+  <alternative>Skrýt symboly jako ™ v názvech aut</alternative></data>
   <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
     <value>Ve vyskakovacím okně zobrazovat náhled auta</value>
   </data>
   <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
-    <value>Opravit chybějící mezery ve specifikacích v sekci Jízda</value>
-  </data>
+    <value>Oprava chybějících mezer ve specifikacích v sekci Jízda</value>
+  <alternative>Opravit chybějící mezery ve specifikacích v sekci Jízda</alternative></data>
   <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
     <value>Formát výkon/krouťák:</value>
   </data>
   <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
-    <value>Zobrazit mezi parametry rozsah otáčení volantu</value>
-  </data>
+    <value>Zobrazovat mezi parametry rozsah otáčení volantu</value>
+  <alternative>Zobrazit mezi parametry rozsah otáčení volantu</alternative></data>
   <data name="Settings_Content_CarSkins" xml:space="preserve">
     <value>Skiny aut:</value>
   </data>
   <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
-    <value>Zobrazit ID skinu místo názvu</value>
-  </data>
+    <value>Zobrazovat ID skinu místo názvu</value>
+  <alternative>Zobrazit ID skinu místo názvu</alternative></data>
   <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
     <value>Automatická aktualizace modů:</value>
   </data>
@@ -4032,14 +4034,14 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Náhledy:</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
-    <value>Pro náhledy použít vlastní autosalon</value>
-  </data>
+    <value>Pro náhledy použít Vlastní autosalon</value>
+  <alternative>Pro náhledy použít vlastní autosalon</alternative></data>
   <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
     <value>Přidat rozšířené informace ve formě EXIFu</value>
   </data>
   <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
-    <value>Přesunout předchozí náhled do Koše</value>
-  </data>
+    <value>Přesouvat předchozí náhled do Koše</value>
+  <alternative>Přesunout předchozí náhled do Koše</alternative></data>
   <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
     <value>Jde o docela pomalou operaci, a tak je lepší možnost deaktivovat</value>
   </data>
@@ -4340,8 +4342,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Nastavení hardwarového zámku Logitech</value>
   </data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
-    <value>Povolit post-processing zpětné vazby</value>
-  </data>
+    <value>Post-processing zpětné vazby</value>
+  <alternative>Povolit post-processing zpětné vazby</alternative></data>
   <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
     <value>Režim:</value>
   </data>
@@ -4388,8 +4390,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Ovládání myší</value>
   </data>
   <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
-    <value>Udržet kameru v autě</value>
-  </data>
+    <value>Udržení kamery v autě</value>
+  <alternative>Udržet kameru v autě</alternative></data>
   <data name="AcSettings_General_PresetsCount" xml:space="preserve">
     <value>Počet přednastavení</value>
   </data>
@@ -4409,17 +4411,17 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Limit pro jiné relace</value>
   </data>
   <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
-    <value>Povolit Python appky</value>
-  </data>
+    <value>Python appky</value>
+  <alternative>Povolit Python appky</alternative></data>
   <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
     <value>Ponechat vlajky vývojářských appek s přednastavením appky</value>
   </data>
   <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
-    <value>Třes kamerou ve VR</value>
-  </data>
+    <value>Třes kamery ve VR</value>
+  <alternative>Třes kamerou ve VR</alternative></data>
   <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
-    <value>Ovlivnění výkonu:</value>
-  </data>
+    <value>Ovlivnění výkonu: </value>
+  <alternative>Ovlivnění výkonu:</alternative></data>
   <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
     <value>Značné zaokrouhlení, nemusí korelovat s realitou. Měřeno v rozlišení 1920×1080.</value>
   </data>
@@ -4433,8 +4435,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Použijte v případě, že chcete podobné výsledky při porovnání nastavení</value>
   </data>
   <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
-    <value>Použijte kolečko myši nebo klávesy +/- pro přizpůsobení velikosti oblasti. Podržte Ctrl či Shift pro určení věrnosti.</value>
-  </data>
+    <value>Použijte kolečko myši nebo klávesy +/- pro přizpůsobení velikosti oblasti. Podržte Ctrl či Shift pro určení přesnosti.</value>
+  <alternative>Použijte kolečko myši nebo klávesy +/- pro přizpůsobení velikosti oblasti. Podržte Ctrl či Shift pro určení věrnosti.</alternative></data>
   <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
     <value>Soubory či odkazy pro stažení přesuňte sem</value>
   </data>
@@ -4463,11 +4465,11 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Výchozí hodnota:</value>
   </data>
   <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
-    <value>Načíst asistenty s přednastaveními Rychlovky</value>
-  </data>
+    <value>Načítat asistenty s přednastaveními Rychlovky</value>
+  <alternative>Načíst asistenty s přednastaveními Rychlovky</alternative></data>
   <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
-    <value>Pro Traťový den použít Tréninky jako typ relace</value>
-  </data>
+    <value>Pro Traťový den použít Trénink jako typ relace</value>
+  <alternative>Pro Traťový den použít Tréninky jako typ relace</alternative></data>
   <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
     <value>Takto budou při zastávce v boxech přítomní mechanici, ale boti mohou být pasivnější</value>
   </data>
@@ -4538,8 +4540,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Počet seřízení připravených k instalaci v Setup Marketu</value>
   </data>
   <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
-    <value>Povolit decimální hodnoty pro stav trati</value>
-  </data>
+    <value>Decimální hodnoty pro stav trati</value>
+  <alternative>Povolit decimální hodnoty pro stav trati</alternative></data>
   <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
     <value>Může způsobit problémy s některými appkami</value>
   </data>
@@ -4556,8 +4558,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Může aplikaci lehce zpomalit</value>
   </data>
   <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
-    <value>Znovuobnovit vybrané</value>
-  </data>
+    <value>Znovuobnovovat vybrané:</value>
+  <alternative>Znovuobnovit vybrané</alternative></data>
   <data name="Settings_Online_ManageLists" xml:space="preserve">
     <value>Spravovat seznamy</value>
   </data>
@@ -4565,17 +4567,17 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Spravovat tagy jezdců</value>
   </data>
   <data name="Settings_Online_Display" xml:space="preserve">
-    <value>Zobrazit:</value>
-  </data>
+    <value>Zobrazení:</value>
+  <alternative>Zobrazit:</alternative></data>
   <data name="Settings_Online_Passwords" xml:space="preserve">
     <value>Hesla:</value>
   </data>
   <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
-    <value>Vždy povolit používání hesel</value>
-  </data>
+    <value>Vždy používat hesla</value>
+  <alternative>Vždy povolit používání hesel</alternative></data>
   <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
-    <value>Povolit, pokud se chystáte připojit jako administrátor</value>
-  </data>
+    <value>Povolte, pokud se chystáte připojit jako administrátor</value>
+  <alternative>Povolit, pokud se chystáte připojit jako administrátor</alternative></data>
   <data name="Settings_Online_FixNames" xml:space="preserve">
     <value>Opravit jména:</value>
   </data>
@@ -4595,9 +4597,9 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Opingovat server jen jednou a při mačkání tlačítka Obnovit, jako v původním spouštěči</value>
   </data>
   <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
-    <value>Zapauzovat pingování během závodu</value>
-  </data>
+    <value>Zapauzování pingování během závodu</value>
+  <alternative>Zapauzovat pingování během závodu</alternative></data>
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
-    <value>Zobrazit rozšířené informace, pokud obsah chybí</value>
-  </data>
+    <value>Zobrazení rozšířených informací, pokud obsah chybí</value>
+  <alternative>Zobrazit rozšířené informace, pokud obsah chybí</alternative></data>
 </root>

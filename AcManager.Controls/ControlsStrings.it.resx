@@ -129,12 +129,6 @@
   <data name="Common_LapsPostfix" xml:space="preserve">
     <value>giro</value>
   </data>
-  <data name="Common_MetersPostfix" xml:space="preserve">
-    <value>m</value>
-  </data>
-  <data name="Common_MinutesPostfix" xml:space="preserve">
-    <value>min</value>
-  </data>
   <data name="Common_MinutePostfix" xml:space="preserve">
     <value>minuto</value>
   </data>
@@ -788,9 +782,6 @@ Profondità: [b]{4}[/b]</value>
   <data name="CustomShowroom_AmbientShadows_CannotUpdate" xml:space="preserve">
     <value>Non è possibile aggiornare le ambient shadows</value>
   </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value>psi</value>
-  </data>
   <data name="Toolbar_DeleteJson_Tooltip" xml:space="preserve">
     <value>Cancella file ui_skin.json (Alt+Delete)</value>
   </data>
@@ -910,5 +901,17 @@ Profondità: [b]{4}[/b]</value>
   </data>
   <data name="FindInformation_Description" xml:space="preserve">
     <value>Selezionare l'anno o la descrizione e premere OK; tieni premuto Ctrl per estendere la descrizione anziché sostituirla.</value>
+  </data>
+  <data name="CarParent_ChildrenWillBeMoved" xml:space="preserve">
+    <value>Le dipendenze saranno spostate nel nuovo principale!</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Gradi</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Scorri fino al selezionato (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Cos'è?</value>
   </data>
 </root>

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using AcManager.Tools.Data;
@@ -71,7 +70,7 @@ namespace AcManager.Tools.Miscellaneous {
 
             Pages = new BetterObservableCollection<PatchPage>();
             PagesView = new BetterListCollectionView(Pages);
-            PagesView.GroupDescriptions.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
+            PagesView.GroupDescriptions?.Add(new PropertyGroupDescription(nameof(PatchPage.Group)));
 
             _isLive = false;
             _dir = FileUtils.NormalizePath(Path.Combine(PatchHelper.GetRootDirectory(), "config"));
@@ -102,7 +101,7 @@ namespace AcManager.Tools.Miscellaneous {
 
         public AsyncCommand InstallPatchCommand => _installPatchCommand ?? (_installPatchCommand = new AsyncCommand(async () => {
             await PatchUpdater.Instance.CheckAndUpdateIfNeeded();
-            await PatchUpdater.Instance.InstallAsync(PatchUpdater.Instance.LatestRecommendedVersion, default(CancellationToken));
+            await PatchUpdater.Instance.InstallAsync(PatchUpdater.Instance.LatestRecommendedVersion, default);
         }, () => Mode != PatchMode.EverythingIsFine));
 
         private readonly Busy _busyCreateConfigs = new Busy(true);
@@ -235,7 +234,7 @@ namespace AcManager.Tools.Miscellaneous {
                 File.Exists(Path.Combine(root, "tzdata", "europe")) ? null
                         : new FoundIssue("Timezones information in “extension/tzdata” are missing", @"reinstallCurrent", "reinstall patch",
                                 "Reinstall currently active patch version to fix the problem automatically"),
-                version == null || version == RequiredAcVersion ? null
+                version == null || version.CompareAsVersionTo(RequiredAcVersion) >= 0 ? null
                         : new FoundIssue($"Assetto Corsa is obsolete (v{RequiredAcVersion} is required)"),
                 !SettingsHolder.Drive.Use32BitVersion ? null
                         : new FoundIssue("32-bit AC is not supported", @"switchTo64Bits", "switch AC to 64 bits",
@@ -492,11 +491,25 @@ namespace AcManager.Tools.Miscellaneous {
             var configs = Configs;
             if (configs == null) return;
             _configsPresetApplying = true;
-            foreach (var config in configs) {
-                config.ValuesIni().Clear();
+
+            var parsed = IniFile.Parse(data);
+            var version = parsed["CONFIGURATION"].GetInt("VERSION", 0);
+            if (version == 1) {
+                foreach (var s in parsed["CONFIGURATION"].GetStrings("AFFECTED_SECTIONS")) {
+                    configs.FirstOrDefault(x => x.PresetId == s)?.ValuesIni().Clear();
+                }
+            } else {
+                foreach (var config in configs) {
+                    config.ValuesIni().Clear();
+                }
             }
-            foreach (var section in IniFile.Parse(data)) {
-                var pieces = section.Key.Split('/');
+
+            if (version > 1) {
+                throw new Exception("Unsupported version");
+            }
+
+            foreach (var section in parsed) {
+                var pieces = section.Key.Split(version == 1 ? ':' : '/');
                 if (pieces.Length != 2) continue;
 
                 var target = configs.FirstOrDefault(x => x.PresetId == pieces[0]);
@@ -507,6 +520,7 @@ namespace AcManager.Tools.Miscellaneous {
                     targetSection.Set(pair.Key, pair.Value);
                 }
             }
+
             foreach (var config in configs) {
                 config.ApplyChangesFromIni();
             }
@@ -516,12 +530,19 @@ namespace AcManager.Tools.Miscellaneous {
         }
 
         public string ExportToPresetData() {
-            var configs = Configs;
-            if (configs == null) return null;
+            return ExportToPresetData(Configs);
+        }
+
+        [CanBeNull]
+        public string ExportToPresetData([CanBeNull] IEnumerable<PythonAppConfig> configs) {
+            var configsList = configs?.ToList();
+            if (configsList == null) return null;
             var ret = new IniFile();
-            foreach (var config in configs) {
+            ret["CONFIGURATION"].Set("VERSION", 1);
+            ret["CONFIGURATION"].Set("AFFECTED_SECTIONS", configsList.Select(x => x.PresetId));
+            foreach (var config in configsList) {
                 foreach (var section in config.Export()) {
-                    var target = ret[config.PresetId + "/" + section.Key];
+                    var target = ret[config.PresetId + ":" + section.Key];
                     foreach (var pair in section.Value) {
                         target.Set(pair.Key, pair.Value);
                     }

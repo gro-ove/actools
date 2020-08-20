@@ -136,8 +136,8 @@
     <value>“[url="http://assetto-db.com/track/{0}"]{0}[/url]”</value>
   </data>
   <data name="Online_ScanningProgress_Found" xml:space="preserve">
-    <value>0} servidor</value>
-  </data>
+    <value>{0} servidor</value>
+  <alternative>0} servidor</alternative></data>
   <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
     <value>Acceso denegado</value>
   </data>

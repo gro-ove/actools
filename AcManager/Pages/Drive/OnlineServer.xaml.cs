@@ -399,7 +399,7 @@ namespace AcManager.Pages.Drive {
                     link += $@"&password={EncryptSharedPassword(Entry.Id, Entry.Password)}";
                 }
 
-                SharingUiHelper.ShowShared("Inviting link", link);
+                SharingUiHelper.ShowShared("Inviting link", link, false);
             }));
 
             private string _tsServer;

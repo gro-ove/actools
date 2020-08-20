@@ -99,20 +99,30 @@ namespace AcManager.Controls.Helpers {
         }
 
         public static void ShowShared(SharedEntryType type, string link) {
-            ShowShared(type.GetDescription(), link);
+            ShowShared(type.GetDescription(), link, true);
         }
 
-        public static void ShowShared(string type, string link) {
+        public static void ShowShared(string type, string link, bool showDialog) {
             if (_custom?.ShowShared(type, link) == true) return;
 
             if (SettingsHolder.Sharing.CopyLinkToClipboard) {
                 ClipboardHelper.SetText(link);
             }
 
-            // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
-            Toast.Show(type,
-                    SettingsHolder.Sharing.CopyLinkToClipboard ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative,
-                    () => { WindowsHelper.ViewInBrowser(link + "#noauto"); });
+            if (showDialog && SettingsHolder.Sharing.ShowSharedDialog) {
+                if (ModernDialog.ShowMessage(SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link
+                        ? $"Link has been copied to the clipboard:[br]{link}[br][br]Open it in browser now?"
+                        : $"Here is the link:[br]{link}[br][br]Open it in browser now?", type, MessageBoxButton.YesNo, "postSharedDialog")
+                        == MessageBoxResult.Yes) {
+                    WindowsHelper.ViewInBrowser(link + "#noauto");
+                }
+            } else {
+                // Toast.Show(string.Format(ControlsStrings.Share_Shared, type.ToTitle()),
+                Toast.Show(type,
+                        SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link
+                                ? ControlsStrings.Share_SharedMessage : ControlsStrings.Share_SharedMessageAlternative,
+                        () => { WindowsHelper.ViewInBrowser(link + "#noauto"); });
+            }
         }
     }
 }

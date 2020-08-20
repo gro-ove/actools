@@ -153,8 +153,9 @@
   </DataTemplate>
 
   <DataTemplate x:Key="Detailed.NationalityDataTemplate" DataType="{x:Type c:RaceGridEntry}">
-    <mui:BetterTextBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
-        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource Borderless.White}" />
+    <mui:BetterComboBox x:Name="TextBox" Text="{Binding Nationality, Mode=TwoWay, UpdateSourceTrigger=LostFocus}"
+        Placeholder="{x:Static t:ToolsStrings.RaceGrid_OpponentSkin_Random}" Style="{StaticResource BetterComboBox.Borderless.White}"
+        ItemsSource="{Binding KunosIdsCountries, Source={x:Static t:DataProvider.Instance}}" />
     <DataTemplate.Triggers>
       <DataTrigger Binding="{Binding SpecialEntry}" Value="True">
         <Setter TargetName="TextBox" Property="Placeholder" Value="{Binding PlayerNationality, Source={x:Static t:SettingsHolder.Drive}}" />

@@ -103,7 +103,7 @@ namespace AcManager.Tools {
             var result = ShowDialog(shared, applyable: false);
             switch (result) {
                 case Choise.Save:
-                    var directory = Path.Combine(WeatherManager.Instance.Directories.GetLocation(WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true));
+                    var directory = WeatherManager.Instance.Directories.GetLocation(WeatherManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true);
                     Directory.CreateDirectory(directory);
 
                     var written = 0;
@@ -393,7 +393,7 @@ namespace AcManager.Tools {
             switch (result) {
                 case Choise.Save:
                 case Choise.ApplyAndSave:
-                    var filename = PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName());
+                    var filename = PpFiltersManager.Instance.Directories.GetLocation(PpFiltersManager.Instance.Directories.GetUniqueId(shared.GetFileName()), true);
                     Directory.CreateDirectory(Path.GetDirectoryName(filename) ?? "");
                     File.WriteAllBytes(filename, data);
                     if (result == Choise.ApplyAndSave) {
