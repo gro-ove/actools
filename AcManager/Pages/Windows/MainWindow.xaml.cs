@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -39,14 +40,17 @@ using AcManager.UserControls;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
+using AcTools.Windows;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows.Controls;
 using FirstFloor.ModernUI.Windows.Media;
 using FirstFloor.ModernUI.Windows.Navigation;
 using JetBrains.Annotations;
+using Microsoft.Win32;
 using Newtonsoft.Json;
 using Application = System.Windows.Application;
 using DragEventArgs = System.Windows.DragEventArgs;
@@ -995,6 +999,62 @@ namespace AcManager.Pages.Windows {
             if (parent != null && parent.Child == null) {
                 parent.Child = new InstallAdditionalContentList();
                 _downloadsListSet = true;
+            }
+        }
+
+        private void OnDownloadSomethingItemClick(object sender, RoutedEventArgs e) {
+            string defaultUrl = null;
+            try {
+                defaultUrl = Clipboard.GetText().Trim('"');
+            } catch {
+                // ignored
+            }
+            var url = Prompt.Show(AppStrings.MainWindow_AddDownload_Message, AppStrings.MainWindow_AddDownload_Title,
+                    defaultUrl.IsAnyUrl() ? defaultUrl : null, @"https://…", required: true,
+                    comment: AppStrings.MainWindow_AddDownload_Comment);
+            if (url != null) {
+                ContentInstallationManager.Instance.InstallAsync(url, new ContentInstallationParams(false));
+            }
+        }
+
+        private void OnInstallFromAFileItemClick(object sender, RoutedEventArgs e) {
+            string defaultFilename = null;
+
+            try {
+                if (Clipboard.ContainsData(DataFormats.FileDrop)) {
+                    defaultFilename = Clipboard.GetFileDropList().OfType<string>().FirstOrDefault();
+                } else if (Clipboard.ContainsData(DataFormats.UnicodeText)) {
+                    defaultFilename = Clipboard.GetText().Trim('"');
+                }
+            } catch {
+                // ignored
+            }
+
+            try {
+                if (!File.Exists(defaultFilename)) {
+                    defaultFilename = null;
+                }
+            } catch {
+                defaultFilename = null;
+            }
+
+            var filename = FileRelatedDialogs.Open(new OpenDialogParams {
+                DirectorySaveKey = defaultFilename != null ? null : "installfromafile",
+                Filters = {
+                    DialogFilterPiece.Archives,
+                    DialogFilterPiece.AllFiles
+                },
+                Title = "Select an archive to install mods from",
+                InitialDirectory = FileUtils.GetDirectoryNameSafe(defaultFilename) ?? Shell32.GetPath(KnownFolder.Downloads),
+                DefaultFileName = FileUtils.GetFileNameSafe(defaultFilename),
+                CheckFileExists = true,
+                CustomPlaces = {
+                    new FileDialogCustomPlace(Shell32.GetPath(KnownFolder.Downloads))
+                }
+            });
+
+            if (filename != null) {
+                ContentInstallationManager.Instance.InstallAsync(filename, new ContentInstallationParams(false));
             }
         }
 

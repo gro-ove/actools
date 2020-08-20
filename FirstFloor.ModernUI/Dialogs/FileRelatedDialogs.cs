@@ -25,8 +25,7 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly DialogFilterPiece CsvTables = new DialogFilterPiece("LUT tables", "*.csv");
         public static readonly DialogFilterPiece TarGZipFiles = new DialogFilterPiece("Tar GZip archives", "*.tar.gz");
         public static readonly DialogFilterPiece DynamicLibraries = new DialogFilterPiece("Dynamic libraries", "*.dll");
-
-        public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Tar GZip archives",
+        public static readonly DialogFilterPiece Archives = new DialogFilterPiece("Archives",
                 "*.zip", "*.rar", "*.7z", "*.gzip", "*.tar", "*.tar.gz", "*.bz2");
 
         public DialogFilterPiece([NotNull] string displayName, [Localizable(false), NotNull] params string[] filter) {

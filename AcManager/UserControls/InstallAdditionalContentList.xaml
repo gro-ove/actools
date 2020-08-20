@@ -406,16 +406,15 @@
   </UserControl.Resources>
 
   <mui:Switch Value="{Binding DownloadListView.Count}">
-    <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="No active downloads" Margin="8 0 0 8"
+    <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="{x:Static g:AppStrings.DownloadList_NoActiveDownloads}" Margin="8 0 0 8"
         VerticalAlignment="{Binding VerticalContentAlignment, RelativeSource={RelativeSource AncestorType=uc:InstallAdditionalContentList}}" />
     <DockPanel>
       <mui:BooleanSwitch DockPanel.Dock="Top" Value="{Binding Plugins.IsReady, Converter={StaticResource InvertBooleanConverter}}">
         <c:MessageBlock Margin="0 0 0 20">
           <DockPanel>
-            <mui:BbCodeBlock Text="With 7-Zip plugin, you can improve installation performance and let CM to unpack all types of archives:"
-                DockPanel.Dock="Top" Margin="0 0 0 8" />
+            <mui:BbCodeBlock Text="{x:Static g:AppStrings.DownloadList_7ZipComment}" DockPanel.Dock="Top" Margin="0 0 0 8" />
             <mui:Switch Value="{Binding Plugins.ListView.Count}">
-              <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="Can’t load list of plugins" />
+              <mui:PlaceholderTextBlock mui:Switch.When="0" Placeholder="{x:Static g:AppStrings.DownloadList_PluginsLoadFailed}" />
               <ItemsControl ItemsSource="{Binding Plugins.ListView}" ItemTemplate="{StaticResource PluginItemTemplate}" Margin="0 0 0 -20" />
             </mui:Switch>
           </DockPanel>
@@ -431,15 +430,15 @@
                   <MenuItem Command="{Binding CopySourceToClipboardCommand}">
                     <MenuItem.Header>
                       <DockPanel MaxWidth="400">
-                        <TextBlock Text="From: " />
+                        <TextBlock Text="{x:Static g:AppStrings.DownloadList_From}" />
                         <mui:PathTrimmingTextBlock Text="{Binding Source}" IsHitTestVisible="False" />
                       </DockPanel>
                     </MenuItem.Header>
                   </MenuItem>
-                  <MenuItem Header="View in Explorer" Command="{Binding ViewInExplorerCommand}" />
+                  <MenuItem Header="{x:Static g:AppStrings.DownloadList_ViewInExplorer}" Command="{Binding ViewInExplorerCommand}" />
                   <Separator />
-                  <MenuItem Header="Restart" Command="{Binding RetryCommand}" />
-                  <MenuItem Header="Cancel" Command="{Binding CancelCommand}" />
+                  <MenuItem Header="{x:Static g:AppStrings.DownloadList_Restart}" Command="{Binding RetryCommand}" />
+                  <MenuItem Header="{x:Static g:AppStrings.DownloadList_Cancel}" Command="{Binding CancelCommand}" />
                 </ContextMenu>
               </Border.ContextMenu>
               <Border.LayoutTransform>
@@ -472,7 +471,8 @@
                     <ProgressBar Maximum="1" Value="{Binding Progress.Progress, Mode=OneWay}" IsIndeterminate="{Binding Progress.IsIndeterminate}" Height="4"
                         Visibility="{Binding Progress.IsReady, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=inverse}" />
                     <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
-                      <mui:LabeledToggleButton LabelUnchecked="Pause" LabelChecked="Resume" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
+                      <mui:LabeledToggleButton LabelUnchecked="{x:Static g:AppStrings.DownloadList_Pause}"
+                          LabelChecked="{x:Static g:AppStrings.DownloadList_Resume}" IsEnabled="{Binding CanPause}" IsChecked="{Binding IsPaused}"
                           HighlightChecked="True" />
                       <Button Content="{x:Static mui:UiStrings.Cancel}" Command="{Binding CancelCommand}" />
                     </mui:SpacingUniformGrid>
@@ -482,7 +482,7 @@
                   <mui:SpacingStackPanel mui:Switch.When="{x:Static t:ContentInstallationEntryState.PasswordRequired}" VerticalAlignment="Center"
                       HorizontalAlignment="Left" Margin="0 2 0 0" Spacing="6">
                     <DockPanel>
-                      <TextBlock Text="Password:" Padding="0 0 12 0" Background="Transparent" />
+                      <TextBlock Text="{x:Static g:AppStrings.DownloadList_Password}" Padding="0 0 12 0" Background="Transparent" />
                       <mui:ProperPasswordBox x:Name="PasswordBox" Password="{Binding InputPassword, ValidatesOnDataErrors=True}" Placeholder="?"
                           Style="{StaticResource ProperPasswordBox.Borderless}" Width="200" Padding="4 0" PreviewKeyDown="OnPasswordBoxKeyDown" />
                     </DockPanel>
@@ -502,8 +502,8 @@
                             <DockPanel>
                               <Path Data="{StaticResource QuestionMarkIconData}" Width="12" Height="12" DockPanel.Dock="Left"
                                   Fill="{DynamicResource WindowTextReadOnly}" Stretch="Uniform" Margin="0 1 4 -1" VerticalAlignment="Center" />
-                              <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap"
-                                  Text="App couldn’t detect any content to install here. Would you like to install it manually?" Style="{StaticResource Small}" />
+                              <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Text="{x:Static g:AppStrings.DownloadList_DetectionFailed}"
+                                  Style="{StaticResource Small}" />
                             </DockPanel>
                           </mui:BooleanSwitch.True>
                           <mui:BooleanSwitch.False>
@@ -515,9 +515,9 @@
                           </mui:BooleanSwitch.False>
                         </mui:BooleanSwitch>
                         <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
-                          <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
+                          <Button Content="{x:Static g:AppStrings.DownloadList_ShowFile}" Command="{Binding ViewInExplorerCommand}"
                               Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                          <Button Content="Scan again" Command="{Binding RetryCommand}" />
+                          <Button Content="{x:Static g:AppStrings.DownloadList_ScanAgain}" Command="{Binding RetryCommand}" />
                         </mui:SpacingUniformGrid>
                       </mui:SpacingStackPanel>
                     </mui:ReferenceSwitch.Null>
@@ -535,9 +535,9 @@
                               DockPanel.Dock="Top" ToolTip="{Binding FailedMessage}" />
                         </DockPanel>
                         <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}">
-                          <Button Content="Show file" Command="{Binding ViewInExplorerCommand}"
+                          <Button Content="{x:Static g:AppStrings.DownloadList_ShowFile}" Command="{Binding ViewInExplorerCommand}"
                               Visibility="{Binding ViewInExplorerCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                          <Button Content="Retry" Command="{Binding RetryCommand}" />
+                          <Button Content="{x:Static g:AppStrings.DownloadList_Retry}" Command="{Binding RetryCommand}" />
                         </mui:SpacingUniformGrid>
                       </mui:SpacingStackPanel>
                     </mui:ReferenceSwitch.NonNull>
@@ -593,8 +593,8 @@
                               </DataTemplate>
                             </ItemsControl.ItemTemplate>
                           </ItemsControl>
-                          <TextBlock Text="Extra options:" DockPanel.Dock="Bottom" Margin="0 20 0 4" Style="{StaticResource Label}"
-                              Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
+                          <TextBlock Text="{x:Static g:AppStrings.DownloadList_ExtraOptions}" DockPanel.Dock="Bottom" Margin="0 20 0 4"
+                              Style="{StaticResource Label}" Visibility="{Binding ExtraOptions.Length, Converter={StaticResource MoreToVisibilityConverter}}" />
 
                           <ItemsControl ItemsSource="{Binding Entries}" Style="{StaticResource VirtualizingItemsControl}" MaxHeight="400" Margin="0 0 0 -12">
                             <ItemsControl.ItemTemplateSelector>
@@ -610,7 +610,7 @@
 
                     <mui:SpacingUniformGrid Rows="1" Columns="2" HorizontalSpacing="4" HorizontalAlignment="Left" Width="{DynamicResource ButtonsRowWidth}"
                         Margin="0 4 0 0">
-                      <Button x:Name="PART_ConfirmButton" Command="{Binding ConfirmCommand}" Content="Install" />
+                      <Button x:Name="PART_ConfirmButton" Command="{Binding ConfirmCommand}" Content="{x:Static g:AppStrings.DownloadList_Install}" />
                       <Button x:Name="PART_CancelButton" Content="{x:Static mui:UiStrings.Cancel}" Command="{Binding CancelCommand}" />
                     </mui:SpacingUniformGrid>
 
@@ -727,7 +727,7 @@
               <DataTrigger Binding="{Binding IsFailed}" Value="True">
                 <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
                 <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
-                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Failed" />
+                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="{x:Static g:AppStrings.DownloadList_Failed}" />
                 <Setter TargetName="PART_Icon" Property="Effect">
                   <Setter.Value>
                     <mui:GrayscaleEffect SaturationFactor="0" />
@@ -735,13 +735,13 @@
                 </Setter>
               </DataTrigger>
               <DataTrigger Binding="{Binding Cancelled}" Value="True">
-                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Cancelled" />
+                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="{x:Static g:AppStrings.DownloadList_Cancelled}" />
                 <Setter TargetName="PART_ErrorIcon" Property="Visibility" Value="Collapsed" />
               </DataTrigger>
               <DataTrigger Binding="{Binding IsEmpty}" Value="True">
                 <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
                 <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
-                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Nothing found" />
+                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="{x:Static g:AppStrings.DownloadList_NothingFound}" />
                 <Setter TargetName="PART_Icon" Property="Effect">
                   <Setter.Value>
                     <mui:GrayscaleEffect SaturationFactor="0" />
@@ -825,9 +825,9 @@
                 </DataTrigger.EnterActions>
                 <Setter TargetName="PART_DisplayName" Property="TextBlock.Foreground" Value="{DynamicResource WindowTextReadOnly}" />
                 <Setter TargetName="PART_DisplayName" Property="TextDecorations" Value="Strikethrough" />
-                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="Cancelled" />
+                <Setter TargetName="PART_DisplayStatus" Property="Tag" Value="{x:Static g:AppStrings.DownloadList_Cancelled}" />
                 <Setter TargetName="PART_ErrorIcon" Property="Visibility" Value="Collapsed" />
-                <Setter TargetName="PART_DisplayFound" Property="Text" Value="Cancelling…" />
+                <Setter TargetName="PART_DisplayFound" Property="Text" Value="{x:Static g:AppStrings.DownloadList_Cancelling}" />
                 <Setter TargetName="PART_Icon" Property="Effect">
                   <Setter.Value>
                     <mui:GrayscaleEffect SaturationFactor="0" />
@@ -838,7 +838,7 @@
                 <DataTrigger.EnterActions>
                   <BeginStoryboard Storyboard="{StaticResource SlideHeader}" />
                 </DataTrigger.EnterActions>
-                <Setter TargetName="PART_DisplayFound" Property="Text" Value="Installing…" />
+                <Setter TargetName="PART_DisplayFound" Property="Text" Value="{x:Static g:AppStrings.DownloadList_Installing}" />
               </DataTrigger>
             </DataTemplate.Triggers>
           </DataTemplate>

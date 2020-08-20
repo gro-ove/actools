@@ -3785,7 +3785,7 @@ Content Manager [url="/Pages/About/License.xaml|_top"]License[/url].</value>
       <value>Tools</value>
     </data>
     <data name="Main_DownloadsAndInstallations" xml:space="preserve">
-      <value>Downloads &amp;amp; Installations</value>
+      <value>Downloads &amp; Installations</value>
     </data>
     <data name="Main_EverythingAboutFiltering" xml:space="preserve">
       <value>Everything about filtering</value>
@@ -4816,5 +4816,84 @@ anyway while it’s waiting for disk to get the data, and there will much less d
     <data name="MainWindow_FoundNModUpdates" xml:space="preserve">
         <value>Found {0} {update} for mods:</value>
         <comment>{0} for number of updates</comment>
+    </data>
+    <data name="MainWindow_AddDownload_Message" xml:space="preserve">
+        <value>Enter URL to download:</value>
+    </data>
+    <data name="MainWindow_AddDownload_Comment" xml:space="preserve">
+        <value>Or, copy a link or a file and press Ctrl+V in Content Manager.</value>
+    </data>
+    <data name="MainWindow_AddDownload_Title" xml:space="preserve">
+        <value>Download</value>
+    </data>
+    <data name="MainWindow_AddDownload_MenuItem" xml:space="preserve">
+        <value>Download something…</value>
+    </data>
+    <data name="MainWindow_InstallFromAFile_MenuItem" xml:space="preserve">
+        <value>Install from a file…</value>
+    </data>
+    <data name="DownloadList_PluginsLoadFailed" xml:space="preserve">
+        <value>Can’t load list of plugins</value>
+    </data>
+    <data name="DownloadList_7ZipComment" xml:space="preserve">
+        <value>With 7-Zip plugin, you can improve installation performance and allow CM to unpack all types of archives:</value>
+    </data>
+    <data name="DownloadList_ViewInExplorer" xml:space="preserve">
+        <value>View in Explorer</value>
+    </data>
+    <data name="DownloadList_Password" xml:space="preserve">
+        <value>Password:</value>
+    </data>
+    <data name="DownloadList_DetectionFailed" xml:space="preserve">
+        <value>App couldn’t detect any content to install here. Would you like to install it manually?</value>
+    </data>
+    <data name="DownloadList_ShowFile" xml:space="preserve">
+        <value>Show file</value>
+    </data>
+    <data name="DownloadList_ScanAgain" xml:space="preserve">
+        <value>Scan again</value>
+    </data>
+    <data name="DownloadList_Retry" xml:space="preserve">
+        <value>Retry</value>
+    </data>
+    <data name="DownloadList_ExtraOptions" xml:space="preserve">
+        <value>Extra options:</value>
+    </data>
+    <data name="DownloadList_Failed" xml:space="preserve">
+        <value>Failed</value>
+    </data>
+    <data name="DownloadList_NothingFound" xml:space="preserve">
+        <value>Nothing found</value>
+    </data>
+    <data name="DownloadList_Cancelled" xml:space="preserve">
+        <value>Cancelled</value>
+    </data>
+    <data name="DownloadList_Cancelling" xml:space="preserve">
+        <value>Cancelling…</value>
+    </data>
+    <data name="DownloadList_Installing" xml:space="preserve">
+        <value>Installing…</value>
+    </data>
+    <data name="DownloadList_Install" xml:space="preserve">
+        <value>Install</value>
+    </data>
+    <data name="DownloadList_Resume" xml:space="preserve">
+        <value>Resume</value>
+    </data>
+    <data name="DownloadList_Pause" xml:space="preserve">
+        <value>Pause</value>
+    </data>
+    <data name="DownloadList_Restart" xml:space="preserve">
+        <value>Restart</value>
+    </data>
+    <data name="DownloadList_Cancel" xml:space="preserve">
+        <value>Cancel</value>
+    </data>
+    <data name="DownloadList_From" xml:space="preserve">
+        <value>From: </value>
+        <comment>Most likely, requires a trailing space</comment>
+    </data>
+    <data name="DownloadList_NoActiveDownloads" xml:space="preserve">
+        <value>No active downloads</value>
     </data>
 </root>

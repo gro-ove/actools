@@ -237,18 +237,14 @@
             </DockPanel>
           </Button>
         </mui:SpacingUniformGrid>
-        <Border Tag="DownloadsParent" />
+        <Border Tag="DownloadsParent" MaxHeight="400" />
       </DockPanel>
 
       <DockPanel x:Key="CupNotificationBlock" x:Shared="False" DataContext="{x:Static c:CupViewModel.Instance}"
           Visibility="{Binding ToUpdate.Count, Converter={StaticResource MoreToVisibilityConverter}}">
         <Separator DockPanel.Dock="Top" Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
-        <TextBlock DockPanel.Dock="Top" Margin="8 8 8 0" Style="{StaticResource Label}">
-          <TextBlock.Text>
-            <Binding Path="ToUpdate.Count" Converter="{StaticResource PluralizingConverter}"
-                ConverterParameter="{x:Static g:AppStrings.MainWindow_FoundNModUpdates}" />
-          </TextBlock.Text>
-        </TextBlock>
+        <TextBlock DockPanel.Dock="Top" Margin="8 8 8 0" Style="{StaticResource Label}"
+            Text="{Binding Path=ToUpdate.Count, Converter={StaticResource PluralizingConverter}, ConverterParameter={x:Static g:AppStrings.MainWindow_FoundNModUpdates}}" />
         <ItemsControl Style="{StaticResource VirtualizingItemsControl}" MaxHeight="320" ItemsSource="{Binding ToUpdate}" DockPanel.Dock="Top"
             Margin="12 6 12 6">
           <ItemsControl.ItemTemplate>
@@ -399,6 +395,19 @@
             <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
           </StackPanel>
 
+          <MenuItem Header="{x:Static g:AppStrings.MainWindow_AddDownload_MenuItem}" Click="OnDownloadSomethingItemClick" InputGestureText="Ctrl+V">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <MenuItem Header="{x:Static g:AppStrings.MainWindow_InstallFromAFile_MenuItem}" Click="OnInstallFromAFileItemClick">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource OpenFolderIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>
+          <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
           <MenuItem Header="{x:Static g:AppStrings.Main_Drive}" Click="OnNavigateItemClick" CommandParameter="/Pages/Drive/QuickDrive.xaml"
               InputGestureText="F1">
             <MenuItem.Icon>
@@ -503,8 +512,8 @@
             </MenuItem>
           </StackPanel>
 
-          <Border Loaded="OnCupNotificationPanelLoaded" Tag="CupNotificationPanel" />
           <Border Loaded="OnDownloadListParentLoaded" Tag="DownloadsListParent" />
+          <Border Loaded="OnCupNotificationPanelLoaded" Tag="CupNotificationPanel" />
         </StackPanel>
       </c:ModernPopup>
     </mui:Cell>
