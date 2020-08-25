@@ -7,8 +7,8 @@
     Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
     Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
-    mui:ModernMenu.Initialize="OnMainMenuInitialize" d:DataContext="{d:DesignInstance w:MainWindow+ViewModel}" SaveKey="MainWindow"
-    LocationAndSizeKey="MainWindow_LS" x:Name="Window" ShowErrorsButton="False"
+    mui:ModernMenu.Initialize="OnMainMenuInitialize" mui:ModernMenu.SelectedChange="OnMainMenuSelectedChange"
+    d:DataContext="{d:DesignInstance w:MainWindow+ViewModel}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window" ShowErrorsButton="False"
     BackButtonVisibility="{Binding ShowMainWindowBackButton, Source={x:Static c:AppAppearanceManager.Instance}, Converter={StaticResource BooleanToVisibilityConverter}}">
   <mui:ModernWindow.Resources>
     <ResourceDictionary>
@@ -549,7 +549,7 @@
       <mui:LinkGroup.Links>
         <mui:Link x:Name="RsrLink" DisplayName="{x:Static g:AppStrings.Main_Rsr}" Source="/Pages/Drive/Rsr.xaml" />
         <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
-        <!--<mui:Link x:Name="RaceULink" DisplayName="RaceU" Source="/Pages/Drive/RaceU.xaml" />-->
+        <!---->
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
         <!--<mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />-->
       </mui:LinkGroup.Links>
@@ -562,6 +562,11 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
+    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="Main" Source="/Pages/Drive/RaceU.xaml" />
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>
 
     <!-- Lap times -->
     <mui:LinkGroupFilterable GroupKey="lapTimes" DisplayName="{x:Static g:AppStrings.Main_RecentLapTimes}" Source="/Pages/Miscellaneous/LapTimes_Recent.xaml"

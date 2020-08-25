@@ -43,7 +43,7 @@
         <DockPanel>
           <mui:ValueLabel Value="{Binding Controls.KeyboardMouseSteeringSpeed, StringFormat='{}{0:F2}'}" mui:BetterTextBox.Mode="Number"
               Content="{x:Static g:AppStrings.Controls_SteeringSpeed}" />
-          <Slider Minimum="0.1" Maximum="1" Value="{Binding Controls.KeyboardMouseSteeringSpeed}" TickFrequency="0.09" TickPlacement="BottomRight" />
+          <Slider Minimum="0.01" Maximum="1" Value="{Binding Controls.KeyboardMouseSteeringSpeed}" TickFrequency="0.09" TickPlacement="BottomRight" />
         </DockPanel>
       </StackPanel>
 

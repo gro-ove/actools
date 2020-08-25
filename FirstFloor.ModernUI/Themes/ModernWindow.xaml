@@ -134,7 +134,8 @@
                         <c:ModernButton DockPanel.Dock="Left" Margin="8 10 10 0" HorizontalAlignment="Left" VerticalAlignment="Top" EllipseDiameter="24"
                             IconWidth="12" IconHeight="12" IconData="F1 M 33,22L 33,26L 19.75,26L 27,33L 20.5,33L 11,24L 20.5,15L 27,15L 19.75,22L 33,22 Z"
                             Command="NavigationCommands.BrowseBack" CommandTarget="{Binding ElementName=ContentFrame}" ToolTip="{x:Static mui:UiStrings.Back}"
-                            WindowChrome.IsHitTestVisibleInChrome="True" Visibility="{TemplateBinding BackButtonVisibility}" />
+                            WindowChrome.IsHitTestVisibleInChrome="True" Visibility="{TemplateBinding BackButtonVisibility}"
+                            x:Name="WindowBackButton" />
 
                         <!-- Main menu -->
                         <c:ModernMenu LinkGroups="{TemplateBinding MenuLinkGroups}" x:Name="PART_Menu" SaveKey="{TemplateBinding SaveKey}"

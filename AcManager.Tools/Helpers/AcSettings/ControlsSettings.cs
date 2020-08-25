@@ -1129,7 +1129,7 @@ namespace AcManager.Tools.Helpers.AcSettings {
 
         public double KeyboardMouseSteeringSpeed {
             get => _keyboardMouseSteeringSpeed;
-            set => Apply(value.Clamp(0.1, 1.0), ref _keyboardMouseSteeringSpeed);
+            set => Apply(value.Clamp(0, 1.0), ref _keyboardMouseSteeringSpeed);
         }
 
         public KeyboardButtonEntry[] KeyboardSpecificButtonEntries { get; }

@@ -135,6 +135,13 @@
       <HintPath>..\Libraries\AcTools\AcTools.Kn5Tools.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="CefSharp, Version=79.1.360.0, Culture=neutral, PublicKeyToken=40c4b6fc221f4138">
+      <HintPath>..\Libraries\CefSharp-79.1.360-x86\CefSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Costura, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d">
+      <HintPath>..\packages\Costura.Fody.2.0.0\lib\net452\Costura.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.7.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a">
       <HintPath>..\packages\HtmlAgilityPack.1.7.0\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -159,6 +166,10 @@
       <HintPath>..\Libraries\SlimDX-$(ActualPlatform)\SlimDX.dll</HintPath>
       <Private>True</Private>
       <EmbedInteropTypes>false</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="CefSharp, Version=79.1.360.0, Culture=neutral, processorArchitecture=$(ActualPlatform)">
+      <HintPath>..\Libraries\CefSharp-79.1.360-$(ActualPlatform)\CefSharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -193,15 +204,12 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
-      <HintPath>..\packages\Blend.Interctivity.WPF.v4.0.1.0.3\lib\net40\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -2195,6 +2203,13 @@
     <!-- This command deliberetely breaks SlimDX to debug how CM works without it. -->
     <!--<PostBuildEvent>cp "$(TargetDir)\Content Manager.exe.manifest" "$(TargetDir)\SlimDX.dll"</PostBuildEvent>-->
   </PropertyGroup>
-  <Import Project="..\packages\Fody.3.0.0\build\Fody.targets" Condition="'$(UseCosturaToPack)' == 'true'" />
-  <Import Project="..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets" Condition="'$(UseCosturaToPack)' == 'true'" />
+  <Import Project="..\packages\Fody.3.0.0\build\Fody.targets" Condition="Exists('..\packages\Fody.3.0.0\build\Fody.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105.The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Fody.3.0.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.0.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets'))" />
+  </Target>
+  <Import Project="..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.2.0.0\build\Costura.Fody.targets')" />
 </Project>

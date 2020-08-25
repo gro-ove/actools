@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -35,41 +37,46 @@ namespace AcManager.Controls.UserControls.Cef {
         private DownloadHandler _downloadHandler;
         private double _zoomLevel;
 
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private void Initialize(bool preferTransparentBackground) {
+            _downloadHandler = new DownloadHandler();
+            _requestHandler = new RequestHandler { UserAgent = CefSharpHelper.DefaultUserAgent };
+            _requestHandler.Inject += OnRequestHandlerInject;
+
+            _inner = new ChromiumWebBrowser {
+                BrowserSettings = {
+                    FileAccessFromFileUrls = CefState.Enabled,
+                    UniversalAccessFromFileUrls = CefState.Enabled,
+                    BackgroundColor = preferTransparentBackground ? 0U : 0xffffffff,
+                    WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
+                    WebGl = CefState.Disabled,
+                    Plugins = CefState.Disabled,
+
+                    // For SRS to work, because IsCSPBypassing somehow doesn’t work!
+                    WebSecurity = CefState.Disabled,
+                },
+                DisplayHandler = this,
+                DownloadHandler = _downloadHandler,
+                RequestHandler = _requestHandler,
+                MenuHandler = new MenuHandler(),
+                JsDialogHandler = new JsDialogHandler(),
+                KeyboardHandler = new KeyboardHandler(),
+                Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White),
+            };
+
+            RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
+            _inner.FrameLoadStart += OnFrameLoadStart;
+            _inner.FrameLoadEnd += OnFrameLoadEnd;
+            _inner.LoadingStateChanged += OnLoadingStateChanged;
+            _inner.LoadError += OnLoadError;
+            _wrapper = new Border { Child = _inner };
+        }
+
         public FrameworkElement GetElement(DpiAwareWindow parentWindow, bool preferTransparentBackground) {
             if (_inner == null) {
                 CefSharpHelper.EnsureInitialized();
-
-                _downloadHandler = new DownloadHandler();
-                _requestHandler = new RequestHandler { UserAgent = CefSharpHelper.DefaultUserAgent };
-                _requestHandler.Inject += OnRequestHandlerInject;
-
-                _inner = new ChromiumWebBrowser {
-                    BrowserSettings = {
-                        FileAccessFromFileUrls = CefState.Enabled,
-                        UniversalAccessFromFileUrls = CefState.Enabled,
-                        BackgroundColor = preferTransparentBackground ? 0U : 0xffffffff,
-                        WindowlessFrameRate = SettingsHolder.Plugins.Cef60Fps ? 60 : 30,
-                        WebGl = CefState.Disabled,
-                        Plugins = CefState.Disabled,
-
-                        // For SRS to work, because IsCSPBypassing somehow doesn’t work!
-                        WebSecurity = CefState.Disabled,
-                    },
-                    DisplayHandler = this,
-                    DownloadHandler = _downloadHandler,
-                    RequestHandler = _requestHandler,
-                    MenuHandler = new MenuHandler(),
-                    JsDialogHandler = new JsDialogHandler(),
-                    KeyboardHandler = new KeyboardHandler(),
-                    Background = new SolidColorBrush(preferTransparentBackground ? Colors.Transparent : Colors.White),
-                };
-
-                RenderOptions.SetBitmapScalingMode(_inner, BitmapScalingMode.NearestNeighbor);
-                _inner.FrameLoadStart += OnFrameLoadStart;
-                _inner.FrameLoadEnd += OnFrameLoadEnd;
-                _inner.LoadingStateChanged += OnLoadingStateChanged;
-                _inner.LoadError += OnLoadError;
-                _wrapper = new Border { Child = _inner };
+                Initialize(preferTransparentBackground);
+                if (_inner == null) throw new Exception(@"Initialization failed");
             }
 
             _zoomLevel = parentWindow?.ScaleX ?? 1d;
@@ -98,22 +105,24 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         private void OnLoadError(object sender, LoadErrorEventArgs args) {
-            if (args.ErrorCode == CefErrorCode.Aborted) return;
+            if (args.ErrorCode == CefErrorCode.Aborted || _inner == null) return;
             if (args.ErrorCode == CefErrorCode.NameNotResolved && args.FailedUrl == @"http://" + _attemptedToNavigateTo + @"/") {
                 args.Frame.LoadUrl(SettingsHolder.Content.SearchEngine.GetUrl(_attemptedToNavigateTo, false));
                 return;
             }
 
-            args.Frame.LoadHtml($@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
+            var html = $@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
 <h2>Failed to load URL {args.FailedUrl}</h2>
 <p>Error: {args.ErrorText} ({args.ErrorCode}).</p>
-</body></html>");
+</body></html>";
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
+            _inner.Load("data:text/html;base64," + encoded);
         }
 
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
             _inner.SetZoomLevel(Math.Log(_zoomLevel, 1.2));
             if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThread(() => PageLoadingStarted?.Invoke(this, new UrlEventArgs(e.Url ?? string.Empty)));
+                ActionExtension.InvokeInMainThread(() => PageLoadingStarted?.Invoke(this, new UrlEventArgs(AlterUrl(e.Url))));
             }
         }
 
@@ -145,12 +154,19 @@ namespace AcManager.Controls.UserControls.Cef {
 
         private void OnFrameLoadEnd(object sender, FrameLoadEndEventArgs e) {
             if (e.Frame.IsMain) {
-                ActionExtension.InvokeInMainThread(() => PageLoaded?.Invoke(this, new UrlEventArgs(e.Url ?? string.Empty)));
+                ActionExtension.InvokeInMainThread(() => PageLoaded?.Invoke(this, new UrlEventArgs(AlterUrl(e.Url))));
             }
         }
 
+        private string AlterUrl([CanBeNull] string url) {
+            if (url?.StartsWith(@"data:") == true) {
+                return _attemptedToNavigateTo ?? url;
+            }
+            return url ?? string.Empty;
+        }
+
         public string GetUrl() {
-            return _inner?.Address ?? string.Empty;
+            return AlterUrl(_inner?.Address);
         }
 
         private bool _jsBridgeSet;
@@ -281,7 +297,7 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         void IDisplayHandler.OnAddressChanged(IWebBrowser browserControl, AddressChangedEventArgs args) {
-            ActionExtension.InvokeInMainThreadAsync(() => AddressChanged?.Invoke(this, new UrlEventArgs(args.Address ?? string.Empty)));
+            ActionExtension.InvokeInMainThreadAsync(() => AddressChanged?.Invoke(this, new UrlEventArgs(AlterUrl(args.Address))));
         }
 
         bool IDisplayHandler.OnAutoResize(IWebBrowser browserControl, IBrowser browser, Size newSize) {

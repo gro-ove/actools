@@ -142,6 +142,7 @@ namespace AcManager.Pages.Windows {
             }.NonNull().ToList());
 
             InitializeComponent();
+            RaceU.InitializeRaceULinks();
             ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
 
@@ -262,6 +263,15 @@ namespace AcManager.Pages.Windows {
                     DisplayName = $@"{source.DisplayName}",
                     Source = UriExtension.Create("/Pages/Drive/Online.xaml?Filter=@{0}&Special=1", source.Id)
                 });
+            }
+        }
+
+        public void UpdateRaceULinks(IEnumerable<Link> links) {
+            for (var i = RaceUGroup.Links.Count - 1; i > 0; --i) {
+                RaceUGroup.Links.RemoveAt(i);
+            }
+            foreach (var link in links) {
+                RaceUGroup.Links.Add(link);
             }
         }
 
@@ -892,6 +902,8 @@ namespace AcManager.Pages.Windows {
         private void OnMainMenuInitialize(object sender, ModernMenu.InitializeEventArgs e) {
             MakeSureOnlineIsReady(e.LoadedUri);
         }
+
+        private void OnMainMenuSelectedChange(object sender, ModernMenu.SelectedChangeEventArgs e) { }
 
         private static readonly Uri AboutPageUri = new Uri("/Pages/About/AboutPage.xaml", UriKind.Relative);
         private readonly StoredValue<Uri> _lastAboutSection = Stored.Get("MainWindow.AboutSection", AboutPageUri);

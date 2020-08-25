@@ -40,7 +40,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 if (string.IsNullOrEmpty(p[0])) {
                     Links.Insert(0, c);
                 } else {
-                    var after = Links.FirstOrDefault(x => x.Source.ToString() == p[0]);
+                    var after = Links.FirstOrDefault(x => x.Source?.ToString() == p[0]);
                     if (after == null) continue;
 
                     var index = Links.IndexOf(after);
@@ -59,7 +59,7 @@ namespace FirstFloor.ModernUI.Presentation {
 
         private void Links_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) {
             ValuesStorage.Storage.SetStringList(KeyTemporary, Links.Select((x, i) =>
-                    x is CustomLink ? ((i > 0 ? Links[i - 1] : null)?.Source.ToString() ?? "") + '\n' + ((CustomLink)x).Serialize() : null).Where(x => x != null));
+                    x is CustomLink link ? ((i > 0 ? Links[i - 1] : null)?.Source?.ToString() ?? "") + '\n' + link.Serialize() : null).Where(x => x != null));
         }
 
         private Link _selectedLink;

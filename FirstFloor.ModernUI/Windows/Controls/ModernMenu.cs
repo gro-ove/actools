@@ -60,6 +60,23 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             public Uri LoadedUri { get; }
         }
 
+        public static readonly RoutedEvent SelectedChangeEvent = EventManager.RegisterRoutedEvent(nameof(SelectedChange), RoutingStrategy.Bubble,
+                typeof(EventHandler<SelectedChangeEventArgs>), typeof(ModernMenu));
+
+        public event EventHandler<SelectedChangeEventArgs> SelectedChange {
+            add => AddHandler(SelectedChangeEvent, value);
+            remove => RemoveHandler(SelectedChangeEvent, value);
+        }
+
+        public class SelectedChangeEventArgs : RoutedEventArgs {
+            [CanBeNull]
+            public Link SelectedLink { get; }
+
+            public SelectedChangeEventArgs(RoutedEvent routedEvent, [CanBeNull] Link selectedLink) : base(routedEvent) {
+                SelectedLink = selectedLink;
+            }
+        }
+
         private bool _skipLoading;
 
         public void SkipLoading() {
@@ -72,10 +89,10 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             }
 
             if (!_skipLoading) {
-                var saved = ValuesStorage.Get<Uri>($"{SaveKey}_link");
-                if (!SelectUriIfLinkExists(saved)) {
+                var saved = ValuesStorage.Get<string>($"{SaveKey}_link");
+                if (!SelectUriIfLinkExists(saved, null)) {
                     Logging.Debug("Can’t find link: " + saved);
-                    SelectUriIfLinkExists(DefaultSource);
+                    SelectUriIfLinkExists(DefaultSource, null, null);
                 }
             }
         }
@@ -220,7 +237,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 newValue.PropertyChanged += OnLinkPropertyChanged;
             }
 
-            SelectedSource = newValue?.NonSelectable == false ? newValue.Source : null;
+            try {
+                SelectedSource = newValue?.NonSelectable == false ? newValue.Source : null;
+                RaiseEvent(new SelectedChangeEventArgs(SelectedChangeEvent, newValue));
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
 
             if (newValue == null || SaveKey == null || newValue.NonSelectable) return;
             var group = (from g in LinkGroups
@@ -230,7 +252,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 group.SelectedLink = newValue;
                 ValuesStorage.Set($"{SaveKey}__{group.GroupKey}", newValue.Source);
             }
-            ValuesStorage.Set($"{SaveKey}_link", newValue.Source);
+            ValuesStorage.Set($"{SaveKey}_link", newValue.SaveKey);
         }
         #endregion
 
@@ -293,11 +315,30 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             group.OnDrop(widget, destination.GetMouseItemIndex());
         }
 
-        private bool SelectUriIfLinkExists(Uri uri, string groupKey = null) {
+        private bool SelectUriIfLinkExists(Uri uri, string tag, string groupKey) {
             if (uri != null) {
                 RaiseEvent(new InitializeEventArgs(InitializeEvent, uri));
                 var selected = LinkGroups.Where(x => groupKey == null || x.GroupKey == groupKey)
-                                         .SelectMany(g => g.Links).FirstOrDefault(t => t.Source?.ToString() == uri.ToString());
+                                         .SelectMany(g => g.Links)
+                                         .FirstOrDefault(t => t.Source?.ToString() == uri.ToString() && t.Tag == tag);
+                if (selected != null) {
+                    SelectedLink = selected;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool SelectUriIfLinkExists(string saveKey, string groupKey) {
+            var saved = ValuesStorage.Get<string>($"{SaveKey}_link")?.Split(new[]{ @"::" }, StringSplitOptions.None);
+            var source = saved?.FirstOrDefault() != null ? new Uri(saved.First(), UriKind.Relative) : null;
+
+            if (source != null) {
+                RaiseEvent(new InitializeEventArgs(InitializeEvent, source));
+                var selected = LinkGroups.Where(x => groupKey == null || x.GroupKey == groupKey)
+                                         .SelectMany(g => g.Links)
+                                         .FirstOrDefault(t => t.SaveKey == saveKey);
                 if (selected != null) {
                     SelectedLink = selected;
                     return true;
@@ -308,7 +349,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public void SwitchToGroupByKey(string key) {
-            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<Uri>($"{SaveKey}__{key}"), key)) {
+            if (SaveKey == null || !SelectUriIfLinkExists(ValuesStorage.Get<string>($"{SaveKey}__{key}"), key)) {
                 SelectedLink = (from g in LinkGroups
                                 where g.GroupKey == key
                                 from l in g.Links
@@ -317,7 +358,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         private void OnLinkPropertyChanged(object sender, PropertyChangedEventArgs args) {
-            if (args.PropertyName != nameof(Link.Source)) return;
+            if (args.PropertyName != nameof(Link.Source) && args.PropertyName != nameof(Link.Tag)) return;
             var link = sender as Link;
             SelectedSource = link?.Source;
 
@@ -328,7 +369,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             if (group != null) {
                 ValuesStorage.Set($"{SaveKey}__{group.GroupKey}", link.Source);
             }
-            ValuesStorage.Set($"{SaveKey}_link", link.Source);
+            ValuesStorage.Set($"{SaveKey}_link", link.SaveKey);
         }
 
         private void OnLinkGroupsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {

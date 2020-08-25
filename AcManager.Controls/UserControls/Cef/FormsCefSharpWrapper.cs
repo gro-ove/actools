@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms.Integration;
@@ -73,17 +74,26 @@ namespace AcManager.Controls.UserControls.Cef {
             return _wrapper;
         }
 
+        private string AlterUrl([CanBeNull] string url) {
+            if (url?.StartsWith(@"data:") == true) {
+                return _attemptedToNavigateTo ?? url;
+            }
+            return url ?? string.Empty;
+        }
+
         private void OnLoadError(object sender, LoadErrorEventArgs args) {
-            if (args.ErrorCode == CefErrorCode.Aborted) return;
+            if (args.ErrorCode == CefErrorCode.Aborted || _inner == null) return;
             if (args.ErrorCode == CefErrorCode.NameNotResolved && args.FailedUrl == @"http://" + _attemptedToNavigateTo + @"/") {
                 args.Frame.LoadUrl(SettingsHolder.Content.SearchEngine.GetUrl(_attemptedToNavigateTo, false));
                 return;
             }
 
-            args.Frame.LoadHtml($@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
+            var html = $@"<html><body bgcolor=""white"" style=""font-family:segoe ui, sans-serif;"">
 <h2>Failed to load URL {args.FailedUrl}</h2>
 <p>Error: {args.ErrorText} ({args.ErrorCode}).</p>
-</body></html>");
+</body></html>";
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(html));
+            _inner.Load("data:text/html;base64," + encoded);
         }
 
         private void OnFrameLoadStart(object sender, FrameLoadStartEventArgs e) {
@@ -125,7 +135,7 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         public string GetUrl() {
-            return _inner?.Address ?? string.Empty;
+            return AlterUrl(_inner?.Address);
         }
 
         private bool _jsBridgeSet;

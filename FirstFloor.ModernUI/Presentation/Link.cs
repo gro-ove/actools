@@ -63,9 +63,18 @@ namespace FirstFloor.ModernUI.Presentation {
             }
         }
 
+        private string _tag;
+
+        public string Tag {
+            get => _tag;
+            set => Apply(value, ref _tag);
+        }
+
         public string Key {
-            get => Source.OriginalString;
+            get => Source?.OriginalString;
             set => Source = new Uri(value, UriKind.Relative);
         }
+
+        public string SaveKey => Tag != null ? $@"{Source}::{Tag}" : Source?.ToString();
     }
 }

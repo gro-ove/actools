@@ -484,7 +484,7 @@ namespace AcManager.Controls {
 
 #if DEBUG
             s.Restart();
-            Logging.Debug($"First step: {s.Elapsed.TotalMilliseconds} ms");
+            Logging.Debug($"First step ({_presetable.PresetableCategory.DirectoryName}): {s.Elapsed.TotalMilliseconds} ms");
 #endif
 
             SetValue(SavedPresetsPropertyKey, presets);
@@ -499,7 +499,7 @@ namespace AcManager.Controls {
             _ignoreNext = false;
 
 #if DEBUG
-            Logging.Debug($"Second step: {s.Elapsed.TotalMilliseconds} ms");
+            Logging.Debug($"Second step ({_presetable.PresetableCategory.DirectoryName}): {s.Elapsed.TotalMilliseconds} ms");
 #endif
         }
 
