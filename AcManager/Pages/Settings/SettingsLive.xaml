@@ -52,6 +52,10 @@
           <mui:BetterTextBox Text="{Binding LiveSettings.SrsAutoMask}" Placeholder="?" />
         </DockPanel>-->
       </StackPanel>
+
+      <CheckBox IsChecked="{Binding LiveSettings.WorldSimSeriesEnabled}" Margin="0 20 0 8">
+        <Label Content="Enable World Sim Series" />
+      </CheckBox>
     </StackPanel>
   </ScrollViewer>
 </UserControl>

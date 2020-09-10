@@ -54,6 +54,7 @@ namespace AcManager.Controls.UserControls.Web {
             _something.AddressChanged += OnAddressChanged;
             _something.FaviconChanged += OnFaviconChanged;
             _something.Inject += OnInject;
+            _something.Headers += OnHeaders;
             _something.AcApiRequest += OnAcApiRequest;
             _something.OnLoaded();
 
@@ -224,6 +225,10 @@ namespace AcManager.Controls.UserControls.Web {
 
         private void OnInject(object sender, WebInjectEventArgs e) {
             _jsBridge?.PageInject(e.Url, e.ToInject, e.Replacements);
+        }
+
+        private void OnHeaders(object sender, WebHeadersEventArgs e) {
+            _jsBridge?.PageHeaders(e.Url, e.Headers);
         }
 
         private void OnAcApiRequest(object sender, AcApiRequestEventArgs e) {

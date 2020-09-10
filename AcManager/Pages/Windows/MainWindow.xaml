@@ -551,6 +551,7 @@
         <!--<mui:Link x:Name="SrsLink" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs.xaml" />-->
         <!---->
         <mui:Link x:Name="Srs2Link" DisplayName="{x:Static g:AppStrings.Main_Srs}" Source="/Pages/Drive/Srs2.xaml" />
+        <mui:Link x:Name="WorldSimSeriesLink" DisplayName="World Sim Series" Source="/Pages/Drive/WorldSimSeries.xaml" />
         <!--<mui:Link x:Name="ShortSurveyLink" DisplayName="Short survey" Source="/Pages/Drive/TempSurvey.xaml" />-->
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
@@ -562,7 +563,7 @@
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_Online_LAN}" Source="/Pages/Drive/Online.xaml?Filter=@lan&amp;Special=1" />
       </mui:LinkGroupFilterable.FixedLinks>
     </mui:LinkGroupFilterable>
-    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU">
+    <mui:LinkGroup x:Name="RaceUGroup" GroupKey="drive" DisplayName="RaceU" IsShown="False">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="Main" Source="/Pages/Drive/RaceU.xaml" />
       </mui:LinkGroup.Links>

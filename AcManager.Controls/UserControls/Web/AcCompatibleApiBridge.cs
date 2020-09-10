@@ -19,10 +19,10 @@ using Newtonsoft.Json;
 
 namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-    public class AcCompatibleApiBridge : JsBridgeBase {
+    public class AcCompatibleApiBridge : JsBridgeCSharp {
         private readonly IniFile _raceConfig = Game.DefaultRaceConfig;
 
-        public override string AcApiRequest(string url) {
+        internal override string AcApiRequest(string url) {
             url = url.SubstringExt(AcApiHandlerFactory.AcSchemeName.Length + 3);
             Logging.Debug(url);
 
@@ -70,7 +70,7 @@ namespace AcManager.Controls.UserControls.Web {
             }
         }
 
-        public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+        internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
             Logging.Debug(url.GetDomainNameFromUrl());
             if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
                 toInject.Add(@"<script>!function(){

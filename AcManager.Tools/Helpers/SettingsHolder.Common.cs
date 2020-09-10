@@ -161,6 +161,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _checkForFth;
+
+            public bool CheckForFaultTolerantHeap {
+                get => _checkForFth ?? (_checkForFth = ValuesStorage.Get("Settings.CommonSettings.CheckForFTH", true)).Value;
+                set {
+                    if (Equals(value, _checkForFth)) return;
+                    _checkForFth = value;
+                    ValuesStorage.Set("Settings.CommonSettings.CheckForFTH", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _developerMode;
 
             public bool DeveloperMode {

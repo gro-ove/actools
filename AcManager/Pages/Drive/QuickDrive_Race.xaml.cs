@@ -346,7 +346,8 @@ namespace AcManager.Pages.Drive {
                     ModeProperties = GetModeProperties(botCars),
                     AdditionalPropertieses = additionalProperties.Concat(new object[] {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),
-                        new CarCustomDataHelper()
+                        new CarCustomDataHelper(),
+                        new CarExtendedPhysicsHelper(),
                     }).ToList()
                 });
             }

@@ -332,6 +332,7 @@
     <Compile Include="GameProperties\AcPatchTrackOutline.cs" />
     <Compile Include="GameProperties\AcShadowsPatcher.cs" />
     <Compile Include="GameProperties\CarCustomDataHelper.cs" />
+    <Compile Include="GameProperties\CarExtendedPhysicsHelper.cs" />
     <Compile Include="GameProperties\CarRaceTextures.cs" />
     <Compile Include="GameProperties\CarSpecificControlsPresetHelper.cs" />
     <Compile Include="GameProperties\CarSpecificFanatecSettingsHelper.cs" />
@@ -407,6 +408,7 @@
     <Compile Include="Helpers\ContentCategory.cs" />
     <Compile Include="Helpers\DirectInput\DirectInputDeviceUtils.cs" />
     <Compile Include="Helpers\DirectInput\KeyHelper.cs" />
+    <Compile Include="Helpers\FaultTolerantHeapFix.cs" />
     <Compile Include="Helpers\FaviconProvider.cs" />
     <Compile Include="Helpers\LazierCached.cs" />
     <Compile Include="Helpers\Loaders\ICmRequestHandler.cs" />
@@ -416,6 +418,7 @@
     <Compile Include="Helpers\Loaders\YouTubeDescriptionLoader.cs" />
     <Compile Include="Helpers\ExtraDataProvider.cs" />
     <Compile Include="Helpers\PackedDescription.cs" />
+    <Compile Include="Helpers\RegistryPatch.cs" />
     <Compile Include="Helpers\SettingsHolder.Common.cs" />
     <Compile Include="Helpers\SettingsHolder.Content.cs" />
     <Compile Include="Helpers\ContentUtils.cs" />

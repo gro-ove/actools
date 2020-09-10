@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using AcManager.Controls.Helpers;
 using AcManager.Controls.Presentation;
 using AcManager.Controls.UserControls;
 using AcManager.Controls.UserControls.Web;
@@ -30,6 +31,7 @@ using CefSharp;
 using FirstFloor.ModernUI;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
+using FirstFloor.ModernUI.Windows;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
 using Newtonsoft.Json;
@@ -65,6 +67,8 @@ namespace AcManager.Pages.Drive {
         }
 
         public RaceU() {
+            this.SetCustomAccentColor(Color.FromArgb(255, 20, 190, 1));
+
             if (_instance == null && Application.Current?.MainWindow is MainWindow mainWindow) {
                 mainWindow.AddHandler(ModernMenu.SelectedChangeEvent, new EventHandler<ModernMenu.SelectedChangeEventArgs>(OnMainWindowLinkChange));
             }
@@ -119,7 +123,6 @@ namespace AcManager.Pages.Drive {
             }
         }
 
-        private Color? _originalAccentColor;
         private Button _windowBackButton;
         private IInputElement _windowBackButtonPreviousTarget;
 
@@ -164,10 +167,6 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e) {
-            if (!_originalAccentColor.HasValue) {
-                _originalAccentColor = AppAppearanceManager.Instance.AccentColor;
-            }
-            AppearanceManager.Instance.SetAccentColorAsync(Color.FromArgb(255, 20, 190, 1));
             _windowBackButton = Application.Current?.MainWindow?.FindChild<Button>("WindowBackButton");
             if (_windowBackButton != null && _windowBackButtonPreviousTarget == null) {
                 _windowBackButtonPreviousTarget = _windowBackButton.CommandTarget;
@@ -176,9 +175,6 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e) {
-            if (_originalAccentColor.HasValue) {
-                AppAppearanceManager.Instance.AccentColor = _originalAccentColor.Value;
-            }
             if (_windowBackButton != null) {
                 _windowBackButton.CommandTarget = _windowBackButtonPreviousTarget;
             }
@@ -225,13 +221,20 @@ namespace AcManager.Pages.Drive {
                 AcApiHosts.Add(@"localhost:3000");
             }
 
-            public override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
+            internal override void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {
                 base.PageInject(url, toInject, replacements);
-                if (AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase)) {
+                if (IsHostAllowed(url)) {
                     toInject.Add(@"<script>
 window.AC = window.external;
 window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify(links)); };
 </script>");
+                }
+            }
+
+            internal override void PageHeaders(string url, IDictionary<string, string> headers) {
+                base.PageHeaders(url, headers);
+                if (IsHostAllowed(url)) {
+                    headers[@"X-Checksum"] = InternalUtils.GetRaceUChecksum(SteamIdHelper.Instance.Value);
                 }
             }
 
@@ -247,6 +250,14 @@ window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify
             // RaceU API, v1
             // ReSharper disable InconsistentNaming
 
+            public void showToast(string title, string message, IJavascriptCallback callback = null) {
+                if (callback != null) {
+                    Toast.Show(title, message, () => callback.ExecuteAsync());
+                } else {
+                    Toast.Show(title, message);
+                }
+            }
+
             public void _setLinks(string encodedData) {
                 CacheStorage.Set(".raceULinks", encodedData);
                 ActionExtension.InvokeInMainThread(() => SetRaceULinks(encodedData));
@@ -258,6 +269,14 @@ window.AC.setLinks = function (links){ return window.AC._setLinks(JSON.stringify
 
             public string getSteamId() {
                 return SteamIdHelper.Instance.Value;
+            }
+
+            public string getCarDataChecksum(string carId) {
+                return GetAcChecksum(CarsManager.Instance.GetById(carId)?.Location, @"data.acd");
+            }
+
+            public string getTrackFileChecksum(string trackId, string layoutId, string fileName) {
+                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
             }
 
             public bool setCurrentCar(string carId, string skinId = null) {

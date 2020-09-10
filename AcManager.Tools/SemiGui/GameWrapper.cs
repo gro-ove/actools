@@ -150,6 +150,7 @@ namespace AcManager.Tools.SemiGui {
 
             AcSettingsHolder.Graphics.FixShadowMapBias();
             CarCustomDataHelper.Revert();
+            CarExtendedPhysicsHelper.Revert();
 
             if (SettingsHolder.Drive.CheckAndFixControlsOrder) {
                 try {

@@ -196,6 +196,10 @@ namespace AcManager.Pages.Windows {
             ContentInstallationManager.Instance.TaskAdded += OnContentInstallationTaskAdded;
             UpdateDiscordRichPresence();
 
+            if (ValuesStorage.Contains("RaceU.CurrentLocation")) {
+                RaceUGroup.IsShown = true;
+            }
+
 #if DEBUG
             // LapTimesGrid.Source = new Uri("/Pages/Miscellaneous/LapTimes_Grid.xaml", UriKind.Relative);
 #endif
@@ -343,6 +347,7 @@ namespace AcManager.Pages.Windows {
             RsrLink.IsShown = SettingsHolder.Live.RsrEnabled;
             // SrsLink.IsShown = SettingsHolder.Live.SrsEnabled;
             Srs2Link.IsShown = SettingsHolder.Live.SrsEnabled;
+            WorldSimSeriesLink.IsShown = SettingsHolder.Live.WorldSimSeriesEnabled;
             LiveGroup.IsShown = LiveGroup.Links.Any(x => x.IsShown);
             // ShortSurveyLink.IsShown = !Stored.Get<bool>("surveyHide").Value;
         }
@@ -1007,7 +1012,8 @@ namespace AcManager.Pages.Windows {
         private void OnDownloadsPopupOpened(object sender, EventArgs e) {
             if (_downloadsListSet) return;
             var popup = (ModernPopup)sender;
-            var parent = ((FrameworkElement)popup.Content).FindVisualChildren<Border>().FirstOrDefault(x => x.Tag as string == @"DownloadsParent");
+            var parent = VisualTreeHelperEx.FindVisualChildren<Border>((FrameworkElement)popup.Content)
+                    .FirstOrDefault(x => x.Tag as string == @"DownloadsParent");
             if (parent != null && parent.Child == null) {
                 parent.Child = new InstallAdditionalContentList();
                 _downloadsListSet = true;

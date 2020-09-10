@@ -1,10 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Security.Permissions;
 using System.Windows;
 using System.Windows.Threading;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -13,17 +17,23 @@ namespace AcManager.Controls.UserControls.Web {
     [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
     public abstract class JsBridgeBase {
         // Do not include “www.” here!
-        public Collection<string> AcApiHosts { get; } = new Collection<string>();
+        internal Collection<string> AcApiHosts { get; } = new Collection<string>();
 
-        public WebTab Tab { get; internal set; }
+        internal bool IsHostAllowed(string url) {
+            return AcApiHosts.Contains(url.GetDomainNameFromUrl(), StringComparer.OrdinalIgnoreCase);
+        }
 
-        [CanBeNull]
-        public virtual string AcApiRequest(string url) {
+        internal WebTab Tab { get; set; }
+
+        internal virtual string AcApiRequest(string url) {
             return null;
         }
 
-        public virtual void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {}
-        public virtual void PageLoaded(string url) {}
+        internal virtual void PageInject(string url, Collection<string> toInject, Collection<KeyValuePair<string, string>> replacements) {}
+
+        internal virtual void PageHeaders(string url, IDictionary<string, string> headers) {}
+
+        internal virtual void PageLoaded(string url) {}
 
         protected void Sync(Action action) {
             (Application.Current?.Dispatcher ?? Dispatcher.CurrentDispatcher).Invoke(() => {
@@ -46,6 +56,16 @@ namespace AcManager.Controls.UserControls.Web {
             });
         }
 
+        protected static string GetAcChecksum(string objectLocation, string relativePath) {
+            if (objectLocation == null || !File.Exists(Path.Combine(objectLocation, relativePath))) return null;
+            using (var md5 = MD5.Create()) {
+                return md5.ComputeHash(File.ReadAllBytes(Path.Combine(objectLocation, relativePath))).ToHexString().ToLowerInvariant();
+            }
+        }
+    }
+
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
+    public abstract class JsBridgeCSharp : JsBridgeBase {
         [UsedImplicitly]
         public void Log(string message) {
             Logging.Write("" + message);

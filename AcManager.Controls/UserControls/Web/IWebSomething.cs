@@ -52,7 +52,12 @@ namespace AcManager.Controls.UserControls.Web {
         event EventHandler<AcApiRequestEventArgs> AcApiRequest;
 
         bool IsInjectSupported { get; }
+
         event EventHandler<WebInjectEventArgs> Inject;
+
+        bool AreHeadersSupported { get; }
+
+        event EventHandler<WebHeadersEventArgs> Headers;
 
         bool CanConvertFilenames { get; }
 

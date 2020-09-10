@@ -905,7 +905,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
         private static readonly string PauseKey = @"p" + StringExtension.RandomString(20);
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeBase {
+        public class JsBridge : JsBridgeCSharp {
             internal Action<string> DownloadFromCallback;
 
             [UsedImplicitly]
@@ -939,7 +939,7 @@ try { $CODE } catch (e){ console.warn(e) }".Replace(@"$CODE", code);
                 });
             }
 
-            public override void PageLoaded(string url) {
+            internal override void PageLoaded(string url) {
                 if (Finder == null) return;
                 RunCssSelector();
             }
@@ -1538,7 +1538,7 @@ window.$KEY = outline.stop.bind(outline);
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class CheckingJsBridge : JsBridgeBase {
+        public class CheckingJsBridge : JsBridgeCSharp {
             internal Action<bool> CallbackFn;
 
             [UsedImplicitly]

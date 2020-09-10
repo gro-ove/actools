@@ -160,6 +160,12 @@ namespace AcManager.Tools {
                     case "race/raceu":
                         return await ProcessRaceRaceU(custom.Params);
 
+                    case "race/worldsimseries":
+                        return await ProcessWorldSimSeries(custom.Params);
+
+                    case "race/worldsimseries/login":
+                        return await ProcessWorldSimSeriesLogin(custom.Params);
+
                     case "setsteamid":
                         return ArgumentHandleResult.Ignore; // TODO?
 

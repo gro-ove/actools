@@ -14,9 +14,11 @@ namespace FirstFloor.ModernUI.Dialogs {
         public static readonly MessageDialogButton YesNo = new MessageDialogButton(MessageBoxButton.YesNo);
 
         private readonly MessageBoxButton? _type;
+        private readonly MessageBoxResult _uacButton;
 
-        public MessageDialogButton(MessageBoxButton type) {
+        public MessageDialogButton(MessageBoxButton type, MessageBoxResult uacButton = MessageBoxResult.None) {
             _type = type;
+            _uacButton = uacButton;
         }
 
         public MessageDialogButton() {}
@@ -41,7 +43,8 @@ namespace FirstFloor.ModernUI.Dialogs {
             var isFirst = true;
             if (_customButtons != null) {
                 foreach (var button in _customButtons) {
-                    yield return dialog.CreateCloseDialogButton(button.Value, isFirst, button.Key == MessageBoxResult.Cancel, button.Key);
+                    yield return dialog.CreateCloseDialogButton(button.Value, isFirst, button.Key == MessageBoxResult.Cancel, button.Key,
+                            isUacButton: _uacButton != MessageBoxResult.None && button.Key == _uacButton);
                     isFirst = false;
                 }
             }

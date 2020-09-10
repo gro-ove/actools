@@ -18,6 +18,18 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _worldSimSeriesEnabled;
+
+            public bool WorldSimSeriesEnabled {
+                get => _worldSimSeriesEnabled ?? (_worldSimSeriesEnabled = ValuesStorage.Get("Settings.LiveSettings.WorldSimSeriesEnabled", true)).Value;
+                set {
+                    if (Equals(value, _worldSimSeriesEnabled)) return;
+                    _worldSimSeriesEnabled = value;
+                    ValuesStorage.Set("Settings.LiveSettings.WorldSimSeriesEnabled", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _srsCustomStyle;
 
             public bool SrsCustomStyle {

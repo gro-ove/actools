@@ -612,6 +612,11 @@ namespace AcManager {
                 LaunchSteam().Ignore();
             }
 
+            // Check and apply FTH fix if necessary
+            if (SettingsHolder.Common.LaunchSteamAtStart) {
+                CheckFaultTolerantHeap().Ignore();
+            }
+
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
             new AppUi(this).Run(() => {
@@ -620,6 +625,11 @@ namespace AcManager {
                     PatchUpdater.Instance.Updated += OnPatchUpdated;
                 }
             });
+        }
+
+        private static async Task CheckFaultTolerantHeap() {
+            await Task.Delay(500);
+            await FaultTolerantHeapFix.CheckAsync();
         }
 
         private static async Task LaunchSteam() {
@@ -733,6 +743,7 @@ namespace AcManager {
             CarSpecificControlsPresetHelper.Revert();
             CarSpecificFanatecSettingsHelper.Revert();
             CarCustomDataHelper.Revert();
+            CarExtendedPhysicsHelper.Revert();
             CopyFilterToSystemForOculusHelper.Revert();
             AcShadowsPatcher.Revert();
         }
@@ -817,8 +828,8 @@ namespace AcManager {
             var index = e.BlockImages?.Select(x => x.Url).IndexOf(e.ImageUrl);
             (index > -1 ?
                     new ImageViewer<BbCodeImageInformation>(e.BlockImages, index.Value,
-                            x => Task.FromResult((object)x.Url),
-                            x => x.Description) {
+                            x => Task.FromResult((object)x?.Url),
+                            x => x?.Description) {
                                 HorizontalDetailsAlignment = HorizontalAlignment.Center
                             } :
                     new ImageViewer(e.ImageUrl)).ShowDialog();

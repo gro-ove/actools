@@ -79,7 +79,8 @@ namespace AcManager.Pages.Drive {
                     },
                     AdditionalPropertieses = additionalProperties.Concat(new object[] {
                         new QuickDrivePresetProperty(serializedQuickDrivePreset),
-                        new CarCustomDataHelper()
+                        new CarCustomDataHelper(),
+                        new CarExtendedPhysicsHelper(),
                     }).ToList()
                 });
             }

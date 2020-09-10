@@ -65,10 +65,17 @@ namespace AcManager.Controls.UserControls.Cef {
                 return CefReturnValue.Cancel;
             }
 
-            if (UserAgent != null) {
-                var headers = request.Headers;
-                headers[@"User-Agent"] = UserAgent;
-                request.Headers = headers;
+            if (UserAgent != null || Headers != null) {
+                var headersCollection = request.Headers;
+                var headers = new WebHeadersEventArgs(request.Url);
+                Headers?.Invoke(this, headers);
+                foreach (var pair in headers.Headers) {
+                    headersCollection[pair.Key] = pair.Value;
+                }
+                if (UserAgent != null) {
+                    headersCollection[@"User-Agent"] = UserAgent;
+                }
+                request.Headers = headersCollection;
             }
 
             return CefReturnValue.Continue;
@@ -79,8 +86,7 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         bool IRequestHandler.OnSelectClientCertificate(IWebBrowser browserControl, IBrowser browser, bool isProxy, string host, int port,
-                X509Certificate2Collection certificates,
-                ISelectClientCertificateCallback callback) {
+                X509Certificate2Collection certificates, ISelectClientCertificateCallback callback) {
             return true;
         }
 
@@ -110,6 +116,8 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         public event EventHandler<WebInjectEventArgs> Inject;
+
+        public event EventHandler<WebHeadersEventArgs> Headers;
 
         private readonly string _windowColor = (Application.Current.TryFindResource(@"WindowBackgroundColor") as Color?)?.ToHexString();
         private readonly string _scrollThumbColor = GetColor(@"ScrollBarThumb");
@@ -144,7 +152,7 @@ namespace AcManager.Controls.UserControls.Cef {
 
         private class ReplaceResponseFilter : StreamReplacement, IResponseFilter {
             public static KeyValuePair<string, string> CreateCustomCssJs(string prefix, string css, string js) {
-                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css.NonNull().JoinToString('\n')}</style><script>{js}</script></head>");
+                return new KeyValuePair<string, string>(@"</head>", $@"{prefix}<style>{css}</style><script>{js}</script></head>");
             }
 
             public ReplaceResponseFilter(IEnumerable<KeyValuePair<string, string>> replacements) : base(replacements) {}

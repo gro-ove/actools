@@ -106,6 +106,9 @@ namespace AcManager.Controls.UserControls.Web {
         public bool IsInjectSupported => false;
         public event EventHandler<WebInjectEventArgs> Inject;
 
+        public bool AreHeadersSupported => false;
+        public event EventHandler<WebHeadersEventArgs> Headers;
+
         public bool CanConvertFilenames => true;
 
         public string ConvertFilename(string filename) {

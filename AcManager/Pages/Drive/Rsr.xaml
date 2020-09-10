@@ -17,10 +17,10 @@
         <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
-      <DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <!--<DockPanel Margin="0 0 0 20" Visibility="{Binding ShowExtensionMessage, Converter={StaticResource BooleanToVisibilityConverter}}">
         <Button DockPanel.Dock="Right" VerticalAlignment="Top" Command="{Binding GotItCommand}" Content="{x:Static g:AppStrings.Common_GotId}" />
         <mui:BbCodeBlock Text="{x:Static g:AppStrings.Rsr_Commentary}" />
-      </DockPanel>
+      </DockPanel>-->
 
       <c:WebBlock Grid.Row="1" x:Name="WebBrowser" StartPage="{Binding StartPage}" SaveKey="Rsr:Address" PageLoaded="OnPageLoaded" KeepAliveKey="Rsr" />
       <Grid Grid.Row="2" Margin="0 16 0 0">

@@ -30,7 +30,7 @@ namespace AcManager.Pages.Dialogs {
         }
 
         [PermissionSet(SecurityAction.Demand, Name = "FullTrust"), ComVisible(true)]
-        public class JsBridge : JsBridgeBase {
+        public class JsBridge : JsBridgeCSharp {
             [CanBeNull]
             internal ViewModel Model;
 

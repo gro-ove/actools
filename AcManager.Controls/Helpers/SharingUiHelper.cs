@@ -110,10 +110,21 @@ namespace AcManager.Controls.Helpers {
             }
 
             if (showDialog && SettingsHolder.Sharing.ShowSharedDialog) {
-                if (ModernDialog.ShowMessage(SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link
-                        ? $"Link has been copied to the clipboard:[br]{link}[br][br]Open it in browser now?"
-                        : $"Here is the link:[br]{link}[br][br]Open it in browser now?", type, MessageBoxButton.YesNo, "postSharedDialog")
-                        == MessageBoxResult.Yes) {
+                var copied = SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link;
+                var response = MessageDialog.Show(copied
+                        ? $"Link has been copied to the clipboard:[br]{link}"
+                        : $"Here is the link:[br]{link}", type, new MessageDialogButton(copied ? MessageBoxButton.YesNoCancel : MessageBoxButton.OKCancel) {
+                            [MessageBoxResult.Yes] = "Copy link to the clipboard",
+                            [MessageBoxResult.No] = "Open link in browser",
+                            [MessageBoxResult.OK] = "Open link in browser",
+                            [MessageBoxResult.Cancel] = "Close"
+                        });
+
+                if (response == MessageBoxResult.OK) {
+                    ClipboardHelper.SetText(link);
+                }
+
+                if (response == MessageBoxResult.Yes) {
                     WindowsHelper.ViewInBrowser(link + "#noauto");
                 }
             } else {

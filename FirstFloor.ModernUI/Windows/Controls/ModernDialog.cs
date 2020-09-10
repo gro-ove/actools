@@ -5,8 +5,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Dialogs;
+using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
@@ -127,13 +129,28 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             };
         }
 
+        private static object GetUacContent(string content) {
+            try {
+                return new DockPanel {
+                    Children = {
+                        new Image { Width = 14, Height = 14, Source = UacIcon.Get(), Stretch = Stretch.Uniform, Margin = new Thickness(-2d, 0d, 6d, 0d) },
+                        new TextBlock { Text = content }
+                    }
+                };
+            } catch (Exception e) {
+                Logging.Warning(e);
+                return content;
+            }
+        }
+
         public Button CreateExtraStyledDialogButton([Localizable(false)] string styleKey, string content, Action action, Func<bool> canExecute = null) {
             return CreateExtraStyledDialogButton(styleKey, content, new DelegateCommand(action, canExecute));
         }
 
-        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, ICommand command = null) {
+        public Button CreateCloseDialogButton(string content, bool isDefault, bool isCancel, MessageBoxResult result, ICommand command = null,
+                bool isUacButton = false) {
             return new Button {
-                Content = content,
+                Content = isUacButton ? GetUacContent(content) : content,
                 Command = command == null ? CloseCommand : new CombinedCommand(CloseCommand, command),
                 CommandParameter = result,
                 IsDefault = isDefault,

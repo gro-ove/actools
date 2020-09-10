@@ -46,6 +46,7 @@ namespace AcManager.Controls.UserControls.Cef {
                 _downloadHandler = new DownloadHandler();
                 _requestHandler = new RequestHandler { UserAgent = CefSharpHelper.DefaultUserAgent };
                 _requestHandler.Inject += OnRequestHandlerInject;
+                _requestHandler.Headers += OnRequestHandlerHeaders;
 
                 _inner = new ChromiumWebBrowser(@"about:blank") {
                     BrowserSettings = {
@@ -116,6 +117,10 @@ namespace AcManager.Controls.UserControls.Cef {
 
         private void OnRequestHandlerInject(object o, WebInjectEventArgs webInjectEventArgs) {
             Inject?.Invoke(this, webInjectEventArgs);
+        }
+
+        private void OnRequestHandlerHeaders(object o, WebHeadersEventArgs webInjectEventArgs) {
+            Headers?.Invoke(this, webInjectEventArgs);
         }
 
         public event EventHandler<PageLoadingEventArgs> LoadingStateChanged;
@@ -219,10 +224,16 @@ namespace AcManager.Controls.UserControls.Cef {
         }
 
         public bool CanHandleAcApiRequests => true;
+
         public event EventHandler<AcApiRequestEventArgs> AcApiRequest;
 
         public bool IsInjectSupported => true;
+
         public event EventHandler<WebInjectEventArgs> Inject;
+
+        public bool AreHeadersSupported => true;
+
+        public event EventHandler<WebHeadersEventArgs> Headers;
 
         public bool CanConvertFilenames => true;
 
