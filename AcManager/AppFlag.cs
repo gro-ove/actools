@@ -11,7 +11,7 @@ namespace AcManager {
         PatchSupport,
 
         /// <summary>
-        /// Hide everything by server management.
+        /// Hide everything but server management.
         /// Example: --server-management-mode.
         /// </summary>
         ServerManagementMode,
