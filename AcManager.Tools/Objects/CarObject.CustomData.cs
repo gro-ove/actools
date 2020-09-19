@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcTools.DataFile;
 using AcTools.Utils;
@@ -54,7 +55,7 @@ namespace AcManager.Tools.Objects {
             var dataAcd = Path.Combine(Location, "data.acd");
             if (File.Exists(dataAcd)) {
                 var backupAcd = Path.Combine(Location, "data.acd~cm_bak_ep");
-                var custom = allowCustom && UseExtendedPhysics;
+                var custom = allowCustom && UseExtendedPhysics && PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay);
                 if (custom) {
                     FileUtils.TryToDelete(backupAcd);
                     if (File.Exists(dataAcd) && !File.Exists(backupAcd)) {

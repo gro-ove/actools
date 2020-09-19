@@ -748,7 +748,7 @@
           </CheckBox>
         </DockPanel>
 
-        <!--<DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureFullDay}">
+        <DockPanel c:FeatureIsAvailable.Feature="{x:Static t:PatchHelper.FeatureFullDay}">
           <c:MessageBlock Margin="0 8 0 0" DockPanel.Dock="Bottom">
             <mui:BbCodeBlock Style="{StaticResource BbCodeBlock.Small}"
                 Text="[b]Warning:[/b] this feature is highly experimental. If you would experience any issues with online servers after using it, please run Steam integrity check." />
@@ -763,7 +763,7 @@
           <CheckBox IsChecked="{Binding SelectedCar.UseExtendedPhysics}" Margin="0 0 0 0">
             <Label Content="Use extended physics (experimental)" />
           </CheckBox>
-        </DockPanel>-->
+        </DockPanel>
       </mui:SpacingStackPanel>
 
       <mui:ModernTab Grid.Column="1" LinksMargin="0 0 0 20" FrameMargin="0 0 0 4" LinksHorizontalAlignment="Left"

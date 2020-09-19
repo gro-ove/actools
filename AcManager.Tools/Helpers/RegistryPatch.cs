@@ -70,7 +70,7 @@ namespace AcManager.Tools.Helpers {
             }
         }
 
-        public async Task ApplyAsync(string title, string message, string fileName = "Changes.reg") {
+        public async Task<bool> ApplyAsync(string title, string message, string fileName = "Changes.reg") {
             var response = ActionExtension.InvokeInMainThread(() => MessageDialog.Show(message, title,
                     new MessageDialogButton(MessageBoxButton.YesNoCancel, MessageBoxResult.Yes) {
                         [MessageBoxResult.Yes] = "Apply changes automatically",
@@ -78,7 +78,7 @@ namespace AcManager.Tools.Helpers {
                     }));
 
             if (response == MessageBoxResult.Cancel) {
-                return;
+                return false;
             }
 
             var data = new StringBuilder();
@@ -97,18 +97,19 @@ namespace AcManager.Tools.Helpers {
                 data.Append(Environment.NewLine);
             }
 
-            var filename = FilesStorage.Instance.GetTemporaryFilename(fileName);
+            var filename = FilesStorage.Instance.GetTemporaryFilename("RunElevated", fileName);
             File.WriteAllText(filename, data.ToString());
 
             if (response == MessageBoxResult.No) {
                 WindowsHelper.ViewFile(filename);
-                return;
+                return true;
             }
 
             try {
-                var proc = ProcessExtension.Start("regedit.exe", new[] { filename }, new ProcessStartInfo { Verb = "runas" });
-                await proc.WaitForExitAsync().ConfigureAwait(false);
-                Logging.Debug("Done: " + proc.ExitCode);
+                var procRegEdit = ProcessExtension.Start("regedit.exe", new[] { filename }, new ProcessStartInfo { Verb = "runas" });
+                await procRegEdit.WaitForExitAsync().ConfigureAwait(false);
+                Logging.Debug("Done: " + procRegEdit.ExitCode);
+                return procRegEdit.ExitCode == 0;
             } catch (Win32Exception ex) when (ex.ErrorCode != -1) {
                 Logging.Debug(ex.ErrorCode);
                 throw new InformativeException("Access denied", "Administrator privilegies are required to modify these registry values.");
