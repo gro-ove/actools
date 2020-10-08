@@ -14,6 +14,7 @@ using AcManager.CustomShowroom;
 using AcManager.Pages.Windows;
 using AcManager.Tools;
 using AcManager.Tools.ContentInstallation;
+using AcManager.Tools.GameProperties;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
@@ -69,12 +70,6 @@ namespace AcManager.Pages.Drive {
                 this.AddWidthCondition(1200).Add(t => Browser.LeftSideContent as FrameworkElement);
             } else {
                 Browser.LeftSideContent = null;
-            }
-
-            if (_loginToken != null) {
-                Browser.Tabs.Clear();
-                Browser.OpenNewTab($@"https://paddock.worldsimseries.com/login-cm?token={_loginToken}");
-                _loginToken = null;
             }
         }
 
@@ -135,6 +130,31 @@ namespace AcManager.Pages.Drive {
                 return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
             }
 
+            public string getTrackGeneralFileChecksum(string trackId, string layoutId, string fileName) {
+                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, fileName);
+            }
+
+            public void getCarDataChecksumAsync(string carId, IJavascriptCallback callback = null) {
+                Task.Run(() => {
+                    var checksum = GetAcChecksum(CarsManager.Instance.GetById(carId)?.Location, @"data.acd");
+                    callback?.ExecuteAsync(checksum);
+                }).Ignore();
+            }
+
+            public void getTrackFileChecksumAsync(string trackId, string layoutId, string fileName, IJavascriptCallback callback = null) {
+                Task.Run(() => {
+                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
+                    callback?.ExecuteAsync(checksum);
+                }).Ignore();
+            }
+
+            public void getTrackGeneralFileChecksumAsync(string trackId, string layoutId, string fileName, IJavascriptCallback callback = null) {
+                Task.Run(() => {
+                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, fileName);
+                    callback?.ExecuteAsync(checksum);
+                }).Ignore();
+            }
+
             public bool setCurrentCar(string carId, string skinId = null) {
                 return Sync(() => {
                     _car = CarsManager.Instance.GetById(carId);
@@ -150,7 +170,7 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
-            public void startOnlineRace(string ip, int port, int httpPort, string password, IJavascriptCallback callback = null) {
+            public void startOnlineRace(string ip, int port, int httpPort, string password, string driverName, IJavascriptCallback callback = null) {
                 if (_car == null) {
                     throw new Exception("Car is not set");
                 }
@@ -174,6 +194,11 @@ namespace AcManager.Pages.Drive {
                             ServerHttpPort = httpPort,
                             RequestedCar = _car.Id,
                             Password = password
+                        },
+                        AdditionalPropertieses = {
+                            new WorldSimSeriesMark {
+                                Name = driverName
+                            }
                         }
                     });
                     callback?.ExecuteAsync(result?.IsNotCancelled);
@@ -235,6 +260,10 @@ namespace AcManager.Pages.Drive {
                 return Sync(() => CarsManager.Instance.GetById(carId) != null);
             }
 
+            public bool isCarSkinAvailable(string carId, string skinId) {
+                return Sync(() => CarsManager.Instance.GetById(carId)?.GetSkinById(skinId) != null);
+            }
+
             public bool isTrackAvailable(string trackId, string layoutId = null) {
                 return Sync(() => TracksManager.Instance.GetLayoutById(trackId, layoutId) != null);
             }
@@ -243,7 +272,14 @@ namespace AcManager.Pages.Drive {
         }
 
         private void OnWebBlockLoaded(object sender, RoutedEventArgs e) {
-            ((WebBlock)sender).SetJsBridge<WorldSimSeriesApiBridge>();
+            var browser = (WebBlock)sender;
+            if (_loginToken != null) {
+                browser.Tabs.Clear();
+                browser.OpenNewTab($@"https://paddock.worldsimseries.com/login-cm?token={_loginToken}");
+                _loginToken = null;
+            }
+
+            browser.SetJsBridge<WorldSimSeriesApiBridge>();
         }
     }
 }

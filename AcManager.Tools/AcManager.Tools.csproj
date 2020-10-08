@@ -370,6 +370,7 @@
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificLightingHelper.cs" />
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificTyreSmokeHelper.cs" />
     <Compile Include="GameProperties\WeatherSpecific\WeatherSpecificVideoSettingsHelper.cs" />
+    <Compile Include="GameProperties\WorldSimSeriesMark.cs" />
     <Compile Include="Helpers\AbstractFilesStorage.cs" />
     <Compile Include="Helpers\AbstractSubdirectoryWatcherProvider.cs" />
     <Compile Include="Helpers\AcSettingsControls\ControllerButtonCombined.cs" />

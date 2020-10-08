@@ -621,6 +621,11 @@
         <mui:Link DisplayName="{x:Static mui:UiStrings.FiltersLinkAll}" Source="/Pages/Lists/ToolsListPage.xaml" />
       </mui:LinkGroup.Links>
     </mui:LinkGroup>
+    <!--<mui:LinkGroup x:Name="WorkshopLinkGroup" GroupKey="content" DisplayName="Workshop">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="Creator Zone" Source="/Pages/Workshop/WorkshopManage.xaml" />
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>-->
     <mui:LinkGroup x:Name="BrowserLinkGroup" GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_GetNewMods}">
       <mui:LinkGroup.Links>
         <mui:Link DisplayName="{x:Static g:AppStrings.Main_GetNewMods_ManageSources}" Source="/Pages/Miscellaneous/ModsWebBrowser.xaml" />

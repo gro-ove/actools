@@ -742,6 +742,9 @@
     <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
       <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Workshop\WorkshopManage.xaml.cs">
+      <DependentUpon>WorkshopManage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
     <Compile Include="PaintShop\CarPaintColors.cs" />
@@ -1793,6 +1796,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Workshop\WorkshopManage.xaml" />
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
