@@ -742,8 +742,14 @@
     <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
       <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Workshop\WorkshopEditProfile.xaml.cs">
+      <DependentUpon>WorkshopEditProfile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Workshop\WorkshopManage.xaml.cs">
       <DependentUpon>WorkshopManage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopUpload.xaml.cs">
+      <DependentUpon>WorkshopUpload.xaml</DependentUpon>
     </Compile>
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
@@ -1796,7 +1802,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Workshop\WorkshopEditProfile.xaml" />
     <Page Include="Pages\Workshop\WorkshopManage.xaml" />
+    <Page Include="Pages\Workshop\WorkshopUpload.xaml" />
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1933,6 +1941,10 @@
     <ProjectReference Include="..\AcManager.Controls\AcManager.Controls.csproj">
       <Project>{b1d477c5-f639-4043-b8a6-82ea950f9890}</Project>
       <Name>AcManager.Controls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.Workshop\AcManager.Workshop.csproj">
+      <Project>{abcd8f3f-5730-4fac-86ba-8a28086b75f8}</Project>
+      <Name>AcManager.Workshop</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.GenericMods\AcTools.GenericMods.csproj">
       <Project>{11EAD82E-0325-44A8-9785-B02BAACD1D3E}</Project>

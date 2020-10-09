@@ -8,6 +8,12 @@ namespace AcManager {
         /// For development purposes.
         /// Example: --patch-support.
         /// </summary>
+        CmWorkshop,
+
+        /// <summary>
+        /// For development purposes.
+        /// Example: --patch-support.
+        /// </summary>
         PatchSupport,
 
         /// <summary>

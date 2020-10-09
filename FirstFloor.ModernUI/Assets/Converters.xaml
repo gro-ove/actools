@@ -10,6 +10,7 @@
   <c:DifferenceToVisibilityConverter x:Key="DifferentToVisibilityConverter" />
   <c:DrawingToColorConverter x:Key="DrawingToColorConverter" />
   <c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
+  <c:EnumToValueConverter x:Key="EnumToValueConverter" />
   <c:EnumToVisibilityConverter x:Key="EnumToVisibilityConverter" />
   <c:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
   <c:EqualToBooleanConverter x:Key="EqualToBooleanConverter" />

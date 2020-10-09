@@ -118,6 +118,9 @@
             Visibility="{Binding DeveloperMode, Source={x:Static t:SettingsHolder.Common}, Converter={StaticResource BooleanToVisibilityConverter}}" />
         <Button Content="Extract sound" Command="{Binding ExtractSoundCommand}" ToolTip="For development purposes only"
             Visibility="{Binding ExtractSoundCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
+        <Separator />
+        <Button Content="Upload to Workshop" Command="{Binding UploadToWorkshopCommand}" ToolTip="For development purposes only"
+            Visibility="{Binding UploadToWorkshopCommand.IsAbleToExecute, Converter={StaticResource BooleanToVisibilityConverter}}" />
       </ToolBar>
     </c:AcObjectBase.ToolBars>
 

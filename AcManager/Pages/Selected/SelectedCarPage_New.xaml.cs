@@ -19,6 +19,7 @@ using AcManager.Pages.ContentTools;
 using AcManager.Pages.Dialogs;
 using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
+using AcManager.Pages.Workshop;
 using AcManager.Tools;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.AcObjectsNew;
@@ -337,6 +338,12 @@ namespace AcManager.Pages.Selected {
                     NonfatalError.Notify("Can’t extract sounds", ToolsStrings.Common_MakeSureThereIsEnoughSpace, e);
                 }
             }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FmodHelper")));
+
+            private DelegateCommand _UploadToWorkshopCommand;
+
+            public DelegateCommand UploadToWorkshopCommand => _UploadToWorkshopCommand ?? (_UploadToWorkshopCommand = new DelegateCommand(() => {
+                new WorkshopUpload(SelectedObject).ShowDialog();
+            }, () => WorkshopUpload.OptionAvailable));
 
             private AsyncCommand _replaceSoundCommand;
 

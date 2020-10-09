@@ -59,7 +59,7 @@ namespace AcManager.Tools {
             }.SelectDialog();
             if (shot == null) return;
 
-            ApplyExistring(shot, filename);
+            ApplyExisting(shot, filename);
         }
 
         public static Task ShotAndApply(TrackObjectBase track) {
@@ -70,7 +70,7 @@ namespace AcManager.Tools {
             return ShotAndApply(track.PreviewImage, track.Enabled, () => QuickDrive.RunAsync(trackSkin: track));
         }
 
-        private static void ApplyExistring(string source, string previewImage) {
+        private static void ApplyExisting(string source, string previewImage) {
             try {
                 var cropped = ImageEditor.Proceed(source, new Size(CommonAcConsts.TrackPreviewWidth, CommonAcConsts.TrackPreviewHeight));
                 using (var t = FileUtils.RecycleOriginal(previewImage)) {
@@ -90,7 +90,7 @@ namespace AcManager.Tools {
             };
 
             if (dialog.ShowDialog() == true) {
-                ApplyExistring(dialog.FileName, previewImage);
+                ApplyExisting(dialog.FileName, previewImage);
             }
 
             return Task.Delay(0);

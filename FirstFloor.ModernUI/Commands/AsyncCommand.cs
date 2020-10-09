@@ -1,9 +1,16 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using FirstFloor.ModernUI.Helpers;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Commands {
+    public static class CancellationTokenStraighten {
+        public static CancellationToken Straighten(this CancellationToken? c) {
+            return c ?? default;
+        }
+    }
+
     public class AsyncCommand : CommandExt, IAsyncCommand {
         [NotNull]
         private readonly Func<Task> _execute;

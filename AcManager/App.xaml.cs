@@ -32,6 +32,7 @@ using AcManager.Pages.Drive;
 using AcManager.Pages.Lists;
 using AcManager.Pages.Miscellaneous;
 using AcManager.Pages.Windows;
+using AcManager.Pages.Workshop;
 using AcManager.Tools;
 using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
@@ -328,6 +329,7 @@ namespace AcManager {
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
+            AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopUpload.OptionAvailable);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);

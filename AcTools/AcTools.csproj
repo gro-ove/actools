@@ -146,6 +146,7 @@
     <Compile Include="Utils\Helpers\ActionAsDisposable.cs" />
     <Compile Include="Utils\Helpers\ArrayExtension.cs" />
     <Compile Include="Utils\Helpers\Diapason.cs" />
+    <Compile Include="Utils\Helpers\ExceptionExtension.cs" />
     <Compile Include="Utils\Helpers\MainExecutingFile.cs" />
     <Compile Include="Utils\Helpers\ProgressExtension.cs" />
     <Compile Include="Utils\Helpers\StreamReplacement.cs" />

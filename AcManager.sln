@@ -61,6 +61,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FirstFloor.ModernUI.Win8Ext
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomTracksBakery", "CustomTracksBakery\CustomTracksBakery.csproj", "{973540C0-82C1-471B-B405-09DAB8D45DF3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcManager.Workshop", "AcManager.Workshop\AcManager.Workshop.csproj", "{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -291,6 +293,14 @@ Global
 		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x64.Build.0 = Release|x64
 		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x86.ActiveCfg = Release|x86
 		{973540C0-82C1-471B-B405-09DAB8D45DF3}.Release|x86.Build.0 = Release|x86
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Debug|x64.ActiveCfg = Debug|x64
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Debug|x64.Build.0 = Debug|x64
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Debug|x86.ActiveCfg = Debug|x86
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Debug|x86.Build.0 = Debug|x86
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x64.ActiveCfg = Release|x64
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x64.Build.0 = Release|x64
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x86.ActiveCfg = Release|x86
+		{ABCD8F3F-5730-4FAC-86BA-8A28086B75F8}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

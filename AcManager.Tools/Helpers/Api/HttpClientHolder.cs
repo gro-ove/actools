@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using AcManager.Internal;
 
@@ -14,7 +15,7 @@ namespace AcManager.Tools.Helpers.Api {
                     UseProxy = !KunosApiProvider.OptionNoProxy
                 };
 
-                _httpClient = new HttpClient(handler);
+                _httpClient = new HttpClient(handler) { Timeout = TimeSpan.FromSeconds(60d) };
                 _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", InternalUtils.GetKunosUserAgent());
                 _httpClient.DefaultRequestHeaders.TryAddWithoutValidation("X-User-Agent", CmApiProvider.UserAgent);
             }

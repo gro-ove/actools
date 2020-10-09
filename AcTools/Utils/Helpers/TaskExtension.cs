@@ -1,23 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
     public static class TaskExtension {
-        public static bool IsCancelled([CanBeNull] this Exception e) {
-            for (; e != null; e = (e as AggregateException)?.GetBaseException()) {
-                if (e is OperationCanceledException
-                        || e is WebException we && we.Status == WebExceptionStatus.RequestCanceled) return true;
-            }
-
-            return false;
-        }
-
         /// <summary>
         /// Use .Ignore() instead, it captures exceptions properly.
         /// </summary>
@@ -29,15 +18,31 @@ namespace AcTools.Utils.Helpers {
         public static void Forget<T>(this Task<T> task) { }
 
         public static void Ignore(this Task task) {
-            task.ContinueWith(x => {
-                AcToolsLogging.Write(x.Exception?.Flatten());
-            }, TaskContinuationOptions.NotOnRanToCompletion);
+            task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.NotOnRanToCompletion);
         }
 
         public static void Ignore<T>(this Task<T> task) {
-            task.ContinueWith(x => {
-                AcToolsLogging.Write(x.Exception?.Flatten());
-            }, TaskContinuationOptions.OnlyOnFaulted);
+            task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.OnlyOnFaulted);
+        }
+
+        public static async Task WithCancellation(this Task task, CancellationToken cancellationToken) {
+            var tcs = new TaskCompletionSource<bool>();
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs)) {
+                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(false)) {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+                await task; // already completed; propagate any exception
+            }
+        }
+
+        public static async Task<T> WithCancellation<T>(this Task<T> task, CancellationToken cancellationToken) {
+            var tcs = new TaskCompletionSource<bool>();
+            using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs)) {
+                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(false)) {
+                    throw new OperationCanceledException(cancellationToken);
+                }
+                return await task; // already completed; propagate any exception
+            }
         }
 
         public static async Task WhenAll(this IEnumerable<Task> tasks, int limit, CancellationToken cancellation = default) {
@@ -133,4 +138,3 @@ namespace AcTools.Utils.Helpers {
         }
     }
 }
-
