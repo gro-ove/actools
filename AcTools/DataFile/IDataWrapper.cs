@@ -1,15 +1,9 @@
 ﻿using JetBrains.Annotations;
 
 namespace AcTools.DataFile {
-    public interface IDataWrapper {
-        [NotNull]
-        string Location { get; }
-
-        [NotNull]
-        T GetFile<T>([NotNull] string name) where T : IDataFile, new();
-
+    public interface IDataWrapper : IDataReadWrapper {
         [CanBeNull]
-        string GetData([NotNull] string name);
+        string Location { get; }
 
         bool Contains([NotNull] string name);
         void Refresh([CanBeNull] string name);

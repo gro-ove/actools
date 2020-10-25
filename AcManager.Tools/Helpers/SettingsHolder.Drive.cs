@@ -683,6 +683,19 @@ namespace AcManager.Tools.Helpers {
                 }
             }
 
+            private bool? _quickDriveAllowExtendedPhysics;
+
+            public bool QuickDriveAllowExtendedPhysics {
+                get => _quickDriveAllowExtendedPhysics
+                        ?? (_quickDriveAllowExtendedPhysics = ValuesStorage.Get("Settings.DriveSettings.QuickDriveAllowExtendedPhysics", false)).Value;
+                set {
+                    if (Equals(value, _quickDriveAllowExtendedPhysics)) return;
+                    _quickDriveAllowExtendedPhysics = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickDriveAllowExtendedPhysics", value);
+                    OnPropertyChanged();
+                }
+            }
+
             private bool? _quickDriveExpandBounds;
 
             public bool QuickDriveExpandBounds {
@@ -812,6 +825,22 @@ namespace AcManager.Tools.Helpers {
                     if (Equals(value, _quickSwitches)) return;
                     _quickSwitches = value;
                     ValuesStorage.Set("Settings.DriveSettings.QuickSwitches", value);
+                    OnPropertyChanged();
+                }
+            }
+
+            private bool? _quickSwitchesRightMouseButton;
+
+            public bool QuickSwitchesRightMouseButton {
+                get
+                        =>
+                                _quickSwitchesRightMouseButton
+                                        ?? (_quickSwitchesRightMouseButton = ValuesStorage.Get("Settings.DriveSettings.QuickSwitchesRightMouseButton", true))
+                                                .Value;
+                set {
+                    if (Equals(value, _quickSwitchesRightMouseButton)) return;
+                    _quickSwitchesRightMouseButton = value;
+                    ValuesStorage.Set("Settings.DriveSettings.QuickSwitchesRightMouseButton", value);
                     OnPropertyChanged();
                 }
             }
@@ -1011,7 +1040,8 @@ namespace AcManager.Tools.Helpers {
             private BeepingNoiseType? _crashBeepingNoise;
 
             public BeepingNoiseType CrashBeepingNoise {
-                get => _crashBeepingNoise ?? (_crashBeepingNoise = ValuesStorage.Get("Settings.DriveSettings.CrashBeepingNoise", BeepingNoiseType.System)).Value;
+                get => _crashBeepingNoise ?? (_crashBeepingNoise = ValuesStorage.Get("Settings.DriveSettings.CrashBeepingNoise", BeepingNoiseType.System)).Value
+                        ;
                 set {
                     if (Equals(value, _crashBeepingNoise)) return;
                     _crashBeepingNoise = value;

@@ -91,7 +91,10 @@ namespace AcManager.Tools.SemiGui {
         }
 
         private static void PrepareRaceDriverName(Game.StartProperties properties) {
-            if (properties.HasAdditional<SrsMark>()) return;
+            if (properties.HasAdditional<SrsMark>()
+                    || properties.HasAdditional<WorldSimSeriesMark>()) {
+                return;
+            }
 
             if (properties.BasicProperties?.DriverName != null) {
                 properties.SetAdditional(new DriverName(properties.BasicProperties.DriverName, properties.BasicProperties.DriverNationality));

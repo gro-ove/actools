@@ -1,0 +1,115 @@
+<UserControl x:Class="AcManager.Pages.Workshop.WorkshopCarBrandsRow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:w="clr-namespace:AcManager.Pages.Workshop"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls"
+    xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" mc:Ignorable="d" d:DataContext="{d:DesignInstance w:WorkshopCarBrandsRow+ViewModel}"
+    SizeChanged="OnSizeChanged">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/WorkshopResources.xaml" />
+  </UserControl.Resources>
+
+  <mui:Cell Margin="0 20">
+
+    <Border x:Name="ColumnFirst" Padding="8 0">
+      <Border.RenderTransform>
+        <TranslateTransform x:Name="TransformFirst" />
+      </Border.RenderTransform>
+      <ListBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" HorizontalAlignment="Center"
+          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:VirtualizingTilePanel HorizontalAlignment="Center" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="106"
+                ItemHeight="106" CacheLength="0,0" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <mui:Cell Width="102" Height="102" Background="Transparent">
+              <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" Width="68" Height="68" HorizontalAlignment="Center" ClearOnChange="True" />
+              <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0" FontSize="14"
+                  VerticalAlignment="Bottom" />
+              <TextBlock x:Name="CountText" Style="{StaticResource Label}" FontSize="12" HorizontalAlignment="Right" Text="{Binding Uses}" Margin="4"
+                  VerticalAlignment="Top" />
+              <Ellipse x:Name="NewMark" Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="2"
+                  IsHitTestVisible="False" Visibility="Collapsed" />
+            </mui:Cell>
+            <DataTemplate.Triggers>
+              <DataTrigger Binding="{Binding HasNew}" Value="True">
+                <Setter TargetName="NewMark" Property="Visibility" Value="Visible" />
+              </DataTrigger>
+            </DataTemplate.Triggers>
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Border>
+
+    <Border x:Name="ColumnSecond" Padding="8 0" Visibility="Collapsed">
+      <Border.RenderTransform>
+        <TranslateTransform x:Name="TransformSecond" />
+      </Border.RenderTransform>
+      <ListBox ItemsSource="{Binding ObjectList}" SelectedItem="{Binding SelectedObject}" ItemTemplate="{StaticResource WorkshopResources.ContentItem.Tile}"
+          HorizontalAlignment="Center" Visibility="{Binding ObjectList, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <mui:VirtualizingTilePanel HorizontalAlignment="Center" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="160"
+                ItemHeight="90" CacheLength="0,0" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+      </ListBox>
+    </Border>
+
+    <Border x:Name="ColumnThird" Padding="8 0" Visibility="Collapsed">
+      <Border.RenderTransform>
+        <TranslateTransform x:Name="TransformThird" />
+      </Border.RenderTransform>
+      <ScrollViewer HorizontalScrollBarVisibility="Disabled" HorizontalAlignment="Center"
+          Visibility="{Binding SelectedObject, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+        <StackPanel>
+          <DockPanel>
+            <Border DockPanel.Dock="Left" Width="24" Height="24" Margin="0 0 4 0">
+              <mui:BetterImage Filename="{Binding SelectedObject.BrandBadge}" />
+            </Border>
+            <!--<c:FavouriteButton IsChecked="{Binding AcObject.IsFavourite, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Right"
+              Margin="8 0 0 0" />-->
+            <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedObject.DisplayName}" Style="{StaticResource Heading2}"
+                Placeholder="{x:Static c:ControlsStrings.TableHeader_Name}" />
+          </DockPanel>
+
+          <mui:BetterImage Filename="{Binding SelectedObject.PreviewImage}" />
+
+          <Border Margin="4" Height="36" VerticalAlignment="Top">
+            <ListBox ItemsSource="{Binding SelectedObject.Skins}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"
+                VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.IsVirtualizing="True" VirtualizingPanel.ScrollUnit="Pixel"
+                VirtualizingPanel.IsContainerVirtualizable="True" VirtualizingPanel.CacheLength="4,4" VirtualizingPanel.CacheLengthUnit="Item"
+                mui:FancyScroll.InvertLocation="True" ItemsPanel="{StaticResource CompactSkinsPanel}">
+              <i:Interaction.Behaviors>
+                <mui:HorizontalScrollBehavior x:Name="HorizontalScrollBehavior" />
+              </i:Interaction.Behaviors>
+              <ListBox.ItemTemplate>
+                <DataTemplate>
+                  <mui:BetterImage ToolTip="{Binding DisplayName}" Filename="{Binding LiveryImage}" Width="32" Height="32" ClearOnChange="True" />
+                </DataTemplate>
+              </ListBox.ItemTemplate>
+            </ListBox>
+          </Border>
+
+          <!-- Tags -->
+          <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" IsReadOnly="True" Margin="0 0 0 12" />
+
+          <mui:AsyncButton>
+            <mui:AsyncButton.Content>
+              <DockPanel>
+                <Path Width="20" Height="20" Margin="0 0 8 0" Stretch="Uniform" Data="{StaticResource DownloadIconData}" HorizontalAlignment="Right"
+                    VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+                <TextBlock Text="Install" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+                <TextBlock Text="{Binding SelectedObject.SizeToInstall, Converter={StaticResource FileSizeConverter}}" Style="{StaticResource Small}" />
+              </DockPanel>
+            </mui:AsyncButton.Content>
+          </mui:AsyncButton>
+
+        </StackPanel>
+      </ScrollViewer>
+    </Border>
+
+  </mui:Cell>
+</UserControl>

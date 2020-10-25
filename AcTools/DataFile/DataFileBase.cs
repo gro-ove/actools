@@ -22,9 +22,9 @@ namespace AcTools.DataFile {
         }
 
         [CanBeNull]
-        public IDataWrapper Data { get; private set; }
+        public IDataReadWrapper Data { get; private set; }
 
-        void IDataFile.Initialize(IDataWrapper data, string name, string filename) {
+        void IDataFile.Initialize(IDataReadWrapper data, string name, string filename) {
             Data = data;
             Name = name;
             Filename = filename;
@@ -65,7 +65,7 @@ namespace AcTools.DataFile {
         public void Save([CanBeNull] string filename, bool recycleOriginal = false) {
             var data = Data;
             if (data != null) {
-                data.SetData(Name, Stringify(), recycleOriginal);
+                (data as IDataWrapper ?? throw new Exception("Can’t change read-only data")).SetData(Name, Stringify(), recycleOriginal);
                 return;
             }
 

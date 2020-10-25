@@ -7103,6 +7103,15 @@ namespace AcManager {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workshop.
+        /// </summary>
+        public static string Main_Workshop {
+            get {
+                return ResourceManager.GetString("Main_Workshop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Or, copy a link or a file and press Ctrl+V in Content Manager..
         /// </summary>
         public static string MainWindow_AddDownload_Comment {
@@ -11393,7 +11402,7 @@ namespace AcManager {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url=&quot;https://acstuff.ru/app/#contacts&quot;]feel free to contact us[/url]..
+        ///   Looks up a localized string similar to Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url=&quot;https://acstuff.ru/app/#contacts&quot;]please contact us[/url]..
         /// </summary>
         public static string Settings_QuickSwitches_Description {
             get {

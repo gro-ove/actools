@@ -429,6 +429,9 @@
     <Compile Include="Pages\Dialogs\CarSetupsDialog.xaml.cs">
       <DependentUpon>CarSetupsDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Dialogs\ImageEditor.xaml.cs">
+      <DependentUpon>ImageEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Dialogs\TrackSkinTexturesDialog.xaml.cs">
       <DependentUpon>TrackSkinTexturesDialog.xaml</DependentUpon>
     </Compile>
@@ -742,15 +745,47 @@
     <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
       <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Workshop\IUploadLoggedOperation.cs" />
+    <Compile Include="Pages\Workshop\IUploadLoggedParallelOperation.cs" />
+    <Compile Include="Pages\Workshop\IUploadLogger.cs" />
+    <Compile Include="Pages\Workshop\AnimatableScrollViewer.cs" />
+    <Compile Include="Pages\Workshop\UploadLogger.cs" />
+    <Compile Include="Pages\Workshop\VirtualDataWrapper.cs" />
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsHorizonal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsNarrrowColumns.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsGrid.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml.cs">
+      <DependentUpon>WorkshopCarBrandsBrandsRow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentMain.xaml.cs">
+      <DependentUpon>WorkshopContentMain.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentCategories.xaml.cs">
+      <DependentUpon>WorkshopContentCategories.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopContentTags.xaml.cs">
+      <DependentUpon>WorkshopContentTags.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Workshop\WorkshopEditProfile.xaml.cs">
       <DependentUpon>WorkshopEditProfile.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Workshop\WorkshopLinkCommands.cs" />
     <Compile Include="Pages\Workshop\WorkshopManage.xaml.cs">
       <DependentUpon>WorkshopManage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Workshop\WorkshopSelectedCar.xaml.cs">
+      <DependentUpon>WorkshopSelectedCar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Workshop\WorkshopUpload.xaml.cs">
       <DependentUpon>WorkshopUpload.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Workshop\WorkshopUtils.cs" />
     <Compile Include="PaintShop\CarPaint.cs" />
     <Compile Include="PaintShop\CarPaintColor.cs" />
     <Compile Include="PaintShop\CarPaintColors.cs" />
@@ -1120,6 +1155,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Dialogs\CarSetupsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Dialogs\ImageEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1698,10 +1737,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Pages\Dialogs\ImageEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Pages\Dialogs\UpgradeIconEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1745,9 +1780,6 @@
     </Compile>
     <Compile Include="Pages\Dialogs\CarSpecsEditor.xaml.cs">
       <DependentUpon>CarSpecsEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\Dialogs\ImageEditor.xaml.cs">
-      <DependentUpon>ImageEditor.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Dialogs\UpgradeIconEditor.xaml.cs">
       <DependentUpon>UpgradeIconEditor.xaml</DependentUpon>
@@ -1802,8 +1834,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Workshop\WorkshopCarBrandsHorizonal.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsNarrrowColumns.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsGrid.xaml" />
+    <Page Include="Pages\Workshop\WorkshopCarBrandsBrandsRow.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentMain.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentCategories.xaml" />
+    <Page Include="Pages\Workshop\WorkshopContentTags.xaml" />
     <Page Include="Pages\Workshop\WorkshopEditProfile.xaml" />
     <Page Include="Pages\Workshop\WorkshopManage.xaml" />
+    <Page Include="Pages\Workshop\WorkshopSelectedCar.xaml" />
     <Page Include="Pages\Workshop\WorkshopUpload.xaml" />
     <Page Include="QuickSwitches\QuickSwitchesBlock.xaml">
       <Generator>MSBuild:Compile</Generator>

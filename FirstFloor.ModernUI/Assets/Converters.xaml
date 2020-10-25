@@ -30,6 +30,7 @@
   <c:NullOrEmptyStringToVisibilityConverter x:Key="NullOrEmptyStringToVisibilityConverter" />
   <c:NullToBooleanConverter x:Key="NullToBooleanConverter" />
   <c:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+  <c:ParamToUriConverter x:Key="ParamToUriConverter" />
   <c:PercentageConverter x:Key="PercentageConverter" />
   <c:LagToTimeEstimateConverter x:Key="LagToTimeEstimateConverter" />
   <c:ReadableTimeSpanConverter x:Key="ReadableTimeSpanConverter" />

@@ -106,25 +106,39 @@ namespace AcManager.Controls.Helpers {
             if (_custom?.ShowShared(type, link) == true) return;
 
             if (SettingsHolder.Sharing.CopyLinkToClipboard) {
-                ClipboardHelper.SetText(link);
+                try {
+                    ClipboardHelper.SetText(link);
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
             }
 
             if (showDialog && SettingsHolder.Sharing.ShowSharedDialog) {
-                var copied = SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link;
+                var copied = false;
+                try {
+                    copied = SettingsHolder.Sharing.CopyLinkToClipboard && Clipboard.GetText() == link;
+                } catch (Exception e) {
+                    Logging.Warning(e);
+                }
+
+                var buttons = copied ? new MessageDialogButton(MessageBoxButton.OKCancel) {
+                    [MessageBoxResult.OK] = "Open link in browser",
+                    [MessageBoxResult.Cancel] = "Close"
+                } : new MessageDialogButton(MessageBoxButton.YesNoCancel) {
+                    [MessageBoxResult.Yes] = "Copy link to the clipboard",
+                    [MessageBoxResult.No] = "Open link in browser",
+                    [MessageBoxResult.Cancel] = "Close"
+                };
+
                 var response = MessageDialog.Show(copied
                         ? $"Link has been copied to the clipboard:[br]{link}"
-                        : $"Here is the link:[br]{link}", type, new MessageDialogButton(copied ? MessageBoxButton.YesNoCancel : MessageBoxButton.OKCancel) {
-                            [MessageBoxResult.Yes] = "Copy link to the clipboard",
-                            [MessageBoxResult.No] = "Open link in browser",
-                            [MessageBoxResult.OK] = "Open link in browser",
-                            [MessageBoxResult.Cancel] = "Close"
-                        });
+                        : $"Here is the link:[br]{link}", type, buttons);
 
-                if (response == MessageBoxResult.OK) {
+                if (response == MessageBoxResult.OK || response == MessageBoxResult.Yes) {
                     ClipboardHelper.SetText(link);
                 }
 
-                if (response == MessageBoxResult.Yes) {
+                if (response == MessageBoxResult.No) {
                     WindowsHelper.ViewInBrowser(link + "#noauto");
                 }
             } else {

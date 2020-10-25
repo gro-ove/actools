@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Converters.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/ComboBox.xaml" />
@@ -15,6 +15,7 @@
     <Setter Property="IsUndoEnabled" Value="False" />
     <Setter Property="UndoLimit" Value="0" />
     <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+    <Setter Property="a:ContextMenuAdvancement.AddCopyLinkItem" Value="True" />
     <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
     <Setter Property="Stylus.IsFlicksEnabled" Value="False" />
     <Setter Property="SelectionBrush" Value="{DynamicResource Accent}" />

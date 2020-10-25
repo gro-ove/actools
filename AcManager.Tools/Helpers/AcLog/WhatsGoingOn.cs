@@ -46,7 +46,7 @@ namespace AcManager.Tools.Helpers.AcLog {
         private LazierThis<NonfatalErrorSolution> _solution;
 
         public NonfatalErrorSolution Solution => _solution.Get(() => Fix == null ? null :
-                new NonfatalErrorSolution(FixDisplayName, null, token => {
+                new NonfatalErrorSolution(FixDisplayName, token => {
                     if (FixAffectingDataOriginalLog != null) {
                         var carIds = GetCarsIds(FixAffectingDataOriginalLog).ToList();
                         if (!DataUpdateWarning.Warn(carIds.Select(CarsManager.Instance.GetById))) {

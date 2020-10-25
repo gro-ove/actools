@@ -107,8 +107,10 @@
     <Compile Include="DataAnalyzer\RulesWrapper.cs" />
     <Compile Include="DataFile\DataDirectoryWrapper.cs" />
     <Compile Include="DataFile\DataWrapperBase.cs" />
+    <Compile Include="DataFile\DataWrapperCache.cs" />
     <Compile Include="DataFile\DataWrapperExtension.cs" />
     <Compile Include="DataFile\IDataFile.cs" />
+    <Compile Include="DataFile\IDataReadWrapper.cs" />
     <Compile Include="DataFile\IDataWrapper.cs" />
     <Compile Include="DataFile\IniFileSection.cs" />
     <Compile Include="DataFile\ISyntaxErrorsCatcher.cs" />

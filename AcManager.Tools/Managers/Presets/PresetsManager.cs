@@ -125,6 +125,13 @@ namespace AcManager.Tools.Managers.Presets {
             RegisterBuiltInPreset(data, new PresetsCategory(categoryName), localFilename);
         }
 
+        public byte[] GetBuiltInPresetData(string categoryName, params string[] localFilename) {
+            var category = new PresetsCategory(categoryName);
+            var directory = GetDirectory(category);
+            var filename = Path.Combine(directory, Path.Combine(localFilename)) + category.Extension;
+            return GetBuiltInPresetsList(category).FirstOrDefault(x => x.VirtualFilename == filename)?.ReadBinaryData();
+        }
+
         public void ClearBuiltInPresets(PresetsCategory category) {
             _builtInPresets.Remove(category);
         }

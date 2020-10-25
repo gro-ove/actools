@@ -6,9 +6,15 @@ namespace AcManager {
     public enum AppFlag {
         /// <summary>
         /// For development purposes.
-        /// Example: --patch-support.
+        /// Example: --cm-workshop.
         /// </summary>
         CmWorkshop,
+
+        /// <summary>
+        /// For development purposes.
+        /// Example: --cm-workshop-creator.
+        /// </summary>
+        CmWorkshopCreator,
 
         /// <summary>
         /// For development purposes.

@@ -1,5 +1,5 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls">
+    xmlns:c="clr-namespace:FirstFloor.ModernUI.Windows.Controls" xmlns:a="clr-namespace:FirstFloor.ModernUI.Windows.Attached">
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/TextBox.xaml" />
     <ResourceDictionary Source="/FirstFloor.ModernUI;component/Assets/Fonts.xaml" />
@@ -9,5 +9,6 @@
     <Setter Property="FontFamily" Value="{StaticResource DefaultFont}" />
     <Setter Property="TextTrimming" Value="CharacterEllipsis" />
     <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="a:ContextMenuAdvancement.AddCopyLinkItem" Value="True" />
   </Style>
 </ResourceDictionary>

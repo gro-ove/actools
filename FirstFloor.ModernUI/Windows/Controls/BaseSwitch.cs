@@ -2,16 +2,11 @@ using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
 using FirstFloor.ModernUI.Windows.Media;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
-    public abstract class BaseSwitch : Control {
-        static BaseSwitch() {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof(BaseSwitch), new FrameworkPropertyMetadata(typeof(BaseSwitch)));
-        }
-
+    public abstract class BaseSwitch : ContentControl {
         public static readonly DependencyProperty ResetElementNameBindingsProperty = DependencyProperty.Register(nameof(ResetElementNameBindings), typeof(bool),
                 typeof(BaseSwitch), new FrameworkPropertyMetadata(false));
 
@@ -20,38 +15,44 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set => SetValue(ResetElementNameBindingsProperty, value);
         }
 
-        public static readonly DependencyPropertyKey ContentPropertyKey = DependencyProperty.RegisterReadOnly(nameof(Content), typeof(object),
-                typeof(BaseSwitch), new PropertyMetadata(null));
-
-        public static readonly DependencyProperty ContentProperty = ContentPropertyKey.DependencyProperty;
-
-        public object Content => GetValue(ContentProperty);
-
         [CanBeNull]
         protected abstract UIElement GetChild();
 
         private UIElement _child;
+        private bool _reattachChild;
 
-        private void SetActiveChild(UIElement child) {
+        private void SetActiveChild([CanBeNull] UIElement child) {
             if (ReferenceEquals(_child, child)) return;
 
+            if (_reattachChild) {
+                Content = null;
+                AddLogicalChild(_child);
+            }
+
+            _reattachChild = child is FrameworkElement fe && fe.Parent == this;
+            if (_reattachChild) {
+                RemoveLogicalChild(child);
+            }
+
             _child = child;
-            SetValue(ContentPropertyKey, child);
+            Content = child;
 
             if (ResetElementNameBindings) {
-                child.ResetElementNameBindings();
+                child?.ResetElementNameBindings();
             }
+
+            InvalidateMeasure();
+            InvalidateVisual();
         }
 
-        protected void UpdateActiveChild() {
+        private void UpdateActiveChild() {
             SetActiveChild(GetChild());
         }
 
         protected static void OnChildDefiningPropertyChanged(object sender, DependencyPropertyChangedEventArgs e) {
             if (!(sender is BaseSwitch b)) return;
+            // b.InvalidateMeasure();
             b.UpdateActiveChild();
-            b.InvalidateMeasure();
-            b.InvalidateVisual();
         }
 
         public override void OnApplyTemplate() {
@@ -66,7 +67,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         protected static void OnWhenChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) {
             if (d is UIElement element) {
-                (VisualTreeHelper.GetParent(element) as BaseSwitch)?.UpdateActiveChild();
+                element.GetParent<BaseSwitch>()?.UpdateActiveChild();
             }
         }
     }

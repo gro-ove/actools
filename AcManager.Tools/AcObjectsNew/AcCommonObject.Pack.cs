@@ -35,6 +35,8 @@ namespace AcManager.Tools.AcObjectsNew {
             [CanBeNull]
             public string Destination { get; set; }
 
+            public Func<string, Action<IWriter, string>> Override { get; set; }
+
             public bool ShowInExplorer { get; set; } = true;
 
             [CanBeNull]
@@ -91,7 +93,13 @@ namespace AcManager.Tools.AcObjectsNew {
                 if (_added.Contains(lower)) return false;
                 _added.Add(lower);
                 _progress?.Report(key);
-                fn?.Invoke(_writer, key);
+
+                var overrideFn = _packerParams?.Override?.Invoke(key);
+                if (overrideFn != null) {
+                    overrideFn.Invoke(_writer, key);
+                } else {
+                    fn?.Invoke(_writer, key);
+                }
                 return true;
             }
 
@@ -112,7 +120,7 @@ namespace AcManager.Tools.AcObjectsNew {
 
                 if (_subFiles == null) {
                     _subFiles = Directory.GetFiles(location, "*", SearchOption.AllDirectories)
-                                         .Select(x => FileUtils.GetRelativePath(x, location).Replace('\\', '/')).ToArray();
+                            .Select(x => FileUtils.GetRelativePath(x, location).Replace('\\', '/')).ToArray();
                 }
 
                 var f = RegexFromQuery.Create(mask.Replace('\\', '/'), StringMatchMode.CompleteMatch);

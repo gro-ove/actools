@@ -62,7 +62,7 @@ namespace AcManager.Tools.Profile {
             } catch (HttpListenerException e) when (e.ToString().Contains("0x80004005")) {
                 NonfatalError.NotifyBackground("Can’t start web server",
                         $"Don’t forget to allow port’s usage with something like “netsh http add urlacl url=\"http://+:{port}/\" user=everyone”.", e, new[] {
-                            new NonfatalErrorSolution($"Use “netsh” to allow usage of port {port}", null, async token => {
+                            new NonfatalErrorSolution($"Use “netsh” to allow usage of port {port}", async token => {
                                 try {
                                     var command = $"netsh http add urlacl url=\"http://+:{port}/\" user=everyone";
                                     var proc = ProcessExtension.Start("cmd", new[] {

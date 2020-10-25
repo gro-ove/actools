@@ -55,10 +55,18 @@ namespace AcManager.Pages.Workshop {
             public ViewModel([NotNull] WorkshopClient workshopClient, [NotNull] UserInfo user) {
                 _workshopClient = workshopClient;
                 _user = user;
+                Username = _user.Username;
                 Name = _user.Name;
                 Location = _user.Location;
                 Bio = _user.Bio;
                 AvatarImageSource = _user.AvatarLarge;
+            }
+
+            private string _username;
+
+            public string Username {
+                get => _username;
+                set => Apply(value, ref _username);
             }
 
             private string _name;
@@ -94,7 +102,7 @@ namespace AcManager.Pages.Workshop {
 
             public void ApplyNewAvatar(string filename) {
                 try {
-                    var source = ImageEditor.Proceed(filename, new Size(256, 256));
+                    var source = ImageEditor.Proceed(filename, new Size(184, 184));
                     _newAvatarLarge = source?.ToBytes(ImageFormat.Jpeg);
                     _newAvatarSmall = source?.Resize(48, 48).ToBytes(ImageFormat.Jpeg);
                     AvatarImageSource = _newAvatarLarge;
@@ -134,6 +142,7 @@ namespace AcManager.Pages.Workshop {
                 => _applyCommand ?? (_applyCommand = new AsyncCommand<Tuple<IProgress<AsyncProgressEntry>, CancellationToken>>(async c => {
                     try {
                         var newInfo = new JObject {
+                            [@"username"] = Username,
                             [@"name"] = Name,
                             [@"bio"] = Bio,
                             [@"location"] = Location
@@ -148,7 +157,7 @@ namespace AcManager.Pages.Workshop {
                         }
 
                         c?.Item1?.Report(new AsyncProgressEntry("New information…", 0.6));
-                        await _workshopClient.PatchAsync("/manage/user-info", newInfo, (c?.Item2).Straighten());
+                        await _workshopClient.PatchAsync($"/users/{_user.UserId}", newInfo, (c?.Item2).Straighten());
                         Finished = true;
                     } catch (Exception e) when (e.IsCancelled()) { }
                 }));

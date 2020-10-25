@@ -323,15 +323,29 @@ namespace AcTools.Utils.Helpers {
             return -1;
         }
 
-        [Pure, NotNull]
-        public static IEnumerable<IEnumerable<T>> Chunk<T>([NotNull] this IEnumerable<T> source, int chunksize) {
+        [Pure, NotNull, ItemNotNull]
+        public static IEnumerable<IEnumerable<T>> Chunk<T>([NotNull] this IEnumerable<T> source, int chunkSize) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = source as IList<T> ?? source.ToList();
+            if (chunkSize <= 0) throw new ArgumentOutOfRangeException(nameof(chunkSize));
 
-            var pos = 0;
-            while (list.Skip(pos).Any()) {
-                yield return list.Skip(pos).Take(chunksize);
-                pos += chunksize;
+            using (var enumerator = source.GetEnumerator()) {
+                while (true) {
+                    if (!enumerator.MoveNext()) {
+                        yield break;
+                    }
+                    yield return FormChunk(enumerator.Current, enumerator);
+                }
+            }
+
+            IEnumerable<T> FormChunk(T firstElement, IEnumerator<T> enumerator) {
+                yield return firstElement;
+                var taken = 1;
+                while (enumerator.MoveNext()) {
+                    yield return enumerator.Current;
+                    if (++taken == chunkSize) {
+                        yield break;
+                    }
+                }
             }
         }
 
@@ -344,6 +358,7 @@ namespace AcTools.Utils.Helpers {
         [Pure, NotNull]
         public static IEnumerable<T> Repeat<T>([NotNull] this IList<T> enumerable, int repetition) {
             if (enumerable == null) throw new ArgumentNullException(nameof(enumerable));
+            if (repetition < 0) throw new ArgumentOutOfRangeException(nameof(repetition));
             for (var i = 0; i < repetition; i++) {
                 for (var j = 0; j < enumerable.Count; j++) {
                     yield return enumerable[j];
@@ -353,7 +368,24 @@ namespace AcTools.Utils.Helpers {
 
         [Pure, NotNull]
         public static IEnumerable<T> Repeat<T>([NotNull] this IEnumerable<T> enumerable, int repetition) {
-            return repetition == 1 ? enumerable : enumerable.ToList().Repeat(repetition);
+            if (repetition < 0) throw new ArgumentOutOfRangeException(nameof(repetition));
+            if (repetition == 0) return Enumerable.Empty<T>();
+            if (repetition == 1) return enumerable;
+            return RepeatFirst();
+
+            IEnumerable<T> RepeatFirst() {
+                var cache = new List<T>();
+                foreach (var item in enumerable) {
+                    yield return item;
+                    cache.Add(item);
+                }
+
+                for (var i = 1; i < repetition; i++) {
+                    foreach (var item in cache) {
+                        yield return item;
+                    }
+                }
+            }
         }
 
         [Pure]
@@ -688,11 +720,46 @@ namespace AcTools.Utils.Helpers {
             return source.OrderBy(x => x, new FuncBasedComparer<T>(fn));
         }
 
-        [Pure]
+        [NotNull]
+        public static IEnumerable<T> WrapSingle<T>(T value) {
+            yield return value;
+        }
+
+        [Pure, NotNull]
         public static IEnumerable<T> TakeLast<T>([NotNull] this IEnumerable<T> source, int count) {
             if (source == null) throw new ArgumentNullException(nameof(source));
-            var list = source.ToList();
-            return list.Skip(Math.Max(list.Count - count, 0));
+            if (count <= 0) throw new ArgumentOutOfRangeException(nameof(count));
+
+            if (count == 1) {
+                return WrapSingle(source.Last());
+            }
+
+            var ret = new List<T>(count);
+            var cursor = 0;
+            var filled = false;
+            foreach (var item in source) {
+                if (!filled) {
+                    ret.Add(item);
+                } else {
+                    ret[cursor] = item;
+                }
+                if (++cursor == count) {
+                    cursor = 0;
+                    filled = true;
+                }
+            }
+            return TakeLastInner();
+
+            IEnumerable<T> TakeLastInner() {
+                if (filled) {
+                    for (var i = cursor; i < count; i++) {
+                        yield return ret[i];
+                    }
+                }
+                for (var i = 0; i < cursor; i++) {
+                    yield return ret[i];
+                }
+            }
         }
 
         [Pure]

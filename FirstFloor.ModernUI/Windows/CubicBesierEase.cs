@@ -34,7 +34,7 @@ namespace FirstFloor.ModernUI.Windows {
             return 3.0 * A(aA1, aA2) * aT * aT + 2.0 * B(aA1, aA2) * aT + C(aA1);
         }
 
-        private static double BinarySubdivide (double aX,  double aA, double aB, double mX1, double mX2) {
+        private static double BinarySubdivide(double aX, double aA, double aB, double mX1, double mX2) {
             double currentX, currentT;
             var i = 0;
             do {
@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Windows {
             return currentT;
         }
 
-        private static double NewtonRaphsonIterate (double aX, double aGuessT, double mX1, double mX2) {
+        private static double NewtonRaphsonIterate(double aX, double aGuessT, double mX1, double mX2) {
             for (var i = 0; i < NewtonIterations; ++i) {
                 var currentSlope = GetSlope(aGuessT, mX1, mX2);
                 if (currentSlope == 0d) return aGuessT;
@@ -62,7 +62,7 @@ namespace FirstFloor.ModernUI.Windows {
 
         private bool _dirty = true;
 
-        private double GetTForX (double aX) {
+        private double GetTForX(double aX) {
             var intervalStart = 0d;
             var currentSample = 1;
 
@@ -169,6 +169,5 @@ namespace FirstFloor.ModernUI.Windows {
         protected override Freezable CreateInstanceCore() {
             return new CubicBesierEase();
         }
-
     }
 }

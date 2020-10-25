@@ -80,11 +80,11 @@ namespace AcTools.Utils {
 
         [CanBeNull, Pure]
         public static string GetMainCarFilename([NotNull] string carDir, bool considerHr) {
-            return GetMainCarFilename(carDir, (DataWrapper)null, considerHr);
+            return GetMainCarFilename(carDir, (IDataReadWrapper)null, considerHr);
         }
 
         [CanBeNull, Pure]
-        public static string GetMainCarFilename([NotNull] string carDir, [CanBeNull] DataWrapper data, bool considerHr) {
+        public static string GetMainCarFilename([NotNull] string carDir, [CanBeNull] IDataReadWrapper data, bool considerHr) {
             var iniFile = (data ?? DataWrapper.FromCarDirectory(carDir)).GetIniFile("lods.ini");
             if (!iniFile.IsEmptyOrDamaged()) {
                 var file = (considerHr ? iniFile["LOD_HR"].GetNonEmpty("FILE") : null) ?? iniFile["LOD_0"].GetNonEmpty("FILE");

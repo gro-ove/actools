@@ -315,7 +315,7 @@ namespace AcManager.Tools.Profile {
             if (EnabledSources.Any(x => x.ReadOnly)) {
                 NonfatalError.Notify("Can’t remove entry from read-only sources",
                         $"Please, disable {EnabledSources.Where(x => x.ReadOnly).Select(x => x.DisplayName).JoinToReadableString()}.", solutions: new[] {
-                            new NonfatalErrorSolution("Disable read-only sources", null, token => {
+                            new NonfatalErrorSolution("Disable read-only sources", token => {
                                 foreach (var source in EnabledSources) {
                                     source.IsEnabled = false;
                                 }

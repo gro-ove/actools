@@ -29,6 +29,7 @@ using AcManager.Tools.Managers;
 using AcManager.Tools.Managers.Plugins;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcManager.Workshop;
 using AcTools;
 using AcTools.AcdFile;
 using AcTools.DataFile;
@@ -339,11 +340,11 @@ namespace AcManager.Pages.Selected {
                 }
             }, () => SettingsHolder.Common.DeveloperMode && PluginsManager.Instance.IsPluginEnabled("FmodHelper")));
 
-            private DelegateCommand _UploadToWorkshopCommand;
+            private DelegateCommand _uploadToWorkshopCommand;
 
-            public DelegateCommand UploadToWorkshopCommand => _UploadToWorkshopCommand ?? (_UploadToWorkshopCommand = new DelegateCommand(() => {
+            public DelegateCommand UploadToWorkshopCommand => _uploadToWorkshopCommand ?? (_uploadToWorkshopCommand = new DelegateCommand(() => {
                 new WorkshopUpload(SelectedObject).ShowDialog();
-            }, () => WorkshopUpload.OptionAvailable));
+            }, () => WorkshopClient.OptionCreatorAvailable));
 
             private AsyncCommand _replaceSoundCommand;
 

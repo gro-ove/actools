@@ -133,9 +133,12 @@ namespace AcManager.Tools.Helpers {
             return id != null && Regex.IsMatch(id.Trim(), @"\d{10,30}");
         }
 
+        private static Dictionary<string, string> _steamNameCache = new Dictionary<string, string>();
+
         [ItemCanBeNull]
-        public static async Task<string> GetSteamName(string id) {
-            return IsValidSteamId(id) ? await Task.Run(() => SteamWebProvider.TryToGetUserName(id)) : null;
+        public static async Task<string> GetSteamNameAsync(string id) {
+            if (_steamNameCache.TryGetValue(id, out var name)) return name;
+            return _steamNameCache[id] = IsValidSteamId(id) ? await Task.Run(() => SteamWebProvider.TryToGetUserName(id)) : null;
         }
     }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
@@ -233,6 +234,11 @@ namespace AcManager.CustomShowroom {
                     NonfatalError.NotifyBackground("Can’t load preset", warningMessage);
                 }
             }
+        }
+
+        [NotNull]
+        public static DarkPreviewsOptions GetSerializedSavedOptions([NotNull] byte[] data) {
+            return (SaveHelper<SaveableData>.LoadSerialized(Encoding.UTF8.GetString(data)) ?? new SaveableData()).ToPreviewsOptions(true);
         }
 
         protected new sealed class SaveableData : DarkRendererSettings.SaveableData {

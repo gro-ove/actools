@@ -25,6 +25,10 @@ namespace AcTools.Utils.Helpers {
             task.ContinueWith(x => { AcToolsLogging.Write(x.Exception?.Flatten()); }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
+        public static IEnumerable<Task> MakeList(params Func<Task>[] functions) {
+            return functions.Select(x => x());
+        }
+
         public static async Task WithCancellation(this Task task, CancellationToken cancellationToken) {
             var tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs)) {
@@ -52,7 +56,9 @@ namespace AcTools.Utils.Helpers {
 
                 list.Add(task);
                 if (list.Count == limit) {
-                    list.Remove(await Task.WhenAny(list));
+                    var completedTask = await Task.WhenAny(list);
+                    list.Remove(completedTask);
+                    await completedTask;
                 }
             }
 

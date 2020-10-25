@@ -32,7 +32,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         public ICommand SaveDriverMovementCommand => _saveDriverMovementCommand ?? (_saveDriverMovementCommand = new DelegateCommand(() => {
             try {
-                _driver?.SaveMovement(Path.Combine(_rootDirectory, "animations",
+                _driver?.SaveMovement(Path.Combine(RootDirectory, "animations",
                         _carData.GetDriverDescription()?.SteerAnimation ?? throw new Exception("Failed to load driver data")));
             } catch (Exception e) {
                 AcToolsLogging.NonFatalErrorNotify("Can’t save new “steer.ksanim”", null, e);

@@ -111,7 +111,16 @@
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ListBoxItem">
-          <DockPanel MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent" Margin="0 0 12 0">
+          <DockPanel MinWidth="20" d:DataContext="{d:DesignInstance pr:LinkInput}" Background="Transparent" Margin="0 0 12 0"
+              a:ContextMenuAdvancement.PropagateToChildren="True">
+            <DockPanel.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Close tab (middle button)" Command="{Binding CloseCommand}" />
+                <MenuItem Header="Close all" Command="{Binding CloseAllCommand}" />
+                <MenuItem Header="Close others" Command="{Binding CloseOthersCommand}" />
+                <MenuItem Header="Close to the right" Command="{Binding CloseToRightCommand}" />
+              </ContextMenu>
+            </DockPanel.ContextMenu>
             <DockPanel.InputBindings>
               <MouseBinding Command="{Binding CloseCommand}" Gesture="MiddleClick" />
             </DockPanel.InputBindings>

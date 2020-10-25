@@ -70,6 +70,13 @@ namespace FirstFloor.ModernUI.Presentation {
             set => Apply(value, ref _tag);
         }
 
+        private bool _isTemporary;
+
+        public bool IsTemporary {
+            get => _isTemporary;
+            set => Apply(value, ref _isTemporary);
+        }
+
         public string Key {
             get => Source?.OriginalString;
             set => Source = new Uri(value, UriKind.Relative);

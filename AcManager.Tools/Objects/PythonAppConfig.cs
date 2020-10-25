@@ -10,6 +10,7 @@ using AcTools.DataFile;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Commands;
+using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Serialization;
 using JetBrains.Annotations;
@@ -228,33 +229,38 @@ namespace AcManager.Tools.Objects {
                 return null;
             }
 
-            const string extension = @".ini";
-            string defaults;
+            try {
+                const string extension = @".ini";
+                string defaults;
 
-            if (userEditedFile == null) {
-                const string defaultsPostfix = @"_defaults" + extension;
+                if (userEditedFile == null) {
+                    const string defaultsPostfix = @"_defaults" + extension;
 
-                if (relative.EndsWith(defaultsPostfix, StringComparison.OrdinalIgnoreCase)) {
-                    var original = filename.ApartFromLast(defaultsPostfix) + extension;
-                    if (File.Exists(original)) return null;
-                    filename = original;
+                    if (relative.EndsWith(defaultsPostfix, StringComparison.OrdinalIgnoreCase)) {
+                        var original = filename.ApartFromLast(defaultsPostfix) + extension;
+                        if (File.Exists(original)) return null;
+                        filename = original;
+                    }
+                    defaults = filename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
+                } else {
+                    defaults = filename;
+                    filename = userEditedFile;
                 }
-                defaults = filename.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase) + defaultsPostfix;
-            } else {
-                defaults = filename;
-                filename = userEditedFile;
-            }
 
-            var defaultsMode = File.Exists(defaults);
-            var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(filename, IniFileMode.Comments);
-            if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) return null;
-            return new PythonAppConfig(configParams, filename, ini,
-                    (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
-                            ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
-                                    .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
-                                    .Select(AcStringValues.NameFromId).JoinToString('/'),
-                    PythonAppsManager.Instance.FirstOrDefault(x => x.Location == configParams.PythonAppLocation),
-                    defaultsMode ? new IniFile(filename) : null);
+                var defaultsMode = File.Exists(defaults);
+                var ini = defaultsMode ? new IniFile(defaults, IniFileMode.Comments) : new IniFile(filename, IniFileMode.Comments);
+                if (!force && (!ini.Any() || ini.Any(x => !Regex.IsMatch(x.Key, @"^[\w -]+$")))) return null;
+                return new PythonAppConfig(configParams, filename, ini,
+                        (ini.ContainsKey("ℹ") ? ini["ℹ"].GetNonEmpty("FULLNAME") : null)
+                                ?? relative.ApartFromLast(extension, StringComparison.OrdinalIgnoreCase)
+                                        .Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
+                                        .Select(AcStringValues.NameFromId).JoinToString('/'),
+                        PythonAppsManager.Instance.FirstOrDefault(x => x.Location == configParams.PythonAppLocation),
+                        defaultsMode ? new IniFile(filename) : null);
+            } catch (Exception e) when (!force) {
+                Logging.Warning(e);
+                return null;
+            }
         }
 
         internal static string CapitalizeFirst(string s) {

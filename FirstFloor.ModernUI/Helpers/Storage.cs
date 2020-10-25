@@ -207,7 +207,36 @@ namespace FirstFloor.ModernUI.Helpers {
 
         private void Load() {
             var w = Stopwatch.StartNew();
-            if (_filename == null || !File.Exists(_filename)) {
+
+            var filenameToLoad = _filename;
+            if (filenameToLoad == null) {
+                lock (_storage) {
+                    _storage.Clear();
+                }
+                return;
+            }
+
+            var filenameToLoadExists = File.Exists(filenameToLoad);
+            var backupFilename = GetBackupFilename();
+            string[] decodedLines = null;
+            if (backupFilename != null && File.Exists(backupFilename)) {
+                if (!filenameToLoadExists || new FileInfo(backupFilename).Length > new FileInfo(filenameToLoad).Length * 4) {
+                    filenameToLoad = backupFilename;
+                    filenameToLoadExists = true;
+                } else {
+                    try {
+                        decodedLines = DecodeLines(filenameToLoad);
+                        if (decodedLines.Length == 0) {
+                            throw new Exception("Surprisingly empty");
+                        }
+                    } catch (Exception e) {
+                        Logging.Warning(e);
+                        filenameToLoad = backupFilename;
+                    }
+                }
+            }
+
+            if (!filenameToLoadExists) {
                 lock (_storage) {
                     _storage.Clear();
                 }
@@ -215,12 +244,11 @@ namespace FirstFloor.ModernUI.Helpers {
             }
 
             try {
-                var splitted = DecodeBytes(File.ReadAllBytes(_filename))
-                        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
+                var splitted = decodedLines ?? DecodeLines(filenameToLoad);
                 Load(int.Parse(splitted[0].Split(new[] { "version:" }, StringSplitOptions.None)[1].Trim(), NumberStyles.Any, CultureInfo.InvariantCulture),
                         splitted.Skip(1));
             } catch (Exception e) {
-                Logging.Warning(e);
+                Logging.Warning($"Failed to load {_filename}: {e}");
                 lock (_storage) {
                     _storage.Clear();
                 }
@@ -229,6 +257,11 @@ namespace FirstFloor.ModernUI.Helpers {
             OnPropertyChanged(nameof(Count));
             if (w.Elapsed.TotalMilliseconds > 2) {
                 Logging.Write($"{Path.GetFileName(_filename)}: {w.Elapsed.TotalMilliseconds:F2} ms");
+            }
+
+            string[] DecodeLines(string filename) {
+                return DecodeBytes(File.ReadAllBytes(filename))
+                        .Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             }
         }
 
@@ -263,11 +296,12 @@ namespace FirstFloor.ModernUI.Helpers {
         public string GetData() {
             lock (_storage) {
                 return "version: " + ActualVersion + "\n" + string.Join("\n", from x in _storage
-                                                                              where x.Key != null && x.Value != null
-                                                                              select Encode(x.Key) + '\t' + Encode(x.Value));
+                    where x.Key != null && x.Value != null
+                    select Encode(x.Key) + '\t' + Encode(x.Value));
             }
         }
 
+        [NotNull]
         private static string EnsureUnique([NotNull] string filename, int startFrom = 1) {
             if (!File.Exists(filename) && !Directory.Exists(filename)) {
                 return filename;
@@ -285,10 +319,18 @@ namespace FirstFloor.ModernUI.Helpers {
             throw new Exception("Can’t find unique filename");
         }
 
+        [CanBeNull]
+        private string GetBackupFilename() {
+            return TemporaryBackupsDirectory == null || _filename == null ? null : Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
+        }
+
         private void SaveData(string data) {
             try {
+                var filename = _filename;
+                if (filename == null) return;
+
                 var bytes = Encoding.UTF8.GetBytes(data);
-                var newFilename = EnsureUnique(_filename);
+                var newFilename = EnsureUnique(_filename + ".new");
 
                 if (_disableCompression) {
                     File.WriteAllBytes(newFilename, bytes);
@@ -306,31 +348,33 @@ namespace FirstFloor.ModernUI.Helpers {
                     }
                 }
 
-                if (newFilename == _filename) return;
+                if (newFilename == filename) return;
 
-                if (TemporaryBackupsDirectory != null) {
-                    var backupFilename = Path.Combine(TemporaryBackupsDirectory, Path.GetFileName(_filename));
-                    try {
-                        if (File.Exists(backupFilename)) {
-                            File.Delete(backupFilename);
+                if (File.Exists(filename)) {
+                    var backupFilename = GetBackupFilename();
+                    if (backupFilename != null) {
+                        try {
+                            if (File.Exists(backupFilename)) {
+                                File.Delete(backupFilename);
+                            }
+                            File.Move(filename, backupFilename);
+                        } catch (Exception e) {
+                            Logging.Error(e);
                         }
-                        File.Move(_filename, backupFilename);
+                    } else {
+                        File.Delete(filename);
+                    }
+
+                    try {
+                        if (File.Exists(filename)) {
+                            File.Delete(filename);
+                        }
                     } catch (Exception e) {
                         Logging.Error(e);
                     }
-                } else {
-                    File.Delete(_filename);
                 }
 
-                try {
-                    if (File.Exists(_filename)) {
-                        File.Delete(_filename);
-                    }
-                } catch (Exception e) {
-                    Logging.Error(e);
-                }
-
-                File.Move(newFilename, _filename);
+                File.Move(newFilename, filename);
             } catch (Exception e) {
                 Logging.Error(e);
             }

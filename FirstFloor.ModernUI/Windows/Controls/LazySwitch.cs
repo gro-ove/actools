@@ -7,6 +7,19 @@ using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Windows.Controls {
     public class BooleanLazySwitch : BaseSwitch {
+        private UIElement _lastChild;
+        private object _lashChildKey;
+
+        [CanBeNull]
+        private UIElement GetChildByKey([CanBeNull] object key) {
+            if (key != _lashChildKey) {
+                _lashChildKey = key;
+                _lastChild = key == null ? null : TryFindResource(key) as UIElement;
+            }
+
+            return _lastChild;
+        }
+
         protected override UIElement GetChild() {
             var v = Value;
             var key = v ? TrueResourceKey : FalseResourceKey;
@@ -16,7 +29,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 key = string.Format(format, key);
             }
 
-            var result = key == null ? null : TryFindResource(key) as UIElement;
+            var result = GetChildByKey(key);
             if (CollapseIfMissing) {
                 Visibility = result == null ? Visibility.Collapsed : Visibility.Visible;
             }

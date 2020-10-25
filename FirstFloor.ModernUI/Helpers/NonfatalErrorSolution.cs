@@ -4,16 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using FirstFloor.ModernUI.Commands;
-using FirstFloor.ModernUI.Dialogs;
 using FirstFloor.ModernUI.Presentation;
 using JetBrains.Annotations;
 
 namespace FirstFloor.ModernUI.Helpers {
     public class NonfatalErrorSolution : AsyncCommand {
         public static Uri IconsDictionary { get; set; }
-
-        [CanBeNull]
-        private readonly NonfatalErrorEntry _entry;
 
         [CanBeNull]
         private readonly Func<CancellationToken, Task> _execute;
@@ -40,11 +36,13 @@ namespace FirstFloor.ModernUI.Helpers {
             }
         }
 
-        public NonfatalErrorSolution([CanBeNull] string displayName, [CanBeNull] NonfatalErrorEntry entry, [CanBeNull] Func<CancellationToken, Task> execute,
+        [CanBeNull]
+        public NonfatalErrorEntry Entry { get; set; }
+
+        public NonfatalErrorSolution([CanBeNull] string displayName, [CanBeNull] Func<CancellationToken, Task> execute,
                 [Localizable(false)] string iconKey = null) : base(() => Task.Delay(0), () => execute != null) {
             DisplayName = displayName ?? "Fix it";
             IconKey = iconKey;
-            _entry = entry;
             _execute = execute;
         }
 
@@ -53,14 +51,9 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         protected override async Task ExecuteInner() {
-            Logging.Debug("Fixing error: " + DisplayName);
-
             try {
-                using (var waiting = new WaitingDialog()) {
-                    waiting.Report("Solving the issue…");
-                    await Task.Yield();
-                    await _execute(CancellationToken.None).ConfigureAwait(false);
-                }
+                await Task.Yield();
+                await _execute(CancellationToken.None);
             } catch (Exception e) when (e.IsCanceled()) {
                 return;
             } catch (Exception e) {
@@ -70,8 +63,10 @@ namespace FirstFloor.ModernUI.Helpers {
 
             Solved = true;
 
-            if (_entry != null) {
-                NonfatalError.Instance.Errors.Remove(_entry);
+            if (Entry != null) {
+                Logging.Here();
+                NonfatalError.Instance.Errors.Remove(Entry);
+                Logging.Here();
             }
         }
     }

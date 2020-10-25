@@ -37,6 +37,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.Starters;
 using AcManager.UserControls;
+using AcManager.Workshop;
 using AcTools.Processes;
 using AcTools.Utils;
 using AcTools.Utils.Helpers;
@@ -68,6 +69,7 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("lapTimes", AppStrings.Main_LapTimes),
                 new TitleLinkEnabledEntry("stats", AppStrings.Main_Results),
                 new TitleLinkEnabledEntry("media", AppStrings.Main_Media),
+                WorkshopClient.OptionUserAvailable ? new TitleLinkEnabledEntry("workshop", AppStrings.Main_Workshop) : null,
                 new TitleLinkEnabledEntry("content", AppStrings.Main_Content),
                 DownloadsEntry,
                 new TitleLinkEnabledEntry("server", AppStrings.Main_Server, false),
@@ -75,7 +77,7 @@ namespace AcManager.Pages.Windows {
                 new TitleLinkEnabledEntry("about", AppStrings.Main_About),
                 new TitleLinkEnabledEntry("originalLauncher", AppStrings.Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter),
                 new TitleLinkEnabledEntry("settings/video", AppStrings.Windows_MainWindow_VideoSettingsFPSCounter, false),
-            };
+            }.NonNull().ToArray();
         }
 
         public static readonly Uri OriginalLauncherUrl = new Uri("cmd://originalLauncher");
@@ -145,6 +147,15 @@ namespace AcManager.Pages.Windows {
             RaceU.InitializeRaceULinks();
             ModsWebBrowser.Instance.RebuildLinksNow();
             ArgumentsHandler.HandlePasteEvent(this);
+
+            if (!WorkshopClient.OptionUserAvailable) {
+                foreach (var link in TitleLinks.OfType<TitleLink>().Where(x => x.GroupKey == "workshop").ToList()) {
+                    TitleLinks.Remove(link);
+                }
+                foreach (var link in MenuLinkGroups.Where(x => x.GroupKey == "workshop").ToList()) {
+                    MenuLinkGroups.Remove(link);
+                }
+            }
 
             if (SteamStarter.IsInitialized) {
                 OverlayContentCell.Children.Add((FrameworkElement)FindResource(@"SteamOverlayFix"));
@@ -779,13 +790,21 @@ namespace AcManager.Pages.Windows {
         }
 
         private async void OnMouseRightButtonDown(object sender, MouseButtonEventArgs e) {
-            if (!SettingsHolder.Drive.QuickSwitches) return;
+            if (!SettingsHolder.Drive.QuickSwitches || !SettingsHolder.Drive.QuickSwitchesRightMouseButton) return;
 
             await Task.Delay(50);
             if (e.Handled) return;
 
             ToggleQuickSwitches(false);
             e.Handled = true;
+        }
+
+        private void OnMouseUp(object sender, MouseButtonEventArgs e) {
+            if (e.Handled) return;
+            if (e.ChangedButton == MouseButton.Middle) {
+                ToggleQuickSwitches(true);
+                e.Handled = true;
+            }
         }
 
         private void OnPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e) {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using FirstFloor.ModernUI.Helpers;
@@ -45,8 +46,8 @@ namespace FirstFloor.ModernUI.Presentation {
             }
 
             foreach (var link in from x in ValuesStorage.GetStringList(KeyGroup)
-                                 where !string.IsNullOrWhiteSpace(x)
-                                 select new LinkInput(_source, x)) {
+                where !string.IsNullOrWhiteSpace(x)
+                select new LinkInput(_source, x)) {
                 Links.Add(link);
                 link.PropertyChanged += Link_PropertyChanged;
                 link.Close += OnLinkClose;
@@ -86,7 +87,7 @@ namespace FirstFloor.ModernUI.Presentation {
             _selectedLink = value;
             OnPropertyChanged(nameof(SelectedLink));
 
-            if (save && value?.Source != null) {
+            if (save && value?.Source != null && value.IsTemporary != true) {
                 ValuesStorage.Set(KeySelected, value.DisplayName);
             }
         }
@@ -141,7 +142,7 @@ namespace FirstFloor.ModernUI.Presentation {
             if (link == null) return;
 
             LinkChanged?.Invoke(this, new LinkChangedEventArgs(link.PreviousValue, link.DisplayName));
-            if (ReferenceEquals(link, SelectedLink)) {
+            if (ReferenceEquals(link, SelectedLink) && !link.IsTemporary) {
                 ValuesStorage.Set(KeySelected, link.DisplayName);
             }
 
@@ -192,13 +193,31 @@ namespace FirstFloor.ModernUI.Presentation {
             AddAndSelect(e.InputValue);
         }
 
-        private void OnLinkClose(object sender, EventArgs e) {
-            var link = sender as LinkInput;
-            if (link == null) return;
-
-            Remove(link);
-            RecentlyClosedQueue.Enqueue(link.DisplayName);
-            SaveRecentlyClosed();
+        private void OnLinkClose(object sender, LinkCloseEventArgs e) {
+            if (sender is LinkInput link) {
+                IEnumerable<LinkInput> listToClose;
+                switch (e.Mode) {
+                    case LinkCloseMode.Regular:
+                        listToClose = new[] { link };
+                        break;
+                    case LinkCloseMode.CloseAll:
+                        listToClose = Links.OfType<LinkInput>();
+                        break;
+                    case LinkCloseMode.CloseOthers:
+                        listToClose = Links.OfType<LinkInput>().Where(x => x != link);
+                        break;
+                    case LinkCloseMode.CloseToRight:
+                        listToClose = Links.OfType<LinkInput>().SkipWhile(x => x != link).Skip(1);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                foreach (var toClose in listToClose.ToList()) {
+                    Remove(toClose);
+                    RecentlyClosedQueue.Enqueue(toClose.DisplayName);
+                }
+                SaveRecentlyClosed();
+            }
         }
 
         private bool _isEnabled = true;

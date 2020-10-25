@@ -27,7 +27,7 @@ namespace FirstFloor.ModernUI.Helpers {
         }
 
         [ContractAnnotation(@"s: null => false")]
-        public static bool IsWebUrl(this string s) {
+        public static bool IsWebUrl([CanBeNull] this string s) {
             return s != null && (s.StartsWith(@"http://", StringComparison.OrdinalIgnoreCase) ||
                     s.StartsWith(@"https://", StringComparison.OrdinalIgnoreCase));
         }
@@ -262,6 +262,12 @@ console.log(result);
                     case 'n':
                     case 'N':
                         return Contains(@"ame");
+                }
+            } else if (length == 5) {
+                switch (s[index]) {
+                    case 's':
+                    case 'S':
+                        return Contains(@"tore");
                 }
             } else if (length == 6) {
                 switch (s[index]) {

@@ -1,0 +1,38 @@
+<UserControl x:Class="AcManager.Pages.Workshop.WorkshopContentTags" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:w="clr-namespace:AcManager.Pages.Workshop"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance w:WorkshopContentTags+ViewModel}">
+  <ListBox x:Name="List" ItemsSource="{Binding Categories}" Margin="20" ScrollViewer.HorizontalScrollBarVisibility="Disabled" PreviewKeyDown="OnPreviewKeyDown">
+    <ListBox.ItemsPanel>
+      <ItemsPanelTemplate>
+        <mui:StretchyWrapPanel SizeChanged="OnPanelSizeChanged" />
+      </ItemsPanelTemplate>
+    </ListBox.ItemsPanel>
+    <ListBox.ItemTemplate>
+      <DataTemplate>
+        <mui:Cell PreviewMouseLeftButtonDown="OnItemMouseDown" Background="Transparent" HorizontalAlignment="Center">
+          <mui:Cell.ToolTip>
+            <ToolTip Visibility="{Binding Description, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+              <mui:BbCodeBlock Text="{Binding Description}" MaxWidth="400" TextWrapping="Wrap" />
+            </ToolTip>
+          </mui:Cell.ToolTip>
+          <TextBlock x:Name="Text" FontSize="14" HorizontalAlignment="Center" Text="{Binding Name}" Margin="8 4" VerticalAlignment="Bottom" />
+          <TextBlock FontSize="16" HorizontalAlignment="Center" Text="{Binding Name}" Margin="8 4" VerticalAlignment="Bottom" Visibility="Hidden"
+              FontWeight="Bold" />
+          <TextBlock Style="{StaticResource Label}" FontSize="10" HorizontalAlignment="Right" Text="{Binding Uses}" Margin="2" VerticalAlignment="Top" />
+          <Ellipse x:Name="NewMark" Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="0"
+              IsHitTestVisible="False" Visibility="Collapsed" />
+        </mui:Cell>
+        <DataTemplate.Triggers>
+          <DataTrigger Binding="{Binding HasNew}" Value="True">
+            <Setter TargetName="NewMark" Property="Visibility" Value="Visible" />
+          </DataTrigger>
+          <DataTrigger Binding="{Binding Accented}" Value="True">
+            <Setter TargetName="Text" Property="Foreground" Value="{DynamicResource Go}" />
+            <Setter TargetName="Text" Property="FontSize" Value="16" />
+          </DataTrigger>
+        </DataTemplate.Triggers>
+      </DataTemplate>
+    </ListBox.ItemTemplate>
+  </ListBox>
+</UserControl>

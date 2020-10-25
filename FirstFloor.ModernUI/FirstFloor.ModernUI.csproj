@@ -151,6 +151,7 @@
     <Compile Include="Helpers\ClipboardHelper.cs" />
     <Compile Include="Helpers\GenericObjectFactoryExtension.cs" />
     <Compile Include="Helpers\ElementPool.cs" />
+    <Compile Include="Helpers\HorizontalScrollViewerBehavior.cs" />
     <Compile Include="Helpers\IStorage.cs" />
     <Compile Include="Helpers\ScreenInterrogatory.cs" />
     <Compile Include="Helpers\Stored.cs" />
@@ -162,6 +163,8 @@
     <Compile Include="ListenersChangedEventHandlerArgs.cs" />
     <Compile Include="NotifyExtension.cs" />
     <Compile Include="Presentation\AppearanceManager.Behavior.cs" />
+    <Compile Include="Presentation\LinkCloseEventArgs.cs" />
+    <Compile Include="Presentation\LinkCloseMode.cs" />
     <Compile Include="Presentation\NotifyPropertyErrorsChanged.cs" />
     <Compile Include="Serialization\SimpleSerialization.cs" />
     <Compile Include="Serialization\SimpleSerialization.Extra.cs" />
@@ -230,6 +233,7 @@
     <Compile Include="Windows\Controls\EmojiSpan.cs" />
     <Compile Include="Windows\Controls\EmojiSupport.cs" />
     <Compile Include="Windows\Controls\ExceptionDetails.cs" />
+    <Compile Include="Windows\Controls\FallbackSwitch.cs" />
     <Compile Include="Windows\Controls\FatalErrorEventArgs.cs" />
     <Compile Include="Windows\Controls\FatalErrorHandler.cs" />
     <Compile Include="Windows\Controls\HistoricalTextBox.cs" />
@@ -271,6 +275,7 @@
     <Compile Include="Windows\Converters\MillisecondsTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\MultiParameterConverter.cs" />
     <Compile Include="Windows\Converters\NullOrWhiteSpaceToBooleanConverter.cs" />
+    <Compile Include="Windows\Converters\ParamToUriConverter.cs" />
     <Compile Include="Windows\Converters\ReadableTimeSpanConverter.cs" />
     <Compile Include="Windows\Converters\SliderRoundConverter.cs" />
     <Compile Include="Windows\Converters\SolidBrushToColorConverter.cs" />
@@ -591,10 +596,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Assets\BetterTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\BaseSwitch.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -85,7 +85,7 @@ namespace AcTools.Utils {
             return s.Length > 0 && s[0] == Path.DirectorySeparatorChar;
         }
 
-        public static bool ArePathsEqual(string pathA, string pathB) {
+        public static bool ArePathsEqual([NotNull] string pathA, [NotNull] string pathB) {
             return NormalizePath(pathA).Equals(NormalizePath(pathB), StringComparison.OrdinalIgnoreCase);
         }
 

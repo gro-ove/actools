@@ -38,7 +38,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         [ItemNotNull]
         private IEnumerable<KsAnimAnimator> LoadLightsAnimators() {
             return _carData.GetLightsAnimations()
-                           .Select(x => CreateAnimator(_rootDirectory, x))
+                           .Select(x => CreateAnimator(RootDirectory, x))
                            .NonNull();
         }
 

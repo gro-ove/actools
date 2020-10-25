@@ -436,6 +436,9 @@ Author: [b]{3}[/b]</value>
   <data name="Main_Content" xml:space="preserve">
     <value>Content</value>
   </data>
+  <data name="Main_Workshop" xml:space="preserve">
+    <value>Workshop</value>
+  </data>
   <data name="Main_About" xml:space="preserve">
     <value>About</value>
   </data>
@@ -936,7 +939,7 @@ Working directory will be set to Assetto Corsa folder in Documents.</value>
     <value>Enable Quick Switches</value>
   </data>
   <data name="Settings_QuickSwitches_Description" xml:space="preserve">
-    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or the right mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url="https://acstuff.ru/app/#contacts"]feel free to contact us[/url].</value>
+    <value>Quick Switches — a small popup menu, which allows to change different settings from any place of the program. To open this menu, press Alt+~ or click middle mouse button. Also, you can change settings by pressing Alt+1…Alt+9.[br][br]If you need some new option, [url="https://acstuff.ru/app/#contacts"]please contact us[/url].</value>
   </data>
   <data name="Settings_QuickSwitches_AddedLabel" xml:space="preserve">
     <value>Added:</value>

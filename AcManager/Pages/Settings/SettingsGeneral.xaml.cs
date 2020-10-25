@@ -79,7 +79,7 @@ namespace AcManager.Pages.Settings {
 
             private async void UpdateSteamId() {
                 SteamId = SteamIdHelper.Instance.Value;
-                SteamProfileName = await SteamIdHelper.GetSteamName(SteamId);
+                SteamProfileName = await SteamIdHelper.GetSteamNameAsync(SteamId);
             }
 
             private DelegateCommand _openAcRootCommand;

@@ -42,6 +42,8 @@ namespace AcManager.Tools {
                         _presence = new DiscordRichPresence(1000, "RSR", "Hotlap");
                     } else if (properties.GetAdditional<SrsMark>() != null) {
                         _presence = new DiscordRichPresence(1000, "SRS", "In a race");
+                    } else if (properties.GetAdditional<WorldSimSeriesMark>() != null) {
+                        _presence = new DiscordRichPresence(1000, "WSS", "In a race");
                     } else if (properties.ModeProperties is Game.OnlineProperties online) {
                         _presence = new DiscordRichPresence(1000, "Online", "In a race");
                         WatchForOnlineDetails(online).Forget();

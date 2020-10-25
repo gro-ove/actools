@@ -51,7 +51,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public float SteerDeg {
             get => _steerDeg;
             set {
-                value = value.Clamp(-50f, 50f).Round(0.1f);
+                value = value.Clamp(-90f, 90f).Round(0.1f);
                 if (Equals(value, _steerDeg)) return;
                 _steerDeg = value;
                 OnPropertyChanged();

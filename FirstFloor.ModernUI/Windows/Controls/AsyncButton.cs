@@ -88,7 +88,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                         SetValue(IsProcessingPropertyKey, true);
                         using (_cancellation = new CancellationTokenSource())
                         using (_taskbar = TaskbarService.Create(1200)) {
-                            await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token);
+                            await _commandInvoke.Invoke(asyncCommand, this, _cancellation.Token, CommandParameter);
                             if (_commandPercentageProgress) {
                                 // Report(new AsyncProgressEntry(Progress.Message, 1d));
                                 Report(AsyncProgressEntry.Finished);
@@ -171,7 +171,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         #region Support for various types of commands
         [NotNull]
         private delegate Task InvokeExecuteDelegate([NotNull] IAsyncCommand command,
-                [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation);
+                [CanBeNull] IProgress<AsyncProgressEntry> progress, CancellationToken cancellation, object param);
 
         [NotNull]
         private static InvokeExecuteDelegate AnalyzeCommand(IAsyncCommand command, out bool cancellable, out bool percentageProgress,
@@ -186,35 +186,46 @@ namespace FirstFloor.ModernUI.Windows.Controls {
                 if (IsCancellation(paramType)) {
                     cancellable = true;
                     percentageProgress = messageProgress = false;
-                    return (c, p, t) => c.ExecuteAsync(t);
+                    return (c, p, t, o) => c.ExecuteAsync(t);
                 }
 
-                if (paramType.GetGenericTypeDefinition() == typeof(IProgress<>)) {
+                if (!paramType.IsGenericType) {
+                    Logging.Debug("Non-generic argument: " + paramType);
+                    goto Nothing;
+                }
+
+                var genericTypeDefinitions = paramType.GetGenericTypeDefinition();
+                if (genericTypeDefinitions == typeof(IProgress<>)) {
                     cancellable = false;
 
                     var progressParamType = paramType.GenericTypeArguments[0];
                     if (progressParamType == typeof(AsyncProgressEntry)) {
                         messageProgress = percentageProgress = true;
-                        return (c, p, t) => c.ExecuteAsync(p);
+                        return (c, p, t, o) => c.ExecuteAsync(p);
                     }
 
                     percentageProgress = !(messageProgress = progressParamType == typeof(string));
-                    return (c, p, t) => c.ExecuteAsync(GetProgress(progressParamType, p));
+                    return (c, p, t, o) => c.ExecuteAsync(GetProgress(progressParamType, p));
                 }
 
-                if (paramType.GetGenericTypeDefinition() == typeof(Tuple<,>)) {
+                if (genericTypeDefinitions == typeof(Tuple<,>)) {
                     var progressType = paramType.GenericTypeArguments[0];
+                    if (!progressType.IsGenericType) {
+                        Logging.Debug("Non-generic progress argument: " + paramType);
+                        goto Nothing;
+                    }
+
                     if (progressType.GetGenericTypeDefinition() == typeof(IProgress<>) && IsCancellation(paramType.GenericTypeArguments[1])) {
                         cancellable = true;
 
                         var progressParamType = progressType.GenericTypeArguments[0];
                         if (progressParamType == typeof(AsyncProgressEntry)) {
                             messageProgress = percentageProgress = true;
-                            return (c, p, t) => c.ExecuteAsync(Activator.CreateInstance(paramType, p, t));
+                            return (c, p, t, o) => c.ExecuteAsync(Activator.CreateInstance(paramType, p, t));
                         }
 
                         percentageProgress = !(messageProgress = progressParamType == typeof(string));
-                        return (c, p, t) => c.ExecuteAsync(Activator.CreateInstance(paramType, GetProgress(progressParamType, p), t));
+                        return (c, p, t, o) => c.ExecuteAsync(Activator.CreateInstance(paramType, GetProgress(progressParamType, p), t));
                     }
                 }
             } catch (Exception e) {
@@ -224,7 +235,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
             Nothing:
             cancellable = percentageProgress = messageProgress = false;
-            return (c, p, t) => c.ExecuteAsync(null);
+            return (c, p, t, o) => c.ExecuteAsync(o);
 
             object GetProgress(Type t, IProgress<AsyncProgressEntry> p) {
                 if (t == typeof(AsyncProgressEntry)) return p;

@@ -55,7 +55,9 @@ namespace AcManager.Tools.Objects {
             var dataAcd = Path.Combine(Location, "data.acd");
             if (File.Exists(dataAcd)) {
                 var backupAcd = Path.Combine(Location, "data.acd~cm_bak_ep");
-                var custom = allowCustom && UseExtendedPhysics && PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay);
+                var custom = allowCustom && UseExtendedPhysics
+                        && PatchHelper.IsFeatureSupported(PatchHelper.FeatureFullDay)
+                        && SettingsHolder.Drive.QuickDriveAllowExtendedPhysics;
                 if (custom) {
                     FileUtils.TryToDelete(backupAcd);
                     if (File.Exists(dataAcd) && !File.Exists(backupAcd)) {

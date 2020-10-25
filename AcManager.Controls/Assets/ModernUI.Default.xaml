@@ -42,7 +42,7 @@
 
   <!-- For quick drive page, for those overlaying buttons -->
   <SolidColorBrush x:Key="OverlayForeground" Color="#FFFFFF" />
-  <SolidColorBrush x:Key="OverlayBackground" Color="#33000000" />
+  <SolidColorBrush x:Key="OverlayBackground" Color="#66000000" />
   <DropShadowEffect x:Key="OverlayEffect" Opacity="1" BlurRadius="4" ShadowDepth="0" />
 
   <!-- Used in stats, in tools page, in lap times sources page -->

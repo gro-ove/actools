@@ -14,6 +14,10 @@ namespace FirstFloor.ModernUI.Helpers {
             Commentary = solutionCommentary;
             Exception = (exception as AggregateException)?.GetBaseException() ?? exception;
             Solutions = solutions as IReadOnlyList<NonfatalErrorSolution> ?? solutions.ToList();
+
+            foreach (var solution in Solutions) {
+                solution.Entry = this;
+            }
         }
 
         private bool _unseen = true;

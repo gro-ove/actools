@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls.BbCode;
 using FirstFloor.ModernUI.Windows.Navigation;
@@ -18,6 +20,45 @@ namespace FirstFloor.ModernUI.Windows.Controls {
     /// </summary>
     [Localizable(false), ContentProperty(nameof(Text))]
     public class BbCodeBlock : PlaceholderTextBlock {
+        public static ICommand LinkCommand { get; } = new AsyncCommand<string>(async p => {
+            var uri = new Uri(p, UriKind.RelativeOrAbsolute);
+            if (DefaultLinkNavigator.Commands != null) {
+                if (DefaultLinkNavigator.Commands.TryGetValue(uri, out var command)) {
+                    await ExecuteCommandAsync(command, null);
+                    return;
+                }
+
+                if (uri.IsAbsoluteUri) {
+                    var original = uri.AbsoluteUri;
+                    var index = original.IndexOf('?');
+                    if (index != -1) {
+                        var subUri = new Uri(original.Substring(0, index), UriKind.Absolute);
+                        if (DefaultLinkNavigator.Commands.TryGetValue(subUri, out command)) {
+                            await ExecuteCommandAsync(command, uri.GetQueryParam("param"));
+                            return;
+                        }
+                    }
+                }
+            }
+
+            DefaultLinkNavigator?.Navigate(uri, Application.Current?.MainWindow);
+
+            Task ExecuteCommandAsync(ICommand command, string param) {
+                if (!command.CanExecute(param)) return Task.Delay(0);
+
+                if (command is AsyncCommand asyncCommand) {
+                    return asyncCommand.ExecuteAsync();
+                }
+
+                if (command is AsyncCommand<string> asyncCommandT) {
+                    return asyncCommandT.ExecuteAsync(param);
+                }
+
+                command.Execute(param);
+                return Task.Delay(0);
+            }
+        });
+
         [CanBeNull]
         public static IEmojiProvider OptionEmojiProvider;
 

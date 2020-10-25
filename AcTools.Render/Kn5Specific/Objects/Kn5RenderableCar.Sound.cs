@@ -137,7 +137,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private async Task InitializeSoundAsync([NotNull] IAcCarSoundFactory soundFactory) {
             LoadEngineParams();
 
-            _sound = await soundFactory.CreateAsync(_rootDirectory);
+            _sound = await soundFactory.CreateAsync(RootDirectory);
             IsSoundAvailable = _sound != null;
         }
 

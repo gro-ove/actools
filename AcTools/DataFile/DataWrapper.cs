@@ -26,13 +26,13 @@ namespace AcTools.DataFile {
             var dataAcd = Path.Combine(carDirectory, PackedFileName);
             if (File.Exists(dataAcd)) {
                 _acd = Acd.FromFile(dataAcd);
-                IsPacked = true;
+                SetIsPacked(true);
             } else {
                 var dataDirectory = Path.Combine(carDirectory, UnpackedDirectoryName);
                 if (Directory.Exists(dataDirectory)) {
                     _acd = Acd.FromDirectory(dataDirectory);
                 } else {
-                    IsEmpty = true;
+                    SetIsEmpty(true);
                 }
             }
         }
@@ -61,21 +61,21 @@ namespace AcTools.DataFile {
                 }
 
                 _acd = Acd.FromFile(dataAcd);
-                IsPacked = true;
-                IsEmpty = false;
+                SetIsPacked(true);
+                SetIsEmpty(false);
             } else {
                 if (IsPacked) {
                     ClearCache();
                 }
 
-                IsPacked = false;
+                SetIsPacked(false);
 
                 var dataDirectory = Path.Combine(ParentDirectory, "data");
                 if (Directory.Exists(dataDirectory)) {
                     _acd = Acd.FromDirectory(dataDirectory);
-                    IsEmpty = false;
+                    SetIsEmpty(false);
                 } else {
-                    IsEmpty = true;
+                    SetIsEmpty(true);
                 }
             }
 
@@ -98,24 +98,22 @@ namespace AcTools.DataFile {
 
         private bool _isPacked;
 
-        public bool IsPacked {
-            get => _isPacked;
-            private set {
-                if (value == _isPacked) return;
-                _isPacked = value;
-                OnPropertyChanged();
-            }
+        public override bool IsPacked => _isPacked;
+
+        private void SetIsPacked(bool value) {
+            if (value == _isPacked) return;
+            _isPacked = value;
+            OnPropertyChanged(nameof(IsPacked));
         }
 
         private bool _isEmpty;
 
-        public bool IsEmpty {
-            get => _isEmpty;
-            private set {
-                if (value == _isEmpty) return;
-                _isEmpty = value;
-                OnPropertyChanged();
-            }
+        public override bool IsEmpty => _isEmpty;
+
+        private void SetIsEmpty(bool value) {
+            if (value == _isEmpty) return;
+            _isEmpty = value;
+            OnPropertyChanged(nameof(IsEmpty));
         }
 
         [NotNull]

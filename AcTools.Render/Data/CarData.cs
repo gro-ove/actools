@@ -26,9 +26,9 @@ namespace AcTools.Render.Data {
 
     public class CarData {
         [NotNull]
-        private readonly DataWrapper _data;
+        private readonly IDataReadWrapper _data;
 
-        [NotNull]
+        [CanBeNull]
         public string CarDirectory { get; }
 
         public CarData([NotNull] string carDirectory) {
@@ -36,15 +36,16 @@ namespace AcTools.Render.Data {
             CarDirectory = carDirectory;
         }
 
-        public CarData([NotNull] DataWrapper data) {
+        public CarData([NotNull] IDataReadWrapper data) {
             _data = data;
-            CarDirectory = data.ParentDirectory;
+            CarDirectory = (data as IDataWrapper)?.Location;
         }
 
         public bool IsEmpty => _data.IsEmpty;
 
         public bool IsPacked => _data.IsPacked;
 
+        [CanBeNull]
         public string GetMainKn5(string carDirectory, bool considerHr) {
             return AcPaths.GetMainCarFilename(carDirectory, _data, considerHr);
         }
@@ -330,7 +331,7 @@ namespace AcTools.Render.Data {
             }
 
             [NotNull]
-            public static SuspensionsPack Create([NotNull] DataWrapper data) {
+            public static SuspensionsPack Create([NotNull] IDataReadWrapper data) {
                 var suspensions = data.GetIniFile("suspensions.ini");
                 var car = data.GetIniFile("car.ini");
                 var carBasic = car["BASIC"];

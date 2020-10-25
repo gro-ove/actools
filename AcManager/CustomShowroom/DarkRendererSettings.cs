@@ -490,7 +490,7 @@ namespace AcManager.CustomShowroom {
 
                     NonfatalError.Notify($"Can’t fully load the preset: showroom “{showroomId}” is missing",
                             "Maybe you can find it online?", solutions: new[] {
-                                new NonfatalErrorSolution("Search for showroom", null, token => {
+                                new NonfatalErrorSolution("Search for showroom", token => {
                                     WindowsHelper.ViewInBrowser(SettingsHolder.Content.MissingContentSearch.GetUri(showroomId,
                                             SettingsHolder.MissingContentType.Showroom));
                                     return Task.Delay(0);

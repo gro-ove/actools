@@ -15,7 +15,7 @@ namespace AcManager.Tools.Helpers.Api {
         [Localizable(false), NotNull]
         public static string[] GetAchievments(string appId, string steamId) {
             var requestUri = string.Format(RequestStatsUri, appId, steamId, InternalUtils.GetSteamApiCode());
-            
+
             var httpRequest = WebRequest.Create(requestUri);
             httpRequest.Method = "GET";
 
@@ -62,7 +62,7 @@ namespace AcManager.Tools.Helpers.Api {
             }
         }
 
-        private const string RequestPlayerSummariesUri = "http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={1}&steamids={0}";
+        private const string RequestPlayerSummariesUri = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key={1}&steamids={0}";
 
         [Localizable(false), CanBeNull]
         public static string TryToGetUserName(string steamId) {

@@ -162,7 +162,7 @@ namespace AcManager.Pages.Lists {
                 e.Handled = true;
 
                 new ImageViewer<Screenshot>(Model.Screenshots, Model.Screenshots.IndexOf(screenshot),
-                        x => Task.FromResult((object)x.Filename), x => Path.GetFileNameWithoutExtension(x.Filename)) {
+                        x => Task.FromResult((object)x?.Filename), x => Path.GetFileNameWithoutExtension(x?.Filename)) {
                             MaxImageWidth = 3840,
                             AutoHideDescriptionIfExpanded = true,
                             Model = { ContextMenuCallback = ShowContextMenu }

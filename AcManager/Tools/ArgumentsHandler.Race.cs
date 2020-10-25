@@ -250,16 +250,19 @@ namespace AcManager.Tools {
         }
 
         private static async Task<ArgumentHandleResult> ProcessRaceRaceU(NameValueCollection p) {
+            await Task.Delay(0);
             RaceU.NavigateTo();
             return ArgumentHandleResult.SuccessfulShow;
         }
 
         private static async Task<ArgumentHandleResult> ProcessWorldSimSeries(NameValueCollection p) {
+            await Task.Delay(0);
             WorldSimSeries.NavigateTo();
             return ArgumentHandleResult.SuccessfulShow;
         }
 
         private static async Task<ArgumentHandleResult> ProcessWorldSimSeriesLogin(NameValueCollection p) {
+            await Task.Delay(0);
             WorldSimSeries.NavigateTo(p.Get(@"token"));
             return ArgumentHandleResult.SuccessfulShow;
         }

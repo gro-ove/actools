@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -372,6 +373,10 @@ namespace AcManager.CustomShowroom {
             private readonly List<UpdatePreviewError> _errors = new List<UpdatePreviewError>();
             private DispatcherTimer _dispatcherTimer;
 
+            public Func<CarSkinObject, string> DestinationOverrideCallback;
+            public IProgress<AsyncProgressEntry> Progress;
+            public CancellationToken CancellationToken = default(CancellationToken);
+
             public Updater([NotNull] IReadOnlyList<ToUpdatePreview> entries, [NotNull] DarkPreviewsOptions options, [CanBeNull] string presetName,
                     [CanBeNull] DarkPreviewsUpdater updater) {
                 _entries = entries;
@@ -390,7 +395,7 @@ namespace AcManager.CustomShowroom {
             public async Task<IReadOnlyList<UpdatePreviewError>> Run() {
                 try {
                     if (_options.Showroom != null && ShowroomsManager.Instance.GetById(_options.Showroom) == null) {
-                        if (_options.Showroom == "at_previews" && MissingShowroomHelper != null) {
+                        if (_options.Showroom == @"at_previews" && MissingShowroomHelper != null) {
                             await MissingShowroomHelper.OfferToInstall("Kunos Previews Showroom (AT Previews Special)", "at_previews",
                                     "http://www.assettocorsa.net/assetto-corsa-v1-5-dev-diary-part-33/");
                             if (ShowroomsManager.Instance.GetById(_options.Showroom) != null) {
@@ -414,7 +419,9 @@ namespace AcManager.CustomShowroom {
                 }
             }
 
+            [CanBeNull]
             private WaitingDialog _waiting;
+
             private int _approximateSkinsPerCarCars = 1;
             private int _approximateSkinsPerCarSkins = 10;
             private Stopwatch _started;
@@ -436,17 +443,21 @@ namespace AcManager.CustomShowroom {
                 _finished = false;
                 _i = _j = 0;
 
-                _waiting = new WaitingDialog { CancellationText = "Stop" };
+                _waiting = Progress != null ? null : new WaitingDialog { CancellationText = "Stop" };
+                var progressReport = Progress ?? _waiting;
+                if (Progress == null) {
+                    CancellationToken = _waiting?.CancellationToken ?? default(CancellationToken);
+                }
 
                 var singleMode = _entries.Count == 1;
                 _verySingleMode = singleMode && _entries[0].Skins?.Count == 1;
                 var recycled = 0;
 
                 if (!_verySingleMode) {
-                    _waiting.SetImage(null);
+                    _waiting?.SetImage(null);
 
                     if (SettingsHolder.CustomShowroom.PreviewsRecycleOld) {
-                        _waiting.SetMultiline(true);
+                        _waiting?.SetMultiline(true);
                     }
                 }
 
@@ -469,8 +480,8 @@ namespace AcManager.CustomShowroom {
                     _currentSkins = entry.Skins;
 
                     if (_currentSkins == null) {
-                        _waiting.Report(new AsyncProgressEntry("Loading skins…" + postfix, _verySingleMode ? 0d : progress));
-                        _waiting.SetDetails(GetDetails(_j, _currentCar, null, null));
+                        progressReport?.Report(new AsyncProgressEntry("Loading skins…" + postfix, _verySingleMode ? 0d : progress));
+                        _waiting?.SetDetails(GetDetails(_j, _currentCar, null, null));
 
                         await _currentCar.SkinsManager.EnsureLoadedAsync();
                         if (Cancel()) return _errors;
@@ -484,21 +495,23 @@ namespace AcManager.CustomShowroom {
                         if (Cancel()) return _errors;
 
                         _currentSkin = _currentSkins[_i];
-                        _waiting.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
+                        _waiting?.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
 
                         var subprogress = progress + step * (0.1 + 0.8 * _i / _currentSkins.Count);
-                        var filename = Path.Combine(_currentSkin.Location, _options.PreviewName);
-                        if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(filename)) {
-                            if (++recycled > 5) {
-                                _recyclingWarning = true;
-                            }
+                        var filename = DestinationOverrideCallback?.Invoke(_currentSkin) ?? Path.Combine(_currentSkin.Location, _options.PreviewName);
+                        if (DestinationOverrideCallback == null) {
+                            if (SettingsHolder.CustomShowroom.PreviewsRecycleOld && File.Exists(filename)) {
+                                if (++recycled > 5) {
+                                    _recyclingWarning = true;
+                                }
 
-                            _waiting.Report(new AsyncProgressEntry($"Recycling current preview for {_currentSkin.DisplayName}…" + postfix,
-                                    _verySingleMode ? 0d : subprogress));
-                            await Task.Run(() => FileUtils.Recycle(filename));
+                                progressReport?.Report(new AsyncProgressEntry($"Recycling current preview for {_currentSkin.DisplayName}…" + postfix,
+                                        _verySingleMode ? 0d : subprogress));
+                                await Task.Run(() => FileUtils.Recycle(filename));
+                            }
                         }
 
-                        _waiting.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix,
+                        progressReport?.Report(new AsyncProgressEntry($"Updating skin {_currentSkin.DisplayName}…" + postfix,
                                 _verySingleMode ? 0d : subprogress + halfstep));
 
                         try {
@@ -515,7 +528,7 @@ namespace AcManager.CustomShowroom {
                 }
 
                 _dispatcherTimer?.Stop();
-                _waiting.Report(new AsyncProgressEntry("Saving…" + postfix, _verySingleMode ? 0d : 0.999999d));
+                progressReport?.Report(new AsyncProgressEntry("Saving…" + postfix, _verySingleMode ? 0d : 0.999999d));
                 await _updater.WaitForProcessing();
 
                 _finished = true;
@@ -536,12 +549,12 @@ namespace AcManager.CustomShowroom {
 
             private void UpdatePreviewImage() {
                 if (!_finished) {
-                    _waiting.SetImage(Path.Combine(_currentSkin.Location, _options.PreviewName));
+                    _waiting?.SetImage(Path.Combine(_currentSkin.Location, _options.PreviewName));
                 }
             }
 
             private bool Cancel() {
-                if (!_waiting.CancellationToken.IsCancellationRequested) return false;
+                if (!CancellationToken.IsCancellationRequested) return false;
                 for (; _j < _entries.Count; _j++) {
                     _errors.Add(new UpdatePreviewError(_entries[_j], ControlsStrings.Common_Cancelled, null));
                 }
@@ -550,7 +563,7 @@ namespace AcManager.CustomShowroom {
 
             private void TimerCallback(object sender, EventArgs args) {
                 if (_currentCar == null || _currentSkins == null || _currentSkin == null) return;
-                _waiting.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
+                _waiting?.SetDetails(GetDetails(_j, _currentCar, _currentSkin, _currentSkins.Count - _i));
             }
 
             private void UpdateApproximate(int skinsPerCar) {
@@ -588,9 +601,15 @@ namespace AcManager.CustomShowroom {
         }
 
         [ItemCanBeNull]
-        private static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync([NotNull] IReadOnlyList<ToUpdatePreview> entries,
-                [NotNull] DarkPreviewsOptions options, string presetName = null, DarkPreviewsUpdater updater = null) {
-            return new Updater(entries, options, presetName, updater).Run();
+        public static Task<IReadOnlyList<UpdatePreviewError>> UpdatePreviewAsync([NotNull] IReadOnlyList<ToUpdatePreview> entries,
+                [NotNull] DarkPreviewsOptions options, string presetName = null, DarkPreviewsUpdater updater = null,
+                Func<CarSkinObject, string> destinationOverrideCallback = null, IProgress<AsyncProgressEntry> progress = null,
+                CancellationToken cancellation = default(CancellationToken)) {
+            return new Updater(entries, options, presetName, updater) {
+                DestinationOverrideCallback = destinationOverrideCallback,
+                Progress = progress,
+                CancellationToken = cancellation
+            }.Run();
         }
 
         /// <summary>

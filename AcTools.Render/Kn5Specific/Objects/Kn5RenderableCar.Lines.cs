@@ -466,7 +466,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         [NotNull]
-        public string CarId => Path.GetFileName(_rootDirectory) ?? "-";
+        public string CarId => Path.GetFileName(RootDirectory) ?? "-";
         #endregion
 
         #region Colliders from colliders.ini

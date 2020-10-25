@@ -176,7 +176,7 @@ namespace AcManager.Pages.Dialogs {
                 SteamProfiles.Add(profile);
                 SteamProfile = profile;
 
-                profile.ProfileName = await SteamIdHelper.GetSteamName(steamId);
+                profile.ProfileName = await SteamIdHelper.GetSteamNameAsync(steamId);
             }
 
             private CancellationTokenSource _cancellationTokenSource;

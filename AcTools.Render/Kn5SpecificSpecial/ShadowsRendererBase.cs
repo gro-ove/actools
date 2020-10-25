@@ -194,7 +194,8 @@ namespace AcTools.Render.Kn5SpecificSpecial {
 
         private void ApplyCarState() {
             var carData = CarData;
-            if (carData == null) return;
+            var carDirectory = carData?.CarDirectory;
+            if (carDirectory == null) return;
 
             if (_dataWheels) {
                 Kn5RenderableFile.UpdateModelMatrixInverted(CarNode);
@@ -204,16 +205,16 @@ namespace AcTools.Render.Kn5SpecificSpecial {
             Kn5RenderableCar.AdjustPosition(CarNode);
 
             if (_leftDoorOpen) {
-                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetLeftDoorAnimation())?.SetImmediate(CarNode, 1f, null);
+                Kn5RenderableCar.CreateAnimator(carDirectory, carData.GetLeftDoorAnimation())?.SetImmediate(CarNode, 1f, null);
             }
 
             if (_rightDoorOpen) {
-                Kn5RenderableCar.CreateAnimator(carData.CarDirectory, carData.GetRightDoorAnimation())?.SetImmediate(CarNode, 1f, null);
+                Kn5RenderableCar.CreateAnimator(carDirectory, carData.GetRightDoorAnimation())?.SetImmediate(CarNode, 1f, null);
             }
 
             if (_headlightsEnabled) {
                 foreach (var animation in carData.GetLightsAnimations()) {
-                    Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
+                    Kn5RenderableCar.CreateAnimator(carDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                 }
             }
 
@@ -225,7 +226,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var i = 0;
                 foreach (var animation in carData.GetWingsAnimations()) {
                     if (_wingsStates[i++]) {
-                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
+                        Kn5RenderableCar.CreateAnimator(carDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                     }
                 }
             }
@@ -234,7 +235,7 @@ namespace AcTools.Render.Kn5SpecificSpecial {
                 var i = 0;
                 foreach (var animation in carData.GetExtraAnimations()) {
                     if (_extraAnimationsStates[i++]) {
-                        Kn5RenderableCar.CreateAnimator(carData.CarDirectory, animation)?.SetImmediate(CarNode, 1f, null);
+                        Kn5RenderableCar.CreateAnimator(carDirectory, animation)?.SetImmediate(CarNode, 1f, null);
                     }
                 }
             }

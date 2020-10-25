@@ -57,6 +57,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcManager.Tools.SharedMemory;
 using AcManager.Tools.Starters;
+using AcManager.Workshop;
 using AcTools;
 using AcTools.AcdEncryption;
 using AcTools.AcdFile;
@@ -103,6 +104,7 @@ namespace AcManager {
                 Logging.Write($"App version: {BuildInformation.AppVersion} ({BuildInformation.Platform}, {WindowsVersionHelper.GetVersion()})");
             }
 
+            Storage.TemporaryBackupsDirectory = FilesStorage.Instance.GetTemporaryDirectory("Storages Backups");
             if (AppArguments.GetBool(AppFlag.DisableSaving)) {
                 ValuesStorage.Initialize();
                 CacheStorage.Initialize();
@@ -329,7 +331,8 @@ namespace AcManager {
             AppArguments.Set(AppFlag.BenchmarkReplays, ref GameDialog.OptionBenchmarkReplays);
             AppArguments.Set(AppFlag.HideRaceCancelButton, ref GameDialog.OptionHideCancelButton);
             AppArguments.Set(AppFlag.PatchSupport, ref PatchHelper.OptionPatchSupport);
-            AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopUpload.OptionAvailable);
+            AppArguments.Set(AppFlag.CmWorkshop, ref WorkshopClient.OptionUserAvailable);
+            AppArguments.Set(AppFlag.CmWorkshopCreator, ref WorkshopClient.OptionCreatorAvailable);
 
             // Shared memory, now as an app flag
             SettingsHolder.Drive.WatchForSharedMemory = !AppArguments.GetBool(AppFlag.DisableSharedMemory);
@@ -392,7 +395,6 @@ namespace AcManager {
                 }
             }
 
-            Storage.TemporaryBackupsDirectory = FilesStorage.Instance.GetTemporaryDirectory("Storages Backups");
             CupClient.Initialize();
             CupViewModel.Initialize();
             Superintendent.Initialize();
@@ -502,6 +504,8 @@ namespace AcManager {
                     args.Cancel = true;
                 }
             };
+
+            WorkshopLinkCommands.Initialize();
 
             AppArguments.SetSize(AppFlag.ImagesCacheLimit, ref BetterImage.OptionCacheTotalSize);
             AppArguments.Set(AppFlag.ImagesMarkCached, ref BetterImage.OptionMarkCached);
@@ -615,9 +619,7 @@ namespace AcManager {
             }
 
             // Check and apply FTH fix if necessary
-            if (SettingsHolder.Common.LaunchSteamAtStart) {
-                CheckFaultTolerantHeap().Ignore();
-            }
+            CheckFaultTolerantHeap().Ignore();
 
             // Let’s roll
             ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -630,8 +632,23 @@ namespace AcManager {
         }
 
         private static async Task CheckFaultTolerantHeap() {
-            await Task.Delay(500);
-            await FaultTolerantHeapFix.CheckAsync();
+            try {
+                await Task.Delay(500);
+                if (ValuesStorage.Get(".fth.shown", false) && FaultTolerantHeapFix.Check()) {
+                    NonfatalError.NotifyBackground("Performance issue detected",
+                            "Assetto Corsa performance is negatively affected by FTH. Content Manager can try to fix it.",
+                            solutions: new[] {
+                                new NonfatalErrorSolution("Try to fix the issue", cancellation => {
+                                    FaultTolerantHeapFix.CheckAndFixAsync().Ignore();
+                                    return Task.Delay(0);
+                                })
+                            });
+                } else {
+                    FaultTolerantHeapFix.CheckAndFixAsync().Ignore();
+                }
+            } catch (Exception e) {
+                Logging.Error(e);
+            }
         }
 
         private static async Task LaunchSteam() {
@@ -674,14 +691,14 @@ namespace AcManager {
                 if (file.Filename != null) {
                     NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Unpacked, Path.GetFileName(file.Filename), line),
                             ToolsStrings.SyntaxError_Commentary, null, new[] {
-                                new NonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, null, token => {
+                                new NonfatalErrorSolution(ToolsStrings.SyntaxError_Solution, token => {
                                     WindowsHelper.OpenFile(file.Filename);
                                     return Task.Delay(0, token);
                                 })
                             });
                 } else {
                     NonfatalError.NotifyBackground(string.Format(ToolsStrings.SyntaxError_Packed,
-                            $"{file.Name} ({Path.GetFileName(file.Data?.Location ?? "?")})", line), ToolsStrings.SyntaxError_Commentary);
+                            $"{file.Name} ({Path.GetFileName((file.Data as IDataWrapper)?.Location ?? @"?")})", line), ToolsStrings.SyntaxError_Commentary);
                 }
             }
         }

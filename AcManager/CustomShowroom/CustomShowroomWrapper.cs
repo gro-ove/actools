@@ -32,7 +32,7 @@ namespace AcManager.CustomShowroom {
 
         private static bool _starting;
 
-        private static void SetProperties(BaseKn5FormWrapper wrapper, IKn5ObjectRenderer renderer) {
+        public static void SetProperties(BaseKn5FormWrapper wrapper, IKn5ObjectRenderer renderer) {
             if (!SettingsHolder.CustomShowroom.SmartCameraPivot) {
                 wrapper.AutoAdjustTargetOnReset = false;
                 renderer.AutoAdjustTarget = false;

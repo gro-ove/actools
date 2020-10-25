@@ -35,7 +35,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         public const string DefaultSkin = "";
         public static bool OptionRepositionLod = false;
 
-        private readonly string _rootDirectory, _skinsDirectory;
+        private readonly string _skinsDirectory;
         private readonly bool _scanForSkins;
 
         [NotNull]
@@ -51,27 +51,28 @@ namespace AcTools.Render.Kn5Specific.Objects {
         [CanBeNull]
         private DataWrapper _listeningData;
 
-        public string RootDirectory => _rootDirectory;
+        [NotNull]
+        public string RootDirectory { get; }
 
         public Kn5RenderableCar(CarDescription car, Matrix matrix, [CanBeNull] IAcCarSoundFactory soundFactory, string selectSkin = DefaultSkin,
                 bool scanForSkins = true, float shadowsHeight = 0.0f, bool asyncTexturesLoading = true, bool asyncOverrideTexturesLoading = false,
                 IKn5ToRenderableConverter converter = null)
-                : base(car.Kn5LoadedRequire, matrix, asyncTexturesLoading, converter) {
+                : base(car.MainModel, matrix, asyncTexturesLoading, converter) {
             CreateSoundEmittersAndSmoothers();
 
-            _rootDirectory = car.CarDirectoryRequire;
+            RootDirectory = car.CarDirectory;
 
-            _skinsDirectory = AcPaths.GetCarSkinsDirectory(_rootDirectory);
+            _skinsDirectory = AcPaths.GetCarSkinsDirectory(RootDirectory);
             _scanForSkins = scanForSkins;
             _converter = converter ?? Kn5ToRenderableSimpleConverter.Instance;
             _shadowsHeight = shadowsHeight;
             _asyncOverrideTexturesLoading = asyncOverrideTexturesLoading;
 
             // Data = DataWrapper.FromDirectory(_rootDirectory);
-            _carData = car.Data != null ? new CarData(car.Data) : new CarData(car.CarDirectoryRequire);
-            if (car.Data != null) {
-                _listeningData = car.Data;
-                car.Data.DataChanged += OnDataChanged;
+            _carData = car.Data != null ? new CarData(car.Data) : new CarData(car.CarDirectory);
+            if (car.Data is DataWrapper data) {
+                _listeningData = data;
+                data.DataChanged += OnDataChanged;
             }
 
             _ambientShadows = new RenderableList("_shadows", Matrix.Identity, LoadAmbientShadows());
@@ -81,11 +82,15 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 ReloadSkins(null, selectSkin);
             }
 
-            var mainKn5 = _carData.IsEmpty ? car.MainKn5File : _carData.GetMainKn5(_rootDirectory, true);
-            _lodA = FileUtils.ArePathsEqual(car.MainKn5File, mainKn5) ? car.Kn5LoadedRequire : Kn5.FromFile(mainKn5);
+            var mainKn5 = _carData.IsEmpty ? car.MainModelFilename : _carData.GetMainKn5(RootDirectory, true);
+            if (mainKn5 == null) {
+                _lodA = car.MainModel;
+            } else {
+                _lodA = FileUtils.ArePathsEqual(car.MainModelFilename, mainKn5) ? car.MainModel : Kn5.FromFile(mainKn5);
+            }
 
             _lods = _carData.GetLods().ToList();
-            _currentLod = _lods.FindIndex(x => string.Equals(x.FileName, Path.GetFileName(car.MainKn5File), StringComparison.OrdinalIgnoreCase));
+            _currentLod = _lods.FindIndex(x => string.Equals(x.FileName, Path.GetFileName(car.MainModelFilename), StringComparison.OrdinalIgnoreCase));
             _currentLodObject = _mainLodObject = new LodObject(RootObject);
             _lodsObjects[_currentLod] = _currentLodObject;
 
@@ -124,7 +129,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private void InitializeAmbientShadows(IDeviceContextHolder contextHolder) {
             _ambientShadowsTextures = new DirectoryTexturesProvider(AsyncTexturesLoading, _asyncOverrideTexturesLoading, true);
-            _ambientShadowsTextures.SetDirectory(contextHolder, _rootDirectory);
+            _ambientShadowsTextures.SetDirectory(contextHolder, RootDirectory);
             _ambientShadowsMaterials = new SharedMaterials(contextHolder.Get<IMaterialsFactory>());
             _ambientShadowsHolder = new Kn5LocalDeviceContextHolder(contextHolder, _ambientShadowsMaterials, _ambientShadowsTextures, this);
         }
@@ -233,7 +238,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
                 var debugMode = _currentLodObject.DebugMode;
                 Remove(_currentLodObject.Renderable);
                 if (!_lodsObjects.TryGetValue(value, out _currentLodObject)) {
-                    var path = Path.GetFullPath(Path.Combine(_rootDirectory, lod.FileName));
+                    var path = Path.GetFullPath(Path.Combine(RootDirectory, lod.FileName));
                     var kn5 = value == 0 ? _lodA : Kn5.FromFile(path);
                     _currentLodObject = new LodObject(kn5, _converter);
                     _lodsObjects[value] = _currentLodObject;
@@ -806,7 +811,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
                 if (_colliderMesh == null) {
                     try {
-                        _colliderMesh = new Kn5RenderableCollider(Kn5.FromFile(Path.Combine(_rootDirectory, "collider.kn5")), Matrix.Identity);
+                        _colliderMesh = new Kn5RenderableCollider(Kn5.FromFile(Path.Combine(RootDirectory, "collider.kn5")), Matrix.Identity);
                     } catch (Exception e) {
                         AcToolsLogging.Write(e);
                         _colliderMesh = new InvisibleObject();
@@ -1015,7 +1020,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
         private void InitializeWipers() {
             if (_wipersAnimator != null) return;
-            _wipersAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, "car_wiper.ksanim"));
+            _wipersAnimator = Lazier.Create(() => CreateAnimator(RootDirectory, "car_wiper.ksanim"));
         }
 
         private void ReenableWipers() {
@@ -1070,8 +1075,8 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             _doorLeftAnimation = Lazier.Create(() => _carData.GetLeftDoorAnimation());
             _doorRightAnimation = Lazier.Create(() => _carData.GetRightDoorAnimation());
-            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _doorLeftAnimation.Value));
-            _doorRightAnimator = Lazier.Create(() => CreateAnimator(_rootDirectory, _doorRightAnimation.Value));
+            _doorLeftAnimator = Lazier.Create(() => CreateAnimator(RootDirectory, _doorLeftAnimation.Value));
+            _doorRightAnimator = Lazier.Create(() => CreateAnimator(RootDirectory, _doorRightAnimation.Value));
         }
 
         private void ReenableDoors() {
@@ -1144,7 +1149,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             internal float Value;
 
             protected AnimationEntryBase(Kn5RenderableCar carNode, string ksAnimName, float duration) {
-                _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(carNode._rootDirectory, ksAnimName, duration));
+                _animator = new Lazier<KsAnimAnimator>(() => CreateAnimator(carNode.RootDirectory, ksAnimName, duration));
                 CarNode = carNode;
                 DisplayName = GetKsAnimDisplayName(ksAnimName);
             }

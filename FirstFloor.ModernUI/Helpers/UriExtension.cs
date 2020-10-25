@@ -49,7 +49,7 @@ namespace FirstFloor.ModernUI.Helpers {
 
             var query = key + "=" + Uri.EscapeDataString(value.ToString());
             var uriAsString = uri.OriginalString;
-            return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, UriKind.Relative);
+            return new Uri(uriAsString + (uriAsString.Contains("?") ? "&" : "?") + query, uri.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
         }
 
         [Pure, CanBeNull]

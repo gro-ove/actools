@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 namespace AcTools.Kn5File {
     public interface IKn5 {
+        [CanBeNull]
         string OriginalFilename { get; }
 
         IEnumerable<Kn5Node> Nodes { get; }

@@ -1,0 +1,91 @@
+<UserControl x:Class="AcManager.Pages.Workshop.WorkshopCarBrandsGrid" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:w="clr-namespace:AcManager.Pages.Workshop"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" xmlns:c="http://acstuff.ru/app/controls" mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance w:WorkshopCarBrandsGrid+ViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/WorkshopResources.xaml" />
+  </UserControl.Resources>
+
+  <Grid>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="440" />
+      <ColumnDefinition Width="9" />
+      <ColumnDefinition Width="400" />
+      <ColumnDefinition Width="9" />
+      <ColumnDefinition />
+    </Grid.ColumnDefinitions>
+
+    <ListBox Grid.Column="0" x:Name="ColumnFirst" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" HorizontalAlignment="Center">
+      <!--<ListBox.RenderTransform>
+        <TranslateTransform x:Name="TransformFirst" />
+      </ListBox.RenderTransform>-->
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="106"
+              ItemHeight="106" CacheLength="0,0" />
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <mui:Cell Width="102" Height="102" Background="Transparent">
+            <mui:BetterImage Filename="{Binding Icon}" Margin="8 8 8 24" Width="68" Height="68" HorizontalAlignment="Center" ClearOnChange="True" />
+            <TextBlock Style="{StaticResource Label.Padding}" HorizontalAlignment="Center" Text="{Binding Name}" Margin="4" Padding="0" FontSize="14"
+                VerticalAlignment="Bottom" />
+            <TextBlock x:Name="CountText" Style="{StaticResource Label}" FontSize="12" HorizontalAlignment="Right" Text="{Binding Uses}" Margin="4"
+                VerticalAlignment="Top" />
+            <Ellipse x:Name="NewMark" Width="4" Height="4" VerticalAlignment="Top" HorizontalAlignment="Right" Fill="{DynamicResource Go}" Margin="2"
+                IsHitTestVisible="False" Visibility="Collapsed" />
+          </mui:Cell>
+          <DataTemplate.Triggers>
+            <DataTrigger Binding="{Binding HasNew}" Value="True">
+              <Setter TargetName="NewMark" Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </DataTemplate.Triggers>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <Rectangle Grid.Column="1" Width="1" Fill="{DynamicResource SeparatorBackground}" />
+
+    <ListBox Grid.Column="2" x:Name="ColumnSecond" ItemsSource="{Binding ObjectList}" SelectedItem="{Binding SelectedObject}"
+        ItemTemplate="{StaticResource WorkshopResources.ContentItem.Tile}" HorizontalAlignment="Center">
+      <!--<ListBox.RenderTransform>
+        <TranslateTransform x:Name="TransformSecond" />
+      </ListBox.RenderTransform>-->
+      <ListBox.ItemsPanel>
+        <ItemsPanelTemplate>
+          <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="160"
+              ItemHeight="90" CacheLength="0,0" />
+        </ItemsPanelTemplate>
+      </ListBox.ItemsPanel>
+    </ListBox>
+
+    <Rectangle Grid.Column="3" Width="1" Fill="{DynamicResource SeparatorBackground}" />
+
+    <ScrollViewer x:Name="ColumnThird" Grid.Column="4" HorizontalScrollBarVisibility="Disabled" HorizontalAlignment="Center">
+      <!--<ScrollViewer.RenderTransform>
+        <TranslateTransform x:Name="TransformThird" />
+      </ScrollViewer.RenderTransform>-->
+      <StackPanel>
+        <DockPanel>
+          <Border DockPanel.Dock="Left" Width="24" Height="24" Margin="0 0 4 0">
+            <mui:BetterImage Filename="{Binding SelectedObject.BrandBadge}" />
+          </Border>
+          <!--<c:FavouriteButton IsChecked="{Binding AcObject.IsFavourite, RelativeSource={RelativeSource TemplatedParent}}" DockPanel.Dock="Right"
+              Margin="8 0 0 0" />-->
+          <mui:BbCodeBlock Mode="WithoutBbCodes" Text="{Binding SelectedObject.DisplayName}" Style="{StaticResource Heading2}"
+              Placeholder="{x:Static c:ControlsStrings.TableHeader_Name}" />
+        </DockPanel>
+
+        <mui:BetterImage Filename="{Binding SelectedObject.PreviewImage}" />
+
+        <!-- Tags -->
+        <mui:TagsList ItemsSource="{Binding SelectedObject.Tags}" IsReadOnly="True" Margin="0 0 0 12" />
+      </StackPanel>
+    </ScrollViewer>
+
+  </Grid>
+
+</UserControl>

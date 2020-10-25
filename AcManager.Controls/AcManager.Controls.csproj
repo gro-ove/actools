@@ -260,6 +260,12 @@
     <Compile Include="UserControls\Web\WebTab.cs" />
     <Compile Include="UserControls\Web\WebTabEventArgs.cs" />
     <Compile Include="UserControls\Web\UrlEventArgs.cs" />
+    <Compile Include="UserControls\Workshop\WorkshopAuthorized.xaml.cs">
+      <DependentUpon>WorkshopAuthorized.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\Workshop\WorkshopCurrentUserBlock.xaml.cs">
+      <DependentUpon>WorkshopCurrentUserBlock.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Video\IVideoPlayer.cs" />
     <Compile Include="UserControls\ModernPopup.xaml.cs">
       <DependentUpon>ModernPopup.xaml</DependentUpon>
@@ -405,6 +411,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Assets\WorkshopResources.xaml" />
     <Page Include="Dialogs\CupInformationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -556,6 +563,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="UserControls\Workshop\WorkshopAuthorized.xaml" />
+    <Page Include="UserControls\Workshop\WorkshopCurrentUserBlock.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -579,6 +588,10 @@
       <Project>{764afd18-0755-4596-839c-fea3f492303b}</Project>
       <Name>AcManager.Tools</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\AcManager.Workshop\AcManager.Workshop.csproj">
+      <Project>{abcd8f3f-5730-4fac-86ba-8a28086b75f8}</Project>
+      <Name>AcManager.Workshop</Name>
     </ProjectReference>
     <ProjectReference Include="..\AcTools.LapTimes\AcTools.LapTimes.csproj">
       <Project>{38A04388-FC0C-4E96-BED5-1DC5C6C0B18F}</Project>
@@ -611,6 +624,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\Background.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Dialogs\Workshop" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\Libraries\PreBuildEvents.props" />

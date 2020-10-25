@@ -67,7 +67,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             }
 
             _driverSteerAnimator = Lazier.Create(() => {
-                var animator = CreateAnimator(_rootDirectory, driverDescription.SteerAnimation,
+                var animator = CreateAnimator(RootDirectory, driverDescription.SteerAnimation,
                         clampEnabled: false, skipFixed: false);
                 if (animator == null) return null;
 
@@ -113,7 +113,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             _driverSet = true;
 
             if (_driverHierarchyFilename == null) {
-                _driverHierarchyFilename = Path.Combine(_rootDirectory, "driver_base_pos.knh");
+                _driverHierarchyFilename = Path.Combine(RootDirectory, "driver_base_pos.knh");
                 _driverHierarchyWatcher = SimpleDirectoryWatcher.WatchFile(_driverHierarchyFilename, () => {
                     _driver?.AlignNodes(Knh.FromFile(_driverHierarchyFilename));
                 });
@@ -122,7 +122,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
             var driver = _carData.GetDriverDescription();
             if (driver == null) return;
 
-            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(_rootDirectory));
+            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(RootDirectory));
             if (contentDirectory == null) return;
 
             var driversDirectory = Path.Combine(contentDirectory, "driver");
@@ -203,7 +203,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private void InitializeShiftAnimation() {
             if (_driverShiftAnimator == null) {
                 _driverShiftAnimator = Lazier.Create(() => {
-                    var result = CreateAnimator(_rootDirectory, "shift.ksanim", skipFixed: false);
+                    var result = CreateAnimator(RootDirectory, "shift.ksanim", skipFixed: false);
                     if (result == null) return null;
 
                     result.PingPongMode = true;
@@ -213,7 +213,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
 
             if (_carShiftAnimator == null) {
                 _carShiftAnimator = Lazier.Create(() => {
-                    var result = CreateAnimator(_rootDirectory, "car_shift.ksanim");
+                    var result = CreateAnimator(RootDirectory, "car_shift.ksanim");
                     if (result == null) return null;
 
                     result.PingPongMode = true;
@@ -291,7 +291,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         private Lazier<KsAnimAnimator> _crewAnimator;
 
         private void InitializeCrewMain() {
-            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(_rootDirectory));
+            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(RootDirectory));
             if (contentDirectory == null) return;
 
             var driversDirectory = Path.Combine(contentDirectory, "objects3D");
@@ -312,7 +312,7 @@ namespace AcTools.Render.Kn5Specific.Objects {
         }
 
         private void InitializeCrewTyres() {
-            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(_rootDirectory));
+            var contentDirectory = Path.GetDirectoryName(Path.GetDirectoryName(RootDirectory));
             if (contentDirectory == null) return;
 
             var driversDirectory = Path.Combine(contentDirectory, "objects3D");

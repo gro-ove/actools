@@ -1,0 +1,16 @@
+<UserControl x:Class="AcManager.Pages.Workshop.WorkshopContentCars" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:workshop="clr-namespace:AcManager.Pages.Workshop"
+    xmlns:mui="http://firstfloorsoftware.com/ModernUI" mc:Ignorable="d" d:DataContext="{d:DesignInstance workshop:WorkshopContentCars+ViewModel}">
+  <UserControl.Resources>
+    <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/WorkshopResources.xaml" />
+  </UserControl.Resources>
+  <ListBox x:Name="List" Style="{StaticResource VirtualizingListBox}" ItemsSource="{Binding List}" ItemTemplate="{StaticResource WorkshopResources.ContentItem.Tile}" PreviewMouseLeftButtonUp="OnItemMouseDown">
+    <ListBox.ItemsPanel>
+      <ItemsPanelTemplate>
+        <mui:VirtualizingTilePanel HorizontalAlignment="Left" VirtualizationMode="Recycling" IsVirtualizing="True" ScrollUnit="Pixel" ItemWidth="240"
+            ItemHeight="140" CacheLength="0,0" />
+      </ItemsPanelTemplate>
+    </ListBox.ItemsPanel>
+  </ListBox>
+</UserControl>

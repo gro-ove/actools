@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Input;
 using FirstFloor.ModernUI.Commands;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows;
@@ -26,7 +25,7 @@ namespace FirstFloor.ModernUI.Presentation {
                 _value = value;
 
                 if (value == "") {
-                    CloseCommand.Execute(null);
+                    CloseCommand.Execute();
                     return;
                 }
 
@@ -37,13 +36,27 @@ namespace FirstFloor.ModernUI.Presentation {
 
         public override Uri Source => _baseUri.AddQueryParam("Filter", _value);
 
-        private ICommand _closeCommand;
+        private DelegateCommand _closeCommand;
 
-        public ICommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(() => {
-            Close?.Invoke(this, EventArgs.Empty);
-        }));
+        public DelegateCommand CloseCommand => _closeCommand ?? (_closeCommand = new DelegateCommand(
+                () => Close?.Invoke(this, new LinkCloseEventArgs(LinkCloseMode.Regular))));
 
-        public event EventHandler Close;
+        private DelegateCommand _closeAllCommand;
+
+        public DelegateCommand CloseAllCommand => _closeAllCommand ?? (_closeAllCommand = new DelegateCommand(
+                () => Close?.Invoke(this, new LinkCloseEventArgs(LinkCloseMode.CloseAll))));
+
+        private DelegateCommand _closeOthersCommand;
+
+        public DelegateCommand CloseOthersCommand => _closeOthersCommand ?? (_closeOthersCommand = new DelegateCommand(
+                () => Close?.Invoke(this, new LinkCloseEventArgs(LinkCloseMode.CloseOthers))));
+
+        private DelegateCommand _closeToRightCommand;
+
+        public DelegateCommand CloseToRightCommand => _closeToRightCommand ?? (_closeToRightCommand = new DelegateCommand(
+                () => Close?.Invoke(this, new LinkCloseEventArgs(LinkCloseMode.CloseToRight))));
+
+        public event EventHandler<LinkCloseEventArgs> Close;
 
         public const string DraggableFormat = "X-Search-Tab";
 

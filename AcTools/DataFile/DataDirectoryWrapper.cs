@@ -15,6 +15,10 @@ namespace AcTools.DataFile {
 
         public override string Location => _directory;
 
+        public override bool IsEmpty => false;
+
+        public override bool IsPacked => false;
+
         public override string GetData(string name) {
             var filename = Path.Combine(_directory, name);
             return File.Exists(filename) ? File.ReadAllText(filename) : null;

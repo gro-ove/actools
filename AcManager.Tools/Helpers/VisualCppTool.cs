@@ -131,7 +131,7 @@ namespace AcManager.Tools.Helpers {
         private static void ShowMessage(Exception e) {
             NonfatalError.Notify("Looks like app can’t load native library",
                     "Visual C++ Redistributable might be missing or damaged. Would you like to install the package prepared specially for CM?", e, new[] {
-                        new NonfatalErrorSolution("Download and install", null, DownloadAndInstall, "DownloadIconData"),
+                        new NonfatalErrorSolution("Download and install", DownloadAndInstall, "DownloadIconData"),
                     });
         }
 
@@ -170,7 +170,7 @@ namespace AcManager.Tools.Helpers {
             NonfatalError.Notify("Can’t download the package",
                     $"You can try to [url={BbCodeBlock.EncodeAttribute(downloadUrl)}]download[/url] and install it manually. Don’t forget to restart CM after it was installed.",
                     e, new[] {
-                        new NonfatalErrorSolution("Open destination folder", null, t => {
+                        new NonfatalErrorSolution("Open destination folder", t => {
                             WindowsHelper.ViewDirectory(directory);
                             return Task.Delay(0);
                         }, "FolderIconData"),

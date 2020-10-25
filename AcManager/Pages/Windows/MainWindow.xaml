@@ -5,7 +5,7 @@
     xmlns:c="http://acstuff.ru/app/controls" xmlns:system="clr-namespace:System;assembly=mscorlib" mc:Ignorable="d" Title="{x:Static g:AppStrings.Main_Title}"
     IsTitleVisible="False" MinWidth="800" MinHeight="640" Width="960" Height="800" AllowsTransparency="False" FocusVisualStyle="{x:Null}" AllowDrop="True"
     Drop="OnDrop" DragEnter="OnDragEnter" DefaultContentSource="/Pages/Drive/QuickDrive.xaml" Loaded="OnLoaded" Unloaded="OnUnloaded" Closing="OnClosing"
-    Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
+    Closed="OnClosed" MouseRightButtonUp="OnMouseRightButtonDown" MouseDown="OnMouseUp" PreviewMouseRightButtonUp="OnPreviewMouseRightButtonUp"
     PreviewMouseRightButtonDown="OnPreviewMouseRightButtonDown" KeyDown="OnKeyDown" FrameNavigating="OnFrameNavigating"
     mui:ModernMenu.Initialize="OnMainMenuInitialize" mui:ModernMenu.SelectedChange="OnMainMenuSelectedChange"
     d:DataContext="{d:DesignInstance w:MainWindow+ViewModel}" SaveKey="MainWindow" LocationAndSizeKey="MainWindow_LS" x:Name="Window" ShowErrorsButton="False"
@@ -437,6 +437,12 @@
             </MenuItem.Icon>
           </MenuItem>
           <Separator Style="{StaticResource {x:Static MenuItem.SeparatorStyleKey}}" />
+          <!--<MenuItem Header="{x:Static g:AppStrings.Main_Workshop}" Click="OnNavigateItemClick" CommandParameter="/Pages/Workshop/WorkshopCars.xaml">
+            <MenuItem.Icon>
+              <Path Width="12" Height="12" Margin="4 0 -2 0" Stretch="Uniform" Data="{StaticResource CloudIconData}" HorizontalAlignment="Center"
+                  VerticalAlignment="Center" Fill="{Binding Path=(Control.Foreground), RelativeSource={RelativeSource Self}}" />
+            </MenuItem.Icon>
+          </MenuItem>-->
           <MenuItem Header="{x:Static g:AppStrings.Main_Content}" Click="OnNavigateItemClick" CommandParameter="/Pages/Lists/CarsListPage.xaml"
               InputGestureText="Ctrl+F1">
             <MenuItem.Icon>
@@ -598,6 +604,35 @@
     <mui:LinkGroupFilterable GroupKey="media" DisplayName="{x:Static g:AppStrings.Main_Replays}" Source="/Pages/Lists/ReplaysListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Files}" />
 
+    <!-- Workshop -->
+    <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Workshop/WorkshopContentMain.xaml?Content=cars"
+        FilterHint="{x:Static c:FilterHints.Cars}" AddAllLink="False">
+      <mui:LinkGroupFilterable.FixedLinks>
+        <mui:Link DisplayName="Brands" Source="/Pages/Workshop/WorkshopCarBrandsHorizonal.xaml?Content=cars&amp;Category=car-brands&amp;SearchBy=carBrand" />
+        <mui:Link DisplayName="Countries" Source="/Pages/Workshop/WorkshopCarBrandsHorizonal.xaml?Content=cars&amp;Category=car-countries&amp;SearchBy=country" />
+        <mui:Link DisplayName="Tags" Source="/Pages/Workshop/WorkshopContentTags.xaml?Content=cars&amp;Category=car-tags" />
+        <mui:Link DisplayName="Latest" Source="/Pages/Workshop/WorkshopContentMain.xaml?Content=cars" />
+        <!--<mui:Link DisplayName="My" Source="/Pages/Miscellaneous/CarsMy" />-->
+      </mui:LinkGroupFilterable.FixedLinks>
+    </mui:LinkGroupFilterable>
+    <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="Car skins" Source="/Pages/Workshop/WorkshopCarSkins.xaml"
+        FilterHint="{x:Static c:FilterHints.CarSkins}" />
+    <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="{x:Static g:AppStrings.Main_Tracks}" Source="/Pages/Workshop/WorkshopTracks.xaml"
+        FilterHint="{x:Static c:FilterHints.Tracks}" />
+    <mui:LinkGroupFilterable GroupKey="workshop" DisplayName="Track skins" Source="/Pages/Workshop/WorkshopTrackSkins.xaml"
+        FilterHint="{x:Static c:FilterHints.TrackSkins}" />
+    <mui:LinkGroup GroupKey="workshop" DisplayName="{x:Static g:AppStrings.Main_Miscellaneous}">
+      <mui:LinkGroup.Links>
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Apps}" Source="/Pages/Workshop/WorkshopPythonApps.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_DriverModels}" Source="/Pages/Workshop/WorkshopDriverModels.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Fonts}" Source="/Pages/Workshop/WorkshopFonts.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_PpFilters}" Source="/Pages/Workshop/WorkshopPpFilters.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Showrooms}" Source="/Pages/Workshop/WorkshopShowrooms.xaml" />
+        <mui:Link DisplayName="{x:Static g:AppStrings.Main_Weather}" Source="/Pages/Workshop/WorkshopWeather.xaml" />
+      </mui:LinkGroup.Links>
+    </mui:LinkGroup>
+    <mui:LinkGroup GroupKey="workshop" DisplayName="Community" />
+
     <!-- Content -->
     <mui:LinkGroupFilterable GroupKey="content" DisplayName="{x:Static g:AppStrings.Main_Cars}" Source="/Pages/Lists/CarsListPage.xaml"
         FilterHint="{x:Static c:FilterHints.Cars}" />
@@ -731,6 +766,37 @@
                 CommandParameter="/Pages/Lists/ScreenshotsListPage.xaml" />
             <MenuItem Header="{x:Static g:AppStrings.Main_Replays}" Command="mui:LinkCommands.NavigateLinkMainWindow"
                 CommandParameter="/Pages/Lists/ReplaysListPage.xaml" />
+          </ContextMenu>
+        </TextBlock.ContextMenu>
+      </TextBlock>
+    </mui:TitleLink>
+    <!-- ReSharper disable once Xaml.PathError -->
+    <mui:TitleLink GroupKey="workshop" Source="/Pages/Workshop/WorkshopContentCategories.xaml?Content=cars&amp;Category=car-brands&amp;SearchBy=carBrand">
+      <TextBlock Text="{Binding Source={x:Static g:AppStrings.Main_Workshop}, Converter={StaticResource ToUpperConverter}}">
+        <TextBlock.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="{x:Static g:AppStrings.Main_Cars}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopCars.xaml" />
+            <MenuItem Header="Car skins" Command="mui:LinkCommands.NavigateLinkMainWindow" CommandParameter="/Pages/Workshop/WorkshopCarSkins.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Tracks}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopTracks.xaml" />
+            <MenuItem Header="Track skins" Command="mui:LinkCommands.NavigateLinkMainWindow" CommandParameter="/Pages/Workshop/WorkshopTrackSkins.xaml" />
+            <Separator />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Apps}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopPythonApps.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_DriverModels}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopDriverModels.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Fonts}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopFonts.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_PpFilters}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopPpFilters.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Showrooms}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopShowrooms.xaml" />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Weather}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopWeather.xaml" />
+            <Separator />
+            <MenuItem Header="{x:Static g:AppStrings.Main_Mods}" Command="mui:LinkCommands.NavigateLinkMainWindow"
+                CommandParameter="/Pages/Workshop/WorkshopGenericMods.xaml" mui:LimitedService.Limited="True" />
           </ContextMenu>
         </TextBlock.ContextMenu>
       </TextBlock>

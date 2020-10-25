@@ -6,12 +6,15 @@
     MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual" ResizeMode="CanResizeWithGrip" Width="640" Height="640"
     LocationAndSizeKey=".imageEditor">
   <mui:ModernDialog.Resources>
-    <Thickness x:Key="BorderThickness">1</Thickness>
-    <Thickness x:Key="MarginThickness">-1</Thickness>
+    <ResourceDictionary>
+      <Thickness x:Key="BorderThickness">1</Thickness>
+      <Thickness x:Key="MarginThickness">-1</Thickness>
+    </ResourceDictionary>
   </mui:ModernDialog.Resources>
+
   <DockPanel>
-    <TextBlock Text="{x:Static g:AppStrings.Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust}" DockPanel.Dock="Bottom"
-        Margin="0 20 0 0" Style="{StaticResource Small}" />
+    <TextBlock Text="{x:Static g:AppStrings.Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust}" DockPanel.Dock="Bottom" Margin="0 20 0 0"
+        Style="{StaticResource Small}" />
     <mui:BorderyViewbox SizeChanged="OnViewboxSizeChanged" x:Name="Viewbox" StretchDirection="DownOnly" Stretch="Uniform">
       <mui:Cell x:Name="MainGrid" HorizontalAlignment="Center" VerticalAlignment="Center" MouseDown="OnMouseDown" ClipToBounds="True">
         <Image x:Name="OriginalImage" />

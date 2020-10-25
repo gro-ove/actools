@@ -47,8 +47,8 @@ namespace AcManager.Tools.Helpers.Loaders {
 
         public Task<string> DownloadAsync(CookieAwareWebClient client,
                 FlexibleLoaderGetPreferredDestinationCallback getPreferredDestination,
-                FlexibleLoaderReportDestinationCallback reportDestination, Func<bool> checkIfPaused,
-                IProgress<long> progress, CancellationToken cancellation) {
+                FlexibleLoaderReportDestinationCallback reportDestination = null, Func<bool> checkIfPaused = null,
+                IProgress<long> progress = null, CancellationToken cancellation = default) {
             return DownloadAsyncInner(client, getPreferredDestination, reportDestination, checkIfPaused, progress, cancellation);
         }
 

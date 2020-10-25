@@ -1,27 +1,19 @@
-using System;
-using System.Collections.Generic;
 using FirstFloor.ModernUI.Presentation;
 using Newtonsoft.Json;
 
 namespace AcManager.Workshop.Data {
-    [Flags]
-    public enum UserFlags {
-        None = 0,
-        Hidden = 1
-    }
-
     public class UserInfo : NotifyPropertyChanged {
         [JsonProperty("userID")]
+        public string UserId { get; set; }
+
+        [JsonProperty("isHidden")]
+        public bool IsHidden { get; set; }
+
+        [JsonProperty("isVirtual")]
+        public bool IsVirtual { get; set; }
+
+        [JsonProperty("username")]
         public string Username { get; set; }
-
-        [JsonProperty("flags")]
-        public UserFlags Flags { get; set; }
-
-        [JsonIgnore]
-        public bool IsHidden {
-            get => Flags.HasFlag(UserFlags.Hidden);
-            set => Flags = (Flags & ~UserFlags.Hidden) | (value ? UserFlags.Hidden : UserFlags.None);
-        }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -38,7 +30,7 @@ namespace AcManager.Workshop.Data {
         [JsonProperty("avatarImageLarge")]
         public string AvatarLarge { get; set; }
 
-        [JsonProperty("userURLs")]
-        public Dictionary<string, string> UserUrls { get; set; }
+        /*[JsonProperty("userURLs")]
+        public Dictionary<string, string> UserUrls { get; set; }*/
     }
 }

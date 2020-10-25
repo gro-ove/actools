@@ -10,6 +10,10 @@ namespace AcTools.Utils.Helpers {
             return (new DateTime(1970, 1, 1) + TimeSpan.FromSeconds(l)).ToLocalTime();
         }
 
+        public static DateTime ToDateTimeFromMilliseconds(this long l) {
+            return (new DateTime(1970, 1, 1) + TimeSpan.FromMilliseconds(l)).ToLocalTime();
+        }
+
         public static long ToMillisecondsTimestamp(this DateTime d) {
             return (long)(d.ToUniversalTime() - new DateTime(1970, 1, 1)).TotalMilliseconds;
         }

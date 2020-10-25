@@ -22,6 +22,7 @@ using AcManager.Tools.Objects;
 using AcManager.Tools.SemiGui;
 using AcTools;
 using AcTools.Processes;
+using AcTools.Utils;
 using AcTools.Utils.Helpers;
 using CefSharp;
 using FirstFloor.ModernUI;
@@ -29,6 +30,7 @@ using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Presentation;
 using FirstFloor.ModernUI.Windows;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 
 namespace AcManager.Pages.Drive {
     public partial class WorldSimSeries : ILoadableContent {
@@ -127,11 +129,15 @@ namespace AcManager.Pages.Drive {
             }
 
             public string getTrackFileChecksum(string trackId, string layoutId, string fileName) {
-                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
+                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, FileUtils.NormalizePath(fileName));
+            }
+
+            public string getCarGeneralFileChecksum(string carId, string fileName) {
+                return GetAcChecksum(CarsManager.Instance.GetById(carId)?.Location, FileUtils.NormalizePath(fileName));
             }
 
             public string getTrackGeneralFileChecksum(string trackId, string layoutId, string fileName) {
-                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, fileName);
+                return GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, FileUtils.NormalizePath(fileName));
             }
 
             public void getCarDataChecksumAsync(string carId, IJavascriptCallback callback = null) {
@@ -141,16 +147,23 @@ namespace AcManager.Pages.Drive {
                 }).Ignore();
             }
 
+            public void getCarGeneralFileChecksumAsync(string carId, string fileName, IJavascriptCallback callback = null) {
+                Task.Run(() => {
+                    var checksum = GetAcChecksum(CarsManager.Instance.GetById(carId)?.Location, fileName);
+                    callback?.ExecuteAsync(checksum);
+                }).Ignore();
+            }
+
             public void getTrackFileChecksumAsync(string trackId, string layoutId, string fileName, IJavascriptCallback callback = null) {
                 Task.Run(() => {
-                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, fileName);
+                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.DataDirectory, FileUtils.NormalizePath(fileName));
                     callback?.ExecuteAsync(checksum);
                 }).Ignore();
             }
 
             public void getTrackGeneralFileChecksumAsync(string trackId, string layoutId, string fileName, IJavascriptCallback callback = null) {
                 Task.Run(() => {
-                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, fileName);
+                    var checksum = GetAcChecksum(TracksManager.Instance.GetLayoutById(trackId, layoutId)?.Location, FileUtils.NormalizePath(fileName));
                     callback?.ExecuteAsync(checksum);
                 }).Ignore();
             }
@@ -170,7 +183,7 @@ namespace AcManager.Pages.Drive {
                 });
             }
 
-            public void startOnlineRace(string ip, int port, int httpPort, string password, string driverName, IJavascriptCallback callback = null) {
+            public void startOnlineRace(string paramsJson, IJavascriptCallback callback = null) {
                 if (_car == null) {
                     throw new Exception("Car is not set");
                 }
@@ -178,6 +191,8 @@ namespace AcManager.Pages.Drive {
                 if (_track == null) {
                     throw new Exception("Track is not set");
                 }
+
+                var obj = JObject.Parse(paramsJson);
 
                 ActionExtension.InvokeInMainThreadAsync(async () => {
                     var result = await GameWrapper.StartAsync(new Game.StartProperties {
@@ -189,15 +204,18 @@ namespace AcManager.Pages.Drive {
                         },
                         ModeProperties = new Game.OnlineProperties {
                             Guid = SteamIdHelper.Instance.Value,
-                            ServerIp = ip,
-                            ServerPort = port,
-                            ServerHttpPort = httpPort,
+                            ServerIp = obj.GetStringValueOnly("ip") ?? throw new Exception(@"Field “ip” is required"),
+                            ServerPort = obj.GetIntValueOnly("port") ?? throw new Exception(@"Field “port” is required"),
+                            ServerHttpPort = obj.GetIntValueOnly("httpPort") ?? throw new Exception(@"Field “httpPort” is required"),
                             RequestedCar = _car.Id,
-                            Password = password
+                            Password = obj.GetStringValueOnly("password")
                         },
                         AdditionalPropertieses = {
                             new WorldSimSeriesMark {
-                                Name = driverName
+                                Name = obj.GetStringValueOnly("driverName"),
+                                Nationality = obj.GetStringValueOnly("driverNationality"),
+                                NationCode = obj.GetStringValueOnly("driverNationCode"),
+                                Team = obj.GetStringValueOnly("driverTeam"),
                             }
                         }
                     });

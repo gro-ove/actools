@@ -10,15 +10,15 @@ using JetBrains.Annotations;
 namespace AcTools.DataFile {
     public class IniFileSection : Dictionary<string, string> {
         [CanBeNull]
-        private readonly IDataWrapper _wrapper;
+        private readonly IDataReadWrapper _wrapper;
 
-        public IniFileSection([CanBeNull] IDataWrapper wrapper, IniFileSection original) : base(original) {
+        public IniFileSection([CanBeNull] IDataReadWrapper wrapper, IniFileSection original) : base(original) {
             _wrapper = wrapper;
             Commentary = original.Commentary;
             Commentaries = original.Commentaries == null ? null : new Dictionary<string, string>(original.Commentaries);
         }
 
-        public IniFileSection([CanBeNull] IDataWrapper wrapper) {
+        public IniFileSection([CanBeNull] IDataReadWrapper wrapper) {
             _wrapper = wrapper;
         }
 

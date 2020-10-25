@@ -31,6 +31,8 @@ namespace FirstFloor.ModernUI.Windows.Controls {
             set {
                 var vc = UiElements;
                 if (!ReferenceEquals(vc[index], value)) {
+                    RemoveLogicalChild(vc[index]);
+                    AddLogicalChild(value);
                     vc[index] = value;
                     InvalidateMeasure();
                 }
@@ -42,13 +44,16 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         public virtual void Clear() {
+            foreach (var element in UiElements) {
+                RemoveLogicalChild(element);
+            }
             UiElements.Clear();
         }
 
         public int Add(UIElement element) {
             InvalidateMeasure();
-
             UiElements.Add(element);
+            AddLogicalChild(element);
             return UiElements.Count;
         }
 
@@ -58,10 +63,12 @@ namespace FirstFloor.ModernUI.Windows.Controls {
 
         public void Insert(int index, UIElement element) {
             InvalidateMeasure();
+            AddLogicalChild(element);
             UiElements.Insert(index, element);
         }
 
         public void Remove(UIElement element) {
+            RemoveLogicalChild(element);
             UiElements.Remove(element);
         }
 
@@ -112,7 +119,7 @@ namespace FirstFloor.ModernUI.Windows.Controls {
         }
 
         protected abstract bool TestChild(UIElement child);
-        
+
         protected override UIElement GetChild() {
             return UiElements?.FirstOrDefault(TestChild);
         }

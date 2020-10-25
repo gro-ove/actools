@@ -101,7 +101,16 @@ namespace AcTools.Utils {
 
             var setting = ++_isSettingId;
             try {
-                var ready = await _fnTask().ConfigureAwait(false);
+                var task = _fnTask();
+                if (task.IsCompleted && !task.IsFaulted) {
+                    _value = task.Result;
+                    IsSet = true;
+                    _settingTask = null;
+                    OnPropertyChanged(nameof(Value));
+                    return _value;
+                }
+
+                var ready = await task.ConfigureAwait(false);
                 if (_isSettingId != setting) return default;
 
                 _value = ready;

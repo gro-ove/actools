@@ -39,6 +39,8 @@ namespace AcManager.Tools.Objects {
             });
         }
 
+        public string NameFromId => _nameFromId.Value;
+
         protected override bool LoadJsonOrThrow() {
             if (!File.Exists(JsonFilename)) {
                 ClearData();
@@ -337,7 +339,7 @@ namespace AcManager.Tools.Objects {
                     yield return Add("cm_skin.json");
                 }
 
-                if (t.CarId == _recentCarId) {
+                if (t.CarId == _recentCarId && _recentTextures != null) {
                     yield return Add(_recentTextures);
                 } else {
                     var car = CarsManager.Instance.GetById(t.CarId);

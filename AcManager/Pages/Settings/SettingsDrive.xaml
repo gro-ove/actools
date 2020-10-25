@@ -132,7 +132,8 @@
           <Label Content="{x:Static g:AppStrings.Settings_Drive_UsePracticeForTrackDay}" />
         </CheckBox>
 
-        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip}" set:Search.Keywords="quick;drive;appearance;ui">
+        <CheckBox IsChecked="{Binding Drive.ShowExtraComboBoxes}" ToolTip="{x:Static g:AppStrings.Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip}"
+            set:Search.Keywords="quick;drive;appearance;ui">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_ShowExtraDropDownListsForSkins}" />
         </CheckBox>
 
@@ -166,7 +167,8 @@
           <mui:BetterTextBox Text="{Binding Drive.LocalAddress}" Placeholder="?" />
         </DockPanel>
 
-        <CheckBox IsChecked="{Binding Drive.AllowDecimalTrackState}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState_Tooltip}" set:Search.Keywords="quick;drive">
+        <CheckBox IsChecked="{Binding Drive.AllowDecimalTrackState}" ToolTip="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState_Tooltip}"
+            set:Search.Keywords="quick;drive">
           <Label Content="{x:Static g:AppStrings.Settings_Drive_AllowDecimalValuesForTrackState}" />
         </CheckBox>
 
@@ -188,6 +190,14 @@
               <TextBlock Text="Allow to use custom car’s data" />
               <Button Style="{StaticResource MoreDetailsSuperscript}" CommandParameter="/Pages/About/ImportantTipsPage.xaml?Key=customCarData" />
             </DockPanel>
+          </Label>
+        </CheckBox>
+
+        <CheckBox IsChecked="{Binding Drive.QuickDriveAllowExtendedPhysics}"
+            ToolTip="Please use carefully, it’s very experimental; if any issues would arrive, run Steam integrity check"
+            set:Search.Keywords="quick;drive;modding">
+          <Label>
+            <TextBlock Text="Allow to use patch car’s data to activate extended physics" />
           </Label>
         </CheckBox>
 

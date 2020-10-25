@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
-using System.Text;
 using JetBrains.Annotations;
 
 namespace AcTools.Utils.Helpers {
@@ -14,17 +14,19 @@ namespace AcTools.Utils.Helpers {
             return false;
         }
 
-        public static string FlattenMessage([CanBeNull] this Exception e, string joinWith = "\n") {
-            var result = new StringBuilder();
+        public static IEnumerable<string> FlattenMessage([CanBeNull] this Exception e) {
+            var any = false;
             while (e != null) {
-                if (result.Length > 0) {
-                    result.Append(joinWith);
+                var trimmed = e.Message.TrimEnd('.');
+                if (!string.IsNullOrWhiteSpace(trimmed)) {
+                    any = true;
+                    yield return e.Message.TrimEnd('.');
                 }
-                result.Append(e.Message.TrimEnd('.'));
                 e = e.InnerException;
             }
-            var joined = result.ToString().Trim();
-            return string.IsNullOrEmpty(joined) ? "Unknown error" : joined;
+            if (any == false) {
+                yield return "Unknown error";
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,7 +38,7 @@ namespace AcManager.Tools.Helpers {
                     void AddValue(int b) {
                         data.Append($@"{b:x2},");
                         if (--commasLeft == 0) {
-                            data.Append("\\\n  ");
+                            data.Append("\\\r\n  ");
                             commasLeft = 25;
                         }
                     }
@@ -88,7 +87,7 @@ namespace AcManager.Tools.Helpers {
                 foreach (var p in pair.Value) {
                     var commentValue = ToCommentValue(p.Value);
                     if (commentValue != null) {
-                        data.Append("; ").Append(commentValue).Append(Environment.NewLine);
+                        data.Append("; ").Append(commentValue.Replace("\n", "\n; ")).Append(Environment.NewLine);
                     }
 
                     // ReSharper disable once MethodHasAsyncOverload
@@ -106,7 +105,7 @@ namespace AcManager.Tools.Helpers {
             }
 
             try {
-                var procRegEdit = ProcessExtension.Start("regedit.exe", new[] { filename }, new ProcessStartInfo { Verb = "runas" });
+                var procRegEdit = ProcessExtension.Start("explorer.exe", new[] { filename });
                 await procRegEdit.WaitForExitAsync().ConfigureAwait(false);
                 Logging.Debug("Done: " + procRegEdit.ExitCode);
                 return procRegEdit.ExitCode == 0;

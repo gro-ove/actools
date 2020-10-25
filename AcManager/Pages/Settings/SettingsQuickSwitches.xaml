@@ -48,6 +48,9 @@
       <CheckBox IsChecked="{Binding Drive.QuickSwitches}">
         <Label Content="{x:Static g:AppStrings.Settings_QuickSwitches_Enable}" />
       </CheckBox>
+      <CheckBox IsChecked="{Binding Drive.QuickSwitchesRightMouseButton}">
+        <Label Content="Use right mouse button to toggle quick switches too" />
+      </CheckBox>
       <mui:BbCodeBlock TextWrapping="Wrap" Text="{x:Static g:AppStrings.Settings_QuickSwitches_Description}" />
     </StackPanel>
 

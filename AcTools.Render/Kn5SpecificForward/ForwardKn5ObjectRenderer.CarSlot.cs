@@ -202,7 +202,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
             private void ClearExisting() {
                 if (_car != null && OptionCacheSize > 0) {
-                    var existing = PreviousCars.FirstOrDefault(x => x.Id == _car.MainKn5File);
+                    var existing = PreviousCars.FirstOrDefault(x => x.Id == _car.MainModelFilename);
                     if (existing != null) {
                         PreviousCars.Remove(existing);
                         PreviousCars.Add(existing);
@@ -214,7 +214,7 @@ namespace AcTools.Render.Kn5SpecificForward {
                         }
 
                         PreviousCars.Add(new PreviousCar {
-                            Id = _car.MainKn5File,
+                            Id = _car.MainModelFilename,
                             Objects = CarWrapper.ToList()
                         });
 
@@ -248,7 +248,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                     Kn5RenderableCar loaded;
 
-                    var previous = PreviousCars.FirstOrDefault(x => x.Id == car.MainKn5File);
+                    var previous = PreviousCars.FirstOrDefault(x => x.Id == car.MainModelFilename);
                     if (previous != null) {
                         PreviousCars.Remove(previous);
 
@@ -321,7 +321,7 @@ namespace AcTools.Render.Kn5SpecificForward {
 
                     Kn5RenderableCar loaded = null;
 
-                    var previous = PreviousCars.FirstOrDefault(x => x.Id == car.MainKn5File);
+                    var previous = PreviousCars.FirstOrDefault(x => x.Id == car.MainModelFilename);
                     if (previous != null) {
                         PreviousCars.Remove(previous);
 

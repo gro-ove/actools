@@ -8,6 +8,6 @@ namespace AcTools.DataFile {
         [CanBeNull]
         string Filename { get; }
 
-        void Initialize([CanBeNull] IDataWrapper data, [NotNull] string name, [CanBeNull] string filename);
+        void Initialize([CanBeNull] IDataReadWrapper data, [NotNull] string name, [CanBeNull] string filename);
     }
 }
