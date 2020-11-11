@@ -12,7 +12,7 @@ namespace AcManager.Workshop.Uploaders {
             if (uploaderId == "B2/1") {
                 return new B2WorkshopUploader(uploadParams);
             }
-            throw new NotImplementedException("Unsupported upload parameters");
+            throw new NotImplementedException("Unsupported uploader ID");
         }
     }
 }

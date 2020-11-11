@@ -37,7 +37,7 @@ namespace AcManager.Workshop {
         private string _userId;
 
         [CanBeNull]
-        internal string UserId {
+        public string UserId {
             get => _userId;
             set {
                 _userId = value;
@@ -49,7 +49,7 @@ namespace AcManager.Workshop {
         private string _userPasswordChecksum;
 
         [CanBeNull]
-        internal string UserPasswordChecksum {
+        public string UserPasswordChecksum {
             get => _userPasswordChecksum;
             set {
                 _userPasswordChecksum = value;
@@ -69,14 +69,14 @@ namespace AcManager.Workshop {
             return $@"{_apiHost}/v1{path}";
         }
 
-        internal static string GetUserId([NotNull] string steamId) {
+        public static string GetUserId([NotNull] string steamId) {
             if (steamId == null) throw new ArgumentNullException(nameof(steamId));
             using (var sha = SHA256.Create()) {
                 return Regex.Replace(Convert.ToBase64String(sha.ComputeHash(Encoding.UTF8.GetBytes(Salt4 + steamId))), @"\W+|=+$", "").Substring(0, 16);
             }
         }
 
-        internal static string GetPasswordChecksum([NotNull] string userId, [NotNull] string userPassword) {
+        public static string GetPasswordChecksum([NotNull] string userId, [NotNull] string userPassword) {
             if (userId == null) throw new ArgumentNullException(nameof(userId));
             if (userPassword == null) throw new ArgumentNullException(nameof(userPassword));
             Logging.Debug($"userId={userId}, userPassword=`{userPassword}`, checksum={GetChecksum(GetChecksum(Salt3 + userId) + userPassword)}");
@@ -137,7 +137,7 @@ namespace AcManager.Workshop {
 
         [ItemNotNull]
         private async Task<string> PokeAsync(CancellationToken cancellation) {
-            var request = new HttpRequestMessage(HttpMethod.Post, GetFullUrl("/poke/" + GetChecksum(Salt1 + UserId)));
+            var request = new HttpRequestMessage(HttpMethod.Post, GetFullUrl($"/users/{_userId}/poke/{GetChecksum(Salt1 + UserId)}"));
             try {
                 using (var response = await HttpClientHolder.Get().SendAsync(request, cancellation).ConfigureAwait(false)) {
                     await TestResponse(response, cancellation).ConfigureAwait(false);
@@ -255,30 +255,25 @@ namespace AcManager.Workshop {
         public async Task<string> UploadAsync([NotNull] byte[] data, [NotNull] string fileName,
                 IProgress<AsyncProgressEntry> progress = null, CancellationToken cancellation = default) {
             var checksum = CalculateUploadChecksum(data);
-            var uploaderParams = await PostAsync<object, JObject>("/manage/urls", new {
+            var uploaderParams = await PostAsync<object, JObject>($"/manage/files/{checksum}", new {
                 size = data.Length,
                 name = fileName,
-                group = _currentGroup,
-                checksum
+                group = _currentGroup
             }, cancellation).ConfigureAwait(false);
 
-            var uploaderId = uploaderParams["uploaderID"].ToString();
+            var uploaderId = uploaderParams["uploaderID"]?.ToString();
             if (uploaderId == "reuse/1") {
                 return ((JObject)uploaderParams["params"])["downloadURL"].ToString();
             }
 
             var uploader = WorkshopUploaderFactory.Create(uploaderId, (JObject)uploaderParams["params"]);
             var result = await uploader.UploadAsync(data, _currentGroup, fileName, progress, cancellation).ConfigureAwait(false);
-            return (await PutAsync<object, JObject>("/manage/urls", new {
-                checksum,
+            return (await PutAsync<object, JObject>($"/manage/files/{checksum}", new {
                 uploaderID = uploaderId,
                 size = result.Size,
                 tag = result.Tag
             }))["downloadURL"].ToString();
         }
-        #endregion
-
-        #region Authorization process
         #endregion
     }
 }

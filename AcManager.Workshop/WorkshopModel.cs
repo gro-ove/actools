@@ -106,9 +106,8 @@ namespace AcManager.Workshop {
                 }
 
                 var userId = WorkshopClient.GetUserId(steamId);
-                // TODO:
-                //ValuesStorage.SetEncrypted(KeySteamId, steamId);
-                //ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
+                // ValuesStorage.SetEncrypted(KeySteamId, steamId);
+                // ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
 
                 IsAuthorizing = true;
                 try {
@@ -166,15 +165,21 @@ namespace AcManager.Workshop {
             for (int i = 0, t = (int)(waitFor.TotalSeconds / stepSize.TotalSeconds); i < t; i++) {
                 await Task.Delay(stepSize, cancellation);
                 if (_upgradeRun != upgradeRun || cancellation.IsCancellationRequested) break;
-                LoggedInAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}");
+                LoggedInAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
                 Logging.Debug(JsonConvert.SerializeObject(LoggedInAs));
                 if (!LoggedInAs.IsVirtual) return;
             }
+
+            // Extra two seconds delay for server to load extra data from Steam
+            await Task.Delay(TimeSpan.FromSeconds(2d), cancellation);
+            LoggedInAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
         }
 
         public AsyncCommand<CancellationToken?> UpgradeUserCommand => _upgradeUserCommand
                 ?? (_upgradeUserCommand = new AsyncCommand<CancellationToken?>(c => {
                     return TryAsync(async () => {
+                        if (_client.UserId == null || LoggedInAs == null || !LoggedInAs.IsVirtual) throw new Exception("Can’t upgrade user");
+
                         var upgradeRun = ++_upgradeRun;
                         var password = Prompt.Show("Choose a new password for your CM Workshop account:", "Verify CM Workshop account",
                                 comment: "After choosing a new password, you would need to verify it by passing Steam authentication.",
@@ -182,18 +187,22 @@ namespace AcManager.Workshop {
                         if (string.IsNullOrEmpty(password)) return;
                         c?.ThrowIfCancellationRequested();
 
-                        await UpgradeUserAsync(password);
+                        var userPasswordChecksum = WorkshopClient.GetPasswordChecksum(_client.UserId, password);
+                        await UpgradeUserAsync(userPasswordChecksum);
                         c?.ThrowIfCancellationRequested();
 
                         await WaitForAuthenticationAsync(upgradeRun, c ?? default);
+                        if (LoggedInAs != null && !LoggedInAs.IsVirtual) {
+                            ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
+                        }
                     });
                 }));
 
-        public async Task UpgradeUserAsync(string userPassword) {
+        public async Task UpgradeUserAsync(string passwordChecksum) {
             if (_client.UserId == null || LoggedInAs == null || !LoggedInAs.IsVirtual) throw new Exception("Can’t upgrade user");
             await _client.RequestAsync<object, object>(new HttpMethod("PATCH"), $"/users/{_client.UserId}", new {
                 isVirtual = false,
-                passwordChecksum = WorkshopClient.GetPasswordChecksum(_client.UserId, userPassword)
+                passwordChecksum
             }, headers => {
                 if (headers.Location != null) {
                     WindowsHelper.ViewInBrowser(headers.Location);

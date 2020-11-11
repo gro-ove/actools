@@ -19,6 +19,87 @@
       <TextBlock Text="{Binding IsAccountVirtual, StringFormat='{}IsAccountVirtual: {0}'}" Style="{StaticResource Small}" />
     </StackPanel>
 
+    <!--
+    <mui:BooleanSwitch Value="{Binding IsAuthorizing}">
+
+
+      <mui:BooleanSwitch.True>
+        <mui:ModernProgressRing x:Name="ProgressRing" mui:FallbackSwitch.Value="{Binding IsAuthorizing}" Width="80" Height="80" VerticalAlignment="Center"
+            HorizontalAlignment="Center" IsActive="True" />
+      </mui:BooleanSwitch.True>
+
+      <mui:BooleanSwitch.False>
+
+        <mui:BooleanSwitch Value="{Binding IsWorkshopAvailable}">
+          <mui:BooleanSwitch.False>
+
+            <mui:SpacingStackPanel x:Name="NotAvailableMessage" mui:FallbackSwitch.Value="{Binding IsWorkshopAvailable}" mui:FallbackSwitch.When="False"
+                Spacing="8">
+              <DockPanel>
+                <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
+                    VerticalAlignment="Top" Margin="0 4 8 0" />
+                <TextBlock Margin="0 0 0 4" Text="CM Workshop is not available at the moment" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+                <TextBlock Text="Please, check your internet connection." Style="{StaticResource Small}" />
+              </DockPanel>
+              <mui:AsyncButton Command="{Binding RefreshCommand}" Content="Try again" />
+            </mui:SpacingStackPanel>
+
+          </mui:BooleanSwitch.False>
+          <mui:BooleanSwitch.True>
+
+            <mui:BooleanSwitch Value="{Binding IsAuthorized}">
+              <mui:BooleanSwitch.False>
+
+                <mui:SpacingStackPanel x:Name="AuthorizationForm" mui:FallbackSwitch.Value="{Binding IsAuthorized}" mui:FallbackSwitch.When="False" Tag="" Spacing="8">
+                  ~1~ Tag stores raw password. This way, it won’t be kept in memory once authorization form has been closed. @1@
+
+                  <mui:SpacingStackPanel Spacing="4">
+                    ~1~<DockPanel>
+            <TextBlock Text="Steam ID:" Width="80" Style="{StaticResource Label}" />
+            <mui:BetterTextBox Placeholder="?" Text="{Binding SteamId}" />
+          </DockPanel>@1@
+                    <DockPanel>
+                      <TextBlock Text="Password:" Width="80" Style="{StaticResource Label}" />
+                      <mui:ProperPasswordBox Placeholder="Empty"
+                          Password="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType=mui:SpacingStackPanel, AncestorLevel=2}}" />
+                    </DockPanel>
+                  </mui:SpacingStackPanel>
+
+                  <DockPanel Visibility="{Binding LastError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse|hidden'}">
+                    <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
+                        VerticalAlignment="Top" Margin="0 4 8 0" />
+                    <TextBlock Margin="0 0 0 4" Text="Error:" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+                    <TextBlock Text="{Binding LastError}" Style="{StaticResource Small}" />
+                  </DockPanel>
+
+                  <DockPanel>
+                    <mui:AsyncButton Content="Reset password" Command="{Binding ResetPasswordCommand}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+                    <mui:AsyncButton Content="Log in" Command="{Binding AuthorizeCommand}"
+                        CommandParameter="{Binding Tag, RelativeSource={RelativeSource FindAncestor, AncestorType=mui:SpacingStackPanel, AncestorLevel=1}}" />
+                  </DockPanel>
+
+                </mui:SpacingStackPanel>
+
+              </mui:BooleanSwitch.False>
+              <mui:BooleanSwitch.True>
+
+                <mui:SpacingStackPanel x:Name="AuthorizedForm" mui:FallbackSwitch.Value="{Binding IsAccountVirtual}" Spacing="8">
+                  <TextBlock Text="{Binding LoggedInAs.Username, StringFormat='{}Signed in as {0}'}" />
+                  <TextBlock Text="This account is not fully registered, you need to set a password first" />
+                  <mui:AsyncButton Content="Set password" Command="{Binding UpgradeUserCommand}" />
+                </mui:SpacingStackPanel>
+
+              </mui:BooleanSwitch.True>
+            </mui:BooleanSwitch>
+
+
+          </mui:BooleanSwitch.True>
+        </mui:BooleanSwitch>
+      </mui:BooleanSwitch.False>
+
+    </mui:BooleanSwitch>
+    -->
+
     <mui:FallbackSwitch>
       <mui:ModernProgressRing x:Name="ProgressRing" mui:FallbackSwitch.Value="{Binding IsAuthorizing}" Width="80" Height="80" VerticalAlignment="Center"
           HorizontalAlignment="Center" IsActive="True" />
@@ -63,7 +144,7 @@
 
       </mui:SpacingStackPanel>
 
-      <mui:SpacingStackPanel x:Name="AuthorizatedForm" mui:FallbackSwitch.Value="{Binding IsAccountVirtual}" Spacing="8">
+      <mui:SpacingStackPanel x:Name="AuthorizedForm" mui:FallbackSwitch.Value="{Binding IsAccountVirtual}" Spacing="8">
         <TextBlock Text="{Binding LoggedInAs.Username, StringFormat='{}Signed in as {0}'}" />
         <TextBlock Text="This account is not fully registered, you need to set a password first" />
         <mui:AsyncButton Content="Set password" Command="{Binding UpgradeUserCommand}" />
