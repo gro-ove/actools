@@ -192,8 +192,8 @@
     <value>Настройки</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Открыть в кастомном шоуруме</value>
-  <alternative>Открыть в пользовательском демонстрационном зале</alternative></data>
+    <value>Открыть в пользовательском выставочном зале</value>
+  <alternative>Открыть в пользовательском демонстрационном зале</alternative><alternative>Открыть в кастомном шоуруме</alternative></data>
   <data name="Video_CannotPlay" xml:space="preserve">
     <value>Не получится проиграть видео</value>
   </data>
@@ -946,5 +946,17 @@ LOD в: [b]{9}[/b]
   </data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
     <value>Родительский автомобиль (если он установлен, этот автомобиль будет его настроенной версией)</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Градусы</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>Перейти к выбранному (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>Что это?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Рейтинг:</value>
   </data>
 </root>

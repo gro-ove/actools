@@ -922,8 +922,8 @@
     <value>隐藏车手模型</value>
   </data>
   <data name="Common_RoundPostfix" xml:space="preserve">
-    <value> 圈</value>
-  </data>
+    <value>圈</value>
+  <alternative> 圈</alternative></data>
   <data name="Common_FahrenheitPostfix" xml:space="preserve">
     <value> 华氏度</value>
   </data>
@@ -959,5 +959,8 @@
   </data>
   <data name="Common_ScrollToSelected" xml:space="preserve">
     <value>滚动到选定的（Ctrl + Shift + V）</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>这是什么？</value>
   </data>
 </root>

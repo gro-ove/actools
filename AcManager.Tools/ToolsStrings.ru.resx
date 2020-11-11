@@ -1057,8 +1057,8 @@
     <value>Не удалось обновить</value>
   </data>
   <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
-    <value>файл не найден</value>
-  </data>
+    <value>Файл не найден</value>
+  <alternative>файл не найден</alternative></data>
   <data name="Settings_DefaultPlayerName" xml:space="preserve">
     <value>Игрок</value>
   </data>
@@ -1463,5 +1463,290 @@
   </data>
   <data name="CarSetupObject_Load_InvalidLocation" xml:space="preserve">
     <value>Неверное расположение</value>
+  </data>
+  <data name="JumpStart_DriveThrough" xml:space="preserve">
+    <value>Проехать мимо</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
+    <value>Не удается включить звук</value>
+  </data>
+  <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
+    <value>Убедитесь, что сейчас нет запущенных приложений с выставочным залом</value>
+  </data>
+  <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
+    <value>Не удается подключиться к удаленному серверу</value>
+  </data>
+  <data name="LogHelper_DriverIsMissing" xml:space="preserve">
+    <value>Модель водителя возможно отсутствует</value>
+  </data>
+  <data name="LogHelper_PasswordIsInvalid" xml:space="preserve">
+    <value>Пароль неверный</value>
+  </data>
+  <data name="LogHelper_SuspensionIsMissing" xml:space="preserve">
+    <value>Объекты подвески (SUSP_LF, SUSP_LR, ...) отсутствуют</value>
+  </data>
+  <data name="LogHelper_WheelsAreMissing" xml:space="preserve">
+    <value>Объекты колёс (WHEEL_LF, WHEEL_LR, ...) отсутствуют</value>
+  </data>
+  <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
+    <value>Режим Тайм-Аттак не поддерживается выбранной трассой</value>
+  </data>
+  <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
+    <value>Стандартный фильтр постобработки (default.ini) отсутствует, но требуется</value>
+  </data>
+  <data name="LogHelper_PpFilterIsMissing" xml:space="preserve">
+    <value>Фильтр постобработки "{0}" отсутствует</value>
+  </data>
+  <data name="LogHelper_ShaderIsMissing" xml:space="preserve">
+    <value>Шейдер "{0}" отсутствует (Мог был быть убран в обновлении AC), модель нуждается в исправлении</value>
+  </data>
+  <data name="LogHelper_CloudsMightBeMissing" xml:space="preserve">
+    <value>Облака (content/texture/clouds) отсутствуют</value>
+  </data>
+  <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
+    <value>Распакованная версия не поддерживает автообновление.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdateApp" xml:space="preserve">
+    <value>Не удалось обновить приложение</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied" xml:space="preserve">
+    <value>Доступ запрещен</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Commentary" xml:space="preserve">
+    <value>Не удалось обновить приложение из-за отсутствия разрешений. Пожалуйста, обновите его вручную.</value>
+  </data>
+  <data name="AppUpdater_CannotLoad" xml:space="preserve">
+    <value>Не удалось загрузить новую версию</value>
+  </data>
+  <data name="AppUpdater_CannotLoad_Commentary" xml:space="preserve">
+    <value>Убедитесь, что подключение к интернету доступно и приложение имеет права на запись в свою папку.</value>
+  </data>
+  <data name="AppUpdater_AccessIsDenied_Short" xml:space="preserve">
+    <value>Не удалось обновить приложение из-за отсутствия разрешений. </value>
+  </data>
+  <data name="AppUpdater_CannotLoadShort" xml:space="preserve">
+    <value>Не удалось загрузить новую версию.</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_HelpNeeded" xml:space="preserve">
+    <value>Не удалось удалить оригинальный файл "{0}" для установки обновления. Попробуйте убрать его самостоятельно и запустить "{1}".</value>
+  </data>
+  <data name="AppUpdater_CannotUpdate_Message" xml:space="preserve">
+    <value>Не удалось обновиться: {0}. Извините, но вам придётся обновить самостоятельно.</value>
+  </data>
+  <data name="Shared_CarSetup" xml:space="preserve">
+    <value>Настройки авто</value>
+  </data>
+  <data name="Shared_ControlsPreset" xml:space="preserve">
+    <value>Пресет управления</value>
+  </data>
+  <data name="Shared_QuickDrivePreset" xml:space="preserve">
+    <value>Пресет Quick Drive</value>
+  </data>
+  <data name="SharingHelper_CannotGetShared" xml:space="preserve">
+    <value>Не удалось получить общую запись</value>
+  </data>
+  <data name="SharingHelper_NotSupported" xml:space="preserve">
+    <value>Не удается получить общую запись, ее тип “{0}” не поддерживается</value>
+  </data>
+  <data name="AcObject_NotValidAnymore" xml:space="preserve">
+    <value>Больше не действует</value>
+  </data>
+  <data name="Online_Server_NotImplemented" xml:space="preserve">
+    <value>Не реализовать.</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsRequired" xml:space="preserve">
+    <value>Требуется пароль</value>
+  </data>
+  <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
+    <value>Пароль неверный</value>
+  </data>
+  <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
+    <value>Экстрактор не был инициализирован</value>
+  </data>
+  <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
+    <value>Извините, но {0} шифрование не поддерживается</value>
+  </data>
+  <data name="Installator_UpdateEverything" xml:space="preserve">
+    <value>Обновление поверх существующих файлов</value>
+  </data>
+  <data name="Installator_RemoveExistingFirst" xml:space="preserve">
+    <value>Чистая установка</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformation" xml:space="preserve">
+    <value>Обновление поверх существующих файлов, сохраняя информацию интерфейса</value>
+  </data>
+  <data name="ContentInstallation_KeepSkinsPreviews" xml:space="preserve">
+    <value>Обновление поверх существующих файлов, сохраняя превью скинов</value>
+  </data>
+  <data name="ContentInstallation_KeepUiInformationAndSkinsPreviews" xml:space="preserve">
+    <value>Обновление поверх существующих файлов, сохраняя информацию интерфейса и превью скинов</value>
+  </data>
+  <data name="Installator_KeepSkinPreview" xml:space="preserve">
+    <value>Обновление поверх существующих файлов, сохраняя превью скина</value>
+  </data>
+  <data name="Installator_KeepUiInformationAndSkinPreview" xml:space="preserve">
+    <value>Обновление поверх существующих файлов, сохраняя информацию интерфейса и превью скина</value>
+  </data>
+  <data name="DirectLoader_AcClubChanged" xml:space="preserve">
+    <value>AssettoCorsa.club изменился.</value>
+  </data>
+  <data name="DirectLoader_RecursionDetected" xml:space="preserve">
+    <value>Рекурсия обнаружена</value>
+  </data>
+  <data name="DirectLoader_AssettoDbChanged" xml:space="preserve">
+    <value>Assetto-DB.com изменился.</value>
+  </data>
+  <data name="DirectLoader_GoogleDriveChanged" xml:space="preserve">
+    <value>Google Drive изменился.</value>
+  </data>
+  <data name="Settings_Starter_Tricky" xml:space="preserve">
+    <value>Хитро</value>
+  </data>
+  <data name="Uploader_RequestFailed" xml:space="preserve">
+    <value>Запрос не удался</value>
+  </data>
+  <data name="Uploader_CannotUploadToGoogleDrive" xml:space="preserve">
+    <value>Не удается загрузить файл на Google Drive</value>
+  </data>
+  <data name="Uploader_CannotShareGoogleDrive" xml:space="preserve">
+    <value>Не удается опубликовать файл Google Drive</value>
+  </data>
+  <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
+    <value>Ливрея скина ({0}/livery.png) отсутствует</value>
+  </data>
+  <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
+    <value>Превью скина ({0}/preview.jpg) отсутствует</value>
+  </data>
+  <data name="AcObject_CannotClone" xml:space="preserve">
+    <value>Не удается клонировать объект</value>
+  </data>
+  <data name="AcObject_CannotClone_Commentary" xml:space="preserve">
+    <value>Будьте уверены, что у вас достаточно емста на диске.</value>
+  </data>
+  <data name="Common_CannotReadData" xml:space="preserve">
+    <value>Не удалось прочитать данные</value>
+  </data>
+  <data name="AcObject_CannotGetId" xml:space="preserve">
+    <value>Не удется получить ID из пути</value>
+  </data>
+  <data name="JumpStartPenalty_DriveThrough" xml:space="preserve">
+    <value>Проезжая часть</value>
+  </data>
+  <data name="RaceGrid_CannotUpdate" xml:space="preserve">
+    <value>Невозможно обновить гоночную сетку</value>
+  </data>
+  <data name="Common_SyntaxErrorFormat" xml:space="preserve">
+    <value>Синтаксическая ошибка: {0}</value>
+  </data>
+  <data name="RaceGrid_InvalidScriptResult" xml:space="preserve">
+    <value>Скрипт должен вернуть функцию фильтрации</value>
+  </data>
+  <data name="RaceGrid_Random" xml:space="preserve">
+    <value>Случайно</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing" xml:space="preserve">
+    <value>Гоночная сетка отсуствует</value>
+  </data>
+  <data name="RaceGrid_GridModeIsMissing_Commentary" xml:space="preserve">
+    <value>Невозможно найти режим гоночной сетки с ID "{0}"</value>
+  </data>
+  <data name="Common_LuaFailed" xml:space="preserve">
+    <value>Невозможно инциализировать Lua</value>
+  </data>
+  <data name="Settings_Starter_Official_Description" xml:space="preserve">
+    <value>Официальны путь от Kunos; может быть медленным и ненадежным, но не требует патча</value>
+  </data>
+  <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
+    <value>Хитрый путь запуска гонки; один из самых быстрых, но не работает без запущенного Steam или без интернет соединения</value>
+  </data>
+  <data name="Settings_Starter_UiModule_Description" xml:space="preserve">
+    <value>Добавляет специальный модуль интерфейса в оригинальный лаунчер, который слушает указания и запускает гонку; используйте это если вам нужно использовать оба: Content Manager и оригинальный лаунчер в то же время</value>
+  </data>
+  <data name="Settings_Starter_StarterPlus_Description" xml:space="preserve">
+    <value>Модифицированная версия оригинального лаунчера, устарело с релиза версии 1.7</value>
+  </data>
+  <data name="Settings_Starter_Naive_Description" xml:space="preserve">
+    <value>Просто пытается запустить acs.exe непосредственно; в большинстве случаев потерпит неудачу</value>
+  </data>
+  <data name="MagickNet_CannotLoad" xml:space="preserve">
+    <value>Невозможно загрузить изображение используя Magick.NET</value>
+  </data>
+  <data name="MagickNet_CannotLoad_Commentary" xml:space="preserve">
+    <value>Пожалуйста попробуйте сделать изображение чуть меньше.</value>
+  </data>
+  <data name="SyntaxError_Packed" xml:space="preserve">
+    <value>Синтаксическая ошибка в запакованном {0} в {1} строке</value>
+  </data>
+  <data name="SyntaxError_Unpacked" xml:space="preserve">
+    <value>Синтаксическая ошибка в {0} в {1} строке</value>
+  </data>
+  <data name="SyntaxError_Commentary" xml:space="preserve">
+    <value>Файл всё ещё анализируется, но некоторые значения могут быть пропущены.</value>
+  </data>
+  <data name="Settings_Starter_UiModule_JustInstalled" xml:space="preserve">
+    <value>Модуль интерфейса "CM Helper" установлен и активирован. Не забывайте перезагрузить AssettoCorsa.exe до гонки!</value>
+  </data>
+  <data name="ServerPreset_UnpackedDataWarning_Title" xml:space="preserve">
+    <value>Данные не зашифрованы</value>
+  </data>
+  <data name="Car_ReplaceSound_WrongCar" xml:space="preserve">
+    <value>Выбранное авто не имеет надлежащего звука</value>
+  </data>
+  <data name="Online_YouAreBookedOnThisServer" xml:space="preserve">
+    <value>Вы забронированы на этот сервер</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Лучшие круги:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Лучший круг:</value>
+  </data>
+  <data name="Common_DistanceLarge_Format" xml:space="preserve">
+    <value>{0:F1} км</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>фут/с</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>м/с</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value> кг</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Балласт</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Ограничитель</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>Организовать силу ИИ базированную на соотношении P/W</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Рандомизация:</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Показывать относительный диапазон </value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Показывать агрессию ИИ в имени водителя.</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Агрессия оппонентов</value>
+  </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value> Гц</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Загрузка списка игроков...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Загрузка авто ({0})...</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Загрузка {0} скинов...</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Загрузка актуальной информации о сервере...</value>
   </data>
 </root>

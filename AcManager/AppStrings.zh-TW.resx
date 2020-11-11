@@ -609,14 +609,14 @@
     <value>精緻展示廳：</value>
   <alternative>高特效展廳:</alternative></data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
-    <value>使用高動態範圍（HDR）</value>
-  <alternative>使用高光特效</alternative></data>
+    <value>啟用HDR</value>
+  <alternative>使用高光特效</alternative><alternative>使用高動態範圍（HDR）</alternative></data>
   <data name="Settings_CustomShowroom_Msaa" xml:space="preserve">
-    <value>使用多重採樣抗鋸齒（MSAA）</value>
-  <alternative>使用多重採樣抗鋸齒</alternative></data>
+    <value>啟用MSAA</value>
+  <alternative>使用多重採樣抗鋸齒</alternative><alternative>使用多重採樣抗鋸齒（MSAA）</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
-    <value>使用快速近似抗鋸齒（FXAA）</value>
-  <alternative>使用快速近似抗鋸齒</alternative></data>
+    <value>啟用FXAA</value>
+  <alternative>使用快速近似抗鋸齒</alternative><alternative>使用快速近似抗鋸齒（FXAA）</alternative></data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
     <value>預設展示廳：</value>
   <alternative>默認展廳:</alternative></data>
@@ -2250,8 +2250,8 @@
     <value>⋯⋯制動馬力</value>
   <alternative>...馬力</alternative></data>
   <data name="CarSpecs_Torque_FormatTooltip" xml:space="preserve">
-    <value>⋯⋯牛公尺</value>
-  <alternative>...牛米</alternative></data>
+    <value>⋯⋯牛頓米</value>
+  <alternative>...牛米</alternative><alternative>⋯⋯牛公尺</alternative></data>
   <data name="CarSpecs_Weight_FormatTooltip" xml:space="preserve">
     <value>⋯⋯公斤</value>
   <alternative>...千克</alternative></data>
@@ -2307,8 +2307,8 @@
     <value>根據車輛數據重新計算</value>
   </data>
   <data name="CarSpecs_SetPowerCurve" xml:space="preserve">
-    <value>設定外特性曲線</value>
-  <alternative>設置外特性曲線</alternative></data>
+    <value>設定動力曲線</value>
+  <alternative>設置外特性曲線</alternative><alternative>設定外特性曲線</alternative></data>
   <data name="CarSpecs_CopyNewPowerAndTorque" xml:space="preserve">
     <value>是否複製新的扭矩和制動馬力數值？</value>
   <alternative>是否複製新的扭矩和馬力數值?</alternative></data>
@@ -2319,23 +2319,23 @@
     <value>您需要首先設定功率和扭矩數值</value>
   <alternative>你需要首先設定功率和扭矩數值</alternative></data>
   <data name="CarSpecs_ScaleCurvesToPowerTorqueHeader" xml:space="preserve">
-    <value>通過馬力和扭矩數據歸一化外特性曲線</value>
-  </data>
+    <value>依馬力和扭矩數據縮放曲線</value>
+  <alternative>通過馬力和扭矩數據歸一化外特性曲線</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorqueHeader" xml:space="preserve">
-    <value>使用車輛數據以及功率扭矩數值重新計算外特性曲線</value>
-  </data>
+    <value>使用車輛數據以及功率扭矩數值重新計算動力曲線</value>
+  <alternative>使用車輛數據以及功率扭矩數值重新計算外特性曲線</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataOnlyHeader" xml:space="preserve">
-    <value>只使用車輛數據重新計算外特性曲線</value>
-  </data>
+    <value>只使用車輛數據重新計算動力曲線</value>
+  <alternative>只使用車輛數據重新計算外特性曲線</alternative></data>
   <data name="CarSpecs_ScaleCurvesToPowerTorque_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會重新歸一化以配合ui_car.json中設定的功率和扭矩數值（您可以在上面看到效果）</value>
-  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中設定的功率和扭矩數值(你可以在上面看到效果)</alternative></data>
+    <value>曲線將被縮放，以配合來自ui_car.json的功率和扭矩值（您可以在上面看到效果）</value>
+  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中設定的功率和扭矩數值(你可以在上面看到效果)</alternative><alternative>外特性曲線將會重新歸一化以配合ui_car.json中設定的功率和扭矩數值（您可以在上面看到效果）</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataAndPowerTorque_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會重新歸一化以配合ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</value>
-  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</alternative></data>
+    <value>動力曲線將根據ui_car.json中的engine.ini、power.lut和馬力及扭矩數值</value>
+  <alternative>外特性曲線將會重新歸一化以匹配ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</alternative><alternative>外特性曲線將會重新歸一化以配合ui_car.json中的engine.ini,power.lut和馬力及扭矩數值</alternative></data>
   <data name="CarSpecs_RecalculateCurvesUsingDataOnly_Tooltip" xml:space="preserve">
-    <value>外特性曲線將會根據engine.ini重新計算，但是您需要提供變速箱能量損失數據</value>
-  <alternative>外特性曲線將會根據engine.ini重新計算,但是你需要提供變速箱能量損失數據</alternative></data>
+    <value>曲線將會根據engine.ini重新計算，但是您需要提供變速箱能量損失數據</value>
+  <alternative>外特性曲線將會根據engine.ini重新計算,但是你需要提供變速箱能量損失數據</alternative><alternative>外特性曲線將會根據engine.ini重新計算，但是您需要提供變速箱能量損失數據</alternative></data>
   <data name="CarSpecs_TransmissionLossTitle" xml:space="preserve">
     <value>變速箱能量損失 {0}</value>
   </data>
@@ -2767,8 +2767,8 @@
     <value>對手音量</value>
   </data>
   <data name="AcSettings_Audio_Ui" xml:space="preserve">
-    <value>用戶界面</value>
-  </data>
+    <value>使用者介面</value>
+  <alternative>用戶界面</alternative></data>
   <data name="AcSettings_Audio_LatencyLabel_Tooltip" xml:space="preserve">
     <value>如果您遇到聲音問題，切換到「低」或者「普通」</value>
   <alternative>如果聲音有問題,切換到低或者普通級別</alternative></data>
@@ -3142,8 +3142,8 @@
     <value>聯絡我們：</value>
   <alternative>聯繫我們:</alternative></data>
   <data name="About_DeveloperMode" xml:space="preserve">
-    <value>允許開發者模式？</value>
-  <alternative>允許開發者模式?</alternative></data>
+    <value>啟用開發者模式？</value>
+  <alternative>允許開發者模式?</alternative><alternative>允許開發者模式？</alternative></data>
   <data name="About_DeveloperMode_Title" xml:space="preserve">
     <value>開發者模式</value>
   </data>
@@ -3151,8 +3151,8 @@
     <value>描述一下問題。如果您想得到回覆，請留下聯絡方式，幫助我們解決問題。</value>
   <alternative>請描述您遇到的問題,如果希望得到回覆或者希望能協助解決問題,請留下聯繫方式</alternative></data>
   <data name="About_ReportAnIssue_Title" xml:space="preserve">
-    <value>遇到了什麼問題？</value>
-  <alternative>問題是什麼?</alternative></data>
+    <value>您遇到了什麼問題？</value>
+  <alternative>問題是什麼?</alternative><alternative>遇到了什麼問題？</alternative></data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
     <value>日誌檔案已經發送</value>
   <alternative>日誌文件已經發送</alternative></data>
@@ -4288,5 +4288,35 @@
   </data>
   <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
     <value>影像設定（幀數計）</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+    <value>要在開始功能表中建立捷徑嗎？</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>動力曲線圖</value>
+  </data>
+  <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+    <value>更換輪胎</value>
+  </data>
+  <data name="Settings_Content_CarSkins" xml:space="preserve">
+    <value>車輛塗裝：</value>
+  </data>
+  <data name="Settings_Content_EMail" xml:space="preserve">
+    <value>電子郵件</value>
+  </data>
+  <data name="Settings_Content_LogIn" xml:space="preserve">
+    <value>登入</value>
+  </data>
+  <data name="Settings_Content_LogOut" xml:space="preserve">
+    <value>登出</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+    <value>Mega.nz登入憑證：</value>
+  </data>
+  <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+    <value>控制：</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+    <value>將先前的預覽圖移至回收桶</value>
   </data>
 </root>

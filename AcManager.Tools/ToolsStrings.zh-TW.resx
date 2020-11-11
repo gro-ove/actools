@@ -1105,11 +1105,11 @@
     <value>請確保有足夠儲存空間</value>
   <alternative>請確保有足夠存儲空間</alternative></data>
   <data name="Units_BHP" xml:space="preserve">
-    <value>馬力</value>
-  </data>
+    <value>馬力（BHP）</value>
+  <alternative>馬力</alternative></data>
   <data name="Units_Nm" xml:space="preserve">
-    <value>牛頓公尺</value>
-  <alternative>牛米</alternative></data>
+    <value>扭力（Nm）</value>
+  <alternative>牛米</alternative><alternative>牛頓公尺</alternative></data>
   <data name="Common_Power" xml:space="preserve">
     <value>功率</value>
   </data>
@@ -1390,8 +1390,8 @@
     <value>在車輛加速時最大化抓地力</value>
   </data>
   <data name="Assists_TyreBlankets" xml:space="preserve">
-    <value>暖胎毯</value>
-  </data>
+    <value>暖胎包</value>
+  <alternative>暖胎毯</alternative></data>
   <data name="Assists_TyreBlankets_Tooltip" xml:space="preserve">
     <value>在維修區內暖胎</value>
   </data>
@@ -1731,5 +1731,8 @@
   </data>
   <data name="Race_ShowRelativeRange" xml:space="preserve">
     <value>顯示關聯範圍</value>
+  </data>
+  <data name="Units_RPM" xml:space="preserve">
+    <value>引擎轉速（RPM）</value>
   </data>
 </root>

@@ -121,11 +121,8 @@
     <value>アイデア、問題、または簡単な質問がある場合は、次のリンクを使用してお問い合わせください: [url="https://trello.com/b/MwqpL8Bw/content-manager"]Trello[/url] or [url="https://trello.com/c/w5xT6ssZ/49-contacts"]他の手段[/url].</value>
   </data>
   <data name="About_ContactUsHeader" xml:space="preserve">
-    <value>お問い合わせ：</value>
-  </data>
-  <data name="About_Copyright" xml:space="preserve">
-    <value>Copyright © 2016 AcClub. All rights reserved.</value>
-  </data>
+    <value>お問い合わせ:</value>
+  <alternative>お問い合わせ：</alternative></data>
   <data name="About_Description" xml:space="preserve">
     <value>[url="http://www.assettocorsa.net/"]Assetto Corsa[/url]用のカスタムランチャーおよびコンテンツ管理アプリ</value>
   </data>
@@ -140,8 +137,8 @@
  Content Manager [url="/Pages/About/License.xaml|_top"]ライセンス[/url].</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>すべて既読にします</value>
-  </data>
+    <value>すべて既読</value>
+  <alternative>すべて既読にします</alternative></data>
   <data name="About_MoreInformation" xml:space="preserve">
     <value>詳細情報</value>
   </data>
@@ -155,11 +152,11 @@
     <value>問題を報告する</value>
   </data>
   <data name="About_ReportAnIssue_CannotSend" xml:space="preserve">
-    <value>ログを送信することができません</value>
-  </data>
+    <value>ログを送信できません</value>
+  <alternative>ログを送信することができません</alternative></data>
   <data name="About_ReportAnIssue_Prompt" xml:space="preserve">
-    <value>問題を説明してください、そして私たちがあなたに連絡できるリンクを残してください。そうでない場合は、我々は対応できない場合があります。</value>
-  </data>
+    <value>問題を説明して解決のための返信が必要な場合はの連絡先を記載して下さい。</value>
+  <alternative>問題を説明してください、そして私たちがあなたに連絡できるリンクを残してください。そうでない場合は、我々は対応できない場合があります。</alternative></data>
   <data name="About_ReportAnIssue_Sent" xml:space="preserve">
     <value>ログが送信されました!</value>
   </data>
@@ -170,8 +167,8 @@
     <value>問題は何ですか?</value>
   </data>
   <data name="About_ThanksForTranslationHeader" xml:space="preserve">
-    <value>次の翻訳に感謝します:</value>
-  </data>
+    <value>翻訳者に感謝:</value>
+  <alternative>次の翻訳に感謝します:</alternative></data>
   <data name="About_VersionFormat" xml:space="preserve">
     <value>バージョン:{0}</value>
   </data>
@@ -260,8 +257,8 @@
     <value>天気:</value>
   </data>
   <data name="AcObject_WeatherUseAsLabel" xml:space="preserve">
-    <value>使用：</value>
-  </data>
+    <value>使用:</value>
+  <alternative>使用：</alternative></data>
   <data name="AcRoot_FolderIsUnacceptable" xml:space="preserve">
     <value>そのフォルダは無効です。</value>
   </data>
@@ -329,11 +326,11 @@
     <value>視野(FoV)</value>
   </data>
   <data name="AcSettings_FieldOfView_Tooltip" xml:space="preserve">
-    <value>これは、カメラを通して見える世界の範囲です。</value>
-  </data>
+    <value>カメラの視野角。</value>
+  <alternative>これは、カメラを通して見える世界の範囲です。</alternative></data>
   <data name="AcSettings_GhostCar" xml:space="preserve">
-    <value>ゴーストカー</value>
-  </data>
+    <value>ゴーストカー:</value>
+  <alternative>ゴーストカー</alternative></data>
   <data name="AcSettings_GhostCar_MaxOpacityAt" xml:space="preserve">
     <value>完全な不透明度</value>
   </data>
@@ -347,8 +344,8 @@
     <value>最小フェード距離</value>
   </data>
   <data name="AcSettings_Mirrors" xml:space="preserve">
-    <value>ミラー</value>
-  </data>
+    <value>ミラー:</value>
+  <alternative>ミラー</alternative></data>
   <data name="AcSettings_Mirrors_RenderingDistance" xml:space="preserve">
     <value>レンダリング距離</value>
   </data>
@@ -356,8 +353,8 @@
     <value>その他</value>
   </data>
   <data name="AcSettings_ProximityIndicator" xml:space="preserve">
-    <value>近接インジケータ</value>
-  </data>
+    <value>近接インジケータ:</value>
+  <alternative>近接インジケータ</alternative></data>
   <data name="AcSettings_ProximityIndicator_ShowNearestOpponents" xml:space="preserve">
     <value>最も近い相手を表示する</value>
   </data>
@@ -404,14 +401,14 @@
     <value>フリーカメラを許可</value>
   </data>
   <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
-    <value>マップ内を自由に移動できます。 有効にするには、F7を押します。</value>
-  </data>
+    <value>F7を押してマップ内を自由に移動できます。</value>
+  <alternative>マップ内を自由に移動できます。 有効にするには、F7を押します。</alternative></data>
   <data name="AcSettings_System_Logging" xml:space="preserve">
     <value>ログインする(推奨)</value>
   </data>
   <data name="AcSettings_System_ScreenshotsFormatLabel" xml:space="preserve">
-    <value>スクリーンショットフォーマット:</value>
-  </data>
+    <value>スクリーンショットの形式:</value>
+  <alternative>スクリーンショットフォーマット:</alternative></data>
   <data name="AcSettings_System_ScreenshotsQuality" xml:space="preserve">
     <value>Magick.NETプラグインをインストールし、.bmpを切り替えます。設定/ドライブページで自動変換を有効にすることを忘れないでください。</value>
   </data>
@@ -425,20 +422,20 @@
     <value>ビデオ</value>
   </data>
   <data name="AcSettings_Video_AllowDirectX10" xml:space="preserve">
-    <value>サポートされていないDirectX 10を許可する(高度な実験的機能、自己責任で使用)</value>
-  </data>
+    <value>サポートされていないDirectX 10を許可する(実験的機能、自己責任)</value>
+  <alternative>サポートされていないDirectX 10を許可する(高度な実験的機能、自己責任で使用)</alternative></data>
   <data name="AcSettings_Video_AnitrosopicFilteringLabel" xml:space="preserve">
     <value>異方性フィルタリング:</value>
   </data>
   <data name="AcSettings_Video_AntiAliasingLabel" xml:space="preserve">
-    <value>アンチエイリアシング:</value>
-  </data>
+    <value>アンチエイリアシング(MSAA):</value>
+  <alternative>アンチエイリアシング:</alternative></data>
   <data name="AcSettings_Video_Benchmark" xml:space="preserve">
     <value>ベンチマーク</value>
   </data>
   <data name="AcSettings_Video_Benchmark_Tooltip" xml:space="preserve">
-    <value>ここでゲームの設定をテストします（Ctrl + G）</value>
-  </data>
+    <value>ゲームの設定をテストします(Ctrl + G)</value>
+  <alternative>ここでゲームの設定をテストします（Ctrl + G）</alternative></data>
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
     <value>薄明光線</value>
   </data>
@@ -455,14 +452,14 @@
     <value>自動的に最適な解像度に変更</value>
   </data>
   <data name="AcSettings_Video_Framerate" xml:space="preserve">
-    <value>フレームレート（FPS）</value>
-  </data>
+    <value>フレームレート(FPS)</value>
+  <alternative>フレームレート（FPS）</alternative></data>
   <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
-    <value>全画面表示</value>
-  </data>
+    <value>フルスクリーン</value>
+  <alternative>全画面表示</alternative></data>
   <data name="AcSettings_Video_GlareQualityLabel" xml:space="preserve">
-    <value>グレアの質:</value>
-  </data>
+    <value>グレアの品質:</value>
+  <alternative>グレアの質:</alternative></data>
   <data name="AcSettings_Video_HeatShimmering" xml:space="preserve">
     <value>陽炎</value>
   </data>
@@ -479,11 +476,11 @@
     <value>最大フレーム遅延;ビデオカード設定による定義</value>
   </data>
   <data name="AcSettings_Video_MipLodBias" xml:space="preserve">
-    <value>MipLODバイアス</value>
-  </data>
+    <value>Mip LODバイアス</value>
+  <alternative>MipLODバイアス</alternative></data>
   <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
-    <value>整数値を設定して、画像をシャープにします。</value>
-  </data>
+    <value>負の値を設定して、遠いオブジェクトの品質を向上させます。</value>
+  <alternative>整数値を設定して、画像をシャープにします。</alternative></data>
   <data name="AcSettings_Video_MirrorResolutionLabel" xml:space="preserve">
     <value>ミラー解像度:</value>
   </data>
@@ -548,11 +545,11 @@
     <value>システム:</value>
   </data>
   <data name="AcSettings_Video_VerticalSyncronization" xml:space="preserve">
-    <value>V-Sync</value>
-  </data>
+    <value>垂直同期(VSync)</value>
+  <alternative>V-Sync</alternative></data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
-    <value>空間描写:</value>
-  </data>
+    <value>空間描写品質:</value>
+  <alternative>空間描写:</alternative></data>
   <data name="AcSettings_ViewAndUi" xml:space="preserve">
     <value>ビューとUI</value>
   </data>
@@ -566,14 +563,14 @@
     <value>展開できません</value>
   </data>
   <data name="AdditionalContent_CannotUnpack_Commentary" xml:space="preserve">
-    <value>アーカイブが破損しているか、読み取り専用であるか、または無効なパスワードと一致している可能性があります。</value>
-  </data>
+    <value>アーカイブが破損しているか、パスワードが間違っています。</value>
+  <alternative>アーカイブが破損しているか、読み取り専用であるか、または無効なパスワードと一致している可能性があります。</alternative></data>
   <data name="AdditionalContent_IdFormat" xml:space="preserve">
     <value>ID:{0}</value>
   </data>
   <data name="AdditionalContent_InputPassword_InvalidPrompt" xml:space="preserve">
-    <value>パスワードが無効です</value>
-  </data>
+    <value>パスワードが無効です、再試行して下さい:</value>
+  <alternative>パスワードが無効です</alternative></data>
   <data name="AdditionalContent_InputPassword_Prompt" xml:space="preserve">
     <value>このアーカイブは暗号化されています。パスワードを入力してください:</value>
   </data>
@@ -581,8 +578,8 @@
     <value>パスワードが必要です!</value>
   </data>
   <data name="AdditionalContent_Installing" xml:space="preserve">
-    <value>{0}のインストール...</value>
-  </data>
+    <value>{0}をインストール中...</value>
+  <alternative>{0}のインストール...</alternative></data>
   <data name="AdditionalContent_NothingFound" xml:space="preserve">
     <value>アーカイブが空です</value>
   </data>
@@ -611,8 +608,8 @@
     <value>現在のバージョン:{0}</value>
   </data>
   <data name="App_LocaleUpdated" xml:space="preserve">
-    <value>ロケールが更新されました!</value>
-  </data>
+    <value>翻訳が更新されました!</value>
+  <alternative>ロケールが更新されました!</alternative></data>
   <data name="App_LocaleUpdated_Details" xml:space="preserve">
     <value>変更を確認するにはアプリを再起動してください</value>
   </data>
@@ -632,17 +629,17 @@
     <value>新しいキーを入手!</value>
   </data>
   <data name="AppKey_InvalidKey" xml:space="preserve">
-    <value>そのキーは無効です。</value>
-  </data>
+    <value>そのキーは無効か不完全です。</value>
+  <alternative>そのキーは無効です。</alternative></data>
   <data name="AppKey_KeyRevoked_Message" xml:space="preserve">
-    <value>申し訳ありませんが、あなたの鍵は危険にさらされており、削除しなければなりませんでした。あなたは別のキーのために私達に連絡しますか?</value>
-  </data>
+    <value>申し訳ありませんが、あなたの鍵は危険にさらされており、無効化されました。私達に連絡して新しいキーを入手して下さい。</value>
+  <alternative>申し訳ありませんが、あなたの鍵は危険にさらされており、削除しなければなりませんでした。あなたは別のキーのために私達に連絡しますか?</alternative></data>
   <data name="AppKey_KeyRevoked_Title" xml:space="preserve">
-    <value>キーが削除されました！</value>
-  </data>
+    <value>キーが無効化されました！</value>
+  <alternative>キーが削除されました！</alternative></data>
   <data name="AppKey_KeyWasRevoked" xml:space="preserve">
-    <value>キーが削除されました。</value>
-  </data>
+    <value>キーが無効化されました。</value>
+  <alternative>キーが削除されました。</alternative></data>
   <data name="AppKey_PreRestart_Message" xml:space="preserve">
     <value>アプリが再起動します。サポートありがとうございます!
  
@@ -658,8 +655,8 @@
     <value>アプリキー</value>
   </data>
   <data name="AppKey_Tooltip" xml:space="preserve">
-    <value>このキーを誰とも共有しないでください。 削除される可能性があります！</value>
-  </data>
+    <value>このキーを誰とも共有しないでください。 無効化される可能性があります！</value>
+  <alternative>このキーを誰とも共有しないでください。 削除される可能性があります！</alternative></data>
   <data name="Arguments_CannotInstallAdditionalContent" xml:space="preserve">
     <value>アドオンをインストールできません。</value>
   </data>
@@ -697,8 +694,8 @@
     <value>適用＆保存</value>
   </data>
   <data name="Arguments_Shared_ApplyFfbOnly" xml:space="preserve">
-    <value>適用（FFBのみ）</value>
-  </data>
+    <value>適用(FFBのみ)</value>
+  <alternative>適用（FFBのみ）</alternative></data>
   <data name="Arguments_Shared_ApplyOnly" xml:space="preserve">
     <value>適用のみ</value>
   </data>
@@ -726,8 +723,8 @@
     <value>サポートされていないファイル形式:"{0}"</value>
   </data>
   <data name="BrandBadge_AddAs" xml:space="preserve">
-    <value>(ブランド名)の新しいバッジとして追加:</value>
-  </data>
+    <value>新しいバッジとして追加(ブランド名):</value>
+  <alternative>(ブランド名)の新しいバッジとして追加:</alternative></data>
   <data name="BrandBadge_CannotChange" xml:space="preserve">
     <value>ブランドのバッジは変更できません</value>
   </data>
@@ -759,8 +756,8 @@
     <value>スキン:{0}</value>
   </data>
   <data name="CarParent_Title" xml:space="preserve">
-    <value>Select Parent</value>
-  </data>
+    <value>親を選択</value>
+  <alternative>Select Parent</alternative></data>
   <data name="CarPreviews_AllEffects" xml:space="preserve">
     <value>すべてのエフェクトを有効にします</value>
   </data>
@@ -786,8 +783,8 @@
     <value>無効な車やスキンのプレビューを更新することはできません。</value>
   </data>
   <data name="CarPreviews_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>どうやらSweetFxは結果に影響しませんが、読み込み時間を短縮できます</value>
-  </data>
+    <value>SweetFxは結果に影響しませんが、読み込み時間を短縮できます</value>
+  <alternative>どうやらSweetFxは結果に影響しませんが、読み込み時間を短縮できます</alternative></data>
   <data name="CarPreviews_ExposureLabel" xml:space="preserve">
     <value>露光:</value>
   </data>
@@ -822,8 +819,8 @@
     <value>プレビューのサイズをKunosサイズ 1022×575に変更(強く推奨)</value>
   </data>
   <data name="CarPreviews_ShotIn4k" xml:space="preserve">
-    <value>2161×3840で撮影</value>
-  </data>
+    <value>4kで撮影(3840x2160)</value>
+  <alternative>2161×3840で撮影</alternative></data>
   <data name="CarPreviews_ShotIn4k_Tooltip" xml:space="preserve">
     <value>最高品質を有効にする</value>
   </data>
@@ -846,14 +843,14 @@
     <value>プレビューを更新</value>
   </data>
   <data name="CarSpecs_Acceleration_FormatTooltip" xml:space="preserve">
-    <value>…s 0-101</value>
-  </data>
+    <value>…s 0-100</value>
+  <alternative>…s 0-101</alternative></data>
   <data name="CarSpecs_Acceleration_Tooltip" xml:space="preserve">
     <value>0km/hから100km/hへの加速時間、推奨フォーマット:"{0}”</value>
   </data>
   <data name="CarSpecs_AccelerationLabel" xml:space="preserve">
-    <value>加速度：</value>
-  </data>
+    <value>加速度:</value>
+  <alternative>加速度：</alternative></data>
   <data name="CarSpecs_AutomaticallyRecalculatePwRatio" xml:space="preserve">
     <value>P/W比を自動的に再計算</value>
   </data>
@@ -1134,8 +1131,8 @@
     <value>リターン率</value>
   </data>
   <data name="Controls_SharedFfbOnly" xml:space="preserve">
-    <value>{0}（FFBのみ）</value>
-  </data>
+    <value>{0}(FFBのみ)</value>
+  <alternative>{0}（FFBのみ）</alternative></data>
   <data name="Controls_SharedFor_Keyboard" xml:space="preserve">
     <value>キーボード</value>
   </data>
@@ -1201,8 +1198,8 @@
  ただし、200 MBを無駄にしたくない場合:200 MB: TIFF Image, 96 bit per pixel, ZIP</value>
   </data>
   <data name="CreateShowroom_Panorama_Example" xml:space="preserve">
-    <value>このようなもの:</value>
-  </data>
+    <value>パノラマの例:</value>
+  <alternative>このようなもの:</alternative></data>
   <data name="CreateShowroom_PanoramaLabel" xml:space="preserve">
     <value>パノラマ:</value>
   </data>
@@ -1459,8 +1456,8 @@
     <value>完全に完了</value>
   </data>
   <data name="KunosCareer_LapsLabel" xml:space="preserve">
-    <value>ラップ：</value>
-  </data>
+    <value>ラップ:</value>
+  <alternative>ラップ：</alternative></data>
   <data name="KunosCareer_LeftToEarn" xml:space="preserve">
     <value>残りの収入:</value>
   </data>
@@ -1558,8 +1555,8 @@
     <value>光</value>
   </data>
   <data name="LiveryIcon_Number_LightOutlined" xml:space="preserve">
-    <value>（輪郭付き）光</value>
-  </data>
+    <value>(輪郭付き)光</value>
+  <alternative>（輪郭付き）光</alternative></data>
   <data name="LiveryIcon_NumberHeader" xml:space="preserve">
     <value>番号:</value>
   </data>
@@ -1567,11 +1564,11 @@
     <value>値</value>
   </data>
   <data name="LiveryIcon_ResultLabel" xml:space="preserve">
-    <value>結果:</value>
-  </data>
+    <value>レース結果:</value>
+  <alternative>結果:</alternative></data>
   <data name="LiveryIcon_SecondaryColorLabel" xml:space="preserve">
-    <value>2次色：</value>
-  </data>
+    <value>2次色:</value>
+  <alternative>2次色：</alternative></data>
   <data name="LiveryIcon_Shape_Carbon" xml:space="preserve">
     <value>カーボン</value>
   </data>
@@ -1654,8 +1651,8 @@
     <value>アプリ</value>
   </data>
   <data name="Main_CannotProcessArgument" xml:space="preserve">
-    <value>引数を処理できません</value>
-  </data>
+    <value>引数を処理できません: “{0}”</value>
+  <alternative>引数を処理できません</alternative></data>
   <data name="Main_CannotProcessArgument_Commentary" xml:space="preserve">
     <value>有効な形式であることを確認してください。</value>
   </data>
@@ -1684,8 +1681,8 @@
     <value>重要なヒント</value>
   </data>
   <data name="Main_Language" xml:space="preserve">
-    <value>言語</value>
-  </data>
+    <value>言語と地域</value>
+  <alternative>言語</alternative></data>
   <data name="Main_LapTimesGrid" xml:space="preserve">
     <value>ラップタイムグリッド</value>
   </data>
@@ -1762,16 +1759,18 @@
     <value>統計</value>
   </data>
   <data name="Main_Title" xml:space="preserve">
-    <value>コンテンツマネージャ（ライトモード）</value>
-  </data>
+    <value>コンテンツマネージャ(ライトモード)</value>
+  <alternative>コンテンツマネージャ（ライトモード）</alternative></data>
   <data name="Main_Tracks" xml:space="preserve">
     <value>トラック</value>
   </data>
   <data name="Main_UnhandledException" xml:space="preserve">
-    <value>未処理の例外：
+    <value>未処理の例外:
  
  {0}</value>
-  </data>
+  <alternative>未処理の例外：
+ 
+ {0}</alternative></data>
   <data name="Main_UnsavedChanges" xml:space="preserve">
     <value>次の項目の変更を保存しますか?</value>
   </data>
@@ -1842,14 +1841,14 @@
     <value>予約されているサーバーを表示</value>
   </data>
   <data name="Online_LeftLabel" xml:space="preserve">
-    <value>左：</value>
-  </data>
+    <value>左:</value>
+  <alternative>左：</alternative></data>
   <data name="Online_NothingToDisplay" xml:space="preserve">
     <value>表示するものがありません</value>
   </data>
   <data name="Online_PasswordLabel" xml:space="preserve">
-    <value>パスワード：</value>
-  </data>
+    <value>パスワード:</value>
+  <alternative>パスワード：</alternative></data>
   <data name="Online_Pinged" xml:space="preserve">
     <value>{1}から{0}にPingしました</value>
   </data>
@@ -1965,8 +1964,8 @@
     <value>リプレイを保存</value>
   </data>
   <data name="RaceResult_Threoretical" xml:space="preserve">
-    <value>理論：</value>
-  </data>
+    <value>理論:</value>
+  <alternative>理論：</alternative></data>
   <data name="RaceResult_TryAgain" xml:space="preserve">
     <value>再試行</value>
   </data>
@@ -2000,8 +1999,8 @@
     <value>Chromeライクなブラウザを使っているなら[url="https://chrome.google.com/webstore/detail/rsr-live-timing-content-m/gpapaefcdeoafonlilichclhkmnhalcc"]これ[/url]がブラウザから直接RSRイベントを開始するための拡張機能です。</value>
   </data>
   <data name="Rsr_ContentIsMissing_Commentary" xml:space="preserve">
-    <value>[URL = "https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]は、ここで[/ URL]（ダウンロードリンクは含まれています）RSRによって使用されるモッズのリストです。</value>
-  </data>
+    <value>[URL = "https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]は、ここで[/ URL](ダウンロードリンクは含まれています)RSRによって使用されるモッズのリストです。</value>
+  <alternative>[URL = "https://docs.google.com/document/d/18fOaz0jRqtOssWaSw7CvRF9x7acizD-jdChEHd6ot-0/edit"]は、ここで[/ URL]（ダウンロードリンクは含まれています）RSRによって使用されるモッズのリストです。</alternative></data>
   <data name="Rsr_InvalidParameters" xml:space="preserve">
     <value>無効なRSRパラメータ</value>
   </data>
@@ -2108,14 +2107,14 @@
     <value>情報検索:</value>
   </data>
   <data name="Settings_Content_LoadingConcurrency_Tooltip" xml:space="preserve">
-    <value>値を小さくすると、UIの応答性は向上しますが、ロード時間は短縮されます</value>
-  </data>
+    <value>値を小さくすると、UIの反応は良くなりますが、読み込み速度が低下します。</value>
+  <alternative>値を小さくすると、UIの応答性は向上しますが、ロード時間は短縮されます</alternative></data>
   <data name="Settings_Content_LoadingConcurrencyLabel" xml:space="preserve">
     <value>同時読み込み数:</value>
   </data>
   <data name="Settings_Content_LookAtWikipedia" xml:space="preserve">
-    <value>デフォルトでWikipediaを表示</value>
-  </data>
+    <value>検索結果にWikipediaだけを表示する</value>
+  <alternative>デフォルトでWikipediaを表示</alternative></data>
   <data name="Settings_Content_LookAtWikipedia_Tooltip" xml:space="preserve">
     <value>デフォルトで”site:wikipedia.org”を追加</value>
   </data>
@@ -2141,8 +2140,8 @@
     <value>可能な限り画面の中央に自動車を表示します(ただし、計算はあまり行いません)</value>
   </data>
   <data name="Settings_CustomShowroom_Bloom" xml:space="preserve">
-    <value>ブルームを使用</value>
-  </data>
+    <value>HDRを使用</value>
+  <alternative>ブルームを使用</alternative></data>
   <data name="Settings_CustomShowroom_Bloom_Tooltip" xml:space="preserve">
     <value>最大のパフォーマンスが必要な場合は無効にします; Bを押すといつでも切り替えることができます</value>
   </data>
@@ -2153,8 +2152,8 @@
     <value>もう1つを選択し始めるときにCtrlを押したままにします</value>
   </data>
   <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
-    <value>ファンシーショールーム：</value>
-  </data>
+    <value>ファンシーショールーム:</value>
+  <alternative>ファンシーショールーム：</alternative></data>
   <data name="Settings_CustomShowroom_Fxaa" xml:space="preserve">
     <value>FXAAを使用</value>
   </data>
@@ -2192,8 +2191,8 @@
     <value>ドライバーの名前にAIレベルを表示</value>
   </data>
   <data name="Settings_Drive_AiLevelInDriverName_Tooltip" xml:space="preserve">
-    <value>非固定AIレベルのみ</value>
-  </data>
+    <value>標準ではないAIレベルのみ</value>
+  <alternative>非固定AIレベルのみ</alternative></data>
   <data name="Settings_Drive_AlwaysRecordGhost" xml:space="preserve">
     <value>常にホットラップモードでゴーストを記録</value>
   </data>
@@ -2216,8 +2215,8 @@
     <value>終了時にスクリーンショットをBMP形式からJPEGに自動的に変換します</value>
   </data>
   <data name="Settings_Drive_ConvertScreenshots_Tooltip" xml:space="preserve">
-    <value>最初にMagick.NETを有効にすることを強くお勧めします—これにより、結果の品質が向上します</value>
-  </data>
+    <value>最初にMagick.NETを有効にすることを強くお勧めします—これにより、品質が向上します</value>
+  <alternative>最初にMagick.NETを有効にすることを強くお勧めします—これにより、結果の品質が向上します</alternative></data>
   <data name="Settings_Drive_CustomClouds" xml:space="preserve">
     <value>雲が存在する場合は、雲を天気の雲に置き換えます</value>
   </data>
@@ -2234,8 +2233,8 @@
     <value>999ラップまでのセットアップが可能です。ご自身の責任でご使用ください。</value>
   </data>
   <data name="Settings_Drive_ExtendedWeatherHeader" xml:space="preserve">
-    <value>天気拡張:</value>
-  </data>
+    <value>天気の拡張:</value>
+  <alternative>天気拡張:</alternative></data>
   <data name="Settings_Drive_KunosCareerHeader" xml:space="preserve">
     <value>Kunosキャリア:</value>
   </data>
@@ -2258,8 +2257,8 @@
     <value>オンライン名:</value>
   </data>
   <data name="Settings_Drive_OverridePpFilterOculusFix" xml:space="preserve">
-    <value>Oculus Riftモードでは、デフォルトのPPフィルターをオーバーライド</value>
-  </data>
+    <value>VRモードで、デフォルトのPPフィルターをオーバーライド</value>
+  <alternative>Oculus Riftモードでは、デフォルトのPPフィルターをオーバーライド</alternative></data>
   <data name="Settings_Drive_OverridePpFilterOculusFix_Tooltip" xml:space="preserve">
     <value>Oculus Riftモードが有効な場合、選択したPPフィルターで"system / cfg / ppfilters / default.ini"を一時的に上書き</value>
   </data>
@@ -2286,8 +2285,8 @@
     <value>クイックドライブ:</value>
   </data>
   <data name="Settings_Drive_SkipPracticeResults" xml:space="preserve">
-    <value>練習セッションの結果を表示しません</value>
-  </data>
+    <value>練習セッションのレース結果を表示しません</value>
+  <alternative>練習セッションの結果を表示しません</alternative></data>
   <data name="Settings_Drive_Starter" xml:space="preserve">
     <value>ゲームスターター</value>
   </data>
@@ -2376,8 +2375,8 @@
     <value>RSRライブタイミングタブを有効</value>
   </data>
   <data name="Settings_Live_EnableSrs" xml:space="preserve">
-    <value>レースシミュレーションシステム（SRS）タブを有効</value>
-  </data>
+    <value>レースシミュレーションシステム(SRS)タブを有効</value>
+  <alternative>レースシミュレーションシステム（SRS）タブを有効</alternative></data>
   <data name="Settings_Live_RsrAutoToggleApp" xml:space="preserve">
     <value>RSRアプリケーションを自動的に切り替え</value>
   </data>
@@ -2430,8 +2429,8 @@
     <value>指定の言語の新しい訳が存在する場合、文字列を上書き</value>
   </data>
   <data name="Settings_Locale_LoadCustom_Tooltip" xml:space="preserve">
-    <value>アンパックロケールは、IDはあなたの選択したロケールである「のAppData \ローカル\ AcToolsのContent Manager \ロケール\（ID）」からロードされます</value>
-  </data>
+    <value>アンパックロケールは、IDはあなたの選択したロケールである「のAppData \ローカル\ AcToolsのContent Manager \ロケール\(ID)」からロードされます</value>
+  <alternative>アンパックロケールは、IDはあなたの選択したロケールである「のAppData \ローカル\ AcToolsのContent Manager \ロケール\（ID）」からロードされます</alternative></data>
   <data name="Settings_Locale_LocaleId" xml:space="preserve">
     <value>ロケールID</value>
   </data>
@@ -2481,11 +2480,8 @@
     <value>コンパクトUI</value>
   </data>
   <data name="Settings_Online_ConnectionHeader" xml:space="preserve">
-    <value>接続：</value>
-  </data>
-  <data name="Settings_Online_LanHeader" xml:space="preserve">
-    <value>LAN：</value>
-  </data>
+    <value>接続:</value>
+  <alternative>接続：</alternative></data>
   <data name="Settings_Online_LanScanConnectionLabel" xml:space="preserve">
     <value>接続を使用してスキャン:</value>
   </data>
@@ -2523,8 +2519,8 @@
     <value>“9600,9602,9700-9750”のような形式</value>
   </data>
   <data name="Settings_Online_RememberPasswords" xml:space="preserve">
-    <value>パスワードを記憶する</value>
-  </data>
+    <value>パスワードを保存</value>
+  <alternative>パスワードを記憶する</alternative></data>
   <data name="Settings_Online_ServerLabel" xml:space="preserve">
     <value>サーバ:</value>
   </data>
@@ -2640,8 +2636,8 @@
     <value>タイプ</value>
   </data>
   <data name="Settings_Sharing_NameLabel" xml:space="preserve">
-    <value>ニックネームを共有：</value>
-  </data>
+    <value>ニックネームを共有:</value>
+  <alternative>ニックネームを共有：</alternative></data>
   <data name="Settings_Sharing_SpecialHeader" xml:space="preserve">
     <value>スペシャル:</value>
   </data>
@@ -2856,14 +2852,14 @@
     <value>セットアップ</value>
   </data>
   <data name="Toolbar_CarSetups_Tooltip" xml:space="preserve">
-    <value>セットアップ管理（Ctrlキー+ U）</value>
-  </data>
+    <value>セットアップ管理(Ctrlキー+ U)</value>
+  <alternative>セットアップ管理（Ctrlキー+ U）</alternative></data>
   <data name="Toolbar_CarSkins" xml:space="preserve">
     <value>スキン</value>
   </data>
   <data name="Toolbar_CarSkins_Tooltip" xml:space="preserve">
-    <value>スキン管理（Ctrl+ K）</value>
-  </data>
+    <value>スキン管理(Ctrl+ K)</value>
+  <alternative>スキン管理（Ctrl+ K）</alternative></data>
   <data name="Toolbar_ChangeId" xml:space="preserve">
     <value>IDを変更</value>
   </data>
@@ -2877,14 +2873,14 @@
     <value>ライブラリを変更</value>
   </data>
   <data name="Toolbar_ChangeLivery_Tooltip" xml:space="preserve">
-    <value>スキンのlivery.pngを変更（Ctrl + L）</value>
-  </data>
+    <value>スキンのlivery.pngを変更(Ctrl + L)</value>
+  <alternative>スキンのlivery.pngを変更（Ctrl + L）</alternative></data>
   <data name="Toolbar_Clone" xml:space="preserve">
     <value>複製</value>
   </data>
   <data name="Toolbar_Clone_WeatherTooltip" xml:space="preserve">
-    <value>天気を複製（Ctrl + Shift+ D）</value>
-  </data>
+    <value>天気を複製(Ctrl + Shift+ D)</value>
+  <alternative>天気を複製（Ctrl + Shift+ D）</alternative></data>
   <data name="Toolbar_CopyValues" xml:space="preserve">
     <value>値をコピー</value>
   </data>
@@ -2898,14 +2894,14 @@
     <value>新しいフォントを作成</value>
   </data>
   <data name="Toolbar_CreateNewFont_Tooltip" xml:space="preserve">
-    <value>Kunosツールを使用して新しいフォントを作成（Ctrl + N）</value>
-  </data>
+    <value>Kunosツールを使用して新しいフォントを作成(Ctrl + N)</value>
+  <alternative>Kunosツールを使用して新しいフォントを作成（Ctrl + N）</alternative></data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
     <value>新しいショールームを作成</value>
   </data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>既存のパノラマから新しいショールームを作成（Ctrl + N）</value>
-  </data>
+    <value>既存のパノラマから新しいショールームを作成(Ctrl + N)</value>
+  <alternative>既存のパノラマから新しいショールームを作成（Ctrl + N）</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
     <value>カスタムショールーム</value>
   </data>
@@ -2961,83 +2957,83 @@
     <value>無効</value>
   </data>
   <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
-    <value>無効（Ctrl + D）</value>
-  </data>
+    <value>無効(Ctrl + D)</value>
+  <alternative>無効（Ctrl + D）</alternative></data>
   <data name="Toolbar_DisableEditMode" xml:space="preserve">
     <value>編集モードを無効にします</value>
   </data>
   <data name="Toolbar_DisableEditMode_Tooltip" xml:space="preserve">
-    <value>編集モードから切り替え（Ctrl + E）</value>
-  </data>
+    <value>編集モードから切り替え(Ctrl + E)</value>
+  <alternative>編集モードから切り替え（Ctrl + E）</alternative></data>
   <data name="Toolbar_DisableUnused" xml:space="preserve">
     <value>未使用を無効</value>
   </data>
   <data name="Toolbar_DisableUnused_Tooltip" xml:space="preserve">
-    <value>usingsを再スキャンし、すべての未使用のフォント（Ctrlキー+ Shiftキー+ D）を無効に</value>
-  </data>
+    <value>usingsを再スキャンし、すべての未使用のフォント(Ctrlキー+ Shiftキー+ D)を無効に</value>
+  <alternative>usingsを再スキャンし、すべての未使用のフォント（Ctrlキー+ Shiftキー+ D）を無効に</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>ドライブ</value>
   </data>
   <data name="Toolbar_Drive_CarTooltip" xml:space="preserve">
-    <value>クイックドライブセッションで車を使用します（Ctrl + G）</value>
-  </data>
+    <value>クイックドライブセッションで車を使用します(Ctrl + G)</value>
+  <alternative>クイックドライブセッションで車を使用します（Ctrl + G）</alternative></data>
   <data name="Toolbar_Drive_TrackTooltip" xml:space="preserve">
-    <value>クイックドライブセッションでトラックを使用します（Ctrl + G）</value>
-  </data>
+    <value>クイックドライブセッションでトラックを使用します(Ctrl + G)</value>
+  <alternative>クイックドライブセッションでトラックを使用します（Ctrl + G）</alternative></data>
   <data name="Toolbar_EditMode" xml:space="preserve">
     <value>編集モード</value>
   </data>
   <data name="Toolbar_EditMode_Tooltip" xml:space="preserve">
-    <value>編集モードに切り替え（Ctrl + E）</value>
-  </data>
+    <value>編集モードに切り替え(Ctrl + E)</value>
+  <alternative>編集モードに切り替え（Ctrl + E）</alternative></data>
   <data name="Toolbar_Enable" xml:space="preserve">
     <value>有効</value>
   </data>
   <data name="Toolbar_Enable_Tooltip" xml:space="preserve">
-    <value>有効（Ctrlキー+ D）</value>
-  </data>
+    <value>有効(Ctrlキー+ D)</value>
+  <alternative>有効（Ctrlキー+ D）</alternative></data>
   <data name="Toolbar_FindInformation" xml:space="preserve">
     <value>情報を検索</value>
   </data>
   <data name="Toolbar_FindInformation_CarTooltip" xml:space="preserve">
-    <value>車についての情報を検索します（Ctrl + I）</value>
-  </data>
+    <value>車についての情報を検索します(Ctrl + I)</value>
+  <alternative>車についての情報を検索します（Ctrl + I）</alternative></data>
   <data name="Toolbar_FindInformation_TrackTooltip" xml:space="preserve">
-    <value>トラックに関する情報を検索します（Ctrl + I）</value>
-  </data>
+    <value>トラックに関する情報を検索します(Ctrl + I)</value>
+  <alternative>トラックに関する情報を検索します（Ctrl + I）</alternative></data>
   <data name="Toolbar_Folder" xml:space="preserve">
     <value>フォルダ</value>
   </data>
   <data name="Toolbar_Folder_AppTooltip" xml:space="preserve">
-    <value>アプリのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>アプリのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>アプリのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_CarTooltip" xml:space="preserve">
-    <value>車のフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>車のフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>車のフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_FontTooltip" xml:space="preserve">
-    <value>フォントのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>フォントのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>フォントのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_PpFilterTooltip" xml:space="preserve">
-    <value>PPフィルターのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>PPフィルターのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>PPフィルターのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_ReplayTooltip" xml:space="preserve">
-    <value>リプレイのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>リプレイのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>リプレイのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_SetupTooltip" xml:space="preserve">
-    <value>セットアップのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>セットアップのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>セットアップのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>ショールームのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>ショールームのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>ショールームのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_SkinTooltip" xml:space="preserve">
-    <value>スキンのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>スキンのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>スキンのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_TrackTooltip" xml:space="preserve">
-    <value>トラックのフォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>トラックのフォルダを開く(Ctrlキー+ F)</value>
+  <alternative>トラックのフォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_Folder_WeatherTooltip" xml:space="preserve">
-    <value>天候フォルダを開く（Ctrlキー+ F）</value>
-  </data>
+    <value>天候フォルダを開く(Ctrlキー+ F)</value>
+  <alternative>天候フォルダを開く（Ctrlキー+ F）</alternative></data>
   <data name="Toolbar_GenerateLivery" xml:space="preserve">
     <value>ライブラリを生成します</value>
   </data>
@@ -3054,8 +3050,8 @@
     <value>参加</value>
   </data>
   <data name="Toolbar_Join_OnlineTooltip" xml:space="preserve">
-    <value>サーバーに参加（Ctrl + G）</value>
-  </data>
+    <value>サーバーに参加(Ctrl + G)</value>
+  <alternative>サーバーに参加（Ctrl + G）</alternative></data>
   <data name="Toolbar_PackData" xml:space="preserve">
     <value>パックデータ</value>
   </data>
@@ -3066,29 +3062,29 @@
     <value>プレイ</value>
   </data>
   <data name="Toolbar_Play_Tooltip" xml:space="preserve">
-    <value>リプレイを再生（Ctrl + G）</value>
-  </data>
+    <value>リプレイを再生(Ctrl + G)</value>
+  <alternative>リプレイを再生（Ctrl + G）</alternative></data>
   <data name="Toolbar_Refresh" xml:space="preserve">
     <value>リフレッシュ</value>
   </data>
   <data name="Toolbar_Refresh_OnlineTooltip" xml:space="preserve">
-    <value>サーバー情報をリフレッシュ（Ctrl+ R）</value>
-  </data>
+    <value>サーバー情報をリフレッシュ(Ctrl+ R)</value>
+  <alternative>サーバー情報をリフレッシュ（Ctrl+ R）</alternative></data>
   <data name="Toolbar_Reload" xml:space="preserve">
     <value>リロード</value>
   </data>
   <data name="Toolbar_Reload_Tooltip" xml:space="preserve">
-    <value>リロード（Ctrl+ R）</value>
-  </data>
+    <value>リロード(Ctrl+ R)</value>
+  <alternative>リロード（Ctrl+ R）</alternative></data>
   <data name="Toolbar_Rename" xml:space="preserve">
     <value>リネーム</value>
   </data>
   <data name="Toolbar_Rename_AppTooltip" xml:space="preserve">
-    <value>新しい名前に応じてアプリの名前を変更します（Ctrl + S）</value>
-  </data>
+    <value>新しい名前に応じてアプリの名前を変更します(Ctrl + S)</value>
+  <alternative>新しい名前に応じてアプリの名前を変更します（Ctrl + S）</alternative></data>
   <data name="Toolbar_Rename_ReplayTooltip" xml:space="preserve">
-    <value>新しい名前に応じてリプレイ名前を変更します（Ctrl + S）</value>
-  </data>
+    <value>新しい名前に応じてリプレイ名前を変更します(Ctrl + S)</value>
+  <alternative>新しい名前に応じてリプレイ名前を変更します（Ctrl + S）</alternative></data>
   <data name="Toolbar_ReplaceSound" xml:space="preserve">
     <value>サウンドを置き換える</value>
   </data>
@@ -3105,11 +3101,11 @@
     <value>セーブ</value>
   </data>
   <data name="Toolbar_Save_IniTooltip" xml:space="preserve">
-    <value>変更したINIファイルを保存（Ctrl + S）</value>
-  </data>
+    <value>変更したINIファイルを保存(Ctrl + S)</value>
+  <alternative>変更したINIファイルを保存（Ctrl + S）</alternative></data>
   <data name="Toolbar_Save_JsonTooltip" xml:space="preserve">
-    <value>変更したJSONファイルを保存（Ctrl + S）</value>
-  </data>
+    <value>変更したJSONファイルを保存(Ctrl + S)</value>
+  <alternative>変更したJSONファイルを保存（Ctrl + S）</alternative></data>
   <data name="Toolbar_Share_FilterTooltip" xml:space="preserve">
     <value>フィルターを共有(Ctrl+Page Up)</value>
   </data>
@@ -3120,38 +3116,38 @@
     <value>ショールーム</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>ショールームで車を見る（Ctrl+ H）</value>
-  </data>
+    <value>ショールームで車を見る(Ctrl+ H)</value>
+  <alternative>ショールームで車を見る（Ctrl+ H）</alternative></data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
     <value>ショールーム、フィルタ等を選択します</value>
   </data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>ショールームでフィルターをテスト（Ctrl + G）</value>
-  </data>
+    <value>ショールームでフィルターをテスト(Ctrl + G)</value>
+  <alternative>ショールームでフィルターをテスト（Ctrl + G）</alternative></data>
   <data name="Toolbar_Test_SetupTooltip" xml:space="preserve">
-    <value>セットアップテスト（Ctrl + G）</value>
-  </data>
+    <value>セットアップテスト(Ctrl + G)</value>
+  <alternative>セットアップテスト（Ctrl + G）</alternative></data>
   <data name="Toolbar_Test_WeatherTooltip" xml:space="preserve">
-    <value>トラック上の天候をテスト（Ctrl + G）</value>
-  </data>
+    <value>トラック上の天候をテスト(Ctrl + G)</value>
+  <alternative>トラック上の天候をテスト（Ctrl + G）</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>サウンドをオフにします</value>
   </data>
   <data name="Toolbar_TurnOffSound_Tooltip" xml:space="preserve">
-    <value>サウンドを無効（Ctrl + I）</value>
-  </data>
+    <value>サウンドを無効(Ctrl + I)</value>
+  <alternative>サウンドを無効（Ctrl + I）</alternative></data>
   <data name="Toolbar_TurnOnSound" xml:space="preserve">
     <value>サウンドをオンにします</value>
   </data>
   <data name="Toolbar_TurnOnSound_Tooltip" xml:space="preserve">
-    <value>サウンドを有効（Ctrl + I）</value>
-  </data>
+    <value>サウンドを有効(Ctrl + I)</value>
+  <alternative>サウンドを有効（Ctrl + I）</alternative></data>
   <data name="Toolbar_UnpackData" xml:space="preserve">
     <value>データをアンパック</value>
   </data>
   <data name="Toolbar_UnpackData_Tooltip" xml:space="preserve">
-    <value>開発目的のみ（Alt+ J）</value>
-  </data>
+    <value>開発目的のみ(Alt+ J)</value>
+  <alternative>開発目的のみ（Alt+ J）</alternative></data>
   <data name="Toolbar_UpdateMap" xml:space="preserve">
     <value>地図を更新</value>
   </data>
@@ -3159,23 +3155,23 @@
     <value>アップデートプレビュー</value>
   </data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>ショールームのプレビューを更新（Ctrl+ P）</value>
-  </data>
+    <value>ショールームのプレビューを更新(Ctrl+ P)</value>
+  <alternative>ショールームのプレビューを更新（Ctrl+ P）</alternative></data>
   <data name="Toolbar_UpdatePreview_SkinTooltip" xml:space="preserve">
-    <value>スキンのプレビューを更新（Ctrl+ P）</value>
-  </data>
+    <value>スキンのプレビューを更新(Ctrl+ P)</value>
+  <alternative>スキンのプレビューを更新（Ctrl+ P）</alternative></data>
   <data name="Toolbar_UpdatePreview_TrackTooltip" xml:space="preserve">
-    <value>トラックのプレビューを更新（Ctrl+ P）</value>
-  </data>
+    <value>トラックのプレビューを更新(Ctrl+ P)</value>
+  <alternative>トラックのプレビューを更新（Ctrl+ P）</alternative></data>
   <data name="Toolbar_UpdatePreview_WeatherTooltip" xml:space="preserve">
-    <value>天気のプレビューを更新（Ctrl+ P）</value>
-  </data>
+    <value>天気のプレビューを更新(Ctrl+ P)</value>
+  <alternative>天気のプレビューを更新（Ctrl+ P）</alternative></data>
   <data name="Toolbar_UpdatePreviews" xml:space="preserve">
     <value>アップデートプレビュー</value>
   </data>
   <data name="Toolbar_UpdatePreviews_Tooltip" xml:space="preserve">
-    <value>すべてのプレビューを更新（Ctrl + P）</value>
-  </data>
+    <value>すべてのプレビューを更新(Ctrl + P)</value>
+  <alternative>すべてのプレビューを更新（Ctrl + P）</alternative></data>
   <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
     <value>マニュアルモード</value>
   </data>
@@ -3207,8 +3203,8 @@
     <value>アップグレードアイコンファイルを書き込めることを確認してください。</value>
   </data>
   <data name="UpgradeIcon_Commentary" xml:space="preserve">
-    <value>Ctrl+ I:斜体(イタリック)、Ctrl+ B：太字</value>
-  </data>
+    <value>Ctrl+ I:斜体(イタリック)、Ctrl+ B:太字</value>
+  <alternative>Ctrl+ I:斜体(イタリック)、Ctrl+ B：太字</alternative></data>
   <data name="UpgradeIcon_Current" xml:space="preserve">
     <value>現在</value>
   </data>
@@ -3239,11 +3235,19 @@
  このリンク[URL = "http://fooplot.com/plot/3x7y44pfli"]グラフ[/ URL]を確認してください。
  
  使用式は次のとおりです。
+ [モノ]((( -10×α)* X)+ 10 *α)* 2((EXP(-6 * X)*(0.4 * SIN(6 * X))+ 0.1)*(15 / 1.5) * SIN(0.9 * X))+ 15 [/モノ]
+ 
+ あなたのグラフで結果を確認するために(* 1((-10 * 1)* x)は+ 10)での1つの値を変更します。
+ 有効な値は-1から1までです。</value>
+  <alternative>私たちは、周囲温度、天候や日の時間に比較的アスファルトの温度を決定し、グラフを作成するための方程式を使用しています。
+ 
+ このリンク[URL = "http://fooplot.com/plot/3x7y44pfli"]グラフ[/ URL]を確認してください。
+ 
+ 使用式は次のとおりです。
  [モノ]（（（ -10×α）* X）+ 10 *α）* 2（（EXP（-6 * X）*（0.4 * SIN（6 * X））+ 0.1）*（15 / 1.5） * SIN（0.9 * X））+ 15 [/モノ]
  
  あなたのグラフで結果を確認するために（* 1（（-10 * 1）* x）は+ 10）での1つの値を変更します。
- 有効な値は-1から1までです。</value>
-  </data>
+ 有効な値は-1から1までです。</alternative></data>
   <data name="Weather_SeemsEmpty" xml:space="preserve">
     <value>空っぽのようです</value>
   </data>
@@ -3272,8 +3276,8 @@
     <value>ベースカラー;これに日光、ライトカラー、アンビエントが追加されます</value>
   </data>
   <data name="WeatherEdit_ColorCurvesHeader" xml:space="preserve">
-    <value>カラーカーブ：</value>
-  </data>
+    <value>カラーカーブ:</value>
+  <alternative>カラーカーブ：</alternative></data>
   <data name="WeatherEdit_Cover" xml:space="preserve">
     <value>カバー</value>
   </data>
@@ -3329,12 +3333,1284 @@
     <value>空気温度</value>
   </data>
   <data name="WeatherEdit_TemperatureCoefficientTesting" xml:space="preserve">
-    <value>温度係数のテスト：</value>
-  </data>
+    <value>温度係数のテスト:</value>
+  <alternative>温度係数のテスト：</alternative></data>
   <data name="WeatherEdit_ViewReadmeHeader" xml:space="preserve">
     <value>readmeweather.txtを見る</value>
   </data>
   <data name="WeatherEdit_Width_Tooltip" xml:space="preserve">
     <value>クワッドの幅</value>
+  </data>
+  <data name="Filter_ByLength" xml:space="preserve">
+    <value>似ている長さでフィルター</value>
+  </data>
+  <data name="Filter_ByWidth" xml:space="preserve">
+    <value>似ている幅でフィルター</value>
+  </data>
+  <data name="Filter_ByPitboxes" xml:space="preserve">
+    <value>似ているピットストップ回数でフィルター</value>
+  </data>
+  <data name="Toolbar_Folder_DriverModelTooltip" xml:space="preserve">
+    <value>モデルのフォルダを開く(Ctrl+F)</value>
+  </data>
+  <data name="Toolbar_Delete_DriverModelTooltip" xml:space="preserve">
+    <value>モデルをゴミ箱に移動(Ctrl+Delete)</value>
+  </data>
+  <data name="DriverModel_MissingDriverModels" xml:space="preserve">
+    <value>ドライバーモデルが見つかりません</value>
+  </data>
+  <data name="Common_RoadTemperature" xml:space="preserve">
+    <value>路面温度:</value>
+  </data>
+  <data name="List_DriverModels" xml:space="preserve">
+    <value>ドライバーモデル {0}</value>
+  </data>
+  <data name="Drive_Time_Random" xml:space="preserve">
+    <value>ランダム</value>
+  </data>
+  <data name="Drive_Temperature_Random" xml:space="preserve">
+    <value>ランダム</value>
+  </data>
+  <data name="TrackSpecs_Length_Tooltip" xml:space="preserve">
+    <value>長さの合計、推奨フォーマット:“{0}”</value>
+  </data>
+  <data name="TrackSpecs_Width_Tooltip" xml:space="preserve">
+    <value>トラックの平均的な幅、推奨されるフォーマット:“{0}”</value>
+  </data>
+  <data name="TrackSpecs_Pitboxes_Tooltip" xml:space="preserve">
+    <value>ピットストール数とコース上の車両数の制限、推奨フォーマット:“{0}”</value>
+  </data>
+  <data name="Race_LaunchingReplay" xml:space="preserve">
+    <value>リプレイを開始…</value>
+  </data>
+  <data name="Race_LaunchingBenchmark" xml:space="preserve">
+    <value>ベンチマークを開始…</value>
+  </data>
+  <data name="Race_WaitingReplay" xml:space="preserve">
+    <value>リプレイの終了を待っています…</value>
+  </data>
+  <data name="Race_WaitingBenchmark" xml:space="preserve">
+    <value>ベンチマークの終了を待っています…</value>
+  </data>
+  <data name="Controls_Axis" xml:space="preserve">
+    <value>軸</value>
+  </data>
+  <data name="WebSource_DeleteBookmark" xml:space="preserve">
+    <value>ウェブサイト“{0}”のブックマークを削除しますか?</value>
+  </data>
+  <data name="WebSource_SharedDescriptionTitle" xml:space="preserve">
+    <value>{0}の説明</value>
+  </data>
+  <data name="WebSource_FailedToShareTitle" xml:space="preserve">
+    <value>設定を共有できません</value>
+  </data>
+  <data name="WebSource_FailedToShareMessage" xml:space="preserve">
+    <value>データが多すぎる可能性があります。</value>
+  </data>
+  <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
+    <value>詳細が書かれたメッセージをクリップボードにコピー</value>
+  </data>
+  <data name="CustomLocalesUpdated_Message" xml:space="preserve">
+    <value>カスタムロケールを更新しました。CMを再起動しますか?</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>ロケールを更新</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>このトラックでのベストラップ:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>車での走行:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>トラックでの走行:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>マシン固有のコントロール</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>クイックドライブプリセットの読み込みを支援(Global)</value>
+  </data>
+  <data name="QuickDrive_LoadAssistsWithQuickDrivePresets_Tooltip" xml:space="preserve">
+    <value>プリセットを選択している間、Ctrl キーを押したままにすると、この動作を1回だけ反転させることができます</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataIfExists" xml:space="preserve">
+    <value>存在する場合はアンパックされたデータを使用</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedDataGlobal" xml:space="preserve">
+    <value>アンパックされたデータを使用する(Global)</value>
+  </data>
+  <data name="QuickDrive_UseUnpackedData_ResetCarSpecificFlag" xml:space="preserve">
+    <value>車固有のフラグをリセット</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>車を修正する</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {important issue}が見つかりました</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>車が選択されていません</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>トラックが選択されていません</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>風速 (メートル/秒)</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>相対的な範囲での風速</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>風向 (度)</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>ランダムな風速</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>ランダムな風向き</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>風</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>特定の日付</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>ランダムな時間を設定</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>手動で風を設定</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>理想的な条件</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>ランダムな温度を設定</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>カスタム路面温度</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>路面温度</value>
+  </data>
+  <data name="MainWindow_Downloads" xml:space="preserve">
+    <value>ダウンロード:</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>完了したものを削除</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>全てをインストール</value>
+  </data>
+  <data name="MainWindow_Downloads_Tooltip" xml:space="preserve">
+    <value>ここに車などをドロップして、コンテンツ管理セクションで開く</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0}をインストール中</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>全てを削除</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>変更ログを見る</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>このアップデートをスキップ</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>自動更新を無効化</value>
+  </data>
+  <data name="MainWindow_Errors_Format" xml:space="preserve">
+    <value>{0}{エラー}をキャッチしました</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>ラップタイム</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>レース結果</value>
+  </data>
+  <data name="Main_Downloads" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>CM設定</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>AC設定</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>アプリ設定</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>CSP設定</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>コンテンツマネージャーについて</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>ホットラップ</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>レース</value>
+  </data>
+  <data name="Main_Challenges_Drifts" xml:space="preserve">
+    <value>ドリフト</value>
+  </data>
+  <data name="Main_Challenges_Drags" xml:space="preserve">
+    <value>ドラッグ</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>タイムアタック</value>
+  </data>
+  <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
+    <value>未合格</value>
+  </data>
+  <data name="Main_Challenges_SomethingToImprove" xml:space="preserve">
+    <value>改善すべき点</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>チャンピオンシップ</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>表示</value>
+  </data>
+  <data name="Main_LapTimes_Sources" xml:space="preserve">
+    <value>ソース</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Kunos車のみ</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Kunos車&amp;トラックのみ</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>Modのみ</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>最も使用</value>
+  </data>
+  <data name="Main_DriverModels" xml:space="preserve">
+    <value>ドライバーモデル</value>
+  </data>
+  <data name="Main_UserChampionships" xml:space="preserve">
+    <value>ユーザーチャンピオンシップ</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>新しいModを入手</value>
+  </data>
+  <data name="Main_Mods" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>ツール</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>ダウンロードとインストール</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>フィルタリングに関するすべてのこと</value>
+  </data>
+  <data name="Main_GetNewMods_ManageSources" xml:space="preserve">
+    <value>ソースの管理</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>オリジナルランチャー</value>
+  </data>
+  <data name="Main_FPS_Tooltip" xml:space="preserve">
+    <value>前回セッションのパフォーマンス</value>
+  </data>
+  <data name="Main_FPS_Title" xml:space="preserve">
+    <value>前回セッションのパフォーマンス:</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>平均:</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>最小:</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>取得日時:</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0}サンプル</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1}フレーム毎秒</value>
+  </data>
+  <data name="Main_FPS_ValueShortFormat" xml:space="preserve">
+    <value>{0:F1}FPS</value>
+  </data>
+  <data name="Main_FPS_Unknown" xml:space="preserve">
+    <value>?FPS</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>車を変更</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>ショールームを開く</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>セットアップを管理</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>車を管理</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>トラックを変更</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>トラックを管理</value>
+  </data>
+  <data name="QuickDrive_TimeIsOutOfWeatherRange_Tooltip" xml:space="preserve">
+    <value>時間は天気の範囲外</value>
+  </data>
+  <data name="QuickDrive_Drag_Total" xml:space="preserve">
+    <value>合計</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>難易度</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>プレビューなし</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>現実のコンデション…</value>
+  </data>
+  <data name="Online_SetSortingAsDefault" xml:space="preserve">
+    <value>新しいタブのソートをデフォルトに設定する</value>
+  </data>
+  <data name="Online_SetFiltersAsDefault" xml:space="preserve">
+    <value>新しいタブのデフォルトでフィルタを設定する</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>更新</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>見つかりませんでした。</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>デフォルト</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>名前(オリジナル)</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>お気に入リ</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>接続中のドライバー</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>ゴーストカーを記録しない</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit" xml:space="preserve">
+    <value>車種制限</value>
+  </data>
+  <data name="Drive_GridCarVarietyLimit_Tooltip" xml:space="preserve">
+    <value>このスライダーを使用すると、ACに読み込ませる各種車両の最大台数を制限することができます</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>スキンナンバーのない車は避ける</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers_Tooltip" xml:space="preserve">
+    <value>品種が大幅に減少する可能性があります</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially" xml:space="preserve">
+    <value>スキンを順番に選択する</value>
+  </data>
+  <data name="Drive_PickSkinsSequentially_Tooltip" xml:space="preserve">
+    <value>このアプリは、フィルターを尊重し、必要に応じてすべてをシャッフルしながら、スキンを昇順に並べようとします。</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>UIスケール</value>
+  </data>
+  <data name="Settings_Appearance_NarrowScrollbars" xml:space="preserve">
+    <value>狭いスクロールバー</value>
+  </data>
+  <data name="Settings_Appearance_PopupScrollbars" xml:space="preserve">
+    <value>ポップアップスクロールバー</value>
+  </data>
+  <data name="Settings_Appearance_LargerFont" xml:space="preserve">
+    <value>大きいフォント</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>太字フォント</value>
+  </data>
+  <data name="Settings_Appearance_Links" xml:space="preserve">
+    <value>リンク:</value>
+  </data>
+  <data name="Settings_Appearance_Background" xml:space="preserve">
+    <value>背景:</value>
+  </data>
+  <data name="Settings_Appearance_FolderForSlideshow" xml:space="preserve">
+    <value>スライドショー用フォルダ</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>画像を変更する間隔:</value>
+  </data>
+  <data name="Settings_Appearance_Placement" xml:space="preserve">
+    <value>配置:</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>不透明度:</value>
+  </data>
+  <data name="Settings_Appearance_Blur" xml:space="preserve">
+    <value>ぼかし</value>
+  </data>
+  <data name="Settings_Appearance_Interface" xml:space="preserve">
+    <value>インタフェース:</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen" xml:space="preserve">
+    <value>画面にバインド:</value>
+  </data>
+  <data name="Settings_Appearance_TitleLinksAndMenu" xml:space="preserve">
+    <value>タイトルリンクとメニュー:</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>設定可能なアプリケーションが見つかりません</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>変更は自動的に保存されます。設定ファイルの表示方法を最適化したい場合は、[url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]ここ[/url]を参照してください。</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>場合によっては、元のショールームの代わりにカスタムショールームを使用する</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
+    <value>検索ボックスの横にドラッグ可能な領域を表示</value>
+  </data>
+  <data name="Settings_Appearance_ShowDraggableAreas_Tooltip" xml:space="preserve">
+    <value>このオプションを無効にすると、閉じるボタンでドラッグすることができます。</value>
+  </data>
+  <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
+    <value>右上のメニューにあるダウンロード＆インストールリストを表示する</value>
+  </data>
+  <data name="Settings_Appearance_AutomaticallyNavigateToDownloadsPage" xml:space="preserve">
+    <value>新しいダウンロードが開始されると、自動的にダウンロードページに移動します</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>無効化されたリンクは、ウィンドウのボタンの横にあるメニューやホットキーからアクセスできます。</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>単一イメージ</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows" xml:space="preserve">
+    <value>ウィンドウの位置とサイズに干渉しない</value>
+  </data>
+  <data name="Settings_Appearance_DoNotInterfereWithWindows_Tooltip" xml:space="preserve">
+    <value>CMがウィンドウを正しく配置できない場合に使用します。[br][br]まだ解決策を探しているところです。</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>強制フルスクリーンモード</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>タスクバー上の全画面表示</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>メインウィンドウに戻るボタンを表示</value>
+  </data>
+  <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+    <value>保存した場所にかかわらず、最初のウィンドウと同じ画面で新しいウィンドウを開く</value>
+  </data>
+  <data name="Settings_Appearance_StickMainMenuAtTheTop" xml:space="preserve">
+    <value>フルスクリーンモードでメインメニューを一番上に表示</value>
+  </data>
+  <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
+    <value>カスタムショールームの半透明ツールとDirectX専用ツール</value>
+  </data>
+  <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
+    <value>クイックドライブの車とトラックの高速アクセスボタン</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+    <value>新しいウィンドウでスキンとセットアップのリストを開く</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow_Tooltip" xml:space="preserve">
+    <value>無効にした場合、スキンやセットアップを開いている間に Ctrl キーを押したままにすると、新しいウィンドウで開くことができます</value>
+  </data>
+  <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+    <value>UIのハードウェアアクセラレーションを無効</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+    <value>ウィンドウの透明性を無効</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency_Tooltip" xml:space="preserve">
+    <value>Wineのパフォーマンスを向上させたり、問題を解決したりする可能性があります</value>
+  </data>
+  <data name="Settings_Appearance_HideButtonsInImageViewers" xml:space="preserve">
+    <value>画像ビューアのボタンを非表示にする(マウスポインタが上にある場合を除く)</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground" xml:space="preserve">
+    <value>画像ビューアの背景をぼかす</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+    <value>Windows 7 または Windows 10 でのみ動作します</value>
+  </data>
+  <data name="Settings_Appearance_BlurButtonsBackground" xml:space="preserve">
+    <value>ボタンの背景をぼかす(パフォーマンスが低下する家の姓があります)</value>
+  </data>
+  <data name="Settings_Appearance_ImageViewer" xml:space="preserve">
+    <value>画像ビュワー:</value>
+  </data>
+  <data name="Settings_Appearance_BindToScreen_Hint" xml:space="preserve">
+    <value>変更は既に表示されているウィンドウに影響しません</value>
+  </data>
+  <data name="Settings_Drive_TryToStartSteamIfNotRunning" xml:space="preserve">
+    <value>Steamを起動していない場合は起動する(推奨)</value>
+  </data>
+  <data name="Settings_General_Open" xml:space="preserve">
+    <value>開く</value>
+  </data>
+  <data name="Settings_General_SteamProfile" xml:space="preserve">
+    <value>Steamのプロファイル:</value>
+  </data>
+  <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+    <value>オンラインで使用</value>
+  </data>
+  <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+    <value>コンテンツマネージャーの起動時に自動的にSteamを起動</value>
+  </data>
+  <data name="Settings_General_ResetOccasionalHits" xml:space="preserve">
+    <value>既に表示したヒントを再度表示</value>
+  </data>
+  <data name="Settings_General_ShowOccasionalHints" xml:space="preserve">
+    <value>随時ヒントを表示する</value>
+  </data>
+  <data name="Settings_General_DontShowAgainInDialogs" xml:space="preserve">
+    <value>ダイアログの「次回から表示しない」:</value>
+  </data>
+  <data name="Settings_General_ResetDoNotShowAgainCheckboxes" xml:space="preserve">
+    <value>「次回から表示しない」をリセット</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>Windowsレジストリ:</value>
+  </data>
+  <data name="Settings_General_ShowRecentChangesNotification_Tooltip" xml:space="preserve">
+    <value>更新後に最近の変更点を含む通知を表示する</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>最近の変更点の通知</value>
+  </data>
+  <data name="Settings_General_OpenAppsDataFolder" xml:space="preserve">
+    <value>Appデータフォルダを開く</value>
+  </data>
+  <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+    <value>ログフォルダを開く</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast" xml:space="preserve">
+    <value>最後の結果を保持</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>レース中はCMを非表示にする</value>
+  </data>
+  <data name="Settings_Content_SmoothCurves" xml:space="preserve">
+    <value>滑らかな曲線</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>温度の単位:</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>ヤード・ポンド法を利用</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>12時間表記を使用</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>キャッシュクリア</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>コンテンツ:</value>
+  </data>
+  <data name="Settings_Drive_SwitchToSteamStarter" xml:space="preserve">
+    <value>Steamスターターを切り替え</value>
+  </data>
+  <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+    <value>CM終了時にサービスを停止</value>
+  </data>
+  <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+    <value>Escape が押された場合、読み込みを直ちに終了させる</value>
+  </data>
+  <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+    <value>Escapeが押された場合はレースを続行</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+    <value>レース中のFPSをモニター</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+    <value>キャンセル時のビープ音:</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled_Tooltip" xml:space="preserve">
+    <value>VRでゲームがクラッシュした場合の発見に役立つかもしれません</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS_Tooltip" xml:space="preserve">
+    <value>結果は[b]Settings/Assetto Corsa/Video[/b]で確認できます</value>
+  </data>
+  <data name="Settings_Drive_RealHeadMotion" xml:space="preserve">
+    <value>リアルヘッドモーション:</value>
+  </data>
+  <data name="Settings_Drive_RHMIntegration" xml:space="preserve">
+    <value>リアルヘッドモーション統合</value>
+  </data>
+  <data name="Settings_Drive_RHMLocation" xml:space="preserve">
+    <value>リアルヘッドモーションの場所:</value>
+  </data>
+  <data name="Settings_Drive_KeepResultsOfTheLast_Tooltip" xml:space="preserve">
+    <value>結果は”…\AppData\Local\AcTools Content Manager\Progress\Sessions”に保存されます</value>
+  </data>
+  <data name="Settings_Content_TemporaryFilesLocation" xml:space="preserve">
+    <value>一時ファイルの場所</value>
+  </data>
+  <data name="Settings_Content_OriginIcons" xml:space="preserve">
+    <value>オリジナルアイコン:</value>
+  </data>
+  <data name="Settings_Content_ShowOriginIconsInLists" xml:space="preserve">
+    <value>リストにオリジナルアイコンを表示(KunosやRSSアイコン等)</value>
+  </data>
+  <data name="Settings_Content_DownloadingContent" xml:space="preserve">
+    <value>コンテンツのダウンロード:</value>
+  </data>
+  <data name="Settings_Content_SearchMissingContentVia" xml:space="preserve">
+    <value>不足しているコンテンツを検索:</value>
+  </data>
+  <data name="Settings_Content_ShowCurvesInDriveSection" xml:space="preserve">
+    <value>ドライブセクションの曲線を表示</value>
+  </data>
+  <data name="Settings_Content_MentionCMInPacked" xml:space="preserve">
+    <value>パック中に、パックされたコンテンツをContent Managerにドラッグしてインストールできることを説明に記載します。</value>
+  </data>
+  <data name="Settings_Content_PowerAndTorqueCurves" xml:space="preserve">
+    <value>パワーとトルクの曲線:</value>
+  </data>
+  <data name="Settings_Content_FourDigitForYearPostfix" xml:space="preserve">
+    <value>製造年を社名の後に4桁表示</value>
+  </data>
+  <data name="Settings_Content_HideSymbolsLikeFromCarNames" xml:space="preserve">
+    <value>車名から™などの記号を隠す</value>
+  </data>
+  <data name="Settings_Content_ShowCarPreviewsInTooltips" xml:space="preserve">
+    <value>ツールチップに車のプレビューを表示</value>
+  </data>
+  <data name="Settings_Content_FixMissingSpacesInSpecsInDrive" xml:space="preserve">
+    <value>ドライブセクションの仕様の空白を修正</value>
+  </data>
+  <data name="Settings_Content_PWRatioFormat" xml:space="preserve">
+    <value>P/W比のフォーマット:</value>
+  </data>
+  <data name="Settings_Content_DisplaySteerLock" xml:space="preserve">
+    <value>ステアロックの表示</value>
+  </data>
+  <data name="Settings_Content_CarSkins" xml:space="preserve">
+    <value>車のスキン:</value>
+  </data>
+  <data name="Settings_Content_DisplaySkinIDsInsteadOfNames" xml:space="preserve">
+    <value>名前の代わりにスキンIDを表示</value>
+  </data>
+  <data name="Settings_Content_ModsAutoUpdate" xml:space="preserve">
+    <value>Modの自動更新:</value>
+  </data>
+  <data name="Settings_Content_MarkObjectsWithNotesWithIcon" xml:space="preserve">
+    <value>特殊なアイコンを使用してオブジェクト(車や道路など)にノートを付ける</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials" xml:space="preserve">
+    <value>Mega.nzのログイン情報:</value>
+  </data>
+  <data name="Settings_Content_MegaNzCredentials_Tooltip" xml:space="preserve">
+    <value>オプションですが、ダウンロードクォータの設定を行います。念のため、CMはパスワードを保存せず、アクセストークンを保存します。</value>
+  </data>
+  <data name="Settings_Content_LogOut" xml:space="preserve">
+    <value>ログアウト</value>
+  </data>
+  <data name="Settings_Content_SignedAs" xml:space="preserve">
+    <value>署名:</value>
+  </data>
+  <data name="Settings_Content_LogIn" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter" xml:space="preserve">
+    <value>タイヤ交換フィルター</value>
+  </data>
+  <data name="Settings_Content_TyresReplacementFilter_Tooltip" xml:space="preserve">
+    <value>空のままにするか、 「*」 を使用して任意の車を許可する</value>
+  </data>
+  <data name="Settings_CustomShowroom_Previews" xml:space="preserve">
+    <value>プレビュー:</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
+    <value>プレビューにカスタムショールームを使用</value>
+  </data>
+  <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
+    <value>EXIFデータに拡張情報を追加</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin" xml:space="preserve">
+    <value>前のプレビューをごみ箱に移動</value>
+  </data>
+  <data name="Settings_CustomShowroom_MovePreviousPreviewToTheRecycleBin_Tooltip" xml:space="preserve">
+    <value>動作が遅いので、無効にした方がいいかもしれません</value>
+  </data>
+  <data name="Settings_CustomShowroom_Controls" xml:space="preserve">
+    <value>コントロール:</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseTheOldVersion" xml:space="preserve">
+    <value>古いバージョンを使用</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptions" xml:space="preserve">
+    <value>思いオプションをリセット:</value>
+  </data>
+  <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
+    <value>設定が高すぎるなどの理由でショールームがクラッシュした場合に使用します。</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
+    <value>全てリセット:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetHeavyOptionsForPreviews" xml:space="preserve">
+    <value>プレビューの重いオプションをリセット:</value>
+  </data>
+  <data name="Settings_CustomShowroom_ResetAllForPreviews" xml:space="preserve">
+    <value>プレビューの全てをリセット:</value>
+  </data>
+  <data name="Settings_Drive_RaceResults_Hint" xml:space="preserve">
+    <value>制限を超えた場合、最も古いレース結果はレース終了後に削除されます。</value>
+  </data>
+  <data name="AcSettings_Audio_OutputDevice" xml:space="preserve">
+    <value>出力デバイス:</value>
+  </data>
+  <data name="AcSettings_Audio_DeviceName" xml:space="preserve">
+    <value>デバイス名:</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_RumbleEffects" xml:space="preserve">
+    <value>振動エフェクト</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringDeadzone" xml:space="preserve">
+    <value>ステアリングデッドゾーン</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringFilter" xml:space="preserve">
+    <value>ステアリングフィルター</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringGamma" xml:space="preserve">
+    <value>ステアリングガンマ</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteerThumb" xml:space="preserve">
+    <value>ステアリングサム:</value>
+  </data>
+  <data name="AcSettings_Controls_Controller_Main_SteeringAndFFB" xml:space="preserve">
+    <value>ステアリングとFFB:</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Pitch" xml:space="preserve">
+    <value>ピッチ</value>
+  </data>
+  <data name="AcSettings_ChaseCamera_Params" xml:space="preserve">
+    <value>パラメーター:</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_SomeErrorHappened" xml:space="preserve">
+    <value>何らかのエラーが発生しました</value>
+  </data>
+  <data name="ContentTools_BatchPreviewsUpdater_AutoSelect" xml:space="preserve">
+    <value>自動選択</value>
+  </data>
+  <data name="Dialogs_CarUpdatePreviewsDialog_Done" xml:space="preserve">
+    <value>了解</value>
+  </data>
+  <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+    <value>ベストデルタ</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalDelta" xml:space="preserve">
+    <value>総デルタ</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+    <value>合計時間</value>
+  </data>
+  <data name="Dialogs_GameDialog_Benchmark" xml:space="preserve">
+    <value>ベンチマーク:</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>ゲームがクラッシュしました</value>
+  </data>
+  <data name="Drive_OnlineServer_JoinTSServer" xml:space="preserve">
+    <value>TSサーバーに参加</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar" xml:space="preserve">
+    <value>この車を待つ</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForThisCar_Tooltip" xml:space="preserve">
+    <value>この車が空くまで待ってから参加してください</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar" xml:space="preserve">
+    <value>どの車でも待つ</value>
+  </data>
+  <data name="Drive_OnlineServer_WaitForAnyCar_Tooltip" xml:space="preserve">
+    <value>どの車でも使えるようになるまで待ってから参加してください。</value>
+  </data>
+  <data name="Drive_OnlineServer_ResetStats" xml:space="preserve">
+    <value>統計情報をリセット</value>
+  </data>
+  <data name="Drive_OnlineServer_GetLinkToStats" xml:space="preserve">
+    <value>統計情報へのリンク</value>
+  </data>
+  <data name="Drive_OnlineServer_TrackIsMissing" xml:space="preserve">
+    <value>トラックが見つかりません</value>
+  </data>
+  <data name="Drive_OnlineServer_CarIsMissing" xml:space="preserve">
+    <value>車が見つかりません</value>
+  </data>
+  <data name="Drive_OnlineServer_SkinForBooking" xml:space="preserve">
+    <value>予約中のスキン:</value>
+  </data>
+  <data name="Drive_OnlineServer_ServerIsEmpty" xml:space="preserve">
+    <value>サーバーは空です</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
+    <value>CMショールーム</value>
+  </data>
+  <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
+    <value>固有のFanatec設定</value>
+  </data>
+  <data name="Drive_Quick_DisableLEDsAndDisplay" xml:space="preserve">
+    <value>LEDとディスプレイを無効化</value>
+  </data>
+  <data name="Drive_Quick_ShowCurrentGearOnly" xml:space="preserve">
+    <value>現在のギアのみ表示</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallRecommendedPlugins" xml:space="preserve">
+    <value>推奨プラグインのインストール</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AppJustHasBeenUpdatedPleaseReview" xml:space="preserve">
+    <value>アプリが最近更新されました。設定が有効か確認して下さい。</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_WhatsYourName" xml:space="preserve">
+    <value>あなたの名前は?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu" xml:space="preserve">
+    <value>スタートメニューにショートカットを追加しますか?</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_AddAShortcutToStartMenu_Tooltip" xml:space="preserve">
+    <value>これがあれば、Windows 8、8.1、10でもCMが適切な通知を使えるようになります。</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Create" xml:space="preserve">
+    <value>作成(推奨)</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_Delete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="Dialogs_AcRootDirectorySelector_InstallSomePlugins" xml:space="preserve">
+    <value>プラグインをインストールしませんか?</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_ViewInExplorer" xml:space="preserve">
+    <value>エクスプローラーで閲覧</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compress" xml:space="preserve">
+    <value>圧縮</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Decompress" xml:space="preserve">
+    <value>非圧縮</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_CompressionAlgorithm" xml:space="preserve">
+    <value>圧縮アルゴリズム:</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Path" xml:space="preserve">
+    <value>パス</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Original" xml:space="preserve">
+    <value>オリジナル</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Compressed" xml:space="preserve">
+    <value>圧縮済み</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_Ratio" xml:space="preserve">
+    <value>比率</value>
+  </data>
+  <data name="ContentTools_FilesCompressor_NotCompressed" xml:space="preserve">
+    <value>未圧縮</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_NoIssuesFound" xml:space="preserve">
+    <value>問題は見つかりませんでした</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_More" xml:space="preserve">
+    <value>詳しく</value>
+  </data>
+  <data name="ContentTools_CarAnalyzer_MoreDetails" xml:space="preserve">
+    <value>詳細:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Condition" xml:space="preserve">
+    <value>状態:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Enabled" xml:space="preserve">
+    <value>有効</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Apps" xml:space="preserve">
+    <value>アプリ:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Audio" xml:space="preserve">
+    <value>オーディオ:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_Video" xml:space="preserve">
+    <value>ビデオ:</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CSP_Tooltip" xml:space="preserve">
+    <value>カスタムシェーダーパッチ(CSP)</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_RearViewMirror" xml:space="preserve">
+    <value>リアビューミラー</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_UpdatePresetsDuringTheRace" xml:space="preserve">
+    <value>レース中に設定が変更された場合は、プリセットを更新してください</value>
+  </data>
+  <data name="AcSettings_PresetsPerMode_CreateNew" xml:space="preserve">
+    <value>新規作成</value>
+  </data>
+  <data name="MainWindow_ContentUpdate_ViewDetails" xml:space="preserve">
+    <value>詳細を見る</value>
+  </data>
+  <data name="Settings_Appearance_ThemeDefined" xml:space="preserve">
+    <value>テーマ定義</value>
+  </data>
+  <data name="Settings_Content_EMail" xml:space="preserve">
+    <value>メールアドレス</value>
+  </data>
+  <data name="TrackStateEditor_Description" xml:space="preserve">
+    <value>説明:</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip" xml:space="preserve">
+    <value>初期グリップ</value>
+  </data>
+  <data name="TrackStateEditor_InitialGrip_Tooltip" xml:space="preserve">
+    <value>セッション開始時のグリップ量</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer" xml:space="preserve">
+    <value>グリップ移動</value>
+  </data>
+  <data name="TrackStateEditor_GripTransfer_Tooltip" xml:space="preserve">
+    <value>追加グリップが次回にどれだけ引き継がれるか</value>
+  </data>
+  <data name="TrackStateEditor_GripRandomization" xml:space="preserve">
+    <value>グリップのランダム化</value>
+  </data>
+  <data name="TrackStateEditor_LapGain" xml:space="preserve">
+    <value>ラップゲイン</value>
+  </data>
+  <data name="RaceGridEditor_AILimitationsAreActive_Tooltip" xml:space="preserve">
+    <value>AIの制限は次のとおりです</value>
+  </data>
+  <data name="Drive_Quick_RandomizeEverything" xml:space="preserve">
+    <value>すべてをランダム化</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTemperature" xml:space="preserve">
+    <value>ランダムな温度を設定</value>
+  </data>
+  <data name="Drive_Quick_SetRandomWeather" xml:space="preserve">
+    <value>ランダムな天気を設定</value>
+  </data>
+  <data name="Drive_Quick_SetRandomTime" xml:space="preserve">
+    <value>ランダムな時間を設定</value>
+  </data>
+  <data name="Drive_Quick_ChangeTrackToRandom" xml:space="preserve">
+    <value>トラックをランダムに変更</value>
+  </data>
+  <data name="Drive_Quick_ChangeSkinToRandom" xml:space="preserve">
+    <value>スキンをランダムに変更</value>
+  </data>
+  <data name="Drive_Quick_ChangeCarToRandom" xml:space="preserve">
+    <value>車をランダムに変更</value>
+  </data>
+  <data name="Drive_Quick_StartingTheRace" xml:space="preserve">
+    <value>レースを開始しています…</value>
+  </data>
+  <data name="Drive_Quick_CantStartTheRace" xml:space="preserve">
+    <value>レースを開始できませんでした</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>はい。それを修正します。</value>
+  </data>
+  <data name="Dialogs_ImageEditor_CantLoadImage" xml:space="preserve">
+    <value>画像を読み込めません</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>オリジナルランチャー(Steamで表示)</value>
+  </data>
+  <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+    <value>ビデオ設定(FPSカウンター)</value>
+  </data>
+  <data name="AcSettings_Audio_CantGetTheListOfAudioDevices" xml:space="preserve">
+    <value>オーディオデバイスの一覧を取得できません</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HardwareLock" xml:space="preserve">
+    <value>ハードウェアロック(実験的)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_LogitechHardwareLockOptions" xml:space="preserve">
+    <value>ハードウェアロックオプション(ロジクール):</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+    <value>FFBポストプロセッシングを有効</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>モード:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostRange" xml:space="preserve">
+    <value>センター加速幅:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain" xml:space="preserve">
+    <value>センター加速量:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>ホイールを中央に配置したときにFFBを乗算するために使用します</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>ポストプロセッシング:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>レース:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Online" xml:space="preserve">
+    <value>オンライン:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>車:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Replay" xml:space="preserve">
+    <value>リプレイ:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Options" xml:space="preserve">
+    <value>オプション:</value>
+  </data>
+  <data name="AcSettings_Controls_Scanning_Hint" xml:space="preserve">
+    <value>あまりにも時間がかかる場合は、PCに接続されているデバイスのいずれかにバグのあるドライバがある可能性があります。例えば、Corsair K55キーボードは、DirectInput8でこの問題を引き起こすことが知られています。[url="https://stackoverflow.com/questions/10967795/directinput8-enumdevices-sometimes-painfully-slow"]詳細情報[/url]。</value>
+  </data>
+  <data name="AcSettings_Controls_DeviceSettings_Tooltip" xml:space="preserve">
+    <value>デバイス設定</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>名前の編集</value>
+  </data>
+  <data name="AcSettings_Controls_ScanDevicesAtLaunch" xml:space="preserve">
+    <value>起動時にデバイスをスキャン</value>
+  </data>
+  <data name="AcSettings_Controls_ResetSystemBindings" xml:space="preserve">
+    <value>システムバインディングのリセット</value>
+  </data>
+  <data name="AcSettings_General_PitStops" xml:space="preserve">
+    <value>ピットストップ:</value>
+  </data>
+  <data name="AcSettings_General_UseMousePitStop" xml:space="preserve">
+    <value>マウスピットストップの使用</value>
+  </data>
+  <data name="AcSettings_General_KeepCameraInTheCar" xml:space="preserve">
+    <value>カメラを車内に固定</value>
+  </data>
+  <data name="AcSettings_General_PresetsCount" xml:space="preserve">
+    <value>プリセット数</value>
+  </data>
+  <data name="AcSettings_General_ReplaysAutosave" xml:space="preserve">
+    <value>リプレイのオートセーブ:</value>
+  </data>
+  <data name="AcSettings_General_MinimumTime" xml:space="preserve">
+    <value>最短時間</value>
+  </data>
+  <data name="AcSettings_General_LimitForRaces" xml:space="preserve">
+    <value>レースの制限</value>
+  </data>
+  <data name="AcSettings_General_LimitForQualifications" xml:space="preserve">
+    <value>予選の制限</value>
+  </data>
+  <data name="AcSettings_General_LimitForOtherSessions" xml:space="preserve">
+    <value>他セッションの制限</value>
+  </data>
+  <data name="AcSettings_Python_EnablePythonApps" xml:space="preserve">
+    <value>Pythonアプリを有効</value>
+  </data>
+  <data name="AcSettings_Python_KeepDeveloperAppsFlagWithAppsPresets" xml:space="preserve">
+    <value>開発者アプリケーションのフラグをアプリプリセットに保持</value>
+  </data>
+  <data name="AcSettings_System_VRCameraShake" xml:space="preserve">
+    <value>VRカメラの手ぶれ</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit" xml:space="preserve">
+    <value>パフォーマンスヒット:</value>
+  </data>
+  <data name="AcSettings_Video_PerformanceHit_Tooltip" xml:space="preserve">
+    <value>巨大な近似値であり、現実とは相関しない場合があります。1920×1080の解像度で測定。</value>
+  </data>
+  <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+    <value>解像度とFPS:</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark" xml:space="preserve">
+    <value>時間制限のあるベンチマーク</value>
+  </data>
+  <data name="AcSettings_Video_TimeLimitedBenchmark_Tooltip" xml:space="preserve">
+    <value>設定を比較する必要がある場合は、これを使用して類似の結果を取得します。</value>
+  </data>
+  <data name="Dialogs_ImageEditor_UseMouseWheelOrKeysToAdjust" xml:space="preserve">
+    <value>マウスホイールまたは+/-キーを使用して領域のサイズを調整します。精度を調整するには、CtrlキーまたはShiftキーを押したままにします。</value>
+  </data>
+  <data name="Dialogs_InstallAdditionalContentDialog_Hint" xml:space="preserve">
+    <value>ファイルやリンクをドロップしてダウンロードする</value>
+  </data>
+  <data name="Drive_OnlineServer_MaximumOfContacts_Tooltip" xml:space="preserve">
+    <value>1km当たりの最大接触回数</value>
+  </data>
+  <data name="Selected_FilterByOrigin" xml:space="preserve">
+    <value>オリジナルでフィルター</value>
+  </data>
+  <data name="Selected_CarPage_ReplaceTyres" xml:space="preserve">
+    <value>タイヤ交換</value>
+  </data>
+  <data name="Selected_ClearNotes" xml:space="preserve">
+    <value>クリアなメモ</value>
+  </data>
+  <data name="Selected_FilterByHavingNotes" xml:space="preserve">
+    <value>ノート所持でフィルター</value>
+  </data>
+  <data name="Selected_CarPage_ClearStatsFromThisCar" xml:space="preserve">
+    <value>この車の明確な統計</value>
+  </data>
+  <data name="Selected_CarSetupPage_Unknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="Selected_CarSetupPage_DefaultValue" xml:space="preserve">
+    <value>デフォルト値:</value>
+  </data>
+  <data name="Settings_Drive_LoadAssistsWithQuickDrivePresets" xml:space="preserve">
+    <value>クイックドライブプリセットの読み込みを支援</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay" xml:space="preserve">
+    <value>走行会の場合はセッションタイプとして”練習”を使用します</value>
+  </data>
+  <data name="Settings_Drive_UsePracticeForTrackDay_Tooltip" xml:space="preserve">
+    <value>この方法だとピットストールのためのクルーが居ますが、ボットはもっと受動的になるかもしれません。</value>
+  </data>
+  <data name="Dialogs_BookingDialog_BookingIsFinished" xml:space="preserve">
+    <value>予約が完了しました</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>CSVをインポート</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>WheelCheckからCSVをインポート(必要に応じてドラッグ＆ドロップ)</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportLUT" xml:space="preserve">
+    <value>LUTをインポート</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_Import_Tooltip" xml:space="preserve">
+    <value>必要に応じてドラッグ&amp;ドロップ</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_HandleMode" xml:space="preserve">
+    <value>ハンドルモード:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ABSEffect" xml:space="preserve">
+    <value>ABS効果</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>新しいタグ</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>削除したものを復元</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NameOfTheTag_Tooltip" xml:space="preserve">
+    <value>タグ名</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>タグの削除…</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>名前:</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names_Tooltip" xml:space="preserve">
+    <value>ここに名前を入力してください</value>
+  </data>
+  <data name="Lists_ToolsListPage_Launch" xml:space="preserve">
+    <value>起動</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>セッションが見つかりません</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveMissing" xml:space="preserve">
+    <value>見つからないものを削除</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_RemoveAllSessionsWithMissingContent_Tooltip" xml:space="preserve">
+    <value>コンテンツが不足している全てのセッションを削除</value>
+  </data>
+  <data name="Selected_CarPage_New_PowerGraph" xml:space="preserve">
+    <value>パワーグラフ:</value>
+  </data>
+  <data name="Selected_CarPage_New_Property_Tooltip" xml:space="preserve">
+    <value>[i]ご存知ですか？[/i]プロパティを右クリックすると、そのプロパティで車をフィルター出来ます。</value>
+  </data>
+  <data name="Selected_FilterBySimilarDrivenDistance" xml:space="preserve">
+    <value>似たような走行距離でフィルタリング</value>
+  </data>
+  <data name="Selected_FilterBySimilarMaxSpeedAchieved" xml:space="preserve">
+    <value>似たような到達最高速でフィルタリング</value>
+  </data>
+  <data name="Selected_CarPage_New_TSMSetups_Tooltip" xml:space="preserve">
+    <value>The Setup Marketのインストール可能なセットアップ数</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState" xml:space="preserve">
+    <value>トラック状態の10進数を許可</value>
+  </data>
+  <data name="Settings_Drive_AllowDecimalValuesForTrackState_Tooltip" xml:space="preserve">
+    <value>使用すると一部のアプリで問題が発生する可能性があります</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode" xml:space="preserve">
+    <value>選択されたモードにトラックが適合するかどうかを確認</value>
+  </data>
+  <data name="Settings_Drive_CheckIfTrackFitsSelectedMode_Tooltip" xml:space="preserve">
+    <value>無効にすることはお勧めしません。何か問題がある場合は、CMがトラックの説明を修正します。ただし、デフォルト以外のタグを使用している場合は、必ず使用してください。</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins" xml:space="preserve">
+    <value>スキン、車の修正、トラックレイアウト用の追加ドロップダウンリストを表示します。</value>
+  </data>
+  <data name="Settings_Drive_ShowExtraDropDownListsForSkins_Tooltip" xml:space="preserve">
+    <value>アプリが若干ダウンして表示される可能性があります</value>
+  </data>
+  <data name="Settings_Online_AutoRefreshSelected" xml:space="preserve">
+    <value>自動更新を選択:</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>リストの管理</value>
+  </data>
+  <data name="Settings_Online_ManageDriversTags" xml:space="preserve">
+    <value>ドライバータグの管理</value>
+  </data>
+  <data name="Settings_Online_Display" xml:space="preserve">
+    <value>表示:</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>パスワード:</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword" xml:space="preserve">
+    <value>常にパスワードの使用を許可</value>
+  </data>
+  <data name="Settings_Online_AlwaysAllowToUsePassword_Tooltip" xml:space="preserve">
+    <value>管理者として接続する場合は有効にして下さい</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>固定名:</value>
+  </data>
+  <data name="Settings_Online_FixNames_Tooltip" xml:space="preserve">
+    <value>変更後に更新が必要な場合があります</value>
+  </data>
+  <data name="Settings_Online_PingAttempts" xml:space="preserve">
+    <value>Ping試行</value>
+  </data>
+  <data name="Settings_Online_PresetsFolder" xml:space="preserve">
+    <value>プリセットフォルダ</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce" xml:space="preserve">
+    <value>サーバーにPingを1回実行</value>
+  </data>
+  <data name="Settings_Online_PingServersOnce_Tooltip" xml:space="preserve">
+    <value>オリジナルのランチャーのように一度だけ、そして更新ボタンを押している間だけPingサーバーに接続します。</value>
+  </data>
+  <data name="Settings_Online_PausePingingDuringTheRace" xml:space="preserve">
+    <value>レース中にPingを一時停止</value>
+  </data>
+  <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
+    <value>コンテンツが不足している場合に拡張情報を表示する</value>
   </data>
 </root>

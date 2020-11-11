@@ -750,8 +750,8 @@ Profondità: [b]{4}[/b]</value>
     <value>Proprrieta delle ombre:</value>
   </data>
   <data name="Controls_ClickToAssign" xml:space="preserve">
-    <value>Clicka per assegnare</value>
-  </data>
+    <value>Clicca per assegnare</value>
+  <alternative>Clicka per assegnare</alternative></data>
   <data name="Controls_WaitingForInput" xml:space="preserve">
     <value>In attesa di input</value>
   </data>

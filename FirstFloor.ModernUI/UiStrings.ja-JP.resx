@@ -528,4 +528,13 @@
   <data name="Yes" xml:space="preserve">
     <value>はい</value>
   </data>
+  <data name="TexturesDdsFilter" xml:space="preserve">
+    <value>DDSファイル (*.dds)|*.dds|全ファイル (*.*)|*.*</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{1}のうち{0}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>閲覧</value>
+  </data>
 </root>

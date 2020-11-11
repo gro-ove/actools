@@ -1668,8 +1668,8 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
     <value>Nejlepší kola:</value>
   </data>
   <data name="BestLapsControl_BestLap" xml:space="preserve">
-    <value>Nejlepší kolo:</value>
-  </data>
+    <value>Nejlepší kolo (toto auto a trať):</value>
+  <alternative>Nejlepší kolo:</alternative></data>
   <data name="Common_Ballast" xml:space="preserve">
     <value>Zátěž</value>
   </data>
@@ -1690,5 +1690,17 @@ Přejete si je zabalit před zahájením serveru? Nezapomeňte ale s klienty sd�
   </data>
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>Agresivita soupeřů</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Načítám seznam hráčů...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Načítám auta ({0})…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Načítám {0} skinů…</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Načítám aktuální informace o serveru...</value>
   </data>
 </root>

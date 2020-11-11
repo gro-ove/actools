@@ -196,14 +196,14 @@
     <value>Apagado</value>
   </data>
   <data name="AcRootDirectory_MissingFile" xml:space="preserve">
-    <value>Archivo {0} perdido</value>
-  </data>
+    <value>Archivo "{0}" no encontrado</value>
+  <alternative>Archivo {0} perdido</alternative></data>
   <data name="AcError_ColorCurvesIniIsMissing" xml:space="preserve">
-    <value>Archivo “colorCurves.ini” perdido</value>
-  </data>
+    <value>Archivo “colorCurves.ini” no encontrado</value>
+  <alternative>Archivo “colorCurves.ini” perdido</alternative></data>
   <data name="AcError_FontBitmapIsMissing" xml:space="preserve">
-    <value>Archivo bitmap de tipo de fuente perdido</value>
-  </data>
+    <value>Archivo bitmap de tipo de fuente no encontrado</value>
+  <alternative>Archivo bitmap de tipo de fuente perdido</alternative></data>
   <data name="DirectoryInstallator_FileNotFound" xml:space="preserve">
     <value>Archivo no encontrado</value>
   </data>
@@ -337,35 +337,35 @@
     <value>Cinco caras por frame</value>
   </data>
   <data name="AdditionalContent_Track" xml:space="preserve">
-    <value>Circuito</value>
-  </data>
+    <value>circuito</value>
+  <alternative>Circuito</alternative></data>
   <data name="Online_Server_TrackIsMissing" xml:space="preserve">
     <value>Circuito {0} desaparecido.</value>
   </data>
   <data name="AcError_TrackIsMissing" xml:space="preserve">
-    <value>Circuito “{0}” desaparecido</value>
-  </data>
+    <value>Circuito “{0}” no encontrado</value>
+  <alternative>Circuito “{0}” desaparecido</alternative></data>
   <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
-    <value>Circuito requerido "{0}" está perdido</value>
-  </data>
+    <value>Circuito requerido "{0}" no encontrado</value>
+  <alternative>Circuito requerido "{0}" está perdido</alternative></data>
   <data name="Controls_Horn" xml:space="preserve">
     <value>Cláxon</value>
   </data>
   <data name="AdditionalContent_Weather" xml:space="preserve">
-    <value>Clima</value>
-  </data>
+    <value>clima</value>
+  <alternative>Clima</alternative></data>
   <data name="Shared_Weather" xml:space="preserve">
     <value>Clima</value>
   </data>
   <data name="AcError_RequiredWeatherIsMissing" xml:space="preserve">
-    <value>Clima requerido {0} está perdido</value>
-  </data>
+    <value>Clima requerido {0} no encontrado</value>
+  <alternative>Clima requerido {0} está perdido</alternative></data>
   <data name="AdditionalContent_Car" xml:space="preserve">
     <value>coche</value>
   </data>
   <data name="AcError_CarIsMissing" xml:space="preserve">
-    <value>Coche "{0}" está perdido</value>
-  </data>
+    <value>Coche "{0}" no encontrado</value>
+  <alternative>Coche "{0}" está perdido</alternative></data>
   <data name="Online_Server_CarIsMissing" xml:space="preserve">
     <value>Coche {0} está perdido</value>
   </data>
@@ -373,8 +373,8 @@
     <value>Coche bloqueado</value>
   </data>
   <data name="AcError_RequiredCarIsMissing" xml:space="preserve">
-    <value>Coche requerido "{0}" está perdido</value>
-  </data>
+    <value>Coche requerido "{0}" no encontrado</value>
+  <alternative>Coche requerido "{0}" está perdido</alternative></data>
   <data name="Online_Server_CarsAreMissing" xml:space="preserve">
     <value>Coches {0} están perdidos</value>
   </data>
@@ -403,8 +403,8 @@
     <value>Consumo de combustible</value>
   </data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
-    <value>Contenido requerido está perdido</value>
-  </data>
+    <value>Contenido requerido no encontrado</value>
+  <alternative>Contenido requerido está perdido</alternative></data>
   <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
     <value>Contraseña invalida</value>
   </data>
@@ -439,8 +439,8 @@
     <value>De serie</value>
   </data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>Decoracion de skin ({0}/livery.png) se ha perdido</value>
-  </data>
+    <value>Decoración de skin ({0}/livery.png) no encontrada</value>
+  <alternative>Decoracion de skin ({0}/livery.png) se ha perdido</alternative></data>
   <data name="CarSetupObject_TyresPressure_RightFront" xml:space="preserve">
     <value>Delante derecha</value>
   </data>
@@ -466,11 +466,11 @@
     <value>Dirección</value>
   </data>
   <data name="AcRootDirectory_MissingDirectory" xml:space="preserve">
-    <value>Directorio "{0} está perdido</value>
-  </data>
+    <value>Directorio "{0}" no encontrado</value>
+  <alternative>Directorio "{0} está perdido</alternative></data>
   <data name="AcError_DirectoryUiIsMissing" xml:space="preserve">
-    <value>Directorio "ui" está perdido</value>
-  </data>
+    <value>Directorio "ui" no encontrado</value>
+  <alternative>Directorio "ui" está perdido</alternative></data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
     <value>Directorio de skins no disponible</value>
   </data>
@@ -478,8 +478,8 @@
     <value>Directorio no definido</value>
   </data>
   <data name="AcRootDirectory_Missing" xml:space="preserve">
-    <value>Directorio perdido</value>
-  </data>
+    <value>Directorio no encontrado</value>
+  <alternative>Directorio perdido</alternative></data>
   <data name="Controls_Decrease" xml:space="preserve">
     <value>Disminuir</value>
   <alternative>Disminución</alternative></data>
@@ -511,8 +511,8 @@
     <value>El archivo {0} está dañado</value>
   </data>
   <data name="AcError_FileIsMissing" xml:space="preserve">
-    <value>El archivo {0} está perdido</value>
-  </data>
+    <value>Archivo {0} no encontrado</value>
+  <alternative>El archivo {0} está perdido</alternative></data>
   <data name="AcObject_ReloadAutomatically_Ini" xml:space="preserve">
     <value>El archivo INI ha sido cambiado. Lo recargamos? Todos los cambios locales pueden perderse.</value>
   </data>
@@ -538,8 +538,8 @@
     <value>El modo "Time Attack" no lo soporta el circuito seleccionado</value>
   </data>
   <data name="AcError_NameIsMissing" xml:space="preserve">
-    <value>El nombre está perdido</value>
-  </data>
+    <value>Nombre no encontrado</value>
+  <alternative>El nombre está perdido</alternative></data>
   <data name="AcError_NameShouldnTContainSymbolsLikeOr" xml:space="preserve">
     <value>El nombre no puede contener simbolos tipo “[” or “]”</value>
   </data>
@@ -592,8 +592,8 @@
     <value>Evento único</value>
   </data>
   <data name="AcError_EventsOfAreMissing" xml:space="preserve">
-    <value>Eventos de "{0}" están perdidos</value>
-  </data>
+    <value>Eventos de "{0}" no encontrados</value>
+  <alternative>Eventos de "{0}" están perdidos</alternative></data>
   <data name="KunosCareer_SingleEvents" xml:space="preserve">
     <value>Eventos individuales</value>
   </data>
@@ -601,11 +601,11 @@
     <value>Exportando...</value>
   </data>
   <data name="CarParentIsMissing" xml:space="preserve">
-    <value>Familia de coche perdida</value>
-  </data>
+    <value>Familia de coche no encontrada</value>
+  <alternative>Familia de coche perdida</alternative></data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>Familia de coche perdida</value>
-  </data>
+    <value>Familia de coche no encontrada</value>
+  <alternative>Familia de coche perdida</alternative></data>
   <data name="Controls_Headlights" xml:space="preserve">
     <value>Faros</value>
   </data>
@@ -683,11 +683,11 @@
     <value>Huracan</value>
   </data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
-    <value>Icono actualizado perdido</value>
-  </data>
+    <value>Icono de actualización no encontrado</value>
+  <alternative>Icono actualizado perdido</alternative></data>
   <data name="Common_CarIdIsMissing" xml:space="preserve">
-    <value>ID de coche perdida</value>
-  </data>
+    <value>ID de coche no encontrado</value>
+  <alternative>ID de coche perdida</alternative></data>
   <data name="Common_CannotUnpack" xml:space="preserve">
     <value>Imposible de desempaquetar {0}</value>
   </data>
@@ -722,8 +722,8 @@
     <value>La autenticación simbólica se ha perdido</value>
   </data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
-    <value>La configuración para el circuito {0} se ha perdido</value>
-  </data>
+    <value>Configuración para el circuito {0} no encontrada</value>
+  <alternative>La configuración para el circuito {0} se ha perdido</alternative></data>
   <data name="Common_SteamIdIsMissing" xml:space="preserve">
     <value>La ID de Steam se ha perdido</value>
   </data>
@@ -731,8 +731,8 @@
     <value>La ID está mal</value>
   </data>
   <data name="Common_IdIsMissing" xml:space="preserve">
-    <value>La ID está perdida</value>
-  </data>
+    <value>ID no encontrado</value>
+  <alternative>La ID está perdida</alternative></data>
   <data name="AppUpdater_UnpackedVersionMessage" xml:space="preserve">
     <value>La versión desempaquetada no soporta la actualización automática</value>
   </data>
@@ -779,8 +779,8 @@
     <value>Localización inválida</value>
   </data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
-    <value>Logo de la marca perdido</value>
-  </data>
+    <value>Logo de la marca no encontrado</value>
+  <alternative>Logo de la marca perdido</alternative></data>
   <data name="Common_Length" xml:space="preserve">
     <value>Longitud</value>
   </data>
@@ -797,8 +797,8 @@
     <value>Los objetos de suspensión (SUSP_LF, SUSP_LR, …) están perdidos</value>
   </data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>Los skins estan perdidos</value>
-  </data>
+    <value>Skins no encontrados</value>
+  <alternative>Los skins estan perdidos</alternative></data>
   <data name="AcObject_PlaceIsTaken" xml:space="preserve">
     <value>Lugar ocupado</value>
   </data>
@@ -857,8 +857,8 @@
     <value>Mismo grupo</value>
   </data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
-    <value>Modelo (KN5 file) está perdido</value>
-  </data>
+    <value>Modelo (KN5 file) no encontrada</value>
+  <alternative>Modelo (KN5 file) está perdido</alternative></data>
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>Modelo KN5</value>
   </data>
@@ -1076,14 +1076,14 @@
     <value>No se pueden leer datos</value>
   </data>
   <data name="Fonts_RescanUsings" xml:space="preserve">
-    <value>No se pueden reescanear los coches</value>
-  </data>
+    <value>No se puede reescanear los coches</value>
+  <alternative>No se pueden reescanear los coches</alternative></data>
   <data name="NotSupported" xml:space="preserve">
     <value>No soportado</value>
   </data>
   <data name="AcError_BrandNameIsMissing" xml:space="preserve">
-    <value>Nombre de la marca perdido</value>
-  </data>
+    <value>Nombre de la marca no encontrado</value>
+  <alternative>Nombre de la marca perdido</alternative></data>
   <data name="Weather_ScatteredClouds" xml:space="preserve">
     <value>Nubes dispersas</value>
   </data>
@@ -1301,11 +1301,11 @@
     <value>Sistema antibloqueo de frenos</value>
   </data>
   <data name="AdditionalContent_CarSkin" xml:space="preserve">
-    <value>Skin de coche</value>
-  </data>
+    <value>skin de coche</value>
+  <alternative>Skin de coche</alternative></data>
   <data name="AcError_RequiredSkinForIsMissing" xml:space="preserve">
-    <value>Skin requerido “{1}” de {0} está perdido</value>
-  </data>
+    <value>Skin requerido “{1}” de {0} no encontrado</value>
+  <alternative>Skin requerido “{1}” de {0} está perdido</alternative></data>
   <data name="Weather_ColorCurves_SunHigh" xml:space="preserve">
     <value>Sol (Alto)</value>
   </data>
@@ -1394,8 +1394,8 @@
     <value>Mostrar la diferencia de tiempo entre los oponentes</value>
   <alternative>Ver intévalo de tiempo de los oponentes</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Vista previa de skin ({0}/preview.jpg) se ha perdido</value>
-  </data>
+    <value>Vista previa de skin ({0}/preview.jpg) no encontrada</value>
+  <alternative>Vista previa de skin ({0}/preview.jpg) se ha perdido</alternative></data>
   <data name="AcSettings_View_ViewHeader" xml:space="preserve">
     <value>Vista:</value>
   </data>
@@ -1500,8 +1500,8 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
     <value>Usar nombres de skin si esta disponible</value>
   </data>
   <data name="RaceGrid_You" xml:space="preserve">
-    <value>Tu</value>
-  </data>
+    <value>Tú</value>
+  <alternative>Tu</alternative></data>
   <data name="Shared_UserChampionship" xml:space="preserve">
     <value>Campeonato</value>
   </data>
@@ -1536,9 +1536,9 @@ Forma dificil de empezar la carrera; Uno de los mas rapidos, pero no funciona si
     <value>No se puede iniciar RHM</value>
   </data>
   <data name="ServerPreset_UnpackedDataWarning" xml:space="preserve">
-    <value>Los datos de {0} no estan empaquetados, los usuarios podrian modificarlo antes de entrar y obtener ventaja.
+    <value>Los datos de {0} no están empaquetados, los usuarios podríian modificarlo antes de entrar y obtener ventaja.
 
-Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</value>
+¿Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</value>
   <alternative>Los datos de {0} no estan empaquetados, los usuarios podrian modificarlo antes de entrar y obtener ventaja.
 
 Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir la version empaquetada con los clientes.</alternative></data>
@@ -1549,8 +1549,8 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
     <value>Por favor, selecciona un coche soportado por el servidor</value>
   </data>
   <data name="Online_BookingResult_IncorrectPassword" xml:space="preserve">
-    <value>La contraseña no es valida</value>
-  </data>
+    <value>La contraseña no es válida</value>
+  <alternative>La contraseña no es valida</alternative></data>
   <data name="Online_BookingResult_Closed" xml:space="preserve">
     <value>La sesion Reserva / Booking esta cerrada</value>
   </data>
@@ -1567,11 +1567,11 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
     <value>El coche seleccionado no tiene un sonido adecuado</value>
   </data>
   <data name="Car_ReplaceSound_WrongCar_Commentary" xml:space="preserve">
-    <value>Selecciona algun otro coche.</value>
-  </data>
+    <value>Selecciona algún otro coche.</value>
+  <alternative>Selecciona algun otro coche.</alternative></data>
   <data name="Car_ReplaceSound_CannotReplace" xml:space="preserve">
-    <value>No se puede reemplazar el sonido del coche.</value>
-  </data>
+    <value>No se puede reemplazar el sonido del coche</value>
+  <alternative>No se puede reemplazar el sonido del coche.</alternative></data>
   <data name="Car_ReplaceSound_CannotReplace_Commentary" xml:space="preserve">
     <value>Asegurate de que tienes suficiente espacio y los archivos originales pueden ser eliminados.</value>
   </data>
@@ -1582,11 +1582,11 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
     <value>Estas en este server</value>
   </data>
   <data name="Online_YouFormat" xml:space="preserve">
-    <value>{0} (Tu)</value>
-  </data>
+    <value>{0} (Tú)</value>
+  <alternative>{0} (Tu)</alternative></data>
   <data name="Online_AdminPassword" xml:space="preserve">
-    <value>Contraseña Administrador:</value>
-  </data>
+    <value>Contraseña administrador:</value>
+  <alternative>Contraseña Administrador:</alternative></data>
   <data name="Online_ShowAdminPasswordInputHeader" xml:space="preserve">
     <value>Mostrar entrada de contraseña de administrador</value>
   </data>
@@ -1648,9 +1648,30 @@ Te gustaria empaquetarlo antes de iniciar el server? Pero no olvides compartir l
     <value>Lastre</value>
   </data>
   <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
-    <value>Organizar la resistencia de la IA basada en la relación P/W</value>
-  </data>
+    <value>Organizar la resistencia de la IA basada en la relación Potencia/Peso</value>
+  <alternative>Organizar la resistencia de la IA basada en la relación P/W</alternative></data>
   <data name="Race_RandomizationTitle" xml:space="preserve">
-    <value>Aleatorio:</value>
+    <value>Aleatorio: </value>
+  <alternative>Aleatorio:</alternative></data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>Mostrar rango relativo</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Mostrar agresividad de IA en el nombre del piloto</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Agresividad de oponentes</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Cargando lista de jugadores...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Cargando lista de coches ({0})…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Cargando skins de {0}…</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Cargando información de servidor real</value>
   </data>
 </root>

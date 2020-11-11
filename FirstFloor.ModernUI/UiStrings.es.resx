@@ -359,8 +359,8 @@
     <value>Escoge un color</value>
   </data>
   <data name="ShowPassword" xml:space="preserve">
-    <value>Mostrar Contraseña</value>
-  </data>
+    <value>Mostrar contraseña</value>
+  <alternative>Mostrar Contraseña</alternative></data>
   <data name="Ordinalizing_Minus" xml:space="preserve">
     <value>Menos {0}</value>
   </data>
@@ -482,8 +482,8 @@
     <value>{0} segundos</value>
   </data>
   <data name="Common_Oops" xml:space="preserve">
-    <value>Ostras!!!</value>
-  </data>
+    <value>¡Ostras!</value>
+  <alternative>Ostras!!!</alternative></data>
   <data name="FatalError_Message" xml:space="preserve">
     <value>La aplicación ha encontrado con un problema y debe reiniciarse. Por favor, utiliza el botón "Notificar un problema" después si quieres enviar un informe de errores.</value>
   </data>
@@ -567,5 +567,11 @@
   </data>
   <data name="TexturesDdsFilter" xml:space="preserve">
     <value>Archivos DDS (*.dds)|*.dds|Todos los archivos (*.*)|*.*</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Examinar</value>
   </data>
 </root>

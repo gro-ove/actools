@@ -280,11 +280,11 @@
     <value>3画面</value>
   </data>
   <data name="AcSettings_CannotGetResolutions" xml:space="preserve">
-    <value>解像度の適切なリストを取得できません</value>
-  </data>
+    <value>適切な解像度のリストを取得できません</value>
+  <alternative>解像度の適切なリストを取得できません</alternative></data>
   <data name="AcSettings_CannotSave" xml:space="preserve">
-    <value>ACの設定を保存できません</value>
-  </data>
+    <value>AC設定を保存できません</value>
+  <alternative>ACの設定を保存できません</alternative></data>
   <data name="AcSettings_CannotSave_Commentary" xml:space="preserve">
     <value>アプリがcfgフォルダにアクセスできることを確認してください。</value>
   </data>
@@ -301,8 +301,8 @@
     <value>フレームあたり6面</value>
   </data>
   <data name="AcSettings_Cubemap_Static" xml:space="preserve">
-    <value>静的"</value>
-  </data>
+    <value>静的</value>
+  <alternative>静的"</alternative></data>
   <data name="AcSettings_Cubemap_ThreeFaces" xml:space="preserve">
     <value>フレームあたり3面</value>
   </data>
@@ -313,8 +313,8 @@
     <value>カスタム</value>
   </data>
   <data name="AcSettings_ExperimentalValue" xml:space="preserve">
-    <value>{0}(実験的機能)</value>
-  </data>
+    <value>{0}(実験的)</value>
+  <alternative>{0}(実験的機能)</alternative></data>
   <data name="AcSettings_Off" xml:space="preserve">
     <value>オフ</value>
   </data>
@@ -364,14 +364,14 @@
     <value>カメラ:</value>
   </data>
   <data name="AcSettings_View_Damage" xml:space="preserve">
-    <value>ダメージ(GUI)を表示</value>
-  </data>
+    <value>ダメージを表示(GUI)</value>
+  <alternative>ダメージ(GUI)を表示</alternative></data>
   <data name="AcSettings_View_DriversNames" xml:space="preserve">
     <value>ドライバーの名前を表示</value>
   </data>
   <data name="AcSettings_View_GForcesHeader" xml:space="preserve">
-    <value>重力:</value>
-  </data>
+    <value>加速度:</value>
+  <alternative>重力:</alternative></data>
   <data name="AcSettings_View_GlancingAngle" xml:space="preserve">
     <value>視射角</value>
   </data>
@@ -382,11 +382,11 @@
     <value>ドライバーの腕を非表示</value>
   </data>
   <data name="AcSettings_View_HideSteeringWheel" xml:space="preserve">
-    <value>ステアリングホイールを表示</value>
-  </data>
+    <value>ステアリングホイールを非表示</value>
+  <alternative>ステアリングホイールを表示</alternative></data>
   <data name="AcSettings_View_HighspeedShaking" xml:space="preserve">
-    <value>高速振動</value>
-  </data>
+    <value>高速時の振動</value>
+  <alternative>高速振動</alternative></data>
   <data name="AcSettings_View_Lateral" xml:space="preserve">
     <value>側面</value>
   </data>
@@ -409,8 +409,8 @@
     <value>ステアリングホイール限界</value>
   </data>
   <data name="AcSettings_View_SteeringWheelLimit_Tooltip" xml:space="preserve">
-    <value>仮想ステアリングホイールの回転限界</value>
-  </data>
+    <value>仮想ステアリングホイールの限界</value>
+  <alternative>仮想ステアリングホイールの回転限界</alternative></data>
   <data name="AcSettings_View_TimeGap" xml:space="preserve">
     <value>対戦相手とのタイムギャップを表示する</value>
   </data>
@@ -478,8 +478,8 @@
     <value>更新に失敗しました</value>
   </data>
   <data name="ArchiveInstallator_InitializationFault" xml:space="preserve">
-    <value>Extractorが初期化されていません</value>
-  </data>
+    <value>解凍処理の初期化に失敗</value>
+  <alternative>Extractorが初期化されていません</alternative></data>
   <data name="ArchiveInstallator_PasswordIsInvalid" xml:space="preserve">
     <value>パスワードが無効です</value>
   </data>
@@ -487,8 +487,8 @@
     <value>パスワードが必要です</value>
   </data>
   <data name="ArchiveInstallator_UnsupportedEncryption" xml:space="preserve">
-    <value>申し訳ありません。{0}の暗号化がサポートされていません。</value>
-  </data>
+    <value>申し訳ありません。{0}の暗号化はサポートされていません。</value>
+  <alternative>申し訳ありません。{0}の暗号化がサポートされていません。</alternative></data>
   <data name="Assists_AbsLabel_Tooltip" xml:space="preserve">
     <value>アンチロック・ブレーキ・システム</value>
   </data>
@@ -508,8 +508,8 @@
     <value>オートシフト</value>
   </data>
   <data name="Assists_AutoShifting_Tooltip" xml:space="preserve">
-    <value>AT機能ではありません</value>
-  </data>
+    <value>ATではないことに注意</value>
+  <alternative>AT機能ではありません</alternative></data>
   <data name="Assists_FuelConsumption" xml:space="preserve">
     <value>燃料消費量</value>
   </data>
@@ -523,8 +523,8 @@
     <value>機械的損傷</value>
   </data>
   <data name="Assists_MechanicalDamage_Tooltip" xml:space="preserve">
-    <value>損傷しやすいエンジン、ギアボックス、サスペンション等</value>
-  </data>
+    <value>エンジン、ギアボックス、サスペンション等の損傷</value>
+  <alternative>損傷しやすいエンジン、ギアボックス、サスペンション等</alternative></data>
   <data name="Assists_SlipstreamEffect" xml:space="preserve">
     <value>スリップストリーム効果</value>
   </data>
@@ -535,8 +535,8 @@
     <value>安定性制御</value>
   </data>
   <data name="Assists_StabilityControl_Tooltip" xml:space="preserve">
-    <value>非現実的ですが、運転やドリフトの方法を学び始めたばかりの場合に役立ちます</value>
-  </data>
+    <value>現実的ではありませんが、運転やドリフトを学び始めたばかりの人には便利です。</value>
+  <alternative>非現実的ですが、運転やドリフトの方法を学び始めたばかりの場合に役立ちます</alternative></data>
   <data name="Assists_Title" xml:space="preserve">
     <value>アシスト</value>
   </data>
@@ -559,8 +559,8 @@
     <value>タイヤ摩耗の乗数</value>
   </data>
   <data name="AssistState_Factory" xml:space="preserve">
-    <value>工場出荷状況</value>
-  </data>
+    <value>工場出荷状態</value>
+  <alternative>工場出荷状況</alternative></data>
   <data name="AssistState_Off" xml:space="preserve">
     <value>オフ</value>
   </data>
@@ -664,8 +664,8 @@
     <value>インターネット接続が機能していることを確認します。</value>
   </data>
   <data name="Common_MakeSureThereIsEnoughSpace" xml:space="preserve">
-    <value>十分なスペースがあることを確認します。</value>
-  </data>
+    <value>十分な空き容量があることを確認して下さい。</value>
+  <alternative>十分なスペースがあることを確認します。</alternative></data>
   <data name="Common_None" xml:space="preserve">
     <value>無し</value>
   </data>
@@ -1399,8 +1399,8 @@
     <value>レースグリッドプリセット</value>
   </data>
   <data name="Shared_Replay" xml:space="preserve">
-    <value>リプレイ"</value>
-  </data>
+    <value>リプレイ</value>
+  <alternative>リプレイ"</alternative></data>
   <data name="Shared_UserChampionship" xml:space="preserve">
     <value>チャンピオンシップ</value>
   </data>
@@ -1631,5 +1631,95 @@
   </data>
   <data name="Windows_Kn5Commentary" xml:space="preserve">
     <value>KN5モデル</value>
+  </data>
+  <data name="Shared_TrackStatePreset" xml:space="preserve">
+    <value>トラック状態のプリセット</value>
+  </data>
+  <data name="Shared_RhmPreset" xml:space="preserve">
+    <value>リアルヘッドモーションプリセット</value>
+  </data>
+  <data name="Online_Server_CarSkinIsMissing" xml:space="preserve">
+    <value>車のスキン{0}がありません。</value>
+  </data>
+  <data name="Online_Server_CarSkinsAreMissing" xml:space="preserve">
+    <value>車のスキン{0}が見つかりません。</value>
+  </data>
+  <data name="Online_Server_WeatherIsMissing" xml:space="preserve">
+    <value>天気{0}が見つかりません。</value>
+  </data>
+  <data name="Controls_Gas" xml:space="preserve">
+    <value>燃料</value>
+  </data>
+  <data name="Controls_Brake" xml:space="preserve">
+    <value>ブレーキ</value>
+  </data>
+  <data name="Controls_Steer" xml:space="preserve">
+    <value>ステア</value>
+  </data>
+  <data name="Shared_CustomShowroomPreset" xml:space="preserve">
+    <value>カスタムショールームのプリセット</value>
+  </data>
+  <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
+    <value>カスタムプレビューのプリセット</value>
+  </data>
+  <data name="Weather_Random" xml:space="preserve">
+    <value>ランダム</value>
+  </data>
+  <data name="Weather_Original" xml:space="preserve">
+    <value>オリジナル</value>
+  </data>
+  <data name="Weather_Mods" xml:space="preserve">
+    <value>Mod</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>ベストラップ:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>ベストラップ:</value>
+  </data>
+  <data name="Common_FeetPerSecondPostfix" xml:space="preserve">
+    <value>ft/s</value>
+  </data>
+  <data name="Common_MetersPerSecondPostfix" xml:space="preserve">
+    <value>m/s</value>
+  </data>
+  <data name="Common_KilogramsPostfix" xml:space="preserve">
+    <value>kg</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>バラスト</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>リストリクター</value>
+  </data>
+  <data name="Race_ArrangeAIStrengthBasedOnPWRatio" xml:space="preserve">
+    <value>パワーウェイトレシオに基づいてAIの強さを調節</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>ランダム化:</value>
+  </data>
+  <data name="Race_ShowRelativeRange" xml:space="preserve">
+    <value>相対範囲を表示</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>ドライバー名にAIの積極性を表示</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>敵の積極性</value>
+  </data>
+  <data name="Common_Unit_Hz" xml:space="preserve">
+    <value>Hz</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>プレイヤーリストを読込中…</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>({0})を読込中…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>({0})スキンを読込中…</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>実際のサーバー情報を読込中…</value>
   </data>
 </root>

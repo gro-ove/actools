@@ -763,8 +763,8 @@
     <value>Gara</value>
   </data>
   <data name="Common_UnhandledError_Commentary" xml:space="preserve">
-    <value>Qualche errore non gestito occorso.</value>
-  </data>
+    <value>Si è verificato un errore non gestito.</value>
+  <alternative>Qualche errore non gestito occorso.</alternative></data>
   <data name="BaseUpdater_CannotDownloadInformation" xml:space="preserve">
     <value>Impossibile scaricare informazioni sulla versione più recente.</value>
   <alternative>Impossibile scaricare informazioni circa la versione più recente.</alternative></data>
@@ -953,8 +953,8 @@
     <value>Evento condizioni “{0}” non sono supportati</value>
   <alternative>Evento condizioni non sono supportati</alternative></data>
   <data name="AcError_RequiredContentIsMissing" xml:space="preserve">
-    <value> Il contenuto richiesto è mancante</value>
-  </data>
+    <value>Il contenuto richiesto è mancante</value>
+  <alternative> Il contenuto richiesto è mancante</alternative></data>
   <data name="AcError_RequiredTrackIsMissing" xml:space="preserve">
     <value>La pista richiesta “{0}” è mancante</value>
   </data>
@@ -968,29 +968,29 @@
     <value>Il meteo Richiesto “{0}” è mancante</value>
   </data>
   <data name="AcError_CarParentIsMissing" xml:space="preserve">
-    <value>Car’s parent è mancante</value>
-  </data>
+    <value>Auto parenti mancante</value>
+  <alternative>Car’s parent è mancante</alternative></data>
   <data name="AcError_BrandBadgeIsMissing" xml:space="preserve">
     <value>Logo del marchio è mancante</value>
   </data>
   <data name="AcError_UpgradeIconIsMissing" xml:space="preserve">
-    <value>Upgrade icon mancante</value>
-  </data>
+    <value>Aggiornamento icone mancante</value>
+  <alternative>Upgrade icon mancante</alternative></data>
   <data name="AcError_SkinsAreMissing" xml:space="preserve">
-    <value>Le Skins sono mancanti</value>
-  </data>
+    <value>Le Skin sono mancanti</value>
+  <alternative>Le Skins sono mancanti</alternative></data>
   <data name="AcError_SkinsDirectoryIsUnavailable" xml:space="preserve">
-    <value>Skins directory non è disponibile</value>
-  </data>
+    <value>Skin directory non è disponibile</value>
+  <alternative>Skins directory non è disponibile</alternative></data>
   <data name="AcError_SetupTrackIsMissing" xml:space="preserve">
-    <value>Setup’s track ({0}) è mancante</value>
-  </data>
+    <value>Setup tracciato ({0})  mancante</value>
+  <alternative>Setup’s track ({0}) è mancante</alternative></data>
   <data name="AcError_SkinLiveryLiveryPngIsMissing" xml:space="preserve">
-    <value>Skin’s livrea ({0}/livery.png) è mancante</value>
-  <alternative>Skin’s livery ({0}/livery.png) è mancante</alternative></data>
+    <value>Skin livrea ({0}/livery.png) mancante</value>
+  <alternative>Skin’s livery ({0}/livery.png) è mancante</alternative><alternative>Skin’s livrea ({0}/livery.png) è mancante</alternative></data>
   <data name="AcError_SkinPreviewPreviewJpgIsMissing" xml:space="preserve">
-    <value>Skin’s manca({0}/preview.jpg) è mancante</value>
-  <alternative>Skin’s preview ({0}/preview.jpg) è mancante</alternative></data>
+    <value>Anteprima skin ({0}/preview.jpg) mancante</value>
+  <alternative>Skin’s preview ({0}/preview.jpg) è mancante</alternative><alternative>Skin’s manca({0}/preview.jpg) è mancante</alternative></data>
   <data name="AcError_ModelKn5FileIsMissing" xml:space="preserve">
     <value>Modello (file KN5) è mancante</value>
   </data>
@@ -1659,7 +1659,16 @@ Vorresti comprimerlo prima di avviare il server? Ma non dimenticare di condivide
   <data name="Race_OpponentsAggression" xml:space="preserve">
     <value>Aggressività avversari</value>
   </data>
-  <data name="Common_Unit_Hz" xml:space="preserve">
-    <value>Hz</value>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Caricamento elenco giocatori...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Caricamento auto ({0})…</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Caricamento {0} skin…</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Caricamento informazioni server attuali...</value>
   </data>
 </root>

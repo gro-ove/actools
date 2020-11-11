@@ -1007,11 +1007,11 @@ Dimensioni massime (raccomandate): {0} MB</alternative></data>
     <value>Scansione porte:</value>
   </data>
   <data name="Settings_Online_PortsByIp_Tooltip" xml:space="preserve">
-    <value>alcune enumerazione come "9000-10000"</value>
-  </data>
+    <value>alcune enumerazioni come "9000-10000"</value>
+  <alternative>alcune enumerazione come "9000-10000"</alternative></data>
   <data name="Settings_Online_PortsLan_Tooltip" xml:space="preserve">
-    <value>alcune enumerazione come “9600,9602,9700-9750”</value>
-  </data>
+    <value>alcune enumerazioni come “9600,9602,9700-9750”</value>
+  <alternative>alcune enumerazione come “9600,9602,9700-9750”</alternative></data>
   <data name="Settings_Online_AddingByIpScanTimeout" xml:space="preserve">
     <value>Tempo scaduto scansione</value>
   </data>
@@ -3492,8 +3492,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
     <value>Catturato {0} {errore}</value>
   </data>
   <data name="Main_LapTimes" xml:space="preserve">
-    <value>Tempi Giro</value>
-  </data>
+    <value>Tempi sul giro</value>
+  <alternative>Tempi Giro</alternative></data>
   <data name="Main_Results" xml:space="preserve">
     <value>Risultati</value>
   </data>
@@ -3567,11 +3567,11 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Licenza[/url].</value>
     <value>Launcher originale</value>
   </data>
   <data name="Main_FPS_Tooltip" xml:space="preserve">
-    <value>Performance della sessione precendente</value>
-  </data>
+    <value>Prestazioni della sessione precendente</value>
+  <alternative>Performance della sessione precendente</alternative></data>
   <data name="Main_FPS_Title" xml:space="preserve">
-    <value>Performance della sessione precendente:</value>
-  </data>
+    <value>Prestazioni della sessione precendente:</value>
+  <alternative>Performance della sessione precendente:</alternative></data>
   <data name="Main_FPS_Average" xml:space="preserve">
     <value>Media:</value>
   </data>
@@ -4422,5 +4422,23 @@ mentre aspetta che il disco ottenga i dati e ci saranno molti meno dati da legge
   </data>
   <data name="Settings_Online_ShowExtendedInformationIfContentIsMissing" xml:space="preserve">
     <value>Se il contenuto è mancante visualizza le informazioni complete</value>
+  </data>
+  <data name="Main_FPS_Taken" xml:space="preserve">
+    <value>Presi:</value>
+  </data>
+  <data name="Main_FPS_TakenFormat" xml:space="preserve">
+    <value>{0} campioni</value>
+  </data>
+  <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
+    <value>In alcuni casi utilizza il Custom Showroom al posto dell'originale</value>
+  </data>
+  <data name="Settings_Appearance_YouCanAccessDisabledLinks" xml:space="preserve">
+    <value>Puoi accedere ai link disabilitati tramite quel menu accanto ai pulsanti della finestra o tramite i tasti di scelta rapida.</value>
+  </data>
+  <data name="Settings_Appearance_OpenNewWindowsOnTheSameScreen" xml:space="preserve">
+    <value>Apri nuove finestre sullo stesso schermo come la prima volta nonostante la posizione salvata</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_CenterBoostGain_Tooltip" xml:space="preserve">
+    <value>Usalo per moltiplicare FFB quando lo sterzo è posizionato al centro</value>
   </data>
 </root>

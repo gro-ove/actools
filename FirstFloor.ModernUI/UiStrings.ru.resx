@@ -423,11 +423,11 @@
     <value>Перейдите по ссылке</value>
   </data>
   <data name="UnexpectedToken" xml:space="preserve">
-    <value>Неожиданный маркер</value>
-  </data>
+    <value>Неожиданный токен</value>
+  <alternative>Неожиданный маркер</alternative></data>
   <data name="UnknownTokenType" xml:space="preserve">
-    <value>Неизвестный тип маркера</value>
-  </data>
+    <value>Неизвестный тип токена</value>
+  <alternative>Неизвестный тип маркера</alternative></data>
   <data name="KeyNumberPad" xml:space="preserve">
     <value>Number Pad {0}</value>
   </data>
@@ -447,14 +447,14 @@
     <value>Скачано {0}</value>
   </data>
   <data name="Progress_Downloading_KnownTotal" xml:space="preserve">
-    <value>Скачано {0} of {1}</value>
-  </data>
+    <value>Скачано {0} из {1}</value>
+  <alternative>Скачано {0} of {1}</alternative></data>
   <data name="Progress_Uploading" xml:space="preserve">
     <value>Закачано {0}</value>
   </data>
   <data name="Progress_Uploading_KnownTotal" xml:space="preserve">
-    <value>Закачано {0} of {1}</value>
-  </data>
+    <value>Закачано {0} из {1}</value>
+  <alternative>Закачано {0} of {1}</alternative></data>
   <data name="Common_Add" xml:space="preserve">
     <value>Добавить</value>
   </data>
@@ -505,5 +505,11 @@
   </data>
   <data name="Toolbar_Unhide_Tooltip" xml:space="preserve">
     <value>Удалить сервер из списка скрытых серверов</value>
+  </data>
+  <data name="Progress_Short_KnownTotal" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>Просмотреть</value>
   </data>
 </root>

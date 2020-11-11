@@ -3422,8 +3422,8 @@ Povolené hodnoty jsou -1 až 1."</value>
     <value>Překlad byl aktualizován</value>
   </data>
   <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
-    <value>Nejlepší kolo na této trati:</value>
-  </data>
+    <value>Nejlepší kolo (tato trať):</value>
+  <alternative>Nejlepší kolo na této trati:</alternative></data>
   <data name="QuickDrive_DrivenInCar" xml:space="preserve">
     <value>Najeto v autě:</value>
   </data>

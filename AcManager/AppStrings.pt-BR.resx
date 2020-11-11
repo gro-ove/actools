@@ -1083,8 +1083,8 @@ Se precisar de outros valores, por favor, contate-nos e nós adicionaremos.
     <value>Showroom Customizado Chique</value>
   </data>
   <data name="Toolbar_CustomShowroom_Fancy_Tooltip" xml:space="preserve">
-    <value>Mais lento menos preciso, mas com iluminação e reflexos corretos</value>
-  </data>
+    <value>Mais lento e menos preciso, mas com iluminação e reflexos corretos</value>
+  <alternative>Mais lento menos preciso, mas com iluminação e reflexos corretos</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>Conduzir</value>
   </data>
@@ -2749,8 +2749,8 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Dispositivo: {0}</value>
   </data>
   <data name="Controls_GearShiftDebouncing" xml:space="preserve">
-    <value>Tempo m´´inimo para troca de marcha</value>
-  </data>
+    <value>Tempo mínimo para troca de marcha</value>
+  <alternative>Tempo m´´inimo para troca de marcha</alternative></data>
   <data name="Controls_BrakeBalance" xml:space="preserve">
     <value>Balanço da travagem:</value>
   </data>
@@ -2758,11 +2758,11 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Controle de tração:</value>
   </data>
   <data name="Controls_EngineBrake" xml:space="preserve">
-    <value>Travagem de motor:</value>
-  </data>
+    <value>Freio motor:</value>
+  <alternative>Travagem de motor:</alternative></data>
   <data name="Controls_Miscellaneous" xml:space="preserve">
-    <value>Diversos</value>
-  </data>
+    <value>Diversos:</value>
+  <alternative>Diversos</alternative></data>
   <data name="Controls_View" xml:space="preserve">
     <value>Visualizar:</value>
   </data>
@@ -2866,11 +2866,11 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Limite de gravação</value>
   </data>
   <data name="AcSettings_System_ScreenshotsQuality_Title" xml:space="preserve">
-    <value>Deseja capturas de ecrã com a melhor qualidade?</value>
-  </data>
+    <value>Deseja capturas de tela com a melhor qualidade?</value>
+  <alternative>Deseja capturas de ecrã com a melhor qualidade?</alternative></data>
   <data name="AcSettings_System_FreeCamera_Tooltip" xml:space="preserve">
-    <value>Premir F7 para alternar entre os modos de câmara-livre</value>
-  </data>
+    <value>Aperte F7 para alternar entre os modos de câmara-livre</value>
+  <alternative>Premir F7 para alternar entre os modos de câmara-livre</alternative></data>
   <data name="AcSettings_Video_Fullscreen" xml:space="preserve">
     <value>Tela cheia</value>
   </data>
@@ -2899,23 +2899,23 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Limitar cadência de fotogramas</value>
   </data>
   <data name="AcSettings_Video_Framerate" xml:space="preserve">
-    <value>Cadência de fotogramas</value>
-  </data>
+    <value>Taxa de quadro</value>
+  <alternative>Cadência de fotogramas</alternative></data>
   <data name="AcSettings_Video_QualityHeader" xml:space="preserve">
     <value>Qualidade:</value>
   </data>
   <data name="AcSettings_Video_WorldDetalLabel" xml:space="preserve">
-    <value>Detalhe do Mundo:</value>
-  </data>
+    <value>Detalhes do Mundo:</value>
+  <alternative>Detalhe do Mundo:</alternative></data>
   <data name="AcSettings_Video_ShadowResolutionLabel" xml:space="preserve">
     <value>Resolução das sombras:</value>
   </data>
   <data name="AcSettings_Video_SmokeGenerationLabel" xml:space="preserve">
-    <value>Geração de fumo:</value>
-  </data>
+    <value>Geração de fumaça:</value>
+  <alternative>Geração de fumo:</alternative></data>
   <data name="AcSettings_Video_SmokeInMirrors" xml:space="preserve">
-    <value>Mostrar fumo nos espelhos:</value>
-  </data>
+    <value>Mostrar fumaça nos espelhos:</value>
+  <alternative>Mostrar fumo nos espelhos:</alternative></data>
   <data name="AcSettings_Video_PostProcessingHeader" xml:space="preserve">
     <value>Pós-Processamento:</value>
   </data>
@@ -2941,14 +2941,14 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Saturação</value>
   </data>
   <data name="AcSettings_Video_CrepuscularRays" xml:space="preserve">
-    <value>Raios crepusculares</value>
-  </data>
+    <value>Raios de sol</value>
+  <alternative>Raios crepusculares</alternative></data>
   <data name="AcSettings_Video_ReflectionsHeader" xml:space="preserve">
-    <value>Reflexões</value>
-  </data>
+    <value>Reflexos:</value>
+  <alternative>Reflexões</alternative></data>
   <data name="AcSettings_Video_ReflectionsResolutionLabel" xml:space="preserve">
-    <value>Resolução das reflexões:</value>
-  </data>
+    <value>Resolução dos reflexos:</value>
+  <alternative>Resolução das reflexões:</alternative></data>
   <data name="AcSettings_Video_RenderingFrequencyLabel" xml:space="preserve">
     <value>Frequência de renderização:</value>
   </data>
@@ -2962,8 +2962,8 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Resolução dos espelhos:</value>
   </data>
   <data name="AcSettings_Video_HighQuality" xml:space="preserve">
-    <value>Qualidade Alta</value>
-  </data>
+    <value>Alta qualidade</value>
+  <alternative>Qualidade Alta</alternative></data>
   <data name="AcSettings_Video_PixelsPerDisplay" xml:space="preserve">
     <value>Pixeis por tela</value>
   </data>
@@ -2974,20 +2974,20 @@ Mas se você não quiser desperdiçar 200 MB: imagem TIFF, 96 bit por pixel, ZIP
     <value>Permitir DirectX não suportado (usar por sua conta e risco; não funciona?)</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection" xml:space="preserve">
-    <value>Reflexão da Skybox</value>
-  </data>
+    <value>Reflexo da Skybox</value>
+  <alternative>Reflexão da Skybox</alternative></data>
   <data name="AcSettings_Video_MaximumFrameLatency" xml:space="preserve">
-    <value>Max. latência de fotograma</value>
-  </data>
+    <value>Max. latência de quadro</value>
+  <alternative>Max. latência de fotograma</alternative></data>
   <data name="AcSettings_Video_MaximumFrameLatency_Tooltip" xml:space="preserve">
-    <value>Latência máxima do quadro; Autodefinido pelas configurações da placa de vídeo</value>
-  </data>
+    <value>Latência máxima do quadro; Automático - definido pelas configurações da placa de vídeo</value>
+  <alternative>Latência máxima do quadro; Autodefinido pelas configurações da placa de vídeo</alternative></data>
   <data name="AcSettings_Video_MipLodBias_Tooltip" xml:space="preserve">
     <value>Defina o valor negativo (como -1) para deixar a imagem mais nítida</value>
   </data>
   <data name="AcSettings_Video_SkyboxReflection_Tooltip" xml:space="preserve">
-    <value>Ganho de reflexão Skybox</value>
-  </data>
+    <value>Ganho de reflexo do Skybox</value>
+  <alternative>Ganho de reflexão Skybox</alternative></data>
   <data name="Common_Manage" xml:space="preserve">
     <value>Gerenciar</value>
   </data>
@@ -3035,14 +3035,14 @@ Content Manager [url=""/Pages/About/License.xaml|_top""]License[/url]."</value>
     <value>Copyright © 2016 AcClub. Todos os direitos reservados.</value>
   </data>
   <data name="About_MarkAllAsRead" xml:space="preserve">
-    <value>Marcar Tudo Como Lido</value>
-  </data>
+    <value>Marcar tudo como lido</value>
+  <alternative>Marcar Tudo Como Lido</alternative></data>
   <data name="About_VersionFormat" xml:space="preserve">
     <value>Versão: {0}</value>
   </data>
   <data name="About_NewTooltip" xml:space="preserve">
-    <value>Novidade!</value>
-  </data>
+    <value>Novo!</value>
+  <alternative>Novidade!</alternative></data>
   <data name="Drive_InvalidScript" xml:space="preserve">
     <value>Script inválido</value>
   </data>
@@ -3363,5 +3363,383 @@ Content Manager [url=""/Pages/About/License.xaml|_top""]License[/url]."</value>
   </data>
   <data name="WebSource_SharedMessageCopiedTitle" xml:space="preserve">
     <value>A mensagem com os detalhes foi copiada para a área de transferência</value>
+  </data>
+  <data name="AcSettings_Video_OculusHeader" xml:space="preserve">
+    <value>Óculos:</value>
+  </data>
+  <data name="CustomLocalesUpdated_Title" xml:space="preserve">
+    <value>Locais atualizados</value>
+  </data>
+  <data name="QuickDrive_BestLapOnThisTrack" xml:space="preserve">
+    <value>Melhor volta nesta pista:</value>
+  </data>
+  <data name="QuickDrive_DrivenInCar" xml:space="preserve">
+    <value>Pilotando no carro:</value>
+  </data>
+  <data name="QuickDrive_DrivenOnTrack" xml:space="preserve">
+    <value>Pilotando na pista:</value>
+  </data>
+  <data name="QuickDrive_CarSpecificControls" xml:space="preserve">
+    <value>Controles específicos do carro</value>
+  </data>
+  <data name="QuickDrive_FixCar" xml:space="preserve">
+    <value>Consertar carro</value>
+  </data>
+  <data name="QuickDrive_FixCar_Tooltip" xml:space="preserve">
+    <value>{0} {erro importante} encontrado</value>
+  </data>
+  <data name="QuickDrive_NoCarSelected" xml:space="preserve">
+    <value>Nenhum carro selecionado</value>
+  </data>
+  <data name="QuickDrive_NoTrackSelected" xml:space="preserve">
+    <value>Nenhuma pista selecionada</value>
+  </data>
+  <data name="QuickDrive_Wind_MetersPerSecond" xml:space="preserve">
+    <value>Velocidade do vento em metros por segundo</value>
+  </data>
+  <data name="QuickDrive_Wind_RelativeRange" xml:space="preserve">
+    <value>Velocidade do vento em trecho relativo</value>
+  </data>
+  <data name="QuickDrive_Wind_Degrees" xml:space="preserve">
+    <value>Velocidade do vento em graus</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomSpeed" xml:space="preserve">
+    <value>Velocidade do vento randômico</value>
+  </data>
+  <data name="QuickDrive_Wind_RandomDirection" xml:space="preserve">
+    <value>Direção do vento randômico</value>
+  </data>
+  <data name="QuickDrive_Wind" xml:space="preserve">
+    <value>Vento</value>
+  </data>
+  <data name="QuickDrive_SpecificDate" xml:space="preserve">
+    <value>Data específica</value>
+  </data>
+  <data name="QuickDrive_RandomTime" xml:space="preserve">
+    <value>Tempo randômico</value>
+  </data>
+  <data name="QuickDrive_SetWindManually" xml:space="preserve">
+    <value>Ajustar vento manualmente</value>
+  </data>
+  <data name="QuickDrive_IdealConditions" xml:space="preserve">
+    <value>Condições ideais</value>
+  </data>
+  <data name="QuickDrive_RandomTemperature" xml:space="preserve">
+    <value>Temperatura randômica</value>
+  </data>
+  <data name="QuickDrive_CustomRoadTemperature" xml:space="preserve">
+    <value>Temperatura da pista customizada</value>
+  </data>
+  <data name="QuickDrive_RoadTemperature" xml:space="preserve">
+    <value>Temperatura da pista</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveCompleted" xml:space="preserve">
+    <value>Remoção completada</value>
+  </data>
+  <data name="MainWindow_Downloads_InstallAll" xml:space="preserve">
+    <value>Instalar tudo</value>
+  </data>
+  <data name="MainWindow_Downloads_TooltipFormat" xml:space="preserve">
+    <value>{0} instalando</value>
+  </data>
+  <data name="MainWindow_Downloads_RemoveAll" xml:space="preserve">
+    <value>Remover tudo</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_ViewChangelog" xml:space="preserve">
+    <value>Ver changelog</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_SkipUpdate" xml:space="preserve">
+    <value>Passar esta atualização</value>
+  </data>
+  <data name="MainWindow_UpdateMenu_DisableAutoUpdates" xml:space="preserve">
+    <value>Desativar atualizações automáticas</value>
+  </data>
+  <data name="Main_LapTimes" xml:space="preserve">
+    <value>Tempos de volta</value>
+  </data>
+  <data name="Main_Results" xml:space="preserve">
+    <value>Resultados</value>
+  </data>
+  <data name="Main_CMSettings" xml:space="preserve">
+    <value>Ajustes CM</value>
+  </data>
+  <data name="Main_ACSettings" xml:space="preserve">
+    <value>Ajustes AC</value>
+  </data>
+  <data name="Main_AppsSettings" xml:space="preserve">
+    <value>Ajustes de Apps</value>
+  </data>
+  <data name="Main_CSPSettings" xml:space="preserve">
+    <value>Ajustes CSP</value>
+  </data>
+  <data name="Main_AboutContentManager" xml:space="preserve">
+    <value>Sobre o Content Manager</value>
+  </data>
+  <data name="Main_Challenges_Hotlaps" xml:space="preserve">
+    <value>Melhores Voltas</value>
+  </data>
+  <data name="Main_Challenges_Races" xml:space="preserve">
+    <value>Corridas</value>
+  </data>
+  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
+    <value>Contra-Relógio</value>
+  </data>
+  <data name="Main_Challenges_Championships" xml:space="preserve">
+    <value>Campeonatos</value>
+  </data>
+  <data name="Main_Online_LAN" xml:space="preserve">
+    <value>REDE</value>
+  </data>
+  <data name="Main_LapTimes_Table" xml:space="preserve">
+    <value>Tabela</value>
+  </data>
+  <data name="Main_Stats_KunosCars" xml:space="preserve">
+    <value>Apenas carros da Kunos</value>
+  </data>
+  <data name="Main_Stats_KunosCarsAndTracks" xml:space="preserve">
+    <value>Apenas carros e pistas da Kunos</value>
+  </data>
+  <data name="Main_Stats_ModsOnly" xml:space="preserve">
+    <value>Apenas Mods</value>
+  </data>
+  <data name="Main_Stats_MostUsed" xml:space="preserve">
+    <value>Mais usado</value>
+  </data>
+  <data name="Main_GetNewMods" xml:space="preserve">
+    <value>Pegar novos mods</value>
+  </data>
+  <data name="Main_Tools" xml:space="preserve">
+    <value>Ferramentas</value>
+  </data>
+  <data name="Main_DownloadsAndInstallations" xml:space="preserve">
+    <value>Downloads e Instalações</value>
+  </data>
+  <data name="Main_EverythingAboutFiltering" xml:space="preserve">
+    <value>Tudo sobre filtros</value>
+  </data>
+  <data name="Main_OriginalLauncherLink" xml:space="preserve">
+    <value>launcher original</value>
+  </data>
+  <data name="Main_FPS_Average" xml:space="preserve">
+    <value>Média:</value>
+  </data>
+  <data name="Main_FPS_Minimum" xml:space="preserve">
+    <value>Mínimo:</value>
+  </data>
+  <data name="Main_FPS_ValueFormat" xml:space="preserve">
+    <value>{0:F1} quadros por segundo</value>
+  </data>
+  <data name="QuickDrive_ChangeCar_Tooltip" xml:space="preserve">
+    <value>Mudar carro</value>
+  </data>
+  <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
+    <value>Abrir no Showroom</value>
+  </data>
+  <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
+    <value>Gerenciar setups</value>
+  </data>
+  <data name="QuickDrive_ManageCar_Tooltip" xml:space="preserve">
+    <value>Gerenciar carro</value>
+  </data>
+  <data name="QuickDrive_ChangeTrack_Tooltip" xml:space="preserve">
+    <value>Mudar pista</value>
+  </data>
+  <data name="QuickDrive_ManageTrack_Tooltip" xml:space="preserve">
+    <value>Gerenciar pista</value>
+  </data>
+  <data name="SpecialEvents_Difficulty" xml:space="preserve">
+    <value>Dificuldade</value>
+  </data>
+  <data name="UserChampionships_NoPreview" xml:space="preserve">
+    <value>Sem pré-visualização</value>
+  </data>
+  <data name="UserChampionships_RealConditions" xml:space="preserve">
+    <value>Condições reais...</value>
+  </data>
+  <data name="Online_Refresh" xml:space="preserve">
+    <value>Atualizar</value>
+  </data>
+  <data name="Online_Scanning_NothingFoundMessage" xml:space="preserve">
+    <value>Nada encontrado.</value>
+  </data>
+  <data name="Online_SortingMode_Default" xml:space="preserve">
+    <value>Padrão</value>
+  </data>
+  <data name="Online_Sorting_NameOriginal" xml:space="preserve">
+    <value>Nome (original)</value>
+  </data>
+  <data name="Online_Sorting_Favourites" xml:space="preserve">
+    <value>Favoritos</value>
+  </data>
+  <data name="Online_Sorting_ConnectedDrivers" xml:space="preserve">
+    <value>Pilotos conectados</value>
+  </data>
+  <data name="Drive_DoNotRecordGhostCar" xml:space="preserve">
+    <value>Não gravar carro fantasma</value>
+  </data>
+  <data name="Drive_AvoidCarsWithoutSkinNumbers" xml:space="preserve">
+    <value>Evitar carros sem a pintura do número</value>
+  </data>
+  <data name="Settings_Appearance_UIScale" xml:space="preserve">
+    <value>Escala UI</value>
+  </data>
+  <data name="Settings_Appearance_BoldFont" xml:space="preserve">
+    <value>Fonte negrito</value>
+  </data>
+  <data name="Settings_Appearance_ChangePictureEvery" xml:space="preserve">
+    <value>Mudar imagem a cada:</value>
+  </data>
+  <data name="Settings_Appearance_Opacity" xml:space="preserve">
+    <value>Opacidade</value>
+  </data>
+  <data name="Settings_PythonApps_NoConfigurableAppsFound" xml:space="preserve">
+    <value>Apps configuráveis não encontrados</value>
+  </data>
+  <data name="Settings_PythonApps_ChangedWillBeSavedAutomatically" xml:space="preserve">
+    <value>As mudanças serão salvas automaticamente. Se você quiser otimizar o modo como etes arquivos são mostrados, encontrará mais informações sobre em [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
+  </data>
+  <data name="Settings_Appearance_SingleImage" xml:space="preserve">
+    <value>Imagem simples</value>
+  </data>
+  <data name="Settings_Appearance_ForceFullscreenMode" xml:space="preserve">
+    <value>Forçar modo tela cheia</value>
+  </data>
+  <data name="Settings_Appearance_FullscreenOverTaskbar" xml:space="preserve">
+    <value>Tela cheia sobre a barra de tarefas</value>
+  </data>
+  <data name="Settings_Appearance_ShowBackButton" xml:space="preserve">
+    <value>Mostrar botão de voltar na janela principal</value>
+  </data>
+  <data name="Settings_Appearance_OpenSkinsAndSetupsNewWindow" xml:space="preserve">
+    <value>Abrir lista de pinturas e setups em nova janela</value>
+  </data>
+  <data name="Settings_Appearance_DisableHardwareAccelerationForUI" xml:space="preserve">
+    <value>Desabilitar aceleração de hardware para UI</value>
+  </data>
+  <data name="Settings_Appearance_DisableWindowsTransparency" xml:space="preserve">
+    <value>Desabilitar transparência do windows</value>
+  </data>
+  <data name="Settings_Appearance_BlurImageViewersBackground_Tooltip" xml:space="preserve">
+    <value>Funciona apenas no Windows 7 ou 10</value>
+  </data>
+  <data name="Settings_General_Open" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="Settings_General_SteamProfile_Tooltip" xml:space="preserve">
+    <value>Usado para online</value>
+  </data>
+  <data name="Settings_General_LaunchSteamAutomatically" xml:space="preserve">
+    <value>Abrir a Steam automaticamente ao iniciar o Content Manager</value>
+  </data>
+  <data name="Settings_General_WindowsRegistry" xml:space="preserve">
+    <value>Registro do Windows:</value>
+  </data>
+  <data name="Settings_General_RecentChangesNotification" xml:space="preserve">
+    <value>Notificação de mudanças recentes</value>
+  </data>
+  <data name="Settings_General_OpenLogsFolder" xml:space="preserve">
+    <value>Abrir pasta de logs</value>
+  </data>
+  <data name="Settings_Drive_HibernateCMWhileRacing" xml:space="preserve">
+    <value>Hibernar CM enquanto está em corrida</value>
+  </data>
+  <data name="Settings_Locale_TemperatureUnits" xml:space="preserve">
+    <value>Unidades de temperatura:</value>
+  </data>
+  <data name="Settings_Locale_UseImperialUnits" xml:space="preserve">
+    <value>Use unidade imperial</value>
+  </data>
+  <data name="Settings_Locale_Use12HourClock" xml:space="preserve">
+    <value>Use relógio de 12 horas</value>
+  </data>
+  <data name="Settings_LapTimes_ClearCache" xml:space="preserve">
+    <value>Limpar cache</value>
+  </data>
+  <data name="Settings_Sharing_Remove" xml:space="preserve">
+    <value>Remover</value>
+  </data>
+  <data name="Settings_Sharing_Content" xml:space="preserve">
+    <value>Conteúdo:</value>
+  </data>
+  <data name="Settings_Drive_StopServiceOnCMExit" xml:space="preserve">
+    <value>Parar serviço ao sair do CM</value>
+  </data>
+  <data name="Settings_Drive_TerminateLoadingIfEscapeIsPressed" xml:space="preserve">
+    <value>Terminar carregamento imediatamente se apertar o Esc</value>
+  </data>
+  <data name="Settings_Drive_ContinueRaceIfEscapePressed" xml:space="preserve">
+    <value>Continuar corrida se apertar o Esc</value>
+  </data>
+  <data name="Settings_Drive_MonitorFPS" xml:space="preserve">
+    <value>Monitorar FPS durante a corrida</value>
+  </data>
+  <data name="Settings_Drive_BeepIfRaceIsCancelled" xml:space="preserve">
+    <value>Bipar se a corrida for cancelada:</value>
+  </data>
+  <data name="Dialogs_GameDialog_BestDelta" xml:space="preserve">
+    <value>Melhor delta</value>
+  </data>
+  <data name="Dialogs_GameDialog_TotalTime" xml:space="preserve">
+    <value>Tempo total</value>
+  </data>
+  <data name="Dialogs_GameDialog_GameCrashed" xml:space="preserve">
+    <value>O jogo fechou</value>
+  </data>
+  <data name="Drive_OnlineServer_Stop" xml:space="preserve">
+    <value>Parar</value>
+  </data>
+  <data name="Drive_Quick_YesAndFixIt" xml:space="preserve">
+    <value>Sim, e conserte isso</value>
+  </data>
+  <data name="AcSettings_Audio_Unknown" xml:space="preserve">
+    <value>Desconhecido</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_EnableFFBPostProcessing" xml:space="preserve">
+    <value>Habilitar pós-processamento do FFB</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessingMode" xml:space="preserve">
+    <value>Modo:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_PostProcessing" xml:space="preserve">
+    <value>Pós-Processamento:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Race" xml:space="preserve">
+    <value>Corrida:</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_System_Car" xml:space="preserve">
+    <value>Carro:</value>
+  </data>
+  <data name="AcSettings_Controls_EditNames" xml:space="preserve">
+    <value>Editar nomes</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV" xml:space="preserve">
+    <value>Importar CSV</value>
+  </data>
+  <data name="AcSettings_Controls_Wheel_ForceFeedback_ImportCSV_Tooltip" xml:space="preserve">
+    <value>Importar LUT</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_NewTag" xml:space="preserve">
+    <value>Nova identificação</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_RestoreDeleted" xml:space="preserve">
+    <value>Restaurar deletado</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_DeleteTag" xml:space="preserve">
+    <value>Remover identificação...</value>
+  </data>
+  <data name="Dialogs_OnlineDriverTags_Names" xml:space="preserve">
+    <value>Nomes:</value>
+  </data>
+  <data name="Miscellaneous_PlayerStats_SessionsNotFound" xml:space="preserve">
+    <value>Sessões não encontradas.</value>
+  </data>
+  <data name="Settings_Online_ManageLists" xml:space="preserve">
+    <value>Gerenciar listas</value>
+  </data>
+  <data name="Settings_Online_Passwords" xml:space="preserve">
+    <value>Senhas:</value>
+  </data>
+  <data name="Settings_Online_FixNames" xml:space="preserve">
+    <value>Consertar nomes:</value>
   </data>
 </root>

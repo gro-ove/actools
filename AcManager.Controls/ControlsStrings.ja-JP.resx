@@ -382,8 +382,8 @@
     <value>強化されたアンダーステア​​エフェクト</value>
   </data>
   <data name="Controls_ExperimentalHeader" xml:space="preserve">
-    <value>実験:</value>
-  </data>
+    <value>実験的:</value>
+  <alternative>実験:</alternative></data>
   <data name="Controls_FilterAxis" xml:space="preserve">
     <value>フィルター</value>
   </data>
@@ -627,8 +627,8 @@
     <value>有効なフォーマット を使用してください。</value>
   </data>
   <data name="CustomShowroom_ViewMapping_Prompt" xml:space="preserve">
-    <value>寸法([高さ]×[幅]）</value>
-  </data>
+    <value>寸法([高さ]×[幅])</value>
+  <alternative>寸法([高さ]×[幅]）</alternative></data>
   <data name="FindInformation_Description" xml:space="preserve">
     <value>年または説明を選択してOKをクリックしてください。Ctrlを押したままにすると、説明が置換されずに拡張されます。</value>
   </data>
@@ -675,8 +675,8 @@
     <value>{0}を使用して参加</value>
   </data>
   <data name="Online_PasswordRequired" xml:space="preserve">
-    <value>パスワードが必要</value>
-  </data>
+    <value>パスワードが必要です</value>
+  <alternative>パスワードが必要</alternative></data>
   <data name="Online_TrackIsMissingLabel" xml:space="preserve">
     <value>トラックが不足しています:</value>
   </data>
@@ -720,8 +720,8 @@
     <value>明るさのレベル</value>
   </data>
   <data name="QuickSwitches_Fov_Tooltip" xml:space="preserve">
-    <value>視野(FoV)</value>
-  </data>
+    <value>視野角(FoV)</value>
+  <alternative>視野(FoV)</alternative></data>
   <data name="QuickSwitches_FreeCamera" xml:space="preserve">
     <value>フリーカメラ</value>
   </data>
@@ -744,11 +744,11 @@
     <value>ドライバーの腕を非表示</value>
   </data>
   <data name="QuickSwitches_HideDriver" xml:space="preserve">
-    <value>ドライバを隠す</value>
-  </data>
+    <value>ドライバを非表示</value>
+  <alternative>ドライバを隠す</alternative></data>
   <data name="QuickSwitches_HideDriver_Tooltip" xml:space="preserve">
-    <value>ドライバモデルを隠す</value>
-  </data>
+    <value>ドライバモデルを非表示</value>
+  <alternative>ドライバモデルを隠す</alternative></data>
   <data name="QuickSwitches_HideWheel" xml:space="preserve">
     <value>ホイールを非表示</value>
   </data>
@@ -852,8 +852,8 @@
     <value>SweetFXを無効にします</value>
   </data>
   <data name="Showroom_DisableSweetFx_Tooltip" xml:space="preserve">
-    <value>どうやらSweetFXは結果に影響しませんが、読み込み時間を短縮できる可能性があります</value>
-  </data>
+    <value>SweetFXは結果に影響しませんが、読み込み時間を短縮できる可能性があります</value>
+  <alternative>どうやらSweetFXは結果に影響しませんが、読み込み時間を短縮できる可能性があります</alternative></data>
   <data name="Showroom_HideWatermark" xml:space="preserve">
     <value>透かしを隠す</value>
   </data>
@@ -892,5 +892,47 @@
   </data>
   <data name="WebBrowser_Prompt" xml:space="preserve">
     <value>ウェブページは述べています</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>角度ガンマ</value>
+  </data>
+  <data name="Common_FahrenheitPostfix" xml:space="preserve">
+    <value>°F</value>
+  </data>
+  <data name="TableHeader_Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="TableHeader_Car" xml:space="preserve">
+    <value>車</value>
+  </data>
+  <data name="TableHeader_Track" xml:space="preserve">
+    <value>トラック</value>
+  </data>
+  <data name="TableHeader_BestLap" xml:space="preserve">
+    <value>ベストラップ</value>
+  </data>
+  <data name="TableHeader_Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="TableHeader_CarSkin" xml:space="preserve">
+    <value>スキン</value>
+  </data>
+  <data name="TableHeader_Nationality" xml:space="preserve">
+    <value>国籍</value>
+  </data>
+  <data name="TableHeader_Visible" xml:space="preserve">
+    <value>可視</value>
+  </data>
+  <data name="TableHeader_Locked" xml:space="preserve">
+    <value>ロック済み</value>
+  </data>
+  <data name="Common_ScrollToSelected" xml:space="preserve">
+    <value>選択項目までスクロールする (Ctrl+Shift+V)</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>それは何ですか?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>評価:</value>
   </data>
 </root>

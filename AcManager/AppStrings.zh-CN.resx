@@ -3877,4 +3877,13 @@
   <data name="Settings_Appearance_ShowDownloadsAmpInstallationsList" xml:space="preserve">
     <value>在右上角的菜单中显示下载和安装列表</value>
   </data>
+  <data name="AcSettings_Video_ResolutionAndFPS" xml:space="preserve">
+    <value>分辨率和帧率：</value>
+  </data>
+  <data name="Windows_MainWindow_OriginalLauncherAppearsWithSteamStarter" xml:space="preserve">
+    <value>原始启动器（与Steam启动器一起启动）</value>
+  </data>
+  <data name="Windows_MainWindow_VideoSettingsFPSCounter" xml:space="preserve">
+    <value>视频设置（FPS计数器）</value>
+  </data>
 </root>

@@ -166,8 +166,8 @@
     <value>Autor, version y URL</value>
   </data>
   <data name="Car_OpenInShowroom" xml:space="preserve">
-    <value>Abierto en Showroom</value>
-  </data>
+    <value>Abrir Showroom</value>
+  <alternative>Abierto en Showroom</alternative></data>
   <data name="Common_Presets" xml:space="preserve">
     <value>Configuraciones predeterminadas</value>
   </data>
@@ -572,8 +572,8 @@ Entry type: [b]{2}[/b]</alternative></data>
     <value>Los datos estan encriptados</value>
   </data>
   <data name="CustomShowroom_AmbientShadowsSize_EncryptedDataMessage" xml:space="preserve">
-    <value>El tamaño de la sombra se guardara en “data/ambient_shadows.ini”, pero la información esta encriptada, por lo que no tendra ningun efecto. Continuar?</value>
-  <alternative>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</alternative></data>
+    <value>El tamaño de la sombra se guardará en “data/ambient_shadows.ini”, pero la información esta encriptada, por lo que no tendrá ningun efecto. ¿Continuar?</value>
+  <alternative>Size of the shadow will be saved to “data/ambient_shadows.ini”, but data is encrypted, so it won’t have any affect. Continue?</alternative><alternative>El tamaño de la sombra se guardara en “data/ambient_shadows.ini”, pero la información esta encriptada, por lo que no tendra ningun efecto. Continuar?</alternative></data>
   <data name="Common_DevTools" xml:space="preserve">
     <value>Herramientas de Desarrollador</value>
   </data>
@@ -696,8 +696,8 @@ Material: [b]{10}[/b]</alternative></data>
     <value>Cargando...</value>
   </data>
   <data name="Common_GoodNews" xml:space="preserve">
-    <value>Buenas noticias!</value>
-  </data>
+    <value>¡Buenas noticias!</value>
+  <alternative>Buenas noticias!</alternative></data>
   <data name="AcObject_CarParentLabel_Tooltip" xml:space="preserve">
     <value>Coche base (si esta seleccionado, este coche sera una version tuneada)</value>
   </data>
@@ -712,9 +712,6 @@ Material: [b]{10}[/b]</alternative></data>
   </data>
   <data name="AcObject_TyresLabel" xml:space="preserve">
     <value>Tipos:</value>
-  </data>
-  <data name="Common_PsiPostfix" xml:space="preserve">
-    <value>psi</value>
   </data>
   <data name="AcObject_FuelLabel" xml:space="preserve">
     <value>Combustible:</value>
@@ -922,5 +919,17 @@ Material: [b]{10}[/b]</alternative></data>
   </data>
   <data name="Common_ScrollToSelected" xml:space="preserve">
     <value>Desplácese hasta seleccionado (Ctrl+Mayús+V)</value>
+  </data>
+  <data name="AcObject_VersionLabel" xml:space="preserve">
+    <value>Versión:</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Grados</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>¿Qué es?</value>
+  </data>
+  <data name="Common_Rating" xml:space="preserve">
+    <value>Calificación:</value>
   </data>
 </root>

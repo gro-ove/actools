@@ -800,8 +800,8 @@ Depth mode: [b]{4}[/b]</alternative></data>
     <value>minuto</value>
   </data>
   <data name="Common_Downloading" xml:space="preserve">
-    <value>Fazendo o download...</value>
-  </data>
+    <value>Baixando...</value>
+  <alternative>Fazendo o download...</alternative></data>
   <data name="Common_Installing" xml:space="preserve">
     <value>Instalando...</value>
   </data>
@@ -940,5 +940,11 @@ de substitui-la.</value>
   </data>
   <data name="Controls_SkipFfbSteps_Tooltip" xml:space="preserve">
     <value>Physics engine steps to skip in order to accomodate wheels with lower FF input buffer; if you’re expeciencing problems with CPU, increase it to 2-4, it might help</value>
+  </data>
+  <data name="Controls_DegreesLabel" xml:space="preserve">
+    <value>Graus</value>
+  </data>
+  <data name="Common_WhatIsIt" xml:space="preserve">
+    <value>O que é isso?</value>
   </data>
 </root>

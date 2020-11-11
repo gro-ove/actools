@@ -214,8 +214,8 @@
     <value>Carro trancado</value>
   </data>
   <data name="JumpStart_DriveThrough" xml:space="preserve">
-    <value>DriveThrough</value>
-  </data>
+    <value>Drive Through</value>
+  <alternative>DriveThrough</alternative></data>
   <data name="JumpStart_TeleportToPit" xml:space="preserve">
     <value>Teletransporte para o Pit</value>
   </data>
@@ -1585,5 +1585,38 @@ Gostaria de embala-los antes de iniciar o servidor? Mas não esqueça de compart
   </data>
   <data name="Controls_Steer" xml:space="preserve">
     <value>Guiar</value>
+  </data>
+  <data name="BestLapsControl_BestLaps" xml:space="preserve">
+    <value>Melhores voltas:</value>
+  </data>
+  <data name="BestLapsControl_BestLap" xml:space="preserve">
+    <value>Melhor volta:</value>
+  </data>
+  <data name="Common_Ballast" xml:space="preserve">
+    <value>Lastro</value>
+  </data>
+  <data name="Common_Restrictor" xml:space="preserve">
+    <value>Restritor</value>
+  </data>
+  <data name="Race_RandomizationTitle" xml:space="preserve">
+    <value>Randomização:</value>
+  </data>
+  <data name="Race_ShowAIAggression" xml:space="preserve">
+    <value>Mostrar agressividade do IA no nome do piloto</value>
+  </data>
+  <data name="Race_OpponentsAggression" xml:space="preserve">
+    <value>Agressividade do Oponente</value>
+  </data>
+  <data name="Online_LoadingPlayersList" xml:space="preserve">
+    <value>Carregando lista de jogadores...</value>
+  </data>
+  <data name="Online_LoadingCars" xml:space="preserve">
+    <value>Carregando carros ({0})...</value>
+  </data>
+  <data name="Online_LoadingSkins" xml:space="preserve">
+    <value>Carregando {0} pinturas...</value>
+  </data>
+  <data name="Online_LoadingActualInformation" xml:space="preserve">
+    <value>Carregando informações atuais do servidor...</value>
   </data>
 </root>

@@ -600,4 +600,7 @@
   <data name="Progress_Short_KnownTotal" xml:space="preserve">
     <value>{1}项已完成{0}</value>
   </data>
+  <data name="Common_Browse" xml:space="preserve">
+    <value>浏览</value>
+  </data>
 </root>
