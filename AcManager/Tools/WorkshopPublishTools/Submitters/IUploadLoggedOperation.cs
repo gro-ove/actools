@@ -1,6 +1,6 @@
 using System;
 
-namespace AcManager.Pages.Workshop {
+namespace AcManager.Tools.WorkshopPublishTools.Submitters {
     public interface IUploadLoggedOperation : IDisposable {
         void SetResult(string message);
 

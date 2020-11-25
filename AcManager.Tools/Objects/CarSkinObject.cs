@@ -345,7 +345,7 @@ namespace AcManager.Tools.Objects {
                     var car = CarsManager.Instance.GetById(t.CarId);
                     if (car != null) {
                         _recentCarId = t.CarId;
-                        _recentTextures = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false),
+                        _recentTextures = Kn5.FromFile(AcPaths.GetMainCarFilename(car.Location, car.AcdData, false) ?? throw new Exception(),
                                 SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToArray();
                         yield return Add(_recentTextures);
                     } else {

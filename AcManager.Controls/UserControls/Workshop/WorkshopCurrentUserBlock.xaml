@@ -14,17 +14,17 @@
   </UserControl.Resources>
 
   <DockPanel Background="Transparent" DataContext="{Binding Source={x:Static ws:WorkshopHolder.Model}}"
-      Visibility="{Binding LoggedInAs, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+      Visibility="{Binding AuthorizedAs, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
     <mui:ContextMenuButton DockPanel.Dock="Right" Padding="4 0 0 0" VerticalAlignment="Center">
       <ContextMenu>
         <MenuItem Header="Edit profile" Command="mui:BbCodeBlock.LinkCommand" CommandParameter="cmd://workshop/editUserProfile" />
         <MenuItem Header="Log out" Command="{Binding LogOutCommand}" />
       </ContextMenu>
     </mui:ContextMenuButton>
-    <mui:BetterImage Width="40" Height="40" Source="{Binding LoggedInAs.AvatarSmall}" Margin="0 0 8 0" />
+    <mui:BetterImage Width="40" Height="40" Source="{Binding AuthorizedAs.AvatarSmall}" Margin="0 0 8 0" />
     <StackPanel VerticalAlignment="Center">
-      <mui:PlaceholderTextBlock Text="{Binding LoggedInAs.Username}" Placeholder="Login" />
-      <mui:PlaceholderTextBlock Text="{Binding LoggedInAs.Name}" Style="{StaticResource Small}" Placeholder="Name is not set" />
+      <mui:PlaceholderTextBlock Text="{Binding AuthorizedAs.Username}" Placeholder="Login" />
+      <mui:PlaceholderTextBlock Text="{Binding AuthorizedAs.Name}" Style="{StaticResource Small}" Placeholder="Name is not set" />
     </StackPanel>
   </DockPanel>
 </UserControl>

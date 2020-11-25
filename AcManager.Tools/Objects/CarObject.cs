@@ -641,8 +641,8 @@ namespace AcManager.Tools.Objects {
             protected override IEnumerable PackOverride(CarObject t) {
                 // Fonts
                 yield return Add(t.AcdData?.GetIniFile("digital_instruments.ini")
-                                  .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
-                                  .NonNull().Select(FontsManager.Instance.GetByAcId).Where(x => x?.Author != AuthorKunos));
+                        .Values.Select(x => x.GetNonEmpty("FONT")?.ToLowerInvariant())
+                        .NonNull().Select(FontsManager.Instance.GetByAcId).Where(x => x?.Author != AuthorKunos));
 
                 // Driver models
                 var driver = DriverModelsManager.Instance.GetByAcId(
@@ -663,8 +663,14 @@ namespace AcManager.Tools.Objects {
                     yield return Add("templates/*");
                 }
 
-                var textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(t.Location, t.AcdData, false),
-                        SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
+                List<string> textureNames;
+                try {
+                    textureNames = Kn5.FromFile(AcPaths.GetMainCarFilename(t.Location, t.AcdData, false) ?? throw new Exception(),
+                            SkippingTextureLoader.Instance, SkippingMaterialLoader.Instance, SkippingNodeLoader.Instance).TexturesData.Keys.ToList();
+                } catch {
+                    textureNames = new List<string> { @"*.*" };
+                }
+
                 yield return Add(textureNames.Select(x => $"skins/*/{x}"));
                 yield return Add("skins/*/livery.png", "skins/*/preview.jpg", "skins/*/ui_skin.json", "skins/*/cm_*.json");
 

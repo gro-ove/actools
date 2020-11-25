@@ -82,11 +82,11 @@
     <Compile Include="Data\WorkshopContentCarSkin.cs" />
     <Compile Include="Data\WorkshopContentCategory.cs" />
     <Compile Include="Data\ContentInfoBase.cs" />
-    <Compile Include="Data\Originality.cs" />
+    <Compile Include="Data\WorkshopOriginality.cs" />
     <Compile Include="Data\UserFlags.cs" />
     <Compile Include="Data\UserInfo.cs" />
     <Compile Include="Data\WorkshopContentTag.cs" />
-    <Compile Include="Providers\BrandBadgeProvider.cs" />
+    <Compile Include="Providers\WorkshopBrandBadgeProvider.cs" />
     <Compile Include="Providers\UserInfoProvider.cs" />
     <Compile Include="Uploaders\AcStuffWorkshopUploader.cs" />
     <Compile Include="Uploaders\B2WorkshopUploader.cs" />

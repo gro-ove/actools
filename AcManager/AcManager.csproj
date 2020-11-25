@@ -745,9 +745,6 @@
     <Compile Include="Pages\ShadersPatch\ShadersMainPage.xaml.cs">
       <DependentUpon>ShadersMainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Workshop\IUploadLoggedOperation.cs" />
-    <Compile Include="Pages\Workshop\IUploadLoggedParallelOperation.cs" />
-    <Compile Include="Pages\Workshop\IUploadLogger.cs" />
     <Compile Include="Pages\Workshop\AnimatableScrollViewer.cs" />
     <Compile Include="Pages\Workshop\UploadLogger.cs" />
     <Compile Include="Pages\Workshop\VirtualDataWrapper.cs" />
@@ -933,6 +930,20 @@
     <Compile Include="Tools\WebDownloadListener.cs" />
     <Compile Include="Tools\WheelAnglesStorage.cs" />
     <Compile Include="Tools\Win10SharingUiHelper.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedOperation.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLoggedParallelOperation.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\IUploadLogger.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopBaseSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSkinSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopCarSubmitter.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterFactory.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Submitters\WorkshopSubmitterParams.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopBaseValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarSkinValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopCarValidator.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedItem.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatedState.cs" />
+    <Compile Include="Tools\WorkshopPublishTools\Validators\WorkshopValidatorFactory.cs" />
     <Compile Include="UserControls\AdditionalContentEntryTemplateSelector.cs" />
     <Compile Include="UserControls\BakedShadowsSettings.xaml.cs">
       <DependentUpon>BakedShadowsSettings.xaml</DependentUpon>

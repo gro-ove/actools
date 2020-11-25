@@ -1,7 +1,7 @@
 using System;
 using FirstFloor.ModernUI.Dialogs;
 
-namespace AcManager.Pages.Workshop {
+namespace AcManager.Tools.WorkshopPublishTools.Submitters {
     public interface IUploadLogger : IProgress<AsyncProgressEntry> {
         IUploadLoggedOperation Begin(string message);
 

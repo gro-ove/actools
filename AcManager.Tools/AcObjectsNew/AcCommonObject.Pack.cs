@@ -45,7 +45,7 @@ namespace AcManager.Tools.AcObjectsNew {
             public CancellationToken Cancellation { get; set; }
         }
 
-        protected abstract class AcCommonObjectPacker {
+        public abstract class AcCommonObjectPacker {
             private List<string> _added = new List<string>();
             private AcCommonObject _current;
             private string _basePath;
@@ -139,6 +139,10 @@ namespace AcManager.Tools.AcObjectsNew {
             }
 
             #region Public Add() methods
+            public bool AddFile(string name, string filename) {
+                return Write(name, (w, k) => w.Write(k, filename));
+            }
+
             public bool AddBytes(string name, byte[] data) {
                 return Write(name, (w, k) => w.WriteBytes(k, data));
             }
@@ -234,7 +238,9 @@ namespace AcManager.Tools.AcObjectsNew {
                     writer.WriteString("ReadMe.txt", description);
                 }
 
-                outputZipStream.AddZipDescription(description);
+                if (!string.IsNullOrEmpty(description)) {
+                    outputZipStream.AddZipDescription(description);
+                }
             }
 
             protected abstract string GetBasePath(AcCommonObject acCommonObject);
@@ -244,7 +250,7 @@ namespace AcManager.Tools.AcObjectsNew {
             protected abstract PackedDescription GetDescriptionOverride(AcCommonObject acCommonObject);
         }
 
-        protected abstract class AcCommonObjectPacker<T, TParams> : AcCommonObjectPacker
+        public abstract class AcCommonObjectPacker<T, TParams> : AcCommonObjectPacker
                 where T : AcCommonObject where TParams : AcCommonObjectPackerParams, new() {
             private TParams _params;
             public TParams Params => _params ?? (_params = GetParams<TParams>());
@@ -268,32 +274,34 @@ namespace AcManager.Tools.AcObjectsNew {
             protected abstract PackedDescription GetDescriptionOverride(T t);
         }
 
-        protected abstract class AcCommonObjectPacker<T> : AcCommonObjectPacker<T, AcCommonObjectPackerParams>
+        public abstract class AcCommonObjectPacker<T> : AcCommonObjectPacker<T, AcCommonObjectPackerParams>
                 where T : AcCommonObject { }
 
         protected virtual AcCommonObjectPacker CreatePacker() {
             throw new NotSupportedException();
         }
 
-        private void Pack(Stream outputZipStream, AcCommonObjectPackerParams packParams, IProgress<string> progress, CancellationToken cancellation) {
-            var packer = CreatePacker();
+        private void Pack(Stream outputZipStream, AcCommonObjectPackerParams packParams, IProgress<string> progress, CancellationToken cancellation,
+                AcCommonObjectPacker customPacker = null) {
+            var packer = customPacker ?? CreatePacker();
             packer.SetProgress(progress, cancellation);
             packer.SetParams(packParams);
             packer.Pack(outputZipStream, this);
         }
 
         public static void Pack<T>(IEnumerable<T> objs, Stream outputZipStream, [CanBeNull] AcCommonObjectPackerParams packParams,
-                [CanBeNull] IProgress<string> progress, CancellationToken cancellation) where T : AcCommonObject {
+                [CanBeNull] IProgress<string> progress, CancellationToken cancellation,
+                AcCommonObjectPacker customPacker = null) where T : AcCommonObject {
             var list = objs.ToList();
             if (list.Count == 0) return;
 
-            var packer = list.First().CreatePacker();
+            var packer = customPacker ?? list.First().CreatePacker();
             packer.SetProgress(progress, cancellation);
             packer.SetParams(packParams);
             packer.Pack(outputZipStream, list);
         }
 
-        public async Task<bool> TryToPack(AcCommonObjectPackerParams packerParams) {
+        public async Task<bool> TryToPack(AcCommonObjectPackerParams packerParams, AcCommonObjectPacker customPacker = null) {
             try {
                 using (var waiting = packerParams.Progress == null ? WaitingDialog.Create("Packing…") : null) {
                     var progress = waiting ?? packerParams.Progress;
@@ -305,7 +313,7 @@ namespace AcManager.Tools.AcObjectsNew {
                         using (var output = File.Create(destination)) {
                             Pack(output, packerParams,
                                     new Progress<string>(x => progress?.Report(AsyncProgressEntry.FromStringIndetermitate($"Packing: {x}…"))),
-                                    cancellation);
+                                    cancellation, customPacker);
                         }
 
                         if (cancellation.IsCancellationRequested) return;
@@ -325,6 +333,6 @@ namespace AcManager.Tools.AcObjectsNew {
         private AsyncCommand<AcCommonObjectPackerParams> _packCommand;
 
         public AsyncCommand<AcCommonObjectPackerParams> PackCommand
-            => _packCommand ?? (_packCommand = new AsyncCommand<AcCommonObjectPackerParams>(TryToPack, packerParams => CanBePacked()));
+            => _packCommand ?? (_packCommand = new AsyncCommand<AcCommonObjectPackerParams>(p => TryToPack(p), packerParams => CanBePacked()));
     }
 }

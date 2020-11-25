@@ -5,7 +5,7 @@ using AcManager.Workshop.Data;
 using AcTools.Utils.Helpers;
 
 namespace AcManager.Workshop.Providers {
-    public class BrandBadgeProvider {
+    public class WorkshopBrandBadgeProvider {
         private static List<WorkshopContentCategory> _carBrands;
         private static TaskCache _tasks = new TaskCache();
 

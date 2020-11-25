@@ -13,7 +13,7 @@
     <c:PropertiesGrid Margin="0 20 0 0" LabelWidth="160" Width="480">
       <TextBlock c:PropertiesGrid.Label="Power at wheels (data):">
         <Run Text="{Binding DataPower, Mode=OneWay, StringFormat='{}{0:F0}'}" />
-        <Run Text="{x:Static t:ToolsStrings.Units_BHP}" />
+        <Run Text="{x:Static t:ToolsStrings.Units_WHP}" />
       </TextBlock>
       <TextBlock c:PropertiesGrid.Label="Power at crankshaft (UI):">
         <Run Text="{Binding UiPower, Mode=OneWay, StringFormat='{}{0:F0}'}" />

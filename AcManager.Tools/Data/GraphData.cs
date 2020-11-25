@@ -47,16 +47,15 @@ namespace AcManager.Tools.Data {
             MaxY = _points.MaxY;
         }
 
-        public GraphData(JArray obj = null) : this(ConvertToValues(obj)) {}
+        public GraphData(JArray obj = null) : this(ConvertToValues(obj)) { }
 
         private static Lut ConvertToValues(JArray obj) {
             var values = new Lut();
             if (obj == null) return values;
 
             foreach (var entry in obj.OfType<JArray>().Where(x => x.Count == 2)) {
-                double x, y;
-                if (FlexibleParser.TryParseDouble(Convert.ToString(entry[0], CultureInfo.InvariantCulture), out x) &&
-                        FlexibleParser.TryParseDouble(Convert.ToString(entry[1], CultureInfo.InvariantCulture), out y)) {
+                if (FlexibleParser.TryParseDouble(Convert.ToString(entry[0], CultureInfo.InvariantCulture), out var x) &&
+                        FlexibleParser.TryParseDouble(Convert.ToString(entry[1], CultureInfo.InvariantCulture), out var y)) {
                     values.Add(new LutPoint(x, y));
                 }
             }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +16,33 @@ using JetBrains.Annotations;
 using Newtonsoft.Json;
 
 namespace AcManager.Workshop {
+    public static class WorkshopHelperUtils {
+        private static string GetDisplayError(IEnumerable<string> message) {
+            return $"• {message.NonNull().JoinToString(";\n• ")}.";
+        }
+
+        public static string GetDisplayErrorMessage(Exception e) {
+            switch (e) {
+                case WorkshopException w:
+                    if (w.Code == HttpStatusCode.Unauthorized) {
+                        return GetDisplayError(new[] { "Invalid password" });
+                    } else {
+                        Logging.Warning(w);
+                        return GetDisplayError(new[] {
+                            $"CM Workshop returned error {(int)w.Code} ({w.Message})",
+                            w.RemoteException == null ? null
+                                    : w.RemoteStackTrace != null
+                                            ? $"{w.RemoteException}\n\t{w.RemoteStackTrace.Take(4).JoinToString("\n\t")}"
+                                            : $"{w.RemoteException}"
+                        });
+                    }
+                default:
+                    Logging.Warning(e);
+                    return GetDisplayError(e.FlattenMessage());
+            }
+        }
+    }
+
     public class WorkshopModel : NotifyPropertyChanged {
         private const string KeySteamId = "w/ui";
         private const string KeyUserPassword = "w/up";
@@ -48,32 +76,17 @@ namespace AcManager.Workshop {
             set => Apply(value, ref _steamId, () => _authorizeCommand?.RaiseCanExecuteChanged());
         }
 
-        private string GetDisplayError(IEnumerable<string> message) {
-            return $"• {message.NonNull().JoinToString(";\n• ")}.";
-        }
-
         private async Task TryAsync(Func<Task> fn) {
             IsWorkshopAvailable = true;
             try {
+                LastError = null;
                 await fn();
             } catch (Exception e) when (e.IsCancelled()) {
                 // Do nothing
-            } catch (HttpRequestException e) {
-                Logging.Warning(e);
-                IsWorkshopAvailable = false;
-                LastError = GetDisplayError(e.FlattenMessage());
-            } catch (WorkshopException e) {
-                Logging.Warning(e);
-                LastError = GetDisplayError(new[] {
-                    $"CM Workshop returned error {(int)e.Code} ({e.Message})",
-                    e.RemoteException == null ? null
-                            : e.RemoteStackTrace != null
-                                    ? $"{e.RemoteException}\n\t{e.RemoteStackTrace.Take(4).JoinToString("\n\t")}"
-                                    : $"{e.RemoteException}"
-                });
             } catch (Exception e) {
                 Logging.Warning(e);
-                LastError = GetDisplayError(e.FlattenMessage());
+                IsWorkshopAvailable = !(e is HttpRequestException);
+                LastError = WorkshopHelperUtils.GetDisplayErrorMessage(e);
             }
         }
 
@@ -84,20 +97,20 @@ namespace AcManager.Workshop {
             set => Apply(value, ref _isWorkshopAvailable);
         }
 
-        private UserInfo _loggedInAs;
+        private UserInfo _authorizedAs;
 
-        public UserInfo LoggedInAs {
-            get => _loggedInAs;
-            set => Apply(value, ref _loggedInAs, () => {
+        public UserInfo AuthorizedAs {
+            get => _authorizedAs;
+            set => Apply(value, ref _authorizedAs, () => {
                 OnPropertyChanged(nameof(IsAuthorized));
                 OnPropertyChanged(nameof(IsAccountVirtual));
                 OnPropertyChanged(nameof(IsAbleToUploadContent));
             });
         }
 
-        public bool IsAuthorized => _loggedInAs != null;
-        public bool IsAccountVirtual => _loggedInAs?.IsVirtual == true;
-        public bool IsAbleToUploadContent => _loggedInAs?.IsVirtual == false;
+        public bool IsAuthorized => _authorizedAs != null;
+        public bool IsAccountVirtual => _authorizedAs?.IsVirtual == true;
+        public bool IsAbleToUploadContent => _authorizedAs?.IsVirtual == false;
 
         private Task AuthorizeAsync(string steamId, string userPasswordChecksum) {
             return TryAsync(async () => {
@@ -106,21 +119,29 @@ namespace AcManager.Workshop {
                 }
 
                 var userId = WorkshopClient.GetUserId(steamId);
-                // ValuesStorage.SetEncrypted(KeySteamId, steamId);
-                // ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
+                ValuesStorage.SetEncrypted(KeySteamId, steamId);
+                ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
 
                 IsAuthorizing = true;
                 try {
                     _client.UserId = userId;
                     _client.UserPasswordChecksum = userPasswordChecksum;
-                    LoggedInAs = await _client.PutAsync<object, UserInfo>($"/users/{userId}", null);
+                    try {
+                        AuthorizedAs = await _client.PutAsync<object, UserInfo>($"/users/{userId}", null);
+                    } catch (WorkshopException e) when (e.Code == HttpStatusCode.Unauthorized) {
+                        userPasswordChecksum = WorkshopClient.GetPasswordChecksum(userId, "");
+                        _client.UserPasswordChecksum = userPasswordChecksum;
+                        AuthorizedAs = await _client.PutAsync<object, UserInfo>($"/users/{userId}", null);
+                        ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
+                    }
+
                     // Reapplying values in case there is another Authorize request happening (which shouldn’t occur, but if
                     // it does, we don’t need a broken state)
                     _client.UserPasswordChecksum = userPasswordChecksum;
                     SteamId = steamId;
                 } catch {
                     _client.UserPasswordChecksum = null;
-                    LoggedInAs = null;
+                    AuthorizedAs = null;
                     throw;
                 } finally {
                     _client.UserId = userId;
@@ -153,7 +174,8 @@ namespace AcManager.Workshop {
 
         public DelegateCommand LogOutCommand => _logOutCommand ?? (_logOutCommand = new DelegateCommand(() => {
             _client.UserPasswordChecksum = null;
-            LoggedInAs = null;
+            LastError = null;
+            AuthorizedAs = null;
         }));
 
         private AsyncCommand<CancellationToken?> _upgradeUserCommand;
@@ -165,20 +187,20 @@ namespace AcManager.Workshop {
             for (int i = 0, t = (int)(waitFor.TotalSeconds / stepSize.TotalSeconds); i < t; i++) {
                 await Task.Delay(stepSize, cancellation);
                 if (_upgradeRun != upgradeRun || cancellation.IsCancellationRequested) break;
-                LoggedInAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
-                Logging.Debug(JsonConvert.SerializeObject(LoggedInAs));
-                if (!LoggedInAs.IsVirtual) return;
+                AuthorizedAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
+                Logging.Debug(JsonConvert.SerializeObject(AuthorizedAs));
+                if (!AuthorizedAs.IsVirtual) return;
             }
 
             // Extra two seconds delay for server to load extra data from Steam
             await Task.Delay(TimeSpan.FromSeconds(2d), cancellation);
-            LoggedInAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
+            AuthorizedAs = await _client.GetAsync<UserInfo>($"/users/{_client.UserId}", cancellation);
         }
 
         public AsyncCommand<CancellationToken?> UpgradeUserCommand => _upgradeUserCommand
                 ?? (_upgradeUserCommand = new AsyncCommand<CancellationToken?>(c => {
                     return TryAsync(async () => {
-                        if (_client.UserId == null || LoggedInAs == null || !LoggedInAs.IsVirtual) throw new Exception("Can’t upgrade user");
+                        if (_client.UserId == null || AuthorizedAs == null || !AuthorizedAs.IsVirtual) throw new Exception("Can’t upgrade user");
 
                         var upgradeRun = ++_upgradeRun;
                         var password = Prompt.Show("Choose a new password for your CM Workshop account:", "Verify CM Workshop account",
@@ -192,14 +214,15 @@ namespace AcManager.Workshop {
                         c?.ThrowIfCancellationRequested();
 
                         await WaitForAuthenticationAsync(upgradeRun, c ?? default);
-                        if (LoggedInAs != null && !LoggedInAs.IsVirtual) {
+                        if (AuthorizedAs != null && !AuthorizedAs.IsVirtual) {
+                            _client.UserPasswordChecksum = userPasswordChecksum;
                             ValuesStorage.SetEncrypted(KeyUserPassword, userPasswordChecksum);
                         }
                     });
                 }));
 
         public async Task UpgradeUserAsync(string passwordChecksum) {
-            if (_client.UserId == null || LoggedInAs == null || !LoggedInAs.IsVirtual) throw new Exception("Can’t upgrade user");
+            if (_client.UserId == null || AuthorizedAs == null || !AuthorizedAs.IsVirtual) throw new Exception("Can’t upgrade user");
             await _client.RequestAsync<object, object>(new HttpMethod("PATCH"), $"/users/{_client.UserId}", new {
                 isVirtual = false,
                 passwordChecksum

@@ -287,8 +287,8 @@
     <value>Трассы</value>
   </data>
   <data name="Main_Showrooms" xml:space="preserve">
-    <value>Выставочные залы</value>
-  <alternative>Шоурумы</alternative><alternative>Демонстрационные залы</alternative></data>
+    <value>Шоурумы</value>
+  <alternative>Демонстрационные залы</alternative><alternative>Выставочные залы</alternative></data>
   <data name="Main_Miscellaneous" xml:space="preserve">
     <value>Разное</value>
   </data>
@@ -338,8 +338,8 @@
     <value>Машины:</value>
   </data>
   <data name="Settings_Content_ShowroomsHeader" xml:space="preserve">
-    <value>Выставочные залы:</value>
-  <alternative>Шоурумы:</alternative><alternative>Демонстрационные залы:</alternative></data>
+    <value>Шоурумы:</value>
+  <alternative>Демонстрационные залы:</alternative><alternative>Выставочные залы:</alternative></data>
   <data name="Settings_Content_FontsHeader" xml:space="preserve">
     <value>Шрифты:</value>
   </data>
@@ -447,11 +447,11 @@
     <value>Перезагрузить (Ctrl+R)</value>
   </data>
   <data name="Toolbar_Showroom" xml:space="preserve">
-    <value>Выставочный зал</value>
-  <alternative>Шоурум</alternative><alternative>Демонстрационный зал</alternative></data>
+    <value>Шоурум</value>
+  <alternative>Демонстрационный зал</alternative><alternative>Выставочный зал</alternative></data>
   <data name="Toolbar_CustomShowroom" xml:space="preserve">
-    <value>Пользовательский выставочный зал</value>
-  <alternative>Кастомный Шоурум</alternative><alternative>Демонстрационный зал</alternative></data>
+    <value>Пользовательский шоурум</value>
+  <alternative>Кастомный Шоурум</alternative><alternative>Демонстрационный зал</alternative><alternative>Пользовательский выставочный зал</alternative></data>
   <data name="Toolbar_Drive" xml:space="preserve">
     <value>Пробный заезд</value>
   <alternative>Тест-драйв</alternative></data>
@@ -621,8 +621,8 @@
     <value>Погода:</value>
   </data>
   <data name="Toolbar_CreateNewShowroom" xml:space="preserve">
-    <value>Создать новый выставочный зал</value>
-  <alternative>Создать новый шоурум</alternative><alternative>Создать новый зал</alternative></data>
+    <value>Создать новый шоурум</value>
+  <alternative>Создать новый зал</alternative><alternative>Создать новый выставочный зал</alternative></data>
   <data name="Toolbar_UpdatePreviewWithoutShooting_Tooltip" xml:space="preserve">
     <value>Лишь выбрать существующее изображение</value>
   </data>
@@ -690,8 +690,8 @@
     <value>{0} пресет</value>
   <alternative>{0} предустановок</alternative></data>
   <data name="List_Showrooms" xml:space="preserve">
-    <value>{0} выставочный зал</value>
-  <alternative>{0} залов</alternative><alternative>{0} шоурум</alternative><alternative>{0} зал</alternative></data>
+    <value>{0} шоурум</value>
+  <alternative>{0} залов</alternative><alternative>{0} зал</alternative><alternative>{0} выставочный зал</alternative></data>
   <data name="List_Tracks" xml:space="preserve">
     <value>{0} трасса</value>
   </data>
@@ -1000,8 +1000,8 @@
     <value>Всё</value>
   </data>
   <data name="CreateShowroom_Title" xml:space="preserve">
-    <value>Создать новый выставочный зал</value>
-  <alternative>Создать новый шоурум</alternative><alternative>Создать новый зал</alternative></data>
+    <value>Создать новый шоурум</value>
+  <alternative>Создать новый зал</alternative><alternative>Создать новый выставочный зал</alternative></data>
   <data name="CreateShowroom_NameLabel" xml:space="preserve">
     <value>Имя:</value>
   </data>
@@ -1924,8 +1924,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Управление настройками сервера:</value>
   </data>
   <data name="Settings_CustomShowroom_TypeComment" xml:space="preserve">
-    <value>Простой выставочный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</value>
-  <alternative>Простой демонстрационный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</alternative></data>
+    <value>Простой шоурум, совместимый с DirectX 10, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</value>
+  <alternative>Простой демонстрационный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</alternative><alternative>Простой выставочный зал DirectX 10-совместимый, гораздо проще и легче для видеокарты. Идеальное решение для создания раскрасок</alternative></data>
   <data name="Settings_CustomShowroom_AutoAdjustPivot" xml:space="preserve">
     <value>Автоматическая регулировка поворота камеры</value>
   </data>
@@ -1933,14 +1933,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Инвертировать кнопки мыши</value>
   </data>
   <data name="Settings_CustomShowroom_LiteHeader" xml:space="preserve">
-    <value>Простой выставочный зал:</value>
-  <alternative>Простой зал:</alternative></data>
+    <value>Простой шоурум:</value>
+  <alternative>Простой зал:</alternative><alternative>Простой выставочный зал:</alternative></data>
   <data name="Settings_CustomShowroom_FancyHeader" xml:space="preserve">
-    <value>Качественный выставочный зал:</value>
-  <alternative>Качественный зал:</alternative></data>
+    <value>Качественный шоурум:</value>
+  <alternative>Качественный зал:</alternative><alternative>Качественный выставочный зал:</alternative></data>
   <data name="Settings_CustomShowroom_Showroom" xml:space="preserve">
-    <value>Выставочный зал по умолчанию</value>
-  <alternative>Зал по умолчанию</alternative></data>
+    <value>Шоурум по умолчанию</value>
+  <alternative>Зал по умолчанию</alternative><alternative>Выставочный зал по умолчанию</alternative></data>
   <data name="Settings_CustomShowroom_DefaultType" xml:space="preserve">
     <value>По умолчанию:</value>
   </data>
@@ -1975,8 +1975,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Я сомневаюсь, что у вас есть время, чтобы обновить их все</value>
   </data>
   <data name="Settings_Content_DownloadPreviews" xml:space="preserve">
-    <value>Скачать предварительные просмотры обычных выставочных залов</value>
-  <alternative>Скачать предварительные просмотры обычных демонстрационных залов</alternative></data>
+    <value>Скачать предварительные просмотры обычных шоурумов</value>
+  <alternative>Скачать предварительные просмотры обычных демонстрационных залов</alternative><alternative>Скачать предварительные просмотры обычных выставочных залов</alternative></data>
   <data name="Settings_Content_FontIconSymbol" xml:space="preserve">
     <value>Значок символа шрифта:</value>
   <alternative>Значок символ шрифта:</alternative></data>
@@ -1999,14 +1999,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>К примеру, на отключение</value>
   </data>
   <data name="Toolbar_Folder_ShowroomTooltip" xml:space="preserve">
-    <value>Открыть каталог с выставочными залами (Ctrl+F)</value>
-  <alternative>Открыть каталог с демонстрационными залами (Ctrl+F)</alternative></data>
+    <value>Открыть каталог с шоурумами (Ctrl+F)</value>
+  <alternative>Открыть каталог с демонстрационными залами (Ctrl+F)</alternative><alternative>Открыть каталог с выставочными залами (Ctrl+F)</alternative></data>
   <data name="Toolbar_CreateNewShowroom_Tooltip" xml:space="preserve">
-    <value>Создать новый выставочный зал из существующей панорамы (Ctrl+N)</value>
-  <alternative>Создать новый зал из существующей панорамы (Ctrl+N)</alternative></data>
+    <value>Создать новый шоурум из существующей панорамы (Ctrl+N)</value>
+  <alternative>Создать новый зал из существующей панорамы (Ctrl+N)</alternative><alternative>Создать новый выставочный зал из существующей панорамы (Ctrl+N)</alternative></data>
   <data name="CreateShowroom_CannotCreate" xml:space="preserve">
-    <value>Не удалось создать новый выставочный зал</value>
-  <alternative>Не удалось создать новый зал</alternative></data>
+    <value>Не удалось создать новый шоурум</value>
+  <alternative>Не удалось создать новый зал</alternative><alternative>Не удалось создать новый выставочный зал</alternative></data>
   <data name="Toolbar_Disable_Tooltip" xml:space="preserve">
     <value>Отключить (Ctrl+D)</value>
   </data>
@@ -2017,14 +2017,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Сохранить изменённый INI-файл (Ctrl+S)</value>
   </data>
   <data name="Toolbar_Delete_ShowroomTooltip" xml:space="preserve">
-    <value>Удалить выставочный зал в корзину (Ctrl+Delete)</value>
-  <alternative>Удалить зал в корзину (Ctrl+Delete)</alternative></data>
+    <value>Удалить шоурум в корзину (Ctrl+Delete)</value>
+  <alternative>Удалить зал в корзину (Ctrl+Delete)</alternative><alternative>Удалить выставочный зал в корзину (Ctrl+Delete)</alternative></data>
   <data name="Toolbar_UpdatePreview" xml:space="preserve">
     <value>Обновить пред. просмотр</value>
   </data>
   <data name="Toolbar_UpdatePreview_ShowroomTooltip" xml:space="preserve">
-    <value>Обновить пред. просмотр выставочных залов (Ctrl+P)</value>
-  <alternative>Обновить пред. просмотр залов (Ctrl+P)</alternative></data>
+    <value>Обновить пред. просмотр шоурум (Ctrl+P)</value>
+  <alternative>Обновить пред. просмотр залов (Ctrl+P)</alternative><alternative>Обновить пред. просмотр выставочных залов (Ctrl+P)</alternative></data>
   <data name="Toolbar_TurnOffSound" xml:space="preserve">
     <value>Отключить звук</value>
   </data>
@@ -2116,17 +2116,17 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Удалить погоду в корзину (Ctrl+Delete)</value>
   </data>
   <data name="Toolbar_Showroom_Tooltip" xml:space="preserve">
-    <value>Просмотр машины в выставочном зале (Ctrl+H)</value>
-  <alternative>Просмотр автомобиля в демонстрационном зале (Ctrl+H)</alternative></data>
+    <value>Просмотр машины в шоуруме (Ctrl+H)</value>
+  <alternative>Просмотр автомобиля в демонстрационном зале (Ctrl+H)</alternative><alternative>Просмотр машины в выставочном зале (Ctrl+H)</alternative></data>
   <data name="Toolbar_UpdatePreviewsManually" xml:space="preserve">
     <value>Ручной режим</value>
   </data>
   <data name="Toolbar_CustomShowroom_Lite" xml:space="preserve">
-    <value>Простой пользовательский выставочный зал</value>
-  <alternative>Простой пользовательский зал</alternative></data>
+    <value>Простой пользовательский шоурум</value>
+  <alternative>Простой пользовательский зал</alternative><alternative>Простой пользовательский выставочный зал</alternative></data>
   <data name="Toolbar_CustomShowroom_Fancy" xml:space="preserve">
-    <value>Качественный пользовательский выставочный зал</value>
-  <alternative>Качественный пользовательский зал</alternative></data>
+    <value>Качественный пользовательский шоурум</value>
+  <alternative>Качественный пользовательский зал</alternative><alternative>Качественный пользовательский выставочный зал</alternative></data>
   <data name="Tags_CleanUp" xml:space="preserve">
     <value>Очистить метки</value>
   </data>
@@ -2212,8 +2212,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Поделиться фильтром (Ctrl+Page Up)</value>
   </data>
   <data name="Toolbar_Test_FilterTooltip" xml:space="preserve">
-    <value>Тестировать фильтр в выставочном зале (Ctrl+G)</value>
-  <alternative>Тестировать фильтр в демонстрационном зале (Ctrl+G)</alternative></data>
+    <value>Тестировать фильтр в шоуруме (Ctrl+G)</value>
+  <alternative>Тестировать фильтр в демонстрационном зале (Ctrl+G)</alternative><alternative>Тестировать фильтр в выставочном зале (Ctrl+G)</alternative></data>
   <data name="Page_Wip" xml:space="preserve">
     <value>Этот раздел ещё не готов</value>
   <alternative>Эта раздел ещё не готов</alternative></data>
@@ -2457,8 +2457,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Идентификатор: {0}</value>
   </data>
   <data name="Toolbar_ShowroomOptions_Tooltip" xml:space="preserve">
-    <value>Выбрать выставочный зал, фильтр и прочее</value>
-  <alternative>Выбрать зал, фильтр и прочее</alternative></data>
+    <value>Выбрать шоурум, фильтр и прочее</value>
+  <alternative>Выбрать зал, фильтр и прочее</alternative><alternative>Выбрать выставочный зал, фильтр и прочее</alternative></data>
   <data name="Toolbar_CustomShowroom_Lite_Tooltip" xml:space="preserve">
     <value>Быстрее и точнее, полезно для рисования моддинга или рисования скинов</value>
   </data>
@@ -2490,8 +2490,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
   </data>
   <data name="Toolbar_UpdatePreviewsOptions_Tooltip" xml:space="preserve">
-    <value>Выберите выставочный зал, фильтр, положение камеры и т.д.</value>
-  <alternative>Выберите зал, фильтр, положение камеры и т.д.</alternative></data>
+    <value>Выберите шоурум, фильтр, положение камеры и т.д.</value>
+  <alternative>Выберите зал, фильтр, положение камеры и т.д.</alternative><alternative>Выберите выставочный зал, фильтр, положение камеры и т.д.</alternative></data>
   <data name="Car_CannotPackData" xml:space="preserve">
     <value>Невозможно упаковать данные</value>
   </data>
@@ -2945,14 +2945,14 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>[url="{0}"]{1}[/url] не установлен. Установить?</value>
   </data>
   <data name="CarPreviews_ShowroomIsMissing_Title" xml:space="preserve">
-    <value>Выставочный зал отсутствует</value>
-  <alternative>Демонстрационный зал отсутствует</alternative></data>
+    <value>Шоурум отсутствует</value>
+  <alternative>Демонстрационный зал отсутствует</alternative><alternative>Выставочный зал отсутствует</alternative></data>
   <data name="CarPreviews_CannotDownloadShowroom" xml:space="preserve">
-    <value>Невозможно загрузить выставочный зал “{0}”</value>
-  <alternative>Невозможно загрузить демонстрационный зал “{0}”</alternative></data>
+    <value>Невозможно загрузить шоурум “{0}”</value>
+  <alternative>Невозможно загрузить демонстрационный зал “{0}”</alternative><alternative>Невозможно загрузить выставочный зал “{0}”</alternative></data>
   <data name="CarPreviews_CannotInstallShowroom" xml:space="preserve">
-    <value>Невозможно установить выставочный зал “{0}”</value>
-  <alternative>Невозможно установить демонстрационный зал “{0}”</alternative></data>
+    <value>Невозможно установить шоурум“{0}”</value>
+  <alternative>Невозможно установить демонстрационный зал “{0}”</alternative><alternative>Невозможно установить выставочный зал “{0}”</alternative></data>
   <data name="CarPreviews_CannotSave" xml:space="preserve">
     <value>Невозможно сохранить пред.просмотр</value>
   </data>
@@ -2963,8 +2963,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Установите положение камеры вручную, а затем нажмите F8, чтобы начать съемку</value>
   </data>
   <data name="CarPreviews_ShowroomIsMissingOptions" xml:space="preserve">
-    <value>Выставочный зал отсутствует. Открыть опции?</value>
-  <alternative>Демонстрационный зал отсутствует. Открыть опции?</alternative></data>
+    <value>Шоурум отсутствует. Открыть опции?</value>
+  <alternative>Демонстрационный зал отсутствует. Открыть опции?</alternative><alternative>Выставочный зал отсутствует. Открыть опции?</alternative></data>
   <data name="CarPreviews_FilterIsMissingOptions" xml:space="preserve">
     <value>Фильтр отсутствует. Открыть опции?</value>
   </data>
@@ -3673,9 +3673,6 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
   <data name="Main_Challenges_Drags" xml:space="preserve">
     <value>Драг</value>
   </data>
-  <data name="Main_Challenges_TimeAttacks" xml:space="preserve">
-    <value>Тайм-Аттак</value>
-  </data>
   <data name="Main_Challenges_NotPassedYet" xml:space="preserve">
     <value>Ещё не пройдено</value>
   </data>
@@ -3761,8 +3758,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Поменять авто</value>
   </data>
   <data name="QuickDrive_OpenInShowroom_Tooltip" xml:space="preserve">
-    <value>Открыть в пользовательском выставочном зале</value>
-  </data>
+    <value>Открыть в пользовательском шоуруме</value>
+  <alternative>Открыть в пользовательском выставочном зале</alternative></data>
   <data name="QuickDrive_ManageSetups_Tooltip" xml:space="preserve">
     <value>Управление настройками</value>
   </data>
@@ -3887,8 +3884,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Изменения будут сохранены автоматически. Если вы хотите оптимизировать способ отображения конфигурационных файлов, вы можете найти о них дополнительную информацию [url="https://acstuff.ru/f/d/19-content-manager-python-app-configs"]here[/url].</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomInstead" xml:space="preserve">
-    <value>В некоторых случаях использовать пользовательский выставочный зал вместо оригинального</value>
-  </data>
+    <value>В некоторых случаях использовать пользовательский шоурум вместо оригинального</value>
+  <alternative>В некоторых случаях использовать пользовательский выставочный зал вместо оригинального</alternative></data>
   <data name="Settings_Appearance_ShowDraggableAreas" xml:space="preserve">
     <value>Показывать перетаскиваемые области рядом с полями поиска.</value>
   </data>
@@ -3929,8 +3926,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Придерживаться главного меню вверху в полноэкранном режиме</value>
   </data>
   <data name="Settings_Appearance_SemiTransparentToolsInCustomShowroom" xml:space="preserve">
-    <value>Полупрозрачные инструменты в пользовательском выставочном зале и специфичных настройках DirectX</value>
-  </data>
+    <value>Полупрозрачные инструменты в пользовательском шоуруме и специфичных настройках DirectX</value>
+  <alternative>Полупрозрачные инструменты в пользовательском выставочном зале и специфичных настройках DirectX</alternative></data>
   <data name="Settings_Appearance_FastAccessButtons" xml:space="preserve">
     <value>Кнопки быстрого доступа над авто и трассой в Quick Drive</value>
   </data>
@@ -4145,8 +4142,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Превью:</value>
   </data>
   <data name="Settings_CustomShowroom_UseCustomShowroomForPreviews" xml:space="preserve">
-    <value>Использовать пользовательский выставочный зал для превью</value>
-  </data>
+    <value>Использовать пользовательский шоурум для превью</value>
+  <alternative>Использовать пользовательский выставочный зал для превью</alternative></data>
   <data name="Settings_CustomShowroom_AddExtendedInformationInEXIFData" xml:space="preserve">
     <value>Добавить расширенную информацию в данные EXIF</value>
   </data>
@@ -4166,8 +4163,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Сбросить тяжелые варианты:</value>
   </data>
   <data name="Settings_CustomShowroom_Reset_Tooltip" xml:space="preserve">
-    <value>Используйте это если выставочный зал вылетает, например, из-за очень высоких настроек</value>
-  </data>
+    <value>Используйте это если шоурум вылетает, например, из-за очень высоких настроек</value>
+  <alternative>Используйте это если выставочный зал вылетает, например, из-за очень высоких настроек</alternative></data>
   <data name="Settings_CustomShowroom_ResetAll" xml:space="preserve">
     <value>Сбросить всё:</value>
   </data>
@@ -4268,8 +4265,8 @@ Content Manager [url="/Pages/About/License.xaml|_top"]Лицензия[/url].</v
     <value>Стоп</value>
   </data>
   <data name="Selected_CarSkinPage_CMShowroom" xml:space="preserve">
-    <value>Выставочный зал CM</value>
-  </data>
+    <value>Шоурум CM</value>
+  <alternative>Выставочный зал CM</alternative></data>
   <data name="Drive_Quick_CarSpecificFanatecSettings" xml:space="preserve">
     <value>Настройки Fanatec для конкретного авто</value>
   </data>

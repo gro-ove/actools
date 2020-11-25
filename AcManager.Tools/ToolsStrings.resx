@@ -1179,7 +1179,10 @@
     <value>Make sure there is enough disk space.</value>
   </data>
   <data name="Units_BHP" xml:space="preserve">
-    <value>BHP</value>
+    <value>bhp</value>
+  </data>
+  <data name="Units_WHP" xml:space="preserve">
+    <value>whp</value>
   </data>
   <data name="Units_Nm" xml:space="preserve">
     <value>Nm</value>

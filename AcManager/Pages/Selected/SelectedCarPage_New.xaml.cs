@@ -342,9 +342,12 @@ namespace AcManager.Pages.Selected {
 
             private DelegateCommand _uploadToWorkshopCommand;
 
-            public DelegateCommand UploadToWorkshopCommand => _uploadToWorkshopCommand ?? (_uploadToWorkshopCommand = new DelegateCommand(() => {
-                new WorkshopUpload(SelectedObject).ShowDialog();
-            }, () => WorkshopClient.OptionCreatorAvailable));
+            public DelegateCommand UploadToWorkshopCommand
+                =>
+                        _uploadToWorkshopCommand
+                                ?? (_uploadToWorkshopCommand =
+                                        new DelegateCommand(() => { new WorkshopUpload(SelectedObject).ShowDialog(); },
+                                                () => WorkshopClient.OptionCreatorAvailable));
 
             private AsyncCommand _replaceSoundCommand;
 
@@ -406,7 +409,7 @@ namespace AcManager.Pages.Selected {
             }));
 
             [CanBeNull]
-            private Tuple<double, double> RecalculateTorqueAndPower() {
+            private Tuple<bool, double, double> RecalculateTorqueAndPower() {
                 var o = SelectedObject;
 
                 var data = o.AcdData;
@@ -430,29 +433,26 @@ namespace AcManager.Pages.Selected {
 
                 torque.UpdateBoundingBox();
                 power.UpdateBoundingBox();
-                return Tuple.Create(torque.MaxY * dlg.Multipler, power.MaxY * dlg.Multipler);
+                return Tuple.Create(dlg.Multipler == 1d, torque.MaxY * dlg.Multipler, power.MaxY * dlg.Multipler);
             }
 
             private DelegateCommand _recalculateTorqueCommand;
 
             public DelegateCommand RecalculateTorqueCommand => _recalculateTorqueCommand ?? (_recalculateTorqueCommand = new DelegateCommand(() => {
-                var torque = RecalculateTorqueAndPower()?.Item1;
-                if (torque == null) {
-                    return;
-                }
+                var recalculated = RecalculateTorqueAndPower();
+                if (recalculated == null) return;
                 SelectedObject.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Torque_FormatTooltip,
-                        torque.Value.ToString(@"F0", CultureInfo.InvariantCulture));
+                        recalculated.Item2.ToString(@"F0", CultureInfo.InvariantCulture)) + (recalculated.Item1 ? @"*" : "");
             }));
 
             private DelegateCommand _recalculatePowerCommand;
 
             public DelegateCommand RecalculatePowerCommand => _recalculatePowerCommand ?? (_recalculatePowerCommand = new DelegateCommand(() => {
-                var power = RecalculateTorqueAndPower()?.Item2;
-                if (power == null) {
-                    return;
-                }
-                SelectedObject.SpecsTorque = SpecsFormat(AppStrings.CarSpecs_Power_FormatTooltip,
-                        power.Value.ToString(@"F0", CultureInfo.InvariantCulture));
+                var recalculated = RecalculateTorqueAndPower();
+                if (recalculated == null) return;
+                SelectedObject.SpecsBhp =
+                        SpecsFormat(recalculated.Item1 ? AppStrings.CarSpecs_PowerAtWheels_FormatTooltip : AppStrings.CarSpecs_Power_FormatTooltip,
+                                recalculated.Item3.ToString(@"F0", CultureInfo.InvariantCulture));
             }));
 
             private void InitializeSpecs() {

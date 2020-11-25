@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using AcManager.CustomShowroom;
 using AcManager.Tools.AcObjectsNew;
-using AcManager.Tools.Data;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Managers.Presets;
 using AcManager.Tools.Objects;
+using AcManager.Tools.WorkshopPublishTools.Submitters;
+using AcManager.Tools.WorkshopPublishTools.Validators;
 using AcManager.Workshop;
 using AcManager.Workshop.Data;
 using AcTools.Utils.Helpers;
@@ -56,7 +57,12 @@ namespace AcManager.Pages.Workshop {
                 set => Apply(value, ref _uploadProgress);
             }
 
-            public PlannedAction(AcJsonObjectNew objectToUpload) {
+            public List<WorkshopValidatedItem> ValidationPassed { get; }
+            public List<WorkshopValidatedItem> ValidationFixable { get; }
+            public List<WorkshopValidatedItem> ValidationWarning { get; }
+            public List<WorkshopValidatedItem> ValidationFailed { get; }
+
+            public PlannedAction(AcJsonObjectNew objectToUpload, bool isChildObject) {
                 ObjectToUpload = objectToUpload;
                 switch (objectToUpload) {
                     case CarObject car:
@@ -71,6 +77,37 @@ namespace AcManager.Pages.Workshop {
                         DisplayType = "Unsupported";
                         break;
                 }
+
+                var validationResults = WorkshopValidatorFactory.Create(objectToUpload, isChildObject).Validate().ToList();
+                ValidationPassed = validationResults.Where(x => x.State == WorkshopValidatedState.Passed).ToList();
+                ValidationFixable = validationResults.Where(x => x.State == WorkshopValidatedState.Fixable).ToList();
+                ValidationWarning = validationResults.Where(x => x.State == WorkshopValidatedState.Warning).ToList();
+                ValidationFailed = validationResults.Where(x => x.State == WorkshopValidatedState.Failed).ToList();
+            }
+        }
+
+        public sealed class PlannedActionsGroup : Displayable, IWithId {
+            public string Id { get; }
+
+            public List<PlannedAction> Children { get; }
+
+            public string DisplayTitle => $"{DisplayName} ({Children.Count})";
+
+            public bool AtLeastOneIsRequired { get; set; }
+
+            public int ChildrenValidationPassed { get; }
+            public int ChildrenValidationFixable { get; }
+            public int ChildrenValidationWarning { get; }
+            public int ChildrenValidationFailed { get; }
+
+            public PlannedActionsGroup([Localizable(false)] string id, string name, IEnumerable<PlannedAction> children) {
+                Id = id;
+                DisplayName = name;
+                Children = children.ToList();
+                ChildrenValidationPassed = Children.Sum(x => x.ValidationPassed.Count);
+                ChildrenValidationFixable = Children.Sum(x => x.ValidationFixable.Count);
+                ChildrenValidationWarning = Children.Sum(x => x.ValidationWarning.Count);
+                ChildrenValidationFailed = Children.Sum(x => x.ValidationFailed.Count);
             }
         }
 
@@ -128,36 +165,78 @@ namespace AcManager.Pages.Workshop {
                 }
             }
 
-            public List<PlannedAction> Children { get; }
+            public List<PlannedActionsGroup> ChildrenGroups { get; } = new List<PlannedActionsGroup>();
 
-            public PlannedActionRoot(AcJsonObjectNew objectToUpload) : base(objectToUpload) {
+            public PlannedActionRoot(AcJsonObjectNew objectToUpload) : base(objectToUpload, false) {
                 switch (objectToUpload) {
                     case CarObject car:
-                        Children = car.EnabledOnlySkins.Select(x => new PlannedAction(x)).ToList();
+                        ChildrenGroups.Add(new PlannedActionsGroup("skins", AppStrings.Main_Skins,
+                                car.EnabledOnlySkins.Select(x => new PlannedAction(x, true))) {
+                                    AtLeastOneIsRequired = true
+                                });
                         break;
                 }
             }
 
             public async Task LoadVersionInformationAsync(WorkshopClient client) {
-                switch (ObjectToUpload) {
-                    case CarObject car:
-                        try {
-                            RemoteVersion = (await client.GetAsync<JObject>("/manage/cars/" + car.Id))[@"lastVersion"].ToString();
-                        } catch (WorkshopException e) when (e.Code == HttpStatusCode.NotFound) {
-                            RemoteVersion = string.Empty;
-                        } catch {
-                            IsFailed = false;
-                            throw;
-                        }
-                        break;
+                try {
+                    switch (ObjectToUpload) {
+                        case CarObject car:
+                            RemoteVersion = (await client.GetAsync<JObject>("/cars/" + car.Id))[@"lastVersion"].ToString();
+                            break;
+                    }
+                } catch (WorkshopException e) when (e.Code == HttpStatusCode.NotFound) {
+                    RemoteVersion = string.Empty;
+                } catch {
+                    IsFailed = false;
+                    throw;
                 }
             }
 
-            public async Task UploadAsync(WorkshopClient client, [CanBeNull] IUploadLogger log, Originality originality) {
+            private bool _remoteValidationComplete;
+
+            private IEnumerable<PlannedAction> IterateActions() {
+                return new[] { this }.Concat(ChildrenGroups.SelectMany(childGroup => childGroup.Children));
+            }
+
+            private JObject PrepareDataToSubmit(WorkshopSubmitterParams submitterParams) {
+                var ignoring = IterateActions().Select(x => x.ObjectToUpload.IgnoreChanges()).ToList();
+                JObject dataToSubmit;
+
+                try {
+                    foreach (var workshopValidatedItem in IterateActions().SelectMany(x => x.ValidationFixable)) {
+                        workshopValidatedItem.FixCallback?.Invoke();
+                    }
+                    return WorkshopSubmitterFactory.Create(ObjectToUpload, submitterParams).BuildPayload();
+                } finally {
+                    foreach (var workshopValidatedItem in IterateActions().SelectMany(x => x.ValidationFixable)) {
+                        workshopValidatedItem.RollbackCallback?.Invoke();
+                    }
+                    ignoring.DisposeEverything();
+                }
+            }
+
+            public async Task ValidateResourceRemotelyAsync(WorkshopSubmitterParams submitterParams) {
+                if (_remoteValidationComplete) return;
+
+                var dataToSubmit = PrepareDataToSubmit(submitterParams);
+                try {
+                    await submitterParams.Client.PutAsync($"/cars/{ObjectToUpload.Id}/validate", dataToSubmit);
+                    ValidationPassed.Insert(0, new WorkshopValidatedItem("Remote validation passed"));
+                    _remoteValidationComplete = true;
+                } catch (WorkshopException e) {
+                    ValidationFailed.Insert(0, new WorkshopValidatedItem("Remote validation failed: " + e.Message, WorkshopValidatedState.Failed));
+                    _remoteValidationComplete = true;
+                }
+            }
+
+            public async Task UploadAsync(WorkshopSubmitterParams submitterParams, [CanBeNull] IUploadLogger log) {
+                var client = submitterParams.Client;
                 switch (ObjectToUpload) {
                     case CarObject car:
                         var temporaryData = FilesStorage.Instance.GetTemporaryDirectory("CM Workshop Upload");
-                        var skins = Children.Where(x => x.IsActive).Select(x => x.ObjectToUpload).OfType<CarSkinObject>().ToList();
+                        var skins = ChildrenGroups.GetById("skins").Children.Where(x => x.IsActive)
+                                .Select(x => x.ObjectToUpload).OfType<CarSkinObject>().ToList();
 
                         if (car.Id.Any(char.IsUpper)) {
                             throw new Exception("Upper case in car folder name is not allowed");
@@ -259,37 +338,7 @@ namespace AcManager.Pages.Workshop {
                         }
 
                         using (log?.Begin("Submitting car to CM Workshop")) {
-                            await client.PutAsync($"/cars/{car.Id}", new {
-                                name = car.Name,
-                                description = car.Description?.Trim(),
-                                tags = TagsCollection.CleanUp(car.Tags).OrderBy(x => x, TagsComparer.Instance).Distinct().ToList(),
-                                version = car.Version,
-                                downloadURL = urlCarCompact,
-                                downloadFullURL = urlCarFull,
-                                year = car.Year,
-                                originality,
-                                skins = skins.ToDictionary(skin => skin.Id, skin => new {
-                                    name = skin.Name.Or(skin.NameFromId),
-                                    skinIcon = urls.GetValueOrDefault($@"{skin.Id}_icon") ?? throw new Exception("CM Workshop skin icon is missing"),
-                                    previewImage = urls.GetValueOrDefault($@"{skin.Id}_preview") ?? throw new Exception("CM Workshop skin preview is missing"),
-                                    downloadURL = urls.GetValueOrDefault($@"{skin.Id}_data") ?? throw new Exception("CM Workshop skin data is missing"),
-                                    driver = skin.DriverName,
-                                    team = skin.Team,
-                                    tags = TagsCollection.CleanUp(car.Tags).OrderBy(x => x, TagsComparer.Instance).Distinct().ToList(),
-                                    number = FlexibleParser.TryParseInt(skin.SkinNumber),
-                                    country = skin.Country,
-                                    originality,
-                                }),
-                                carBrand = car.Brand,
-                                carClass = car.CarClass,
-                                country = car.Country,
-                                specs = @"{}"
-                                /*weight = FlexibleParser.TryParseDouble(car.SpecsWeight),
-                                power = FlexibleParser.TryParseDouble(car.SpecsBhp),
-                                torque = FlexibleParser.TryParseDouble(car.SpecsTorque),
-                                speed = FlexibleParser.TryParseDouble(car.SpecsTopSpeed),
-                                acceleration = FlexibleParser.TryParseDouble(car.SpecsAcceleration)*/
-                            });
+                            await client.PutAsync($"/cars/{car.Id}", PrepareDataToSubmit(submitterParams));
                         }
                         break;
                 }
@@ -297,17 +346,20 @@ namespace AcManager.Pages.Workshop {
         }
 
         public enum UploadPhase {
-            /*[Description("Authorization")]
-            Authorization = 1,*/
+            [Description("Upload failed")]
+            Failed = 0,
+
+            [Description("Preparation…")]
+            Preparation = 1,
 
             [Description("Select items to upload")]
-            Preparation = 2,
+            Setup = 2,
 
             [Description("Uploading…")]
             Upload = 3,
 
             [Description("Upload complete")]
-            Finalization = 5
+            Finalization = 5,
         }
 
         public class ViewModel : NotifyPropertyChanged {
@@ -320,7 +372,7 @@ namespace AcManager.Pages.Workshop {
                 set => Apply(value, ref _phase, () => { PhaseName = value.GetDescription(); });
             }
 
-            private string _phaseName = "Authorization";
+            private string _phaseName;
 
             public string PhaseName {
                 get => _phaseName;
@@ -329,90 +381,54 @@ namespace AcManager.Pages.Workshop {
 
             public ViewModel(IEnumerable<AcJsonObjectNew> objects) {
                 PlannedActions = objects.Select(x => new PlannedActionRoot(x)).ToList();
+
+                if (WorkshopHolder.Model.AuthorizedAs != null) {
+                    PrepareUpload();
+                }
+                WorkshopHolder.Model.SubscribeWeak(OnWorkshopModelChanged);
+            }
+
+            private void OnWorkshopModelChanged(object sender, PropertyChangedEventArgs e) {
+                if (e.PropertyName == nameof(WorkshopModel.AuthorizedAs)) {
+                    PrepareUpload();
+                }
+            }
+
+            private WorkshopSubmitterParams GetWorkshopSubmitterParams(bool withProgressLogging) {
+                return new WorkshopSubmitterParams(WorkshopHolder.Client,
+                        withProgressLogging ? new UploadLogger(UploadLog) : null,
+                        IsOriginalWork ? WorkshopOriginality.Original : WorkshopOriginality.Ported,
+                        PlannedActions
+                                .Concat(PlannedActions.SelectMany(x => x.ChildrenGroups).SelectMany(x => x.Children))
+                                .Where(x => !x.IsActive).Select(x => x.ObjectToUpload).ToList());
+            }
+
+            private Busy _prepareBusy = new Busy();
+
+            private void PrepareUpload() {
+                Phase = UploadPhase.Preparation;
+                _prepareBusy.Task(async () => {
+                    try {
+                        var submitterParams = GetWorkshopSubmitterParams(false);
+                        foreach (var action in PlannedActions) {
+                            await action.LoadVersionInformationAsync(WorkshopHolder.Client);
+                            await action.ValidateResourceRemotelyAsync(submitterParams);
+                        }
+                        CurrentError = null;
+                        Phase = UploadPhase.Setup;
+                    } catch (Exception e) {
+                        CurrentError = WorkshopHelperUtils.GetDisplayErrorMessage(e);
+                        Phase = UploadPhase.Failed;
+                    }
+                }).Ignore();
             }
 
             // Common values
-            private WorkshopClient _client;
-
             private string _currentError;
 
             public string CurrentError {
                 get => _currentError;
                 set => Apply(value, ref _currentError);
-            }
-
-            // Phase 1: authorization
-            /*private bool _silentLogIn;
-
-            public bool SilentLogIn {
-                get => _silentLogIn;
-                set => Apply(value, ref _silentLogIn);
-            }
-
-            private UserInfo _loggedInAs;
-
-            public UserInfo LoggedInAs {
-                get => _loggedInAs;
-                set => Apply(value, ref _loggedInAs);
-            }*/
-
-            /*private AsyncCommand<CancellationToken?> _logInCommand;
-
-            public AsyncCommand<CancellationToken?> LogInCommand
-                => _logInCommand ?? (_logInCommand = new AsyncCommand<CancellationToken?>(async c => {
-                    _client = new WorkshopClient("http://192.168.1.10:3000", UserName, UserPassword);
-                    try {
-                        LoggedInAs = await _client.GetAsync<UserInfo>("/users/~me", c.Straighten());
-                        Phase = UploadPhase.Preparation;
-                        CurrentError = null;
-                        ValuesStorage.SetEncrypted(KeyUserName, UserName);
-                        ValuesStorage.SetEncrypted(KeyUserPassword, UserPassword);
-                    } catch (Exception e) when (e.IsCancelled()) {
-                        Phase = UploadPhase.Authorization;
-                        CurrentError = null;
-                        LoggedInAs = null;
-                    } catch (Exception e) {
-                        var wrongCredentials = e.Message == @"Forbidden";
-                        Phase = UploadPhase.Authorization;
-                        CurrentError = wrongCredentials ? "Username or password is wrong" : $"Failed to log in:\n• {e.FlattenMessage(";\n• ")}.";
-                        LoggedInAs = null;
-                        if (wrongCredentials && SilentLogIn) {
-                            ValuesStorage.Remove(KeyUserName);
-                            ValuesStorage.Remove(KeyUserPassword);
-                        }
-                    }
-                    SilentLogIn = false;
-                    try {
-                        await LoadVersionInformationAsync();
-                    } catch (Exception e) {
-                        NonfatalError.Notify("Can’t load information about remote objects", e);
-                    }
-                }, c => !string.IsNullOrWhiteSpace(UserName) && !string.IsNullOrWhiteSpace(UserPassword)))
-                        .ListenOn(this, nameof(UserName))
-                        .ListenOn(this, nameof(UserPassword));*/
-
-            /*private DelegateCommand _logOutCommand;
-
-            public DelegateCommand LogOutCommand => _logOutCommand ?? (_logOutCommand = new DelegateCommand(() => {
-                Phase = UploadPhase.Authorization;
-                CurrentError = null;
-                LoggedInAs = null;
-            }, () => LoggedInAs != null)).ListenOn(this, nameof(LoggedInAs));
-
-            private AsyncCommand _editProfleCommand;
-
-            public AsyncCommand EditProfleCommand => _editProfleCommand ?? (_editProfleCommand = new AsyncCommand(async () => {
-                if (_client == null || LoggedInAs == null) return;
-                if (new WorkshopEditProfile(_client, LoggedInAs).ShowDialog() == true) {
-                    LoggedInAs = await _client.GetAsync<UserInfo>("/users/~me");
-                }
-            }, () => LoggedInAs != null)).ListenOn(this, nameof(LoggedInAs));*/
-
-            // Phase 2: preparation
-            private async Task LoadVersionInformationAsync() {
-                foreach (var action in PlannedActions) {
-                    await action.LoadVersionInformationAsync(_client);
-                }
             }
 
             private bool _isOriginalWork;
@@ -432,13 +448,13 @@ namespace AcManager.Pages.Workshop {
                     action.IsBusy = true;
                 }
 
+                var submitterParams = GetWorkshopSubmitterParams(true);
                 foreach (var action in PlannedActions.Where(action => action.IsAvailable && action.IsActive)) {
                     using (var op = logger.Begin($@"Starting to upload {action.DisplayType.ToSentenceMember()} {action.ObjectToUpload.Name}")) {
                         try {
                             logger.Write($@"Version: {action.ObjectToUpload.Version}");
                             logger.Write($@"Remote version: {action.RemoteVersion.Or("none")}");
-                            _client.MarkNewUploadGroup();
-                            await action.UploadAsync(_client, logger, IsOriginalWork ? Originality.Original : Originality.Ported);
+                            await action.UploadAsync(submitterParams, logger);
                         } catch (Exception e) {
                             Logging.Error(e);
                             logger.Error(e.FlattenMessage().JoinToString("\n\t"));
@@ -446,7 +462,12 @@ namespace AcManager.Pages.Workshop {
                         }
                     }
                 }
-            }, () => _client != null && PlannedActions.Any(x => x.IsAvailable && x.IsActive)));
+            }, () => PlannedActions.Any(x => x.IsAvailable && x.IsActive
+                    && x.ChildrenGroups.All(y => !y.AtLeastOneIsRequired || y.Children.Any(z => z.IsActive)))));
+
+            private DelegateCommand _retryCommand;
+
+            public DelegateCommand RetryCommand => _retryCommand ?? (_retryCommand = new DelegateCommand(PrepareUpload));
 
             // Phase 3: upload
             public BetterObservableCollection<string> UploadLog { get; } = new BetterObservableCollection<string>();

@@ -6,6 +6,7 @@ using AcManager.Tools.AcErrors;
 using AcManager.Tools.AcManagersNew;
 using AcManager.Tools.Helpers;
 using AcManager.Tools.Objects;
+using AcTools.Utils.Helpers;
 using FirstFloor.ModernUI.Helpers;
 using FirstFloor.ModernUI.Windows.Controls;
 using JetBrains.Annotations;
@@ -113,16 +114,27 @@ namespace AcManager.Tools.AcObjectsNew {
             set => Name = value;
         }
 
+        private bool _ignoreChanges;
         private bool _changed;
 
         public virtual bool Changed {
             get => _changed;
             protected set {
-                if (value == _changed || !Loaded) return;
+                if (value == _changed || !Loaded || _ignoreChanges) return;
                 _changed = value;
                 OnPropertyChanged(nameof(Changed));
                 _saveCommand?.RaiseCanExecuteChanged();
             }
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null) {
+            if (_ignoreChanges) return;
+            base.OnPropertyChanged(propertyName);
+        }
+
+        public IDisposable IgnoreChanges() {
+            _ignoreChanges = true;
+            return new ActionAsDisposable(() => _ignoreChanges = false);
         }
 
         private int? _year;

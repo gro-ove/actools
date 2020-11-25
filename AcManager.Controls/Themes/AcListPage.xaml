@@ -199,6 +199,7 @@
                 <DockPanel.ContextMenu>
                   <ContextMenu>
                     <MenuItem Header="Copy IDs" Command="{Binding CopyIdsCommand}" />
+                    <MenuItem Header="Copy tags" Command="{Binding CopyTagsCommand}" />
                   </ContextMenu>
                 </DockPanel.ContextMenu>
                 <mui:ModernButton x:Name="AddNewButton" DockPanel.Dock="Right" IconData="{StaticResource AddIconData}"

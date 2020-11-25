@@ -33,12 +33,12 @@ using System.Windows.Markup;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.0.1.347")]
-[assembly: AssemblyFileVersion("1.0.1.347")]
+[assembly: AssemblyVersion("1.0.1.369")]
+[assembly: AssemblyFileVersion("1.0.1.369")]
 
 [assembly: XmlnsDefinition("http://acstuff.ru/app/workshop", "AcManager.Workshop")]
 [assembly: XmlnsDefinition("http://acstuff.ru/app/workshop", "AcManager.Workshop.Data")]
 [assembly: XmlnsPrefix("http://acstuff.ru/app/workshop", "ws")]
 
 [assembly: NeutralResourcesLanguage("en-US")]
-// Modified at: 11/11/2020 7:04:56 PM
+// Modified at: 11/23/2020 12:24:28 AM

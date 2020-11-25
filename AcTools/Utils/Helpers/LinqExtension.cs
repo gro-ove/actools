@@ -875,7 +875,8 @@ namespace AcTools.Utils.Helpers {
         }
 
         [NotNull, Pure]
-        public static IEnumerable<T> ApartFrom<T>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<T> additionalItems) {
+        public static IEnumerable<T> ApartFrom<T, TException>([NotNull] this IEnumerable<T> source, [CanBeNull] IEnumerable<TException> additionalItems)
+                where T : TException {
             if (source == null) throw new ArgumentNullException(nameof(source));
             if (additionalItems == null) return source;
             var list = additionalItems.ToIReadOnlyListIfItIsNot();

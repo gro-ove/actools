@@ -192,8 +192,8 @@
     <value>Настройки</value>
   </data>
   <data name="Car_OpenInCustomShowroom" xml:space="preserve">
-    <value>Открыть в пользовательском выставочном зале</value>
-  <alternative>Открыть в пользовательском демонстрационном зале</alternative><alternative>Открыть в кастомном шоуруме</alternative></data>
+    <value>Открыть в пользовательском шоуруме</value>
+  <alternative>Открыть в пользовательском демонстрационном зале</alternative><alternative>Открыть в кастомном шоуруме</alternative><alternative>Открыть в пользовательском выставочном зале</alternative></data>
   <data name="Video_CannotPlay" xml:space="preserve">
     <value>Не получится проиграть видео</value>
   </data>
@@ -513,8 +513,8 @@
     <value>Расход топлива:</value>
   </data>
   <data name="Showroom_DialogHeader" xml:space="preserve">
-    <value>Выставочный зал</value>
-  <alternative>Шоурум</alternative></data>
+    <value>Шоурум</value>
+  <alternative>Выставочный зал</alternative></data>
   <data name="Common_ExposureLabel" xml:space="preserve">
     <value>Экспозиция:</value>
   </data>
@@ -728,8 +728,8 @@
     <value>Нажмите, чтобы открыть ссылку</value>
   </data>
   <data name="Showroom_ShowroomLabel" xml:space="preserve">
-    <value>Выставочный зал:</value>
-  </data>
+    <value>Шоурум:</value>
+  <alternative>Выставочный зал:</alternative></data>
   <data name="Showroom_HideWatermark_Tooltip" xml:space="preserve">
     <value>Водяной знак Kunos будет временно скрыт</value>
   </data>
@@ -743,8 +743,8 @@
     <value>Очевидно, SweetFX не влияет на результат, но может уменьшить время загрузки</value>
   </data>
   <data name="Showroom_CannotStart" xml:space="preserve">
-    <value>Не удается запустить выставочный зал</value>
-  <alternative>Не удается запустить демонстрационный зал</alternative></data>
+    <value>Не удается запустить шоурум</value>
+  <alternative>Не удается запустить демонстрационный зал</alternative><alternative>Не удается запустить выставочный зал</alternative></data>
   <data name="ImageViewer_CannotSave" xml:space="preserve">
     <value>Не удалось сохранить изображение</value>
   </data>
@@ -800,8 +800,8 @@
     <value>Загрузка модели ...</value>
   </data>
   <data name="CustomShowroom_CannotStart" xml:space="preserve">
-    <value>Не удается запустить пользовательский выставочный зал</value>
-  <alternative>Не удается запустить пользовательский демонстрационный зал</alternative></data>
+    <value>Не удается запустить пользовательский шоурум</value>
+  <alternative>Не удается запустить пользовательский демонстрационный зал</alternative><alternative>Не удается запустить пользовательский выставочный зал</alternative></data>
   <data name="CustomShowroom_Tools_Title" xml:space="preserve">
     <value>Инструменты</value>
   </data>

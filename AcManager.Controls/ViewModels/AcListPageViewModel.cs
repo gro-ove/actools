@@ -17,6 +17,7 @@ namespace AcManager.Controls.ViewModels {
         string GetNumberString(int count);
         string Status { get; }
         ICommand CopyIdsCommand { get; }
+        ICommand CopyTagsCommand { get; }
         void SetCurrentItem(string id);
         AcWrapperCollectionView GetAcWrapperCollectionView();
     }
@@ -26,6 +27,8 @@ namespace AcManager.Controls.ViewModels {
 
         protected AcListPageViewModel([NotNull] IAcManagerNew list, IFilter<T> listFilter) : base(list, listFilter, KeyBase, false) {
             CopyIdsCommand = new DelegateCommand(() => ClipboardHelper.SetText(MainList.OfType<AcItemWrapper>().Select(x => x.Id).JoinToString('\n')));
+            CopyTagsCommand = new DelegateCommand(() => ClipboardHelper.SetText(MainList.OfType<AcItemWrapper>().Select(x => x.Value)
+                    .OfType<AcJsonObjectNew>().SelectMany(x => x.Tags).OrderBy(x => x).Distinct().JoinToString('\n')));
         }
 
         protected override void FilteredNumberChanged(int oldValue, int newValue) {
@@ -42,6 +45,8 @@ namespace AcManager.Controls.ViewModels {
         public string Status => GetNumberString(MainList.Count);
 
         public ICommand CopyIdsCommand { get; }
+
+        public ICommand CopyTagsCommand { get; }
 
         public void SetCurrentItem(string id) {
             var found = MainList.OfType<AcItemWrapper>().GetByIdOrDefault(id) ?? MainList.OfType<AcItemWrapper>().FirstOrDefault();

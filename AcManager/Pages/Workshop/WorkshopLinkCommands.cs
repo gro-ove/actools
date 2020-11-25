@@ -134,7 +134,7 @@ namespace AcManager.Pages.Workshop {
                     var userUrl = $@"/users/{userId ?? @"~me"}";
                     var currentProfile = await client.GetAsync<UserInfo>(userUrl);
                     if (await new WorkshopEditProfile(client, currentProfile).ShowDialogAsync() == true) {
-                        model.LoggedInAs = await client.GetAsync<UserInfo>(userUrl);
+                        model.AuthorizedAs = await client.GetAsync<UserInfo>(userUrl);
                     }
                 } catch (Exception e) {
                     NonfatalError.Notify("Failed to edit profile", e);

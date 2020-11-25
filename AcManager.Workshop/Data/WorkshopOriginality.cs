@@ -1,5 +1,5 @@
 namespace AcManager.Workshop.Data {
-    public enum Originality {
+    public enum WorkshopOriginality {
         Stolen = 0,
         PortedIndy = 1,
         Ported = 2,

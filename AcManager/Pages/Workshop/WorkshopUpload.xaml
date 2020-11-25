@@ -2,8 +2,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mui="http://firstfloorsoftware.com/ModernUI"
     xmlns:w="clr-namespace:AcManager.Pages.Workshop" xmlns:ws="http://acstuff.ru/app/workshop"
-    xmlns:workshop="clr-namespace:AcManager.Controls.UserControls.Workshop;assembly=AcManager.Controls" mc:Ignorable="d" MinWidth="600" Width="800"
-    Height="720" MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual"
+    xmlns:workshop="clr-namespace:AcManager.Controls.UserControls.Workshop;assembly=AcManager.Controls" mc:Ignorable="d" MinWidth="600" Width="800" Height="720"
+    MaxWidth="{x:Static mui:DpiAwareWindow.UnlimitedSize}" MaxHeight="{x:Static mui:DpiAwareWindow.UnlimitedSize}" SizeToContent="Manual"
     ResizeMode="CanResizeWithGrip" LocationAndSizeKey="WorkshopUpload.LS" d:DataContext="{d:DesignInstance w:WorkshopUpload+ViewModel}"
     Title="Upload to CM Workshop">
   <mui:ModernDialog.Resources>
@@ -13,6 +13,54 @@
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/SettingsSpecific.xaml" />
         <mui:SharedResourceDictionary Source="/AcManager.Controls;component/Assets/WorkshopResources.xaml" />
       </ResourceDictionary.MergedDictionaries>
+
+      <DataTemplate x:Key="WorkshopValidationItem" DataType="wv:WorkshopValidatedItem">
+        <TextBlock Text="{Binding DisplayMessage, StringFormat='{}• {0}'}" Style="{StaticResource Small}" />
+      </DataTemplate>
+
+      <mui:SpacingStackPanel x:Key="WorkshopValidationPanel" x:Shared="False" Orientation="Horizontal" Spacing="8"
+          d:DataContext="{d:DesignInstance w:WorkshopUpload+PlannedAction}">
+        <DockPanel Background="Transparent" Visibility="{Binding ValidationFailed.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+          <DockPanel.ToolTip>
+            <StackPanel>
+              <TextBlock Text="Errors requiring fixing:" Style="{StaticResource Label}" Margin="0 0 0 4" />
+              <ItemsControl ItemsSource="{Binding ValidationFailed}" ItemTemplate="{StaticResource WorkshopValidationItem}" />
+            </StackPanel>
+          </DockPanel.ToolTip>
+          <Path Data="{StaticResource CloseIconData}" Width="12" Height="12" Fill="Red" Stretch="Uniform" />
+          <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ValidationFailed.Count}" VerticalAlignment="Center" />
+        </DockPanel>
+        <DockPanel Background="Transparent" Visibility="{Binding ValidationWarning.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+          <DockPanel.ToolTip>
+            <StackPanel>
+              <TextBlock Text="Possible issues:" Style="{StaticResource Label}" Margin="0 0 0 4" />
+              <ItemsControl ItemsSource="{Binding ValidationWarning}" ItemTemplate="{StaticResource WorkshopValidationItem}" />
+            </StackPanel>
+          </DockPanel.ToolTip>
+          <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" />
+          <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ValidationWarning.Count}" VerticalAlignment="Center" />
+        </DockPanel>
+        <DockPanel Background="Transparent" Visibility="{Binding ValidationFixable.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+          <DockPanel.ToolTip>
+            <StackPanel>
+              <TextBlock Text="Issues that will be fixed automatically:" Style="{StaticResource Label}" Margin="0 0 0 4" />
+              <ItemsControl ItemsSource="{Binding ValidationFixable}" ItemTemplate="{StaticResource WorkshopValidationItem}" />
+            </StackPanel>
+          </DockPanel.ToolTip>
+          <Path Data="{StaticResource GearIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform" />
+          <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ValidationFixable.Count}" VerticalAlignment="Center" />
+        </DockPanel>
+        <DockPanel Background="Transparent" Visibility="{Binding ValidationPassed.Count, Converter={StaticResource MoreToVisibilityConverter}}">
+          <DockPanel.ToolTip>
+            <StackPanel>
+              <TextBlock Text="Passed checks:" Style="{StaticResource Label}" Margin="0 0 0 4" />
+              <ItemsControl ItemsSource="{Binding ValidationPassed}" ItemTemplate="{StaticResource WorkshopValidationItem}" />
+            </StackPanel>
+          </DockPanel.ToolTip>
+          <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" Fill="{DynamicResource Go}" Stretch="Uniform" />
+          <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ValidationPassed.Count}" VerticalAlignment="Center" />
+        </DockPanel>
+      </mui:SpacingStackPanel>
 
       <DockPanel x:Shared="False" x:Key="PieceReady">
         <DockPanel Margin="0 0 0 20" Dock="Top">
@@ -29,6 +77,18 @@
         <mui:Switch Value="{Binding Phase}" Margin="0 20 0 20">
 
           <DockPanel mui:Switch.When="{x:Static w:WorkshopUpload+UploadPhase.Preparation}" VerticalAlignment="Top">
+            <mui:ModernProgressRing Width="80" Height="80" VerticalAlignment="Center" HorizontalAlignment="Center" IsActive="True" />
+          </DockPanel>
+
+          <DockPanel mui:Switch.When="{x:Static w:WorkshopUpload+UploadPhase.Failed}" VerticalAlignment="Top">
+            <mui:AsyncButton Command="{Binding RetryCommand}" Content="Try again" DockPanel.Dock="Bottom" Margin="0 8 0 0" />
+            <Path Data="{StaticResource AlertIconData}" Width="16" Height="16" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left"
+                VerticalAlignment="Top" Margin="0 4 8 0" />
+            <TextBlock Margin="0 0 0 4" Text="Error:" Style="{StaticResource Heading2}" DockPanel.Dock="Top" />
+            <TextBlock Text="{Binding CurrentError}" Style="{StaticResource Small}" />
+          </DockPanel>
+
+          <DockPanel mui:Switch.When="{x:Static w:WorkshopUpload+UploadPhase.Setup}" VerticalAlignment="Top">
             <mui:SpacingStackPanel Spacing="8" DockPanel.Dock="Bottom" Margin="0 20 0 0">
               <CheckBox IsChecked="{Binding IsOriginalWork}" Background="Transparent">
                 <CheckBox.ToolTip>
@@ -38,10 +98,10 @@
                 <Label Content="This is a scratch made work" />
               </CheckBox>
               <mui:AsyncButton Command="{Binding UploadCommand}" Content="Upload" />
-              <DockPanel Visibility="{Binding CurrentError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse|hidden'}">
+              <!--<DockPanel Visibility="{Binding CurrentError, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='inverse|hidden'}">
                 <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" DockPanel.Dock="Left" />
                 <TextBlock Margin="8 0 0 0" Foreground="{DynamicResource Error}" Text="{Binding CurrentError}" />
-              </DockPanel>
+              </DockPanel>-->
             </mui:SpacingStackPanel>
 
             <ItemsControl Style="{StaticResource VirtualizingItemsControl}" ItemsSource="{Binding PlannedActions}">
@@ -52,22 +112,61 @@
                       <CheckBox IsChecked="{Binding IsActive}" VerticalAlignment="Center"
                           Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter='inverse|hidden'}" />
                       <DockPanel>
+                        <ContentControl Content="{StaticResource WorkshopValidationPanel}" DockPanel.Dock="Right" Margin="8 0 0 0" />
                         <mui:BetterImage Width="24" Height="24" Margin="8 0 4 0" Filename="{Binding IconFilename}" CollapseIfMissing="True"
                             CollapseIfNull="True" />
                         <TextBlock Text="{Binding ObjectToUpload.DisplayName}" DockPanel.Dock="Top" />
                         <TextBlock Text="{Binding DisplayStatus}" Style="{StaticResource Small}" DockPanel.Dock="Top" />
                       </DockPanel>
                     </DockPanel>
-                    <ItemsControl ItemsSource="{Binding Children}" Margin="40 0 0 0">
+                    <ItemsControl ItemsSource="{Binding ChildrenGroups}" Margin="16 8 0 0">
                       <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                          <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Top" Margin="0 4 0 0">
-                            <DockPanel>
-                              <mui:BetterImage Width="14" Height="14" Margin="4 0 4 0" Filename="{Binding IconFilename}" CollapseIfMissing="True"
-                                  CollapseIfNull="True" VerticalAlignment="Center" />
-                              <TextBlock Text="{Binding ObjectToUpload.DisplayName}" Style="{StaticResource Small}" VerticalAlignment="Center" />
-                            </DockPanel>
-                          </CheckBox>
+                          <Expander Style="{StaticResource SimpleExpander}">
+                            <Expander.Header>
+                              <DockPanel>
+                                <mui:SpacingStackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="8 -2 0 2" Spacing="8">
+                                  <DockPanel Visibility="{Binding ChildrenValidationFailed, Converter={StaticResource MoreToVisibilityConverter}}">
+                                    <Path Data="{StaticResource CloseIconData}" Width="12" Height="12" Fill="Red" Stretch="Uniform" />
+                                    <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ChildrenValidationFailed}"
+                                        VerticalAlignment="Center" />
+                                  </DockPanel>
+                                  <DockPanel Visibility="{Binding ChildrenValidationWarning, Converter={StaticResource MoreToVisibilityConverter}}">
+                                    <Path Data="{StaticResource AlertIconData}" Width="12" Height="12" Fill="{DynamicResource Error}" Stretch="Uniform" />
+                                    <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ChildrenValidationWarning}"
+                                        VerticalAlignment="Center" />
+                                  </DockPanel>
+                                  <DockPanel Visibility="{Binding ChildrenValidationFixable, Converter={StaticResource MoreToVisibilityConverter}}">
+                                    <Path Data="{StaticResource GearIconData}" Width="12" Height="12" Fill="{DynamicResource WindowText}" Stretch="Uniform" />
+                                    <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ChildrenValidationFixable}"
+                                        VerticalAlignment="Center" />
+                                  </DockPanel>
+                                  <DockPanel Visibility="{Binding ChildrenValidationPassed, Converter={StaticResource MoreToVisibilityConverter}}">
+                                    <Path Data="{StaticResource CheckIconData}" Width="12" Height="12" Fill="{DynamicResource Go}" Stretch="Uniform" />
+                                    <TextBlock Margin="4 0 0 0" Style="{StaticResource Small}" FontWeight="Bold" Text="{Binding ChildrenValidationPassed}"
+                                        VerticalAlignment="Center" />
+                                  </DockPanel>
+                                </mui:SpacingStackPanel>
+                                <TextBlock Text="{Binding DisplayTitle}" Style="{StaticResource Label}" Background="Transparent" />
+                              </DockPanel>
+                            </Expander.Header>
+                            <ItemsControl ItemsSource="{Binding Children}" Margin="16 0 0 0">
+                              <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                  <DockPanel>
+                                    <ContentControl Content="{StaticResource WorkshopValidationPanel}" DockPanel.Dock="Right" Margin="8 0 0 0" />
+                                    <CheckBox IsChecked="{Binding IsActive}" DockPanel.Dock="Top" Margin="0 4 0 0">
+                                      <DockPanel>
+                                        <mui:BetterImage Width="14" Height="14" Margin="4 0 4 0" Filename="{Binding IconFilename}" CollapseIfMissing="True"
+                                            CollapseIfNull="True" VerticalAlignment="Center" />
+                                        <TextBlock Text="{Binding ObjectToUpload.DisplayName}" Style="{StaticResource Small}" VerticalAlignment="Center" />
+                                      </DockPanel>
+                                    </CheckBox>
+                                  </DockPanel>
+                                </DataTemplate>
+                              </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                          </Expander>
                         </DataTemplate>
                       </ItemsControl.ItemTemplate>
                     </ItemsControl>

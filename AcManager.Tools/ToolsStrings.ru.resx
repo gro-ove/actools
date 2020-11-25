@@ -285,8 +285,8 @@
     <value>шрифт</value>
   </data>
   <data name="AdditionalContent_Showroom" xml:space="preserve">
-    <value>выставочный зал</value>
-  <alternative>шоурум</alternative></data>
+    <value>Шоурум</value>
+  <alternative>шоурум</alternative><alternative>выставочный зал</alternative></data>
   <data name="AdditionalContent_Track" xml:space="preserve">
     <value>трасса</value>
   </data>
@@ -1231,8 +1231,8 @@
     <value>Новая трасса {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomNew" xml:space="preserve">
-    <value>Новый выставочный зал {0}</value>
-  </data>
+    <value>Новый шоурум {0}</value>
+  <alternative>Новый выставочный зал {0}</alternative></data>
   <data name="ContentInstallation_FontNew" xml:space="preserve">
     <value>Новый шрифт {0}</value>
   </data>
@@ -1249,8 +1249,8 @@
     <value>Новая версия трассы {0}</value>
   </data>
   <data name="ContentInstallation_ShowroomExisting" xml:space="preserve">
-    <value>Новая версия выставочного зала {0}</value>
-  </data>
+    <value>Новая версия шоурума {0}</value>
+  <alternative>Новая версия выставочного зала {0}</alternative></data>
   <data name="ContentInstallation_FontExisting" xml:space="preserve">
     <value>Новая версия шрифта {0}</value>
   </data>
@@ -1444,8 +1444,8 @@
     <value>Погода {0} отсутствует.</value>
   </data>
   <data name="Shared_CustomShowroomPreset" xml:space="preserve">
-    <value>Пользовательская предустановка выставочного зала</value>
-  </data>
+    <value>Пользовательская предустановка шоурума</value>
+  <alternative>Пользовательская предустановка выставочного зала</alternative></data>
   <data name="Shared_CustomPreviewsPreset" xml:space="preserve">
     <value>Пользовательская предустановка пред. просмотра</value>
   </data>
@@ -1465,14 +1465,14 @@
     <value>Неверное расположение</value>
   </data>
   <data name="JumpStart_DriveThrough" xml:space="preserve">
-    <value>Проехать мимо</value>
-  </data>
+    <value>Проехать сквозь питы</value>
+  <alternative>Проехать мимо</alternative></data>
   <data name="ShowroomObject_CannotToggleSound" xml:space="preserve">
     <value>Не удается включить звук</value>
   </data>
   <data name="ShowroomObject_CannotToggleSound_Commentary" xml:space="preserve">
-    <value>Убедитесь, что сейчас нет запущенных приложений с выставочным залом</value>
-  </data>
+    <value>Убедитесь, что сейчас нет запущенных приложений с шоурумом</value>
+  <alternative>Убедитесь, что сейчас нет запущенных приложений с выставочным залом</alternative></data>
   <data name="LogHelper_CannotConnectToRemoteServer" xml:space="preserve">
     <value>Не удается подключиться к удаленному серверу</value>
   </data>
@@ -1489,8 +1489,8 @@
     <value>Объекты колёс (WHEEL_LF, WHEEL_LR, ...) отсутствуют</value>
   </data>
   <data name="LogHelper_TimeAttackNotSupported" xml:space="preserve">
-    <value>Режим Тайм-Аттак не поддерживается выбранной трассой</value>
-  </data>
+    <value>Режим Time-Attack не поддерживается выбранной трассой</value>
+  <alternative>Режим Тайм-Аттак не поддерживается выбранной трассой</alternative></data>
   <data name="LogHelper_DefaultPpFilterIsMissing" xml:space="preserve">
     <value>Стандартный фильтр постобработки (default.ini) отсутствует, но требуется</value>
   </data>
@@ -1654,8 +1654,8 @@
     <value>Невозможно инциализировать Lua</value>
   </data>
   <data name="Settings_Starter_Official_Description" xml:space="preserve">
-    <value>Официальны путь от Kunos; может быть медленным и ненадежным, но не требует патча</value>
-  </data>
+    <value>Официальный способ от Kunos; может быть медленнее и менее надёжным</value>
+  <alternative>Официальны путь от Kunos; может быть медленным и ненадежным, но не требует патча</alternative></data>
   <data name="Settings_Starter_Tricky_Description" xml:space="preserve">
     <value>Хитрый путь запуска гонки; один из самых быстрых, но не работает без запущенного Steam или без интернет соединения</value>
   </data>

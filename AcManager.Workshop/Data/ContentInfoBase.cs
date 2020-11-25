@@ -71,7 +71,7 @@ namespace AcManager.Workshop.Data {
         public string Description { get; set; }
 
         [JsonProperty("originality")]
-        public Originality Originality { get; set; }
+        public WorkshopOriginality Originality { get; set; }
 
         [JsonProperty("version")]
         public string Version { get; set; }

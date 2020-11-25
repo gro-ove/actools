@@ -36,7 +36,7 @@ namespace AcManager.Workshop.Data {
         }
 
         public WorkshopContentCar() {
-            BrandBadge = Lazier.CreateAsync(() => BrandBadgeProvider.GetAsync(Brand));
+            BrandBadge = Lazier.CreateAsync(() => WorkshopBrandBadgeProvider.GetAsync(Brand));
         }
 
         [JsonProperty("parentID")]
